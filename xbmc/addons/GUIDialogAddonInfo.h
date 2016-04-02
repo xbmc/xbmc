@@ -80,7 +80,6 @@ private:
   bool PromptIfDependency(int heading, int line2);
 
   CFileItemPtr m_item;
-  ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;
   bool m_addonEnabled;
   unsigned int m_jobid;

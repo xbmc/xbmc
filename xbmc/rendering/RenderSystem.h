@@ -102,7 +102,7 @@ public:
 
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
-  virtual bool PresentRender(const CDirtyRegionList& dirty) = 0;
+  virtual void PresentRender(bool rendered) = 0;
   virtual bool ClearBuffers(color_t color) = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 
@@ -146,7 +146,7 @@ public:
   bool SupportsBGRA() const;
   bool SupportsBGRAApple() const;
   bool SupportsNPOT(bool dxt) const;
-  bool SupportsStereo(RENDER_STEREO_MODE mode) const;
+  virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }

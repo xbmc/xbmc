@@ -29,7 +29,7 @@ class CFileItemList;
 class CGUIDialogSelect : public CGUIDialogBoxBase
 {
 public:
-  CGUIDialogSelect(void);
+  CGUIDialogSelect();
   virtual ~CGUIDialogSelect(void);
   virtual bool OnMessage(CGUIMessage& message) override;
   virtual bool OnBack(int actionID) override;
@@ -52,11 +52,14 @@ public:
   void SetMultiSelection(bool multiSelection);
 
 protected:
+  CGUIDialogSelect(int windowid);
   virtual CGUIControl *GetFirstFocusableControl(int id) override;
   virtual void OnWindowLoaded() override;
   virtual void OnInitWindow() override;
   virtual void OnDeinitWindow(int nextWindowID) override;
   virtual void OnWindowUnload() override;
+
+  virtual void OnSelect(int idx);
 
 private:
   bool m_bButtonEnabled;

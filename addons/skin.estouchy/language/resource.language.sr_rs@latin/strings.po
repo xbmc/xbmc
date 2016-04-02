@@ -1,0 +1,161 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Serbian (Latin) (Serbia) (http://www.transifex.com/projects/p/kodi-main/language/sr_RS@latin/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sr_RS@latin\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Postojeće vizualizacije"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Obrada..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filmovi"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Epizode"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albumi"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Strana"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Prijava"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "PREMOTAVANjE UNAPRED"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "PREMOTAVANjE UNAZAD"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Vreme završetka"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Složi: Uzlazno"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Složi: Silazno"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Otvori spisak za reprodukciju"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Sačuvaj spisak za reprodukciju"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Zatvori spisak za reprodukciju"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Sistemske muzičke datoteke"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Trenutni spisak za reprodukciju"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Nazad"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Lokacija"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Prikaz"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Trenutna temperatura"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Poslednje ažuriranje"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Provajder podataka"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Iskorišćenost memorije:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Poslednja prijava"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Emitovano"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Preuzmi titlove"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Podrazumevana maska"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Zasnovano na Arialu"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Izaberite vaš Kodi korisnički[CR]profil za prijavu, a potom nastavite dalje"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Телевизија уживо"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostupne grupe"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Dodaj grupu"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Преименуј групу"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Обриши групу"

@@ -115,6 +115,41 @@ static int MasterMode(const std::vector<std::string>& params)
   return 0;
 }
 
+
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_13 Profile built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`LoadProfile(profilename\,[prompt])`</b>
+///     ,
+///     Load the specified profile. If prompt is not specified\, and a password
+///     would be required for the requested profile\, this command will silently
+///     fail. If promp' is specified and a password is required\, a password
+///     dialog will be shown.
+///     @param[in] profilename           The profile name.
+///     @param[in] prompt                Add "prompt" to allow unlocking dialogs (optional)
+///   }
+///   \table_row2_l{
+///     <b>`Mastermode`</b>
+///     ,
+///     Runs Kodi in master mode
+///   }
+///   \table_row2_l{
+///     <b>`System.LogOff`</b>
+///     ,
+///     Log off current user.
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap CProfileBuiltins::GetOperations() const
 {
   return {

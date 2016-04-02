@@ -23,7 +23,6 @@
 #include "WinEventsIOS.h"
 #include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
-#include "input/SDLJoystick.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "threads/CriticalSection.h"

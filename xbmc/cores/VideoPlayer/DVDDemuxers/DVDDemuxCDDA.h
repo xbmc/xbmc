@@ -20,11 +20,14 @@
  */
 
 #include "DVDDemux.h"
+#include <vector>
 
 #ifdef TARGET_WINDOWS
 #define __attribute__(dummy_val)
-#else
-#include <config.h>
+#endif
+
+#if defined(HAVE_CONFIG_H)
+  #include "config.h"
 #endif
 
 class CDemuxStreamAudioCDDA;
@@ -45,8 +48,9 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   void SetSpeed(int iSpeed) {};
   int GetStreamLength() ;
-  CDemuxStream* GetStream(int iStreamId);
-  int GetNrOfStreams();
+  CDemuxStream* GetStream(int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override;
   std::string GetFileName();
   virtual std::string GetStreamCodecName(int iStreamId) override;
 

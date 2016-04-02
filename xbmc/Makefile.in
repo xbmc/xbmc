@@ -25,6 +25,8 @@ SRCS=Application.cpp \
      PlayListPlayer.cpp \
      PartyModeManager.cpp \
      SectionLoader.cpp \
+     ServiceBroker.cpp \
+     ServiceManager.cpp \
      SystemGlobals.cpp \
      TextureCache.cpp \
      TextureCacheJob.cpp \

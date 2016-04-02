@@ -39,6 +39,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "PasswordManager.h"
 #include "URL.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
@@ -252,6 +253,20 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.m_ignore = true;
     extraShares.push_back(share1);
 
+    // add the recordings dir as needed
+    if (CPVRDirectory::HasRadioRecordings())
+    {
+      share1.strPath = PVR::CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS;
+      share1.strName = g_localizeStrings.Get(19017); // Recordings
+      extraShares.push_back(share1);
+    }
+    if (CPVRDirectory::HasDeletedRadioRecordings())
+    {
+      share1.strPath = PVR::CPVRRecordingsPath::PATH_DELETED_RADIO_RECORDINGS;
+      share1.strName = g_localizeStrings.Get(19184); // Deleted recordings
+      extraShares.push_back(share1);
+    }
+
     if (CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH) != "")
     {
       share1.strPath = "special://recordings/";
@@ -281,16 +296,16 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share1);
 
     // add the recordings dir as needed
-    if (CPVRDirectory::HasRecordings())
+    if (CPVRDirectory::HasTVRecordings())
     {
-      share1.strPath = "pvr://recordings/active/";
-      share1.strName = g_localizeStrings.Get(19017); // TV Recordings
+      share1.strPath = PVR::CPVRRecordingsPath::PATH_ACTIVE_TV_RECORDINGS;
+      share1.strName = g_localizeStrings.Get(19017); // Recordings
       extraShares.push_back(share1);
     }
-    if (CPVRDirectory::HasDeletedRecordings())
+    if (CPVRDirectory::HasDeletedTVRecordings())
     {
-      share1.strPath = "pvr://recordings/deleted/";
-      share1.strName = g_localizeStrings.Get(19108); // Deleted TV Recordings
+      share1.strPath = PVR::CPVRRecordingsPath::PATH_DELETED_TV_RECORDINGS;
+      share1.strName = g_localizeStrings.Get(19184); // Deleted recordings
       extraShares.push_back(share1);
     }
   }

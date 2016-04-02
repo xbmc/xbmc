@@ -36,6 +36,7 @@
 #include "utils/BitstreamStats.h"
 #include "linux/DllBCM.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include <atomic>
 
 class OMXPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
@@ -57,6 +58,7 @@ protected:
   bool                      m_sync;
   bool                      m_flush;
   std::string               m_codecname;
+  std::atomic_bool          m_bAbortOutput;
   double                    m_iSubtitleDelay;
   bool                      m_bRenderSubs;
   bool                      m_bAllowFullscreen;
@@ -86,7 +88,7 @@ protected:
   virtual void Process();
 private:
 public:
-  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager);
+  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager, CProcessInfo &processInfo);
   ~OMXPlayerVideo();
   bool OpenStream(CDVDStreamInfo &hints);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }

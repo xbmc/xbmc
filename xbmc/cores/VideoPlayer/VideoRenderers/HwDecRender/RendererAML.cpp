@@ -129,7 +129,7 @@ bool CRendererAML::RenderHook(int index)
 
 bool CRendererAML::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
 {
-  ManageDisplay();
+  ManageRenderArea();
 
   CDVDAmlogicInfo *amli = static_cast<CDVDAmlogicInfo *>(m_buffers[m_iYV12RenderBuffer].hwDec);
   if (amli)

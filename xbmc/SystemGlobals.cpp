@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include "SectionLoader.h"
 #include "cores/DataCacheCore.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
@@ -33,6 +34,10 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+
+// Guarantee that CSpecialProtocol is initialized before and uninitialized after RarManager
+#include "filesystem/SpecialProtocol.h"
+std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 
 #if defined(HAS_FILESYSTEM_RAR)
 #include "filesystem/RarManager.h"
@@ -58,9 +63,6 @@
   XCURL::DllLibCurlGlobal g_curlInterface;
   CPartyModeManager     g_partyModeManager;
 
-#ifdef HAS_PYTHON
-  XBPython           g_pythonParser;
-#endif
   CAlarmClock        g_alarmClock;
   PLAYLIST::CPlayListPlayer g_playlistPlayer;
 

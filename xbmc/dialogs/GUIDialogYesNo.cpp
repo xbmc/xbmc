@@ -72,11 +72,11 @@ bool CGUIDialogYesNo::OnBack(int actionID)
 
 void CGUIDialogYesNo::OnInitWindow()
 {
-  CGUIDialogBoxBase::OnInitWindow();
-
-  SET_CONTROL_VISIBLE(CONTROL_YES_BUTTON);
-  SET_CONTROL_VISIBLE(CONTROL_NO_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
   SET_CONTROL_FOCUS(CONTROL_NO_BUTTON, 0);
+
+  CGUIDialogBoxBase::OnInitWindow();
 }
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled)

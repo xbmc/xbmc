@@ -44,7 +44,7 @@ typedef struct frame_queue {
 class CDVDVideoCodecVideoToolBox : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecVideoToolBox();
+  CDVDVideoCodecVideoToolBox(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecVideoToolBox();
 
   static DllVideoToolBoxInterface *GetDllImpl() { return m_pLibVTB; }

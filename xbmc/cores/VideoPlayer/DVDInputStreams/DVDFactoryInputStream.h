@@ -29,5 +29,6 @@ class IVideoPlayer;
 class CDVDFactoryInputStream
 {
 public:
-  static CDVDInputStream* CreateInputStream(IVideoPlayer* pPlayer, CFileItem fileitem);
+  static CDVDInputStream* CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio = false);
+  static CDVDInputStream* CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames);
 };

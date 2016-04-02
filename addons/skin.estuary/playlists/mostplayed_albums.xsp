@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="albums">
+    <name>Most played albums</name>
+    <match>all</match>
+    <limit>10</limit>
+    <rule field="playcount" operator="greaterthan">
+        <value>0</value>
+    </rule>
+    <order direction="descending">playcount</order>
+</smartplaylist>

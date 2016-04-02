@@ -155,10 +155,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       if (g_application.m_pPlayer->IsPlayingVideo())
       { // don't allow resolution switching if we are playing a video
 
-#ifdef HAS_VIDEO_PLAYBACK
-        RESOLUTION res = g_application.m_pPlayer->GetRenderResolution();
-        g_graphicsContext.SetVideoResolution(res);
-#endif
+        g_application.m_pPlayer->TriggerUpdateResolution();
 
         m_iCurRes = 0;
         m_Res.push_back(g_graphicsContext.GetVideoResolution());

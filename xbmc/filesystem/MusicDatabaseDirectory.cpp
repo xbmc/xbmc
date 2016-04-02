@@ -112,13 +112,6 @@ bool CMusicDatabaseDirectory::IsArtistDir(const std::string& strDirectory)
   return (node==NODE_TYPE_ARTIST);
 }
 
-bool CMusicDatabaseDirectory::HasAlbumInfo(const std::string& strDirectory)
-{
-  NODE_TYPE node=GetDirectoryType(strDirectory);
-  return (node!=NODE_TYPE_OVERVIEW && node!=NODE_TYPE_TOP100 &&
-          node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST && node!=NODE_TYPE_YEAR);
-}
-
 void CMusicDatabaseDirectory::ClearDirectoryCache(const std::string& strDirectory)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strDirectory);

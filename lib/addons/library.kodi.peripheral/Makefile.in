@@ -1,0 +1,29 @@
+ARCH=@ARCH@
+INCLUDES=-I. -I../../../xbmc/addons/include -I../../../xbmc
+DEFINES+=
+CXXFLAGS=-fPIC
+LIBNAME=libKODI_peripheral
+OBJS=$(LIBNAME).o
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+LIB_SHARED=../../../addons/library.kodi.peripheral/$(LIBNAME)-$(ARCH).dylib
+else
+LIB_SHARED=../../../addons/library.kodi.peripheral/$(LIBNAME)-$(ARCH).so
+endif
+
+all: $(LIB_SHARED)
+
+$(LIB_SHARED): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -dynamiclib -o $@ $(OBJS)
+else
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
+endif
+
+CLEAN_FILES = \
+	$(LIB_SHARED) \
+
+DISTCLEAN_FILES= \
+	Makefile \
+
+include ../../../Makefile.include

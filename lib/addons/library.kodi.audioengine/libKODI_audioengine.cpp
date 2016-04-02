@@ -22,8 +22,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include "../../../addons/library.kodi.audioengine/libKODI_audioengine.h"
-#include "addons/AddonCallbacks.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"
+#include "addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -33,6 +33,7 @@
 #endif
 
 using namespace std;
+using namespace V1::KodiAPI::AudioEngine;
 
 #define LIBRARY_NAME "libKODI_audioengine"
 
@@ -46,7 +47,7 @@ DLLEXPORT void* AudioEngine_register_me(void *hdl)
     fprintf(stderr, "%s-ERROR: AudioEngine_register_me is called with NULL handle !!!\n", LIBRARY_NAME);
   else
   {
-    cb = ((AddonCB*)hdl)->AudioEngineLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (CB_AudioEngineLib*)((AddonCB*)hdl)->AudioEngineLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "%s-ERROR: AudioEngine_register_me can't get callback table from KODI !!!\n", LIBRARY_NAME);
   }
@@ -224,8 +225,4 @@ void CAddonAEStream::SetResampleRatio(double Ratio)
   ((CB_AudioEngineLib*)m_Callbacks)->AEStream_SetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle, Ratio);
 }
 
-void CAddonAEStream::Discontinuity()
-{
-  return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_Discontinuity(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
-}
 };

@@ -28,6 +28,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIFontManager.h"
 #include "Application.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -62,12 +63,13 @@ unsigned int CRenderer::m_textureid = 1;
 
 CRenderer::CRenderer()
 {
+  m_font = "__subtitle__";
+  m_fontBorder = "__subtitleborder__";
 }
 
 CRenderer::~CRenderer()
 {
-  for(int i = 0; i < NUM_BUFFERS; i++)
-    Release(m_buffers[i]);
+  Flush();
 }
 
 void CRenderer::AddOverlay(CDVDOverlay* o, double pts, int index)
@@ -100,6 +102,9 @@ void CRenderer::Flush()
     Release(m_buffers[i]);
 
   ReleaseCache();
+
+  g_fontManager.Unload(m_font);
+  g_fontManager.Unload(m_fontBorder);
 }
 
 void CRenderer::Release(int idx)
@@ -170,8 +175,22 @@ void CRenderer::Render(int idx)
   int subalign = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
   {
-    COverlay* o = *it;
-    o->PrepareRender();
+    COverlay* o = nullptr;
+    COverlayText *text = dynamic_cast<COverlayText*>(*it);
+    if (text)
+    {
+      text->PrepareRender(CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_FONT),
+                          CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_COLOR),
+                          CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
+                          CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STYLE),
+                          m_font, m_fontBorder);
+      o = text;
+    }
+    else
+    {
+      o = *it;
+      o->PrepareRender();
+    }
     total_height += o->m_height;
   }
 
@@ -409,4 +428,3 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
 
   return r;
 }
-

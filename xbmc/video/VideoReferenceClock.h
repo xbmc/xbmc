@@ -31,24 +31,24 @@ class CVideoReferenceClock : public CThread
     virtual ~CVideoReferenceClock();
 
     int64_t GetTime(bool interpolated = true);
-    int64_t GetFrequency();
+    int64_t GetFrequency() const;
     void    SetSpeed(double Speed);
     double  GetSpeed();
-    double  GetRefreshRate(double* interval = NULL);
+    double  GetRefreshRate(double* interval = nullptr);
     int64_t Wait(int64_t Target);
-    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate);
+    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const;
     void    SetFineAdjust(double fineadjust);
     void    RefreshChanged();
     void    Start();
     void    Stop();
 
   private:
-    void    Process();
+    void    Process() override;
     void    UpdateRefreshrate();
     void    SendVblankSignal();
     void    UpdateClock(int NrVBlanks, bool CheckMissed);
-    double  UpdateInterval();
-    int64_t TimeOfNextVblank();
+    double  UpdateInterval() const;
+    int64_t TimeOfNextVblank() const;
     static void CBUpdateClock(int NrVBlanks, uint64_t time);
 
     int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source

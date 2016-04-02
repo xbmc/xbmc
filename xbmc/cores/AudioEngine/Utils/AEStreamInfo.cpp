@@ -78,7 +78,8 @@ CAEStreamInfo::CAEStreamInfo() :
   m_type(STREAM_TYPE_NULL),
   m_dataIsLE(true),
   m_dtsPeriod(0),
-  m_repeat(0)
+  m_repeat(0),
+  m_ac3FrameSize(0)
 {
 }
 
@@ -417,6 +418,7 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
       m_info.m_channels = AC3Channels[acmod] + lfeon;
       m_syncFunc = &CAEStreamParser::SyncAC3;
       m_info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+      m_info.m_ac3FrameSize = m_fsize;
       m_info.m_repeat = 1;
 
       CLog::Log(LOGINFO, "CAEStreamParser::SyncAC3 - AC3 stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);
@@ -467,6 +469,7 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
       m_info.m_channels = 8; /* FIXME: this should be read out of the stream */
       m_syncFunc = &CAEStreamParser::SyncAC3;
       m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+      m_info.m_ac3FrameSize = m_fsize;
       m_fsizeMain = 0;
 
       CLog::Log(LOGINFO, "CAEStreamParser::SyncAC3 - E-AC3 stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);

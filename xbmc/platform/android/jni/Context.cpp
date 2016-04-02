@@ -90,6 +90,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIDisplayMetrics::PopulateStaticFields();
   CJNIIntent::PopulateStaticFields();
   CJNIKeyEvent::PopulateStaticFields();
+  CJNIViewInputDevice::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()

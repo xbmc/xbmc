@@ -20,8 +20,9 @@
 
 #include "DVDInputStream.h"
 #include "URL.h"
+#include "DVDStreamInfo.h"
 
-CDVDInputStream::CDVDInputStream(DVDStreamType streamType, CFileItem& fileitem)
+CDVDInputStream::CDVDInputStream(DVDStreamType streamType, const CFileItem& fileitem)
 {
   m_streamType = streamType;
   m_contentLookup = true;

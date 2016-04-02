@@ -87,7 +87,6 @@ public:
   void FlushRenderer();
   void SetRenderViewMode(int mode);
   float GetRenderAspectRatio();
-  RESOLUTION GetRenderResolution();
   void TriggerUpdateResolution();
   bool IsRenderingVideo();
   bool IsRenderingGuiLayer();
@@ -100,7 +99,6 @@ public:
   void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags = 0);
   void RenderCaptureRelease(unsigned int captureId);
   bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
-  std::string GetRenderVSyncState();
   bool IsExternalPlaying();
 
   // proxy calls
@@ -111,7 +109,6 @@ public:
   bool  ControlsVolume() const;
   void  DoAudioWork();
   void  GetAudioCapabilities(std::vector<int> &audioCaps);
-  void  GetAudioInfo(std::string& strAudioInfo);
   int   GetAudioStream();
   int   GetAudioStreamCount();
   void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
@@ -123,7 +120,6 @@ public:
   int64_t GetChapterPos(int chapterIdx=-1);
   void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
   void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
-  void  GetGeneralInfo(std::string& strVideoInfo);
   float GetPercentage() const;
   std::string GetPlayerState();
   std::string GetPlayingTitle();
@@ -140,7 +136,6 @@ public:
   std::string GetRadioText(unsigned int line);
   int64_t GetTime() const;
   int64_t GetTotalTime() const;
-  void  GetVideoInfo(std::string& strVideoInfo);
   int   GetVideoStream();
   int   GetVideoStreamCount();
   void  GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info);

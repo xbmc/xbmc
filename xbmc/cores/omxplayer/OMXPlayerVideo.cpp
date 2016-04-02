@@ -69,13 +69,14 @@ public:
 
 OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
                                CDVDOverlayContainer* pOverlayContainer,
-                               CDVDMessageQueue& parent, CRenderManager& renderManager)
+                               CDVDMessageQueue& parent, CRenderManager& renderManager, CProcessInfo &processInfo)
 : CThread("OMXPlayerVideo")
 , m_messageQueue("video")
 , m_codecname("")
 , m_messageParent(parent)
 , m_omxVideo(renderManager)
 , m_renderManager(renderManager)
+, IDVDStreamPlayerVideo(processInfo)
 {
   m_av_clock              = av_clock;
   m_pOverlayContainer     = pOverlayContainer;
@@ -166,7 +167,10 @@ void OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
   m_messageQueue.Abort();
 
   if(IsRunning())
+  {
+    m_bAbortOutput = true;
     StopThread();
+  }
 
   m_messageQueue.End();
 
@@ -301,7 +305,8 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   if (m_nextOverlay != DVD_NOPTS_VALUE && media_pts != 0.0 && media_pts + preroll <= m_nextOverlay)
     return;
 
-  int buffer = m_renderManager.WaitForBuffer(CThread::m_bStop);
+  m_bAbortOutput = false;
+  int buffer = m_renderManager.WaitForBuffer(m_bAbortOutput);
   if (buffer < 0)
     return;
 
@@ -313,7 +318,7 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   ProcessOverlays(media_pts + preroll);
 
   time += m_av_clock->GetAbsoluteClock();
-  m_renderManager.FlipPage(CThread::m_bStop, time/DVD_TIME_BASE);
+  m_renderManager.FlipPage(m_bAbortOutput, time/DVD_TIME_BASE);
 }
 
 void OMXPlayerVideo::Process()
@@ -506,6 +511,7 @@ void OMXPlayerVideo::Flush(bool sync)
   m_messageQueue.Flush();
   m_messageQueue.Flush(CDVDMsg::GENERAL_EOF);
   m_messageQueue.Put(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
+  m_bAbortOutput = true;
 }
 
 bool OMXPlayerVideo::OpenDecoder()

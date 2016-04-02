@@ -27,23 +27,11 @@
 #include "interfaces/python/ContextItemAddonInvoker.h"
 #include "interfaces/python/XBPython.h"
 #include "utils/StringUtils.h"
-#include <boost/lexical_cast.hpp>
 
 
-std::string CContextMenuItem::GetLabel() const
+bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
-  if (!m_addon)
-    return "";
-
-  if (StringUtils::IsNaturalNumber(m_label))
-    return m_addon->GetString(boost::lexical_cast<int>(m_label.c_str()));
-
-  return m_label;
-}
-
-bool CContextMenuItem::IsVisible(const CFileItemPtr& item) const
-{
-  return IsGroup() || (item && m_condition && m_condition->Get(item.get()));
+  return IsGroup() || (m_condition && m_condition->Get(&item));
 }
 
 bool CContextMenuItem::IsParentOf(const CContextMenuItem& other) const
@@ -58,11 +46,15 @@ bool CContextMenuItem::IsGroup() const
 
 bool CContextMenuItem::Execute(const CFileItemPtr& item) const
 {
-  if (!item || !m_addon || m_library.empty() || IsGroup())
+  if (!item || m_library.empty() || IsGroup())
+    return false;
+
+  ADDON::AddonPtr addon;
+  if (!ADDON::CAddonMgr::GetInstance().GetAddon(m_addonId, addon))
     return false;
 
   LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
-  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, m_addon) != -1);
+  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon) != -1);
 }
 
 bool CContextMenuItem::operator==(const CContextMenuItem& other) const
@@ -73,34 +65,38 @@ bool CContextMenuItem::operator==(const CContextMenuItem& other) const
   return (IsGroup() == other.IsGroup())
       && (m_parent == other.m_parent)
       && (m_library == other.m_library)
-      && ((!m_addon && !other.m_addon) || (m_addon && other.m_addon && m_addon->ID() == other.m_addon->ID()));
+      && (m_addonId == other.m_addonId);
 }
 
 std::string CContextMenuItem::ToString() const
 {
   if (IsGroup())
     return StringUtils::Format("CContextMenuItem[group, id=%s, parent=%s, addon=%s]",
-        m_groupId.c_str(), m_parent.c_str(), m_addon ? m_addon->ID().c_str() : "null");
+        m_groupId.c_str(), m_parent.c_str(), m_addonId.c_str());
   else
     return StringUtils::Format("CContextMenuItem[item, parent=%s, library=%s, addon=%s]",
-        m_parent.c_str(), m_library.c_str(), m_addon ? m_addon->ID().c_str() : "null");
+        m_parent.c_str(), m_library.c_str(), m_addonId.c_str());
 }
 
-CContextMenuItem CContextMenuItem::CreateGroup(const std::string& label, const std::string& parent, const std::string& groupId)
+CContextMenuItem CContextMenuItem::CreateGroup(const std::string& label, const std::string& parent,
+    const std::string& groupId, const std::string& addonId)
 {
   CContextMenuItem menuItem;
   menuItem.m_label = label;
   menuItem.m_parent = parent;
   menuItem.m_groupId = groupId;
+  menuItem.m_addonId = addonId;
   return menuItem;
 }
 
-CContextMenuItem CContextMenuItem::CreateItem(const std::string& label, const std::string& parent, const std::string& library, const INFO::InfoPtr& condition)
+CContextMenuItem CContextMenuItem::CreateItem(const std::string& label, const std::string& parent,
+    const std::string& library, const INFO::InfoPtr& condition, const std::string& addonId)
 {
   CContextMenuItem menuItem;
   menuItem.m_label = label;
   menuItem.m_parent = parent;
   menuItem.m_library = library;
   menuItem.m_condition = condition;
+  menuItem.m_addonId = addonId;
   return menuItem;
 }

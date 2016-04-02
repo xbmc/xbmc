@@ -1,5 +1,5 @@
 LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg/archive
-VERSION=2.8.5-Jarvis-rc1
+VERSION=release/3.0-xbmc
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-
+GNUTLS_VER=3.4.9

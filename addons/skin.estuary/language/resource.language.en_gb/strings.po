@@ -1,0 +1,682 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/kodi-main/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /1080i/Home.xml:920 /1080i/Home.xml:520 /1080i/DialogFullScreenInfo.xml:44
+msgctxt "#31000"
+msgid "Now playing"
+msgstr ""
+
+#: /1080i/Home.xml:775
+msgctxt "#31001"
+msgid "Search..."
+msgstr ""
+
+#: /1080i/SkinSettings.xml:125
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:431
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr ""
+
+#: /1080i/VideoOSD.xml:409
+msgctxt "#31004"
+msgid "Change mode"
+msgstr ""
+
+#: /1080i/VideoOSD.xml:416
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr ""
+
+#: /1080i/Home.xml:93
+msgctxt "#31006"
+msgid "Random movies"
+msgstr ""
+
+#: /1080i/Home.xml:102
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr ""
+
+#: /1080i/DialogAddonInfo.xml:32
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr ""
+
+#: /1080i/MyVideoNav.xml:278
+msgctxt "#31009"
+msgid "Download icons"
+msgstr ""
+
+#: /1080i/Home.xml:75
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr ""
+
+#: /1080i/Home.xml:194
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr ""
+
+#: /1080i/Home.xml:210
+msgctxt "#31012"
+msgid "Random albums"
+msgstr ""
+
+#: /1080i/Home.xml:218
+msgctxt "#31013"
+msgid "Random artists"
+msgstr ""
+
+#: /1080i/Home.xml:227
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr ""
+
+#: /1080i/Home.xml:362
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr ""
+
+#: /1080i/Home.xml:374
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:265
+msgctxt "#31017"
+msgid "Rated"
+msgstr ""
+
+#: /1080i/Home.xml:443
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr ""
+
+#: /1080i/Home.xml:675 /1080i/MyWeather.xml:52
+msgctxt "#31019"
+msgid "Forecast"
+msgstr ""
+
+#: /1080i/MyMusicNav.xml:43 /1080i/MyPics.xml:40 /1080i/MyVideoNav.xml:98
+msgctxt "#31020"
+msgid "Actions"
+msgstr ""
+
+#: /1080i/AddonBrowser.xml:35 /1080i/DialogPVRChannelManager.xml:203 /1080i/Includes_MediaMenu.xml:116 /1080i/EventLog.xml:228
+msgctxt "#31021"
+msgid "Misc options"
+msgstr ""
+
+#: /1080i/Includes_MediaMenu.xml:97 /1080i/Includes_MediaMenu.xml:221 /1080i/Includes.xml:1109
+msgctxt "#31022"
+msgid "Sort by"
+msgstr ""
+
+#: /1080i/Includes_MediaMenu.xml:213 /1080i/Includes_MediaMenu.xml:89
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr ""
+
+#: /1080i/MusicVisualisation.xml:143
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr ""
+
+#: /1080i/DialogFavourites.xml:117
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr ""
+
+#: /1080i/DialogAlbumInfo.xml:122
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr ""
+
+#: /1080i/DialogAlbumInfo.xml:131
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr ""
+
+#: /1080i/DialogAlbumInfo.xml:140 /1080i/DialogVideoInfo.xml:280
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr ""
+
+#: /1080i/SettingsProfile.xml:115
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr ""
+
+#: /1080i/SettingsSystemInfo.xml:172
+msgctxt "#31030"
+msgid "Memory used"
+msgstr ""
+
+#: /1080i/SettingsSystemInfo.xml:191
+msgctxt "#31031"
+msgid "Version info"
+msgstr ""
+
+#: /1080i/EventLog.xml:25 /1080i/Includes_MediaMenu.xml:216 /1080i/SmartPlaylistEditor.xml:67 /1080i/EventLog.xml:220 /1080i/Includes_MediaMenu.xml:139
+msgctxt "#31032"
+msgid "Order"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:238 /1080i/DialogSongInfo.xml:232
+msgctxt "#31033"
+msgid "Your rating"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:263
+msgctxt "#31034"
+msgid "Extended info"
+msgstr ""
+
+#: /1080i/DialogPVRChannelManager.xml:279 /1080i/DialogPVRChannelsOSD.xml:291 /1080i/DialogPVRGuideOSD.xml:171 /1080i/Variables.xml:41 /1080i/FileBrowser.xml:238
+msgctxt "#31035"
+msgid "Pages"
+msgstr ""
+
+#: /1080i/FileBrowser.xml:238 /1080i/Variables.xml:41 /1080i/MyPVRRecordings.xml:242
+msgctxt "#31036"
+msgid "items"
+msgstr ""
+
+#: /1080i/Variables.xml:55
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr ""
+
+#: /1080i/Variables.xml:112
+msgctxt "#31038"
+msgid "Rewind"
+msgstr ""
+
+#: /1080i/Variables.xml:111
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr ""
+
+#: /1080i/Variables.xml:200
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr ""
+
+#: /1080i/Variables.xml:14 /1080i/MyPics.xml:95
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr ""
+
+#: /1080i/SmartPlaylistEditor.xml:46
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr ""
+
+#: /1080i/SmartPlaylistEditor.xml:126
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr ""
+
+#: /1080i/DialogPVRGroupManager.xml:31
+msgctxt "#31044"
+msgid "Add group"
+msgstr ""
+
+#: /1080i/DialogPVRGroupManager.xml:37
+msgctxt "#31045"
+msgid "Rename group"
+msgstr ""
+
+#: /1080i/DialogPVRGroupManager.xml:49
+msgctxt "#31046"
+msgid "Delete group"
+msgstr ""
+
+#: /1080i/View_50_List.xml:43
+msgctxt "#31047"
+msgid "Read more..."
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:62
+msgctxt "#31048"
+msgid "Available"
+msgstr ""
+
+#: /1080i/Variables.xml:119
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr ""
+
+#: /1080i/Variables.xml:120
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr ""
+
+#: /1080i/VideoOSD.xml:361
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr ""
+
+#: /1080i/Includes.xml:1102
+msgctxt "#31052"
+msgid "filtered"
+msgstr ""
+
+#: /1080i/Font.xml:99
+msgctxt "#31053"
+msgid "Arial based"
+msgstr ""
+
+#: /1080i/Variables.xml:127
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr ""
+
+#: /1080i/Variables.xml:126
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr ""
+
+#: /1080i/MyMusicNav.xml:58 /1080i/MyVideoNav.xml:125
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr ""
+
+#: /1080i/SettingsProfile.xml:189
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr ""
+
+#: /1080i/SettingsProfile.xml:194
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr ""
+
+#: /1080i/Includes.xml:579
+msgctxt "#31059"
+msgid "Updates available"
+msgstr ""
+
+#: /1080i/Variables.xml:35 /1080i/DialogVideoInfo.xml:193
+msgctxt "#31060"
+msgid "minutes"
+msgstr ""
+
+#: /1080i/SkinSettings.xml:42
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr ""
+
+#: /1080i/Custom_1103_SourcesDialog.xml:24
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr ""
+
+#: /1080i/Includes_MediaMenu.xml:74
+msgctxt "#31063"
+msgid "Sections"
+msgstr ""
+
+#: /1080i/Variables.xml:36
+msgctxt "#31064"
+msgid "unwatched"
+msgstr ""
+
+#: /1080i/MyVideoPlaylist.xml:29
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr ""
+
+#: /1080i/MyMusicPlaylist.xml:19
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr ""
+
+#: /1080i/EventLog.xml:251
+msgctxt "#31067"
+msgid "Event log"
+msgstr ""
+
+#: /1080i/Custom_1105_MusicOSDSettings.xml:41
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr ""
+
+#: /1080i/AddonBrowser.xml:75
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr ""
+
+#: /1080i/Custom_1103_SourcesDialog.xml:13
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr ""
+
+#: /1080i/DialogAddonInfo.xml:90
+msgctxt "#31071"
+msgid "by"
+msgstr ""
+
+#: /1080i/DialogButtonMenu.xml:13 /1080i/LoginScreen.xml:140
+msgctxt "#31072"
+msgid "Power Options"
+msgstr ""
+
+#: /1080i/Home.xml:132
+msgctxt "#31073"
+msgid "Titles"
+msgstr ""
+
+#: /1080i/Home.xml:74 /1080i/Home.xml:337
+msgctxt "#31074"
+msgid "Library root"
+msgstr ""
+
+#: /1080i/Home.xml:62
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr ""
+
+#: /1080i/Home.xml:333
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr ""
+
+#: /1080i/Home.xml:499
+msgctxt "#31077"
+msgid "Previous location"
+msgstr ""
+
+#: /1080i/Home.xml:502
+msgctxt "#31078"
+msgid "Next location"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:110
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr ""
+
+#: /1080i/VideoOSD.xml:287
+msgctxt "#31080"
+msgid "Ends at"
+msgstr ""
+
+#: /1080i/DialogSongInfo.xml:203
+msgctxt "#31081"
+msgid "Album info"
+msgstr ""
+
+#: /1080i/Custom_1105_MusicOSDSettings.xml:46
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr ""
+
+#: /1080i/Custom_1105_MusicOSDSettings.xml:50
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr ""
+
+#: /1080i/Custom_1105_MusicOSDSettings.xml:37
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr ""
+
+#: /1080i/DialogFullScreenInfo.xml:271
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr ""
+
+#: /1080i/DialogFullScreenInfo.xml:107
+msgctxt "#31086"
+msgid "Metadata"
+msgstr ""
+
+#: /1080i/DialogContentSettings.xml:52
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr ""
+
+#: /1080i/DialogContentSettings.xml:61
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr ""
+
+#: /1080i/DialogPVRGroupManager.xml:67
+msgctxt "#31089"
+msgid "Available groups"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:248
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr ""
+
+#: /1080i/VideoOSD.xml:160
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr ""
+
+#: /1080i/VideoOSD.xml:169 /1080i/Variables.xml:163
+msgctxt "#31092"
+msgid "Video menu"
+msgstr ""
+
+#: /1080i/SkinSettings.xml:95
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr ""
+
+#: /1080i/SkinSettings.xml:102
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr ""
+
+#: /1080i/SkinSettings.xml:81
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr ""
+
+#: /1080i/DialogSubtitles.xml:58
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr ""
+
+#: /1080i/DialogPVRChannelManager.xml:145
+msgctxt "#31097"
+msgid "Channel options"
+msgstr ""
+
+#: /1080i/LoginScreen.xml:26
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr ""
+
+#: /1080i/View_52_IconWall.xml:21
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr ""
+
+#: /1080i/View_53_Shift.xml:80
+msgctxt "#31100"
+msgid "Shift"
+msgstr ""
+
+#: /1080i/View_54_InfoWall.xml:334
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr ""
+
+#: /1080i/View_500_SmallThumb.xml:414
+msgctxt "#31102"
+msgid "Wall"
+msgstr ""
+
+#: /1080i/SmartPlaylistRule.xml:48
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr ""
+
+#: /1080i/Home.xml:134 /1080i/Home.xml:228
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr ""
+
+#: /1080i/Home.xml:468
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr ""
+
+#: /1080i/Variables.xml:164
+msgctxt "#31106"
+msgid "Teletext"
+msgstr ""
+
+#: /1080i/View_55_WideList.xml:33
+msgctxt "#31107"
+msgid "WideList"
+msgstr ""
+
+#: /1080i/SkinSettings.xml:109
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr ""
+
+#: /1080i/SkinSettings.xml:116
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr ""
+
+#: /1080i/Home.xml:138
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr ""
+
+#: /1080i/Home.xml:775
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr ""
+
+#: /1080i/VideoOSD.xml:322
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr ""
+
+#: /1080i/Custom_1107_SearchDialog.xml:32
+msgctxt "#31113"
+msgid "Search local library"
+msgstr ""
+
+#: /1080i/Custom_1107_SearchDialog.xml:38 /1080i/DialogMusicInfo.xml:202
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr ""
+
+#: /1080i/Custom_1107_SearchDialog.xml:44
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr ""
+
+#: /1080i/Includes_Home.xml:414
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr ""
+
+#: /1080i/MyVideoNav.xml:271
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr ""
+
+#: /1080i/Home.xml:416
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr ""
+
+#: /1080i/Home.xml:415
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr ""
+
+#: /1080i/Home.xml:769
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr ""
+
+#: /1080i/Home.xml:770
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr ""
+
+#: /1080i/Home.xml:216
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:456
+msgctxt "#31123"
+msgid "Same director"
+msgstr ""
+
+#: /1080i/MyPics.xml:229
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:521
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr ""
+
+#: /1080i/DialogVideoInfo.xml:558
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr ""
+
+#: /1080i/Includes_MediaMenu.xml:137
+msgctxt "#31127"
+msgid "Show icons"
+msgstr ""
+
+#: /1080i/Variables.xml:30
+msgctxt "#31128"
+msgid "Contributors"
+msgstr ""
+
+#: /1080i/Variables.xml:229
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr ""
+
+#: /1080i/Variables.xml:230
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr ""
+
+#: /1080i/SkinSettings.xml:117
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr ""
+
+#: /1080i/MyVideoNav.xml:121 /1080i/View_502_FanArt.xml:213
+msgctxt "#31132"
+msgid "min"
+msgstr ""

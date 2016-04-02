@@ -76,6 +76,41 @@ void CJNIMainActivity::_onAudioFocusChange(JNIEnv *env, jobject context, jint fo
     m_appInstance->onAudioFocusChange(focusChange);
 }
 
+void CJNIMainActivity::_onInputDeviceAdded(JNIEnv *env, jobject context, jint deviceId)
+{
+  static_cast<void>(env);
+  static_cast<void>(context);
+
+  if (m_appInstance != nullptr)
+    m_appInstance->onInputDeviceAdded(deviceId);
+}
+
+void CJNIMainActivity::_onInputDeviceChanged(JNIEnv *env, jobject context, jint deviceId)
+{
+  static_cast<void>(env);
+  static_cast<void>(context);
+
+  if (m_appInstance != nullptr)
+    m_appInstance->onInputDeviceChanged(deviceId);
+}
+
+void CJNIMainActivity::_onInputDeviceRemoved(JNIEnv *env, jobject context, jint deviceId)
+{
+  static_cast<void>(env);
+  static_cast<void>(context);
+
+  if (m_appInstance != nullptr)
+    m_appInstance->onInputDeviceRemoved(deviceId);
+}
+
+void CJNIMainActivity::_doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos)
+{
+  (void)env;
+  (void)context;
+  if(m_appInstance)
+    m_appInstance->doFrame(frameTimeNanos);
+}
+
 CJNISurface CJNIMainActivity::getVideoViewSurface()
 {
   return call_method<jhobject>(m_context,

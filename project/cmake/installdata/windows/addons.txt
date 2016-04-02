@@ -1,0 +1,1 @@
+addons/repository.pvr-win32.xbmc.org/*

@@ -444,7 +444,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message
 bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
 {
   int iSelection = 0;
-  if (g_PVRClients->ConnectedClientAmount() > 1)
+  if (g_PVRClients->CreatedClientAmount() > 1)
   {
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     if (!pDlgSelect)

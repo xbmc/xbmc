@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "Util.h"
 #include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -36,6 +37,10 @@
 void TestBasicEnvironment::SetUp()
 {
   XFILE::CFile *f;
+
+  g_application.m_ServiceManager.reset(new CServiceManager());
+  if (!g_application.m_ServiceManager->Init1())
+    exit(1);
 
   /* NOTE: The below is done to fix memleak warning about unitialized variable
    * in xbmcutil::GlobalsSingleton<CAdvancedSettings>::getInstance().
@@ -62,6 +67,9 @@ void TestBasicEnvironment::SetUp()
    */
   g_powerManager.Initialize();
   CSettings::GetInstance().Initialize();
+
+  if (!g_application.m_ServiceManager->Init2())
+    exit(1);
 
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
@@ -106,6 +114,8 @@ void TestBasicEnvironment::TearDown()
 {
   std::string xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
   XFILE::CDirectory::Remove(xbmcTempPath);
+  CSettings::GetInstance().Uninitialize();
+  g_application.m_ServiceManager->Deinit();
 }
 
 void TestBasicEnvironment::SetUpError()

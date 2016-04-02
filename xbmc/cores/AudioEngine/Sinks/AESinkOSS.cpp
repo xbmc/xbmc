@@ -21,6 +21,7 @@
 #include "AESinkOSS.h"
 #include <stdint.h>
 #include <limits.h>
+#include <unistd.h>
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"

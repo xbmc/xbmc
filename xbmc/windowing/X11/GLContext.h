@@ -22,7 +22,7 @@
 
 #if defined(HAVE_X11)
 #include "X11/Xlib.h"
-#include "guilib/DirtyRegion.h"
+#include <string>
 
 class CGLContext
 {
@@ -30,16 +30,15 @@ public:
   CGLContext(Display *dpy)
   {
     m_dpy = dpy;
-    m_extensions = "";
   }
   virtual ~CGLContext() {};
   virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext) = 0;
   virtual void Destroy() = 0;
   virtual void Detach() = 0;
   virtual void SetVSync(bool enable, int &mode) = 0;
-  virtual bool SwapBuffers(const CDirtyRegionList& dirty, int &mode) = 0;
+  virtual void SwapBuffers(int &mode) = 0;
   virtual void QueryExtensions() = 0;
-  virtual bool IsExtSupported(const char* extension) = 0;
+  bool IsExtSupported(const char* extension) const;
 
   std::string ExtPrefix(){ return m_extPrefix; };
   std::string m_extPrefix;

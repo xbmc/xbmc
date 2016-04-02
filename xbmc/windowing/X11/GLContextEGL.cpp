@@ -356,14 +356,12 @@ void CGLContextEGL::SetVSync(bool enable, int &mode)
   eglSwapInterval(m_eglDisplay, enable ? 1 : 0);
 }
 
-bool CGLContextEGL::SwapBuffers(const CDirtyRegionList& dirty, int &mode)
+void CGLContextEGL::SwapBuffers(int &mode)
 {
   if ((m_eglDisplay == EGL_NO_DISPLAY) || (m_eglSurface == EGL_NO_SURFACE))
-    return false;
+    return;
 
   eglSwapBuffers(m_eglDisplay, m_eglSurface);
-
-  return true;
 }
 
 void CGLContextEGL::QueryExtensions()
@@ -372,17 +370,6 @@ void CGLContextEGL::QueryExtensions()
   m_extensions = std::string(" ") + extensions + " ";
 
   CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:%s", m_extensions.c_str());
-}
-
-bool CGLContextEGL::IsExtSupported(const char* extension)
-{
-  std::string name;
-
-  name  = " ";
-  name += extension;
-  name += " ";
-
-  return m_extensions.find(name) != std::string::npos;
 }
 
 XVisualInfo* CGLContextEGL::GetVisual()

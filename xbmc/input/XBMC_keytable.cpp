@@ -243,6 +243,7 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_FAVORITES,              0,    0, XBMCVK_FAVORITES,     "favorites" }
 , { XBMCK_HOMEPAGE ,              0,    0, XBMCVK_HOMEPAGE,      "homepage" }
 , { XBMCK_CONFIG,                 0,    0, XBMCVK_CONFIG,        "config" }
+, { XBMCK_EPG   ,                 0,    0, XBMCVK_EPG,           "epg" }
 };
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable)/sizeof(XBMCKEYTABLE);

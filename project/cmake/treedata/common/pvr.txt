@@ -1,0 +1,7 @@
+xbmc/pvr            pvr
+xbmc/pvr/addons     pvr/addons
+xbmc/pvr/channels   pvr/channels
+xbmc/pvr/dialogs    pvr/dialogs
+xbmc/pvr/recordings pvr/recordings
+xbmc/pvr/timers     pvr/timers
+xbmc/pvr/windows    pvr/windows

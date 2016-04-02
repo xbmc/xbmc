@@ -219,6 +219,9 @@ void *CAudioDecoder::GetData(unsigned int samples)
 
 uint8_t *CAudioDecoder::GetRawData(int &size)
 {
+  if (m_status == STATUS_ENDING)
+    m_status = STATUS_ENDED;
+
   if (m_rawBufferSize)
   {
     size = m_rawBufferSize;

@@ -44,6 +44,7 @@ class CJNIAudioTrack : public CJNIBase
     int   getState();
     int   getPlayState();
     int   getPlaybackHeadPosition();
+    int   getBufferSizeInFrames();
 
     static int  MODE_STREAM;
     static int  STATE_INITIALIZED;

@@ -50,7 +50,7 @@ public:
   virtual void           UnInit();
   virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
   virtual void           Close();
-  virtual CRenderPicture *Convert(DVDVideoPicture* picture);
+  virtual CRenderPicture *Convert(DVDVideoPicture &picture);
   virtual bool           Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
   virtual unsigned       Size() { if (m_pVideoProcessor) return m_size; return 0; }
   virtual unsigned       PastRefs() { return m_max_back_refs; }

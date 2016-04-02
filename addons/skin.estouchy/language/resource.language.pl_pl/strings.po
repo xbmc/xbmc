@@ -1,0 +1,289 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/kodi-main/language/pl_PL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Ustawienia dźwięku"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Opcje wizualizacji"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Zdefiniowane szablony wizualizacji"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Menu kontekstowe"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Uruchamianie"
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Najnowsze"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filmy"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Odcinki"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albumy"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Strona"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Lista informacji"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Użytkownik"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Zaktualizowano:"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "DO PRZODU"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "DO TYŁU"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Koniec o godzinie"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sortuj: Rosnąco"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sortuj: Malejąco"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Otwórz listę odtwarzania"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Zapisz listę odtwarzania"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Zamknij listę odtwarzania"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Systemowe pliki muzyczne"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Aktualna lista odtwarzania"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Wstecz"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Lokalizacja"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Widok"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Temperatura"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Ostatnia aktualizacja"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Dostawca danych"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Użycie pamięci:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Ostatnio zalogowany"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Data emisji"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Menu wideo"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Pobierz napisy"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Domyślne dla skóry"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Bazujące na Arialu"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Wybór skóry · Ustawienia regionalne · Listy plików · Wygaszacz ekranu"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Biblioteka wideo · Odtwarzanie · Akceleracja[CR]Listy wideo · Napisy"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Biblioteka muzyki · Odtwarzanie · Listy utworów  · CD-Audio"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Listy obrazów · Pokaz slajdów"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Wybór lokalizacji dla informacji pogodowych"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Zdalne sterowanie przez uPnP i HTTP · Współdzielenie plików · Aktywacja Zeroconf · Ustawienia AirPlay"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Wyświetlanie obrazu · Odtwarzanie dźwięku · Urządzenia wejściowe · Zdalne sterowanie · Oszczędzanie energii · Diagnostyka · Blokady"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Zarządzanie zainstalowanymi dodatkami · Przeglądanie i instalowanie dodatków · Ustawienia dodatków"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Przyciski kategorii menu startowego"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Szybkie łącza dodatków w menu startowym"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Opcje dodatkowe"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Informacje i przycisk pogody na ekranie startowym"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Skrót do dodatku"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNCHRONIZACJA"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Używaj niestandardowego tła"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Tło:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Konfiguracja telewizji · Menu ekranowe · Przewodnik programów · Nagrywanie"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Telewizja"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Ukrywaj odtwarzane wideo w tle interfejsu"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Ukrywaj tło wizualizacji"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Ustawienia kanałów"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostępne grupy"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Dodaj grupę"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Przemianuj grupę"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Usuń grupę"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Pokazuj ukryte"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Pokazuj usunięte"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Pierwsze uruchomienie"

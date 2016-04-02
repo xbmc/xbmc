@@ -44,9 +44,9 @@ that are used to build Kodi packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
 Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
-  dcadec-dev, default-jre, gawk, gperf, libao-dev, libasound2-dev,
+  default-jre, gawk, gperf, libao-dev, libasound2-dev,
   libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev,
-  libbluray-dev (>= 0.7.0), libboost-dev, libboost-thread-dev, libbz2-dev, libcap-dev,
+  libbluray-dev (>= 0.7.0), libbz2-dev, libcap-dev,
   libcdio-dev, libcec-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev,
   libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libfontconfig-dev, libfreetype6-dev,
   libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
@@ -133,6 +133,12 @@ Audio decoders:
 
 Audio encoders:
     audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
+
+Inputstream addons:
+    inputstream.mpd
+
+Peripheral addons:
+    peripheral.joystick
 
 PVR addons:
     pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hdhomerun, pvr.hts, pvr.iptvsimple,

@@ -40,13 +40,21 @@ typedef std::vector<color_t> vecColors;
 
 class CGUIFontTTFBase;
 
-// flags for alignment
-#define XBFONT_LEFT       0x00000000
-#define XBFONT_RIGHT      0x00000001
-#define XBFONT_CENTER_X   0x00000002
-#define XBFONT_CENTER_Y   0x00000004
-#define XBFONT_TRUNCATED  0x00000008
-#define XBFONT_JUSTIFIED  0x00000010
+///
+/// \defgroup kodi_gui_font_alignment Font alignment flags
+/// \ingroup python_xbmcgui_control_radiobutton
+/// @{
+/// @brief Flags for alignment
+///
+/// Flags are used as bits to have several together, e.g. `XBFONT_LEFT | XBFONT_CENTER_Y`
+///
+#define XBFONT_LEFT       0x00000000 ///< Align X left
+#define XBFONT_RIGHT      0x00000001 ///< Align X right
+#define XBFONT_CENTER_X   0x00000002 ///< Align X center
+#define XBFONT_CENTER_Y   0x00000004 ///< Align Y center
+#define XBFONT_TRUNCATED  0x00000008 ///< Truncated text
+#define XBFONT_JUSTIFIED  0x00000010 ///< Justify text
+/// @}
 
 // flags for font style. lower 16 bits are the unicode code
 // points, 16-24 are color bits and 24-32 are style bits

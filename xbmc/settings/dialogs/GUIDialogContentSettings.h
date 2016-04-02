@@ -37,9 +37,6 @@ class CGUIDialogContentSettings : public CGUIDialogSettingsManualBase
 public:
   CGUIDialogContentSettings();
 
-  // specializations of CGUIControl
-  bool OnMessage(CGUIMessage &message) override;
-
   // specialization of CGUIWindow
   bool HasListItems() const override { return true; };
 
@@ -66,6 +63,7 @@ protected:
 
   // implementations of ISettingCallback
   void OnSettingChanged(const CSetting *setting) override;
+  void OnSettingAction(const CSetting *setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
@@ -76,6 +74,10 @@ protected:
   void InitializeSettings() override;
 
 private:
+  void SetLabel2(const std::string &settingid, const std::string &label);
+  void ToggleState(const std::string &settingid, bool enabled);
+  void SetFocus(const std::string &settingid);
+
   /*!
   * @brief The currently selected content type
   */

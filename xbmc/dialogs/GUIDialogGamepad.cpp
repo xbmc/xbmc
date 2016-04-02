@@ -45,6 +45,10 @@ CGUIDialogGamepad::~CGUIDialogGamepad(void)
 
 void CGUIDialogGamepad::OnInitWindow()
 {
+  // hide all controls
+  for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
+    SET_CONTROL_HIDDEN(CONTROL_CHOICES_START + i);
+  SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
 
   CGUIDialogBoxBase::OnInitWindow();
 }

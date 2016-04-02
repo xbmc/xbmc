@@ -23,8 +23,9 @@
 #include "URL.h"
 #include "VideoPlayerCodec.h"
 #include "utils/StringUtils.h"
-#include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
+#include "addons/BinaryAddonCache.h"
+#include "ServiceBroker.h"
 
 using namespace ADDON;
 
@@ -33,7 +34,8 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
   std::string fileType = strFileType;
   StringUtils::ToLower(fileType);
   VECADDONS codecs;
-  CAddonMgr::GetInstance().GetAddons(codecs, ADDON_AUDIODECODER);
+  ADDON::CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(codecs, ADDON::ADDON_AUDIODECODER);
   for (size_t i=0;i<codecs.size();++i)
   {
     std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
@@ -58,7 +60,8 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
   if (!content.empty())
   {
     VECADDONS codecs;
-    CAddonMgr::GetInstance().GetAddons(codecs, ADDON_AUDIODECODER);
+    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+    addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
     for (size_t i=0;i<codecs.size();++i)
     {
       std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));

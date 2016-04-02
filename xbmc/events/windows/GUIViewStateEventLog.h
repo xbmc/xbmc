@@ -36,6 +36,5 @@ protected:
   // specializations of CGUIViewState
   virtual void SaveViewState();
   virtual std::string GetExtensions();
-  virtual VECSOURCES& GetSources();
 };
 

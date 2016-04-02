@@ -317,7 +317,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (!m_rule.m_parameter.empty())
       m_rule.m_parameter.clear();
     if (!path.empty())
-      m_rule.m_parameter.push_back(path);
+      m_rule.m_parameter.emplace_back(std::move(path));
 
     UpdateButtons();
     return;
@@ -509,7 +509,7 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
   std::vector< std::pair<std::string, int> > labels;
   std::vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
   for (unsigned int i = 0; i < fields.size(); i++)
-    labels.push_back(std::make_pair(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]));
+    labels.emplace_back(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]);
 
   SET_CONTROL_LABELS(CONTROL_FIELD, 0, &labels);
 

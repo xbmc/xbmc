@@ -25,17 +25,22 @@
 #include <string>
 #include <vector>
 
+/* make sure stdlib.h is included before including pcre.h inside the
+   namespace; this works around stdlib.h definitions also living in
+   the PCRE namespace */
+#include <stdlib.h>
+
 namespace PCRE {
 struct real_pcre_jit_stack; // forward declaration for PCRE without JIT
 typedef struct real_pcre_jit_stack pcre_jit_stack;
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #define PCRE_STATIC 1
 #ifdef _DEBUG
 #pragma comment(lib, "pcred.lib")
 #else  // ! _DEBUG
 #pragma comment(lib, "pcre.lib")
 #endif // ! _DEBUG
-#endif // TARGET_WINDOWS
+#endif // defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #include <pcre.h>
 }
 

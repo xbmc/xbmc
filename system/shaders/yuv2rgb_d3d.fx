@@ -18,9 +18,7 @@
  *
  */
 
-texture2D  g_YTexture;
-texture2D  g_UTexture;
-texture2D  g_VTexture;
+texture2D  g_Texture[3];
 float4x4   g_ColorMatrix;
 float2     g_StepXY;
 float2     g_viewPort;
@@ -45,15 +43,13 @@ struct VS_INPUT
 {
   float4 Position   : POSITION;
   float2 TextureY   : TEXCOORD0;
-  float2 TextureU   : TEXCOORD1;
-  float2 TextureV   : TEXCOORD2;
+  float2 TextureUV  : TEXCOORD1;
 };
 
 struct VS_OUTPUT
 {
   float2 TextureY   : TEXCOORD0;
-  float2 TextureU   : TEXCOORD1;
-  float2 TextureV   : TEXCOORD2;
+  float2 TextureUV  : TEXCOORD1;
   float4 Position   : SV_POSITION;
 };
 
@@ -65,8 +61,7 @@ VS_OUTPUT VS(VS_INPUT In)
   output.Position.z = output.Position.z;
   output.Position.w = 1.0;
   output.TextureY   = In.TextureY;
-  output.TextureU   = In.TextureU;
-  output.TextureV   = In.TextureV;
+  output.TextureUV  = In.TextureUV;
 
   return output;
 }
@@ -87,16 +82,16 @@ inline float2 unormUV(float2 rg)
 float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
 {
 #if defined(XBMC_YV12) //|| defined(XBMC_NV12)
-  float4 YUV = float4(g_YTexture.Sample(YUVSampler, In.TextureY).r
-                    , g_UTexture.Sample(YUVSampler, In.TextureU).r
-                    , g_VTexture.Sample(YUVSampler, In.TextureV).r
+  float4 YUV = float4(g_Texture[0].Sample(YUVSampler, In.TextureY ).r
+                    , g_Texture[1].Sample(YUVSampler, In.TextureUV).r
+                    , g_Texture[2].Sample(YUVSampler, In.TextureUV).r
                     , 1.0);
 #elif defined(XBMC_NV12)
-  float4 YUV = float4(g_YTexture.Sample(YUVSampler, In.TextureY).r
+  float4 YUV = float4(g_Texture[0].Sample(YUVSampler, In.TextureY).r
   #if defined(NV12_SNORM_UV)
-                    , unormUV(g_UTexture.Sample(UVSamplerSNORM, In.TextureU).rg)
+                    , unormUV(g_Texture[1].Sample(UVSamplerSNORM, In.TextureUV).rg)
   #else
-                    , g_UTexture.Sample(YUVSampler, In.TextureU).rg
+                    , g_Texture[1].Sample(YUVSampler, In.TextureUV).rg
   #endif
                     , 1.0);
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
@@ -109,8 +104,8 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
 
   //y axis will be correctly interpolated by opengl
   //x axis will not, so we grab two pixels at the center of two columns and interpolate ourselves
-  float4 c1 = g_YTexture.Sample(YUVSampler, float2(pos.x + ((0.5 - f.x) * stepxy.x), pos.y));
-  float4 c2 = g_YTexture.Sample(YUVSampler, float2(pos.x + ((1.5 - f.x) * stepxy.x), pos.y));
+  float4 c1 = g_Texture[0].Sample(YUVSampler, float2(pos.x + ((0.5 - f.x) * stepxy.x), pos.y));
+  float4 c2 = g_Texture[0].Sample(YUVSampler, float2(pos.x + ((1.5 - f.x) * stepxy.x), pos.y));
 
   /* each pixel has two Y subpixels and one UV subpixel
       YUV  Y  YUV
@@ -128,7 +123,7 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
     float4 YUV    = float4(outY, outUV, 1.0);
 #endif
 
-  return float4(mul(YUV, g_ColorMatrix).rgb, 1.0);
+  return mul(YUV, g_ColorMatrix);
 }
 
 technique11 YUV2RGB_T

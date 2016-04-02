@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<description>background image</description>
+				<left>90</left>
+				<top>170</top>
+				<width>390</width>
+				<height>746</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="list" id="9000">
+				<left>111</left>
+				<top>192</top>
+				<width>348</width>
+				<height>567</height>
+				<onleft>9100</onleft>
+				<onright>9100</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<scrolltime>300</scrolltime>
+				<itemlayout height="74" width="348">
+					<control type="label">
+						<left>30</left>
+						<width>306</width>
+						<height>74</height>
+						<label>$INFO[ListItem.Label]</label>
+						<aligny>center</aligny>
+						<textcolor>grey</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout height="74" width="348">
+					<control type="image">
+						<width>348</width>
+						<height>74</height>
+						<texture>lists/focus.png</texture>
+						<animation effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)">Conditional</animation>
+					</control>
+					<control type="label">
+						<left>30</left>
+						<width>306</width>
+						<height>74</height>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>$LOCALIZE[128]</label>
+						<onclick>noop</onclick>
+						<icon>-</icon>
+					</item>
+					<item id="2">
+						<label>$LOCALIZE[13200]</label>
+						<onclick>noop</onclick>
+						<icon>-</icon>
+					</item>
+				</content>
+			</control>
+		</control>
+		<control type="group" id="9100">
+			<include>OpenClose_Right</include>
+			<control type="image">
+				<description>background image</description>
+				<left>490</left>
+				<top>170</top>
+				<width>1340</width>
+				<height>746</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="panel" id="2">
+				<left>510</left>
+				<top>192</top>
+				<visible>Container(9000).Hasfocus(2)</visible>
+				<width>1300</width>
+				<height>700</height>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="350" width="325">
+					<control type="image">
+						<left>55</left>
+						<top>23</top>
+						<width>215</width>
+						<height>215</height>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+						<aspectratio>scale</aspectratio>
+						<texture border="4" fallback="DefaultUser.png">$INFO[Listitem.Icon]</texture>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>240</top>
+						<width>305</width>
+						<height>100</height>
+						<align>center</align>
+						<aligny>top</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>275</top>
+						<width>305</width>
+						<height>100</height>
+						<font>font10</font>
+						<textcolor>grey</textcolor>
+						<align>center</align>
+						<aligny>top</aligny>
+						<label>$LOCALIZE[31029]:</label>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>300</top>
+						<width>305</width>
+						<height>100</height>
+						<textcolor>grey</textcolor>
+						<font>font10</font>
+						<align>center</align>
+						<aligny>top</aligny>
+						<label fallback="13170">$INFO[ListItem.Label2]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="350" width="325">
+					<control type="image">
+						<width>325</width>
+						<height>352</height>
+						<texture>lists/focus.png</texture>
+						<visible>Control.HasFocus(2)</visible>
+					</control>
+					<control type="image">
+						<left>55</left>
+						<top>23</top>
+						<width>215</width>
+						<height>215</height>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+						<aspectratio>scale</aspectratio>
+						<texture border="4" fallback="DefaultUser.png">$INFO[Listitem.Icon]</texture>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>240</top>
+						<width>305</width>
+						<height>100</height>
+						<align>center</align>
+						<aligny>top</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>275</top>
+						<width>305</width>
+						<height>100</height>
+						<textcolor>grey</textcolor>
+						<font>font10</font>
+						<align>center</align>
+						<aligny>top</aligny>
+						<label>$LOCALIZE[31029]:</label>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>300</top>
+						<width>305</width>
+						<height>100</height>
+						<font>font10</font>
+						<textcolor>grey</textcolor>
+						<align>center</align>
+						<aligny>top</aligny>
+						<label fallback="13170">$INFO[ListItem.Label2]</label>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="grouplist" id="9001">
+				<visible>Container(9000).Hasfocus(1)</visible>
+				<width>1300</width>
+				<height>735</height>
+				<left>510</left>
+				<top>192</top>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+				<control type="radiobutton" id="4">
+					<label>$LOCALIZE[31057]</label>
+					<include>DefaultSettingButton</include>
+					<width>1300</width>
+				</control>
+				<control type="button" id="5">
+					<label>$LOCALIZE[31058]</label>
+					<label2>[B]$INFO[System.ProfileAutoLogin][/B]</label2>
+					<include>DefaultSettingButton</include>
+					<width>1300</width>
+					<enable>!Window.IsVisible(ProfileSettings) + !System.HasLoginScreen</enable>
+				</control>
+			</control>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[10034]" />
+			<param name="breadcrumbs_icon" value="icons/settings/profiles.png" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

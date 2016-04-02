@@ -33,49 +33,18 @@
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 #include "xbmc/Application.h"
+#include "linux/RBP.h"
 
 #define CLASSNAME "CMMALRenderer"
 
-#ifdef _DEBUG
-#define MMAL_DEBUG_VERBOSE
-#endif
 
-
-CYUVVideoBuffer::CYUVVideoBuffer()
+MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, bool opaque)
 {
-  m_refs = 0;
-  mmal_buffer = 0;
-}
+  CSingleLock lock(m_sharedSection);
+  if (!m_bMMALConfigured)
+    m_bMMALConfigured = init_vout(format, opaque);
 
-CYUVVideoBuffer::~CYUVVideoBuffer()
-{
-  m_refs = 0;
-  mmal_buffer = 0;
-}
-
-CYUVVideoBuffer *CYUVVideoBuffer::Acquire()
-{
-  long count = AtomicIncrement(&m_refs);
-#ifdef MMAL_DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s::%s omvb:%p mmal:%p ref:%ld", CLASSNAME, __func__, this, mmal_buffer, count);
-#endif
-  (void)count;
-  return this;
-}
-
-long CYUVVideoBuffer::Release()
-{
-  long count = AtomicDecrement(&m_refs);
-#ifdef MMAL_DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "%s::%s omvb:%p mmal:%p ref:%ld", CLASSNAME, __func__, this, mmal_buffer, count);
-#endif
-  if (count == 0)
-  {
-    mmal_buffer_header_release(mmal_buffer);
-    delete this;
-  }
-  else assert(count > 0);
-  return count;
+  return m_vout_input_pool;
 }
 
 CRenderInfo CMMALRenderer::GetRenderInfo()
@@ -83,51 +52,26 @@ CRenderInfo CMMALRenderer::GetRenderInfo()
   CSingleLock lock(m_sharedSection);
   CRenderInfo info;
 
-  // we'll assume that video is accelerated (RENDER_FMT_MMAL) for now
-  // we will reconfigure renderer later if necessary
-  if (!m_bMMALConfigured)
-    m_bMMALConfigured = init_vout(RENDER_FMT_MMAL);
-
-  #if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s cookie:%p", CLASSNAME, __func__, (void *)m_vout_input_pool);
-  #endif
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s cookie:%p", CLASSNAME, __func__, (void *)m_vout_input_pool);
 
   info.max_buffer_size = NUM_BUFFERS;
   info.optimal_buffer_size = NUM_BUFFERS;
-  info.opaque_pointer = (void *)m_vout_input_pool;
+  info.opaque_pointer = (void *)this;
   info.formats = m_formats;
   return info;
-}
-
-static void vout_control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
-{
-  mmal_buffer_header_release(buffer);
 }
 
 void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
   assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_TRANSMISSION_FAILED));
   buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER2;
-  if (m_format == RENDER_FMT_MMAL)
-  {
-    CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
-    assert(buffer == omvb->mmal_buffer);
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s port:%p omvb:%p mmal:%p len:%d cmd:%x flags:%x flight:%d", CLASSNAME, __func__, port, omvb, omvb->mmal_buffer, buffer->length, buffer->cmd, buffer->flags, m_inflight);
-#endif
-    omvb->Release();
-  }
-  else if (m_format == RENDER_FMT_YUV420P)
-  {
-    CYUVVideoBuffer *omvb = (CYUVVideoBuffer *)buffer->user_data;
-    assert(buffer == omvb->mmal_buffer);
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s port:%p omvb:%p mmal:%p len:%d cmd:%x flags:%x flight:%d", CLASSNAME, __func__, port, omvb, omvb->mmal_buffer, buffer->length, buffer->cmd, buffer->flags, m_inflight);
-#endif
-    m_inflight--;
-    omvb->Release();
-  }
-  else assert(0);
+  CMMALBuffer *omvb = (CMMALBuffer *)buffer->user_data;
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s YUV port:%p omvb:%p mmal:%p:%p len:%d cmd:%x flags:%x flight:%d", CLASSNAME, __func__, port, omvb, buffer, omvb->mmal_buffer, buffer->length, buffer->cmd, buffer->flags, m_inflight);
+  assert(buffer == omvb->mmal_buffer);
+  m_inflight--;
+  omvb->Release();
 }
 
 static void vout_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -136,13 +80,13 @@ static void vout_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *b
   mmal->vout_input_port_cb(port, buffer);
 }
 
-bool CMMALRenderer::init_vout(ERenderFormat format)
+bool CMMALRenderer::init_vout(ERenderFormat format, bool opaque)
 {
   CSingleLock lock(m_sharedSection);
-  bool formatChanged = m_format != format;
+  bool formatChanged = m_format != format || m_opaque != opaque;
   MMAL_STATUS_T status;
 
-  CLog::Log(LOGDEBUG, "%s::%s configured:%d format:%d->%d", CLASSNAME, __func__, m_bConfigured, m_format, format);
+  CLog::Log(LOGDEBUG, "%s::%s configured:%d format %d->%d opaque %d->%d", CLASSNAME, __func__, m_bConfigured, m_format, format, m_opaque, opaque);
 
   if (m_bMMALConfigured && formatChanged)
     UnInitMMAL();
@@ -151,8 +95,7 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
     return true;
 
   m_format = format;
-  if (m_format != RENDER_FMT_MMAL && m_format != RENDER_FMT_YUV420P)
-    return true;
+  m_opaque = opaque;
 
   /* Create video renderer */
   status = mmal_component_create(MMAL_COMPONENT_DEFAULT_VIDEO_RENDERER, &m_vout);
@@ -162,50 +105,29 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
     return false;
   }
 
-  m_vout->control->userdata = (struct MMAL_PORT_USERDATA_T *)this;
-  status = mmal_port_enable(m_vout->control, vout_control_port_cb);
-  if(status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to enable vout control port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
   m_vout_input = m_vout->input[0];
   m_vout_input->userdata = (struct MMAL_PORT_USERDATA_T *)this;
   MMAL_ES_FORMAT_T *es_format = m_vout_input->format;
 
   es_format->type = MMAL_ES_TYPE_VIDEO;
+  if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
+    es_format->es->video.color_space = MMAL_COLOR_SPACE_ITUR_BT709;
+  else if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT601)
+    es_format->es->video.color_space = MMAL_COLOR_SPACE_ITUR_BT601;
+  else if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_240M)
+    es_format->es->video.color_space = MMAL_COLOR_SPACE_SMPTE240M;
+
   es_format->es->video.crop.width = m_sourceWidth;
   es_format->es->video.crop.height = m_sourceHeight;
+  es_format->es->video.width = m_sourceWidth;
+  es_format->es->video.height = m_sourceHeight;
 
-  if (m_format == RENDER_FMT_MMAL)
-  {
-    es_format->encoding = MMAL_ENCODING_OPAQUE;
-    es_format->es->video.width = m_sourceWidth;
-    es_format->es->video.height = m_sourceHeight;
-  }
-  else if (m_format == RENDER_FMT_YUV420P)
-  {
-    const int pitch = ALIGN_UP(m_sourceWidth, 32);
-    const int aligned_height = ALIGN_UP(m_sourceHeight, 16);
+  es_format->encoding = m_opaque ? MMAL_ENCODING_OPAQUE : MMAL_ENCODING_I420;
 
-    es_format->encoding = MMAL_ENCODING_I420;
-    es_format->es->video.width = pitch;
-    es_format->es->video.height = aligned_height;
+  status = mmal_port_parameter_set_boolean(m_vout_input, MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
+  if (status != MMAL_SUCCESS)
+     CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_vout_input->name, status, mmal_status_to_string(status));
 
-    if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
-      es_format->es->video.color_space = MMAL_COLOR_SPACE_ITUR_BT709;
-    else if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT601)
-      es_format->es->video.color_space = MMAL_COLOR_SPACE_ITUR_BT601;
-    else if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_240M)
-      es_format->es->video.color_space = MMAL_COLOR_SPACE_SMPTE240M;
-  }
-
-  if (m_format == RENDER_FMT_MMAL)
-  {
-    status = mmal_port_parameter_set_boolean(m_vout_input, MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
-    if (status != MMAL_SUCCESS)
-       CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_vout_input->name, status, mmal_status_to_string(status));
-  }
   status = mmal_port_format_commit(m_vout_input);
   if (status != MMAL_SUCCESS)
   {
@@ -213,7 +135,7 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
     return false;
   }
 
-  m_vout_input->buffer_num = std::max(m_vout_input->buffer_num_recommended, (uint32_t)m_NumYV12Buffers);
+  m_vout_input->buffer_num = std::max(m_vout_input->buffer_num_recommended, (uint32_t)m_NumYV12Buffers+(m_opaque?0:32));
   m_vout_input->buffer_size = m_vout_input->buffer_size_recommended;
 
   status = mmal_port_enable(m_vout_input, vout_input_port_cb_static);
@@ -230,7 +152,8 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
     return false;
   }
 
-  m_vout_input_pool = mmal_port_pool_create(m_vout_input , m_vout_input->buffer_num, m_vout_input->buffer_size);
+  CLog::Log(LOGDEBUG, "%s::%s Created pool of size %d x %d", CLASSNAME, __func__, m_vout_input->buffer_num, m_vout_input->buffer_size);
+  m_vout_input_pool = mmal_port_pool_create(m_vout_input , m_vout_input->buffer_num, m_opaque ? m_vout_input->buffer_size:0);
   if (!m_vout_input_pool)
   {
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
@@ -248,6 +171,7 @@ CMMALRenderer::CMMALRenderer()
   memset(m_buffers, 0, sizeof m_buffers);
   m_iFlags = 0;
   m_format = RENDER_FMT_NONE;
+  m_opaque = true;
   m_bConfigured = false;
   m_bMMALConfigured = false;
   m_iYV12RenderBuffer = 0;
@@ -263,15 +187,18 @@ CMMALRenderer::~CMMALRenderer()
 
 void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
 {
-  CMMALVideoBuffer *buffer = pic.MMALBuffer;
-#if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
-#endif
+  if (m_format != RENDER_FMT_MMAL)
+  {
+    assert(0);
+    return;
+  }
 
-  YUVBUFFER &buf = m_buffers[index];
-  assert(!buf.MMALBuffer);
-  memset(&buf, 0, sizeof buf);
-  buf.MMALBuffer = buffer->Acquire();
+  CMMALBuffer *buffer = pic.MMALBuffer;
+  assert(buffer);
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s MMAL - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
+
+  m_buffers[index] = buffer->Acquire();
 }
 
 bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
@@ -291,13 +218,18 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_dst_rect.SetRect(0, 0, 0, 0);
 
   CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d ext:%x orient:%d", CLASSNAME, __func__, width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
+  if (format != RENDER_FMT_BYPASS && format != RENDER_FMT_MMAL)
+  {
+    CLog::Log(LOGERROR, "%s::%s - format:%d not supported", CLASSNAME, __func__, format);
+    return false;
+  }
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  ManageRenderArea();
 
-  m_bMMALConfigured = init_vout(format);
+  m_bMMALConfigured = init_vout(format, m_opaque);
   m_bConfigured = m_bMMALConfigured;
   assert(m_bConfigured);
   return m_bConfigured;
@@ -305,108 +237,32 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
 
 int CMMALRenderer::GetImage(YV12Image *image, int source, bool readonly)
 {
-  if (!image || source < 0)
+  if (!image || source < 0 || m_format != RENDER_FMT_MMAL)
   {
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - invalid: image:%p source:%d ro:%d flight:%d", CLASSNAME, __func__, image, source, readonly, m_inflight);
-#endif
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - invalid: format:%d image:%p source:%d ro:%d flight:%d", CLASSNAME, __func__, m_format, image, source, readonly, m_inflight);
     return -1;
   }
-
-  if (m_format == RENDER_FMT_MMAL)
-  {
-#if defined(MMAL_DEBUG_VERBOSE)
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: image:%p source:%d ro:%d flight:%d", CLASSNAME, __func__, image, source, readonly, m_inflight);
-#endif
-  }
-  else if (m_format == RENDER_FMT_YUV420P)
-  {
-    const int pitch = ALIGN_UP(m_sourceWidth, 32);
-    const int aligned_height = ALIGN_UP(m_sourceHeight, 16);
-
-    MMAL_BUFFER_HEADER_T *buffer = mmal_queue_timedwait(m_vout_input_pool->queue, 500);
-    if (!buffer)
-    {
-      CLog::Log(LOGERROR, "%s::%s - mmal_queue_get failed", CLASSNAME, __func__);
-      return -1;
-    }
-
-    m_inflight++;
-    mmal_buffer_header_reset(buffer);
-
-    buffer->length = 3 * pitch * aligned_height >> 1;
-    assert(buffer->length <= buffer->alloc_size);
-
-    image->width    = m_sourceWidth;
-    image->height   = m_sourceHeight;
-    image->flags    = 0;
-    image->cshift_x = 1;
-    image->cshift_y = 1;
-    image->bpp      = 1;
-
-    image->stride[0] = pitch;
-    image->stride[1] = image->stride[2] = pitch>>image->cshift_x;
-
-    image->planesize[0] = pitch * aligned_height;
-    image->planesize[1] = image->planesize[2] = (pitch>>image->cshift_x)*(aligned_height>>image->cshift_y);
-
-    image->plane[0] = (uint8_t *)buffer->data;
-    image->plane[1] = image->plane[0] + image->planesize[0];
-    image->plane[2] = image->plane[1] + image->planesize[1];
-
-    YUVBUFFER &buf = m_buffers[source];
-    memset(&buf, 0, sizeof buf);
-    buf.YUVBuffer = new CYUVVideoBuffer;
-    if (!buf.YUVBuffer)
-      return -1;
-    buf.YUVBuffer->mmal_buffer = buffer;
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - YUV: image:%p source:%d ro:%d omvb:%p mmal:%p flight:%d", CLASSNAME, __func__, image, source, readonly, buf.YUVBuffer, buffer, m_inflight);
-#endif
-    buf.YUVBuffer->Acquire();
-  }
-  else assert(0);
-
   return source;
 }
 
 void CMMALRenderer::ReleaseBuffer(int idx)
 {
   CSingleLock lock(m_sharedSection);
-  if (!m_bMMALConfigured)
+  if (!m_bMMALConfigured || m_format != RENDER_FMT_MMAL)
   {
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d", CLASSNAME, __func__, idx);
-#endif
-    return;
-  }
-  if (m_format == RENDER_FMT_BYPASS)
-  {
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - bypass: source:%d", CLASSNAME, __func__, idx);
-#endif
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d", CLASSNAME, __func__, idx);
     return;
   }
 
-  YUVBUFFER *buffer = &m_buffers[idx];
-  if (m_format == RENDER_FMT_MMAL)
-  {
-    CMMALVideoBuffer *omvb = buffer->MMALBuffer;
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - MMAL: source:%d omvb:%p mmal:%p", CLASSNAME, __func__, idx, omvb, omvb ? omvb->mmal_buffer:NULL);
-#endif
-    SAFE_RELEASE(buffer->MMALBuffer);
-  }
-  else if (m_format == RENDER_FMT_YUV420P)
-  {
-    CYUVVideoBuffer *omvb = buffer->YUVBuffer;
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - YUV: source:%d omvb:%p mmal:%p flight:%d", CLASSNAME, __func__, idx, omvb, omvb ? omvb->mmal_buffer:NULL, m_inflight);
-#endif
-    if (omvb && omvb->mmal_buffer)
-      SAFE_RELEASE(buffer->YUVBuffer);
-  }
-  else assert(0);
+  CMMALBuffer *omvb = m_buffers[idx];
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s - MMAL: source:%d omvb:%p mmal:%p flight:%d", CLASSNAME, __func__, idx, omvb, omvb ? omvb->mmal_buffer:NULL, m_inflight);
+  if (omvb)
+    SAFE_RELEASE(m_buffers[idx]);
 }
 
 void CMMALRenderer::ReleaseImage(int source, bool preserve)
@@ -426,11 +282,10 @@ void CMMALRenderer::Flush()
 
 void CMMALRenderer::Update()
 {
-#if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
-#endif
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   if (!m_bConfigured) return;
-  ManageDisplay();
+  ManageRenderArea();
 }
 
 void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -440,79 +295,70 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   if (!m_bConfigured)
   {
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - not configured: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
-#endif
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - not configured: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
     return;
   }
 
-  ManageDisplay();
+  ManageRenderArea();
 
-  if (m_format == RENDER_FMT_BYPASS)
+  if (m_format != RENDER_FMT_MMAL)
   {
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - bypass: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
-#endif
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - bypass: clear:%d flags:%x alpha:%d source:%d format:%d", CLASSNAME, __func__, clear, flags, alpha, source, m_format);
     return;
   }
   SetVideoRect(m_sourceRect, m_destRect);
 
-  YUVBUFFER *buffer = &m_buffers[source];
-  if (m_format == RENDER_FMT_MMAL)
+  CMMALBuffer *omvb = m_buffers[source];
+  if (omvb && omvb->mmal_buffer)
   {
-    CMMALVideoBuffer *omvb = buffer->MMALBuffer;
-    if (omvb && omvb->mmal_buffer)
-    {
-#if defined(MMAL_DEBUG_VERBOSE)
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
-#endif
-      // we only want to upload frames once
-      if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
-        return;
-      omvb->Acquire();
-      omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
-      mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
-    }
-    else
-      CLog::Log(LOGDEBUG, "%s::%s - No buffer to update", CLASSNAME, __func__);
-  }
-  else if (m_format == RENDER_FMT_YUV420P)
-  {
-    CYUVVideoBuffer *omvb = buffer->YUVBuffer;
-    if (omvb && omvb->mmal_buffer)
+    // we only want to upload frames once
+    if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
+      return;
+    // check for changes in aligned sizes
+    if (omvb->m_width != (uint32_t)m_vout_input->format->es->video.crop.width || omvb->m_height != (uint32_t)m_vout_input->format->es->video.crop.height ||
+        omvb->m_aligned_width != m_vout_input->format->es->video.width || omvb->m_aligned_height != m_vout_input->format->es->video.height)
     {
-#if defined(MMAL_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "%s::%s - YUV: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
-#endif
-      // we only want to upload frames once
-      if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
+      CLog::Log(LOGDEBUG, "%s::%s Changing dimensions from %dx%d (%dx%d) to %dx%d (%dx%d)", CLASSNAME, __func__,
+          m_vout_input->format->es->video.crop.width, m_vout_input->format->es->video.crop.height, omvb->m_width, omvb->m_height,
+          m_vout_input->format->es->video.width, m_vout_input->format->es->video.height, omvb->m_aligned_width, omvb->m_aligned_height);
+      m_vout_input->format->es->video.width = omvb->m_aligned_width;
+      m_vout_input->format->es->video.height = omvb->m_aligned_height;
+      m_vout_input->format->es->video.crop.width = omvb->m_width;
+      m_vout_input->format->es->video.crop.height = omvb->m_height;
+      MMAL_STATUS_T status = mmal_port_format_commit(m_vout_input);
+      if (status != MMAL_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s::%s Failed to commit vout input format (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
         return;
-      // sanity check it is not on display
-      omvb->Acquire();
-      omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
-      omvb->mmal_buffer->user_data = omvb;
-      mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
+      }
     }
-    else
-      CLog::Log(LOGDEBUG, "%s::%s - No buffer to update: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
+    m_inflight++;
+    assert(omvb->mmal_buffer && omvb->mmal_buffer->data && omvb->mmal_buffer->length);
+    omvb->Acquire();
+    omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
+    omvb->mmal_buffer->user_data = omvb;
+    mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
   }
-  else assert(0);
+  else
+    CLog::Log(LOGDEBUG, "%s::%s - MMAL: No buffer to update clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb ? omvb->mmal_buffer : nullptr);
 }
 
 void CMMALRenderer::FlipPage(int source)
 {
   CSingleLock lock(m_sharedSection);
-  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+  if (!m_bConfigured || m_format != RENDER_FMT_MMAL)
   {
-#if defined(MMAL_DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d", CLASSNAME, __func__, source);
-#endif
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d format:%d", CLASSNAME, __func__, source, m_format);
     return;
   }
 
-#if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - source:%d", CLASSNAME, __func__, source);
-#endif
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s - source:%d", CLASSNAME, __func__, source);
 
   m_iYV12RenderBuffer = source;
 }
@@ -528,7 +374,6 @@ void CMMALRenderer::PreInit()
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 
   m_formats.clear();
-  m_formats.push_back(RENDER_FMT_YUV420P);
   m_formats.push_back(RENDER_FMT_MMAL);
   m_formats.push_back(RENDER_FMT_BYPASS);
 
@@ -539,9 +384,8 @@ void CMMALRenderer::PreInit()
 
 void CMMALRenderer::ReleaseBuffers()
 {
-#if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
-#endif
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   for (int i=0; i<NUM_BUFFERS; i++)
     ReleaseBuffer(i);
 }
@@ -553,23 +397,22 @@ void CMMALRenderer::UnInitMMAL()
   if (m_vout)
   {
     mmal_component_disable(m_vout);
-    mmal_port_disable(m_vout->control);
   }
 
   if (m_vout_input)
   {
     mmal_port_flush(m_vout_input);
     mmal_port_disable(m_vout_input);
-    m_vout_input = NULL;
   }
 
   ReleaseBuffers();
 
   if (m_vout_input_pool)
   {
-    mmal_pool_destroy(m_vout_input_pool);
+    mmal_port_pool_destroy(m_vout_input, m_vout_input_pool);
     m_vout_input_pool = NULL;
   }
+  m_vout_input = NULL;
 
   if (m_vout)
   {
@@ -622,13 +465,6 @@ bool CMMALRenderer::Supports(EDEINTERLACEMODE mode)
 
 bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if (m_format == RENDER_FMT_YUV420P)
-  {
-    if (method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-      return true;
-    else
-      return false;
-  }
   if (method == VS_INTERLACEMETHOD_AUTO)
     return true;
   if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
@@ -662,8 +498,6 @@ bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CMMALRenderer::AutoInterlaceMethod()
 {
-  if (m_format == RENDER_FMT_YUV420P)
-    return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
   return m_sourceWidth * m_sourceHeight <= 576 * 720 ? VS_INTERLACEMETHOD_MMAL_ADVANCED : VS_INTERLACEMETHOD_MMAL_BOB;
 }
 

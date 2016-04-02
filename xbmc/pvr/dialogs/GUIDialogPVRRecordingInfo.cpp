@@ -48,6 +48,12 @@ bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogPVRRecordingInfo::OnInfo(int actionID)
+{
+  Close();
+  return true;
+}
+
 void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem *item)
 {
   *m_recordItem = *item;

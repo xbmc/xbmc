@@ -21,9 +21,10 @@
  */
 
 #include <string>
+#include <vector>
 #include "system.h"
-#include "DVDDemuxPacket.h"
 
+struct DemuxPacket;
 class CDVDInputStream;
 
 #ifndef __GNUC__
@@ -42,8 +43,6 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(pop)
 #endif
-
-enum AVDiscard;
 
 enum StreamType
 {
@@ -76,8 +75,9 @@ class CDemuxStream
 public:
   CDemuxStream()
   {
-    iId = 0;
-    iPhysicalId = 0;
+    uniqueId = 0;
+    dvdNavId = 0;
+    demuxerId = -1;
     codec = (AVCodecID)0; // AV_CODEC_ID_NONE
     codec_fourcc = 0;
     profile = FF_PROFILE_UNKNOWN;
@@ -93,6 +93,7 @@ public:
     changes = 0;
     flags = FLAG_NONE;
     realtime = false;
+    bandwidth = 0;
   }
 
   virtual ~CDemuxStream()
@@ -100,18 +101,11 @@ public:
     delete [] ExtraData;
   }
 
-  virtual std::string GetStreamInfo()
-  {
-    return "";
-  }
-
   virtual std::string GetStreamName();
 
-  virtual void      SetDiscard(AVDiscard discard);
-  virtual AVDiscard GetDiscard();
-
-  int iId;         // most of the time starting from 0
-  int iPhysicalId; // id
+  int uniqueId;          // unique stream id
+  int dvdNavId;
+  int64_t demuxerId; // id of the associated demuxer
   AVCodecID codec;
   unsigned int codec_fourcc; // if available
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
@@ -119,6 +113,7 @@ public:
   StreamType type;
   int source;
   bool realtime;
+  unsigned int bandwidth;
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
@@ -127,6 +122,8 @@ public:
 
   char language[4]; // ISO 639 3-letter language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
+
+  std::string codecName;
 
   int  changes; // increment on change which player may need to know about
 
@@ -222,7 +219,6 @@ public:
   {
     type = STREAM_TELETEXT;
   }
-  virtual std::string GetStreamInfo();
 };
 
 class CDemuxStreamRadioRDS : public CDemuxStream
@@ -232,14 +228,13 @@ public:
   {
     type = STREAM_RADIO_RDS;
   }
-  virtual std::string GetStreamInfo();
 };
 
 class CDVDDemux
 {
 public:
 
-  CDVDDemux() {}
+  CDVDDemux() : m_demuxerId(NewGuid()) {}
   virtual ~CDVDDemux() {}
 
 
@@ -311,28 +306,21 @@ public:
   virtual int GetStreamLength() = 0;
 
   /*
-   * returns the stream or NULL on error, starting from 0
+   * returns the stream or NULL on error
    */
-  virtual CDemuxStream* GetStream(int iStreamId) = 0;
+  virtual CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const { return GetStream(iStreamId); };
+
+  virtual std::vector<CDemuxStream*> GetStreams() const = 0;
 
   /*
    * return nr of streams, 0 if none
    */
-  virtual int GetNrOfStreams() = 0;
+  virtual int GetNrOfStreams() const = 0;
 
   /*
    * returns opened filename
    */
   virtual std::string GetFileName() = 0;
-  /*
-   * return nr of audio streams, 0 if none
-   */
-  int GetNrOfAudioStreams();
-
-  /*
-   * return nr of video streams, 0 if none
-   */
-  int GetNrOfVideoStreams();
 
   /*
    * return nr of subtitle streams, 0 if none
@@ -340,42 +328,46 @@ public:
   int GetNrOfSubtitleStreams();
 
   /*
-   * return nr of teletext streams, 0 if none
-   */
-  int GetNrOfTeletextStreams();
-
-  /*
-   * return nr of rds streams, 0 if none
-   */
-  const int GetNrOfRadioRDSStreams();
-
-  /*
-   * return the audio stream, or NULL if it does not exist
-   */
-  CDemuxStreamAudio* GetStreamFromAudioId(int iAudioIndex);
-
-  /*
-   * return the video stream, or NULL if it does not exist
-   */
-  CDemuxStreamVideo* GetStreamFromVideoId(int iVideoIndex);
-
-  /*
-   * return the subtitle stream, or NULL if it does not exist
-   */
-  CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
-
-  /*
-   * return the teletext stream, or NULL if it does not exist
-   */
-  CDemuxStreamTeletext* GetStreamFromTeletextId(int iTeletextIndex);
-
-  /*
-   * return the rds stream, or NULL if it does not exist
-   */
-  const CDemuxStreamRadioRDS* GetStreamFromRadioRDSId(int iRadioRDSIndex);
-
-  /*
    * return a user-presentable codec name of the given stream
    */
+  virtual std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) { return GetStreamCodecName(iStreamId); };
+
+  /*
+  * return true if demuxer supports enabling at a specific PTS
+  */
+  virtual bool SupportsEnableAtPTS(int64_t demuxerId) { return SupportsEnableAtPTS(); };
+
+  /*
+   * enable / disable demux stream
+   */
+  virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); };
+
+  /*
+  * enable / disable demux stream at given PTS
+  */
+  virtual void EnableStreamAtPTS(int64_t demuxerId, int id, uint64_t pts) { EnableStreamAtPTS(id, pts); };
+
+  /*
+  * return the id of the demuxer
+  */
+  int64_t GetDemuxerId() { return m_demuxerId; };
+
+protected:
+  virtual void EnableStream(int id, bool enable) {};
+  virtual void EnableStreamAtPTS(int id, uint64_t pts) {};
+  virtual bool SupportsEnableAtPTS() { return false; };
+  virtual CDemuxStream* GetStream(int iStreamId) const = 0;
   virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
+
+  int GetNrOfStreams(StreamType streamType);
+
+  int64_t m_demuxerId;
+
+private:
+
+  int64_t NewGuid()
+  {
+    static int64_t guid = 0;
+    return guid++;
+  }
 };

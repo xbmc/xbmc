@@ -1,11 +1,11 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../../xbmc/addons/include -I../../../xbmc -I../../../xbmc/cores/VideoPlayer/DVDDemuxers
+INCLUDES=-I. -I../../../xbmc/addons/kodi-addon-dev-kit/include/kodi -I../../../xbmc/addons/kodi-addon-dev-kit/include -I../../../xbmc -I../../../xbmc/cores/VideoPlayer/DVDDemuxers
 DEFINES+=
 CXXFLAGS=-fPIC
 LIBNAME=libKODI_guilib
 OBJS=$(LIBNAME).o
 
-LIB_INTERFACE=../../../addons/library.kodi.guilib/libKODI_guilib.h
+LIB_INTERFACE=../../../xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 LIB_SHARED=../../../addons/library.kodi.guilib/$(LIBNAME)-$(ARCH).dylib

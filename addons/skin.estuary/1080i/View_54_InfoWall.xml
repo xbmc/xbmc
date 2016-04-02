@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="InfoWallPictureLayout">
+		<control type="image">
+			<top>-10</top>
+			<width>400</width>
+			<height>380</height>
+			<texture border="40">buttons/button-nofo.png</texture>
+		</control>
+		<control type="image">
+			<left>25</left>
+			<top>18</top>
+			<width>350</width>
+			<height>280</height>
+			<texture border="2" fallback="DefaultFolderSquare.png" background="true">$VAR[ShiftThumbVar]</texture>
+			<aspectratio>keep</aspectratio>
+			<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+			<bordersize>4</bordersize>
+		</control>
+		<control type="image">
+			<left>20</left>
+			<top>308</top>
+			<width>358</width>
+			<height>40</height>
+			<texture>colors/black.png</texture>
+		</control>
+		<control type="label">
+			<left>20</left>
+			<top>315</top>
+			<width>358</width>
+			<textoffsetx>20</textoffsetx>
+			<height>20</height>
+			<font>font12</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Label]</label>
+		</control>
+	</include>
+	<include name="InfoWallMusicLayout">
+		<control type="image">
+			<top>-10</top>
+			<width>320</width>
+			<height>380</height>
+			<texture border="40">buttons/button-nofo.png</texture>
+		</control>
+		<control type="image">
+			<left>35</left>
+			<top>21</top>
+			<width>250</width>
+			<height>250</height>
+			<texture border="2" fallback="DefaultFolderSquare.png" background="true">$VAR[ShiftThumbVar]</texture>
+			<aspectratio>keep</aspectratio>
+			<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+			<bordersize>4</bordersize>
+		</control>
+		<control type="image">
+			<left>20</left>
+			<top>278</top>
+			<width>278</width>
+			<height>70</height>
+			<texture>colors/black.png</texture>
+		</control>
+		<control type="textbox">
+			<left>28</left>
+			<top>278</top>
+			<width>262</width>
+			<height>70</height>
+			<font>font12</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Year,[COLOR button_focus], - [/COLOR]]$INFO[ListItem.Label]</label>
+		</control>
+		<control type="group">
+			<left>230</left>
+			<top>28</top>
+			<include>UserRatingCircle</include>
+		</control>
+	</include>
+	<include name="View_54_InfoWall">
+		<include name="UpDownArrows">
+			<param name="container_id" value="54" />
+			<param name="visible" value="!System.HasModalDialog" />
+		</include>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>100</left>
+			<top>172</top>
+			<visible>Control.IsVisible(54)</visible>
+			<include>Visible_Right</include>
+			<control type="scrollbar" id="533">
+				<left>1213</left>
+				<top>10</top>
+				<width>12</width>
+				<height>705</height>
+				<onleft>54</onleft>
+				<onright>54</onright>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="panel" id="54">
+				<left>0</left>
+				<top>0</top>
+				<width>1204</width>
+				<height>720</height>
+				<onleft>9000</onleft>
+				<onright>533</onright>
+				<onup>54</onup>
+				<ondown>54</ondown>
+				<viewtype label="31101">icon</viewtype>
+				<preloaditems>2</preloaditems>
+				<pagecontrol>533</pagecontrol>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(sets) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(musicvideos) | Container.Content(images)</visible>
+				<itemlayout height="360" width="240" condition="Container.Content(sets) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
+					<control type="image">
+						<left>-5</left>
+						<top>0</top>
+						<width>259</width>
+						<height>364</height>
+						<texture fallback="DefaultVideo.png" background="true">$VAR[ListPosterVar]</texture>
+						<bordertexture border="20">overlays/shadow.png</bordertexture>
+						<bordersize>20</bordersize>
+					</control>
+					<control type="group">
+						<left>179</left>
+						<top>30</top>
+						<include>UserRatingCircle</include>
+					</control>
+				</itemlayout>
+				<focusedlayout height="360" width="240" condition="Container.Content(sets) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
+					<control type="group">
+						<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="124,179">Focus</animation>
+						<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="124,179">UnFocus</animation>
+						<control type="image">
+							<left>-5</left>
+							<top>0</top>
+							<width>259</width>
+							<height>364</height>
+							<texture fallback="DefaultVideo.png" background="true">$VAR[ListPosterVar]</texture>
+							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordersize>20</bordersize>
+						</control>
+						<control type="group">
+							<left>179</left>
+							<top>30</top>
+							<include>UserRatingCircle</include>
+						</control>
+						<control type="image">
+							<left>15</left>
+							<top>20</top>
+							<width>219</width>
+							<height>325</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<animation effect="fade" start="0" end="100" time="200" tween="sine">Focus</animation>
+							<animation effect="fade" start="100" end="0" time="200" tween="sine">UnFocus</animation>
+						</control>
+					</control>
+				</focusedlayout>
+				<itemlayout height="360" width="300" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos)">
+					<include>InfoWallMusicLayout</include>
+				</itemlayout>
+				<focusedlayout height="360" width="300" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos)">
+					<control type="group">
+						<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180">Focus</animation>
+						<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180">UnFocus</animation>
+						<include>InfoWallMusicLayout</include>
+						<control type="image">
+							<left>15</left>
+							<top>5</top>
+							<width>288</width>
+							<height>348</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+						</control>
+					</control>
+				</focusedlayout>
+				<itemlayout height="360" width="401" condition="Container.Content(images)">
+					<include>InfoWallPictureLayout</include>
+				</itemlayout>
+				<focusedlayout height="360" width="401" condition="Container.Content(images)">
+					<control type="group">
+						<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="190,180">Focus</animation>
+						<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="190,180">UnFocus</animation>
+						<include>InfoWallPictureLayout</include>
+						<control type="image">
+							<left>15</left>
+							<top>5</top>
+							<width>368</width>
+							<height>348</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+</includes>

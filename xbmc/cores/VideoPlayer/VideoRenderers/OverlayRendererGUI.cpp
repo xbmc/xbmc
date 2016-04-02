@@ -33,7 +33,7 @@
 
 using namespace OVERLAY;
 
-static color_t color[8] = { 0xFFFFFF00
+static color_t colors[8] = { 0xFFFFFF00
                           , 0xFFFFFFFF
                           , 0xFF0099FF
                           , 0xFF00FF00
@@ -42,29 +42,31 @@ static color_t color[8] = { 0xFFFFFF00
                           , 0xFFE5E5E5
                           , 0xFFC0C0C0 };
 
-static CGUITextLayout* GetFontLayout()
+CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, int height, int style,
+                                            const std::string &fontcache, const std::string &fontbordercache)
 {
   if (CUtil::IsUsingTTFSubtitles())
-  { std::string font_file = CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_FONT);
+  {
+    std::string font_file = font;
     std::string font_path = URIUtils::AddFileToFolder("special://home/media/Fonts/", font_file);
     if (!XFILE::CFile::Exists(font_path))
       font_path = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", font_file);
 
     // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
     RESOLUTION_INFO pal(720, 576, 0);
-    CGUIFont *subtitle_font = g_fontManager.LoadTTF("__subtitle__"
+    CGUIFont *subtitle_font = g_fontManager.LoadTTF(fontcache
                                                     , font_path
-                                                    , color[CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_COLOR)]
+                                                    , colors[color]
                                                     , 0
-                                                    , CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT)
-                                                    , CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STYLE)
+                                                    , height
+                                                    , style
                                                     , false, 1.0f, 1.0f, &pal, true);
-    CGUIFont *border_font   = g_fontManager.LoadTTF("__subtitleborder__"
+    CGUIFont *border_font   = g_fontManager.LoadTTF(fontbordercache
                                                     , font_path
                                                     , 0xFF000000
                                                     , 0
-                                                    , CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT)
-                                                    , CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STYLE)
+                                                    , height
+                                                    , style
                                                     , true, 1.0f, 1.0f, &pal, true);
     if (!subtitle_font || !border_font)
       CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
@@ -113,8 +115,6 @@ COverlayText::COverlayText(CDVDOverlayText * src)
   StringUtils::Replace(m_text, "</b", "[/B]");
   StringUtils::Replace(m_text, "</u", "");
 
-  m_layout = GetFontLayout();
-
   m_subalign = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if (m_subalign == SUBTITLE_ALIGN_MANUAL)
   {
@@ -144,6 +144,8 @@ COverlayText::COverlayText(CDVDOverlayText * src)
   m_height = 0;
 
   m_type = TYPE_GUITEXT;
+
+  m_layout = nullptr;
 }
 
 COverlayText::~COverlayText()
@@ -151,8 +153,12 @@ COverlayText::~COverlayText()
   delete m_layout;
 }
 
-void COverlayText::PrepareRender()
+void COverlayText::PrepareRender(const std::string &font, int color, int height, int style,
+                                 const std::string &fontcache, const std::string &fontbordercache)
 {
+  if (!m_layout)
+    m_layout = GetFontLayout(font, color, height, style, fontcache, fontbordercache);
+
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
   float width_max = (float)res.Overscan.right - res.Overscan.left;
   m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)

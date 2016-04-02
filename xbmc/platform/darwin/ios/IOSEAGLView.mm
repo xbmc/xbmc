@@ -26,17 +26,16 @@
 #include <stdio.h>
 
 #include "system.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
-#include "WindowingFactory.h"
-#include "VideoReferenceClock.h"
+#include "windowing/WindowingFactory.h"
+#include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include "platform/XbmcContext.h"
-#include "WindowingFactory.h"
 #undef BOOL
 
 #import <QuartzCore/QuartzCore.h>
@@ -47,7 +46,8 @@
 #import "XBMCController.h"
 #import "IOSScreenManager.h"
 #import "platform/darwin/AutoPool.h"
-#import "DarwinUtils.h"
+#import "platform/darwin/DarwinUtils.h"
+#import "platform/darwin/ios-common/AnnounceReceiver.h"
 #import "XBMCDebugHelpers.h"
 
 using namespace KODI::MESSAGING;
@@ -358,6 +358,9 @@ using namespace KODI::MESSAGING;
     {
       CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
     }
+    
+    CAnnounceReceiver::GetInstance()->DeInitialize();
+      
     // wait for animation thread to die
     if ([animationThread isFinished] == NO)
       [animationThreadLock lockWhenCondition:TRUE];
@@ -401,6 +404,8 @@ using namespace KODI::MESSAGING;
     readyToRun = false;
     ELOG(@"%sUnable to create application", __PRETTY_FUNCTION__);
   }
+  
+  CAnnounceReceiver::GetInstance()->Initialize();
 
   if (!g_application.CreateGUI())
   {

@@ -77,7 +77,7 @@ ${SUDO} rm -rf $DIRNAME/$ARCHIVE
 
 # create debian control file.
 mkdir -p $DIRNAME/$PACKAGE/DEBIAN
-if [ $ARM64 ]; then
+if $ARM64; then
   echo "Package: $PACKAGE_ARM64"                  >  $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Name: @APP_NAME@-iOS (64-bit)"            >> $DIRNAME/$PACKAGE/DEBIAN/control
   echo "Depends: firmware (>= 7.0)"               >> $DIRNAME/$PACKAGE/DEBIAN/control

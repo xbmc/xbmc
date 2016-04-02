@@ -22,6 +22,7 @@
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
 #include "DVDClock.h"
+#include "DVDDemuxers/DVDDemuxPacket.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
 #include "guilib/GraphicContext.h"
@@ -131,8 +132,8 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
   {
     if(sub.rects[i])
     {
-      av_free(sub.rects[i]->pict.data[0]);
-      av_free(sub.rects[i]->pict.data[1]);
+      av_free(sub.rects[i]->data[0]);
+      av_free(sub.rects[i]->data[1]);
       av_freep(&sub.rects[i]);
     }
   }
@@ -237,7 +238,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
       return NULL;
 
     AVSubtitleRect rect = *m_Subtitle.rects[m_SubtitleIndex];
-    if (rect.pict.data[0] == NULL)
+    if (rect.data[0] == NULL)
       return NULL;
 
     m_height = m_pCodecContext->height;
@@ -289,20 +290,20 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->source_width  = m_width;
     overlay->source_height = m_height;
 
-    uint8_t* s = rect.pict.data[0];
+    uint8_t* s = rect.data[0];
     uint8_t* t = overlay->data;
     for(int i=0;i<rect.h;i++)
     {
       memcpy(t, s, rect.w);
-      s += rect.pict.linesize[0];
+      s += rect.linesize[0];
       t += overlay->linesize;
     }
 
     for(int i=0;i<rect.nb_colors;i++)
-      overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.pict.data[1])[i]);
+      overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
 
-    av_free(rect.pict.data[0]);
-    av_free(rect.pict.data[1]);
+    av_free(rect.data[0]);
+    av_free(rect.data[1]);
     av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
     m_SubtitleIndex++;
 

@@ -22,6 +22,7 @@
 #define WINDOW_EVENTS_LINUX_H
 
 #pragma once
+#include <memory>
 #include "windowing/WinEvents.h"
 #include "input/linux/LinuxInputDevices.h"
 
@@ -43,6 +44,7 @@ public:
 private:
   static bool m_initialized;
   static CLinuxInputDevices m_devices;
+  std::unique_ptr<CLinuxInputDevicesCheckHotplugged> m_checkHotplug;
 };
 
 #endif

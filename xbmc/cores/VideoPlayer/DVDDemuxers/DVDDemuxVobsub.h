@@ -41,12 +41,14 @@ public:
   virtual DemuxPacket*  Read();
   virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL);
   virtual void          SetSpeed(int speed) {}
-  virtual CDemuxStream* GetStream(int index) { return m_Streams[index]; }
-  virtual int           GetNrOfStreams()     { return m_Streams.size(); }
+  virtual CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
+  virtual std::vector<CDemuxStream*> GetStreams() const override;
+  virtual int           GetNrOfStreams() const override { return m_Streams.size(); }
   virtual int           GetStreamLength()    { return 0; }
   virtual std::string   GetFileName()        { return m_Filename; }
 
   bool                  Open(const std::string& filename, int source, const std::string& subfilename);
+  virtual void EnableStream(int id, bool enable) override;
 
 private:
   class CStream
@@ -54,12 +56,10 @@ private:
   {
   public:
     CStream(CDVDDemuxVobsub* parent)
-      : m_discard(AVDISCARD_NONE), m_parent(parent)
+      : m_discard(false), m_parent(parent)
     {}
-    virtual void      SetDiscard(AVDiscard discard) { m_discard = discard; }
-    virtual AVDiscard GetDiscard()                  { return m_discard; }
 
-    AVDiscard        m_discard;
+    bool m_discard;
     CDVDDemuxVobsub* m_parent;
   };
 

@@ -26,7 +26,7 @@
 class CDVDInputStreamStack : public CDVDInputStream
 {
 public:
-  CDVDInputStreamStack(CFileItem& fileitem);
+  CDVDInputStreamStack(const CFileItem& fileitem);
   virtual ~CDVDInputStreamStack();
 
   virtual bool    Open();

@@ -36,7 +36,7 @@ namespace XFILE
 {
   class CCurlFile : public IFile
   {
-    public:
+    private:
       typedef enum
       {
         PROXY_HTTP = 0,
@@ -46,6 +46,7 @@ namespace XFILE
         PROXY_SOCKS5_REMOTE,
       } ProxyType;
     
+    public:
       CCurlFile();
       virtual ~CCurlFile();
       virtual bool Open(const CURL& url);
@@ -63,6 +64,7 @@ namespace XFILE
       virtual std::string GetContent()                           { return m_state->m_httpheader.GetValue("content-type"); }
       virtual int IoControl(EIoControl request, void* param);
       virtual std::string GetContentCharset(void)                { return GetServerReportedCharset(); }
+      virtual double GetDownloadSpeed();
 
       bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);
       bool Get(const std::string& strURL, std::string& strHTML);
@@ -72,13 +74,11 @@ namespace XFILE
       void Cancel();
       void Reset();
       void SetUserAgent(const std::string& sUserAgent)           { m_userAgent = sUserAgent; }
-      void SetProxy(const std::string &proxy)                    { m_proxy = proxy; }
-      void SetProxyUserPass(const std::string &proxyuserpass)    { m_proxyuserpass = proxyuserpass; }
-      void SetProxyType(ProxyType proxytype)                     { m_proxytype = proxytype; }
-      void SetStreamProxy(const std::string &proxy, ProxyType type);
+      void SetProxy(const std::string &type, const std::string &host, uint16_t port,
+                    const std::string &user, const std::string &password);
       void SetCustomRequest(const std::string &request)          { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
-      void SetContentEncoding(const std::string& encoding)       { m_contentencoding = encoding; }
+      void SetAcceptEncoding(const std::string& encoding)        { m_acceptencoding = encoding; }
       void SetAcceptCharset(const std::string& charset)          { m_acceptCharset = charset; }
       void SetTimeout(int connecttimeout)                        { m_connecttimeout = connecttimeout; }
       void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
@@ -164,11 +164,13 @@ namespace XFILE
 
       std::string     m_url;
       std::string     m_userAgent;
-      std::string     m_proxy;
-      std::string     m_proxyuserpass;
       ProxyType       m_proxytype;
+      std::string     m_proxyhost;
+      uint16_t        m_proxyport;
+      std::string     m_proxyuser;
+      std::string     m_proxypassword;
       std::string     m_customrequest;
-      std::string     m_contentencoding;
+      std::string     m_acceptencoding;
       std::string     m_acceptCharset;
       std::string     m_ftpauth;
       std::string     m_ftpport;

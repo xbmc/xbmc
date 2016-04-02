@@ -95,6 +95,7 @@
       <sleep>ActivateWindow(shutdownmenu)</sleep>
       <!-- PVR windows -->
       <e>ActivateWindow(TVGuide)</e>
+      <epg>ActivateWindow(TVGuide)</epg>
       <h>ActivateWindow(TVChannels)</h>
       <j>ActivateWindow(RadioChannels)</j>
       <k>ActivateWindow(TVRecordings)</k>
@@ -217,6 +218,13 @@
       <blue>Blue</blue>
     </keyboard>
   </MyTVTimers>
+  <TVGuide>
+    <keyboard>
+      <e>PreviousMenu</e>
+      <t>ShowTimerRule</t>
+      <epg>PreviousMenu</epg>
+    </keyboard>
+  </TVGuide>
   <MyRadioChannels>
     <keyboard>
       <m mod="ctrl">Move</m>
@@ -243,11 +251,12 @@
       <blue>Blue</blue>
     </keyboard>
   </MyRadioTimers>
-  <TVGuide>
+  <RadioGuide>
     <keyboard>
       <e>PreviousMenu</e>
+      <t>ShowTimerRule</t>
     </keyboard>
-  </TVGuide>
+  </RadioGuide>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>

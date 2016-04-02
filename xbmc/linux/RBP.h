@@ -41,6 +41,20 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+class CGPUMEM
+{
+public:
+  CGPUMEM(unsigned int numbytes, bool cached = true);
+  ~CGPUMEM();
+  void Flush();
+  void *m_arm; // Pointer to memory mapped on ARM side
+  int m_vc_handle;   // Videocore handle of relocatable memory
+  int m_vcsm_handle; // Handle for use by VCSM
+  unsigned int m_vc;       // Address for use in GPU code
+  unsigned int m_numbytes; // Size of memory block
+  void *m_opaque;
+};
+
 class CRBP
 {
 public:
@@ -63,6 +77,7 @@ public:
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
   DllOMX *GetDllOMX() { return m_OMX ? m_OMX->GetDll() : NULL; }
   void WaitVsync();
+  int GetMBox() { return m_mb; }
 
 private:
   DllBcmHost *m_DllBcmHost;
@@ -79,6 +94,8 @@ private:
   CEvent     m_vsync;
   class DllLibOMXCore;
   CCriticalSection m_critSection;
+
+  int m_mb;
 };
 
 extern CRBP g_RBP;

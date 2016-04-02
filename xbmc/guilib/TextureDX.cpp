@@ -181,7 +181,7 @@ void CDXTexture::LoadToGPU()
     }
     m_texture.UnlockRect(0);
   }
-  delete [] m_pixels;
+  _aligned_free(m_pixels);
   m_pixels = nullptr;
 
   m_loadedToGPU = true;

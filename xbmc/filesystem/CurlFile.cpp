@@ -406,6 +406,8 @@ CCurlFile::~CCurlFile()
 
 CCurlFile::CCurlFile()
  : m_writeOffset(0)
+ , m_proxytype(PROXY_HTTP)
+ , m_proxyport(3128)
  , m_overflowBuffer(NULL)
  , m_overflowSize(0)
 {
@@ -428,7 +430,6 @@ CCurlFile::CCurlFile()
   m_password = "";
   m_httpauth = "";
   m_cipherlist = "";
-  m_proxytype = PROXY_HTTP;
   m_state = new CReadState();
   m_oldState = NULL;
   m_skipshout = false;
@@ -589,9 +590,9 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   else
     g_curlInterface.easy_setopt(h, CURLOPT_FTP_SKIP_PASV_IP, 1);
 
-  // setup Content-Encoding if requested
-  if( m_contentencoding.length() > 0 )
-    g_curlInterface.easy_setopt(h, CURLOPT_ENCODING, m_contentencoding.c_str());
+  // setup Accept-Encoding if requested
+  if (m_acceptencoding.length() > 0)
+    g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding.c_str());
 
   if (!m_useOldHttpVersion && !m_acceptCharset.empty())
     SetRequestHeader("Accept-Charset", m_acceptCharset);
@@ -607,13 +608,18 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (g_advancedSettings.m_curlDisableIPV6)
     g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
-  if (m_proxy.length() > 0)
+  if (!m_proxyhost.empty())
   {
-    g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
     g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxytype]);
-    if (m_proxyuserpass.length() > 0)
-      g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, m_proxyuserpass.c_str());
 
+    const std::string hostport = m_proxyhost +
+      StringUtils::Format(":%d", m_proxyport);
+    g_curlInterface.easy_setopt(h, CURLOPT_PROXY, hostport.c_str());
+
+    const std::string userpass =
+      m_proxyuser + std::string(":") + m_proxypassword;
+    if (!userpass.empty())
+      g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, userpass.c_str());
   }
   if (m_customrequest.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
@@ -754,20 +760,19 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if( url2.IsProtocol("http")
        ||  url2.IsProtocol("https"))
   {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
-        && !CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
-        && CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
-        && m_proxy.empty())
+    const CSettings &s = CSettings::GetInstance();
+    if (m_proxyhost.empty()
+        && s.GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
+        && !s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
+        && s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0)
     {
-      m_proxy = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
-      m_proxy += StringUtils::Format(":%d", CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
-      if (CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).length() > 0 && m_proxyuserpass.empty())
-      {
-        m_proxyuserpass = CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
-        m_proxyuserpass += ":" + CSettings::GetInstance().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
-      }
-      m_proxytype = (ProxyType)CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
-      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
+      m_proxytype = (ProxyType)s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
+      m_proxyhost = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
+      m_proxyport = s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT);
+      m_proxyuser = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
+      m_proxypassword = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
+      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxyhost.c_str(),
+                proxyType2CUrlProxyType[m_proxytype]);
     }
 
     // get username and password
@@ -798,16 +803,14 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetUserAgent(value);
         else if (name == "cookie")
           SetCookie(value);
-        else if (name == "encoding")
-          SetContentEncoding(value);
+        else if (name == "acceptencoding" || name == "encoding")
+          SetAcceptEncoding(value);
         else if (name == "noshout" && value == "true")
           m_skipshout = true;
         else if (name == "seekable" && value == "0")
           m_seekable = false;
         else if (name == "accept-charset")
           SetAcceptCharset(value);
-        else if (name == "httpproxy")
-          SetStreamProxy(value, PROXY_HTTP);
         else if (name == "sslcipherlist")
           m_cipherlist = value;
         else if (name == "connection-timeout")
@@ -825,17 +828,6 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
-}
-
-void CCurlFile::SetStreamProxy(const std::string &proxy, ProxyType type)
-{
-  CURL url(proxy);
-  m_proxy = url.GetWithoutUserDetails();
-  m_proxyuserpass = url.GetUserName();
-  if (!url.GetPassWord().empty())
-    m_proxyuserpass += ":" + url.GetPassWord();
-  m_proxytype = type;
-  CLog::Log(LOGDEBUG, "Overriding proxy from URL parameter: %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
 }
 
 bool CCurlFile::Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
@@ -938,6 +930,28 @@ void CCurlFile::Reset()
   m_state->m_cancelled = false;
 }
 
+void CCurlFile::SetProxy(const std::string &type, const std::string &host,
+  uint16_t port, const std::string &user, const std::string &password)
+{
+  m_proxytype = CCurlFile::PROXY_HTTP;
+  if (type == "http")
+    m_proxytype = CCurlFile::PROXY_HTTP;
+  else if (type == "socks4")
+    m_proxytype = CCurlFile::PROXY_SOCKS4;
+  else if (type == "socks4a")
+    m_proxytype = CCurlFile::PROXY_SOCKS4A;
+  else if (type == "socks5")
+    m_proxytype = CCurlFile::PROXY_SOCKS5;
+  else if (type == "socks5-remote")
+    m_proxytype = CCurlFile::PROXY_SOCKS5_REMOTE;
+  else
+    CLog::Log(LOGERROR, "Invalid proxy type \"%s\"", type.c_str());
+  m_proxyhost = host;
+  m_proxyport = port;
+  m_proxyuser = user;
+  m_proxypassword = password;
+}
+
 bool CCurlFile::Open(const CURL& url)
 {
   if (!g_curlInterface.IsLoaded())
@@ -979,7 +993,7 @@ bool CCurlFile::Open(const CURL& url)
   // since we can't know the stream size up front if we're gzipped/deflated
   // flag the stream with an unknown file size rather than the compressed
   // file size.
-  if (!m_contentencoding.empty())
+  if (!m_acceptencoding.empty())
     m_state->m_fileSize = 0;
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
@@ -1844,4 +1858,11 @@ int CCurlFile::IoControl(EIoControl request, void* param)
     return m_seekable ? 1 : 0;
 
   return -1;
+}
+
+double CCurlFile::GetDownloadSpeed()
+{
+  double res = 0.0f;
+  g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_SPEED_DOWNLOAD, &res);
+  return res;
 }

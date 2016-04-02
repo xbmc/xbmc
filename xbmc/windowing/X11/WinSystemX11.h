@@ -37,30 +37,30 @@ public:
   virtual ~CWinSystemX11();
 
   // CWinSystemBase
-  virtual bool InitWindowSystem();
-  virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
-  virtual bool DestroyWindow();
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
-  virtual void UpdateResolutions();
-  virtual int  GetNumScreens() { return 1; }
-  virtual int  GetCurrentScreen() { return m_nScreen; }
-  virtual void ShowOSMouse(bool show);
-  virtual void ResetOSScreensaver();
-  virtual bool EnableFrameLimiter();
-  virtual void EnableSystemScreenSaver(bool bEnable);
+  bool InitWindowSystem() override;
+  bool DestroyWindowSystem() override;
+  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction) override;
+  bool DestroyWindow() override;
+  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  void UpdateResolutions() override;
+  int  GetNumScreens() override { return 1; }
+  int  GetCurrentScreen() override { return m_nScreen; }
+  void ShowOSMouse(bool show) override;
+  void ResetOSScreensaver() override;
+  bool EnableFrameLimiter() override;
+  void EnableSystemScreenSaver(bool bEnable) override;
 
-  virtual void NotifyAppActiveChange(bool bActivated);
-  virtual void NotifyAppFocusChange(bool bGaining);
+  void NotifyAppActiveChange(bool bActivated) override;
+  void NotifyAppFocusChange(bool bGaining) override;
 
-  virtual bool Minimize();
-  virtual bool Restore() ;
-  virtual bool Hide();
-  virtual bool Show(bool raise = true);
+  bool Minimize() override;
+  bool Restore() override;
+  bool Hide() override;
+  bool Show(bool raise = true) override;
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
-  virtual bool HasCalibration(const RESOLUTION_INFO &resInfo);
+  bool HasCalibration(const RESOLUTION_INFO &resInfo) override;
 
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }

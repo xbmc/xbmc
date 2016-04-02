@@ -197,7 +197,7 @@ void CGLContextGLX::SetVSync(bool enable, int &mode)
   }
 }
 
-bool CGLContextGLX::SwapBuffers(const CDirtyRegionList& dirty, int &mode)
+void CGLContextGLX::SwapBuffers(int &mode)
 {
   if(mode == 3)
   {
@@ -264,8 +264,6 @@ bool CGLContextGLX::SwapBuffers(const CDirtyRegionList& dirty, int &mode)
   }
   else
     glXSwapBuffers(m_dpy, m_glxWindow);
-
-  return true;
 }
 
 void CGLContextGLX::QueryExtensions()
@@ -295,17 +293,6 @@ void CGLContextGLX::QueryExtensions()
     m_glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddress((const GLubyte*)"glXSwapIntervalEXT");
   else
     m_glXSwapIntervalEXT = NULL;
-}
-
-bool CGLContextGLX::IsExtSupported(const char* extension)
-{
-  std::string name;
-
-  name  = " ";
-  name += extension;
-  name += " ";
-
-  return m_extensions.find(name) != std::string::npos;
 }
 
 #endif

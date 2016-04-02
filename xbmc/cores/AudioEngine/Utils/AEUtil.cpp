@@ -547,7 +547,7 @@ bool CAEUtil::S16NeedsByteSwap(AEDataFormat in, AEDataFormat out)
   return in != out;
 }
 
-uint64_t CAEUtil::GetAVChannelLayout(CAEChannelInfo &info)
+uint64_t CAEUtil::GetAVChannelLayout(const CAEChannelInfo &info)
 {
   uint64_t channelLayout = 0;
   if (info.HasChannel(AE_CH_FL))   channelLayout |= AV_CH_FRONT_LEFT;

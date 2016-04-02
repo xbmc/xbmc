@@ -23,7 +23,8 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DVDDemuxFFmpeg.h"
+#include "DVDDemuxPacket.h"
 #include "DVDClock.h"
 #include "DVDSubtitles/DVDSubtitleStream.h"
 
@@ -40,6 +41,16 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
     delete m_Streams[i];
   }
   m_Streams.clear();
+}
+
+std::vector<CDemuxStream*> CDVDDemuxVobsub::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  for (auto iter : m_Streams)
+    streams.push_back(iter);
+
+  return streams;
 }
 
 bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::string& subfilename)
@@ -134,12 +145,12 @@ bool CDVDDemuxVobsub::SeekTime(int time, bool backwords, double* startpts)
 {
   double pts = DVD_MSEC_TO_TIME(time);
   m_Timestamp = m_Timestamps.begin();
-  for(;m_Timestamp != m_Timestamps.end();++m_Timestamp)
+  for (;m_Timestamp != m_Timestamps.end();++m_Timestamp)
   {
     if(m_Timestamp->pts > pts)
       break;
   }
-  for(unsigned i=0;i<m_Streams.size() && m_Timestamps.begin() != m_Timestamp;i++)
+  for (unsigned i=0;i<m_Streams.size() && m_Timestamps.begin() != m_Timestamp;i++)
   {
     --m_Timestamp;
   }
@@ -154,7 +165,7 @@ DemuxPacket* CDVDDemuxVobsub::Read()
       return NULL;
 
     current =  m_Timestamp++;
-  } while(m_Streams[current->id]->m_discard == AVDISCARD_ALL);
+  } while(m_Streams[current->id]->m_discard == true);
 
   if(!m_Demuxer->SeekByte(current->pos))
     return NULL;
@@ -208,16 +219,16 @@ bool CDVDDemuxVobsub::ParseId(SState& state, char* line)
   {
     line+=6;
     while(*line == ' ') line++;
-    stream->iPhysicalId = atoi(line);
+    stream->uniqueId = atoi(line);
   }
   else
-    stream->iPhysicalId = -1;
+    stream->uniqueId = -1;
 
   stream->codec = AV_CODEC_ID_DVD_SUBTITLE;
-  stream->iId = m_Streams.size();
+  stream->uniqueId = m_Streams.size();
   stream->source = m_source;
 
-  state.id = stream->iId;
+  state.id = stream->uniqueId;
   m_Streams.push_back(stream.release());
   return true;
 }
@@ -245,4 +256,16 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, char* line)
   timestamp.pts = DVD_SEC_TO_TIME(state.delay + h*3600.0 + m*60.0 + s + ms*0.001);
   m_Timestamps.push_back(timestamp);
   return true;
+}
+
+void CDVDDemuxVobsub::EnableStream(int id, bool enable)
+{
+  for (auto &stream : m_Streams)
+  {
+    if (stream->uniqueId == id)
+    {
+      stream->m_discard = !enable;
+      break;
+    }
+  }
 }

@@ -19,17 +19,25 @@
  *
  */
 
+#include <map>
 #include <set>
 #include <string>
 #include "peripherals/PeripheralTypes.h"
 
 class TiXmlDocument;
-
 class CSetting;
+
+namespace JOYSTICK
+{
+  class IButtonMapper;
+  class IDriverHandler;
+  class IInputHandler;
+}
 
 namespace PERIPHERALS
 {
   class CGUIDialogPeripheralSettings;
+  class CPeripheralBus;
 
   typedef enum
   {
@@ -43,7 +51,7 @@ namespace PERIPHERALS
     friend class CGUIDialogPeripheralSettings;
 
   public:
-    CPeripheral(const PeripheralScanResult& scanResult);
+    CPeripheral(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheral(void);
 
     bool operator ==(const CPeripheral &right) const;
@@ -163,6 +171,15 @@ namespace PERIPHERALS
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
+    virtual void RegisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
+    virtual void UnregisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler) { }
+
+    virtual void RegisterJoystickInputHandler(JOYSTICK::IInputHandler* handler);
+    virtual void UnregisterJoystickInputHandler(JOYSTICK::IInputHandler* handler);
+
+    virtual void RegisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+    virtual void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+
   protected:
     virtual void ClearSettings(void);
 
@@ -185,5 +202,8 @@ namespace PERIPHERALS
     std::vector<CPeripheral *>       m_subDevices;
     std::map<std::string, PeripheralDeviceSetting> m_settings;
     std::set<std::string>             m_changedSettings;
+    CPeripheralBus*                  m_bus;
+    std::map<JOYSTICK::IInputHandler*, JOYSTICK::IDriverHandler*> m_inputHandlers;
+    std::map<JOYSTICK::IButtonMapper*, JOYSTICK::IDriverHandler*> m_buttonMappers;
   };
 }

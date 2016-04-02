@@ -21,21 +21,51 @@
  */
 
 #include "iimage.h"
+#include <memory>
 
 extern "C"
 {
 #include "libavutil/pixfmt.h"
 }
 
+class Frame
+{
+public:
+  friend class CFFmpegImage;
+
+  Frame();
+  virtual ~Frame();
+
+  int GetPitch() const { return m_pitch; }
+
+  unsigned char* m_pImage;
+  unsigned int m_delay;
+
+private:
+  Frame(const Frame& src);
+
+  int m_pitch = 0;
+  unsigned int m_imageSize;
+  unsigned int m_height;
+  unsigned int m_width;
+};
+
+
+struct MemBuffer
+{
+  uint8_t* data = nullptr;
+  size_t size = 0;
+  size_t pos = 0;
+};
+
 struct AVFrame;
-struct AVPicture;
 struct AVIOContext;
-struct AVCodecContext;
+struct AVFormatContext;
 
 class CFFmpegImage : public IImage
 {
 public:
-  CFFmpegImage(const std::string& strMimeType);
+  explicit CFFmpegImage(const std::string& strMimeType);
   virtual ~CFFmpegImage();
 
   virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
@@ -48,11 +78,25 @@ public:
                                           unsigned char* &bufferout,
                                           unsigned int &bufferoutSize);
   virtual void ReleaseThumbnailBuffer();
+
+  bool Initialize(unsigned char* buffer, unsigned int bufSize);
+
+  std::shared_ptr<Frame> ReadFrame();
+
 private:
-  static void FreeIOCtx(AVIOContext* ioctx);
+  static void FreeIOCtx(AVIOContext** ioctx);
+  AVFrame* ExtractFrame();
+  bool DecodeFrame(AVFrame* m_pFrame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels);
   static AVPixelFormat ConvertFormats(AVFrame* frame);
   std::string m_strMimeType;
   void CleanupLocalOutputBuffer();
+
+
+  MemBuffer m_buf;
+  uint32_t m_frames = 0;
+
+  AVIOContext* m_ioctx = nullptr;
+  AVFormatContext* m_fctx = nullptr;
 
   AVFrame* m_pFrame;
   uint8_t* m_outputBuffer;

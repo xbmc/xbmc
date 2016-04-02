@@ -38,12 +38,10 @@
 #ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
 #endif
-#if defined(HAS_GIFLIB)
-#include "guilib/Gif.h"
-#endif//HAS_GIFLIB
 #if defined(TARGET_DARWIN_IOS)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
+#include "FFmpegImage.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -335,79 +333,99 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   start = CurrentHostCounter();
 #endif
 
-  if (StringUtils::EndsWithNoCase(strPath, ".gif"))
+  if (bundle >= 0 && StringUtils::EndsWithNoCase(strPath, ".gif"))
+  {
+    CTextureMap* pMap = nullptr;
+    CBaseTexture **pTextures = nullptr;
+    int nLoops = 0, width = 0, height = 0;
+    int* Delay = nullptr;
+    int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &pTextures, width, height, nLoops, &Delay);
+    if (!nImages)
+    {
+      CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
+      delete[] pTextures;
+      delete[] Delay;
+      return emptyTexture;
+    }
+
+    unsigned int maxWidth = 0;
+    unsigned int maxHeight = 0;
+    pMap = new CTextureMap(strTextureName, width, height, nLoops);
+    for (int iImage = 0; iImage < nImages; ++iImage)
+    {
+      pMap->Add(pTextures[iImage], Delay[iImage]);
+      maxWidth = std::max(maxWidth, pTextures[iImage]->GetWidth());
+      maxHeight = std::max(maxHeight, pTextures[iImage]->GetHeight());
+    }
+
+    pMap->SetWidth((int)maxWidth);
+    pMap->SetHeight((int)maxHeight);
+
+    delete[] pTextures;
+    delete[] Delay;
+
+    m_vecTextures.push_back(pMap);
+    return pMap->GetTexture();
+  }
+  else if (StringUtils::EndsWithNoCase(strPath, ".gif") ||
+           StringUtils::EndsWithNoCase(strPath, ".apng"))
   {
     CTextureMap* pMap = nullptr;
 
-    if (bundle >= 0)
+    std::string mimeType;
+    if (StringUtils::EndsWithNoCase(strPath, ".gif"))
+      mimeType = "image/gif";
+    else if (StringUtils::EndsWithNoCase(strPath, ".apng"))
+      mimeType = "image/apng";
+
+    XFILE::CFile file;
+    XFILE::auto_buffer buf;
+    CFFmpegImage anim(mimeType);
+    pMap = new CTextureMap(strTextureName, 0, 0, 0);
+
+    if (file.LoadFile(strPath, buf) <= 0 ||
+       !anim.Initialize((uint8_t*)buf.get(), buf.size()))
     {
-      CBaseTexture **pTextures = nullptr;
-      int nLoops = 0, width = 0, height = 0;
-      int* Delay = nullptr;
-      int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &pTextures, width, height, nLoops, &Delay);
-      if (!nImages)
-      {
-        CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
-        delete [] pTextures;
-        delete [] Delay;
-        return emptyTexture;
-      }
-
-      unsigned int maxWidth = 0;
-      unsigned int maxHeight = 0;
-      pMap = new CTextureMap(strTextureName, width, height, nLoops);
-      for (int iImage = 0; iImage < nImages; ++iImage)
-      {
-        pMap->Add(pTextures[iImage], Delay[iImage]);
-        maxWidth = std::max(maxWidth, pTextures[iImage]->GetWidth());
-        maxHeight = std::max(maxHeight, pTextures[iImage]->GetHeight());
-      }
-
-      pMap->SetWidth((int)maxWidth);
-      pMap->SetHeight((int)maxHeight);
-
-      delete [] pTextures;
-      delete [] Delay;
-    }
-    else
-    {
-#if defined(HAS_GIFLIB)
-      Gif gif;
-      if(!gif.LoadGif(strPath.c_str()))
-      {
-        if (StringUtils::StartsWith(strPath, g_SkinInfo->Path()))
-          CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-        return emptyTexture;
-      }
-
-      unsigned int maxWidth = 0;
-      unsigned int maxHeight = 0;
-      pMap = new CTextureMap(strTextureName, gif.Width(), gif.Height(), gif.GetNumLoops());
-
-      for (auto frame : gif.GetFrames())
-      {
-        CTexture *glTexture = new CTexture();
-        if (glTexture)
-        {
-          glTexture->LoadFromMemory(gif.Width(), gif.Height(), gif.GetPitch(), XB_FMT_A8R8G8B8, false, frame->m_pImage);
-          pMap->Add(glTexture, frame->m_delay);
-          maxWidth = std::max(maxWidth, glTexture->GetWidth());
-          maxHeight = std::max(maxHeight, glTexture->GetHeight());
-        }
-      }
-
-      pMap->SetWidth((int)maxWidth);
-      pMap->SetHeight((int)maxHeight);
-
-#endif//HAS_GIFLIB
+      CLog::Log(LOGERROR, "Texture manager unable to load file: %s", CURL::GetRedacted(strPath).c_str());
+      file.Close();
+      return emptyTexture;
     }
 
-    if (pMap)
+    unsigned int maxWidth = 0;
+    unsigned int maxHeight = 0;
+    uint64_t maxMemoryUsage = 91238400;// 1920*1080*4*11 bytes, i.e, a total of approx. 12 full hd frames
+
+    auto frame = anim.ReadFrame();
+    while (frame)
     {
-      m_vecTextures.push_back(pMap);
-      return pMap->GetTexture();
+      CTexture *glTexture = new CTexture();
+      if (glTexture)
+      {
+        glTexture->LoadFromMemory(anim.Width(), anim.Height(), frame->GetPitch(), XB_FMT_A8R8G8B8, true, frame->m_pImage);
+        pMap->Add(glTexture, frame->m_delay);
+        maxWidth = std::max(maxWidth, glTexture->GetWidth());
+        maxHeight = std::max(maxHeight, glTexture->GetHeight());
+      }
+
+      if (pMap->GetMemoryUsage() <= maxMemoryUsage)
+      {
+        frame = anim.ReadFrame();
+      } 
+      else
+      {
+        CLog::Log(LOGDEBUG, "Memory limit (%" PRIu64 " bytes) exceeded, %i frames extracted from file : %s", (maxMemoryUsage/11)*12,pMap->GetTexture().size(), CURL::GetRedacted(strPath).c_str());
+        break;
+      }
     }
-  } // of if (strPath.Right(4).ToLower()==".gif")
+
+    pMap->SetWidth((int)maxWidth);
+    pMap->SetHeight((int)maxHeight);
+
+    file.Close();
+
+    m_vecTextures.push_back(pMap);
+    return pMap->GetTexture();
+  }
 
   CBaseTexture *pTexture = NULL;
   int width = 0, height = 0;

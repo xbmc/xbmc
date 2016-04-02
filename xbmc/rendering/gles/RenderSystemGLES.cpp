@@ -50,8 +50,6 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
 
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
- , m_pGUIshader(0)
- , m_method(SM_DEFAULT)
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
 }
@@ -69,9 +67,6 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_maxTextureSize = maxTextureSize;
   m_bVSync = false;
   m_iVSyncMode = 0;
-  m_iSwapStamp = 0;
-  m_iSwapTime = 0;
-  m_iSwapRate = 0;
   m_bVsyncInit = false;
   m_renderCaps = 0;
   // Get the GLES version number
@@ -198,7 +193,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
 
   ClearBuffers(0);
   glFinish();
-  PresentRenderImpl(dirtyRegions);
+  PresentRenderImpl(true);
 
   m_bRenderCreated = false;
 
@@ -276,48 +271,12 @@ static int64_t abs64(int64_t a)
   return a;
 }
 
-bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
+void CRenderSystemGLES::PresentRender(bool rendered)
 {
   if (!m_bRenderCreated)
-    return false;
+    return;
 
-  if (m_iVSyncMode != 0 && m_iSwapRate != 0) 
-  {
-    int64_t curr, diff, freq;
-    curr = CurrentHostCounter();
-    freq = CurrentHostFrequency();
-
-    if(m_iSwapStamp == 0)
-      m_iSwapStamp = curr;
-
-    /* calculate our next swap timestamp */
-    diff = curr - m_iSwapStamp;
-    diff = m_iSwapRate - diff % m_iSwapRate;
-    m_iSwapStamp = curr + diff;
-
-    /* sleep as close as we can before, assume 1ms precision of sleep *
-     * this should always awake so that we are guaranteed the given   *
-     * m_iSwapTime to do our swap                                     */
-    diff = (diff - m_iSwapTime) * 1000 / freq;
-    if (diff > 0)
-      Sleep((DWORD)diff);
-  }
-  
-  bool result = PresentRenderImpl(dirty);
-  
-  if (m_iVSyncMode && m_iSwapRate != 0)
-  {
-    int64_t curr, diff;
-    curr = CurrentHostCounter();
-
-    diff = curr - m_iSwapStamp;
-    m_iSwapStamp = curr;
-
-    if (abs64(diff - m_iSwapRate) < abs64(diff))
-      CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
-  }
-  
-  return result;
+  PresentRenderImpl(rendered);
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)
@@ -335,7 +294,6 @@ void CRenderSystemGLES::SetVSync(bool enable)
 
   m_iVSyncMode   = 0;
   m_iVSyncErrors = 0;
-  m_iSwapRate    = 0;
   m_bVSync       = enable;
   m_bVsyncInit   = true;
 
@@ -344,28 +302,6 @@ void CRenderSystemGLES::SetVSync(bool enable)
   if (!enable)
     return;
 
-  if (g_advancedSettings.m_ForcedSwapTime != 0.0)
-  {
-    /* some hardware busy wait on swap/glfinish, so we must manually sleep to avoid 100% cpu */
-    double rate = g_graphicsContext.GetFPS();
-    if (rate <= 0.0 || rate > 1000.0)
-    {
-      CLog::Log(LOGWARNING, "Unable to determine a valid horizontal refresh rate, vsync workaround disabled %.2g", rate);
-      m_iSwapRate = 0;
-    }
-    else
-    {
-      int64_t freq;
-      freq = CurrentHostFrequency();
-      m_iSwapRate   = (int64_t)((double)freq / rate);
-      m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
-      m_iSwapStamp  = 0;
-      CLog::Log(LOGINFO, "GLES: Using artificial vsync sleep with rate %f", rate);
-      if(!m_iVSyncMode)
-        m_iVSyncMode = 1;
-    }
-  }
-    
   if (!m_iVSyncMode)
     CLog::Log(LOGERROR, "GLES: Vertical Blank Syncing unsupported");
   else
@@ -714,7 +650,7 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
   return -1;
 }
 
-bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
+bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode) const
 {
   switch(mode)
   {

@@ -27,7 +27,6 @@
 
 namespace EPG
 {
-  #define MAXCHANNELS 20
   #define MAXBLOCKS   (33 * 24 * 60 / 5) //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
 
   struct GridItemsPtr
@@ -65,11 +64,8 @@ namespace EPG
     virtual std::string GetDescription() const;
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
-    const int GetSelectedChannel() const;
-    void SetSelectedChannel(int channelIndex);
     CFileItemPtr GetSelectedChannelItem() const;
-    PVR::CPVRChannelPtr GetChannel(int iIndex);
-    void SetSelectedBlock(int blockIndex);
+    PVR::CPVRChannelPtr GetSelectedChannel();
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
@@ -100,7 +96,7 @@ namespace EPG
     bool OnClick(int actionID);
     bool SelectItemFromPoint(const CPoint &point, bool justGrid = true);
 
-    void SetChannel(int channel);
+    void SetChannel(int channel, bool bFindClosestItem = true);
     void SetBlock(int block);
     void ChannelScroll(int amount);
     void ProgrammesScroll(int amount);
@@ -109,20 +105,22 @@ namespace EPG
     void Reset();
     void ClearGridIndex(void);
 
-    GridItemsPtr *GetItem(const int &channel);
-    GridItemsPtr *GetNextItem(const int &channel);
-    GridItemsPtr *GetPrevItem(const int &channel);
-    GridItemsPtr *GetClosestItem(const int &channel);
+    GridItemsPtr *GetItem(int channel);
+    GridItemsPtr *GetNextItem(int channel);
+    GridItemsPtr *GetPrevItem(int channel);
+    GridItemsPtr *GetClosestItem(int channel);
 
     int GetItemSize(GridItemsPtr *item);
-    int GetBlock(const CGUIListItemPtr &item, const int &channel);
-    int GetRealBlock(const CGUIListItemPtr &item, const int &channel);
+    int GetBlock(const CGUIListItemPtr &item, int channel);
+    int GetRealBlock(const CGUIListItemPtr &item, int channel);
     void MoveToRow(int row);
 
     CGUIListItemLayout *GetFocusedLayout() const;
 
     void ScrollToBlockOffset(int offset);
     void ScrollToChannelOffset(int offset);
+    void GoToBlock(int blockIndex);
+    void GoToChannel(int channelIndex);
     void UpdateScrollOffset(unsigned int currentTime);
     void ProcessItem(float posX, float posY, CGUIListItem *item, CGUIListItem *&lastitem, bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout, unsigned int currentTime, CDirtyRegionList &dirtyregions, float resize = -1.0f);
     void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -177,8 +175,6 @@ namespace EPG
     void UpdateItems(CFileItemList *items);
 
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
-    int GetBlock(const EPG::CEpgInfoTagPtr &tag, int channel) const;
-    int GetChannel(const EPG::CEpgInfoTagPtr &tag) const;
 
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
     int m_channels;

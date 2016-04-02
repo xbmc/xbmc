@@ -36,8 +36,6 @@
 #include <time.h>
 #endif
 
-#include "TimeSmoother.h"
-
 int64_t CurrentHostCounter(void)
 {
 #if   defined(TARGET_DARWIN)
@@ -70,28 +68,18 @@ int64_t CurrentHostFrequency(void)
 #endif
 }
 
-CTimeSmoother CTimeUtils::frameTimer;
 unsigned int CTimeUtils::frameTime = 0;
 
-void CTimeUtils::UpdateFrameTime(bool flip, bool vsync)
+void CTimeUtils::UpdateFrameTime(bool flip)
 {
   unsigned int currentTime = XbmcThreads::SystemClockMillis();
-  if (vsync)
+  unsigned int last = frameTime;
+  while (frameTime < currentTime)
   {
-    unsigned int last = frameTime;
-    while (frameTime < currentTime)
-    {
-      frameTime += (unsigned int)(1000 / g_graphicsContext.GetFPS());
-      // observe wrap around
-      if (frameTime < last)
-        break;
-    }
-  }
-  else
-  {
-    if (flip)
-      frameTimer.AddTimeStamp(currentTime);
-    frameTime = frameTimer.GetNextFrameTime(currentTime);
+    frameTime += (unsigned int)(1000 / g_graphicsContext.GetFPS());
+    // observe wrap around
+    if (frameTime < last)
+      break;
   }
 }
 

@@ -38,30 +38,12 @@
 #define AUTOSOURCE -1
 
 class CBaseTexture;
-class CMMALVideoBuffer;
+class CMMALBuffer;
 
 struct DVDVideoPicture;
 
-class CYUVVideoBuffer
-{
-public:
-  CYUVVideoBuffer();
-  ~CYUVVideoBuffer();
-  // reference counting
-  CYUVVideoBuffer *Acquire();
-  long Release();
-  MMAL_BUFFER_HEADER_T *mmal_buffer;
-protected:
-  long m_refs;
-};
-
 class CMMALRenderer : public CBaseRenderer
 {
-  struct YUVBUFFER
-  {
-    CMMALVideoBuffer *MMALBuffer; // used for hw decoded buffers
-    CYUVVideoBuffer  *YUVBuffer;  // used for sw decoded buffers
-  };
 public:
   CMMALRenderer();
   ~CMMALRenderer();
@@ -99,13 +81,14 @@ public:
   virtual bool         IsGuiLayer() { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
+  MMAL_POOL_T *GetPool(ERenderFormat format, bool opaque);
 protected:
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
   std::vector<ERenderFormat> m_formats;
 
-  YUVBUFFER            m_buffers[NUM_BUFFERS];
+  CMMALBuffer         *m_buffers[NUM_BUFFERS];
   bool                 m_bConfigured;
   bool                 m_bMMALConfigured;
   unsigned int         m_extended_format;
@@ -117,13 +100,14 @@ protected:
   RENDER_STEREO_MODE        m_display_stereo_mode;
   bool                      m_StereoInvert;
   int                       m_inflight;
+  bool                      m_opaque;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_vout;
   MMAL_PORT_T *m_vout_input;
   MMAL_POOL_T *m_vout_input_pool;
 
-  bool init_vout(ERenderFormat format);
+  bool init_vout(ERenderFormat format, bool opaque);
   void ReleaseBuffers();
   void UnInitMMAL();
 };

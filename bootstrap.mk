@@ -2,23 +2,8 @@ BOOTSTRAP_SUBDIRS += configure.ac
 BOOTSTRAP_SUBDIRS += lib/cpluff/configure.ac
 BOOTSTRAP_SUBDIRS += lib/gtest/configure.ac
 
-ifneq ($(wildcard lib/libdvd/libdvdcss/configure.ac),)
-BOOTSTRAP_SUBDIRS += lib/libdvd/libdvdcss/configure.ac
-DVD_CSS=lib/libdvd/libdvdcss/configure
-endif
-BOOTSTRAP_SUBDIRS += lib/libdvd/libdvdread/configure.ac
-BOOTSTRAP_SUBDIRS += lib/libdvd/libdvdnav/configure.ac
-
-ifneq ($(wildcard pvr-addons/Makefile.am),)
-BOOTSTRAP_SUBDIRS += pvr-addons/configure.ac
-endif
-
 BOOTSTRAP_TARGETS=$(basename $(BOOTSTRAP_SUBDIRS))
 all: $(BOOTSTRAP_TARGETS)
-
-#preserve order for libdvd. dvdcss (if present) -> dvdread -> dvdnav.
-lib/libdvd/libdvdread/configure: $(DVD_CSS)
-lib/libdvd/libdvdnav/configure: lib/libdvd/libdvdread/configure
 
 %: %.ac
 	autoreconf -vif $(@D)

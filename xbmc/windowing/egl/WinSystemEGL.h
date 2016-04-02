@@ -66,7 +66,7 @@ public:
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();
 protected:
-  virtual bool  PresentRenderImpl(const CDirtyRegionList &dirty);
+  virtual void  PresentRenderImpl(bool rendered);
   virtual void  SetVSyncImpl(bool enable);
 
   bool          CreateWindow(RESOLUTION_INFO &res);

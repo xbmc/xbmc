@@ -122,6 +122,9 @@
 			<RegExp input="$INFO[albumthemessource]" output="&lt;url function=&quot;GetAMGAlbumThemes&quot; cache=&quot;mb-$$4-rg.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group/$$4?inc=url-rels&lt;/url&gt;" dest="5+">
 				<expression>allmusic.com</expression>
 			</RegExp>
+			<RegExp input="$INFO[albumthemessource]" output="&lt;chain function=&quot;GetTADBAlbumThemeByMBID&quot;&gt;$$4&lt;/chain&gt;" dest="5+">
+				<expression>TheAudioDb.com</expression>
+			</RegExp>
 			<RegExp conditional="fanarttvalbumthumbs" input="$$4" output="&lt;chain function=&quot;GetFanartTvAlbumThumbsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
 				<expression noclean="1">(.+)</expression>
 			</RegExp>

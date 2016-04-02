@@ -42,6 +42,7 @@
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
   : m_sar(0.0f)
+  , m_show(true)
   , m_display(NULL)
   , m_window(NULL)
 {
@@ -256,14 +257,13 @@ bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
   DestroyNativeWindow();
   DestroyNativeDisplay();
 
+  ShowWindow(false);
   SysfsUtils::SetString("/sys/class/graphics/fb0/mode", res.strId + "\n");
 
   CreateNativeDisplay();
+  CreateNativeWindow();
 
   CLog::Log(LOGDEBUG, "%s: %s",__FUNCTION__, res.strId.c_str());
-
-  // Reset AE
-  CAEFactory::DeviceChange();
 
   return true;
 }
@@ -320,13 +320,15 @@ bool CEGLNativeTypeIMX::GetPreferredResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeIMX::ShowWindow(bool show)
 {
-  // Force vsync by default
-  eglSwapInterval(g_Windowing.GetEGLDisplay(), 1);
-  EGLint result = eglGetError();
-  if(result != EGL_SUCCESS)
-    CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, result);
+  if (m_show == show)
+    return true;
 
-  return false;
+  CLog::Log(LOGDEBUG, ": %s %s", __FUNCTION__, show?"show":"hide");
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", show ? 0 : 1 );
+
+  m_show = show;
+
+  return true;
 }
 
 float CEGLNativeTypeIMX::GetMonitorSAR()
@@ -346,6 +348,19 @@ float CEGLNativeTypeIMX::GetMonitorSAR()
   if(!f_edid)
     return 0;
 
+  // first check if EDID is in binary format by reading 512bytes, compare 1st 8bytes
+  // against EDID 1.4 identificator [0x0,0xff,0xff,0xff,0xff,0xff,0xff,0x0]
+  // if no match, seek to 0 input file and continue with previous method.
+  if (((done = fread(m_edid, 1, EDID_MAXSIZE, f_edid)) % 128) == 0 && done)
+    if (!memcmp(m_edid, EDID_HEADER, EDID_HEADERSIZE))
+    {
+      fclose(f_edid);
+      return true;
+    }
+
+  done = 0;
+  memset(m_edid, 0, EDID_MAXSIZE);
+  fseek(f_edid, 0L, SEEK_SET);
   // we need to convert mxc_hdmi output format to binary array
   // mxc_hdmi provides the EDID as space delimited 1bytes blocks
   // exported as text with format specifier %x eg:
@@ -362,7 +377,7 @@ float CEGLNativeTypeIMX::GetMonitorSAR()
   while(getline(&str, &n, f_edid) > 0)
   {
     char *c = str;
-    while(*c != '\n' && done < 512)
+    while(*c != '\n' && done < EDID_MAXSIZE)
     {
       c += 2;
       sscanf(c, "%hhx", &p);

@@ -321,7 +321,7 @@ int SqliteDatabase::drop_analytics(void) {
   result_set res;
 
   CLog::Log(LOGDEBUG, "Cleaning indexes from database %s at %s", db.c_str(), host.c_str());
-  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index'");
+  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index' AND sql IS NOT NULL");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK) return DB_UNEXPECTED_RESULT;
 
   for (size_t i=0; i < res.records.size(); i++) {

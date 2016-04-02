@@ -803,7 +803,7 @@ void CWinSystemWin32::Unregister(IDispResource* resource)
 
 void CWinSystemWin32::OnDisplayLost()
 {
-  CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s - notify display lost event", __FUNCTION__);
 
   // make sure renderer has no invalid references
   KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_RENDERER_FLUSH);
@@ -817,26 +817,30 @@ void CWinSystemWin32::OnDisplayLost()
 
 void CWinSystemWin32::OnDisplayReset()
 {
-  CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
   if (!m_delayDispReset)
   {
+    CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
     CSingleLock lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
   }
 }
 
-void CWinSystemWin32::ResolutionChanged()
+void CWinSystemWin32::OnDisplayBack()
 {
-  OnDisplayLost();
   int delay = CSettings::GetInstance().GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;
     m_dispResetTimer.Set(delay * 100);
   }
-  else
-    OnDisplayReset();
+  OnDisplayReset();
+}
+
+void CWinSystemWin32::ResolutionChanged()
+{
+  OnDisplayLost();
+  OnDisplayBack();
 }
 
 #endif

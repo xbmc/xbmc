@@ -1,0 +1,141 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tajik (Tajikistan) (http://www.transifex.com/projects/p/kodi-main/language/tg_TJ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tg_TJ\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Дар ҳоли иҷро..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Филмҳо"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Эпизодҳо"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Албомҳо"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Саҳифа"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Вуруд"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "БАСУРЪАТ БА ПЕШ ГАРДОНИДАНИ РОҲЧА"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "БА АҚИБ БУРДАН"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Вақти анҷом"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Мураттаб: Бароянда"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Мураттаб: Камшаванда"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Кушодани рӯйхати пахш"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Захира кардани рӯйхати пахш"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Пӯшидани рӯйхати пахш"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Файлҳои мусиқии системавӣ"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Рӯйхати пахши ҷорӣ"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Ҷойгиршавӣ"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Ҳарорати ҷорӣ"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Навсозии охирин"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Провайдери иттилоотӣ"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Ҳофизаи истифодашуда:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Воридшавии охирин"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Премера"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Боргирӣ кардани субтитрҳо"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Пӯсти пешфарз"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Дар асоси шрифти Arial"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Барои ворид шудан ва идома додан[CR]профили корбари Kodi-ро интихоб кунед"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Пахши мустақим"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Илова кардани гурӯҳ"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Тоза кардани гурӯҳ"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Нест кардани гурӯҳ"

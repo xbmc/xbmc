@@ -7,18 +7,20 @@ endif
 DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
-	openssl gmp nettle gnutls libssh2 curl \
+	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng \
 	libogg libvorbis libflac fribidi \
-	libass libsquish \
+	libass \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python27 libshairplay \
-	libplist libcec libbluray boost tinyxml dummy-libxbmc \
+	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
-	libxslt ffmpeg platform crossguid libdcadec giflib
+	libxslt ffmpeg platform crossguid \
+        libdvdread libdvdnav libdvdcss
 
-FFMPEG_DEPENDS = gnutls libdcadec
+
+FFMPEG_DEPENDS = gnutls
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -27,10 +29,12 @@ else
 endif
 
 ifeq ($(OS),ios)
-  EXCLUDED_DEPENDS = libcec libusb
-ifeq ($(TARGET_PLATFORM),appletvos)
-  DEPENDS += boblight
-endif
+  EXCLUDED_DEPENDS = libcec libusb libdvdcss
+  ifeq ($(TARGET_PLATFORM),appletvos)
+    DEPENDS += boblight
+  endif
+else
+  DVDREAD_DEPS = libdvdcss
 endif
 
 ifeq ($(OS),osx)
@@ -78,8 +82,7 @@ all: .installed-$(PLATFORM)
 gettext: $(ICONV)
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
-libssh2: libgcrypt openssl
-curl: openssl libssh2
+curl: openssl
 libvorbis: libogg
 libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
@@ -90,7 +93,7 @@ libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
 libssh: libgcrypt openssl $(ZLIB)
-mysql: openssl
+mysql: openssl $(ZLIB)
 libzip: $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
@@ -103,6 +106,8 @@ libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 libcec: platform
 crossguid: $(CROSSGUID_DEPS)
+libdvdnav: libdvdread
+libdvdread: $(DVDREAD_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
@@ -131,7 +136,6 @@ linux-system-libs-egl:
 	[ -f $(PREFIX)/lib/pkgconfig/egl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/egl.pc $(PREFIX)/lib/pkgconfig/egl.pc
 	[ -f $(PREFIX)/lib/pkgconfig/damageproto.pc ] || ln -s  /usr/share/pkgconfig/damageproto.pc $(PREFIX)/lib/pkgconfig/damageproto.pc
 	[ -f $(PREFIX)/lib/pkgconfig/fixesproto.pc ] || ln -s  /usr/share/pkgconfig/fixesproto.pc $(PREFIX)/lib/pkgconfig/fixesproto.pc
-	[ -f $(PREFIX)/lib/pkgconfig/wayland-egl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/wayland-egl.pc $(PREFIX)/lib/pkgconfig/wayland-egl.pc
 	[ -f $(PREFIX)/lib/pkgconfig/x11-xcb.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/x11-xcb.pc $(PREFIX)/lib/pkgconfig/x11-xcb.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri2.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri2.pc $(PREFIX)/lib/pkgconfig/xcb-dri2.pc
 	[ -f $(PREFIX)/lib/pkgconfig/xcb-dri3.pc ] || ln -s  /usr/lib/$(HOST)/pkgconfig/xcb-dri3.pc $(PREFIX)/lib/pkgconfig/xcb-dri3.pc

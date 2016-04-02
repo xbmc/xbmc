@@ -21,6 +21,7 @@
 #include "system.h"
 #include "RenderManager.h"
 #include "RenderFlags.h"
+#include "guilib/GraphicContext.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
@@ -32,7 +33,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "guilib/GUIFontManager.h"
 
 #if defined(HAS_GL)
 #include "LinuxRendererGL.h"
@@ -137,6 +137,7 @@ CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) : m_dvdCloc
   m_renderedOverlay = false;
   m_captureWaitCounter = 0;
   m_playerPort = player;
+  m_renderDebug = false;
 }
 
 CRenderManager::~CRenderManager()
@@ -336,7 +337,7 @@ bool CRenderManager::Configure()
   CSingleLock lock2(m_presentlock);
   CSingleLock lock3(m_datalock);
 
-  if (m_pRenderer && m_pRenderer->GetRenderFormat() != m_format)
+  if (m_pRenderer && !m_pRenderer->HandlesRenderFormat(m_format))
   {
     DeleteRenderer();
   }
@@ -383,6 +384,7 @@ bool CRenderManager::Configure()
     m_sleeptime = 1.0;
     m_presentevent.notifyAll();
     m_renderedOverlay = false;
+    m_renderDebug = false;
 
     m_renderState = STATE_CONFIGURED;
 
@@ -576,8 +578,7 @@ void CRenderManager::UnInit()
   CSingleLock lock(m_statelock);
 
   m_overlays.Flush();
-  g_fontManager.Unload("__subtitle__");
-  g_fontManager.Unload("__subtitleborder__");
+  m_debugRenderer.Flush();
 
   DeleteRenderer();
 
@@ -604,6 +605,7 @@ bool CRenderManager::Flush()
     {
       m_pRenderer->Flush();
       m_overlays.Flush();
+      m_debugRenderer.Flush();
 
       m_queued.clear();
       m_discard.clear();
@@ -722,10 +724,10 @@ void CRenderManager::CreateRenderer()
 
 void CRenderManager::DeleteRenderer()
 {
-  CLog::Log(LOGDEBUG, "%s - deleting renderer", __FUNCTION__);
-
   if (m_pRenderer)
   {
+    CLog::Log(LOGDEBUG, "%s - deleting renderer", __FUNCTION__);
+
     delete m_pRenderer;
     m_pRenderer = NULL;
   }
@@ -802,7 +804,10 @@ bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int
     
     CSingleExit exitlock(m_captCritSect);
     if (!it->second->GetEvent().WaitMSec(millis))
+    {
+      m_captureWaitCounter--;
       return false;
+    }
   }
 
   m_captureWaitCounter--;
@@ -904,7 +909,7 @@ void CRenderManager::SetViewMode(int iViewMode)
   m_playerPort->VideoParamsChange();
 }
 
-void CRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   { CSingleLock lock(m_statelock);
 
@@ -1053,6 +1058,30 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
     m_pRenderer->GetVideoRect(src, dst, view);
     m_overlays.SetVideoRect(src, dst, view);
     m_overlays.Render(m_presentsource);
+
+    if (m_renderDebug)
+    {
+      std::string audio, video, player, vsync;
+
+      m_playerPort->GetDebugInfo(audio, video, player);
+
+      double refreshrate, clockspeed;
+      int missedvblanks;
+      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
+      {
+        vsync = StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%% %s",
+                                     refreshrate,
+                                     missedvblanks,
+                                     clockspeed - 100.0,
+                                     GetVSyncState().c_str());
+      }
+
+      m_debugRenderer.SetInfo(audio, video, player, vsync);
+      m_debugRenderer.Render(src, dst, view);
+
+      m_debugTimer.Set(1000);
+      m_renderedOverlay = true;
+    }
   }
 }
 
@@ -1064,6 +1093,9 @@ bool CRenderManager::IsGuiLayer()
       return false;
 
     if (m_pRenderer->IsGuiLayer() || m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
+      return true;
+
+    if (m_renderDebug && m_debugTimer.IsTimePast())
       return true;
   }
   return false;
@@ -1171,6 +1203,12 @@ void CRenderManager::TriggerUpdateResolution(float fps, int width, int flags)
   m_bTriggerUpdateResolution = true;
 }
 
+void CRenderManager::ToggleDebug()
+{
+  m_renderDebug = !m_renderDebug;
+  m_debugTimer.SetExpired();
+}
+
 // Get renderer info, can be called before configure
 CRenderInfo CRenderManager::GetRenderInfo()
 {
@@ -1198,17 +1236,28 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  // TODO: this is a Windows onl thing and should go away
-  if(m_pRenderer->AddVideoPicture(&pic, index))
-    return 1;
-
   YV12Image image;
   if (m_pRenderer->GetImage(&image, index) < 0)
     return -1;
 
-  if(pic.format == RENDER_FMT_YUV420P
-  || pic.format == RENDER_FMT_YUV420P10
-  || pic.format == RENDER_FMT_YUV420P16)
+  if(pic.format == RENDER_FMT_VDPAU
+  || pic.format == RENDER_FMT_VDPAU_420
+  || pic.format == RENDER_FMT_OMXEGL
+  || pic.format == RENDER_FMT_CVBREF
+  || pic.format == RENDER_FMT_VAAPI
+  || pic.format == RENDER_FMT_VAAPINV12
+  || pic.format == RENDER_FMT_MEDIACODEC
+  || pic.format == RENDER_FMT_MEDIACODECSURFACE
+  || pic.format == RENDER_FMT_AML
+  || pic.format == RENDER_FMT_IMXMAP
+  || pic.format == RENDER_FMT_MMAL
+  || m_pRenderer->IsPictureHW(pic))
+  {
+    m_pRenderer->AddVideoPictureHW(pic, index);
+  }
+  else if(pic.format == RENDER_FMT_YUV420P
+       || pic.format == RENDER_FMT_YUV420P10
+       || pic.format == RENDER_FMT_YUV420P16)
   {
     CDVDCodecUtils::CopyPicture(&image, &pic);
   }
@@ -1221,18 +1270,6 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
   }
-  else if(pic.format == RENDER_FMT_VDPAU
-       || pic.format == RENDER_FMT_VDPAU_420
-       || pic.format == RENDER_FMT_OMXEGL
-       || pic.format == RENDER_FMT_CVBREF
-       || pic.format == RENDER_FMT_VAAPI
-       || pic.format == RENDER_FMT_VAAPINV12
-       || pic.format == RENDER_FMT_MEDIACODEC
-       || pic.format == RENDER_FMT_MEDIACODECSURFACE
-       || pic.format == RENDER_FMT_AML
-       || pic.format == RENDER_FMT_IMXMAP
-       || pic.format == RENDER_FMT_MMAL)
-    m_pRenderer->AddVideoPictureHW(pic, index);
 
   m_pRenderer->ReleaseImage(index, false);
 
@@ -1307,7 +1344,7 @@ EINTERLACEMETHOD CRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHOD mI
   return mInt;
 }
 
-int CRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
+int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
 {
   CSingleLock lock(m_presentlock);
 

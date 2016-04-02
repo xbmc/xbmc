@@ -546,10 +546,8 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   CFileItem item(pathVideoTS, false);
   CDVDInputStreamNavigator dvdNavigator(NULL, item);
   dvdNavigator.Open();
-  std::string labelString;
-  dvdNavigator.GetDVDTitleString(labelString);
-  std::string serialString;
-  dvdNavigator.GetDVDSerialString(serialString);
+  std::string labelString = dvdNavigator.GetDVDTitleString();
+  std::string serialString = dvdNavigator.GetDVDSerialString();
 
   std::string strID = StringUtils::Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());

@@ -29,13 +29,6 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libshairplaylibshairplay.la $(PREFIX)/lib/libshairplay.so $(PREFIX)/lib/libshairplay.so.0
-	mv -f $(PREFIX)/lib/libshairplay.so.0.0.0 $(PREFIX)/lib/libshairplay.so
-	$(RPL) -e "libshairplay.so.0" "libshairplay.so\x00\x00" $(PREFIX)/lib/libshairplay.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libshairplay.so | grep ibrary
-endif
-
 	touch $@
 
 clean:

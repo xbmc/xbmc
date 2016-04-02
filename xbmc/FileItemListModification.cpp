@@ -21,10 +21,14 @@
 #include "FileItemListModification.h"
 
 #include "playlists/SmartPlaylistFileItemListModifier.h"
+#include "music/windows/MusicFileItemListModifier.h"
+#include "video/windows/VideoFileItemListModifier.h"
 
 CFileItemListModification::CFileItemListModification()
 {
   m_modifiers.insert(new CSmartPlaylistFileItemListModifier());
+  m_modifiers.insert(new CMusicFileItemListModifier());
+  m_modifiers.insert(new CVideoFileItemListModifier());
 }
 
 CFileItemListModification::~CFileItemListModification()

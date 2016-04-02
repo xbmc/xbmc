@@ -114,11 +114,11 @@ struct YUVBuffer : SVideoBuffer
   virtual void Clear();
   unsigned int GetActivePlanes() { return m_activeplanes; }
   virtual bool IsReadyToRender();
-  bool CopyFromDXVA(ID3D11VideoDecoderOutputView* pView);
-
+  bool CopyFromPicture(DVDVideoPicture &picture);
   SVideoPlane planes[MAX_PLANES];
 
 private:
+  bool CopyFromDXVA(ID3D11VideoDecoderOutputView* pView);
   void PerformCopy();
 
   unsigned int     m_width;
@@ -150,33 +150,31 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
-  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual bool         AddVideoPicture(DVDVideoPicture* picture, int index);
-  virtual void         FlipPage(int source);
-  virtual void         PreInit();
-  virtual void         UnInit();
-  virtual void         Reset(); /* resets renderer after seek for example */
-  virtual bool         IsConfigured() { return m_bConfigured; }
-  virtual void         Flush();
-
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
+  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual void ReleaseImage(int source, bool preserve = false);
+  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  virtual bool IsPictureHW(DVDVideoPicture &picture) override;
+  virtual void FlipPage(int source);
+  virtual void PreInit();
+  virtual void UnInit();
+  virtual void Reset(); /* resets renderer after seek for example */
+  virtual bool IsConfigured() { return m_bConfigured; }
+  virtual void Flush();
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
   virtual CRenderInfo GetRenderInfo();
+  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
+  virtual void SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
+  virtual void ReleaseBuffer(int idx);
+  virtual bool NeedBufferForRef(int idx);
+  virtual bool HandlesRenderFormat(ERenderFormat format) override;
 
   // Feature support
-  virtual bool         SupportsMultiPassRendering() { return false; }
-  virtual bool         Supports(ERENDERFEATURE feature);
-  virtual bool         Supports(EDEINTERLACEMODE mode);
-  virtual bool         Supports(EINTERLACEMETHOD method);
-  virtual bool         Supports(ESCALINGMETHOD method);
-
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
-
-  void                 RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
-
-  virtual void         SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
-  virtual void         ReleaseBuffer(int idx);
-  virtual bool         NeedBufferForRef(int idx);
+  virtual bool SupportsMultiPassRendering() { return false; }
+  virtual bool Supports(ERENDERFEATURE feature);
+  virtual bool Supports(EDEINTERLACEMODE mode);
+  virtual bool Supports(EINTERLACEMETHOD method);
+  virtual bool Supports(ESCALINGMETHOD method);
 
 protected:
   virtual void Render(DWORD flags);
@@ -227,6 +225,7 @@ protected:
 
   int                  m_neededBuffers;
   unsigned int         m_frameIdx;
+  CRenderCapture*      m_capture = nullptr;
 };
 
 #else

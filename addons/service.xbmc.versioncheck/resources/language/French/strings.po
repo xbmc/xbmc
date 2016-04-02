@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: XBMC Foundation
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -18,39 +18,39 @@ msgstr ""
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr "Nous vous recommandons de mettre à jour Kodi."
+msgstr "Il est recommandé de mettre à jour Kodi."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr "Visitez kodi.tv pour plus d'informations."
+msgstr "Consulter kodi.tv pour plus d'informations."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Souhaitez-vous supprimer ce rappel ?"
+msgstr "Faut-il retirer ce rappel ?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr "Vous pouvez l'activer/désactiver depuis les paramètres de l'extension."
+msgstr "Il est possible de l'activer / le désactiver depuis les paramètres de l'extension."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr "Utilisez votre gestionnaire de paquets (apt) pour mettre à jour."
+msgstr "Utiliser votre gestionnaire de paquets (apt) pour mettre à niveau."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr "Une nouvelle version est disponible, souhaitez vous mettre à niveau maintenant ?"
+msgstr "Une nouvelle version est disponible, faut-il mettre à niveau maintenant ?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr "Mise à jour réussie"
+msgstr "Mise à niveau réussie"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr "Voulez-vous redémarrer Kodi pour terminer la mise à jour ?"
+msgstr "Faut-il redémarrer Kodi pour terminer la mise à niveau ?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr "Voulez-vous vérifier sur le dépôt s’il existe une nouvelle version?"
+msgstr "Faut-il vérifier sur le dépôt s’il existe une nouvelle version?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
@@ -62,39 +62,39 @@ msgstr "Général"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr "Activer Kodi Version Check ?"
+msgstr "Activer le contrôle de version de Kodi"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr "S'il vous plaît entrer votre mot de passe"
+msgstr "Saisir le mot de passe"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
-msgstr "Linux: Mise à niveau du système terminée"
+msgstr "Linux : mettre à niveau le système complet"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr "Linux: Mettre à niveau en utilisant apt"
+msgstr "Linux : mettre à niveau en utilisant apt"
 
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr "Une nouvelle version stable de Kodi est disponible"
+msgstr "Une nouvelle version stable de Kodi est disponible."
 
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr "Visitez http://kodi.tv pour plus d'informations."
+msgstr "Consulter http://kodi.tv pour plus d'informations."
 
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr "A new stable version of Kodi is available."
+msgstr "Une nouvelle version stable de Kodi est disponible."
 
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr "Visitez http://kodi.tv pour plus d'informations."
+msgstr "Consulter http://kodi.tv pour plus d'informations."
 
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr "Utiliser %s tant que %s est disponible."
+msgstr "%s est utilisée alors que %s est disponible."
 
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."

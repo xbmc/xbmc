@@ -82,7 +82,6 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
     }
     if (timeout.IsTimePast())
     {
-      CLog::Log(LOGERROR, "CDVDMsgGeneralSynchronize - timeout");
       return false; /* request timeout, should be retried */
     }
   }
@@ -122,4 +121,12 @@ CDVDMsgDemuxerPacket::~CDVDMsgDemuxerPacket()
 {
   if (m_packet)
     CDVDDemuxUtils::FreeDemuxPacket(m_packet);
+}
+
+unsigned int CDVDMsgDemuxerPacket::GetPacketSize()
+{
+  if (m_packet)
+    return m_packet->iSize;
+  else
+    return 0;
 }

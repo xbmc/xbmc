@@ -25,6 +25,10 @@
 #include "EGLNativeType.h"
 
 #define EDID_STRUCT_DISPLAY     0x14
+#define EDID_MAXSIZE            512
+#define EDID_HEADERSIZE         8
+
+static const char EDID_HEADER[EDID_HEADERSIZE] = { 0x0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0 };
 
 class CEGLNativeTypeIMX : public CEGLNativeType
 {
@@ -55,11 +59,12 @@ public:
 protected:
   bool m_readonly;
   float m_sar;
+  bool m_show;
   bool ModeToResolution(std::string mode, RESOLUTION_INFO *res) const;
   bool FindMatchingResolution(const RESOLUTION_INFO &res, const std::vector<RESOLUTION_INFO> &resolutions);
   float GetMonitorSAR();
 
   EGLNativeDisplayType m_display;
   EGLNativeWindowType  m_window;
-  uint8_t              m_edid[512];
+  uint8_t              m_edid[EDID_MAXSIZE];
 };

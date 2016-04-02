@@ -62,6 +62,10 @@ typedef enum {
   FieldAudioCount,
   FieldSubtitleCount,
 
+  FieldInstallDate,
+  FieldLastUpdated,
+  FieldLastUsed,
+
   // fields retrievable from the database
   FieldId,
   FieldGenre,

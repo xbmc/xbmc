@@ -38,7 +38,7 @@ class CDVDAudioCodec;
 class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
-  CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent);
+  CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent, CProcessInfo &processInfo);
   virtual ~CVideoPlayerAudio();
 
   bool OpenStream(CDVDStreamInfo &hints);
@@ -87,53 +87,11 @@ protected:
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
   float GetCurrentAttenuation()                         { return m_dvdAudio.GetCurrentAttenuation(); }
-  bool AllowDTSHDDecode();
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
 
   double m_audioClock;
-
-  // data for audio decoding
-  struct PacketStatus
-  {
-    PacketStatus()
-    {
-        msg = NULL;
-        Release();
-    }
-
-   ~PacketStatus()
-    {
-        Release();
-    }
-
-    CDVDMsgDemuxerPacket* msg;
-    uint8_t* data;
-    int size;
-    double dts;
-    double pts;
-
-    void Attach(CDVDMsgDemuxerPacket* msg2)
-    {
-      if(msg) msg->Release();
-      msg = msg2;
-      msg->Acquire();
-      DemuxPacket* p = msg->GetPacket();
-      data = p->pData;
-      size = p->iSize;
-      dts = p->dts;
-      pts = p->pts;
-    }
-    void Release()
-    {
-      if(msg) msg->Release();
-      msg  = NULL;
-      data = NULL;
-      size = 0;
-      dts  = DVD_NOPTS_VALUE;
-    }
-  } m_decode;
 
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock

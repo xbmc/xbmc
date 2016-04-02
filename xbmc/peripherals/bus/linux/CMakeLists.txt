@@ -1,0 +1,12 @@
+if(UDEV_FOUND)
+  list(APPEND SOURCES PeripheralBusUSBLibUdev.cpp)
+  list(APPEND HEADERS PeripheralBusUSBLibUdev.h)
+elseif(LIBUSB_FOUND)
+  list(APPEND SOURCES PeripheralBusUSBLibUSB.cpp)
+  list(APPEND HEADERS PeripheralBusUSBLibUSB.h)
+endif()
+
+if(SOURCES)
+  core_add_library(peripherals_bus_linux)
+  set_target_properties(peripherals_bus_linux PROPERTIES LINKER_LANGUAGE CXX)
+endif()

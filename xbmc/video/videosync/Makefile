@@ -3,6 +3,8 @@ SRCS=VideoSyncGLX.cpp \
      VideoSyncIos.cpp \
      VideoSyncDRM.cpp \
      VideoSyncPi.cpp \
+     VideoSyncIMX.cpp \
+     VideoSyncAndroid.cpp \
 
 LIB=videosync.a
 

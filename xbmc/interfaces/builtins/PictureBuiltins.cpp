@@ -91,6 +91,50 @@ static int Slideshow(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text 
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_11 Picture built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`RecursiveSlideShow(dir)`</b>
+///     ,
+///     Run a slideshow from the specified directory\, including all subdirs.
+///     @param[in] dir                   Path to run slideshow for.
+///     @param[in] random                Add "random" to randomize slideshow (optional).
+///     @param[in] notrandom             Add "notrandom" to not randomize slideshow (optional).
+///     @param[in] pause                 Add "pause" to start slideshow paused (optional).
+///     @param[in] beginslide            Add "beginslide=<number>" to start at a given slide (optional).
+///   }
+///   \table_row2_l{
+///     <b>`ShowPicture(picture)`</b>
+///     ,
+///     Display a picture by file path.
+///     @param[in] url                    URL of picture.
+///   }
+///   \table_row2_l{
+///     <b>`SlideShow(dir [\,recursive\, [not]random])`</b>
+///     ,
+///     Starts a slideshow of pictures in the folder dir. Optional parameters are
+///     <b>recursive</b>\, and **random** or **notrandom** slideshow\, adding images
+///     from sub-folders. The **random** and **notrandom** parameters override
+///     the Randomize setting found in the pictures media window.
+///     @param[in] dir                   Path to run slideshow for.
+///     @param[in] recursive             Add "recursive" to run a recursive slideshow (optional).
+///     @param[in] random                Add "random" to randomize slideshow (optional).
+///     @param[in] notrandom             Add "notrandom" to not randomize slideshow (optional).
+///     @param[in] pause                 Add "pause" to start slideshow paused (optional).
+///     @param[in] beginslide            Add "beginslide=<number>" to start at a given slide (optional).
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap CPictureBuiltins::GetOperations() const
 {
   return {

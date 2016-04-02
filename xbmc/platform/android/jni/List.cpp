@@ -29,7 +29,7 @@
 using namespace jni;
 
 template <typename T>
-T CJNIList<T>::get(int index)
+T CJNIList<T>::get(int index) const
 {
   return (T)call_method<jhobject>(m_object,
     "get", "(I)Ljava/lang/Object;",
@@ -37,7 +37,7 @@ T CJNIList<T>::get(int index)
 }
 
 template <typename T>
-int CJNIList<T>::size()
+int CJNIList<T>::size() const
 {
   return m_object.get() ? call_method<jint>(m_object,
     "size", "()I") : 0;

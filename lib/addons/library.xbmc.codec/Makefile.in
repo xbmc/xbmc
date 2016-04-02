@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../../xbmc/addons/include
+INCLUDES=-I. -I../../../xbmc/addons/kodi-addon-dev-kit/include/kodi -I../../../xbmc/addons/kodi-addon-dev-kit/include
 DEFINES+=
 CXXFLAGS=-fPIC
 LIBNAME=libXBMC_codec

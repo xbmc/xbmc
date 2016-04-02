@@ -25,7 +25,7 @@
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
-#include "DVDCodecUtils.h"
+#include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDVideoCodecVideoToolBox.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -974,7 +974,7 @@ bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_
 //-----------------------------------------------------------------------------------
 DllVideoToolBoxInterface *CDVDVideoCodecVideoToolBox::m_pLibVTB = NULL;
 
-CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox() : CDVDVideoCodec()
+CDVDVideoCodecVideoToolBox::CDVDVideoCodecVideoToolBox(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
 {
   m_fmt_desc    = NULL;
   m_vt_session  = NULL;

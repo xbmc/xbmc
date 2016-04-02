@@ -287,8 +287,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
     pLabel->SetVisible(true);
     pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
   }
-
-  m_showCodec.Parse("player.showcodec", GetID());
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -305,7 +303,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         return true;
       }
       g_infoManager.SetShowInfo(false);
-      g_infoManager.SetShowCodec(false);
       m_bShowCurrentTime = false;
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
@@ -368,65 +365,9 @@ void CGUIWindowFullScreen::FrameMove()
   if (g_application.m_pPlayer->GetPlaySpeed() != 1)
     g_infoManager.SetDisplayAfterSeek();
 
-  if (!g_application.m_pPlayer->HasPlayer()) return;
+  if (!g_application.m_pPlayer->HasPlayer())
+    return;
 
-  if( g_application.m_pPlayer->IsCaching() )
-  {
-    g_infoManager.SetDisplayAfterSeek(0); //Make sure these stuff aren't visible now
-  }
-
-  //------------------------
-  m_showCodec.Update();
-  if (m_showCodec)
-  {
-    // show audio codec info
-    std::string strAudio, strVideo, strGeneral;
-    g_application.m_pPlayer->GetAudioInfo(strAudio);
-    {
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-      msg.SetLabel(strAudio);
-      OnMessage(msg);
-    }
-    // show video codec info
-    g_application.m_pPlayer->GetVideoInfo(strVideo);
-    {
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
-      msg.SetLabel(strVideo);
-      OnMessage(msg);
-    }
-    // show general info
-    g_application.m_pPlayer->GetGeneralInfo(strGeneral);
-    {
-      std::string strGeneralFPS;
-#if defined(TARGET_DARWIN)
-      // We show CPU usage for the entire process, as it's arguably more useful.
-      double dCPU = m_resourceCounter.GetCPUUsage();
-      std::string strCores;
-      strCores = StringUtils::Format("cpu:%.0f%%", dCPU);
-#else
-      std::string strCores = g_cpuInfo.GetCoresUsageString();
-#endif
-      int    missedvblanks;
-      double refreshrate;
-      double clockspeed;
-      std::string strClock;
-
-      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
-        strClock = StringUtils::Format("S( refresh:%.3f missed:%i speed:%+.3f%% %s )"
-                                       , refreshrate
-                                       , missedvblanks
-                                       , clockspeed - 100.0
-                                       , g_application.m_pPlayer->GetRenderVSyncState().c_str());
-
-      strGeneralFPS = StringUtils::Format("%s\nW( %s )\n%s"
-                                          , strGeneral.c_str()
-                                          , strCores.c_str(), strClock.c_str() );
-
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
-      msg.SetLabel(strGeneralFPS);
-      OnMessage(msg);
-    }
-  }
   //----------------------
   // ViewMode Information
   //----------------------
@@ -516,7 +457,7 @@ void CGUIWindowFullScreen::FrameMove()
     OnMessage(msg);
   }
 
-  if (m_showCodec || m_bShowViewModeInfo)
+  if (m_bShowViewModeInfo)
   {
     SET_CONTROL_VISIBLE(LABEL_ROW1);
     SET_CONTROL_VISIBLE(LABEL_ROW2);

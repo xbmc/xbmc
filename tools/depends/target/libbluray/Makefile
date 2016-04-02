@@ -35,12 +35,6 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libbluray.la $(PREFIX)/lib/libbluray.so $(PREFIX)/lib/libbluray.so.1
-	mv -f $(PREFIX)/lib/libbluray.so.1.8.1 $(PREFIX)/lib/libbluray.so
-	$(RPL) -e "libbluray.so.1" "libbluray.so\x00\x00" $(PREFIX)/lib/libbluray.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libbluray.so | grep ibrary
-endif
 	touch $@
 
 clean:

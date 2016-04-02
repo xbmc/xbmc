@@ -257,6 +257,7 @@ public:
 
   int  AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID);
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = true);
+  bool GetArtistExists(int idArtist);
   int  UpdateArtist(int idArtist,
                     const std::string& strArtist, const std::string& strMusicBrainzArtistID,
                     const std::string& strBorn, const std::string& strFormed,
@@ -265,6 +266,8 @@ public:
                     const std::string& strBiography, const std::string& strDied,
                     const std::string& strDisbanded, const std::string& strYearsActive,
                     const std::string& strImage, const std::string& strFanart);
+  bool GetTranslateBlankArtist() { return m_translateBlankArtist; }
+  void SetTranslateBlankArtist(bool translate) { m_translateBlankArtist = translate; }
   bool HasArtistBeenScraped(int idArtist);
   bool ClearArtistLastScrapedTime(int idArtist);
   int  AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear);
@@ -311,6 +314,7 @@ public:
   int  AddSongContributor(int idSong, const std::string& strRole, const std::string& strArtist);
   void AddSongContributors(int idSong, const VECMUSICROLES& contributors);
   int GetRoleByName(const std::string& strRole);
+  bool GetRolesByArtist(int idArtist, CFileItem* item);
   bool GetSongsByArtist(int idArtist, std::vector<int>& songs);
   bool GetArtistsBySong(int idSong, std::vector<int>& artists);
   bool DeleteSongArtistsBySong(int idSong);
@@ -322,6 +326,9 @@ public:
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
   bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
   bool DeleteAlbumGenresByAlbum(int idAlbum);
+
+  bool GetGenresByArtist(int idArtist, CFileItem* item);
+  bool GetIsAlbumArtist(int idArtist, CFileItem* item);
 
   /////////////////////////////////////////////////
   // Top 100
@@ -372,7 +379,7 @@ public:
   bool GetSongsNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
-  bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false);
+  bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false, bool cueSheetData = true);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, VECALBUMS& albums, int& total, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
@@ -528,6 +535,8 @@ private:
   bool SearchAlbums(const std::string& search, CFileItemList &albums);
   bool SearchSongs(const std::string& strSearch, CFileItemList &songs);
   int GetSongIDFromPath(const std::string &filePath);
+
+  bool m_translateBlankArtist;
 
   // Fields should be ordered as they
   // appear in the songview

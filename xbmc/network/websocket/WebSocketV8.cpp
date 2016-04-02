@@ -20,7 +20,7 @@
 
 #include <string>
 #include <sstream>
-#include <boost/uuid/sha1.hpp>
+#include "sha1.hpp"
 
 #include "WebSocketV8.h"
 #include "WebSocket.h"

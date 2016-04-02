@@ -59,16 +59,10 @@
     <ClInclude Include="..\md5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\SDL_anigif.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\xbmc\guilib\XBTF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\XBTFWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Gif.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\rgbaimage.h">

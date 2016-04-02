@@ -316,16 +316,13 @@ bool CEncoderFFmpeg::WriteFrame()
 
   if (got_output)
   {
-    if (m_CodecCtx->coded_frame && m_CodecCtx->coded_frame->pts != AV_NOPTS_VALUE)
-      m_Pkt.pts = av_rescale_q(m_CodecCtx->coded_frame->pts, m_Stream->time_base, m_CodecCtx->time_base);
-
     if (av_write_frame(m_Format, &m_Pkt) < 0) {
       CLog::Log(LOGERROR, "CEncoderFFMmpeg::WriteFrame - Failed to write the frame data");
       return false;
     }
   }
 
-  av_free_packet(&m_Pkt);
+  av_packet_unref(&m_Pkt);
 
   return true;
 }

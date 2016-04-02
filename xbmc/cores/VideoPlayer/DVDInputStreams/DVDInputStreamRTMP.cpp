@@ -62,7 +62,7 @@ extern "C"
   }
 }
 
-CDVDInputStreamRTMP::CDVDInputStreamRTMP(CFileItem &fileitem)
+CDVDInputStreamRTMP::CDVDInputStreamRTMP(const CFileItem &fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_RTMP, fileitem)
   , m_canSeek(true)
   , m_canPause(true)
@@ -233,7 +233,7 @@ int64_t CDVDInputStreamRTMP::Seek(int64_t offset, int whence)
     return -1;
 }
 
-bool CDVDInputStreamRTMP::SeekTime(int iTimeInMsec)
+bool CDVDInputStreamRTMP::PosTime(int iTimeInMsec)
 {
   CLog::Log(LOGNOTICE, "RTMP Seek to %i requested", iTimeInMsec);
   CSingleLock lock(m_RTMPSection);

@@ -1,0 +1,10 @@
+Estuary by phil65 & Piers (Team Kodi)
+
+Estuary Artwork is licensed under a
+Creative Commons Attribution-ShareAlike 4.0 Unported License.
+You can find the license details here: <http://creativecommons.org/licenses/by-sa/4.0/>.
+
+Estuary code work is licensed under
+GNU General Public License (GPL), Version 2.0
+You can find the license details here: <https://www.gnu.org/licenses/gpl-2.0>.
+

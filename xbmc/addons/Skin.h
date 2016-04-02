@@ -106,11 +106,22 @@ public:
     std::string m_name;
   };
 
-  //FIXME remove this, kept for current repo handling
-  CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &res = RESOLUTION_INFO());
-  CSkinInfo(const cp_extension_t *ext);
-  virtual ~CSkinInfo();
-  virtual AddonPtr Clone() const;
+  static std::unique_ptr<CSkinInfo> FromExtension(AddonProps props, const cp_extension_t* ext);
+
+  //FIXME: CAddonCallbacksGUI/WindowXML hack
+  explicit CSkinInfo(AddonProps props, const RESOLUTION_INFO& resolution = RESOLUTION_INFO())
+      : CAddon(std::move(props)),
+        m_defaultRes(resolution),
+        m_version(""),
+        m_effectsSlowDown(1.f),
+        m_debugging(false) {}
+
+  CSkinInfo(
+      AddonProps props,
+      const RESOLUTION_INFO& resolution,
+      const std::vector<RESOLUTION_INFO>& resolutions,
+      float effectsSlowDown,
+      bool debugging);
 
   /*! \brief Load resultion information from directories in Path().
    */

@@ -64,7 +64,8 @@ void CPVRGUIInfo::ResetProperties(void)
   m_strNextRecordingChannelIcon .clear();
   m_strNextRecordingTime        .clear();
   m_iTimerAmount                = 0;
-  m_bHasRecordings              = false;
+  m_bHasTVRecordings            = false;
+  m_bHasRadioRecordings         = false;
   m_iRecordingTimerAmount       = 0;
   m_iCurrentActiveClient        = 0;
   m_strPlayingClientName        .clear();
@@ -216,11 +217,11 @@ void CPVRGUIInfo::Process(void)
     Sleep(0);
 
     if (!m_bStop)
-      UpdatePlayingTag();
+      UpdateTimeshift();
     Sleep(0);
 
     if (!m_bStop)
-      UpdateTimeshift();
+      UpdatePlayingTag();
     Sleep(0);
 
     if (!m_bStop)
@@ -265,7 +266,8 @@ void CPVRGUIInfo::UpdateMisc(void)
 {
   bool bStarted = g_PVRManager.IsStarted();
   std::string strPlayingClientName     = bStarted ? g_PVRClients->GetPlayingClientName() : "";
-  bool       bHasRecordings            = bStarted && g_PVRRecordings->GetNumRecordings() > 0;
+  bool       bHasTVRecordings          = bStarted && g_PVRRecordings->GetNumTVRecordings() > 0;
+  bool       bHasRadioRecordings       = bStarted && g_PVRRecordings->GetNumRadioRecordings() > 0;
   bool       bIsPlayingTV              = bStarted && g_PVRClients->IsPlayingTV();
   bool       bIsPlayingRadio           = bStarted && g_PVRClients->IsPlayingRadio();
   bool       bIsPlayingRecording       = bStarted && g_PVRClients->IsPlayingRecording();
@@ -279,7 +281,8 @@ void CPVRGUIInfo::UpdateMisc(void)
 
   CSingleLock lock(m_critSection);
   m_strPlayingClientName      = strPlayingClientName;
-  m_bHasRecordings            = bHasRecordings;
+  m_bHasTVRecordings          = bHasTVRecordings;
+  m_bHasRadioRecordings       = bHasRadioRecordings;
   m_bHasNonRecordingTimers    = bHasNonRecordingTimers;
   m_bIsPlayingTV              = bIsPlayingTV;
   m_bIsPlayingRadio           = bIsPlayingRadio;
@@ -357,15 +360,6 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
     break;
   case PVR_NEXT_TIMER:
     CharInfoNextTimer(strValue);
-    break;
-  case PVR_ACTUAL_STREAM_VIDEO_BR:
-    CharInfoVideoBR(strValue);
-    break;
-  case PVR_ACTUAL_STREAM_AUDIO_BR:
-    CharInfoAudioBR(strValue);
-    break;
-  case PVR_ACTUAL_STREAM_DOLBY_BR:
-    CharInfoDolbyBR(strValue);
     break;
   case PVR_ACTUAL_STREAM_SIG:
     CharInfoSignal(strValue);
@@ -602,21 +596,6 @@ void CPVRGUIInfo::CharInfoBackendNumber(std::string &strValue) const
 void CPVRGUIInfo::CharInfoTotalDiskSpace(std::string &strValue) const
 {
   strValue = StringUtils::SizeToString(m_iBackendDiskTotal).c_str();
-}
-
-void CPVRGUIInfo::CharInfoVideoBR(std::string &strValue) const
-{
-  strValue = StringUtils::Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
-}
-
-void CPVRGUIInfo::CharInfoAudioBR(std::string &strValue) const
-{
-  strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
-}
-
-void CPVRGUIInfo::CharInfoDolbyBR(std::string &strValue) const
-{
-  strValue = StringUtils::Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
 }
 
 void CPVRGUIInfo::CharInfoSignal(std::string &strValue) const
@@ -901,13 +880,13 @@ int CPVRGUIInfo::GetDuration(void) const
 int CPVRGUIInfo::GetStartTime(void) const
 {
   CSingleLock lock(m_critSection);
-  if (m_playingEpgTag)
+  if (m_playingEpgTag || m_iTimeshiftStartTime)
   {
     /* Calculate here the position we have of the running live TV event.
      * "position in ms" = ("current UTC" - "event start UTC") * 1000
      */
-    CDateTime current = g_PVRClients->GetPlayingTime();
-    CDateTime start = m_playingEpgTag->StartAsUTC();
+    CDateTime current = m_iTimeshiftPlayTime;
+    CDateTime start = m_playingEpgTag ? m_playingEpgTag->StartAsUTC() : m_iTimeshiftStartTime;
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return (time.GetDays()   * 60 * 60 * 24
          + time.GetHours()   * 60 * 60
@@ -954,6 +933,10 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
         {
           m_playingEpgTag = newTag;
           m_iDuration     = m_playingEpgTag->GetDuration() * 1000;
+        }
+        else if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
+        {
+          m_iDuration = (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 1000;
         }
       }
       g_PVRManager.UpdateCurrentFile();

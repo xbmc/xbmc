@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <node order="4" type="folder" visible="Library.HasContent(Role, Lyricist)">
-	<label>Lyricists</label>
-      <icon>DefaultMusicGenres.png</icon>
+	<label>29992</label>
+	<icon>DefaultMusicGenres.png</icon>
 	<path>musicdb://artists/?role=Lyricist</path>
 </node>

@@ -36,74 +36,95 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 namespace ADDON
 {
 
-CLanguageResource::CLanguageResource(const cp_extension_t *ext)
-  : CResource(ext),
-  m_forceUnicodeFont(false)
+std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  if (ext != NULL)
+  // parse <extension> attributes
+  CLocale locale = CLocale::FromString(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@locale"));
+
+  // parse <charsets>
+  std::string charsetGui;
+  bool forceUnicodeFont(false);
+  std::string charsetSubtitle;
+  cp_cfg_element_t *charsetsElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "charsets");
+  if (charsetsElement != NULL)
   {
-    // parse <extension> attributes
-    std::string locale = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@locale");
-    m_locale = CLocale::FromString(locale);
+    charsetGui = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "gui");
+    forceUnicodeFont = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "gui@unicodefont") == "true";
+    charsetSubtitle = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "subtitle");
+  }
 
-    // parse <charsets>
-    cp_cfg_element_t *charsetsElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "charsets");
-    if (charsetsElement != NULL)
-    {
-      m_charsetGui = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "gui");
-      m_forceUnicodeFont = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "gui@unicodefont") == "true";
-      m_charsetSubtitle = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "subtitle");
-    }
+  // parse <dvd>
+  std::string dvdLanguageMenu;
+  std::string dvdLanguageAudio;
+  std::string dvdLanguageSubtitle;
+  cp_cfg_element_t *dvdElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "dvd");
+  if (dvdElement != NULL)
+  {
+    dvdLanguageMenu = CAddonMgr::GetInstance().GetExtValue(dvdElement, "menu");
+    dvdLanguageAudio = CAddonMgr::GetInstance().GetExtValue(dvdElement, "audio");
+    dvdLanguageSubtitle = CAddonMgr::GetInstance().GetExtValue(dvdElement, "subtitle");
+  }
+  // fall back to the language of the addon if a DVD language is not defined
+  if (dvdLanguageMenu.empty())
+    dvdLanguageMenu = locale.GetLanguageCode();
+  if (dvdLanguageAudio.empty())
+    dvdLanguageAudio = locale.GetLanguageCode();
+  if (dvdLanguageSubtitle.empty())
+    dvdLanguageSubtitle = locale.GetLanguageCode();
 
-    // parse <dvd>
-    cp_cfg_element_t *dvdElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "dvd");
-    if (dvdElement != NULL)
+  // parse <sorttokens>
+  std::set<std::string> sortTokens;
+  cp_cfg_element_t *sorttokensElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "sorttokens");
+  if (sorttokensElement != NULL)
+  {
+    for (size_t i = 0; i < sorttokensElement->num_children; ++i)
     {
-      m_dvdLanguageMenu = CAddonMgr::GetInstance().GetExtValue(dvdElement, "menu");
-      m_dvdLanguageAudio = CAddonMgr::GetInstance().GetExtValue(dvdElement, "audio");
-      m_dvdLanguageSubtitle = CAddonMgr::GetInstance().GetExtValue(dvdElement, "subtitle");
-    }
-    // fall back to the language of the addon if a DVD language is not defined
-    if (m_dvdLanguageMenu.empty())
-      m_dvdLanguageMenu = m_locale.GetLanguageCode();
-    if (m_dvdLanguageAudio.empty())
-      m_dvdLanguageAudio = m_locale.GetLanguageCode();
-    if (m_dvdLanguageSubtitle.empty())
-      m_dvdLanguageSubtitle = m_locale.GetLanguageCode();
-
-    // parse <sorttokens>
-    cp_cfg_element_t *sorttokensElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "sorttokens");
-    if (sorttokensElement != NULL)
-    {
-      for (size_t i = 0; i < sorttokensElement->num_children; ++i)
+      cp_cfg_element_t &tokenElement = sorttokensElement->children[i];
+      if (tokenElement.name != NULL && strcmp(tokenElement.name, "token") == 0 &&
+          tokenElement.value != NULL)
       {
-        cp_cfg_element_t &tokenElement = sorttokensElement->children[i];
-        if (tokenElement.name != NULL && strcmp(tokenElement.name, "token") == 0 &&
-            tokenElement.value != NULL)
-        {
-          std::string token(tokenElement.value);
-          std::string separators = CAddonMgr::GetInstance().GetExtValue(&tokenElement, "@separators");
-          if (separators.empty())
-            separators = " ._";
+        std::string token(tokenElement.value);
+        std::string separators = CAddonMgr::GetInstance().GetExtValue(&tokenElement, "@separators");
+        if (separators.empty())
+          separators = " ._";
 
-          for (std::string::const_iterator separator = separators.begin(); separator != separators.end(); ++separator)
-            m_sortTokens.insert(token + *separator);
-        }
+        for (std::string::const_iterator separator = separators.begin(); separator != separators.end(); ++separator)
+          sortTokens.insert(token + *separator);
       }
     }
   }
+  return std::unique_ptr<CLanguageResource>(new CLanguageResource(
+      std::move(props),
+      locale,
+      charsetGui,
+      forceUnicodeFont,
+      charsetSubtitle,
+      dvdLanguageMenu,
+      dvdLanguageAudio,
+      dvdLanguageSubtitle,
+      sortTokens));
 }
 
-CLanguageResource::CLanguageResource(const CLanguageResource &rhs)
-  : CResource(rhs),
-    m_locale(rhs.m_locale),
-    m_forceUnicodeFont(rhs.m_forceUnicodeFont)
+CLanguageResource::CLanguageResource(
+    AddonProps props,
+    const CLocale& locale,
+    const std::string& charsetGui,
+    bool forceUnicodeFont,
+    const std::string& charsetSubtitle,
+    const std::string& dvdLanguageMenu,
+    const std::string& dvdLanguageAudio,
+    const std::string& dvdLanguageSubtitle,
+    const std::set<std::string>& sortTokens)
+  : CResource(std::move(props)),
+    m_locale(locale),
+    m_charsetGui(charsetGui),
+    m_forceUnicodeFont(forceUnicodeFont),
+    m_charsetSubtitle(charsetSubtitle),
+    m_dvdLanguageMenu(dvdLanguageMenu),
+    m_dvdLanguageAudio(dvdLanguageAudio),
+    m_dvdLanguageSubtitle(dvdLanguageSubtitle),
+    m_sortTokens(sortTokens)
 { }
-
-AddonPtr CLanguageResource::Clone() const
-{
-  return AddonPtr(new CLanguageResource(*this));
-}
 
 bool CLanguageResource::IsInUse() const
 {

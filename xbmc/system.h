@@ -81,10 +81,6 @@
   #define HAS_MDNS_EMBEDDED
 #endif
 
-#if defined(HAVE_LIBGIF)
-  #define HAS_GIFLIB
-#endif
-
 /**********************
  * Non-free Components
  **********************/
@@ -102,7 +98,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_SDL_JOYSTICK
 #define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
@@ -111,20 +106,22 @@
 #define HAS_WEB_INTERFACE
 #define HAVE_LIBSSH
 #define HAS_LIBRTMP
-#define HAVE_LIBBLURAY
 #define HAS_FILESYSTEM_SMB
-#define HAS_FILESYSTEM_NFS
 #define HAS_ZEROCONF
 #define HAS_MDNS
-#define HAS_AIRPLAY
 #define HAS_AIRTUNES
-#define HAVE_LIBSHAIRPLAY
-#define HAVE_LIBCEC
-#define HAVE_LIBMP3LAME
-#define HAVE_LIBVORBISENC
-#define HAS_MYSQL
 #define HAS_UPNP
-#define HAS_GIFLIB
+
+// With CMake these are set by options (through conditional defines in
+// the 'All platforms' section above.
+#if !defined(BUILDING_WITH_CMAKE)
+  #define HAS_AIRPLAY
+  #define HAS_FILESYSTEM_NFS
+  #define HAS_MYSQL
+  #define HAVE_LIBBLURAY
+  #define HAVE_LIBSHAIRPLAY
+  #define HAVE_LIBCEC
+#endif
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
@@ -266,8 +263,8 @@
 /****************
  * default skin
  ****************/
-#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS)
-#define DEFAULT_SKIN          "skin.re-touched"
+#if defined(TARGET_DARWIN_IOS)
+#define DEFAULT_SKIN          "skin.estouchy"
 #else
-#define DEFAULT_SKIN          "skin.confluence"
+#define DEFAULT_SKIN          "skin.estuary"
 #endif

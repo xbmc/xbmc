@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "지금 재생 중"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "찾기"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "모드 변경"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "2D로 감상"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "예보"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "동작"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "기타 옵션"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "마지막 로그인"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "되감기"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "빨리감기"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "재생목록 옵션"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "그룹 추가"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "그룸 이름 변경"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "그룹 삭제"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial based"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "마지막 업데이트"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "전원 옵션"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "앨범 정보"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "가사 애드온"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "채널 그룹"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "콘텐츠 탐색 옵션"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "사용 가능한 그룹"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "자막 다운로드"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "로컬 자막 있음"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "채널 옵션"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "로그인할 Kodi 사용자 프로파일을[CR]선택하고 계속하세요"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "시프트"

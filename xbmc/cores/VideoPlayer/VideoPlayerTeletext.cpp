@@ -21,6 +21,7 @@
 #include "VideoPlayerTeletext.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
+#include "DVDDemuxers/DVDDemuxPacket.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
@@ -88,8 +89,9 @@ signed int CDVDTeletextTools::deh24(unsigned char *p)
 }
 
 
-CDVDTeletextData::CDVDTeletextData()
+CDVDTeletextData::CDVDTeletextData(CProcessInfo &processInfo)
 : CThread("DVDTeletextData")
+, IDVDStreamPlayer(processInfo)
 , m_messageQueue("teletext")
 {
   m_speed = DVD_PLAYSPEED_NORMAL;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">6</defaultcontrol>
+	<menucontrol>9000</menucontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<top>180</top>
+			<include>OpenClose_Left</include>
+			<control type="grouplist" id="9000">
+				<left>100</left>
+				<top>-20</top>
+				<onright>50</onright>
+				<onleft>100</onleft>
+				<align>left</align>
+				<itemgap>-20</itemgap>
+				<include name="DefaultDialogButton">
+					<param name="id" value="6" />
+					<param name="label" value="$LOCALIZE[502]" />
+					<param name="width" value="200" />
+					<param name="height" value="200" />
+					<param name="wrapmultiline" value="true" />
+				</include>
+				<include name="DefaultDialogButton">
+					<param name="id" value="7" />
+					<param name="label" value="$LOCALIZE[190]" />
+					<param name="width" value="200" />
+					<param name="height" value="200" />
+					<param name="wrapmultiline" value="true" />
+				</include>
+				<include name="DefaultDialogButton">
+					<param name="id" value="8" />
+					<param name="label" value="$LOCALIZE[192]" />
+					<param name="width" value="200" />
+					<param name="height" value="200" />
+					<param name="wrapmultiline" value="true" />
+				</include>
+			</control>
+		</control>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<left>300</left>
+			<top>180</top>
+			<include name="FileManagerPanel">
+				<param name="header_id" value="22" />
+				<param name="header_label" value="$LOCALIZE[20094]" />
+				<param name="list_id" value="50" />
+				<param name="scrollbar_id" value="60" />
+				<param name="onleft_id" value="9000" />
+				<param name="onright_id" value="100" />
+				<param name="width" value="740" />
+				<param name="bg_width" value="780" />
+			</include>
+		</control>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>1070</left>
+			<top>180</top>
+			 <include name="FileManagerPanel">
+				<param name="header_id" value="23" />
+				<param name="header_label" value="$LOCALIZE[13350]" />
+				<param name="list_id" value="100" />
+				<param name="scrollbar_id" value="61" />
+				<param name="onleft_id" value="60" />
+				<param name="onright_id" value="9000" />
+				<param name="width" value="740" />
+				<param name="bg_width" value="780" />
+			</include>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[10503][COLOR=button_focus][/COLOR]" />
+			<param name="breadcrumbs_icon" value="icons/settings/music.png" />
+		</include>
+		<include>BottomBar</include>
+		<include name="BottomBarTwoListInfo">
+			<param name="left_container_id">50</param>
+			<param name="left_scrollbar_id">60</param>
+			<param name="right_container_id">100</param>
+			<param name="right_scrollbar_id">61</param>
+		</include>
+	</controls>
+</window>

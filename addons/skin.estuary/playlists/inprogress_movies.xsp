@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>In-progress movies</name>
+    <match>all</match>
+    <rule field="inprogress" operator="true" />
+    <limit>10</limit>
+    <order direction="descending">lastplayed</order>
+</smartplaylist>

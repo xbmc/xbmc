@@ -32,7 +32,7 @@ APPBIN=$(PREFIX)/bin/TexturePacker
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): ../libsquish-native/.installed-$(PLATFORM)
+$(PLATFORM):
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); cp -a $(SOURCE)/* .
 	cd $(PLATFORM); ./autogen.sh
@@ -41,9 +41,6 @@ $(PLATFORM): ../libsquish-native/.installed-$(PLATFORM)
 
 $(APP): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
-
-../libsquish-native/.installed-$(PLATFORM):
-	$(MAKE) -C ../libsquish-native
 
 .installed-$(PLATFORM): $(APP)
 	$(MAKE) -C $(PLATFORM) install

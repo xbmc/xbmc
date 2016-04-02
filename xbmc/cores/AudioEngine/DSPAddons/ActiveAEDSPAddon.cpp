@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "ActiveAEDSPAddon.h"
 #include "ActiveAEDSP.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 #include "commons/Exception.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -33,15 +34,8 @@ using namespace ActiveAE;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CActiveAEDSPAddon::CActiveAEDSPAddon(const AddonProps& props) :
-    CAddonDll<DllAudioDSP, AudioDSP, AE_DSP_PROPERTIES>(props),
-    m_apiVersion("0.0.0")
-{
-  ResetProperties();
-}
-
-CActiveAEDSPAddon::CActiveAEDSPAddon(const cp_extension_t *ext) :
-    CAddonDll<DllAudioDSP, AudioDSP, AE_DSP_PROPERTIES>(ext),
+CActiveAEDSPAddon::CActiveAEDSPAddon(AddonProps props) :
+    CAddonDll<DllAudioDSP, AudioDSP, AE_DSP_PROPERTIES>(std::move(props)),
     m_apiVersion("0.0.0")
 {
   ResetProperties();

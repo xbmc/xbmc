@@ -37,10 +37,6 @@ public:
     , m_codec(codec)
 
   {}
-  void GetStreamInfo(std::string& strInfo)
-  {
-    strInfo = StringUtils::Format("%s", m_codec.c_str());
-  }
 };
 
 CDVDDemuxBXA::CDVDDemuxBXA() : CDVDDemux()
@@ -162,7 +158,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
   return pPacket;
 }
 
-CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId) const
 {
   if(iStreamId != 0)
     return NULL;
@@ -170,7 +166,19 @@ CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId)
   return m_stream;
 }
 
-int CDVDDemuxBXA::GetNrOfStreams()
+std::vector<CDemuxStream*> CDVDDemuxBXA::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  if (m_stream != nullptr)
+  {
+    streams.push_back(m_stream);
+  }
+
+  return streams;
+}
+
+int CDVDDemuxBXA::GetNrOfStreams() const
 {
   return (m_stream == NULL ? 0 : 1);
 }

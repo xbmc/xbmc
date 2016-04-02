@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">20</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="image">
+			<left>926</left>
+			<top>495</top>
+			<width>68</width>
+			<height>68</height>
+			<texture colordiffuse="button_focus">icons/file-manager/left-right.png</texture>
+			<animation effect="fade" start="0" end="100" time="300" delay="100">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
+		</control>
+		<control type="image">
+			<left>836</left>
+			<top>580</top>
+			<width>250</width>
+			<height>330</height>
+			<fadetime>200</fadetime>
+			<texture>$VAR[FileManagerImageVar]</texture>
+			<bordertexture border="20">overlays/shadow.png</bordertexture>
+			<bordersize>20</bordersize>
+			<aspectratio aligny="bottom">keep</aspectratio>
+			<animation effect="fade" start="0" end="100" time="300" delay="100">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
+		</control>
+		<control type="group">
+			<top>190</top>
+			<left>100</left>
+			<include>OpenClose_Left</include>
+			<include name="FileManagerPanel">
+				<param name="header_id" value="101" />
+				<param name="header_label" value="" />
+				<param name="list_id" value="20" />
+				<param name="scrollbar_id" value="60" />
+				<param name="onleft_id" value="21" />
+				<param name="onright_id" value="21" />
+				<param name="width" value="700" />
+				<param name="bg_width" value="740" />
+				<param name="header_haspath" value="true" />
+			</include>
+		</control>
+		<control type="group">
+			<left>1120</left>
+			<top>190</top>
+			<include>OpenClose_Right</include>
+			<include name="FileManagerPanel">
+				<param name="header_id" value="102" />
+				<param name="header_label" value="" />
+				<param name="list_id" value="21" />
+				<param name="scrollbar_id" value="61" />
+				<param name="onleft_id" value="60" />
+				<param name="onright_id" value="20" />
+				<param name="width" value="700" />
+				<param name="bg_width" value="740" />
+				<param name="header_haspath" value="true" />
+			</include>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[7]" />
+			<param name="breadcrumbs_icon" value="icons/settings/filemanager.png" />
+		</include>
+		<include>BottomBar</include>
+		<include name="BottomBarTwoListInfo">
+			<param name="left_container_id">20</param>
+			<param name="left_scrollbar_id">60</param>
+			<param name="right_container_id">21</param>
+			<param name="right_scrollbar_id">61</param>
+		</include>
+	</controls>
+</window>

@@ -127,14 +127,12 @@ void CProcessorHD::ApplySupportedFormats(std::vector<ERenderFormat> *formats)
   if (SUCCEEDED(m_pEnumerator->CheckVideoProcessorFormat(DXGI_FORMAT_P010, &flags))
     && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
   {
-    // TODO: temporary disabled
-    //formats->push_back(RENDER_FMT_YUV420P10);
+    formats->push_back(RENDER_FMT_YUV420P10);
   }
   if (SUCCEEDED(m_pEnumerator->CheckVideoProcessorFormat(DXGI_FORMAT_P016, &flags))
     && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
   {
-    // TODO: temporary disabled
-    //formats->push_back(RENDER_FMT_YUV420P16);
+    formats->push_back(RENDER_FMT_YUV420P16);
   }
 }
 
@@ -438,20 +436,21 @@ bool CProcessorHD::CreateSurfaces()
   return true;
 }
 
-CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
+CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
 {
-  // RENDER_FMT_YUV420P -> DXGI_FORMAT_NV12
-  // RENDER_FMT_YUV420P10 -> DXGI_FORMAT_P010
-  // RENDER_FMT_YUV420P16 -> DXGI_FORMAT_P016
-  if ( picture->format != RENDER_FMT_YUV420P
-    && picture->format != RENDER_FMT_YUV420P10
-    && picture->format != RENDER_FMT_YUV420P16)
+  if ( picture.format != RENDER_FMT_YUV420P
+    && picture.format != RENDER_FMT_YUV420P10
+    && picture.format != RENDER_FMT_YUV420P16
+    && picture.format != RENDER_FMT_DXVA)
   {
     CLog::Log(LOGERROR, "%s - colorspace not supported by processor, skipping frame.", __FUNCTION__);
     return nullptr;
   }
 
-  ID3D11View* pView = m_context->GetFree(nullptr);
+  if (picture.format == RENDER_FMT_DXVA)
+    return picture.dxva->Acquire();
+
+  ID3D11View *pView = m_context->GetFree(nullptr);
   if (!pView)
   {
     CLog::Log(LOGERROR, "%s - no free video surface", __FUNCTION__);
@@ -476,39 +475,19 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
     return nullptr;
   }
 
-  if (picture->format == RENDER_FMT_YUV420P)
+  uint8_t*  pData = static_cast<uint8_t*>(rectangle.pData);
+  uint8_t*  dst[] = { pData, pData + m_texDesc.Height * rectangle.RowPitch };
+  int dstStride[] = { rectangle.RowPitch, rectangle.RowPitch };
+
+  if (picture.format == RENDER_FMT_YUV420P)
   {
-    uint8_t*  pData = static_cast<uint8_t*>(rectangle.pData);
-    uint8_t*  dst[] = { pData, pData + m_texDesc.Height * rectangle.RowPitch };
-    int dstStride[] = { rectangle.RowPitch, rectangle.RowPitch };
-    convert_yuv420_nv12(picture->data, picture->iLineSize, picture->iHeight, picture->iWidth, dst, dstStride);
+    convert_yuv420_nv12(picture.data, picture.iLineSize, picture.iHeight, picture.iWidth, dst, dstStride);
   }
-  else
+  else if(picture.format == RENDER_FMT_YUV420P10
+       || picture.format == RENDER_FMT_YUV420P16)
   {
-    // TODO: Optimize this later using sse2/sse4
-    uint16_t * d_y = static_cast<uint16_t*>(rectangle.pData);
-    uint16_t * d_uv = d_y + m_texDesc.Height * rectangle.RowPitch;
-    // Convert to NV12 - Luma
-    for (size_t line = 0; line < picture->iHeight; ++line)
-    {
-      uint16_t * y = (uint16_t*)(picture->data[0] + picture->iLineSize[0] * line);
-      uint16_t * d = d_y + rectangle.RowPitch * line;
-      memcpy(d, y, picture->iLineSize[0]);
-    }
-    // Convert to NV12 - Chroma
-    size_t chromaWidth = (picture->iWidth + 1) >> 1;
-    size_t chromaHeight = picture->iHeight >> 1;
-    for (size_t line = 0; line < chromaHeight; ++line)
-    {
-      uint16_t * u = (uint16_t*)picture->data[1] + line * picture->iLineSize[1];
-      uint16_t * v = (uint16_t*)picture->data[2] + line * picture->iLineSize[2];
-      uint16_t * d = d_uv + line * rectangle.RowPitch;
-      for (size_t x = 0; x < chromaWidth; x++)
-      {
-        *d++ = *u++; 
-        *d++ = *v++;
-      }
-    }
+    convert_yuv420_p01x(picture.data, picture.iLineSize, picture.iHeight, picture.iWidth, dst, dstStride
+                      , picture.format == RENDER_FMT_YUV420P10 ? 10 : 16);
   }
   pContext->Unmap(pResource, subresource);
   SAFE_RELEASE(pResource);
@@ -706,10 +685,12 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
 
   m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
 
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness
-                                             , 0, 100, 50);
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast
-                                             , 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, 
+              CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, 
+              CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);
   // Rotation
   m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor, DEFAULT_STREAM_INDEX, (rotation != 0), (D3D11_VIDEO_PROCESSOR_ROTATION)(rotation / 90));
 

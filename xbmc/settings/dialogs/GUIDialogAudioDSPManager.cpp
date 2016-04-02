@@ -563,7 +563,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     {
       CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
       pDlgInfo->SetHeading(g_localizeStrings.Get(15062) + " - " + pItem->GetProperty("Name").asString());
-      pDlgInfo->SetText(addon->GetString((uint32_t)pItem->GetProperty("Help").asInteger()));
+      pDlgInfo->SetText(g_localizeStrings.GetAddonString(addon->ID(), (uint32_t)pItem->GetProperty("Help").asInteger()));
       pDlgInfo->Open();
     }
   }
@@ -970,12 +970,12 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
     return pItem;
   }
 
-  std::string modeName = addon->GetString(ModePointer->ModeName());
+  std::string modeName = g_localizeStrings.GetAddonString(addon->ID(), ModePointer->ModeName());
 
   std::string description;
   if (ModePointer->ModeDescription() > -1)
   {
-    description = addon->GetString(ModePointer->ModeDescription());
+    description = g_localizeStrings.GetAddonString(addon->ID(), ModePointer->ModeDescription());
   }
   else
   {
@@ -1066,7 +1066,7 @@ int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePoint
     if (dialogId == 0)
       CLog::Log(LOGERROR, "DSP Dialog Manager - %s - Present marked settings dialog of mode %s on addon %s not found",
                             __FUNCTION__,
-                            Addon->GetString(ModePointer->ModeName()).c_str(),
+                            g_localizeStrings.GetAddonString(Addon->ID(), ModePointer->ModeName()).c_str(),
                             AddonName.c_str());
   }
 

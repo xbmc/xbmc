@@ -24,6 +24,7 @@
 #include "platform/xbmc.h"
 #include "utils/CPUInfo.h"
 #include "utils/Environment.h"
+#include "utils/CharsetConverter.h" // Required to initialize converters before usage
 
 #include <dbghelp.h>
 #include <shellapi.h>

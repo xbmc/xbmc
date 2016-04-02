@@ -57,24 +57,24 @@ public:
     virtual void SetCodecControl(int flags) {};
   };
 
-  CDVDVideoCodecFFmpeg();
+  CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecFFmpeg();
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual void Dispose();
-  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts);
-  virtual void Reset();
-  virtual void Reopen();
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  virtual void Dispose() override;
+  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts) override;
+  virtual void Reset() override;
+  virtual void Reopen() override;
   bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
-  virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual void SetDropState(bool bDrop);
-  virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
-  virtual unsigned GetConvergeCount();
-  virtual unsigned GetAllowedReferences();
-  virtual bool GetCodecStats(double &pts, int &droppedPics);
-  virtual void SetCodecControl(int flags);
+  virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
+  virtual void SetDropState(bool bDrop) override;
+  virtual const char* GetName() override { return m_name.c_str(); }; // m_name is never changed after open
+  virtual unsigned GetConvergeCount() override;
+  virtual unsigned GetAllowedReferences() override;
+  virtual bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override;
+  virtual void SetCodecControl(int flags) override;
 
-  IHardwareDecoder * GetHardware()                           { return m_pHardware; };
-  void               SetHardware(IHardwareDecoder* hardware);
+  IHardwareDecoder * GetHardware() { return m_pHardware; };
+  void SetHardware(IHardwareDecoder* hardware);
 
 protected:
   static enum AVPixelFormat GetFormat(struct AVCodecContext * avctx, const AVPixelFormat * fmt);
@@ -125,8 +125,10 @@ protected:
   std::vector<AVPixelFormat> m_formats;
   double m_decoderPts;
   int    m_skippedDeint;
+  int    m_droppedFrames;
   bool   m_requestSkipDeint;
   int    m_codecControlFlags;
+  bool m_interlaced;
   CDVDStreamInfo m_hints;
   CDVDCodecOptions m_options;
 };

@@ -50,6 +50,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("aip",       "text/x-audiosoft-intra"));
   mimeTypes.insert(std::pair<std::string, std::string>("ani",       "application/x-navi-animation"));
   mimeTypes.insert(std::pair<std::string, std::string>("aos",       "application/x-nokia-9000-communicator-add-on-software"));
+  mimeTypes.insert(std::pair<std::string, std::string>("apng",      "image/apng"));
   mimeTypes.insert(std::pair<std::string, std::string>("aps",       "application/mime"));
   mimeTypes.insert(std::pair<std::string, std::string>("arc",       "application/octet-stream"));
   mimeTypes.insert(std::pair<std::string, std::string>("arj",       "application/arj"));

@@ -6,9 +6,6 @@
         <setting id="videoplayer.adjustrefreshrate">
           <visible>false</visible>
         </setting>
-        <setting id="videoplayer.pauseafterrefreshchange">
-          <visible>false</visible>
-        </setting>
       </group>
     </category>
     <category id="videoacceleration">
@@ -31,6 +28,9 @@
           <visible>false</visible>
         </setting>
         <setting id="videoscreen.blankdisplays">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.delayrefreshchange">
           <visible>false</visible>
         </setting>
       </group>
@@ -64,6 +64,15 @@
       <group id="2">
         <setting id="input.enablemouse">
           <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="appearance">
+    <category id="lookandfeel">
+      <group id="1">
+        <setting id="lookandfeel.skin" type="addon">
+          <default>skin.estouchy</default>
         </setting>
       </group>
     </category>

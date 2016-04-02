@@ -27,6 +27,7 @@
 #include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
+#include "ServiceManager.h"
 
 #include <map>
 #include <memory>
@@ -150,7 +151,6 @@ public:
 
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
-  void StartPVRManager();
   void StopPVRManager();
   bool IsCurrentThread() const;
   void Stop(int exitCode);
@@ -180,7 +180,7 @@ public:
   bool PlayMedia(const CFileItem& item, const std::string &player, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
-  PlayBackRet PlayFile(const CFileItem& item, const std::string& player, bool bRestart = false);
+  PlayBackRet PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
   void UpdateFileState();
   void LoadVideoSettings(const CFileItem& item);
@@ -388,6 +388,8 @@ public:
    \param listener The listener to unregister
    */
   void UnregisterActionListener(IActionListener *listener);
+
+  std::unique_ptr<CServiceManager> m_ServiceManager;
 
 protected:
   virtual bool OnSettingsSaving() const override;

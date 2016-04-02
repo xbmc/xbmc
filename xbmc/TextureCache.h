@@ -61,15 +61,13 @@ public:
 
    Check and return URL to cached image if it exists; If not, return empty string.
    If the image is cached, return URL (for original image or .dds version if requested)
-   Creates a .dds of image if requested via returnDDS and the image doesn't need recaching.
 
    \param image url of the image to check
-   \param returnDDS if we're allowed to return a DDS version, defaults to true
    \param needsRecaching [out] whether the image needs recaching.
    \return cached url of this image
    \sa GetCachedImage
    */ 
-  std::string CheckCachedImage(const std::string &image, bool returnDDS, bool &needsRecaching);
+  std::string CheckCachedImage(const std::string &image, bool &needsRecaching);
 
   /*! \brief Cache image (if required) using a background job
 

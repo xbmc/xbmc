@@ -1,4 +1,10 @@
 SRCS  = PeripheralBus.cpp
+SRCS += virtual/PeripheralBusAddon.cpp
+
+ifeq (@USE_ANDROID@,1)
+SRCS += android/AndroidJoystickState.cpp
+SRCS += android/PeripheralBusAndroid.cpp
+endif
 
 ifeq (@USE_LIBUDEV@,1)
 SRCS += linux/PeripheralBusUSBLibUdev.cpp

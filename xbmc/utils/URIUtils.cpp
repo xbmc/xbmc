@@ -140,9 +140,9 @@ void URIUtils::RemoveExtension(std::string& strFileName)
     strFileMask += "|" + g_advancedSettings.m_videoExtensions;
     strFileMask += "|" + g_advancedSettings.m_subtitlesExtensions;
 #if defined(TARGET_DARWIN)
-    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.applescript|.workflow";
+    strFileMask += "|.py|.xml|.milk|.xbt|.cdg|.app|.applescript|.workflow";
 #else
-    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg";
+    strFileMask += "|.py|.xml|.milk|.xbt|.cdg";
 #endif
     strFileMask += "|";
 
@@ -784,12 +784,10 @@ bool URIUtils::IsArchive(const std::string& strFile)
 
 bool URIUtils::IsSpecial(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsSpecial(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "special");
+  return IsProtocol(strFile, "special");
 }
 
 bool URIUtils::IsPlugin(const std::string& strFile)
@@ -880,32 +878,34 @@ bool URIUtils::IsHTTP(const std::string& strFile)
 
 bool URIUtils::IsUDP(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsUDP(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "udp");
+  return IsProtocol(strFile, "udp");
 }
 
 bool URIUtils::IsTCP(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsTCP(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return IsProtocol(strFile2, "tcp");
+  return IsProtocol(strFile, "tcp");
 }
 
 bool URIUtils::IsPVRChannel(const std::string& strFile)
 {
-  std::string strFile2(strFile);
-
   if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsPVRChannel(CStackDirectory::GetFirstStackedFile(strFile));
 
-  return StringUtils::StartsWithNoCase(strFile2, "pvr://channels");
+  return StringUtils::StartsWithNoCase(strFile, "pvr://channels");
+}
+
+bool URIUtils::IsPVRGuideItem(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVRGuideItem(CStackDirectory::GetFirstStackedFile(strFile));
+
+  return StringUtils::StartsWithNoCase(strFile, "pvr://guide");
 }
 
 bool URIUtils::IsDAV(const std::string& strFile)
