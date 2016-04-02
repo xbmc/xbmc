@@ -34,6 +34,7 @@
 #include "utils/XMLUtils.h"
 #include "URL.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
+#include "filesystem/SpecialProtocol.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -55,6 +56,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->QueueNotification  = QueueNotification;
   m_callbacks->WakeOnLan          = WakeOnLan;
   m_callbacks->GetSetting         = GetAddonSetting;
+  m_callbacks->TranslateSpecialProtocol = TranslateSpecialProtocol;
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
   m_callbacks->GetLocalizedString = GetLocalizedString;
   m_callbacks->GetDVDMenuLanguage = GetDVDMenuLanguage;
@@ -273,6 +275,22 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
   }
 
   return false;
+}
+
+char* CAddonCallbacksAddon::TranslateSpecialProtocol(const char *strSource)
+{
+  try
+  {
+    if (strSource)
+      return strdup(CSpecialProtocol::TranslatePath(strSource).c_str());
+    else
+      return NULL;
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - exception '%s' caught", __FUNCTION__, e.what());
+    return NULL;
+  }
 }
 
 char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
