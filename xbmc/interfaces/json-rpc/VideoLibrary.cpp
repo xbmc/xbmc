@@ -1113,6 +1113,8 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     details.SetTrailer(parameterObject["trailer"].asString());
   if (ParameterNotNull(parameterObject, "tagline"))
     details.SetTagLine(parameterObject["tagline"].asString());
+  if (ParameterNotNull(parameterObject, "status"))
+    details.SetStatus(parameterObject["status"].asString());
   if (ParameterNotNull(parameterObject, "plotoutline"))
     details.SetPlotOutline(parameterObject["plotoutline"].asString());
 
