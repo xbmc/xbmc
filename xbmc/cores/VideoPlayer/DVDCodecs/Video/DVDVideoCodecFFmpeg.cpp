@@ -582,7 +582,7 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if (!iGotPicture)
   {
-    if (pData)
+    if (pData && m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
     {
       m_droppedFrames++;
       if (m_interlaced)
