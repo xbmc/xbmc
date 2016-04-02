@@ -294,7 +294,7 @@
 				</item>
 			</content>
 		</control>
-		<include name="PopupMenu">
+		<include content="PopupMenu">
 			<param name="panel-posy">320</param>
 			<param name="panel-height">240</param>
 		</include>
