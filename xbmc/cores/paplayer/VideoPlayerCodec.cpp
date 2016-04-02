@@ -214,7 +214,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   m_bCanSeek = false;
   if (m_pInputStream->Seek(0, SEEK_POSSIBLE))
   {
-    if (Seek(1) != DVD_NOPTS_VALUE)
+    if (Seek(1))
     {
       // rewind stream to beginning
       Seek(0);
@@ -320,7 +320,7 @@ void VideoPlayerCodec::DeInit()
   m_bInited = false;
 }
 
-int64_t VideoPlayerCodec::Seek(int64_t iSeekTime)
+bool VideoPlayerCodec::Seek(int64_t iSeekTime)
 {
   // default to announce backwards seek if !m_pPacket to not make FFmpeg
   // skip mpeg audio frames at playback start
@@ -338,10 +338,7 @@ int64_t VideoPlayerCodec::Seek(int64_t iSeekTime)
 
   m_nDecodedLen = 0;
 
-  if (!ret)
-    return DVD_NOPTS_VALUE;
-
-  return iSeekTime;
+  return ret;
 }
 
 int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)

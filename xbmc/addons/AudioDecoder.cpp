@@ -80,12 +80,13 @@ int CAudioDecoder::ReadPCM(uint8_t* buffer, int size, int* actualsize)
   return m_pStruct->ReadPCM(m_context, buffer, size, actualsize);
 }
 
-int64_t CAudioDecoder::Seek(int64_t time)
+bool CAudioDecoder::Seek(int64_t time)
 {
   if (!Initialized())
-    return 0;
+    return false;
 
-  return m_pStruct->Seek(m_context, time);
+  m_pStruct->Seek(m_context, time);
+  return true;
 }
 
 void CAudioDecoder::DeInit()
