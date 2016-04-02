@@ -278,7 +278,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_application.StopPVRManager();
 
   // stop audio DSP services with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
+  CServiceBroker::GetADSP().Deactivate();
 
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
@@ -332,9 +332,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   g_application.UpdateLibraries();
   CStereoscopicsManager::GetInstance().Initialize();
-
-  // start audio DSP related services with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE);
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)

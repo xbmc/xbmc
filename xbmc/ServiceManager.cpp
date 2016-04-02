@@ -55,6 +55,7 @@ bool CServiceManager::Init2()
 
 bool CServiceManager::Init3()
 {
+  m_ADSPManager->Init();
   m_PVRManager->Init();
 
   return true;

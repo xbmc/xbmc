@@ -49,15 +49,12 @@ CActiveAEDSPAddon::~CActiveAEDSPAddon(void)
 
 void CActiveAEDSPAddon::OnDisabled()
 {
-  // restart the ADSP manager if we're disabling a client
-  if (CServiceBroker::GetADSP().IsActivated())
-    CServiceBroker::GetADSP().Activate(true);
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::OnEnabled()
 {
-  // restart the ADSP manager if we're enabling a client
-  CServiceBroker::GetADSP().Activate(true);
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
@@ -73,14 +70,12 @@ AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
 
 void CActiveAEDSPAddon::OnPreInstall()
 {
-  // stop the ADSP manager, so running ADSP add-ons are stopped and closed
-  CServiceBroker::GetADSP().Deactivate();
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::OnPostInstall(bool restart, bool update)
 {
-  // (re)start the ADSP manager
-  CServiceBroker::GetADSP().Activate(true);
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::OnPreUnInstall()
@@ -91,15 +86,13 @@ void CActiveAEDSPAddon::OnPreUnInstall()
 
 void CActiveAEDSPAddon::OnPostUnInstall()
 {
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
-    CServiceBroker::GetADSP().Activate(true);
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 bool CActiveAEDSPAddon::CanInstall()
 {
   if (!CServiceBroker::GetADSP().InstallAddonAllowed(ID()))
   {
-    CServiceBroker::GetADSP().MarkAsOutdated(ID());
     return false;
   }
   return CAddon::CanInstall();
