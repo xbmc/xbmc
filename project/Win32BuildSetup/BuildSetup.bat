@@ -185,11 +185,6 @@ set WORKSPACE=%CD%\..\..
   Echo userdata\database\>>exclude.txt
   Echo userdata\playlists\>>exclude.txt
   Echo userdata\thumbnails\>>exclude.txt
-  rem Exclude non Windows addons
-  Echo addons\repository.pvr-android.xbmc.org\>>exclude.txt
-  Echo addons\repository.pvr-ios.xbmc.org\>>exclude.txt
-  Echo addons\repository.pvr-osx32.xbmc.org\>>exclude.txt
-  Echo addons\repository.pvr-osx64.xbmc.org\>>exclude.txt
   rem Exclude skins as they're copied by their own script
   Echo addons\skin.estuary\>>exclude.txt
   Echo addons\skin.estouchy\>>exclude.txt
