@@ -78,6 +78,14 @@ DLLEXPORT bool XBMC_get_setting(void *hdl, void* cb, const char* settingName, vo
   return ((CB_AddOnLib*)cb)->GetSetting(((AddonCB*)hdl)->addonData, settingName, settingValue);
 }
 
+DLLEXPORT char* XBMC_translate_special(void *hdl, void* cb, const char* source)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->TranslateSpecialProtocol(source);
+}
+
 DLLEXPORT void XBMC_queue_notification(void *hdl, void* cb, const queue_msg_t type, const char *msg)
 {
   if (cb == NULL)

@@ -49,6 +49,7 @@ typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t logle
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
 typedef bool (*AddOnWakeOnLan)(const char* mac);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
+typedef char* (*AddonTranslateSpecialProtocol)(const char *strSource);
 typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
 typedef char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
 typedef char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
@@ -86,6 +87,7 @@ typedef struct CB_AddOn
   AddOnQueueNotification      QueueNotification;
   AddOnWakeOnLan              WakeOnLan;
   AddOnGetSetting             GetSetting;
+  AddonTranslateSpecialProtocol TranslateSpecialProtocol;
   AddOnUnknownToUTF8          UnknownToUTF8;
   AddOnGetLocalizedString     GetLocalizedString;
   AddOnGetDVDMenuLanguage     GetDVDMenuLanguage;
@@ -131,6 +133,7 @@ public:
 
   static void AddOnLog(void *addonData, const ADDON::addon_log_t addonLogLevel, const char *strMessage);
   static bool GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue);
+  static char *TranslateSpecialProtocol(const char *strSource);
   static void QueueNotification(void *addonData, const ADDON::queue_msg_t type, const char *strMessage);
   static bool WakeOnLan(const char *mac);
   static char* UnknownToUTF8(const char *strSource);
