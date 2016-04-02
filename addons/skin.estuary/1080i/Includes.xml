@@ -407,10 +407,10 @@
 			<left>100</left>
 			<itemgap>5</itemgap>
 			<width>1720</width>
-			<include name="MediaFlag">
+			<include content="MediaFlag">
 				<param name="texture" value="$INFO[ListItem.AudioChannels,flags/audiochannel/,.png]" />
 			</include>
-			<include name="MediaFlag">
+			<include content="MediaFlag">
 				<param name="texture" value="$INFO[ListItem.AudioCodec,flags/audiocodec/,.png]" />
 			</include>
 		</control>
@@ -420,10 +420,10 @@
 			<itemgap>5</itemgap>
 			<width>1720</width>
 			<align>right</align>
-			<include name="MediaFlag">
+			<include content="MediaFlag">
 				<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
 			</include>
-			<include name="MediaFlag">
+			<include content="MediaFlag">
 				<param name="texture" value="$VAR[ResolutionFlagVar]" />
 			</include>
 		</control>

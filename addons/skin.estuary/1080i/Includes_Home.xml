@@ -166,7 +166,7 @@
 			<left>0</left>
 			<top>0</top>
 			<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
-			<include name="LeftRightArrows">
+			<include content="LeftRightArrows">
 				<param name="posy" value="221" />
 				<param name="list_id" value="$PARAM[list_id]" />
 			</include>
@@ -398,7 +398,7 @@
 				<left>0</left>
 				<top>0</top>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
-				<include name="LeftRightArrows">
+				<include content="LeftRightArrows">
 					<param name="posy" value="210" />
 					<param name="list_id" value="$PARAM[list_id]" />
 				</include>
@@ -557,7 +557,7 @@
 				<left>0</left>
 				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
-				<include name="LeftRightArrows">
+				<include content="LeftRightArrows">
 					<param name="posy" value="200" />
 					<param name="list_id" value="$PARAM[list_id]" />
 				</include>
@@ -736,7 +736,7 @@
 					<label>$PARAM[widget_header]</label>
 					<shadowcolor>text_shadow</shadowcolor>
 				</control>
-				<include name="LeftRightArrows">
+				<include content="LeftRightArrows">
 					<param name="posy" value="200" />
 					<param name="list_id" value="$PARAM[list_id]" />
 				</include>
@@ -863,7 +863,7 @@
 					<label>$PARAM[widget_header]</label>
 					<shadowcolor>text_shadow</shadowcolor>
 				</control>
-				<include name="LeftRightArrows">
+				<include content="LeftRightArrows">
 					<param name="posy" value="300" />
 					<param name="list_id" value="$PARAM[list_id]" />
 				</include>
@@ -1138,34 +1138,34 @@
 				<onclick>noop</onclick>
 				<visible>String.IsEmpty(Window(weather).Property(Hourly.IsFetched))</visible>
 			</item>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="1" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="2" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="3" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="4" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="5" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="6" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="7" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="8" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="9" />
 			</include>
-			<include name="WeatherHourlyItem">
+			<include content="WeatherHourlyItem">
 				<param name="item_index" value="10" />
 			</include>
 		</content>
@@ -1177,51 +1177,51 @@
 				<onclick>noop</onclick>
 				<visible>String.IsEmpty(Window(weather).Property(Daily.IsFetched))</visible>
 			</item>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="1" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="2" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="3" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="4" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="5" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="6" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="7" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="8" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="9" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="10" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="11" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="12" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="13" />
 			</include>
-			<include name="WeatherDailyItem">
+			<include content="WeatherDailyItem">
 				<param name="item_index" value="14" />
 			</include>
 		</content>
 	</include>
-	<!-- <include name="WeatherDailyItem">
+	<!-- <include content="WeatherDailyItem">
 	     <item id="$PARAM[item_index]">
 	     <label>$INFO[Window(weather).Property(Daily.$PARAM[item_index].LongDay)]</label>
 	     <label2>$INFO[Window(weather).Property(Daily.$PARAM[item_index].LongDate)]</label2>

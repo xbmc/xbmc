@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_50_List">
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="50" />
 			<param name="visible" value="!System.HasModalDialog" />
 		</include>
@@ -11,7 +11,7 @@
 			<top>182</top>
 			<visible>Control.IsVisible(50)</visible>
 			<include>Visible_Right</include>
-			<include name="ListContainer">
+			<include content="ListContainer">
 				<param name="list_id" value="50" />
 				<param name="viewtype_label" value="$LOCALIZE[535]" />
 			</include>

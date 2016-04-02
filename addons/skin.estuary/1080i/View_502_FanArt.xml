@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_502_FanArt">
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="502" />
 			<param name="visible" value="!System.HasModalDialog" />
 		</include>
@@ -55,7 +55,7 @@
 				<top>18</top>
 				<visible>Control.IsVisible(502)</visible>
 				<include>Visible_Left</include>
-				<include name="ListContainer">
+				<include content="ListContainer">
 					<param name="list_id" value="502" />
 					<param name="viewtype_label" value="$LOCALIZE[20445]" />
 				</include>

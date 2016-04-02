@@ -171,7 +171,7 @@
 				<visible>!String.IsEmpty(ListItem.Date)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
-				<include name="PVRInfoPanel">
+				<include content="PVRInfoPanel">
 					<param name="bottom_label1" value="$INFO[ListItem.NextTitle,[COLOR button_focus]$LOCALIZE[19031]:[/COLOR] ]" />
 					<param name="bottom_label2" value="$INFO[ListItem.NextStartTime]" />
 				</include>
@@ -180,7 +180,7 @@
 				<include>MediaMenuCommon</include>
 				<include>PVRSideBar</include>
 			</control>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[137]" />
 				<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 			</include>

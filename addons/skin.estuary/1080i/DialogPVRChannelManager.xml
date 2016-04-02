@@ -7,7 +7,7 @@
 	</coordinates>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
-		<include name="DialogBackgroundCommons">
+		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1720" />
 			<param name="DialogBackgroundHeight" value="830" />
 			<param name="DialogHeaderLabel" value="$VAR[PVRChannelMgrHeader]" />
@@ -249,17 +249,17 @@
 			<onleft>9002</onleft>
 			<onright>20</onright>
 			<itemgap>-20</itemgap>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="width" value="350" />
 				<param name="id" value="4" />
 				<param name="label" value="$LOCALIZE[186]" />
 			</include>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="width" value="350" />
 				<param name="id" value="5" />
 				<param name="label" value="$LOCALIZE[14070]" />
 			</include>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="width" value="350" />
 				<param name="id" value="6" />
 				<param name="label" value="$LOCALIZE[222]" />

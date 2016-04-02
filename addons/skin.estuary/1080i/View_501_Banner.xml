@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_501_Banner">
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="501" />
 			<param name="visible" value="!System.HasModalDialog" />
 		</include>
@@ -132,12 +132,12 @@
 						<animation effect="fade" start="100" end="0" time="50">UnFocus</animation>
 						<top>13</top>
 						<right>0</right>
-						<include name="SmallThumbInfoFlag">
+						<include content="SmallThumbInfoFlag">
 							<param name="icon" value="lists/rating.png" />
 							<param name="infolabel" value="ListItem.Rating" />
 							<param name="posy" value="5" />
 						</include>
-						<include name="SmallThumbInfoFlag">
+						<include content="SmallThumbInfoFlag">
 							<param name="icon" value="lists/year.png" />
 							<param name="infolabel" value="ListItem.Year" />
 							<param name="posy" value="84" />

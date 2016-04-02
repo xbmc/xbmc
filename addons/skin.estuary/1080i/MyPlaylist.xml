@@ -7,7 +7,7 @@
 		<include>DefaultBackground</include>
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
-			<include name="PlaylistWindowButtons">
+			<include content="PlaylistWindowButtons">
 				<param name="width" value="400" />
 			</include>
 			<control type="group">
@@ -144,11 +144,11 @@
 				<include>MediaFlags</include>
 			</control>
 		</control>
-		<include name="TopBar" condition="Window.IsActive(videoplaylist)">
+		<include content="TopBar" condition="Window.IsActive(videoplaylist)">
 			<param name="breadcrumbs_label" value="$LOCALIZE[31065]" />
 			<param name="breadcrumbs_icon" value="icons/settings/video.png" />
 		</include>
-		<include name="TopBar" condition="Window.IsActive(musicplaylist)">
+		<include content="TopBar" condition="Window.IsActive(musicplaylist)">
 			<param name="breadcrumbs_label" value="$LOCALIZE[31066]" />
 			<param name="breadcrumbs_icon" value="icons/settings/music.png" />
 		</include>

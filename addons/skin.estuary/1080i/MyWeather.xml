@@ -59,7 +59,7 @@
 				<ondown>20</ondown>
 				<onleft>16001</onleft>
 				<onright>16001</onright>
-				<include name="DefaultSimpleListLayout">
+				<include content="DefaultSimpleListLayout">
 					<param name="align" value="center" />
 					<param name="width" value="340" />
 					<param name="height" value="120" />
@@ -254,46 +254,46 @@
 					</control>
 				</itemlayout>
 				<content>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="1" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="2" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="3" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="4" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="5" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="6" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="7" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="8" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="9" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="10" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="11" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="12" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="13" />
 					</include>
-					<include name="WeatherDailyItem">
+					<include content="WeatherDailyItem">
 						<param name="item_index" value="14" />
 					</include>
 				</content>
@@ -401,46 +401,46 @@
 					</control>
 				</itemlayout>
 				<content>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="1" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="2" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="3" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="4" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="5" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="6" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="7" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="8" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="9" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="10" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="11" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="12" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="13" />
 					</include>
-					<include name="WeatherHourlyItem">
+					<include content="WeatherHourlyItem">
 						<param name="item_index" value="14" />
 					</include>
 				</content>
@@ -521,27 +521,27 @@
 					<top>650</top>
 					<left>70</left>
 					<orientation>horizontal</orientation>
-					<include name="WeatherIcon">
+					<include content="WeatherIcon">
 						<param name="label" value="Window(weather).Property(Current.Wind)" />
 						<param name="texture" value="icons/weather/wind.png" />
 						<param name="header" value="$LOCALIZE[404]" />
 					</include>
-					<include name="WeatherIcon">
+					<include content="WeatherIcon">
 						<param name="label" value="Window(weather).Property(Current.Humidity)" />
 						<param name="texture" value="icons/weather/humidity.png" />
 						<param name="header" value="$LOCALIZE[406]" />
 					</include>
-					<include name="WeatherIcon">
+					<include content="WeatherIcon">
 						<param name="label" value="Window(weather).Property(Current.Precipitation)" />
 						<param name="texture" value="icons/weather/rain.png" />
 						<param name="header" value="$LOCALIZE[33021]" />
 					</include>
-					<include name="WeatherIcon">
+					<include content="WeatherIcon">
 						<param name="label" value="Window(weather).Property(Today.Sunrise)" />
 						<param name="texture" value="icons/weather/sunrise.png" />
 						<param name="header" value="$LOCALIZE[405]" />
 					</include>
-					<include name="WeatherIcon">
+					<include content="WeatherIcon">
 						<param name="label" value="Window(weather).Property(Today.Sunset)" />
 						<param name="texture" value="icons/weather/sunset.png" />
 						<param name="header" value="$LOCALIZE[403]" />
@@ -653,25 +653,25 @@
 					</control>
 				</focusedlayout>
 				<content>
-					<include name="WeatherMapItem">
+					<include content="WeatherMapItem">
 						<param name="item_id" value="1" />
 					</include>
-					<include name="WeatherMapItem">
+					<include content="WeatherMapItem">
 						<param name="item_id" value="2" />
 					</include>
-					<include name="WeatherMapItem">
+					<include content="WeatherMapItem">
 						<param name="item_id" value="3" />
 					</include>
-					<include name="WeatherMapItem">
+					<include content="WeatherMapItem">
 						<param name="item_id" value="4" />
 					</include>
-					<include name="WeatherMapItem">
+					<include content="WeatherMapItem">
 						<param name="item_id" value="5" />
 					</include>
 				</content>
 			</control>
 		</control>
-		<include name="TopBar">
+		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[8]" />
 			<param name="breadcrumbs_icon" value="icons/settings/weather.png" />
 		</include>

@@ -6,7 +6,7 @@
         <control type="group">
             <left>100</left>
             <top>200</top>
-            <include name="DialogBackgroundCommons">
+            <include content="DialogBackgroundCommons">
                 <param name="DialogBackgroundWidth" value="1720" />
                 <param name="DialogBackgroundHeight" value="690" />
                 <param name="DialogHeaderLabel" value="$LOCALIZE[35058]" />
@@ -116,22 +116,22 @@
                 <onleft>5</onleft>
                 <onright>3</onright>
                 <itemgap>-20</itemgap>
-                <include name="DefaultDialogButton">
+                <include content="DefaultDialogButton">
                     <param name="width" value="350" />
                     <param name="id" value="20" />
                     <param name="label" value="$LOCALIZE[21452]" />
                 </include>
-                <include name="DefaultDialogButton">
+                <include content="DefaultDialogButton">
                     <param name="width" value="350" />
                     <param name="id" value="19" />
                     <param name="label" value="$LOCALIZE[10035]" />
                 </include>
-                <include name="DefaultDialogButton">
+                <include content="DefaultDialogButton">
                     <param name="width" value="350" />
                     <param name="id" value="18" />
                     <param name="label" value="$LOCALIZE[186]" />
                 </include>
-                <include name="DefaultDialogButton">
+                <include content="DefaultDialogButton">
                     <param name="width" value="350" />
                     <param name="id" value="17" />
                     <param name="label" value="$LOCALIZE[10043]" />

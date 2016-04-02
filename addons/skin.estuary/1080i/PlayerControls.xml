@@ -8,7 +8,7 @@
 	</coordinates>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
-		<include name="DialogBackgroundCommons">
+		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1115" />
 			<param name="DialogBackgroundHeight" value="380" />
 			<param name="DialogHeaderLabel" value="16003" />
@@ -137,7 +137,7 @@
 			<orientation>horizontal</orientation>
 			<onup>87</onup>
 			<control type="radiobutton" id="600">
-				<include name="OSDButton">
+				<include content="OSDButton">
 					<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 				</include>
 				<onclick>PlayerControl(Previous)</onclick>
@@ -160,13 +160,13 @@
 				<onclick>PlayerControl(Play)</onclick>
 			</control>
 			<control type="radiobutton" id="603">
-				<include name="OSDButton">
+				<include content="OSDButton">
 					<param name="texture" value="osd/fullscreen/buttons/stop.png"/>
 				</include>
 				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="radiobutton" id="605">
-				<include name="OSDButton">
+				<include content="OSDButton">
 					<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 				</include>
 				<onclick>PlayerControl(Next)</onclick>

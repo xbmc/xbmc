@@ -170,7 +170,7 @@
 				<visible>!String.IsEmpty(ListItem.Date)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
-				<include name="PVRInfoPanel">
+				<include content="PVRInfoPanel">
 					<param name="bottom_label1" value="$INFO[PVR.NextTimer]" />
 					<param name="bottom_label2" value="" />
 				</include>
@@ -180,7 +180,7 @@
 			<include>MediaMenuCommon</include>
 			<include>PVRSideBar</include>
 		</control>
-		<include name="TopBar">
+		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimerVar]" />
 			<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 		</include>

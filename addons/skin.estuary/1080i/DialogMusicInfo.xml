@@ -290,7 +290,7 @@
 					<width>262</width>
 					<visible>String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)</visible>
 					<control type="button" id="7">
-						<include name="VideoInfoButtonsCommon">
+						<include content="VideoInfoButtonsCommon">
 							<param name="icon" value="" />
 						</include>
 						<label>$LOCALIZE[31033]</label>
@@ -319,7 +319,7 @@
 					</control>
 				</control>
 				<control type="radiobutton" id="120">
-					<include name="VideoInfoButtonsCommon">
+					<include content="VideoInfoButtonsCommon">
 						<param name="icon" value="icons/infodialogs/image.png" />
 					</include>
 					<label>$LOCALIZE[31028]</label>
@@ -328,24 +328,24 @@
 					<onclick>ActivateWindow(1104)</onclick>
 					<visible>String.IsEqual(ListItem.DBType,artist) | String.IsEqual(ListItem.DBType,album)</visible>
 				</control>
-				<include name="InfoDialogButton">
+				<include content="InfoDialogButton">
 					<param name="id" value="6" />
 					<param name="icon" value="icons/infodialogs/update.png" />
 					<param name="label" value="$LOCALIZE[184]" />
 				</include>
-				<include name="InfoDialogButton">
+				<include content="InfoDialogButton">
 					<param name="id" value="10" />
 					<param name="icon" value="icons/infodialogs/choose_image.png" />
 					<param name="label" value="$LOCALIZE[13405]" />
 				</include>
-				<include name="InfoDialogButton">
+				<include content="InfoDialogButton">
 					<param name="id" value="12" />
 					<param name="icon" value="icons/infodialogs/choose_image.png" />
 					<param name="label" value="$LOCALIZE[20413]" />
 				</include>
 				<control type="radiobutton" id="440">
 					<label>$LOCALIZE[31114]</label>
-					<include name="VideoInfoButtonsCommon">
+					<include content="VideoInfoButtonsCommon">
 						<param name="icon" value="icons/infodialogs/trailer.png" />
 					</include>
 					<onclick>Action(close)</onclick>
@@ -354,7 +354,7 @@
 					<onclick condition="String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
 				</control>
 			</control>
-			<include name="LeftRightArrows">
+			<include content="LeftRightArrows">
 				<param name="list_id" value="50" />
 				<param name="left_posx" value="574" />
 				<param name="right_posx" value="1780" />
@@ -364,7 +364,7 @@
 		</control>
 		<control type="group">
 			<visible>String.IsEqual(ListItem.DBType,artist)</visible>
-			<include name="InfoDialogTopBarInfo">
+			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$INFO[ListItem.Artist]" />
 				<param name="sub_label" value="$INFO[ListItem.Genre]" />
 				<param name="id" value="33333" />
@@ -372,7 +372,7 @@
 		</control>
 		<control type="group">
 			<visible>String.IsEqual(ListItem.DBType,album)</visible>
-			<include name="InfoDialogTopBarInfo">
+			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]" />
 				<param name="sub_label" value="$INFO[ListItem.Artist]" />
 				<param name="id" value="33334" />
@@ -380,7 +380,7 @@
 		</control>
 		<control type="group">
 			<visible>String.IsEqual(ListItem.DBType,song) + !Window.IsActive(musicinformation)</visible>
-			<include name="InfoDialogTopBarInfo">
+			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="[COLOR button_focus]$INFO[ListItem.TrackNumber]. [/COLOR]$INFO[ListItem.Title]" />
 				<param name="sub_label" value="$INFO[ListItem.Artist,, - ]$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]" />
 				<param name="id" value="33335" />

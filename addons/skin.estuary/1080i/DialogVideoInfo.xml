@@ -147,67 +147,67 @@
 					<onup>50</onup>
 					<onright>140</onright>
 					<onleft>140</onleft>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="148" />
 						<param name="label" value="$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]: [/COLOR]]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Writer)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="149" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[563]: [/COLOR]$INFO[ListItem.RatingAndVotes]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.RatingAndVotes)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="150" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[515]: [/COLOR]$INFO[ListItem.Genre]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Genre) + Stringcompare(ListItem.DBType,movie)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="151" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[180]: [/COLOR]$INFO[ListItem.Duration] $LOCALIZE[31060]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Duration)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="152" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[21875]: [/COLOR]$INFO[ListItem.Country]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Country)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="153" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[29909]: [/COLOR]$INFO[ListItem.Studio]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Studio)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="154" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[20416]: [/COLOR]$INFO[ListItem.Premiered]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Premiered)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="155" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[31048]: [/COLOR]$INFO[ListItem.Season,, $LOCALIZE[36905]]$INFO[ListItem.Episode, (, $LOCALIZE[20453])]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Season) + !Stringcompare(ListItem.DBType,episode)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="156" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[31017]: [/COLOR]$INFO[ListItem.Mpaa]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Mpaa)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="157" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[20141]: [/COLOR]$INFO[ListItem.Set]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Set)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="157" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[20459]: [/COLOR]$INFO[ListItem.Tag]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Tag)" />
 					</include>
-					<include name="InfoDialogMetadata">
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="157" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[126]: [/COLOR]$INFO[ListItem.Status]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Status)" />
@@ -381,18 +381,18 @@
 					<align>center</align>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="quadratic">200</scrolltime>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="8" />
 						<param name="icon" value="icons/infodialogs/play.png" />
 						<param name="label" value="$LOCALIZE[208]" />
 					</include>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="11" />
 						<param name="icon" value="icons/infodialogs/trailer.png" />
 						<param name="label" value="$LOCALIZE[20410]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]" />
 					</include>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="441" />
 						<param name="icon" value="icons/infodialogs/cinema.png" />
 						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
@@ -400,7 +400,7 @@
 						<param name="label" value="$LOCALIZE[31003]" />
 						<param name="visible" value="System.HasAddon(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
 					</include>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="440" />
 						<param name="icon" value="icons/infodialogs/trailer.png" />
 						<param name="label" value="$LOCALIZE[31090]" />
@@ -412,7 +412,7 @@
 						<width>262</width>
 						<visible>Control.IsEnabled(7)</visible>
 						<control type="button" id="7">
-							<include name="VideoInfoButtonsCommon">
+							<include content="VideoInfoButtonsCommon">
 								<param name="icon" value="" />
 							</include>
 							<label>$LOCALIZE[31033]</label>
@@ -443,14 +443,14 @@
 							<visible>String.IsEmpty(ListItem.UserRating)</visible>
 						</control>
 					</control>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="101" />
 						<param name="icon" value="icons/infodialogs/info.png" />
 						<param name="label" value="$LOCALIZE[31034]" />
 						<param name="onclick_1" value="RunScript(script.extendedinfo,info=openinfodialog)" />
 						<param name="visible" value="System.hasAddon(script.extendedinfo)" />
 					</include>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="102" />
 						<param name="icon" value="icons/infodialogs/image.png" />
 						<param name="label" value="$LOCALIZE[31028]" />
@@ -458,32 +458,32 @@
 						<param name="onclick_2" value="ActivateWindow(1104)" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Art(fanart))" />
 					</include>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="13" />
 						<param name="icon" value="icons/infodialogs/director.png" />
 						<param name="label" value="$LOCALIZE[31123]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="10" />
 						<param name="icon" value="icons/infodialogs/choose_image.png" />
 						<param name="label" value="$LOCALIZE[13511]" />
 					</include>
-					<include name="InfoDialogButton">
+					<include content="InfoDialogButton">
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/update.png" />
 						<param name="label" value="$LOCALIZE[184]" />
 						<param name="visible" value="Control.IsEnabled(6)" />
 					</include>
 				</control>
-				<include name="LeftRightArrows">
+				<include content="LeftRightArrows">
 					<param name="list_id" value="5000" />
 					<param name="left_posx" value="-15" />
 					<param name="right_posx" value="1240" />
 					<param name="posy" value="924" />
 					<param name="visible" value="true" />
 				</include>
-				<include name="LeftRightArrows">
+				<include content="LeftRightArrows">
 					<param name="list_id" value="50" />
 					<param name="left_posx" value="-15" />
 					<param name="right_posx" value="1240" />
@@ -536,7 +536,7 @@
 					</control>
 				</control>
 			</control>
-			<include name="InfoDialogTopBarInfo">
+			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$VAR[VideoInfoMainLabelVar]" />
 				<param name="sub_label" value="$VAR[VideoInfoSubLabelVar]" />
 			</include>

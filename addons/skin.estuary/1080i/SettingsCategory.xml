@@ -143,7 +143,7 @@
 			<textcolor>grey</textcolor>
 			<shadowcolor>black</shadowcolor>
 		</control>
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="5" />
 			<param name="posx" value="1141" />
 			<param name="up_posy" value="105" />
@@ -159,7 +159,7 @@
 			<aspectratio>keep</aspectratio>
 			<texture>icon_system.png</texture>
 		</control>
-		<include name="TopBar">
+		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[5]$INFO[Control.GetLabel(2), / ]" />
 			<param name="breadcrumbs_icon" value="$VAR[SettingsSectionIcon]" />
 		</include>

@@ -10,7 +10,7 @@
 		<control type="group">
 			<include>Animation_DialogPopupVisible</include>
 			<visible>!Window.IsVisible(sliderdialog)</visible>
-			<include name="DialogBackgroundCommons">
+			<include content="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="1520" />
 				<param name="DialogBackgroundHeight" value="870" />
 				<param name="DialogHeaderLabel" value="-" />
@@ -71,15 +71,15 @@
 				<itemgap>-10</itemgap>
 				<onleft>5</onleft>
 				<onright>5</onright>
-				<include name="DefaultDialogButton">
+				<include content="DefaultDialogButton">
 					<param name="id" value="28" />
 					<param name="label" value="-" />
 				</include>
-				<include name="DefaultDialogButton">
+				<include content="DefaultDialogButton">
 					<param name="id" value="29" />
 					<param name="label" value="-" />
 				</include>
-				<include name="DefaultDialogButton">
+				<include content="DefaultDialogButton">
 					<param name="id" value="30" />
 					<param name="label" value="-" />
 				</include>

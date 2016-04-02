@@ -7,7 +7,7 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group" id="250">
-			<include name="DialogBackgroundCommons">
+			<include content="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="1720" />
 				<param name="DialogBackgroundHeight" value="750" />
 				<param name="DialogHeaderLabel" value="$LOCALIZE[24012]" />
@@ -21,7 +21,7 @@
 					<onright>150</onright>
 					<onleft>73</onleft>
 					<orientation>vertical</orientation>
-					<include name="DefaultDialogButton">
+					<include content="DefaultDialogButton">
 						<param name="id" value="160" />
 						<param name="label" value="$LOCALIZE[24120]" />
 						<param name="width" value="420" />
@@ -278,7 +278,7 @@
 				<onup>150</onup>
 				<ondown>150</ondown>
 				<scrolltime>200</scrolltime>
-				<include name="DefaultSimpleListLayout">
+				<include content="DefaultSimpleListLayout">
 					<param name="width" value="320" />
 					<param name="height" value="80" />
 					<param name="list_id" value="150" />

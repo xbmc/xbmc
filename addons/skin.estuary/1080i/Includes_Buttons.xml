@@ -161,28 +161,28 @@
 					<ondown>700</ondown>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<include name="PlaylistWindowButton">
+					<include content="PlaylistWindowButton">
 						<param name="control_id" value="20" />
 						<param name="onclick" value="" />
 						<param name="label" value="$LOCALIZE[191]$INFO[Playlist.Random, : ]" />
 						<param name="icon" value="osd/fullscreen/buttons/random-on.png" />
 						<param name="width" value="$PARAM[width]" />
 					</include>
-					<include name="PlaylistWindowButton">
+					<include content="PlaylistWindowButton">
 						<param name="control_id" value="26" />
 						<param name="onclick" value="" />
 						<param name="label" value="" />
 						<param name="icon" value="osd/fullscreen/buttons/repeat-all.png" />
 						<param name="width" value="$PARAM[width]" />
 					</include>
-					<include name="PlaylistWindowButton">
+					<include content="PlaylistWindowButton">
 						<param name="control_id" value="21" />
 						<param name="onclick" value="" />
 						<param name="label" value="$LOCALIZE[190]" />
 						<param name="icon" value="icons/playlist/save.png" />
 						<param name="width" value="$PARAM[width]" />
 					</include>
-					<include name="PlaylistWindowButton">
+					<include content="PlaylistWindowButton">
 						<param name="control_id" value="22" />
 						<param name="onclick" value="" />
 						<param name="label" value="$LOCALIZE[192]" />

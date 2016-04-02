@@ -89,32 +89,32 @@
 						<onup>14100</onup>
 						<ondown>6054</ondown>
 						<width>1000</width>
-						<include name="PVRQuickNavItemsCommon">
+						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id" value="100" />
 							<param name="area" value="Channels" />
 							<param name="icon" value="icons/submenu/channels.png" />
 						</include>
-						<include name="PVRQuickNavItemsCommon">
+						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id" value="101" />
 							<param name="area" value="Guide" />
 							<param name="icon" value="icons/submenu/guide.png" />
 						</include>
-						<include name="PVRQuickNavItemsCommon">
+						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id" value="102" />
 							<param name="area" value="Recordings" />
 							<param name="icon" value="icons/submenu/recordings.png" />
 						</include>
-						<include name="PVRQuickNavItemsCommon">
+						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id" value="103" />
 							<param name="area" value="Timers" />
 							<param name="icon" value="icons/submenu/timers.png" />
 						</include>
-						<include name="PVRQuickNavItemsCommon">
+						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id" value="104" />
 							<param name="area" value="TimerRules" />
 							<param name="icon" value="icons/submenu/timer-rules.png" />
 						</include>
-						<include name="PVRQuickNavItemsCommon">
+						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id" value="105" />
 							<param name="area" value="Search" />
 							<param name="icon" value="icons/submenu/tv-search.png" />
@@ -209,25 +209,25 @@
 						<ondown>6056</ondown>
 						<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
 						<visible>!System.HasModalDialog</visible>
-						<include name="BottomMainMenuItem">
+						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14101" />
 							<param name="height" value="95" />
 							<param name="onclick" value="Pause" />
 							<param name="icon" value="icons/now-playing/pause.png" />
 						</include>
-						<include name="BottomMainMenuItem">
+						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14102" />
 							<param name="height" value="95" />
 							<param name="onclick" value="Stop" />
 							<param name="icon" value="icons/now-playing/stop.png" />
 						</include>
-						<include name="BottomMainMenuItem">
+						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14104" />
 							<param name="height" value="95" />
 							<param name="onclick" value="Next" />
 							<param name="icon" value="icons/now-playing/next.png" />
 						</include>
-						<include name="BottomMainMenuItem">
+						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14105" />
 							<param name="height" value="95" />
 							<param name="onclick" value="Fullscreen" />
@@ -287,25 +287,25 @@
 			<onleft>14100</onleft>
 			<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
 			<visible>!System.HasModalDialog</visible>
-			<include name="BottomMainMenuItem">
+			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14101" />
 				<param name="height" value="95" />
 				<param name="onclick" value="Pause" />
 				<param name="icon" value="icons/now-playing/pause.png" />
 			</include>
-			<include name="BottomMainMenuItem">
+			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14102" />
 				<param name="height" value="95" />
 				<param name="onclick" value="Stop" />
 				<param name="icon" value="icons/now-playing/stop.png" />
 			</include>
-			<include name="BottomMainMenuItem">
+			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14104" />
 				<param name="height" value="95" />
 				<param name="onclick" value="Next" />
 				<param name="icon" value="icons/now-playing/next.png" />
 			</include>
-			<include name="BottomMainMenuItem">
+			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14105" />
 				<param name="height" value="95" />
 				<param name="onclick" value="Fullscreen" />

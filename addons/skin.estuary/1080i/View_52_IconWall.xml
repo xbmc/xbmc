@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_52_IconWall">
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="52" />
 			<param name="visible" value="!System.HasModalDialog" />
 		</include>

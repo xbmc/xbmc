@@ -174,7 +174,7 @@
 			<visible>Player.ShowInfo | Window.IsActive(musicosd)</visible>
 			<animation effect="fade" start="0" end="100" time="200">Visible</animation>
 			<animation effect="fade" end="0" time="200">Hidden</animation>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[250]" />
 				<param name="breadcrumbs_icon" value="icons/settings/music.png" />
 			</include>

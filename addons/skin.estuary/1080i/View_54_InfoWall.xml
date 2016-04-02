@@ -77,7 +77,7 @@
 		</control>
 	</include>
 	<include name="View_54_InfoWall">
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="54" />
 			<param name="visible" value="!System.HasModalDialog" />
 		</include>

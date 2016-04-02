@@ -43,147 +43,147 @@
 					<width>450</width>
 					<height>600</height>
 					<orientation>vertical</orientation>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21820]"/>
 						<param name="value" value="ListItem.PictureDatetime" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21805]"/>
 						<param name="value" value="ListItem.PictureResolution" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21826]"/>
 						<param name="value" value="ListItem.PictureAperture" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21863]"/>
 						<param name="value" value="ListItem.PictureAuthor" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21867]"/>
 						<param name="value" value="ListItem.PictureByline" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21868]"/>
 						<param name="value" value="ListItem.PictureBylineTitle" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[31041]"/>
 						<param name="value" value="ListItem.PictureCamMake" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21823]"/>
 						<param name="value" value="ListItem.PictureCamModel" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21862]"/>
 						<param name="value" value="ListItem.PictureCaption" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21866]"/>
 						<param name="value" value="ListItem.PictureCategory" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21839]"/>
 						<param name="value" value="ListItem.PictureCCDWidth" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21873]"/>
 						<param name="value" value="ListItem.PictureCity" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21807]"/>
 						<param name="value" value="ListItem.PictureColour" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21839]"/>
 						<param name="value" value="ListItem.PictureComment" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21871]"/>
 						<param name="value" value="ListItem.PictureCopyrightNotice" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21875]"/>
 						<param name="value" value="ListItem.PictureCountry" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21879]"/>
 						<param name="value" value="ListItem.PictureCountryCode" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21869]"/>
 						<param name="value" value="ListItem.PictureCredit" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21821]"/>
 						<param name="value" value="ListItem.PictureDesc" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21838]"/>
 						<param name="value" value="ListItem.PictureDigitalZoom" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21832]"/>
 						<param name="value" value="ListItem.PictureExpMode" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21829]"/>
 						<param name="value" value="ListItem.PictureExposure" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21831]"/>
 						<param name="value" value="ListItem.PictureExposureBias" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21830]"/>
 						<param name="value" value="ListItem.PictureExpTime" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21833]"/>
 						<param name="value" value="ListItem.PictureFlashUsed" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21827]"/>
 						<param name="value" value="ListItem.PictureFocalLen" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21828]"/>
 						<param name="value" value="ListItem.PictureFocusDist" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21840]"/>
 						<param name="value" value="ListItem.PictureGPSLat" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21841]"/>
 						<param name="value" value="ListItem.PictureGPSLon" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21842]"/>
 						<param name="value" value="ListItem.PictureGPSAlt" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21864]"/>
 						<param name="value" value="ListItem.PictureHeadline" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21858]"/>
 						<param name="value" value="ListItem.PictureImageType" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21837]"/>
 						<param name="value" value="ListItem.PictureISO" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21861]"/>
 						<param name="value" value="ListItem.PictureKeywords" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21843]"/>
 						<param name="value" value="$INFO[ListItem.PictureOrientation]" />
 					</include>
-					<include name="PicsInfoLine">
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21808]"/>
 						<param name="value" value="$INFO[ListItem.PictureProcess]" />
 					</include>
@@ -242,7 +242,7 @@
 					<include>MediaMenuNowPlaying</include>
 				</control>
 			</control>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[1213]" />
 				<param name="breadcrumbs_icon" value="icons/settings/pictures.png" />
 			</include>

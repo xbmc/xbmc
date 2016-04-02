@@ -7,13 +7,13 @@
 	</coordinates>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
-		<include name="DialogBackgroundCommons">
+		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1500" />
 			<param name="DialogBackgroundHeight" value="800" />
 			<param name="DialogHeaderLabel" value="$LOCALIZE[1036]" />
 			<param name="DialogHeaderId" value="2" />
 		</include>
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="450" />
 			<param name="posx" value="726" />
 			<param name="up_posy" value="-40" />

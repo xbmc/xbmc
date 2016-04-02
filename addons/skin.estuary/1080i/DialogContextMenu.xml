@@ -44,7 +44,7 @@
 			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 			<texturenofocus>lists/separator.png</texturenofocus>
 		</control>
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="996" />
 			<param name="posx" value="201" />
 			<param name="up_posy" value="-40" />
