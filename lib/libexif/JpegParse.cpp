@@ -161,7 +161,7 @@ bool CJpegParse::ExtractInfo (FILE *infile)
   {
     BYTE marker = 0;
     for (a=0; a<7; a++) {
-      bytesRead = fread(&marker, 1, sizeof(BYTE), infile);
+      fread(&marker, 1, sizeof(BYTE), infile);
       if (marker != 0xFF)
         break;
 
