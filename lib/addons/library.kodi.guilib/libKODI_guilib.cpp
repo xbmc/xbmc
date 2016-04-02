@@ -273,9 +273,13 @@ CAddonGUIWindow::CAddonGUIWindow(void *hdl, void *cb, const char *xmlFilename, c
  : m_Handle(hdl)
  , m_cb(cb)
 {
-  CBOnInit = NULL;
-  CBOnClick = NULL;
-  CBOnFocus = NULL;
+  CBOnInit = nullptr;
+  CBOnClick = nullptr;
+  CBOnFocus = nullptr;
+  CBOnAction = nullptr;
+  m_WindowHandle = nullptr;
+  m_cbhdl = nullptr;
+
   if (hdl && cb)
   {
     m_WindowHandle = ((CB_GUILib*)m_cb)->Window_New(((AddonCB*)m_Handle)->addonData, xmlFilename, defaultSkin, forceFallback, asDialog);
@@ -958,10 +962,15 @@ DLLEXPORT bool GUI_control_rendering_dirty(GUIHANDLE handle)
 }
 
 CAddonGUIRenderingControl::CAddonGUIRenderingControl(void *hdl, void *cb, CAddonGUIWindow *window, int controlId)
- : m_Window(window)
- , m_ControlId(controlId)
- , m_Handle(hdl)
- , m_cb(cb)
+  : m_Window(window)
+  , m_ControlId(controlId)
+  , m_Handle(hdl)
+  , m_cb(cb)
+  , m_cbhdl(nullptr)
+  , CBCreate(nullptr)
+  , CBRender(nullptr)
+  , CBStop(nullptr)
+  , CBDirty(nullptr)
 {
   m_RenderingHandle = ((CB_GUILib*)m_cb)->Window_GetControl_RenderAddon(((AddonCB*)m_Handle)->addonData, m_Window->m_WindowHandle, controlId);
 }

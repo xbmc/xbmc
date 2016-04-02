@@ -198,10 +198,8 @@ static void ErrNonfatal(const char* const msg, int a1, int a2)
 //--------------------------------------------------------------------------
 CExifParse::CExifParse () : m_FocalPlaneXRes(0.0),
         m_FocalPlaneUnits(0.0), m_ExifImageWidth(0), m_MotorolaOrder(false),
-        m_DateFound(false)
-{
-  m_ExifInfo = NULL;
-}
+        m_DateFound(false), m_LargestExifOffset(0), m_ExifInfo(nullptr)
+{}
 
 //--------------------------------------------------------------------------
 // Convert a 16 bit unsigned value from file's native byte order
