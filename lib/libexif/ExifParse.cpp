@@ -121,6 +121,8 @@ static void ErrNonfatal(const char* const msg, int a1, int a2);
 // NOTE: Remember to change NUM_FORMATS if you define a new format
 #define NUM_FORMATS   12
 
+const unsigned int BytesPerFormat[NUM_FORMATS] = { 1,1,2,4,8,1,1,2,4,8,4,8 };
+
 //--------------------------------------------------------------------------
 // Internationalisation string IDs. The enum order must match that in the
 // language file (e.g. 'language/English/strings.xml', and EXIF_PARSE_STRING_ID_BASE
@@ -356,9 +358,6 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     }
   }
 
-  const int BytesPerFormat[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
-
-
   for (int de=0;de<NumDirEntries;de++)
   {
     int Tag, Format, Components;
@@ -370,9 +369,8 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     Format = Get16(DirEntry+2, m_MotorolaOrder);
     Components = Get32(DirEntry+4, m_MotorolaOrder);
 
-    if ((Format-1) >= NUM_FORMATS)
+    if (Format <= 0 || Format > NUM_FORMATS)
     {
-      // (-1) catches illegal zero case as unsigned underflows to positive large.
       ErrNonfatal("Illegal number format %d for tag %04x", Format, Tag);
       continue;
     }
@@ -383,7 +381,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       continue;
     }
 
-    ByteCount = Components * BytesPerFormat[Format];
+    ByteCount = Components * BytesPerFormat[Format - 1];
 
     if (ByteCount > 4)
     {
@@ -894,15 +892,13 @@ void CExifParse::ProcessGpsInfo(
     unsigned Tag        = Get16(DirEntry, m_MotorolaOrder);
     unsigned Format     = Get16(DirEntry+2, m_MotorolaOrder);
     unsigned Components = (unsigned)Get32(DirEntry+4, m_MotorolaOrder);
-    if ((Format-1) >= NUM_FORMATS)
+    if (Format == 0 || Format > NUM_FORMATS)
     {
-      // (-1) catches illegal zero case as unsigned underflows to positive large.
       ErrNonfatal("Illegal number format %d for tag %04x", Format, Tag);
       continue;
     }
 
-    const int BytesPerFormat[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
-    int ComponentSize  = BytesPerFormat[Format];
+    unsigned ComponentSize = BytesPerFormat[Format - 1];
     unsigned ByteCount = Components * ComponentSize;
 
     const unsigned char* ValuePtr;
