@@ -10,7 +10,7 @@ ExternalProject_Add(d3dx11effects
             SOURCE_DIR ${CORE_SOURCE_DIR}/lib/win32/Effects11
             PREFIX ${CORE_BUILD_DIR}/Effects11
             CONFIGURE_COMMAND ""
-            BUILD_COMMAND msbuild ${CORE_SOURCE_DIR}/lib/win32/Effects11/Effects11_2013.sln
+            BUILD_COMMAND msbuild ${CORE_SOURCE_DIR}/lib/win32/Effects11/Effects11_2015.sln
                                   /t:Effects11 /p:Configuration=${CORE_BUILD_CONFIG}
             INSTALL_COMMAND "")
 

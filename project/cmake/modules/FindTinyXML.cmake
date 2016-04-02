@@ -22,10 +22,10 @@ find_path(TINYXML_INCLUDE_DIR tinyxml.h
                               PATH_SUFFIXES tinyxml
                               PATHS ${PC_TINYXML_INCLUDEDIR})
 find_library(TINYXML_LIBRARY_RELEASE NAMES tinyxml tinyxmlSTL
-                                     PATH_SUFFIXES tinyxml ${CONFIGURATION_LIBDIR_RELEASE}
+                                     PATH_SUFFIXES tinyxml
                                      PATHS ${PC_TINYXML_LIBDIR})
-find_library(TINYXML_LIBRARY_DEBUG NAMES tinyxml tinyxmlSTL
-                                   PATH_SUFFIXES tinyxml ${CONFIGURATION_LIBDIR_DEBUG}
+find_library(TINYXML_LIBRARY_DEBUG NAMES tinyxmld tinyxmlSTLd
+                                   PATH_SUFFIXES tinyxml
                                    PATHS ${PC_TINYXML_LIBDIR})
 set(TINYXML_VERSION ${PC_TINYXML_VERSION})
 

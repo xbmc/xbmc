@@ -26,7 +26,11 @@
 #ifdef TARGET_WINDOWS
 #ifndef BUILDING_WITH_CMAKE
 #define TIXML_USE_STL
+#ifdef _DEBUG
+#pragma comment(lib, "tinyxmlSTLd.lib")
+#else
 #pragma comment(lib, "tinyxmlSTL.lib")
+#endif
 #endif
 #else
 //compile fix for TinyXml < 2.6.0

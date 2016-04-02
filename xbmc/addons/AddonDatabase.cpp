@@ -21,6 +21,7 @@
 #include "AddonDatabase.h"
 
 #include <algorithm>
+#include <iterator>
 #include <utility>
 
 #include "addons/AddonBuilder.h"
@@ -32,7 +33,6 @@
 #include "utils/Variant.h"
 #include "DllLibCPluff.h"
 #include "XBDateTime.h"
-
 
 using namespace ADDON;
 
@@ -253,7 +253,6 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::
   }
 }
 
-
 void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
 {
   try
@@ -278,7 +277,6 @@ void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
 }
-
 
 bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime& dateTime)
 {
@@ -829,7 +827,6 @@ std::pair<CDateTime, ADDON::AddonVersion> CAddonDatabase::LastChecked(const std:
   }
   return std::make_pair(date, version);
 }
-
 
 bool CAddonDatabase::SetLastChecked(const std::string& id,
     const ADDON::AddonVersion& version, const std::string& time)

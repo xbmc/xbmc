@@ -845,7 +845,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
 {
   switch (pMsg->dwMessage)
   {
-  case TMSG_GUI_DIALOG_OPEN:
+  case TMSG_GUI_DIALOG_OPEN:  
   {
     if (pMsg->lpVoid)
       static_cast<CGUIDialog*>(pMsg->lpVoid)->Open(pMsg->strParam);
@@ -1032,7 +1032,7 @@ void CGUIWindowManager::RenderPass() const
   // we render the dialogs based on their render order.
   std::vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
-
+  
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())

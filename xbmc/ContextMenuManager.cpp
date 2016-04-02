@@ -29,6 +29,8 @@
 #include "video/ContextMenus.h"
 #include "utils/log.h"
 
+#include <iterator>
+
 using namespace ADDON;
 
 

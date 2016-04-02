@@ -2,12 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
-
   <!-- Common configuration settings -->
   <PropertyGroup>
     <IncludePath>$(SolutionDir)\..\BuildDependencies\include;$(SolutionDir)\..\BuildDependencies\include\python;$(IncludePath)</IncludePath>
     <ExecutablePath>$(SolutionDir)\..\..\tools\win32buildtools;$(ExecutablePath)</ExecutablePath>
-    <LocalDebuggerEnvironment>KODI_HOME=$(SolutionDir)..\..&#xD;&#xA;PATH=$(SolutionDir)..\Win32BuildSetup\dependencies;%PATH%</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>KODI_HOME=$(SolutionDir)..\..
+PATH=$(SolutionDir)..\Win32BuildSetup\dependencies;%PATH%</LocalDebuggerEnvironment>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -27,7 +27,6 @@
       <LinkErrorReporting>QueueForNextLogin</LinkErrorReporting>
     </Link>
   </ItemDefinitionGroup>
-
   <!-- "Debug" specific settings -->
   <PropertyGroup Condition="'$(UseDebugLibraries)'=='true'">
     <LibraryPath>$(SolutionDir)\..\BuildDependencies\lib\Debug-vc120;$(SolutionDir)\..\BuildDependencies\lib;$(LibraryPath)</LibraryPath>
@@ -37,7 +36,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>false</OmitFramePointers>
-      <PreprocessorDefinitions>_DEBUG;TARGET_WINDOWS;_WINDOWS;WIN32;_XBMC;_WIN32_WINNT=0x0600;NTDDI_VERSION=0x06000000;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;TARGET_WINDOWS;_WINDOWS;WIN32;_XBMC;_WIN32_WINNT=0x0600;NTDDI_VERSION=0x06000000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary Condition="'$(ConfigurationType)'=='Application'">MultiThreadedDebug</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(ConfigurationType)'=='StaticLibrary'">MultiThreadedDebug</RuntimeLibrary>
       <RuntimeLibrary Condition="'$(ConfigurationType)'=='DynamicLibrary'">MultiThreadedDebugDLL</RuntimeLibrary>
@@ -48,7 +47,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-
   <!-- "Release" specific settings -->
   <PropertyGroup Condition="'$(UseDebugLibraries)'!='true'">
     <LibraryPath>$(SolutionDir)\..\BuildDependencies\lib\Release-vc120;$(SolutionDir)\..\BuildDependencies\lib;$(LibraryPath)</LibraryPath>

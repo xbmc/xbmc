@@ -15,9 +15,6 @@ list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32)
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg)
 list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg/bin)
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../BuildDependencies)
-set(CONFIGURATION_LIBDIR lib/${CORE_BUILD_CONFIG}-vc120)
-set(CONFIGURATION_LIBDIR_RELEASE lib/Release-vc120)
-set(CONFIGURATION_LIBDIR_DEBUG lib/Debug-vc120)
 
 set(JPEG_NAMES ${JPEG_NAMES} jpeg-static)
 set(PYTHON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/../BuildDependencies/include/python)
@@ -32,7 +29,7 @@ set(SYSTEM_DEFINES -DNOMINMAX -D_USE_32BIT_TIME_T -DHAS_DX -D__STDC_CONSTANT_MAC
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DBUILDING_WITH_CMAKE
-                   $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO -D_SECURE_SCL=0 -D_HAS_ITERATOR_DEBUGGING=0>)
+                   $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO -D_SECURE_SCL=0>)
 
 # Compile with /MT (to be compatible with the dependent libraries)
 foreach(CompilerFlag CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
@@ -53,8 +50,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 # For #pragma comment(lib X)
 # TODO: It would certainly be better to handle these libraries via CMake modules.
 link_directories(${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg/bin
-                 ${PROJECT_SOURCE_DIR}/../BuildDependencies/lib
-                 ${PROJECT_SOURCE_DIR}/../BuildDependencies/${CONFIGURATION_LIBDIR})
+                 ${PROJECT_SOURCE_DIR}/../BuildDependencies/lib)
 
 # Additional libraries
 list(APPEND DEPLIBS d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib

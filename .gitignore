@@ -549,3 +549,8 @@ lib/cpluff/stamp-h1
 
 # Doxygen generated files
 /docs/html
+system/libmysql.dll
+system/python27.dll
+system/zlib.dll
+lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
+lib/addons/library.kodi.inputstream/project/VS2010Express/Release

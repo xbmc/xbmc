@@ -1,4 +1,4 @@
-os: Visual Studio 2013
+os: Visual Studio 2015
 
 shallow_clone: true
 
@@ -24,7 +24,7 @@ build_script:
   - ps: $ErrorActionPreference= 'silentlycontinue'
   
   # Setup Visual Studio compiler environment 
-  - call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+  - call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
   
   #
   # Build Kodi
