@@ -402,7 +402,7 @@ void CRenderSystemDX::SetFullScreenInternal()
   }
 end:
   // in windowed mode DWM uses triple buffering in any case. 
-  // for FSEM we use double buffering
+  // for FSEM we use double buffering to avoid possible shuttering/tearing
   SetMaximumFrameLatency(2 - m_useWindowedDX);
 }
 
@@ -756,7 +756,9 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (m_pSwapChain)
   {
     m_pSwapChain->GetDesc(&scDesc);
-    bNeedResize = m_bResizeRequred || m_nBackBufferWidth != scDesc.BufferDesc.Width || m_nBackBufferHeight != scDesc.BufferDesc.Height;
+    bNeedResize = m_bResizeRequred || 
+                  m_nBackBufferWidth != scDesc.BufferDesc.Width || 
+                  m_nBackBufferHeight != scDesc.BufferDesc.Height;
   }
   else
     bNeedResize = true;
@@ -765,7 +767,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   {
     DXGI_SWAP_CHAIN_DESC1 scDesc;
     m_pSwapChain1->GetDesc1(&scDesc);
-    bNeedRecreate = (scDesc.Stereo && !bHWStereoEnabled) || (!scDesc.Stereo && bHWStereoEnabled);
+    bNeedRecreate = scDesc.Stereo != bHWStereoEnabled;
   }
 
   if (!bNeedRecreate && !bNeedResize)
@@ -800,6 +802,12 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (bNeedRecreate)
   {
+    if (!m_bResizeRequred)
+    {
+      OnDisplayLost();
+      m_bResizeRequred = true;
+    }
+
     BOOL fullScreen;
     m_pSwapChain1->GetFullscreenState(&fullScreen, NULL);
     if (fullScreen)
@@ -847,6 +855,20 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
       hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, NULL, &m_pSwapChain1);
 
+      // some drivers (AMD) are denied to switch in stereoscopic 3D mode, if so then fallback to mono mode
+      if (FAILED(hr) && bHWStereoEnabled)
+      {
+        // switch to stereo mode failed, create mono swapchain
+        CLog::Log(LOGERROR, "%s - Creating stereo swap chain failed with error: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
+        CLog::Log(LOGNOTICE, "%s - Fallback to monoscopic mode.", __FUNCTION__);
+
+        scDesc1.Stereo = false;
+        hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, NULL, &m_pSwapChain1);
+
+        // fallback to split_horisontal mode.
+        g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
+      }
+
       if (SUCCEEDED(hr))
       {
         m_pSwapChain1->QueryInterface(__uuidof(IDXGISwapChain), reinterpret_cast<void**>(&m_pSwapChain));
@@ -865,17 +887,6 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
           Sleep(100);
         }
         m_bHWStereoEnabled = bHWStereoEnabled;
-      }
-      else if (bHWStereoEnabled)
-      {
-        // switch to stereo mode failed, create mono swapchain
-        CLog::Log(LOGERROR, "%s - Creating swap chain failed with error: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
-
-        scDesc1.Stereo = false;
-        hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, NULL, &m_pSwapChain1);
-
-        // fallback to split_horisontal mode.
-        g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
       }
       dxgiFactory2->Release();
     }
@@ -951,7 +962,6 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer (%s).", __FUNCTION__, GetErrorDescription(hr).c_str());
-      pBackBuffer->Release();
       g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_OFF); // try fallback to mono
     }
   }
@@ -1249,6 +1259,8 @@ bool CRenderSystemDX::BeginRender()
     break;
   case DXGI_ERROR_INVALID_CALL: // application provided invalid parameter data. Try to return after resize buffers
     CLog::Log(LOGERROR, "DXGI_ERROR_INVALID_CALL");
+    // in most cases when DXGI_ERROR_INVALID_CALL occurs it means what DXGI silently leaves from FSE mode.
+    // if so, we should return for FSE mode and resize buffers
     SetFullScreenInternal();
     CreateWindowSizeDependentResources();
     m_nDeviceStatus = S_OK;
