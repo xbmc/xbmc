@@ -27,7 +27,6 @@ class CEdl
 {
 public:
   CEdl();
-  virtual ~CEdl(void);
 
   typedef enum
   {

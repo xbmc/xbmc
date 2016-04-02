@@ -464,7 +464,7 @@ void CVideoPlayerVideo::Process()
       // buffer packets so we can recover should decoder flush for some reason
       if(m_pVideoCodec->GetConvergeCount() > 0)
       {
-        m_packets.push_back(DVDMessageListItem(pMsg, 0));
+        m_packets.emplace_back(pMsg, 0);
         if(m_packets.size() > m_pVideoCodec->GetConvergeCount()
         || m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
           m_packets.pop_front();

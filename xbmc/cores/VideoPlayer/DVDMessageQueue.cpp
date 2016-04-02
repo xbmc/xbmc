@@ -56,13 +56,9 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
 {
   CSingleLock lock(m_section);
 
-  for (SList::iterator it = m_list.begin(); it != m_list.end();)
-  {
-    if (it->message->IsType(type) ||  type == CDVDMsg::NONE)
-      it = m_list.erase(it);
-    else
-      ++it;
-  }
+  m_list.remove_if([type](const DVDMessageListItem &item){
+      return type == CDVDMsg::NONE || item.message->IsType(type);
+    });
 
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
   {
@@ -109,14 +105,11 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
     return MSGQ_INVALID_MSG;
   }
 
-  SList::iterator it = m_list.begin();
-  while(it != m_list.end())
-  {
-    if(priority <= it->priority)
-      break;
-    ++it;
-  }
-  m_list.insert(it, DVDMessageListItem(pMsg, priority));
+  auto it = std::find_if(m_list.begin(), m_list.end(),
+                         [priority](const DVDMessageListItem &item){
+                           return priority <= item.priority;
+                         });
+  m_list.emplace(it, pMsg, priority);
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) && priority == 0)
   {
@@ -213,9 +206,9 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
     return 0;
 
   unsigned count = 0;
-  for(SList::iterator it = m_list.begin(); it != m_list.end();++it)
+  for (const auto &item : m_list)
   {
-    if(it->message->IsType(type))
+    if(item.message->IsType(type))
       count++;
   }
 

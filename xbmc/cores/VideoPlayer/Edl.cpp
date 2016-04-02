@@ -41,11 +41,6 @@ CEdl::CEdl()
   Clear();
 }
 
-CEdl::~CEdl()
-{
-  Clear();
-}
-
 void CEdl::Clear()
 {
   m_vecCuts.clear();

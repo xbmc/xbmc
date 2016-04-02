@@ -51,7 +51,7 @@ CDVDDemuxSPU::CDVDDemuxSPU()
 
 CDVDDemuxSPU::~CDVDDemuxSPU()
 {
-  if (m_spuData.data) free(m_spuData.data);
+  free(m_spuData.data);
 }
 
 void CDVDDemuxSPU::Reset()
@@ -68,7 +68,7 @@ void CDVDDemuxSPU::Reset()
 
 void CDVDDemuxSPU::FlushCurrentPacket()
 {
-  if (m_spuData.data) free(m_spuData.data);
+  free(m_spuData.data);
   memset(&m_spuData, 0, sizeof(m_spuData));
 }
 
