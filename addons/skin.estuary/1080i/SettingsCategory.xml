@@ -34,7 +34,7 @@
 				<aligny>center</aligny>
 				<font>font13_title</font>
 				<textcolor>white</textcolor>
-				<texturefocus>lists/focus.png</texturefocus>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 				<texturenofocus border="2">lists/separator.png</texturenofocus>
 			</control>
 			<control type="radiobutton" id="20">
@@ -46,7 +46,7 @@
 				<onclick>SettingsLevelChange</onclick>
 				<textoffsetx>100</textoffsetx>
 				<textoffsety>0</textoffsety>
-				<texturefocus border="40">buttons/button-theme-fo.png</texturefocus>
+				<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
 				<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 				<radioposx>40</radioposx>
 				<radioposy>0</radioposy>

@@ -52,7 +52,7 @@
 							<top>0</top>
 							<width>800</width>
 							<height>63</height>
-							<texture>lists/focus.png</texture>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
 						</control>
 						<control type="label">
 							<left>30</left>

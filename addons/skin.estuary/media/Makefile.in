@@ -1,10 +1,5 @@
 TARGET=Textures.xbt
 TARGET_CURIAL=curial.xbt
-TARGET_GREEN=green.xbt
-TARGET_ORANGE=orange.xbt
-TARGET_PINK=pink.xbt
-TARGET_MAROON=maroon.xbt
-TARGET_CHARCOAL=charcoal.xbt
 
 all: TEXTURES
 
@@ -13,19 +8,9 @@ all: TEXTURES
 TEXTURES:
 	@TEXTUREPACKER@ -dupecheck -input . -output $(TARGET)
 	@TEXTUREPACKER@ -dupecheck -input ../themes/curial -output $(TARGET_CURIAL)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/green -output $(TARGET_GREEN)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/orange -output $(TARGET_ORANGE)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/pink -output $(TARGET_PINK)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/maroon -output $(TARGET_MAROON)
-	@TEXTUREPACKER@ -dupecheck -input ../themes/charcoal -output $(TARGET_CHARCOAL)
 
 clean:
 	rm -f $(TARGET)
 	rm -f $(TARGET_CURIAL)
-	rm -f $(TARGET_GREEN)
-	rm -f $(TARGET_ORANGE)
-	rm -f $(TARGET_PINK)
-	rm -f $(TARGET_MAROON)
-	rm -f $(TARGET_CHARCOAL)
 
 distclean: clean

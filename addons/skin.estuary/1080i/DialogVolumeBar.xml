@@ -13,6 +13,14 @@
             <animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
             <animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
             <control type="image">
+                <left>-5</left>
+                <top>-25</top>
+                <width>150</width>
+                <height>125</height>
+                <texture border="40">buttons/dialogbutton-nofo.png</texture>
+                <visible>Window.IsActive(fullscreenvideo) | Window.IsActive(slideshow)</visible>
+            </control>
+            <control type="image">
                 <left>6</left>
                 <top>-11</top>
                 <width>100</width>

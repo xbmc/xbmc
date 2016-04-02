@@ -40,9 +40,9 @@
 							<align>center</align>
 						</control>
 						<control type="image">
-							<left>19</left>
+							<left>21</left>
 							<top>149</top>
-							<width>359</width>
+							<width>358</width>
 							<height>75</height>
 							<texture colordiffuse="border_alpha">colors/black.png</texture>
 						</control>
@@ -85,7 +85,7 @@
 						<control type="image">
 							<width>400</width>
 							<height>245</height>
-							<texture border="40">buttons/button-theme-fo.png</texture>
+							<texture border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texture>
 							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
 						</control>
 						<control type="image">
@@ -107,9 +107,9 @@
 							<visible>!String.EndsWith(ListItem.Overlay,watched.png)</visible>
 						</control>
 						<control type="image">
-							<left>19</left>
+							<left>21</left>
 							<top>149</top>
-							<width>359</width>
+							<width>358</width>
 							<height>75</height>
 							<texture colordiffuse="border_alpha">colors/black.png</texture>
 						</control>
@@ -161,7 +161,7 @@
 						<control type="image">
 							<width>330</width>
 							<height>124</height>
-							<texture border="40">buttons/button-theme-fo.png</texture>
+							<texture border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texture>
 							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
 						</control>
 						<control type="textbox">

@@ -169,7 +169,7 @@
 						<top>0</top>
 						<width>920</width>
 						<height>100</height>
-						<texture>lists/focus.png</texture>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<visible>Control.HasFocus(120)</visible>
 					</control>
 					<control type="image">

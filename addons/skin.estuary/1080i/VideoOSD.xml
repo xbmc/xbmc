@@ -240,8 +240,8 @@
 						<onup>201</onup>
 						<onunfocus condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onunfocus>
 						<ondown>201</ondown>
-						<onright>PlayerControl(Forward)</onright>
-						<onleft>PlayerControl(Rewind)</onleft>
+						<onright condition="!Player.Forwarding32x">PlayerControl(Forward)</onright>
+						<onleft condition="!Player.Rewinding32x">PlayerControl(Rewind)</onleft>
 						<visible>Player.SeekEnabled</visible>
 						<onclick condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onclick>
 					</control>

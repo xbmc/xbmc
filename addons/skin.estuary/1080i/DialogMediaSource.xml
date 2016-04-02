@@ -77,7 +77,7 @@
 					<width>820</width>
 					<height>61</height>
 					<visible>Control.HasFocus(10)</visible>
-					<texture>lists/focus.png</texture>
+					<texture colordiffuse="button_focus">lists/focus.png</texture>
 				</control>
 				<control type="label">
 					<left>10</left>

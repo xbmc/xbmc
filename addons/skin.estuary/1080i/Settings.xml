@@ -20,9 +20,9 @@
 					<texture border="40">buttons/button-nofo.png</texture>
 				</control>
 				<control type="image">
-					<left>19</left>
+					<left>21</left>
 					<top>179</top>
-					<width>359</width>
+					<width>358</width>
 					<height>50</height>
 					<texture colordiffuse="border_alpha">colors/black.png</texture>
 				</control>
@@ -48,10 +48,10 @@
 				<control type="group">
 					<depth>DepthContentPopout</depth>
 					<animation type="Focus" reversible="false">
-						<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+						<effect type="zoom" center="200,125" start="100" end="108" time="250" tween="sine" />
 					</animation>
 					<animation type="UnFocus" reversible="false">
-						<effect type="zoom" center="auto" start="108" end="100" time="250" tween="sine" />
+						<effect type="zoom" center="200,125" start="108" end="100" time="250" tween="sine" />
 					</animation>
 					<control type="image">
 						<width>400</width>
@@ -61,13 +61,13 @@
 					<control type="image">
 						<width>400</width>
 						<height>250</height>
-						<texture border="40">buttons/button-theme-fo.png</texture>
+						<texture border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texture>
 						<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
 					</control>
 					<control type="image">
-						<left>19</left>
+						<left>21</left>
 						<top>179</top>
-						<width>359</width>
+						<width>358</width>
 						<height>50</height>
 						<texture colordiffuse="border_alpha">colors/black.png</texture>
 					</control>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<menucontrol>9000</menucontrol>
-	<defaultcontrol>9000</defaultcontrol>
+<!-- 	<menucontrol>9000</menucontrol>
+ -->	<defaultcontrol>9000</defaultcontrol>
 	<!-- 	<onload condition="ControlGroup(700).HasFocus">SetFocus(9000,0)</onload>
 	 -->
 	<backgroundcolor>background</backgroundcolor>
@@ -445,7 +445,7 @@
 							<param name="sortorder" value="descending"/>
 							<param name="list_id" value="8500"/>
 							<param name="onup_id" value="8400"/>
-							<param name="ondown_id" value="20001"/>
+							<param name="ondown_id" value="8600"/>
 							<param name="single_label" value="$INFO[ListItem.Label]"/>
 							<param name="main_label" value=""/>
 							<param name="sub_label" value=""/>
@@ -456,6 +456,7 @@
 							<param name="button_label" value="$LOCALIZE[31118]" />
 							<param name="button_onclick" value="ActivateWindow(addonbrowser)"/>
 							<param name="button_id" value="8600"/>
+							<param name="onup_id" value="8100"/>
 							<param name="visible" value="!Integer.IsGreater(Container(8100).NumItems,0) + !Integer.IsGreater(Container(8200).NumItems,0) + !Integer.IsGreater(Container(8300).NumItems,0) + !Integer.IsGreater(Container(8400).NumItems,0) + !Integer.IsGreater(Container(8500).NumItems,0)"/>
 							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoProgramsButton)"/>
 						</include>
@@ -523,7 +524,7 @@
 							<param name="button_onclick" value="ActivateWindow(videos,root)"/>
 							<param name="button_id" value="11300"/>
 							<param name="onup_id" value="11200"/>
-							<param name="visible" value="!Control.IsVisible(11100) + !Control.IsVisible(11200)"/>
+							<param name="visible" value="!Control.IsVisible(111000) + !Control.IsVisible(112000)"/>
 							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoVideosButton)"/>
 						</include>
 					</control>
@@ -596,7 +597,7 @@
 									<param name="label2" value="$INFO[PVR.NowRecordingTitle][CR][COLOR=grey]$INFO[PVR.NowRecordingChannel][/COLOR]" />
 								</include>
 							</control>
-							<control type="group">>
+							<control type="group">
 								<visible>PVR.HasNonRecordingTimer</visible>
 								<width>680</width>
 								<include name="PVRWidget">
@@ -892,6 +893,7 @@
 						<width>382</width>
 						<height>671</height>
 						<pagecontrol>70</pagecontrol>
+						<onfocus>ClearProperty(listposition,home)</onfocus>
 						<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),movies) + Control.IsVisible(5000)">5000</onright>
 						<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows) + Control.IsVisible(6000)">6000</onright>
 						<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),music) + Control.IsVisible(7000)">7000</onright>
@@ -918,7 +920,7 @@
 									<top>0</top>
 									<width>390</width>
 									<height>73</height>
-									<texture>lists/focus.png</texture>
+									<texture colordiffuse="button_focus">lists/focus.png</texture>
 									<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !Control.HasFocus(900) + !ControlGroup(700).HasFocus + !Control.HasFocus(14200)">Conditional</animation>
 								</control>
 								<control type="image">
@@ -1103,6 +1105,11 @@
 					<ondown>14200</ondown>
 					<onright>2000</onright>
 					<include name="BottomMainMenuItem">
+						<param name="control_id" value="803" />
+						<param name="onclick" value="ActivateWindow(favourites)" />
+						<param name="icon" value="icons/favourites.png" />
+					</include>
+					<include name="BottomMainMenuItem">
 						<param name="control_id" value="801" />
 						<param name="onclick" value="ActivateWindow(filemanager)" />
 						<param name="icon" value="icons/filemanager.png" />
@@ -1111,11 +1118,6 @@
 						<param name="control_id" value="802" />
 						<param name="onclick" value="ActivateWindow(settings)" />
 						<param name="icon" value="icons/settings.png" />
-					</include>
-					<include name="BottomMainMenuItem">
-						<param name="control_id" value="803" />
-						<param name="onclick" value="ActivateWindow(favourites)" />
-						<param name="icon" value="icons/favourites.png" />
 					</include>
 					<include name="BottomMainMenuItem">
 						<param name="control_id" value="804" />
@@ -1144,7 +1146,7 @@
 					<radioposy>0</radioposy>
 					<radiowidth>34</radiowidth>
 					<radioheight>34</radioheight>
-					<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 					<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 					<textureradioonfocus>icons/now-playing/fullscreen.png</textureradioonfocus>
 					<textureradioonnofocus>icons/now-playing/fullscreen.png</textureradioonnofocus>

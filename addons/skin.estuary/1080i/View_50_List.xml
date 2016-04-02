@@ -54,7 +54,7 @@
 					<top>0</top>
 					<width>710</width>
 					<height>69</height>
-					<texture>lists/focus.png</texture>
+					<texture colordiffuse="button_focus">lists/focus.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
 				<control type="label">

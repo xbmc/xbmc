@@ -111,9 +111,9 @@
 					</control>
 					<control type="grouplist">
 						<top>845</top>
-						<right>140</right>
+						<right>150</right>
 						<orientation>horizontal</orientation>
-						<width>380</width>
+						<width>360</width>
 						<align>center</align>
 						<include name="InfoFlag">
 							<param name="visible" value="!String.IsEmpty(ListItem.duration)" />
@@ -142,7 +142,6 @@
 				<top>180</top>
 				<left>106</left>
 				<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(sets) | Container.Content(actors) | Container.Content(directors)</visible>
-				<visible>!Control.IsVisible(502)</visible>
 				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(55)</visible>
 				<include>OpenClose_Left</include>
 				<include>Visible_Left</include>

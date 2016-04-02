@@ -16,11 +16,6 @@ ECHO ----------------------------------------
 ECHO Creating XBT File...
 START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input media -output ..\..\project\Win32BuildSetup\BUILD_WIN32\application\addons\skin.estuary\media\Textures.xbt
 START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input themes\curial -output ..\..\project\Win32BuildSetup\BUILD_WIN32\application\addons\skin.estuary\media\curial.xbt
-START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input themes\green -output ..\..\project\Win32BuildSetup\BUILD_WIN32\application\addons\skin.estuary\media\green.xbt
-START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input themes\orange -output ..\..\project\Win32BuildSetup\BUILD_WIN32\application\addons\skin.estuary\media\orange.xbt
-START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input themes\pink -output ..\..\project\Win32BuildSetup\BUILD_WIN32\application\addons\skin.estuary\media\pink.xbt
-START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input themes\maroon -output ..\..\project\Win32BuildSetup\BUILD_WIN32\application\addons\skin.estuary\media\maroon.xbt
-START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -dupecheck -input themes\charcoal -output ..\..\project\Win32BuildSetup\BUILD_WIN32\application\addons\skin.estuary\media\charcoal.xbt
 
 ECHO ----------------------------------------
 ECHO XBT Texture Files Created...

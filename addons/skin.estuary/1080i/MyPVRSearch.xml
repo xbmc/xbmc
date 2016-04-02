@@ -9,7 +9,6 @@
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
-				<description>TV Search group</description>
 				<visible>Control.IsVisible(50)</visible>
 				<include>OpenClose_Left</include>
 				<include>Visible_Left</include>
@@ -104,7 +103,7 @@
 								<top>0</top>
 								<width>1050</width>
 								<height>101</height>
-								<texture>lists/focus.png</texture>
+								<texture colordiffuse="button_focus">lists/focus.png</texture>
 								<visible>Control.HasFocus(50)</visible>
 							</control>
 							<control type="label">

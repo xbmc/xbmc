@@ -207,6 +207,11 @@
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[20459]: [/COLOR]$INFO[ListItem.Tag]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Tag)" />
 					</include>
+					<include name="InfoDialogMetadata">
+						<param name="control_id" value="157" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[126]: [/COLOR]$INFO[ListItem.Status]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Status)" />
+					</include>
 				</control>
 				<control type="image">
 					<left>17</left>
@@ -265,7 +270,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture fallback="DefaultActor.png">$INFO[ListItem.Thumb]</texture>
+								<texture fallback="DefaultActor.png" background="true">$INFO[ListItem.Thumb]</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -317,7 +322,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture>$INFO[ListItem.Thumb]</texture>
+								<texture fallback="DefaultActor.png" background="true">$INFO[ListItem.Thumb]</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">

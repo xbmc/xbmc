@@ -143,7 +143,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 						<visible>!String.IsEmpty(ListItem.Duration)</visible>
 					</control>
-					<control type="label">>
+					<control type="label">
 						<font>font12</font>
 						<width>1160</width>
 						<height>38</height>
@@ -159,7 +159,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 						<visible>[String.IsEmpty(ListItem.Director) | String.IsEmpty(ListItem.Duration)] + !String.IsEmpty(ListItem.Genre)</visible>
 					</control>
-					<control type="label">>
+					<control type="label">
 						<font>font12</font>
 						<width>1160</width>
 						<height>38</height>

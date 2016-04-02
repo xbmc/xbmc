@@ -67,7 +67,7 @@
 						<onup>300</onup>
 						<ondown>302</ondown>
 						<textoffsetx>20</textoffsetx>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -156,7 +156,7 @@
 						<height>125</height>
 						<onup>309</onup>
 						<ondown>303</ondown>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<label>$LOCALIZE[20178]</label>
 						<altlabel>[B][UPPERCASE]$LOCALIZE[20178][/UPPERCASE][/B]</altlabel>
@@ -249,7 +249,7 @@
 						<altlabel>[B][UPPERCASE]$LOCALIZE[20179][/UPPERCASE][/B]</altlabel>
 						<onup>302</onup>
 						<ondown>307</ondown>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -339,7 +339,7 @@
 						<onup>303</onup>
 						<ondown>300</ondown>
 						<label>IP</label>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -352,7 +352,7 @@
 						<altlabel>ABC</altlabel>
 						<onup>303</onup>
 						<ondown>300</ondown>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -439,7 +439,7 @@
 						<description>DONE button</description>
 						<width>290</width>
 						<height>125</height>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<label>$LOCALIZE[20177]</label>
 						<align>center</align>
@@ -453,7 +453,7 @@
 						<width>335</width>
 						<height>125</height>
 						<label>$LOCALIZE[20182]</label>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -469,7 +469,7 @@
 						<onup>164</onup>
 						<ondown condition="!System.HasAddon(plugin.program.autocompletion)">104</ondown>
 						<ondown condition="System.HasAddon(plugin.program.autocompletion)">9010</ondown>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -479,7 +479,7 @@
 						<label>&lt;</label>
 						<width>125</width>
 						<height>125</height>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -493,7 +493,7 @@
 						<label>&gt;</label>
 						<width>125</width>
 						<height>125</height>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -509,7 +509,7 @@
 						<label>Hide</label>
 						<align>center</align>
 						<aligny>center</aligny>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<onclick>SetFocus(502)</onclick>
 						<onup>169</onup>
@@ -523,7 +523,7 @@
 						<label>$LOCALIZE[222]</label>
 						<align>center</align>
 						<aligny>center</aligny>
-						<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 						<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
 						<onclick>Close</onclick>
 						<onup>171</onup>
@@ -573,7 +573,7 @@
 						<control type="image">
 							<width>520</width>
 							<height>90</height>
-							<texture border="40">buttons/dialogbutton-fo.png</texture>
+							<texture border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
 							<animation effect="fade" start="0" end="100" time="200">Focus</animation>
 							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
 						</control>

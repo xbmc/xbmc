@@ -38,7 +38,7 @@
 					<control type="image">
 						<width>348</width>
 						<height>74</height>
-						<texture>lists/focus.png</texture>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<animation effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)">Conditional</animation>
 					</control>
 					<control type="label">
@@ -131,7 +131,7 @@
 					<control type="image">
 						<width>325</width>
 						<height>352</height>
-						<texture>lists/focus.png</texture>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<visible>Control.HasFocus(2)</visible>
 					</control>
 					<control type="image">

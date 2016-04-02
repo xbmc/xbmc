@@ -55,7 +55,7 @@
 					<top>0</top>
 					<width>500</width>
 					<height>70</height>
-					<texture>lists/focus.png</texture>
+					<texture colordiffuse="button_focus">lists/focus.png</texture>
 					<visible>Control.HasFocus(9000)</visible>
 				</control>
 				<control type="label">
