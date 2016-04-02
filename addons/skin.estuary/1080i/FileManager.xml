@@ -17,7 +17,7 @@
 			<top>190</top>
 			<left>100</left>
 			<include>OpenClose_Left</include>
-			<include name="FileManagerPanel">
+			<include content="FileManagerPanel">
 				<param name="header_id" value="101" />
 				<param name="header_label" value="" />
 				<param name="list_id" value="20" />
@@ -33,7 +33,7 @@
 			<left>1020</left>
 			<top>190</top>
 			<include>OpenClose_Right</include>
-			<include name="FileManagerPanel">
+			<include content="FileManagerPanel">
 				<param name="header_id" value="102" />
 				<param name="header_label" value="" />
 				<param name="list_id" value="21" />
@@ -45,12 +45,12 @@
 				<param name="header_haspath" value="true" />
 			</include>
 		</control>
-		<include name="TopBar">
+		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[7]" />
 			<param name="breadcrumbs_icon" value="icons/settings/filemanager.png" />
 		</include>
 		<include>BottomBar</include>
-		<include name="BottomBarTwoListInfo">
+		<include content="BottomBarTwoListInfo">
 			<param name="left_container_id">20</param>
 			<param name="left_scrollbar_id">60</param>
 			<param name="right_container_id">21</param>

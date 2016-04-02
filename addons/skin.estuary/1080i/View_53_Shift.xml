@@ -6,7 +6,7 @@
 			<height>424</height>
 			<left>0</left>
 			<top>180</top>
-			<include name="LeftRightArrows">
+			<include content="LeftRightArrows">
 				<param name="list_id" value="53" />
 				<param name="left_posx" value="45" />
 				<param name="right_posx" value="1849" />
@@ -117,13 +117,13 @@
 				<visible>Control.IsVisible(53)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
-				<include name="ShiftTextbox">
+				<include content="ShiftTextbox">
 					<param name="textbox_id" value="53200" />
 					<param name="textbox_content" value="$VAR[ShiftLeftTextBoxVar]" />
 				</include>
 				<control type="group">
 					<left>860</left>
-					<include name="ShiftTextbox">
+					<include content="ShiftTextbox">
 						<param name="textbox_id" value="53300" />
 						<param name="textbox_content" value="$VAR[ShiftRightTextBoxVar]" />
 					</include>

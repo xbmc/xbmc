@@ -32,7 +32,7 @@
 				<onleft>5000</onleft>
 				<onright>620</onright>
 				<control type="radiobutton" id="600">
-					<include name="OSDButton">
+					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 					</include>
 					<onclick>PlayerControl(Previous)</onclick>
@@ -54,13 +54,13 @@
 					<onclick>PlayerControl(Play)</onclick>
 				</control>
 				<control type="radiobutton" id="603">
-					<include name="OSDButton">
+					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/stop.png"/>
 					</include>
 					<onclick>PlayerControl(Stop)</onclick>
 				</control>
 				<control type="radiobutton" id="605">
-					<include name="OSDButton">
+					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 					</include>
 					<onclick>PlayerControl(Next)</onclick>
@@ -81,7 +81,7 @@
 				<onleft>605</onleft>
 				<onright>600</onright>
 				<control type="radiobutton" id="620">
-					<include name="OSDButton">
+					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/rating.png"/>
 					</include>
 					<onclick>SetRating</onclick>
@@ -137,7 +137,7 @@
 					<onclick>PlayerControl(Random)</onclick>
 				</control>
 				<control type="radiobutton" id="703">
-					<include name="OSDButton">
+					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 					</include>
 					<onclick>Close</onclick>
@@ -147,7 +147,7 @@
 					<onclick condition="String.IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 				</control>
 				<control type="radiobutton" id="5000">
-					<include name="OSDButton">
+					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/settings.png"/>
 					</include>
 					<onclick>ActivateWindow(1105)</onclick>

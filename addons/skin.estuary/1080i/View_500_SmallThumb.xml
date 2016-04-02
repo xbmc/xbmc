@@ -25,7 +25,7 @@
 		</control>
 	</include>
 	<include name="View_500_SmallThumb">
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="500" />
 			<param name="visible" value="!System.HasModalDialog" />
 		</include>
@@ -131,12 +131,12 @@
 						<top>15</top>
 						<animation effect="fade" start="0" end="100" time="200" delay="250">Focus</animation>
 						<animation effect="fade" start="100" end="0" time="50">UnFocus</animation>
-						<include name="SmallThumbInfoFlag">
+						<include content="SmallThumbInfoFlag">
 							<param name="icon" value="lists/rating.png" />
 							<param name="infolabel" value="ListItem.Rating" />
 							<param name="posy" value="20" />
 						</include>
-						<include name="SmallThumbInfoFlag">
+						<include content="SmallThumbInfoFlag">
 							<param name="icon" value="lists/year.png" />
 							<param name="infolabel" value="ListItem.Year" />
 							<param name="posy" value="140" />
@@ -307,12 +307,12 @@
 						<right>-10</right>
 						<animation effect="fade" start="0" end="100" time="200" delay="250">Focus</animation>
 						<animation effect="fade" start="100" end="0" time="50">UnFocus</animation>
-						<include name="SmallThumbInfoFlag">
+						<include content="SmallThumbInfoFlag">
 							<param name="icon" value="lists/rating.png" />
 							<param name="infolabel" value="ListItem.Rating" />
 							<param name="posy" value="20" />
 						</include>
-						<include name="SmallThumbInfoFlag">
+						<include content="SmallThumbInfoFlag">
 							<param name="icon" value="lists/year.png" />
 							<param name="infolabel" value="ListItem.Year" />
 							<param name="posy" value="140" />

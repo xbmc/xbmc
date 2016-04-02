@@ -7,7 +7,7 @@
 	</coordinates>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
-		<include name="DialogBackgroundCommons">
+		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1720" />
 			<param name="DialogBackgroundHeight" value="800" />
 			<param name="DialogHeaderLabel" value="-" />
@@ -27,7 +27,7 @@
 			<onup>9</onup>
 			<ondown>9</ondown>
 		</control>
-		<include name="UpDownArrows">
+		<include content="UpDownArrows">
 			<param name="container_id" value="2" />
 			<param name="posx" value="830" />
 			<param name="up_posy" value="-42" />
@@ -63,15 +63,15 @@
 			<ondown>9001</ondown>
 			<onleft>2</onleft>
 			<onright>9</onright>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="id" value="10" />
 				<param name="label" value="$LOCALIZE[186]" />
 			</include>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="id" value="11" />
 				<param name="label" value="$LOCALIZE[222]" />
 			</include>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="id" value="12" />
 				<param name="label" value="$LOCALIZE[409]" />
 			</include>

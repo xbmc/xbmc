@@ -67,7 +67,7 @@
 					<onleft>70043</onleft>
 					<onright>70011</onright>
 					<control type="radiobutton" id="600">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 						</include>
 						<onclick>PlayerControl(Previous)</onclick>
@@ -91,20 +91,20 @@
 						<visible>Player.PauseEnabled</visible>
 					</control>
 					<control type="radiobutton" id="603">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/stop.png"/>
 						</include>
 						<onclick>PlayerControl(Stop)</onclick>
 					</control>
 					<control type="radiobutton" id="605">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 						</include>
 						<onclick>PlayerControl(Next)</onclick>
 						<visible>!VideoPlayer.Content(livetv) + Integer.IsGreater(Playlist.Length(video),1)</visible>
 					</control>
 					<control type="radiobutton" id="804">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/home.png"/>
 						</include>
 						<onclick>PlayerControl(ShowVideoMenu)</onclick>
@@ -147,13 +147,13 @@
 					<onleft>606</onleft>
 					<onright>600</onright>
 					<control type="radiobutton" id="70011">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/information.png"/>
 						</include>
 						<onclick>ActivateWindow(fullscreeninfo)</onclick>
 					</control>
 					<control type="radiobutton" id="70040">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/channels.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
@@ -161,7 +161,7 @@
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="70041">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/guide.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
@@ -169,14 +169,14 @@
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="700">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/bookmarks.png"/>
 						</include>
 						<onclick>ActivateWindow(videobookmarks)</onclick>
 						<visible>!VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="703">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/teletext.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
@@ -184,18 +184,18 @@
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="704">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 						</include>
 					</control>
 					<control type="radiobutton" id="255">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/stereoscopic.png"/>
 						</include>
 						<visible>VideoPlayer.IsStereoscopic</visible>
 					</control>
 					<control type="radiobutton" id="70043">
-						<include name="OSDButton">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings.png"/>
 						</include>
 						<onclick>SetFocus(11000)</onclick>

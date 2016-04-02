@@ -25,7 +25,7 @@
 				<onright>10000</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
-				<include name="DefaultSimpleListLayout">
+				<include content="DefaultSimpleListLayout">
 					<param name="align" value="center" />
 					<param name="width" value="400" />
 					<param name="height" value="120" />
@@ -60,7 +60,7 @@
 				<height>3</height>
 				<texture colordiffuse="button_focus" border="2">dialogs/separator.png</texture>
 			</control>
-			<include name="UpDownArrows">
+			<include content="UpDownArrows">
 				<param name="container_id" value="600" />
 				<param name="posx" value="1045" />
 				<param name="up_posy" value="130" />
@@ -210,7 +210,7 @@
 				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 			</control>
 		</control>
-		<include name="TopBar">
+		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[5] / $LOCALIZE[20077]" />
 			<param name="breadcrumbs_icon" value="icons/settings/skin.png" />
 		</include>

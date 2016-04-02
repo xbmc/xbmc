@@ -54,7 +54,7 @@
 					<include>MediaMenuNowPlaying</include>
 				</control>
 			</control>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />
 				<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
 			</include>
@@ -62,7 +62,7 @@
 			<control type="group">
 				<top>1002</top>
 				<visible>$EXP[sidebar_focused]</visible>
-				<include name="LeftAlignedInfo">
+				<include content="LeftAlignedInfo">
 					<param name="main_label" value="$INFO[Window(AddonBrowser).Property(Updated)]" />
 					<param name="sub_label" value="$LOCALIZE[31069]" />
 				</include>

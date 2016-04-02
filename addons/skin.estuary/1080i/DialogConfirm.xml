@@ -7,7 +7,7 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthDialog+</depth>
 	<controls>
-		<include name="DialogBackgroundCommons">
+		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="915" />
 			<param name="DialogBackgroundHeight" value="380" />
 			<param name="DialogHeaderLabel" value="" />
@@ -34,15 +34,15 @@
 			<top>280</top>
 			<width>915</width>
 			<align>center</align>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="id" value="11" />
 				<param name="label" value="" />
 			</include>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="id" value="10" />
 				<param name="label" value="" />
 			</include>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="id" value="12" />
 				<param name="label" value="" />
 			</include>

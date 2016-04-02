@@ -54,15 +54,15 @@
 					<orientation>vertical</orientation>
 					<left>20</left>
 					<top>90</top>
-					<include name="LeftRightAlignedInfoLine">
+					<include content="LeftRightAlignedInfoLine">
 						<param name="label" value="$LOCALIZE[19012]" />
 						<param name="value" value="$INFO[PVR.ActStreamClient]" />
 					</include>
-					<include name="LeftRightAlignedInfoLine">
+					<include content="LeftRightAlignedInfoLine">
 						<param name="label" value="$LOCALIZE[19006]" />
 						<param name="value" value="$INFO[PVR.ActStreamDevice]" />
 					</include>
-					<include name="LeftRightAlignedInfoLine">
+					<include content="LeftRightAlignedInfoLine">
 						<param name="label" value="$LOCALIZE[19007]" />
 						<param name="value" value="$INFO[PVR.ActStreamStatus]" />
 					</include>
@@ -106,15 +106,15 @@
 					<orientation>vertical</orientation>
 					<left>800</left>
 					<top>90</top>
-					<include name="LeftRightAlignedInfoLine">
+					<include content="LeftRightAlignedInfoLine">
 						<param name="label" value="$LOCALIZE[19010]" />
 						<param name="value" value="$INFO[PVR.ActStreamBER]" />
 					</include>
-					<include name="LeftRightAlignedInfoLine">
+					<include content="LeftRightAlignedInfoLine">
 						<param name="label" value="$LOCALIZE[19011]" />
 						<param name="value" value="$INFO[PVR.ActStreamUNC]" />
 					</include>
-					<include name="LeftRightAlignedInfoLine">
+					<include content="LeftRightAlignedInfoLine">
 						<param name="label" value="$LOCALIZE[19015]" />
 						<param name="value" value="$INFO[PVR.ActStreamEncryptionName]" />
 					</include>

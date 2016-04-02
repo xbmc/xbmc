@@ -14,21 +14,21 @@
 				<onleft>100</onleft>
 				<align>left</align>
 				<itemgap>-20</itemgap>
-				<include name="DefaultDialogButton">
+				<include content="DefaultDialogButton">
 					<param name="id" value="6" />
 					<param name="label" value="$LOCALIZE[502]" />
 					<param name="width" value="200" />
 					<param name="height" value="200" />
 					<param name="wrapmultiline" value="true" />
 				</include>
-				<include name="DefaultDialogButton">
+				<include content="DefaultDialogButton">
 					<param name="id" value="7" />
 					<param name="label" value="$LOCALIZE[190]" />
 					<param name="width" value="200" />
 					<param name="height" value="200" />
 					<param name="wrapmultiline" value="true" />
 				</include>
-				<include name="DefaultDialogButton">
+				<include content="DefaultDialogButton">
 					<param name="id" value="8" />
 					<param name="label" value="$LOCALIZE[192]" />
 					<param name="width" value="200" />
@@ -41,7 +41,7 @@
 			<include>OpenClose_Left</include>
 			<left>300</left>
 			<top>180</top>
-			<include name="FileManagerPanel">
+			<include content="FileManagerPanel">
 				<param name="header_id" value="22" />
 				<param name="header_label" value="$LOCALIZE[20094]" />
 				<param name="list_id" value="50" />
@@ -56,7 +56,7 @@
 			<include>OpenClose_Right</include>
 			<left>1070</left>
 			<top>180</top>
-			 <include name="FileManagerPanel">
+			 <include content="FileManagerPanel">
 				<param name="header_id" value="23" />
 				<param name="header_label" value="$LOCALIZE[13350]" />
 				<param name="list_id" value="100" />
@@ -67,12 +67,12 @@
 				<param name="bg_width" value="780" />
 			</include>
 		</control>
-		<include name="TopBar">
+		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[10503][COLOR=button_focus][/COLOR]" />
 			<param name="breadcrumbs_icon" value="icons/settings/music.png" />
 		</include>
 		<include>BottomBar</include>
-		<include name="BottomBarTwoListInfo">
+		<include content="BottomBarTwoListInfo">
 			<param name="left_container_id">50</param>
 			<param name="left_scrollbar_id">60</param>
 			<param name="right_container_id">100</param>

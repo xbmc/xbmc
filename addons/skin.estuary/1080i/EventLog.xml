@@ -39,7 +39,7 @@
 						<texture>icons/eventlog/order.png</texture>
 					</control>
 				</control>
-				<include name="PlaylistWindowButton">
+				<include content="PlaylistWindowButton">
 					<param name="control_id" value="21" />
 					<param name="onclick" value="" />
 					<param name="label" value="" />
@@ -55,7 +55,7 @@
 					<textoffsety>35</textoffsety>
 					<radioposx>-1</radioposx>
 				</control>
-				<include name="PlaylistWindowButton">
+				<include content="PlaylistWindowButton">
 					<param name="control_id" value="20" />
 					<param name="onclick" value="" />
 					<param name="label" value="$LOCALIZE[192]" />
@@ -204,7 +204,7 @@
 					</focusedlayout>
 				</control>
 			</control>
-			<include name="UpDownArrows">
+			<include content="UpDownArrows">
 				<param name="container_id" value="50" />
 				<param name="visible" value="!System.HasModalDialog" />
 			</include>
@@ -219,7 +219,7 @@
 				<visible>Control.IsVisible(50)</visible>
 			</control>
 		</control>
-		<include name="TopBar">
+		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[31067]" />
 			<param name="breadcrumbs_icon" value="icons/settings/video.png" />
 		</include>

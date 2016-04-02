@@ -202,11 +202,11 @@
 					</control>
 				</control>
 			</control>
-			<include name="PVRGuideListViewtype">
+			<include content="PVRGuideListViewtype">
 				<param name="container_id" value="11" />
 				<param name="container_name" value="19030" />
 			</include>
-			<include name="PVRGuideListViewtype">
+			<include content="PVRGuideListViewtype">
 				<param name="container_id" value="12" />
 				<param name="container_name" value="19031" />
 			</include>
@@ -324,22 +324,22 @@
 				<visible>Control.IsVisible(13)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
-				<include name="PVRInfoPanel">
+				<include content="PVRInfoPanel">
 					<param name="bottom_label1" value="$INFO[ListItem.NextTitle,[COLOR button_focus]$LOCALIZE[19031]:[/COLOR] ]" />
 					<param name="bottom_label2" value="$INFO[ListItem.NextStartTime]" />
 				</include>
 			</control>
 			<control type="group">
 				<include>MediaMenuCommon</include>
-				<include name="PVRSideBar">
+				<include content="PVRSideBar">
 					<param name="group_label2" value="$INFO[Control.GetLabel(30)]" />
 				</include>
 			</control>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$INFO[Control.GetLabel(29)] - $INFO[Control.GetLabel(30)]" />
 				<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 			</include>
-			<include name="BottomBar">
+			<include content="BottomBar">
 				<param name="PageLabel" value="$INFO[Container.NumItems,$LOCALIZE[19019]: ]" />
 			</include>
 		</control>

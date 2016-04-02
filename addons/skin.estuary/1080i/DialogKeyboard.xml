@@ -17,7 +17,7 @@
 			<animation type="Conditional" condition="!Control.HasFocus(502) + System.HasAddon(plugin.program.autocompletion)">
 				<effect type="slide" start="0,0" end="0,-80" time="700" tween="cubic" easing="inout" />
 			</animation>
-			<include name="DialogBackgroundCommons">
+			<include content="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="1610" />
 				<param name="DialogBackgroundHeight" value="709" />
 				<param name="DialogHeaderLabel" value="" />

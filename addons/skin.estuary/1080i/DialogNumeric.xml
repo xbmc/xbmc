@@ -8,7 +8,7 @@
 		<top>213</top>
 	</coordinates>
 	<controls>
-		<include name="DialogBackgroundCommons">
+		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="545" />
 			<param name="DialogBackgroundHeight" value="600" />
 			<param name="DialogHeaderLabel" value="" />

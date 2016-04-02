@@ -276,7 +276,7 @@
 					</focusedlayout>
 				</control>
 			</control>
-			<include name="UpDownArrows">
+			<include content="UpDownArrows">
 				<param name="container_id" value="$PARAM[container_id]" />
 				<param name="posx" value="830" />
 				<param name="up_posy" value="-50" />

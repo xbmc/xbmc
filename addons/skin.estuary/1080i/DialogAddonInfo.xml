@@ -51,17 +51,17 @@
 				<align>center</align>
 				<itemgap>-18</itemgap>
 				<orientation>horizontal</orientation>
-				<include name="InfoDialogButton">
+				<include content="InfoDialogButton">
 					<param name="id" value="12" />
 					<param name="icon" value="icons/infodialogs/launch.png" />
 					<param name="label" value="$LOCALIZE[518]" />
 				</include>
-				<include name="InfoDialogButton">
+				<include content="InfoDialogButton">
 					<param name="id" value="9" />
 					<param name="icon" value="icons/infodialogs/configure.png" />
 					<param name="label" value="$LOCALIZE[24020]" />
 				</include>
-				<include name="InfoDialogButton">
+				<include content="InfoDialogButton">
 					<param name="id" value="8" />
 					<param name="icon" value="icons/infodialogs/update.png" />
 					<param name="label" value="$LOCALIZE[24069]" />
@@ -79,19 +79,19 @@
 					<font>font12</font>
 					<visible>Control.IsEnabled(13)</visible>
 				</control>
-				<include name="InfoDialogButton">
+				<include content="InfoDialogButton">
 					<param name="id" value="10" />
 					<param name="icon" value="icons/infodialogs/changelog.png" />
 					<param name="label" value="$LOCALIZE[24036]" />
 				</include>
-				<include name="InfoDialogToggleButton">
+				<include content="InfoDialogToggleButton">
 					<param name="id" value="7" />
 					<param name="icon_on" value="icons/infodialogs/disable.png" />
 					<param name="icon_off" value="icons/infodialogs/enabled.png" />
 					<param name="selected" value="!String.StartsWith(Control.GetLabel(7),$LOCALIZE[24022]) | !Window.IsActive(addonbrowser)" />
 					<param name="label" value="" />
 				</include>
-				<include name="InfoDialogToggleButton">
+				<include content="InfoDialogToggleButton">
 					<param name="id" value="6" />
 					<param name="icon_on" value="icons/infodialogs/uninstall.png" />
 					<param name="icon_off" value="icons/infodialogs/install.png" />
@@ -143,7 +143,7 @@
 				</control>
 			</control>
 		</control>
-		<include name="InfoDialogTopBarInfo">
+		<include content="InfoDialogTopBarInfo">
 			<param name="main_label" value="$INFO[ListItem.AddonName]" />
 			<param name="sub_label" value="$INFO[ListItem.AddonVersion,[COLOR grey],[/COLOR]]$INFO[ListItem.AddonCreator, $LOCALIZE[31071] ]" />
 		</include>

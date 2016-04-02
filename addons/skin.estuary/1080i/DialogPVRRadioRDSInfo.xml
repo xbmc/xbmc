@@ -7,7 +7,7 @@
 	</coordinates>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
-		<include name="DialogBackgroundCommons">
+		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1300" />
 			<param name="DialogBackgroundHeight" value="920" />
 			<param name="DialogHeaderLabel" value="-" />
@@ -660,7 +660,7 @@
 			<onright>60</onright>
 			<onup>21</onup>
 			<ondown>21</ondown>
-			<include name="DefaultDialogButton">
+			<include content="DefaultDialogButton">
 				<param name="id" value="10" />
 				<param name="label" value="$LOCALIZE[186]" />
 			</include>

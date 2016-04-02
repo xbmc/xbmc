@@ -322,12 +322,12 @@
 				<visible>Control.IsVisible(50)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
-				<include name="PVRInfoPanel">
+				<include content="PVRInfoPanel">
 					<param name="bottom_label1" value="$INFO[ListItem.NextTitle,[COLOR button_focus]$LOCALIZE[19031]:[/COLOR] ]" />
 					<param name="bottom_label2" value="$INFO[ListItem.NextStartTime]" />
 				</include>
 			</control>
-			<include name="UpDownArrows">
+			<include content="UpDownArrows">
 				<param name="container_id" value="50" />
 				<param name="posx" value="936" />
 				<param name="up_posy" value="132" />
@@ -339,7 +339,7 @@
 				<include>MediaMenuCommon</include>
 				<include>PVRSideBar</include>
 			</control>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="TV$INFO[Control.GetLabel(29), / ]$INFO[Control.GetLabel(30), / ]" />
 				<param name="breadcrumbs_icon" value="icons/settings/tvremote.png" />
 			</include>

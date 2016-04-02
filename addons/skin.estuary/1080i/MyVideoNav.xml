@@ -83,7 +83,7 @@
 					<left>1350</left>
 					<top>244</top>
 					<visible>ListItem.IsCollection</visible>
-					<include name="InfoList">
+					<include content="InfoList">
 						<param name="height" value="322" />
 						<param name="width" value="429" />
 						<param name="sortby" value="year" />
@@ -115,22 +115,22 @@
 						<orientation>horizontal</orientation>
 						<width>360</width>
 						<align>center</align>
-						<include name="InfoFlag">
+						<include content="InfoFlag">
 							<param name="visible" value="!String.IsEmpty(ListItem.duration)" />
 							<param name="icon" value="frame/clock.png" />
 							<param name="label" value="$INFO[ListItem.Duration,, $LOCALIZE[31132]]" />
 						</include>
-						<include name="InfoFlag">
+						<include content="InfoFlag">
 							<param name="visible" value="!String.IsEmpty(ListItem.Property(TotalEpisodes))" />
 							<param name="icon" value="lists/played-total.png" />
 							<param name="label" value="$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]" />
 						</include>
-						<include name="InfoFlag">
+						<include content="InfoFlag">
 							<param name="visible" value="!String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.Premiered)" />
 							<param name="icon" value="lists/year.png" />
 							<param name="label" value="$INFO[ListItem.Year]" />
 						</include>
-						<include name="InfoFlag">
+						<include content="InfoFlag">
 							<param name="visible" value="!String.IsEmpty(ListItem.Premiered) + String.IsEmpty(ListItem.Property(TotalEpisodes))" />
 							<param name="icon" value="lists/year.png" />
 							<param name="label" value="$INFO[ListItem.Premiered]" />
@@ -175,7 +175,7 @@
 				<control type="group">
 					<left>415</left>
 					<top>10</top>
-					<include name="UserRatingCircle">
+					<include content="UserRatingCircle">
 						<param name="animation" value="True" />
 					</include>
 					<visible>Control.IsVisible(51) | Control.IsVisible(50) | Control.IsVisible(55)</visible>
@@ -252,11 +252,11 @@
 					<include>MediaMenuNowPlaying</include>
 				</control>
 			</control>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsVideoVar]" />
 				<param name="breadcrumbs_icon" value="icons/settings/video.png" />
 			</include>
-			<include name="BottomBar">
+			<include content="BottomBar">
 				<param name="info_visible" value="true" />
 			</include>
 		</control>

@@ -9,7 +9,7 @@
 	<depth>DepthOSD</depth>
 	<controls>
 		<control type="group">
-			<include name="DialogBackgroundCommons">
+			<include content="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="1220" />
 				<param name="DialogBackgroundHeight" value="742" />
 				<param name="DialogHeaderLabel" value="" />
@@ -33,7 +33,7 @@
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<include name="DefaultSimpleListLayout">
+				<include content="DefaultSimpleListLayout">
 					<param name="width" value="880" />
 					<param name="height" value="69" />
 					<param name="list_id" value="3" />
@@ -161,11 +161,11 @@
 					<onleft>61</onleft>
 					<itemgap>-20</itemgap>
 					<onright>3</onright>
-					<include name="DefaultDialogButton">
+					<include content="DefaultDialogButton">
 						<param name="id" value="5" />
 						<param name="label" value="-" />
 					</include>
-					<include name="DefaultDialogButton">
+					<include content="DefaultDialogButton">
 						<param name="id" value="7" />
 						<param name="label" value="$LOCALIZE[222]" />
 						<param name="onclick" value="Dialog.Close(selectdialog)" />

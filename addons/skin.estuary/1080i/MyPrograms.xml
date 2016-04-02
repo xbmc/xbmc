@@ -47,11 +47,11 @@
 				</control>
 				<include>MediaMenuNowPlaying</include>
 			</control>
-			<include name="TopBar">
+			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[10001]" />
 				<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
 			</include>
-			<include name="BottomBar">
+			<include content="BottomBar">
 				<param name="info_visible" value="true" />
 			</include>
 		</control>

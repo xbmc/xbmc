@@ -6,7 +6,7 @@
 		<control type="group">
 			<left>260</left>
 			<top>150</top>
-			<include name="DialogBackgroundCommons">
+			<include content="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="1400" />
 				<param name="DialogBackgroundHeight" value="770" />
 				<param name="DialogHeaderLabel" value="$INFO[Window(home).Property(TextViewer_Header)]" />
