@@ -48,7 +48,6 @@ public:
   {
     m_stamp = XbmcThreads::SystemClockMillis();
     m_pos   = 0;
-    m_pause = 0;
     m_size = 0;
     m_time = 0;
   }
@@ -80,21 +79,9 @@ public:
     return (unsigned)(1000 * (m_size / (m_time + time_bias)));
   }
 
-  void Pause()
-  {
-    m_pause = XbmcThreads::SystemClockMillis();
-  }
-
-  void Resume()
-  {
-    m_stamp += XbmcThreads::SystemClockMillis() - m_pause;
-    m_pause  = 0;
-  }
-
 private:
   unsigned m_stamp;
   int64_t  m_pos;
-  unsigned m_pause;
   unsigned m_time;
   int64_t  m_size;
 };
@@ -325,9 +312,7 @@ void CFileCache::Process()
      */
     if (maxWrite == 0 && !cacheReachEOF)
     {
-      average.Pause();
       m_pCache->m_space.WaitMSec(5);
-      average.Resume();
       continue;
     }
 
@@ -367,9 +352,7 @@ void CFileCache::Process()
       }
       else if (iWrite == 0)
       {
-        average.Pause();
         m_pCache->m_space.WaitMSec(5);
-        average.Resume();
       }
 
       iTotalWrite += iWrite;
