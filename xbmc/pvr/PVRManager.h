@@ -687,6 +687,16 @@ private:
     static const int                m_pvrWindowIds[12];
   };
 
+  class CPVRStartupJob : public CJob
+  {
+  public:
+    CPVRStartupJob(void) {}
+    virtual ~CPVRStartupJob() {}
+    virtual const char *GetType() const { return "pvr-startup"; }
+
+    virtual bool DoWork();
+  };
+
   class CPVREpgsCreateJob : public CJob
   {
   public:

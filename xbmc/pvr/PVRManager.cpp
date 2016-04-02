@@ -404,7 +404,9 @@ void CPVRManager::Init()
   settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
   CSettings::GetInstance().RegisterCallback(this, settingSet);
 
-  m_addons->Start();
+  // initial check for enabled addons
+  // if at least one pvr addon is enabled, PVRManager start up
+  CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
 }
 
 void CPVRManager::Start()
@@ -988,6 +990,12 @@ CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
     return m_channelGroups->GetSelectedGroup(bRadio);
 
   return CPVRChannelGroupPtr();
+}
+
+bool CPVRStartupJob::DoWork(void)
+{
+  g_PVRClients->Start();
+  return true;
 }
 
 bool CPVREpgsCreateJob::DoWork(void)
