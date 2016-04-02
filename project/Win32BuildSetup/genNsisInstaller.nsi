@@ -369,16 +369,6 @@ SectionEnd
 ;--------------------------------
 ;vs redist installer Section
 SectionGroup "Microsoft Visual C++ packages" SEC_VCREDIST
-Section "VS2008 C++ re-distributable Package (x86)" SEC_VCREDIST1
-  ;vc90 for python
-  DetailPrint "Running VS2008 re-distributable setup..."
-  SectionIn 1 2 #section is in install type Full 
-  SetOutPath "$TEMP\vc2008"
-  File "${app_root}\..\dependencies\vcredist\2008\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2008\vcredist_x86.exe" /q' $VSRedistSetupError
-  RMDir /r "$TEMP\vc2008"
-  DetailPrint "Finished VS2008 re-distributable setup"
-SectionEnd
 
 Section "VS2010 C++ re-distributable Package (x86)" SEC_VCREDIST2
   DetailPrint "Running VS2010 re-distributable setup..."
