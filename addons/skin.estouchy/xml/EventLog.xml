@@ -16,12 +16,12 @@
 		</control>
 		<control type="group">
 			<include>Window_OpenClose_Animation_Zoom</include>
-			<include name="List" condition="String.IsEqual(Skin.AspectRatio,16:9)"> <!-- view id = 50 -->
+			<include content="List" condition="String.IsEqual(Skin.AspectRatio,16:9)"> <!-- view id = 50 -->
 				<param name="panel-width" value="1530"/>
 				<param name="label-width" value="1240"/>
 				<param name="label2-posx" value="1360r"/>
 			</include>
-			<include name="List" condition="String.IsEqual(Skin.AspectRatio,4:3)"> <!-- view id = 50 -->
+			<include content="List" condition="String.IsEqual(Skin.AspectRatio,4:3)"> <!-- view id = 50 -->
 				<param name="panel-width" value="1090"/>
 				<param name="label-width" value="800"/>
 				<param name="label2-posx" value="920r"/>
@@ -29,7 +29,7 @@
 		</control>
 		<include>ScrollBarCommons</include>
 		<include>BottomMenu</include>
-		<include name="PopupMenu">
+		<include content="PopupMenu">
 			<param name="panel-posy">240</param>
 			<param name="panel-height">360</param>
 		</include>
