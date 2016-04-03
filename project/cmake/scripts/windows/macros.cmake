@@ -87,11 +87,13 @@ function(add_precompiled_header target pch_header pch_source)
     # As own target for usage in multiple libraries
     if(NOT TARGET ${PCH_PCH_TARGET}_pch)
       add_library(${PCH_PCH_TARGET}_pch STATIC ${pch_source})
-      set_target_properties(${PCH_PCH_TARGET}_pch PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY ${PRECOMPILEDHEADER_DIR})
+      set_target_properties(${PCH_PCH_TARGET}_pch PROPERTIES COMPILE_PDB_NAME vc140
+                                                             COMPILE_PDB_OUTPUT_DIRECTORY ${PRECOMPILEDHEADER_DIR})
     endif()
     # From VS2012 onwards, precompiled headers have to be linked against (LNK2011).
     target_link_libraries(${target} PUBLIC ${PCH_PCH_TARGET}_pch)
-    set_target_properties(${target} PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY ${PRECOMPILEDHEADER_DIR})
+    set_target_properties(${target} PROPERTIES COMPILE_PDB_NAME vc140
+                                               COMPILE_PDB_OUTPUT_DIRECTORY ${PRECOMPILEDHEADER_DIR})
   else()
     # As part of the target
     target_sources(${target} PRIVATE ${pch_source})
