@@ -105,10 +105,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       CGUIDialogContextMenu::GetContextButtons("programs", item, buttons);
     }
-    else
-    {
-      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
-    }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
@@ -121,14 +117,6 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     Update("");
     return true;
-  }
-  switch (button)
-  {
-  case CONTEXT_BUTTON_GOTO_ROOT:
-    Update("");
-    return true;
-  default:
-    break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
