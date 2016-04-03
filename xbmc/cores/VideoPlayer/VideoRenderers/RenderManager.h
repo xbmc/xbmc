@@ -166,14 +166,12 @@ protected:
 
   void PrepareNextRender();
   static double GetPresentTime();
-  void  WaitPresentTime(double presenttime);
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
   bool Configure();
   void CreateRenderer();
   void DeleteRenderer();
   void ManageCaptures();
-  std::string GetVSyncState();
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
@@ -244,10 +242,6 @@ protected:
 
   double m_sleeptime;
   double m_presentpts;
-  double m_presentcorr;
-  double m_presenterr;
-  double m_errorbuff[ERRORBUFFSIZE];
-  int m_errorindex;
   EPRESENTSTEP m_presentstep;
   int m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;

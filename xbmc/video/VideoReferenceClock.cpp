@@ -65,7 +65,6 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
   m_CurrTime = 0;
   m_LastIntTime = 0;
   m_CurrTimeFract = 0.0;
-  m_fineadjust = 0.0;
   m_RefreshRate = 0.0;
   m_MissedVblanks = 0;
   m_VblankTime = 0;
@@ -146,7 +145,6 @@ void CVideoReferenceClock::Process()
     m_CurrTimeFract = 0.0;
     m_ClockSpeed = 1.0;
     m_TotalMissedVblanks = 0;
-    m_fineadjust = 1.0;
     m_MissedVblanks = 0;
 
     if (SetupSuccess)
@@ -218,7 +216,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 
 double CVideoReferenceClock::UpdateInterval() const
 {
-  return m_ClockSpeed * m_fineadjust / m_RefreshRate * static_cast<double>(m_SystemFrequency);
+  return m_ClockSpeed / m_RefreshRate * static_cast<double>(m_SystemFrequency);
 }
 
 //called from dvdclock to get the time
@@ -244,7 +242,7 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
     if (interpolated)
     {
       //interpolate from the last time the clock was updated
-      double elapsed = static_cast<double>(Now - m_VblankTime) * m_ClockSpeed * m_fineadjust;
+      double elapsed = static_cast<double>(Now - m_VblankTime) * m_ClockSpeed;
       //don't interpolate more than 2 vblank periods
       elapsed = std::min(elapsed, UpdateInterval() * 2.0);
 
@@ -405,12 +403,6 @@ bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, 
     return true;
   }
   return false;
-}
-
-void CVideoReferenceClock::SetFineAdjust(double fineadjust)
-{
-  CSingleLock SingleLock(m_CritSection);
-  m_fineadjust = fineadjust;
 }
 
 void CVideoReferenceClock::RefreshChanged()

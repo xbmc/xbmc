@@ -131,10 +131,6 @@ CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) : m_dvdCloc
   m_bTriggerUpdateResolution = false;
   m_hasCaptures = false;
   m_displayLatency = 0.0f;
-  m_presentcorr = 0.0;
-  m_presenterr = 0.0;
-  memset(&m_errorbuff, 0, ERRORBUFFSIZE);
-  m_errorindex = 0;
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
   m_format      = RENDER_FMT_NONE;
@@ -182,74 +178,6 @@ static double wrap(double x, double minimum, double maximum)
   if(x > maximum)
     x -= maximum - minimum;
   return x;
-}
-
-void CRenderManager::WaitPresentTime(double presenttime)
-{
-  double frametime;
-  double fps = g_VideoReferenceClock.GetRefreshRate(&frametime);
-  if(fps <= 0)
-  {
-    /* smooth video not enabled */
-    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
-    return;
-  }
-
-  if(m_dvdClock.GetSpeedAdjust() != 0.0)
-  {
-    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
-    m_presenterr = 0;
-    m_presentcorr = 0;
-    return;
-  }
-
-  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
-  double target    = 0.5;
-  double error     = ( clock - presenttime ) / frametime - target;
-
-  m_presenterr     = error;
-
-  // correct error so it targets the closest vblank
-  error = wrap(error, 0.0 - target, 1.0 - target);
-
-  // scale the error used for correction,
-  // based on how much buffer we have on
-  // that side of the target
-  if(error > 0)
-    error /= 2.0 * (1.0 - target);
-  if(error < 0)
-    error /= 2.0 * (0.0 + target);
-
-  //save error in the buffer
-  m_errorindex = (m_errorindex + 1) % ERRORBUFFSIZE;
-  m_errorbuff[m_errorindex] = error;
-
-  //get the average error from the buffer
-  double avgerror = 0.0;
-  for (int i = 0; i < ERRORBUFFSIZE; i++)
-    avgerror += m_errorbuff[i];
-
-  avgerror /= ERRORBUFFSIZE;
-
-  //we change the clock speed slightly
-  //to make every frame's presenttime end up in the middle of two vblanks
-  //integral correction, clamp to -0.5:0.5 range
-  m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.1), -0.1);
-  g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
-}
-
-std::string CRenderManager::GetVSyncState()
-{
-  double avgerror = 0.0;
-  for (int i = 0; i < ERRORBUFFSIZE; i++)
-    avgerror += m_errorbuff[i];
-  avgerror /= ERRORBUFFSIZE;
-
-  std::string state = StringUtils::Format("sync:%+3d%% avg:%3d%% error:%2d%%"
-                                         ,     MathUtils::round_int(m_presentcorr * 100)
-                                         ,     MathUtils::round_int(avgerror      * 100)
-                                         , abs(MathUtils::round_int(m_presenterr  * 100)));
-  return state;
 }
 
 bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
@@ -510,13 +438,6 @@ void CRenderManager::FrameFinish()
   /* wait for this present to be valid */
   SPresent& m = m_Queue[m_presentsource];
 
-  if(g_graphicsContext.IsFullScreenVideo() &&
-     (m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2))
-  {
-    CSingleExit lock(g_graphicsContext);
-    WaitPresentTime(m.timestamp);
-  }
-
   m_clock_framefinish = GetPresentTime();
 
   { CSingleLock lock(m_presentlock);
@@ -551,11 +472,6 @@ void CRenderManager::PreInit()
   }
 
   CSingleLock lock(m_statelock);
-
-  m_presentcorr = 0.0;
-  m_presenterr  = 0.0;
-  m_errorindex  = 0;
-  memset(m_errorbuff, 0, sizeof(m_errorbuff));
 
   if (!m_pRenderer)
   {
@@ -1073,11 +989,10 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
       int missedvblanks;
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
       {
-        vsync = StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%% %s",
+        vsync = StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%%",
                                      refreshrate,
                                      missedvblanks,
-                                     clockspeed - 100.0,
-                                     GetVSyncState().c_str());
+                                     clockspeed - 100.0);
       }
 
       m_debugRenderer.SetInfo(audio, video, player, vsync);

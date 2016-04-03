@@ -37,7 +37,6 @@ class CVideoReferenceClock : public CThread
     double  GetRefreshRate(double* interval = nullptr);
     int64_t Wait(int64_t Target);
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const;
-    void    SetFineAdjust(double fineadjust);
     void    RefreshChanged();
     void    Start();
     void    Stop();
@@ -57,7 +56,6 @@ class CVideoReferenceClock : public CThread
     double  m_ClockSpeed;        //the frequency of the clock set by VideoPlayer
     int64_t m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
     int64_t m_SystemFrequency;   //frequency of the systemclock
-    double  m_fineadjust;
 
     bool    m_UseVblank;         //set to true when vblank is used as clock source
     double  m_RefreshRate;       //current refreshrate
