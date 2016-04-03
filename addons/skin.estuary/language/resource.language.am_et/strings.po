@@ -16,10 +16,6 @@ msgstr ""
 "Language: am_ET\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "መፈለጊያ"
-
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "መቀየሪያ ዘዴ"

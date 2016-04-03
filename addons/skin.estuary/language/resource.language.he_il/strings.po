@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "מנגן כעת"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "חיפוש"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "הראה מדיית פאנארט כרקע"

@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "En lecture"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Rechercher"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Afficher les FanArts des médias en arrière-plan"
@@ -79,6 +75,10 @@ msgstr "Enregistrements récents"
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Chaînes vues récemment"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Noté"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -535,3 +535,7 @@ msgstr "Paramètres relatifs au menu principal : configurer l'écran d'accueil c
 msgctxt "#31131"
 msgid "Choose home fanart pack"
 msgstr "Choisir le paquet de FanArt pour l'accueil"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

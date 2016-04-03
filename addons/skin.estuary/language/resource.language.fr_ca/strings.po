@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Lecture en cours"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Rechercher"
-
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Mode cinéma"

@@ -16,10 +16,6 @@ msgstr ""
 "Language: fo_FO\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Leita"
-
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Forsøgn"

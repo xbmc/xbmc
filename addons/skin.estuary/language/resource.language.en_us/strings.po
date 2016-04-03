@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Now playing"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Search"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Show media fanart as background"
@@ -75,6 +71,14 @@ msgstr "Unplayed albums"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Recent recordings"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Recently played channels"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Rated"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -420,6 +424,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Enter text here..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -515,3 +523,19 @@ msgstr "Show icons"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Contributors"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "General settings applying to all areas of the skin."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Main menu-related settings: Configure the home screen to your likings."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Choose home fanart pack"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

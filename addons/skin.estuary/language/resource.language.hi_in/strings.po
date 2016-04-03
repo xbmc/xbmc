@@ -16,10 +16,6 @@ msgstr ""
 "Language: hi_IN\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "धुन्धना"
-
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "बिजली विकल्प"

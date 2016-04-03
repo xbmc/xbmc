@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Prehráva sa"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Hľadať"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Zobraziť fanart médií ako pozadie"
@@ -79,6 +75,10 @@ msgstr "Nedávne nahrávky"
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Nedávno prehrávané kanály"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Ohodnotené"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -535,3 +535,7 @@ msgstr "Nastavenia týkajúce sa hlavnej ponuky: Nastavte si domovskú obrazovku
 msgctxt "#31131"
 msgid "Choose home fanart pack"
 msgstr "Vybrať domovský fanart balík"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

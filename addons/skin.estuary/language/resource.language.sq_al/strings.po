@@ -16,10 +16,6 @@ msgstr ""
 "Language: sq_AL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Kërkoni"
-
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Parashikimi"

@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "S'està reproduint"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Cerca"
-
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Canvia el mode"

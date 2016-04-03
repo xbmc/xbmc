@@ -18,11 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "Most játszva"
-
-msgctxt "#31001"
-msgid "Search"
-msgstr "Keresés"
+msgstr "Most játszott"
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -79,6 +75,10 @@ msgstr "Friss felvételek"
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Mostanában játszott csatornák"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Értékelés"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -256,6 +256,10 @@ msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Főmenü elemek"
 
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Hivatkozások a „Fájlok” szakaszhoz, minden egyes médiatípusnál. Ugorjon oda további források hozzáadásához az adatbázisba."
+
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Szakaszok"
@@ -420,6 +424,14 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Ide írja a szöveget…"
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "A médiatár jelenleg üres. A saját médiafájlok hozzáadásához, menjen a \"Fájlok\" menüponthoz, adjon hozzá egy médiaforrást és konfigurálja azt. Miután a forrás hozzáadásra és indexelésre került, böngészni fogja tudni a médiatárat."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Adjon hozzá videóforrásokat és állítsa be a megfelelő tartalomtípust a videótárak kialakításához."
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
@@ -435,6 +447,14 @@ msgstr "Egyéni globális háttér használata"
 msgctxt "#31109"
 msgid "Choose image path"
 msgstr "Válassz kép útvonalat"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Fájlok megadása szakasz"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Nézd meg a saját fényképeidet vagy tölts le egyet a sok képkiegészítő közül a hivatalos kiegészítő tárhelyről."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -463,6 +483,14 @@ msgstr "Csomópontok szerkesztése"
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "Belépés a kiegészítő böngészőbe"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Még nincs telepített kiegészítő. Látogass el a kiegészítő böngészőhöz és válassz a gyűjteményből a Kodi felhasználói élmény javítása érdekében."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Még nem állítottál be időjárás szolgáltatót. Az időjárási adatok megtekintéséhez, válassz egy szolgáltatót és állítsd be a helyet."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -495,3 +523,19 @@ msgstr "Ikonok megjelenítése"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Közreműködők"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Általános beállítások a felület minden egyes területére vonatkozóan."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Főmenüvel kapcsolatos beállítások: állítsa be a főképernyőt az ízlésének megfelelően."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Válasszon főkepernyő illusztráció csomagot"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "perc"

@@ -16,10 +16,6 @@ msgstr ""
 "Language: cy_GB\n"
 "Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Chwilio"
-
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Newid modd"

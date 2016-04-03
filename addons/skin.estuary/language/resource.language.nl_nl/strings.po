@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Nu afspelend"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Zoeken"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Toon media fanart als achtergrond"
@@ -79,6 +75,10 @@ msgstr "Recente opnames"
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Onlangs afgespeelde kanalen"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Rated"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -424,6 +424,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Voor hier tekst in..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Uw bibliotheek is momenteel leeg. Om deze te vullen met uw eigen media, ga naar \"Bestanden\" sectie, voeg een mediabron toe en configureer deze. Nadat de bron is toegevoegd en geïndexeerd, kunt u uw bibliotheek bekijken."
+
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Voeg video bronnen toe en stel het juiste content type in om uw video bibliotheken te vullen."
@@ -523,3 +527,15 @@ msgstr "Bijdragers"
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
 msgstr "Algemene instellingen die van toepassing zijn op alle onderdelen van de skin."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Hoofdmenu gerelateerde instellingen: Configureer het home screen naar wens."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Kies home fanart pakket"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

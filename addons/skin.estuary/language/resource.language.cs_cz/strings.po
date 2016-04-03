@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Přehrává se"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Hledat"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Zobrazit fanart médií jako pozadí"
@@ -75,6 +71,14 @@ msgstr "Nepřehraná alba"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nedávné nahrávky"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Nedávno sledované programy"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Hodnocené"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -420,6 +424,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Zde vložte text..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Vaše knihovna je v současné době úplně prázdná. Aby jste ji naplnili, zvolte sekci Soubory, přidejte zdroj medií a nakonfigurujte jej. Po přidání zdroje bude automaticky naindexován jeho obsah a bude moci procházet svoji novou knihovnou medií."
+
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Přidejte zdroje videí a nastavte správný typ obsahu pro naplnění vašich video knihoven."
@@ -515,3 +523,19 @@ msgstr "Zobrazit ikony"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Přispěvatelé"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Obecná nastavení která se vztahují na celý motiv."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Nastavení Hlavní nabídky: Nakonfiguruje Hlavní nabídku podle vašeho gusta."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Vybrat balíček fanátrů pro Hlavní nabídku"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

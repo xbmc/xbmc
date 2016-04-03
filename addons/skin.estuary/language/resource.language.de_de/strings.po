@@ -20,13 +20,13 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Es läuft"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Suchen"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Medien-Fanart als Hintergrund nutzen (wenn verfügbar)"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Kinomodus"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -71,6 +71,14 @@ msgstr "Ungespielte Alben"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Neue Aufnahmen"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Kürzlich abgespielte Kanäle"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Bewertung"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -199,6 +207,14 @@ msgstr "Verfügbar"
 msgctxt "#31049"
 msgid "Press [B]Up[/B] to rewind or fast-forward"
 msgstr "Drücke [B]Hoch[/B] zum Zurück- oder Vorspulen."
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "[B]OK[/B] drücken, um zu to stoppen"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Sprache umstellen"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -408,6 +424,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Text hier eingeben..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Deine Bibliothek ist derzeit leer. Um sie mit deinen Inhalten zu füllen, wechsle zu \"Dateien\", füge eine Medienquelle hinzu und konfiguriere sie. Nachdem die Quelle hinzugefügt und indiziert wurde, kannst du deine Bibliothek durchstöbern."
+
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
 msgstr "Füge Videoquellen hinzu und stellen den korrekten Inhaltstyp ein, um die Datenbank zu befüllen."
@@ -435,6 +455,10 @@ msgstr "\"Dateien\"-Sektion betreten"
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
 msgstr "Schaue dir deine persönlichen Fotos an oder probiere eines der vielen Bilder-Addons aus dem offiziellen Repository."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Tonspur wechseln"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -499,3 +523,19 @@ msgstr "Icons zeigen"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Mitwirkende"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Allgemeine Einstellungen für das gesamte Theme"
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Einstellungen für das Hauptmenü: Passe den Hauptbildschirm nach Belieben an."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Wähle Fanart für den Hauptbildschirm"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

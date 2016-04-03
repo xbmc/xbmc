@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Dabar atkuriama"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Paieška"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Rodyti media įrašo Fanart fone"
@@ -79,6 +75,10 @@ msgstr "Naujausi įrašai"
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Neseniai žiūrėti kanalai"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Įvertinta"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -150,7 +150,7 @@ msgstr "Išplėstinė informacija"
 
 msgctxt "#31035"
 msgid "Pages"
-msgstr "Pusl."
+msgstr "Puslapis"
 
 msgctxt "#31036"
 msgid "items"
@@ -306,7 +306,7 @@ msgstr "Pavadinimai"
 
 msgctxt "#31074"
 msgid "Library root"
-msgstr "Pradinis bibliotekos katalogas"
+msgstr "Bibliotekos katalogas"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -535,3 +535,7 @@ msgstr "Su pagrindiniu meniu susiję nustatymai: susikonfigūruokite pradinį ek
 msgctxt "#31131"
 msgid "Choose home fanart pack"
 msgstr "Pasirinkti pradinio ekrano Fanart paketą"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

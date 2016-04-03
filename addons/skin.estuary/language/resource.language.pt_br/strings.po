@@ -20,10 +20,6 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Agora reproduzindo"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "Buscar"
-
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Mostrar fanart de mídia como imagem de fundo."
@@ -79,6 +75,10 @@ msgstr "Gravações recentes"
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Canais assistidos recentemente"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Avaliado"
 
 msgctxt "#31018"
 msgid "Most played channels"
@@ -535,3 +535,7 @@ msgstr "Ajustes relacionados ao menu principal: Configure a tela da home de acor
 msgctxt "#31131"
 msgid "Choose home fanart pack"
 msgstr "Escolha pacote fanarts para home"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

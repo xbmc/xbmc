@@ -16,10 +16,6 @@ msgstr ""
 "Language: si_LK\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#31001"
-msgid "Search"
-msgstr "සොයන්න "
-
 msgctxt "#31081"
 msgid "Album info"
 msgstr "ඇල්බම් තොරතුරු "
