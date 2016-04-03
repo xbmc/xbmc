@@ -115,10 +115,7 @@ void CPeripherals::Initialise()
 
     /* initialise all known busses and run an initial scan for devices */
     for (auto& bus : m_busses)
-    {
       bus->Initialise();
-      bus->TriggerDeviceScan();
-    }
   }
 
   m_eventScanner.Start();

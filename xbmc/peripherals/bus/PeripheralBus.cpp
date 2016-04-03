@@ -219,6 +219,13 @@ void CPeripheralBus::Process(void)
     if (!ScanForDevices())
       break;
 
+    // depending on bus implementation
+    // needsPolling can be set properly
+    // only after unitial scan.
+    // if this is the case, bail out.
+    if (!m_bNeedsPolling)
+      break;
+
     if (!m_bStop)
       m_triggerEvent.WaitMSec(m_iRescanTime);
   }
