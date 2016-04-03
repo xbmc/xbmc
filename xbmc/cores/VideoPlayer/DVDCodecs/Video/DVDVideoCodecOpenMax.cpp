@@ -35,7 +35,7 @@
 #define CLASSNAME "COpenMax"
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
-CDVDVideoCodecOpenMax::CDVDVideoCodecOpenMax() : CDVDVideoCodec()
+CDVDVideoCodecOpenMax::CDVDVideoCodecOpenMax(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
 {
   m_omx_decoder = NULL;
   m_pFormatName = "omx-xxxx";
