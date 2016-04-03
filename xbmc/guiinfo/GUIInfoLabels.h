@@ -309,39 +309,41 @@
 #define CONTAINER_TOTALUNWATCHED    380
 #define CONTAINER_VIEWCOUNT         381
 #define CONTAINER_SHOWTITLE         382
-#define MUSICPM_ENABLED             383
-#define MUSICPM_SONGSPLAYED         384
-#define MUSICPM_MATCHINGSONGS       385
-#define MUSICPM_MATCHINGSONGSPICKED 386
-#define MUSICPM_MATCHINGSONGSLEFT   387
-#define MUSICPM_RELAXEDSONGSPICKED  388
-#define MUSICPM_RANDOMSONGSPICKED   389
+#define CONTAINER_PLUGINCATEGORY    383
 
-#define PLAYLIST_LENGTH             390
-#define PLAYLIST_POSITION           391
-#define PLAYLIST_RANDOM             392
-#define PLAYLIST_REPEAT             393
-#define PLAYLIST_ISRANDOM           394
-#define PLAYLIST_ISREPEAT           395
-#define PLAYLIST_ISREPEATONE        396
+#define MUSICPM_ENABLED             390
+#define MUSICPM_SONGSPLAYED         391
+#define MUSICPM_MATCHINGSONGS       392
+#define MUSICPM_MATCHINGSONGSPICKED 393
+#define MUSICPM_MATCHINGSONGSLEFT   394
+#define MUSICPM_RELAXEDSONGSPICKED  395
+#define MUSICPM_RANDOMSONGSPICKED   396
 
-#define VISUALISATION_LOCKED        400
-#define VISUALISATION_PRESET        401
-#define VISUALISATION_NAME          402
-#define VISUALISATION_ENABLED       403
-#define VISUALISATION_HAS_PRESETS   404
+#define PLAYLIST_LENGTH             400
+#define PLAYLIST_POSITION           401
+#define PLAYLIST_RANDOM             402
+#define PLAYLIST_REPEAT             403
+#define PLAYLIST_ISRANDOM           404
+#define PLAYLIST_ISREPEAT           405
+#define PLAYLIST_ISREPEATONE        406
 
-#define STRING_IS_EMPTY             410
-#define STRING_IS_EQUAL             411
-#define STRING_STARTS_WITH          412
-#define STRING_ENDS_WITH            413
-#define STRING_CONTAINS             414
+#define VISUALISATION_LOCKED        410
+#define VISUALISATION_PRESET        411
+#define VISUALISATION_NAME          412
+#define VISUALISATION_ENABLED       413
+#define VISUALISATION_HAS_PRESETS   414
+
+#define STRING_IS_EMPTY             420
+#define STRING_IS_EQUAL             421
+#define STRING_STARTS_WITH          422
+#define STRING_ENDS_WITH            423
+#define STRING_CONTAINS             424
 // deprecated begin
 // should be removed before L*** v18
-#define STRING_COMPARE              415
-#define STRING_STR                  416
-#define STRING_STR_LEFT             418
-#define STRING_STR_RIGHT            419
+#define STRING_COMPARE              425
+#define STRING_STR                  426
+#define STRING_STR_LEFT             428
+#define STRING_STR_RIGHT            429
 // deprecated end
 
 #define INTEGER_IS_EQUAL            450

@@ -2201,6 +2201,7 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "folderpath",       CONTAINER_FOLDERPATH },
                                   { "foldername",       CONTAINER_FOLDERNAME },
                                   { "pluginname",       CONTAINER_PLUGINNAME },
+                                  { "plugincategory",   CONTAINER_PLUGINCATEGORY },
                                   { "viewmode",         CONTAINER_VIEWMODE },
                                   { "viewcount",        CONTAINER_VIEWCOUNT },
                                   { "totaltime",        CONTAINER_TOTALTIME },
@@ -6135,6 +6136,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case CONTAINER_SHOWPLOT:
   case CONTAINER_SHOWTITLE:
+  case CONTAINER_PLUGINCATEGORY:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
@@ -6143,6 +6145,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
           return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot").asString();
         else if (info == CONTAINER_SHOWTITLE)
           return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showtitle").asString();
+        else if (info == CONTAINER_PLUGINCATEGORY)
+          return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("plugincategory").asString();
       }
     }
     break;
