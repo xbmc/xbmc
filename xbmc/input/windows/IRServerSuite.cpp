@@ -451,11 +451,13 @@ bool CRemoteControl::ReadPacket(CIrssMessage &message)
     if (ReadN(messagebytes, size) != size)
     {
       CLog::Log(LOGERROR, "IRServerSuite: failed to read packet.");
+      delete[] messagebytes;
       return false;
     }
     if (!CIrssMessage::FromBytes(messagebytes, size, message))
     {
       CLog::Log(LOGERROR, "IRServerSuite: invalid packet received (size: %u).", size);
+      delete[] messagebytes;
       return false;
     }
     delete[] messagebytes;

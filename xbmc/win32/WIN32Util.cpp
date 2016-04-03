@@ -614,7 +614,6 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
     DWORD dwDummy;
     dwReq = (GetDriveStatus(strVolFormat, true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
     bRet = DeviceIoControl( hDrive, dwReq, NULL, 0, NULL, 0, &dwDummy, NULL);
-    CloseHandle( hDrive );
   }
   // Windows doesn't seem to send always DBT_DEVICEREMOVECOMPLETE
   // unmount it here too as it won't hurt
@@ -626,6 +625,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
     share.strName = share.strPath;
     g_mediaManager.RemoveAutoSource(share);
   }
+  CloseHandle(hDrive);
   return bRet? S_OK : S_FALSE;
 }
 
