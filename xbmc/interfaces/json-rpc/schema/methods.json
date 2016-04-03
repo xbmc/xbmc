@@ -1489,6 +1489,7 @@
       { "name": "mpaa", "$ref": "Optional.String" },
       { "name": "imdbnumber", "$ref": "Optional.String" },
       { "name": "premiered", "$ref": "Optional.String" },
+      { "name": "status", "$ref": "Optional.String" },
       { "name": "votes", "$ref": "Optional.String" },
       { "name": "lastplayed", "$ref": "Optional.String" },
       { "name": "originaltitle", "$ref": "Optional.String" },
