@@ -898,8 +898,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
 {
-  if (!m_vecItems->IsVirtualDirectoryRoot())
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
     buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);
 }
@@ -969,10 +967,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       g_application.StopMusicScan();
       return true;
     }
-
-  case CONTEXT_BUTTON_GOTO_ROOT:
-    Update("");
-    return true;
 
   case CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS:
     g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);

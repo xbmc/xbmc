@@ -10959,12 +10959,7 @@ msgctxt "#20126"
 msgid "Log off"
 msgstr ""
 
-#empty string with id 20127
-
-#: xbmc/windows/GUIWindowFileManager.cpp
-msgctxt "#20128"
-msgid "Go to root"
-msgstr ""
+#empty string from id 20127 to 20128
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#20129"
