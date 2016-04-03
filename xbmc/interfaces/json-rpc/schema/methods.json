@@ -1489,7 +1489,6 @@
       { "name": "mpaa", "$ref": "Optional.String" },
       { "name": "imdbnumber", "$ref": "Optional.String" },
       { "name": "premiered", "$ref": "Optional.String" },
-      { "name": "status", "$ref": "Optional.String" },
       { "name": "votes", "$ref": "Optional.String" },
       { "name": "lastplayed", "$ref": "Optional.String" },
       { "name": "originaltitle", "$ref": "Optional.String" },
@@ -1502,7 +1501,8 @@
       { "name": "userrating", "$ref": "Optional.Integer" },
       { "name": "ratings", "$ref": "Video.Ratings" },
       { "name": "dateadded", "$ref": "Optional.String" },
-      { "name": "runtime", "$ref": "Optional.Integer", "description": "Runtime in seconds" }
+      { "name": "runtime", "$ref": "Optional.Integer", "description": "Runtime in seconds" },
+      { "name": "status", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
