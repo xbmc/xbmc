@@ -30,6 +30,11 @@ if(CORE_SYSTEM_NAME STREQUAL ios)
   list(APPEND HEADERS VideoSyncIos.h)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL android)
+  list(APPEND SOURCES VideoSyncAndroid.cpp)
+  list(APPEND HEADERS VideoSyncAndroid.h)
+endif()
+
 if(SOURCES AND HEADERS)
   core_add_library(video_sync)
   if(CORE_SYSTEM_NAME STREQUAL windows)
