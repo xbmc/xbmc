@@ -519,6 +519,7 @@ lib/cpluff/stamp-h1
 
 #/lib/win32/ffmpeg
 /lib/win32/ffmpeg/
+/lib/win32/FFmpeg*
 
 # /lib/libexif
 /lib/libexif/Makefile
