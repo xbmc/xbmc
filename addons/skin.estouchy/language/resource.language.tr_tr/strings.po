@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Çalışıyor..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "En Son"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmler"
@@ -67,6 +71,10 @@ msgstr "Bilgi Listesi"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Giriş"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Güncellendi"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -222,7 +230,7 @@ msgstr "Eklenti Kısayolu"
 
 msgctxt "#31552"
 msgid "SYNC"
-msgstr "EŞİTLEME"
+msgstr "SYNC"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
@@ -268,6 +276,30 @@ msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Grubu Sil"
 
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Gizlileri göster"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Silinenleri göster"
+
 msgctxt "#31900"
 msgid "First Run"
 msgstr "İlk Çalıştırma"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Estouchy'de gezinme hakkında bilmeniz gereken iki şey vardır."
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi logosu 'Giriş Sayfası' düğmesi olarak işlev görür. Logoya dokunduğunuz zaman giriş ekranına geri gidersiniz."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Ses veya video oynatılırken, oynatılan öğenin başlığı ekranın üst kısmında görünür. Buna dokunmak sizi tam ekran görsel öğeye veya video penceresine götürecektir."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Şimdi Oynatılan Öğenin Başlığı..."

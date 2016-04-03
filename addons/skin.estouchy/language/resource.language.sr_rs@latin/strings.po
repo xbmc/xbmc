@@ -16,13 +16,37 @@ msgstr ""
 "Language: sr_RS@latin\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Audio Podešavanja"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Veličina[CR]Slova"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Opcije Vizuelizacije"
+
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Postojeće vizualizacije"
+msgstr "Unapred Zadate Vizualizacije"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Meni Opcija"
 
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Obrada..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Skorašnje"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -40,9 +64,17 @@ msgctxt "#31024"
 msgid "Page"
 msgstr "Strana"
 
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Lista Informacija"
+
 msgctxt "#31038"
 msgid "Login"
 msgstr "Prijava"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Ažurirano:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -66,15 +98,15 @@ msgstr "Složi: Silazno"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Otvori spisak za reprodukciju"
+msgstr "Otvori listu za reprodukciju"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Sačuvaj spisak za reprodukciju"
+msgstr "Sačuvaj listu za reprodukciju"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Zatvori spisak za reprodukciju"
+msgstr "Zatvori listu za reprodukciju"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -82,7 +114,7 @@ msgstr "Sistemske muzičke datoteke"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Trenutni spisak za reprodukciju"
+msgstr "Trenutna lista za reprodukciju"
 
 msgctxt "#31200"
 msgid "Back"
@@ -120,9 +152,13 @@ msgctxt "#31322"
 msgid "Aired"
 msgstr "Emitovano"
 
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video Meni"
+
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Preuzmi titlove"
+msgstr "Preuzmi Titlove"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -136,13 +172,93 @@ msgctxt "#31391"
 msgid "Arial based"
 msgstr "Zasnovano na Arialu"
 
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Promenite masku · Postavite jezik i regiju - Promenite opcije izlistavanja datoteka - Postavite čuvara ekrana"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Upravljajte vašom video bibliotekom · Postavite opcije video reprodukcije - Promenite opcije izlistavanja filmova - Postavite slova titlova"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Upravljajte vašom muzičkom bibliotekom · Postavite opcije reprodukcije muzike - Promenite opcije izlistavanja muzike - Postavite slanje pesama"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Postavite opcije izlistavanja slika · Podesite reprodukciju slajdova"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Postavite tri grada za prikupljanje informacija o vremenskim prilikama"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Podesite kontrolu Kodi putem UPnP i HTTP · Podesite deljenje datoteka - Postavite opcije internet pristupa"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Podesite i kalibrišite ekrane · Podesite zvučni izlaz - Podesite daljinsko upravljanje - Postavite opcije uštede energije - Omogućite evidenciju grešaka · Podesite glavnu lozinku"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne programe sa kodi.tv - Podesite podešavanja dodatnih programa"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Izaberite vaš Kodi korisnički[CR]profil za prijavu, a potom nastavite dalje"
+msgstr "Izaberite vaš Kodi korisnički Profil[CR]za prijavu, a potom nastavite dalje"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Tasteri Kategorije Glavnog Menija"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Brzi Linkovi Dodatnih Programa Glavnog Ekrana"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Razne Opcije"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Informacije Vremenske Prognoze Glavnog Ekrana i taster"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Prečica Dodatnog Programa"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Koristi Prilagoćenu Pozadinu"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Pozadina:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Podesite TV podešavanja - Promenite informacije celog ekrana · Upravljajte podešavanjima EPG podataka"
 
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Телевизија уживо"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Sakrij video pozadinu"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Sakrij vizuelizaciju u pozadini"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Podešavanja kanala"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -154,8 +270,36 @@ msgstr "Dodaj grupu"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Преименуј групу"
+msgstr "Preimenuj Grupu"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Обриши групу"
+msgstr "Obriši Grupu"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Prikaži skriveno"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Prikaži izbrisano"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Prvo pokretanje"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Postoje dve stvari koje treba znati o navigaciji u Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi logo funkcioniše kao 'GLAVNI' taster. Kad god ga dodirnete, bićete odvedeni na glavni ekran."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Kada puštate audio ili video, naziv stavke će se pojaviti na vrhu ekrana. Ako ga dodirnete odvešće vas do vizuelizacije preko celog ekrana ili video prozora."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Naziv Sada Pušteno..."

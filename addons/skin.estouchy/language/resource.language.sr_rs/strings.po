@@ -16,13 +16,37 @@ msgstr ""
 "Language: sr_RS\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Аудио Подешавања"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Величина[CR]Слова"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Опције Визуелизације"
+
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Постојеће визуализације"
+msgstr "Унапред Задате Визуализације"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Мени Опција"
 
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Обрада..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Скорашње"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -40,9 +64,17 @@ msgctxt "#31024"
 msgid "Page"
 msgstr "Страна"
 
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Листа Информација"
+
 msgctxt "#31038"
 msgid "Login"
 msgstr "Пријава"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Ажурирано:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -54,27 +86,27 @@ msgstr "ПРЕМОТАВАЊЕ УНАЗАД"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Време завршетка"
+msgstr "Време Завршетка"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Сортирај Растуће"
+msgstr "Сортирај: Растуће"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Сортирај Опадајуће"
+msgstr "Сортирај: Опадајуће"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Отвори списак за репродукцију"
+msgstr "Отвори листу за репродукцију"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Сачувај списак за репродукцију"
+msgstr "Сачувај листу за репродукцију"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Затвори списак за репродукцију"
+msgstr "Затвори листу за репродукцију"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -82,7 +114,7 @@ msgstr "Системске музичке датотеке"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Тренутни списак за репродукцију"
+msgstr "Тренутна листа за репродукцију"
 
 msgctxt "#31200"
 msgid "Back"
@@ -98,11 +130,11 @@ msgstr "Приказ"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Тренутна температура"
+msgstr "Тренутна Tемпература"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Последње ажурирање"
+msgstr "Последње Aжурирање"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -110,19 +142,27 @@ msgstr "Провајдер података"
 
 msgctxt "#31309"
 msgid "Memory Used:"
-msgstr "Искоришћеност меморије:"
+msgstr "Искоришћеност Mеморије:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Последња пријава"
+msgstr "Последња Пријава"
 
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Емитовано"
 
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Видео Мени"
+
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Преузми титлове"
+msgstr "Преузми Титлове"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Телетекст"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -132,22 +172,134 @@ msgctxt "#31391"
 msgid "Arial based"
 msgstr "Засновано на Arial-у"
 
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Промените маску · Поставите језик и регију - Промените опције излиставања датотека - Поставите чувара екрана"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Управљајте вашом видео библиотеком · Поставите опције видео репродукције - Промените опције излиставања филмова - Поставите слова титлова"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Управљајте вашом музичком библиотеком · Поставите опције репродукције музике - Промените опције излиставања музике - Поставите слање песама"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Поставите опције излиставања слика · Подесите репродукцију слајдова"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Поставите три града за прикупљање информација о временским приликама"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Подесите контролу Kodi путем UPnP и HTTP · Подесите дељење датотека - Поставите опције интернет приступа"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Подесите и калибришите екране · Подесите звучни излаз - Подесите даљинско управљање - Поставите опције уштеде енергије - Омогућите евиденцију грешака · Подесите главну лозинку"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Управљајте вашим инсталираним додатним програмима · Потражите и инсталирајте додатне програме са kodi.tv - Подесите подешавања додатних програма"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Изаберите ваш Kodi кориснички[CR]профил за пријаву, а потом наставите даље"
+msgstr "Изаберите ваш Коди кориснички Профил[CR]за пријаву, а потом наставите даље"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Тастери Категорије Главног Менија"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Брзи Линкови Додатних Програма Главног Екрана"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Разне Опције"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Информације Временске Прогнозе Главног Екрана и тастер"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Пречица Додатног Програма"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Користи Прилагоћену Позадину"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Позадина:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Подесите ТВ подешавања - Промените информације целог екрана · Управљајте подешавањима ЕПГ података"
 
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "ТВ уживо"
 
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Сакриј видео позадину"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Сакриј визуелизацију у позадини"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Подешавања канала"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Доступне групе"
+
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Додај групу"
+msgstr "Додај Групу"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Преименуј групу"
+msgstr "Преименуј Групу"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Обриши групу"
+msgstr "Обриши Групу"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Прикажи скривено"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Прикажи избрисано"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Прво покретање"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Постоје две ствари које треба знати о навигацији у Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi лого функционише као 'ГЛАВНИ' тастер. Кад год га додирнете, бићете одведени на главни екран."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Када пуштате аудио или видео, назив ставке ће се појавити на врху екрана. Ако га додирнете одвешће вас до визуелизације преко целог екрана или видео прозора."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Назив Сада Пуштено..."
