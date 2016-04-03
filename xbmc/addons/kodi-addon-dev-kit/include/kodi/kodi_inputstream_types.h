@@ -140,7 +140,7 @@ extern "C" {
     DemuxPacket* (__cdecl* DemuxRead)(void);
     bool (__cdecl* DemuxSeekTime)(int, bool, double*);
     void (__cdecl* DemuxSetSpeed)(int);
-    bool (__cdecl* SetVideoResolution)(int, int);
+    void (__cdecl* SetVideoResolution)(int, int);
 
     // IDisplayTime
     int (__cdecl* GetTotalTime)(void);
