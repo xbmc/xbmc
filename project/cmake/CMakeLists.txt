@@ -57,6 +57,9 @@ endif()
 get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../.. ABSOLUTE)
 set(CORE_BUILD_DIR build)
 
+message(STATUS "Source directory: ${CORE_SOURCE_DIR}")
+message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
+
 include(scripts/common/generatorsetup.cmake)
 include(scripts/common/addoptions.cmake)
 include(scripts/common/archsetup.cmake)

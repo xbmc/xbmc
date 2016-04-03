@@ -8,7 +8,7 @@ executable (but no packaging or dependency management yet) for the following
 platforms:
 
 - Linux (GNU Makefiles)
-- Windows (NMake Makefiles, Visual Studio 12 (2013))
+- Windows (NMake Makefiles, Visual Studio 14 (2015))
 - OSX (GNU Makefiles, Xcode)
 - Android (GNU Makefiles)
 
@@ -107,7 +107,7 @@ kodi.exe
 ### Windows with Visual Studio project files
 
 ```
-cmake -G "Visual Studio 12" <KODI_SRC>/project/cmake/
+cmake -G "Visual Studio 14" <KODI_SRC>/project/cmake/
 cmake --build . --config "Debug"  # or: Build solution with Visual Studio
 set KODI_HOME="%CD%" && Debug\kodi.exe
 ```
