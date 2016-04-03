@@ -135,6 +135,7 @@ public:
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
   void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
+  void SetType(const MediaType mediaType);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -202,7 +203,7 @@ protected:
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   int m_iDbId;
-  MediaType m_type; ///< item type "song", "album", "artist"
+  MediaType m_type; ///< item type "music", "song", "album", "artist"
   bool m_bLoaded;
   float m_Rating;
   int m_Userrating;

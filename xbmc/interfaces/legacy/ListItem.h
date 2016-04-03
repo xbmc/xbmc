@@ -241,6 +241,7 @@ namespace XBMCAddon
        *     - lyrics        : string (On a dark desert highway...)
        *     - playcount     : integer (2) - number of times this item has been played
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
+       *     - mediatype     : string - "music", "song", "album", "artist"
        * - Picture Values:
        *     - title         : string (In the last summer-1)
        *     - picturepath   : string (/home/username/pictures/img001.jpg)
