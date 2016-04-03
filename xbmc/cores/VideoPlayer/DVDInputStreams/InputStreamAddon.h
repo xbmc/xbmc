@@ -83,6 +83,7 @@ public:
   virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
   virtual void AbortDemux() override;
   virtual void FlushDemux() override;
+  virtual void SetVideoResolution(int width, int height) override;
 
 protected:
   ADDON::CInputStream *m_addon;

@@ -548,5 +548,17 @@ bool CInputStream::IsRealTimeStream()
   return ret;
 }
 
+void CInputStream::SetVideoResolution(int width, int height)
+{
+  try
+  {
+    m_pStruct->SetVideoResolution(width, height);
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "CInputStream::SetVideoResolution - error. Reason: %s", e.what());
+  }
+}
+
 } /*namespace ADDON*/
 

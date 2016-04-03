@@ -51,6 +51,7 @@ public:
   virtual bool SupportsEnableAtPTS() override { return m_IDemux ? m_IDemux->SupportsEnableAtPTS():false; };
   virtual void EnableStream(int id, bool enable) override;
   virtual void EnableStreamAtPTS(int id, uint64_t pts) override;
+  virtual void SetVideoResolution(int width, int height) override;
 
 protected:
   void RequestStreams();

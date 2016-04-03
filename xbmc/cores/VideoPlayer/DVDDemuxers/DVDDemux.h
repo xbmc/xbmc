@@ -348,6 +348,12 @@ public:
   virtual void EnableStreamAtPTS(int64_t demuxerId, int id, uint64_t pts) { EnableStreamAtPTS(id, pts); };
 
   /*
+   * sets desired width / height for video stream
+   * adaptive demuxers like DASH can use this to choose best fitting video stream
+   */
+  virtual void SetVideoResolution(int width, int height) {};
+  
+  /*
   * return the id of the demuxer
   */
   int64_t GetDemuxerId() { return m_demuxerId; };

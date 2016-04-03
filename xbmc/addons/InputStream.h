@@ -76,6 +76,7 @@ namespace ADDON
     void SetSpeed(int iSpeed);
     void EnableStream(int iStreamId, bool enable);
     void EnableStreamAtPTS(int iStreamId, uint64_t pts);
+    void SetVideoResolution(int width, int height);
 
     // stream
     int ReadStream(uint8_t* buf, unsigned int size);

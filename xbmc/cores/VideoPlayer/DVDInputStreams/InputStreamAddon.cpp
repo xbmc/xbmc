@@ -265,3 +265,11 @@ void CInputStreamAddon::FlushDemux()
 
   m_addon->FlushDemux();
 }
+
+void CInputStreamAddon::SetVideoResolution(int width, int height)
+{
+  if (!m_addon)
+    return;
+
+  m_addon->SetVideoResolution(width, height);
+}

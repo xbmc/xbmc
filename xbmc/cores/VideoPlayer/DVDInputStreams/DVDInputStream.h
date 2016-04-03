@@ -131,6 +131,7 @@ public:
     virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) = 0;
     virtual void AbortDemux() = 0;
     virtual void FlushDemux() = 0;
+    virtual void SetVideoResolution(int width, int height) {};
   };
 
   enum ENextStream
