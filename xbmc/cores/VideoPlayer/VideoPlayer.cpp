@@ -84,6 +84,8 @@
 #include "windowing/WindowingFactory.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 
+#include <iterator>
+
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
@@ -117,10 +119,11 @@ SelectionStream& CSelectionStreams::Get(StreamType type, int index)
 std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
 {
   std::vector<SelectionStream> streams;
-  int count = Count(type);
-  for(int index = 0; index < count; ++index){
-    streams.push_back(Get(type, index));
-  }
+  std::copy_if(m_Streams.begin(), m_Streams.end(), std::back_inserter(streams),
+    [type](const SelectionStream &stream)
+    {
+      return stream.type == type;
+    });
   return streams;
 }
 
