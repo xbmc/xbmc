@@ -1897,7 +1897,10 @@ void CApplication::Render()
     g_Windowing.FinishPipeline();
   }
 
-  g_graphicsContext.Flip(hasRendered);
+  // TODO: find better solution
+  // if video is rendered to a separate layer, we should not block this thread
+  if (!m_pPlayer->IsRenderingVideoLayer() || hasRendered)
+    g_graphicsContext.Flip(hasRendered);
 
   CTimeUtils::UpdateFrameTime(hasRendered);
 }
