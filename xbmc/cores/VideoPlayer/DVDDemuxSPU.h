@@ -38,7 +38,7 @@ SPUData;
 // upto 32 streams can exist
 #define DVD_MAX_SPUSTREAMS 32
 
-class CDVDDemuxSPU
+class CDVDDemuxSPU final
 {
 public:
   CDVDDemuxSPU();
