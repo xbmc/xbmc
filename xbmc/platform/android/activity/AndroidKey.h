@@ -34,8 +34,10 @@ public:
   bool onKeyboardEvent(AInputEvent *event);
 
   static void SetHandleMediaKeys(bool enable) { m_handleMediaKeys = enable; }
+  static void SetHandleSearchKeys(bool enable) { m_handleSearchKeys = enable; }
   static void XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up);
 
 protected:
   static bool m_handleMediaKeys;
+  static bool m_handleSearchKeys;
 };

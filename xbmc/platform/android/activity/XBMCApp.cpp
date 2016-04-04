@@ -61,6 +61,7 @@
 
 #include "AndroidKey.h"
 #include "settings/AdvancedSettings.h"
+#include "interfaces/AnnouncementManager.h"
 #include "Application.h"
 #include "AppParamParser.h"
 #include "messaging/ApplicationMessenger.h"
@@ -91,6 +92,7 @@
 #define GIGABYTES       1073741824
 
 using namespace KODI::MESSAGING;
+using namespace ANNOUNCEMENT;
 
 template<class T, void(T::*fn)()>
 void* thread_run(void* obj)
@@ -136,6 +138,17 @@ CXBMCApp::~CXBMCApp()
 {
   m_xbmcappinstance = NULL;
   delete m_wakeLock;
+}
+
+void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if ((flag & Input) && strcmp(sender, "xbmc") == 0)
+  {
+    if (strcmp(message, "OnInputRequested") == 0)
+      CAndroidKey::SetHandleSearchKeys(true);
+    else if (strcmp(message, "OnInputFinished") == 0)
+      CAndroidKey::SetHandleSearchKeys(false);
+  }
 }
 
 void CXBMCApp::onStart()
@@ -285,6 +298,15 @@ void CXBMCApp::onLostFocus()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
   m_hasFocus = false;
+}
+
+void CXBMCApp::Initialize()
+{
+  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());  
+}
+
+void CXBMCApp::Deinitialize()
+{
 }
 
 bool CXBMCApp::EnableWakeLock(bool on)

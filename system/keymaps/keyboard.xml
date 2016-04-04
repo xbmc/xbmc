@@ -194,6 +194,7 @@
       <browser_back>Backspace</browser_back>
       <browser_back mod="longpress">PreviousMenu</browser_back>
       <play_pause mod="longpress">Enter</play_pause>
+      <browser_search>VoiceRecognizer</browser_search>
       <menu>VoiceRecognizer</menu>
     </keyboard>
   </VirtualKeyboard>
