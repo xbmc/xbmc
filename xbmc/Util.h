@@ -94,6 +94,7 @@ public:
   *   \param[out] vecAudio A vector containing the full paths of all found external audio files.
   */
   static void ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio);
+  static void ScanForExternalDemuxSub(const std::string& videoPath, std::vector<std::string>& vecSubtitles);
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static std::string GetNextFilename(const std::string &fn_template, int max);
   static std::string GetNextPathname(const std::string &path_template, int max);
