@@ -90,16 +90,13 @@ using namespace KODI::MESSAGING;
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
   CSingleLock lock(m_section);
-  for(int i=m_Streams.size()-1;i>=0;i--)
-  {
-    if(type && m_Streams[i].type != type)
-      continue;
-
-    if(source && m_Streams[i].source != source)
-      continue;
-
-    m_Streams.erase(m_Streams.begin() + i);
-  }
+  auto new_end = std::remove_if(m_Streams.begin(), m_Streams.end(),
+    [type, source](const SelectionStream &stream)
+    {
+      return (type == STREAM_NONE || stream.type == type) &&
+      (source == 0 || stream.source == source);
+    });
+  m_Streams.erase(new_end, m_Streams.end());
 }
 
 SelectionStream& CSelectionStreams::Get(StreamType type, int index)
