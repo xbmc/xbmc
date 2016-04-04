@@ -26,6 +26,7 @@
 #include <io.h>
 #include <direct.h>
 #include <process.h>
+#include <errno.h>
 #else
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 #include <mntent.h>
@@ -52,6 +53,8 @@
 #include <signal.h>
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
+#include "XFileUtils.h"
+#include "XTimeUtils.h"
 #endif
 #include "Util.h"
 #include "filesystem/SpecialProtocol.h"
@@ -572,12 +575,12 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      errno = NOERROR;
+      errno = 0;
       const ssize_t ret = pFile->Read(buffer, uiSize);
       if (ret < 0)
       {
         const int err = errno; // help compiler to optimize, "errno" can be macro
-        if (err == NOERROR ||
+        if (err == 0 ||
             (err != EAGAIN && err != EINTR && err != EIO && err != EOVERFLOW && err != EWOULDBLOCK &&
              err != ECONNRESET && err != ENOTCONN && err != ETIMEDOUT &&
              err != ENOBUFS && err != ENOMEM && err != ENXIO))
@@ -603,12 +606,12 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      errno = NOERROR;
+      errno = 0;
       const ssize_t ret = pFile->Write(buffer, uiSize);
       if (ret < 0)
       {
         const int err = errno; // help compiler to optimize, "errno" can be macro
-        if (err == NOERROR ||
+        if (err == 0 ||
             (err != EAGAIN && err != EFBIG && err != EINTR && err != EIO && err != ENOSPC && err != EPIPE && err != EWOULDBLOCK &&
              err != ECONNRESET &&
              err != ENOBUFS && err != ENXIO &&

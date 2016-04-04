@@ -49,6 +49,9 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "python27.lib")

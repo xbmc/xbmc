@@ -35,6 +35,10 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
+
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
   : CGUIDialog(WINDOW_DEBUG_INFO, "", DialogModalityType::MODELESS)
 {

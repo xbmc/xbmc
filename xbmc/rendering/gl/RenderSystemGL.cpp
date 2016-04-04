@@ -34,6 +34,9 @@
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {

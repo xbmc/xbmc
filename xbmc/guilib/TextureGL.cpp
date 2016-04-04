@@ -24,6 +24,9 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 

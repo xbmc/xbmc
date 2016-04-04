@@ -37,6 +37,10 @@
 #include <sys/wait.h>
 #endif
 
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
+
 CXRandR::CXRandR(bool query)
 {
   m_bInit = false;

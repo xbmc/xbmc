@@ -27,6 +27,10 @@
 #include <sys\stat.h>
 #endif
 
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
+
 #include "NFSDirectory.h"
 #include "FileItem.h"
 #include "utils/log.h"

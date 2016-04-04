@@ -31,6 +31,7 @@
 #include <QuartzCore/CVDisplayLink.h>
 #include <CoreVideo/CVHostTime.h>
 #include "platform/darwin/osx/CocoaInterface.h"
+#include <unistd.h>
 
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
 {
@@ -55,14 +56,14 @@ void CVideoSyncOsx::Run(volatile bool& stop)
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!stop && !m_displayLost && !m_displayReset)
   {
-    Sleep(100);
+    usleep(100000);
   }
 
   m_lostEvent.Set();
 
   while(!stop && m_displayLost && !m_displayReset)
   {
-    Sleep(10);
+    usleep(10000);
   }
 
   DeinitDisplayLink();

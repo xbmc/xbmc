@@ -34,6 +34,10 @@
 #include "mysqldataset.h"
 #endif
 
+#ifdef TARGET_POSIX
+#include "linux/ConvUtils.h"
+#endif
+
 using namespace dbiplus;
 
 #define MAX_COMPRESS_COUNT 20

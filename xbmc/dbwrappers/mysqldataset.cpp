@@ -36,6 +36,10 @@
 #pragma comment(lib, "libmysql.lib")
 #endif
 
+#ifdef TARGET_POSIX
+#include "linux/ConvUtils.h"
+#endif
+
 #define MYSQL_OK          0
 #define ER_BAD_DB_ERROR   1049
 

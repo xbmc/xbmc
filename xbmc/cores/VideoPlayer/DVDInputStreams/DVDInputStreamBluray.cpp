@@ -41,6 +41,10 @@
 #include "utils/LangCodeExpander.h"
 #include "filesystem/SpecialProtocol.h"
 
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
+
 #define LIBBLURAY_BYTESEEK 0
 
 using namespace XFILE;

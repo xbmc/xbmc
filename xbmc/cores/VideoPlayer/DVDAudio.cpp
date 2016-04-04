@@ -26,6 +26,9 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "settings/MediaSettings.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 CDVDAudio::CDVDAudio(CDVDClock *clock) : m_pClock(clock)
 {

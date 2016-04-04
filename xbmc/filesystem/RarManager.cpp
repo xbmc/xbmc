@@ -40,6 +40,10 @@
 
 #include <set>
 
+#ifdef TARGET_POSIX
+#include "linux/XFileUtils.h"
+#endif
+
 #define EXTRACTION_WARN_SIZE 50*1024*1024
 
 using namespace XFILE;

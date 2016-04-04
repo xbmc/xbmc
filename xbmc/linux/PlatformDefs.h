@@ -129,8 +129,6 @@
 
 #ifdef TARGET_POSIX
 
-#define XXLog(a,b) printf("%s", (b))
-
 #ifndef INSTALL_PATH
 #define INSTALL_PATH    "/usr/share/xbmc"
 #endif
@@ -179,10 +177,6 @@
 #define _declspec(X)
 #define __declspec(X)
 
-#define __try try
-#define EXCEPTION_EXECUTE_HANDLER ...
-//NOTE: dont try to define __except because it breaks g++ (already uses it).
-
 struct CXHandle; // forward declaration
 typedef CXHandle* HANDLE;
 
@@ -193,16 +187,11 @@ typedef unsigned int  DWORD;
 typedef unsigned short  WORD;
 typedef unsigned char   BYTE;
 typedef char        CHAR;
-typedef unsigned char UCHAR;
 typedef wchar_t     WCHAR;
 typedef int         BOOL;
-typedef BYTE        BOOLEAN;
-typedef short       SHORT;
-typedef unsigned short  USHORT;
 typedef int         INT;
 typedef unsigned int  UINT;
 // typedef int INT32;              // unused; must match Xmd.h but why bother
-typedef unsigned int  UINT32;
 typedef long long     INT64;
 typedef unsigned long long    UINT64;
 typedef long        LONG;
@@ -212,7 +201,6 @@ typedef UInt32          ULONG;
 #else
 typedef unsigned long   ULONG;
 #endif
-typedef float         FLOAT;
 typedef size_t        SIZE_T;
 typedef void*         PVOID;
 typedef void*         LPVOID;
@@ -220,11 +208,6 @@ typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 typedef HANDLE        HDC;
 typedef void*       HWND;
-#if defined(TARGET_DARWIN_OSX)
-typedef SInt32      HRESULT;
-#else
-typedef LONG        HRESULT;
-#endif
 typedef BYTE*       LPBYTE;
 typedef DWORD*        LPDWORD;
 typedef CONST CHAR*   LPCSTR;
@@ -239,14 +222,11 @@ typedef LPCWSTR       LPCTSTR;
 typedef LPCSTR      LPCTSTR;
 #endif
 typedef unsigned __int64 ULONGLONG;
-typedef long        LONG_PTR;
 typedef unsigned long   ULONG_PTR;
 typedef ULONG_PTR     DWORD_PTR;
-typedef __int64     __time64_t;
 typedef intptr_t (*FARPROC)(void);
 
 #define MAXWORD   0xffff
-#define MAXDWORD  0xffffffff
 
 typedef DWORD LCID;
 typedef WORD* LPWORD;
@@ -430,21 +410,6 @@ typedef struct _MEMORYSTATUSEX
   uint64_t ullAvailVirtual;
 } MEMORYSTATUSEX, *LPMEMORYSTATUSEX;
 
-// Common HRESULT values
-#ifndef NOERROR
-#define NOERROR           (0L)
-#endif
-#ifndef S_OK
-#define S_OK            (0L)
-#endif
-#ifndef E_FAIL
-#define E_FAIL            (0x80004005L)
-#endif
-#ifndef E_OUTOFMEMORY
-#define E_OUTOFMEMORY         (0x8007000EL)
-#endif
-#define FAILED(Status)            ((HRESULT)(Status)<0)
-
 // Basic D3D stuff
 typedef struct _RECT {
   LONG left;
@@ -453,97 +418,16 @@ typedef struct _RECT {
   LONG bottom;
 } RECT, *PRECT;
 
-typedef DWORD D3DCOLOR;
-
 typedef enum _D3DFORMAT
 {
-  D3DFMT_A8R8G8B8         = 0x00000006,
+  D3DFMT_A8R8G8B8     = 0x00000006,
   D3DFMT_DXT1         = 0x0000000C,
   D3DFMT_DXT2         = 0x0000000E,
   D3DFMT_DXT4         = 0x0000000F,
-  D3DFMT_UNKNOWN          = 0xFFFFFFFF
+  D3DFMT_UNKNOWN      = 0xFFFFFFFF
 } D3DFORMAT;
 
-typedef enum D3DRESOURCETYPE
-{
-    D3DRTYPE_SURFACE = 1,
-    D3DRTYPE_VOLUME = 2,
-    D3DRTYPE_TEXTURE = 3,
-    D3DRTYPE_VOLUMETEXTURE = 4,
-    D3DRTYPE_CubeTexture = 5,
-    D3DRTYPE_VERTEXBUFFER = 6,
-    D3DRTYPE_INDEXBUFFER = 7,
-    D3DRTYPE_FORCE_DWORD = 0x7fffffff
-} D3DRESOURCETYPE, *LPD3DRESOURCETYPE;
-
-typedef enum D3DXIMAGE_FILEFORMAT
-{
-    D3DXIFF_BMP = 0,
-    D3DXIFF_JPG = 1,
-    D3DXIFF_TGA = 2,
-    D3DXIFF_PNG = 3,
-    D3DXIFF_DDS = 4,
-    D3DXIFF_PPM = 5,
-    D3DXIFF_DIB = 6,
-    D3DXIFF_HDR = 7,
-    D3DXIFF_PFM = 8,
-    D3DXIFF_FORCE_DWORD = 0x7fffffff
-} D3DXIMAGE_FILEFORMAT, *LPD3DXIMAGE_FILEFORMAT;
-
-typedef struct D3DXIMAGE_INFO {
-    UINT Width;
-    UINT Height;
-    UINT Depth;
-    UINT MipLevels;
-    D3DFORMAT Format;
-    D3DRESOURCETYPE ResourceType;
-    D3DXIMAGE_FILEFORMAT ImageFileFormat;
-} D3DXIMAGE_INFO, *LPD3DXIMAGE_INFO;
-
-typedef struct _D3DPRESENT_PARAMETERS_
-{
-    UINT                BackBufferWidth;
-    UINT                BackBufferHeight;
-    D3DFORMAT           BackBufferFormat;
-    UINT                BackBufferCount;
-    //D3DMULTISAMPLE_TYPE MultiSampleType;
-    //D3DSWAPEFFECT       SwapEffect;
-    //HWND                hDeviceWindow;
-    BOOL                Windowed;
-    BOOL                EnableAutoDepthStencil;
-    D3DFORMAT           AutoDepthStencilFormat;
-    DWORD               Flags;
-    UINT                FullScreen_RefreshRateInHz;
-    UINT                FullScreen_PresentationInterval;
-    //D3DSurface         *BufferSurfaces[3];
-    //D3DSurface         *DepthStencilSurface;
-} D3DPRESENT_PARAMETERS;
-
-typedef enum D3DPRIMITIVETYPE
-{
-    D3DPT_POINTLIST = 1,
-    D3DPT_LINELIST = 2,
-    D3DPT_LINESTRIP = 3,
-    D3DPT_TRIANGLELIST = 4,
-    D3DPT_TRIANGLESTRIP = 5,
-    D3DPT_TRIANGLEFAN = 6,
-    D3DPT_FORCE_DWORD = 0x7fffffff
-} D3DPRIMITIVETYPE, *LPD3DPRIMITIVETYPE;
-
-typedef struct _D3DMATRIX {
-    union {
-        struct {
-            float        _11, _12, _13, _14;
-            float        _21, _22, _23, _24;
-            float        _31, _32, _33, _34;
-            float        _41, _42, _43, _44;
-        } u;
-        float m[4][4];
-    };
-} D3DMATRIX;
-
 // Misc stuff found in the code, not really important
-#define PAGE_READONLY     0x02
 #define PAGE_READWRITE    0x04
 #define MAXULONG_PTR    ((ULONG) 0xffffffff)
 
@@ -599,65 +483,6 @@ WORD    cbSize;
 #define WAVE_FORMAT_ADPCM             0x0002
 #define WAVE_FORMAT_IEEE_FLOAT        0x0003
 #define WAVE_FORMAT_EXTENSIBLE        0xFFFE
-
-#define SPEAKER_FRONT_LEFT            0x00001
-#define SPEAKER_FRONT_RIGHT           0x00002
-#define SPEAKER_FRONT_CENTER          0x00004
-#define SPEAKER_LOW_FREQUENCY         0x00008
-#define SPEAKER_BACK_LEFT             0x00010
-#define SPEAKER_BACK_RIGHT            0x00020
-#define SPEAKER_FRONT_LEFT_OF_CENTER  0x00040
-#define SPEAKER_FRONT_RIGHT_OF_CENTER 0x00080
-#define SPEAKER_BACK_CENTER           0x00100
-#define SPEAKER_SIDE_LEFT             0x00200
-#define SPEAKER_SIDE_RIGHT            0x00400
-#define SPEAKER_TOP_CENTER            0x00800
-#define SPEAKER_TOP_FRONT_LEFT        0x01000
-#define SPEAKER_TOP_FRONT_CENTER      0x02000
-#define SPEAKER_TOP_FRONT_RIGHT       0x04000
-#define SPEAKER_TOP_BACK_LEFT         0x08000
-#define SPEAKER_TOP_BACK_CENTER       0x10000
-#define SPEAKER_TOP_BACK_RIGHT        0x20000
-
-typedef struct tGUID
-{
-  DWORD Data1;
-  WORD  Data2, Data3;
-  BYTE  Data4[8];
-} __attribute__((__packed__)) GUID;
-
-static const GUID KSDATAFORMAT_SUBTYPE_UNKNOWN = {
-  WAVE_FORMAT_UNKNOWN,
-  0x0000, 0x0000,
-  {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
-};
-
-static const GUID KSDATAFORMAT_SUBTYPE_PCM = {
-  WAVE_FORMAT_PCM,
-  0x0000, 0x0010,
-  {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-};
-
-static const GUID KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = {
-  WAVE_FORMAT_IEEE_FLOAT,
-  0x0000, 0x0010,
-  {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-};
-
-typedef struct tWAVEFORMATEXTENSIBLE
-{
-  WAVEFORMATEX Format;
-  union
-  {
-    WORD wValidBitsPerSample;
-    WORD wSamplesPerBlock;
-    WORD wReserved;
-  } Samples;
-  DWORD dwChannelMask;
-  GUID SubFormat;
-} __attribute__((__packed__)) WAVEFORMATEXTENSIBLE;
-
-
 
 #endif
 

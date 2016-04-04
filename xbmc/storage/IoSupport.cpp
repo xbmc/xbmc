@@ -61,6 +61,7 @@
 #include "MediaManager.h"
 #ifdef TARGET_POSIX
 #include "XHandle.h"
+#include "XFileUtils.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
