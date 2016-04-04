@@ -771,7 +771,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         namedSeason->Attribute("number", &seasonNumber) != nullptr)
       m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
 
-    namedSeason = thumb->NextSiblingElement("namedseason");
+    namedSeason = namedSeason->NextSiblingElement("namedseason");
   }
 
   // cast
