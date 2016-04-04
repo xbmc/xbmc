@@ -981,6 +981,9 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 
 void CGraphicContext::Flip(bool rendered)
 {
+  if (IsFullScreenVideo())
+    g_Windowing.FinishPipeline();
+
   g_Windowing.PresentRender(rendered);
 
   if(m_stereoMode != m_nextStereoMode)

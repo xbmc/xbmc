@@ -1892,11 +1892,6 @@ void CApplication::Render()
 
   m_pPlayer->AfterRender();
 
-  if (g_graphicsContext.IsFullScreenVideo())
-  {
-    g_Windowing.FinishPipeline();
-  }
-
   // TODO: find better solution
   // if video is rendered to a separate layer, we should not block this thread
   if (!m_pPlayer->IsRenderingVideoLayer() || hasRendered)
