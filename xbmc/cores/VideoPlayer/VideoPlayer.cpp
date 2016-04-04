@@ -84,22 +84,21 @@
 #include "windowing/WindowingFactory.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 
+#include <iterator>
+
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
   CSingleLock lock(m_section);
-  for(int i=m_Streams.size()-1;i>=0;i--)
-  {
-    if(type && m_Streams[i].type != type)
-      continue;
-
-    if(source && m_Streams[i].source != source)
-      continue;
-
-    m_Streams.erase(m_Streams.begin() + i);
-  }
+  auto new_end = std::remove_if(m_Streams.begin(), m_Streams.end(),
+    [type, source](const SelectionStream &stream)
+    {
+      return (type == STREAM_NONE || stream.type == type) &&
+      (source == 0 || stream.source == source);
+    });
+  m_Streams.erase(new_end, m_Streams.end());
 }
 
 SelectionStream& CSelectionStreams::Get(StreamType type, int index)
@@ -120,10 +119,11 @@ SelectionStream& CSelectionStreams::Get(StreamType type, int index)
 std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
 {
   std::vector<SelectionStream> streams;
-  int count = Count(type);
-  for(int index = 0; index < count; ++index){
-    streams.push_back(Get(type, index));
-  }
+  std::copy_if(m_Streams.begin(), m_Streams.end(), std::back_inserter(streams),
+    [type](const SelectionStream &stream)
+    {
+      return stream.type == type;
+    });
   return streams;
 }
 
