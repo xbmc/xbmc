@@ -3164,13 +3164,11 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     }
     else
     {
-      double dDelay = m_VideoPlayerVideo->GetDelay() / DVD_TIME_BASE - m_renderManager.GetDisplayLatency();
-
       double apts = m_VideoPlayerAudio->GetCurrentPts();
       double vpts = m_VideoPlayerVideo->GetCurrentPts();
       double dDiff = 0;
 
-      if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
+      if (apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE)
         dDiff = (apts - vpts) / DVD_TIME_BASE;
 
       std::string strBuf;
@@ -3184,8 +3182,7 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
           strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
       }
 
-      strGeneralInfo = StringUtils::Format("Player: ad:% 6.3f, a/v:% 6.3f, %s"
-                                           , dDelay
+      strGeneralInfo = StringUtils::Format("Player: a/v:% 6.3f, %s"
                                            , dDiff
                                            , strBuf.c_str());
     }
@@ -4924,11 +4921,6 @@ bool CVideoPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 void CVideoPlayer::FrameMove()
 {
   m_renderManager.FrameMove();
-}
-
-void CVideoPlayer::FrameWait(int ms)
-{
-  m_renderManager.FrameWait(ms);
 }
 
 bool CVideoPlayer::HasFrame()

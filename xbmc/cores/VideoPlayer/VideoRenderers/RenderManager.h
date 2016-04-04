@@ -100,7 +100,6 @@ public:
   EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
   static float GetMaximumFPS();
-  double GetDisplayLatency() { return m_displayLatency; }
   int GetSkippedFrames()  { return m_QueueSkip; }
 
   // Functions called from mplayer
@@ -130,7 +129,7 @@ public:
    * @param source depreciated
    * @param sync signals frame, top, or bottom field
    */
-  void FlipPage(volatile std::atomic_bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+  void FlipPage(volatile std::atomic_bool& bStop, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
 
   void AddOverlay(CDVDOverlay* o, double pts);
 
@@ -223,7 +222,6 @@ protected:
   struct SPresent
   {
     double         pts;
-    double         timestamp;
     EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
   } m_Queue[NUM_BUFFERS];

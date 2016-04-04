@@ -315,7 +315,6 @@ public:
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
 
   virtual void FrameMove();
-  virtual void FrameWait(int ms);
   virtual bool HasFrame();
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true);
   virtual void AfterRender();

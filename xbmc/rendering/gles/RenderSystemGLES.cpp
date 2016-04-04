@@ -33,6 +33,9 @@
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
+#ifdef TARGET_POSIX
+#include "XTimeUtils.h"
+#endif
 
 static const char* ShaderNames[SM_ESHADERCOUNT] =
     {"guishader_frag_default.glsl",

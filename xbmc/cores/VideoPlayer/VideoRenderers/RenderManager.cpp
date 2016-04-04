@@ -82,8 +82,6 @@
 
 using namespace KODI::MESSAGING;
 
-#define MAXPRESENTDELAY 0.500
-
 static void requeue(std::deque<int> &trg, std::deque<int> &src)
 {
   trg.push_back(src.front());
@@ -384,14 +382,8 @@ void CRenderManager::FrameMove()
     {
       if (!m_queued.empty())
       {
-        double timestamp = GetPresentTime();
-        SPresent& m = m_Queue[m_presentsource];
-        SPresent& q = m_Queue[m_queued.front()];
-        if(timestamp > m.timestamp + (q.timestamp - m.timestamp) * 0.5)
-        {
-          m_presentstep = PRESENT_READY;
-          m_presentevent.notifyAll();
-        }
+        m_presentstep = PRESENT_READY;
+        m_presentevent.notifyAll();
       }
     }
 
@@ -829,7 +821,7 @@ void CRenderManager::SetViewMode(int iViewMode)
   m_playerPort->VideoParamsChange();
 }
 
-void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   { CSingleLock lock(m_statelock);
 
@@ -886,10 +878,6 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double timestamp
     }
   }
 
-  /* failsafe for invalid timestamps, to make sure queue always empties */
-  if(timestamp > GetPresentTime() + 5.0)
-    timestamp = GetPresentTime() + 5.0;
-
   CSingleLock lock(m_presentlock);
 
   if(m_free.empty())
@@ -899,7 +887,6 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double timestamp
     source = m_free.front();
 
   SPresent& m = m_Queue[source];
-  m.timestamp     = timestamp;
   m.presentfield  = sync;
   m.presentmethod = presentmethod;
   m.pts           = pts;
@@ -934,7 +921,8 @@ float CRenderManager::GetMaximumFPS()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC) != VSYNC_DISABLED)
   {
     fps = (float)g_VideoReferenceClock.GetRefreshRate();
-    if (fps <= 0) fps = g_graphicsContext.GetFPS();
+    if (fps <= 0)
+      fps = g_graphicsContext.GetFPS();
   }
   else
     fps = 1000.0f;
@@ -1090,7 +1078,6 @@ void CRenderManager::UpdateDisplayLatency()
   if (g_graphicsContext.GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
   m_displayLatency = (double) g_advancedSettings.GetDisplayLatency(refresh);
-  //CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatency - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
 }
 
 void CRenderManager::UpdateResolution()
@@ -1273,11 +1260,11 @@ int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
   {
     m_bRenderGUI = false;
     double presenttime = 0;
-    double clock = GetPresentTime();
+    double clock = m_dvdClock.GetClock();
     if (!m_queued.empty())
     {
       int idx = m_queued.front();
-      presenttime = m_Queue[idx].timestamp;
+      presenttime = m_Queue[idx].pts;
     }
     else
       presenttime = clock + 0.02;
@@ -1329,36 +1316,31 @@ void CRenderManager::PrepareNextRender()
     return;
   }
 
-  double clocktime = GetPresentTime();
-  double frametime = 1.0 / GetMaximumFPS();
-  double correction = 0.0;
-  int fps = g_VideoReferenceClock.GetRefreshRate();
-  if((fps > 0) && g_graphicsContext.IsFullScreenVideo() && (clocktime != m_clock_framefinish))
-  {
-    correction = frametime;
-  }
+  double frameOnScreen = m_dvdClock.GetClock();
+  double frametime = 1.0 / GetMaximumFPS() * DVD_TIME_BASE;
 
-  /* see if any future queued frames are already due */
+  // correct display latency
+  // internal buffers of driver, assume that driver lets us go one frame in advance
+  double totalLatency = DVD_SEC_TO_TIME(m_displayLatency) + 2* frametime;
+
+  double clocktime = frameOnScreen + totalLatency;
+
+  // see if any future queued frames are already due
   std::deque<int>::reverse_iterator curr, prev;
   int idx;
   curr = prev = m_queued.rbegin();
   ++prev;
   while (prev != m_queued.rend())
   {
-    if(clocktime > m_Queue[*prev].timestamp + correction                 /* previous frame is late */
-    && clocktime > m_Queue[*curr].timestamp - frametime + correction)    /* selected frame is close to it's display time */
+    if (clocktime > m_Queue[*prev].pts + 2 * frametime &&  // previous frame is late
+        clocktime > m_Queue[*curr].pts + frametime)        // selected frame due
       break;
     ++curr;
     ++prev;
   }
   idx = *curr;
 
-  /* in fullscreen we will block after render, but only for MAXPRESENTDELAY */
-  bool next;
-  if(g_graphicsContext.IsFullScreenVideo())
-    next = (m_Queue[idx].timestamp <= clocktime + MAXPRESENTDELAY);
-  else
-    next = (m_Queue[idx].timestamp <= clocktime + frametime);
+  bool next = clocktime >= m_Queue[idx].pts;
 
   if (next)
   {
@@ -1373,8 +1355,8 @@ void CRenderManager::PrepareNextRender()
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
     m_queued.pop_front();
-    m_sleeptime = m_Queue[idx].timestamp - clocktime;
-    m_presentpts = m_Queue[idx].pts;
+    m_sleeptime = m_Queue[idx].pts - clocktime + frametime;
+    m_presentpts = m_Queue[idx].pts - totalLatency;
     m_presentevent.notifyAll();
   }
 }
@@ -1386,8 +1368,6 @@ void CRenderManager::DiscardBuffer()
   while(!m_queued.empty())
     requeue(m_discard, m_queued);
 
-  m_Queue[m_presentsource].timestamp = GetPresentTime();
-
   if(m_presentstep == PRESENT_READY)
     m_presentstep = PRESENT_IDLE;
   m_presentevent.notifyAll();
@@ -1396,7 +1376,7 @@ void CRenderManager::DiscardBuffer()
 bool CRenderManager::GetStats(double &sleeptime, double &pts, int &queued, int &discard)
 {
   CSingleLock lock(m_presentlock);
-  sleeptime = m_sleeptime;
+  sleeptime = DVD_TIME_TO_SEC(m_sleeptime);
   pts = m_presentpts;
   queued = m_queued.size();
   discard  = m_discard.size();

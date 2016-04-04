@@ -333,9 +333,6 @@ bool CWinSystemEGL::DestroyWindow()
 bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight, true, 0);
-  int vsync_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
-  if (vsync_mode != VSYNC_DRIVER)
-    SetVSyncImpl(m_iVSyncMode);
   return true;
 }
 
@@ -343,9 +340,6 @@ bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 {
   CreateNewWindow("", fullScreen, res, NULL);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
-  int vsync_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
-  if (vsync_mode != VSYNC_DRIVER)
-    SetVSyncImpl(m_iVSyncMode);
   return true;
 }
 

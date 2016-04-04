@@ -286,7 +286,6 @@ CApplication::CApplication(void)
   /* for now always keep this around */
   m_currentStack = new CFileItemList;
 
-  m_bPresentFrame = false;
   m_bPlatformDirectories = true;
 
   m_bStandalone = false;
@@ -1843,6 +1842,7 @@ void CApplication::Render()
 
   bool hasRendered = false;
   bool limitFrames = false;
+  bool bPresentFrame = false;
   unsigned int singleFrameTime = 40; // default limit 25 fps
 
   // Whether externalplayer is playing and we're unfocused
@@ -1852,10 +1852,9 @@ void CApplication::Render()
     // Less fps in DPMS
     bool lowfps = g_Windowing.EnableFrameLimiter();
 
-    m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
     {
-      m_bPresentFrame = m_pPlayer->HasFrame();
+      bPresentFrame = true;
     }
     else
     {
@@ -1897,7 +1896,7 @@ void CApplication::Render()
     g_Windowing.SetVSync(false);
   }
 
-  if (m_bPresentFrame && m_pPlayer->IsPlaying() && !m_pPlayer->IsPaused())
+  if (bPresentFrame && m_pPlayer->IsPlaying() && !m_pPlayer->IsPaused())
     ResetScreenSaver();
 
   if(!g_Windowing.BeginRender())
@@ -1962,7 +1961,7 @@ void CApplication::Render()
     flip = true;
 
   //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
-  if (limitFrames || !(flip || m_bPresentFrame))
+  if (limitFrames || !(flip || bPresentFrame))
   {
     unsigned int frameTime = now - m_lastFrameTime;
     if (frameTime < singleFrameTime)
@@ -1970,11 +1969,6 @@ void CApplication::Render()
   }
 
   g_graphicsContext.Flip(flip);
-
-  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
-  {
-    m_pPlayer->FrameWait(100);
-  }
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
   CTimeUtils::UpdateFrameTime(flip);
