@@ -42,7 +42,7 @@ class CDVDDemuxSPU final
 {
 public:
   CDVDDemuxSPU();
-  virtual ~CDVDDemuxSPU();
+  ~CDVDDemuxSPU();
 
   CDVDOverlaySpu* AddData(uint8_t* data, int iSize, double pts); // returns a packet from ParsePacket if possible
 
