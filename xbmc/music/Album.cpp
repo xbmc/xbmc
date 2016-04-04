@@ -52,70 +52,102 @@ CAlbum::CAlbum(const CFileItem& item)
   strAlbum = tag.GetAlbum();
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
   genre = tag.GetGenre();
-  std::vector<std::string> musicBrainAlbumArtistHints = tag.GetMusicBrainzAlbumArtistHints();
+  std::vector<std::string> musicBrainzAlbumArtistHints = tag.GetMusicBrainzAlbumArtistHints();
   strArtistDesc = tag.GetAlbumArtistString();
 
   if (!tag.GetMusicBrainzAlbumArtistID().empty())
-  { // have musicbrainz artist info, so use it
-    // Establish tag consistency - do the number of musicbrainz ids and number of names in hints or artist match
-    if (tag.GetMusicBrainzAlbumArtistID().size() != musicBrainAlbumArtistHints.size() &&
-      tag.GetMusicBrainzAlbumArtistID().size() != tag.GetAlbumArtist().size())
+  { // Have musicbrainz artist info, so use it
+    
+    // Vector of possible separators in the order least likely to be part of artist name
+    const std::vector<std::string> separators{ " feat. ", ";", ":", "|", "#", "/", ",", "&" };
+
+    // Establish tag consistency
+    // Do the number of musicbrainz ids and number of names in hints and artist mis-match?
+    if (musicBrainzAlbumArtistHints.size() != tag.GetMusicBrainzAlbumArtistID().size() &&
+      tag.GetAlbumArtist().size() != tag.GetMusicBrainzAlbumArtistID().size())
     {
       // Tags mis-match - report it and then try to fix
       CLog::Log(LOGDEBUG, "Mis-match in song file albumartist tags: %i mbid %i name album: %s %s",
-        (int)tag.GetMusicBrainzAlbumArtistID().size(), (int)tag.GetAlbumArtist().size(), strAlbum.c_str(), strArtistDesc.c_str());
+        (int)tag.GetMusicBrainzAlbumArtistID().size(),
+        (int)tag.GetAlbumArtist().size(),
+        strAlbum.c_str(), strArtistDesc.c_str());
       /*
       Most likey we have no hints and a single artist name like "Artist1 feat. Artist2"
       or "Composer; Conductor, Orchestra, Soloist" or "Artist1/Artist2" where the
       expected single item separator (default = space-slash-space) as not been used.
       Comma and slash (no spaces) are poor delimiters as could be in name e.g. AC/DC,
       but here treat them as such in attempt to find artist names.
+      When there are hints they could be poorly formatted using unexpected separators, 
+      so attempt to split them. Or we could have more hints or artist names than 
+      musicbrainz so ingore them but raise warning.
       */
-      if (tag.GetAlbumArtist().size() == 1)
+       
+      // Do hints exist yet mis-match
+      if (!musicBrainzAlbumArtistHints.empty() &&
+          musicBrainzAlbumArtistHints.size() != tag.GetMusicBrainzAlbumArtistID().size())
       {
-        std::vector<std::string> names;
-        if (tag.GetAlbumArtist()[0].find(" feat. ") != std::string::npos)
-          names = StringUtils::Split(tag.GetAlbumArtist()[0], " feat. ");
+        if (tag.GetAlbumArtist().size() == tag.GetMusicBrainzAlbumArtistID().size())
+          // Album artist name count matches, use that as hints
+          musicBrainzAlbumArtistHints = tag.GetAlbumArtist(); 
+        else if (musicBrainzAlbumArtistHints.size() < tag.GetMusicBrainzAlbumArtistID().size())
+        { // Try splitting the hints until have matching number
+          musicBrainzAlbumArtistHints = StringUtils::SplitMulti(musicBrainzAlbumArtistHints, separators, tag.GetMusicBrainzAlbumArtistID().size());
+        }
         else
-          names = StringUtils::SplitMulti(tag.GetAlbumArtist()[0], "/;:|#,");
-        //If we have extracted the right number of names then use them as hints
-        if (tag.GetMusicBrainzAlbumArtistID().size() == names.size())
-          musicBrainAlbumArtistHints = names;
+          // Extra hints, discard them.
+          musicBrainzAlbumArtistHints.resize(tag.GetMusicBrainzAlbumArtistID().size());
       }
+      // Do hints not exist or still mis-match, try album artists
+      if (musicBrainzAlbumArtistHints.size() != tag.GetMusicBrainzAlbumArtistID().size())
+        musicBrainzAlbumArtistHints = tag.GetAlbumArtist();
+      // Still mis-match, try splitting the hints (now artists) until have matching number
+      if (musicBrainzAlbumArtistHints.size() < tag.GetMusicBrainzAlbumArtistID().size())
+        musicBrainzAlbumArtistHints = StringUtils::SplitMulti(musicBrainzAlbumArtistHints, separators, tag.GetMusicBrainzAlbumArtistID().size());
+      // Try matching on artists or artist hints field, if it is reliable
+      if (musicBrainzAlbumArtistHints.size() != tag.GetMusicBrainzAlbumArtistID().size())
+      {
+        if (!tag.GetMusicBrainzArtistID().empty() && 
+           (tag.GetMusicBrainzArtistID().size() == tag.GetArtist().size() ||
+            tag.GetMusicBrainzArtistID().size() == tag.GetMusicBrainzArtistHints().size()))
+        {
+          for (size_t i = 0; i < tag.GetMusicBrainzAlbumArtistID().size(); i++)
+          {
+            for (size_t j = 0; j < tag.GetMusicBrainzArtistID().size(); j++)
+            {
+              if (tag.GetMusicBrainzAlbumArtistID()[i] == tag.GetMusicBrainzArtistID()[j])
+              {
+                if (musicBrainzAlbumArtistHints.size() < i + 1)
+                  musicBrainzAlbumArtistHints.resize(i + 1);
+                if (tag.GetMusicBrainzArtistID().size() == tag.GetMusicBrainzArtistHints().size())
+                  musicBrainzAlbumArtistHints[j] = tag.GetMusicBrainzArtistHints()[j];
+                else
+                  musicBrainzAlbumArtistHints[j] = tag.GetArtist()[j];
+              }
+            }
+          }
+        }
+      }
+    }
+    else
+    { // Either hints or album artists (or both) name matches number of musicbrainz id
+      // If hints mis-match, use album artists
+      if (musicBrainzAlbumArtistHints.size() != tag.GetMusicBrainzAlbumArtistID().size())
+        musicBrainzAlbumArtistHints = tag.GetAlbumArtist();
     }
 
     for (size_t i = 0; i < tag.GetMusicBrainzAlbumArtistID().size(); i++)
     {
       std::string artistId = tag.GetMusicBrainzAlbumArtistID()[i];
       std::string artistName;
-
       /*
          We try and get the mbrainzid <-> name matching from the hints and match on the same index.
-         If not found, we try and use the mbrainz <-> name matching from the artists fields
-         If still not found, try and use the same index of the albumartist field.
-         If still not found, use the mbrainzid and hope we later on can update that entry
+         Some album artist hints could be blank (if populated from artist or artist hints).
+         If not found, use the mbrainzid and hope we later on can update that entry
          If we have more names than musicbrainz id they are ingored, but raise a warning.
       */
 
-      if (i < musicBrainAlbumArtistHints.size())
-        artistName = musicBrainAlbumArtistHints[i];
-      else if (!tag.GetMusicBrainzArtistID().empty() && !tag.GetArtist().empty())
-      {
-        for (size_t j = 0; j < tag.GetMusicBrainzArtistID().size(); j++)
-        {
-          if (artistId == tag.GetMusicBrainzArtistID()[j])
-          {
-            if (j < tag.GetMusicBrainzArtistHints().size())
-              artistName = tag.GetMusicBrainzArtistHints()[j];
-            else
-              artistName = (j < tag.GetArtist().size()) ? tag.GetArtist()[j] : tag.GetArtist()[0];
-          }
-        }
-      }
-
-      if (artistName.empty() && tag.GetMusicBrainzAlbumArtistID().size() == tag.GetAlbumArtist().size())
-        artistName = tag.GetAlbumArtist()[i];
-
+      if (i < musicBrainzAlbumArtistHints.size())
+        artistName = musicBrainzAlbumArtistHints[i];
       if (artistName.empty())
         artistName = artistId;
 
