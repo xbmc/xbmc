@@ -822,7 +822,8 @@ void CGUIWindowManager::CloseDialogs(bool forceClose) const
   if (m_activeDialogs.empty())
     return;
 
-  for (const auto& dialog : m_activeDialogs)
+  auto activeDialogs = m_activeDialogs;
+  for (const auto& dialog : activeDialogs)
   {
     dialog->Close(forceClose);
   }
@@ -834,7 +835,8 @@ void CGUIWindowManager::CloseInternalModalDialogs(bool forceClose) const
   if (m_activeDialogs.empty())
     return;
 
-  for (const auto& dialog : m_activeDialogs)
+  auto activeDialogs = m_activeDialogs;
+  for (const auto& dialog : activeDialogs)
   {
     if (dialog->IsModalDialog() && !IsAddonWindow(dialog->GetID()) && !IsPythonWindow(dialog->GetID()))
       dialog->Close(forceClose);
