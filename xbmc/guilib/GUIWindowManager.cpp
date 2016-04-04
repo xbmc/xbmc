@@ -817,14 +817,9 @@ void CGUIWindowManager::CloseDialogs(bool forceClose) const
 {
   CSingleLock lock(g_graphicsContext);
 
-  //This is to avoid an assert about out of bounds iterator
-  //when m_activeDialogs happens to be empty
-  if (m_activeDialogs.empty())
-    return;
-
-  for (const auto& dialog : m_activeDialogs)
+  while (!m_activeDialogs.empty())
   {
-    dialog->Close(forceClose);
+    m_activeDialogs[0]->Close(forceClose);
   }
 }
 
@@ -834,10 +829,12 @@ void CGUIWindowManager::CloseInternalModalDialogs(bool forceClose) const
   if (m_activeDialogs.empty())
     return;
 
-  for (const auto& dialog : m_activeDialogs)
+  for (size_t i = 0; i < m_activeDialogs.size();)
   {
-    if (dialog->IsModalDialog() && !IsAddonWindow(dialog->GetID()) && !IsPythonWindow(dialog->GetID()))
-      dialog->Close(forceClose);
+    if (m_activeDialogs[i]->IsModalDialog() && !IsAddonWindow(m_activeDialogs[i]->GetID()) && !IsPythonWindow(m_activeDialogs[i]->GetID()))
+      m_activeDialogs[i]->Close(forceClose);
+    else
+      ++i;
   }
 }
 
