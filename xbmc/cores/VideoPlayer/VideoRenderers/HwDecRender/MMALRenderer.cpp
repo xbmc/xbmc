@@ -338,12 +338,24 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(m_sharedSection);
   int source = m_iYV12RenderBuffer;
+  CMMALBuffer *omvb = nullptr;
 
   if (!m_bConfigured)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - not configured: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
-    return;
+    goto exit;
+  }
+
+  if (m_format == RENDER_FMT_MMAL)
+    omvb = m_buffers[source];
+
+  // we only want to upload frames once
+  if (omvb && omvb->mmal_buffer && omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
+  {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x skipping", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
+    goto exit;
   }
 
   ManageRenderArea();
@@ -352,18 +364,14 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - bypass: clear:%d flags:%x alpha:%d source:%d format:%d", CLASSNAME, __func__, clear, flags, alpha, source, m_format);
-    return;
+    goto exit;
   }
   SetVideoRect(m_sourceRect, m_destRect);
 
-  CMMALBuffer *omvb = m_buffers[source];
   if (omvb && omvb->mmal_buffer)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
-    // we only want to upload frames once
-    if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
-      return;
     // check for changes in aligned sizes
     if (omvb->m_width != (uint32_t)m_vout_input->format->es->video.crop.width || omvb->m_height != (uint32_t)m_vout_input->format->es->video.crop.height ||
         omvb->m_aligned_width != m_vout_input->format->es->video.width || omvb->m_aligned_height != m_vout_input->format->es->video.height)
@@ -379,7 +387,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       if (status != MMAL_SUCCESS)
       {
         CLog::Log(LOGERROR, "%s::%s Failed to commit vout input format (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-        return;
+        goto exit;
       }
     }
     m_inflight++;
@@ -394,6 +402,10 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   }
   else
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: No buffer to update clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb ? omvb->mmal_buffer : nullptr);
+
+exit:
+   lock.Leave();
+   g_RBP.WaitVsync();
 }
 
 void CMMALRenderer::FlipPage(int source)
