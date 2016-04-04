@@ -19,6 +19,7 @@
  */
 
 #include "ServiceManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -42,7 +43,8 @@ bool CServiceManager::Init2()
     CLog::Log(LOGFATAL, "CServiceManager::Init: Unable to start CAddonMgr");
     return false;
   }
-  
+
+  m_ADSPManager.reset(new ActiveAE::CActiveAEDSP());
   m_PVRManager.reset(new PVR::CPVRManager());
 
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
@@ -53,6 +55,7 @@ bool CServiceManager::Init2()
 
 bool CServiceManager::Init3()
 {
+  m_ADSPManager->Init();
   m_PVRManager->Init();
 
   return true;
@@ -62,6 +65,7 @@ void CServiceManager::Deinit()
 {
   m_binaryAddonCache.reset();
   m_PVRManager.reset();
+  m_ADSPManager.reset();
   m_addonMgr.reset();
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
@@ -91,4 +95,9 @@ XBPython& CServiceManager::GetXBPython()
 PVR::CPVRManager& CServiceManager::GetPVRManager()
 {
   return *m_PVRManager;
+}
+
+ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
+{
+  return *m_ADSPManager;
 }

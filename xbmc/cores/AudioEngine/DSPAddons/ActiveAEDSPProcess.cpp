@@ -305,7 +305,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
    * Load all selected processing types, stored in a database and available from addons
    */
   AE_DSP_ADDONMAP addonMap;
-  if (CActiveAEDSP::GetInstance().GetEnabledAudioDSPAddons(addonMap) > 0)
+  if (CServiceBroker::GetADSP().GetEnabledAudioDSPAddons(addonMap) > 0)
   {
     int foundInputResamplerId = -1; /*!< Used to prevent double call of StreamCreate if input stream resampling is together with outer processing types */
 
@@ -314,7 +314,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
      * load one allowed before master processing & final resample addon
      */
     CLog::Log(LOGDEBUG, "  ---- DSP input resample addon ---");
-    const AE_DSP_MODELIST listInputResample = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_INPUT_RESAMPLE);
+    const AE_DSP_MODELIST listInputResample = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_INPUT_RESAMPLE);
     if (listInputResample.empty())
       CLog::Log(LOGDEBUG, "  | - no input resample addon present or enabled");
     for (unsigned int i = 0; i < listInputResample.size(); ++i)
@@ -406,7 +406,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
      * Load all required pre process dsp addon functions
      */
     CLog::Log(LOGDEBUG, "  ---- DSP active pre process modes ---");
-    const AE_DSP_MODELIST listPreProcess = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_PRE_PROCESS);
+    const AE_DSP_MODELIST listPreProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_PRE_PROCESS);
     for (unsigned int i = 0; i < listPreProcess.size(); ++i)
     {
       CActiveAEDSPModePtr pMode = listPreProcess[i].first;
@@ -436,7 +436,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
      * Load all available master modes from addons and put together with database
      */
     CLog::Log(LOGDEBUG, "  ---- DSP active master process modes ---");
-    const AE_DSP_MODELIST listMasterProcess = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_MASTER_PROCESS);
+    const AE_DSP_MODELIST listMasterProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_MASTER_PROCESS);
     for (unsigned int i = 0; i < listMasterProcess.size(); ++i)
     {
       CActiveAEDSPModePtr pMode = listMasterProcess[i].first;
@@ -510,7 +510,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
      * Load all required post process dsp addon functions
      */
     CLog::Log(LOGDEBUG, "  ---- DSP active post process modes ---");
-    const AE_DSP_MODELIST listPostProcess = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_POST_PROCESS);
+    const AE_DSP_MODELIST listPostProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_POST_PROCESS);
     for (unsigned int i = 0; i < listPostProcess.size(); ++i)
     {
       CActiveAEDSPModePtr pMode = listPostProcess[i].first;
@@ -543,7 +543,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
     CLog::Log(LOGDEBUG, "  ---- DSP post resample addon ---");
     if (m_addonSettings.iProcessSamplerate != m_outputFormat.m_sampleRate)
     {
-      const AE_DSP_MODELIST listOutputResample = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE);
+      const AE_DSP_MODELIST listOutputResample = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE);
       if (listOutputResample.empty())
         CLog::Log(LOGDEBUG, "  | - no final post resample addon present or enabled, becomes performed by KODI");
       for (unsigned int i = 0; i < listOutputResample.size(); ++i)
@@ -820,7 +820,7 @@ void CActiveAEDSPProcess::Destroy()
 {
   CSingleLock lock(m_restartSection);
 
-  if (!CActiveAEDSP::GetInstance().IsActivated())
+  if (!CServiceBroker::GetADSP().IsActivated())
     return;
 
   for (AE_DSP_ADDONMAP_ITR itr = m_usedMap.begin(); itr != m_usedMap.end(); ++itr)

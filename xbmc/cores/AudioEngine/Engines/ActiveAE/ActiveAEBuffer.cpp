@@ -182,7 +182,7 @@ CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
 {
   delete m_resampler;
   if (m_useDSP)
-    CActiveAEDSP::GetInstance().DestroyDSPs(m_streamId);
+    CServiceBroker::GetADSP().DestroyDSPs(m_streamId);
   if (m_dspBuffer)
     delete m_dspBuffer;
 }
@@ -216,12 +216,12 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
    * stream with the basic data to have best quality like for surround upmix.
    *
    * The value m_streamId and address pointer m_processor are passed a pointers
-   * to CActiveAEDSP::GetInstance().CreateDSPs and set from it.
+   * to CServiceBroker::GetADSP().CreateDSPs and set from it.
    */
   if ((useDSP || m_changeDSP) && !m_bypassDSP)
   {
     m_dspFormat = m_inputFormat;
-    m_useDSP = CActiveAEDSP::GetInstance().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, upmix, m_resampleQuality, m_MatrixEncoding, m_AudioServiceType, m_Profile);
+    m_useDSP = CServiceBroker::GetADSP().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, upmix, m_resampleQuality, m_MatrixEncoding, m_AudioServiceType, m_Profile);
     if (m_useDSP)
     {
 
@@ -330,7 +330,7 @@ void CActiveAEBufferPoolResample::ChangeAudioDSP()
     wasActive = true;
   }
 
-  m_useDSP = CActiveAEDSP::GetInstance().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, m_stereoUpmix, m_resampleQuality, m_MatrixEncoding, m_AudioServiceType, m_Profile, wasActive);
+  m_useDSP = CServiceBroker::GetADSP().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, m_stereoUpmix, m_resampleQuality, m_MatrixEncoding, m_AudioServiceType, m_Profile, wasActive);
   if (m_useDSP)
   {
     m_inputFormat.m_channelLayout = m_processor->GetChannelLayout();    /* Overide input format with DSP's supported format */
@@ -360,7 +360,7 @@ void CActiveAEBufferPoolResample::ChangeAudioDSP()
       m_changeResampler = true;
 
     m_useDSP = false;
-    CActiveAEDSP::GetInstance().DestroyDSPs(m_streamId);
+    CServiceBroker::GetADSP().DestroyDSPs(m_streamId);
   }
   else
   {

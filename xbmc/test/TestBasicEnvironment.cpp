@@ -20,6 +20,7 @@
 
 #include "TestBasicEnvironment.h"
 #include "TestUtils.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"

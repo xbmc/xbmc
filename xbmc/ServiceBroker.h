@@ -25,6 +25,10 @@ class CAddonMgr;
 class CBinaryAddonCache;
 }
 
+namespace ActiveAE {
+class CActiveAEDSP;
+}
+
 namespace ANNOUNCEMENT
 {
   class CAnnouncementManager;
@@ -45,4 +49,5 @@ public:
   static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
+  static ActiveAE::CActiveAEDSP& GetADSP();
 };

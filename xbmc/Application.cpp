@@ -638,6 +638,14 @@ bool CApplication::Create()
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 #endif // TARGET_WINDOWS
 
+  // initialize the addon database (must be before the addon manager is init'd)
+  CDatabaseManager::GetInstance().Initialize(true);
+
+  if (!m_ServiceManager->Init2())
+  {
+    return false;
+  }
+
   // start the AudioEngine
   if (!CAEFactory::StartEngine())
   {
@@ -655,14 +663,6 @@ bool CApplication::Create()
   m_replayGainSettings.iPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
   m_replayGainSettings.iNoGainPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
   m_replayGainSettings.bAvoidClipping = CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
-
-  // initialize the addon database (must be before the addon manager is init'd)
-  CDatabaseManager::GetInstance().Initialize(true);
-
-  if (!m_ServiceManager->Init2())
-  {
-    return false;
-  }
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
@@ -1162,7 +1162,6 @@ bool CApplication::Initialize()
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
       CStereoscopicsManager::GetInstance().Initialize();
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE); // send a blocking message to active AudioDSP engine
 
       if (!m_ServiceManager->Init3())
       {
@@ -2492,9 +2491,9 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_SETAUDIODSPSTATE:
     if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)
-      ActiveAE::CActiveAEDSP::GetInstance().Activate(pMsg->param2 == ACTIVE_AE_DSP_ASYNC_ACTIVATE);
+      CServiceBroker::GetADSP().Activate();
     else if(pMsg->param1 == ACTIVE_AE_DSP_STATE_OFF)
-      ActiveAE::CActiveAEDSP::GetInstance().Deactivate();
+      CServiceBroker::GetADSP().Deactivate();
     break;
 
   case TMSG_START_ANDROID_ACTIVITY:
@@ -2896,7 +2895,7 @@ void CApplication::Stop(int exitCode)
     if (CVideoLibraryQueue::GetInstance().IsRunning())
       CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF); // send a blocking message to deactivate AudioDSP engine
+    CServiceBroker::GetADSP().Deactivate();
     CApplicationMessenger::GetInstance().Cleanup();
 
     CLog::Log(LOGNOTICE, "stop player");

@@ -295,7 +295,7 @@ bool CGUIWindowPVRBase::OnContextButtonActiveAEDSPSettings(CFileItem *item, CONT
   {
     bReturn = true;
 
-    if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
+    if (CServiceBroker::GetADSP().IsProcessing())
       g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
   }
 
