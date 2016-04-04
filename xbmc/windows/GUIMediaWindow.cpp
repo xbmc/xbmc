@@ -37,6 +37,7 @@
 #endif
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"
+#include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -890,8 +891,15 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   }
   if (pItem->GetPath() == "add" || pItem->GetPath() == "sources://add/") // 'add source button' in empty root
   {
-    OnContextButton(iItem, CONTEXT_BUTTON_ADD_SOURCE);
-    return true;
+    if (CProfilesManager::GetInstance().IsMasterProfile())
+    {
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return false;
+    }
+    else if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      return false;
+
+    return CGUIDialogMediaSource::ShowAndAddMediaSource("video");
   }
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))

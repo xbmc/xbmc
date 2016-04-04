@@ -289,20 +289,6 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
 
 bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button)
 {
-  // Add Source doesn't require a valid share
-  if (button == CONTEXT_BUTTON_ADD_SOURCE)
-  {
-    if (CProfilesManager::GetInstance().IsMasterProfile())
-    {
-      if (!g_passwordManager.IsMasterLockUnlocked(true))
-        return false;
-    }
-    else if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-      return false;
-
-    return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
-  }
-
   // buttons that are available on both sources and autosourced items
   if (!item) return false;
 
