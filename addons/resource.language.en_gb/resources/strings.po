@@ -5690,12 +5690,7 @@ msgctxt "#13101"
 msgid "Let driver choose (requires restart)"
 msgstr ""
 
-#empty strings from id 13102 to 13104
-
-#: system/settings/settings.xml
-msgctxt "#13105"
-msgid "Vertical blank sync"
-msgstr ""
+#empty strings from id 13102 to 13105
 
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
@@ -17344,11 +17339,7 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Vertical blank sync" with label #13105
-#: system/settings/settings.xml
-msgctxt "#36356"
-msgid "Eliminates tearing."
-msgstr ""
+#empty strings from id 36356 to 36356
 
 #. Description of setting "System -> Video output -> Video calibration..." with label #214
 #: system/settings/settings.xml

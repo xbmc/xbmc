@@ -276,10 +276,15 @@ static int64_t abs64(int64_t a)
 
 void CRenderSystemGLES::PresentRender(bool rendered)
 {
+  SetVSync(true);
+
   if (!m_bRenderCreated)
     return;
 
   PresentRenderImpl(rendered);
+
+  if (!rendered)
+    Sleep(40);
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)

@@ -106,8 +106,6 @@ public:
   virtual bool ClearBuffers(color_t color) = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 
-  virtual void SetVSync(bool vsync) = 0;
-  bool GetVSync() { return m_bVSync; }
   virtual void FinishPipeline() {};
 
   virtual void SetViewPort(CRect& viewPort) = 0;

@@ -918,14 +918,9 @@ float CRenderManager::GetMaximumFPS()
 {
   float fps;
 
-  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC) != VSYNC_DISABLED)
-  {
-    fps = (float)g_VideoReferenceClock.GetRefreshRate();
-    if (fps <= 0)
-      fps = g_graphicsContext.GetFPS();
-  }
-  else
-    fps = 1000.0f;
+  fps = (float)g_VideoReferenceClock.GetRefreshRate();
+  if (fps <= 0)
+    fps = g_graphicsContext.GetFPS();
 
   return fps;
 }

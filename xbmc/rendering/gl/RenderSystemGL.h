@@ -43,7 +43,7 @@ public:
   bool ClearBuffers(color_t color) override;
   bool IsExtSupported(const char* extension) override;
 
-  void SetVSync(bool vsync) override;
+  void SetVSync(bool vsync);
   void ResetVSync() { m_bVsyncInit = false; }
   void FinishPipeline() override;
 

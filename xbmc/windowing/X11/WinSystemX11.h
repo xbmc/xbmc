@@ -48,7 +48,6 @@ public:
   int  GetCurrentScreen() override { return m_nScreen; }
   void ShowOSMouse(bool show) override;
   void ResetOSScreensaver() override;
-  bool EnableFrameLimiter() override;
   void EnableSystemScreenSaver(bool bEnable) override;
 
   void NotifyAppActiveChange(bool bActivated) override;

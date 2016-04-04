@@ -56,13 +56,6 @@ enum RESOLUTION {
 //                     12 + N + ... // Other resolutions, in any order
 };
 
-enum VSYNC {
-  VSYNC_DISABLED     =  0,
-  VSYNC_VIDEO        =  1,
-  VSYNC_ALWAYS       =  2,
-  VSYNC_DRIVER       =  3
-};
-
 struct OVERSCAN
 {
   int left;

@@ -655,11 +655,6 @@ int CWinSystemX11::XErrorHandler(Display* dpy, XErrorEvent* error)
   return 0;
 }
 
-bool CWinSystemX11::EnableFrameLimiter()
-{
-  return m_minimized;
-}
-
 bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate)
 {
   bool changeWindow = false;

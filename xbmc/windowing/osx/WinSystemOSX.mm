@@ -1609,11 +1609,6 @@ void CWinSystemOSX::ResetOSScreensaver()
   EnableSystemScreenSaver(!m_bFullScreen);
 }
 
-bool CWinSystemOSX::EnableFrameLimiter()
-{
-  return IsObscured();
-}
-
 void CWinSystemOSX::EnableTextInput(bool bEnable)
 {
   if (bEnable)
