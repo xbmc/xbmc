@@ -1404,17 +1404,8 @@ void CVideoPlayer::Process()
     if ((!m_VideoPlayerAudio->AcceptsData() && m_CurrentAudio.id >= 0) ||
         (!m_VideoPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0))
     {
-      if (m_pDemuxer && m_playSpeed == DVD_PLAYSPEED_PAUSE)
-      {
-        m_pDemuxer->SetSpeed(DVD_PLAYSPEED_PAUSE);
-      }
-
       Sleep(10);
       continue;
-    }
-    else if (m_pDemuxer)
-    {
-      m_pDemuxer->SetSpeed(m_playSpeed);
     }
 
     // always yield to players if they have data levels > 50 percent
@@ -2732,6 +2723,8 @@ void CVideoPlayer::HandleMessages()
         m_VideoPlayerAudio->SetSpeed(speed);
         m_VideoPlayerVideo->SetSpeed(speed);
         m_streamPlayerSpeed = speed;
+        if (m_pDemuxer)
+          m_pDemuxer->SetSpeed(speed);
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
