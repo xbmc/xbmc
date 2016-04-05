@@ -85,10 +85,28 @@ foreach(subdir ${build_dirs})
   endif()
 endforeach()
 
-install(FILES ${CORE_SOURCE_DIR}/media/icon48x48.png
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon16x16.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/16x16/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon22x22.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/22x22/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon24x24.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/24x24/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon32x32.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/32x32/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon48x48.png
         RENAME ${APP_NAME_LC}.png
         DESTINATION ${datarootdir}/icons/hicolor/48x48/apps)
-install(FILES ${CORE_SOURCE_DIR}/media/icon256x256.png
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon64x64.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/64x64/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon128x128.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/128x128/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon256x256.png
         RENAME ${APP_NAME_LC}.png
         DESTINATION ${datarootdir}/icons/hicolor/256x256/apps)
 
