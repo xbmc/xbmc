@@ -847,9 +847,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     // get the usual shares
     CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
-    // add scan button somewhere here
-    if (g_application.IsVideoScanning())
-      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
     if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
         (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
@@ -924,9 +921,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
         if (node == NODE_TYPE_TITLE_TVSHOWS)
         {
-          if (g_application.IsVideoScanning())
-            buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
 

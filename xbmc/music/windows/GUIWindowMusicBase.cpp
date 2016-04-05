@@ -865,10 +865,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
-      // Add the scan button(s)
-      if (g_application.IsMusicScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
-      else if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
+      if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
           !item->IsPath("add") && !item->IsParentFolder() &&
           !item->IsPlugin() && !item->IsMusicDb()         &&
           !item->IsLibraryFolder() &&
@@ -964,12 +961,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
     g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, item->GetPath());
     return true;
-
-  case CONTEXT_BUTTON_STOP_SCANNING:
-    {
-      g_application.StopMusicScan();
-      return true;
-    }
 
   case CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS:
     g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);

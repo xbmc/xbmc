@@ -462,10 +462,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 #endif
-      // Add the scan button(s)
-      if (g_application.IsMusicScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
-      else if (!inPlaylists && !m_vecItems->IsInternetStream() &&
+      if (!inPlaylists && !m_vecItems->IsInternetStream() &&
         !item->IsPath("add") && !item->IsParentFolder() &&
         !item->IsPlugin() &&
         !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
