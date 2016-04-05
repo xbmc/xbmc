@@ -31,8 +31,8 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
         DESTINATION ${bindir})
 
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
-               ${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop)
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop)
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/xsessions)
 
 install(FILES ${CORE_SOURCE_DIR}/copying.txt
