@@ -211,7 +211,11 @@ void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
   while(bytesRead != 0)
   {
     seek(readPosition);
-    bytesRead = m_file.Read(buffer.data(), bufferLength);
+    ssize_t read = m_file.Read(buffer.data(), bufferLength);
+    if (read < 0)
+      return;// explicit error
+
+    bytesRead = static_cast<TagLib::ulong>(read);
     readPosition += bytesRead;
 
     // Check to see if we just read the last block.  We need to call clear()

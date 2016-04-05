@@ -231,10 +231,11 @@ void CGUIDialogContentSettings::OnSettingAction(const CSetting *setting)
 
       dialog->Open();
       // Selected item has not changes - in case of cancel or the user selecting the same item
-      if (!dialog->IsConfirmed() || dialog->GetSelectedItem() == iSelected)
+      int newSelected = dialog->GetSelectedItem();
+      if (!dialog->IsConfirmed() || newSelected < 0 || newSelected == iSelected)
         return;
 
-      auto selected = labels.at(dialog->GetSelectedItem());
+      auto selected = labels.at(newSelected);
       m_content = static_cast<CONTENT_TYPE>(selected.second);
 
       AddonPtr scraperAddon;

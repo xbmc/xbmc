@@ -636,7 +636,7 @@ std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::
   for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
   {
     std::string type = *i;
-    CFileItemPtr item(new CFileItem(type, "false"));
+    CFileItemPtr item(new CFileItem(type, false));
     if (type == "banner")
       item->SetLabel(g_localizeStrings.Get(20020));
     else if (type == "fanart")

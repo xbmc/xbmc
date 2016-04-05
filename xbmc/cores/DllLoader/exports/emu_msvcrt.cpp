@@ -874,7 +874,7 @@ extern "C"
       url.SetFileName(strReplaced);
     }
     int iDirSlot=0; // locate next free directory
-    while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+    while ((iDirSlot < MAX_OPEN_DIRS) && (vecDirsOpen[iDirSlot].curr_index != -1)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
       return -1; // no free slots
     if (url.IsProtocol("filereader"))

@@ -150,7 +150,7 @@ static int nal_bs_read_ue(nal_bitstream *bs)
 {
   int i = 0;
 
-  while (nal_bs_read(bs, 1) == 0 && !nal_bs_eos(bs) && i < 32)
+  while (nal_bs_read(bs, 1) == 0 && !nal_bs_eos(bs) && i < 31)
     i++;
 
   return ((1 << i) - 1 + nal_bs_read(bs, i));

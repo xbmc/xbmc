@@ -75,7 +75,7 @@ namespace
   }
 }
 
-bool GetDirectoryFromTxtRecords(CZeroconfBrowser::ZeroconfService zeroconf_service, CURL& url, CFileItemList &items)
+bool GetDirectoryFromTxtRecords(const CZeroconfBrowser::ZeroconfService& zeroconf_service, CURL& url, CFileItemList &items)
 {
   bool ret = false;
 

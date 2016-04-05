@@ -85,9 +85,9 @@ typedef struct {
 #define MAX_DATE_COPIES 10
 
 typedef struct {
-    char  CameraMake   [32];
-    char  CameraModel  [40];
-    char  DateTime     [20];
+    char  CameraMake   [33];
+    char  CameraModel  [41];
+    char  DateTime     [21];
     int   Height, Width;
     int   Orientation;
     int   IsColor;

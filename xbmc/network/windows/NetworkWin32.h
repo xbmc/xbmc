@@ -32,7 +32,7 @@ class CNetworkWin32;
 class CNetworkInterfaceWin32 : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceWin32(CNetworkWin32* network, IP_ADAPTER_INFO adapter);
+   CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter);
    ~CNetworkInterfaceWin32(void);
 
    virtual std::string& GetName(void);

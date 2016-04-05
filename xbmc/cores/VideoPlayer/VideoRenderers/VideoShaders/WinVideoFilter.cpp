@@ -471,7 +471,7 @@ bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
   }
 
   if (m_floattex)
-    delete[] kernelVals;
+    delete[] (HALF*)kernelVals;
 
   return true;
 }
