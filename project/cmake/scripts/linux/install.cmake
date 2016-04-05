@@ -17,23 +17,38 @@ endif()
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC} @ONLY)
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.in
-                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone @ONLY)
+               ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone @ONLY)
 
 install(TARGETS ${APP_NAME_LC} DESTINATION ${libdir}/kodi)
 if(ENABLE_X11 AND XRANDR_FOUND)
   install(TARGETS ${APP_NAME_LC}-xrandr DESTINATION ${libdir}/${APP_NAME_LC})
 endif()
+
+if(NOT EXISTS ${libdir}/xbmc)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${libdir})")
+endif()
 install(FILES ${addon_bindings} DESTINATION ${includedir}/kodi)
+if(NOT EXISTS ${includedir}/xbmc)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${includedir})")
+endif()
+
 install(FILES ${cmake-files}
         DESTINATION ${libdir}/kodi)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
-                ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
+                 ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
         DESTINATION ${bindir})
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC} xbmc WORKING_DIRECTORY ${bindir})")
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}-standalone xbmc-standalone WORKING_DIRECTORY ${bindir})")
 
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop)
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/xsessions)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}.desktop xbmc.desktop WORKING_DIRECTORY ${datarootdir}/xsessions/)")
+
+if(NOT EXISTS ${datarootdir}/xbmc)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${datarootdir})")
+endif()
 
 install(FILES ${CORE_SOURCE_DIR}/copying.txt
               ${CORE_SOURCE_DIR}/LICENSE.GPL
