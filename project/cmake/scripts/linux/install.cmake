@@ -35,7 +35,9 @@ configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
         DESTINATION ${datarootdir}/xsessions)
 
-install(FILES ${CORE_SOURCE_DIR}/LICENSE.GPL
+install(FILES ${CORE_SOURCE_DIR}/copying.txt
+              ${CORE_SOURCE_DIR}/LICENSE.GPL
+              ${CORE_SOURCE_DIR}/version.txt
               ${CORE_SOURCE_DIR}/docs/README.linux
         DESTINATION ${datarootdir}/doc/kodi)
 
