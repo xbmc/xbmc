@@ -292,6 +292,8 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->m_iSeason = strtol(value.c_str(), NULL, 10);
           else if (key == "top250")
             item->GetVideoInfoTag()->m_iTop250 = strtol(value.c_str(), NULL, 10);
+          else if (key == "setid")
+            item->GetVideoInfoTag()->m_iSetId = strtol(value.c_str(), NULL, 10);
           else if (key == "tracknumber")
             item->GetVideoInfoTag()->m_iTrack = strtol(value.c_str(), NULL, 10);
           else if (key == "count")
@@ -380,6 +382,10 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->m_premiered.SetFromDateString(value);
           else if (key == "status")
             item->GetVideoInfoTag()->m_strStatus = value;
+          else if (key == "set")
+            item->GetVideoInfoTag()->m_strSet = value;
+          else if (key == "imdbnumber")
+            item->GetVideoInfoTag()->m_strIMDBNumber = value;
           else if (key == "code")
             item->GetVideoInfoTag()->m_strProductionCode = value;
           else if (key == "aired")
