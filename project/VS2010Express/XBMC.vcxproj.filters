@@ -3548,9 +3548,6 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h">
       <Filter>cores\VideoPlayer\DVDCodecs\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DllLibMpeg2.h">
-      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodec.h">
       <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
