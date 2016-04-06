@@ -130,7 +130,7 @@
 		<control type="group">
 			<animation effect="slide" start="0,0" end="212,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !Integer.IsGreater(Container(2400).NumItems,0)">Conditional</animation>
 			<animation effect="slide" start="0,0" end="323,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !Integer.IsGreater(Container(2400).NumItems,0)">Conditional</animation>
-			<include condition="String.IsEqual(Skin.AspectRatio,16:9)" name="HomeMenu">
+			<include content="HomeMenu" condition="String.IsEqual(Skin.AspectRatio,16:9)">
 				<param name="panel-width">1000</param>
 				<param name="layout-width">500</param>
 				<param name="list-width">480</param>
@@ -142,7 +142,7 @@
 				<param name="iconback-posx">383</param>
 				<param name="iconback-width">98</param>
 			</include>
-			<include condition="String.IsEqual(Skin.AspectRatio,4:3)" name="HomeMenu">
+			<include content="HomeMenu" condition="String.IsEqual(Skin.AspectRatio,4:3)">
 				<param name="panel-width">832</param>
 				<param name="layout-width">416</param>
 				<param name="list-width">400</param>
@@ -244,11 +244,11 @@
 				</content>
 			</control>
 		</control>
-		<include condition="String.IsEqual(Skin.AspectRatio,16:9)" name="HomeRecentlyAddedInfo">
+		<include content="HomeRecentlyAddedInfo" condition="String.IsEqual(Skin.AspectRatio,16:9)">
 			<param name="group-posx">640r</param>
 			<param name="panel-width">630</param>
 		</include>
-		<include condition="String.IsEqual(Skin.AspectRatio,4:3)" name="HomeRecentlyAddedInfo">
+		<include content="HomeRecentlyAddedInfo" condition="String.IsEqual(Skin.AspectRatio,4:3)">
 			<param name="group-posx">430r</param>
 			<param name="panel-width">420</param>
 		</include>
