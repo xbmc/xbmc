@@ -14,6 +14,9 @@ else()
   set(USE_OPENGLES 0)
 endif()
 
+configure_file(${CORE_SOURCE_DIR}/project/cmake/${APP_NAME_LC}-config.cmake.in
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}-config.cmake @ONLY)
+
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC} @ONLY)
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.in
@@ -32,8 +35,14 @@ if(NOT EXISTS ${includedir}/xbmc)
 install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${includedir})")
 endif()
 
-install(FILES ${cmake-files}
+install(FILES ${cmake_files} 
         DESTINATION ${libdir}/kodi)
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-config.cmake
+        DESTINATION ${libdir}/${APP_NAME_LC})
+install(FILES ${CORE_SOURCE_DIR}/project/cmake/xbmc-config.cmake.in
+        RENAME xbmc-config.cmake
+        DESTINATION ${libdir}/${APP_NAME_LC})
+
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
                  ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
         DESTINATION ${bindir})

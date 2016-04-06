@@ -1,0 +1,13 @@
+project/cmake/scripts/common/addon-helpers.cmake
+project/cmake/scripts/common/addoptions.cmake
+project/cmake/scripts/common/archsetup.cmake
+project/cmake/scripts/common/checkcommits.cmake
+project/cmake/scripts/common/check_target_platform.cmake
+project/cmake/scripts/common/generateversionedfiles.cmake
+project/cmake/scripts/common/generatorsetup.cmake
+project/cmake/scripts/common/handle-depends.cmake
+project/cmake/scripts/common/macros.cmake
+project/cmake/scripts/common/managestring.cmake
+project/cmake/scripts/common/pathsetup.cmake
+project/cmake/scripts/common/prepare-env.cmake
+project/cmake/scripts/common/projectmacros.cmake

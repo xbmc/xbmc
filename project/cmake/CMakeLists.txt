@@ -252,6 +252,11 @@ foreach(binding ${bindings})
   list(APPEND addon_bindings ${CORE_SOURCE_DIR}/${binding})
 endforeach()
 
+file(STRINGS ${PROJECT_SOURCE_DIR}/installdata/cmake-files.txt cmakefiles)
+foreach(cmakefile ${cmakefiles})
+  list(APPEND cmake_files ${CORE_SOURCE_DIR}/${cmakefile})
+endforeach()
+
 add_subdirectory(${CORE_SOURCE_DIR}/lib/gtest ${CORE_BUILD_DIR}/gtest EXCLUDE_FROM_ALL)
 
 # Subdirs
