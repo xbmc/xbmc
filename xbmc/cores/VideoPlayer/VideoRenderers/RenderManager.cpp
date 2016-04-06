@@ -1320,25 +1320,25 @@ void CRenderManager::PrepareNextRender()
 
   double clocktime = frameOnScreen + totalLatency;
 
-  // see if any future queued frames are already due
-  std::deque<int>::reverse_iterator curr, prev;
-  int idx;
-  curr = prev = m_queued.rbegin();
-  ++prev;
-  while (prev != m_queued.rend())
-  {
-    if (clocktime > m_Queue[*prev].pts + 2 * frametime &&  // previous frame is late
-        clocktime > m_Queue[*curr].pts + frametime)        // selected frame due
-      break;
-    ++curr;
-    ++prev;
-  }
-  idx = *curr;
-
-  bool next = clocktime >= m_Queue[idx].pts;
+  bool next = clocktime >= m_Queue[m_queued.front()].pts;
 
   if (next)
   {
+    // see if any future queued frames are already due
+    std::deque<int>::reverse_iterator curr, prev;
+    int idx;
+    curr = prev = m_queued.rbegin();
+    ++prev;
+    while (prev != m_queued.rend())
+    {
+      if (clocktime > m_Queue[*prev].pts + 2 * frametime &&  // previous frame is late
+          clocktime > m_Queue[*curr].pts + frametime)        // selected frame due
+        break;
+      ++curr;
+      ++prev;
+    }
+    idx = *curr;
+
     /* skip late frames */
     while(m_queued.front() != idx)
     {

@@ -1871,6 +1871,8 @@ void CApplication::Render()
     }
     // execute post rendering actions (finalize window closing)
     g_windowManager.AfterRender();
+
+    m_lastRenderTime = XbmcThreads::SystemClockMillis();
   }
 
   // render video layer
@@ -1896,8 +1898,6 @@ void CApplication::Render()
     g_graphicsContext.Flip(hasRendered);
 
   CTimeUtils::UpdateFrameTime(hasRendered);
-
-  m_lastRenderTime = XbmcThreads::SystemClockMillis();;
 }
 
 void CApplication::SetStandAlone(bool value)
