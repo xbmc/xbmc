@@ -63,6 +63,10 @@ void CEmuFileWrapper::CleanUp()
   CSingleLock lock(m_criticalSection);
   for (int i = 0; i < MAX_EMULATED_FILES; i++)
   {
+#if defined(TARGET_WINDOWS) && _MSC_VER >= 1900
+    delete static_cast<kodi_iobuf*>(m_files[i].file_emu._Placeholder);
+    m_files[i].file_emu._Placeholder = nullptr;
+#endif
     if (m_files[i].used)
     {
       m_files[i].file_xbmc->Close();
@@ -73,17 +77,10 @@ void CEmuFileWrapper::CleanUp()
         delete m_files[i].file_lock;
         m_files[i].file_lock = nullptr;
       }
-#if !defined(TARGET_WINDOWS)
-      //Don't memset on Windows as it overwrites our pointer
       memset(&m_files[i], 0, sizeof(EmuFileObject));
-#endif
       m_files[i].used = false;
       FileDescriptor(m_files[i].file_emu)->_file = -1;
     }
-#if defined(TARGET_WINDOWS) && _MSC_VER >= 1900
-    delete static_cast<kodi_iobuf*>(m_files[i].file_emu._Placeholder);
-    m_files[i].file_emu._Placeholder = nullptr;
-#endif
   }
 }
 
