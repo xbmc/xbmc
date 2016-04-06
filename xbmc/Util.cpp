@@ -2165,7 +2165,7 @@ void CUtil::ScanForExternalDemuxSub(const std::string& videoPath, std::vector<st
   const std::string DemuxSubExtensions = ".sup";
   GetItemsToScan(strBasePath, DemuxSubExtensions, common_sub_dirs, items);
 
-  std::vector<std::string> exts = StringUtils::Split(g_advancedSettings.GetMusicExtensions(), "|");
+  std::vector<std::string> exts = StringUtils::Split(DemuxSubExtensions, "|");
   ScanPathsForAssociatedItems(strSubtitle, items, exts, vecSubtitles);
 }
 
