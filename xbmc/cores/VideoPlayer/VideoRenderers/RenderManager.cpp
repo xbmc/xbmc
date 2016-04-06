@@ -1316,7 +1316,7 @@ void CRenderManager::PrepareNextRender()
 
   // correct display latency
   // internal buffers of driver, assume that driver lets us go one frame in advance
-  double totalLatency = DVD_SEC_TO_TIME(m_displayLatency) + 2* frametime;
+  double totalLatency = DVD_SEC_TO_TIME(m_displayLatency) - DVD_MSEC_TO_TIME(m_videoDelay) + 2* frametime;
 
   double clocktime = frameOnScreen + totalLatency;
 

@@ -79,7 +79,6 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
   m_bRenderSubs = false;
   m_stalled = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
-  m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
   m_iLateFrames = 0;
   m_iDroppedRequest = 0;
@@ -796,11 +795,6 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   // speed to better match with our video renderer's output speed
   m_pClock->UpdateFramerate(m_fFrameRate);
 
-  // remember original pts, we need it later for overlaying subtitles
-  double pts_org = pts;
-
-  pts += m_iVideoDelay;
-
   // calculate the time we need to delay this picture before displaying
   double iPlayingClock, iCurrentClock;
 
@@ -812,7 +806,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     int queued, discard;
     double inputPts = m_droppingStats.m_lastPts;
     m_renderManager.GetStats(sleepTime, renderPts, queued, discard);
-    if (pts_org > renderPts || queued > 0)
+    if (pts > renderPts || queued > 0)
     {
       if (inputPts >= renderPts)
       {
@@ -820,7 +814,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       }
       return result | EOS_DROPPED;
     }
-    else if (pts_org < iPlayingClock)
+    else if (pts < iPlayingClock)
     {
       return result | EOS_DROPPED;
     }
@@ -834,7 +828,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
     // estimate the time it will take for the next frame to get rendered
     // drop the frame if it's late in regard to this estimation
-    double diff = pts_org - renderPts;
+    double diff = pts - renderPts;
     double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate) * (bufferLevel + 1);
     if (diff < mindiff)
     {
@@ -872,7 +866,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_DROPPED;
   }
 
-  ProcessOverlays(pPicture, pts_org);
+  ProcessOverlays(pPicture, pts);
 
   int index = m_renderManager.AddVideoPicture(*pPicture);
 
@@ -890,7 +884,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_DROPPED;
   }
 
-  m_renderManager.FlipPage(m_bAbortOutput, pts_org, -1, mDisplayField);
+  m_renderManager.FlipPage(m_bAbortOutput, pts, -1, mDisplayField);
 
   return result;
 }

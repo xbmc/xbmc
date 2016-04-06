@@ -3217,12 +3217,12 @@ float CVideoPlayer::GetCachePercentage()
 
 void CVideoPlayer::SetAVDelay(float fValue)
 {
-  m_VideoPlayerVideo->SetDelay( (fValue * DVD_TIME_BASE) ) ;
+  m_renderManager.SetDelay( (fValue * 1000) ) ;
 }
 
 float CVideoPlayer::GetAVDelay()
 {
-  return (float) m_VideoPlayerVideo->GetDelay() / (float)DVD_TIME_BASE;
+  return static_cast<float>(m_renderManager.GetDelay()) / 1000;
 }
 
 void CVideoPlayer::SetSubTitleDelay(float fValue)

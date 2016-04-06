@@ -157,6 +157,9 @@ public:
    */
   void DiscardBuffer();
 
+  void SetDelay(int delay) { m_videoDelay = delay; };
+  int GetDelay() { return m_videoDelay; };
+
 protected:
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
@@ -171,6 +174,8 @@ protected:
   void CreateRenderer();
   void DeleteRenderer();
   void ManageCaptures();
+
+  void UpdateDisplayLatency();
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
@@ -214,7 +219,7 @@ protected:
   CEvent m_stateEvent;
 
   double m_displayLatency;
-  void UpdateDisplayLatency();
+  std::atomic_int m_videoDelay;
 
   int m_QueueSize;
   int m_QueueSkip;
