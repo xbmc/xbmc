@@ -176,18 +176,23 @@ void CAddonDatabase::UpdateTables(int version)
 
     cpluff->scan_plugins(cp_context, CP_SP_UPGRADE);
 
+    std::string systemPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
-    BeginMultipleExecute();
+    BeginTransaction();
     int n;
     cp_plugin_info_t** cp_addons = cpluff->get_plugins_info(cp_context, &status, &n);
     for (int i = 0; i < n; ++i)
     {
       const char* id = cp_addons[i]->identifier;
+      // To not risk enabling something user didn't enable, assume that everything from the systems
+      // directory is new for this release and set them to disabled.
+      bool inSystem = StringUtils::StartsWith(cp_addons[i]->plugin_path, systemPath);
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) VALUES "
-          "('%s', NOT EXISTS (SELECT * FROM disabled WHERE addonID='%s'), '%s')", id, id, now.c_str()));
+          "('%s', NOT %d AND NOT EXISTS (SELECT * FROM disabled WHERE addonID='%s'), '%s')",
+          id, inSystem, id, now.c_str()));
     }
     cpluff->release_info(cp_context, cp_addons);
-    CommitMultipleExecute();
+    CommitTransaction();
 
     m_pDS->exec("DROP TABLE disabled");
   }
