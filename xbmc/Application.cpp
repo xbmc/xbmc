@@ -1883,11 +1883,9 @@ void CApplication::Render()
   // isn't called)
   g_infoManager.ResetCache();
 
-  unsigned int now = XbmcThreads::SystemClockMillis();
   if (hasRendered)
   {
     g_infoManager.UpdateFPS();
-    m_lastRenderTime = now;
   }
 
   m_pPlayer->AfterRender();
@@ -1898,6 +1896,8 @@ void CApplication::Render()
     g_graphicsContext.Flip(hasRendered);
 
   CTimeUtils::UpdateFrameTime(hasRendered);
+
+  m_lastRenderTime = XbmcThreads::SystemClockMillis();;
 }
 
 void CApplication::SetStandAlone(bool value)
