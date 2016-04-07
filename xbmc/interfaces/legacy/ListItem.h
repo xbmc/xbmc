@@ -195,6 +195,7 @@ namespace XBMCAddon
        *     - episode       : integer (4)
        *     - season        : integer (1)
        *     - top250        : integer (192)
+       *     - setid         : integer (14)
        *     - tracknumber   : integer (3)
        *     - rating        : float (6.4) - range is 0..10
        *     - userrating    : integer (9) - range is 1..10
@@ -217,7 +218,9 @@ namespace XBMCAddon
        *     - tvshowtitle   : string (Heroes)
        *     - premiered     : string (2005-03-04)
        *     - status        : string (Continuing) - status of a TVshow
-       *     - code          : string (tt0110293) - IMDb code
+       *     - set           : string (Batman Collection) - name of the collection
+       *     - imdbnumber    : string (tt0110293) - IMDb code
+       *     - code          : string (101) - Production code
        *     - aired         : string (2008-12-07)
        *     - credits       : string (Andy Kaufman) - writing credits
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
