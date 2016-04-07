@@ -64,8 +64,6 @@ struct DVDNavAudioStreamInfo : DVDNavStreamInfo
 
 struct DVDNavSubtitleStreamInfo : DVDNavStreamInfo
 {
-  std::string name;
-  std::string language;
   CDemuxStream::EFlags flags;
 
   DVDNavSubtitleStreamInfo() : DVDNavStreamInfo(),
