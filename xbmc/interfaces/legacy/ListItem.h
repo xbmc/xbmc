@@ -230,6 +230,7 @@ namespace XBMCAddon
        *     - trailer       : string (/home/user/trailer.avi)
        *     - dateadded     : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        *     - mediatype     : string - "video", "movie", "tvshow", "season", "episode" or "musicvideo"
+       *     - dbid          : integer (23) - Only add this for items which are part of the local db. You also need to set the correct 'mediatype'!
        * - Music Values:
        *     - tracknumber   : integer (8)
        *     - discnumber    : integer (2)
