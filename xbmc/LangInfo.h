@@ -216,6 +216,12 @@ protected:
     void SetTemperatureUnit(const std::string& strUnit);
     void SetSpeedUnit(const std::string& strUnit);
     void SetTimeZone(const std::string& strTimeZone);
+
+    /*! \brief Set the locale associated with this region global.
+
+    Set the locale associated with this region global. This affects string
+    sorting & transformations.
+    */
     void SetGlobalLocale();
     std::string m_strLangLocaleName;
     std::string m_strLangLocaleCodeTwoChar;

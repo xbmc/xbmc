@@ -256,8 +256,6 @@ void CLangInfo::CRegion::SetTimeZone(const std::string& strTimeZone)
   m_strTimeZone = strTimeZone;
 }
 
-// set the locale associated with this region global. This affects string
-// sorting & transformations
 void CLangInfo::CRegion::SetGlobalLocale()
 {
   std::string strLocale;
