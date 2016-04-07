@@ -24,7 +24,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "VideoPlayerVideo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -102,7 +101,6 @@ CVideoPlayerVideo::~CVideoPlayerVideo()
 {
   m_bAbortOutput = true;
   StopThread();
-  g_VideoReferenceClock.Stop();
 }
 
 double CVideoPlayerVideo::GetOutputDelay()
@@ -135,8 +133,6 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     CLog::Log(LOGERROR, "Unsupported video codec");
     return false;
   }
-
-  g_VideoReferenceClock.Start();
 
   if(m_messageQueue.IsInited())
     m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);
@@ -872,7 +868,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   // video device might not be done yet
   while (index < 0 && !m_bAbortOutput &&
-         CDVDClock::GetAbsoluteClock(false) < iCurrentClock + DVD_MSEC_TO_TIME(500))
+         m_pClock->GetAbsoluteClock(false) < iCurrentClock + DVD_MSEC_TO_TIME(500))
   {
     Sleep(1);
     index = m_renderManager.AddVideoPicture(*pPicture);

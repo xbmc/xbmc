@@ -48,7 +48,7 @@ void CVideoSyncPi::Run(volatile bool& stop)
   {
     g_RBP.WaitVsync();
     uint64_t now = CurrentHostCounter();
-    UpdateClock(1, now);
+    UpdateClock(1, now, m_refClock);
   }
 }
 

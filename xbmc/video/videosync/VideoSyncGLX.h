@@ -32,6 +32,7 @@
 class CVideoSyncGLX : public CVideoSync, IDispResource
 {
 public:
+  CVideoSyncGLX(CVideoReferenceClock *clock) : CVideoSync(clock) {};
   virtual bool Setup(PUPDATECLOCK func);
   virtual void Run(volatile bool& stop);
   virtual void Cleanup();

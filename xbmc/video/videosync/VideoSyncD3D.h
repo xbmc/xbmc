@@ -28,6 +28,7 @@
 class CVideoSyncD3D : public CVideoSync, ID3DResource
 {
 public:
+  CVideoSyncD3D(CVideoReferenceClock *clock) : CVideoSync(clock) {};
   virtual bool Setup(PUPDATECLOCK func);
   virtual void Run(volatile bool& stop);
   virtual void Cleanup();

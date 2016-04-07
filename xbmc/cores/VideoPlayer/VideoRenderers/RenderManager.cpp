@@ -22,7 +22,6 @@
 #include "RenderManager.h"
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
-#include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -157,12 +156,6 @@ float CRenderManager::GetAspectRatio()
     return m_pRenderer->GetAspectRatio();
   else
     return 1.0f;
-}
-
-/* These is based on CurrentHostCounter() */
-double CRenderManager::GetPresentTime()
-{
-  return CDVDClock::GetAbsoluteClock(false) / DVD_TIME_BASE;
 }
 
 static double wrap(double x, double minimum, double maximum)
@@ -429,8 +422,6 @@ void CRenderManager::FrameFinish()
 
   /* wait for this present to be valid */
   SPresent& m = m_Queue[m_presentsource];
-
-  m_clock_framefinish = GetPresentTime();
 
   { CSingleLock lock(m_presentlock);
 
@@ -918,7 +909,7 @@ float CRenderManager::GetMaximumFPS()
 {
   float fps;
 
-  fps = (float)g_VideoReferenceClock.GetRefreshRate();
+  fps = (float)m_dvdClock.GetRefreshRate();
   if (fps <= 0)
     fps = g_graphicsContext.GetFPS();
 
@@ -970,7 +961,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
       double refreshrate, clockspeed;
       int missedvblanks;
-      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
+      if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
       {
         vsync = StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%%",
                                      refreshrate,

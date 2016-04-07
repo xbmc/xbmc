@@ -31,7 +31,6 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
-#include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"

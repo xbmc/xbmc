@@ -34,7 +34,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "video/VideoReferenceClock.h"
 #include "utils/CPUInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"

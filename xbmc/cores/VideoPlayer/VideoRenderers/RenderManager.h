@@ -99,7 +99,7 @@ public:
   bool Supports(ESCALINGMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
-  static float GetMaximumFPS();
+  float GetMaximumFPS();
   int GetSkippedFrames()  { return m_QueueSkip; }
 
   // Functions called from mplayer
@@ -167,7 +167,6 @@ protected:
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   void PrepareNextRender();
-  static double GetPresentTime();
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
   bool Configure();
@@ -249,7 +248,6 @@ protected:
   int m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;
   CEvent m_flushEvent;
-  double m_clock_framefinish;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
 

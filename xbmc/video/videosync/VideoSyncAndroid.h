@@ -26,7 +26,7 @@
 class CVideoSyncAndroid : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncAndroid() : m_LastVBlankTime(0), m_abort(false){}
+  CVideoSyncAndroid(CVideoReferenceClock *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
   
   // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func);

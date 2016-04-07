@@ -39,7 +39,7 @@
 
 #include <sys/ioctl.h>
 
-CVideoSyncIMX::CVideoSyncIMX()
+CVideoSyncIMX::CVideoSyncIMX(CVideoReferenceClock *clock) : CVideoSync(clock)
 {
   m_fddcic = open("/dev/mxc_dcic0", O_RDWR);
 }
@@ -88,7 +88,7 @@ void CVideoSyncIMX::Run(volatile bool& stop)
     read(m_fddcic, &counter, sizeof(unsigned long));
     uint64_t now = CurrentHostCounter();
 
-    UpdateClock((unsigned int)(counter - last), now);
+    UpdateClock((unsigned int)(counter - last), now, m_refClock);
     last = counter;
   }
   ioctl(m_fddcic, DCIC_IOC_STOP_VSYNC, 0);
