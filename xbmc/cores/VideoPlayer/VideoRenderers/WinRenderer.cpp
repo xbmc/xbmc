@@ -547,6 +547,9 @@ void CWinRenderer::SelectPSVideoFilter()
 void CWinRenderer::UpdatePSVideoFilter()
 {
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  if (!res.bFullScreen)
+    res = g_graphicsContext.GetResInfo(RES_DESKTOP);
+
   m_destWidth = res.iScreenWidth;
   m_destHeight = res.iScreenHeight;
 
