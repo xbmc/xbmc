@@ -372,7 +372,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender
 {
-  if( m_glView && [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if( m_glView && [m_glView isXBMCAlive] && sender.numberOfTouches )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
     point.x *= screenScale;
@@ -398,7 +398,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 -(void)handleRotate:(UIRotationGestureRecognizer*)sender
 {
-  if( m_glView && [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if( m_glView && [m_glView isXBMCAlive] && sender.numberOfTouches )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
     point.x *= screenScale;
@@ -427,7 +427,7 @@ XBMCController *g_xbmcController;
   { 
     CGPoint velocity = [sender velocityInView:m_glView];
 
-    if( [sender state] == UIGestureRecognizerStateBegan )
+    if( [sender state] == UIGestureRecognizerStateBegan && sender.numberOfTouches )
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
       point.x *= screenScale;
@@ -436,7 +436,7 @@ XBMCController *g_xbmcController;
       lastGesturePoint = point;
     }
 
-    if( [sender state] == UIGestureRecognizerStateChanged )
+    if( [sender state] == UIGestureRecognizerStateChanged && sender.numberOfTouches )
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
       point.x *= screenScale;
@@ -484,7 +484,7 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (IBAction)handleSwipe:(UISwipeGestureRecognizer *)sender
 {
-  if( m_glView && [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  if( m_glView && [m_glView isXBMCAlive] && sender.numberOfTouches )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     
     
