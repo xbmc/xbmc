@@ -425,7 +425,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         if (space > 0)
         {
           strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, space - 1);
-          m_ExifInfo->CameraMake[space] = '\0';
+          m_ExifInfo->CameraMake[space - 1] = '\0';
         }
         break;
       }
@@ -435,7 +435,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         if (space > 0)
         {
           strncpy(m_ExifInfo->CameraModel, (char *)ValuePtr, space - 1);
-          m_ExifInfo->CameraModel[space] = '\0';
+          m_ExifInfo->CameraModel[space - 1] = '\0';
         }
         break;
       }
@@ -455,7 +455,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         if (space > 0)
         {
           strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, space - 1);
-          m_ExifInfo->DateTime[space] = '\0';
+          m_ExifInfo->DateTime[space - 1] = '\0';
           // If we get a DATETIME_ORIGINAL, we use that one.
           m_DateFound = true;
         }
@@ -472,7 +472,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
           if (space > 0)
           {
             strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, space - 1);
-            m_ExifInfo->DateTime[space] = '\0';
+            m_ExifInfo->DateTime[space - 1] = '\0';
           }
         }
         break;
