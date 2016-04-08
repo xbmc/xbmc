@@ -80,7 +80,7 @@ struct SOmxPlayerState
   bool bOmxWaitAudio;             // whether we need to wait for audio to play out on EOS
   bool bOmxSentEOFs;              // flag if we've send EOFs to audio/video players
   float threshold;                // current fifo threshold required to come out of buffering
-  double last_check_time;         // we periodically check for gpu underrun
+  unsigned int last_check_time;   // we periodically check for gpu underrun
   double stamp;                   // last media timestamp
 };
 
