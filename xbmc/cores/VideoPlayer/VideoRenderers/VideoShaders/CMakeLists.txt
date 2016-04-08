@@ -14,7 +14,7 @@ if(OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES GLSLOutput.cpp
                       VideoFilterShader.cpp
                       YUV2RGBShader.cpp)
-  list(APPEND SOURCES GLSLOutput.h
+  list(APPEND HEADERS GLSLOutput.h
                       VideoFilterShader.h
                       YUV2RGBShader.h)
 endif()
