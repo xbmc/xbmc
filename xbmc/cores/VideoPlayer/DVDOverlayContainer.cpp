@@ -24,7 +24,6 @@
 
 CDVDOverlayContainer::CDVDOverlayContainer()
 {
-  m_overlays.clear();
 }
 
 CDVDOverlayContainer::~CDVDOverlayContainer()
@@ -123,25 +122,14 @@ void CDVDOverlayContainer::CleanUp(double pts)
 
 }
 
-void CDVDOverlayContainer::Remove()
-{
-  if (!m_overlays.empty())
-  {
-    CDVDOverlay* pOverlay;
-
-    {
-      CSingleLock lock(*this);
-
-      pOverlay = m_overlays.front();
-      m_overlays.erase(m_overlays.begin());
-    }
-    pOverlay->Release();
-  }
-}
-
 void CDVDOverlayContainer::Clear()
 {
-  while (!m_overlays.empty()) Remove();
+  CSingleLock lock(*this);
+  for (auto &overlay : m_overlays)
+  {
+    overlay->Release();
+  }
+  m_overlays.clear();
 }
 
 int CDVDOverlayContainer::GetSize()
@@ -185,7 +173,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, 
       // set menu spu color and alpha data if there is a valid menu overlay
       if (pOverlaySpu->bForced)
       {
-        if(pOverlaySpu->Acquire()->Release() > 1)
+        if (pOverlaySpu->Acquire()->Release() > 1)
         {
           pOverlaySpu = new CDVDOverlaySpu(*pOverlaySpu);
           (*it)->Release();
