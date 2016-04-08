@@ -3837,11 +3837,6 @@ msgid "Enter the username"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
-msgctxt "#1020"
-msgid "Add %s source"
-msgstr ""
-
-#: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: addons/skin.estuary/1080i/DialogMediaSource.xml
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
@@ -3881,10 +3876,6 @@ msgctxt "#1027"
 msgid "Edit source"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogMediaSource.cpp
-msgctxt "#1028"
-msgid "Edit %s source"
-msgstr ""
 
 msgctxt "#1029"
 msgid "Enter the new label"
@@ -4845,7 +4836,57 @@ msgctxt "#10047"
 msgid "Try changing the setting level to see additional categories and settings."
 msgstr ""
 
-#empty strings from id 10048 to 10099
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10048"
+msgid "Add video source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10049"
+msgid "Add music source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10050"
+msgid "Add picture source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10051"
+msgid "Add program source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10052"
+msgid "Add file source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10053"
+msgid "Edit video source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10054"
+msgid "Edit music source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10055"
+msgid "Edit picture source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10056"
+msgid "Edit program source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#10057"
+msgid "Edit file source"
+msgstr ""
+
+#empty strings from id 10058 to 10099
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10100"
