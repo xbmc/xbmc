@@ -20,7 +20,6 @@ set(HEADERS DVDFactoryInputStream.h
             DVDInputStreamPVRManager.h
             DVDInputStreamRTMP.h
             DVDInputStreamStack.h
-            InputStreamAddon.h
             DVDStateSerializer.h
             DllDvdNav.h
             DllLibRTMP.h
