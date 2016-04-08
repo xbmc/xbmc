@@ -75,12 +75,13 @@ public:
   /**
   * decrease the reference counter by one.
   */
-  long Release()
+  int Release()
   {
-    long count = m_references--;
-    if (count == 0)
+    m_references--;
+    int ret = m_references;
+    if (m_references == 0)
       delete this;
-    return count;
+    return ret;
   }
 
   /**

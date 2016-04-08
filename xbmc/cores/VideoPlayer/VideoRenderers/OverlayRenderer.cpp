@@ -87,10 +87,10 @@ void CRenderer::Release(std::vector<SElement>& list)
   std::vector<SElement> l = list;
   list.clear();
 
-  for(std::vector<SElement>::iterator it = l.begin(); it != l.end(); ++it)
+  for (auto &elem : l)
   {
-    if (it->overlay_dvd)
-      it->overlay_dvd->Release();
+    if (elem.overlay_dvd)
+      elem.overlay_dvd->Release();
   }
 }
 
