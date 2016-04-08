@@ -30,6 +30,7 @@
 #include "PartyModeManager.h"
 #include "music/MusicDatabase.h"
 #include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
@@ -1047,6 +1048,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
+}
+
+bool CGUIWindowVideoNav::OnAddMediaSource()
+{
+  return CGUIDialogMediaSource::ShowAndAddMediaSource("video");
 }
 
 bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)

@@ -83,6 +83,8 @@ protected:
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual bool OnAddMediaSource() { return false; };
+
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
   virtual void SaveControlStates() override;

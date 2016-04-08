@@ -27,6 +27,7 @@
 #include "GUIPassword.h"
 #include "GUIDialogPictureInfo.h"
 #include "addons/GUIDialogAddonInfo.h"
+#include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "playlists/PlayListFactory.h"
 #include "PictureInfoLoader.h"
@@ -530,6 +531,11 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
+}
+
+bool CGUIWindowPictures::OnAddMediaSource()
+{
+  return CGUIDialogMediaSource::ShowAndAddMediaSource("pictures");
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
