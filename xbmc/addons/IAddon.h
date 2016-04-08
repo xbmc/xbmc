@@ -133,9 +133,6 @@ namespace ADDON
     virtual void OnPreUnInstall() =0;
     virtual void OnPostUnInstall() =0;
     virtual bool CanInstall() =0;
-
-  protected:
-    virtual bool LoadSettings(bool bForce = false) =0;
   };
 };
 
