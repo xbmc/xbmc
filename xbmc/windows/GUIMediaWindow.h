@@ -26,9 +26,9 @@
 #include "guilib/GUIWindow.h"
 #include "playlists/SmartPlayList.h"
 #include "view/GUIViewControl.h"
-#include "view/GUIViewState.h"
 
 class CFileItemList;
+class CGUIViewState;
 
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow

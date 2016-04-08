@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "view/GUIViewState.h"
 #include "playlists/PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"

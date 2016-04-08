@@ -22,6 +22,7 @@
 #include "system.h"
 #include "CompileInfo.h"
 #include "GUIInfoManager.h"
+#include "view/GUIViewState.h"
 #include "windows/GUIMediaWindow.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogNumeric.h"
