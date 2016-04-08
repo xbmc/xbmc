@@ -107,7 +107,7 @@ static const TypeMapping types[] =
    {"kodi.inputstream",                  ADDON_INPUTSTREAM,         24048, "DefaultAddonInputstream.png" },
   };
 
-const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
+std::string TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -135,7 +135,7 @@ TYPE TranslateType(const std::string &string)
   return ADDON_UNKNOWN;
 }
 
-const std::string GetIcon(const ADDON::TYPE& type)
+std::string GetIcon(ADDON::TYPE type)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -323,7 +323,7 @@ TiXmlElement* CAddon::GetSettingsXML()
   return m_addonXmlDoc.RootElement();
 }
 
-const std::string CAddon::LibPath() const
+std::string CAddon::LibPath() const
 {
   if (m_props.libname.empty())
     return "";
