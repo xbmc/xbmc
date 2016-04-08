@@ -112,7 +112,6 @@ public:
   explicit CSkinInfo(AddonProps props, const RESOLUTION_INFO& resolution = RESOLUTION_INFO())
       : CAddon(std::move(props)),
         m_defaultRes(resolution),
-        m_version(""),
         m_effectsSlowDown(1.f),
         m_debugging(false) {}
 
@@ -137,8 +136,6 @@ public:
    \return path to the XML file
    */
   std::string GetSkinPath(const std::string& file, RESOLUTION_INFO *res = NULL, const std::string& baseDir = "") const;
-
-  AddonVersion APIVersion() const { return m_version; };
 
   /*! \brief Return whether skin debugging is enabled
    \return true if skin debugging (set via <debugging>true</debugging> in skin.xml) is enabled.
@@ -235,8 +232,6 @@ protected:
 
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;
-
-  AddonVersion m_version;
 
   float m_effectsSlowDown;
   CGUIIncludes m_includes;
