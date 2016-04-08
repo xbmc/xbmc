@@ -229,15 +229,5 @@ private:
   std::map<std::string, std::string> m_settings;
 };
 
-class CAddonLibrary : public CAddon
-{
-public:
-  explicit CAddonLibrary(AddonProps props);
-
-private:
-  TYPE SetAddonType();
-  const TYPE m_addonType; // addon type this library enhances
-};
-
 }; /* namespace ADDON */
 
