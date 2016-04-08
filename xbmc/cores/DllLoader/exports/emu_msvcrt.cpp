@@ -1273,7 +1273,7 @@ extern "C"
 
   int dll_fputc(int character, FILE* stream)
   {
-    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
+    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream) || !IS_VALID_STREAM(stream))
     {
       unsigned char tmp[2] = { (unsigned char)character, 0 };
       dllputs((char *)tmp);
@@ -1305,7 +1305,7 @@ extern "C"
 
   int dll_fputs(const char * szLine, FILE* stream)
   {
-    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
+    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream) || !IS_VALID_STREAM(stream))
     {
       dllputs(szLine);
       return 0;
@@ -1470,7 +1470,7 @@ extern "C"
     if (size == 0 || count == 0)
       return 0;
 
-    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
+    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream) || !IS_VALID_STREAM(stream))
     {
       char* buf = (char*)malloc(size * count + 1);
       if (buf)
@@ -1561,7 +1561,7 @@ extern "C"
     }
     tmp[2048 - 1] = 0;
 
-    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
+    if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream) || !IS_VALID_STREAM(stream))
     {
       CLog::Log(LOGINFO, "  msg: %s", tmp);
       return strlen(tmp);
