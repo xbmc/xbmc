@@ -10,6 +10,7 @@ if(NOT ADDONS_TO_BUILD)
   set(ADDONS_TO_BUILD "all")
 else()
   string(STRIP "${ADDONS_TO_BUILD}" ADDONS_TO_BUILD)
+  message(STATUS "Bootstrapping following addons: ${ADDONS_TO_BUILD}")
   separate_arguments(ADDONS_TO_BUILD)
 endif()
 
