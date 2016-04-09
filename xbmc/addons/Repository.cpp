@@ -261,7 +261,7 @@ bool CRepositoryUpdateJob::DoWork()
     textureDB.CommitMultipleExecute();
   }
 
-  database.AddRepository(m_repo->ID(), addons, newChecksum, m_repo->Version());
+  database.UpdateRepositoryContent(m_repo->ID(), addons, newChecksum, m_repo->Version());
 
   //Update broken status
   database.BeginMultipleExecute();
