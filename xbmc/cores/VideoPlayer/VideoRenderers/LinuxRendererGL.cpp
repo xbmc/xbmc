@@ -2919,7 +2919,7 @@ CRenderInfo CLinuxRendererGL::GetRenderInfo()
   CRenderInfo info;
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
-  info.optimal_buffer_size = 3;
+  info.optimal_buffer_size = 4;
   return info;
 }
 
