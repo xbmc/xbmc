@@ -116,7 +116,7 @@ CPVRManager::~CPVRManager(void)
 void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   if (!IsStarted() || (flag & (System)) == 0)
-   return;
+    return;
 
   if (strcmp(message, "OnWake") == 0)
   {
@@ -225,42 +225,12 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
 
 bool CPVRManager::IsPVRWindowActive(void) const
 {
-  return g_windowManager.IsWindowActive(WINDOW_TV_CHANNELS) ||
-      g_windowManager.IsWindowActive(WINDOW_TV_GUIDE) ||
-      g_windowManager.IsWindowActive(WINDOW_TV_RECORDINGS) ||
-      g_windowManager.IsWindowActive(WINDOW_TV_TIMERS) ||
-      g_windowManager.IsWindowActive(WINDOW_TV_TIMER_RULES) ||
-      g_windowManager.IsWindowActive(WINDOW_TV_SEARCH) ||
-      g_windowManager.IsWindowActive(WINDOW_RADIO_CHANNELS) ||
-      g_windowManager.IsWindowActive(WINDOW_RADIO_GUIDE) ||
-      g_windowManager.IsWindowActive(WINDOW_RADIO_RECORDINGS) ||
-      g_windowManager.IsWindowActive(WINDOW_RADIO_TIMERS) ||
-      g_windowManager.IsWindowActive(WINDOW_RADIO_TIMER_RULES) ||
-      g_windowManager.IsWindowActive(WINDOW_RADIO_SEARCH) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_CHANNEL_MANAGER) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GROUP_MANAGER) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GUIDE_INFO) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_GUIDE) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GUIDE_SEARCH) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_RECORDING_INFO) ||
-      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_TIMER_SETTING);
+  return (IsPVRWindow(g_windowManager.GetActiveWindow() & WINDOW_ID_MASK)) ? true : false;
 }
 
 bool CPVRManager::IsPVRWindow(int windowId)
 {
-  return (windowId == WINDOW_TV_CHANNELS ||
-          windowId == WINDOW_TV_GUIDE ||
-          windowId == WINDOW_TV_RECORDINGS ||
-          windowId == WINDOW_TV_SEARCH ||
-          windowId == WINDOW_TV_TIMERS ||
-          windowId == WINDOW_TV_TIMER_RULES ||
-          windowId == WINDOW_RADIO_CHANNELS ||
-          windowId == WINDOW_RADIO_GUIDE ||
-          windowId == WINDOW_RADIO_RECORDINGS ||
-          windowId == WINDOW_RADIO_SEARCH ||
-          windowId == WINDOW_RADIO_TIMERS ||
-          windowId == WINDOW_RADIO_TIMER_RULES);
+  return (windowId >= WINDOW_PVR_ID_START && windowId <= WINDOW_PVR_ID_END) ? true : false;
 }
 
 bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
