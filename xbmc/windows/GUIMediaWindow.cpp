@@ -899,7 +899,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     else if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
 
-    return CGUIDialogMediaSource::ShowAndAddMediaSource("video");
+    return OnAddMediaSource();
   }
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))

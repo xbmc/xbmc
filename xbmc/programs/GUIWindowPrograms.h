@@ -38,6 +38,7 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  bool OnAddMediaSource() override;
   virtual std::string GetStartFolder(const std::string &dir);
 
   CGUIDialogProgress* m_dlgProgress;

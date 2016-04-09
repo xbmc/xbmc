@@ -63,6 +63,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   void GetNonContextButtons(CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  bool OnAddMediaSource() override;
   /*!
   \brief Overwrite to update your gui buttons (visible, enable,...)
   */

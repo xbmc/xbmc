@@ -22,6 +22,7 @@
 #include "system.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
+#include "dialogs/GUIDialogMediaSource.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "playlists/PlayListFactory.h"
 #include "Util.h"
@@ -994,6 +995,11 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
+}
+
+bool CGUIWindowMusicBase::OnAddMediaSource()
+{
+  return CGUIDialogMediaSource::ShowAndAddMediaSource("music");
 }
 
 void CGUIWindowMusicBase::OnRipCD()
