@@ -39,7 +39,7 @@ namespace XFILE
   class CFile;
 }
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) && _MSC_VER >= 1900
 struct kodi_iobuf {
   int   _file;
 };
