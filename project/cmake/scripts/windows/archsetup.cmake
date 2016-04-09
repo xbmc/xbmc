@@ -67,7 +67,7 @@ foreach(_lib ${_nodefaultlibs_DEBUG})
 endforeach()
 
 # DELAYLOAD option
-set(_delayloadlibs libxslt.dll dnssd.dll dwmapi.dll ssh.dll sqlite3.dll
+set(_delayloadlibs zlib.dll libmysql.dll libxslt.dll dnssd.dll dwmapi.dll ssh.dll sqlite3.dll
                    avcodec-57.dll avfilter-6.dll avformat-57.dll avutil-55.dll
                    postproc-54.dll swresample-2.dll swscale-4.dll d3dcompiler_47.dll)
 foreach(_lib ${_delayloadlibs})
