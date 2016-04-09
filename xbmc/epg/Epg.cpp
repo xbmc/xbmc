@@ -355,12 +355,10 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObservers, bool bU
 
 bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase /* = false */)
 {
-  CSingleLock lock(m_critSection);
   auto it = m_tags.end();
   if (UpdateEntry(tag, newState, it, bUpdateDatabase))
   {
     SetChanged();
-    lock.Leave();
     NotifyObservers(ObservableMessageEpg);
     return true;
   }
@@ -435,10 +433,12 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std:
   infoTag->Update(*tag, bNewTag);
   infoTag->SetEpg(this);
   infoTag->SetPVRChannel(m_pvrChannel);
-  infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
 
   if (bUpdateDatabase)
     m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
+
+  lock.Leave();
+  infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
 
   return true;
 }
