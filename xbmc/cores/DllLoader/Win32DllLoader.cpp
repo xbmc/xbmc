@@ -33,8 +33,6 @@
 
 #include <limits>
 
-//This shouldn't be needed anymore and it's not exported through the dll
-//extern "C" FILE _iob[];
 extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);
 
 // our exports
@@ -125,9 +123,6 @@ Export win32_exports[] =
   { "puts",                       -1, (void*)dllputs,                       NULL },
   // workarounds for non-win32 signals
   { "signal",                     -1, (void*)dll_signal,                    NULL },
-
-  // reading/writing from stdin/stdout needs this
-  //{ "_iob",                       -1, (void*)&_iob,                         NULL },
 
   // libdvdnav + python need this (due to us using dll_putenv() to put stuff only?)
   { "getenv",                     -1, (void*)dll_getenv,                    NULL },
