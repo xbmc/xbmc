@@ -463,8 +463,6 @@ protected:
   int m_currentStackPosition;
   int m_nextPlaylistItem;
 
-  bool m_bPresentFrame;
-  unsigned int m_lastFrameTime;
   unsigned int m_lastRenderTime;
   bool m_skipGuiRender;
 

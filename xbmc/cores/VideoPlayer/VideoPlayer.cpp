@@ -73,7 +73,6 @@
 #include "Util.h"
 #include "LangInfo.h"
 #include "URL.h"
-#include "video/VideoReferenceClock.h"
 
 #ifdef HAS_OMXPLAYER
 #include "cores/omxplayer/OMXPlayerAudio.h"
@@ -2049,7 +2048,7 @@ void CVideoPlayer::HandlePlaySpeed()
       {
         m_SpeedState.lastpts  = m_VideoPlayerVideo->GetCurrentPts();
         m_SpeedState.lasttime = GetTime();
-        m_SpeedState.lastabstime = CDVDClock::GetAbsoluteClock();
+        m_SpeedState.lastabstime = m_clock.GetAbsoluteClock();
         // check how much off clock video is when ff/rw:ing
         // a problem here is that seeking isn't very accurate
         // and since the clock will be resynced after seek
@@ -2665,13 +2664,13 @@ void CVideoPlayer::HandleMessages()
         if(m_State.timestamp > 0)
         {
           double offset;
-          offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
+          offset  = m_clock.GetAbsoluteClock() - m_State.timestamp;
           offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
           offset  = DVD_TIME_TO_MSEC(offset);
           if(offset >  1000) offset =  1000;
           if(offset < -1000) offset = -1000;
           m_State.time     += offset;
-          m_State.timestamp =  CDVDClock::GetAbsoluteClock();
+          m_State.timestamp =  m_clock.GetAbsoluteClock();
         }
 
         if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
@@ -3164,13 +3163,11 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     }
     else
     {
-      double dDelay = m_VideoPlayerVideo->GetDelay() / DVD_TIME_BASE - m_renderManager.GetDisplayLatency();
-
       double apts = m_VideoPlayerAudio->GetCurrentPts();
       double vpts = m_VideoPlayerVideo->GetCurrentPts();
       double dDiff = 0;
 
-      if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
+      if (apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE)
         dDiff = (apts - vpts) / DVD_TIME_BASE;
 
       std::string strBuf;
@@ -3184,8 +3181,7 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
           strBuf += StringUtils::Format(" %d sec", DVD_TIME_TO_SEC(m_State.cache_delay));
       }
 
-      strGeneralInfo = StringUtils::Format("Player: ad:% 6.3f, a/v:% 6.3f, %s"
-                                           , dDelay
+      strGeneralInfo = StringUtils::Format("Player: a/v:% 6.3f, %s"
                                            , dDiff
                                            , strBuf.c_str());
     }
@@ -3220,12 +3216,12 @@ float CVideoPlayer::GetCachePercentage()
 
 void CVideoPlayer::SetAVDelay(float fValue)
 {
-  m_VideoPlayerVideo->SetDelay( (fValue * DVD_TIME_BASE) ) ;
+  m_renderManager.SetDelay( (fValue * 1000) ) ;
 }
 
 float CVideoPlayer::GetAVDelay()
 {
-  return (float) m_VideoPlayerVideo->GetDelay() / (float)DVD_TIME_BASE;
+  return static_cast<float>(m_renderManager.GetDelay()) / 1000;
 }
 
 void CVideoPlayer::SetSubTitleDelay(float fValue)
@@ -3435,7 +3431,7 @@ int64_t CVideoPlayer::GetTime()
   const double limit = DVD_MSEC_TO_TIME(500);
   if (m_State.timestamp > 0)
   {
-    offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
+    offset  = m_clock.GetAbsoluteClock() - m_State.timestamp;
     offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
     if (offset > limit)
       offset = limit;
@@ -4674,7 +4670,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
 void CVideoPlayer::UpdatePlayState(double timeout)
 {
   if(m_State.timestamp != 0 &&
-     m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+     m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > m_clock.GetAbsoluteClock())
     return;
 
   SPlayerState state(m_State);
@@ -4804,7 +4800,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   else
     state.cache_bytes = 0;
 
-  state.timestamp = CDVDClock::GetAbsoluteClock();
+  state.timestamp = m_clock.GetAbsoluteClock();
 
   CSingleLock lock(m_StateSection);
   m_State = state;
@@ -4813,7 +4809,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 void CVideoPlayer::UpdateApplication(double timeout)
 {
   if(m_UpdateApplication != 0
-  && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+  && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > m_clock.GetAbsoluteClock())
     return;
 
   CDVDInputStreamPVRManager* pStream = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
@@ -4826,7 +4822,7 @@ void CVideoPlayer::UpdateApplication(double timeout)
       CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
     }
   }
-  m_UpdateApplication = CDVDClock::GetAbsoluteClock();
+  m_UpdateApplication = m_clock.GetAbsoluteClock();
 }
 
 bool CVideoPlayer::CanRecord()
@@ -4924,11 +4920,6 @@ bool CVideoPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 void CVideoPlayer::FrameMove()
 {
   m_renderManager.FrameMove();
-}
-
-void CVideoPlayer::FrameWait(int ms)
-{
-  m_renderManager.FrameWait(ms);
 }
 
 bool CVideoPlayer::HasFrame()

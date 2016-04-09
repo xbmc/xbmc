@@ -115,7 +115,7 @@ void CVideoSyncOsx::VblankHandler(int64_t nowtime, uint32_t timebase)
     NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
 
     //update the vblank timestamp, update the clock and send a signal that we got a vblank
-    UpdateClock(NrVBlanks, Now);
+    UpdateClock(NrVBlanks, Now, m_refClock);
   }
 
   //save the timestamp of this vblank so we can calculate how many happened next time

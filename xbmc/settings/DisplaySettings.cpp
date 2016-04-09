@@ -323,16 +323,6 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
     if (screenmode.size() == 21)
       return screenmodeSetting->SetValue(screenmode + "std");
   }
-  else if (settingId == CSettings::SETTING_VIDEOSCREEN_VSYNC)
-  {
-    // This ifdef is intended to catch everything except Linux and FreeBSD
-#if !defined(TARGET_LINUX) || defined(TARGET_DARWIN) || defined(TARGET_ANDROID) || defined(TARGET_RASPBERRY_PI)
-    // in the Gotham alphas through beta3 the default value for darwin and android was set incorrectly.
-    CSettingInt *vsyncSetting = (CSettingInt*)setting;
-    if (vsyncSetting->GetValue() == VSYNC_DRIVER)
-      return vsyncSetting->SetValue(VSYNC_ALWAYS);
-#endif
-  }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE)
   {
     CSettingInt *stereomodeSetting = (CSettingInt*)setting;
@@ -726,17 +716,6 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
     current = resInfo.iScreen;
   }
 #endif
-}
-
-void CDisplaySettings::SettingOptionsVerticalSyncsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
-{
-  // This ifdef is intended to catch everything except Linux and FreeBSD
-#if defined(TARGET_LINUX) && !defined(TARGET_DARWIN) && !defined(TARGET_ANDROID) && !defined(TARGET_RASPBERRY_PI)
-  list.push_back(std::make_pair(g_localizeStrings.Get(13101), VSYNC_DRIVER));
-#endif
-  list.push_back(std::make_pair(g_localizeStrings.Get(13106), VSYNC_DISABLED));
-  list.push_back(std::make_pair(g_localizeStrings.Get(13107), VSYNC_VIDEO));
-  list.push_back(std::make_pair(g_localizeStrings.Get(13108), VSYNC_ALWAYS));
 }
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)

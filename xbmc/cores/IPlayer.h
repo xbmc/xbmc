@@ -390,8 +390,6 @@ public:
    */
   virtual void FrameMove() {};
 
-  virtual void FrameWait(int ms) {};
-
   virtual bool HasFrame() { return false; };
 
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};

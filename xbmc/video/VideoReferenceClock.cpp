@@ -65,40 +65,36 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
   m_CurrTime = 0;
   m_LastIntTime = 0;
   m_CurrTimeFract = 0.0;
-  m_fineadjust = 0.0;
   m_RefreshRate = 0.0;
   m_MissedVblanks = 0;
   m_VblankTime = 0;
 
   m_pVideoSync = nullptr;
+
+  Start();
 }
 
 CVideoReferenceClock::~CVideoReferenceClock()
 {
+  StopThread();
 }
 
 void CVideoReferenceClock::Start()
 {
-  CSingleExit lock(g_graphicsContext);
+  m_ClockOffset = CurrentHostCounter();
   if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
     Create();
 }
 
-void CVideoReferenceClock::Stop()
-{
-  CSingleExit lock(g_graphicsContext);
-  StopThread();
-}
-
-void CVideoReferenceClock::CBUpdateClock(int NrVBlanks, uint64_t time)
+void CVideoReferenceClock::CBUpdateClock(int NrVBlanks, uint64_t time, CVideoReferenceClock *clock)
 {
   {
-    CSingleLock lock(g_VideoReferenceClock.m_CritSection);
-    g_VideoReferenceClock.m_VblankTime = time;
-    g_VideoReferenceClock.UpdateClock(NrVBlanks, true);
+    CSingleLock lock(clock->m_CritSection);
+    clock->m_VblankTime = time;
+    clock->UpdateClock(NrVBlanks, true);
   }
 
-  g_VideoReferenceClock.SendVblankSignal();
+  clock->SendVblankSignal();
 }
 
 void CVideoReferenceClock::Process()
@@ -114,23 +110,23 @@ void CVideoReferenceClock::Process()
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   if ((gpuvendor.compare(0, 5, "intel") == 0 ||
        gpuvendor.compare(0, 5, "x.org") == 0)) // AMD
-    m_pVideoSync = new CVideoSyncDRM();
+    m_pVideoSync = new CVideoSyncDRM(this);
 #if defined(HAS_GLX)
   else
-    m_pVideoSync = new CVideoSyncGLX();
+    m_pVideoSync = new CVideoSyncGLX(this);
 #endif
 #elif defined(TARGET_WINDOWS)
-    m_pVideoSync = new CVideoSyncD3D();
+    m_pVideoSync = new CVideoSyncD3D(this);
 #elif defined(TARGET_DARWIN_OSX)
-    m_pVideoSync = new CVideoSyncOsx();
+    m_pVideoSync = new CVideoSyncOsx(this);
 #elif defined(TARGET_DARWIN_IOS)
-    m_pVideoSync = new CVideoSyncIos();
+    m_pVideoSync = new CVideoSyncIos(this);
 #elif defined(TARGET_RASPBERRY_PI)
-    m_pVideoSync = new CVideoSyncPi();
+    m_pVideoSync = new CVideoSyncPi(this);
 #elif defined(HAS_IMXVPU)
-    m_pVideoSync = new CVideoSyncIMX();
+    m_pVideoSync = new CVideoSyncIMX(this);
 #elif defined(TARGET_ANDROID)
-    m_pVideoSync = new CVideoSyncAndroid();
+    m_pVideoSync = new CVideoSyncAndroid(this);
 #endif
 
     if (m_pVideoSync)
@@ -146,7 +142,6 @@ void CVideoReferenceClock::Process()
     m_CurrTimeFract = 0.0;
     m_ClockSpeed = 1.0;
     m_TotalMissedVblanks = 0;
-    m_fineadjust = 1.0;
     m_MissedVblanks = 0;
 
     if (SetupSuccess)
@@ -218,7 +213,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 
 double CVideoReferenceClock::UpdateInterval() const
 {
-  return m_ClockSpeed * m_fineadjust / m_RefreshRate * static_cast<double>(m_SystemFrequency);
+  return m_ClockSpeed / m_RefreshRate * static_cast<double>(m_SystemFrequency);
 }
 
 //called from dvdclock to get the time
@@ -244,7 +239,7 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
     if (interpolated)
     {
       //interpolate from the last time the clock was updated
-      double elapsed = static_cast<double>(Now - m_VblankTime) * m_ClockSpeed * m_fineadjust;
+      double elapsed = static_cast<double>(Now - m_VblankTime) * m_ClockSpeed;
       //don't interpolate more than 2 vblank periods
       elapsed = std::min(elapsed, UpdateInterval() * 2.0);
 
@@ -264,12 +259,6 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
   {
     return CurrentHostCounter() + m_ClockOffset;
   }
-}
-
-//called from dvdclock to get the clock frequency
-int64_t CVideoReferenceClock::GetFrequency() const
-{
-  return m_SystemFrequency;
 }
 
 void CVideoReferenceClock::SetSpeed(double Speed)
@@ -322,64 +311,6 @@ double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
     return -1;
 }
 
-
-//this is called from CDVDClock::WaitAbsoluteClock, which is called from CRenderManager::WaitPresentTime
-//it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
-int64_t CVideoReferenceClock::Wait(int64_t Target)
-{
-  int64_t       Now;
-  int           SleepTime;
-
-  CSingleLock SingleLock(m_CritSection);
-
-  if (m_UseVblank) //when true the vblank is used as clock source
-  {
-    while (m_CurrTime < Target)
-    {
-      //calculate how long to sleep before we should have gotten a signal that a vblank happened
-      Now = CurrentHostCounter();
-      int64_t NextVblank = TimeOfNextVblank();
-      SleepTime = static_cast<int>((NextVblank - Now) * 1000 / m_SystemFrequency);
-
-      int64_t CurrTime = m_CurrTime; //save current value of the clock
-
-      bool Late = false;
-      if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
-      {
-        Late = true;
-      }
-      else
-      {
-        m_VblankEvent.Reset();
-        SingleLock.Leave();
-        if (!m_VblankEvent.WaitMSec(SleepTime)) //if this returns false, it means the vblank event was not set within
-          Late = true;                          //the required time
-        SingleLock.Enter();
-      }
-
-      //if the vblank clock was late with its update, we update the clock ourselves
-      if (Late && CurrTime == m_CurrTime)
-        UpdateClock(1, false); //update the clock by 1 vblank
-
-    }
-    return m_CurrTime;
-  }
-  else
-  {
-    int64_t ClockOffset = m_ClockOffset;
-    SingleLock.Leave();
-    Now = CurrentHostCounter();
-    //sleep until the timestamp has passed
-    SleepTime = static_cast<int>((Target - (Now + ClockOffset)) * 1000 / m_SystemFrequency);
-    if (SleepTime > 0)
-      Sleep(SleepTime);
-
-    Now = CurrentHostCounter();
-    return Now + ClockOffset;
-  }
-}
-
-
 void CVideoReferenceClock::SendVblankSignal()
 {
   m_VblankEvent.Set();
@@ -406,20 +337,3 @@ bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, 
   }
   return false;
 }
-
-void CVideoReferenceClock::SetFineAdjust(double fineadjust)
-{
-  CSingleLock SingleLock(m_CritSection);
-  m_fineadjust = fineadjust;
-}
-
-void CVideoReferenceClock::RefreshChanged()
-{
-  CSingleLock SingleLock(m_CritSection);
-  if (m_pVideoSync)
-  {
-    m_pVideoSync->RefreshChanged();
-  }
-}
-
-CVideoReferenceClock g_VideoReferenceClock;

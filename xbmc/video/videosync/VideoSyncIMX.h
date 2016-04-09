@@ -27,7 +27,7 @@
 class CVideoSyncIMX : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncIMX();
+  CVideoSyncIMX(CVideoReferenceClock *clock);
   virtual ~CVideoSyncIMX();
   virtual bool Setup(PUPDATECLOCK func);
   virtual void Run(volatile bool& stop);

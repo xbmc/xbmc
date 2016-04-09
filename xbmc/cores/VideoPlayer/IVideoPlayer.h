@@ -149,8 +149,6 @@ public:
   virtual void EnableSubtitle(bool bEnable) = 0;
   virtual bool IsSubtitleEnabled() = 0;
   virtual void EnableFullscreen(bool bEnable) = 0;
-  virtual double GetDelay() = 0;
-  virtual void SetDelay(double delay) = 0;
   virtual double GetSubtitleDelay() = 0;
   virtual void SetSubtitleDelay(double delay) = 0;
   virtual bool IsStalled() const = 0;

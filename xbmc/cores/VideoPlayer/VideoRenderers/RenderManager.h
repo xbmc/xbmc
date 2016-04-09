@@ -99,8 +99,7 @@ public:
   bool Supports(ESCALINGMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
-  static float GetMaximumFPS();
-  double GetDisplayLatency() { return m_displayLatency; }
+  float GetMaximumFPS();
   int GetSkippedFrames()  { return m_QueueSkip; }
 
   // Functions called from mplayer
@@ -130,7 +129,7 @@ public:
    * @param source depreciated
    * @param sync signals frame, top, or bottom field
    */
-  void FlipPage(volatile std::atomic_bool& bStop, double timestamp = 0.0, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+  void FlipPage(volatile std::atomic_bool& bStop, double pts = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
 
   void AddOverlay(CDVDOverlay* o, double pts);
 
@@ -158,6 +157,9 @@ public:
    */
   void DiscardBuffer();
 
+  void SetDelay(int delay) { m_videoDelay = delay; };
+  int GetDelay() { return m_videoDelay; };
+
 protected:
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
@@ -165,15 +167,14 @@ protected:
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   void PrepareNextRender();
-  static double GetPresentTime();
-  void  WaitPresentTime(double presenttime);
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
   bool Configure();
   void CreateRenderer();
   void DeleteRenderer();
   void ManageCaptures();
-  std::string GetVSyncState();
+
+  void UpdateDisplayLatency();
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
@@ -217,7 +218,7 @@ protected:
   CEvent m_stateEvent;
 
   double m_displayLatency;
-  void UpdateDisplayLatency();
+  std::atomic_int m_videoDelay;
 
   int m_QueueSize;
   int m_QueueSkip;
@@ -225,7 +226,6 @@ protected:
   struct SPresent
   {
     double         pts;
-    double         timestamp;
     EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
   } m_Queue[NUM_BUFFERS];
@@ -244,15 +244,10 @@ protected:
 
   double m_sleeptime;
   double m_presentpts;
-  double m_presentcorr;
-  double m_presenterr;
-  double m_errorbuff[ERRORBUFFSIZE];
-  int m_errorindex;
   EPRESENTSTEP m_presentstep;
   int m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;
   CEvent m_flushEvent;
-  double m_clock_framefinish;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
 

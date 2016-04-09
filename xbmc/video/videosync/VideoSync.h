@@ -19,11 +19,13 @@
  *
  */
 
-typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time);
+class CVideoReferenceClock;
+typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time, CVideoReferenceClock *clock);
 
 class CVideoSync
 {
 public:
+  CVideoSync(CVideoReferenceClock *clock) { m_refClock = clock; };
   virtual ~CVideoSync() {};
   virtual bool Setup(PUPDATECLOCK func) = 0;
   virtual void Run(volatile bool& stop) = 0;
@@ -33,4 +35,5 @@ public:
 protected:
   PUPDATECLOCK UpdateClock;
   float m_fps;
+  CVideoReferenceClock *m_refClock;
 };

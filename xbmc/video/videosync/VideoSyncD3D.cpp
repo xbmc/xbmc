@@ -90,7 +90,7 @@ void CVideoSyncD3D::Run(volatile bool& stop)
     NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
 
     // update the vblank timestamp, update the clock and send a signal that we got a vblank
-    UpdateClock(NrVBlanks, Now);
+    UpdateClock(NrVBlanks, Now, m_refClock);
 
     // save the timestamp of this vblank so we can calculate how many vblanks happened next time
     LastVBlankTime = Now;

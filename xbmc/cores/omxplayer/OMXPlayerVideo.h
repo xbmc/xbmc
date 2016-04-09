@@ -51,7 +51,6 @@ protected:
   COMXVideo                 m_omxVideo;
   float                     m_fFrameRate;
   bool                      m_hdmi_clock_sync;
-  double                    m_iVideoDelay;
   int                       m_speed;
   bool                      m_stalled;
   bool                      m_started;
@@ -111,8 +110,6 @@ public:
   double GetFPS() { return m_fFrameRate; };
   void  SubmitEOS();
   bool SubmittedEOS() const { return m_omxVideo.SubmittedEOS(); }
-  void SetDelay(double delay) { m_iVideoDelay = delay; }
-  double GetDelay() { return m_iVideoDelay; }
   void SetSpeed(int iSpeed);
   std::string GetPlayerInfo();
   int GetVideoBitrate();

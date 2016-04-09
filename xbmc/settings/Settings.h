@@ -296,7 +296,6 @@ public:
   static const std::string SETTING_VIDEOSCREEN_BLANKDISPLAYS;
   static const std::string SETTING_VIDEOSCREEN_STEREOSCOPICMODE;
   static const std::string SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE;
-  static const std::string SETTING_VIDEOSCREEN_VSYNC;
   static const std::string SETTING_VIDEOSCREEN_GUICALIBRATION;
   static const std::string SETTING_VIDEOSCREEN_TESTPATTERN;
   static const std::string SETTING_VIDEOSCREEN_LIMITEDRANGE;

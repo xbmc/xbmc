@@ -24,7 +24,6 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDDemuxers/DVDDemuxPacket.h"
 #include "settings/Settings.h"
-#include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "cores/AudioEngine/AEFactory.h"

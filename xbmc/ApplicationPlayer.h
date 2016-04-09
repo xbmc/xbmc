@@ -80,7 +80,6 @@ public:
   void SetPlaySpeed(int iSpeed, bool bApplicationMuted);
 
   void FrameMove();
-  void FrameWait(int ms);
   bool HasFrame();
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
   void AfterRender();

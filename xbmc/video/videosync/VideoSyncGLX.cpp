@@ -210,7 +210,7 @@ void CVideoSyncGLX::Run(volatile bool& stop)
 
     if (VblankCount > PrevVblankCount)
     {
-      UpdateClock((int)(VblankCount - PrevVblankCount), Now);
+      UpdateClock((int)(VblankCount - PrevVblankCount), Now, m_refClock);
       IsReset = false;
     }
     else
