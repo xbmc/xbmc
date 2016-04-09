@@ -33,7 +33,8 @@
 
 #include <limits>
 
-extern "C" FILE _iob[];
+//This shouldn't be needed anymore and it's not exported through the dll
+//extern "C" FILE _iob[];
 extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);
 
 // our exports
@@ -126,7 +127,7 @@ Export win32_exports[] =
   { "signal",                     -1, (void*)dll_signal,                    NULL },
 
   // reading/writing from stdin/stdout needs this
-  { "_iob",                       -1, (void*)&_iob,                         NULL },
+  //{ "_iob",                       -1, (void*)&_iob,                         NULL },
 
   // libdvdnav + python need this (due to us using dll_putenv() to put stuff only?)
   { "getenv",                     -1, (void*)dll_getenv,                    NULL },
@@ -162,7 +163,7 @@ bool Win32DllLoader::Load()
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
-    DWORD dw = GetLastError(); 
+    DWORD dw = GetLastError();
     wchar_t* lpMsgBuf = NULL;
     DWORD strLen = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPWSTR)&lpMsgBuf, 0, NULL);
     if (strLen == 0)
@@ -176,7 +177,7 @@ bool Win32DllLoader::Load()
     }
     else
       CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %lu", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw);
-    
+
     LocalFree(lpMsgBuf);
     return false;
   }
@@ -353,6 +354,16 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
   std::string xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc");
   std::string homePath = CSpecialProtocol::TranslatePath("special://home");
   std::string tempPath = CSpecialProtocol::TranslatePath("special://temp");
+
+  //need a better version of this really
+  //We can ignore modules we know don't need any special file access
+  if (StringUtils::EndsWithNoCase(dllPath, "libcurl.dll") ||
+      StringUtils::EndsWithNoCase(dllPath, "libeay32.dll") ||
+      StringUtils::EndsWithNoCase(dllPath, "ssleay32.dll"))
+  {
+    return false;
+  }
+
   return (StringUtils::StartsWith(dllPath, xbmcPath) ||
           StringUtils::StartsWith(dllPath, homePath) ||
           StringUtils::StartsWith(dllPath, tempPath));
