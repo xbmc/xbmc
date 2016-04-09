@@ -65,7 +65,6 @@ namespace ADDON
     ADDON_AUDIO,
     ADDON_IMAGE,
     ADDON_EXECUTABLE,
-    ADDON_VIZ_LIBRARY,
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
     ADDON_SCRIPT_MODULE,
@@ -96,22 +95,22 @@ namespace ADDON
     virtual TYPE FullType() const =0;
     virtual bool IsType(TYPE type) const =0;
     virtual const AddonProps& Props() =0;
-    virtual const std::string ID() const =0;
-    virtual const std::string Name() const =0;
+    virtual std::string ID() const =0;
+    virtual std::string Name() const =0;
     virtual bool IsInUse() const =0;
-    virtual const AddonVersion Version() const =0;
-    virtual const AddonVersion MinVersion() const =0;
-    virtual const std::string Summary() const =0;
-    virtual const std::string Description() const =0;
-    virtual const std::string Path() const =0;
-    virtual const std::string Profile() const =0;
-    virtual const std::string LibPath() const =0;
-    virtual const std::string ChangeLog() const =0;
-    virtual const std::string FanArt() const =0;
-    virtual const std::string Author() const =0;
-    virtual const std::string Icon() const =0;
-    virtual const std::string Disclaimer() const =0;
-    virtual const std::string Broken() const =0;
+    virtual AddonVersion Version() const =0;
+    virtual AddonVersion MinVersion() const =0;
+    virtual std::string Summary() const =0;
+    virtual std::string Description() const =0;
+    virtual std::string Path() const =0;
+    virtual std::string Profile() const =0;
+    virtual std::string LibPath() const =0;
+    virtual std::string ChangeLog() const =0;
+    virtual std::string FanArt() const =0;
+    virtual std::string Author() const =0;
+    virtual std::string Icon() const =0;
+    virtual std::string Disclaimer() const =0;
+    virtual std::string Broken() const =0;
     virtual CDateTime InstallDate() const =0;
     virtual CDateTime LastUpdated() const =0;
     virtual CDateTime LastUsed() const =0;
@@ -132,10 +131,6 @@ namespace ADDON
     virtual void OnPostInstall(bool update, bool modal) =0;
     virtual void OnPreUnInstall() =0;
     virtual void OnPostUnInstall() =0;
-    virtual bool CanInstall() =0;
-
-  protected:
-    virtual bool LoadSettings(bool bForce = false) =0;
   };
 };
 

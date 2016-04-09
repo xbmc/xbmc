@@ -89,15 +89,6 @@ void CActiveAEDSPAddon::OnPostUnInstall()
   CServiceBroker::GetADSP().UpdateAddons();
 }
 
-bool CActiveAEDSPAddon::CanInstall()
-{
-  if (!CServiceBroker::GetADSP().InstallAddonAllowed(ID()))
-  {
-    return false;
-  }
-  return CAddon::CanInstall();
-}
-
 void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_ID */)
 {
   /* initialise members */

@@ -734,12 +734,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float buttonGap = 5;
   int iMovementRange = 0;
   CAspectRatio aspect;
-  if (g_SkinInfo && g_SkinInfo->APIVersion() < ADDON::AddonVersion("5.1.0"))
-  {
-    if (insideContainer)  // default for inside containers is keep
-      aspect.ratio = CAspectRatio::AR_KEEP;
-  }
-
   std::string allowHiddenFocus;
   std::string enableCondition;
 
@@ -974,11 +968,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   // the <texture> tag can be overridden by the <info> tag
   GetInfoTexture(pControlNode, "texture", texture, textureFile, parentID);
-  if (g_SkinInfo && g_SkinInfo->APIVersion() < ADDON::AddonVersion("5.1.0"))
-  {
-    if (type == CGUIControl::GUICONTROL_IMAGE && insideContainer && textureFile.IsConstant())
-      aspect.ratio = CAspectRatio::AR_STRETCH;
-  }
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
 

@@ -39,9 +39,9 @@ namespace ADDON
   typedef std::vector<AddonPtr>::iterator IVECADDONS;
 
 // utils
-const std::string   TranslateType(const TYPE &type, bool pretty=false);
-const std::string   GetIcon(const TYPE &type);
-      TYPE          TranslateType(const std::string &string);
+std::string TranslateType(TYPE type, bool pretty=false);
+std::string GetIcon(TYPE type);
+TYPE TranslateType(const std::string &string);
 
 void OnEnabled(const std::string& id);
 void OnDisabled(const std::string& id);
@@ -89,11 +89,37 @@ public:
   explicit CAddon(AddonProps props);
   virtual ~CAddon() {}
 
+  TYPE Type() const override { return m_props.type; }
+  TYPE FullType() const override { return Type(); }
+  bool IsType(TYPE type) const override { return type == m_props.type; }
+  const AddonProps& Props() override { return m_props; }
+  std::string ID() const override{ return m_props.id; }
+  std::string Name() const override { return m_props.name; }
+  bool IsInUse() const override{ return false; };
+  AddonVersion Version() const override { return m_props.version; }
+  AddonVersion MinVersion() const override { return m_props.minversion; }
+  std::string Summary() const override { return m_props.summary; }
+  std::string Description() const override { return m_props.description; }
+  std::string Path() const override { return m_props.path; }
+  std::string Profile() const override { return m_profilePath; }
+  std::string LibPath() const override;
+  std::string Author() const override { return m_props.author; }
+  std::string ChangeLog() const override { return m_props.changelog; }
+  std::string FanArt() const override { return m_props.fanart; }
+  std::string Icon() const override { return m_props.icon; };
+  std::string Disclaimer() const override { return m_props.disclaimer; }
+  std::string Broken() const override { return m_props.broken; }
+  CDateTime InstallDate() const override { return m_props.installDate; }
+  CDateTime LastUpdated() const override { return m_props.lastUpdated; }
+  CDateTime LastUsed() const override { return m_props.lastUsed; }
+  const InfoMap& ExtraInfo() const override { return m_props.extrainfo; }
+  const ADDONDEPS& GetDeps() const override { return m_props.dependencies; }
+
   /*! \brief Check whether the this addon can be configured or not
    \return true if the addon has settings, false otherwise
    \sa LoadSettings, LoadUserSettings, SaveSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  virtual bool HasSettings();
+  bool HasSettings() override;
 
   /*! \brief Check whether the user has configured this addon or not
    \return true if previously saved settings are found, false otherwise
@@ -104,14 +130,14 @@ public:
   /*! \brief Save any user configured settings
    \sa LoadSettings, LoadUserSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  virtual void SaveSettings();
+  void SaveSettings() override;
 
   /*! \brief Update a user-configured setting with a new value
    \param key the id of the setting to update
    \param value the value that the setting should take
    \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
    */
-  virtual void UpdateSetting(const std::string& key, const std::string& value);
+  void UpdateSetting(const std::string& key, const std::string& value) override;
 
   /*! \brief Retrieve a particular settings value
    If a previously configured user setting is available, we return it's value, else we return the default (if available)
@@ -119,70 +145,41 @@ public:
    \return the current value of the setting, or the default if the setting has yet to be configured.
    \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
    */
-  virtual std::string GetSetting(const std::string& key);
+  std::string GetSetting(const std::string& key) override;
 
-  TiXmlElement* GetSettingsXML();
-
-  // properties
-  TYPE Type() const { return m_props.type; }
-  virtual TYPE FullType() const { return Type(); }
-  bool IsType(TYPE type) const { return type == m_props.type; }
-  const AddonProps& Props() { return m_props; }
-  const std::string ID() const { return m_props.id; }
-  const std::string Name() const { return m_props.name; }
-  virtual bool IsInUse() const { return false; };
-  const AddonVersion Version() const { return m_props.version; }
-  const AddonVersion MinVersion() const { return m_props.minversion; }
-  const std::string Summary() const { return m_props.summary; }
-  const std::string Description() const { return m_props.description; }
-  const std::string Path() const { return m_props.path; }
-  const std::string Profile() const { return m_profilePath; }
-  const std::string LibPath() const;
-  const std::string Author() const { return m_props.author; }
-  const std::string ChangeLog() const { return m_props.changelog; }
-  const std::string FanArt() const { return m_props.fanart; }
-  const std::string Icon() const { return m_props.icon; };
-  const std::string Disclaimer() const { return m_props.disclaimer; }
-  const std::string Broken() const { return m_props.broken; }
-  CDateTime InstallDate() const override { return m_props.installDate; }
-  CDateTime LastUpdated() const override { return m_props.lastUpdated; }
-  CDateTime LastUsed() const override { return m_props.lastUsed; }
-  const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
-  const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
-
+  TiXmlElement* GetSettingsXML() override;
 
   /*! \brief get the required version of a dependency.
    \param dependencyID the addon ID of the dependency.
    \return the version this addon requires.
    */
-  AddonVersion GetDependencyVersion(const std::string &dependencyID) const;
+  AddonVersion GetDependencyVersion(const std::string &dependencyID) const override;
 
   /*! \brief return whether or not this addon satisfies the given version requirements
    \param version the version to meet.
    \return true if  min_version <= version <= current_version, false otherwise.
    */
-  bool MeetsVersion(const AddonVersion &version) const;
-  virtual bool ReloadSettings();
+  bool MeetsVersion(const AddonVersion &version) const override;
+  bool ReloadSettings() override;
 
   /*! \brief callback for when this add-on is disabled.
    Use to perform any needed actions (e.g. stop a service)
    */
-  virtual void OnDisabled() {};
+  void OnDisabled() override {};
 
   /*! \brief callback for when this add-on is enabled.
    Use to perform any needed actions (e.g. start a service)
    */
-  virtual void OnEnabled() {};
+  void OnEnabled() override {};
 
   /*! \brief retrieve the running instance of an add-on if it persists while running.
    */
-  virtual AddonPtr GetRunningInstance() const { return AddonPtr(); }
+  AddonPtr GetRunningInstance() const override { return AddonPtr(); }
 
-  virtual void OnPreInstall() {};
-  virtual void OnPostInstall(bool update, bool modal) {};
-  virtual void OnPreUnInstall() {};
-  virtual void OnPostUnInstall() {};
-  virtual bool CanInstall() { return true; }
+  void OnPreInstall() override {};
+  void OnPostInstall(bool update, bool modal) override {};
+  void OnPreUnInstall() override {};
+  void OnPostUnInstall() override {};
 
 protected:
   /*! \brief Load the default settings and override these with any previously configured user settings
@@ -228,16 +225,6 @@ private:
   std::string m_profilePath;
   std::string m_userSettingsPath;
   std::map<std::string, std::string> m_settings;
-};
-
-class CAddonLibrary : public CAddon
-{
-public:
-  explicit CAddonLibrary(AddonProps props);
-
-private:
-  TYPE SetAddonType();
-  const TYPE m_addonType; // addon type this library enhances
 };
 
 }; /* namespace ADDON */

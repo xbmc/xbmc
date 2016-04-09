@@ -190,12 +190,10 @@ CSkinInfo::CSkinInfo(
     : CAddon(std::move(props)),
       m_defaultRes(resolution),
       m_resolutions(resolutions),
-      m_version(""),
       m_effectsSlowDown(effectsSlowDown),
       m_debugging(debugging)
 {
   LoadStartupWindows(nullptr);
-  m_version = GetDependencyVersion("xbmc.gui");
 }
 
 struct closestRes
