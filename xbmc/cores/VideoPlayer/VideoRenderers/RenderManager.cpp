@@ -1309,39 +1309,39 @@ void CRenderManager::PrepareNextRender()
   // internal buffers of driver, assume that driver lets us go one frame in advance
   double totalLatency = DVD_SEC_TO_TIME(m_displayLatency) - DVD_MSEC_TO_TIME(m_videoDelay) + 2* frametime;
 
-  double clocktime = frameOnScreen + totalLatency;
+  double renderPts = frameOnScreen + totalLatency;
 
-  bool next = clocktime >= m_Queue[m_queued.front()].pts;
+  bool next = renderPts >= m_Queue[m_queued.front()].pts;
 
   if (next)
   {
     // see if any future queued frames are already due
-    std::deque<int>::reverse_iterator curr, prev;
-    int idx;
-    curr = prev = m_queued.rbegin();
-    ++prev;
-    while (prev != m_queued.rend())
+    auto iter = m_queued.begin();
+    int idx = *iter;
+    ++iter;
+    while (iter != m_queued.end())
     {
-      if (clocktime > m_Queue[*prev].pts + 2 * frametime &&  // previous frame is late
-          clocktime > m_Queue[*curr].pts + frametime)        // selected frame due
+      // the slot for rendering in time is [pts .. (pts + frametime)]
+      // renderer/drivers have internal queues, being slightliy late here does not mean that
+      // we are really late. If we don't recover here, player will take action
+      if (renderPts < m_Queue[*iter].pts + 0.8 * frametime)
         break;
-      ++curr;
-      ++prev;
+      idx = *iter;
+      ++iter;
     }
-    idx = *curr;
 
-    /* skip late frames */
+    // skip late frames
     while(m_queued.front() != idx)
     {
       requeue(m_discard, m_queued);
       m_QueueSkip++;
     }
 
-    m_presentstep   = PRESENT_FLIP;
+    m_presentstep = PRESENT_FLIP;
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
     m_queued.pop_front();
-    m_sleeptime = m_Queue[idx].pts - clocktime + frametime;
+    m_sleeptime = m_Queue[idx].pts - renderPts + frametime;
     m_presentpts = m_Queue[idx].pts - totalLatency;
     m_presentevent.notifyAll();
   }
