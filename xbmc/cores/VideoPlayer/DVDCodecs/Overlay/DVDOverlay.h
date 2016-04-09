@@ -46,6 +46,7 @@ public:
     bForced = false;
     replace = false;
     m_references = 1;
+    m_textureid = 0;
   }
 
   CDVDOverlay(const CDVDOverlay& src)
@@ -56,6 +57,7 @@ public:
     bForced       = src.bForced;
     replace       = src.replace;
     m_references  = 1;
+    m_textureid = 0;
   }
 
   virtual ~CDVDOverlay()
