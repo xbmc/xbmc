@@ -1573,12 +1573,8 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
 
-  // ensure that the "go to parent" item doesn't have any context menu items
   if (!item || item->IsParentFolder())
-  {
-    buttons.clear();
     return;
-  }
 
   // user added buttons
   std::string label;
