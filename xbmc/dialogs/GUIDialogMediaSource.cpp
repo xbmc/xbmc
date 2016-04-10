@@ -467,20 +467,34 @@ void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
 void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNotAdd)
 {
   m_type = type;
-  int typeStringID = -1;
-  if (type == "music")
-    typeStringID = 249; // "Music"
-  else if (type == "video")
-    typeStringID = 291;  // "Video"
-  else if (type == "programs")
-    typeStringID = 350;  // "Programs"
-  else if (type == "pictures")
-    typeStringID = 1213;  // "Pictures"
-  else // if (type == "files");
-    typeStringID = 744;  // "Files"
-  std::string format;
-  format = StringUtils::Format(g_localizeStrings.Get(editNotAdd ? 1028 : 1020).c_str(), g_localizeStrings.Get(typeStringID).c_str());
-  SET_CONTROL_LABEL(CONTROL_HEADING, format);
+  std::string heading;
+  if (editNotAdd)
+  {
+    if (type == "video")
+      heading = g_localizeStrings.Get(10053);
+    else if (type == "music")
+      heading = g_localizeStrings.Get(10054);
+    else if (type == "pictures")
+      heading = g_localizeStrings.Get(10055);
+    else if (type == "programs")
+      heading = g_localizeStrings.Get(10056);
+    else
+      heading = g_localizeStrings.Get(10057);
+  }
+  else
+  {
+    if (type == "video")
+      heading = g_localizeStrings.Get(10048);
+    else if (type == "music")
+      heading = g_localizeStrings.Get(10049);
+    else if (type == "pictures")
+      heading = g_localizeStrings.Get(10050);
+    else if (type == "programs")
+      heading = g_localizeStrings.Get(10051);
+    else
+      heading = g_localizeStrings.Get(10052);
+  }
+  SET_CONTROL_LABEL(CONTROL_HEADING, heading);
 }
 
 int CGUIDialogMediaSource::GetSelectedItem()
