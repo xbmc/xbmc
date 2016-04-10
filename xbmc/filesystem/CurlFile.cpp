@@ -263,6 +263,7 @@ CCurlFile::CReadState::CReadState()
   m_bLastError = false;
   m_readBuffer = 0;
   m_isPaused = false;
+  m_bRetry = true;
   m_curlHeaderList = NULL;
   m_curlAliasList = NULL;
 }
@@ -440,6 +441,7 @@ CCurlFile::CCurlFile()
   m_skipshout = false;
   m_httpresponse = -1;
   m_acceptCharset = "UTF-8,*;q=0.8"; /* prefer UTF-8 if available */
+  m_allowRetry = true;
 }
 
 //Has to be called before Open()
@@ -985,6 +987,7 @@ bool CCurlFile::Open(const CURL& url)
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
   m_state->m_sendRange = m_seekable;
+  m_state->m_bRetry = m_allowRetry;
 
   m_httpresponse = m_state->Connect(m_bufferSize);
   if (m_httpresponse <= 0 || m_httpresponse >= 400)
@@ -1599,7 +1602,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
         m_bLastError = true; // Flag error for the next run
 
         // Retry immediately or leave it up to the caller?
-        if (retry < g_advancedSettings.m_curlretries || (bRetryNow && retry == 0))
+        if ((m_bRetry && retry < g_advancedSettings.m_curlretries) || (bRetryNow && retry == 0))
         {
           retry++;
 
@@ -1870,8 +1873,14 @@ bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
 
 int CCurlFile::IoControl(EIoControl request, void* param)
 {
-  if(request == IOCTRL_SEEK_POSSIBLE)
+  if (request == IOCTRL_SEEK_POSSIBLE)
     return m_seekable ? 1 : 0;
+
+  if (request == IOCTRL_SET_RETRY)
+  {
+    m_allowRetry = *(bool*) param;
+    return 0;
+  }
 
   return -1;
 }

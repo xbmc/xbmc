@@ -176,7 +176,10 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
-  m_source.IoControl(IOCTRL_SET_CACHE,this);
+  m_source.IoControl(IOCTRL_SET_CACHE, this);
+
+  bool retry = false;
+  m_source.IoControl(IOCTRL_SET_RETRY, &retry); // We already handle retrying ourselves
 
   // check if source can seek
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);

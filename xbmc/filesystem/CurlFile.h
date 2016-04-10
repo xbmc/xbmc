@@ -124,6 +124,7 @@ namespace XFILE
           bool            m_isPaused;
           bool            m_sendRange;
           bool            m_bLastError;
+          bool            m_bRetry;
 
           char*           m_readBuffer;
 
@@ -194,6 +195,7 @@ namespace XFILE
       bool            m_multisession;
       bool            m_skipshout;
       bool            m_postdataset;
+      bool            m_allowRetry;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
