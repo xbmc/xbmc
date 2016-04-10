@@ -328,31 +328,37 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 
   if (settingId == CSettings::SETTING_SERVICES_ESENABLED)
   {
-#ifdef HAS_EVENT_SERVER
     if (((CSettingBool*)setting)->GetValue())
     {
+      bool result = true;
+#ifdef HAS_EVENT_SERVER
       if (!StartEventServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
-        return false;
+        result = false;
       }
-    }
-    else
-      return StopEventServer(true, true);
 #endif // HAS_EVENT_SERVER
 
 #ifdef HAS_JSONRPC
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
-    {
       if (!StartJSONRPCServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
-        return false;
+        result = false;
       }
+#endif // HAS_JSONRPC
+      return result;
     }
     else
-      return StopJSONRPCServer(false);
+    {
+      bool result = true;
+#ifdef HAS_EVENT_SERVER
+      result = StopEventServer(true, true);
+#endif // HAS_EVENT_SERVER
+#ifdef HAS_JSONRPC
+      result &= StopJSONRPCServer(false);
 #endif // HAS_JSONRPC
+      return result;
+    }
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESPORT)
   {
@@ -392,6 +398,9 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 #ifdef HAS_JSONRPC
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_ESENABLED))
     {
+      if (!StopJSONRPCServer(true))
+        return false;
+
       if (!StartJSONRPCServer())
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
