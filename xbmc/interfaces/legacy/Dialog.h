@@ -78,6 +78,19 @@ namespace XBMCAddon
                  int autoclose = 0);
 
       /**
+       * contextmenu(list) -- Show a context menu.\n
+       * \n
+       * list           : string list - list of items.\n
+       * \n
+       * *Note, Returns the position of the highlighted item as an integer (-1 if cancelled).\n
+       * \n
+       * example:\n
+       *   - dialog = xbmcgui.Dialog()\n
+       *   - ret = dialog.contextmenu(['Option #1', 'Option #2', 'Option #3'])\n\n
+       */
+      int contextmenu(const std::vector<String>& list);
+
+      /**
        * select(heading, list) -- Show a select dialog.\n
        * \n
        * heading        : string or unicode - dialog heading.\n

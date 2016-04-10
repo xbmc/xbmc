@@ -22,6 +22,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -83,6 +84,22 @@ namespace XBMCAddon
 
       return pDialog->IsConfirmed();
     }
+
+    int Dialog::contextmenu(const std::vector<String>& list)
+    {
+      DelayedCallGuard dcguard(languageHook);
+      CGUIDialogContextMenu* pDialog= (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+      if (pDialog == NULL)
+        throw WindowException("Error: Window is NULL, this is not possible :-)");
+
+      CContextButtons choices;
+      for(unsigned int i = 0; i < list.size(); i++)
+      {
+        choices.Add(i, list[i]);
+      }
+      return pDialog->Show(choices);
+    }
+
 
     int Dialog::select(const String& heading, const std::vector<String>& list, int autoclose)
     {
