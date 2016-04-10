@@ -97,8 +97,12 @@ namespace ADDON
     std::map<int, CDemuxStream*> m_streams;
 
     static CCriticalSection m_parentSection;
-    static bool m_hasConfig;
-    static std::vector<std::string> m_pathList;
+
+    struct Config
+    {
+      std::vector<std::string> m_pathList;
+    };
+    static std::map<std::string, Config> m_configMap;
   };
 
 } /*namespace ADDON*/
