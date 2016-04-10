@@ -229,6 +229,9 @@ protected:
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
+  void RenderToFBO(int index, int field, bool weave = false);
+  void RenderToFBO_OES(int index, int field, bool weave = false);
+  void RenderFromFBO();
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
@@ -238,7 +241,12 @@ protected:
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
   void RenderIMXMAPTexture(int index, int field); // IMXMAP rendering
 
-  CFrameBufferObject m_fbo;
+  struct
+  {
+    CFrameBufferObject fbo;
+    float width, height;
+  } m_fbo;
+  bool  m_nonLinStretch;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;

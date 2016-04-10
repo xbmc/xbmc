@@ -48,7 +48,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
 
   if(!file.Open("special://xbmc/system/shaders/" + filename))
   {
-    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::LoadSource - failed to open file %s", filename.c_str());
     return false;
   }
   getline(file, m_source, '\0');
