@@ -331,26 +331,13 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
     return false;
 
   CEpgInfoTagPtr tag(new CEpgInfoTag(*data));
-  return UpdateEntry(tag, false, bUpdateDatabase);
+  return UpdateEntry(tag, bUpdateDatabase);
 }
 
-bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObservers, bool bUpdateDatabase /* = false */)
+bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase /* = false */)
 {
-  CSingleLock lock(m_critSection);
   auto it = m_tags.find(tag->StartAsUTC());
-  EPG_EVENT_STATE state = (it == m_tags.end()) ? EPG_EVENT_CREATED : EPG_EVENT_UPDATED;
-
-  if (UpdateEntry(tag, state, it, bUpdateDatabase))
-  {
-    if (bNotifyObservers)
-    {
-      SetChanged();
-      lock.Leave();
-      NotifyObservers(ObservableMessageEpg);
-    }
-    return true;
-  }
-  return false;
+  return UpdateEntry(tag, it == m_tags.end() ? EPG_EVENT_CREATED : EPG_EVENT_UPDATED, it, bUpdateDatabase);
 }
 
 bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase /* = false */)
@@ -482,7 +469,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 #endif
   /* copy over tags */
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); ++it)
-    UpdateEntry(it->second, false, bStoreInDb);
+    UpdateEntry(it->second, bStoreInDb);
 
 #if EPG_DEBUGGING
   CLog::Log(LOGDEBUG, "EPG - %s - %" PRIuS" entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
