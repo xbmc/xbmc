@@ -162,7 +162,7 @@ bool CMMALRenderer::init_vout(ERenderFormat format, bool opaque)
   return true;
 }
 
-CMMALRenderer::CMMALRenderer()
+CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer")
 {
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   m_vout = NULL;
@@ -176,13 +176,59 @@ CMMALRenderer::CMMALRenderer()
   m_bMMALConfigured = false;
   m_iYV12RenderBuffer = 0;
   m_inflight = 0;
+  m_queue = mmal_queue_create();
+  m_error = 0.0;
+  Create();
 }
 
 CMMALRenderer::~CMMALRenderer()
 {
   CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  StopThread(true);
+  mmal_queue_destroy(m_queue);
   UnInit();
+}
+
+
+void CMMALRenderer::Process()
+{
+  SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
+  while (!m_bStop)
+  {
+    g_RBP.WaitVsync();
+    double dfps = g_graphicsContext.GetFPS();
+    if (dfps <= 0.0)
+      dfps = m_fps;
+    // This algorithm is basically making the decision according to Bresenham's line algorithm.  Imagine drawing a line where x-axis is display frames, and y-axis is video frames
+    m_error += m_fps / dfps;
+    // we may need to discard frames if queue length gets too high or video frame rate is above display frame rate
+    while (mmal_queue_length(m_queue) > 2 || m_error > 1.0)
+    {
+      if (m_error > 1.0)
+        m_error -= 1.0;
+      MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(m_queue);
+      if (buffer)
+      {
+        CMMALBuffer *omvb = (CMMALBuffer *)buffer->user_data;
+        assert(buffer == omvb->mmal_buffer);
+        m_inflight--;
+        omvb->Release();
+        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+          CLog::Log(LOGDEBUG, "%s::%s - discard buffer:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue), m_error);
+      }
+    }
+    // this is case where we would like to display a new frame
+    if (m_error > 0.0)
+    {
+      m_error -= 1.0;
+      MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(m_queue);
+      if (buffer)
+        mmal_port_send_buffer(m_vout_input, buffer);
+      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "%s::%s - buffer:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue), m_error);
+    }
+  }
 }
 
 void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
@@ -292,12 +338,24 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(m_sharedSection);
   int source = m_iYV12RenderBuffer;
+  CMMALBuffer *omvb = nullptr;
 
   if (!m_bConfigured)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - not configured: clear:%d flags:%x alpha:%d source:%d", CLASSNAME, __func__, clear, flags, alpha, source);
-    return;
+    goto exit;
+  }
+
+  if (m_format == RENDER_FMT_MMAL)
+    omvb = m_buffers[source];
+
+  // we only want to upload frames once
+  if (omvb && omvb->mmal_buffer && omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
+  {
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x skipping", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
+    goto exit;
   }
 
   ManageRenderArea();
@@ -306,18 +364,14 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - bypass: clear:%d flags:%x alpha:%d source:%d format:%d", CLASSNAME, __func__, clear, flags, alpha, source, m_format);
-    return;
+    goto exit;
   }
   SetVideoRect(m_sourceRect, m_destRect);
 
-  CMMALBuffer *omvb = m_buffers[source];
   if (omvb && omvb->mmal_buffer)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
-    // we only want to upload frames once
-    if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
-      return;
     // check for changes in aligned sizes
     if (omvb->m_width != (uint32_t)m_vout_input->format->es->video.crop.width || omvb->m_height != (uint32_t)m_vout_input->format->es->video.crop.height ||
         omvb->m_aligned_width != m_vout_input->format->es->video.width || omvb->m_aligned_height != m_vout_input->format->es->video.height)
@@ -333,7 +387,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       if (status != MMAL_SUCCESS)
       {
         CLog::Log(LOGERROR, "%s::%s Failed to commit vout input format (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-        return;
+        goto exit;
       }
     }
     m_inflight++;
@@ -341,10 +395,17 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     omvb->Acquire();
     omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
     omvb->mmal_buffer->user_data = omvb;
-    mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
+    if (!CSettings::GetInstance().GetBool("videoplayer.usedisplayasclock") && m_fps > 0.0f)
+      mmal_queue_put(m_queue, omvb->mmal_buffer);
+    else
+      mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
   }
   else
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: No buffer to update clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb ? omvb->mmal_buffer : nullptr);
+
+exit:
+   lock.Leave();
+   g_RBP.WaitVsync();
 }
 
 void CMMALRenderer::FlipPage(int source)

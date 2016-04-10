@@ -80,7 +80,7 @@ public:
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual unsigned GetAllowedReferences() { return 3; }
+  virtual unsigned GetAllowedReferences() { return 4; }
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return m_pFormatName ? m_pFormatName:"mmal-xxx"; }
   virtual bool GetCodecStats(double &pts, int &droppedPics);
