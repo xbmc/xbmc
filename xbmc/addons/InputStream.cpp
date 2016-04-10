@@ -98,7 +98,27 @@ void CInputStream::UpdateConfig()
   }
 
   CSingleLock lock(m_parentSection);
+  auto it = m_configMap.find(ID());
+  if (it == m_configMap.end())
+    config.m_parentBusy = false;
+  else
+    config.m_parentBusy = it->second.m_parentBusy;
+
   m_configMap[ID()] = config;
+}
+
+bool CInputStream::UseParent()
+{
+  CSingleLock lock(m_parentSection);
+
+  auto it = m_configMap.find(ID());
+  if (it == m_configMap.end())
+    return false;
+  if (it->second.m_parentBusy)
+    return false;
+
+  it->second.m_parentBusy = true;
+  return true;
 }
 
 bool CInputStream::Supports(const CFileItem &fileitem)
@@ -187,6 +207,14 @@ void CInputStream::Close()
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "CInputStream::Close - could not close stream. Reason: %s", e.what());
+  }
+
+  if (!m_bIsChild)
+  {
+    CSingleLock lock(m_parentSection);
+    auto it = m_configMap.find(ID());
+    if (it != m_configMap.end())
+      it->second.m_parentBusy = false;
   }
 }
 

@@ -32,7 +32,7 @@ class CInputStreamAddon :
 {
 public:
   //! \brief constructor
-  CInputStreamAddon(const CFileItem& fileitem, ADDON::CInputStream *inputStream);
+  CInputStreamAddon(const CFileItem& fileitem, std::shared_ptr<ADDON::CInputStream> inputStream);
 
   //! \brief Destructor.
   virtual ~CInputStreamAddon();
@@ -86,7 +86,7 @@ public:
   virtual void SetVideoResolution(int width, int height) override;
 
 protected:
-  ADDON::CInputStream *m_addon;
+  std::shared_ptr<ADDON::CInputStream> m_addon;
   bool m_hasDemux;
   bool m_hasDisplayTime;
   bool m_hasPosTime;

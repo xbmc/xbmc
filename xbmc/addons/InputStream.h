@@ -47,6 +47,7 @@ namespace ADDON
 
     virtual void SaveSettings() override;
 
+    bool UseParent();
     bool Supports(const CFileItem &fileitem);
     bool Open(CFileItem &fileitem);
     void Close();
@@ -101,6 +102,7 @@ namespace ADDON
     struct Config
     {
       std::vector<std::string> m_pathList;
+      bool m_parentBusy;
     };
     static std::map<std::string, Config> m_configMap;
   };
