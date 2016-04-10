@@ -212,7 +212,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
   if (item->IsPath("addons://search/"))
     return Update(item->GetPath());
 
-  return CGUIMediaWindow::OnClick(iItem);
+  return CGUIMediaWindow::OnClick(iItem, player);
 }
 
 void CGUIWindowAddonBrowser::UpdateButtons()
