@@ -1139,7 +1139,7 @@ void CPVRClients::UpdateAddons(void)
   VECADDONS addons;
   PVR_CLIENT addon;
 
-  CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL);
+  CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_PVRDLL);
 
   if (addons.empty())
     return;
