@@ -12690,11 +12690,11 @@ msgid "Root filesystem"
 msgstr ""
 
 msgctxt "#21454"
-msgid "Cache full"
+msgid "Source too slow"
 msgstr ""
 
 msgctxt "#21455"
-msgid "Cache filled before reaching required amount for continuous playback"
+msgid "Read rate too low for continuous playback"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
