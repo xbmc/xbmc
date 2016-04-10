@@ -620,10 +620,6 @@ namespace XBMCAddon
         property = StringUtils::Format("contextmenuaction(%i)", itemCount);
         item->SetProperty(property, uAction);
       }
-
-      // set our replaceItems status
-      if (replaceItems)
-        item->SetProperty("pluginreplacecontextitems", replaceItems);
     } // end addContextMenuItems
 
     void ListItem::setSubtitles(const std::vector<String>& paths)
