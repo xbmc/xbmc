@@ -23,8 +23,6 @@
 #include <cassert>
 #include <utility>
 
-#include "addons/AddonInstaller.h"
-#include "addons/AddonSystemSettings.h"
 #include "Application.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -263,89 +261,6 @@ bool CPVRManager::IsPVRWindow(int windowId)
           windowId == WINDOW_RADIO_TIMER_RULES);
 }
 
-bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
-{
-  return !IsStarted() ||
-      !m_addons->IsInUse(strAddonId) ||
-      (!IsPVRWindowActive() && !IsPlaying());
-}
-
-void CPVRManager::MarkAsOutdated(const std::string& strAddonId)
-{
-  if (IsStarted() && CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON)
-  {
-    CSingleLock lock(m_critSection);
-    m_outdatedAddons.push_back(strAddonId);
-  }
-}
-
-bool CPVRManager::UpgradeOutdatedAddons(void)
-{
-  CSingleLock lock(m_critSection);
-  if (m_outdatedAddons.empty())
-    return true;
-
-  // there's add-ons that couldn't be updated
-  for (auto it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); ++it)
-  {
-    if (!InstallAddonAllowed(*it))
-    {
-      // we can't upgrade right now
-      return true;
-    }
-  }
-
-  // all outdated add-ons can be upgraded now
-  CLog::Log(LOGINFO, "PVR - upgrading outdated add-ons");
-
-  auto outdatedAddons = m_outdatedAddons;
-  // stop threads and unload
-  SetState(ManagerStateInterrupted);
-
-  {
-    CSingleExit exit(m_critSection);
-    g_EpgContainer.Stop();
-  }
-
-  m_guiInfo->Stop();
-  Cleanup();
-
-  // upgrade all add-ons
-  for (auto it = outdatedAddons.begin(); it != outdatedAddons.end(); ++it)
-  {
-    CLog::Log(LOGINFO, "PVR - updating add-on '%s'", (*it).c_str());
-    CAddonInstaller::GetInstance().InstallOrUpdate(*it, false);
-  }
-
-  // reload
-  CLog::Log(LOGINFO, "PVRManager - %s - restarting the PVR manager", __FUNCTION__);
-  SetState(ManagerStateStarting);
-  ResetProperties();
-
-  const unsigned int MAX_PROGRESS_DISPLAY_TIME = 30000; // 30 secs
-  XbmcThreads::EndTime progressTimeout(MAX_PROGRESS_DISPLAY_TIME);
-  while (!Load(!progressTimeout.IsTimePast()) && IsInitialising())
-  {
-    CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
-    Sleep(1000);
-  }
-
-  if (IsInitialising())
-  {
-    SetState(ManagerStateStarted);
-
-    {
-      CSingleExit exit(m_critSection);
-      g_EpgContainer.Start(true);
-    }
-
-    CLog::Log(LOGDEBUG, "PVRManager - %s - restarted", __FUNCTION__);
-    return true;
-  }
-
-  return false;
-}
-
 void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
@@ -360,7 +275,6 @@ void CPVRManager::Cleanup(void)
 
   m_currentFile           = NULL;
   m_bIsSwitchingChannels  = false;
-  m_outdatedAddons.clear();
   m_bEpgsCreated = false;
 
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
@@ -544,12 +458,7 @@ void CPVRManager::Process(void)
       bRestart = true;
     }
 
-    if (!UpgradeOutdatedAddons())
-    {
-      // failed to load after upgrading
-      CLog::Log(LOGERROR, "PVRManager - %s - could not load pvr data after upgrading. stopping the pvrmanager", __FUNCTION__);
-    }
-    else if (IsStarted() && !bRestart)
+    if (IsStarted() && !bRestart)
       m_triggerEvent.WaitMSec(1000);
   }
 

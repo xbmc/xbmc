@@ -182,24 +182,6 @@ private:
     static bool IsPVRWindow(int windowId);
 
     /*!
-     * @brief Check whether an add-on can be upgraded or installed without restarting the pvr manager, when the add-on is in use or the pvr window is active
-     * @param strAddonId The add-on to check.
-     * @return True when the add-on can be installed, false otherwise.
-     */
-    bool InstallAddonAllowed(const std::string& strAddonId) const;
-
-    /*!
-     * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
-     * @param strAddonId The add-on to mark as outdated
-     */
-    void MarkAsOutdated(const std::string& strAddonId);
-
-    /*!
-     * @return True when updated, false when the pvr manager failed to load after the attempt
-     */
-    bool UpgradeOutdatedAddons(void);
-
-    /*!
      * @brief Get the TV database.
      * @return The TV database.
      */
@@ -683,7 +665,6 @@ private:
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     std::unique_ptr<CStopWatch>     m_parentalTimer;
-    std::vector<std::string>        m_outdatedAddons;
     static const int                m_pvrWindowIds[12];
   };
 
