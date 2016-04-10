@@ -850,11 +850,12 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       mDisplayField = FS_BOT;
   }
 
+  int timeToDisplay = DVD_TIME_TO_MSEC(pts - iPlayingClock);
   // make sure waiting time is not negative
-  int maxWaitTime = 500;
+  int maxWaitTime = std::max(timeToDisplay + 500, 50);
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
-    maxWaitTime = 0;
+    maxWaitTime = std::max(timeToDisplay, 0);
   int buffer = m_renderManager.WaitForBuffer(m_bAbortOutput, maxWaitTime);
   if (buffer < 0)
   {
