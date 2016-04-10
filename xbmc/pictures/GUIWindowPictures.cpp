@@ -285,7 +285,7 @@ bool CGUIWindowPictures::OnClick(int iItem, const std::string &player)
     OnShowPictureRecursive(pathToUrl.Get());
     return true;
   }
-  else if (CGUIMediaWindow::OnClick(iItem))
+  else if (CGUIMediaWindow::OnClick(iItem, player))
     return true;
 
   return false;
