@@ -21,6 +21,8 @@
 
 #include "WinSystemWin32DX.h"
 #include "guilib/gui3d.h"
+#include "guilib/GraphicContext.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
@@ -129,20 +131,31 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
       keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
   }
 
-  // to disable stereo mode in windowed mode we must recreate swapchain and then change display mode
+  // most 3D content has 23.976fps, so switch for this mode
+  if (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
+    res = CDisplaySettings::GetInstance().GetResolutionInfo(CResolutionUtils::ChooseBestResolution(24.f / 1.001f, res.iWidth, true));
+
   // so this flags delays call SetFullScreen _after_ resetting render system
-  bool delaySetFS = CRenderSystemDX::m_bHWStereoEnabled && UseWindowedDX(fullScreen);
+  bool delaySetFS = CRenderSystemDX::m_bHWStereoEnabled;
   if (!delaySetFS)
     CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
 
   // this needed to prevent resize/move events from DXGI during changing mode
   CWinSystemWin32::m_IsAlteringWindow = true;
   CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
-  CWinSystemWin32::m_IsAlteringWindow = false;
 
   if (delaySetFS)
+  {
     // now resize window and force changing resolution if stereo mode disabled
-    CWinSystemWin32::SetFullScreenEx(fullScreen, res, blankOtherDisplays, !CRenderSystemDX::m_bHWStereoEnabled);
+    if (UseWindowedDX(fullScreen))
+      CWinSystemWin32::SetFullScreenEx(fullScreen, res, blankOtherDisplays, !CRenderSystemDX::m_bHWStereoEnabled);
+    else
+    {
+      CRenderSystemDX::SetFullScreenInternal();
+      CRenderSystemDX::CreateWindowSizeDependentResources();
+    }
+  }
+  CWinSystemWin32::m_IsAlteringWindow = false;
 
   return true;
 }
