@@ -123,6 +123,8 @@ namespace XFILE
           bool            m_bFirstLoop;
           bool            m_isPaused;
           bool            m_sendRange;
+          bool            m_bLastError;
+          bool            m_bRetry;
 
           char*           m_readBuffer;
 
@@ -139,9 +141,9 @@ namespace XFILE
           size_t HeaderCallback(void *ptr, size_t size, size_t nmemb);
 
           bool         Seek(int64_t pos);
-          unsigned int Read(void* lpBuf, size_t uiBufSize);
+          ssize_t      Read(void* lpBuf, size_t uiBufSize);
           bool         ReadString(char *szLine, int iLineLength);
-          bool         FillBuffer(unsigned int want);
+          int8_t       FillBuffer(unsigned int want);
           void         SetReadBuffer(const void* lpBuf, int64_t uiBufSize);
 
           void         SetResume(void);
@@ -193,6 +195,7 @@ namespace XFILE
       bool            m_multisession;
       bool            m_skipshout;
       bool            m_postdataset;
+      bool            m_allowRetry;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
