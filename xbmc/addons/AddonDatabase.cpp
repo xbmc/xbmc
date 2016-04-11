@@ -244,7 +244,11 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::
           "VALUES('%s', 0, '%s')", id.c_str(), now.c_str()));
 
     for (const auto& id : removed)
+    {
       m_pDS->exec(PrepareSQL("DELETE FROM installed WHERE addonID='%s'", id.c_str()));
+      RemoveAddonFromBlacklist(id);
+      DeleteRepository(id);
+    }
 
     for (const auto& id : enabled)
       m_pDS->exec(PrepareSQL("UPDATE installed SET enabled=1 WHERE addonID='%s'", id.c_str()));
