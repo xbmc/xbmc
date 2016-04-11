@@ -28,5 +28,5 @@ list(APPEND final_message "Includedir: ${includedir}")
 list(APPEND final_message "Datarootdir: ${datarootdir}")
 list(APPEND final_message "Datadir: ${datadir}")
 
-set(PATH_DEFINES -DBIN_INSTALL_PATH=\"${libdir}/xbmc\"
-                   -DINSTALL_PATH=\"${datarootdir}/xbmc\")
+set(PATH_DEFINES -DBIN_INSTALL_PATH=\"${libdir}/kodi\"
+                   -DINSTALL_PATH=\"${datarootdir}/kodi\")
