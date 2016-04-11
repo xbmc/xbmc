@@ -1362,7 +1362,7 @@ void CRenderManager::DiscardBuffer()
 bool CRenderManager::GetStats(double &sleeptime, double &pts, int &queued, int &discard)
 {
   CSingleLock lock(m_presentlock);
-  sleeptime = DVD_TIME_TO_SEC(m_sleeptime);
+  sleeptime = m_sleeptime;
   pts = m_presentpts;
   queued = m_queued.size();
   discard  = m_discard.size();
