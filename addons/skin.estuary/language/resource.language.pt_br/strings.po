@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Agora reproduzindo"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Buscar..."
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Mostrar fanart de mídia como imagem de fundo."
@@ -43,6 +47,10 @@ msgstr "Filmes randômicos"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Filmes por assistir"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Sem Aviso"
 
 msgctxt "#31009"
 msgid "Download icons"

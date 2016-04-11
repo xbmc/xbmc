@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Nu afspelend"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Zoeken..."
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Toon media fanart als achtergrond"

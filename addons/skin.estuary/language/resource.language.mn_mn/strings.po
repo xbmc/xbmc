@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Одоо тоглуулж байгаа"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Хайх..."
+
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "бусад тохиргоонууд"

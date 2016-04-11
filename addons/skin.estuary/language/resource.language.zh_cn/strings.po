@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "正在播放"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "查找..."
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "显示媒体同人画为背景"
@@ -43,6 +47,10 @@ msgstr "随机电影"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "未观看电影"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "无免责声明"
 
 msgctxt "#31009"
 msgid "Download icons"

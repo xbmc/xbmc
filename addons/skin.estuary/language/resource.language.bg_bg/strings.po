@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Сега се възпроизвежда"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Търсене"
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Ползвай за фон фен-арт изображенията"
@@ -240,6 +244,10 @@ msgctxt "#31067"
 msgid "Event log"
 msgstr "Журнал за събития"
 
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Избор на шаблон"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Последно обновяване"
@@ -283,6 +291,10 @@ msgstr "Инф. за албума"
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Добавка за лирики"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Настройки на лириките"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -410,7 +422,7 @@ msgstr "Негледани ТВ Сериали"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr "От същия режисьор"
+msgstr "Още от режисьора"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
@@ -419,3 +431,11 @@ msgstr "Натиснете [B]Нагоре[/B] за информация за а
 msgctxt "#31126"
 msgid "Press OK to read plot"
 msgstr "Натиснете [B]ОК[/B] за да прочетете сюжета"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Основни настройки, прилагани из всяка част на облика."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Настройки свързани с началния екран."

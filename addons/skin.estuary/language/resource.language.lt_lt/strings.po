@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Dabar atkuriama"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Paieška ..."
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Rodyti media įrašo Fanart fone"
@@ -43,6 +47,10 @@ msgstr "Atsitiktiniai filmai"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Neperžiūrėti filmai"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Nėra atsakomybės apribojimo"
 
 msgctxt "#31009"
 msgid "Download icons"

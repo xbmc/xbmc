@@ -16,6 +16,10 @@ msgstr ""
 "Language: mk_MK\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Барај..."
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Измени начин"

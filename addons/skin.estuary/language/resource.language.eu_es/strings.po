@@ -16,6 +16,10 @@ msgstr ""
 "Language: eu_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Bilatu..."
+
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Ikusi 2D bezala"

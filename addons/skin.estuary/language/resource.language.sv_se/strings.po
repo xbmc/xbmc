@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Spelas nu"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Sök..."
+
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Bio-läge"

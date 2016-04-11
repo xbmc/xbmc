@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Reproduciendo ahora"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Buscar..."
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Cambiar modo"
@@ -119,3 +123,7 @@ msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Mays."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletexto"

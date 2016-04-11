@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Сада пуштено"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Претрага..."
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Прикажи слике љубитеља као позадину"

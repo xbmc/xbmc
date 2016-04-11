@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Most játszott"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Keresés…"
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Médiaillusztrációk megjelenítése a háttérben"
@@ -43,6 +47,10 @@ msgstr "Véletlenszerű filmek"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Nem látott filmek"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Nincs jogi nyilatkozat"
 
 msgctxt "#31009"
 msgid "Download icons"

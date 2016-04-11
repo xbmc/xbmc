@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Přehrává se"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Hledat..."
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Zobrazit fanart médií jako pozadí"
@@ -43,6 +47,10 @@ msgstr "Náhodné filmy"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Neshlédnuté filmy"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Žádné podmínky"
 
 msgctxt "#31009"
 msgid "Download icons"

@@ -20,6 +20,18 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "지금 재생 중"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "찾기..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "미디어 팬아트를 배경화면으로 표시"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "시네마 모드"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "모드 변경"
@@ -27,6 +39,54 @@ msgstr "모드 변경"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "2D로 감상"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "무작위 영화"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "시청하지 않은 영화"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "다운로드 아이콘"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "감상 중인 영화"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "많이 재생한 앨범"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "무작위 앨범"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "무작위 아티스트"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "재생하지 않은 앨범"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "최근 녹화"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "최근 시청한 채널"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "등급"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "많이 시청한 채널"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -40,9 +100,57 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "기타 옵션"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "정렬 기준"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "보기 형식"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "다음 트랙"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "앨범으로 가기"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "노래로 가기"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "팬아트 표시"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "마지막 로그인"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "사용 메모리"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "버전 정보"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "순서"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "내 평점"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "페이지"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "항목"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -51,6 +159,14 @@ msgstr "되감기"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "빨리감기"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "업데이트 취소"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "카메라 제조사"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -68,17 +184,97 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "그룹 삭제"
 
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "언어 전환"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial based"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "자막 다운로드"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "재생목록 가기"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "시작할 때 로그인 화면 표시"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "시작할 때 자동 로그인"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "업데이트 사용가능"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "분"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "메인 메뉴 항목"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "미시청"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "비디오 재생목록"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "음악 재생목록"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "이벤트 로그"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "프리셋 선택"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "마지막 업데이트"
 
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "미디어 소스 추가"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "전원 옵션"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "제목"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "시리즈 영화"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "광학 디스크 재생"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "이전 위치"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "다음 위치"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "종료:"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -88,9 +284,25 @@ msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "가사 애드온"
 
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "가사 애드온 설정"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "시각화 설정"
+
 msgctxt "#31085"
 msgid "Channel Group"
 msgstr "채널 그룹"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "메타데이터"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "제공자 설정"
 
 msgctxt "#31088"
 msgid "Content scanning options"
@@ -100,9 +312,21 @@ msgctxt "#31089"
 msgid "Available groups"
 msgstr "사용 가능한 그룹"
 
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "예고편 찾기"
+
 msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "자막 다운로드"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "비디오 메뉴"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "슬라이드 애니메이션 사용"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -119,3 +343,43 @@ msgstr "로그인할 Kodi 사용자 프로파일을[CR]선택하고 계속하세
 msgctxt "#31100"
 msgid "Shift"
 msgstr "시프트"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "이미지 경로 선택"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "오디오 스트림 전환"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "로컬 라이브러리 찾기"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "YouTube 찾기"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "TheMovieDB 찾기"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "애드온 탐색기 들어가기"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "날씨 제공자 선택"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "시청하지 않은 TV 쇼"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "지도에 이미지 표시"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "아이콘 표시"

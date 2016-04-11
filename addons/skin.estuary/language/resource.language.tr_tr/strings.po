@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Now playing"
 msgstr "Şimdi oynatılıyor"
 
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Ara..."
+
 msgctxt "#31002"
 msgid "Show media fanart as background"
 msgstr "Ortam fanartını arka plan olarak göster"
@@ -43,6 +47,10 @@ msgstr "Rastgele filmler"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "İzlenmemiş filmler"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Yasal uyarı yok"
 
 msgctxt "#31009"
 msgid "Download icons"
