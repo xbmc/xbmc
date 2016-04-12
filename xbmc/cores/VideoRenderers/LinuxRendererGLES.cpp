@@ -1342,7 +1342,10 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
 void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*/)
 {
-  YUVPLANES &planesf = m_buffers[index].fields[field];
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANES &planes = fields[FIELD_FULL];
+  YUVPLANES &planesf = fields[field];
 
   if (m_reloadShaders)
   {
@@ -1355,19 +1358,19 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   // Y
   glEnable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, planesf[0].id);
+  glBindTexture(m_textureTarget, planes[0].id);
   VerifyGLState();
 
   // U
   glActiveTexture(GL_TEXTURE1);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, planesf[1].id);
+  glBindTexture(m_textureTarget, planes[1].id);
   VerifyGLState();
 
   // V
   glActiveTexture(GL_TEXTURE2);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, planesf[2].id);
+  glBindTexture(m_textureTarget, planes[2].id);
   VerifyGLState();
 
   glActiveTexture(GL_TEXTURE0);
@@ -1384,15 +1387,15 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   m_fbo.fbo.BeginRender();
   VerifyGLState();
 
-  m_fbo.width  = planesf[0].rect.x2 - planesf[0].rect.x1;
-  m_fbo.height = planesf[0].rect.y2 - planesf[0].rect.y1;
+  m_fbo.width  = planes[0].rect.x2 - planes[0].rect.x1;
+  m_fbo.height = planes[0].rect.y2 - planes[0].rect.y1;
   if (m_textureTarget == GL_TEXTURE_2D)
   {
-    m_fbo.width  *= planesf[0].texwidth;
-    m_fbo.height *= planesf[0].texheight;
+    m_fbo.width  *= planes[0].texwidth;
+    m_fbo.height *= planes[0].texheight;
   }
-  m_fbo.width  *= planesf[0].pixpertex_x;
-  m_fbo.height *= planesf[0].pixpertex_y;
+  m_fbo.width  *= planes[0].pixpertex_x;
+  m_fbo.height *= planes[0].pixpertex_y;
   if (weave)
     m_fbo.height *= 2;
 
