@@ -5,3 +5,4 @@ set(HEADERS ApplicationMessenger.h
             ThreadMessage.h)
 
 core_add_library(messaging)
+add_dependencies(messaging libcpluff)
