@@ -934,7 +934,7 @@ double CVideoPlayerVideo::GetCurrentPts()
     return DVD_NOPTS_VALUE;
   else if (m_speed == DVD_PLAYSPEED_NORMAL)
   {
-    iRenderPts -= std::max(0.0, DVD_SEC_TO_TIME(iSleepTime));
+    iRenderPts -= std::max(0.0, iSleepTime);
 
     if (iRenderPts < 0)
       iRenderPts = 0;
@@ -1065,7 +1065,7 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
   {
     if (iSkippedPicture > 0)
     {
-      iGain = iSkippedPicture*interval/(double)DVD_TIME_BASE;
+      iGain = iSkippedPicture*interval;
       CDroppingStats::CGain gain;
       gain.gain = iGain;
       gain.pts = iDecoderPts;
@@ -1074,11 +1074,11 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
       result |= EOS_DROPPED;
       m_droppingStats.m_dropRequests = 0;
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - dropped pictures, Sleeptime: %f, Bufferlevel: %d, Gain: %f", iSleepTime, iBufferLevel, iGain);
+        CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - dropped pictures, Sleeptime: %d, Bufferlevel: %d, Gain: %d", DVD_TIME_TO_MSEC(iSleepTime), iBufferLevel, DVD_TIME_TO_MSEC(iGain));
     }
     if (iDroppedFrames > 0)
     {
-      iGain = iDroppedFrames*interval/(double)DVD_TIME_BASE;
+      iGain = iDroppedFrames*interval;
       CDroppingStats::CGain gain;
       gain.gain = iGain;
       gain.pts = iDecoderPts;
@@ -1087,7 +1087,7 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
       result |= EOS_DROPPED;
       m_droppingStats.m_dropRequests = 0;
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - dropped in decoder, Sleeptime: %f, Bufferlevel: %d, Gain: %f", iSleepTime, iBufferLevel, iGain);
+        CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - dropped in decoder, Sleeptime: %d, Bufferlevel: %d, Gain: %d", DVD_TIME_TO_MSEC(iSleepTime), iBufferLevel, DVD_TIME_TO_MSEC(iGain));
     }
   }
 
