@@ -301,7 +301,7 @@ void CPeripheralBus::GetDirectory(const std::string &strPath, CFileItemList &ite
       strDetails = StringUtils::Format("%s: %s", g_localizeStrings.Get(126).c_str(), g_localizeStrings.Get(13106).c_str());
 
     peripheralFile->SetProperty("version", strVersion);
-    peripheralFile->SetProperty("Addon.Summary", strDetails);
+    peripheralFile->SetLabel2(strDetails);
     peripheralFile->SetIconImage("DefaultAddon.png");
     items.Add(peripheralFile);
   }

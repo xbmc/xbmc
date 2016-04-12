@@ -656,8 +656,6 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   //TODO: fix hacks that depends on these
   item->SetProperty("Addon.ID", addon->ID());
   item->SetProperty("Addon.Name", addon->Name());
-  item->SetProperty("Addon.Version", addon->Version().asString());
-  item->SetProperty("Addon.Summary", addon->Summary());
   const auto it = addon->ExtraInfo().find("language");
   if (it != addon->ExtraInfo().end())
     item->SetProperty("Addon.Language", it->second);

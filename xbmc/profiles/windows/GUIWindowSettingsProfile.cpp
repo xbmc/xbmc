@@ -251,7 +251,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
     const CProfile *profile = CProfilesManager::GetInstance().GetProfile(i);
     std::string locked = g_localizeStrings.Get(profile->getLockMode() > 0 ? 20166 : 20165);
     CFileItemPtr item(new CFileItem(profile->getName()));
-    item->SetProperty("Addon.Summary", locked); // lock setting
+    item->SetLabel2(locked); // lock setting
     std::string thumb = profile->getThumb();
     if (thumb.empty())
       thumb = "DefaultUser.png";
@@ -261,6 +261,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
 
   dialog->SetHeading(CVariant{20093}); // Profile name
   dialog->Reset();
+  dialog->SetUseDetails(true);
   dialog->SetItems(items);
   dialog->SetSelected(autoLoginProfileId);
   dialog->Open();
