@@ -3002,11 +3002,6 @@ bool CVideoPlayer::CanSeek()
 
 void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
-  if( m_playSpeed == DVD_PLAYSPEED_PAUSE && bPlus && !bLargeStep)
-  {
-    if (m_VideoPlayerVideo->StepFrame())
-      return;
-  }
   if (!m_State.canseek)
     return;
 
