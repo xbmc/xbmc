@@ -5,3 +5,4 @@ set(HEADERS Profile.h
             ProfilesManager.h)
 
 core_add_library(profiles)
+add_dependencies(profiles libcpluff)

@@ -18,3 +18,4 @@ set(HEADERS DefaultJoystick.h
             KeymapHandler.h)
 
 core_add_library(input_joystick)
+add_dependencies(input_joystick libcpluff)

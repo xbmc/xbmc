@@ -15,3 +15,4 @@ set(HEADERS GLContext.h
             XRandR.h)
 
 core_add_library(windowing_X11)
+add_dependencies(windowing_X11 libcpluff)
