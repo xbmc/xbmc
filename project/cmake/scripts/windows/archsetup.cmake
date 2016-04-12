@@ -29,13 +29,7 @@ set(SYSTEM_DEFINES -DNOMINMAX -D_USE_32BIT_TIME_T -DHAS_DX -D__STDC_CONSTANT_MAC
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DBUILDING_WITH_CMAKE
-                   $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO -D_SECURE_SCL=0>)
-
-# Compile with /MT (to be compatible with the dependent libraries)
-foreach(CompilerFlag CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-                     CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-endforeach()
+                   $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO -D_ITERATOR_DEBUG_LEVEL=0>)
 
 # Make sure /FS is set for Visual Studio in order to prevent simultanious access to pdb files.
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
@@ -57,8 +51,8 @@ list(APPEND DEPLIBS d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.
                     PowrProf.lib setupapi.lib dwmapi.lib yajl.lib dxguid.lib DelayImp.lib)
 
 # NODEFAULTLIB option
-set(_nodefaultlibs_RELEASE libc msvcrt libci msvcprt)
-set(_nodefaultlibs_DEBUG libcpmt libc msvcrt libcmt msvcrtd msvcprtd)
+set(_nodefaultlibs_RELEASE libcmt)
+set(_nodefaultlibs_DEBUG libcmt msvcrt)
 foreach(_lib ${_nodefaultlibs_RELEASE})
   set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:\"${_lib}\"")
 endforeach()
@@ -67,7 +61,7 @@ foreach(_lib ${_nodefaultlibs_DEBUG})
 endforeach()
 
 # DELAYLOAD option
-set(_delayloadlibs libxslt.dll dnssd.dll dwmapi.dll ssh.dll sqlite3.dll
+set(_delayloadlibs zlib.dll libmysql.dll libxslt.dll dnssd.dll dwmapi.dll ssh.dll sqlite3.dll
                    avcodec-57.dll avfilter-6.dll avformat-57.dll avutil-55.dll
                    postproc-54.dll swresample-2.dll swscale-4.dll d3dcompiler_47.dll)
 foreach(_lib ${_delayloadlibs})

@@ -554,3 +554,5 @@ system/python27.dll
 system/zlib.dll
 lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
 lib/addons/library.kodi.inputstream/project/VS2010Express/Release
+/project/VS2010Express/XBMC for Windows.VC.db
+/project/VS2010Express/XBMC for Windows.VC.VC.opendb
