@@ -228,11 +228,6 @@ bool CVideoPlayerVideo::AcceptsData() const
   return !full;
 }
 
-void CVideoPlayerVideo::OnStartup()
-{
-  m_iDroppedFrames = 0;
-}
-
 void CVideoPlayerVideo::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: video_thread");
@@ -248,6 +243,7 @@ void CVideoPlayerVideo::Process()
 
   m_videoStats.Start();
   m_droppingStats.Reset();
+  m_iDroppedFrames = 0;
 
   while (!m_bStop)
   {
@@ -411,7 +407,6 @@ void CVideoPlayerVideo::Process()
       {
         if (m_bAllowDrop)
         {
-          m_pullupCorrection.Flush();
           bRequestDrop = true;
         }
       }
@@ -429,6 +424,7 @@ void CVideoPlayerVideo::Process()
       {
         m_iDroppedFrames++;
         iDropped++;
+        m_pullupCorrection.Flush();
       }
 
       if (m_messageQueue.GetDataSize() == 0
@@ -627,7 +623,10 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
       }
 
       if ((iResult & EOS_DROPPED) && !(m_picture.iFlags & DVP_FLAG_DROPPED))
+      {
         m_iDroppedFrames++;
+        m_pullupCorrection.Flush();
+      }
     }
     else
     {
@@ -1101,13 +1100,14 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
 
   // calculate lateness
   iLateness = iSleepTime + m_droppingStats.m_totalGain;
+
   if (iLateness < 0 && m_speed)
   {
     m_droppingStats.m_lateFrames++;
 
     // if lateness is smaller than frametime, we observe this state
     // for 10 cycles
-    if (m_droppingStats.m_lateFrames > 10 || iLateness < -2/m_fFrameRate)
+    if (m_droppingStats.m_lateFrames > 10 || iLateness < -2*DVD_TIME_BASE/m_fFrameRate)
     {
       result |= EOS_VERYLATE;
       m_droppingStats.m_dropRequests++;

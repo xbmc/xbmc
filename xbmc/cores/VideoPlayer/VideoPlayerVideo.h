@@ -101,7 +101,6 @@ public:
 
 protected:
 
-  virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
   bool ProcessDecoderOutput(int &decoderState, double &frametime, double &pts);
