@@ -75,9 +75,6 @@ protected:
    \param thumb the skin image to use as the icon
    */
   void AddAddonsSource(const std::string &content, const std::string &label, const std::string& thumb);
-#if defined(TARGET_ANDROID)
-  void AddAndroidSource(const std::string &content, const std::string &label, const std::string& thumb);
-#endif
   void AddLiveTVSources();
 
   /*! \brief Add the sort order defined in a smartplaylist
