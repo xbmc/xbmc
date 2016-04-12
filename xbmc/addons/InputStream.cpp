@@ -27,8 +27,7 @@
 namespace ADDON
 {
 
-bool CInputStream::m_hasConfig = false;
-std::vector<std::string> CInputStream::m_pathList;
+std::map<std::string, CInputStream::Config> CInputStream::m_configMap;
 CCriticalSection CInputStream::m_parentSection;
 
 std::unique_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, const cp_extension_t* ext)
@@ -58,7 +57,15 @@ CInputStream::CInputStream(AddonProps props, std::string name, std::string listi
     StringUtils::Trim(ext);
   }
 
-  if (!m_bIsChild && !m_hasConfig)
+  bool hasConfig = false;
+
+  {
+    CSingleLock lock(m_parentSection);
+    auto it = m_configMap.find(ID());
+    hasConfig = it != m_configMap.end();
+  }
+
+  if (!m_bIsChild && !hasConfig)
     UpdateConfig();
 }
 
@@ -83,13 +90,35 @@ void CInputStream::UpdateConfig()
   }
   Destroy();
 
-  CSingleLock lock(m_parentSection);
-  m_pathList = StringUtils::Tokenize(pathList, "|");
-  for (auto &path : m_pathList)
+  Config config;
+  config.m_pathList = StringUtils::Tokenize(pathList, "|");
+  for (auto &path : config.m_pathList)
   {
     StringUtils::Trim(path);
   }
-  m_hasConfig = true;
+
+  CSingleLock lock(m_parentSection);
+  auto it = m_configMap.find(ID());
+  if (it == m_configMap.end())
+    config.m_parentBusy = false;
+  else
+    config.m_parentBusy = it->second.m_parentBusy;
+
+  m_configMap[ID()] = config;
+}
+
+bool CInputStream::UseParent()
+{
+  CSingleLock lock(m_parentSection);
+
+  auto it = m_configMap.find(ID());
+  if (it == m_configMap.end())
+    return false;
+  if (it->second.m_parentBusy)
+    return false;
+
+  it->second.m_parentBusy = true;
+  return true;
 }
 
 bool CInputStream::Supports(const CFileItem &fileitem)
@@ -106,9 +135,12 @@ bool CInputStream::Supports(const CFileItem &fileitem)
 
   // check paths
   CSingleLock lock(m_parentSection);
+  auto it = m_configMap.find(ID());
+  if (it == m_configMap.end())
+    return false;
 
   bool match = false;
-  for (auto &path : m_pathList)
+  for (auto &path : it->second.m_pathList)
   {
     if (path.empty())
       continue;
@@ -175,6 +207,14 @@ void CInputStream::Close()
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "CInputStream::Close - could not close stream. Reason: %s", e.what());
+  }
+
+  if (!m_bIsChild)
+  {
+    CSingleLock lock(m_parentSection);
+    auto it = m_configMap.find(ID());
+    if (it != m_configMap.end())
+      it->second.m_parentBusy = false;
   }
 }
 
