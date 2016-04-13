@@ -76,15 +76,16 @@ JSONRPC_STATUS CGUIOperations::ShowNotification(const std::string &method, ITran
   std::string title = parameterObject["title"].asString();
   std::string message = parameterObject["message"].asString();
   unsigned int displaytime = (unsigned int)parameterObject["displaytime"].asUnsignedInteger();
+  bool withsound = (bool)parameterObject["withsound"].asBoolean();
 
   if (image.compare("info") == 0)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, title, message, displaytime);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, title, message, displaytime, withsound);
   else if (image.compare("warning") == 0)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, title, message, displaytime);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, title, message, displaytime, withsound);
   else if (image.compare("error") == 0)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, title, message, displaytime);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, title, message, displaytime, withsound);
   else
-    CGUIDialogKaiToast::QueueNotification(image, title, message, displaytime);
+    CGUIDialogKaiToast::QueueNotification(image, title, message, displaytime, withsound);
 
   return ACK;
 }

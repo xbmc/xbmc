@@ -1751,7 +1751,8 @@
           { "type": "string", "required": true }
         ], "default": ""
       },
-      { "name": "displaytime", "type": "integer", "minimum": 1500, "default": 5000, "description": "The time in milliseconds the notification will be visible" }
+      { "name": "displaytime", "type": "integer", "minimum": 1000, "default": 5000, "description": "The time in milliseconds the notification will be visible" },
+      { "name": "withsound", "type": "boolean", "default": true, "description": "Whether or not to play a sound with the notification" }
     ],
     "returns": "string"
   },
