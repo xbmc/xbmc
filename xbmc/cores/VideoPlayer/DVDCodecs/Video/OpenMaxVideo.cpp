@@ -26,6 +26,9 @@
 
 #include "OpenMaxVideo.h"
 
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "windowing/WindowingFactory.h"
