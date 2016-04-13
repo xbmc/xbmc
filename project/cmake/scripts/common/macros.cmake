@@ -319,6 +319,9 @@ macro(today RESULT)
 endmacro()
 
 function(core_find_git_rev)
+# this is dead code. It should be version.txt
+# revisit later after some more light reading about cmake's string parsing
+# and filtering.
   if(EXISTS ${CORE_SOURCE_DIR}/VERSION)
     file(STRINGS ${CORE_SOURCE_DIR}/VERSION VERSION_FILE)
     string(SUBSTRING "${VERSION_FILE}" 1 16 GIT_REV)
@@ -329,25 +332,29 @@ function(core_find_git_rev)
                       RESULT_VARIABLE status_code
                       WORKING_DIRECTORY ${CORE_SOURCE_DIR})
       if (NOT status_code)
-        execute_process(COMMAND ${GIT_EXECUTABLE} diff-index --cached --ignore-submodules --quiet HEAD --
+        execute_process(COMMAND ${GIT_EXECUTABLE} diff-index --ignore-submodules --quiet HEAD --
                         RESULT_VARIABLE status_code
                         WORKING_DIRECTORY ${CORE_SOURCE_DIR})
       endif()
-      today(DATE)
-      execute_process(COMMAND ${GIT_EXECUTABLE} --no-pager log --abbrev=7 -n 1
-                                                --pretty=format:"%h-dirty" HEAD
-                      OUTPUT_VARIABLE LOG_UNFORMATTED
+      if (status_code)
+        execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h-dirty" HEAD
+                        OUTPUT_VARIABLE HASH
+                        WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+        string(SUBSTRING ${HASH} 1 13 HASH)
+      else()
+        execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h" HEAD
+                        OUTPUT_VARIABLE HASH
+                        WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+        string(SUBSTRING ${HASH} 1 7 HASH)
+      endif()
+      execute_process(COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:"%cd" --date=short HEAD
+                      OUTPUT_VARIABLE DATE
                       WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-      string(SUBSTRING ${LOG_UNFORMATTED} 1 7 HASH)
+      string(SUBSTRING ${DATE} 1 10 DATE)
     else()
-      execute_process(COMMAND ${GIT_EXECUTABLE} --no-pager log --abbrev=7 -n 1
-                                                --pretty=format:"%h %cd" HEAD
-                      OUTPUT_VARIABLE LOG_UNFORMATTED
-                      WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-      string(SUBSTRING ${LOG_UNFORMATTED} 1 7 HASH)
-      string(SUBSTRING ${LOG_UNFORMATTED} 9 10 DATE)
-      string(REPLACE "-" "" DATE ${DATE})
+    today(DATE)
     endif()
+    string(REPLACE "-" "" DATE ${DATE})
     set(GIT_REV "${DATE}-${HASH}")
   endif()
   if(GIT_REV)
