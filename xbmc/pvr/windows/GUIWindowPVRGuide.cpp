@@ -44,10 +44,9 @@ using namespace EPG;
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_GUIDE : WINDOW_TV_GUIDE, "MyPVRGuide.xml"),
-  m_refreshTimelineItemsThread(new CPVRRefreshTimelineItemsThread(this))
+  m_refreshTimelineItemsThread(new CPVRRefreshTimelineItemsThread(this)),
+  m_cachedChannelGroup(new CPVRChannelGroup)
 {
-  m_cachedTimeline = std::make_shared<CFileItemList>();
-  m_cachedChannelGroup = CPVRChannelGroupPtr(new CPVRChannelGroup);
   m_bRefreshTimelineItems = false;
 }
 
@@ -88,7 +87,7 @@ void CGUIWindowPVRGuide::StartRefreshTimelineItemsThread()
 
 void CGUIWindowPVRGuide::StopRefreshTimelineItemsThread()
 {
-  m_refreshTimelineItemsThread->StopThread();
+  m_refreshTimelineItemsThread->StopThread(false);
 }
 
 void CGUIWindowPVRGuide::RegisterObservers(void)
@@ -503,72 +502,68 @@ bool CGUIWindowPVRGuide::RefreshTimelineItems()
   {
     m_bRefreshTimelineItems = false;
 
-    CPVRChannelGroupPtr group = GetGroup();
-
-    std::shared_ptr<CFileItemList> timeline = std::make_shared<CFileItemList>();
-
-    // can be very expensive. never call with lock aquired.
-    group->GetEPGAll(*timeline, true);
-
+    CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+    if (epgGridContainer)
     {
-      CSingleLock lock(m_critSection);
+      const CPVRChannelGroupPtr group(GetGroup());
+      std::unique_ptr<CFileItemList> timeline(new CFileItemList);
 
-      m_newTimeline = timeline;
-      m_cachedChannelGroup = group;
+      // can be very expensive. never call with lock acquired.
+      group->GetEPGAll(*timeline, true);
+
+      CDateTime startDate(group->GetFirstEPGDate());
+      CDateTime endDate(group->GetLastEPGDate());
+      const CDateTime currentDate(CDateTime::GetCurrentDateTime().GetAsUTCDateTime());
+
+      if (!startDate.IsValid())
+        startDate = currentDate;
+
+      if (!endDate.IsValid() || endDate < startDate)
+        endDate = startDate;
+
+      // limit start to linger time
+      const CDateTime maxPastDate(currentDate - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0));
+      if (startDate < maxPastDate)
+        startDate = maxPastDate;
+
+      // can be very expensive. never call with lock acquired.
+      epgGridContainer->SetTimelineItems(timeline, startDate, endDate);
+
+      {
+        CSingleLock lock(m_critSection);
+
+        m_newTimeline = std::move(timeline);
+        m_cachedChannelGroup = group;
+      }
+      return true;
     }
-
-    return true;
   }
   return false;
 }
 
 void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
 {
-  CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
-  if (!epgGridContainer)
-    return;
+  CSingleLock lock(m_critSection);
 
-  CPVRChannelGroupPtr group;
+  // group change detected reset grid coordinates and refresh grid items
+  if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetGroup())
   {
-    CSingleLock lock(m_critSection);
+    CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+    if (!epgGridContainer)
+      return;
 
-    // group change detected reset grid coordinates and refresh grid items
-    if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetGroup())
-    {
-      epgGridContainer->ResetCoordinates();
-      m_bRefreshTimelineItems = true;
-      RefreshTimelineItems();
-    }
-
-    if (m_newTimeline != nullptr)
-    {
-      m_cachedTimeline = m_newTimeline;
-      m_newTimeline.reset();
-    }
-
-    items.Clear();
-    items.RemoveDiscCache(GetID());
-    items.Assign(*m_cachedTimeline, false);
-
-    group = m_cachedChannelGroup;
+    epgGridContainer->ResetCoordinates();
+    m_bRefreshTimelineItems = true;
+    RefreshTimelineItems();
   }
 
-  CDateTime startDate(group->GetFirstEPGDate());
-  CDateTime endDate(group->GetLastEPGDate());
-  CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
-
-  if (!startDate.IsValid())
-    startDate = currentDate;
-
-  if (!endDate.IsValid() || endDate < startDate)
-    endDate = startDate;
-
-  // limit start to linger time
-  CDateTime maxPastDate = currentDate - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0);
-  if (startDate < maxPastDate)
-    startDate = maxPastDate;
-
-  epgGridContainer->SetStartEnd(startDate, endDate);
+  // Note: no need to do anything if no new data available. items always contains previous data.
+  if (m_newTimeline)
+  {
+    items.RemoveDiscCache(GetID());
+    items.Assign(*m_newTimeline, false);
+    m_newTimeline.reset();
+  }
 }
 
 bool CGUIWindowPVRGuide::OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button)

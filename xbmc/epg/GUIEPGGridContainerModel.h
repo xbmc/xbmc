@@ -47,7 +47,7 @@ namespace EPG
     CGUIEPGGridContainerModel() : m_blocks(0) {}
     virtual ~CGUIEPGGridContainerModel() { Reset(); }
 
-    void Refresh(CFileItemList *items, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
+    void Refresh(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
     void SetInvalid();
 
     void FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int &newChannelIndex, int &newBlockIndex) const;
@@ -78,8 +78,6 @@ namespace EPG
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
     const CDateTime &GetGridStart() const { return m_gridStart; }
     const CDateTime &GetGridEnd() const { return m_gridEnd; }
-    void SetGridStart(const CDateTime &gridStart) { m_gridStart = gridStart; }
-    void SetGridEnd(const CDateTime &gridEnd) { m_gridEnd = gridEnd; }
 
   private:
     void FreeItemsMemory();

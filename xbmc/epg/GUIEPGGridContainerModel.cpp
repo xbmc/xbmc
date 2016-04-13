@@ -60,7 +60,7 @@ void CGUIEPGGridContainerModel::Reset()
   m_epgItemsPtr.clear();
 }
 
-void CGUIEPGGridContainerModel::Refresh(CFileItemList *items, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
+void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
 {
   Reset();
 
@@ -103,11 +103,16 @@ void CGUIEPGGridContainerModel::Refresh(CFileItemList *items, int iRulerUnit, in
   }
 
   /* check for invalid start and end time */
-  if (m_gridStart >= m_gridEnd)
+  if (gridStart >= gridEnd)
   {
     // default to start "now minus 30 minutes" and end "start plus one page".
     m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, 30, 0);
     m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, iBlocksPerPage * MINSPERBLOCK, 0);
+  }
+  else
+  {
+    m_gridStart = CDateTime(gridStart.GetYear(), gridStart.GetMonth(), gridStart.GetDay(), gridStart.GetHour(), gridStart.GetMinute() >= 30 ? 30 : 0, 0);
+    m_gridEnd = CDateTime(gridEnd.GetYear(), gridEnd.GetMonth(), gridEnd.GetDay(), gridEnd.GetHour(), gridEnd.GetMinute() >= 30 ? 30 : 0, 0);
   }
 
   ////////////////////////////////////////////////////////////////////////

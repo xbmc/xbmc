@@ -78,9 +78,8 @@ namespace PVR
     std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
     std::atomic_bool m_bRefreshTimelineItems;
 
-    std::shared_ptr<CFileItemList> m_cachedTimeline;
     CPVRChannelGroupPtr m_cachedChannelGroup;
-    std::shared_ptr<CFileItemList> m_newTimeline;
+    std::unique_ptr<CFileItemList> m_newTimeline;
   };
 
   class CPVRRefreshTimelineItemsThread : public CThread

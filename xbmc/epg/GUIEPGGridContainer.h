@@ -76,7 +76,7 @@ namespace EPG
     void GoToBegin();
     void GoToEnd();
     void GoToNow();
-    void SetStartEnd(CDateTime start, CDateTime end);
+    void SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd);
     void SetChannel(const PVR::CPVRChannelPtr &channel);
     void SetChannel(const std::string &channel);
     void ResetCoordinates();
@@ -140,7 +140,7 @@ namespace EPG
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
   private:
-    void UpdateItems(CFileItemList *items);
+    void UpdateItems();
 
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
 
@@ -189,5 +189,7 @@ namespace EPG
 
     CCriticalSection m_critSection;
     std::shared_ptr<CGUIEPGGridContainerModel> m_gridModel;
+    std::shared_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
+    std::shared_ptr<CGUIEPGGridContainerModel> m_outdatedGridModel;
   };
 }

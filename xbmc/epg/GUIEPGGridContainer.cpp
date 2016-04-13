@@ -147,6 +147,8 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_channelScrollSpeed      = other.m_channelScrollSpeed;
   m_channelScrollOffset     = other.m_channelScrollOffset;
   m_gridModel               = other.m_gridModel;
+  m_updatedGridModel        = other.m_updatedGridModel;
+  m_outdatedGridModel       = other.m_outdatedGridModel;
 }
 
 void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -808,7 +810,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         return true;
 
       case GUI_MSG_LABEL_BIND:
-        UpdateItems(static_cast<CFileItemList *>(message.GetPointer()));
+        UpdateItems();
         return true;
 
       case GUI_MSG_REFRESH_LIST:
@@ -821,12 +823,12 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
+void CGUIEPGGridContainer::UpdateItems()
 {
-  if (!items)
-    return;
-
   CSingleLock lock(m_critSection);
+
+  if (!m_updatedGridModel)
+    return;
 
   /* Safe currently selected epg tag and grid coordinates. Selection shall be restored after update. */
   const CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
@@ -876,9 +878,9 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
   m_lastItem    = nullptr;
   m_lastChannel = nullptr;
 
-  m_gridModel->Refresh(items, m_rulerUnit, m_blocksPerPage, m_blockSize);
-
-  UpdateLayout();
+  // always use asynchronously precalculated grid data.
+  m_outdatedGridModel = std::move(m_gridModel); // destructing grid data can be very expensive, thus this will be done asynchronously, not here.
+  m_gridModel = std::move(m_updatedGridModel);
 
   if (prevSelectedEpgTag)
   {
@@ -1648,13 +1650,36 @@ void CGUIEPGGridContainer::GoToNow()
   SetBlock(PAGE_NOW_OFFSET);
 }
 
-void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
+void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd)
 {
-  m_gridModel->SetGridStart(CDateTime(start.GetYear(), start.GetMonth(), start.GetDay(), start.GetHour(), start.GetMinute() >= 30 ? 30 : 0, 0));
-  m_gridModel->SetGridEnd(CDateTime(end.GetYear(), end.GetMonth(), end.GetDay(), end.GetHour(), end.GetMinute() >= 30 ? 30 : 0, 0));
+  int iRulerUnit;
+  int iBlocksPerPage;
+  float fBlockSize;
+  {
+    CSingleLock lock(m_critSection);
 
-  CLog::Log(LOGDEBUG, "CGUIEPGGridContainer - %s - start=%s end=%s",
-      __FUNCTION__, m_gridModel->GetGridStart().GetAsLocalizedDateTime(false, true).c_str(), m_gridModel->GetGridEnd().GetAsLocalizedDateTime(false, true).c_str());
+    UpdateLayout();
+    iRulerUnit = m_rulerUnit;
+    iBlocksPerPage = m_blocksPerPage;
+    fBlockSize = m_blockSize;
+  }
+
+  std::shared_ptr<CGUIEPGGridContainerModel> oldOutdatedGridModel;
+  std::shared_ptr<CGUIEPGGridContainerModel> oldUpdatedGridModel;
+  std::shared_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
+  // can be very expensive. never call with lock acquired.
+  newUpdatedGridModel->Refresh(items, gridStart, gridEnd, iRulerUnit, iBlocksPerPage, fBlockSize);
+
+  {
+    CSingleLock lock(m_critSection);
+
+    // grid contains CFileItem instances. CFileItem dtor locks global graphics mutex.
+    // by increasing its refcount make sure, old data are not deleted while we're holding own mutex.
+    oldOutdatedGridModel = std::move(m_outdatedGridModel);
+    oldUpdatedGridModel = std::move(m_updatedGridModel);
+
+    m_updatedGridModel = std::move(newUpdatedGridModel);
+  }
 }
 
 void CGUIEPGGridContainer::GoToChannel(int channelIndex)
