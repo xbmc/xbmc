@@ -155,6 +155,7 @@ cmake_install.cmake
 /lib/addons/library.kodi.audioengine/Makefile
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
+/lib/addons/library.kodi.inputstream/Makefile
 /lib/addons/library.kodi.peripheral/project/VS2010Express/Release
 /lib/addons/library.kodi.peripheral/project/VS2010Express/Debug
 
@@ -348,6 +349,16 @@ lib/cpluff/stamp-h1
 /tools/depends/target/ffmpeg/ffmpeg-*-*.tar.gz
 /tools/depends/target/ffmpeg/ffmpeg-*-*/
 /tools/depends/target/ffmpeg/ffmpeg-install/
+/tools/depends/target/ffmpeg/ffmpeg-release/
+/tools/depends/target/libdvdcss/dvdcss-install/
+/tools/depends/target/libdvdcss/libdvdcss-*.tar.gz
+/tools/depends/target/libdvdcss/native/
+/tools/depends/target/libdvdnav/dvdnav-install/
+/tools/depends/target/libdvdnav/libdvdnav-*.tar.gz
+/tools/depends/target/libdvdnav/native/
+/tools/depends/target/libdvdread/dvdread-install/
+/tools/depends/target/libdvdread/libdvdread-*.tar.gz
+/tools/depends/target/libdvdread/native/
 /tools/depends/target/Toolchain_binaddons.cmake
 /tools/depends/target/config-binaddons.site
 
@@ -426,6 +437,7 @@ lib/cpluff/stamp-h1
 /xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile
 /xbmc/cores/VideoPlayer/DVDDemuxers/Makefile
 /xbmc/cores/VideoPlayer/DVDSubtitles/Makefile
+/xbmc/cores/VideoPlayer/Process/Makefile
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/Makefile
 /xbmc/cores/omxplayer/Makefile
 /xbmc/cores/paplayer/Makefile
@@ -511,6 +523,7 @@ lib/cpluff/stamp-h1
 /lib/libdvd/bin
 /lib/libdvd/include
 /lib/libdvd/lib
+/lib/libdvd/Makefile
 /lib/libdvd/share
 
 #/lib/win32
