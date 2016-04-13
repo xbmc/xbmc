@@ -48,7 +48,6 @@ public:
   void Flush(bool sync);
 
   // waits until all available data has been rendered
-  void WaitForBuffers();
   bool AcceptsData() const;
   bool HasData() const                                  { return m_messageQueue.GetDataSize() > 0; }
   int  GetLevel() const                                 { return m_messageQueue.GetLevel(); }
@@ -72,7 +71,6 @@ public:
   double GetCurrentPts()                            { CSingleLock lock(m_info_section); return m_info.pts; }
 
   bool IsStalled() const                            { return m_stalled;  }
-  bool IsEOS()                                      { return false; }
   bool IsPassthrough() const;
 
 protected:

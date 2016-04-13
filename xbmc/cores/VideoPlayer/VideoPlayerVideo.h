@@ -85,8 +85,6 @@ public:
   double GetSubtitleDelay() { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay) { m_iSubtitleDelay = delay; }
   bool IsStalled() const { return m_stalled; }
-  bool IsEOS() { return false; }
-  bool SubmittedEOS() const { return false; }
   double GetCurrentPts();
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   int GetDecoderFreeSpace() { return 0; }
@@ -108,10 +106,6 @@ protected:
   int OutputPicture(const DVDVideoPicture* src, double pts);
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
   void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
-
-  // waits until all available data has been rendered
-  // just waiting for packetqueue should be enough for video
-  void WaitForBuffers()  { m_messageQueue.WaitUntilEmpty(); }
 
   void ResetFrameRateCalc();
   void CalcFrameRate();

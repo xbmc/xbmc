@@ -138,9 +138,7 @@ public:
   ~IDVDStreamPlayerVideo() {}
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
-  virtual bool StepFrame() { return false; };
   virtual void Flush(bool sync) = 0;
-  virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool HasData() const = 0;
   virtual int  GetLevel() const = 0;
@@ -160,8 +158,7 @@ public:
   virtual void SetSpeed(int iSpeed) = 0;
   virtual int  GetDecoderBufferSize() { return 0; }
   virtual int  GetDecoderFreeSpace() = 0;
-  virtual bool IsEOS() = 0;
-  virtual bool SubmittedEOS() const = 0;
+  virtual bool IsEOS() { return false; };
 };
 
 class CDVDAudioCodec;
@@ -174,7 +171,6 @@ public:
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SetSpeed(int speed) = 0;
   virtual void Flush(bool sync) = 0;
-  virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool HasData() const = 0;
   virtual int  GetLevel() const = 0;
@@ -190,5 +186,5 @@ public:
   virtual bool IsStalled() const = 0;
   virtual bool IsPassthrough() const = 0;
   virtual float GetDynamicRangeAmplification() const = 0;
-  virtual bool IsEOS() = 0;
+  virtual bool IsEOS() { return false; };
 };
