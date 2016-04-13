@@ -3761,6 +3761,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "discnumber",       LISTITEM_DISC_NUMBER },
                                   { "starttime",        LISTITEM_STARTTIME },
                                   { "endtime",          LISTITEM_ENDTIME },
+                                  { "endtimeresume",    LISTITEM_ENDTIME_RESUME },
                                   { "startdate",        LISTITEM_STARTDATE },
                                   { "enddate",          LISTITEM_ENDDATE },
                                   { "nexttitle",        LISTITEM_NEXT_TITLE },
@@ -9885,6 +9886,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetPVRRecordingInfoTag()->RecordingTimeAsLocalTime().GetAsLocalizedTime("", false);
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedTime("", false);
+    break;
+  case LISTITEM_ENDTIME_RESUME:
+    if (item->HasVideoInfoTag())
+    {
+      auto* tag = item->GetVideoInfoTag();
+      CDateTimeSpan duration(0, 0, 0, tag->GetDuration() - tag->m_resumePoint.timeInSeconds);
+      return (CDateTime::GetCurrentDateTime() + duration).GetAsLocalizedTime("", false);
+    }
     break;
   case LISTITEM_ENDTIME:
     if (item->HasPVRChannelInfoTag())
