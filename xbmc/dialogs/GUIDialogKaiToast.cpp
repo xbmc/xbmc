@@ -86,7 +86,7 @@ void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessag
   toast.imagefile = aImageFile;
   toast.caption = aCaption;
   toast.description = aDescription;
-  toast.displayTime = displayTime > TOAST_MESSAGE_TIME + 500 ? displayTime : TOAST_MESSAGE_TIME + 500;
+  toast.displayTime = displayTime > TOAST_MESSAGE_TIME ? displayTime : TOAST_MESSAGE_TIME ;
   toast.messageTime = messageTime;
   toast.withSound = withSound;
 
