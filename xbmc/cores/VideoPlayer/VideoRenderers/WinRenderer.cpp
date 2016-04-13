@@ -291,8 +291,6 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if (!buf)
     return -1;
 
-  buf->StartDecode();
-
   image->cshift_x = 1;
   image->cshift_y = 1;
   image->height = m_sourceHeight;
@@ -315,8 +313,6 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
 void CWinRenderer::ReleaseImage(int source, bool preserve)
 {
-  if (m_VideoBuffers[source] != nullptr)
-    m_VideoBuffers[source]->StartRender();
 }
 
 void CWinRenderer::Reset()
@@ -347,10 +343,16 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
 
 void CWinRenderer::FlipPage(int source)
 {
+  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
+    m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = NextYV12Texture();;
+
+  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
+    m_VideoBuffers[m_iYV12RenderBuffer]->StartRender();
 
   return;
 }
@@ -999,7 +1001,6 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
   m_VideoBuffers[index]->StartDecode();
   m_VideoBuffers[index]->Clear();
-  m_VideoBuffers[index]->StartRender();
 
   CLog::Log(LOGDEBUG, "created video buffer %i", index);
   return true;
