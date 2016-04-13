@@ -46,16 +46,9 @@ ssize_t CHTTPFile::Write(const void* lpBuf, size_t uiBufSize)
   if (!m_openedforwrite)
     return -1;
 
-  std::string myPostData(static_cast<const char*>(lpBuf));
-  if (myPostData.length() != uiBufSize)
-    return -1;
-
-  // If we get here, we (most likely) satisfied the pre-conditions that we used OpenForWrite and passed a string as postdata
-  // we mimic 'post(..)' but do not read any data
-  m_postdata = myPostData;
+  m_postdata = std::string(static_cast<const char*>(lpBuf), uiBufSize);
   m_postdataset = true;
   m_openedforwrite = false;
-  SetMimeType("application/json");
   if (!Open(m_urlforwrite))
     return -1;
 
