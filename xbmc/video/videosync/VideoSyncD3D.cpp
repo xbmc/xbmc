@@ -120,7 +120,6 @@ void CVideoSyncD3D::Run(volatile bool& stop)
 void CVideoSyncD3D::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Cleaning up Direct3d");
-  CSingleLock lock(g_graphicsContext);
 
   m_lostEvent.Set();
   g_Windowing.Unregister(this);
