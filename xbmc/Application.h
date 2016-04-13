@@ -93,7 +93,6 @@ namespace MUSIC_INFO
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB
 #define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
-#define VOLUME_CONTROL_STEPS 90    // 90 steps
 
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)

@@ -4212,7 +4212,12 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr ""
 
-#empty strings from id 1302 to 1374
+#: system/settings/settings.xml
+msgctxt "#1302"
+msgid "Volume control steps"
+msgstr ""
+
+#empty strings from id 1303 to 1374
 #strings from 1350 to 1449 are reserved for weather translation
 
 #. Weather token
@@ -17879,7 +17884,13 @@ msgctxt "#36441"
 msgid "Enable audio DSP processing"
 msgstr ""
 
-#empty strings from id 36442 to 36459
+#. Description of setting "System -> Audio output -> Volume control steps" with label #1302
+#: system/settings/settings.xml
+msgctxt "#36442"
+msgid "Set the number of volume control steps."
+msgstr ""
+
+#empty strings from id 36443 to 36459
 
 #. Description of settings "System -> Logging -> Enable event logging" with label #14112
 #: system/settings/settings.xml
