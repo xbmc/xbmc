@@ -859,6 +859,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
         CLog::Log(LOGNOTICE, "%s - Fallback to monoscopic mode.", __FUNCTION__);
 
         scDesc1.Stereo = false;
+        bHWStereoEnabled = false;
         hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, NULL, &m_pSwapChain1);
 
         // fallback to split_horisontal mode.
