@@ -1532,6 +1532,8 @@ void CGUIMediaWindow::SetupShares()
 
 bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
 {
+  auto InRange = [](int i, std::pair<int, int> range){ return i >= range.first && i < range.second; };
+
   if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
     return false;
 
@@ -1539,18 +1541,34 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   if (!item)
     return false;
 
-  //Construct the list with core menu on top, legacy menu in the middle and addons on bottom.
   CContextButtons buttons;
-  auto menuItems = CContextMenuManager::GetInstance().GetItems(*item, CContextMenuManager::MAIN);
-  for (const auto& menu : menuItems)
+
+  //Add items from plugin
+  {
+    int i = 0;
+    while (item->HasProperty(StringUtils::Format("contextmenulabel(%i)", i)))
+    {
+      buttons.emplace_back(-buttons.size(), item->GetProperty(StringUtils::Format("contextmenulabel(%i)", i)).asString());
+      ++i;
+    }
+  }
+  auto pluginMenuRange = std::make_pair(0, buttons.size());
+
+  //Add the global menu
+  auto globalMenu = CContextMenuManager::GetInstance().GetItems(*item, CContextMenuManager::MAIN);
+  auto globalMenuRange = std::make_pair(buttons.size(), buttons.size() + globalMenu.size());
+  for (const auto& menu : globalMenu)
     buttons.emplace_back(-buttons.size(), menu->GetLabel(*item));
 
-  int legacyMenuStart = buttons.size();
+  //Add legacy items from windows
+  auto windowMenuRange = std::make_pair(buttons.size(), -1);
   GetContextButtons(itemIdx, buttons);
+  windowMenuRange.second = buttons.size();
 
-  int addonMenuStart = buttons.size();
-  auto addonItems = CContextMenuManager::GetInstance().GetAddonItems(*item, CContextMenuManager::MAIN);
-  for (const auto& menu : addonItems)
+  //Add addon menus
+  auto addonMenu = CContextMenuManager::GetInstance().GetAddonItems(*item, CContextMenuManager::MAIN);
+  auto addonMenuRange = std::make_pair(buttons.size(), buttons.size() + addonMenu.size());
+  for (const auto& menu : addonMenu)
     buttons.emplace_back(-buttons.size(), menu->GetLabel(*item));
 
   if (buttons.empty())
@@ -1560,43 +1578,27 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   if (idx < 0 || idx >= buttons.size())
     return false;
 
-  if (idx < legacyMenuStart)
-    return CONTEXTMENU::LoopFrom(*menuItems[idx], item);
+  if (InRange(idx, pluginMenuRange))
+  {
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+        item->GetProperty(StringUtils::Format("contextmenuaction(%i)", idx - pluginMenuRange.first)).asString());
+    return true;
+  }
 
-  if (idx >= addonMenuStart)
-    return CONTEXTMENU::LoopFrom(*addonItems[idx - addonMenuStart], item);
+  if (InRange(idx, windowMenuRange))
+    return OnContextButton(itemIdx, static_cast<CONTEXT_BUTTON>(buttons[idx].first));
 
-  return OnContextButton(itemIdx, static_cast<CONTEXT_BUTTON>(buttons[idx].first));
+  if (InRange(idx, globalMenuRange))
+    return CONTEXTMENU::LoopFrom(*globalMenu[idx - globalMenuRange.first], item);
+
+  return CONTEXTMENU::LoopFrom(*addonMenu[idx - addonMenuRange.first], item);
 }
 
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
 
-  // ensure that the "go to parent" item doesn't have any context menu items
   if (!item || item->IsParentFolder())
-  {
-    buttons.clear();
-    return;
-  }
-
-  // user added buttons
-  std::string label;
-  std::string action;
-  for (int i = CONTEXT_BUTTON_USER1; i <= CONTEXT_BUTTON_USER10; i++)
-  {
-    label = StringUtils::Format("contextmenulabel(%i)", i - CONTEXT_BUTTON_USER1);
-    if (item->GetProperty(label).empty())
-      break;
-
-    action = StringUtils::Format("contextmenuaction(%i)", i - CONTEXT_BUTTON_USER1);
-    if (item->GetProperty(action).empty())
-      break;
-
-    buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label).asString());
-  }
-
-  if (item->GetProperty("pluginreplacecontextitems").asBoolean())
     return;
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
@@ -1630,21 +1632,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       Update(item->GetPath());
-      return true;
-    }
-  case CONTEXT_BUTTON_USER1:
-  case CONTEXT_BUTTON_USER2:
-  case CONTEXT_BUTTON_USER3:
-  case CONTEXT_BUTTON_USER4:
-  case CONTEXT_BUTTON_USER5:
-  case CONTEXT_BUTTON_USER6:
-  case CONTEXT_BUTTON_USER7:
-  case CONTEXT_BUTTON_USER8:
-  case CONTEXT_BUTTON_USER9:
-  case CONTEXT_BUTTON_USER10:
-    {
-      std::string action = StringUtils::Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, m_vecItems->Get(itemNumber)->GetProperty(action).asString());
       return true;
     }
   default:

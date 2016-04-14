@@ -285,7 +285,7 @@ namespace XBMCAddon
        * items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.
        *   - label           : string or unicode - item's label.
        *   - action          : string or unicode - any built-in function to perform.
-       * replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).
+       * replaceItems        : [opt] bool - Deprecated.
        * \n
        * List of functions - http://kodi.wiki/view/List_of_Built_In_Functions \n
        * \n
