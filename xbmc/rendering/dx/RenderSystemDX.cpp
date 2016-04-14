@@ -878,12 +878,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
         // sleep value possible depends on hardware m.b. need a setting in as.xml
         if (m_useWindowedDX && !bHWStereoEnabled && m_bHWStereoEnabled)
         {
-          DXGI_PRESENT_PARAMETERS presentParams = {};
-          presentParams.DirtyRectsCount = 0;
-          presentParams.pDirtyRects = NULL;
-          presentParams.pScrollRect = NULL;
-          m_pSwapChain1->Present1(0, DXGI_PRESENT_RESTART, &presentParams);
-
+          m_pSwapChain1->Present(0, DXGI_PRESENT_RESTART);
           Sleep(100);
         }
         m_bHWStereoEnabled = bHWStereoEnabled;
@@ -1189,18 +1184,9 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
   }
 
   FinishCommandList();
+  m_pImdContext->Flush();
 
-  if (m_pSwapChain1)
-  {
-    // will use optimized present with dirty regions.
-    DXGI_PRESENT_PARAMETERS presentParams = {};
-    presentParams.DirtyRectsCount = 0;
-    presentParams.pDirtyRects = NULL;
-    presentParams.pScrollRect = NULL;
-    hr = m_pSwapChain1->Present1((m_bVSync ? 1 : 0), 0, &presentParams);
-  }
-  else 
-    hr = m_pSwapChain->Present((m_bVSync ? 1 : 0), 0);
+  hr = m_pSwapChain->Present((m_bVSync ? 1 : 0), 0);
 
   if (DXGI_ERROR_DEVICE_REMOVED == hr)
   {
@@ -1232,18 +1218,7 @@ bool CRenderSystemDX::BeginRender()
     return false;
 
   HRESULT oldStatus = m_nDeviceStatus;
-  if (m_pSwapChain1)
-  {
-    DXGI_PRESENT_PARAMETERS presentParams = {};
-    presentParams.DirtyRectsCount = 0;
-    presentParams.pDirtyRects = NULL;
-    presentParams.pScrollRect = NULL;
-    m_nDeviceStatus = m_pSwapChain1->Present1(0, DXGI_PRESENT_TEST, &presentParams);
-  }
-  else
-  {
-    m_nDeviceStatus = m_pSwapChain->Present(0, DXGI_PRESENT_TEST);
-  }
+  m_nDeviceStatus = m_pSwapChain->Present(0, DXGI_PRESENT_TEST);
 
   // handling of return values. 
   switch (m_nDeviceStatus)
@@ -1330,10 +1305,6 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
       // for interlaced/checkerboard/hw clear right view
       else if (m_pRenderTargetViewRight)
         pRTView = m_pRenderTargetViewRight;
-
-      // for hw stereo clear depth view also
-      if (m_stereoMode == RENDER_STEREO_MODE_HARDWAREBASED)
-        m_pContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0, 0);
     }
   }
  
