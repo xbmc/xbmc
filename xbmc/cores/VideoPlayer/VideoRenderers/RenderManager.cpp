@@ -412,40 +412,6 @@ void CRenderManager::FrameMove()
   ManageCaptures();
 }
 
-void CRenderManager::FrameFinish()
-{
-  {
-    CSingleLock lock(m_statelock);
-    if (m_renderState != STATE_CONFIGURED)
-      return;
-  }
-
-  /* wait for this present to be valid */
-  SPresent& m = m_Queue[m_presentsource];
-
-  { CSingleLock lock(m_presentlock);
-
-    if(m_presentstep == PRESENT_FRAME)
-    {
-      if( m.presentmethod == PRESENT_METHOD_BOB
-      ||  m.presentmethod == PRESENT_METHOD_WEAVE)
-        m_presentstep = PRESENT_FRAME2;
-      else
-        m_presentstep = PRESENT_IDLE;
-    }
-    else if(m_presentstep == PRESENT_FRAME2)
-      m_presentstep = PRESENT_IDLE;
-
-    if(m_presentstep == PRESENT_IDLE)
-    {
-      if(!m_queued.empty())
-        m_presentstep = PRESENT_READY;
-    }
-
-    m_presentevent.notifyAll();
-  }
-}
-
 void CRenderManager::PreInit()
 {
   if (!g_application.IsCurrentThread())
@@ -947,6 +913,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   {
     if (!m_pRenderer->IsGuiLayer())
       m_pRenderer->Update();
+
     m_renderedOverlay = m_overlays.HasOverlay(m_presentsource);
     CRect src, dst, view;
     m_pRenderer->GetVideoRect(src, dst, view);
@@ -975,6 +942,31 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
       m_debugTimer.Set(1000);
       m_renderedOverlay = true;
     }
+  }
+
+
+  SPresent& m = m_Queue[m_presentsource];
+
+  { CSingleLock lock(m_presentlock);
+
+    if(m_presentstep == PRESENT_FRAME)
+    {
+      if( m.presentmethod == PRESENT_METHOD_BOB
+         ||  m.presentmethod == PRESENT_METHOD_WEAVE)
+        m_presentstep = PRESENT_FRAME2;
+      else
+        m_presentstep = PRESENT_IDLE;
+    }
+    else if(m_presentstep == PRESENT_FRAME2)
+      m_presentstep = PRESENT_IDLE;
+
+    if(m_presentstep == PRESENT_IDLE)
+    {
+      if(!m_queued.empty())
+        m_presentstep = PRESENT_READY;
+    }
+
+    m_presentevent.notifyAll();
   }
 }
 

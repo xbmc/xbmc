@@ -4933,11 +4933,6 @@ void CVideoPlayer::Render(bool clear, uint32_t alpha, bool gui)
   m_renderManager.Render(clear, 0, alpha, gui);
 }
 
-void CVideoPlayer::AfterRender()
-{
-  m_renderManager.FrameFinish();
-}
-
 void CVideoPlayer::FlushRenderer()
 {
   m_renderManager.Flush();

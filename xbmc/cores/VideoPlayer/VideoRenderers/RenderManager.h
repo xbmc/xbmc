@@ -71,7 +71,6 @@ public:
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio();
   void FrameMove();
-  void FrameFinish();
   void FrameWait(int ms);
   bool HasFrame();
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);

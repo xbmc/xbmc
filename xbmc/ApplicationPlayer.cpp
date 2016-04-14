@@ -790,13 +790,6 @@ void CApplicationPlayer::Render(bool clear, uint32_t alpha, bool gui)
     player->Render(clear, alpha, gui);
 }
 
-void CApplicationPlayer::AfterRender()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->AfterRender();
-}
-
 void CApplicationPlayer::FlushRenderer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
