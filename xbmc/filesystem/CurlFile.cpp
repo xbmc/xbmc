@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "File.h"
 #include "threads/SystemClock.h"
+#include "utils/Base64.h"
 
 #include <vector>
 #include <climits>
@@ -822,6 +823,11 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_cipherlist = value;
         else if (name == "connection-timeout")
           m_connecttimeout = strtol(value.c_str(), NULL, 10);
+        else if (name == "postdata")
+        {
+          m_postdata = Base64::Decode(value);
+          m_postdataset = true;
+        }
         else
           SetRequestHeader(it->first, value);
       }
