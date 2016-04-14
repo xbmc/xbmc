@@ -128,7 +128,7 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
   UnInit();
 
   if (m_rgbBuffer != NULL) {
-    delete [] m_rgbBuffer;
+    av_free(m_rgbBuffer);
     m_rgbBuffer = NULL;
   }
 
@@ -690,7 +690,7 @@ void CLinuxRendererGLES::UnInit()
 
   if (m_rgbBuffer != NULL)
   {
-    delete [] m_rgbBuffer;
+    av_free(m_rgbBuffer);
     m_rgbBuffer = NULL;
   }
   m_rgbBufferSize = 0;
@@ -1272,9 +1272,9 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   {
     if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
     {
-      delete [] m_rgbBuffer;
+      av_free(m_rgbBuffer);
       m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-      m_rgbBuffer = new BYTE[m_rgbBufferSize];
+      m_rgbBuffer = (BYTE*) av_malloc(m_rgbBufferSize);
     }
 
 #if defined(__ARM_NEON__) && !defined(__LP64__)
