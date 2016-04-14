@@ -100,17 +100,18 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_OVERLAY);
 
   // Features
-  for (const TiXmlElement* pCategory = pElement->FirstChildElement(); pCategory != NULL; pCategory = pCategory->NextSiblingElement())
+  for (const TiXmlElement* pCategory = pElement->FirstChildElement(); pCategory != nullptr; pCategory = pCategory->NextSiblingElement())
   {
-    std::string strCategory = pElement->Value();
+    if (std::string(pCategory->Value()) != std::string(LAYOUT_XML_ELM_CATEGORY))
+      continue;
 
-    //! @todo Something with category
+    const std::string strCategoryName = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_NAME);
 
-    for (const TiXmlElement* pFeature = pCategory->FirstChildElement(); pFeature != NULL; pFeature = pFeature->NextSiblingElement())
+    for (const TiXmlElement* pFeature = pCategory->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
     {
       CControllerFeature feature;
 
-      if (!feature.Deserialize(pFeature, controller))
+      if (!feature.Deserialize(pFeature, controller, strCategoryName))
         return false;
 
       m_features.push_back(feature);

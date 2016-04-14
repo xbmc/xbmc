@@ -21,13 +21,24 @@
 
 #define LAYOUT_XML_ROOT                    "layout"
 
+#define LAYOUT_XML_ELM_CATEGORY            "category"
+
 #define LAYOUT_XML_ELM_BUTTON              "button"
 #define LAYOUT_XML_ELM_ANALOG_STICK        "analogstick"
 #define LAYOUT_XML_ELM_ACCELEROMETER       "accelerometer"
+#define LAYOUT_XML_ELM_MOTOR               "motor"
 
 #define LAYOUT_XML_ATTR_LAYOUT_LABEL       "label"
 #define LAYOUT_XML_ATTR_LAYOUT_IMAGE       "image"
 #define LAYOUT_XML_ATTR_LAYOUT_OVERLAY     "overlay"
+
+#define LAYOUT_XML_ATTR_CATEGORY_NAME      "name"
+
+#define LAYOUT_XML_VALUE_CATEGORY_FACE          "face"
+#define LAYOUT_XML_VALUE_CATEGORY_SHOULDER      "shoulder"
+#define LAYOUT_XML_VALUE_CATEGORY_TRIGGERS      "triggers"
+#define LAYOUT_XML_VALUE_CATEGORY_ANALOG_STICKS "analogsticks"
+#define LAYOUT_XML_VALUE_CATEGORY_HAPTICS       "haptics"
 
 #define LAYOUT_XML_ATTR_FEATURE_NAME       "name"
 #define LAYOUT_XML_ATTR_FEATURE_LABEL      "label"

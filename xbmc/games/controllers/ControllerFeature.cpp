@@ -34,6 +34,7 @@ using namespace JOYSTICK;
 void CControllerFeature::Reset(void)
 {
   m_type = FEATURE_TYPE::UNKNOWN;
+  m_category = FEATURE_CATEGORY::UNKNOWN;
   m_strName.clear();
   m_strLabel.clear();
   m_labelId = 0;
@@ -45,6 +46,7 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
   if (this != &rhs)
   {
     m_type       = rhs.m_type;
+    m_category   = rhs.m_category;
     m_strName    = rhs.m_strName;
     m_strLabel   = rhs.m_strLabel;
     m_labelId    = rhs.m_labelId;
@@ -53,7 +55,7 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
   return *this;
 }
 
-bool CControllerFeature::Deserialize(const TiXmlElement* pElement, const CController* controller)
+bool CControllerFeature::Deserialize(const TiXmlElement* pElement, const CController* controller, const std::string& strCategory)
 {
   Reset();
 
@@ -70,6 +72,9 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement, const CContro
     return false;
   }
 
+  // Category was obtained from parent XML node
+  m_category = CControllerTranslator::TranslateCategory(strCategory);
+
   // Name
   m_strName = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_NAME);
   if (m_strName.empty())
@@ -78,17 +83,21 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement, const CContro
     return false;
   }
 
-  // Label ID
-  std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_LABEL);
-  if (strLabel.empty())
+  // Label (not used for motors)
+  if (m_type != FEATURE_TYPE::MOTOR)
   {
-    CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", strType.c_str(), LAYOUT_XML_ATTR_FEATURE_LABEL);
-    return false;
-  }
-  std::istringstream(strLabel) >> m_labelId;
+    // Label ID
+    std::string strLabel = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_LABEL);
+    if (strLabel.empty())
+    {
+      CLog::Log(LOGERROR, "<%s> tag has no \"%s\" attribute", strType.c_str(), LAYOUT_XML_ATTR_FEATURE_LABEL);
+      return false;
+    }
+    std::istringstream(strLabel) >> m_labelId;
 
-  // Label (string)
-  m_strLabel = g_localizeStrings.GetAddonString(controller->ID(), m_labelId);
+    // Label (string)
+    m_strLabel = g_localizeStrings.GetAddonString(controller->ID(), m_labelId);
+  }
 
   // Input type
   if (m_type == FEATURE_TYPE::SCALAR)

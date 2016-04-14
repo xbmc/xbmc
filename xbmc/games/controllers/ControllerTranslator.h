@@ -33,6 +33,9 @@ public:
   static const char* TranslateFeatureType(JOYSTICK::FEATURE_TYPE type);
   static JOYSTICK::FEATURE_TYPE TranslateFeatureType(const std::string& strType);
 
+  static const char* TranslateCategory(JOYSTICK::FEATURE_CATEGORY category);
+  static JOYSTICK::FEATURE_CATEGORY TranslateCategory(const std::string& strCategory);
+
   static const char* TranslateInputType(JOYSTICK::INPUT_TYPE type);
   static JOYSTICK::INPUT_TYPE TranslateInputType(const std::string& strType);
 };
