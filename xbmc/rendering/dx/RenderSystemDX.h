@@ -110,7 +110,7 @@ protected:
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
   void CheckInterlasedStereoView(void);
-  void SetMaximumFrameLatency(uint32_t latency);
+  void SetMaximumFrameLatency(uint8_t latency = -1);
 
   virtual void Register(ID3DResource *resource);
   virtual void Unregister(ID3DResource *resource);

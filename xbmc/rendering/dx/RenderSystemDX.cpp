@@ -401,9 +401,7 @@ void CRenderSystemDX::SetFullScreenInternal()
     }
   }
 end:
-  // in windowed mode DWM uses triple buffering in any case. 
-  // for FSEM we use double buffering to avoid possible shuttering/tearing
-  SetMaximumFrameLatency(2 - m_useWindowedDX);
+  SetMaximumFrameLatency();
 }
 
 bool CRenderSystemDX::IsFormatSupport(DXGI_FORMAT format, unsigned int usage)
@@ -632,9 +630,7 @@ bool CRenderSystemDX::CreateDevice()
     pMultiThreading->Release();
   }
 
-  // in windowed mode DWM uses triple buffering in any case. 
-  // for FSEM we use double buffering
-  SetMaximumFrameLatency(2 - m_useWindowedDX);
+  SetMaximumFrameLatency();
 
 #ifdef _DEBUG
   if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_d3dDebug))))
@@ -1724,7 +1720,7 @@ void CRenderSystemDX::FinishCommandList(bool bExecute /*= true*/)
   SAFE_RELEASE(pCommandList);
 }
 
-void CRenderSystemDX::SetMaximumFrameLatency(uint32_t latency)
+void CRenderSystemDX::SetMaximumFrameLatency(uint8_t latency)
 {
   if (!m_pD3DDev)
     return;
@@ -1732,6 +1728,10 @@ void CRenderSystemDX::SetMaximumFrameLatency(uint32_t latency)
   IDXGIDevice1* pDXGIDevice = nullptr;
   if (SUCCEEDED(m_pD3DDev->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice))))
   {
+    // in windowed mode DWM uses triple buffering in any case. 
+    // for FSEM we use same buffering to avoid possible shuttering/tearing
+    if (latency == -1)
+      latency = m_useWindowedDX ? 1 : 3;
     pDXGIDevice->SetMaximumFrameLatency(latency);
     SAFE_RELEASE(pDXGIDevice);
   }
