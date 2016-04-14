@@ -25,12 +25,16 @@
 
 namespace JOYSTICK
 {
+  class IInputReceiver;
+
   /*!
    * \brief Interface for handling input events for game controllers
    */
   class IInputHandler
   {
   public:
+    IInputHandler(void) : m_receiver(nullptr) { }
+
     virtual ~IInputHandler(void) { }
 
     /*!
@@ -93,5 +97,13 @@ namespace JOYSTICK
      * \return True if the event was handled otherwise false
      */
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) { return false; }
+
+    // Input receiver interface
+    void SetInputReceiver(IInputReceiver* receiver) { m_receiver = receiver; }
+    void ResetInputReceiver(void) { m_receiver = nullptr; }
+    IInputReceiver* InputReceiver(void) { return m_receiver; }
+
+  private:
+    IInputReceiver* m_receiver;
   };
 }

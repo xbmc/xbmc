@@ -9,7 +9,9 @@ set(HEADERS DefaultJoystick.h
             IButtonMap.h
             IButtonMapper.h
             IDriverHandler.h
+            IDriverReceiver.h
             IInputHandler.h
+            IInputReceiver.h
             IKeymapHandler.h
             JoystickMonitor.h
             JoystickTranslator.h

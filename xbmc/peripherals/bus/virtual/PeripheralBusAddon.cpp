@@ -135,6 +135,18 @@ bool CPeripheralBusAddon::InitializeProperties(CPeripheral* peripheral)
   return bSuccess;
 }
 
+bool CPeripheralBusAddon::SendRumbleEvent(const std::string& strLocation, unsigned int motorIndex, float magnitude)
+{
+  bool bHandled = false;
+
+  PeripheralAddonPtr addon;
+  unsigned int peripheralIndex;
+  if (SplitLocation(strLocation, addon, peripheralIndex))
+    bHandled = addon->SendRumbleEvent(peripheralIndex, motorIndex, magnitude);
+
+  return bHandled;
+}
+
 void CPeripheralBusAddon::ProcessEvents(void)
 {
   PeripheralAddonVector addons;

@@ -123,4 +123,16 @@ namespace JOYSTICK
     DIGITAL,
     ANALOG,
   };
+
+  /*!
+  * \brief Type of driver primitive
+  */
+  enum PRIMITIVE_TYPE
+  {
+    UNKNOWN = 0, // primitive has no type (invalid)
+    BUTTON,      // a digital button
+    HAT,         // one of the four direction arrows on a D-pad
+    SEMIAXIS,    // the positive or negative half of an axis
+    MOTOR,       // a rumble motor
+  };
 }

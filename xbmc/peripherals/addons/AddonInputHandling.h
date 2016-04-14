@@ -20,12 +20,14 @@
 #pragma once
 
 #include "input/joysticks/IDriverHandler.h"
+#include "input/joysticks/IInputReceiver.h"
 
 #include <memory>
 
 namespace JOYSTICK
 {
   class IButtonMap;
+  class IDriverReceiver;
   class IInputHandler;
 }
 
@@ -33,10 +35,11 @@ namespace PERIPHERALS
 {
   class CPeripheral;
 
-  class CAddonInputHandling : public JOYSTICK::IDriverHandler
+  class CAddonInputHandling : public JOYSTICK::IDriverHandler,
+                              public JOYSTICK::IInputReceiver
   {
   public:
-    CAddonInputHandling(CPeripheral* peripheral, JOYSTICK::IInputHandler* handler);
+    CAddonInputHandling(CPeripheral* peripheral, JOYSTICK::IInputHandler* handler, JOYSTICK::IDriverReceiver* receiver);
 
     virtual ~CAddonInputHandling(void);
 
@@ -46,8 +49,12 @@ namespace PERIPHERALS
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
     virtual void ProcessAxisMotions(void) override;
 
+    // implementation of IInputReceiver
+    virtual bool SetRumbleState(const JOYSTICK::FeatureName& feature, float magnitude) override;
+
   private:
     std::unique_ptr<JOYSTICK::IDriverHandler> m_driverHandler;
+    std::unique_ptr<JOYSTICK::IInputReceiver> m_inputReceiver;
     std::unique_ptr<JOYSTICK::IButtonMap>     m_buttonMap;
   };
 }

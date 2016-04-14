@@ -55,6 +55,9 @@ namespace JOYSTICK
    *       - driver index
    *       - semiaxis direction (positive/negative)
    *
+   *    Motor:
+   *       - driver index
+   *
    * For more info, see "Chapter 2. Joystick drivers" in the documentation
    * thread: http://forum.kodi.tv/showthread.php?tid=257764
    */
@@ -62,25 +65,14 @@ namespace JOYSTICK
   {
   public:
     /*!
-     * \brief Type of driver primitive
-     */
-    enum PrimitiveType
-    {
-      UNKNOWN = 0, // primitive has no type (invalid)
-      BUTTON,      // a digital button
-      HAT,         // one of the four direction arrows on a D-pad
-      SEMIAXIS,    // the positive or negative half of an axis
-    };
-
-    /*!
      * \brief Construct an invalid driver primitive
      */
     CDriverPrimitive(void);
 
     /*!
-     * \brief Construct a driver primitive representing a button
+     * \brief Construct a driver primitive representing a button or motor
      */
-    CDriverPrimitive(unsigned int buttonIndex);
+    CDriverPrimitive(PRIMITIVE_TYPE type, unsigned int index);
 
     /*!
      * \brief Construct a driver primitive representing one of the four
@@ -105,7 +97,7 @@ namespace JOYSTICK
     /*!
      * \brief The type of driver primitive
      */
-    PrimitiveType Type(void) const { return m_type; }
+    PRIMITIVE_TYPE Type(void) const { return m_type; }
 
     /*!
      * \brief The index used by the driver (valid for all types)
@@ -133,7 +125,7 @@ namespace JOYSTICK
     bool IsValid(void) const;
 
   private:
-    PrimitiveType      m_type;
+    PRIMITIVE_TYPE     m_type;
     unsigned int       m_driverIndex;
     HAT_DIRECTION      m_hatDirection;
     SEMIAXIS_DIRECTION m_semiAxisDirection;

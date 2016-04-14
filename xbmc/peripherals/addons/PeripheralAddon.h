@@ -75,6 +75,7 @@ namespace PERIPHERALS
     //@{
     bool PerformDeviceScan(PeripheralScanResults &results);
     bool ProcessEvents(void);
+    bool SendRumbleEvent(unsigned int index, unsigned int driverIndex, float magnitude);
     //@}
 
     /** @name Joystick methods */

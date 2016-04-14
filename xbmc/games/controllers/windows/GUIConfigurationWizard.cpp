@@ -137,7 +137,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
   bool bHandled = false;
 
   // Handle esc key separately
-  if (primitive.Type() == CDriverPrimitive::BUTTON &&
+  if (primitive.Type() == PRIMITIVE_TYPE::BUTTON &&
       primitive.Index() == ESC_KEY_CODE)
   {
     bHandled = Abort(false);

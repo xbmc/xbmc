@@ -100,6 +100,14 @@ extern "C"
    * @param events       The array of allocated events
    */
   void FreeEvents(unsigned int event_count, PERIPHERAL_EVENT* events);
+
+  /*!
+   * @brief Send an input event to the specified peripheral
+   * @param peripheralIndex The index of the device receiving the input event
+   * @param event The input event
+   * @return true if the event was handled, false otherwise
+   */
+  bool SendEvent(const PERIPHERAL_EVENT* event);
   ///}
 
   /// @name Joystick operations
@@ -180,6 +188,7 @@ extern "C"
     pClient->FreeScanResults                = FreeScanResults;
     pClient->GetEvents                      = GetEvents;
     pClient->FreeEvents                     = FreeEvents;
+    pClient->SendEvent                      = SendEvent;
 
 #ifdef PERIPHERAL_ADDON_JOYSTICKS
     pClient->GetJoystickInfo                = GetJoystickInfo;
