@@ -44,8 +44,6 @@ namespace VAAPI { class CSurfaceHolder; }
 namespace VDPAU { class CVdpauRenderPicture; }
 struct DVDVideoPicture;
 
-#define ERRORBUFFSIZE 30
-
 class CWinRenderer;
 class CMMALRenderer;
 class CLinuxRenderer;
@@ -249,6 +247,16 @@ protected:
   CEvent m_flushEvent;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
+
+  struct CClockSync
+  {
+    void Reset();
+    double m_error;
+    int m_errCount;
+    double m_syncOffset;
+    bool m_enabled;
+  };
+  CClockSync m_clockSync;
 
   void RenderCapture(CRenderCapture* capture);
   void RemoveCaptures();

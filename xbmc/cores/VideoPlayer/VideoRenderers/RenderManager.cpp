@@ -115,6 +115,14 @@ static std::string GetRenderFormatName(ERenderFormat format)
   return "UNKNOWN";
 }
 
+void CRenderManager::CClockSync::Reset()
+{
+  m_error = 0;
+  m_errCount = 0;
+  m_syncOffset = 0;
+  m_enabled = false;
+}
+
 unsigned int CRenderManager::m_nextCaptureId = 0;
 
 CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) : m_dvdClock(clock)
@@ -156,19 +164,6 @@ float CRenderManager::GetAspectRatio()
     return m_pRenderer->GetAspectRatio();
   else
     return 1.0f;
-}
-
-static double wrap(double x, double minimum, double maximum)
-{
-  if(x >= minimum
-  && x <= maximum)
-    return x;
-  x = fmod(x - minimum, maximum - minimum) + minimum;
-  if(x < minimum)
-    x += maximum - minimum;
-  if(x > maximum)
-    x -= maximum - minimum;
-  return x;
 }
 
 bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
@@ -308,6 +303,7 @@ bool CRenderManager::Configure()
     m_presentevent.notifyAll();
     m_renderedOverlay = false;
     m_renderDebug = false;
+    m_clockSync.Reset();
 
     m_renderState = STATE_CONFIGURED;
 
@@ -928,9 +924,10 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
       double refreshrate, clockspeed;
       int missedvblanks;
+      vsync = StringUtils::Format("VSyncOff: %.1f  ", m_clockSync.m_syncOffset / 1000);
       if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
       {
-        vsync = StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%%",
+        vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%%",
                                      refreshrate,
                                      missedvblanks,
                                      clockspeed - 100.0);
@@ -1069,6 +1066,11 @@ void CRenderManager::UpdateResolution()
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
         g_graphicsContext.SetVideoResolution(res);
         UpdateDisplayLatency();
+
+        if (fabs(m_fps - g_graphicsContext.GetFPS()) < 0.01)
+        {
+          m_clockSync.m_enabled = true;
+        }
       }
       m_bTriggerUpdateResolution = false;
       m_playerPort->VideoParamsChange();
@@ -1303,9 +1305,26 @@ void CRenderManager::PrepareNextRender()
 
   double renderPts = frameOnScreen + totalLatency;
 
-  bool next = renderPts >= m_Queue[m_queued.front()].pts;
+  double nextFramePts = m_Queue[m_queued.front()].pts;
 
-  if (next)
+  if (m_clockSync.m_enabled)
+  {
+    double err = fmod(renderPts - nextFramePts, frametime);
+    m_clockSync.m_error += err;
+    m_clockSync.m_errCount ++;
+    if (m_clockSync.m_errCount > 30)
+    {
+      double average = m_clockSync.m_error / m_clockSync.m_errCount;
+      m_clockSync.m_syncOffset = average;
+      m_clockSync.m_error = 0;
+      m_clockSync.m_errCount = 0;
+
+      m_dvdClock.SetVsyncAdjust(-average);
+    }
+    renderPts += frametime / 2 - m_clockSync.m_syncOffset;
+  }
+
+  if (renderPts >= nextFramePts)
   {
     // see if any future queued frames are already due
     auto iter = m_queued.begin();
@@ -1316,7 +1335,7 @@ void CRenderManager::PrepareNextRender()
       // the slot for rendering in time is [pts .. (pts + frametime)]
       // renderer/drivers have internal queues, being slightliy late here does not mean that
       // we are really late. If we don't recover here, player will take action
-      if (renderPts < m_Queue[*iter].pts + 0.8 * frametime)
+      if (renderPts < m_Queue[*iter].pts + 0.98 * frametime)
         break;
       idx = *iter;
       ++iter;
