@@ -76,7 +76,7 @@ DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
 
 void CDVDCodecUtils::FreePicture(DVDVideoPicture* pPicture)
 {
-  delete[] pPicture->data[0];
+  av_free(pPicture->data[0]);
   delete pPicture;
 }
 
@@ -185,7 +185,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
     int h = pPicture->iHeight / 2;
     int size = w * h;
     int totalsize = (pPicture->iWidth * pPicture->iHeight) + size * 2;
-    uint8_t* data = new uint8_t[totalsize];
+    uint8_t* data = (uint8_t*) av_malloc(totalsize);
     if (data)
     {
       pPicture->data[0] = data;
@@ -239,7 +239,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
     *pPicture = *pSrc;
 
     int totalsize = pPicture->iWidth * pPicture->iHeight * 2;
-    uint8_t* data = new uint8_t[totalsize];
+    uint8_t* data = (uint8_t*) av_malloc(totalsize);
 
     if (data)
     {
