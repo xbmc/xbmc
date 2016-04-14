@@ -333,6 +333,27 @@ namespace XBMCAddon
       String getProperty(const char* key);
 
       /**
+       * getArt(key) -- Returns a listitem art path as a string, similar to an infolabel.\n
+       * \n
+       * key            : string - art name.\n
+       * \n
+       *
+       * - Some default art values (any string possible):
+       *     - thumb         : string - image path
+       *     - poster        : string - image path
+       *     - banner        : string - image path
+       *     - fanart        : string - image path
+       *     - clearart      : string - image path
+       *     - clearlogo     : string - image path
+       *     - landscape     : string - image path
+       *     - icon          : string - image path
+       *
+       * example:
+       *   - poster = self.list.getSelectedItem().getArt('poster')
+       */
+      String getArt(const char* key);
+
+      /**
        * setPath(path) -- Sets the listitem's path.\n
        * \n
        * path           : string or unicode - path, activated when item is clicked.\n
