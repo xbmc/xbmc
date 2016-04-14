@@ -374,6 +374,9 @@ namespace XBMCAddon
                 PulseActionEvent();
                 return true;
               }
+              // the core context menu can lead to all sort of issues right now when used with WindowXMLs, so lets intercept the corresponding message
+              else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_CONTEXT_MENU)
+                return true;
             }
           }
         }
