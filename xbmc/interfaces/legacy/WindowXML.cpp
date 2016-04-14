@@ -319,6 +319,10 @@ namespace XBMCAddon
         }
         break;
 
+      case GUI_MSG_NOTIFY_ALL:
+        // GUI_MSG_NOTIFY_ALL breaks container content, so intercept it.
+        return true;
+
       case GUI_MSG_CLICKED:
         {
           int iControl=message.GetSenderId();
