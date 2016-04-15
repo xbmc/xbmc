@@ -1475,7 +1475,12 @@ void CFileItem::SetFromSong(const CSong &song)
 {
   if (!song.strTitle.empty())
     SetLabel(song.strTitle);
-  if (!song.strFileName.empty())
+  if (song.idSong > 0)
+  {
+    std::string strExt = URIUtils::GetExtension(song.strFileName);
+    m_strPath = StringUtils::Format("musicdb://songs/%i%s", song.idSong, strExt.c_str());
+  }
+  else if (!song.strFileName.empty())
     m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
