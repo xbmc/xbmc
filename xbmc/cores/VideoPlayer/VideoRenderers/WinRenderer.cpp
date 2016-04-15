@@ -805,7 +805,7 @@ void CWinRenderer::RenderHQ()
 {
   m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
                        , m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
-                       , (m_renderMethod == RENDER_DXVA && g_Windowing.UseLimitedColor()));
+                       , (m_renderMethod == RENDER_DXVA && g_Windowing.UseLimitedColor() && !g_advancedSettings.m_DXVAPassColorRange));
 }
 
 void CWinRenderer::RenderHW(DWORD flags)
@@ -917,8 +917,11 @@ void CWinRenderer::RenderHW(DWORD flags)
     }
 
     // render frame
+    SHADER_METHOD method = g_advancedSettings.m_DXVAPassColorRange 
+                         ? SHADER_METHOD_RENDER_TEXTURE_NOBLEND
+                         : SHADER_METHOD_RENDER_TEXTURE_BLEND;
     CRect tu = { dst.x1 / m_destWidth, dst.y1 / m_destHeight, dst.x2 / m_destWidth, dst.y2 / m_destHeight };
-    CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_BLEND);
+    CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, method);
 
     if (stereoHack)
       g_Windowing.SetViewPort(oldViewPort);
