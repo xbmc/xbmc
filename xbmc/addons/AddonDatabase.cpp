@@ -404,7 +404,9 @@ bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
         "SELECT addon.version, repo.addonID AS repoID FROM addon "
         "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addon.id "
         "JOIN repo ON repo.id=addonlinkrepo.idRepo "
-        "WHERE NOT EXISTS (SELECT * FROM installed WHERE installed.addonID=repoID AND installed.enabled=0) "
+        "WHERE "
+        "repo.checksum IS NOT NULL AND repo.checksum != '' "
+        "AND EXISTS (SELECT * FROM installed WHERE installed.addonID=repoID AND installed.enabled=1) "
         "AND NOT EXISTS (SELECT * FROM  broken WHERE broken.addonID=addon.addonID) "
         "AND addon.addonID='%s'", addonId.c_str());
 
