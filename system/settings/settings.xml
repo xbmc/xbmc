@@ -2599,6 +2599,16 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="audiooutput.volumesteps" type="integer" label="1302" help="36442">
+          <level>1</level>
+          <default>90</default>
+          <constraints>
+            <minimum>10</minimum>
+            <step>5</step>
+            <maximum>90</maximum>
+          </constraints>
+          <control type="list" format="integer" />
+        </setting>
       </group>
       <group id="3">
         <setting id="audiooutput.passthrough" type="boolean" label="348" help="36368">

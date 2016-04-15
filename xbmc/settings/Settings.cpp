@@ -363,6 +363,7 @@ const std::string CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH = "audiooutput.
 const std::string CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH = "audiooutput.dtspassthrough";
 const std::string CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH = "audiooutput.truehdpassthrough";
 const std::string CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH = "audiooutput.dtshdpassthrough";
+const std::string CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS = "audiooutput.volumesteps";
 const std::string CSettings::SETTING_INPUT_PERIPHERALS = "input.peripherals";
 const std::string CSettings::SETTING_INPUT_ENABLEMOUSE = "input.enablemouse";
 const std::string CSettings::SETTING_INPUT_CONTROLLERCONFIG = "input.controllerconfig";
@@ -1078,6 +1079,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS);
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();

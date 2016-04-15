@@ -2289,11 +2289,16 @@ bool CApplication::OnAction(const CAction &action)
       if (m_muted)
         UnMute();
       float volume = m_volumeLevel;
+      int volumesteps = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS);
+      // sanity check
+      if (volumesteps == 0)
+        volumesteps = 90;
+
 // Android has steps based on the max available volume level
 #if defined(TARGET_ANDROID)
       float step = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / CXBMCApp::GetMaxSystemVolume();
 #else
-      float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / VOLUME_CONTROL_STEPS;
+      float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / volumesteps;
 
       if (action.GetRepeat())
         step *= action.GetRepeat() * 50; // 50 fps
