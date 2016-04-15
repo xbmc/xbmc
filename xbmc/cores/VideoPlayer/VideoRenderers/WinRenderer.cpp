@@ -291,8 +291,6 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if (!buf)
     return -1;
 
-  buf->StartDecode();
-
   image->cshift_x = 1;
   image->cshift_y = 1;
   image->height = m_sourceHeight;
@@ -315,8 +313,6 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
 void CWinRenderer::ReleaseImage(int source, bool preserve)
 {
-  if (m_VideoBuffers[source] != nullptr)
-    m_VideoBuffers[source]->StartRender();
 }
 
 void CWinRenderer::Reset()
@@ -347,10 +343,16 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
 
 void CWinRenderer::FlipPage(int source)
 {
+  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
+    m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = NextYV12Texture();;
+
+  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
+    m_VideoBuffers[m_iYV12RenderBuffer]->StartRender();
 
   return;
 }
@@ -547,6 +549,9 @@ void CWinRenderer::SelectPSVideoFilter()
 void CWinRenderer::UpdatePSVideoFilter()
 {
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  if (!res.bFullScreen)
+    res = g_graphicsContext.GetResInfo(RES_DESKTOP);
+
   m_destWidth = res.iScreenWidth;
   m_destHeight = res.iScreenHeight;
 
@@ -805,7 +810,7 @@ void CWinRenderer::RenderHQ()
 {
   m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
                        , m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
-                       , (m_renderMethod == RENDER_DXVA && g_Windowing.UseLimitedColor()));
+                       , false);
 }
 
 void CWinRenderer::RenderHW(DWORD flags)
@@ -918,7 +923,7 @@ void CWinRenderer::RenderHW(DWORD flags)
 
     // render frame
     CRect tu = { dst.x1 / m_destWidth, dst.y1 / m_destHeight, dst.x2 / m_destWidth, dst.y2 / m_destHeight };
-    CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_BLEND);
+    CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
 
     if (stereoHack)
       g_Windowing.SetViewPort(oldViewPort);
@@ -996,7 +1001,6 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
   m_VideoBuffers[index]->StartDecode();
   m_VideoBuffers[index]->Clear();
-  m_VideoBuffers[index]->StartRender();
 
   CLog::Log(LOGDEBUG, "created video buffer %i", index);
   return true;
