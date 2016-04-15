@@ -1990,9 +1990,10 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
 
 std::string CGUIMediaWindow::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
-  if (lower == "$root" || lower == "root")
+  if (StringUtils::EqualsNoCase(dir, "$root") ||
+      StringUtils::EqualsNoCase(dir, "root"))
     return "";
+
   return dir;
 }
 
