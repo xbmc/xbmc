@@ -24,7 +24,6 @@ SRCS += FileReaderFile.cpp
 SRCS += FTPDirectory.cpp
 SRCS += FTPParse.cpp
 SRCS += HTTPDirectory.cpp
-SRCS += HTTPFile.cpp
 SRCS += IDirectory.cpp
 SRCS += IFile.cpp
 SRCS += ImageFile.cpp

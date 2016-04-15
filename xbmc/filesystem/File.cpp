@@ -243,10 +243,7 @@ bool CFile::CURLAddOption(XFILE::CURLOPTIONTYPE type, const char* name, const ch
 
 bool CFile::CURLOpen(unsigned int flags)
 {
-  if (flags & XFILE::READ_AFTER_WRITE)
-    return OpenForWrite(m_curl, true);
-  else
-    return Open(m_curl, flags);
+  return Open(m_curl, flags);
 }
 
 bool CFile::Open(const std::string& strFileName, const unsigned int flags)
