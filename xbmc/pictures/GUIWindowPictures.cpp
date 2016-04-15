@@ -114,11 +114,6 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("pictures"));
 
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-      if (!CGUIMediaWindow::OnMessage(message))
-        return false;
-
-      return true;
     }
     break;
 
