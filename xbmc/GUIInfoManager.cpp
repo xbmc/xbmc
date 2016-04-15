@@ -10090,11 +10090,15 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_DBID:
     if (item->HasVideoInfoTag())
       {
-        return StringUtils::Format("%i", item->GetVideoInfoTag()->m_iDbId);
+        int dbId = item->GetVideoInfoTag()->m_iDbId;
+        if (dbId > -1)
+          return StringUtils::Format("%i", dbId);
       }
     if (item->HasMusicInfoTag())
       {
-        return StringUtils::Format("%i", item->GetMusicInfoTag()->GetDatabaseId());
+        int dbId = item->GetMusicInfoTag()->GetDatabaseId();
+        if (dbId > -1)
+          return StringUtils::Format("%i", dbId);
       }
     break;
   case LISTITEM_STEREOSCOPIC_MODE:
