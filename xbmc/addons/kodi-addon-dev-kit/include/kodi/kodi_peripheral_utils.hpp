@@ -21,6 +21,7 @@
 
 #include "kodi_peripheral_types.h"
 
+#include <array> // Requires c++11
 #include <cstring>
 #include <map>
 #include <string>
@@ -359,7 +360,7 @@ namespace ADDON
    *    Motor:
    *       - driver index
    */
-  class DriverPrimitive
+  struct DriverPrimitive
   {
   protected:
     /*!
@@ -569,19 +570,12 @@ namespace ADDON
   class JoystickFeature
   {
   public:
-    const unsigned int MAX_PRIMITIVES = 4;
+    enum { MAX_PRIMITIVES = 4 };
 
-    JoystickFeature(void) :
-      m_type(JOYSTICK_FEATURE_TYPE_UNKNOWN)
-    {
-      m_primitives.resize(MAX_PRIMITIVES);
-    }
-
-    JoystickFeature(const std::string& name, JOYSTICK_FEATURE_TYPE type) :
+    JoystickFeature(const std::string& name = "", JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN) :
       m_name(name),
       m_type(type)
     {
-      m_primitives.resize(MAX_PRIMITIVES);
     }
 
     JoystickFeature(const JoystickFeature& other)
@@ -593,7 +587,6 @@ namespace ADDON
       m_name(feature.name ? feature.name : ""),
       m_type(feature.type)
     {
-      m_primitives.resize(MAX_PRIMITIVES);
       switch (m_type)
       {
         case JOYSTICK_FEATURE_TYPE_SCALAR:
@@ -701,7 +694,7 @@ namespace ADDON
   private:
     std::string                  m_name;
     JOYSTICK_FEATURE_TYPE        m_type;
-    std::vector<DriverPrimitive> m_primitives;
+    std::array<DriverPrimitive, MAX_PRIMITIVES> m_primitives;
   };
 
   typedef PeripheralVector<JoystickFeature, JOYSTICK_FEATURE> JoystickFeatures;
