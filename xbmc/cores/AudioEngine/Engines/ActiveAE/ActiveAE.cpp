@@ -1507,8 +1507,8 @@ void CActiveAE::FlushEngine()
 
 void CActiveAE::ClearDiscardedBuffers()
 {
-  std::list<CActiveAEBufferPool*>::iterator it;
-  for (it=m_discardBufferPools.begin(); it!=m_discardBufferPools.end(); ++it)
+  auto it = m_discardBufferPools.begin();
+  while (it != m_discardBufferPools.end())
   {
     CActiveAEBufferPoolResample *rbuf = dynamic_cast<CActiveAEBufferPoolResample*>(*it);
     if (rbuf)
@@ -1520,8 +1520,10 @@ void CActiveAE::ClearDiscardedBuffers()
     {
       delete (*it);
       CLog::Log(LOGDEBUG, "CActiveAE::ClearDiscardedBuffers - buffer pool deleted");
-      m_discardBufferPools.erase(it);
+      it = m_discardBufferPools.erase(it);
     }
+    else
+      ++it;
   }
 }
 
