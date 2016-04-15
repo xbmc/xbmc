@@ -582,7 +582,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
 
 void CGUIWindowPictures::OnItemInfo(int itemNumber)
 {
-  CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
+  CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (!item)
     return;
   if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
