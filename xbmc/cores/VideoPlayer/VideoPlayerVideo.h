@@ -45,17 +45,15 @@ class CDroppingStats
 {
 public:
   void Reset();
-  void AddOutputDropGain(double pts, double frametime);
+  void AddOutputDropGain(double pts, int frames);
   struct CGain
   {
-    double gain;
+    int frames;
     double pts;
   };
   std::deque<CGain> m_gain;
   double m_totalGain;
   double m_lastPts;
-  unsigned int m_lateFrames;
-  unsigned int m_dropRequests;
 };
 
 class CVideoPlayerVideo : public CThread, public IDVDStreamPlayerVideo

@@ -180,6 +180,10 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
                          (render_framerate != config_framerate);
 
     CSingleLock lock(m_statelock);
+    
+    m_fps = fps;
+    CheckEnableClockSync();
+
     if (m_width == picture.iWidth &&
         m_height == picture.iHeight &&
         m_dwidth == picture.iDisplayWidth &&
@@ -191,7 +195,9 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
         m_orientation == orientation &&
         m_NumberBuffers == buffers &&
         m_pRenderer != NULL)
+    {
       return true;
+    }
   }
 
   std::string formatstr = GetRenderFormatName(picture.format);
@@ -299,7 +305,7 @@ bool CRenderManager::Configure()
     m_bTriggerUpdateResolution = true;
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
-    m_sleeptime = 1.0;
+    m_lateframes = -1.0;
     m_presentevent.notifyAll();
     m_renderedOverlay = false;
     m_renderDebug = false;
@@ -1067,10 +1073,7 @@ void CRenderManager::UpdateResolution()
         g_graphicsContext.SetVideoResolution(res);
         UpdateDisplayLatency();
 
-        if (fabs(m_fps - g_graphicsContext.GetFPS()) < 0.01)
-        {
-          m_clockSync.m_enabled = true;
-        }
+        CheckEnableClockSync();
       }
       m_bTriggerUpdateResolution = false;
       m_playerPort->VideoParamsChange();
@@ -1348,11 +1351,16 @@ void CRenderManager::PrepareNextRender()
       m_QueueSkip++;
     }
 
+    int lateframes = (renderPts - m_Queue[idx].pts) / frametime;
+    if (lateframes)
+      m_lateframes += lateframes;
+    else
+      m_lateframes = 0;
+    
     m_presentstep = PRESENT_FLIP;
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
     m_queued.pop_front();
-    m_sleeptime = m_Queue[idx].pts - renderPts + frametime;
     m_presentpts = m_Queue[idx].pts - totalLatency;
     m_presentevent.notifyAll();
   }
@@ -1370,12 +1378,25 @@ void CRenderManager::DiscardBuffer()
   m_presentevent.notifyAll();
 }
 
-bool CRenderManager::GetStats(double &sleeptime, double &pts, int &queued, int &discard)
+bool CRenderManager::GetStats(int &lateframes, double &pts, int &queued, int &discard)
 {
   CSingleLock lock(m_presentlock);
-  sleeptime = m_sleeptime;
+  lateframes = m_lateframes / 10;;
   pts = m_presentpts;
   queued = m_queued.size();
   discard  = m_discard.size();
   return true;
+}
+
+void CRenderManager::CheckEnableClockSync()
+{
+  if (fabs(m_fps - g_graphicsContext.GetFPS()) < 0.01)
+  {
+    m_clockSync.m_enabled = true;
+  }
+  else
+  {
+    m_clockSync.m_enabled = true;
+    m_dvdClock.SetSpeedAdjust(0);
+  }
 }

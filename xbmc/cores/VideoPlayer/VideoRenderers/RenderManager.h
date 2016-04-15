@@ -147,7 +147,7 @@ public:
    * Can be called by player for lateness detection. This is done best by
    * looking at the end of the queue.
    */
-  bool GetStats(double &sleeptime, double &pts, int &queued, int &discard);
+  bool GetStats(int &lateframes, double &pts, int &queued, int &discard);
 
   /**
    * Video player call this on flush in oder to discard any queued frames
@@ -172,6 +172,7 @@ protected:
   void ManageCaptures();
 
   void UpdateDisplayLatency();
+  void CheckEnableClockSync();
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
@@ -239,7 +240,7 @@ protected:
   unsigned int m_orientation;
   int m_NumberBuffers;
 
-  double m_sleeptime;
+  int m_lateframes;
   double m_presentpts;
   EPRESENTSTEP m_presentstep;
   int m_presentsource;
