@@ -1521,7 +1521,6 @@ void CActiveAE::ClearDiscardedBuffers()
       delete (*it);
       CLog::Log(LOGDEBUG, "CActiveAE::ClearDiscardedBuffers - buffer pool deleted");
       m_discardBufferPools.erase(it);
-      return;
     }
   }
 }
