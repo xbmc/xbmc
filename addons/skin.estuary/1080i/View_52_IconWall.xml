@@ -20,7 +20,7 @@
 				<onup>52</onup>
 				<ondown>52</ondown>
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
-				<visible>Container.Content() | Container.Content(tags) | Container.Content(years) | Container.Content(genres) | Container.Content(countries) | Container.Content(studios) | Container.Content(playlists) | Container.Content(unknown)</visible>
+				<visible>Container.Content() | Container.Content(tags) | Container.Content(years) | Container.Content(roles) | Container.Content(genres) | Container.Content(countries) | Container.Content(studios) | Container.Content(playlists) | Container.Content(unknown)</visible>
 				<viewtype label="31099">icon</viewtype>
 				<itemlayout height="248" width="440" condition="Container.Content() | Container.Content(unknown) | Container.Content(tags) | Container.Content(files) | Container.Content(playlists) | [Container.Content(studios) + System.HasAddon(resource.images.studios.white)]">
 					<control type="group">
@@ -81,11 +81,13 @@
 							<width>400</width>
 							<height>245</height>
 							<texture border="40">buttons/button-nofo.png</texture>
+							<animation effect="fade" start="0" end="100" time="0">Unfocus</animation>
+							<animation effect="fade" start="100" end="0" time="0">Focus</animation>
 						</control>
 						<control type="image">
 							<width>400</width>
 							<height>245</height>
-							<texture border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texture>
+							<texture border="40" colordiffuse="button_focus">buttons/button-fo.png</texture>
 							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
 						</control>
 						<control type="image">
@@ -125,7 +127,7 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<itemlayout height="124" width="348" condition="Container.Content(genres) | Container.Content(years) | Container.Content(countries) | [Container.Content(studios) + !System.HasAddon(resource.images.studios.white)]">
+				<itemlayout height="124" width="348" condition="Container.Content(genres) | Container.Content(years) | Container.Content(roles) | Container.Content(countries) | [Container.Content(studios) + !System.HasAddon(resource.images.studios.white)]">
 					<control type="group">
 						<control type="image">
 							<width>330</width>
@@ -145,7 +147,7 @@
 						</control>
 					</control>
 				</itemlayout>
-				<focusedlayout height="124" width="348" condition="Container.Content(genres) | Container.Content(years) | Container.Content(countries) | [Container.Content(studios) + !System.HasAddon(resource.images.studios.white)]">
+				<focusedlayout height="124" width="348" condition="Container.Content(genres) | Container.Content(years) | Container.Content(roles) | Container.Content(countries) | [Container.Content(studios) + !System.HasAddon(resource.images.studios.white)]">
 					<control type="group">
 						<animation type="Focus" reversible="false">
 							<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
@@ -157,11 +159,13 @@
 							<width>330</width>
 							<height>124</height>
 							<texture border="40">buttons/button-nofo.png</texture>
+							<animation effect="fade" start="0" end="100" time="0">Unfocus</animation>
+							<animation effect="fade" start="100" end="0" time="0">Focus</animation>
 						</control>
 						<control type="image">
 							<width>330</width>
 							<height>124</height>
-							<texture border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texture>
+							<texture border="40" colordiffuse="button_focus">buttons/button-fo.png</texture>
 							<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
 						</control>
 						<control type="textbox">

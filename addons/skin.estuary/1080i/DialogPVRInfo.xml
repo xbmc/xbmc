@@ -5,6 +5,16 @@
 	<onunload>ClearProperty(infobackground,home)</onunload>
 	<controls>
 		<control type="image">
+			<texture fallback="special://skin/extras/backgrounds/SKINDEFAULT.jpg">$VAR[GlobalFanartVar]</texture>
+			<width>1920</width>
+			<height>1080</height>
+			<aspectratio align="center">scale</aspectratio>
+			<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
+			<animation effect="fade" start="100" end="75" time="0" condition="true">Conditional</animation>
+			<visible>Window.isActive(fullscreenvideo)</visible>
+		</control>
+		<control type="image">
 			<include>OpenClose_Left</include>
 			<left>114</left>
 			<top>236</top>

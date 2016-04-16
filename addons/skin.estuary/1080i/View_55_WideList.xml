@@ -32,8 +32,8 @@
 				<onup>55</onup>
 				<ondown>55</ondown>
 				<viewtype label="$LOCALIZE[31107]">list</viewtype>
-				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos)</visible>
-				<focusedlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
+				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos) | Container.Content(videos)</visible>
+				<focusedlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos)">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -58,7 +58,6 @@
 						<aligny>center</aligny>
 						<font>font12</font>
 						<label>$INFO[ListItem.Year]</label>
-						<textcolor>button_focus</textcolor>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
@@ -81,7 +80,6 @@
 						<aligny>center</aligny>
 						<font>font12</font>
 						<label>$INFO[ListItem.Label2]</label>
-						<textcolor>grey</textcolor>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="image">
@@ -104,7 +102,7 @@
 						<visible>!Control.HasFocus(55)</visible>
 					</control>
 				</focusedlayout>
-				<itemlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed)">
+				<itemlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos)">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -196,7 +194,6 @@
 				<aligny>center</aligny>
 				<font>font12</font>
 				<label>$INFO[ListItem.Label2]</label>
-				<textcolor>grey</textcolor>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 		</focusedlayout>
@@ -274,7 +271,6 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font12</font>
-				<textcolor>grey</textcolor>
 				<label>$VAR[AddonsLabel2Var]</label>
 			</control>
 		</focusedlayout>

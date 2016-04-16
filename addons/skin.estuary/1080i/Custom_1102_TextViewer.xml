@@ -55,7 +55,7 @@
 			<onclick>Down</onclick>
 			<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
 			<texturenofocus colordiffuse="button_focus">overlays/arrowdown.png</texturenofocus>
-			<visible>Control.IsVisible(3000) + !Integer.IsEqual(Container(2000).CurrentPage,Container(2000).NumPages)</visible>
+			<visible>Control.IsVisible(3000) + !String.IsEqual(Container(2000).CurrentPage,Container(2000).NumPages)</visible>
 			<animation delay="80" effect="fade" time="120">VisibleChange</animation>
 		</control>
 	</controls>

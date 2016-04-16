@@ -1,12 +1,14 @@
 TARGET=Textures.xbt
 TARGET_CURIAL=curial.xbt
 
-all: TEXTURES
+all: $(TARGET) $(TARGET_CURIAL)
 
 .PHONY: force
 
-TEXTURES:
+$(TARGET):
 	@TEXTUREPACKER@ -dupecheck -input . -output $(TARGET)
+
+$(TARGET_CURIAL):
 	@TEXTUREPACKER@ -dupecheck -input ../themes/curial -output $(TARGET_CURIAL)
 
 clean:

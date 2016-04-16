@@ -30,8 +30,8 @@
 					<aspectratio align="center" aligny="bottom">keep</aspectratio>
 				</control>
 				<control type="group">
-					<left>1650</left>
-					<top>20</top>
+					<left>1680</left>
+					<top>30</top>
 					<include>UserRatingCircle</include>
 				</control>
 				<control type="image">

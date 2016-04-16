@@ -58,7 +58,7 @@
 								<width>382</width>
 								<height>120</height>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<animation effect="fade" start="100" end="50" time="0">Unfocus</animation>
+								<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
 							</control>
 							<control type="label">
 								<left>20</left>
@@ -162,7 +162,7 @@
 				<top>795</top>
 				<onup>SetFocus(9000,99)</onup>
 				<onup>9000</onup>
-				<ondown>14200</ondown>
+				<ondown>SetFocus(9000,0)</ondown>
 				<include>OpenClose_Left</include>
 				<onright>400</onright>
 				<usecontrolcoords>true</usecontrolcoords>
@@ -176,7 +176,7 @@
 					<label>-</label>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 					<radioposx>55</radioposx>
 					<radioposy>0</radioposy>
@@ -197,7 +197,7 @@
 					<label>-</label>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 					<radioposx>35</radioposx>
 					<radioposy>0</radioposy>
@@ -221,7 +221,7 @@
 					<label>-</label>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 					<radioposx>55</radioposx>
 					<radioposy>0</radioposy>
