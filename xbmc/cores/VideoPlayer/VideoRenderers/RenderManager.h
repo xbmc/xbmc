@@ -44,8 +44,6 @@ namespace VAAPI { class CSurfaceHolder; }
 namespace VDPAU { class CVdpauRenderPicture; }
 struct DVDVideoPicture;
 
-#define ERRORBUFFSIZE 30
-
 class CWinRenderer;
 class CMMALRenderer;
 class CLinuxRenderer;
@@ -71,7 +69,6 @@ public:
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio();
   void FrameMove();
-  void FrameFinish();
   void FrameWait(int ms);
   bool HasFrame();
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
@@ -150,7 +147,7 @@ public:
    * Can be called by player for lateness detection. This is done best by
    * looking at the end of the queue.
    */
-  bool GetStats(double &sleeptime, double &pts, int &queued, int &discard);
+  bool GetStats(int &lateframes, double &pts, int &queued, int &discard);
 
   /**
    * Video player call this on flush in oder to discard any queued frames
@@ -175,6 +172,7 @@ protected:
   void ManageCaptures();
 
   void UpdateDisplayLatency();
+  void CheckEnableClockSync();
 
   CBaseRenderer *m_pRenderer;
   OVERLAY::CRenderer m_overlays;
@@ -242,7 +240,7 @@ protected:
   unsigned int m_orientation;
   int m_NumberBuffers;
 
-  double m_sleeptime;
+  int m_lateframes;
   double m_presentpts;
   EPRESENTSTEP m_presentstep;
   int m_presentsource;
@@ -250,6 +248,16 @@ protected:
   CEvent m_flushEvent;
   CDVDClock &m_dvdClock;
   IRenderMsg *m_playerPort;
+
+  struct CClockSync
+  {
+    void Reset();
+    double m_error;
+    int m_errCount;
+    double m_syncOffset;
+    bool m_enabled;
+  };
+  CClockSync m_clockSync;
 
   void RenderCapture(CRenderCapture* capture);
   void RemoveCaptures();

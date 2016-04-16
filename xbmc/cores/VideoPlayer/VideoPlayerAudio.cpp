@@ -530,14 +530,12 @@ bool CVideoPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   if (m_synctype == SYNC_DISCON)
   {
     double limit, error;
-    limit = DVD_MSEC_TO_TIME(10);
     error = syncerror;
 
-    double absolute;
-    double clock = m_pClock->GetClock(absolute);
-    if (m_pClock->Update(clock + error, absolute, limit - 0.001, "CVideoPlayerAudio::OutputPacket"))
+    double correction = m_pClock->ErrorAdjust(error, "CVideoPlayerAudio::OutputPacket");
+    if (correction != 0)
     {
-      m_dvdAudio.SetSyncErrorCorrection(-error);
+      m_dvdAudio.SetSyncErrorCorrection(-correction);
     }
   }
   m_dvdAudio.AddPackets(audioframe);

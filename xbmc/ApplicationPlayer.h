@@ -82,7 +82,6 @@ public:
   void FrameMove();
   bool HasFrame();
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
-  void AfterRender();
   void FlushRenderer();
   void SetRenderViewMode(int mode);
   float GetRenderAspectRatio();
