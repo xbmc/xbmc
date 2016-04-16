@@ -976,36 +976,35 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
 }
 
-CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(void) const
+CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
-  CPVRChannelPtr channel;
-  if (!m_epgTag)
-    channel = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
-
-  if (channel)
+  if (!m_epgTag && bCreate)
   {
-    CSingleLock lock(m_critSection);
-    if (!m_epgTag)
+    CPVRChannelPtr channel(g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId));
+    if (channel)
     {
       const CEpgPtr epg(channel->GetEPG());
       if (epg)
       {
-        if (m_iEpgUid != EPG_TAG_INVALID_UID)
+        CSingleLock lock(m_critSection);
+        if (!m_epgTag)
         {
-          m_epgTag = epg->GetTagByBroadcastId(m_iEpgUid);
-        }
-        else if (!m_bStartAnyTime && !m_bEndAnyTime)
-        {
-          // if no epg uid present, try to find a tag according to timer's start/end time
-          m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
-        }
+          if (m_iEpgUid != EPG_TAG_INVALID_UID)
+          {
+            m_epgTag = epg->GetTagByBroadcastId(m_iEpgUid);
+          }
+          else if (!m_bStartAnyTime && !m_bEndAnyTime)
+          {
+            // if no epg uid present, try to find a tag according to timer's start/end time
+            m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
+          }
 
-        if (m_epgTag)
-          m_epgTag->SetTimer(g_PVRTimers->GetById(m_iTimerId));
+          if (m_epgTag)
+            m_epgTag->SetTimer(g_PVRTimers->GetById(m_iTimerId));
+        }
       }
     }
   }
-
   return m_epgTag;
 }
 

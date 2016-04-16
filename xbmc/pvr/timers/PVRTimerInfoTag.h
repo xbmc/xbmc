@@ -114,9 +114,10 @@ namespace PVR
 
     /*!
      * @brief get the epg info tag associated with this timer, if any
+     * @param bCreate if true, try to find the epg tag if not yet set (lazy evaluation)
      * @return the epg info tag associated with this timer or null if there is no tag
      */
-    EPG::CEpgInfoTagPtr GetEpgInfoTag(void) const;
+    EPG::CEpgInfoTagPtr GetEpgInfoTag(bool bCreate = true) const;
 
     /*!
      * @brief check whether there is an epg info tag associated with this timer
