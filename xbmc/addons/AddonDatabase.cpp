@@ -568,7 +568,7 @@ bool CAddonDatabase::GetRepositoryContent(VECADDONS& addons)
   return GetRepositoryContent("", addons);
 }
 
-bool CAddonDatabase::GetRepositoryContent(const std::string& repoId, VECADDONS& addons)
+bool CAddonDatabase::GetRepositoryContent(const std::string& repository, VECADDONS& addons)
 {
   try
   {
@@ -577,23 +577,36 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& repoId, VECADDONS& 
 
     auto start = XbmcThreads::SystemClockMillis();
 
-    if (!repoId.empty())
+    // Ensure that the repositories we fetch from are enabled and valid.
+    std::vector<std::string> repoIds;
     {
-      // Report failure if repository has not been correctly fetched.
-      m_pDS->query(PrepareSQL("SELECT repo.id FROM repo WHERE repo.addonId='%s' AND "
-          "repo.checksum IS NOT NULL AND repo.checksum != ''", repoId.c_str()));
-      if (m_pDS->eof())
-        return false;
+      std::string sql = PrepareSQL(
+          " SELECT repo.id FROM repo"
+          " WHERE repo.checksum IS NOT NULL AND repo.checksum != ''"
+          " AND EXISTS (SELECT * FROM installed WHERE installed.addonID=repo.addonID AND"
+          " installed.enabled=1)");
+
+      if (!repository.empty())
+        sql += PrepareSQL(" AND repo.addonId='%s'", repository.c_str());
+
+      m_pDS->query(sql);
+      while (!m_pDS->eof())
+      {
+        repoIds.emplace_back(m_pDS->fv(0).get_asString());
+        m_pDS->next();
+      }
+    }
+
+    if (repoIds.empty())
+    {
+      CLog::Log(LOGDEBUG, "CAddonDatabase: no valid repository matching '%s'", repository.c_str());
+      return false;
     }
 
     std::string commonConstraint = PrepareSQL(
-        "JOIN addonlinkrepo ON addon.id=addonlinkrepo.idAddon "
-        "JOIN repo ON addonlinkrepo.idRepo=repo.id ");
-
-    if (!repoId.empty())
-      commonConstraint += PrepareSQL(" WHERE repo.addonId='%s'", repoId.c_str());
-
-    commonConstraint += PrepareSQL(" ORDER BY addon.addonID");
+        " JOIN addonlinkrepo ON addon.id=addonlinkrepo.idAddon"
+        " WHERE addonlinkrepo.idRepo IN (%s)"
+        " ORDER BY addon.addonID", StringUtils::Join(repoIds, ",").c_str());
 
     std::vector<CAddonBuilder> result;
     // Read basic info from the `addon` table
