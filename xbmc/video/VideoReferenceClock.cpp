@@ -93,8 +93,6 @@ void CVideoReferenceClock::CBUpdateClock(int NrVBlanks, uint64_t time, CVideoRef
     clock->m_VblankTime = time;
     clock->UpdateClock(NrVBlanks, true);
   }
-
-  clock->SendVblankSignal();
 }
 
 void CVideoReferenceClock::Process()
@@ -309,11 +307,6 @@ double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
   }
   else
     return -1;
-}
-
-void CVideoReferenceClock::SendVblankSignal()
-{
-  m_VblankEvent.Set();
 }
 
 #define MAXVBLANKDELAY 13LL
