@@ -33,6 +33,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "XBDateTime.h"
 #include "utils/params_check_macros.h"
@@ -92,6 +93,19 @@ public:
   static bool EndsWithNoCase(const std::string &str1, const char *s2);
 
   static std::string Join(const std::vector<std::string> &strings, const std::string& delimiter);
+  template <typename T, typename U>
+  static std::string Join(const std::map<T, U>& input_map, const std::string& delimiter = ",") {
+    if (input_map.empty())
+      return "";
+
+    std::ostringstream ss;
+    for (auto const& element : input_map)
+      ss << element.first << delimiter;
+    std::string result = ss.str();
+    result.erase(result.size() - delimiter.size());
+    return result;
+  }
+
   /*! \brief Splits the given input string using the given delimiter into separate strings.
 
    If the given input string is empty the result will be an empty array (not
