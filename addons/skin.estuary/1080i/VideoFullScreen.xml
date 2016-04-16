@@ -79,7 +79,6 @@
 						<font>font12</font>
 					</control>
 					<control type="progress">
-						<description>Progressbar</description>
 						<top>30</top>
 						<width>360</width>
 						<height>12</height>
@@ -95,7 +94,6 @@
 						<font>font12</font>
 					</control>
 					<control type="progress">
-						<description>Progressbar</description>
 						<top>90</top>
 						<width>360</width>
 						<height>12</height>

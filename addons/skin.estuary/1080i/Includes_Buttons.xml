@@ -203,7 +203,7 @@
 				<aligny>center</aligny>
 				<onclick>$PARAM[onclick]</onclick>
 				<font>-</font>
-				<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
+				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 				<radioposx>38</radioposx>
 				<radioposy>0</radioposy>
@@ -223,7 +223,7 @@
 			<height>142</height>
 			<align>center</align>
 			<aligny>top</aligny>
-			<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
+			<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 			<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 			<textoffsetx>35</textoffsetx>
 			<textoffsety>78</textoffsety>
@@ -247,7 +247,7 @@
 				<height>142</height>
 				<align>center</align>
 				<aligny>top</aligny>
-				<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
+				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 				<textoffsetx>35</textoffsetx>
 				<textoffsety>78</textoffsety>
@@ -277,7 +277,7 @@
 				<height>142</height>
 				<align>center</align>
 				<aligny>top</aligny>
-				<texturefocus border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texturefocus>
+				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 				<textoffsetx>35</textoffsetx>
 				<textoffsety>78</textoffsety>

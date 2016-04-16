@@ -98,7 +98,7 @@
 						<top>0</top>
 						<width>690</width>
 						<height>130</height>
-						<texture border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texture>
+						<texture border="40" colordiffuse="button_focus">buttons/button-fo.png</texture>
 						<visible>Control.HasFocus(52)</visible>
 					</control>
 					<control type="image">

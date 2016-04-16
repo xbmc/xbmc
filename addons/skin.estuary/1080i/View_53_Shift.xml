@@ -47,7 +47,7 @@
 					<pagecontrol>5199</pagecontrol>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<orientation>horizontal</orientation>
-					<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(musicvideos) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(mixed) | Container.Content(images)</visible>
+					<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(musicvideos) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(mixed) | Container.Content(images) | Container.Content(videos)</visible>
 					<onleft>53</onleft>
 					<onup>9000</onup>
 					<ondown>5199</ondown>

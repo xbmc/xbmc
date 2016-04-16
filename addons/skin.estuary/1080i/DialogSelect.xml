@@ -127,7 +127,6 @@
 						<width>700</width>
 						<height>60</height>
 						<font>font12</font>
-						<textcolor>grey</textcolor>
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
 				</focusedlayout>
@@ -168,7 +167,6 @@
 					<include content="DefaultDialogButton">
 						<param name="id" value="7" />
 						<param name="label" value="$LOCALIZE[222]" />
-						<param name="onclick" value="Dialog.Close(selectdialog)" />
 					</include>
 				</control>
 			</control>

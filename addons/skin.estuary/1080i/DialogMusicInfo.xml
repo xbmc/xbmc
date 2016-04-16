@@ -177,7 +177,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="40" colordiffuse="button_focus">buttons/button-theme-fo.png</texture>
+							<texture border="40" colordiffuse="button_focus">buttons/button-fo.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -295,7 +295,7 @@
 						</include>
 						<label>$LOCALIZE[31033]</label>
 						<onup>130</onup>
-						<onleft>440</onleft>
+						<onleft>12</onleft>
 						<onright>120</onright>
 						<onup condition="Integer.IsGreater(Container(5000).CurrentItem,3)">210</onup>
 						<onup condition="!Integer.IsGreater(Container(5000).CurrentItem,3)">138</onup>
@@ -328,6 +328,16 @@
 					<onclick>ActivateWindow(1104)</onclick>
 					<visible>String.IsEqual(ListItem.DBType,artist) | String.IsEqual(ListItem.DBType,album)</visible>
 				</control>
+				<control type="radiobutton" id="440">
+					<label>$LOCALIZE[31114]</label>
+					<include content="VideoInfoButtonsCommon">
+						<param name="icon" value="icons/infodialogs/trailer.png" />
+					</include>
+					<onclick>Action(close)</onclick>
+					<visible>System.hasAddon(script.extendedinfo)</visible>
+					<onclick condition="!String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Album])</onclick>
+					<onclick condition="String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
+				</control>
 				<include content="InfoDialogButton">
 					<param name="id" value="6" />
 					<param name="icon" value="icons/infodialogs/update.png" />
@@ -343,16 +353,6 @@
 					<param name="icon" value="icons/infodialogs/choose_image.png" />
 					<param name="label" value="$LOCALIZE[20413]" />
 				</include>
-				<control type="radiobutton" id="440">
-					<label>$LOCALIZE[31114]</label>
-					<include content="VideoInfoButtonsCommon">
-						<param name="icon" value="icons/infodialogs/trailer.png" />
-					</include>
-					<onclick>Action(close)</onclick>
-					<visible>System.hasAddon(script.extendedinfo)</visible>
-					<onclick condition="!String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Album])</onclick>
-					<onclick condition="String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
-				</control>
 			</control>
 			<include content="LeftRightArrows">
 				<param name="list_id" value="50" />

@@ -526,7 +526,6 @@
 						<aligny>center</aligny>
 						<font>font12</font>
 						<label>$INFO[ListItem.Label2]</label>
-						<textcolor>grey</textcolor>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 				</focusedlayout>
@@ -928,6 +927,11 @@
 						<include>BreadcrumbsLabel</include>
 						<visible>![Container.Content() + Window.IsActive(videos)]</visible>
 						<visible>![Window.IsActive(PVR) | Window.IsActive(MyPVRTimers.xml)]</visible>
+					</control>
+					<control type="label">
+						<label>$INFO[Container.PluginCategory, / ]</label>
+						<include>BreadcrumbsLabel</include>
+						<visible>!IsEmpty(Container.PluginCategory)</visible>
 					</control>
 					<control type="label">
 						<label>$INFO[Control.GetLabel(10),: ]</label>
