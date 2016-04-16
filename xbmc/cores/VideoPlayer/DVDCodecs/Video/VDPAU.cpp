@@ -2460,7 +2460,7 @@ void CMixer::FiniCycle()
   // Keep video surfaces for one 2 cycles longer than used
   // by mixer. This avoids blocking in decoder.
   // NVidia recommends num_ref + 5
-  int surfToKeep = 5;
+  size_t surfToKeep = 5;
 
   if (m_mixerInput.size() > 0 &&
       (m_mixerInput[0].videoSurface == VDP_INVALID_HANDLE))
