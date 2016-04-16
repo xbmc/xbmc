@@ -20,7 +20,9 @@ install(FILES ${CORE_SOURCE_DIR}/tools/Linux/xbmc-xsession.desktop
         RENAME XBMC.desktop
         DESTINATION share/xsessions)
                 
-install(FILES ${CORE_SOURCE_DIR}/LICENSE.GPL
+install(FILES ${CORE_SOURCE_DIR}/copying.txt
+              ${CORE_SOURCE_DIR}/LICENSE.GPL
+              ${CORE_SOURCE_DIR}/version.txt
               ${CORE_SOURCE_DIR}/docs/README.freebsd
         DESTINATION share/doc/xbmc)
 

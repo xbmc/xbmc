@@ -14,28 +14,54 @@ else()
   set(USE_OPENGLES 0)
 endif()
 
+configure_file(${CORE_SOURCE_DIR}/project/cmake/${APP_NAME_LC}-config.cmake.in
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}-config.cmake @ONLY)
+
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC} @ONLY)
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.in
-                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone @ONLY)
+               ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone @ONLY)
 
 install(TARGETS ${APP_NAME_LC} DESTINATION ${libdir}/kodi)
 if(ENABLE_X11 AND XRANDR_FOUND)
   install(TARGETS ${APP_NAME_LC}-xrandr DESTINATION ${libdir}/${APP_NAME_LC})
 endif()
+
+if(NOT EXISTS ${libdir}/xbmc)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${libdir})")
+endif()
 install(FILES ${addon_bindings} DESTINATION ${includedir}/kodi)
-install(FILES ${cmake-files}
+if(NOT EXISTS ${includedir}/xbmc)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${includedir})")
+endif()
+
+install(FILES ${cmake_files} 
         DESTINATION ${libdir}/kodi)
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-config.cmake
+        DESTINATION ${libdir}/${APP_NAME_LC})
+install(FILES ${CORE_SOURCE_DIR}/project/cmake/xbmc-config.cmake.in
+        RENAME xbmc-config.cmake
+        DESTINATION ${libdir}/${APP_NAME_LC})
+
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
-                ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
+                 ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
         DESTINATION ${bindir})
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC} xbmc WORKING_DIRECTORY ${bindir})")
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}-standalone xbmc-standalone WORKING_DIRECTORY ${bindir})")
 
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
-               ${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop)
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop)
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/xsessions)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}.desktop xbmc.desktop WORKING_DIRECTORY ${datarootdir}/xsessions/)")
 
-install(FILES ${CORE_SOURCE_DIR}/LICENSE.GPL
+if(NOT EXISTS ${datarootdir}/xbmc)
+install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${datarootdir})")
+endif()
+
+install(FILES ${CORE_SOURCE_DIR}/copying.txt
+              ${CORE_SOURCE_DIR}/LICENSE.GPL
+              ${CORE_SOURCE_DIR}/version.txt
               ${CORE_SOURCE_DIR}/docs/README.linux
         DESTINATION ${datarootdir}/doc/kodi)
 
@@ -83,10 +109,28 @@ foreach(subdir ${build_dirs})
   endif()
 endforeach()
 
-install(FILES ${CORE_SOURCE_DIR}/media/icon48x48.png
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon16x16.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/16x16/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon22x22.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/22x22/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon24x24.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/24x24/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon32x32.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/32x32/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon48x48.png
         RENAME ${APP_NAME_LC}.png
         DESTINATION ${datarootdir}/icons/hicolor/48x48/apps)
-install(FILES ${CORE_SOURCE_DIR}/media/icon256x256.png
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon64x64.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/64x64/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon128x128.png
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/128x128/apps)
+install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon256x256.png
         RENAME ${APP_NAME_LC}.png
         DESTINATION ${datarootdir}/icons/hicolor/256x256/apps)
 
