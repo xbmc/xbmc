@@ -126,7 +126,7 @@ std::string CPVRRecordingsPath::GetSubDirectoryPath(const std::string &strPath) 
   std::string strUsePath(TrimSlashes(strPath));
 
   /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
-  if (!m_directoryPath.empty() && (strUsePath.size() <= m_directoryPath.size() || !StringUtils::StartsWith(strUsePath, m_directoryPath + "/")))
+  if (!m_directoryPath.empty() && (strUsePath.size() <= m_directoryPath.size() || !URIUtils::PathHasParent(strUsePath, m_directoryPath)))
     return strReturn;
 
   strUsePath.erase(0, m_directoryPath.size());

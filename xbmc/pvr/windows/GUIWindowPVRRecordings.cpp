@@ -29,6 +29,7 @@
 #include "input/Key.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
@@ -74,7 +75,7 @@ void CGUIWindowPVRRecordings::OnWindowLoaded()
 std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
 {
   const std::string basePath = CPVRRecordingsPath(m_bShowDeletedRecordings, m_bRadio);
-  return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
+  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
 std::string CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)

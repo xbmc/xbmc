@@ -172,11 +172,11 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = g_localizeStrings.Get(744);
 
   // Music Playlists
-  else if (URIUtils::PathStarts(path, "special://musicplaylists"))
+  else if (StringUtils::StartsWith(path, "special://musicplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   // Video Playlists
-  else if (URIUtils::PathStarts(path, "special://videoplaylists"))
+  else if (StringUtils::StartsWith(path, "special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())

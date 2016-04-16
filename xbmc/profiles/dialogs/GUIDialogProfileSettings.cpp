@@ -101,7 +101,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     std::string userDir = defaultDir;
     if (GetProfilePath(userDir, false)) // can't be the master user
     {
-      if (!StringUtils::StartsWith(userDir, defaultDir)) // user chose a different folder
+      if (!URIUtils::PathHasParent(userDir, defaultDir)) // user chose a different folder
         XFILE::CDirectory::Remove(URIUtils::AddFileToFolder("special://masterprofile/", defaultDir));
     }
     dialog->m_directory = userDir;

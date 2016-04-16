@@ -76,7 +76,7 @@ CHTTPPythonHandler::CHTTPPythonHandler(const HTTPRequest &request)
 
   // we need to map any requests to a specific WSGI webinterface to the root path
   std::string baseLocation = webinterface->GetBaseLocation();
-  if (!StringUtils::StartsWith(m_request.pathUrl, baseLocation))
+  if (!URIUtils::PathHasParent(m_request.pathUrl, baseLocation))
   {
     m_response.type = HTTPRedirect;
     m_response.status = MHD_HTTP_MOVED_PERMANENTLY;
