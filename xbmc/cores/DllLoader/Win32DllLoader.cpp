@@ -324,6 +324,10 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
 bool Win32DllLoader::NeedsHooking(const char *dllName)
 {
+  if ( !StringUtils::EndsWithNoCase(dllName, "libdvdcss-2.dll")
+  && !StringUtils::EndsWithNoCase(dllName, "libdvdnav.dll"))
+    return false;
+
   LibraryLoader *loader = DllLoaderContainer::GetModule(dllName);
   if (loader)
   {
@@ -334,34 +338,7 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
         return false;
     }
   }
-  std::wstring strdllNameW;
-  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(dllName), strdllNameW, false);
-  HMODULE hModule = GetModuleHandleW(strdllNameW.c_str());
-  if (hModule == NULL)
-    return false;
-
-  wchar_t filepathW[MAX_PATH];
-  GetModuleFileNameW(hModule, filepathW, MAX_PATH);
-  std::string dllPath;
-  g_charsetConverter.wToUTF8(filepathW, dllPath);
-
-  // compare this filepath with some special directories
-  std::string xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc");
-  std::string homePath = CSpecialProtocol::TranslatePath("special://home");
-  std::string tempPath = CSpecialProtocol::TranslatePath("special://temp");
-
-  //need a better version of this really
-  //We can ignore modules we know don't need any special file access
-  if (StringUtils::EndsWithNoCase(dllPath, "libcurl.dll") ||
-      StringUtils::EndsWithNoCase(dllPath, "libeay32.dll") ||
-      StringUtils::EndsWithNoCase(dllPath, "ssleay32.dll"))
-  {
-    return false;
-  }
-
-  return (StringUtils::StartsWith(dllPath, xbmcPath) ||
-          StringUtils::StartsWith(dllPath, homePath) ||
-          StringUtils::StartsWith(dllPath, tempPath));
+  return true;
 }
 
 void Win32DllLoader::RestoreImports()
