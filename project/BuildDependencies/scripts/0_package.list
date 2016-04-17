@@ -1,4 +1,4 @@
-; package.list should contain all file names of packages which are already in the "new" package format (the package contains the paths to the libraries 
+; package.list should contain all file names of packages which are already in the "new" package format (the package contains the paths to the libraries
 ; and headers relative to the XBMC root directory, stored in a zip container)
 ; example sqlite-3.7.12.1-win32.7z:
 ; -> (package name)\(relative path to file)
@@ -39,7 +39,7 @@ libxslt-1.1.26_1-win32.7z
 libyajl-2.0.1-win32.7z
 libzlib-vc100-1.2.5-win32.7z
 mysql-connector-c-6.1.6-win32-vc140.7z
-openssl-1.0.2g-win32-vc140.7z
+openssl-1.0.2g-win32-vc140-v2.7z
 pcre-8.37-win32-vc140-v3.7z
 pillow-3.1.0-win32-vc140.7z
 python-2.7.11-win32-vc140-v2.7z
