@@ -86,6 +86,14 @@ DLLEXPORT char* XBMC_translate_special(void *hdl, void* cb, const char* source)
   return ((CB_AddOnLib*)cb)->TranslateSpecialProtocol(source);
 }
 
+DLLEXPORT char* XBMC_encode_base64(void *hdl, void* cb, const uint8_t* data, const size_t data_size)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->EncodeBase64(data, data_size);
+}
+
 DLLEXPORT void XBMC_queue_notification(void *hdl, void* cb, const queue_msg_t type, const char *msg)
 {
   if (cb == NULL)
