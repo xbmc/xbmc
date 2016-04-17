@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2005-2014 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,23 +18,7 @@
  *
  */
 
-#if defined(HAS_IMXVPU)
 
-#include "video/videosync/VideoSync.h"
-#include "guilib/DispResource.h"
+#include "IMX.h"
 
-class CVideoSyncIMX : public CVideoSync, IDispResource
-{
-public:
-  CVideoSyncIMX(CVideoReferenceClock *clock);
-  virtual ~CVideoSyncIMX();
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(volatile bool& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void OnResetDisplay();
-private:
-  volatile bool m_abort;
-};
-
-#endif
+CIMX g_IMX;
