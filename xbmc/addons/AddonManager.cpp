@@ -20,6 +20,7 @@
 
 #include "AddonManager.h"
 
+#include <algorithm>
 #include <iterator>
 #include <memory>
 #include <utility>
@@ -514,22 +515,25 @@ bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
   CSingleLock lock(m_critSection);
 
   // get all addons
-  VECADDONS installableAddons;
-  if (!m_database.GetRepositoryContent(installableAddons))
+  if (!m_database.GetRepositoryContent(addons))
     return false;
 
   // go through all addons and remove all that are already installed
-  for (const auto& addon : installableAddons)
-  {
-    // check if the addon matches the provided addon type
-    if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type && !addon->IsType(type))
-      continue;
 
-    if (!CanAddonBeInstalled(addon))
-      continue;
+  addons.erase(std::remove_if(addons.begin(), addons.end(),
+    [this, type](const AddonPtr& addon)
+    {
+      bool bErase = false;
 
-    addons.push_back(addon);
-  }
+      // check if the addon matches the provided addon type
+      if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type && !addon->IsType(type))
+        bErase = true;
+
+      if (!this->CanAddonBeInstalled(addon))
+        bErase = true;
+
+      return bErase;
+    }), addons.end());
 
   return true;
 }
