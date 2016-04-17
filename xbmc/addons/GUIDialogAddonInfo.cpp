@@ -46,6 +46,7 @@
 #include "Util.h"
 #include "interfaces/builtins/Builtins.h"
 
+#include <functional>
 #include <utility>
 
 #define CONTROL_BTN_INSTALL          6
@@ -217,12 +218,8 @@ void CGUIDialogAddonInfo::UpdateControls()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, !isRepo);
 }
 
-static const std::string LOCAL_CACHE = "special_local_cache";
+static const std::string LOCAL_CACHE = "\\0_local_cache"; // \0 to give it the lowest priority when sorting
 
-static bool CompareVersion(const std::pair<AddonVersion, std::string>& lhs, const std::pair<AddonVersion, std::string>& rhs)
-{
-  return lhs.first > rhs.first;
-};
 
 int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::string>>& versions)
 {
@@ -231,7 +228,7 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
   dialog->SetHeading(CVariant{21338});
   dialog->SetUseDetails(true);
 
-  std::stable_sort(versions.begin(), versions.end(), CompareVersion);
+  std::sort(versions.begin(), versions.end(), std::greater<std::pair<AddonVersion, std::string>>());
 
   for (const auto& versionInfo : versions)
   {
