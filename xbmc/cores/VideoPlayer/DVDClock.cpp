@@ -40,7 +40,7 @@ CDVDClock::CDVDClock()
   m_speedAdjust = 0;
   m_startClock = 0;
   m_vSyncAdjust = 0;
-  m_frameTime = DVD_TIME_BASE / 60;
+  m_frameTime = DVD_TIME_BASE / 60.0;
 
   m_videoRefClock.reset(new CVideoReferenceClock());
   m_lastSystemTime = m_videoRefClock->GetTime();
