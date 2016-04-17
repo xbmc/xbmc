@@ -107,15 +107,15 @@ void CDebugRenderer::CRenderer::Render(int idx)
 {
   std::vector<COverlay*> render;
   std::vector<SElement>& list = m_buffers[idx];
-  int posY = 40;
-  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
+  int posY = 0;
+  for (std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
   {
     COverlay* o = nullptr;
 
     if (it->overlay_dvd)
       o = Convert(it->overlay_dvd, it->pts);
 
-    if(!o)
+    if (!o)
       continue;
 
     COverlayText *text = dynamic_cast<COverlayText*>(o);
@@ -125,11 +125,11 @@ void CDebugRenderer::CRenderer::Render(int idx)
     o->m_pos = COverlay::POSITION_ABSOLUTE;
     o->m_align = COverlay::ALIGN_SCREEN;
     o->m_x = 10 + o->m_width / 2;
-    o->m_y = posY;
+    o->m_y = posY + o->m_height;
     OVERLAY::CRenderer::Render(o, 0);
 
-    posY += 40;
+    posY = o->m_y;
   }
-  
+
   ReleaseUnused();
 }
