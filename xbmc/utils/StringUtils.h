@@ -33,7 +33,10 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <sstream>
+#include <locale>
 
+#include "LangInfo.h"
 #include "XBDateTime.h"
 #include "utils/params_check_macros.h"
 
@@ -173,6 +176,24 @@ public:
   static double CompareFuzzy(const std::string &left, const std::string &right);
   static int FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore);
   static bool ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords);
+
+  /*! \brief Format the string with locale separators.
+
+  Format the string with locale separators.
+  For example 10000.57 in en-us is '10,000.57' but in italian is '10.000,57'
+
+  \param param String to format
+  \return Formatted string
+  */
+  template<typename T>
+  static std::string FormatNumber(T num)
+  {
+    std::stringstream ss;
+    ss.imbue(g_langInfo.GetOriginalLocale());
+    ss.precision(1);
+    ss << std::fixed << num;
+    return ss.str();
+  }
 
   /*! \brief Escapes the given string to be able to be used as a parameter.
 

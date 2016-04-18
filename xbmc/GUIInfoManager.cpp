@@ -8382,12 +8382,10 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (m_currentFile->GetMusicInfoTag()->GetRating() > 0.f)
     {
       if (m_currentFile->GetMusicInfoTag()->GetRating() > 0)
-        strRatingAndVotes = StringUtils::Format("%.1f",
-          m_currentFile->GetMusicInfoTag()->GetRating());
+        strRatingAndVotes = StringUtils::FormatNumber(m_currentFile->GetMusicInfoTag()->GetRating());
       else
-        strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
-          m_currentFile->GetMusicInfoTag()->GetRating(),
-          m_currentFile->GetMusicInfoTag()->GetVotes());
+        strRatingAndVotes = FormatRatingAndVotes(m_currentFile->GetMusicInfoTag()->GetRating(),
+                                                 m_currentFile->GetMusicInfoTag()->GetVotes());
     }
     return strRatingAndVotes;
   }
@@ -8612,7 +8610,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         std::string strRating;
         float rating = m_currentFile->GetVideoInfoTag()->GetRating().rating;
         if (rating > 0.f)
-          strRating = StringUtils::Format("%.1f", rating);
+          strRating = StringUtils::FormatNumber(rating);
         return strRating;
       }
       break;
@@ -8623,12 +8621,9 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         if (rating.rating > 0.f)
         {
           if (rating.votes == 0)
-            strRatingAndVotes = StringUtils::Format("%.1f",
-                                                    rating.rating);
+            strRatingAndVotes = StringUtils::FormatNumber(rating.rating);
           else
-            strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
-                                                    rating.rating,
-                                                    rating.votes);
+            strRatingAndVotes = FormatRatingAndVotes(rating.rating, rating.votes);
         }
         return strRatingAndVotes;
       }
@@ -8641,8 +8636,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       return strUserRating;
     }
     case VIDEOPLAYER_VOTES:
-      return StringUtils::Format("%i",
-        m_currentFile->GetVideoInfoTag()->GetRating().votes);
+      return StringUtils::FormatNumber(m_currentFile->GetVideoInfoTag()->GetRating().votes);
     case VIDEOPLAYER_YEAR:
       {
         std::string strYear;
@@ -9215,13 +9209,13 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET) < (int)m_listitemProperties.size())
   { // grab the rating
     std::string rating = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET)];
-    return StringUtils::Format("%.1f", item->GetVideoInfoTag()->GetRating(rating).rating);
+    return StringUtils::FormatNumber(item->GetVideoInfoTag()->GetRating(rating).rating);
   }
 
   if (info >= LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET) < (int)m_listitemProperties.size())
   { // grab the votes
     std::string votes = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET)];
-    return StringUtils::Format("%i", item->GetVideoInfoTag()->GetRating(votes).votes);
+    return StringUtils::FormatNumber(item->GetVideoInfoTag()->GetRating(votes).votes);
   }
 
   if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET) < (int)m_listitemProperties.size())
@@ -9233,9 +9227,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return "";
     
     if (rating.votes == 0)
-      return StringUtils::Format("%.1f", rating.rating);
+      return StringUtils::FormatNumber(rating.rating);
     else
-      return StringUtils::Format(g_localizeStrings.Get(20350).c_str(), rating.rating, rating.votes);
+      return FormatRatingAndVotes(rating.rating, rating.votes);
   }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
@@ -9489,9 +9483,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasVideoInfoTag()) // movie rating
         r = item->GetVideoInfoTag()->GetRating().rating;
       if (r > 0.f)
-        rating = StringUtils::Format("%.1f", r);
+        rating = StringUtils::FormatNumber(r);
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // song rating
-        rating = StringUtils::Format("%.1f", item->GetMusicInfoTag()->GetRating());
+        rating = StringUtils::FormatNumber(item->GetMusicInfoTag()->GetRating());
       return rating;
     }
   case LISTITEM_RATING_AND_VOTES:
@@ -9503,23 +9497,19 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       {
         std::string strRatingAndVotes;
         if (r.votes == 0)
-          strRatingAndVotes = StringUtils::Format("%.1f",
-                                                  r.rating);
+          strRatingAndVotes = StringUtils::FormatNumber(r.rating);
         else
-          strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
-                                                  r.rating,
-                                                  r.votes);
+          strRatingAndVotes = FormatRatingAndVotes(r.rating, r.votes);
         return strRatingAndVotes;
       }
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // music rating & votes
       {
         std::string strRatingAndVotes;
         if (item->GetMusicInfoTag()->GetVotes() <= 0)
-          strRatingAndVotes = StringUtils::Format("%.1f", item->GetMusicInfoTag()->GetRating());
+          strRatingAndVotes = StringUtils::FormatNumber(item->GetMusicInfoTag()->GetRating());
         else
-          strRatingAndVotes = StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
-            item->GetMusicInfoTag()->GetRating(),
-            item->GetMusicInfoTag()->GetVotes());
+          strRatingAndVotes = FormatRatingAndVotes(item->GetMusicInfoTag()->GetRating(), 
+                                                   item->GetMusicInfoTag()->GetVotes());
         return strRatingAndVotes;
       }
     }
@@ -9536,10 +9526,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_VOTES:
     if (item->HasVideoInfoTag())
-      return StringUtils::Format("%i",
-                                 item->GetVideoInfoTag()->GetRating().votes);
+      return StringUtils::FormatNumber(item->GetVideoInfoTag()->GetRating().votes);
     else if (item->HasMusicInfoTag())
-      return StringUtils::Format("%i", item->GetMusicInfoTag()->GetVotes());
+      return StringUtils::FormatNumber(item->GetMusicInfoTag()->GetVotes());
     break;
   case LISTITEM_PROGRAM_COUNT:
     {
@@ -10773,4 +10762,11 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
   default:
     break;
   }
+}
+
+std::string CGUIInfoManager::FormatRatingAndVotes(float rating, int votes)
+{
+  return StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
+                             StringUtils::FormatNumber(rating).c_str(),
+                             StringUtils::FormatNumber(votes).c_str());
 }

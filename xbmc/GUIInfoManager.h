@@ -353,6 +353,9 @@ protected:
   SPlayerAudioStreamInfo m_audioInfo;
 
   CCriticalSection m_critInfo;
+
+private:
+  static std::string FormatRatingAndVotes(float rating, int votes);
 };
 
 /*!
