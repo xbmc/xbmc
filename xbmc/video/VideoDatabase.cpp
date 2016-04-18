@@ -2072,6 +2072,8 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
   std::vector<std::string> conditions;
   for (int i = min + 1; i < max; ++i)
   {
+    if (offsets[i].type == NULL || offsets[i].offset == NULL)
+      continue;
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:
@@ -3457,6 +3459,8 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
 {
   for (int i = min + 1; i < max; i++)
   {
+    if (offsets[i].type == NULL || offsets[i].offset == NULL)
+      continue;
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:

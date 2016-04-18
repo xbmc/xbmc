@@ -164,7 +164,6 @@ public:
   CScraperUrl m_strPictureURL;
   std::string m_strTitle;
   std::string m_strSortTitle;
-  std::string m_strVotes;
   std::vector<std::string> m_artist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
@@ -192,7 +191,6 @@ public:
   std::map<int, std::string> m_namedSeasons;
   int m_playCount;
   int m_iTop250;
-  int m_iYear;
   int m_iSeason;
   int m_iEpisode;
   std::string m_strUniqueId;
