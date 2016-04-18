@@ -1089,6 +1089,10 @@ bool URIUtils::HasSlashAtEnd(const std::string& strFile, bool checkURL /* = fals
 
 void URIUtils::RemoveSlashAtEnd(std::string& strFolder)
 {
+  // performance optimization. pvr guide items are mass objects, uri never has a slash at end, and this method is quite expensive...
+  if (IsPVRGuideItem(strFolder))
+    return;
+
   if (IsURL(strFolder))
   {
     CURL url(strFolder);
