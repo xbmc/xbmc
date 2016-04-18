@@ -36,6 +36,9 @@ namespace EPG
     CFileItemPtr item;
     float originWidth;
     float width;
+    int progIndex;
+
+    GridItemsPtr() : originWidth(0.0), width(0.0), progIndex(-1) {}
   };
 
   class CGUIEPGGridContainerModel
@@ -73,6 +76,7 @@ namespace EPG
     CFileItemPtr GetGridItem(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].item; }
     float GetGridItemWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].width; }
     float GetGridItemOriginWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].originWidth; }
+    int GetGridItemIndex(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].progIndex; }
     void SetGridItemWidth(int iChannel, int iBlock, float fWidth) { m_gridIndex[iChannel][iBlock].width = fWidth; }
 
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }

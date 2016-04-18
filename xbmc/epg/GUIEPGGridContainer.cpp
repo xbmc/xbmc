@@ -1272,16 +1272,7 @@ int CGUIEPGGridContainer::GetSelectedItem() const
       m_blockCursor + m_blockOffset >= m_gridModel->GetBlockCount())
     return -1;
 
-  CGUIListItemPtr currentItem = m_gridModel->GetGridItem(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
-  if (!currentItem)
-    return -1;
-
-  for (int i = 0; i < m_gridModel->ProgrammeItemsSize(); i++)
-  {
-    if (currentItem == m_gridModel->GetProgrammeItem(i))
-      return i;
-  }
-  return -1;
+  return m_gridModel->GetGridItemIndex(m_channelCursor + m_channelOffset, m_blockCursor + m_blockOffset);
 }
 
 CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const

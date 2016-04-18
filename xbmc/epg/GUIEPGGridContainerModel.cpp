@@ -172,6 +172,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
         if (gridCursor < tag->EndAsUTC())
         {
           m_gridIndex[channel][block].item = item;
+          m_gridIndex[channel][block].progIndex = progIdx;
           break;
         }
 
