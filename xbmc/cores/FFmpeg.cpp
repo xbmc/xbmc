@@ -114,9 +114,12 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
-  if (level > AV_LOG_WARNING &&
-     !g_advancedSettings.CanLogComponent(LOGFFMPEG) &&
-     CFFmpegLog::GetLogLevel() < 0)
+  int maxLevel = AV_LOG_WARNING;
+  if (CFFmpegLog::GetLogLevel() > 0)
+    maxLevel = AV_LOG_INFO;
+
+  if (level > maxLevel &&
+     !g_advancedSettings.CanLogComponent(LOGFFMPEG))
     return;
   else if (g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
     return;
