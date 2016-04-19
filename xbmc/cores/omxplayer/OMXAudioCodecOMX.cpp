@@ -79,6 +79,9 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
 
   m_bFirstFrame = true;
   m_pCodecContext = avcodec_alloc_context3(pCodec);
+  if (!m_pCodecContext)
+    return false;
+
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = 1;
@@ -123,6 +126,12 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
   }
 
   m_pFrame1 = av_frame_alloc();
+  if (!m_pFrame1)
+  {
+    Dispose();
+    return false;
+  }
+
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_desiredSampleFormat = m_pCodecContext->sample_fmt == AV_SAMPLE_FMT_S16 ? AV_SAMPLE_FMT_S16 : AV_SAMPLE_FMT_FLTP;
   return true;
