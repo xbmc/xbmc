@@ -18,7 +18,7 @@
  *
  */
 
-#include "FileItem.h"
+#include "PVRChannel.h"
 #include "epg/EpgContainer.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
@@ -28,11 +28,9 @@
 #include "utils/Variant.h"
 
 #include "pvr/PVRDatabase.h"
-#include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
 
-#include "PVRChannel.h"
 #include "PVRChannelGroupInternal.h"
 
 #include <assert.h>
