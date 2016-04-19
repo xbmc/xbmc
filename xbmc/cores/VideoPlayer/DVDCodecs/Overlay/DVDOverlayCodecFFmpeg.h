@@ -43,8 +43,6 @@ public:
   virtual CDVDOverlay* GetOverlay();
 
 private:
-  void FreeSubtitle(AVSubtitle &sub);
-
   AVCodecContext* m_pCodecContext;
   AVSubtitle      m_Subtitle;
   int             m_SubtitleIndex;
