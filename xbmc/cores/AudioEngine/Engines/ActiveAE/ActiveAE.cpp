@@ -3035,7 +3035,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       {
         avcodec_close(dec_ctx);
         av_free(dec_ctx);
-        av_free(&decoded_frame);
+        av_frame_free(&decoded_frame);
         avformat_close_input(&fmt_ctx);
         if (io_ctx)
         {
@@ -3063,7 +3063,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   }
 
   av_free(dec_ctx);
-  av_free(decoded_frame);
+  av_frame_free(&decoded_frame);
   avformat_close_input(&fmt_ctx);
   if (io_ctx)
   {

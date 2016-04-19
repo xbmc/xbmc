@@ -125,8 +125,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDAudioCodecFFmpeg::Dispose()
 {
-  if (m_pFrame1) av_free(m_pFrame1);
-  m_pFrame1 = NULL;
+  av_frame_free(&m_pFrame1);
 
   if (m_pCodecContext)
   {

@@ -130,8 +130,7 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
 
 void COMXAudioCodecOMX::Dispose()
 {
-  if (m_pFrame1) av_free(m_pFrame1);
-  m_pFrame1 = NULL;
+  av_frame_free(&m_pFrame1);
 
   swr_free(&m_pConvert);
 
