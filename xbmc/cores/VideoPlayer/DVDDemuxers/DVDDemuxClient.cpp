@@ -52,7 +52,7 @@ public:
     }
     if (m_context)
     {
-      avcodec_close(m_context);
+      avcodec_free_context(&m_context);
       m_context = nullptr;
     }
   }

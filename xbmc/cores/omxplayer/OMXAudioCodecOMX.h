@@ -63,8 +63,6 @@ protected:
   int   m_iBufferOutputUsed;
   int   m_iBufferOutputAlloced;
 
-  bool m_bOpenedCodec;
-
   int     m_channels;
   CAEChannelInfo m_channelLayout;
   bool m_bFirstFrame;

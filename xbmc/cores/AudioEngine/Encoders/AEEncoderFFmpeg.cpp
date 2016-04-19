@@ -44,8 +44,8 @@ CAEEncoderFFmpeg::CAEEncoderFFmpeg():
 CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
-  av_freep(&m_CodecCtx);
   swr_free(&m_SwrCtx);
+  avcodec_free_context(&m_CodecCtx);
 }
 
 bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat& format)
@@ -200,7 +200,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
   /* open the codec */
   if (avcodec_open2(m_CodecCtx, codec, NULL))
   {
-    av_freep(&m_CodecCtx);
+    avcodec_free_context(&m_CodecCtx);
     return false;
   }
 

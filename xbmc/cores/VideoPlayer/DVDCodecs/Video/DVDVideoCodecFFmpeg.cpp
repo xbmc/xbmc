@@ -379,21 +379,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
   av_frame_free(&m_pFrame);
   av_frame_free(&m_pDecodedFrame);
   av_frame_free(&m_pFilterFrame);
-
-  if (m_pCodecContext)
-  {
-    if (m_pCodecContext->codec)
-      avcodec_close(m_pCodecContext);
-
-    if (m_pCodecContext->extradata)
-    {
-      av_free(m_pCodecContext->extradata);
-      m_pCodecContext->extradata = NULL;
-      m_pCodecContext->extradata_size = 0;
-    }
-    av_free(m_pCodecContext);
-    m_pCodecContext = NULL;
-  }
+  avcodec_free_context(&m_pCodecContext);
   SAFE_RELEASE(m_pHardware);
 
   FilterClose();

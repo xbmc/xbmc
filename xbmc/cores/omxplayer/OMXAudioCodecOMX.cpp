@@ -41,7 +41,6 @@ COMXAudioCodecOMX::COMXAudioCodecOMX()
 
   m_pCodecContext = NULL;
   m_pConvert = NULL;
-  m_bOpenedCodec = false;
 
   m_channels = 0;
   m_pFrame1 = NULL;
@@ -65,7 +64,6 @@ COMXAudioCodecOMX::~COMXAudioCodecOMX()
 bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
 {
   AVCodec* pCodec = NULL;
-  m_bOpenedCodec = false;
 
   if (hints.codec == AV_CODEC_ID_DTS && g_RBP.RasberryPiVersion() > 1)
     pCodec = avcodec_find_decoder_by_name("dcadec");
@@ -122,7 +120,6 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
   }
 
   m_pFrame1 = av_frame_alloc();
-  m_bOpenedCodec = true;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_desiredSampleFormat = m_pCodecContext->sample_fmt == AV_SAMPLE_FMT_S16 ? AV_SAMPLE_FMT_S16 : AV_SAMPLE_FMT_FLTP;
   return true;
@@ -131,19 +128,8 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
 void COMXAudioCodecOMX::Dispose()
 {
   av_frame_free(&m_pFrame1);
-
   swr_free(&m_pConvert);
-
-  if (m_pCodecContext)
-  {
-    if (m_pCodecContext->extradata) av_free(m_pCodecContext->extradata);
-    m_pCodecContext->extradata = NULL;
-    if (m_bOpenedCodec) avcodec_close(m_pCodecContext);
-    m_bOpenedCodec = false;
-    av_free(m_pCodecContext);
-    m_pCodecContext = NULL;
-  }
-
+  avcodec_free_context(&m_pCodecContext);
   m_bGotFrame = false;
 }
 

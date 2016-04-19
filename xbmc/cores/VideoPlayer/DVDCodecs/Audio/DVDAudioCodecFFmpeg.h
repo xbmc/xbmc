@@ -62,7 +62,6 @@ protected:
   AVFrame* m_pFrame1;
   int m_gotFrame;
 
-  bool m_bOpenedCodec;
   int m_channels;
   uint64_t m_layout;
 

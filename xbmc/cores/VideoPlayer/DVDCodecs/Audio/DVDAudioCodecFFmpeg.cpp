@@ -38,7 +38,6 @@ extern "C" {
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
   m_pCodecContext = NULL;
-  m_bOpenedCodec = false;
 
   m_channels = 0;
   m_layout = 0;
@@ -56,7 +55,6 @@ CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
 bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   AVCodec* pCodec = NULL;
-  m_bOpenedCodec = false;
   bool allowdtshddecode = true;
 
   // set any special options
@@ -116,7 +114,6 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   m_pFrame1 = av_frame_alloc();
-  m_bOpenedCodec = true;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
 
@@ -126,14 +123,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 void CDVDAudioCodecFFmpeg::Dispose()
 {
   av_frame_free(&m_pFrame1);
-
-  if (m_pCodecContext)
-  {
-    if (m_bOpenedCodec) avcodec_close(m_pCodecContext);
-    m_bOpenedCodec = false;
-    av_free(m_pCodecContext);
-    m_pCodecContext = NULL;
-  }
+  avcodec_free_context(&m_pCodecContext);
 }
 
 int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double pts)
