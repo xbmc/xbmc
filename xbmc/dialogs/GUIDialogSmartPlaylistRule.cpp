@@ -164,7 +164,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (m_type == "artists" || m_type == "mixed")
     {
       database.GetRolesNav("musicdb://songs/", items);
-      iLabel = 38027;
+      iLabel = 38033;
     }
   }
   else if (m_rule.m_field == FieldCountry)

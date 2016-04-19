@@ -134,6 +134,16 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderAscending);
     }
     break;
+  case NODE_TYPE_ROLE:
+  {
+    AddSortMethod(SortByNone, 576, LABEL_MASKS("%F", "", "%G", ""));  // Filename, empty | Genre, empty
+    SetSortMethod(SortByPlaycount);
+
+    SetViewAsControl(DEFAULT_VIEW_LIST);
+
+    SetSortOrder(SortOrderNone);
+  }
+  break;
   case NODE_TYPE_YEAR:
     {
       AddSortMethod(SortByLabel, 562, LABEL_MASKS("%F", "", "%Y", ""));  // Filename, empty | Year, empty

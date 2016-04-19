@@ -3600,8 +3600,8 @@ bool CMusicDatabase::GetRolesNav(const std::string& strBaseDir, CFileItemList& i
       return false;
 
     // get roles with artists having that role
-    std::string strSQL = "SELECT idRole, strRole FROM role WHERE EXISTS "
-                         "(SELECT 1 FROM song_artist WHERE song_artist.idRole = role.idRole)";
+    std::string strSQL = "SELECT DISTINCT role.idRole, role.strRole FROM role "
+                         "JOIN song_artist ON song_artist.idRole = role.idRole ";
 
     if (!BuildSQL(strSQL, extFilter, strSQL))
       return false;
@@ -3625,10 +3625,8 @@ bool CMusicDatabase::GetRolesNav(const std::string& strBaseDir, CFileItemList& i
       pItem->GetMusicInfoTag()->SetTitle(labelValue);
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("role.idRole").get_asInt(), "role");
 
-      CMusicDbUrl itemUrl = musicUrl;
-      std::string strDir = StringUtils::Format("%s/", labelValue.c_str());
-      itemUrl.AppendPath(strDir);
-      pItem->SetPath(itemUrl.ToString());
+      std::string artistrolepath = StringUtils::Format("musicdb://artists/?roleid=%i", m_pDS->fv("role.idRole").get_asInt());
+      pItem->SetPath(artistrolepath);
 
       pItem->m_bIsFolder = true;
       items.Add(pItem);
