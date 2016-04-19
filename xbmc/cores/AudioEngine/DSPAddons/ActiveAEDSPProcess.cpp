@@ -88,10 +88,8 @@ CActiveAEDSPProcess::~CActiveAEDSPProcess()
       free(m_processArray[1][i]);
   }
 
-  if (m_convertInput)
-    swr_free(&m_convertInput);
-  if (m_convertOutput)
-    swr_free(&m_convertOutput);
+  swr_free(&m_convertInput);
+  swr_free(&m_convertOutput);
 }
 
 void CActiveAEDSPProcess::ResetStreamFunctionsSelection()

@@ -133,8 +133,7 @@ void COMXAudioCodecOMX::Dispose()
   if (m_pFrame1) av_free(m_pFrame1);
   m_pFrame1 = NULL;
 
-  if (m_pConvert)
-    swr_free(&m_pConvert);
+  swr_free(&m_pConvert);
 
   if (m_pCodecContext)
   {

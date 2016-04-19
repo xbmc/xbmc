@@ -48,8 +48,7 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
   Reset();
   av_freep(&m_CodecCtx);
   av_freep(&m_ResampBuffer);
-  if (m_SwrCtx)
-    swr_free(&m_SwrCtx);
+  swr_free(&m_SwrCtx);
 }
 
 bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat& format)
