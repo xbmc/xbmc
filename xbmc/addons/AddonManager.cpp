@@ -545,7 +545,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
         AddonPtr runningAddon = addon->GetRunningInstance();
         if (runningAddon)
           addon = runningAddon;
-        addons.push_back(addon);
+        addons.emplace_back(std::move(addon));
       }
     }
   }
@@ -1095,7 +1095,7 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
     {
       AddonPtr addon = Factory(info, ADDON_UNKNOWN);
       if (addon.get())
-        addons.push_back(addon);
+        addons.push_back(std::move(addon));
       m_cpluff->release_info(context, info);
     }
     element = element->NextSiblingElement("addon");

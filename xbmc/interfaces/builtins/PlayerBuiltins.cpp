@@ -36,6 +36,7 @@
 #include "utils/SeekHandler.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "view/GUIViewState.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"

@@ -20,6 +20,7 @@
 
 #include "GUIWindowMusicPlaylist.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
+#include "view/GUIViewState.h"
 #include "Util.h"
 #include "playlists/PlayListM3U.h"
 #include "Application.h"

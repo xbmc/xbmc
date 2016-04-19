@@ -22,6 +22,7 @@
 #include "epg/GUIEPGGridContainer.h"
 #include "GUIUserMessages.h"
 #include "epg/EpgContainer.h"
+#include "view/GUIViewState.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
