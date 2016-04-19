@@ -3057,6 +3057,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
         sound->StoreSound(true, decoded_frame->extended_data,
                           decoded_frame->nb_samples, decoded_frame->linesize[0]);
       }
+      av_packet_unref(&avpkt);
     }
   }
 
