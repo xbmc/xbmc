@@ -37,9 +37,7 @@ CAEEncoderFFmpeg::CAEEncoderFFmpeg():
   m_OutputRatio   (0.0  ),
   m_SampleRateMul (0.0  ),
   m_NeededFrames  (0    ),
-  m_NeedConversion(false),
-  m_ResampBuffer  (NULL ),
-  m_ResampBufferSize(0  )
+  m_NeedConversion(false)
 {
 }
 
@@ -47,7 +45,6 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
   av_freep(&m_CodecCtx);
-  av_freep(&m_ResampBuffer);
   swr_free(&m_SwrCtx);
 }
 
