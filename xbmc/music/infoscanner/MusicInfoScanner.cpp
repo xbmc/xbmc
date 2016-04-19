@@ -733,8 +733,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       album.strAlbum = songsByAlbumName->first;
       for (std::vector<std::string>::iterator it = common.begin(); it != common.end(); ++it)
       {
-        CArtistCredit artistCredit(*it);
-        album.artistCredits.push_back(artistCredit);
+        album.artistCredits.emplace_back(StringUtils::Trim(*it));
       }
       album.bCompilation = compilation;
       for (std::vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
