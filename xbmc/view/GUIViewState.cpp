@@ -349,25 +349,21 @@ bool CGUIViewState::ChooseSortMethod()
 {
   
   CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
-  if (dialog)
-  {
-    dialog->Reset();
-    dialog->SetHeading(CVariant{ 32104 }); // Label "Sort by"
-    for (int i = 0; i < m_sortMethods.size(); ++i)
-    {
-      dialog->Add(g_localizeStrings.Get(m_sortMethods[i].m_buttonLabel));
-    }
-    dialog->SetSelected(m_currentSortMethod);
-    dialog->Open();
-    int newSelected = dialog->GetSelectedItem();
-    // check if selection has changed
-    if (!dialog->IsConfirmed() || newSelected < 0 || newSelected == m_currentSortMethod)
-      return false;
+  if (!dialog)
+    return false;
+  dialog->Reset();
+  dialog->SetHeading(CVariant{ 32104 }); // Label "Sort by"
+  for (auto &sortMethod : m_sortMethods)
+    dialog->Add(g_localizeStrings.Get(sortMethod.m_buttonLabel));
+  dialog->SetSelected(m_currentSortMethod);
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+  // check if selection has changed
+  if (!dialog->IsConfirmed() || newSelected < 0 || newSelected == m_currentSortMethod)
+    return false;
 
-    m_currentSortMethod = newSelected;
-
-    SaveViewState();
-  }
+  m_currentSortMethod = newSelected;
+  SaveViewState();
   return true;
 }
 
