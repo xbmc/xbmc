@@ -42,7 +42,6 @@ namespace PVR
     virtual bool OnAction(const CAction &action) override;
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
     virtual void UpdateButtons(void) override;
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
 

@@ -63,7 +63,10 @@ void CGUIWindowPVRGuide::OnInitWindow()
   CGUIEPGGridContainer *epgGridContainer =
     dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
   if (epgGridContainer)
+  {
+    epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
     epgGridContainer->GoToNow();
+  }
 
   m_bRefreshTimelineItems = true;
   StartRefreshTimelineItemsThread();
@@ -199,25 +202,6 @@ void CGUIWindowPVRGuide::UpdateSelectedItemPath()
   }
   else
     CGUIWindowPVRBase::UpdateSelectedItemPath();
-}
-
-bool CGUIWindowPVRGuide::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
-{
-  bool bReturn = CGUIWindowPVRBase::Update(strDirectory, updateFilterPath);
-
-  switch (m_viewControl.GetCurrentControl())
-  {
-    case GUIDE_VIEW_TIMELINE: {
-      CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
-      if (epgGridContainer)
-        epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
-      break;
-    }
-    default:
-      break;
-  }
-
-  return bReturn;
 }
 
 void CGUIWindowPVRGuide::UpdateButtons(void)
