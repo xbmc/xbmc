@@ -154,6 +154,17 @@ namespace XBMCAddon
        */
       SWIGHIDDENVIRTUAL void setContainerProperty(const String &strProperty, const String &strValue);
 
+      /**
+       * getCurrentContainerId() -- Get the id of the currently visible container
+       * 
+       * 
+       * example:\n
+       *   - container_id = self.getCurrentContainerId()
+       */
+
+      SWIGHIDDENVIRTUAL int getCurrentContainerId();
+
+
 #ifndef SWIG
       // CGUIWindow
       SWIGHIDDENVIRTUAL bool      OnMessage(CGUIMessage& message);

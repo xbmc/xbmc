@@ -262,6 +262,13 @@ namespace XBMCAddon
       A(m_vecItems)->SetProperty(key, value);
     }
 
+    int WindowXML::getCurrentContainerId()
+    {
+      XBMC_TRACE;
+      LOCKGUI;
+      return A(m_viewControl.GetCurrentControl());
+    }
+
     bool WindowXML::OnAction(const CAction &action)
     {
       XBMC_TRACE;

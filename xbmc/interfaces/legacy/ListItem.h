@@ -230,6 +230,7 @@ namespace XBMCAddon
        *     - trailer       : string (/home/user/trailer.avi)
        *     - dateadded     : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        *     - mediatype     : string - "video", "movie", "tvshow", "season", "episode" or "musicvideo"
+       *     - dbid          : integer (23) - Only add this for items which are part of the local db. You also need to set the correct 'mediatype'!
        * - Music Values:
        *     - tracknumber   : integer (8)
        *     - discnumber    : integer (2)
@@ -330,6 +331,27 @@ namespace XBMCAddon
        *   - AspectRatio = self.list.getSelectedItem().getProperty('AspectRatio')
        */
       String getProperty(const char* key);
+
+      /**
+       * getArt(key) -- Returns a listitem art path as a string, similar to an infolabel.\n
+       * \n
+       * key            : string - art name.\n
+       * \n
+       *
+       * - Some default art values (any string possible):
+       *     - thumb         : string - image path
+       *     - poster        : string - image path
+       *     - banner        : string - image path
+       *     - fanart        : string - image path
+       *     - clearart      : string - image path
+       *     - clearlogo     : string - image path
+       *     - landscape     : string - image path
+       *     - icon          : string - image path
+       *
+       * example:
+       *   - poster = self.list.getSelectedItem().getArt('poster')
+       */
+      String getArt(const char* key);
 
       /**
        * setPath(path) -- Sets the listitem's path.\n

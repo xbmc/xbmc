@@ -224,6 +224,13 @@ namespace XBMCAddon
       return value;
     }
 
+    String ListItem::getArt(const char* key)
+    {
+      LOCKGUI;
+      return item->GetArt(key);
+    }
+
+
     void ListItem::setPath(const String& path)
     {
       LOCKGUI;
@@ -284,7 +291,9 @@ namespace XBMCAddon
           const InfoLabelValue& alt = it->second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
-          if (key == "year")
+          if (key == "dbid")
+            item->GetVideoInfoTag()->m_iDbId = strtol(value.c_str(), NULL, 10);
+          else if (key == "year")
             item->GetVideoInfoTag()->m_iYear = strtol(value.c_str(), NULL, 10);
           else if (key == "episode")
             item->GetVideoInfoTag()->m_iEpisode = strtol(value.c_str(), NULL, 10);
