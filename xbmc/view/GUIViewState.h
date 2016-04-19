@@ -37,6 +37,7 @@ public:
   void SaveViewAsControl(int viewAsControl);
   int GetViewAsControl() const;
 
+  bool ChooseSortMethod();
   SortDescription SetNextSortMethod(int direction = 1);
   void SetCurrentSortMethod(int method);
   SortDescription GetSortMethod() const;
