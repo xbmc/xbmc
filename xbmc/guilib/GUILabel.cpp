@@ -21,6 +21,8 @@
 #include "GUILabel.h"
 #include <limits>
 
+#include "Application.h"
+
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)
     : m_label(labelInfo)
     , m_textLayout(labelInfo.font, overflow == OVER_FLOW_WRAP, height)
@@ -104,7 +106,7 @@ void CGUILabel::Render()
   color_t color = GetColor();
   bool renderSolid = (m_color == COLOR_DISABLED);
   bool overFlows = (m_renderRect.Width() + 0.5f < m_textLayout.GetTextWidth()); // 0.5f to deal with floating point rounding issues
-  if (overFlows && m_scrolling && !renderSolid)
+  if (overFlows && m_scrolling && !renderSolid && !g_application.ScreenSaverDisablesAutoScrolling())
     m_textLayout.RenderScrolling(m_renderRect.x1, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, 0, m_renderRect.Width(), m_scrollInfo);
   else
   {

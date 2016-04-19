@@ -390,6 +390,8 @@ public:
 
   std::unique_ptr<CServiceManager> m_ServiceManager;
 
+  bool ScreenSaverDisablesAutoScrolling();
+
 protected:
   virtual bool OnSettingsSaving() const override;
 

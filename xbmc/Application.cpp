@@ -5146,3 +5146,13 @@ bool CApplication::NotifyActionListeners(const CAction &action) const
   
   return false;
 }
+
+bool CApplication::ScreenSaverDisablesAutoScrolling()
+{
+  bool onBlackDimScreenSaver = IsInScreenSaver() && m_screenSaver &&
+    (m_screenSaver->ID() == "screensaver.xbmc.builtin.black" ||
+     m_screenSaver->ID() == "screensaver.xbmc.builtin.dim");
+  bool openingStreams = m_pPlayer->IsPlaying() && g_windowManager.IsWindowActive(WINDOW_DIALOG_BUSY);
+
+  return onBlackDimScreenSaver || openingStreams;
+}
