@@ -37,19 +37,15 @@ CAEEncoderFFmpeg::CAEEncoderFFmpeg():
   m_OutputRatio   (0.0  ),
   m_SampleRateMul (0.0  ),
   m_NeededFrames  (0    ),
-  m_NeedConversion(false),
-  m_ResampBuffer  (NULL ),
-  m_ResampBufferSize(0  )
+  m_NeedConversion(false)
 {
 }
 
 CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
-  av_freep(&m_CodecCtx);
-  av_freep(&m_ResampBuffer);
-  if (m_SwrCtx)
-    swr_free(&m_SwrCtx);
+  swr_free(&m_SwrCtx);
+  avcodec_free_context(&m_CodecCtx);
 }
 
 bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat& format)
@@ -120,6 +116,9 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     return false;
 
   m_CodecCtx = avcodec_alloc_context3(codec);
+  if (!m_CodecCtx)
+    return false;
+
   m_CodecCtx->bit_rate = m_BitRate;
   m_CodecCtx->sample_rate = format.m_sampleRate;
   m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
@@ -195,6 +194,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     else
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Unable to find a suitable data format for the codec (%s)", m_CodecName.c_str());
+      avcodec_free_context(&m_CodecCtx);
       return false;
     }
   }
@@ -204,7 +204,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
   /* open the codec */
   if (avcodec_open2(m_CodecCtx, codec, NULL))
   {
-    av_freep(&m_CodecCtx);
+    avcodec_free_context(&m_CodecCtx);
     return false;
   }
 
@@ -226,6 +226,8 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     if (!m_SwrCtx || swr_init(m_SwrCtx) < 0)
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Failed to initialise resampler.");
+      swr_free(&m_SwrCtx);
+      avcodec_free_context(&m_CodecCtx);
       return false;
     }
   }

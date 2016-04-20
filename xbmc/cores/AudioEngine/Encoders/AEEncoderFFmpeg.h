@@ -63,7 +63,5 @@ private:
   double m_SampleRateMul;
   unsigned int  m_NeededFrames;
   bool m_NeedConversion;
-  uint8_t *m_ResampBuffer;
-  int m_ResampBufferSize;
 };
 
