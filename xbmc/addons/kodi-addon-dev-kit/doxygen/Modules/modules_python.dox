@@ -1,0 +1,143 @@
+/*!
+
+
+\defgroup python Python
+\image html logo-python.png
+\brief \htmlonly
+      <h3><span  style="text-decoration: underline;"><span  style="font-style: italic;"><span
+               style="color: rgb(102, 102, 102);">Python Script Add-On Development</span></span></span></h3>
+       \endhtmlonly
+
+Kodi includes a built-in [Python interpreter](http://en.wikipedia.org/wiki/Python_%28programming_language%29)
+that allows users to develop add-ons (scripts and plugins) that interface easily
+and cleanly with the Kodi dashboard. These add-ons can extend the functionality
+of Kodi without requiring extensive programming experience or ability. While you
+may not feel comfortable browsing the Kodi source code and submitting patches (or
+even bug reports), you can learn how to write a script or plugin with just a few
+hours' practice, using the information available in these pages.
+
+This page is intended as an introduction to Kodi Python for new developers, and
+a quick reference for more experienced programmers. If you're not interested in
+programming, you might want to visit [this page](http://kodi.wiki/view/Add-ons)
+for information about installing and using Python add-ons as an end user. If
+you're already familiar with Kodi Python, you can probably skip on down to the
+[environment details](http://kodi.wiki/view/Python_Development#Environment_details)
+or the [resource links](http://kodi.wiki/view/Python_Development#Resource_links)
+below for quick reference material.
+
+_ _ _
+
+Built-in modules
+----------------
+
+In addition to the standard libraries, Kodi [Python](https://www.python.org/)
+uses a handful of custom modules to expose Kodi functionality to Python.
+
+| Module                              | Description                                                |
+|------------------------------------:|:-----------------------------------------------------------|
+| \ref python_xbmc       "xbmc"       | Offers classes and functions that provide information about the media currently playing and that allow manipulation of the media player (such as starting a new song). You can also find system information using the functions available in this library.
+| \ref python_xbmcgui    "xbmcgui"    | Offers classes and functions that manipulate the Graphical User Interface through windows, dialogs, and various control widgets.
+| \ref python_xbmcplugin "xbmcplugin" |  Offers classes and functions that allow a developer to present information through Kodi's standard menu structure. While plugins don't have the same flexibility as scripts, they boast significantly quicker development time and a more consistent user experience.
+| \ref python_xbmcaddon  "xbmcaddon"  | Offers classes and functions that manipulate the add-on settings, information and localization.
+| \ref python_xbmcvfs    "xbmcvfs"    | Offers classes and functions offers access to the Virtual File Server (VFS) which you can use to manipulate files and folders.
+| \ref python_xbmcwsgi   "xbmcwsgi"   | The [<b>Web Server Gateway Interface (WSGI)</b>](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface) is a specification for simple and universal interface between web servers and web applications or frameworks for the Python programming language.
+
+_ _ _
+
+Installing additional modules
+----------------
+
+Additional modules may be installed by simply adding the module to the root
+folder of your add-on.
+
+A common way to organized third-party modules that are not part of add-on source
+code itself, is to add a lib directory and place an __init__.py file and other
+third-party modules inside it. These modules may then normally be imported using
+from lib import some module.
+
+_ _ _
+
+Python plugins versus scripts
+----------------
+
+Please do not confuse "Plugins" with "Scripts". Unlike the Scripts, Plugins are
+not meant to be directly invoked by the user. Instead, Plugins are automatically
+invoked when the user enters such a virtual folder. Do not try to run Plugins
+files from the scripts window as that will only give you a weird error message.
+Plugins, unlike Scripts, do not really provide new functionality to Kodi,
+instead what they do do is provide an easy way to present content listings in
+Kodi through the native GUI interface.
+
+_ _ _
+
+Script development
+----------------
+
+If you're new to Python programming (or just new to Kodi Python), the easiest
+way to get started is with a script. The traditional Hello World program,
+written as an Kodi Python script, would look like this:
+~~~~~~~~~~~~~{.py}
+print("Hello World!")
+~~~~~~~~~~~~~
+That's the same code you would enter at the Python command line, because Kodi
+runs a full-featured, standard Python interpreter (for more information
+concerning the current version number and included modules see the environment
+details below). If you're already familiar with Python programming, the only new
+challenge is learning the custom modules that allow you to gather information
+from Kodi and manipulate the Graphical User Interface (GUI).
+
+There are some excellent tutorials available to introduce you to Kodi scripting
+(and Python in general). See the [HOW-TO](http://kodi.wiki/view/HOW-TO_write_Python_Scripts)
+included in the Kodi Online Manual, or visit Alexpoet's Kodi Scripting site for
+a popular beginner's tutorial (PDF).
+
+_ _ _
+Plugin development
+----------------
+
+While scripts offer you flexibility and full control over the Kodi GUI, plugins
+allow you to quickly and consistently present information to the user through
+the standard Kodi menu structure.
+
+When a user launches a plugin, the plugin generates a list of menu items and
+hands them to Kodi to draw on the screen (regardless of screen resolution, skin,
+or any other user setting). While plugin developers lose some amount of control
+over the presentation, they no longer have to make up their own UIs, or worry
+about creating a usable look and feel across multiple displays.
+
+Plugins are most commonly used to scrape websites for links to streaming videos,
+displaying the video list in Kodi just like it would movie files on the local
+hard drive, but a plugin can be used anywhere a script could, as long as the
+menu structure is a sufficient GUI for the add-on's needs.
+
+Also, note that a script can launch a plugin, and a plugin can launch a script
+(and, for that matter, it can call all the same functions available to a script)
+so the distinction is more theoretical than practical.
+
+
+@{
+\ingroup python
+\defgroup python_xbmc Library - xbmc
+
+\ingroup python
+\defgroup python_xbmcgui Library - xbmcgui
+
+\ingroup python
+\defgroup python_xbmcplugin Library - xbmcplugin
+
+\ingroup python
+\defgroup python_xbmcaddon Library - xbmcaddon
+
+\ingroup python
+\defgroup python_xbmcvfs Library - xbmcvfs
+
+\ingroup python
+\defgroup python_xbmcwsgi Library - xbmcwsgi
+@brief **Web Server Gateway Interface**
+
+The [<b>Web Server Gateway Interface (WSGI)</b>](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface)
+is a specification for simple and universal interface between web servers and
+web applications or frameworks for the Python programming language.
+@}
+
+*/

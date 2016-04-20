@@ -19,7 +19,14 @@
       <tab type="filelist" visible="yes" title="" intro=""/>
       <tab type="globals" visible="yes" title="" intro=""/>
     </tab>
-    <tab type="examples" visible="yes" title="" intro=""/>  
+    <tab type="examples" visible="yes" title="" intro=""/>
+    <tab type="usergroup" title="Older versions">
+      <tab type="user" url="http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/" title="Kodi 16.x Jarvis"/>
+      <tab type="user" url="http://mirrors.kodi.tv/docs/python-docs/15.x-isengard/" title="Kodi 15.x Isengard"/>
+      <tab type="user" url="http://mirrors.kodi.tv/docs/python-docs/14.x-helix/" title="Kodi 14.x Helix"/>
+      <tab type="user" url="http://mirrors.kodi.tv/docs/python-docs/13.0-gotham/" title="XBMC 13.x Gotham"/>
+      <tab type="user" url="http://mirrors.kodi.tv/docs/python-docs/12.2-frodo/" title="XBMC 12.x Frodo"/>
+    </tab>
   </navindex>
 
   <!-- Layout definition for a class page -->
@@ -196,4 +203,5 @@
     </memberdecl>
 <!--    <detaileddescription title=""/> -->
   </directory>
+
 </doxygenlayout>

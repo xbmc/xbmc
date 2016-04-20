@@ -20,26 +20,72 @@
 
 #include "swighelper.h"
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace XBMCAddon
 {
   namespace xbmcgui
   {
-    /**
-     * getCurrentWindowId() -- Returns the id for the current 'active' window as an integer.
-     * 
-     * example:
-     *   - wid = xbmcgui.getCurrentWindowId()
-     */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+    //
+    /// \defgroup python_xbmcgui Library - xbmcgui
+    /// @{
+    /// @brief **GUI functions on Kodi.**
+    ///
+    /// Offers classes and functions that manipulate the Graphical User
+    /// Interface through windows, dialogs, and various control widgets.
+    //
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcgui
+    /// @brief \python_func{ xbmcgui.getCurrentWindowId() }
+    ///-------------------------------------------------------------------------
+    /// Returns the id for the current 'active' window as an integer.
+    ///
+    /// @return                        The currently active window Id
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// wid = xbmcgui.getCurrentWindowId()
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getCurrentWindowId();
+#else
     long getCurrentWindowId();
+#endif
 
-    /**
-     * getCurrentWindowDialogId() -- Returns the id for the current 'active' dialog as an integer.
-     * 
-     * example:
-     *   - wid = xbmcgui.getCurrentWindowDialogId()
-     */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcgui
+    /// @brief \python_func{ xbmcgui.getCurrentWindowDialogId() }
+    ///-------------------------------------------------------------------------
+    /// Returns the id for the current 'active' dialog as an integer.
+    ///
+    /// @return                        The currently active dialog Id
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// wid = xbmcgui.getCurrentWindowDialogId()
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getCurrentWindowDialogId();
+#else
     long getCurrentWindowDialogId();
+#endif
+    ///@}
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     SWIG_CONSTANT2(int,ICON_OVERLAY_NONE, CGUIListItem::ICON_OVERLAY_NONE);
     SWIG_CONSTANT2(int,ICON_OVERLAY_RAR, CGUIListItem::ICON_OVERLAY_RAR);
     SWIG_CONSTANT2(int,ICON_OVERLAY_ZIP, CGUIListItem::ICON_OVERLAY_ZIP);
@@ -64,3 +110,4 @@ namespace XBMCAddon
 
   }
 }
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

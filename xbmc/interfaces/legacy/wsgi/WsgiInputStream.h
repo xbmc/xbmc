@@ -28,33 +28,62 @@ namespace XBMCAddon
 {
   namespace xbmcwsgi
   {
-    /**
-    * Iterator for the wsgi.input stream.
-    */
+
+    // Iterator for the wsgi.input stream.
     class WsgiInputStreamIterator : public AddonClass
     {
     public:
       WsgiInputStreamIterator();
       virtual ~WsgiInputStreamIterator();
 
-      /**
-      * Read a maximum of <size> bytes from the wsgi.input stream.
-      */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      /// \ingroup python_xbmcwsgi_WsgiInputStream
+      /// \python_func{ read([size]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Read a maximum of `<size>` bytes from the wsgi.input stream.
+      ///
+      /// @param size         [opt] bytes to read
+      /// @return             Returns the readed string
+      ///
+      read(...);
+#else
       String read(unsigned long size = 0) const;
+#endif
 
-      /**
-      * Read a full line up to a maximum of <size> bytes from the wsgi.input
-      * stream.
-      */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      /// \ingroup python_xbmcwsgi_WsgiInputStream
+      /// \python_func{ readline([size]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Read a full line up to a maximum of `<size>` bytes from the wsgi.input
+      /// stream.
+      ///
+      /// @param size         [opt] bytes to read
+      /// @return             Returns the readed string line
+      ///
+      read(...);
+#else
       String readline(unsigned long size = 0) const;
+#endif
 
-      /**
-      * Read multiple full lines up to at least <sizehint> bytes from the
-      * wsgi.input stream and return them as a list.
-      */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      /// \ingroup python_xbmcwsgi_WsgiInputStream
+      /// \python_func{ readlines([sizehint]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Read multiple full lines up to at least `<sizehint>` bytes from the
+      /// wsgi.input stream and return them as a list.
+      ///
+      /// @param sizehint      [opt] bytes to read
+      /// @return              Returns a list readed string lines
+      ///
+      read(...);
+#else
       std::vector<String> readlines(unsigned long sizehint = 0) const;
+#endif
 
-#ifndef SWIG
+#if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
       WsgiInputStreamIterator(const String& data, bool end = false);
 
       WsgiInputStreamIterator& operator++();
@@ -73,16 +102,22 @@ namespace XBMCAddon
 #endif
     };
 
-    /**
-     * Represents the wsgi.input stream to access data from a HTTP request.
-     */
+    /// \defgroup python_xbmcwsgi_WsgiInputStream WsgiInputStream
+    /// \ingroup python_xbmcwsgi
+    /// @{
+    /// @brief **Represents the wsgi.input stream to access data from a HTTP request.**
+    ///
+    /// \python_class{ WsgiInputStream() }
+    ///
+    ///-------------------------------------------------------------------------
+    ///
     class WsgiInputStream : public WsgiInputStreamIterator
     {
     public:
       WsgiInputStream();
       virtual ~WsgiInputStream();
 
-#ifndef SWIG
+#if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
       WsgiInputStreamIterator* begin();
       WsgiInputStreamIterator* end();
 

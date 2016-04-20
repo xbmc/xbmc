@@ -34,23 +34,66 @@ namespace XBMCAddon
     class ListItem;
     class WindowXMLInterceptor;
 
-    /**
-     * WindowXML class.
-     * 
-     * WindowXML(self, xmlFilename, scriptPath[, defaultSkin, defaultRes]) -- Create a new WindowXML script.
-     * 
-     * xmlFilename     : string - the name of the xml file to look for.\n
-     * scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))\n
-     * defaultSkin     : [opt] string - name of the folder in the skins path to look in for the xml. (default='Default')\n
-     * defaultRes      : [opt] string - default skins resolution. (default='720p')
-     * 
-     * *Note, skin folder structure is eg(resources/skins/Default/720p)
-     * 
-     * example:\n
-     *  - ui = GUI('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')\n
-     *    ui.doModal()\n
-     *    del ui
-     */
+    //
+    /// \defgroup python_xbmcgui_window_xml Subclass - WindowXML
+    /// \ingroup python_xbmcgui_window
+    /// @{
+    /// @brief __GUI xml window class.__
+    ///
+    /// \python_class{ xbmcgui.WindowXML(xmlFilename, scriptPath[, defaultSkin, defaultRes]) }
+    ///
+    /// Creates a new xml file based window class.
+    ///
+    /// \note This class include also all calls from <b><c>\ref python_xbmcgui_window</c></b>.
+    ///
+    /// @param xmlFilename          string - the name of the xml file to
+    ///                             look for.
+    /// @param scriptPath           string - path to script. used to
+    ///                             fallback to if the xml doesn't exist in
+    ///                             the current skin. (eg xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))
+    /// @param defaultSkin          [opt] string - name of the folder in the
+    ///                             skins path to look in for the xml.
+    ///                             (default='Default')
+    /// @param defaultRes           [opt] string - default skins resolution.
+    ///                             (default='720p')
+    /// @throws Exception           if more then 200 windows are created.
+    ///
+    /// \remark Skin folder structure is e.g. **resources/skins/Default/720p**
+    ///
+    /// Deleting this window will activate the old window that was active
+    /// and resets (not delete) all controls that are associated with this
+    /// window.
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')
+    /// win.doModal()
+    /// del win
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// On functions defined input variable <b><tt>controlId</tt> (GUI control identifier)</b>
+    /// is the on window.xml defined value behind type added with <tt><b>id="..."</b></tt> and
+    /// used to identify for changes there and on callbacks.
+    ///
+    /// ~~~~~~~~~~~~~{.xml}
+    ///   <control type="label" id="31">
+    ///     <description>Title Label</description>
+    ///     ...
+    ///   </control>
+    ///   <control type="progress" id="32">
+    ///     <description>progress control</description>
+    ///     ...
+    ///   </control>
+    /// ~~~~~~~~~~~~~
+    ///
+    //
     class WindowXML : public Window
     {
       std::string sFallBackPath;
@@ -72,87 +115,212 @@ namespace XBMCAddon
                 const String& defaultRes = "720p");
       virtual ~WindowXML();
 
-      /**
-       * addItem(item[, position]) -- Add a new item to this Window List.
-       * 
-       * - item            : string, unicode or ListItem - item to add.
-       * - position        : [opt] integer - position of item to add. (NO Int = Adds to bottom,0 adds to top, 1 adds to one below from top,-1 adds to one above from bottom etc etc )
-       *             - If integer positions are greater than list size, negative positions will add to top of list, positive positions will add to bottom of list
-       *
-       * example:
-       *   - self.addItem('Reboot XBMC', 0)
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ addItem(item[, position]) }
+      ///-----------------------------------------------------------------------
+      /// Add a new item to this Window List.
+      ///
+      /// @param item            string, unicode or ListItem - item to add.
+      /// @param position        [opt] integer - position of item to add. (NO Int = Adds to bottom,0 adds to top, 1 adds to one below from top,-1 adds to one above from bottom etc etc )
+      ///  - If integer positions are greater than list size, negative positions will add to top of list, positive positions will add to bottom of list
+      ///
+      ///
+      ///
+      /// ----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.addItem('Reboot Kodi', 0)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      addItem(...);
+#else
       SWIGHIDDENVIRTUAL void addItem(const Alternative<String, const ListItem*>& item, int position = INT_MAX);
+#endif
 
-      // these calls represent the python interface
-      /**
-       * removeItem(position) -- Removes a specified item based on position, from the Window List.
-       * 
-       * position        : integer - position of item to remove.
-       * 
-       * example:\n
-       *   - self.removeItem(5)
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ removeItem(position) }
+      ///-----------------------------------------------------------------------
+      /// Removes a specified item based on position, from the Window List.
+      ///
+      /// @param position        integer - position of item to remove.
+      ///
+      ///
+      ///
+      /// ----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.removeItem(5)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      removeItem(...);
+#else
       SWIGHIDDENVIRTUAL void removeItem(int position);
+#endif
 
-      /**
-       * getCurrentListPosition() -- Gets the current position in the Window List.
-       * 
-       * example:\n
-       *   - pos = self.getCurrentListPosition()
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ getCurrentListPosition() }
+      ///-----------------------------------------------------------------------
+      /// Gets the current position in the Window List.
+      ///
+      ///
+      ///
+      /// ----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// pos = self.getCurrentListPosition()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getCurrentListPosition();
+#else
       SWIGHIDDENVIRTUAL int getCurrentListPosition();
+#endif
 
-      /**
-       * setCurrentListPosition(position) -- Set the current position in the Window List.
-       * 
-       * position        : integer - position of item to set.
-       * 
-       * example:\n
-       *   - self.setCurrentListPosition(5)
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ setCurrentListPosition(position) }
+      ///-----------------------------------------------------------------------
+      /// Set the current position in the Window List.
+      ///
+      /// @param position        integer - position of item to set.
+      ///
+      ///
+      ///
+      /// ----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.setCurrentListPosition(5)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      setCurrentListPosition(...);
+#else
       SWIGHIDDENVIRTUAL void setCurrentListPosition(int position);
+#endif
 
-      /**
-       * getListItem(position) -- Returns a given ListItem in this Window List.
-       * 
-       * position        : integer - position of item to return.
-       * 
-       * example:\n
-       *   - listitem = self.getListItem(6)
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ getListItem(position) }
+      ///-----------------------------------------------------------------------
+      /// Returns a given ListItem in this Window List.
+      ///
+      /// @param position        integer - position of item to return.
+      ///
+      ///
+      ///
+      /// ----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// listitem = self.getListItem(6)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getListItem(...);
+#else
       SWIGHIDDENVIRTUAL ListItem* getListItem(int position);
+#endif
 
-      /**
-       * getListSize() -- Returns the number of items in this Window List.
-       * 
-       * example:\n
-       *   - listSize = self.getListSize()
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ getListSize() }
+      ///-----------------------------------------------------------------------
+      /// Returns the number of items in this Window List.
+      ///
+      ///
+      ///
+      /// ------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// listSize = self.getListSize()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getListSize();
+#else
       SWIGHIDDENVIRTUAL int getListSize();
+#endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ clearList() }
+      ///-----------------------------------------------------------------------
+      /// Clear the Window List.
+      ///
+      ///
+      ///
+      /// ------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.clearList()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      clearList();
+#else
       /**
        * clearList() -- Clear the Window List.
-       * 
+       *
        * example:\n
        *   - self.clearList()
        */
       SWIGHIDDENVIRTUAL void clearList();
+#endif
 
-      /**
-       * setContainerProperty(key, value) -- Sets a container property, similar to an infolabel.
-       * 
-       * key            : string - property name.\n
-       * value          : string or unicode - value of property.
-       * 
-       * *Note, Key is NOT case sensitive.
-       *        You can use the above as keywords for arguments and skip certain optional arguments.\n
-       *        Once you use a keyword, all following arguments require the keyword.
-       * 
-       * example:\n
-       *   - self.setContainerProperty('Category', 'Newest')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ setContainerProperty(key, value) }
+      ///-----------------------------------------------------------------------
+      /// Sets a container property, similar to an infolabel.
+      ///
+      /// @param key            string - property name.
+      /// @param value          string or unicode - value of property.
+      ///
+      /// @note Key is NOT case sensitive.\n
+      /// You can use the above as keywords for arguments and skip certain
+      /// optional arguments.\n
+      /// Once you use a keyword, all following arguments require the keyword.
+      ///
+      ///
+      /// ------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.setContainerProperty('Category', 'Newest')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      setContainerProperty(...);
+#else
       SWIGHIDDENVIRTUAL void setContainerProperty(const String &strProperty, const String &strValue);
+#endif
 
       /**
        * getCurrentContainerId() -- Get the id of the currently visible container
@@ -179,7 +347,7 @@ namespace XBMCAddon
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.
-      // Since the respective parent differences are handled by the 
+      // Since the respective parent differences are handled by the
       // interceptor there's no reason to define this one here.
 //      SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 
@@ -199,38 +367,76 @@ namespace XBMCAddon
       friend class WindowXMLInterceptor;
 #endif
     };
+    ///@}
 
     // Ideally what we want here is a Dialog/Media Window. The problem is that these
     //  are two orthogonal discriminations of CGUIWindow and there wasn't a previous
-    //  accounting for this possibility through the use of making CGUIWindow a 
+    //  accounting for this possibility through the use of making CGUIWindow a
     //  virtual base class of the pertinent subclasses. So now we're left with
     //  no good solution.
     //
     // <strike>So here we're going to have the 'main' hierarchy (the one visible to SWIG)
-    //  go the way intended - through WindowXML, but we're going to borrow dialog 
+    //  go the way intended - through WindowXML, but we're going to borrow dialog
     //  functionality from CGUIDialog by using it as a Mixin.</strike>
     //
     // jmarshall says that this class has no reason to inherit from CGUIMediaWindow.
     //  At some point this entire hierarchy needs to be reworked. The XML handling
     //  routines should be put in a mixin.
-
-    /**
-     * WindowXMLDialog class.
-     * 
-     * WindowXMLDialog(self, xmlFilename, scriptPath[, defaultSkin, defaultRes]) -- Create a new WindowXMLDialog script.
-     * 
-     * xmlFilename     : string - the name of the xml file to look for.\n
-     * scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))\n
-     * defaultSkin     : [opt] string - name of the folder in the skins path to look in for the xml. (default='Default')\n
-     * defaultRes      : [opt] string - default skins resolution. (default='720p')
-     * 
-     * *Note, skin folder structure is eg(resources/skins/Default/720p)
-     * 
-     * example:
-     *  - ui = GUI('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')
-     *  - ui.doModal()
-     *  - del ui
-     */
+    //
+    /// \defgroup python_xbmcgui_window_dialog_xml Subclass - WindowDialogXML
+    /// \ingroup python_xbmcgui_window_xml
+    /// @{
+    /// @brief __GUI xml window dialog__
+    ///
+    /// \python_class{ xbmcgui.WindowXMLDialog(xmlFilename, scriptPath[, defaultSkin, defaultRes]) }
+    ///
+    /// Creates a new xml file based window dialog class.
+    ///
+    /// @param xmlFilename              string - the name of the xml file to
+    ///                                 look for.
+    /// @param scriptPath               string - path to script. used to
+    ///                                 fallback to if the xml doesn't exist in
+    ///                                 the current skin. (eg \ref python_xbmcaddon_Addon "xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))"
+    /// @param defaultSkin              [opt] string - name of the folder in the
+    ///                                 skins path to look in for the xml.
+    ///                                 (default='Default')
+    /// @param defaultRes               [opt] string - default skins resolution.
+    ///                                 (default='720p')
+    /// @throws Exception               if more then 200 windows are created.
+    ///
+    /// @note Skin folder structure is e.g. **resources/skins/Default/720p**
+    ///
+    ///
+    ///-------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// dialog = xbmcgui.WindowXMLDialog('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')
+    /// dialog.doModal()
+    /// del dialog
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    ///
+    ///-------------------------------------------------------------------------
+    ///
+    /// On functions defined input variable <b><tt>controlId</tt> (GUI control identifier)</b>
+    /// is the on window.xml defined value behind type added with <tt><b>id="..."</b></tt> and
+    /// used to identify for changes there and on callbacks.
+    ///
+    /// ~~~~~~~~~~~~~{.xml}
+    ///   <control type="label" id="31">
+    ///     <description>Title Label</description>
+    ///     ...
+    ///   </control>
+    ///   <control type="progress" id="32">
+    ///     <description>progress control</description>
+    ///     ...
+    ///   </control>
+    /// ~~~~~~~~~~~~~
+    ///
+    //
     class WindowXMLDialog : public WindowXML, private WindowDialogMixin
     {
     public:
@@ -257,5 +463,6 @@ namespace XBMCAddon
       friend class DialogJumper;
 #endif
     };
+    ///@}
   }
 }

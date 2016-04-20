@@ -27,9 +27,31 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    /**
-     * InfoTagMusic class.\n
-     */
+    //
+    /// \defgroup python_InfoTagMusic InfoTagMusic
+    /// \ingroup python_xbmc
+    /// @{
+    /// @brief **Kodi's music info tag class.**
+    ///
+    /// \python_class{ InfoTagMusic() }
+    ///
+    /// To get music info tag data of currently played source.
+    ///
+    /// @note Info tag load is only be possible from present player class.
+    ///
+    ///
+    ///-------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// tag = xbmc.Player().getMusicInfoTag()
+    ///
+    /// title = tag.getTitle()
+    /// url   = tag.getURL()
+    /// ...
+    /// ~~~~~~~~~~~~~
+    //
     class InfoTagMusic : public AddonClass
     {
     private:
@@ -42,67 +64,283 @@ namespace XBMCAddon
       InfoTagMusic();
       virtual ~InfoTagMusic();
 
-      /**
-       * getURL() -- returns a string.\n
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getURL() }
+      ///-----------------------------------------------------------------------
+      /// Returns url of source as string from music info tag.
+      ///
+      /// @return [string] Url of source
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getURL();
+#else
       String getURL();
-      /**
-       * getTitle() -- returns a string.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getTitle() }
+      ///-----------------------------------------------------------------------
+      /// Returns the title from music as string on info tag.
+      ///
+      /// @return [string] Music title
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getTitle();
+#else
       String getTitle();
-      /**
-       * getArtist() -- returns a string.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getArtist() }
+      ///-----------------------------------------------------------------------
+      /// Returns the artist from music as string if present.
+      ///
+      /// @return [string] Music artist
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getArtist();
+#else
       String getArtist();
-      /**
-       * getAlbum() -- returns a string.\n
-       */
+#endif
+
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getAlbum() }
+      ///-----------------------------------------------------------------------
+      /// Returns the album from music tag as string if present.
+      ///
+      /// @return [string] Music album name
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getAlbum();
+#else
       String getAlbum();
-      /**
-       * getAlbumArtist() -- returns a string.\n
-       */
+#endif
+
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getAlbumArtist() }
+      ///-----------------------------------------------------------------------
+      /// @brief Returns the album artist from music tag as string if present.
+      ///
+      /// @return [string] Music album artist name
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getAlbumArtist();
+#else
       String getAlbumArtist();
-      /**
-       * getGenre() -- returns a string.\n
-       */
+#endif
+
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getGenre() }
+      ///-----------------------------------------------------------------------
+      /// Returns the genre name from music tag as string if present.
+      ///
+      /// @return [string] Genre name
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getGenre();
+#else
       String getGenre();
-      /**
-       * getDuration() -- returns an integer.\n
-       */
+#endif
+
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getDuration() }
+      ///-----------------------------------------------------------------------
+      /// Returns the duration of music as integer from info tag.
+      ///
+      /// @return [integer] Duration
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getDuration();
+#else
       int getDuration();
-      /**
-       * getTrack() -- returns an integer.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getTrack() }
+      ///-----------------------------------------------------------------------
+      /// Returns the track number (if present) from music info tag as integer.
+      ///
+      /// @return [integer] Track number
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getTrack();
+#else
       int getTrack();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getDisc() }
+      ///-----------------------------------------------------------------------
+      /// Returns the disk number (if present) from music info tag as integer.
+      ///
+      /// @return [integer] Disc number
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getDisc();
+#else
       /**
        * getDisc() -- returns an integer.\n
        */
       int getDisc();
-      /**
-       * getReleaseDate() -- returns a string.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getReleaseDate() }
+      ///-----------------------------------------------------------------------
+      /// Returns the release date as string from music info tag (if present).
+      ///
+      /// @return [string] Release date
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getReleaseDate();
+#else
       String getReleaseDate();
-      /**
-       * getListeners() -- returns an integer.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getListeners() }
+      ///-----------------------------------------------------------------------
+      /// Returns the listeners as integer from music info tag.
+      ///
+      /// @return [integer] Listeners
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getListeners();
+#else
       int getListeners();
-      /**
-       * getPlayCount() -- returns an integer.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getPlayCount() }
+      ///-----------------------------------------------------------------------
+      /// Returns the number of carried out playbacks.
+      ///
+      /// @return [integer] Playback count
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getPlayCount();
+#else
       int getPlayCount();
-      /**
-       * getLastPlayed() -- returns a string.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getLastPlayed() }
+      ///-----------------------------------------------------------------------
+      /// Returns last played time as string from music info tag.
+      ///
+      /// @return [string] Last played date / time on tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getLastPlayed();
+#else
       String getLastPlayed();
-      /**
-       * getComment() -- returns a string.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getComment() }
+      ///-----------------------------------------------------------------------
+      /// Returns comment as string from music info tag.
+      ///
+      /// @return [string] Comment on tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getComment();
+#else
       String getComment();
-      /**
-       * getLyrics() -- returns a string.\n
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getLyrics() }
+      ///-----------------------------------------------------------------------
+      /// Returns a string from lyrics.
+      ///
+      /// @return [string] Lyrics on tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getLyrics();
+#else
       String getLyrics();
+#endif
     };
+    //@}
   }
 }
-  
