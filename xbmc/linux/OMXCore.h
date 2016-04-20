@@ -146,8 +146,8 @@ public:
   OMX_BUFFERHEADERTYPE *GetInputBuffer(long timeout=200);
   OMX_BUFFERHEADERTYPE *GetOutputBuffer(long timeout=200);
 
-  OMX_ERRORTYPE AllocInputBuffers(bool use_buffers = false);
-  OMX_ERRORTYPE AllocOutputBuffers(bool use_buffers = false);
+  OMX_ERRORTYPE AllocInputBuffers();
+  OMX_ERRORTYPE AllocOutputBuffers();
 
   OMX_ERRORTYPE FreeInputBuffers();
   OMX_ERRORTYPE FreeOutputBuffers();
@@ -179,7 +179,6 @@ private:
   unsigned int  m_input_alignment;
   unsigned int  m_input_buffer_size;
   unsigned int  m_input_buffer_count;
-  bool          m_omx_input_use_buffers;
 
   // OMXCore output buffers (video frames)
   pthread_mutex_t   m_omx_output_mutex;
@@ -188,7 +187,6 @@ private:
   unsigned int  m_output_alignment;
   unsigned int  m_output_buffer_size;
   unsigned int  m_output_buffer_count;
-  bool          m_omx_output_use_buffers;
 
   bool          m_exit;
   DllOMX        *m_DllOMX;
