@@ -459,7 +459,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     if (minPitch < 0)
     {
       CLog::LogFunction(LOGERROR, __FUNCTION__, "negative pitch or height");
-      av_free(pictureRGB);
+      av_frame_free(&pictureRGB);
       return false;
     }
     const unsigned char *src = pictureRGB->data[0];
