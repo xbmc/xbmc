@@ -2,7 +2,8 @@ set(SOURCES DefaultJoystick.cpp
             DriverPrimitive.cpp
             JoystickMonitor.cpp
             JoystickTranslator.cpp
-            KeymapHandler.cpp)
+            KeymapHandler.cpp
+            RumbleGenerator.cpp)
 
 set(HEADERS DefaultJoystick.h
             DriverPrimitive.h
@@ -17,6 +18,7 @@ set(HEADERS DefaultJoystick.h
             JoystickTranslator.h
             JoystickTypes.h
             JoystickUtils.h
-            KeymapHandler.h)
+            KeymapHandler.h
+            RumbleGenerator.h)
 
 core_add_library(input_joystick)

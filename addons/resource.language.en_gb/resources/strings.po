@@ -15950,7 +15950,19 @@ msgctxt "#35050"
 msgid "Controller profiles"
 msgstr ""
 
-#empty strings from id 35051 to 35054
+#. Setting to test rumble
+#: system/settings/settings.xml
+msgctxt "#35051"
+msgid "Test rumble"
+msgstr ""
+
+#. Description of setting to test rumble
+#: system/settings/settings.xml
+msgctxt "#35052"
+msgid "Activate the rumble motors of all controllers."
+msgstr ""
+
+#empty strings from id 35053 to 35054
 
 #. Help text for controller window
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp

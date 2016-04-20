@@ -2601,6 +2601,13 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
+        <setting id="input.testrumble" type="action" label="35051" help="35052">
+          <level>2</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="HasRumbleFeature" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
       </group>
     </category>
     <category id="network" label="798" help="36379">

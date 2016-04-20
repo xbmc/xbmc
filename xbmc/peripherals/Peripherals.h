@@ -216,6 +216,12 @@ namespace PERIPHERALS
      */
     EventRateHandle SetEventScanRate(float rateHz) { return m_eventScanner.SetRate(rateHz); }
 
+    /*!
+     * @brief Request peripherals with the specified feature to perform a quick test
+     * @return true if any peripherals support the feature, false otherwise
+     */
+    bool TestFeature(PeripheralFeature feature);
+
     bool SupportsCEC() const
     {
 #if defined(HAVE_LIBCEC)

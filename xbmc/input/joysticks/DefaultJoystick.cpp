@@ -32,7 +32,8 @@
 using namespace JOYSTICK;
 
 CDefaultJoystick::CDefaultJoystick(void) :
-  m_handler(new CKeymapHandler)
+  m_handler(new CKeymapHandler),
+  m_rumbleGenerator(ControllerID())
 {
 }
 

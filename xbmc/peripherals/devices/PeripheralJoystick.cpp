@@ -44,6 +44,7 @@ CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult,
 
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
+  m_defaultInputHandler.AbortRumble();
   UnregisterJoystickInputHandler(&m_defaultInputHandler);
   UnregisterJoystickDriverHandler(&m_joystickMonitor);
 }
@@ -92,6 +93,22 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
     // Give joystick monitor priority over default controller
     RegisterJoystickInputHandler(&m_defaultInputHandler);
     RegisterJoystickDriverHandler(&m_joystickMonitor, false);
+  }
+
+  return bSuccess;
+}
+
+bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
+{
+  bool bSuccess = false;
+
+  switch (feature)
+  {
+  case FEATURE_RUMBLE:
+    bSuccess = m_defaultInputHandler.TestRumble();
+    break;
+  default:
+    break;
   }
 
   return bSuccess;

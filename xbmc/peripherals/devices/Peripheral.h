@@ -101,6 +101,13 @@ namespace PERIPHERALS
     virtual bool InitialiseFeature(const PeripheralFeature feature) { return true; }
 
     /*!
+     * @brief Briefly test one of the features of this peripheral.
+     * @param feature The feature to test.
+     * @return True if the test succeeded, false otherwise.
+     */
+    virtual bool TestFeature(PeripheralFeature feature) { return false; }
+
+    /*!
      * @brief Called when a setting changed.
      * @param strChangedSetting The changed setting.
      */

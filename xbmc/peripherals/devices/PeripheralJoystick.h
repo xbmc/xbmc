@@ -45,6 +45,7 @@ namespace PERIPHERALS
 
     // implementation of CPeripheral
     virtual bool InitialiseFeature(const PeripheralFeature feature) override;
+    virtual bool TestFeature(PeripheralFeature feature) override;
     virtual void RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous) override;
     virtual void UnregisterJoystickDriverHandler(IDriverHandler* handler) override;
     virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
