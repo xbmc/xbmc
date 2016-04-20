@@ -776,6 +776,7 @@ WARN_LOGFILE           =
 INPUT                  = main.txt \
                          ../../../GUIInfoManager.cpp \
                          Modules/modules_general.dox \
+                         Modules/modules_cpp.dox \
                          Skin/skin.dox \
                          ../../../guilib/GUIRenderingControl.dox \
                          ../../../guilib/GUIButtonControl.dox \
@@ -823,7 +824,57 @@ INPUT                  = main.txt \
                          ../../../interfaces/builtins/SkinBuiltins.cpp \
                          ../../../interfaces/builtins/SystemBuiltins.cpp \
                          ../../../interfaces/builtins/WeatherBuiltins.cpp \
-                         ../../../pictures/PictureInfoTag.cpp
+                         ../../../pictures/PictureInfoTag.cpp \
+                         ../include/kodi/api2/AddonLib.hpp \
+                         ../include/kodi/api2/definitions-all.hpp \
+                         ../include/kodi/api2/definitions.hpp \
+                         ../include/kodi/api2/addon/definitions_addon.hpp \
+                         ../include/kodi/api2/addon/General.hpp \
+                         ../include/kodi/api2/addon/SoundPlay.hpp \
+                         ../include/kodi/api2/addon/Network.hpp \
+                         ../include/kodi/api2/addon/VFSUtils.hpp \
+                         ../include/kodi/api2/audioengine/definitions_audioengine.hpp \
+                         ../include/kodi/api2/audioengine/General.hpp \
+                         ../include/kodi/api2/audioengine/Stream.hpp \
+                         ../include/kodi/api2/gui/definitions_gui.hpp \
+                         ../include/kodi/api2/gui/General.hpp \
+                         ../include/kodi/api2/gui/Window.hpp \
+                         ../include/kodi/api2/gui/ListItem.hpp \
+                         ../include/kodi/api2/gui/DialogYesNo.hpp \
+                         ../include/kodi/api2/gui/DialogExtendedProgress.hpp \
+                         ../include/kodi/api2/gui/DialogFileBrowser.hpp \
+                         ../include/kodi/api2/gui/DialogKeyboard.hpp \
+                         ../include/kodi/api2/gui/DialogNumeric.hpp \
+                         ../include/kodi/api2/gui/DialogOK.hpp \
+                         ../include/kodi/api2/gui/DialogProgress.hpp \
+                         ../include/kodi/api2/gui/DialogSelect.hpp \
+                         ../include/kodi/api2/gui/DialogTextViewer.hpp \
+                         ../include/kodi/api2/gui/ControlButton.hpp \
+                         ../include/kodi/api2/gui/ControlEdit.hpp \
+                         ../include/kodi/api2/gui/ControlFadeLabel.hpp \
+                         ../include/kodi/api2/gui/ControlImage.hpp \
+                         ../include/kodi/api2/gui/ControlLabel.hpp \
+                         ../include/kodi/api2/gui/ControlProgress.hpp \
+                         ../include/kodi/api2/gui/ControlRadioButton.hpp \
+                         ../include/kodi/api2/gui/ControlRendering.hpp \
+                         ../include/kodi/api2/gui/ControlSettingsSlider.hpp \
+                         ../include/kodi/api2/gui/ControlSlider.hpp \
+                         ../include/kodi/api2/gui/ControlSpin.hpp \
+                         ../include/kodi/api2/gui/ControlTextBox.hpp \
+                         ../include/kodi/api2/inputstream/definitions_inputstream.hpp \
+                         ../include/kodi/api2/inputstream/InputStream.hpp \
+                         ../include/kodi/api2/peripheral/definitions_peripheral.hpp \
+                         ../include/kodi/api2/peripheral/Peripheral.hpp \
+                         ../include/kodi/api2/player/Player.hpp \
+                         ../include/kodi/api2/player/PlayList.hpp \
+                         ../include/kodi/api2/player/definitions_player.hpp \
+                         ../include/kodi/api2/player/InfoTagMusic.hpp \
+                         ../include/kodi/api2/player/InfoTagVideo.hpp \
+                         ../include/kodi/api2/pvr/definitions_pvr.hpp \
+                         ../include/kodi/api2/pvr/General.hpp \
+                         ../include/kodi/api2/pvr/StreamUtils.hpp \
+                         ../include/kodi/api2/pvr/Transfer.hpp \
+                         ../include/kodi/api2/pvr/Trigger.hpp
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

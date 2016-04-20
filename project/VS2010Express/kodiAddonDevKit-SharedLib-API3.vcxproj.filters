@@ -1,0 +1,364 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="addon">
+      <UniqueIdentifier>{c89c6f23-9018-4740-bfcf-cac84fc73368}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="audioengine">
+      <UniqueIdentifier>{33d4268f-fa63-4466-ada6-42265b14efb2}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="gui">
+      <UniqueIdentifier>{1e4f68fb-de2b-44c1-a88d-da9144e4406b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inputstream">
+      <UniqueIdentifier>{aa969c45-e720-43fd-8346-d666a9857e87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripheral">
+      <UniqueIdentifier>{de53a537-1b9c-48b3-9da0-b928b1389a29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="player">
+      <UniqueIdentifier>{b6d9574c-5899-4659-8c7d-f97bd4c9919c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pvr">
+      <UniqueIdentifier>{e5515c98-10a7-4674-8de2-d49f995b878f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{7abca689-97c3-45e3-bc1e-745f1ab92c8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\addon">
+      <UniqueIdentifier>{22c1ef66-ace3-4ddc-ae21-d5ca1d0c74ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\audioengine">
+      <UniqueIdentifier>{2923e997-72db-4e5d-ba00-4f38bd67d207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\gui">
+      <UniqueIdentifier>{754228eb-c33e-480f-9ae6-106cd448e0c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\inputstream">
+      <UniqueIdentifier>{742d241a-532b-4a78-b09a-5f2548178daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\peripheral">
+      <UniqueIdentifier>{c3072333-e286-4a55-99a1-fc1c8f758392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\player">
+      <UniqueIdentifier>{6fb1351d-73bd-4515-8662-e80bdbead5b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\pvr">
+      <UniqueIdentifier>{cf46de28-119b-4277-a68e-f2a3409c07e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\.internal">
+      <UniqueIdentifier>{1ee33070-0449-4c10-bdfa-86582a23c8f2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\AddonLib.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\ErrorCodeNames.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\InterProcess.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\pvr\AddonLib_PVR_General.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\pvr\AddonLib_PVR_Stream.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\pvr\AddonLib_PVR_Transfer.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\pvr\AddonLib_PVR_Trigger.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\player\AddonLib_Player_InfoTagMusic.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\player\AddonLib_Player_InfoTagVideo.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\player\AddonLib_Player_Player.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\player\AddonLib_Player_PlayList.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\peripheral\AddonLib_Peripheral.cpp">
+      <Filter>peripheral</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\inputstream\AddonLib_InputStream.cpp">
+      <Filter>inputstream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlButton.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlEdit.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlFadeLabel.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlImage.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlLabel.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlProgress.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlRadioButton.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlRendering.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlSettingsSlider.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlSlider.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlSpin.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ControlTextBox.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogExtendedProgress.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogFileBrowser.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogKeyboard.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogNumeric.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogOK.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogProgress.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogSelect.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogTextViewer.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_DialogYesNo.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_General.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_ListItem.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\gui\AddonLib_GUI_Window.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\audioengine\AddonLib_AudioEngine_General.cpp">
+      <Filter>audioengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\audioengine\AddonLib_AudioEngine_Stream.cpp">
+      <Filter>audioengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\addon\AddonLib_Addon_General.cpp">
+      <Filter>addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\addon\AddonLib_Addon_Network.cpp">
+      <Filter>addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\addon\AddonLib_Addon_SoundPlay.cpp">
+      <Filter>addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\addon\AddonLib_Addon_VFSUtils.cpp">
+      <Filter>addon</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\dlfcn-win32.h" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\kodi-addon-sharedlibrary\InterProcess.h" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\AddonLib.hpp">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\definitions.hpp">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\definitions-all.hpp">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\definitions_addon.hpp">
+      <Filter>Includes\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\General.hpp">
+      <Filter>Includes\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\Network.hpp">
+      <Filter>Includes\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\SoundPlay.hpp">
+      <Filter>Includes\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\VFSUtils.hpp">
+      <Filter>Includes\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\.internal\AddonLib_internal.hpp">
+      <Filter>Includes\.internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\definitions_audioengine.hpp">
+      <Filter>Includes\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\General.hpp">
+      <Filter>Includes\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\Stream.hpp">
+      <Filter>Includes\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlButton.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlEdit.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlFadeLabel.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlImage.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlLabel.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlProgress.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlRadioButton.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlRendering.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlSettingsSlider.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlSlider.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlSpin.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlTextBox.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\definitions_gui.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogExtendedProgress.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogFileBrowser.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogKeyboard.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogNumeric.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogOK.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogProgress.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogSelect.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogTextViewer.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogYesNo.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\General.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ListItem.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\Window.hpp">
+      <Filter>Includes\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\inputstream\definitions_inputstream.hpp">
+      <Filter>Includes\inputstream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\inputstream\InputStream.hpp">
+      <Filter>Includes\inputstream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\peripheral\Peripheral.hpp">
+      <Filter>Includes\peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\definitions_player.hpp">
+      <Filter>Includes\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\InfoTagMusic.hpp">
+      <Filter>Includes\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\InfoTagVideo.hpp">
+      <Filter>Includes\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\Player.hpp">
+      <Filter>Includes\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\PlayList.hpp">
+      <Filter>Includes\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\definitions_pvr.hpp">
+      <Filter>Includes\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\General.hpp">
+      <Filter>Includes\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\StreamUtils.hpp">
+      <Filter>Includes\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\Transfer.hpp">
+      <Filter>Includes\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\Trigger.hpp">
+      <Filter>Includes\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api3\version.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\AddonLib.i">
+      <Filter>Includes</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\KodiAPI_AddOn.i">
+      <Filter>Includes\addon</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\KodiAPI_AudioEngine.i">
+      <Filter>Includes\audioengine</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\KodiAPI_GUI.i">
+      <Filter>Includes\gui</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\inputstream\KodiAPI_InputStream.i">
+      <Filter>Includes\inputstream</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\peripheral\KodiAPI_Peripheral.i">
+      <Filter>Includes\peripheral</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\KodiAPI_Player.i">
+      <Filter>Includes\player</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\KodiAPI_PVR.i">
+      <Filter>Includes\pvr</Filter>
+    </None>
+  </ItemGroup>
+</Project>

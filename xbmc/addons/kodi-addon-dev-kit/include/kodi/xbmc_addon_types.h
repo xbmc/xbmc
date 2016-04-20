@@ -24,7 +24,9 @@
 extern "C" {
 #endif
 
-enum ADDON_STATUS
+typedef int ADDON_STATUS;
+
+typedef enum ADDON_STATUS_TYPE
 {
   ADDON_STATUS_OK,
   ADDON_STATUS_LOST_CONNECTION,
@@ -33,7 +35,7 @@ enum ADDON_STATUS
   ADDON_STATUS_UNKNOWN,
   ADDON_STATUS_NEED_SAVEDSETTINGS,
   ADDON_STATUS_PERMANENT_FAILURE   /**< permanent failure, like failing to resolve methods */
-};
+} ADDON_STATUS_TYPE;
 
 typedef struct
 {

@@ -1,0 +1,6 @@
+SRCS=Addon_Peripheral.cpp \
+
+LIB=addon-interface-peripheral.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

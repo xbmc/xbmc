@@ -220,6 +220,8 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIWindowLoginScreen.h"
 
+#include "addons/binary/AddonInterfaceManager.h"
+
 using namespace ADDON;
 using namespace XFILE;
 #ifdef HAS_DVD_DRIVE
@@ -1144,6 +1146,7 @@ bool CApplication::Initialize()
       CJSONRPC::Initialize();
 #endif
       ADDON::CAddonMgr::GetInstance().StartServices(false);
+      CServiceBroker::GetAddonInterfaceManager().StartManager();
 
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
@@ -1167,6 +1170,7 @@ bool CApplication::Initialize()
     CJSONRPC::Initialize();
 #endif
     ADDON::CAddonMgr::GetInstance().StartServices(false);
+    CServiceBroker::GetAddonInterfaceManager().StartManager();
   }
 
   g_sysinfo.Refresh();
@@ -3462,6 +3466,7 @@ void CApplication::OnPlayBackEnded()
   if(m_bPlaybackStarting)
     return;
 
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackStopped();
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -3489,6 +3494,7 @@ void CApplication::OnPlayBackStarted()
   if(m_bPlaybackStarting)
     return;
 
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackStarted();
 #ifdef HAS_PYTHON
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
@@ -3511,6 +3517,8 @@ void CApplication::OnQueueNextItem()
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   if(m_bPlaybackStarting)
     return;
+
+  CServiceBroker::GetAddonInterfaceManager().OnQueueNextItem();
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -3529,6 +3537,7 @@ void CApplication::OnPlayBackStopped()
   if(m_bPlaybackStarting)
     return;
 
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackEnded();
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -3550,6 +3559,7 @@ void CApplication::OnPlayBackStopped()
 
 void CApplication::OnPlayBackPaused()
 {
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackPaused();
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackPaused();
 #endif
@@ -3567,6 +3577,7 @@ void CApplication::OnPlayBackPaused()
 
 void CApplication::OnPlayBackResumed()
 {
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackResumed();
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackResumed();
 #endif
@@ -3585,6 +3596,7 @@ void CApplication::OnPlayBackResumed()
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 {
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackSpeedChanged(iSpeed);
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
 #endif
@@ -3597,6 +3609,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 {
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackSeek(iTime, seekOffset);
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackSeek(iTime, seekOffset);
 #endif
@@ -3612,6 +3625,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
 {
+  CServiceBroker::GetAddonInterfaceManager().OnPlayBackSeekChapter(iChapter);
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackSeekChapter(iChapter);
 #endif
