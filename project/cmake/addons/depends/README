@@ -34,7 +34,7 @@ specific paths:
     builds.
   * CORE_SYSTEM_NAME is the name of the platform (e.g. "linux" or "android") in
     lower-case (defaults to lowercase(CMAKE_SYSTEM_NAME)).
-  * APP_ROOT points to the root directory of the project (default is the
+  * CORE_SOURCE_DIR points to the root directory of the project (default is the
     absolute representation of ../../.. starting from this directory).
   * DEPENDS_PATH points to the directory where the built dependencies
     (their include and library file) will be installed to.
@@ -56,6 +56,6 @@ In case of additional options the call might look like this
 
   cmake <path> [-G <generator>] \
         -DCMAKE_BUILD_TYPE=Release \
-        -DAPP_ROOT="<path-to-project-root>" \
+        -DCORE_SOURCE_DIR="<path-to-project-root>" \
         -DARCH_DEFINES="-DTARGET_LINUX" \
         -DCMAKE_INSTALL_PREFIX="<path-to-install-directory"

@@ -1,6 +1,6 @@
 # parse version.txt to get the version info
-if(EXISTS "${APP_ROOT}/version.txt")
-  file(STRINGS "${APP_ROOT}/version.txt" versions)
+if(EXISTS "${CORE_SOURCE_DIR}/version.txt")
+  file(STRINGS "${CORE_SOURCE_DIR}/version.txt" versions)
   foreach (version ${versions})
     if(version MATCHES "^VERSION_.*")
       string(REGEX MATCH "^[^ ]+" version_name ${version})
@@ -18,7 +18,7 @@ endif()
 
 # bail if we can't parse versions
 if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
-  message(FATAL_ERROR "Could not determine app version! make sure that ${APP_ROOT}/version.txt exists")
+  message(FATAL_ERROR "Could not determine app version! make sure that ${CORE_SOURCE_DIR}/version.txt exists")
 endif()
 
 # in case we need to download something, set KODI_MIRROR to the default if not alread set
@@ -57,26 +57,26 @@ if(NOT WIN32)
 endif()
 
 # generate the proper kodi-config.cmake file
-configure_file(${APP_ROOT}/project/cmake/kodi-config.cmake.in ${APP_LIB_DIR}/kodi-config.cmake @ONLY)
+configure_file(${CORE_SOURCE_DIR}/project/cmake/kodi-config.cmake.in ${APP_LIB_DIR}/kodi-config.cmake @ONLY)
 
 # copy cmake helpers to lib/kodi
-file(COPY ${APP_ROOT}/project/cmake/scripts/common/addon-helpers.cmake
-          ${APP_ROOT}/project/cmake/scripts/common/addoptions.cmake
+file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/addon-helpers.cmake
+          ${CORE_SOURCE_DIR}/project/cmake/scripts/common/addoptions.cmake
      DESTINATION ${APP_LIB_DIR})
 
 # generate xbmc-config.cmake for backwards compatibility to xbmc
-configure_file(${APP_ROOT}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
+configure_file(${CORE_SOURCE_DIR}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
 
 ### copy all the addon binding header files to include/kodi
 # parse addon-bindings.mk to get the list of header files to copy
-file(STRINGS ${APP_ROOT}/xbmc/addons/addon-bindings.mk bindings)
+file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk bindings)
 string(REPLACE "\n" ";" bindings "${bindings}")
 foreach(binding ${bindings})
   string(REPLACE " =" ";" binding "${binding}")
   string(REPLACE "+=" ";" binding "${binding}")
   list(GET binding 1 header)
   # copy the header file to include/kodi
-  file(COPY ${APP_ROOT}/${header} DESTINATION ${APP_INCLUDE_DIR})
+  file(COPY ${CORE_SOURCE_DIR}/${header} DESTINATION ${APP_INCLUDE_DIR})
 
   # auto-generate header files for backwards compatibility to xbmc with deprecation warning
   # but only do it if the file doesn't already exist

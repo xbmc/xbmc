@@ -31,14 +31,14 @@ endif()
 include(ExternalProject)
 
 ### setup all the necessary paths
-if(NOT APP_ROOT AND NOT XBMCROOT)
-  set(APP_ROOT ${PROJECT_SOURCE_DIR}/../../..)
-elseif(NOT APP_ROOT)
-  file(TO_CMAKE_PATH "${XBMCROOT}" APP_ROOT)
+if(NOT CORE_SOURCE_DIR AND NOT XBMCROOT)
+  set(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../../..)
+elseif(NOT CORE_SOURCE_DIR)
+  file(TO_CMAKE_PATH "${XBMCROOT}" CORE_SOURCE_DIR)
 else()
-  file(TO_CMAKE_PATH "${APP_ROOT}" APP_ROOT)
+  file(TO_CMAKE_PATH "${CORE_SOURCE_DIR}" CORE_SOURCE_DIR)
 endif()
-get_filename_component(APP_ROOT "${APP_ROOT}" ABSOLUTE)
+get_filename_component(CORE_SOURCE_DIR "${CORE_SOURCE_DIR}" ABSOLUTE)
 
 if(NOT BUILD_DIR)
   set(BUILD_DIR "${CMAKE_BINARY_DIR}/build")
@@ -55,7 +55,7 @@ endif()
 get_filename_component(DEPENDS_PATH "${DEPENDS_PATH}" ABSOLUTE)
 
 if(NOT PLATFORM_DIR)
-  set(PLATFORM_DIR ${APP_ROOT}/project/cmake/platform/${CORE_SYSTEM_NAME})
+  set(PLATFORM_DIR ${CORE_SOURCE_DIR}/project/cmake/platform/${CORE_SYSTEM_NAME})
   file(TO_CMAKE_PATH "${PLATFORM_DIR}" PLATFORM_DIR)
 endif()
 
@@ -156,7 +156,7 @@ if(EXISTS ${PLATFORM_DIR}/defines.txt)
 endif()
 
 # include check_target_platform() function
-include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
+include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/check_target_platform.cmake)
 
 set(ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 if(NOT WIN32)
@@ -171,7 +171,7 @@ endif()
 
 ### prepare the build environment for the binary addons
 # copy the prepare-env.cmake script to the depends path so that we can include it
-file(COPY ${APP_ROOT}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${APP_LIB_DIR})
+file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${APP_LIB_DIR})
 
 # add the location of prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
 list(APPEND CMAKE_MODULE_PATH ${APP_LIB_DIR})
@@ -366,7 +366,7 @@ foreach(addon ${addons})
           set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
 
           if(EXISTS ${${id}_DEPENDS_DIR})
-            include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
+            include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/handle-depends.cmake)
             add_addon_depends(${id} ${${id}_DEPENDS_DIR})
             if(${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
               message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
