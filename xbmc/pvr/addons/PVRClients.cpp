@@ -458,9 +458,9 @@ bool CPVRClients::HasTimerSupport(int iClientId)
   return false;
 }
 
-PVR_ERROR CPVRClients::GetTimers(CPVRTimers *timers)
+bool CPVRClients::GetTimers(CPVRTimers *timers, std::vector<int> &failedClients)
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  bool bSuccess(true);
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
@@ -472,11 +472,12 @@ PVR_ERROR CPVRClients::GetTimers(CPVRTimers *timers)
         currentError != PVR_ERROR_NO_ERROR)
     {
       CLog::Log(LOGERROR, "PVR - %s - cannot get timers from client '%d': %s",__FUNCTION__, (*itrClients).first, CPVRClient::ToString(currentError));
-      error = currentError;
+      bSuccess = false;
+      failedClients.push_back((*itrClients).first);
     }
   }
 
-  return error;
+  return bSuccess;
 }
 
 PVR_ERROR CPVRClients::AddTimer(const CPVRTimerInfoTag &timer)
