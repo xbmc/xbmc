@@ -1,0 +1,102 @@
+/*!
+
+\page Radio_button_control Radio button control
+\brief **A radio button control (as used for on/off settings).**
+
+\tableofcontents
+
+The radio button control is used for creating push button on/off settings in
+Kodi. You can choose the position, size, and look of the button. When the user
+clicks on the radio button, the state will change, toggling the extra textures
+(`textureradioon` and `textureradiooff`). Used for settings controls.
+
+--------------------------------------------------------------------------------
+\section Radio_button_control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="radiobutton" id="2">
+      <description>My first radiobutton control</description>
+      <type>radiobutton</type>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <visible>true</visible>
+      <colordiffuse>FFFFFFFF</colordiffuse>
+      <texturefocus>myfocustexture.png</texturefocus>
+      <texturenofocus>mynormaltexture.png</texturenofocus>
+      <textureradioonfocus colordiffuse="FFFFAAFF">myradiobutton.png</textureradioonfocus>
+      <textureradioonnofocus colordiffuse="FFFFAAFF">myradiobutton.png</textureradioonnofocus>
+      <textureradioofffocus colordiffuse="FFFFAAFF">myradiobutton_nf.png</textureradioofffocus>
+      <textureradiooffnofocus colordiffuse="FFFFAAFF">myradiobutton_nf.png</textureradiooffnofocus>
+      <selected>Player.Paused</selected>
+      <onclick>PlayerControls(Pause)</onclick>
+      <label>29</label>
+      <font>font12</font>
+      <textcolor>FFFFFFFF</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <disabledcolor>80FFFFFF</disabledcolor>
+      <align>left</align>
+      <aligny>center</aligny>
+      <textoffsetx>4</textoffsetx>
+      <textoffsety>5</textoffsety>
+      <pulseonselect>false</pulseonselect>
+      <onfocus>-</onfocus>
+      <onunfocus>-</onunfocus>
+      <onup>2</onup>
+      <ondown>3</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Radio_button_control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag                     | Description                                                   |
+|------------------------:|:--------------------------------------------------------------|
+| texturefocus            | Specifies the image file which should be displayed when the button has focus. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| texturenofocus          | Specifies the image file which should be displayed when the button does not have focus.
+| textureradioonfocus     | Specifies the image file which should be displayed for the radio button portion when it's the button is on and focused. This texture is positioned on the right of the button – it's positioned 24 pixels from the right edge of the button, and 8 pixels above the center vertically.
+| textureradioonnofocus   | Specifies the image file which should be displayed for the radio button portion when it's the button is on and unfocused. This texture is positioned on the right of the button – it's positioned 24 pixels from the right edge of the button, and 8 pixels above the center vertically.
+| textureradioon          | A shortcut to set both of the above textures to the same image file.
+| textureradioondisabled  | Specifies the image file which should be displayed for the radio button portion when the button is on and disabled.
+| textureradioofffocus    | Specifies the image file which should be displayed for the radio button portion when the button is off and focused.
+| textureradiooffnofocus  | Specifies the image file which should be displayed for the radio button portion when the button is off and unfocused.
+| textureradiooff         | A shortcut to set both of the above textures to the same image file.
+| textureradioondisabled  | Specifies the image file which should be displayed for the radio button portion when the button is off and disabled.
+| label                   | The label used on the button. It can be a link into strings.xml, or an actual text label.
+| label2                  | Optional. Will display an 'on' or 'off' label. Only available if you specify an empty radiowidth and radioheight.
+| font                    | Font used for the button label. From fonts.xml.
+| textcolor               | Color used for displaying the button label. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| focusedcolor            | Color used for the button label when the button has in focus. In **AARRGGBB** hex format or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| disabledcolor           | Color used for the button label if the button is disabled. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| shadowcolor             | Specifies the color of the drop shadow on the text, in **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| align                   | Label horizontal alignment on the button. Defaults to left, can also be center or right.
+| aligny                  | Label vertical alignment on the button. Defaults to top, can also be center.
+| textoffsetx             | Amount to offset the label from the left (or right) edge of the button when using left or right alignment.
+| textoffsety             | Amount to offset the label from the top edge of the button when using top alignment.
+| selected                | The boolean condition that when met will cause the control to become selected. [see here for more information](http://kodi.wiki/view/Conditional_Visibility).
+| onclick                 | The function to perform when the radio button is clicked. Should be a [built in function](http://kodi.wiki/view/Built-in_functions_available_to_FTP,_Webserver,_skins,_keymap_and_to_python).
+| radioposx               | X offset of the dot or radio button itself
+| radioposy               | Y offset of the dot or radio button itself
+| radiowidth              | Width in Pixels of the dot or radio button itself
+| radioheight             | Height in Pixels of the dot or radio button itself
+| onfocus                 | Specifies the action to perform when the button is focused. Should be a built in function. The action is performed after any focus animations have completed. See here for more information.
+| onunfocus               | Specifies the action to perform when the button loses focus. Should be a built in function.
+
+
+--------------------------------------------------------------------------------
+\section Radio_button_control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

@@ -1,0 +1,126 @@
+/*!
+
+\page Panel_Container Panel Container
+\brief **Used for a scrolling panel of items. Replaces the thumbnail panel.**
+
+\tableofcontents
+
+The panel container is one of several containers used to display items from file
+lists in various ways. The panel container is very flexible - it's essentially a
+multi-column list. The layout of the items is very flexible and is up to the
+skinner.
+
+
+--------------------------------------------------------------------------------
+\section Panel_Container_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="panel" id="52">
+        <posx>190</posx>
+        <posy>100</posy>
+        <width>485</width>
+        <height>425</height>
+        <onleft>9000</onleft>
+        <onright>60</onright>
+        <onup>52</onup>
+        <ondown>52</ondown>
+        <scrolltime tween="sine" easing="out">200</scrolltime>
+        <autoscroll>true</autoscroll>
+        <viewtype label="536">icon</viewtype>
+        <pagecontrol>60</pagecontrol>
+        <include>contentpanelslide</include>
+        <itemlayout height="141" width="120">
+                <control type="image">
+                        <posx>10</posx>
+                        <posy>10</posy>
+                        <width>100</width>
+                        <height>100</height>
+                        <info>ListItem.Icon</info>
+                </control>
+                <control type="image">
+                        <posx>80</posx>
+                        <posy>75</posy>
+                        <width>32</width>
+                        <height>32</height>
+                        <info>ListItem.Overlay</info>
+                </control>
+                <control type="label">
+                        <posx>60</posx>
+                        <posy>115</posy>
+                        <width>110</width>
+                        <height>22</height>
+                        <font>font13</font>
+                        <selectedcolor>green</selectedcolor>
+                        <align>center</align>
+                        <info>ListItem.Label</info>
+                </control>
+        </itemlayout>
+        <focusedlayout height="141" width="120">
+                <control type="image">
+                        <width>110</width>
+                        <height>110</height>
+                        <posx>5</posx>
+                        <posy>5</posy>
+                        <texture>folder-focus.png</texture>
+                        <animation effect="zoom" end="0,0,120,120" time="100">focus</animation>
+                </control>
+                <control type="image">
+                        <posx>10</posx>
+                        <posy>10</posy>
+                        <width>100</width>
+                        <height>100</height>
+                        <info>ListItem.Icon</info>
+                        <animation effect="zoom" end="5,5,110,110" time="100">focus</animation>
+                </control>
+                <control type="image">
+                        <posx>80</posx>
+                        <posy>75</posy>
+                        <width>32</width>
+                        <height>32</height>
+                        <info>ListItem.Overlay</info>
+                        <animation effect="slide" end="5,5" time="100">focus</animation>
+                </control>
+                <control type="label">
+                        <posx>60</posx>
+                        <posy>120</posy>
+                        <width>110</width>
+                        <height>22</height>
+                        <font>font13</font>
+                        <selectedcolor>green</selectedcolor>
+                        <align>center</align>
+                        <info>ListItem.Label</info>
+                </control>
+        </focusedlayout>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Panel_Container_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| viewtype      | The type of view. Choices are list, icon, wide, wrap, biglist, bigicon, bigwide, bigwrap, info and biginfo. The label attribute indicates the label that will be used in the "View As" control within the GUI. It is localizable via strings.xml. viewtype has no effect on the view itself. It is used by kodi when switching skin to automatically select a view with a similar layout. Skinners should try to set viewtype to describe the layout as best as possible.
+| orientation   | The orientation of the panel. Defaults to vertical.
+| pagecontrol   | Used to set the <b>`<id>`</b> of the page control used to control this panel.
+| scrolltime    | The time (in ms) to scroll from one item to another. By default, this is 200ms. The panel will scroll smoothly from one item to another as needed. Set it to zero to disable the smooth scrolling. The scroll movement can be further adjusted by selecting one of the available [tween](http://kodi.wiki/view/Tweeners) methods.
+| itemlayout    | Specifies the layout of items in the list. Requires both width and height attributes set. The <b>`<itemlayout>`</b> then contains as many label and image controls as required. [See here for more information](http://kodi.wiki/view/Container_Item_Layout).
+| focusedlayout | Specifies the layout of items in the list that have focus. Requires both width and height attributes set. The <b>`<focusedlayout>`</b> then contains as many label and image controls as required. [See here for more information](http://kodi.wiki/view/Container_Item_Layout).
+| content       | Used to set the item content that this panel will contain. Allows the skinner to setup a panel anywhere they want with a static set of content, as a useful alternative to the grouplist control. [See here for more information](http://kodi.wiki/view/Static_List_Content)
+| preloaditems  | Used in association with the background image loader. [See here for more information](http://kodi.wiki/view/Background_Image_Loader)
+| autoscroll    | Used to make the container scroll automatically
+
+
+--------------------------------------------------------------------------------
+\section Panel_Container_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

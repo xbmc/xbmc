@@ -1,0 +1,42 @@
+/*!
+
+\page Visualisation_Control Visualisation Control
+\brief **Used to display a visualisation while music is playing.**
+
+\tableofcontents
+
+The visualisation control is used for displaying those funky patterns that jump
+to the music in Kodi. You can choose the position, and size of the visualisation
+displayed. Note that the control is only rendered if music is being played.
+
+
+--------------------------------------------------------------------------------
+\section Visualisation_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="visualisation" id ="3">
+      <description>My first visualisation control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <visible>true</visible>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Visualisation_Control_sect2 Available tags
+Only the [default control](http://kodi.wiki/view/Default_Control_Tags) tags are
+applicable to this control.
+
+
+--------------------------------------------------------------------------------
+\section Visualisation_Control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

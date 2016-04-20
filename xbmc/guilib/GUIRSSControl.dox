@@ -1,0 +1,106 @@
+/*!
+
+\page RSS_feed_Control RSS ticker
+\brief **Used to display scrolling RSS feeds.**
+
+\tableofcontents
+
+Kodi can display an RSS feed on the home screen of the default skin/interface
+(Estuary), as well as any other skin that supports RSS feeds. By default,
+the RSS news feed is taken from [http://kodi.tv](http://kodi.tv/), but the feed
+can be changed to almost any RSS feed.
+
+@note Don't confuse the RSS ticker with RSS media source, which allows access to
+video and/or audio RSS streams.
+
+
+--------------------------------------------------------------------------------
+\section RSS_feed_Control_sect1 RSS ticker settings
+
+The RSS ticker can be toggled on or off by going to
+<b>`Settings -> Appearance -> Skin -> Show RSS news feed`</b>
+
+Below this setting one can also change the RSS news feed address.
+
+
+--------------------------------------------------------------------------------
+\section RSS_feed_Control_sect2 Technical documentation for skinners
+
+  Main page: [Skin development](http://kodi.wiki/view/Skin_development)
+
+\subsection RSS_feed_Control_sect2_1 RSS control
+The rss control is used for displaying scrolling RSS feeds from the internet
+in Kodi. You can choose the font, size, colour, location and the RSS feed to
+be displayed.
+
+__Example:__
+
+~~~~~~~~~~~~~
+<control type="rss" id="1">
+  <description>My First RSS control</description>
+  <posx>80</posx>
+  <posy>60</posy>
+  <width>500</width>
+  <visible>true</visible>
+  <font>font14</font>
+  <textcolor>FFB2D4F5</textcolor>
+  <headlinecolor>FFFFFFFF</headlinecolor>
+  <titlecolor>FF655656</titlecolor>
+</control>
+~~~~~~~~~~~~~
+
+
+\subsection RSS_feed_Control_sect2_2 Available tags and attributes
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| id            | This refers to the feedset to be displayed. This is the id reference to the <b>`<set>`</b> section in [RssFeeds.xml](http://kodi.wiki/view/RssFeeds.xml) (see below):
+| font          | Specifies the font to use from the font.xml file.
+| textcolor     | Specified the color the text should be. In hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| shadowcolor   | Specifies the color of the drop shadow on the text. In **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| headlinecolor | Specified the color that any highlighted text should be. In hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| titlecolor    | Specified the color the titles of the feeds should be. In hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| scrollspeed   | Scroll speed of text in pixels per second.
+
+
+\subsection RSS_feed_Control_sect2_3 RssFeeds.xml
+
+- <em>Main page: [RssFeeds.xml](http://kodi.wiki/view/RssFeeds.xml)</em>
+
+The actual content of the RSS feed is defined in the
+[RssFeeds.xml](http://kodi.wiki/view/RssFeeds.xml) file stored in the user's
+profile. Here is an example :
+
+~~~~~~~~~~~~~
+ <rssfeeds>
+   <set id="1">
+     <feed updateinterval="30">http://feeds.feedburner.com/XboxScene</feed>
+     <feed updateinterval="30">http://feeds.wired.com/wired/topheadlines</feed>
+   </set>
+   <set id="2">
+     <feed updateinterval="30">http://www.cnet.co.uk/feeds/public/rss_news_10.htm</feed>
+   </set>
+ </rssfeeds>
+~~~~~~~~~~~~~
+
+As can be seen, each feedset has an id attribute – this is what we are
+referencing in the <b>`<id>`</b> attribute of the control. There can be more
+than one <b>`<set>`</b> defined, and more than one <b>`<feed>`</b> per
+set. The <b>`<feed>`</b>'s must be escaped so that they're xml-safe (ie replace &
+with & etc.). Each feed in the set runs through in the order they are defined.
+
+
+--------------------------------------------------------------------------------
+\section RSS_feed_Control_sect3 See also
+
+- [RssFeeds.xml](http://kodi.wiki/view/RssFeeds.xml)
+
+#### Development:
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

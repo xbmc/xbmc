@@ -1,0 +1,243 @@
+/*!
+
+\page EPGGrid_control EPGGrid control
+\brief **Used to display the EPG guide in the PVR section.**
+
+\tableofcontents
+
+The epggrid control is used for creating an epg timeline in Kodi. You can choose
+the position, size, and look of the grid and it's contents.
+
+
+--------------------------------------------------------------------------------
+\section EPGGrid_control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="epggrid" id="10">
+    <description>EPG Grid</description>
+    <posx>80</posx>
+    <posy>81</posy>
+    <width>1120</width>
+    <height>555</height>
+    <pagecontrol>10</pagecontrol>
+    <scrolltime>350</scrolltime>
+    <timeblocks>40</timeblocks>
+    <rulerunit>6</rulerunit>
+    <progresstexture border="5">PVR-EpgProgressIndicator.png</progresstexture>
+    <onleft>31</onleft>
+    <onright>31</onright>
+    <onup>10</onup>
+    <ondown>10</ondown>
+    <rulerlayout height="35" width="40">
+        <control type="image" id="1">
+            <width>40</width>
+            <height>29</height>
+            <posx>0</posx>
+            <posy>0</posy>
+            <texture border="5">button-nofocus.png</texture>
+        </control>
+        <control type="label" id="2">
+            <posx>10</posx>
+            <posy>0</posy>
+            <width>34</width>
+            <height>29</height>
+            <font>font12</font>
+            <aligny>center</aligny>
+            <selectedcolor>selected</selectedcolor>
+            <align>left</align>
+            <label>$INFO[ListItem.Label]</label>
+        </control>
+    </rulerlayout>
+    <channellayout height="52" width="280">
+        <animation effect="fade" start="110" time="200">UnFocus</animation>
+        <control type="image" id="1">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>270</width>
+            <height>52</height>
+            <texture border="5">button-nofocus.png</texture>
+        </control>
+        <control type="label">
+            <posx>5</posx>
+            <posy>5</posy>
+            <width>40</width>
+            <height>35</height>
+            <font>font12</font>
+            <align>left</align>
+            <aligny>center</aligny>
+            <textcolor>grey</textcolor>
+            <selectedcolor>grey</selectedcolor>
+            <info>ListItem.ChannelNumber</info>
+        </control>
+        <control type="image">
+            <posx>45</posx>
+            <posy>4</posy>
+            <width>45</width>
+            <height>44</height>
+            <texture>$INFO[ListItem.Icon]</texture>
+        </control>
+        <control type="label" id="1">
+            <posx>94</posx>
+            <posy>0</posy>
+            <width>160</width>
+            <height>52</height>
+            <font>special12</font>
+            <aligny>center</aligny>
+            <selectedcolor>selected</selectedcolor>
+            <align>left</align>
+            <label>$INFO[ListItem.ChannelName]</label>
+        </control>
+    </channellayout>
+    <focusedchannellayout height="52" width="280">
+        <animation effect="fade" start="110" time="200">OnFocus</animation>
+        <control type="image" id="1">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>270</width>
+            <height>52</height>
+            <texture border="5">button-focus.png</texture>
+        </control>
+        <control type="label">
+            <posx>5</posx>
+            <posy>5</posy>
+            <width>40</width>
+            <height>35</height>
+            <font>font12</font>
+            <align>left</align>
+            <aligny>center</aligny>
+            <textcolor>grey</textcolor>
+            <selectedcolor>grey</selectedcolor>
+            <info>ListItem.ChannelNumber</info>
+        </control>
+        <control type="image">
+            <posx>45</posx>
+            <posy>4</posy>
+            <width>45</width>
+            <height>44</height>
+            <texture>$INFO[ListItem.Icon]</texture>
+        </control>
+        <control type="label" id="1">
+            <posx>94</posx>
+            <posy>0</posy>
+            <width>160</width>
+            <height>52</height>
+            <font>special12</font>
+            <aligny>center</aligny>
+            <selectedcolor>selected</selectedcolor>
+            <align>left</align>
+            <label>$INFO[ListItem.ChannelName]</label>
+        </control>
+    </focusedchannellayout>
+    <itemlayout height="52" width="40">
+        <control type="image" id="2">
+            <width>40</width>
+            <height>52</height>
+            <posx>0</posx>
+            <posy>0</posy>
+            <aspectratio>stretch</aspectratio>
+            <texture border="3">epg-genres/$INFO[ListItem.Property(GenreType)].png</texture>
+        </control>
+        <control type="label" id="1">
+            <posx>6</posx>
+            <posy>3</posy>
+            <width>30</width>
+            <height>25</height>
+            <font>font12</font>
+            <aligny>center</aligny>
+            <selectedcolor>selected</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+        </control>
+        <control type="image">
+            <posx>5</posx>
+            <posy>28</posy>
+            <width>30</width>
+            <height>20</height>
+            <texture>PVR-IsRecording.png</texture>
+            <visible>ListItem.IsRecording</visible>
+        </control>
+        <control type="image">
+            <posx>5</posx>
+            <posy>28</posy>
+            <width>20</width>
+            <height>20</height>
+            <texture>PVR-HasTimer.png</texture>
+            <visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
+        </control>
+    </itemlayout>
+    <focusedlayout height="52" width="40">
+        <control type="image" id="14">
+            <width>40</width>
+            <height>52</height>
+            <posx>0</posx>
+            <posy>0</posy>
+            <texture border="5">folder-focus.png</texture>
+        </control>
+        <control type="image" id="2">
+            <width>40</width>
+            <height>52</height>
+            <posx>0</posx>
+            <posy>0</posy>
+            <aspectratio>stretch</aspectratio>
+            <texture border="3">epg-genres/$INFO[ListItem.Property(GenreType)].png</texture>
+        </control>
+        <control type="label" id="1">
+            <posx>6</posx>
+            <posy>3</posy>
+            <width>30</width>
+            <height>25</height>
+            <font>font12</font>
+            <aligny>center</aligny>
+            <selectedcolor>selected</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+        </control>
+        <control type="image">
+            <posx>5</posx>
+            <posy>28</posy>
+            <width>30</width>
+            <height>20</height>
+            <texture>PVR-IsRecording.png</texture>
+            <visible>ListItem.IsRecording</visible>
+        </control>
+        <control type="image">
+            <posx>5</posx>
+            <posy>28</posy>
+            <width>20</width>
+            <height>20</height>
+            <texture>PVR-HasTimer.png</texture>
+            <visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
+        </control>
+    </focusedlayout>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section EPGGrid_control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag                   | Description                                                   |
+|----------------------:|:--------------------------------------------------------------|
+| timeblocks            | The number of timeframes on the top row.
+| rulerunit             | Timeframe of each unit on the top row. 1 unit equals 5 minutes.
+| rulerlayout           | The layout of the top row.
+| progresstexture       | A texture which indicates the current progress time
+| channellayout         | The layout of the left column.
+| focusedchannellayout  | The focused layout of the left column.
+| itemlayout            | The layout of the grid
+| focusedlayout         | The focused layout of the grid
+
+
+--------------------------------------------------------------------------------
+\section EPGGrid_control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

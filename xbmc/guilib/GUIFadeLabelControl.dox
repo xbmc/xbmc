@@ -1,0 +1,72 @@
+/*!
+
+\page Fade_Label_Control Fade label control
+\brief **Used to show multiple pieces of text in the same position, by fading from one to the other.**
+
+\tableofcontents
+
+The fade label control is used for displaying multiple pieces of text in the
+same space in Kodi. You can choose the font, size, colour, location and contents
+of the text to be displayed. The first piece of information to display fades in
+over 50 frames, then scrolls off to the left. Once it is finished scrolling off
+screen, the second piece of information fades in and the process repeats. A fade
+label control is not supported in a list container.
+
+--------------------------------------------------------------------------------
+\section Fade_Label_Control_sect1 Example
+
+~~~~~~~~~~~~~
+  <control type="fadelabel" id="1">
+        <description>My First fadelabel</description>
+        <posx>80</posx>
+        <posy>60</posy>
+        <width>250</width>
+        <visible>true</visible>
+        <scrollout>true</scrollout>
+        <pauseatend>200</pauseatend>
+        <label>6</label>
+        <info>MusicPlayer.Genre</info>
+        <info>MusicPlayer.Artist</info>
+        <info>MusicPlayer.Album</info>
+        <info>MusicPlayer.Year</info>
+        <font>font14</font>
+        <textcolor>FFB2D4F5</textcolor>
+        <textoffsetx>20</textoffsetx>
+        <scroll>true</scroll>
+        <randomize>true</randomize>
+  </control>
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Fade_Label_Control_sect2 Tag descriptions
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag                 | Description                                                   |
+|--------------------:|:--------------------------------------------------------------|
+| label               | Specifies the text which should be drawn. You should specify an entry from the strings.xml here, however you may also specify a piece of text yourself if you wish, though ofcourse it will not be localisable. [You may also specify more than one piece of information here by using the $INFO and $LOCALIZE formats](http://kodi.wiki/view/Label_Parsing).
+| info                | Specifies the information that should be presented. Kodi will auto-fill in this info in place of the <b>`<label>`</b>. [See here for more information](http://kodi.wiki/view/InfoLabels).
+| font                | Specifies the font to use from the font.xml file.
+| textcolor           | Specified the color the text should be, in hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| textoffsetx         | Specify the offset from the left edge that the text should be rendered at when static (not scrolling). The scrolling text will still scroll using the full <b>`<width>`</b> of the control.
+| shadowcolor         | Specifies the color of the drop shadow on the text, in **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| angle               | Specifies the angle at which the text should be drawn, measured counter clockwise from the horizontal.
+| scrollout           | If set to False the fadelabel will only scroll until the last char is to the right side of the width of the fadelabel instead of all the way out to the left.
+| pauseatend          | Specifies the time that the text will wait until it fades away before it scrolls again or moves to the next item.
+| resetonlabelchange  | If set to false the fadelabel will not reset the scrolling offset when the label's content changes. Useful if you have things such as the play time (in seconds) inside a fadelabel. Defaults to true.
+| scrollspeed         | Scroll speed of text in pixels per second. Defaults to 60.
+| scroll              | If set to false, the labels won't scroll. Defaults to true.
+| randomize           | If set to true, the labels will be displayed in a random order. Defaults to false.
+
+
+--------------------------------------------------------------------------------
+\section Fade_Label_Control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/
