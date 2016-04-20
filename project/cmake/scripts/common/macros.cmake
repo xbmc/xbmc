@@ -319,22 +319,15 @@ macro(today RESULT)
 endmacro()
 
 function(core_find_git_rev)
-# this is dead code. It should be version.txt
-# revisit later after some more light reading about cmake's string parsing
-# and filtering.
-  if(EXISTS ${CORE_SOURCE_DIR}/VERSION)
-    file(STRINGS ${CORE_SOURCE_DIR}/VERSION VERSION_FILE)
-    string(SUBSTRING "${VERSION_FILE}" 1 16 GIT_REV)
-  else()
-    find_package(Git)
-    if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
-      execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
-                      RESULT_VARIABLE status_code
-                      WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+  find_package(Git)
+  if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
+    execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
+                    RESULT_VARIABLE status_code
+                    WORKING_DIRECTORY ${CORE_SOURCE_DIR})
       if (NOT status_code)
         execute_process(COMMAND ${GIT_EXECUTABLE} diff-index --ignore-submodules --quiet HEAD --
-                        RESULT_VARIABLE status_code
-                        WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+                      RESULT_VARIABLE status_code
+                      WORKING_DIRECTORY ${CORE_SOURCE_DIR})
       endif()
       if (status_code)
         execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h-dirty" HEAD
@@ -347,16 +340,16 @@ function(core_find_git_rev)
                         WORKING_DIRECTORY ${CORE_SOURCE_DIR})
         string(SUBSTRING ${HASH} 1 7 HASH)
       endif()
-      execute_process(COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:"%cd" --date=short HEAD
-                      OUTPUT_VARIABLE DATE
-                      WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-      string(SUBSTRING ${DATE} 1 10 DATE)
-    else()
+    execute_process(COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:"%cd" --date=short HEAD
+                    OUTPUT_VARIABLE DATE
+                    WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+    string(SUBSTRING ${DATE} 1 10 DATE)
+  else()
     today(DATE)
-    endif()
-    string(REPLACE "-" "" DATE ${DATE})
-    set(GIT_REV "${DATE}-${HASH}")
+    set(HASH "nogitfound")
   endif()
+  string(REPLACE "-" "" DATE ${DATE})
+  set(GIT_REV "${DATE}-${HASH}")
   if(GIT_REV)
     set(APP_SCMID ${GIT_REV} PARENT_SCOPE)
   endif()
