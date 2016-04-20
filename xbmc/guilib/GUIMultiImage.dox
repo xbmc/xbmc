@@ -1,0 +1,78 @@
+/*!
+
+\page MultiImage_Control Group MultiImage Control
+\brief **Used to show a slideshow of images.**
+
+\tableofcontents
+
+The MultiImage control is used for displaying a slideshow of images from a folder
+in Kodi. You can choose the position and size of the slideshow, as well as
+timing information.
+
+
+--------------------------------------------------------------------------------
+\section MultiImage_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="multiimage" id="1">
+      <description>My first slideshow control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <visible>true</visible>
+      <imagepath>myimagepath</imagepath>
+      <info></info>
+      <timeperimage>5000</timeperimage>
+      <fadetime>2000</fadetime>
+      <pauseatend>10000</pauseatend>
+      <randomize>true</randomize>
+      <loop>no</loop>
+      <aspectratio>stretch</aspectratio>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section MultiImage_Control_sect2 Image Size and Type Restrictions
+For the <b>`<texture>`</b> tags, and for all <b>`<texture>`</b> tags in other
+controls, there is a small set of rules that you should follow if at all possible:
+
+\subsection MultiImage_Control_sect2_1 Formats
+If you wish to use full 8 bit transparency, then use PNG. If you only need a
+single transparent colour, then you can specify this in the <b>`<colorkey>`</b>
+tag, so any image will be fine. It is suggested that you use PNG and JPG as much
+as possible. The size of the images (in kb) is therefore not as important as the
+size of the images in pixels – so feel free to store them in a lossless (eg PNG)
+manner if you wish.
+
+The only exception to this is if you require an animated texture. In this case, we
+only support animated GIF. There are also SOME animated gifs that may not work.
+Use ImageReady CS and make sure you set the gif-anim to “restore to background”
+and they should work fine.
+
+\section MultiImage_Control_sect3 Available tags and attributes
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| imagepath     | Specifies the path containing the images to use for the slideshow. Kodi will first look inside the compressed Textures.xbt file for images, and then will look in the actual folder. The path is relative to the media/ folder if it is not specified completely.
+| info          | Specifies the information that this image control is presenting. Kodi will select the texture to use based on this tag. [See here for more information](http://kodi.wiki/view/InfoLabels).
+| timeperimage  | Time in milliseconds that an image is shown for.
+| fadetime      | Time in milliseconds to fade between images.
+| pauseatend    | Time in milliseconds to pause (in addition to <b>`<timeperimage>`</b>) on the last image at the end of a complete cycle through the images. Only useful if <b>`<loop>`</b> is set to yes.
+| loop          | If set to no, the last image will display indefinitely. Setting it to yes will loop around once they reach the last image. Defaults to yes.
+| aspectratio   | This specifies how the image will be drawn inside the box defined by <b>`<width>`</b> and <b>`<height>`</b>. [See here for more info](http://kodi.wiki/view/Aspect_Ratio).
+
+--------------------------------------------------------------------------------
+\section MultiImage_Control_sect4 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

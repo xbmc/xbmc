@@ -1,0 +1,85 @@
+/*!
+
+\page Image_Control Image Control
+\brief **Used to show an image.**
+
+\tableofcontents
+
+The image control is used for displaying images in Kodi. You can choose the
+position, size, transparency and contents of the image to be displayed.
+
+--------------------------------------------------------------------------------
+\section Image_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="image" id="1">
+      <description>My first image control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <visible>true</visible>
+      <colordiffuse>FFFFFFFF</colordiffuse>
+      <fadetime>200</fadetime>
+      <texture border="5" flipy="true" flipx="false">mytexture.png</texture>
+      <bordertexture border="5">mybordertexture.png</bordertexture>
+      <bordersize>5</bordersize>
+      <texture>$INFO[MusicPlayer.Cover]</texture>
+      <aspectratio>keep</aspectratio>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Image_Control_sect2 Image Size and Type Restrictions
+For the <b>`<texture>`</b> tags, and for all <b>`<texture>`</b> tags in
+other controls, there is a small set of rules that you should follow if at all
+possible:
+
+\subsection Image_Control_sect2_1 Size
+Images can be any size, though some graphics cards allow only power of 2 textures,
+so this may be a consideration. For the most case, it doesn't really matter what
+size things are - Kodi will quite happily load most files.
+
+\subsection Image_Control_sect2_2 Formats
+If you wish to use transparency, then use PNG. It is suggested that you use PNG
+and JPG as much as possible. Note that once the images are injected into
+Textures.xbt, they are not stored as JPG or PNG – rather they are stored in
+a native format used for GPUs for faster loading, such as ARGB or DXTc textures.
+The size of the images (in kb) is therefore not as important as the size of the
+images in pixels – so feel free to store them in a lossless (eg PNG) manner if
+you wish.
+
+The only exception to this is if you require an animated texture. In this case,
+we support only animated GIF. There are also some animated gifs that may not
+work. Use ImageReady CS and make sure you set the gif-anim to “restore to
+background” and they should work fine.
+
+--------------------------------------------------------------------------------
+\section Image_Control_sect3 Available tags and attributes
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| aspectratio   | This specifies how the image will be drawn inside the box defined by <b>`<width>`</b> and <b>`<height>`</b>. [See here for more information](http://kodi.wiki/view/Aspect_Ratio).
+| texture       | Specifies the image file which should be displayed. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| bordertexture | Specifies the image file which should be displayed as a border around the image. Use the <b>`<bordersize>`</b> to specify the size of the border. The <b>`<width>`</b>, <b>`<height>`</b> box specifies the size of the image plus border.
+| bordersize    | Specifies the size of the border. A single number specifies the border should be the same size all the way around the image, whereas a comma separated list of 4 values indicates left,top,right,bottom values.
+| info          | Specifies the information that this image control is presenting. Kodi will select the texture to use based on this tag. [See here for more information](http://kodi.wiki/view/InfoLabels).
+| fadetime      | This specifies a crossfade time that will be used whenever the underlying <b>`<texture>`</b> filename changes. The previous image will be held until the new image is ready, and then they will be crossfaded. This is particularly useful for a large thumbnail image showing the focused item in a list, or for fanart or other large backdrops.
+| background    | For images inside a container, you can specify background="true" to load the textures in a background worker thread. [See here for additional information about background loading](http://kodi.wiki/view/Background_Image_Loader).
+
+
+--------------------------------------------------------------------------------
+\section Image_Control_sect4 See also
+
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

@@ -58,7 +58,7 @@ PROJECT_LOGO           = ./kodi-dev.png
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = ../doxygen-generated
+OUTPUT_DIRECTORY       = ../docs
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -376,7 +376,7 @@ SUBGROUPING            = YES
 # SEPARATE_MEMBER_PAGES.
 # The default value is: NO.
 
-INLINE_GROUPED_CLASSES = NO
+INLINE_GROUPED_CLASSES = YES
 
 # When the INLINE_SIMPLE_STRUCTS tag is set to YES, structs, classes, and unions
 # with only public data fields or simple typedef fields will be shown inline in
@@ -424,7 +424,7 @@ LOOKUP_CACHE_SIZE      = 0
 # normally produced when WARNINGS is set to YES.
 # The default value is: NO.
 
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 
 # If the EXTRACT_PRIVATE tag is set to YES, all private members of a class will
 # be included in the documentation.
@@ -533,7 +533,7 @@ HIDE_COMPOUND_REFERENCE= YES
 # the files that are included by a file in the documentation of that file.
 # The default value is: YES.
 
-SHOW_INCLUDE_FILES     = YES
+SHOW_INCLUDE_FILES     = NO
 
 # If the SHOW_GROUPED_MEMB_INC tag is set to YES then Doxygen will add for each
 # grouped member an include statement to the documentation, telling the reader
@@ -559,7 +559,7 @@ INLINE_INFO            = YES
 # name. If set to NO, the members will appear in declaration order.
 # The default value is: YES.
 
-SORT_MEMBER_DOCS       = YES
+SORT_MEMBER_DOCS       = NO
 
 # If the SORT_BRIEF_DOCS tag is set to YES then doxygen will sort the brief
 # descriptions of file, namespace and class members alphabetically by member
@@ -586,7 +586,7 @@ SORT_MEMBERS_CTORS_1ST = NO
 # appear in their defined order.
 # The default value is: NO.
 
-SORT_GROUP_NAMES       = YES
+SORT_GROUP_NAMES       = NO
 
 # If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by
 # fully-qualified names, including namespaces. If set to NO, the class list will
@@ -606,7 +606,7 @@ SORT_BY_SCOPE_NAME     = YES
 # accept a match between prototype and implementation in such cases.
 # The default value is: NO.
 
-STRICT_PROTO_MATCHING  = NO
+STRICT_PROTO_MATCHING  = YES
 
 # The GENERATE_TODOLIST tag can be used to enable (YES) or disable (NO) the todo
 # list. This list is created by putting \todo commands in the documentation.
@@ -776,6 +776,37 @@ WARN_LOGFILE           =
 INPUT                  = main.txt \
                          ../../../GUIInfoManager.cpp \
                          Modules/modules_general.dox \
+                         Skin/skin.dox \
+                         ../../../guilib/GUIRenderingControl.dox \
+                         ../../../guilib/GUIButtonControl.dox \
+                         ../../../guilib/GUIEditControl.dox \
+                         ../../../epg/GUIEPGGridContainer.dox \
+                         ../../../guilib/GUIFadeLabelControl.dox \
+                         ../../../guilib/GUIFixedListContainer.dox \
+                         ../../../guilib/GUIControlGroup.dox \
+                         ../../../guilib/GUIListContainer.dox \
+                         ../../../guilib/GUIImage.dox \
+                         ../../../guilib/GUILabelControl.dox \
+                         ../../../guilib/GUIListGroup.dox \
+                         ../../../guilib/GUIMoverControl.dox \
+                         ../../../guilib/GUIMultiImage.dox \
+                         ../../../guilib/GUIPanelContainer.dox \
+                         ../../../guilib/GUIProgressControl.dox \
+                         ../../../guilib/GUIRadioButtonControl.dox \
+                         ../../../guilib/GUIResizeControl.dox \
+                         ../../../guilib/GUIRSSControl.dox \
+                         ../../../guilib/GUIScrollBarControl.dox \
+                         ../../../guilib/GUISelectButtonControl.dox \
+                         ../../../guilib/GUISettingsSliderControl.dox \
+                         ../../../guilib/GUISpinControlEx.dox \
+                         ../../../guilib/GUISliderControl.dox \
+                         ../../../guilib/GUISpinControl.dox \
+                         ../../../guilib/GUITextBox.dox \
+                         ../../../guilib/GUIToggleButtonControl.dox \
+                         ../../../guilib/GUIVideoControl.dox \
+                         ../../../guilib/GUIVisualisationControl.dox \
+                         ../../../guilib/GUIWrappingListContainer.dox \
+                         ../../../guilib/_Controls.txt \
                          ../../../interfaces/builtins/AddonBuiltins.cpp \
                          ../../../interfaces/builtins/AndroidBuiltins.cpp \
                          ../../../interfaces/builtins/ApplicationBuiltins.cpp \
