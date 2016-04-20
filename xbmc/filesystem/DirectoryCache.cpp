@@ -151,12 +151,11 @@ void CDirectoryCache::ClearSubPaths(const std::string& strPath)
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath = CURL(strPath).GetWithoutOptions();
-  URIUtils::RemoveSlashAtEnd(storedPath);
 
   iCache i = m_cache.begin();
   while (i != m_cache.end())
   {
-    if (StringUtils::StartsWith(i->first, storedPath))
+    if (URIUtils::PathHasParent(i->first, storedPath))
       Delete(i++);
     else
       i++;

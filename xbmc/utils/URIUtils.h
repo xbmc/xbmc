@@ -29,7 +29,6 @@ class URIUtils
 public:
   URIUtils(void);
   virtual ~URIUtils(void);
-  static bool IsInPath(const std::string &uri, const std::string &baseURI);
 
   static std::string GetDirectory(const std::string &strFilePath);
 
@@ -95,19 +94,20 @@ public:
    \param url a std::string path.
    \param type a lower-case scheme name, e.g. "smb".
    \return true if the url is of the given scheme, false otherwise.
-   \sa PathStarts, PathEquals
+   \sa PathHasParent, PathEquals
    */
   static bool IsProtocol(const std::string& url, const std::string& type);
 
-  /*! \brief Check whether a path starts with a given start.
+  /*! \brief Check whether a path has a given parent.
    Comparison is case-sensitive.
    Use IsProtocol() to compare the protocol portion only.
    \param path a std::string path.
-   \param start the string the start of the path should be compared against.
-   \return true if the path starts with the given string, false otherwise.
+   \param parent the string the parent of the path should be compared against.
+   \param translate whether to translate any special paths into real paths
+   \return true if the path has the given parent string, false otherwise.
    \sa IsProtocol, PathEquals
    */
-  static bool PathStarts(const std::string& path, const char *start);
+  static bool PathHasParent(std::string path, std::string parent, bool translate = false);
 
   /*! \brief Check whether a path equals another path.
    Comparison is case-sensitive.
@@ -115,9 +115,9 @@ public:
    \param path2 the second path the path should be compared against.
    \param ignoreTrailingSlash ignore any trailing slashes in both paths
    \return true if the paths are equal, false otherwise.
-   \sa IsProtocol, PathStarts
+   \sa IsProtocol, PathHasParent
    */
-  static bool PathEquals(const std::string& path1, const std::string &path2, bool ignoreTrailingSlash = false, bool ignoreURLOptions = false);
+  static bool PathEquals(std::string path1, std::string path2, bool ignoreTrailingSlash = false, bool ignoreURLOptions = false);
 
   static bool IsAddonsPath(const std::string& strFile);
   static bool IsSourcesPath(const std::string& strFile);

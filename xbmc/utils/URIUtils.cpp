@@ -36,14 +36,6 @@
 
 using namespace XFILE;
 
-bool URIUtils::IsInPath(const std::string &uri, const std::string &baseURI)
-{
-  std::string uriPath = CSpecialProtocol::TranslatePath(uri);
-  std::string basePath = CSpecialProtocol::TranslatePath(baseURI);
-
-  return !basePath.empty() && StringUtils::StartsWith(uriPath, basePath);
-}
-
 /* returns filename extension including period of filename */
 std::string URIUtils::GetExtension(const CURL& url)
 {
@@ -517,23 +509,32 @@ bool URIUtils::IsProtocol(const std::string& url, const std::string &type)
   return StringUtils::StartsWithNoCase(url, type + "://");
 }
 
-bool URIUtils::PathStarts(const std::string& url, const char *start)
+bool URIUtils::PathHasParent(std::string path, std::string parent, bool translate /* = false */)
 {
-  return StringUtils::StartsWith(url, start);
+  if (translate)
+  {
+    path = CSpecialProtocol::TranslatePath(path);
+    parent = CSpecialProtocol::TranslatePath(parent);
+  }
+
+  if (parent.empty())
+    return false;
+
+  if (path == parent)
+    return true;
+
+  // Make sure parent has a trailing slash
+  AddSlashAtEnd(parent);
+
+  return StringUtils::StartsWith(path, parent);
 }
 
-bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool ignoreTrailingSlash /* = false */, bool ignoreURLOptions /* = false */)
+bool URIUtils::PathEquals(std::string path1, std::string path2, bool ignoreTrailingSlash /* = false */, bool ignoreURLOptions /* = false */)
 {
-  std::string path1, path2;
   if (ignoreURLOptions)
   {
-    path1 = CURL(url).GetWithoutOptions();
-    path2 = CURL(start).GetWithoutOptions();
-  }
-  else
-  {
-    path1 = url;
-    path2 = start;
+    path1 = CURL(path1).GetWithoutOptions();
+    path2 = CURL(path2).GetWithoutOptions();
   }
 
   if (ignoreTrailingSlash)
@@ -542,7 +543,7 @@ bool URIUtils::PathEquals(const std::string& url, const std::string &start, bool
     RemoveSlashAtEnd(path2);
   }
 
-  return path1 == path2;
+  return (path1 == path2);
 }
 
 bool URIUtils::IsRemote(const std::string& strFile)
@@ -969,7 +970,7 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
   std::string strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if (StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings"))
+  if (StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !StringUtils::StartsWith(strFileWithoutSlash, "pvr://recordings"))
     return true;
 
   return false;
@@ -981,7 +982,7 @@ bool URIUtils::IsPVRRecording(const std::string& strFile)
   RemoveSlashAtEnd(strFileWithoutSlash);
 
   return StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") &&
-         PathStarts(strFile, "pvr://recordings");
+         StringUtils::StartsWith(strFile, "pvr://recordings");
 }
 
 bool URIUtils::IsMusicDb(const std::string& strFile)

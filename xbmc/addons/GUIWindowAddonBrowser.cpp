@@ -529,7 +529,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
 
 std::string CGUIWindowAddonBrowser::GetStartFolder(const std::string &dir)
 {
-  if (URIUtils::PathStarts(dir, "addons://"))
+  if (StringUtils::StartsWith(dir, "addons://"))
     return dir;
   return CGUIMediaWindow::GetStartFolder(dir);
 }

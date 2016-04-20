@@ -27,6 +27,7 @@
 #include "guilib/WindowIDs.h"
 #include "view/ViewState.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -47,11 +48,11 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
   {
     AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%L", "%s", "%L", "%s"));
 
-    if (URIUtils::PathStarts(items.GetPath(), "addons://sources/"))
+    if (StringUtils::StartsWith(items.GetPath(), "addons://sources/"))
       AddSortMethod(SortByLastUsed, 12012, LABEL_MASKS("%L", "%u", "%L", "%u"),
           SortAttributeIgnoreFolders, SortOrderDescending); //Label, Last used
 
-    if (URIUtils::PathStarts(items.GetPath(), "addons://user/") && items.GetContent() == "addons")
+    if (StringUtils::StartsWith(items.GetPath(), "addons://user/") && items.GetContent() == "addons")
       AddSortMethod(SortByInstallDate, 12013, LABEL_MASKS("%L", "%i", "%L", "%i"),
           SortAttributeIgnoreFolders, SortOrderDescending);
 

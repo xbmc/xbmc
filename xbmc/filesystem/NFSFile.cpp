@@ -28,6 +28,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "network/DNSNameCache.h"
 #include "threads/SystemClock.h"
 
@@ -260,12 +261,13 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &expo
       for(it=exportList.begin();it!=exportList.end();++it)
       {
         //if path starts with the current export path
-        if(StringUtils::StartsWith(path, *it))
+        if(URIUtils::PathHasParent(path, *it))
         {
-          //its possible that StartsWith may not find the correct match first
-          //as an example, if /path/ & and /path/sub/ are exported, but
-          //the user specifies the path /path/subdir/ (from /path/ export).
-          //If the path is longer than the exportpath, make sure / is next.
+          /* It's possible that PathHasParent() may not find the correct match first/
+           * As an example, if /path/ & and /path/sub/ are exported, but
+           * the user specifies the path /path/subdir/ (from /path/ export).
+           * If the path is longer than the exportpath, make sure / is next.
+           */
           if( (path.length() > (*it).length()) &&
               (path[(*it).length()] != '/') && (*it) != "/")
             continue;

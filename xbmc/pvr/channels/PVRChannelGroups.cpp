@@ -142,7 +142,7 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
   {
     // check if the path matches
     strCheckPath = StringUtils::Format("channels/%s/%s/", (*it)->IsRadio() ? "radio" : "tv", (*it)->GroupName().c_str());
-    if (StringUtils::StartsWith(strFileName, strCheckPath))
+    if (URIUtils::PathHasParent(strFileName, strCheckPath))
     {
       strFileName.erase(0, strCheckPath.length());
       std::vector<std::string> split(StringUtils::Split(strFileName, '_', 2));

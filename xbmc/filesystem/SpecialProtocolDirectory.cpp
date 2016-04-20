@@ -46,7 +46,7 @@ bool CSpecialProtocolDirectory::GetDirectory(const CURL& url, CFileItemList &ite
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
-      if (StringUtils::StartsWith(item->GetPath(), translatedPath))
+      if (URIUtils::PathHasParent(item->GetPath(), translatedPath))
         item->SetPath(URIUtils::AddFileToFolder(pathToUrl, item->GetPath().substr(translatedPath.size())));
     }
     return true;

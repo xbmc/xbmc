@@ -150,7 +150,7 @@ bool CVirtualDirectory::IsInSource(const std::string &path) const
     {
       CMediaSource &share = shares[i];
       if (URIUtils::IsOnDVD(share.strPath) &&
-          StringUtils::StartsWith(path, share.strPath))
+          URIUtils::PathHasParent(path, share.strPath))
         return true;
     }
     return false;

@@ -18,7 +18,7 @@
  *
  */
 
-#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "pvr/timers/PVRTimers.h"
 
 #include "GUIWindowPVRTimers.h"
@@ -33,5 +33,5 @@ CGUIWindowPVRTimers::CGUIWindowPVRTimers(bool bRadio) :
 std::string CGUIWindowPVRTimers::GetDirectoryPath(void)
 {
   const std::string basePath(CPVRTimersPath(m_bRadio, false).GetPath());
-  return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
+  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
