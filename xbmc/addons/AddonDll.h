@@ -31,8 +31,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
 #include "utils/log.h"
-#include "interfaces/IAnnouncer.h"
-#include "interfaces/AnnouncementManager.h"
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 #include "Util.h"
@@ -40,7 +38,7 @@
 namespace ADDON
 {
   template<class TheDll, typename TheStruct, typename TheProps>
-  class CAddonDll : public CAddon, public ANNOUNCEMENT::IAnnouncer
+  class CAddonDll : public CAddon
   {
   public:
     CAddonDll(AddonProps props);
@@ -60,8 +58,6 @@ namespace ADDON
     void Destroy();
 
     bool DllLoaded(void) const;
-
-    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
   protected:
     void HandleException(std::exception &e, const char* context);
@@ -235,7 +231,6 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
     if (status == ADDON_STATUS_OK)
     {
       m_initialized = true;
-      ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
     }
     else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
@@ -298,8 +293,6 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
-
   /* Unload library file */
   try
   {
@@ -535,19 +528,6 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
   }
 
   return ADDON_STATUS_OK;
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-void CAddonDll<TheDll, TheStruct, TheProps>::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
-{
-  try
-  {
-    m_pDll->Announce(ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message, &data);
-  }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->Announce()");
-  }
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
