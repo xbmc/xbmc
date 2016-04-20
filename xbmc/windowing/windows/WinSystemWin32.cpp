@@ -843,4 +843,46 @@ void CWinSystemWin32::ResolutionChanged()
   OnDisplayBack();
 }
 
+void CWinSystemWin32::SetForegroundWindowInternal(HWND hWnd)
+{
+  if (!IsWindow(hWnd)) return;
+
+  // if the window isn't focused, bring it to front or SetFullScreen will fail
+  BYTE keyState[256] = { 0 };
+  // to unlock SetForegroundWindow we need to imitate Alt pressing
+  if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
+    keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+
+  BOOL res = SetForegroundWindow(hWnd);
+
+  if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
+    keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+
+  if (!res)
+  {
+    //relation time of SetForegroundWindow lock
+    DWORD lockTimeOut = 0;
+    HWND  hCurrWnd = GetForegroundWindow();
+    DWORD dwThisTID = GetCurrentThreadId(),
+          dwCurrTID = GetWindowThreadProcessId(hCurrWnd, 0);
+
+    // we need to bypass some limitations from Microsoft
+    if (dwThisTID != dwCurrTID)
+    {
+      AttachThreadInput(dwThisTID, dwCurrTID, TRUE);
+      SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, &lockTimeOut, 0);
+      SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, 0, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+      AllowSetForegroundWindow(ASFW_ANY);
+    }
+
+    SetForegroundWindow(hWnd);
+
+    if (dwThisTID != dwCurrTID)
+    {
+      SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (PVOID)lockTimeOut, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+      AttachThreadInput(dwThisTID, dwCurrTID, FALSE);
+    }
+  }
+}
+
 #endif
