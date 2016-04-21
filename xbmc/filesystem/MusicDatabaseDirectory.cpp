@@ -274,7 +274,7 @@ std::string CMusicDatabaseDirectory::GetIcon(const std::string &strDirectory)
   case NODE_TYPE_GENRE:
       return "DefaultMusicGenres.png";
   case NODE_TYPE_ROLE:
-    return "DefaultMusicArtists.png";
+    return "DefaultMusicRoles.png";
   case NODE_TYPE_TOP100:
       return "DefaultMusicTop100.png";
   case NODE_TYPE_ALBUM:
