@@ -109,7 +109,7 @@ namespace EPG
     void GoToBlock(int blockIndex);
     void GoToChannel(int channelIndex);
     void UpdateScrollOffset(unsigned int currentTime);
-    void ProcessItem(float posX, float posY, CGUIListItem *item, CGUIListItem *&lastitem, bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout, unsigned int currentTime, CDirtyRegionList &dirtyregions, float resize = -1.0f);
+    void ProcessItem(float posX, float posY, const CFileItemPtr &item, CFileItemPtr &lastitem, bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout, unsigned int currentTime, CDirtyRegionList &dirtyregions, float resize = -1.0f);
     void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
     void GetCurrentLayouts();
 
@@ -174,8 +174,8 @@ namespace EPG
     CGUITexture m_guiProgressIndicatorTexture;
 
     GridItemsPtr *m_item;
-    CGUIListItem *m_lastItem;
-    CGUIListItem *m_lastChannel;
+    CFileItemPtr m_lastItem;
+    CFileItemPtr m_lastChannel;
 
     int m_scrollTime;
 
@@ -188,8 +188,8 @@ namespace EPG
     float m_channelScrollOffset;
 
     CCriticalSection m_critSection;
-    std::shared_ptr<CGUIEPGGridContainerModel> m_gridModel;
-    std::shared_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
-    std::shared_ptr<CGUIEPGGridContainerModel> m_outdatedGridModel;
+    std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
+    std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
+    std::unique_ptr<CGUIEPGGridContainerModel> m_outdatedGridModel;
   };
 }
