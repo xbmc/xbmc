@@ -256,6 +256,7 @@ void CPowerManager::OnSleep()
 #endif
 
   PVR::CPVRManager::GetInstance().SetWakeupCommand();
+  PVR::CPVRManager::GetInstance().OnSleep();
   g_application.SaveFileState(true);
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
@@ -296,6 +297,7 @@ void CPowerManager::OnWake()
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
+  PVR::CPVRManager::GetInstance().OnWake();
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
 }
 

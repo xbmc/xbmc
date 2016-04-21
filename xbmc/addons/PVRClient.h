@@ -634,6 +634,14 @@ namespace PVR
      */
     bool GetAddonProperties(void);
 
+    /*!
+     * @brief Propagate power management events to this add-on
+     */
+    void OnSystemSleep();
+    void OnSystemWake();
+    void OnPowerSavingActivated();
+    void OnPowerSavingDeactivated();
+
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC

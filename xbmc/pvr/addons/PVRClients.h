@@ -679,6 +679,14 @@ namespace PVR
     void ConnectionStateChange(int clientId, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
                                std::string &strMessage);
 
+    /*!
+     * @brief Propagate event to clients
+     */
+    void OnSystemSleep();
+    void OnSystemWake();
+    void OnPowerSavingActivated();
+    void OnPowerSavingDeactivated();
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager

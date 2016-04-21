@@ -1615,3 +1615,43 @@ void CPVRClients::ConnectionStateChange(int clientId, std::string &strConnection
     g_PVRManager.Start();
   }
 }
+
+void CPVRClients::OnSystemSleep()
+{
+  PVR_CLIENTMAP clients;
+  GetCreatedClients(clients);
+
+  /* propagate event to each client */
+  for (auto &client : clients)
+    client.second->OnSystemSleep();
+}
+
+void CPVRClients::OnSystemWake()
+{
+  PVR_CLIENTMAP clients;
+  GetCreatedClients(clients);
+
+  /* propagate event to each client */
+  for (auto &client : clients)
+    client.second->OnSystemWake();
+}
+
+void CPVRClients::OnPowerSavingActivated()
+{
+  PVR_CLIENTMAP clients;
+  GetCreatedClients(clients);
+
+  /* propagate event to each client */
+  for (auto &client : clients)
+    client.second->OnPowerSavingActivated();
+}
+
+void CPVRClients::OnPowerSavingDeactivated()
+{
+  PVR_CLIENTMAP clients;
+  GetCreatedClients(clients);
+
+  /* propagate event to each client */
+  for (auto &client : clients)
+    client.second->OnPowerSavingDeactivated();
+}
