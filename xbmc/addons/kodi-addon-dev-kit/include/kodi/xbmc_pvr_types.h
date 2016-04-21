@@ -77,10 +77,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "5.1.1"
+#define XBMC_PVR_API_VERSION "5.2.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "5.1.1"
+#define XBMC_PVR_MIN_API_VERSION "5.2.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -602,6 +602,10 @@ extern "C" {
     bool         (__cdecl* IsTimeshifting)(void);
     bool         (__cdecl* IsRealTimeStream)(void);
     PVR_ERROR    (__cdecl* SetEPGTimeFrame)(int);
+    void         (__cdecl* OnSystemSleep)(void);
+    void         (__cdecl* OnSystemWake)(void);
+    void         (__cdecl* OnPowerSavingActivated)(void);
+    void         (__cdecl* OnPowerSavingDeactivated)(void);
   } PVRClient;
 
 #ifdef __cplusplus
