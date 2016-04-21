@@ -3,6 +3,10 @@
 cd $TRAVIS_BUILD_DIR/xbmc/addons/kodi-addon-dev-kit/doxygen
 
 echo "Generating addon-dev-kit doxygen documentation ..."
+echo \"$TEST_VAR\"
+
+exit 1
+
 doxygen
 if [ $? != 0 ]; then
   exit 1
