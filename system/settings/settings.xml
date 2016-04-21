@@ -1172,6 +1172,11 @@
     </category>
     <category id="pictures" label="14217" help="38109">
       <group id="1" label="744">
+        <setting id="pictures.usetags" type="boolean" label="38207" help="38208">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
           <level>0</level>
           <default>true</default>

@@ -20410,3 +20410,13 @@ msgstr ""
 msgctxt "#39013"
 msgid "Virtual filesystems"
 msgstr ""
+
+#. Description of setting "Pictures -> Show EXIF picture information" with label #38207
+#: system/settings/settings.xml
+msgctxt "#38207"
+msgid "Show EXIF picture information"
+msgstr ""
+
+msgctxt "#38208"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr ""
