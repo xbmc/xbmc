@@ -1,0 +1,96 @@
+/*!
+
+\page Settings_Spin_Control Settings Spin Control
+\brief **Used for cycling up/down controls in the settings menus.**
+
+\tableofcontents
+
+The settings spin control is used in the settings screens for when a list of
+options can be chosen from using up/down arrows. You can choose the position,
+size, and look of the spin control. It is basically a cross between the button
+control and a spin control. It has a label and focus and non focus textures, as
+well as a spin control on the right.
+
+--------------------------------------------------------------------------------
+\section Settings_Spin_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="spincontrolex" id="12">
+      <description>My first settings spin control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <spinposx>220</spinposx>
+      <spinposy>180</spinposy>
+      <spinwidth>16</spinwidth>
+      <spinheight>16</spinheight>
+      <visible>true</visible>
+      <colordiffuse>FFFFFFFF</colordiffuse>
+      <texturefocus>myfocustexture.png</texturefocus>
+      <texturenofocus>mynofocustexture.png</texturenofocus>
+      <textureup>myuptexture.png</textureup>
+      <textureupfocus>myupfocustexture.png</textureupfocus>
+      <texturedown>mydowntexture.png</texturedown>
+      <texturedownfocus>mydownfocustexture.png</texturedownfocus>
+      <textureupdisabled colordiffuse="AAFFAAFF">mydowntexture.png</textureupdisabled>
+      <texturedowndisabled colordiffuse="AAFFAAFF">mydownfocustexture.png</texturedowndisabled>
+      <label>46</label>
+      <font>font12</font>
+      <textcolor>FFFFFFFF</textcolor>
+      <disabledcolor>80FFFFFF</disabledcolor>
+      <align></align>
+      <aligny></aligny>
+      <textoffsetx></textoffsetx>
+      <textoffsety></textoffsety>
+      <pulseonselect></pulseonselect>
+      <onup>2</onup>
+      <ondown>3</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Settings_Spin_Control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag                 | Description                                                   |
+|--------------------:|:--------------------------------------------------------------|
+| spinposx            | The horizontal position of the spin control for multipage lists. This is offset from the top left of the list.
+| spinposy            | The vertical position of the spin control for multipage lists. This is offset from the top left of the list.
+| spinwidth           | The width of one of the spin control buttons. The textures for this spin control will be scaled to fit this width.
+| spinheight          | The height of one of the spin control buttons. The textures for this spin control will be scaled to fit this height.
+| texturefocus        | Specifies the image file which should be displayed for the control when it has focus. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| texturenofocus      | Specifies the image file which should be displayed for the control when it doesn't focus.
+| textureup           | Specifies the image file which should be displayed for the up arrow when it doesn't have focus. It is displayed to the left of the down arrow.
+| textureupfocus      | Specifies the image file which should be displayed for the up arrow when it has focus.
+| textureupdisabled   | Specifies the image file which should be displayed for the up arrow when the button is disabled.
+| texturedown         | Specifies the image file which should be displayed for the down arrow when it is not focused. It is displayed to the right of the up arrow so that it's right edge is <b>`<textoffsetx>`</b> pixels away from the right edge of the control.
+| texturedownfocus    | Specifies the image file which should be displayed for the down arrow when it has focus.
+| texturedowndisabled | Specifies the image file which should be displayed for the up arrow when the button is disabled.
+| label               | Either a numeric reference into strings.xml (for localization), or a string that will be shown on the left of the control.
+| font                | Font used for the controls label. From fonts.xml.
+| textcolor           | Color used for displaying the label. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| disabledcolor       | Color used for the label if the control is disabled. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| shadowcolor         | Specifies the color of the drop shadow on the text. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| align               | Label horizontal alignment on the control. Defaults to left.
+| aligny              | Label vertical alignment on the control. Defaults to top, can also be center.
+| textoffsetx         | Amount to offset the label from the left (or right) edge of the button when using left or right alignment.
+| textoffsety         | Amount to offset the label from the top edge of the button when using top alignment.
+| textwidth           | Will truncate any text that's too long.
+
+
+--------------------------------------------------------------------------------
+\section Settings_Spin_Control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

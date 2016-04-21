@@ -27,5 +27,7 @@
 *.out
 *.app
 
-/doxygen-generated
+/docs
 /build
+.cmake-kit
+.create-kit

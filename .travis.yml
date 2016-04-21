@@ -20,14 +20,20 @@ compiler:
   - clang
 
 env:
-  - BUILD=Kodi TOOLS=Autotools
-  - BUILD=Kodi TOOLS=CMake
-  - ADDONS=adsp
-  - ADDONS=audiodecoder
-  - ADDONS=audioencoder
-  - ADDONS=pvr
-  - ADDONS=screensaver
-  - ADDONS=visualization
+  global:
+    - secure: "WWnEu/i8zfvUTmF15X3dI2GmqIKvaJ0fjiGvI3OV7kpaxrXAuANC11jIduZj2n+qZcSbver1s2Q7stDBWSZxeMJ7rFZidyMUedhtb9Hc15Q9cQRqTu7HuRMQFv1cgSMdY/IJ1D9tiBalVo2Qc/uHCR4epWC/6/m0Yh4BRPtqrUMKtpmimBCGTZP+nrzg+Su+Cifl0xGhfitTUtQOpQaFMOoWp+j4VB9aKGhoklDHYCO6Nj1KsnH6vYzV4Wh7sTv0OGEIeObB9Vvltq7wiIeaIE55kj0aJM5wuPcc/i4BjAzw0sWdmaPBIDSAbWVI7GQC3R6Rs39R4N5xxo0pKNh/rw2fY+yrbTRZJuqVinaARL4duyyvoumKK6RnwBVen1KGmKQeFyw0YQ0BXVdZFGhATDgP+vqApvR17MOaKiM5jWQSou9pTg6CtgfcwGH0dSKYPc14rUhvGVHWqQVtzINrjDHWsiru623rftf8P7+9f6FU7ZJutBH2J7LVjh8/OCaecfRpH6yyKEyqWNRn0rX6Xs+ZzHLsWgPMQuQZaM0cODEzj8UmS8k8nieeypnR995o/Sni6plQTcBLjbw1dVgpBoGsFWCwbNoshEMEg1PHxnJ0MJ8ACRLNRArIho2FmCVmkMhtWCnaiBuiP3hbIr508MAclpGjO6Q2GqfoJjvY/6I="
+    - secure: "mdTxKuqMaImuTG7w1g2T1f836KITpW7UMxDok1OLgqWXXKVMtl+9gowbplskXe0hL/UsJGCSwItYG3RAHZg3HnasMKaaWgI8HehDM4zIxWi/QN+JCSUDOP84Y6az5n0Gy3EWOhc2u7xTB3JTxX0xtAlMNLSQ/LgGSnKQTfhTamrz5E64rzYuJCI5rgTQ7yEOg14ajr6VAUs/HlpBN1BptzTilNKW2IUYoYLjzUvuQcEHWqayORtucB+beMJytmE9LsfGUKlswk8kfvnBcCUd9YABvx8C2QyG3z4XaWXh3LrX1lQnYKtD/Pkc6/TZfDz2qvPscBv6VD52oyhnhw3ncPnsQn82GhlsTlEJVz068adaC9agbkJx4RKsZd8HXsuwk6rmBfcc4yr6twFBvtXeUpsTxQ5a+p7YtHg+tn4vM5OK7lvduvJW8Y+rJLcZ7Rg95un0WmH4lnAKJ9Rcz8ZUcjD257JxPwNehe4dRgW6FwfwSfN4KsBoaKqeNoYrdJZtX/3cFXjAMmv7BTNJ0Y17qXMCyugBuKez/G+dTjaCkCxQCPhIWUE8htR014CkGVhn5dS8nObANcQ3XygnDDWNA8wPnSpLETCvEl5MtSjarq1q5UI/mp9bnWIqY8D/4H0NacG9BPGWZ0c7Ynsckrgdp0IiPC1MgCU6s1YsFZfYEXA="
+    - TEST_VAR=PW1234
+  matrix:
+    - BUILD=Kodi TOOLS=Autotools
+    - BUILD=Kodi TOOLS=CMake
+    - ADDONS=adsp
+    - ADDONS=audiodecoder
+    - ADDONS=audioencoder
+    - ADDONS=pvr
+    - ADDONS=screensaver
+    - ADDONS=visualization
+    - ADDONS=kodi-addon-dev-kit
 
 matrix:
   fast_finish: true
@@ -38,6 +44,11 @@ matrix:
     - env: ADDONS=pvr
     - env: ADDONS=screensaver
     - env: ADDONS=visualization
+    - env: ADDONS=kodi-addon-dev-kit
+  exclude:
+    - env: ADDONS=kodi-addon-dev-kit
+      compiler: gcc
+      compiler: clang
 
 # Prepare system
 #
@@ -68,15 +79,19 @@ install:
 
 # Linux dependencies
 #
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" ]]; then
-      sudo apt-get install -qq automake autopoint build-essential cmake curl default-jre gawk gdb gdc
-      gettext git-core gperf libasound2-dev libass-dev libbz2-dev libcap-dev libcdio-dev libcrossguid-dev libcurl3
-      libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev libfribidi-dev libgif-dev
-      libiso9660-dev libjpeg-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmodplug-dev libmysqlclient-dev libnfs-dev
-      libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libsdl2-dev libsmbclient-dev libsqlite3-dev libssh-dev
-      libssl-dev libtag1-dev libtinyxml-dev libtool libudev-dev libusb-dev libva-dev libvdpau-dev libvorbis-dev
-      libvorbisenc2 libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils
-      nasm pmount python-dev python-imaging python-sqlite swig unzip uuid-dev yasm zip zlib1g-dev;
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      if [[ "$BUILD" == "Kodi" ]]; then
+        sudo apt-get install -qq automake autopoint build-essential cmake curl default-jre gawk gdb gdc
+        gettext git-core gperf libasound2-dev libass-dev libbz2-dev libcap-dev libcdio-dev libcrossguid-dev libcurl3
+        libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev libfribidi-dev libgif-dev
+        libiso9660-dev libjpeg-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmodplug-dev libmysqlclient-dev libnfs-dev
+        libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libsdl2-dev libsmbclient-dev libsqlite3-dev libssh-dev
+        libssl-dev libtag1-dev libtinyxml-dev libtool libudev-dev libusb-dev libva-dev libvdpau-dev libvorbis-dev
+        libvorbisenc2 libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils
+        nasm pmount python-dev python-imaging python-sqlite swig unzip uuid-dev yasm zip zlib1g-dev;
+      elif [[ "$ADDONS" == "kodi-addon-dev-kit" ]]; then
+        sudo apt-get install -qq doxygen;
+      fi
     fi
 
 # Prepare builds
@@ -137,6 +152,12 @@ script:
       mkdir -p build &&
       cmake -DADDONS_TO_BUILD="$ADDONS".* -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../addons $TRAVIS_BUILD_DIR/project/cmake/addons &&
       make -j3;
+    fi
+
+after_success:
+    if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "kodi-addon-dev-kit" ]]; then
+      export DOC_UPLOAD_URL=ftp://esmasol.de/addon-dev-kit &&
+      bash $TRAVIS_BUILD_DIR/xbmc/addons/kodi-addon-dev-kit/tools/deploy-documentation.sh;
     fi
 
 after_failure:

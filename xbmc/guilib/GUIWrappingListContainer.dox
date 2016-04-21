@@ -1,0 +1,139 @@
+/*!
+
+\page Wrap_List_Container Wrap List Container
+\brief **Used for a wrapping list of items with fixed focus.**
+
+\tableofcontents
+
+The wrap list container is one of several containers used to display items
+fromfile lists in various ways. The wrap list container is the same as the
+\ref List_Container "List Container", with two exceptions:
+  1. The focused item is fixed.
+  2. The items "wrap" around once they reach the end.
+
+As with all container controls, the layout of the items within the control is
+very flexible.
+
+--------------------------------------------------------------------------------
+\section Wrap_List_Container_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="wraplist" id="50">
+      <description>My first wraplist container</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <visible>true</visible>
+      <onup>2</onup>
+      <ondown>3</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+      <viewtype label="3D list">list</viewtype>
+      <orientation>vertical</orientation>
+      <pagecontrol>25</pagecontrol>
+      <focusposition>3</focusposition>
+      <scrolltime tween="sine" easing="out">200</scrolltime>
+      <autoscroll>true</autoscroll>
+      <itemlayout width="250" height="29">
+                <control type="image">
+                        <posx>5</posx>
+                        <posy>3</posy>
+                        <width>22</width>
+                        <height>22</height>
+                        <info>ListItem.Icon</info>
+                </control>
+                <control type="label">
+                        <posx>30</posx>
+                        <posy>3</posy>
+                        <width>430</width>
+                        <height>22</height>
+                        <font>font13</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>green</selectedcolor>
+                        <align>left</align>
+                        <info>ListItem.Label</info>
+                </control>
+                <control type="label">
+                        <posx>475</posx>
+                        <posy>3</posy>
+                        <width>300</width>
+                        <height>22</height>
+                        <font>font13</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>green</selectedcolor>
+                        <textcolor>grey</textcolor>
+                        <align>right</align>
+                        <info>ListItem.Label2</info>
+                </control>
+      </itemlayout>
+      <focusedlayout height="29" width="250">
+                <control type="image">
+                        <width>485</width>
+                        <height>29</height>
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <visible>Control.HasFocus(50)</visible>
+                        <texture>list-focus.png</texture>
+                </control>
+                <control type="image">
+                        <posx>5</posx>
+                        <posy>3</posy>
+                        <width>22</width>
+                        <height>22</height>
+                        <info>ListItem.Icon</info>
+                </control>
+                <control type="label">
+                        <posx>30</posx>
+                        <posy>3</posy>
+                        <width>430</width>
+                        <height>22</height>
+                        <font>font13</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>green</selectedcolor>
+                        <align>left</align>
+                        <info>ListItem.Label</info>
+                </control>
+                <control type="label">
+                        <posx>475</posx>
+                        <posy>3</posy>
+                        <width>300</width>
+                        <height>22</height>
+                        <font>font13</font>
+                        <aligny>center</aligny>
+                        <selectedcolor>green</selectedcolor>
+                        <textcolor>grey</textcolor>
+                        <align>right</align>
+                        <info>ListItem.Label2</info>
+                </control>
+      </focusedlayout>
+</control>
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Wrap_List_Container_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| viewtype      | The type of view. Choices are list, icon, wide, wrap, biglist, bigicon, bigwide, bigwrap, info and biginfo. The label attribute indicates the label that will be used in the <i>"View As"</i> control within the GUI. It is localizable via strings.xml. viewtype has no effect on the view itself. It is used by kodi when switching skin to automatically select a view with a similar layout. Skinners should try to set _viewtype_ to describe the layout as best as possible.
+| orientation   | The orientation of the list. Defaults to vertical.
+| pagecontrol   | Used to set the <b>`<id>`</b> of the page control used to control this list.
+| scrolltime    | The time (in ms) to scroll from one item to another. By default, this is 200ms. The list will scroll smoothly from one item to another as needed. Set it to zero to disable the smooth scrolling. The scroll movement can be further adjusted by selecting one of the available [tween](http://kodi.wiki/view/Tweeners) methods.
+| focusposition | Specifies the index (from 0 -> number items displayable - 1) of the focused item. The focused item doesn't move - as the user moves up and down (or left and right) the items scroll instead.
+| itemlayout    | Specifies the layout of items in the list. Requires the height attribute set in a vertical list, and the width attribute set for a horizontal list. The <b>`<itemlayout>`</b> then contains as many label and image controls as required. [See here for more information](http://kodi.wiki/view/Container_Item_Layout).
+| focusedlayout | Specifies the layout of items in the list that have focus. Requires the height attribute set in a vertical list, and the width attribute set for a horizontal list. The <b>`<focusedlayout>`</b> then contains as many label and image controls as required. [See here for more information](http://kodi.wiki/view/Container_Item_Layout).
+| content       | Used to set the item content that this list will contain. Allows the skinner to setup a list anywhere they want with a static set of content, as a useful alternative to the grouplist control. [See here for more information](http://kodi.wiki/view/Static_List_Content)
+| autoscroll    | Used to make the container scroll automatically
+
+--------------------------------------------------------------------------------
+\section Wrap_List_Container_sect3 See also
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

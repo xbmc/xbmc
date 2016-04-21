@@ -1,0 +1,38 @@
+/*!
+
+\page skin_controls Controls
+\brief Controls are the substance of your skin. They define everything from
+buttons, to text labels, to visualization placement. This portion of the
+manual will explain each and every control in detail. 
+
+- \subpage Addon_Rendering_control - Control where rendering becomes performed from add-on
+- \subpage skin_Button_control - a standard push button control.
+- \subpage EPGGrid_control - used to display the EPG guide in the PVR section.
+- \subpage skin_Edit_control - used as an input control for the osd keyboard and other input fields.
+- \subpage Fade_Label_Control - used to show multiple pieces of text in the same position, by fading from one to the other.
+- \subpage Fixed_List_Container - used for a list of items with a fixed focus. Same as the \ref Wrap_List_Container "Wrap List Container" except it doesn't wrap.
+- \subpage Group_Control -  used to group controls together.
+- \subpage Group_List_Control - special case of the group control that forms a scrolling list of controls.
+- \subpage Image_Control - used to show an image.
+- \subpage Label_Control - used to show some lines of text.
+- \subpage List_Container - used for a scrolling lists of items. Replaces the list control.
+- \subpage Mover_Control - used in the calibration screens.
+- \subpage MultiImage_Control - used to show a slideshow of images.
+- \subpage Panel_Container - used for a scrolling panel of items. Replaces the thumbnail panel.
+- \subpage Progress_Control - Used to show the progress of a particular operation.
+- \subpage RSS_feed_Control - used to display scrolling RSS feeds.
+- \subpage Radio_button_control - a radio button control (as used for on/off settings).
+- \subpage Resize_Control - used to set the pixel ratio in Video Calibration.
+- \subpage Scroll_Bar_Control - used for a implementing a scroll bar.
+- \subpage Select_Button_Control - Button with multi selection choice.
+- \subpage Settings_Slider_Control - used for a slider control in the settings menus.
+- \subpage Settings_Spin_Control - used for cycling up/down controls in the settings menus.
+- \subpage Slider_Control - used for a volume slider.
+- \subpage Spin_Control - used for cycling up/down controls.
+- \subpage Text_Box - used to show a multi-page piece of text.
+- \subpage skin_Toggle_button_control - a toggle on/off button that can take 2 different states.
+- \subpage Video_Control - used to display the currently playing video whilst in the GUI.
+- \subpage Visualisation_Control - used to display a visualisation while music is playing.
+- \subpage Wrap_List_Container - used for a wrapping list of items with fixed focus.
+
+*/

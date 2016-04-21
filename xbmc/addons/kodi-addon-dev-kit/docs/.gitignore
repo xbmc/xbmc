@@ -1,0 +1,7 @@
+# Ignore everything in this directory
+# In this folder becomes the doxygen generated documents stored and with this
+# file forced to have present.
+
+*
+# Except this file
+!.gitignore

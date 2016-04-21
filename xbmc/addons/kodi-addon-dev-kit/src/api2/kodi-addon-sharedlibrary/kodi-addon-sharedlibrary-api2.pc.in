@@ -1,0 +1,12 @@
+prefix=@prefix@
+libdir=@libdir@
+includedir=@includedir@
+CXX=@CXX@
+CC=@CC@
+DEPENDENCIES=
+
+Name: kodi-addon-sharedlibrary-api2
+Description: Kodi add-on API 2 development kit for shared libraries
+Version: 2.0.0
+Libs: -L${libdir} -lkodi.addon.sharedlibrary.api2
+Cflags: -I${includedir} @CXXFLAGS@

@@ -1,0 +1,85 @@
+/*!
+
+\page skin_Button_control Button control
+\brief **A standard push button control.**
+
+\tableofcontents
+
+The button control is used for creating push buttons in Kodi. You can
+choose the position, size, and look of the button, as well as choosing what
+action(s) should be performed when pushed.
+
+--------------------------------------------------------------------------------
+\section skin_Button_control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="button" id="1">
+      <description>My first button control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <visible>true</visible>
+      <colordiffuse>FFFFFFFF</colordiffuse>
+      <texturefocus colordiffuse="FFFFAAFF">myfocustexture.png</texturefocus>
+      <texturenofocus colordiffuse="FFFFAAFF">mynormaltexture.png</texturenofocus>
+      <label>29</label>
+      <wrapmultiline>true</wrapmultiline>
+      <font>font12</font>
+      <textcolor>FFFFFFFF</textcolor>
+      <focusedcolor>FFFFFFFF</focusedcolor>
+      <disabledcolor>80FFFFFF</disabledcolor>
+      <invalidcolor>FFFFFFFF</invalidcolor>
+      <align></align>
+      <aligny></aligny>
+      <textoffsetx></textoffsetx>
+      <textoffsety></textoffsety>
+      <pulseonselect></pulseonselect>
+      <onclick>XBMC.ActivateWindow(MyVideos)</onclick>
+      <onfocus>-</onfocus>
+      <onunfocus>-</onunfocus>
+      <onup>2</onup>
+      <ondown>3</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+</control>
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section skin_Button_control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is lower case only. This is
+important, as xml tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| texturefocus  | Specifies the image file which should be displayed when the button has focus. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| texturenofocus| Specifies the image file which should be displayed when the button does not have focus.
+| label         | The label used on the button. It can be a link into <b>`strings.xml`</b>, or an actual text label.
+| font          | Font used for the button label. From fonts.xml.
+| textcolor     | Color used for displaying the button label. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| focusedcolor  | Color used for the button label when the button has in focus. In **AARRGGBB** hex format or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| disabledcolor | Color used for the button label if the button is disabled. In **AARRGGBB** hex format or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| invalidcolor  | Color used for the button if the user entered some invalid value. In **AARRGGBB** hex format or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| shadowcolor   | Specifies the color of the drop shadow on the text, in **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| angle         | The angle the text should be rendered at, in degrees. A value of 0 is horizontal.
+| align         | Label horizontal alignment on the button. Defaults to left, can also be center or right.
+| aligny        | Label vertical alignment on the button. Defaults to top, can also be center.
+| textoffsetx   | Amount to offset the label from the left (or right) edge of the button when using left or right alignment.
+| textoffsety   | Amount to offset the label from the top edge of the button when using top alignment.
+| textwidth     | Will truncate any text that's too long.
+| onclick       | Specifies the action to perform when the button is pressed. Should be a built in function. [See here for more information](http://kodi.wiki/view/Built-in_functions_available_to_FTP,_Webserver,_skins,_keymap_and_to_python). You may have more than one <b>`<onclick>`</b> tag, and they'll be executed in sequence.
+| onfocus       | Specifies the action to perform when the button is focused. Should be a built in function. The action is performed after any focus animations have completed. [See here for more information](http://kodi.wiki/view/Built-in_functions_available_to_FTP,_Webserver,_skins,_keymap_and_to_python).
+| onunfocus     | Specifies the action to perform when the button loses focus. Should be a built in function.
+| wrapmultiline | Will wrap the label across multiple lines if the label exceeds the control width.
+
+
+--------------------------------------------------------------------------------
+\section skin_Button_control_sect3 See also
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

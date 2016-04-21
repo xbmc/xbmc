@@ -1,0 +1,51 @@
+/*!
+
+\page Resize_Control Resize control
+\brief **Used to set the pixel ratio in Video Calibration.**
+
+\tableofcontents
+
+The resize control is used to specify an area of changeable ratio for use in
+the screen calibration portion of Kodi. You can choose the size, and look of
+the resizer.
+
+
+--------------------------------------------------------------------------------
+\section Resize_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="resize" id="3">
+      <description>My first resize control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <texturefocus>mytexture.png</texturefocus>
+      <texturenofocus>mytexture.png</texturenofocus>
+      <pulseonselect>true</pulseonselect>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Resize_Control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag             | Description                                                   |
+|----------------:|:--------------------------------------------------------------|
+| texturefocus    | Specifies the image file which should be displayed when the resizer has focus. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| texturenofocus  | Specifies the image file which should be displayed when the resizer does not have focus.
+
+
+--------------------------------------------------------------------------------
+\section Resize_Control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/
