@@ -18,10 +18,11 @@
  *
  */
 
+#include "GUIWindowPVRTimerRules.h"
 #include "utils/URIUtils.h"
 #include "pvr/timers/PVRTimers.h"
 
-#include "GUIWindowPVRTimerRules.h"
+#include "FileItem.h"
 
 using namespace PVR;
 
