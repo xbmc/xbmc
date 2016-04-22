@@ -188,7 +188,7 @@ bool CGUIControllerList::RefreshControllers(void)
       [controller](const ControllerPtr& ctrl)
       {
         return ctrl->ID() == controller->ID();
-      }) == newControllers.end())
+      }) == controllers.end())
     {
       it = m_controllers.erase(it); // Not found, remove it
       bChanged = true;

@@ -27,12 +27,7 @@
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-#ifndef SAFE_DELETE
-  #define SATE_DELETE(x)  do { delete (x); (x) = NULL; } while (0)
-#endif
-
 CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral, IInputHandler* handler)
-  : m_driverHandler(NULL)
 {
   PeripheralAddonPtr addon = g_peripherals.GetAddon(peripheral);
 
@@ -42,18 +37,18 @@ CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral, IInputHandler*
   }
   else
   {
-    m_buttonMap = new CAddonButtonMap(peripheral, addon, handler->ControllerID());
+    m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())
-      m_driverHandler = new CInputHandling(handler, m_buttonMap);
+      m_driverHandler.reset(new CInputHandling(handler, m_buttonMap.get()));
     else
-      SAFE_DELETE(m_buttonMap);
+      m_buttonMap.reset();
   }
 }
 
 CAddonInputHandling::~CAddonInputHandling(void)
 {
-  delete m_driverHandler;
-  delete m_buttonMap;
+  m_driverHandler.reset();
+  m_buttonMap.reset();
 }
 
 bool CAddonInputHandling::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
