@@ -1819,6 +1819,15 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
   }
 }
 
+void CFileItemList::Add(CFileItem&& item)
+{
+  CSingleLock lock(m_lock);
+  auto ptr = std::make_shared<CFileItem>(std::move(item));
+  if (m_fastLookup)
+    m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(ptr->GetPath()).GetWithoutOptions() : ptr->GetPath(), ptr));
+  m_items.emplace_back(std::move(ptr));
+}
+
 void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 {
   CSingleLock lock(m_lock);

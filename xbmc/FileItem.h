@@ -606,6 +606,7 @@ public:
   void Clear();
   void ClearItems();
   void Add(const CFileItemPtr &pItem);
+  void Add(CFileItem&& item);
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
