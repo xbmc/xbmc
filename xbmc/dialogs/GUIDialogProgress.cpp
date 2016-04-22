@@ -85,7 +85,7 @@ void CGUIDialogProgress::Progress()
 {
   if (m_active)
   {
-    g_windowManager.ProcessRenderLoop();
+    ProcessRenderLoop();
   }
 }
 

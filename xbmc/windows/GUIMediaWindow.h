@@ -179,6 +179,8 @@ protected:
    */
   static std::string RemoveParameterFromPath(const std::string &strDirectory, const std::string &strParameter);
 
+  void ProcessRenderLoop(bool renderOnly = false);
+
   XFILE::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
 

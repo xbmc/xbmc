@@ -76,6 +76,8 @@ protected:
   virtual void Open_Internal(bool bProcessRenderLoop, const std::string &param = "");
   virtual void OnDeinitWindow(int nextWindowID);
 
+  void ProcessRenderLoop(bool renderOnly = false);
+
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()
   bool m_autoClosing;
   bool m_enableSound;
