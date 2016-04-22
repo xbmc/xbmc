@@ -28,6 +28,7 @@
 #import "Application.h"
 #import "FileItem.h"
 #import "music/tags/MusicInfoTag.h"
+#import "music/MusicDatabase.h"
 #import "TextureCache.h"
 #import "filesystem/SpecialProtocol.h"
 #import "playlists/PlayList.h"
@@ -93,10 +94,52 @@ id objectFromVariant(const CVariant &data)
 
 void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  //LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
-  NSDictionary *dict = dictionaryFromVariantMap(data);
-  //LOG(@"data: %@", dict.description);
+  int item_id = -1;
+  std::string item_type = "";
+  CVariant nonConstData = data;
   const std::string msg(message);
+
+  // handle data which only has a database id and not the metadata inside
+  if (msg == "OnPlay")
+  {
+    if (!nonConstData["item"].isNull())
+    {
+      if (!nonConstData["item"]["id"].isNull())
+      {
+        item_id = (int)nonConstData["item"]["id"].asInteger();
+      }
+
+      if (!nonConstData["item"]["type"].isNull())
+      {
+        item_type = nonConstData["item"]["type"].asString();
+      }
+    }
+  
+    // if we got an id from the passed data
+    // we need to get title, track, album and artist from the db
+    if (item_id >= 0)
+    {
+      if (item_type == MediaTypeSong)
+      {
+        CMusicDatabase db;
+        if (db.Open())
+        {
+          CSong song;
+          if (db.GetSong(item_id, song))
+          {
+            nonConstData["item"]["title"] = song.strTitle;
+            nonConstData["item"]["track"] = song.iTrack;
+            nonConstData["item"]["album"] = song.strAlbum;
+            nonConstData["item"]["artist"] = song.GetArtist();
+          }
+        }
+      }
+    }
+  }
+
+  //LOG(@"AnnounceBridge: [%s], [%s], [%s]", ANNOUNCEMENT::AnnouncementFlagToString(flag), sender, message);
+  NSDictionary *dict = dictionaryFromVariantMap(nonConstData);
+  //LOG(@"data: %@", dict.description);
   if (msg == "OnPlay")
   {
     NSDictionary *item = [dict valueForKey:@"item"];
