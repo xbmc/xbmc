@@ -180,389 +180,41 @@ void CGUIEPGGridContainer::Render()
 
 void CGUIEPGGridContainer::ProcessChannels(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!m_focusedChannelLayout || !m_channelLayout)
-    return;
-
-  int chanOffset = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(VERTICAL));
-
-  int cacheBeforeChannel, cacheAfterChannel;
-  GetChannelCacheOffsets(cacheBeforeChannel, cacheAfterChannel);
-
-  // Free memory not used on screen
-  if (m_gridModel->ChannelItemsSize() > m_channelsPerPage + cacheBeforeChannel + cacheAfterChannel)
-    m_gridModel->FreeChannelMemory(chanOffset - cacheBeforeChannel, chanOffset + m_channelsPerPage + 1 + cacheAfterChannel);
-
-  CPoint originChannel = CPoint(m_channelPosX, m_channelPosY) + m_renderOffset;
-  float pos = originChannel.y;
-  float end = m_posY + m_height;
-
-  // we offset our draw position to take into account scrolling and whether or not our focused
-  // item is offscreen "above" the list.
-  float drawOffset = (chanOffset - cacheBeforeChannel) * m_channelLayout->Size(VERTICAL) - m_channelScrollOffset;
-  if (m_channelOffset + m_channelCursor < chanOffset)
-    drawOffset += m_focusedChannelLayout->Size(VERTICAL) - m_channelLayout->Size(VERTICAL);
-  pos += drawOffset;
-  end += cacheAfterChannel * m_channelLayout->Size(VERTICAL);
-
-  CFileItemPtr item;
-  int current = chanOffset;// - cacheBeforeChannel;
-  while (pos < end && m_gridModel->HasChannelItems())
-  {
-    int itemNo = current;
-    if (itemNo >= m_gridModel->ChannelItemsSize())
-      break;
-    bool focused = (current == m_channelOffset + m_channelCursor);
-    if (itemNo >= 0)
-    {
-      item = m_gridModel->GetChannelItem(itemNo);
-      // process our item
-      ProcessItem(originChannel.x, pos, item, m_lastItem, focused, m_channelLayout, m_focusedChannelLayout, currentTime, dirtyregions);
-    }
-    // increment our position
-    pos += focused ? m_focusedChannelLayout->Size(VERTICAL) : m_channelLayout->Size(VERTICAL);
-    current++;
-  }
+  HandleChannels(false, currentTime, dirtyregions);
 }
 
 void CGUIEPGGridContainer::RenderChannels()
 {
-  if (!m_focusedChannelLayout || !m_channelLayout)
-    return;
-
-  int chanOffset = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(VERTICAL));
-
-  /// Render channel names
-  int cacheBeforeChannel, cacheAfterChannel;
-  GetChannelCacheOffsets(cacheBeforeChannel, cacheAfterChannel);
-
-  g_graphicsContext.SetClipRegion(m_channelPosX, m_channelPosY, m_channelWidth, m_gridHeight);
-
-  CPoint originChannel = CPoint(m_channelPosX, m_channelPosY) + m_renderOffset;
-  float pos = originChannel.y;
-  float end = m_posY + m_height;
-
-  // we offset our draw position to take into account scrolling and whether or not our focused
-  // item is offscreen "above" the list.
-  float drawOffset = (chanOffset - cacheBeforeChannel) * m_channelLayout->Size(VERTICAL) - m_channelScrollOffset;
-  if (m_channelOffset + m_channelCursor < chanOffset)
-    drawOffset += m_focusedChannelLayout->Size(VERTICAL) - m_channelLayout->Size(VERTICAL);
-  pos += drawOffset;
-  end += cacheAfterChannel * m_channelLayout->Size(VERTICAL);
-
-  float focusedPos = 0;
-  CGUIListItemPtr focusedItem;
-  int current = chanOffset;// - cacheBeforeChannel;
-  while (pos < end && m_gridModel->HasChannelItems())
-  {
-    int itemNo = current;
-    if (itemNo >= m_gridModel->ChannelItemsSize())
-      break;
-    bool focused = (current == m_channelOffset + m_channelCursor);
-    if (itemNo >= 0)
-    {
-      CGUIListItemPtr item(m_gridModel->GetChannelItem(itemNo));
-      // render our item
-      if (focused)
-      {
-        focusedPos = pos;
-        focusedItem = item;
-      }
-      else
-      {
-        RenderItem(originChannel.x, pos, item.get(), false);
-      }
-    }
-    // increment our position
-    pos += focused ? m_focusedChannelLayout->Size(VERTICAL) : m_channelLayout->Size(VERTICAL);
-    current++;
-  }
-  // render focused item last so it can overlap other items
-  if (focusedItem)
-  {
-    RenderItem(originChannel.x, focusedPos, focusedItem.get(), true);
-  }
-  g_graphicsContext.RestoreClipRegion();
+  // params not needed for render.
+  unsigned int dummyTime = 0;
+  CDirtyRegionList dummyRegions;
+  HandleChannels(true, dummyTime, dummyRegions);
 }
 
 void CGUIEPGGridContainer::ProcessRuler(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!m_rulerLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
-    return;
-
-  int rulerOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
-  CFileItemPtr item(m_gridModel->GetRulerItem(0));
-  item->SetLabel(m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1)->GetLabel2());
-  CFileItemPtr lastitem; // dummy pointer needed to be passed as reference to ProcessItem() method
-  ProcessItem(m_posX, m_posY, item, lastitem, false, m_rulerLayout, m_rulerLayout, currentTime, dirtyregions, m_channelWidth);
-
-  // render ruler items
-  int cacheBeforeRuler, cacheAfterRuler;
-  GetProgrammeCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
-
-  // Free memory not used on screen
-  if (m_gridModel->RulerItemsSize() > m_blocksPerPage + cacheBeforeRuler + cacheAfterRuler)
-    m_gridModel->FreeRulerMemory(rulerOffset / m_rulerUnit + 1 - cacheBeforeRuler, rulerOffset / m_rulerUnit + 1 + m_blocksPerPage + 1 + cacheAfterRuler);
-
-  CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
-  float pos = originRuler.x;
-  float end = m_posX + m_width;
-  float drawOffset = (rulerOffset - cacheBeforeRuler) * m_blockSize - m_programmeScrollOffset;
-  pos += drawOffset;
-  end += cacheAfterRuler * m_rulerLayout->Size(HORIZONTAL);
-
-  if (rulerOffset % m_rulerUnit != 0)
-  {
-    /* first ruler marker starts before current view */
-    int startBlock = rulerOffset - 1;
-
-    while (startBlock % m_rulerUnit != 0)
-      startBlock--;
-
-    int missingSection = rulerOffset - startBlock;
-
-    pos -= missingSection * m_blockSize;
-  }
-  while (pos < end && (rulerOffset / m_rulerUnit + 1) < m_gridModel->RulerItemsSize())
-  {
-    item = m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1);
-    ProcessItem(pos, originRuler.y, item, lastitem, false, m_rulerLayout, m_rulerLayout, currentTime, dirtyregions, m_rulerWidth);
-    pos += m_rulerWidth;
-    rulerOffset += m_rulerUnit;
-  }
+  HandleRuler(false, currentTime, dirtyregions);
 }
 
 void CGUIEPGGridContainer::RenderRuler()
 {
-  if (!m_rulerLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
-    return;
-
-  int rulerOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
-
-  /// Render single ruler item with date of selected programme
-  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  CGUIListItemPtr item(m_gridModel->GetRulerItem(0));
-  RenderItem(m_posX, m_posY, item.get(), false);
-  g_graphicsContext.RestoreClipRegion();
-
-  // render ruler items
-  int cacheBeforeRuler, cacheAfterRuler;
-  GetProgrammeCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
-
-  g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_rulerHeight);
-
-  CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
-  float pos = originRuler.x;
-  float end = m_posX + m_width;
-  float drawOffset = (rulerOffset - cacheBeforeRuler) * m_blockSize - m_programmeScrollOffset;
-  pos += drawOffset;
-  end += cacheAfterRuler * m_rulerLayout->Size(HORIZONTAL);
-
-  if (rulerOffset % m_rulerUnit != 0)
-  {
-    /* first ruler marker starts before current view */
-    int startBlock = rulerOffset - 1;
-
-    while (startBlock % m_rulerUnit != 0)
-      startBlock--;
-
-    int missingSection = rulerOffset - startBlock;
-
-    pos -= missingSection * m_blockSize;
-  }
-  while (pos < end && (rulerOffset / m_rulerUnit + 1) < m_gridModel->RulerItemsSize())
-  {
-    item = m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1);
-    RenderItem(pos, originRuler.y, item.get(), false);
-    pos += m_rulerWidth;
-    rulerOffset += m_rulerUnit;
-  }
-  g_graphicsContext.RestoreClipRegion();
+  // params not needed for render.
+  unsigned int dummyTime = 0;
+  CDirtyRegionList dummyRegions;
+  HandleRuler(true, dummyTime, dummyRegions);
 }
 
 void CGUIEPGGridContainer::ProcessProgrammeGrid(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!m_focusedProgrammeLayout || !m_programmeLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
-    return;
-
-  int blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
-  int chanOffset  = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(VERTICAL));
-
-  int cacheBeforeProgramme, cacheAfterProgramme;
-  GetProgrammeCacheOffsets(cacheBeforeProgramme, cacheAfterProgramme);
-
-  CPoint originProgramme = CPoint(m_gridPosX, m_gridPosY) + m_renderOffset;
-  float posA = originProgramme.x;
-  float endA = m_posX + m_width;
-  float posB = originProgramme.y;
-  float endB = m_gridPosY + m_gridHeight;
-  endA += cacheAfterProgramme * m_blockSize;
-
-  float DrawOffsetA = blockOffset * m_blockSize - m_programmeScrollOffset;
-  posA += DrawOffsetA;
-  float DrawOffsetB = (chanOffset - cacheBeforeProgramme) * m_channelLayout->Size(VERTICAL) - m_channelScrollOffset;
-  posB += DrawOffsetB;
-
-  int channel = chanOffset;
-
-  CFileItemPtr item;
-  while (posB < endB && m_gridModel->HasChannelItems())
-  {
-    if (channel >= m_gridModel->ChannelItemsSize())
-      break;
-
-    // Free memory not used on screen
-    m_gridModel->FreeProgrammeMemory(channel, blockOffset - cacheBeforeProgramme, blockOffset + m_programmesPerPage + 1 + cacheAfterProgramme);
-
-    int block = blockOffset;
-    float posA2 = posA;
-
-    item = m_gridModel->GetGridItem(channel, block);
-    if (blockOffset > 0 && item == m_gridModel->GetGridItem(channel, blockOffset - 1))
-    {
-      /* first program starts before current view */
-      int startBlock = blockOffset - 1;
-      while (startBlock >= 0 && m_gridModel->GetGridItem(channel, startBlock) == item)
-        startBlock--;
-
-      block = startBlock + 1;
-      int missingSection = blockOffset - block;
-      posA2 -= missingSection * m_blockSize;
-    }
-
-    while (posA2 < endA && m_gridModel->HasProgrammeItems())
-    {
-      if (block >= m_gridModel->GetBlockCount())
-        break;
-
-      item = m_gridModel->GetGridItem(channel, block);
-      if (!item || !item.get()->IsFileItem())
-        break;
-
-      bool focused = (channel == m_channelOffset + m_channelCursor) && (item == m_gridModel->GetGridItem(m_channelOffset + m_channelCursor, m_blockOffset + m_blockCursor));
-
-      // calculate the size to truncate if item is out of grid view
-      float truncateSize = 0;
-      if (posA2 < posA)
-      {
-        truncateSize = posA - posA2;
-        posA2 = posA; // reset to grid start position
-      }
-
-      {
-        CSingleLock lock(m_critSection);
-        // truncate item's width
-        m_gridModel->SetGridItemWidth(channel, block, m_gridModel->GetGridItemOriginWidth(channel, block) - truncateSize);
-      }
-
-      ProcessItem(posA2, posB, item, m_lastChannel, focused, m_programmeLayout, m_focusedProgrammeLayout, currentTime, dirtyregions, m_gridModel->GetGridItemWidth(channel, block));
-
-      // increment our X position
-      posA2 += m_gridModel->GetGridItemWidth(channel, block); // assumes focused & unfocused layouts have equal length
-      block += MathUtils::round_int(m_gridModel->GetGridItemOriginWidth(channel, block) / m_blockSize);
-    }
-
-    // increment our Y position
-    channel++;
-    posB += m_channelHeight;
-  }
+  HandleProgrammeGrid(false, currentTime, dirtyregions);
 }
 
 void CGUIEPGGridContainer::RenderProgrammeGrid()
 {
-  if (!m_focusedProgrammeLayout || !m_programmeLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
-    return;
-
-  int blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
-  int chanOffset  = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(VERTICAL));
-
-  /// Render programmes
-  int cacheBeforeProgramme, cacheAfterProgramme;
-  GetProgrammeCacheOffsets(cacheBeforeProgramme, cacheAfterProgramme);
-
-  g_graphicsContext.SetClipRegion(m_gridPosX, m_gridPosY, m_gridWidth, m_gridHeight);
-  CPoint originProgramme = CPoint(m_gridPosX, m_gridPosY) + m_renderOffset;
-  float posA = originProgramme.x;
-  float endA = m_posX + m_width;
-  float posB = originProgramme.y;
-  float endB = m_gridPosY + m_gridHeight;
-  endA += cacheAfterProgramme * m_blockSize;
-
-  float DrawOffsetA = blockOffset * m_blockSize - m_programmeScrollOffset;
-  posA += DrawOffsetA;
-  float DrawOffsetB = (chanOffset - cacheBeforeProgramme) * m_channelLayout->Size(VERTICAL) - m_channelScrollOffset;
-  posB += DrawOffsetB;
-
-  int channel = chanOffset;
-
-  float focusedPosX = 0;
-  float focusedPosY = 0;
-
-  CGUIListItemPtr focusedItem;
-  CGUIListItemPtr item;
-
-  while (posB < endB && m_gridModel->HasChannelItems())
-  {
-    if (channel >= m_gridModel->ChannelItemsSize())
-      break;
-
-    int block = blockOffset;
-    float posA2 = posA;
-
-    item = m_gridModel->GetGridItem(channel, block);
-    if (blockOffset > 0 && item == m_gridModel->GetGridItem(channel, blockOffset - 1))
-    {
-      /* first program starts before current view */
-      int startBlock = blockOffset - 1;
-      while (startBlock >= 0 && m_gridModel->GetGridItem(channel, startBlock) == item)
-        startBlock--;
-
-      block = startBlock + 1;
-      int missingSection = blockOffset - block;
-      posA2 -= missingSection * m_blockSize;
-    }
-
-    while (posA2 < endA && m_gridModel->HasProgrammeItems())
-    {
-      if (block >= m_gridModel->GetBlockCount())
-        break;
-
-      item = m_gridModel->GetGridItem(channel, block);
-      if (!item || !item.get()->IsFileItem())
-        break;
-
-      bool focused = (channel == m_channelOffset + m_channelCursor) && (item == m_gridModel->GetGridItem(m_channelOffset + m_channelCursor, m_blockOffset + m_blockCursor));
-
-      // reset to grid start position if first item is out of grid view
-      if (posA2 < posA)
-        posA2 = posA;
-
-      // render our item
-      if (focused)
-      {
-        focusedPosX = posA2;
-        focusedPosY = posB;
-        focusedItem = item;
-      }
-      else
-      {
-        RenderItem(posA2, posB, item.get(), focused);
-      }
-
-      // increment our X position
-      posA2 += m_gridModel->GetGridItemWidth(channel, block); // assumes focused & unfocused layouts have equal length
-      block += MathUtils::round_int(m_gridModel->GetGridItemOriginWidth(channel, block) / m_blockSize);
-    }
-
-    // increment our Y position
-    channel++;
-    posB += m_channelHeight;
-  }
-
-  // and render the focused item last (for overlapping purposes)
-  if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
-
-  g_graphicsContext.RestoreClipRegion();
+  // params not needed for render.
+  unsigned int dummyTime = 0;
+  CDirtyRegionList dummyRegions;
+  HandleProgrammeGrid(true, dummyTime, dummyRegions);
 }
 
 void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -1870,5 +1522,280 @@ void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int &cacheBefore, int &cache
   {
     cacheBefore = m_cacheProgrammeItems / 2;
     cacheAfter = m_cacheProgrammeItems / 2;
+  }
+}
+
+void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (!m_focusedChannelLayout || !m_channelLayout)
+    return;
+
+  int chanOffset = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(VERTICAL));
+
+  int cacheBeforeChannel, cacheAfterChannel;
+  GetChannelCacheOffsets(cacheBeforeChannel, cacheAfterChannel);
+
+  if (bRender)
+    g_graphicsContext.SetClipRegion(m_channelPosX, m_channelPosY, m_channelWidth, m_gridHeight);
+  else
+  {
+    // Free memory not used on screen
+    if (m_gridModel->ChannelItemsSize() > m_channelsPerPage + cacheBeforeChannel + cacheAfterChannel)
+      m_gridModel->FreeChannelMemory(chanOffset - cacheBeforeChannel, chanOffset + m_channelsPerPage + 1 + cacheAfterChannel);
+  }
+
+  CPoint originChannel = CPoint(m_channelPosX, m_channelPosY) + m_renderOffset;
+  float pos = originChannel.y;
+  float end = m_posY + m_height;
+
+  // we offset our draw position to take into account scrolling and whether or not our focused
+  // item is offscreen "above" the list.
+  float drawOffset = (chanOffset - cacheBeforeChannel) * m_channelLayout->Size(VERTICAL) - m_channelScrollOffset;
+  if (m_channelOffset + m_channelCursor < chanOffset)
+    drawOffset += m_focusedChannelLayout->Size(VERTICAL) - m_channelLayout->Size(VERTICAL);
+
+  pos += drawOffset;
+  end += cacheAfterChannel * m_channelLayout->Size(VERTICAL);
+
+  float focusedPos = 0;
+  CGUIListItemPtr focusedItem;
+
+  CFileItemPtr item;
+  int current = chanOffset;// - cacheBeforeChannel;
+  while (pos < end && m_gridModel->HasChannelItems())
+  {
+    int itemNo = current;
+    if (itemNo >= m_gridModel->ChannelItemsSize())
+      break;
+
+    bool focused = (current == m_channelOffset + m_channelCursor);
+    if (itemNo >= 0)
+    {
+      item = m_gridModel->GetChannelItem(itemNo);
+      if (bRender)
+      {
+        // render our item
+        if (focused)
+        {
+          focusedPos = pos;
+          focusedItem = item;
+        }
+        else
+          RenderItem(originChannel.x, pos, item.get(), false);
+      }
+      else
+      {
+        // process our item
+        ProcessItem(originChannel.x, pos, item, m_lastItem, focused, m_channelLayout, m_focusedChannelLayout, currentTime, dirtyregions);
+      }
+    }
+    // increment our position
+    pos += focused ? m_focusedChannelLayout->Size(VERTICAL) : m_channelLayout->Size(VERTICAL);
+    current++;
+  }
+
+  if (bRender)
+  {
+    // render focused item last so it can overlap other items
+    if (focusedItem)
+      RenderItem(originChannel.x, focusedPos, focusedItem.get(), true);
+
+    g_graphicsContext.RestoreClipRegion();
+  }
+}
+
+void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (!m_rulerLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
+    return;
+
+  int rulerOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
+
+  CFileItemPtr item(m_gridModel->GetRulerItem(0));
+  CFileItemPtr lastitem;
+  int cacheBeforeRuler, cacheAfterRuler;
+  if (bRender)
+  {
+    // Render single ruler item with date of selected programme
+    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
+    RenderItem(m_posX, m_posY, item.get(), false);
+    g_graphicsContext.RestoreClipRegion();
+
+    // render ruler items
+    GetProgrammeCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
+
+    g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_rulerHeight);
+  }
+  else
+  {
+    item->SetLabel(m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1)->GetLabel2());
+    ProcessItem(m_posX, m_posY, item, lastitem, false, m_rulerLayout, m_rulerLayout, currentTime, dirtyregions, m_channelWidth);
+
+    GetProgrammeCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
+
+    // Free memory not used on screen
+    if (m_gridModel->RulerItemsSize() > m_blocksPerPage + cacheBeforeRuler + cacheAfterRuler)
+      m_gridModel->FreeRulerMemory(rulerOffset / m_rulerUnit + 1 - cacheBeforeRuler, rulerOffset / m_rulerUnit + 1 + m_blocksPerPage + 1 + cacheAfterRuler);
+  }
+
+  CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
+  float pos = originRuler.x;
+  float end = m_posX + m_width;
+  float drawOffset = (rulerOffset - cacheBeforeRuler) * m_blockSize - m_programmeScrollOffset;
+  pos += drawOffset;
+  end += cacheAfterRuler * m_rulerLayout->Size(HORIZONTAL);
+
+  if (rulerOffset % m_rulerUnit != 0)
+  {
+    /* first ruler marker starts before current view */
+    int startBlock = rulerOffset - 1;
+
+    while (startBlock % m_rulerUnit != 0)
+      startBlock--;
+
+    int missingSection = rulerOffset - startBlock;
+
+    pos -= missingSection * m_blockSize;
+  }
+
+  while (pos < end && (rulerOffset / m_rulerUnit + 1) < m_gridModel->RulerItemsSize())
+  {
+    item = m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1);
+    if (bRender)
+      RenderItem(pos, originRuler.y, item.get(), false);
+    else
+      ProcessItem(pos, originRuler.y, item, lastitem, false, m_rulerLayout, m_rulerLayout, currentTime, dirtyregions, m_rulerWidth);
+
+    pos += m_rulerWidth;
+    rulerOffset += m_rulerUnit;
+  }
+
+  if (bRender)
+    g_graphicsContext.RestoreClipRegion();
+}
+
+void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (!m_focusedProgrammeLayout || !m_programmeLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
+    return;
+
+  int blockOffset = MathUtils::round_int(m_programmeScrollOffset / m_blockSize);
+  int chanOffset  = MathUtils::round_int(m_channelScrollOffset / m_programmeLayout->Size(VERTICAL));
+
+  int cacheBeforeProgramme, cacheAfterProgramme;
+  GetProgrammeCacheOffsets(cacheBeforeProgramme, cacheAfterProgramme);
+
+  if (bRender)
+    g_graphicsContext.SetClipRegion(m_gridPosX, m_gridPosY, m_gridWidth, m_gridHeight);
+
+  CPoint originProgramme = CPoint(m_gridPosX, m_gridPosY) + m_renderOffset;
+  float posA = originProgramme.x;
+  float endA = m_posX + m_width;
+  float posB = originProgramme.y;
+  float endB = m_gridPosY + m_gridHeight;
+  endA += cacheAfterProgramme * m_blockSize;
+
+  float DrawOffsetA = blockOffset * m_blockSize - m_programmeScrollOffset;
+  posA += DrawOffsetA;
+  float DrawOffsetB = (chanOffset - cacheBeforeProgramme) * m_channelLayout->Size(VERTICAL) - m_channelScrollOffset;
+  posB += DrawOffsetB;
+
+  int channel = chanOffset;
+
+  float focusedPosX = 0;
+  float focusedPosY = 0;
+  CFileItemPtr focusedItem;
+  CFileItemPtr item;
+  while (posB < endB && m_gridModel->HasChannelItems())
+  {
+    if (channel >= m_gridModel->ChannelItemsSize())
+      break;
+
+    if (!bRender)
+    {
+      // Free memory not used on screen
+      m_gridModel->FreeProgrammeMemory(channel, blockOffset - cacheBeforeProgramme, blockOffset + m_programmesPerPage + 1 + cacheAfterProgramme);
+    }
+
+    int block = blockOffset;
+    float posA2 = posA;
+
+    item = m_gridModel->GetGridItem(channel, block);
+    if (blockOffset > 0 && item == m_gridModel->GetGridItem(channel, blockOffset - 1))
+    {
+      /* first program starts before current view */
+      int startBlock = blockOffset - 1;
+      while (startBlock >= 0 && m_gridModel->GetGridItem(channel, startBlock) == item)
+        startBlock--;
+
+      block = startBlock + 1;
+      int missingSection = blockOffset - block;
+      posA2 -= missingSection * m_blockSize;
+    }
+
+    while (posA2 < endA && m_gridModel->HasProgrammeItems())
+    {
+      if (block >= m_gridModel->GetBlockCount())
+        break;
+
+      item = m_gridModel->GetGridItem(channel, block);
+      if (!item || !item.get()->IsFileItem())
+        break;
+
+      bool focused = (channel == m_channelOffset + m_channelCursor) && (item == m_gridModel->GetGridItem(m_channelOffset + m_channelCursor, m_blockOffset + m_blockCursor));
+
+      if (bRender) // @@@ TODO why the functional difference wrt truncate here?
+      {
+        // reset to grid start position if first item is out of grid view
+        if (posA2 < posA)
+          posA2 = posA;
+
+        // render our item
+        if (focused)
+        {
+          focusedPosX = posA2;
+          focusedPosY = posB;
+          focusedItem = item;
+        }
+        else
+        {
+          RenderItem(posA2, posB, item.get(), focused);
+        }
+      }
+      else
+      {
+        // calculate the size to truncate if item is out of grid view
+        float truncateSize = 0;
+        if (posA2 < posA)
+        {
+          truncateSize = posA - posA2;
+          posA2 = posA; // reset to grid start position
+        }
+
+        {
+          CSingleLock lock(m_critSection);
+          // truncate item's width
+          m_gridModel->SetGridItemWidth(channel, block, m_gridModel->GetGridItemOriginWidth(channel, block) - truncateSize);
+        }
+
+        ProcessItem(posA2, posB, item, m_lastChannel, focused, m_programmeLayout, m_focusedProgrammeLayout, currentTime, dirtyregions, m_gridModel->GetGridItemWidth(channel, block));
+      }
+
+      // increment our X position
+      posA2 += m_gridModel->GetGridItemWidth(channel, block); // assumes focused & unfocused layouts have equal length
+      block += MathUtils::round_int(m_gridModel->GetGridItemOriginWidth(channel, block) / m_blockSize);
+    }
+    // increment our Y position
+    channel++;
+    posB += m_channelHeight;
+  }
+
+  if (bRender)
+  {
+    // and render the focused item last (for overlapping purposes)
+    if (focusedItem)
+      RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
+
+    g_graphicsContext.RestoreClipRegion();
   }
 }

@@ -140,6 +140,10 @@ namespace EPG
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
   private:
+    void HandleChannels(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void HandleRuler(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void HandleProgrammeGrid(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+
     void UpdateItems();
 
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
