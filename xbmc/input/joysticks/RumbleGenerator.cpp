@@ -31,10 +31,23 @@ using namespace JOYSTICK;
 CRumbleGenerator::CRumbleGenerator(const std::string& controllerId) :
   CThread("RumbleGenerator"),
   m_motors(GetMotors(controllerId)),
-  m_receiver(nullptr)
+  m_receiver(nullptr),
+  m_type(RUMBLE_UNKNOWN)
 {
 }
 
+void CRumbleGenerator::NotifyUser(IInputReceiver* receiver)
+{
+  if (receiver && !m_motors.empty())
+  {
+    if (IsRunning())
+      StopThread(true);
+
+    m_receiver = receiver;
+    m_type = RUMBLE_NOTIFICATION;
+    Create();
+  }
+}
 bool CRumbleGenerator::DoTest(IInputReceiver* receiver)
 {
   if (receiver && !m_motors.empty())
@@ -43,6 +56,7 @@ bool CRumbleGenerator::DoTest(IInputReceiver* receiver)
       StopThread(true);
 
     m_receiver = receiver;
+    m_type = RUMBLE_TEST;
     Create();
 
     return true;
@@ -52,16 +66,37 @@ bool CRumbleGenerator::DoTest(IInputReceiver* receiver)
 
 void CRumbleGenerator::Process(void)
 {
-  for (const std::string& motor : m_motors)
+  switch (m_type)
   {
-    m_receiver->SetRumbleState(motor, 1.0f);
+  case RUMBLE_NOTIFICATION:
+  {
+    for (const std::string& motor : m_motors)
+      m_receiver->SetRumbleState(motor, 1.0f);
 
     Sleep(1000);
 
-    m_receiver->SetRumbleState(motor, 0.0f);
+    for (const std::string& motor : m_motors)
+      m_receiver->SetRumbleState(motor, 0.0f);
 
-    if (m_bStop)
-      break;
+    break;
+  }
+  case RUMBLE_TEST:
+  {
+    for (const std::string& motor : m_motors)
+    {
+      m_receiver->SetRumbleState(motor, 1.0f);
+
+      Sleep(1000);
+
+      m_receiver->SetRumbleState(motor, 0.0f);
+
+      if (m_bStop)
+        break;
+    }
+    break;
+  }
+  default:
+    break;
   }
 }
 

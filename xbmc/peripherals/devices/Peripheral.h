@@ -101,6 +101,11 @@ namespace PERIPHERALS
     virtual bool InitialiseFeature(const PeripheralFeature feature) { return true; }
 
     /*!
+    * @brief Briefly activate a feature to notify the user
+    */
+    virtual void OnUserNotification() { }
+
+    /*!
      * @brief Briefly test one of the features of this peripheral.
      * @param feature The feature to test.
      * @return True if the test succeeded, false otherwise.

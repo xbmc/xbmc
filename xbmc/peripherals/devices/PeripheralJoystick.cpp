@@ -98,6 +98,11 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   return bSuccess;
 }
 
+void CPeripheralJoystick::OnUserNotification()
+{
+  m_defaultInputHandler.NotifyUser();
+}
+
 bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
 {
   bool bSuccess = false;

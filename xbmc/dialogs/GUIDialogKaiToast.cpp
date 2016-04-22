@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogKaiToast.h"
+#include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 
@@ -133,6 +134,9 @@ bool CGUIDialogKaiToast::DoWork()
 
     //  Play the window specific init sound for each notification queued
     SetSound(toast.withSound);
+
+    // Activate haptics for this notification
+    PERIPHERALS::g_peripherals.OnUserNotification();
 
     ResetTimer();
     return true;

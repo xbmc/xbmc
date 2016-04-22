@@ -217,6 +217,11 @@ namespace PERIPHERALS
     EventRateHandle SetEventScanRate(float rateHz) { return m_eventScanner.SetRate(rateHz); }
 
     /*!
+     * 
+     */
+    void OnUserNotification();
+
+    /*!
      * @brief Request peripherals with the specified feature to perform a quick test
      * @return true if any peripherals support the feature, false otherwise
      */

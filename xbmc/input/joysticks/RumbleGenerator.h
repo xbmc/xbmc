@@ -32,6 +32,7 @@ namespace JOYSTICK
 
     virtual ~CRumbleGenerator(void) { AbortRumble(); }
 
+    void NotifyUser(IInputReceiver* receiver);
     bool DoTest(IInputReceiver* receiver);
 
     void AbortRumble(void) { StopThread(); }
@@ -41,6 +42,13 @@ namespace JOYSTICK
     void Process(void);
 
   private:
+    enum RUMBLE_TYPE
+    {
+      RUMBLE_UNKNOWN,
+      RUMBLE_NOTIFICATION,
+      RUMBLE_TEST,
+    };
+
     static std::vector<std::string> GetMotors(const std::string& controllerId);
 
     // Construction param
@@ -48,5 +56,6 @@ namespace JOYSTICK
 
     // Test param
     IInputReceiver* m_receiver;
+    RUMBLE_TYPE     m_type;
   };
 }

@@ -53,6 +53,7 @@ namespace JOYSTICK
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
 
     // Forward rumble commands to rumble generator
+    void NotifyUser(void) { m_rumbleGenerator.NotifyUser(InputReceiver()); }
     bool TestRumble(void) { return m_rumbleGenerator.DoTest(InputReceiver()); }
     void AbortRumble() { return m_rumbleGenerator.AbortRumble(); }
 
