@@ -32,7 +32,8 @@
 			</control>
 			<control type="group">
 				<include>OpenClose_Right</include>
-				<visible>[Control.IsVisible(50) | Control.Isvisible(54)] + !String.IsEmpty(ListItem.DBID)</visible>
+				<visible>[Control.IsVisible(50) | Control.Isvisible(54)]</visible>
+				<visible>!ListItem.IsParentFolder</visible>
 				<include>Visible_Right</include>
 				<visible>Container.Content(sets) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(musicvideos)</visible>
 				<control type="image">
@@ -248,6 +249,12 @@
 						<label>$LOCALIZE[31009]</label>
 						<onclick>InstallAddon(resource.images.studios.white)</onclick>
 						<visible>Container.Content(studios) + !System.HasAddon(resource.images.studios.white)</visible>
+					</control>
+					<control type="button" id="624">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10140]</label>
+						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<include>MediaMenuNowPlaying</include>
 				</control>

@@ -181,20 +181,22 @@
 				</control>
 			</control>
 			<control type="label">
-				<top>665</top>
+				<top>660</top>
 				<left>900</left>
 				<width>auto</width>
 				<height>50</height>
 				<aligny>bottom</aligny>
 				<textoffsety>10</textoffsety>
-				<label>[B]$LOCALIZE[31031]:[/B]</label>
+				<label>$LOCALIZE[31031]:</label>
 				<shadowcolor>black</shadowcolor>
+				<font>font12_title</font>
 			</control>
 			<control type="grouplist">
 				<description>Kodi build version</description>
 				<itemgap>10</itemgap>
-				<top>715</top>
+				<top>710</top>
 				<left>900</left>
+				<width>800</width>
 				<align>left</align>
 				<height>45</height>
 				<orientation>horizontal</orientation>
@@ -225,6 +227,7 @@
 				<top>755</top>
 				<align>left</align>
 				<left>900</left>
+				<width>800</width>
 				<orientation>horizontal</orientation>
 				<control type="label">
 					<description>kodi Compiled Text</description>
