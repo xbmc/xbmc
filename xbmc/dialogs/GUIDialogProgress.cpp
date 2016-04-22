@@ -89,14 +89,6 @@ void CGUIDialogProgress::Progress()
   }
 }
 
-void CGUIDialogProgress::ProgressKeys()
-{
-  if (m_active)
-  {
-    g_application.FrameMove(true);
-  }
-}
-
 bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
