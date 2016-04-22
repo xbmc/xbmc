@@ -83,9 +83,9 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
     filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
 
   // create our codec
-  m_codec=CodecFactory::CreateCodecDemux(file.GetPath(), file.GetMimeType(), filecache * 1024);
+  m_codec=CodecFactory::CreateCodecDemux(file, filecache * 1024);
 
-  if (!m_codec || !m_codec->Init(file.GetPath(), filecache * 1024))
+  if (!m_codec || !m_codec->Init(file, filecache * 1024))
   {
     CLog::Log(LOGERROR, "CAudioDecoder: Unable to Init Codec while loading file %s", file.GetPath().c_str());
     Destroy();
