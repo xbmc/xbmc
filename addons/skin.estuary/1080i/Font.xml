@@ -139,7 +139,7 @@
 		</font>
 		<font>
 			<name>font_textbox</name>
-			<filename>Lato-Regular.ttf</filename>
+			<filename>arial.ttf</filename>
 			<size>26</size>
 			<linespacing>1.2</linespacing>
 		</font>
