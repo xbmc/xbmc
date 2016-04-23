@@ -43,6 +43,7 @@ namespace PVR
     virtual void UpdateButtons(void) override;
 
   protected:
+    virtual bool OnClick(int iItem, const std::string &player = "");
     virtual std::string GetDirectoryPath(void) override;
     virtual void OnPrepareFileItems(CFileItemList &items) override;
     virtual void RegisterObservers(void) override;
