@@ -91,11 +91,12 @@ namespace XBMCAddon
       int contextmenu(const std::vector<String>& list);
 
       /**
-       * select(heading, list) -- Show a select dialog.\n
+       * select(heading, list [,autoclose, preselect]) -- Show a select dialog.\n
        * \n
        * heading        : string or unicode - dialog heading.\n
        * list           : string list - list of items.\n
        * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)\n
+       * preselect      : [opt] integer - index of preselected item. (default=no preselected item)\n
        * \n
        * *Note, Returns the position of the highlighted item as an integer.\n
        * \n
@@ -103,7 +104,7 @@ namespace XBMCAddon
        *   - dialog = xbmcgui.Dialog()\n
        *   - ret = dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])\n\n
        */
-      int select(const String& heading, const std::vector<String>& list, int autoclose=0);
+      int select(const String& heading, const std::vector<String>& list, int autoclose=0, int preselect=-1);
 
       /**
        * multiselect(heading, list [,autoclose]) -- Show a multi-select dialog.

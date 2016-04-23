@@ -101,7 +101,7 @@ namespace XBMCAddon
     }
 
 
-    int Dialog::select(const String& heading, const std::vector<String>& list, int autoclose)
+    int Dialog::select(const String& heading, const std::vector<String>& list, int autoclose, int preselect)
     {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -118,6 +118,8 @@ namespace XBMCAddon
         listLine = list[i];
           pDialog->Add(listLine);
       }
+      if (preselect > -1)
+        pDialog->SetSelected(preselect);
       if (autoclose > 0)
         pDialog->SetAutoClose(autoclose);
 
