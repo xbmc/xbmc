@@ -31,7 +31,7 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-confi
               ${PROJECT_SOURCE_DIR}/scripts/common/addon-helpers.cmake
         DESTINATION lib/${APP_NAME_LC})
 
-install(TARGETS ${APP_NAME_LC} DESTINATION ${libdir}/kodi)
+install(TARGETS ${APP_NAME_LC} DESTINATION ${libdir}/${APP_NAME_LC})
 if(ENABLE_X11 AND XRANDR_FOUND)
   install(TARGETS ${APP_NAME_LC}-xrandr DESTINATION ${libdir}/${APP_NAME_LC})
 endif()
@@ -39,7 +39,7 @@ endif()
 if(NOT EXISTS ${libdir}/xbmc)
 install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${libdir})")
 endif()
-install(FILES ${addon_bindings} DESTINATION ${includedir}/kodi)
+install(FILES ${addon_bindings} DESTINATION ${includedir}/${APP_NAME_LC})
 if(NOT EXISTS ${includedir}/xbmc)
 install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${includedir})")
 endif()
@@ -64,28 +64,28 @@ install(FILES ${CORE_SOURCE_DIR}/copying.txt
               ${CORE_SOURCE_DIR}/LICENSE.GPL
               ${CORE_SOURCE_DIR}/version.txt
               ${CORE_SOURCE_DIR}/docs/README.linux
-        DESTINATION ${datarootdir}/doc/kodi)
+        DESTINATION ${datarootdir}/doc/${APP_NAME_LC})
 
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/kodi.desktop
-        DESTINATION ${datarootdir}/applications)
+        DESTINATION ${datarootdir}/applications/${APP_NAME_LC}.desktop)
 
 foreach(texture ${XBT_FILES})
   string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${texture})
   get_filename_component(dir ${dir} PATH)
   install(FILES ${texture}
-          DESTINATION ${datarootdir}/kodi/${dir})
+          DESTINATION ${datarootdir}/${APP_NAME_LC}/${dir})
 endforeach()
 
 foreach(wraplib ${WRAP_FILES})
   get_filename_component(dir ${wraplib} PATH)
   install(PROGRAMS ${CMAKE_BINARY_DIR}/${wraplib}
-          DESTINATION ${libdir}/kodi/${dir})
+          DESTINATION ${libdir}/${APP_NAME_LC}/${dir})
 endforeach()
 
 foreach(file ${install_data})
   get_filename_component(dir ${file} PATH)
   install(FILES ${CMAKE_BINARY_DIR}/${file}
-          DESTINATION ${datarootdir}/kodi/${dir})
+          DESTINATION ${datarootdir}/${APP_NAME_LC}/${dir})
 endforeach()
 
 if(EXISTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/extra-installs)
@@ -94,7 +94,7 @@ if(EXISTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/extra-installs)
                 file(GLOB_RECURSE FILES RELATIVE ${CMAKE_BINARY_DIR} \${dir}/*)
                 foreach(file \${FILES})
                   get_filename_component(dir \${file} PATH)
-                  file(INSTALL \${file} DESTINATION ${datarootdir}/kodi/\${dir})
+                  file(INSTALL \${file} DESTINATION ${datarootdir}/${APP_NAME_LC}/\${dir})
                 endforeach()
               endforeach()")
 endif()
