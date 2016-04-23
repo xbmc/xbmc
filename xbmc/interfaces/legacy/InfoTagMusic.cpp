@@ -77,6 +77,16 @@ namespace XBMCAddon
       return infoTag->GetDuration();
     }
 
+    int InfoTagMusic::getRating()
+    {
+      return infoTag->GetRating();
+    }
+
+    int InfoTagMusic::getUserRating()
+    {
+      return infoTag->GetUserrating();
+    }
+
     int InfoTagMusic::getTrack()
     {
       return infoTag->GetTrackNumber();

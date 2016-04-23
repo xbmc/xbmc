@@ -197,6 +197,42 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getRating() }
+      ///-----------------------------------------------------------------------
+      /// Returns the scraped rating as integer.
+      ///
+      /// @return [integer] Rating
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getRating();
+#else
+      int getRating();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getUserRating() }
+      ///-----------------------------------------------------------------------
+      /// Returns the user rating as integer (-1 if not existing)
+      ///
+      /// @return [integer] User rating
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getUserRating();
+#else
+      int getUserRating();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ getTrack() }
       ///-----------------------------------------------------------------------
       /// Returns the track number (if present) from music info tag as integer.
