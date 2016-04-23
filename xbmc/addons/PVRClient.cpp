@@ -2026,3 +2026,51 @@ bool CPVRClient::IsRealTimeStream(void) const
   }
   return bReturn;
 }
+
+void CPVRClient::OnSystemSleep(void)
+{
+  if (!m_bReadyToUse)
+    return;
+
+  try
+  {
+    m_pStruct->OnSystemSleep();
+  }
+  catch (std::exception &e) { LogException(e, __FUNCTION__); }
+}
+
+void CPVRClient::OnSystemWake(void)
+{
+  if (!m_bReadyToUse)
+    return;
+
+  try
+  {
+    m_pStruct->OnSystemWake();
+  }
+  catch (std::exception &e) { LogException(e, __FUNCTION__); }
+}
+
+void CPVRClient::OnPowerSavingActivated(void)
+{
+  if (!m_bReadyToUse)
+    return;
+
+  try
+  {
+    m_pStruct->OnPowerSavingActivated();
+  }
+  catch (std::exception &e) { LogException(e, __FUNCTION__); }
+}
+
+void CPVRClient::OnPowerSavingDeactivated(void)
+{
+  if (!m_bReadyToUse)
+    return;
+
+  try
+  {
+    m_pStruct->OnPowerSavingDeactivated();
+  }
+  catch (std::exception &e) { LogException(e, __FUNCTION__); }
+}

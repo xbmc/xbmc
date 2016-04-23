@@ -113,23 +113,34 @@ CPVRManager::~CPVRManager(void)
 
 void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if (!IsStarted() || (flag & (System)) == 0)
+  if (!IsStarted())
     return;
 
-  if (strcmp(message, "OnWake") == 0)
+  if ((flag & (ANNOUNCEMENT::System)))
   {
-    /* start job to search for missing channel icons */
-    TriggerSearchMissingChannelIcons();
+    if (strcmp(message, "OnWake") == 0)
+    {
+      /* start job to search for missing channel icons */
+      TriggerSearchMissingChannelIcons();
 
-    /* continue last watched channel */
-    ContinueLastChannel();
+      /* continue last watched channel */
+      ContinueLastChannel();
 
-    /* trigger PVR data updates */
-    TriggerChannelGroupsUpdate();
-    TriggerChannelsUpdate();
-    TriggerRecordingsUpdate();
-    TriggerEpgsCreate();
-    TriggerTimersUpdate();
+      /* trigger PVR data updates */
+      TriggerChannelGroupsUpdate();
+      TriggerChannelsUpdate();
+      TriggerRecordingsUpdate();
+      TriggerEpgsCreate();
+      TriggerTimersUpdate();
+    }
+  }
+
+  if ((flag & (ANNOUNCEMENT::GUI)))
+  {
+    if (strcmp(message, "OnScreensaverActivated") == 0)
+      g_PVRClients->OnPowerSavingActivated();
+    else if (strcmp(message, "OnScreensaverDeactivated") == 0)
+      g_PVRClients->OnPowerSavingDeactivated();
   }
 }
 
@@ -464,6 +475,16 @@ bool CPVRManager::SetWakeupCommand(void)
   }
 
   return false;
+}
+
+void CPVRManager::OnSleep()
+{
+  g_PVRClients->OnSystemSleep();
+}
+
+void CPVRManager::OnWake()
+{
+  g_PVRClients->OnSystemWake();
 }
 
 bool CPVRManager::Load(bool bShowProgress)

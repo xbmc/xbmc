@@ -548,6 +548,16 @@ private:
     bool SetWakeupCommand(void);
 
     /*!
+     * @brief Propagate event on system sleep
+     */
+    void OnSleep();
+
+    /*!
+     * @brief Propagate event on system wake
+     */
+    void OnWake();
+
+    /*!
      * @brief Wait until the pvr manager is loaded
      * @return True when loaded, false otherwise
      */

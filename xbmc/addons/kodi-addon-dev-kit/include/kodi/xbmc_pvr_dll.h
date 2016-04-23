@@ -648,6 +648,14 @@ extern "C"
   PVR_ERROR SetEPGTimeFrame(int iDays);
 
   /*!
+   * Notify the pvr addon for power management events
+   */
+  void OnSystemSleep();
+  void OnSystemWake();
+  void OnPowerSavingActivated();
+  void OnPowerSavingDeactivated();
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -736,6 +744,11 @@ extern "C"
     pClient->IsRealTimeStream               = IsRealTimeStream;
 
     pClient->SetEPGTimeFrame                = SetEPGTimeFrame;
+
+    pClient->OnSystemSleep                  = OnSystemSleep;
+    pClient->OnSystemWake                   = OnSystemWake;
+    pClient->OnPowerSavingActivated         = OnPowerSavingActivated;
+    pClient->OnPowerSavingDeactivated       = OnPowerSavingDeactivated;
   };
 };
 
