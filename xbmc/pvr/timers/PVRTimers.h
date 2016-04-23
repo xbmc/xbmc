@@ -205,7 +205,7 @@ namespace PVR
     typedef std::vector<CPVRTimerInfoTagPtr> VecTimerInfoTag;
 
     void Unload(void);
-    bool UpdateEntries(const CPVRTimers &timers);
+    bool UpdateEntries(const CPVRTimers &timers, const std::vector<int> &failedClients);
     CPVRTimerInfoTagPtr GetByClient(int iClientId, unsigned int iClientTimerId) const;
     bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
     bool GetSubDirectory(const CPVRTimersPath &path, CFileItemList &items) const;

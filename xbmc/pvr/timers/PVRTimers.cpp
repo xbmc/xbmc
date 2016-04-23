@@ -86,8 +86,9 @@ bool CPVRTimers::Update(void)
 
   CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating timers", __FUNCTION__);
   CPVRTimers newTimerList;
-  g_PVRClients->GetTimers(&newTimerList);
-  return UpdateEntries(newTimerList);
+  std::vector<int> failedClients;
+  g_PVRClients->GetTimers(&newTimerList, failedClients);
+  return UpdateEntries(newTimerList, failedClients);
 }
 
 bool CPVRTimers::IsRecording(void) const
@@ -102,7 +103,7 @@ bool CPVRTimers::IsRecording(void) const
   return false;
 }
 
-bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
+bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> &failedClients)
 {
   bool bChanged(false);
   bool bAddedOrDeleted(false);
@@ -185,6 +186,22 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
       if (!timers.GetByClient(timer->m_iClientId, timer->m_iClientIndex))
       {
         /* timer was not found */
+        bool bIgnoreTimer(false);
+        for (const auto &failedClient : failedClients)
+        {
+          if (failedClient == timer->m_iClientId)
+          {
+            bIgnoreTimer = true;
+            break;
+          }
+        }
+
+        if (bIgnoreTimer)
+        {
+          ++it2;
+          continue;
+        }
+
         CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
@@ -259,7 +276,6 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
     }
   }
 
-
   m_bIsUpdating = false;
   if (bChanged)
   {
@@ -269,7 +285,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
     NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
-    /* queue notifications / fill eventlog*/
+    /* queue notifications / fill eventlog */
     for (const auto &entry : timerNotifications)
     {
       if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
