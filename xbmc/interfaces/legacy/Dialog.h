@@ -107,19 +107,20 @@ namespace XBMCAddon
       int select(const String& heading, const std::vector<String>& list, int autoclose=0, int preselect=-1);
 
       /**
-       * multiselect(heading, list [,autoclose]) -- Show a multi-select dialog.
+       * multiselect(heading, list [,autoclose, preselect]) -- Show a multi-select dialog.
        *
        * heading        : string or unicode - dialog heading.
        * options        : list of string - options to choose from.
        * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+       * preselect      : [opt] list of int - indexes of items to preselect in list (default: do not preselect any item)
        *
        * *Note, Returns the selected items as a list of indices, or None if cancelled.
        *
        * example:
        *   - dialog = xbmcgui.Dialog()
-       *   - ret = dialog.multiselect("Choose something", ["Foo", "Bar", "Baz"])
+       *   - ret = dialog.multiselect("Choose something", ["Foo", "Bar", "Baz"], preselect=[1,2])
        */
-      std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<String>& options, int autoclose=0);
+      std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<String>& options, int autoclose=0, const std::vector<int>& preselect = std::vector<int>());
 
       /**
        * ok(heading, line1[, line2, line3]) -- Show a dialog 'OK'.\n

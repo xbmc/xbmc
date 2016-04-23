@@ -130,7 +130,7 @@ namespace XBMCAddon
 
 
     std::unique_ptr<std::vector<int>> Dialog::multiselect(const String& heading,
-        const std::vector<String>& options, int autoclose)
+        const std::vector<String>& options, int autoclose, const std::vector<int>& preselect)
     {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -147,6 +147,7 @@ namespace XBMCAddon
       if (autoclose > 0)
         pDialog->SetAutoClose(autoclose);
 
+      pDialog->SetSelected(preselect);
       pDialog->Open();
 
       if (pDialog->IsConfirmed())
