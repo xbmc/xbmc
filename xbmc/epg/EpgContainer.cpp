@@ -369,11 +369,11 @@ void CEpgContainer::Process(void)
 CEpgPtr CEpgContainer::GetById(int iEpgId) const
 {
   if (iEpgId < 0)
-    return NULL;
+    return CEpgPtr();
 
   CSingleLock lock(m_critSection);
   const auto &epgEntry = m_epgs.find((unsigned int) iEpgId);
-  return epgEntry != m_epgs.end() ? epgEntry->second : NULL;
+  return epgEntry != m_epgs.end() ? epgEntry->second : CEpgPtr();
 }
 
 CEpgInfoTagPtr CEpgContainer::GetTagById(const CPVRChannelPtr &channel, unsigned int iBroadcastId) const
@@ -399,7 +399,7 @@ CEpgPtr CEpgContainer::GetByChannel(const CPVRChannel &channel) const
       return epgEntry.second;
   }
 
-  return NULL;
+  return CEpgPtr();
 }
 
 void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName)
@@ -431,7 +431,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, c
 CEpgPtr CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 {
   if (!channel)
-    return NULL;
+    return CEpgPtr();
 
   WaitForUpdateFinish(true);
   LoadFromDB();
