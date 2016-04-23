@@ -18,7 +18,7 @@
  *
  */
 
-#include "Application.h"
+
 #include "Observer.h"
 #include "threads/SingleLock.h"
 
@@ -32,9 +32,8 @@ Observer::~Observer(void)
 void Observer::StopObserving(void)
 {
   CSingleLock lock(m_obsCritSection);
-  std::vector<Observable *> observables = m_observables;
-  for (unsigned int iObsPtr = 0; iObsPtr < observables.size(); iObsPtr++)
-    observables.at(iObsPtr)->UnregisterObserver(this);
+  for (auto& observable : m_observables)
+    observable->UnregisterObserver(this);
 }
 
 bool Observer::IsObserving(const Observable &obs) const
@@ -83,9 +82,8 @@ Observable &Observable::operator=(const Observable &observable)
 void Observable::StopObserver(void)
 {
   CSingleLock lock(m_obsCritSection);
-  std::vector<Observer *> observers = m_observers;
-  for (unsigned int iObsPtr = 0; iObsPtr < observers.size(); iObsPtr++)
-    observers.at(iObsPtr)->UnregisterObservable(this);
+  for (auto& observer : m_observers)
+    observer->UnregisterObservable(this);
 }
 
 bool Observable::IsObserving(const Observer &obs) const
@@ -120,13 +118,13 @@ void Observable::NotifyObservers(const ObservableMessage message /* = Observable
   bool bNotify(false);
   {
     CSingleLock lock(m_obsCritSection);
-    if (m_bObservableChanged && !g_application.m_bStop)
+    if (m_bObservableChanged)
       bNotify = true;
     m_bObservableChanged = false;
   }
 
   if (bNotify)
-    SendMessage(*this, message);
+    SendMessage(message);
 }
 
 void Observable::SetChanged(bool SetTo)
@@ -135,20 +133,11 @@ void Observable::SetChanged(bool SetTo)
   m_bObservableChanged = SetTo;
 }
 
-void Observable::SendMessage(const Observable& obs, const ObservableMessage message)
+void Observable::SendMessage(const ObservableMessage message)
 {
-  CSingleLock lock(obs.m_obsCritSection);
-  for(int ptr = obs.m_observers.size() - 1; ptr >= 0; ptr--)
+  CSingleLock lock(m_obsCritSection);
+  for (auto& observer : m_observers)
   {
-    if (ptr < (int)obs.m_observers.size())
-    {
-      Observer *observer = obs.m_observers.at(ptr);
-      if (observer)
-      {
-        lock.Leave();
-        observer->Notify(obs, message);
-        lock.Enter();
-      }
-    }
+    observer->Notify(*this, message);
   }
 }

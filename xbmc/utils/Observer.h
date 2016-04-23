@@ -138,7 +138,7 @@ protected:
    * @param obs The observer that sends the message.
    * @param message The message to send.
    */
-  static void SendMessage(const Observable& obs, const ObservableMessage message);
+  void SendMessage(const ObservableMessage message);
 
   bool                    m_bObservableChanged; /*!< true when the observable is marked as changed, false otherwise */
   std::vector<Observer *> m_observers;          /*!< all observers */
