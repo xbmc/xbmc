@@ -44,8 +44,9 @@ specific paths:
   * ADDONS_DEFINITION_DIR points to the directory containing the definitions
     for the addons to be built.
   * ADDON_SRC_PREFIX can be used to override the addon repository location.
-    It must point to the locally available parent directory of the addon(s) to build
-    <addon-id> will be appended to this path automatically
+    It must point to the locally available parent directory of the addon(s) 
+	to build and must be an absolute path. <addon-id> will be appended to 
+	this path automatically.
   * CMAKE_BUILD_TYPE specifies the type of the build. This can be either "Debug"
     or "Release" (default is "Release").
   * CMAKE_INSTALL_PREFIX points to the directory where the built addons and their

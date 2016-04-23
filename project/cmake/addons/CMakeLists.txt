@@ -133,7 +133,9 @@ endif()
 get_filename_component(ADDONS_DEFINITION_DIR "${ADDONS_DEFINITION_DIR}" ABSOLUTE)
 
 if(ADDON_SRC_PREFIX)
-  get_filename_component(ADDON_SRC_PREFIX "${ADDON_SRC_PREFIX}" ABSOLUTE)
+  if(NOT IS_ABSOLUTE ${ADDON_SRC_PREFIX})
+    message(FATAL_ERROR "ADDON_SRC_PREFIX must be an absolute path!")
+  endif()
   message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
 endif()
 
