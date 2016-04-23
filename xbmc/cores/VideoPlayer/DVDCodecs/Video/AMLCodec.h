@@ -25,10 +25,14 @@
 #include "guilib/Geometry.h"
 #include "rendering/RenderSystem.h"
 #include "threads/Thread.h"
+#include <deque>
 
 typedef struct am_private_t am_private_t;
 
 class DllLibAmCodec;
+
+class PosixFile;
+typedef std::shared_ptr<PosixFile> PosixFilePtr;
 
 class CAMLCodec : public CThread
 {
@@ -47,6 +51,7 @@ public:
   int           GetDataSize();
   double        GetTimeSize();
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
+  int64_t       GetCurPts() const { return m_cur_pts; }
 
 protected:
   virtual void  Process();
@@ -60,6 +65,11 @@ private:
   void          SetVideoSaturation(const int saturation);
   void          SetVideo3dMode(const int mode3d);
   std::string   GetStereoMode();
+  bool          OpenAmlVideo(const CDVDStreamInfo &hints);
+  void          CloseAmlVideo();
+  std::string   GetVfmMap(const std::string &name);
+  void          SetVfmMap(const std::string &name, const std::string &map);
+  int           DequeueBuffer(int &pts);
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;
@@ -68,8 +78,6 @@ private:
   volatile int     m_speed;
   volatile int64_t m_1st_pts;
   volatile int64_t m_cur_pts;
-  volatile int64_t m_cur_pictcnt;
-  volatile int64_t m_old_pictcnt;
   volatile double  m_timesize;
   volatile int64_t m_vbufsize;
   int64_t          m_start_dts;
@@ -86,5 +94,8 @@ private:
   int              m_contrast;
   int              m_brightness;
 
-  double m_player_pts;
+  PosixFilePtr     m_amlVideoFile;
+  std::string      m_defaultVfmMap;
+  std::deque<int>  m_ptsQueue;
+  CCriticalSection m_ptsQueueMutex;
 };
