@@ -126,7 +126,10 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   }
 
   SetChanged();
-  NotifyObservers(ObservableMessageEpgContainer);
+  {
+    CSingleExit ex(m_critSection);
+    NotifyObservers(ObservableMessageEpgContainer);
+  }
 
   if (bThreadRunning)
     Start(true);
@@ -204,6 +207,7 @@ bool CEpgContainer::Stop(void)
 void CEpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
 {
   SetChanged();
+  CSingleExit ex(m_critSection);
   NotifyObservers(msg);
 }
 
@@ -459,6 +463,7 @@ CEpgPtr CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
   }
 
+  CSingleExit ex(m_critSection);
   NotifyObservers(ObservableMessageEpgContainer);
 
   return epg;
@@ -680,6 +685,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   if (iUpdatedTables > 0)
   {
     SetChanged();
+    CSingleExit ex(m_critSection);
     NotifyObservers(ObservableMessageEpgContainer);
   }
 
@@ -780,6 +786,7 @@ bool CEpgContainer::CheckPlayingEvents(void)
   if (bFoundChanges)
   {
     SetChanged();
+    CSingleExit ex(m_critSection);
     NotifyObservers(ObservableMessageEpgActiveItem);
   }
   return bReturn;
