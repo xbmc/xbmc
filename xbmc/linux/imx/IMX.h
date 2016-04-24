@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2014 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,23 +19,37 @@
  *
  */
 
-#if defined(HAS_IMXVPU)
-
-#include "video/videosync/VideoSync.h"
+#include "threads/CriticalSection.h"
+#include "threads/Event.h"
+#include "threads/Thread.h"
 #include "guilib/DispResource.h"
 
-class CVideoSyncIMX : public CVideoSync, IDispResource
+class CIMX : public CThread, IDispResource
 {
 public:
-  CVideoSyncIMX(CVideoReferenceClock *clock);
-  virtual ~CVideoSyncIMX();
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(volatile bool& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void OnResetDisplay();
+  CIMX(void);
+  ~CIMX(void);
+
+  bool          Initialize();
+  void          Deinitialize();
+
+  int           WaitVsync();
+  virtual void  OnResetDisplay();
+
 private:
-  volatile bool m_abort;
+  virtual void  Process();
+  bool          UpdateDCIC();
+
+  int           m_fddcic;
+  bool          m_change;
+  unsigned long m_counter;
+  unsigned long m_counterLast;
+  CEvent        m_VblankEvent;
+
+  double        m_frameTime;
+  CCriticalSection m_critSection;
+
+  uint32_t      m_lastSyncFlag;
 };
 
-#endif
+extern CIMX g_IMX;
