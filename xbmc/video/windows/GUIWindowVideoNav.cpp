@@ -22,7 +22,6 @@
 #include "GUIWindowVideoNav.h"
 #include "utils/FileUtils.h"
 #include "Util.h"
-#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
@@ -126,9 +125,40 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         message.SetStringParam("");
       }
-      
+
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
+
+      //Have we been called with a parameter attached?
+      if (message.GetStringParam(0) != "")
+      {
+        auto path = message.GetStringParam(0);
+        CURL url(path);
+
+        for (int i = 0; i < m_vecItems->Size(); i++)
+        {
+          auto pItem = m_vecItems->Get(i);
+          if (URIUtils::PathEquals(pItem->GetPath(), path, true, true))
+          {
+            //Highlights the item in our view
+            m_viewControl.SetSelectedItem(i);
+            break;
+          }
+        }
+        if (url.GetOption("showinfo") == "true")
+        {
+          //This needs to also be able to handle movies/shows that have been set as watched and are hidden/not in m_vecItems
+          //So this is deliberately not part of the above for loop and not depending on pItem for OnItemInfo
+          auto item = CFileItem(path, URIUtils::HasSlashAtEnd(path));
+          if (item.IsVideoDb())
+          {
+            *item.GetVideoInfoTag() = RetrieveTag(m_vecItems->GetContent(), item.GetPath());
+            item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+          }
+          ADDON::ScraperPtr scrapper;
+          OnItemInfo(item, scrapper);
+        }
+      }
 
       // This needs to be done again, because the initialization of CGUIWindow overwrites it with default values
       // Mostly affects cases where GUIWindowViedeoNav is constructed and we're already in a show, e.g. entering from the homesceen
@@ -202,6 +232,38 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
+CVideoInfoTag CGUIWindowVideoNav::RetrieveTag(const std::string& content, const std::string& url) const
+{
+  CVideoInfoTag tag;
+
+  auto strFileName = URIUtils::GetFileName(url);
+  if (strFileName.empty())
+    return tag;
+
+  URIUtils::RemoveExtension(strFileName);
+  if (!StringUtils::IsNaturalNumber(strFileName))
+    return tag;
+  long idDb = atol(strFileName.c_str());
+
+  VIDEODB_CONTENT_TYPE type;
+  if (content == "movies" || content == "recentlyaddedmovies")
+    type = VIDEODB_CONTENT_MOVIES;
+  else if (content == "tvshows")
+    type = VIDEODB_CONTENT_TVSHOWS;
+  else if (content == "episodes" || content == "recentlyaddedepisodes")
+    type = VIDEODB_CONTENT_EPISODES;
+  else if (content == "musicvideos" || content == "recentlyaddedmusicvideos")
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
+  else
+    return tag;
+
+  CVideoDatabase videoDatabase;
+  if (!videoDatabase.Open())
+    return tag;
+
+  return videoDatabase.GetDetailsByTypeAndId(type, idDb);
+};
+
 SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
 {
   if (m_vecItems->IsVideoDb())
@@ -270,7 +332,7 @@ int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool 
 
       CVideoInfoTag *pTag = pItem->GetVideoInfoTag();
 
-      // Does the episode belong to the unwatched season and Is the episode unwatched, and is its epsiode number 
+      // Does the episode belong to the unwatched season and Is the episode unwatched, and is its epsiode number
       // lower than the currently identified first unwatched episode
       if (pTag->m_iSeason == iUnwatchedSeason && pTag->m_playCount == 0 && pTag->m_iEpisode < iUnwatchedEpisode)
       {
@@ -487,7 +549,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       std::string label;
-      if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"), &label)) 
+      if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"), &label))
         items.SetLabel(label);
       if (!items.IsSourcesPath() && !items.IsLibraryFolder())
         LoadVideoInfo(items);
@@ -591,7 +653,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
         database.GetPlayCounts(items.GetPath(), items);
         fetchedPlayCounts = true;
       }
-      
+
       // preferably use some information from PVR info tag if available
       if (pItem->HasPVRRecordingInfoTag())
         pItem->GetPVRRecordingInfoTag()->CopyClientInfo(pItem->GetVideoInfoTag());
@@ -697,7 +759,7 @@ void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& i
 
   m_database.GetMusicVideosByAlbum(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(558) + "] ", items);
-  
+
   // get matching genres
   m_database.GetMovieGenresByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strGenre + " - " + g_localizeStrings.Get(20342) + "] ", items);
@@ -1013,7 +1075,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         type = "actor";
       else if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         type = MediaTypeArtist;
-      
+
       bool result = CGUIDialogVideoInfo::ManageVideoItemArtwork(m_vecItems->Get(itemNumber), type);
       Refresh();
 
@@ -1088,7 +1150,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{662});
       return true;
-    }	  
+    }
   }
   else if (StringUtils::StartsWithNoCase(item->GetPath(), "newtag://"))
   {

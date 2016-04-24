@@ -48,6 +48,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/URIUtils.h"
 #include "AppParamParser.h"
 #include "platform/XbmcContext.h"
 #include <android/bitmap.h>
@@ -83,6 +84,7 @@
 #include "platform/android/jni/Window.h"
 #include "platform/android/jni/WindowManager.h"
 #include "platform/android/jni/KeyEvent.h"
+#include "URL.h"
 #include "platform/android/jni/Display.h"
 #include "platform/android/jni/View.h"
 #include "AndroidKey.h"
@@ -856,10 +858,25 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 void CXBMCApp::onNewIntent(CJNIIntent intent)
 {
   std::string action = intent.getAction();
+  CXBMCApp::android_printf("Got Intent: %s", action.c_str());
+  std::string targetFile = GetFilenameFromIntent(intent);
+  CXBMCApp::android_printf("-- targetFile: %s", targetFile.c_str());
   if (action == "android.intent.action.VIEW")
   {
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(
                                                  new CFileItem(GetFilenameFromIntent(intent), false)));
+  }
+  else if (action == "android.intent.action.GET_CONTENT")
+  {
+    CURL targeturl(targetFile);
+    std::vector<std::string> params;
+    params.push_back(targeturl.Get());
+    params.push_back("return");
+    if (targeturl.IsProtocol("videodb"))
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+    else if (targeturl.IsProtocol("musicdb"))
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+
   }
 }
 

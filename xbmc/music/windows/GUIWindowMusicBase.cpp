@@ -151,6 +151,25 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       if (!CGUIMediaWindow::OnMessage(message))
         return false;
 
+      if (message.GetStringParam(0) != "")
+      {
+        CURL url(message.GetStringParam(0));
+
+        int i = 0;
+        for (; i < m_vecItems->Size(); i++)
+        {
+          CFileItemPtr pItem = m_vecItems->Get(i);
+          if (URIUtils::PathEquals(pItem->GetPath(), message.GetStringParam(0), true, true))
+          {
+            m_viewControl.SetSelectedItem(i);
+            i = -1;
+            if (url.GetOption("showinfo") == "true")
+              OnItemInfo(pItem.get(), true);
+            break;
+          }
+        }
+      }
+
       return true;
     }
     break;

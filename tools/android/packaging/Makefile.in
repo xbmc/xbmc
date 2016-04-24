@@ -7,7 +7,7 @@ OBJS = libcurl.so \
   libbluray.so libsmbclient.so
 
 PLATFORM_OBJS =
-EXCLUDED_ADDONS = 
+EXCLUDED_ADDONS =
 
 CORE_SOURCE_DIR = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons media
@@ -26,7 +26,7 @@ endif
 X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)
 ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_ARM_TOOLCHAIN)
 
-#this fixes a android ndk fuckup where the pathes to 
+#this fixes a android ndk fuckup where the pathes to
 #prebuilt stuff follow different name shemes for
 #arm and x86
 ifeq ($(findstring i686,$(CPU)),i686)
@@ -110,7 +110,7 @@ python: | xbmc/assets
 	cd xbmc/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
 
 res:
-	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
+	mkdir -p xbmc/gen/org/xbmc/kodi xbmc/res xbmc/res/raw xbmc/res/values images
 	@echo "native_arch=$(CPU)" > xbmc/res/raw/xbmc.properties
 	cp -fp $(CORE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable/splash.png
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
@@ -121,9 +121,11 @@ res:
 	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp xbmc/strings.xml xbmc/res/values/
+	cp xbmc/colors.xml xbmc/res/values/
 	cp xbmc/activity_main.xml xbmc/res/layout/
+	cp xbmc/searchable.xml xbmc/res/xml/
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
-	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/src
+	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/gen/org/xbmc/kodi
 	@rm -rf tmp/
 
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
@@ -137,6 +139,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
+	cp -fp $(SDKROOT)/extras/android/support/v4/android-support-v4.jar xbmc/libs
 	install -p $(GDBPATH) ./xbmc/libs/$(CPU)/gdbserver
 	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/libs/$(CPU)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
@@ -145,9 +148,9 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 
 xbmc/classes.dex: res
 	mkdir -p xbmc/obj
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java $(JAVAC_EXTRA_ARGS)
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java $(JAVAC_EXTRA_ARGS)
-	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:$(SDKROOT)/extras/android/support/v4/android-support-v4.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/gen/org/xbmc/kodi/*.java
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:$(SDKROOT)/extras/android/support/v4/android-support-v4.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java
+	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj xbmc/libs
 
 package: libs python xbmc/classes.dex
 	@echo "Creating package..."
