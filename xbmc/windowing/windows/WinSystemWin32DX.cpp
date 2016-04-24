@@ -50,6 +50,8 @@ void CWinSystemWin32DX::PresentRender(bool rendered)
     m_delayDispReset = false;
     CWinSystemWin32::OnDisplayReset();
   }
+  if (!rendered)
+    Sleep(40);
 }
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
