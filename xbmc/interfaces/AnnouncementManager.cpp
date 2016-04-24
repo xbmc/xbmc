@@ -100,13 +100,13 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   Announce(flag, sender, message, CFileItemPtr(), data);
 }
 
-void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const std::shared_ptr<const CFileItem>& item)
 {
   CVariant data;
   Announce(flag, sender, message, item, data);
 }
 
-void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, const CVariant &data)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const std::shared_ptr<const CFileItem>& item, const CVariant &data)
 {
   CAnnounceData announcement;
   announcement.flag = flag;
