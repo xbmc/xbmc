@@ -37,69 +37,77 @@ const D3D11_VIDEO_PROCESSOR_FILTER PROCAMP_FILTERS[] =
   D3D11_VIDEO_PROCESSOR_FILTER_SATURATION
 };
 
+enum PROCESSOR_VIEW_TYPE
+{
+  PROCESSOR_VIEW_TYPE_UNKNOWN = 0,
+  PROCESSOR_VIEW_TYPE_DECODER = 1,
+  PROCESSOR_VIEW_TYPE_PROCESSOR = 2
+};
+
 const DWORD NUM_FILTERS = ARRAYSIZE(PROCAMP_FILTERS);
 
-class CProcessorHD : ID3DResource
-  //: public CProcessor
+class CProcessorHD : public ID3DResource
 {
 public:
   CProcessorHD();
  ~CProcessorHD();
 
-  virtual bool           PreInit();
-  virtual void           UnInit();
-  virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
-  virtual void           Close();
-  virtual CRenderPicture *Convert(DVDVideoPicture &picture);
-  virtual bool           Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
-  virtual unsigned       Size() { if (m_pVideoProcessor) return m_size; return 0; }
-  virtual unsigned       PastRefs() { return m_max_back_refs; }
-  virtual void           ApplySupportedFormats(std::vector<ERenderFormat> * formats);
+  bool PreInit();
+  void UnInit();
+  bool Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
+  void Close();
+  CRenderPicture *Convert(DVDVideoPicture &picture);
+  bool Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
+  uint8_t Size() { if (m_pVideoProcessor) return m_size; return 0; }
+  uint8_t PastRefs() { return m_max_back_refs; }
+  void ApplySupportedFormats(std::vector<ERenderFormat> * formats);
 
-  virtual void OnCreateDevice()  {}
-  virtual void OnDestroyDevice() { CSingleLock lock(m_section); UnInit(); }
-  virtual void OnLostDevice()    { CSingleLock lock(m_section); UnInit(); }
-  virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
+  // ID3DResource overrides
+  void OnCreateDevice() override  {}
+  void OnDestroyDevice() override { CSingleLock lock(m_section); UnInit(); }
+  void OnLostDevice() override    { CSingleLock lock(m_section); UnInit(); }
+  void OnResetDevice() override   { CSingleLock lock(m_section); Close();  }
 
 protected:
-  virtual bool UpdateSize(const DXVA2_VideoDesc& dsc);
-  virtual bool ReInit();
-  virtual bool InitProcessor();
-  virtual bool ConfigureProcessor(unsigned int format, unsigned int extended_format);
-  virtual bool OpenProcessor();
-  virtual bool CreateSurfaces();
-  virtual bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def);
+  bool UpdateSize(const DXVA2_VideoDesc& dsc);
+  bool ReInit();
+  bool InitProcessor();
+  bool ConfigureProcessor(unsigned int format, unsigned int extended_format);
+  bool OpenProcessor();
+  bool CreateSurfaces();
+  bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def);
   ID3D11VideoProcessorInputView* GetInputView(ID3D11View* view);
+  bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support);
 
-  unsigned int             m_width;
-  unsigned int             m_height;
-  unsigned int             m_flags;
-  unsigned int             m_renderFormat;
-  unsigned                 m_size;
-  unsigned                 m_max_back_refs;
-  unsigned                 m_max_fwd_refs;
+  uint32_t m_width;
+  uint32_t m_height;
+  uint32_t m_flags;
+  uint32_t m_renderFormat;
+  uint8_t  m_size;
+  uint8_t  m_max_back_refs;
+  uint8_t  m_max_fwd_refs;
 
   struct ProcAmpInfo
   {
-    bool                                bSupported;
+    bool bSupported;
     D3D11_VIDEO_PROCESSOR_FILTER_RANGE  Range;
   };
-  ProcAmpInfo              m_Filters[NUM_FILTERS];
+  ProcAmpInfo m_Filters[NUM_FILTERS];
 
   // dx 11
-  DXGI_FORMAT                     m_textureFormat;
-  ID3D11VideoDevice*              m_pVideoDevice;
-  ID3D11VideoContext*             m_pVideoContext;
-  ID3D11VideoProcessorEnumerator* m_pEnumerator;
-  D3D11_VIDEO_PROCESSOR_CAPS      m_vcaps;
-  ID3D11VideoProcessor*           m_pVideoProcessor;
-  bool                            m_bStereoEnabled = false;
-  CSurfaceContext*                m_context;
-  CCriticalSection                m_section;
+  DXGI_FORMAT m_textureFormat;
+  ID3D11VideoDevice *m_pVideoDevice;
+  ID3D11VideoContext *m_pVideoContext;
+  ID3D11VideoProcessorEnumerator *m_pEnumerator;
+  D3D11_VIDEO_PROCESSOR_CAPS m_vcaps;
+  ID3D11VideoProcessor *m_pVideoProcessor;
+  CSurfaceContext *m_context;
+  CCriticalSection m_section;
 
-  unsigned int                    m_procIndex;
+  uint32_t m_procIndex;
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
-  D3D11_TEXTURE2D_DESC            m_texDesc;
+  D3D11_TEXTURE2D_DESC m_texDesc;
+  PROCESSOR_VIEW_TYPE m_eViewType;
 };
 
 };
