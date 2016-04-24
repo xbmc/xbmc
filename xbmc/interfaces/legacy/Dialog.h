@@ -42,9 +42,16 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-    /**
-     * Dialog class (Duh!)\n
-     */
+    ///
+    /// \defgroup python_Dialog Dialog
+    /// \ingroup python_xbmcgui
+    /// @{
+    /// @brief **Kodi's dialog class**
+    ///
+    /// The graphical control element dialog box (also called dialogue box or
+    /// just dialog) is a small window that communicates information to the user
+    /// and prompts them for a response.
+    ///
     class Dialog : public AddonClass
     {
     public:
@@ -52,285 +59,494 @@ namespace XBMCAddon
       inline Dialog() {}
       virtual ~Dialog();
 
-      /**
-       * yesno(heading, line1[, line2, line3]) -- Show a dialog 'YES/NO'.\n
-       * \n
-       * heading        : string or unicode - dialog heading.\n
-       * line1          : string or unicode - line #1 multi-line text.\n
-       * line2          : [opt] string or unicode - line #2 text.\n
-       * line3          : [opt] string or unicode - line #3 text.\n
-       * nolabel        : [opt] label to put on the no button.\n
-       * yeslabel       : [opt] label to put on the yes button.\n
-       * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)\n
-       * \n
-       * *Note, Returns True if 'Yes' was pressed, else False.\n
-       * *Note, it is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()\n
-       *   - ret = dialog.yesno('Kodi', 'Do you want to exit this script?')\n\n
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().yesno(heading, line1[, line2, line3, nolabel, yeslabel, autoclose]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Yes / no dialog**
+      ///
+      /// The Yes / No dialog can be used to inform the user about questions and
+      /// get the answer.
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param line1          string or unicode - line #1 multi-line text.
+      /// @param line2          [opt] string or unicode - line #2 text.
+      /// @param line3          [opt] string or unicode - line #3 text.
+      /// @param nolabel        [opt] label to put on the no button.
+      /// @param yeslabel       [opt] label to put on the yes button.
+      /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+      /// @return Returns True if 'Yes' was pressed, else False.
+      ///
+      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.yesno('Kodi', 'Do you want to exit this script?')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      yesno(...);
+#else
       bool yesno(const String& heading, const String& line1, 
                  const String& line2 = emptyString,
                  const String& line3 = emptyString,
                  const String& nolabel = emptyString,
                  const String& yeslabel = emptyString,
                  int autoclose = 0);
+#endif
 
-      /**
-       * contextmenu(list) -- Show a context menu.\n
-       * \n
-       * list           : string list - list of items.\n
-       * \n
-       * *Note, Returns the position of the highlighted item as an integer (-1 if cancelled).\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()\n
-       *   - ret = dialog.contextmenu(['Option #1', 'Option #2', 'Option #3'])\n\n
-       */
-      int contextmenu(const std::vector<String>& list);
-
-      /**
-       * select(heading, list [,autoclose, preselect]) -- Show a select dialog.\n
-       * \n
-       * heading        : string or unicode - dialog heading.\n
-       * list           : string list - list of items.\n
-       * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)\n
-       * preselect      : [opt] integer - index of preselected item. (default=no preselected item)\n
-       * \n
-       * *Note, Returns the position of the highlighted item as an integer.\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()\n
-       *   - ret = dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])\n\n
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().select(heading, list[, autoclose,preselect]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Select dialog**
+      ///
+      /// Show of a dialog to select of an entry as a key
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param list           string list - list of items.
+      /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+      /// @param preselect      [opt] integer - index of preselected item. (default=no preselected item)
+      /// @return Returns the position of the highlighted item as an integer.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      select(...);
+#else
       int select(const String& heading, const std::vector<String>& list, int autoclose=0, int preselect=-1);
+#endif
 
-      /**
-       * multiselect(heading, list [,autoclose, preselect]) -- Show a multi-select dialog.
-       *
-       * heading        : string or unicode - dialog heading.
-       * options        : list of string - options to choose from.
-       * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
-       * preselect      : [opt] list of int - indexes of items to preselect in list (default: do not preselect any item)
-       *
-       * *Note, Returns the selected items as a list of indices, or None if cancelled.
-       *
-       * example:
-       *   - dialog = xbmcgui.Dialog()
-       *   - ret = dialog.multiselect("Choose something", ["Foo", "Bar", "Baz"], preselect=[1,2])
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().contextmenu(list) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Show a context menu.
+      ///
+      /// @param list           string list - list of items.
+      /// @return               the position of the highlighted item as an integer
+      ///                       (-1 if cancelled).
+      ///
+      ///
+      ///--------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.contextmenu(['Option #1', 'Option #2', 'Option #3'])
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      contextmenu(...);
+#else
+      int contextmenu(const std::vector<String>& list);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().multiselect(heading, options[, autoclose, preselect]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Show a multi-select dialog.
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param options        list of string - options to choose from.
+      /// @param autoclose      [opt] integer - milliseconds to autoclose dialog.
+      ///                       (default=do not autoclose)
+      /// @param preselect      [opt] list of int - indexes of items to preselect
+      ///                       in list (default: do not preselect any item)
+      /// @return               Returns the selected items as a list of indices,
+      ///                       or None if cancelled.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// @code{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.multiselect("Choose something", ["Foo", "Bar", "Baz"], preselect=[1,2])
+      /// ..
+      /// @endcode
+      ///
+      multiselect(...);
+#else
       std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<String>& options, int autoclose=0, const std::vector<int>& preselect = std::vector<int>());
+#endif
 
-      /**
-       * ok(heading, line1[, line2, line3]) -- Show a dialog 'OK'.\n
-       * \n
-       * heading        : string or unicode - dialog heading.\n
-       * line1          : string or unicode - line #1 multi-line text.\n
-       * line2          : [opt] string or unicode - line #2 text.\n
-       * line3          : [opt] string or unicode - line #3 text.\n
-       * \n
-       * *Note, Returns True if 'Ok' was pressed, else False.\n
-       * *Note, it is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()\n
-       *   - ok = dialog.ok('XBMC', 'There was an error.')\n\n
-       */
-      bool ok(const String& heading, const String& line1, 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().ok(heading, line1[, line2, line3]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **OK dialog**
+      ///
+      /// The functions permit the call of a dialog of information, a
+      /// confirmation of the user by press from OK required.
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param line1          string or unicode - line #1 multi-line text.
+      /// @param line2          [opt] string or unicode - line #2 text.
+      /// @param line3          [opt] string or unicode - line #3 text.
+      /// @return Returns True if 'Ok' was pressed, else False.
+      ///
+      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ok = dialog.ok('Kodi', 'There was an error.')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      ok(...);
+#else
+      bool ok(const String& heading, const String& line1,
               const String& line2 = emptyString,
               const String& line3 = emptyString);
+#endif
 
-      /**
-      * textviewer(heading, text) -- Show a dialog 'TextViewer'.\n
-      * \n
-      * heading        : string or unicode - dialog heading.\n
-      * text          : string or unicode - text.\n
-      * \n
-      * example:\n
-      *   - dialog = xbmcgui.Dialog()\n
-      *   - dialog.textviewer('Plot', 'Some movie plot.')\n\n
-      */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().textviewer(heading, text) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **TextViewe dialog**
+      ///
+      /// The text viewer dialog can be used to display descriptions, help texts
+      /// or other larger texts.
+      ///
+      /// @param heading       string or unicode - dialog heading.
+      /// @param text          string or unicode - text.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// dialog.textviewer('Plot', 'Some movie plot.')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      textviewer(...);
+#else
       void textviewer(const String& heading, const String& text);
+#endif
 
-
-      /**
-       * browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default, enableMultiple]) -- Show a 'Browse' dialog.\n
-       * \n
-       * type           : integer - the type of browse dialog.\n
-       * heading        : string or unicode - dialog heading.\n
-       * shares         : string or unicode - from sources.xml. (i.e. 'myprograms')\n
-       * mask           : [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')\n
-       * useThumbs      : [opt] boolean - if True autoswitch to Thumb view if files exist.\n
-       * treatAsFolder  : [opt] boolean - if True playlists and archives act as folders.\n
-       * default        : [opt] string - default path or file.\n
-       * 
-       * enableMultiple : [opt] boolean - if True multiple file selection is enabled.
-       *
-       * Types:
-       *   - 0 : ShowAndGetDirectory
-       *   - 1 : ShowAndGetFile
-       *   - 2 : ShowAndGetImage
-       *   - 3 : ShowAndGetWriteableDirectory
-       * 
-       * *Note, If enableMultiple is False (default): returns filename and/or path as a string\n
-       *        to the location of the highlighted item, if user pressed 'Ok' or a masked item\n
-       *        was selected. Returns the default value if dialog was canceled.\n
-       *        If enableMultiple is True: returns tuple of marked filenames as a strin\n
-       *        if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.\n
-       * \n
-       *        If type is 0 or 3 the enableMultiple parameter is ignore\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()\n
-       *   - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, False, 'special://masterprofile/script_data/XBMC Lyrics')\n
-       */
-      Alternative<String, std::vector<String> > browse(int type, const String& heading, const String& s_shares,
-                          const String& mask = emptyString, bool useThumbs = false, 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().browse(type, heading, shares[, mask, useThumbs, treatAsFolder, sDefault, enableMultiple]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Browser dialog**
+      ///
+      /// The function offer the possibility to select a file by the user of
+      /// the add-on.
+      ///
+      /// It allows all the options that are possible in Kodi itself and offers
+      /// all support file types.
+      ///
+      /// @param type           integer - the type of browse dialog.
+      /// | Param | Name                            |
+      /// |:-----:|:--------------------------------|
+      /// |   0   | ShowAndGetDirectory             |
+      /// |   1   | ShowAndGetFile                  |
+      /// |   2   | ShowAndGetImage                 |
+      /// |   3   | ShowAndGetWriteableDirectory    |
+      /// @param heading        string or unicode - dialog heading.
+      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml) . (i.e. 'myprograms')
+      /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
+      /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist.
+      /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders.
+      /// @param sDefault       [opt] string - default path or file.
+      /// @param enableMultiple [opt] boolean - if True multiple file selection is enabled.
+      ///
+      /// @return If enableMultiple is False (default): returns filename and/or path as a string
+      ///        to the location of the highlighted item, if user pressed 'Ok' or a masked item
+      ///        was selected. Returns the default value if dialog was canceled.
+      ///        If enableMultiple is True: returns tuple of marked filenames as a strin
+      ///        if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.\n\n
+      ///        If type is 0 or 3 the enableMultiple parameter is ignore
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// fn = dialog.browse(3, 'Kodi', 'files', '', False, False, False, 'special://masterprofile/script_data/Kodi Lyrics')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      browse(...);
+#else
+      Alternative<String, std::vector<String> > browse(int type, const String& heading, const String& shares,
+                          const String& mask = emptyString, bool useThumbs = false,
                           bool treatAsFolder = false, const String& defaultt = emptyString,
                           bool enableMultiple = false);
- 
-      /**
-       * browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) -- Show a 'Browse' dialog.\n
-       * \n
-       * type           : integer - the type of browse dialog.\n
-       * heading        : string or unicode - dialog heading.\n
-       * shares         : string or unicode - from sources.xml. (i.e. 'myprograms')\n
-       * mask           : [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')\n
-       * useThumbs      : [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).\n
-       * treatAsFolder  : [opt] boolean - if True playlists and archives act as folders (default=false).\n
-       * default        : [opt] string - default path or file.\n
-       * \n
-       * Types:\n
-       *   - 0 : ShowAndGetDirectory
-       *   - 1 : ShowAndGetFile
-       *   - 2 : ShowAndGetImage
-       *   - 3 : ShowAndGetWriteableDirectory
-       * \n
-       * *Note, Returns filename and/or path as a string to the location of the highlighted item,\n
-       *        if user pressed 'Ok' or a masked item was selected.\n
-       *        Returns the default value if dialog was canceled.\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()
-       *   - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'special://masterprofile/script_data/XBMC Lyrics')
-       */
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().browseSingle(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Browse single dialog**
+      ///
+      /// The function offer the possibility to select a file by the user of
+      /// the add-on.
+      ///
+      /// It allows all the options that are possible in Kodi itself and offers
+      /// all support file types.
+      ///
+      /// @param type           integer - the type of browse dialog.
+      /// | Param | Name                            |
+      /// |:-----:|:--------------------------------|
+      /// |   0   | ShowAndGetDirectory
+      /// |   1   | ShowAndGetFile
+      /// |   2   | ShowAndGetImage
+      /// |   3   | ShowAndGetWriteableDirectory
+      /// @param heading        string or unicode - dialog heading.
+      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml) . (i.e. 'myprograms')
+      /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
+      /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).
+      /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders (default=false).
+      /// @param default        [opt] string - default path or file.
+      ///
+      /// @return Returns filename and/or path as a string to the location of the highlighted item,
+      ///        if user pressed 'Ok' or a masked item was selected.
+      ///        Returns the default value if dialog was canceled.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// fn = dialog.browseSingle(3, 'Kodi', 'files', '', False, False, 'special://masterprofile/script_data/Kodi Lyrics')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      browseSingle(...);
+#else
       String browseSingle(int type, const String& heading, const String& shares,
                           const String& mask = emptyString, bool useThumbs = false, 
                           bool treatAsFolder = false, 
                           const String& defaultt = emptyString );
+#endif
 
-      /**
-       * browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) -- Show a 'Browse' dialog.\n
-       * \n
-       * type           : integer - the type of browse dialog.\n
-       * heading        : string or unicode - dialog heading.\n
-       * shares         : string or unicode - from sources.xml. (i.e. 'myprograms')\n
-       * mask           : [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')\n
-       * useThumbs      : [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).\n
-       * treatAsFolder  : [opt] boolean - if True playlists and archives act as folders (default=false).\n
-       * default        : [opt] string - default path or file.\n
-       * \n
-       * Types:
-       *   - 1 : ShowAndGetFile
-       *   - 2 : ShowAndGetImage
-       *
-       * *Note, \n
-       *       returns tuple of marked filenames as a string,"\n
-       *       if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()
-       *   - fn = dialog.browseMultiple(2, 'XBMC', 'files', '', False, False, 'special://masterprofile/script_data/XBMC Lyrics')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().browseMultiple(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Browser dialog**
+      ///
+      /// The function offer the possibility to select multiple files by the
+      /// user of the add-on.
+      ///
+      /// It allows all the options that are possible in Kodi itself and offers
+      /// all support file types.
+      ///
+      /// @param type           integer - the type of browse dialog.
+      /// | Param | Name                            |
+      /// |:-----:|:--------------------------------|
+      /// |   1   | ShowAndGetFile
+      /// |   2   | ShowAndGetImage
+      /// @param heading        string or unicode - dialog heading.
+      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml) . (i.e. 'myprograms')
+      /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
+      /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).
+      /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders (default=false).
+      /// @param default        [opt] string - default path or file.
+      /// @return Returns tuple of marked filenames as a string,"
+      ///       if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// fn = dialog.browseMultiple(2, 'Kodi', 'files', '', False, False, 'special://masterprofile/script_data/Kodi Lyrics')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      browseMultiple(...);
+#else
       std::vector<String> browseMultiple(int type, const String& heading, const String& shares,
                                          const String& mask = emptyString, bool useThumbs = false, 
                                          bool treatAsFolder = false, 
                                          const String& defaultt = emptyString );
+#endif
 
-
-      /**
-       * numeric(type, heading[, default]) -- Show a 'Numeric' dialog.\n
-       * \n
-       * type           : integer - the type of numeric dialog.\n
-       * heading        : string or unicode - dialog heading.\n
-       * default        : [opt] string - default value.\n
-       * \n
-       * Types:
-       *   - 0 : ShowAndGetNumber    (default format: #)
-       *   - 1 : ShowAndGetDate      (default format: DD/MM/YYYY)
-       *   - 2 : ShowAndGetTime      (default format: HH:MM)
-       *   - 3 : ShowAndGetIPAddress (default format: #.#.#.#)
-       * 
-       * *Note, Returns the entered data as a string.\n
-       *        Returns the default value if dialog was canceled.\n
-       * \n
-       * example:\n
-       *   - dialog = xbmcgui.Dialog()
-       *   - d = dialog.numeric(1, 'Enter date of birth')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().numeric(type, heading[, default]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Numeric dialog**
+      ///
+      /// The function have to be permitted by the user for the representation
+      /// of a numeric keyboard around an input.
+      ///
+      /// @param type           integer - the type of numeric dialog.
+      /// | Param | Name                | Format                       |
+      /// |:-----:|:--------------------|:-----------------------------|
+      /// |  0    | ShowAndGetNumber    | (default format: #)
+      /// |  1    | ShowAndGetDate      | (default format: DD/MM/YYYY)
+      /// |  2    | ShowAndGetTime      | (default format: HH:MM)
+      /// |  3    | ShowAndGetIPAddress | (default format: #.#.#.#)
+      /// @param heading        string or unicode - dialog heading.
+      /// @param default        [opt] string - default value.
+      /// @return Returns the entered data as a string.
+      ///         Returns the default value if dialog was canceled.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// d = dialog.numeric(1, 'Enter date of birth')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      numeric(...);
+#else
       String numeric(int type, const String& heading, const String& defaultt = emptyString);
-      
-      /**
-       * notification(heading, message[, icon, time, sound]) -- Show a Notification alert.\n
-       * \n
-       * heading        : string - dialog heading.\n
-       * message        : string - dialog message.\n
-       * icon           : [opt] string - icon to use. (default xbmcgui.NOTIFICATION_INFO)\n
-       * time           : [opt] integer - time in milliseconds (default 5000)\n
-       * sound          : [opt] bool - play notification sound (default True)\n
-       * \n
-       * Builtin Icons:\n
-       *   - xbmcgui.NOTIFICATION_INFO
-       *   - xbmcgui.NOTIFICATION_WARNING
-       *   - xbmcgui.NOTIFICATION_ERROR
-       * \n
-       * example:
-       *   - dialog = xbmcgui.Dialog()
-       *   - dialog.notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
-       */
-      void notification(const String& heading, const String& message, const String& icon = emptyString, int time = 0, bool sound = true);
+#endif
 
-      /**
-       * input(heading[, default, type, option, autoclose]) -- Show an Input dialog.\n
-       *\n
-       * heading        : string - dialog heading.\n
-       * default        : [opt] string - default value. (default=empty string)\n
-       * type           : [opt] integer - the type of keyboard dialog. (default=xbmcgui.INPUT_ALPHANUM)\n
-       * option         : [opt] integer - option for the dialog. (see Options below)\n
-       * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)\n
-       *\n
-       * Types:
-       *   - xbmcgui.INPUT_ALPHANUM         (standard keyboard)
-       *   - xbmcgui.INPUT_NUMERIC          (format: #)
-       *   - xbmcgui.INPUT_DATE             (format: DD/MM/YYYY)
-       *   - xbmcgui.INPUT_TIME             (format: HH:MM)
-       *   - xbmcgui.INPUT_IPADDRESS        (format: #.#.#.#)
-       *   - xbmcgui.INPUT_PASSWORD         (return md5 hash of input, input is masked)
-       *
-       * Options Password Dialog:\n
-       *   - xbmcgui.PASSWORD_VERIFY (verifies an existing (default) md5 hashed password)
-       *\n
-       * Options Alphanum Dialog:\n
-       *   - xbmcgui.ALPHANUM_HIDE_INPUT (masks input)
-       *\n
-       * *Note, Returns the entered data as a string.\n
-       *        Returns an empty string if dialog was canceled.\n
-       *\n
-       * example:
-       *   - dialog = xbmcgui.Dialog()
-       *   - d = dialog.input('Enter secret code', type=xbmcgui.INPUT_ALPHANUM, option=xbmcgui.ALPHANUM_HIDE_INPUT)\n
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().notification(heading, message[, icon, time, sound]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Show a Notification alert.
+      ///
+      /// @param heading        string - dialog heading.
+      /// @param message        string - dialog message.
+      /// @param icon           [opt] string - icon to use. (default xbmcgui.NOTIFICATION_INFO)
+      /// @param time           [opt] integer - time in milliseconds (default 5000)
+      /// @param sound          [opt] bool - play notification sound (default True)
+      ///
+      /// Builtin Icons:
+      ///   - xbmcgui.NOTIFICATION_INFO
+      ///   - xbmcgui.NOTIFICATION_WARNING
+      ///   - xbmcgui.NOTIFICATION_ERROR
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// dialog.notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      notification(...);
+#else
+      void notification(const String& heading, const String& message, const String& icon = emptyString, int time = 0, bool sound = true);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().input(heading[, default, type, option, autoclose]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Show an Input dialog.
+      ///
+      /// @param heading        string - dialog heading.
+      /// @param default        [opt] string - default value. (default=empty string)
+      /// @param type           [opt] integer - the type of keyboard dialog. (default=xbmcgui.INPUT_ALPHANUM)
+      /// | Parameter                        | Format                          |
+      /// |---------------------------------:|:--------------------------------|
+      /// | <tt>xbmcgui.INPUT_ALPHANUM</tt>  | (standard keyboard)
+      /// | <tt>xbmcgui.INPUT_NUMERIC</tt>   | (format: #)
+      /// | <tt>xbmcgui.INPUT_DATE</tt>      | (format: DD/MM/YYYY)
+      /// | <tt>xbmcgui.INPUT_TIME</tt>      | (format: HH:MM)
+      /// | <tt>xbmcgui.INPUT_IPADDRESS</tt> | (format: #.#.#.#)
+      /// | <tt>xbmcgui.INPUT_PASSWORD</tt>  | (return md5 hash of input, input is masked)
+      /// @param option         [opt] integer - option for the dialog. (see Options below)
+      ///   - Password dialog:
+      ///     - <tt>xbmcgui.PASSWORD_VERIFY</tt> (verifies an existing (default) md5 hashed password)
+      ///   - Alphanum dialog:
+      ///     - <tt>xbmcgui.ALPHANUM_HIDE_INPUT</tt> (masks input)
+      /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
+      ///
+      /// @return Returns the entered data as a string.
+      ///         Returns an empty string if dialog was canceled.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// d = dialog.input('Enter secret code', type=xbmcgui.INPUT_ALPHANUM, option=xbmcgui.ALPHANUM_HIDE_INPUT)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      input(...);
+#else
       String input(const String& heading,
                    const String& defaultt = emptyString,
                    int type = INPUT_ALPHANUM,
                    int option = 0,
                    int autoclose = 0);
+#endif
     };
+    //@}
 
-    /**
-     * DialogProgress class (Duh!)
-     */
+    ///
+    /// \defgroup python_DialogProgress DialogProgress
+    /// \ingroup python_xbmcgui
+    /// @{
+    /// @brief <b>Kodi's progress dialog class (Duh!)</b>
+    ///
+    ///
     class DialogProgress : public AddonClass
     {
       CGUIDialogProgress* dlg;
@@ -344,64 +560,130 @@ namespace XBMCAddon
       DialogProgress() : dlg(NULL), open(false) {}
       virtual ~DialogProgress();
 
-
-      /**
-       * create(heading[, line1, line2, line3]) -- Create and show a progress dialog.\n
-       * \n
-       * heading        : string or unicode - dialog heading.\n
-       * line1          : [opt] string or unicode - line #1 multi-line text.\n
-       * line2          : [opt] string or unicode - line #2 text.\n
-       * line3          : [opt] string or unicode - line #3 text.\n
-       * \n
-       * *Note, it is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.\n
-       * *Note, Use update() to update lines and progressbar.\n
-       * \n
-       * example:
-       *   - pDialog = xbmcgui.DialogProgress()
-       *   - pDialog.create('XBMC', 'Initializing script...')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgress
+      /// \python_func{ xbmcgui.DialogProgress().create(heading[, line1, line2, line3]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Create and show a progress dialog.
+      ///
+      /// @param heading        string or unicode - dialog heading.
+      /// @param line1          [opt] string or unicode - line #1 multi-line text.
+      /// @param line2          [opt] string or unicode - line #2 text.
+      /// @param line3          [opt] string or unicode - line #3 text.
+      ///
+      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
+      /// @note Use update() to update lines and progressbar.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// pDialog = xbmcgui.DialogProgress()
+      /// pDialog.create('Kodi', 'Initializing script...')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      create(...);
+#else
       void create(const String& heading, const String& line1 = emptyString, 
                   const String& line2 = emptyString,
                   const String& line3 = emptyString);
+#endif
 
-      /**
-       * update(percent[, line1, line2, line3]) -- Updates the progress dialog.\n
-       * \n
-       * percent        : integer - percent complete. (0:100)\n
-       * line1          : [opt] string or unicode - line #1 multi-line text.\n
-       * line2          : [opt] string or unicode - line #2 text.\n
-       * line3          : [opt] string or unicode - line #3 text.\n
-       * \n
-       * *Note, it is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.\n
-       * *Note, If percent == 0, the progressbar will be hidden.\n
-       * \n
-       * example:
-       *   - pDialog.update(25, 'Importing modules...')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgress
+      /// \python_func{ xbmcgui.DialogProgress().update(percent[, line1, line2, line3]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Updates the progress dialog.
+      ///
+      /// @param percent        integer - percent complete. (0:100)
+      /// @param line1          [opt] string or unicode - line #1 multi-line text.
+      /// @param line2          [opt] string or unicode - line #2 text.
+      /// @param line3          [opt] string or unicode - line #3 text.
+      ///
+      /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
+      /// @note If percent == 0, the progressbar will be hidden.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// pDialog.update(25, 'Importing modules...')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      update(...);
+#else
       void update(int percent, const String& line1 = emptyString, 
                   const String& line2 = emptyString,
                   const String& line3 = emptyString);
+#endif
 
-      /**
-       * close() -- Close the progress dialog.\n
-       * \n
-       * example:
-       *   - pDialog.close()
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgress
+      /// \python_func{ xbmcgui.DialogProgress().close() }
+      ///------------------------------------------------------------------------
+      ///
+      /// Close the progress dialog.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// pDialog.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      close(...);
+#else
       void close();
+#endif
 
-      /**
-       * iscanceled() -- Returns True if the user pressed cancel.\n
-       * \n
-       * example:
-       *   - if (pDialog.iscanceled()): return
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgress
+      /// \python_func{ xbmcgui.DialogProgress().iscanceled() }
+      ///------------------------------------------------------------------------
+      ///
+      /// Checks progress is canceled.
+      ///
+      /// @return True if the user pressed cancel.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// if (pDialog.iscanceled()): return
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      iscanceled(...);
+#else
       bool iscanceled();
+#endif
     };
+    //@}
 
-    /**
-     * DialogProgressBG class
-     */
+    ///
+    /// \defgroup python_DialogProgressBG DialogProgressBG
+    /// \ingroup python_xbmcgui
+    /// @{
+    /// @brief <b>Kodi's background progress dialog class</b>
+    ///
+    ///
     class DialogProgressBG : public AddonClass
     {
       CGUIDialogExtendedProgressBar* dlg;
@@ -416,52 +698,114 @@ namespace XBMCAddon
       DialogProgressBG() : dlg(NULL), handle(NULL), open(false) {}
       virtual ~DialogProgressBG();
 
-
-      /**
-       * create(heading[, message]) -- Create and show a background progress dialog.\n
-       *
-       * heading     : string or unicode - dialog heading.\n
-       * message     : [opt] string or unicode - message text.\n
-       *
-       * *Note, 'heading' is used for the dialog's id. Use a unique heading.\n
-       *        Use  update() to update heading, message and progressbar.\n
-       *
-       * example:
-       * - pDialog = xbmcgui.DialogProgressBG()
-       * - pDialog.create('Movie Trailers', 'Downloading Monsters Inc. ...')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgressBG
+      /// \python_func{ xbmcgui.DialogProgressBG().create(heading[, message]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Create and show a background progress dialog.
+      ///
+      /// @param heading     string or unicode - dialog heading.
+      /// @param message     [opt] string or unicode - message text.
+      ///
+      /// @note 'heading' is used for the dialog's id. Use a unique heading.
+      ///        Use  update() to update heading, message and progressbar.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// pDialog = xbmcgui.DialogProgressBG()
+      /// pDialog.create('Movie Trailers', 'Downloading Monsters Inc... .')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      create(...);
+#else
       void create(const String& heading, const String& message = emptyString);
+#endif
 
-      /**
-       * update([percent, heading, message]) -- Updates the background progress dialog.
-       *
-       * percent     : [opt] integer - percent complete. (0:100)\n
-       * heading     : [opt] string or unicode - dialog heading.\n
-       * message     : [opt] string or unicode - message text.\n
-       *
-       * *Note, To clear heading or message, you must pass a blank character.\n
-       *
-       * example:
-       * - pDialog.update(25, message='Downloading Finding Nemo ...')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgressBG
+      /// \python_func{ xbmcgui.DialogProgressBG().update([percent, heading, message]) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Updates the background progress dialog.
+      ///
+      /// @param percent     [opt] integer - percent complete. (0:100)
+      /// @param heading     [opt] string or unicode - dialog heading.
+      /// @param message     [opt] string or unicode - message text.
+      ///
+      /// @note To clear heading or message, you must pass a blank character.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// pDialog.update(25, message='Downloading Finding Nemo ...')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      update(...);
+#else
       void update(int percent = 0, const String& heading = emptyString, const String& message = emptyString);
+#endif
 
-      /**
-       * close() -- Close the background progress dialog
-       *
-       * example:
-       * - pDialog.close()
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgressBG
+      /// \python_func{ xbmcgui.DialogProgressBG().close() }
+      ///------------------------------------------------------------------------
+      ///
+      /// Close the background progress dialog
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// pDialog.close()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      close(...);
+#else
       void close();
+#endif
 
-      /**
-       * isFinished() -- Returns True if the background dialog is active.
-       *
-       * example:
-       * - if (pDialog.isFinished()): return
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogProgressBG
+      /// \python_func{ xbmcgui.DialogProgressBG().isFinished() }
+      ///------------------------------------------------------------------------
+      ///
+      /// Checks progress is finished
+      ///
+      /// @return True if the background dialog is active.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// if (pDialog.isFinished()): return
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      isFinished(...);
+#else
       bool isFinished();
+#endif
     };
+    //@}
 
   }
 }

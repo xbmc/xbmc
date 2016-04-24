@@ -32,21 +32,40 @@ namespace XBMCAddon
   {
     XBMCCOMMONS_STANDARD_EXCEPTION(AddonException);
 
-    /**
-     * Addon class.
-     * 
-     * Addon([id]) -- Creates a new Addon class.
-     * 
-     * id          : [opt] string - id of the addon as specified in addon.xml
-     * 
-     * *Note, specifying the addon id is not needed.\n
-     *  Important however is that the addon folder has the same name as the addon id provided in addon.xml.\n
-     *  You can optionally specify the addon id from another installed addon to retrieve settings from it.
-     * 
-     * example:
-     *  - self.Addon = xbmcaddon.Addon()
-     *  - self.Addon = xbmcaddon.Addon('script.foo.bar')
-     */
+    ///
+    /// \addtogroup python_xbmcaddon
+    /// @{
+    /// @brief **Kodi's addon class.**
+    ///
+    /// Offers classes and functions that manipulate the add-on settings,
+    /// information and localization.
+    ///
+    ///-------------------------------------------------------------------------
+    ///
+    /// \python_class{ xbmcaddon.Addon([id]) }
+    ///
+    /// Creates a new AddOn class.
+    ///
+    /// @param id                    [opt] string - id of the addon as
+    ///                              specified in [addon.xml](http://kodi.wiki/view/Addon.xml)
+    ///
+    /// @note Specifying the addon id is not needed.\n
+    /// Important however is that the addon folder has the same name as the AddOn
+    /// id provided in [addon.xml](http://kodi.wiki/view/Addon.xml).\n
+    /// You can optionally specify the addon id from another installed addon to
+    /// retrieve settings from it.
+    ///
+    ///
+    ///-------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// self.Addon = xbmcaddon.Addon()
+    /// self.Addon = xbmcaddon.Addon('script.foo.bar')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
     class Addon : public AddonClass
     {
       ADDON::AddonPtr pAddon;
@@ -56,78 +75,145 @@ namespace XBMCAddon
       String getAddonVersion();
 
     public:
-      /**
-       * Addon class.
-       * 
-       * Addon([id]) -- Creates a new Addon class.
-       * 
-       * id          : [opt] string - id of the addon as specified in addon.xml\n
-       * 
-       * *Note, specifying the addon id is not needed.\n
-       *  Important however is that the addon folder has the same name as the addon id provided in addon.xml.\n
-       *  You can optionally specify the addon id from another installed addon to retrieve settings from it.
-       * 
-       * example:
-       *  - self.Addon = xbmcaddon.Addon()
-       *  - self.Addon = xbmcaddon.Addon('script.foo.bar')
-       */
       Addon(const char* id = NULL);
-
       virtual ~Addon();
 
-      /**
-       * getLocalizedString(id) -- Returns an addon's localized 'unicode string'.
-       * 
-       * id        : integer - id# for string you want to localize.
-       * 
-       * example:
-       *   - locstr = self.Addon.getLocalizedString(32000)
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).getLocalizedString(id) }
+      ///-----------------------------------------------------------------------
+      /// Returns an addon's localized 'unicode string'.
+      ///
+      /// @param id                      integer - id# for string you want to
+      ///                                localize.
+      /// @return                        Localized 'unicode string'
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// locstr = self.Addon.getLocalizedString(32000)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getLocalizedString(...);
+#else
       String getLocalizedString(int id);
+#endif
 
-      /**
-       * getSetting(id) -- Returns the value of a setting as a unicode string.
-       * 
-       * id        : string - id of the setting that the module needs to access.
-       * 
-       * example:
-       *   - apikey = self.Addon.getSetting('apikey')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).getSetting(id) }
+      ///-----------------------------------------------------------------------
+      /// Returns the value of a setting as a unicode string.
+      ///
+      /// @param id                      string - id of the setting that the module
+      ///                                needs to access.
+      /// @return                        Setting as a unicode string
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// apikey = self.Addon.getSetting('apikey')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getSetting(...);
+#else
       String getSetting(const char* id);
+#endif
 
-      /**
-       * setSetting(id, value) -- Sets a script setting.
-       * 
-       * id        : string - id of the setting that the module needs to access.
-       * value     : string or unicode - value of the setting.
-       * 
-       * *Note, You can use the above as keywords for arguments.
-       * 
-       * example:
-       *   - self.Addon.setSetting(id='username', value='teamxbmc')\n
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).setSetting(id, value) }
+      ///-----------------------------------------------------------------------
+      /// Sets a script setting.
+      ///
+      /// @param id                  string - id of the setting that the module needs to access.
+      /// @param value               string or unicode - value of the setting.
+      ///
+      ///
+      /// @note You can use the above as keywords for arguments.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.Addon.setSetting(id='username', value='teamkodi')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      setSetting(...);
+#else
       void setSetting(const char* id, const String& value);
+#endif
 
-      /**
-       * openSettings() -- Opens this scripts settings dialog.
-       * 
-       * example:
-       *   - self.Addon.openSettings()
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).openSettings() }
+      ///-----------------------------------------------------------------------
+      /// Opens this scripts settings dialog.
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.Addon.openSettings()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      openSettings();
+#else
       void openSettings();
+#endif
 
-      /**
-       * getAddonInfo(id) -- Returns the value of an addon property as a string.
-       * 
-       * id        : string - id of the property that the module needs to access.
-       * 
-       * *Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, name, path,\n
-       *                     profile, stars, summary, type, version)
-       * 
-       * example:
-       *   - version = self.Addon.getAddonInfo('version')
-       */
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcaddon
+      /// \anchor python_xbmcaddon_Addon
+      /// @brief \python_func{ xbmcaddon.Addon([id]).getAddonInfo(id) }
+      ///-----------------------------------------------------------------------
+      /// Returns the value of an addon property as a string.
+      ///
+      /// @param id                      string - id of the property that the
+      ///                                module needs to access.
+      /// @par Choices for the property are
+      /// |             |             |             |             |
+      /// |:-----------:|:-----------:|:-----------:|:-----------:|
+      /// | author      | changelog   | description | disclaimer  |
+      /// | fanart      | icon        | id          | name        |
+      /// | path        | profile     | stars       | summary     |
+      /// | type        | version     |             |             |
+      /// @return                        AddOn property as a string
+      ///
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// version = self.Addon.getAddonInfo('version')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getAddonInfo(...);
+#else
       String getAddonInfo(const char* id);
+#endif
     };
+    //@}
   }
 }
