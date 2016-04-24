@@ -31,14 +31,17 @@
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 
+#include <sys/ioctl.h>
+#include <linux/fb.h>
+
 CRendererAML::CRendererAML()
 {
-
+  m_fbHandle = open("/dev/fb0", O_RDWR);
 }
 
 CRendererAML::~CRendererAML()
 {
-
+  close(m_fbHandle);
 }
 
 bool CRendererAML::RenderCapture(CRenderCapture* capture)
@@ -139,7 +142,15 @@ bool CRendererAML::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
       amlcodec->SetVideoRect(m_sourceRect, m_destRect);
   }
 
+  WaitVsync();
+
   return true;
+}
+
+void CRendererAML::WaitVsync()
+{
+  if (m_fbHandle >= 0)
+    ioctl(m_fbHandle, FBIO_WAITFORVSYNC, 0);
 }
 
 #endif
