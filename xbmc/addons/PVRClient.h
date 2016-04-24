@@ -63,7 +63,7 @@ namespace PVR
 
     explicit CPVRClient(ADDON::AddonProps props);
     CPVRClient(ADDON::AddonProps props, const std::string& strAvahiType,
-        const std::string& strAvahiIpSetting, const std::string& strAvahiPortSetting, bool bNeedsConfiguration);
+        const std::string& strAvahiIpSetting, const std::string& strAvahiPortSetting);
 
     ~CPVRClient(void);
 
@@ -73,8 +73,6 @@ namespace PVR
     virtual void OnPostInstall(bool update, bool modal) override;
     virtual void OnPreUnInstall() override;
     virtual void OnPostUnInstall() override;
-
-    bool NeedsConfiguration(void) const { return m_bNeedsConfiguration; }
 
     /** @name PVR add-on methods */
     //@{
@@ -730,7 +728,6 @@ namespace PVR
     std::string                                    m_strAvahiType;        /*!< avahi service type */
     std::string                                    m_strAvahiIpSetting;   /*!< add-on setting name to change to the found ip address */
     std::string                                    m_strAvahiPortSetting; /*!< add-on setting name to change to the found port number */
-    bool                                           m_bNeedsConfiguration; /*!< add-on needs a user set configuration */
     std::vector<CZeroconfBrowser::ZeroconfService> m_rejectedAvahiHosts;  /*!< hosts that were rejected by the user */
 
     CCriticalSection m_critSection;
