@@ -485,9 +485,10 @@ void CGUIEPGGridContainer::UpdateItems()
     return;
 
   /* Safe currently selected epg tag and grid coordinates. Selection shall be restored after update. */
-  const CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
+  CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
   const int oldChannelIndex = m_channelOffset + m_channelCursor;
   const int oldBlockIndex   = m_blockOffset + m_blockCursor;
+  const CDateTime oldGridStart(m_gridModel->GetGridStart());
   int eventOffset           = oldBlockIndex;
   int newChannelIndex       = oldChannelIndex;
   int newBlockIndex         = oldBlockIndex;
@@ -535,6 +536,26 @@ void CGUIEPGGridContainer::UpdateItems()
   // always use asynchronously precalculated grid data.
   m_outdatedGridModel = std::move(m_gridModel); // destructing grid data can be very expensive, thus this will be done asynchronously, not here.
   m_gridModel = std::move(m_updatedGridModel);
+
+  if (prevSelectedEpgTag)
+  {
+    if (oldGridStart != m_gridModel->GetGridStart())
+    {
+      // grid start changed. block offset for selected event might have changed.
+      int diff;
+      if (m_gridModel->GetGridStart() > oldGridStart)
+        diff = -(m_gridModel->GetGridStart() - oldGridStart).GetSecondsTotal();
+      else
+        diff = (oldGridStart - m_gridModel->GetGridStart()).GetSecondsTotal();
+
+      newBlockIndex += diff / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK;
+      if (newBlockIndex < 0 || newBlockIndex + 1 > m_gridModel->GetBlockCount())
+      {
+        // previously selected event no longer in grid.
+        prevSelectedEpgTag.reset();
+      }
+    }
+  }
 
   if (prevSelectedEpgTag)
   {
