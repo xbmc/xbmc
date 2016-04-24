@@ -178,7 +178,7 @@ STRIP_FROM_INC_PATH    = .
 # support long names like on DOS, Mac, or CD-ROM.
 # The default value is: NO.
 
-SHORT_NAMES            = YES
+SHORT_NAMES            = NO
 
 # If the JAVADOC_AUTOBRIEF tag is set to YES then doxygen will interpret the
 # first line (until the first dot) of a Javadoc-style comment as the brief
@@ -379,7 +379,7 @@ SUBGROUPING            = YES
 # SEPARATE_MEMBER_PAGES.
 # The default value is: NO.
 
-INLINE_GROUPED_CLASSES = YES
+INLINE_GROUPED_CLASSES = NO
 
 # When the INLINE_SIMPLE_STRUCTS tag is set to YES, structs, classes, and unions
 # with only public data fields or simple typedef fields will be shown inline in
@@ -782,6 +782,7 @@ INPUT                  = main.txt \
                          ../../../../CODING_GUIDELINES.dox \
                          ../../../GUIInfoManager.cpp \
                          Modules/modules_general.dox \
+                         Modules/modules_python.dox \
                          Skin/skin.dox \
                          ../../../guilib/GUIRenderingControl.dox \
                          ../../../guilib/GUIButtonControl.dox \
@@ -829,6 +830,31 @@ INPUT                  = main.txt \
                          ../../../interfaces/builtins/SkinBuiltins.cpp \
                          ../../../interfaces/builtins/SystemBuiltins.cpp \
                          ../../../interfaces/builtins/WeatherBuiltins.cpp \
+                         ../../../interfaces/legacy/Keyboard.h \
+                         ../../../interfaces/legacy/InfoTagMusic.h \
+                         ../../../interfaces/legacy/InfoTagVideo.h \
+                         ../../../interfaces/legacy/Addon.h \
+                         ../../../interfaces/legacy/Dialog.h \
+                         ../../../interfaces/legacy/ModuleXbmc.h \
+                         ../../../interfaces/legacy/ModuleXbmcgui.h \
+                         ../../../interfaces/legacy/File.h \
+                         ../../../interfaces/legacy/ListItem.h \
+                         ../../../interfaces/legacy/Monitor.h \
+                         ../../../interfaces/legacy/ModuleXbmcvfs.h \
+                         ../../../interfaces/legacy/ModuleXbmcplugin.h \
+                         ../../../interfaces/legacy/InfoTagRadioRDS.h \
+                         ../../../interfaces/legacy/Window.h \
+                         ../../../interfaces/legacy/WindowDialog.h \
+                         ../../../interfaces/legacy/WindowXML.h \
+                         ../../../interfaces/legacy/Stat.h \
+                         ../../../interfaces/legacy/PlayList.h \
+                         ../../../interfaces/legacy/Player.h \
+                         ../../../interfaces/legacy/RenderCapture.h \
+                         ../../../interfaces/legacy/Control.h \
+                         ../../../interfaces/legacy/wsgi/WsgiErrorStream.h \
+                         ../../../interfaces/legacy/wsgi/WsgiInputStream.h \
+                         ../../../interfaces/legacy/wsgi/WsgiResponseBody.h \
+                         ../../../interfaces/legacy/wsgi/WsgiResponse.h \
                          ../../../pictures/PictureInfoTag.cpp
 
 # This tag can be used to specify the character encoding of the source files
@@ -2113,7 +2139,8 @@ INCLUDE_FILE_PATTERNS  =
 # recursively expanded use the := operator instead of the = operator.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-PREDEFINED             = DOXYGEN_SHOULD_SKIP_THIS
+PREDEFINED             = DOXYGEN_SHOULD_SKIP_THIS \
+                         DOXYGEN_SHOULD_USE_THIS
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The
