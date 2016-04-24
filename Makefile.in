@@ -34,7 +34,6 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/binary/interfaces/api1/InputStream/addon-callbacks-inputstream.a \
                    xbmc/addons/binary/interfaces/api1/Peripheral/addon-callbacks-peripheral.a \
                    xbmc/addons/binary/interfaces/api1/PVR/addon-callbacks-pvr.a \
-                   xbmc/cdrip/cdrip.a \
                    xbmc/contrib/kissfft/kissfft.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
@@ -119,6 +118,9 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
 NWAOBJSXBMC=	xbmc/threads/threads.a \
 		xbmc/commons/commons.a
 
+ifeq (@USE_OPTICAL_DRIVE@,1)
+DIRECTORY_ARCHIVES += xbmc/cdrip/cdrip.a 
+endif
 
 ifeq (@USE_WEB_SERVER@,1)
 DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/wsgi/legacy-wsgi.a
