@@ -403,6 +403,14 @@ namespace XBMCAddon
      */  
     void audioResume();
 
+   /**
+    * saveSettings() -- saves settings to guisettings.xml
+    *
+    * example:
+    *   xbmc.saveSettings()
+    */
+    void saveSettings();
+
     /**
      * getUserAgent() -- Returns Kodi's HTTP UserAgent string
      *

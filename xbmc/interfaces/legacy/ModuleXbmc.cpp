@@ -496,6 +496,11 @@ namespace XBMCAddon
       CAEFactory::Resume();
     }
 
+   void saveSettings()
+   {
+      CSettings::Get().Save();
+   }
+
     String convertLanguage(const char* language, int format)
     {
       std::string convertedLanguage;
