@@ -18,6 +18,9 @@
  *
  */
 
+#include "GUIWindowPVRBase.h"
+#include "GUIWindowPVRRecordings.h"
+
 #include "Application.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -42,13 +45,12 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/timers/PVRTimers.h"
-
-#include "GUIWindowPVRBase.h"
-#include "GUIWindowPVRRecordings.h"
 
 #include <utility>
 

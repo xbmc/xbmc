@@ -19,13 +19,16 @@
  *
  */
 
+#include "PVRChannel.h"
+#include "settings/lib/ISettingCallback.h"
+#include "utils/Job.h"
+
 #include <memory>
 #include <utility>
 
-#include "FileItem.h"
-#include "PVRChannel.h"
-#include "settings/lib/ISettingCallback.h"
-#include "utils/JobManager.h"
+class CDateTime;
+class CFileItem;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace EPG
 {
