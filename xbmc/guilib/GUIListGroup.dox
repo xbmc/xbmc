@@ -1,0 +1,67 @@
+/*!
+
+\page Group_List_Control Group List Control
+\brief **Special case of the group control that forms a scrolling list of controls.**
+
+\tableofcontents
+
+The group list control is a special case of the group control. It is used for
+placing a set of controls into a list (either horizontally or vertically) and
+handles all the navigation within the list and placement within the list for
+you. It will be scrollable if the number of items exceeds the size of the
+list, and you can assign a scrollbar to it just like you can to any of the
+containers (list, panel, etc.).
+
+
+--------------------------------------------------------------------------------
+\section Group_List_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="grouplist" id="17">
+      <description>My first group list control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>300</height>
+      <itemgap>10</itemgap>
+      <pagecontrol>25</pagecontrol>
+      <scrolltime tween="sine" easing="out">200</scrolltime>
+      <orientation>vertical</orientation>
+      <usecontrolcoords>false</usecontrolcoords>
+      <visible>true</visible>
+      <onup>2</onup>
+      <ondown>3</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+      <align>right</align>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Group_List_Control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag               | Description                                                   |
+|------------------:|:--------------------------------------------------------------|
+| itemgap           | Specifies the gap (in pixels) between controls in the list. Defaults to 5px.
+| orientation       | Specifies whether the list is horizontal or vertical. Defaults to vertical.
+| pagecontrol       | Specifies the page control used to scroll up and down the list. Set the page control's id here.
+| scrolltime        | The time (in ms) to scroll from one item to another. By default, this is 200ms. The list will scroll smoothly from one item to another as needed. Set it to zero to disable the smooth scrolling. The scroll movement can be further adjusted by selecting one of the available [tween](http://kodi.wiki/view/Tweeners) methods.
+| usecontrolcoords  | Specifies whether the list should use the control's coordinates as an offset location from the coordinates it would normally use to draw the control. Defaults to false. Useful for staggering a control in from the edge of the grouplist, or for having more space around a control than <c>`<itemgap>`</c> gives.
+| align             | Specifies how to align the grouplist. possible values: left, right, center, justify. defaults to left.
+
+
+--------------------------------------------------------------------------------
+\section Group_List_Control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+
+*/

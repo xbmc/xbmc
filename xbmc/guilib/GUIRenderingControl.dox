@@ -1,0 +1,34 @@
+/*!
+
+\page Addon_Rendering_control Add-on Rendering control
+\brief **Control where rendering becomes performed from add-on to show on Kodi**
+
+\tableofcontents
+
+--------------------------------------------------------------------------------
+\section Addon_Rendering_control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="renderaddon" id ="9">
+      <left>5</left>
+      <top>50</top>
+      <width>780</width>
+      <height>515</height>
+</control>
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Addon_Rendering_control_sect2 Available tags
+
+Only the [default control](http://kodi.wiki/view/Default_Control_Tags) tags are
+applicable to this control.
+
+
+--------------------------------------------------------------------------------
+\section Addon_Rendering_control_sect3 See also
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

@@ -1,0 +1,63 @@
+/*!
+
+\page Text_Box Text Box
+\brief **Used to show a multi-page piece of text.**
+
+\tableofcontents
+
+The text box is used for showing a large multipage piece of text in Kodi. You
+can choose the position, size, and look of the text.
+
+
+--------------------------------------------------------------------------------
+\section Text_Box_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="textbox" id="2">
+   <description>My first text box control</description>
+   <posx>80</posx>
+   <posy>60</posy>
+   <width>250</width>
+   <height>200</height>
+   <visible>true</visible>
+   <colordiffuse>FFFFFFFF</colordiffuse>
+   <font>font13</font>
+   <textcolor>FFFFFFFF</textcolor>
+   <pulseonselect></pulseonselect>
+   <pagecontrol>13</pagecontrol>
+   <scrolltime>200</scrolltime>
+   <autoscroll delay="3000" time="1000" repeat="10000">!Control.HasFocus(13)</autoscroll>
+   <label>Text to display goes here [CR] next line...</label>
+   <align>center</align>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Text_Box_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is lower case only. This is
+important, as xml tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| height        | <b>`<height>auto</height>`</b> is supported in textbox controls
+| font          | Font used for the items first label. From `fonts.xml`.
+| textcolor     | Color used for displaying the text. In **AARRGGBB** hex format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| shadowcolor   | Specifies the color of the drop shadow on the text. In **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| pagecontrol   | Specifies the <b>`<id>`</b> of the page control used to control this textbox. The page control can either be a \ref Spin_Control "Spin Control" or a \ref Scroll_Bar_Control "Scroll Bar Control".
+| scrolltime    | The time (in ms) to scroll from one item to another. By default, this is *200ms*. The list will scroll smoothly from one item to another as needed. Set it to zero to disable the smooth scrolling.
+| align	        | possible values for text alignment: left, right, center, justify
+| autoscroll    | Specifies the timing and conditions of any autoscrolling this textbox should have. Times are in milliseconds. The content is delayed for the given delay, then scrolls at a rate of one line per time interval until the end. If the repeat tag is present, it then delays for the repeat time, fades out over 1 second, and repeats. It does not wrap or reset to the top at the end of the scroll. You can use any [bool condition](http://kodi.wiki/view/List_of_Boolean_Conditions) to specify when autoscrolling should be allowed.
+
+
+--------------------------------------------------------------------------------
+\section Text_Box_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

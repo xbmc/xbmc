@@ -1,0 +1,108 @@
+/*!
+
+\page Group_Control Group Control
+\brief **Used to group controls together.**
+
+\tableofcontents
+
+The group control is one of the most important controls. It allows you to group
+controls together, applying attributes to all of them at once. It also remembers
+the last navigated button in the group, so you can set the <b>`<onup>`</b> of a control
+to a group of controls to have it always go back to the one you were at before.
+It also allows you to position controls more accurately relative to each other,
+as any controls within a group take their coordinates from the group's top left
+corner (or from elsewhere if you use the "r" attribute). You can have as many
+groups as you like within the skin, and groups within groups are handled with
+no issues.
+
+
+--------------------------------------------------------------------------------
+\section Group_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="group" id="17">
+      <description>My first group control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>30</height>
+      <defaultcontrol>2</defaultcontrol>
+      <visible>true</visible>
+      <onup>2</onup>
+      <ondown>3</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+      ... more controls go here ...
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Group_Control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag               | Description                                                   |
+|------------------:|:--------------------------------------------------------------|
+| defaultcontrol    | Specifies the default control that will be focused within the group when the group receives focus. Note that the group remembers it's previously focused item and will return to it.
+
+
+--------------------------------------------------------------------------------
+\section Group_Control_sect3 Notes on positioning of controls within groups
+
+All controls within a group take their positions relative to the group's placement.
+Thus, the group always requires its <b>`<posx>`</b>, <b>`<posy>`</b>,
+<b>`<width>`</b>, and <b>`<height>`</b> attributes to be defined.
+As this can be a pain to remember, anything that you don't specify will be
+inherited from it's parent group (or the main window).
+
+By way of example, consider the first group within a PAL full screen window
+(720x576), and suppose we have
+
+~~~~~~~~~~~~~
+<control type="group" id="15">
+  <posx>30</posx>
+  <posy>70</posy>
+  <width>400</width>
+  ... more controls go here ...
+</control>
+~~~~~~~~~~~~~
+
+so that the <b>`<height>`</b> hasn't been defined. Then Kodi will
+automatically set the <b>`<height>`</b> equal to 506 by inheriting this
+from the window's height of 576, less the <b>`<posy>`</b> amount.
+
+You can align controls within a group to the right edge of the group, by
+using the <b>"r"</b> modifier to the <b>`<posx>`</b> and <b>`<posy>`</b> fields
+
+~~~~~~~~~~~~~
+<control type="group" id="20">
+  <control type="button" id=2>
+    <posx>180r</posx>
+    <width>180</width>
+  </control>
+  <control type="button" id=3>
+    <posx>180r</posx>
+    <width>180</width>
+  </control>
+  <control type="button" id=4>
+    <posx>180r</posx>
+    <width>180</width>
+  </control>
+</control>
+~~~~~~~~~~~~~
+
+All the buttons have width 180, and are aligned 180 pixels from the right edge of the group they're within.
+
+
+--------------------------------------------------------------------------------
+\section Group_Control_sect4 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/
