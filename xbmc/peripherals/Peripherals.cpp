@@ -115,10 +115,7 @@ void CPeripherals::Initialise()
 
     /* initialise all known busses and run an initial scan for devices */
     for (auto& bus : m_busses)
-    {
       bus->Initialise();
-      bus->TriggerDeviceScan();
-    }
   }
 
   m_eventScanner.Start();
@@ -165,8 +162,13 @@ void CPeripherals::Clear()
 
 void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERAL_BUS_UNKNOWN */)
 {
-  CSingleLock lock(m_critSectionBusses);
-  for (auto& bus : m_busses)
+  std::vector<PeripheralBusPtr> busses;
+  {
+    CSingleLock lock(m_critSectionBusses);
+    busses = m_busses;
+  }
+
+  for (auto& bus : busses)
   {
     bool bScan = false;
 
@@ -252,7 +254,7 @@ int CPeripherals::GetPeripheralsWithFeature(std::vector<CPeripheral *> &results,
 size_t CPeripherals::GetNumberOfPeripherals() const
 {
   size_t iReturn(0);
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionBusses);
   for (const auto& bus : m_busses)
     iReturn += bus->GetNumberOfPeripherals();
 
