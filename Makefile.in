@@ -512,9 +512,7 @@ install-scripts:
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@install -d $(DESTDIR)$(docdir)
-	@for FILE in `ls LICENSE.GPL *.txt`; do \
-		install -m 0644 "$$FILE" "$(DESTDIR)$(docdir)/$$FILE"; done
-	@install -m 0644 "docs/README.linux" "$(DESTDIR)$(docdir)/README.linux"
+	@install -m 0644 docs/README.linux LICENSE.GPL *.txt $(DESTDIR)$(docdir)
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/@APP_NAME_LC@"
 	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
@@ -563,15 +561,9 @@ endif
 
 	@echo "Copying bindings to $(DESTDIR)$(includedir)/@APP_NAME_LC@"
 	@install -d $(DESTDIR)$(includedir)/@APP_NAME_LC@
-	@for f in $(BINDINGS); do \
-	  install -m 0644 $$f $(DESTDIR)$(includedir)/@APP_NAME_LC@ ; \
-	done
-	@for f in project/cmake/*.cmake; do \
-	  install -m 0644 $$f $(DESTDIR)$(libdir)/@APP_NAME_LC@; \
-	done
-	@for f in project/cmake/scripts/common/*.cmake; do \
-	  install -m 0644 $$f $(DESTDIR)$(libdir)/@APP_NAME_LC@; \
-	done
+	@install -m 0644 $(BINDINGS) $(DESTDIR)$(includedir)/@APP_NAME_LC@
+	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
+	@install -m 0644 project/cmake/*.cmake project/cmake/scripts/common/*.cmake $(DESTDIR)$(libdir)/@APP_NAME_LC@
 	@cd $(DESTDIR)$(includedir); [ -L xbmc ] || [ -d xbmc ] || ln -s @APP_NAME_LC@ xbmc
 
 uninstall:
