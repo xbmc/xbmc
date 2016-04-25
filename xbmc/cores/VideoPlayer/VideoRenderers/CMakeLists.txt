@@ -47,6 +47,7 @@ if(ARCH MATCHES arm)
 endif()
 
 core_add_library(videorenderers)
+add_dependencies(videorenderers libcpluff)
 
 if(ENABLE_INTERNAL_FFMPEG)
   add_dependencies(videorenderers ffmpeg)

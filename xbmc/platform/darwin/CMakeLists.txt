@@ -12,3 +12,4 @@ set(HEADERS AutoPool.h
             OSXGNUReplacements.h)
 
 core_add_library(platform_darwin)
+add_dependencies(platform_darwin libcpluff)
