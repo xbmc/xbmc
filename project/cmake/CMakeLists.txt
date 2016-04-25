@@ -328,7 +328,7 @@ else()
 endif()
 
 # testing
-copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt 1)
+copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt NO_INSTALL)
 add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp $<TARGET_OBJECTS:compileinfo>)
 whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest ${test_archives})
 target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
