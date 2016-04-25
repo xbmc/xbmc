@@ -233,7 +233,7 @@ bool CProcessorHD::InitProcessor()
 bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support)
 {
   UINT uiFlags;
-  if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(format, &uiFlags))
+  if (S_OK == m_pEnumerator->CheckVideoProcessorFormat(format, &uiFlags))
   {
     if (uiFlags & support)
       return true;
