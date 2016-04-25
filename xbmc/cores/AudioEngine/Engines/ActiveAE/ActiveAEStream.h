@@ -107,7 +107,7 @@ protected:
 
 public:
   virtual unsigned int GetSpace();
-  virtual unsigned int AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts = 0.0);
+  virtual unsigned int AddData(const uint8_t* const *data, unsigned int offset, unsigned int frames, double pts = 0.0);
   virtual double GetDelay();
   virtual CAESyncInfo GetSyncInfo();
   virtual bool IsBuffering();

@@ -230,12 +230,12 @@ unsigned int CActiveAEStream::GetSpace()
     return m_streamFreeBuffers * m_streamSpace;
 }
 
-unsigned int CActiveAEStream::AddData(uint8_t* const *data, unsigned int offset, unsigned int frames, double pts)
+unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int offset, unsigned int frames, double pts)
 {
   Message *msg;
   unsigned int copied = 0;
   int sourceFrames = frames;
-  uint8_t* const *buf = data;
+  const uint8_t* const *buf = data;
 
   m_streamIsFlushed = false;
 
