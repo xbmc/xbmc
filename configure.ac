@@ -960,8 +960,6 @@ if test "$use_mysql" = "yes"; then
   fi
 fi
 AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 
 PKG_CHECK_MODULES([LIBCURL], [libcurl],, AC_MSG_ERROR([libcurl not found]))
 XB_FIND_SONAME([CURL], [curl])
