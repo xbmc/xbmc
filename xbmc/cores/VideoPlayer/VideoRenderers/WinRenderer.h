@@ -102,19 +102,27 @@ struct SVideoPlane
 
 struct YUVBuffer : SVideoBuffer
 {
-  YUVBuffer() : m_width(0), m_height(0), m_format(RENDER_FMT_NONE), m_activeplanes(0), m_locked(false), m_staging(nullptr)
+  YUVBuffer() : m_width(0), m_height(0)
+              , m_format(RENDER_FMT_NONE)
+              , m_activeplanes(0)
+              , m_locked(false)
+              , m_staging(nullptr)
+              , m_bPending(false)
   {
     memset(&m_sDesc, 0, sizeof(CD3D11_TEXTURE2D_DESC));
   }
   ~YUVBuffer();
   bool Create(ERenderFormat format, unsigned int width, unsigned int height, bool dynamic);
-  virtual void Release();
-  virtual void StartDecode();
-  virtual void StartRender();
-  virtual void Clear();
   unsigned int GetActivePlanes() { return m_activeplanes; }
-  virtual bool IsReadyToRender();
   bool CopyFromPicture(DVDVideoPicture &picture);
+
+  // SVideoBuffer overrides
+  void Release() override;
+  void StartDecode() override;
+  void StartRender() override;
+  void Clear() override;
+  bool IsReadyToRender() override;
+
   SVideoPlane planes[MAX_PLANES];
 
 private:
@@ -129,6 +137,7 @@ private:
   D3D11_MAP        m_mapType;
   ID3D11Texture2D* m_staging;
   CD3D11_TEXTURE2D_DESC m_sDesc;
+  bool             m_bPending;
 };
 
 struct DXVABuffer : SVideoBuffer

@@ -54,6 +54,7 @@ CProcessorHD::CProcessorHD()
   m_pVideoContext = nullptr;
   m_pEnumerator = nullptr;
   m_pVideoProcessor = nullptr;
+  m_eViewType = PROCESSOR_VIEW_TYPE_UNKNOWN;
   g_Windowing.Register(this);
 
   m_context = nullptr;
@@ -81,6 +82,7 @@ void CProcessorHD::Close()
   SAFE_RELEASE(m_pEnumerator);
   SAFE_RELEASE(m_pVideoProcessor);
   SAFE_RELEASE(m_context);
+  m_eViewType = PROCESSOR_VIEW_TYPE_UNKNOWN;
 }
 
 bool CProcessorHD::UpdateSize(const DXVA2_VideoDesc& dsc)
@@ -122,18 +124,11 @@ bool CProcessorHD::PreInit()
 
 void CProcessorHD::ApplySupportedFormats(std::vector<ERenderFormat> *formats)
 {
-  // do not check for NV12 it supported by default
-  UINT flags;
-  if (SUCCEEDED(m_pEnumerator->CheckVideoProcessorFormat(DXGI_FORMAT_P010, &flags))
-    && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-  {
+  if (IsFormatSupported(DXGI_FORMAT_P010, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
     formats->push_back(RENDER_FMT_YUV420P10);
-  }
-  if (SUCCEEDED(m_pEnumerator->CheckVideoProcessorFormat(DXGI_FORMAT_P016, &flags))
-    && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-  {
+
+  if (IsFormatSupported(DXGI_FORMAT_P016, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
     formats->push_back(RENDER_FMT_YUV420P16);
-  }
 }
 
 bool CProcessorHD::InitProcessor()
@@ -169,9 +164,6 @@ bool CProcessorHD::InitProcessor()
   CLog::Log(LOGDEBUG, "%s - Video processor has %#x input format caps.", __FUNCTION__, m_vcaps.InputFormatCaps);
   CLog::Log(LOGDEBUG, "%s - Video processor has %d max input streams.", __FUNCTION__, m_vcaps.MaxInputStreams);
   CLog::Log(LOGDEBUG, "%s - Video processor has %d max stream states.", __FUNCTION__, m_vcaps.MaxStreamStates);
-
-  if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_STEREO))
-    m_bStereoEnabled = true;
 
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
     CLog::Log(LOGWARNING, "%s - The video driver does not support full video processing capabilities.", __FUNCTION__);
@@ -238,6 +230,19 @@ bool CProcessorHD::InitProcessor()
   return true;
 }
 
+bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support)
+{
+  UINT uiFlags;
+  if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(format, &uiFlags))
+  {
+    if (uiFlags & support)
+      return true;
+  }
+
+  CLog::Log(LOGERROR, "%s - Unsupported format %d for %d.", __FUNCTION__, format, support);
+  return false;
+}
+
 bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended_format)
 {
   if (g_advancedSettings.m_DXVANoDeintProcForProgressive)
@@ -245,30 +250,17 @@ bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended
     CLog::Log(LOGNOTICE, "%s - Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.", __FUNCTION__);
   }
 
-  UINT uiFlags;
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
-  if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(DXGI_FORMAT_B8G8R8A8_UNORM, &uiFlags)
-    || 0 == (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
-  {
-    CLog::Log(LOGERROR, "%s - Unsupported output format.", __FUNCTION__);
+  if (!IsFormatSupported(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
     return false;
-  }
 
   if (format == RENDER_FMT_DXVA)
   {
     m_textureFormat = (DXGI_FORMAT)extended_format;
-
-    // this was checked by decoder, but check again.
-    if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(m_textureFormat, &uiFlags)
-      || 0 == (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-    {
-      CLog::Log(LOGERROR, "%s - Unsupported input format.", __FUNCTION__);
-      return false;
-    }
+    m_eViewType = PROCESSOR_VIEW_TYPE_DECODER;
   }
   else
   {
-    // Only NV12 software colorspace conversion is implemented for now
     m_textureFormat = DXGI_FORMAT_NV12; // default
 
     if (format == RENDER_FMT_YUV420P)
@@ -278,16 +270,14 @@ bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended
     if (format == RENDER_FMT_YUV420P16)
       m_textureFormat = DXGI_FORMAT_P016;
 
-    if (S_OK != m_pEnumerator->CheckVideoProcessorFormat(m_textureFormat, &uiFlags)
-      || 0 == (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-    {
-      CLog::Log(LOGERROR, "%s - Unsupported input format.", __FUNCTION__);
-      return false;
-    }
-
-    if (!CreateSurfaces())
-      return false;
+    m_eViewType = PROCESSOR_VIEW_TYPE_PROCESSOR;
   }
+
+  if (!IsFormatSupported(m_textureFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
+    return false;
+  if (m_eViewType == PROCESSOR_VIEW_TYPE_PROCESSOR && !CreateSurfaces())
+    return false;
+
   return true;
 }
 
@@ -365,25 +355,6 @@ bool CProcessorHD::OpenProcessor()
   color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
   m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor, TRUE, &color);
 
-  // the following code is unneeded, keep it for reference only
-  /*if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_ALPHA_FILL))
-  {
-    CLog::Log(LOGDEBUG, "%s - Processor supports alfa fill feature.", __FUNCTION__);
-    //m_pVideoContext->VideoProcessorSetStreamAlpha(m_pVideoProcessor, DEFAULT_STREAM_INDEX, true, 1.0f);
-    //m_pVideoContext->VideoProcessorSetOutputAlphaFillMode(m_pVideoProcessor, D3D11_VIDEO_PROCESSOR_ALPHA_FILL_MODE_BACKGROUND, DEFAULT_STREAM_INDEX);
-  }
-  else
-    CLog::Log(LOGDEBUG, "%s - Processor doesn't support alfa fill feature.", __FUNCTION__);
-
-  // Output rate (repeat frames)
-  if (0 != (m_rateCaps.ProcessorCaps & D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_FRAME_RATE_CONVERSION))
-  {
-    CLog::Log(LOGDEBUG, "%s - Processor supports frame rate conversion feature.", __FUNCTION__);
-    //m_pVideoContext->VideoProcessorSetStreamOutputRate(m_pVideoProcessor, DEFAULT_STREAM_INDEX, D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_NORMAL, TRUE, NULL);
-  }
-  else
-    CLog::Log(LOGDEBUG, "%s - Processor doesn't support frame rate conversion feature.", __FUNCTION__);*/
-
   return true;
 }
 
@@ -405,7 +376,7 @@ bool CProcessorHD::CreateSurfaces()
   for (idx = 0; idx < m_size; idx++)
   {
     ID3D11Texture2D* pTexture = nullptr;
-    hr = pD3DDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
+    hr = pD3DDevice->CreateTexture2D(&texDesc, nullptr, &pTexture);
     if (FAILED(hr))
       break;
 
@@ -457,21 +428,16 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
     return nullptr;
   }
 
-  ID3D11VideoProcessorInputView* view = reinterpret_cast<ID3D11VideoProcessorInputView*>(pView);
-
   ID3D11Resource* pResource = nullptr;
-  view->GetResource(&pResource);
-
-  D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd;
-  view->GetDesc(&vpivd);
-  UINT subresource = D3D11CalcSubresource(0, vpivd.Texture2D.ArraySlice, 1);
+  pView->GetResource(&pResource);
 
   D3D11_MAPPED_SUBRESOURCE rectangle;
   ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
-  if (FAILED(pContext->Map(pResource, subresource, D3D11_MAP_WRITE_DISCARD, 0, &rectangle)))
+
+  if (FAILED(pContext->Map(pResource, 0, D3D11_MAP_WRITE_DISCARD, 0, &rectangle)))
   {
     CLog::Log(LOGERROR, "%s - could not lock rect", __FUNCTION__);
-    m_context->ClearReference(view);
+    m_context->ClearReference(pView);
     return nullptr;
   }
 
@@ -489,13 +455,14 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
     convert_yuv420_p01x(picture.data, picture.iLineSize, picture.iHeight, picture.iWidth, dst, dstStride
                       , picture.format == RENDER_FMT_YUV420P10 ? 10 : 16);
   }
-  pContext->Unmap(pResource, subresource);
+  pContext->Unmap(pResource, 0);
   SAFE_RELEASE(pResource);
 
-  m_context->ClearReference(view);
-  m_context->MarkRender(view);
+  m_context->ClearReference(pView);
+  m_context->MarkRender(pView);
+
   CRenderPicture *pic = new CRenderPicture(m_context);
-  pic->view           = view;
+  pic->view           = pView;
   return pic;
 }
 
@@ -525,39 +492,37 @@ bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
 ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view) 
 {
   ID3D11VideoProcessorInputView* inputView = nullptr;
-  if (m_context) // we have own context so the view will be processor input view
+  if (m_eViewType == PROCESSOR_VIEW_TYPE_PROCESSOR)
   {
     inputView = reinterpret_cast<ID3D11VideoProcessorInputView*>(view);
-    inputView->AddRef(); // it will be released in Render method
-
-    return inputView;
+    inputView->AddRef(); // it will be released later
   }
-
-  // the view came from decoder
-  ID3D11VideoDecoderOutputView* decoderView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view);
-  if (!decoderView) 
+  else if (m_eViewType == PROCESSOR_VIEW_TYPE_DECODER)
   {
-    CLog::Log(LOGERROR, __FUNCTION__" - cannot get view.");
-    return nullptr;
+    // the view cames from decoder
+    ID3D11VideoDecoderOutputView* decoderView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view);
+    if (!decoderView)
+    {
+      CLog::Log(LOGERROR, "%s - cannot get view.", __FUNCTION__);
+      return nullptr;
+    }
+
+    ID3D11Resource* resource = nullptr;
+    D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vdovd;
+    decoderView->GetDesc(&vdovd);
+    decoderView->GetResource(&resource);
+
+    D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = { { 0 } };
+    vpivd.FourCC = 0;
+    vpivd.ViewDimension = D3D11_VPIV_DIMENSION_TEXTURE2D;
+    vpivd.Texture2D.ArraySlice = vdovd.Texture2D.ArraySlice;
+    vpivd.Texture2D.MipSlice = 0;
+
+    if (FAILED(m_pVideoDevice->CreateVideoProcessorInputView(resource, m_pEnumerator, &vpivd, &inputView)))
+      CLog::Log(LOGERROR, "%s - cannot create processor view.", __FUNCTION__);
+
+    resource->Release();
   }
-
-  ID3D11Resource* resource = nullptr;
-  D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vdovd;
-  decoderView->GetDesc(&vdovd);
-  decoderView->GetResource(&resource);
-
-  D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = { 0 };
-  vpivd.FourCC = 0; // if zero, the driver uses the DXGI format; must be 0 on level 9.x
-  vpivd.ViewDimension = D3D11_VPIV_DIMENSION_TEXTURE2D;
-  vpivd.Texture2D.ArraySlice = vdovd.Texture2D.ArraySlice;
-  vpivd.Texture2D.MipSlice = 0;
-
-  if (FAILED(m_pVideoDevice->CreateVideoProcessorInputView(resource, m_pEnumerator, &vpivd, &inputView)))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - cannot create processor view.");
-  }
-  resource->Release();
-
   return inputView;
 }
 
@@ -722,14 +687,14 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   SAFE_RELEASE(pOutputView);
   SAFE_RELEASE(stream_data.pInputSurface);
 
-  for (unsigned i = 0; i < stream_data.PastFrames; ++i)
+  for (size_t i = 0; i < stream_data.PastFrames; ++i)
     SAFE_RELEASE(stream_data.ppPastSurfaces[i]);
 
-  for (unsigned i = 0; i < stream_data.FutureFrames; ++i)
+  for (size_t i = 0; i < stream_data.FutureFrames; ++i)
     SAFE_RELEASE(stream_data.ppFutureSurfaces[i]);
 
   delete[] stream_data.ppPastSurfaces;
-  delete [] stream_data.ppFutureSurfaces;
+  delete[] stream_data.ppFutureSurfaces;
 
   return !FAILED(hr);
 }

@@ -72,6 +72,7 @@ public:
   CRenderPicture(CSurfaceContext *context);
   ~CRenderPicture();
   ID3D11View*      view;
+
 protected:
   CSurfaceContext *surface_context;
 };
@@ -87,6 +88,7 @@ public:
   bool CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, ID3D11VideoDecoder **decoder, ID3D11VideoContext **context);
   void Release(CDecoder *decoder);
   ID3D11VideoContext* GetVideoContext() { return m_vcontext; }
+
 private:
   CDXVAContext();
   void Close();
@@ -94,8 +96,10 @@ private:
   void DestroyContext();
   void QueryCaps();
   bool IsValidDecoder(CDecoder *decoder);
+
   static CDXVAContext *m_context;
   static CCriticalSection m_section;
+
   ID3D11VideoContext* m_vcontext;
   ID3D11VideoDevice* m_service;
   int m_refCount;
@@ -112,22 +116,25 @@ class CDecoder
 public:
   CDecoder();
  ~CDecoder();
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces);
-  virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
-  virtual int  Check     (AVCodecContext* avctx);
-  virtual void Close();
-  virtual const std::string Name() { return "d3d11va"; }
-  virtual unsigned GetAllowedReferences();
-  virtual long Release();
 
-  bool  OpenDecoder();
-  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
-  void  RelBuffer(uint8_t *data);
+  // IHardwareDecoder overrides
+  bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) override;
+  int Decode(AVCodecContext* avctx, AVFrame* frame) override;
+  bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) override;
+  int Check(AVCodecContext* avctx) override;
+  const std::string Name() override { return "d3d11va"; }
+  unsigned GetAllowedReferences() override;
 
-  static bool      Supports(enum AVPixelFormat fmt);
+  // IDVDResourceCounted overrides
+  long Release() override;
 
+  bool OpenDecoder();
+  int GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  void RelBuffer(uint8_t *data);
+  void Close();
   void CloseDXVADecoder();
+
+  static bool Supports(enum AVPixelFormat fmt);
 
 protected:
   enum EDeviceState
@@ -136,28 +143,26 @@ protected:
   , DXVA_LOST
   } m_state;
 
-  virtual void OnCreateDevice()  {}
-  virtual void OnDestroyDevice() { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
-  virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
-  virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
+  // ID3DResource overrides
+  void OnCreateDevice() override  {}
+  void OnDestroyDevice() override { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
+  void OnLostDevice() override    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
+  void OnResetDevice() override   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
-  ID3D11VideoDecoder*          m_decoder;
-  ID3D11VideoContext*          m_vcontext;
-  HANDLE                       m_device;
-  D3D11_VIDEO_DECODER_DESC     m_format;
-  int                          m_refs;
-  CRenderPicture              *m_presentPicture;
-
-  struct AVD3D11VAContext*     m_context;
-
-  CSurfaceContext*             m_surface_context;
-  CDXVAContext*                m_dxva_context;
-  AVCodecContext*              m_avctx;
-
-  unsigned int                 m_shared;
-  unsigned int                 m_surface_alignment;
-  CCriticalSection             m_section;
-  CEvent                       m_event;
+  int m_refs;
+  HANDLE m_device;
+  ID3D11VideoDecoder *m_decoder;
+  ID3D11VideoContext *m_vcontext;
+  D3D11_VIDEO_DECODER_DESC m_format;
+  CRenderPicture *m_presentPicture;
+  struct AVD3D11VAContext *m_context;
+  CSurfaceContext *m_surface_context;
+  CDXVAContext *m_dxva_context;
+  AVCodecContext *m_avctx;
+  unsigned int m_shared;
+  unsigned int m_surface_alignment;
+  CCriticalSection m_section;
+  CEvent m_event;
 };
 
 };

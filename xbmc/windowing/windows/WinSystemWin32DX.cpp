@@ -50,6 +50,8 @@ void CWinSystemWin32DX::PresentRender(bool rendered)
     m_delayDispReset = false;
     CWinSystemWin32::OnDisplayReset();
   }
+  if (!rendered)
+    Sleep(40);
 }
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
@@ -118,18 +120,7 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
     CRenderSystemDX::SetFullScreenInternal();
 
   if (!m_useWindowedDX)
-  {
-    // if the window isn't focused, bring it to front or SetFullScreen will fail
-    BYTE keyState[256] = { 0 };
-    // to unlock SetForegroundWindow we need to imitate Alt pressing
-    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
-      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
-
-    BringWindowToTop(m_hWnd);
-
-    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
-      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-  }
+    SetForegroundWindowInternal(m_hWnd);
 
   // most 3D content has 23.976fps, so switch for this mode
   if (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)

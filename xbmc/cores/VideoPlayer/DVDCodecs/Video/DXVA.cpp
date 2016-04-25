@@ -671,7 +671,7 @@ bool CSurfaceContext::HasRefs()
 }
 
 //-----------------------------------------------------------------------------
-// DXVA RednerPictures
+// DXVA RenderPictures
 //-----------------------------------------------------------------------------
 
 CRenderPicture::CRenderPicture(CSurfaceContext *context)

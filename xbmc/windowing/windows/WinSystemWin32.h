@@ -186,6 +186,7 @@ protected:
   void OnDisplayReset();
   void OnDisplayBack();
   void ResolutionChanged();
+  void SetForegroundWindowInternal(HWND hWnd);
 
   HWND m_hWnd;
   std::vector<HWND> m_hBlankWindows;

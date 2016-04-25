@@ -840,7 +840,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
       DXGI_SWAP_CHAIN_DESC1 scDesc1 = { 0 };
       scDesc1.Width       = m_nBackBufferWidth;
       scDesc1.Height      = m_nBackBufferHeight;
-      scDesc1.BufferCount = 2 + 3 * bHWStereoEnabled;
+      scDesc1.BufferCount = 3 * (1 + bHWStereoEnabled);
       scDesc1.Format      = DXGI_FORMAT_B8G8R8A8_UNORM;
       scDesc1.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
       scDesc1.AlphaMode   = DXGI_ALPHA_MODE_UNSPECIFIED;
@@ -891,7 +891,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
     else
     {
       // DirectX 11.0 systems
-      scDesc.BufferCount  = 2;  // Use double buffering to minimize latency.
+      scDesc.BufferCount  = 3;
       scDesc.BufferUsage  = DXGI_USAGE_RENDER_TARGET_OUTPUT;
       scDesc.OutputWindow = m_hFocusWnd;
       scDesc.Windowed     = m_useWindowedDX;
