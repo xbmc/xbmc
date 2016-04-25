@@ -69,6 +69,7 @@ bool CDVDInputStreamFile::Open()
   {
     if ((g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_INTERNET && URIUtils::IsInternetStream(m_item.GetPath(), false))
      || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET && URIUtils::IsInternetStream(m_item.GetPath(), true))
+     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_REMOTE && URIUtils::IsRemote(m_item.GetPath()))
      || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_ALL))
     {
       flags |= READ_CACHED;

@@ -751,7 +751,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pElement)
   {
     XMLUtils::GetUInt(pElement, "memorysize", m_cacheMemSize);
-    XMLUtils::GetUInt(pElement, "buffermode", m_cacheBufferMode, 0, 3);
+    XMLUtils::GetUInt(pElement, "buffermode", m_cacheBufferMode, 0, 4);
     XMLUtils::GetFloat(pElement, "readfactor", m_cacheReadFactor);
   }
 
