@@ -22,7 +22,6 @@
 #include "WindowInterceptor.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUICheckMarkControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
@@ -292,18 +291,6 @@ namespace XBMCAddon
         ((ControlButton*)pControl)->shadowColor   = li.shadowColor;
         if (li.font) ((ControlButton*)pControl)->strFont = li.font->GetFontName();
         ((ControlButton*)pControl)->align = li.align;
-        break;
-      case CGUIControl::GUICONTROL_CHECKMARK:
-        pControl = new ControlCheckMark();
-
-        li = ((CGUICheckMarkControl *)pGUIControl)->GetLabelInfo();
-
-        // note: conversion to plain colors from infocolors.
-        ((ControlCheckMark*)pControl)->disabledColor = li.disabledColor;
-        //((ControlCheckMark*)pControl)->shadowColor = li.shadowColor;
-        ((ControlCheckMark*)pControl)->textColor  = li.textColor;
-        if (li.font) ((ControlCheckMark*)pControl)->strFont = li.font->GetFontName();
-        ((ControlCheckMark*)pControl)->align = li.align;
         break;
       case CGUIControl::GUICONTROL_LABEL:
         pControl = new ControlLabel();

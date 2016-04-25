@@ -1189,117 +1189,6 @@ namespace XBMCAddon
 #endif
     };
 
-    // ControlCheckMark class
-    /**
-     * ControlCheckMark class.
-     * 
-     * ControlCheckMark(x, y, width, height, label[, focusTexture, noFocusTexture,
-     *                  checkWidth, checkHeight, alignment, font, textColor, disabledColor])
-     * 
-     * x              : integer - x coordinate of control.\n
-     * y              : integer - y coordinate of control.\n
-     * width          : integer - width of control.\n
-     * height         : integer - height of control.\n
-     * label          : string or unicode - text string.\n
-     * focusTexture   : [opt] string - filename for focus texture.\n
-     * noFocusTexture : [opt] string - filename for no focus texture.\n
-     * checkWidth     : [opt] integer - width of checkmark.\n
-     * checkHeight    : [opt] integer - height of checkmark.\n
-     * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n
-     * font           : [opt] string - font used for label text. (e.g. 'font13')\n
-     * textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n
-     * disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
-     * 
-     * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
-     *        Once you use a keyword, all following arguments require the keyword.\n
-     *        After you create the control, you need to add it to the window with addControl().
-     * 
-     * example:
-     *   - self.checkmark = xbmcgui.ControlCheckMark(100, 250, 200, 50, 'Status', font='font14')
-     */
-    class ControlCheckMark : public Control
-    {
-    public:
-
-      ControlCheckMark(long x, long y, long width, long height, const String& label,
-                       const char* focusTexture = NULL, const char* noFocusTexture = NULL, 
-                       long checkWidth = 30, long checkHeight = 30,
-                       long _alignment = XBFONT_RIGHT, const char* font = NULL, 
-                       const char* textColor = NULL, const char* disabledColor = NULL);
-
-      // getSelected() Method
-      /**
-       * getSelected() -- Returns the selected status for this checkmark as a bool.
-       * 
-       * example:
-       *   - selected = self.checkmark.getSelected()
-       */
-      virtual bool getSelected();
-
-      // setSelected() Method
-      /**
-       * setSelected(isOn) -- Sets this checkmark status to on or off.
-       * 
-       * isOn           : bool - True=selected (on) / False=not selected (off)
-       * 
-       * example:
-       *   - self.checkmark.setSelected(True)
-       */
-      virtual void setSelected(bool selected);
-
-      // setLabel() Method
-      /**
-       * setLabel(label[, font, textColor, disabledColor]) -- Set's this controls text attributes.
-       * 
-       * label          : string or unicode - text string.\n
-       * font           : [opt] string - font used for label text. (e.g. 'font13')\n
-       * textColor      : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n
-       * disabledColor  : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
-       * 
-       * example:
-       *   - self.checkmark.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300')
-       */
-      virtual void setLabel(const String& label = emptyString, 
-                            const char* font = NULL,
-                            const char* textColor = NULL,
-                            const char* disabledColor = NULL,
-                            const char* shadowColor = NULL,
-                            const char* focusedColor = NULL,
-                            const String& label2 = emptyString);
-
-      // setDisabledColor() Method
-      /**
-       * setDisabledColor(disabledColor) -- Set's this controls disabled color.
-       * 
-       * disabledColor  : hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
-       * 
-       * example:
-       *   - self.checkmark.setDisabledColor('0xFFFF3300')
-       */
-      virtual void setDisabledColor(const char* color);
-
-#ifndef SWIG
-      SWIGHIDDENVIRTUAL bool canAcceptMessages(int actionId) { return true; }
-
-      std::string strFont;
-      int checkWidth;
-      int checkHeight;
-      uint32_t align;
-      color_t textColor;
-      color_t disabledColor;
-      std::string strTextureFocus;
-      std::string strTextureNoFocus;
-      std::string strText;
-
-      SWIGHIDDENVIRTUAL CGUIControl* Create();
-
-      ControlCheckMark() :
-        checkWidth  (0),
-        checkHeight (0)
-      {}
-#endif
-    };
-
     // ControlGroup class
     /**
      * ControlGroup class.
@@ -1348,8 +1237,8 @@ namespace XBMCAddon
      * textOffsetY       : [opt] integer - vertical text offset\n
      * alignment         : [opt] integer - alignment of label - *Note, see xbfont.h\n
      * font              : [opt] string - font used for label text. (e.g. 'font13')\n
-     * textColor         : [opt] hexstring - color of enabled checkmark's label. (e.g. '0xFFFFFFFF')\n
-     * disabledColor     : [opt] hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
+     * textColor         : [opt] hexstring - color of label when control is enabled. (e.g. '0xFFFFFFFF')\n
+     * disabledColor     : [opt] hexstring - color of label when control is disabled. (e.g. '0xFFFF3300')
      * 
      * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
      *        Once you use a keyword, all following arguments require the keyword.\n
