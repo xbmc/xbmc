@@ -57,7 +57,7 @@ case $host in
   powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC")
      ;;
-  powerpc64-*-linux-gnu*|powerpc64-*-linux-uclibc*)
+  powerpc64*-*-linux-gnu*|powerpc64*-*-linux-uclibc*)
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC64")
      ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
