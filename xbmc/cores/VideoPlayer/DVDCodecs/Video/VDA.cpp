@@ -37,7 +37,7 @@ using namespace VDA;
 CDecoder::CDecoder()
 : m_renderbuffers_count(3)
 {
-  m_ctx = av_vda_alloc_context();
+  //m_ctx = av_vda_alloc_context();
   m_bitstream = NULL;
 }
 

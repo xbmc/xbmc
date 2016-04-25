@@ -678,6 +678,8 @@
 		7CCDACCA19275D790074CF51 /* NptAppleLogConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		7CCDACCB19275D790074CF51 /* NptAppleLogConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
+		7CD46A141CCDEA7500BF4AD4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD46A131CCDEA7500BF4AD4 /* VideoToolbox.framework */; };
+		7CD46A161CCDF09500BF4AD4 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD46A151CCDF09500BF4AD4 /* CoreMedia.framework */; };
 		7CD4F7EC1C60DBC10015214B /* VideoFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD4F7EA1C60DBC10015214B /* VideoFileItemListModifier.cpp */; };
 		7CD4F7ED1C60DBC10015214B /* VideoFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD4F7EA1C60DBC10015214B /* VideoFileItemListModifier.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
@@ -3387,6 +3389,8 @@
 		7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptAppleLogConfig.mm; sourceTree = "<group>"; };
 		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
+		7CD46A131CCDEA7500BF4AD4 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		7CD46A151CCDF09500BF4AD4 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		7CD4F7EA1C60DBC10015214B /* VideoFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoFileItemListModifier.cpp; sourceTree = "<group>"; };
 		7CD4F7EB1C60DBC10015214B /* VideoFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFileItemListModifier.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
@@ -5020,8 +5024,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CD46A141CCDEA7500BF4AD4 /* VideoToolbox.framework in Frameworks */,
 				F5ED9BFB155EC77400842059 /* ApplicationServices.framework in Frameworks */,
 				E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */,
+				7CD46A161CCDF09500BF4AD4 /* CoreMedia.framework in Frameworks */,
 				E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */,
 				E38E23940D2626E600618676 /* Cocoa.framework in Frameworks */,
 				F5ED9A0C155EBDC000842059 /* CoreAudio.framework in Frameworks */,
@@ -8884,6 +8890,8 @@
 		E49910F7174E55E100741B6D /* OSX */ = {
 			isa = PBXGroup;
 			children = (
+				7CD46A151CCDF09500BF4AD4 /* CoreMedia.framework */,
+				7CD46A131CCDEA7500BF4AD4 /* VideoToolbox.framework */,
 				E38E25340D26365C00618676 /* ApplicationServices.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
 				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
