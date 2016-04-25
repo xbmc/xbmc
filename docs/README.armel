@@ -217,7 +217,7 @@ These are python and liblzo2
 
 For Angstrom:
     $ opkg update
-    $ opkg install subversion make g++ gcc gawk pmount libtool automake gperf unzip bison libsdl-1.2-dev libsdl-image-1.2-dev libsdl-gfx-dev libsdl-mixer-1.2-dev libfribidi-dev liblzo-dev libfreetype-dev libsqlite3-dev libasound2 python-sqlite3 libcurl4 libxrandr-dev libxrender-dev libmad-dev libogg-dev libvorbis-dev libmysqlclient-dev libpcre-dev libdbus-glib-1-dev hal-dev libfontconfig-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev
+    $ opkg install subversion make g++ gcc gawk pmount libtool automake gperf unzip bison libsdl-1.2-dev libsdl-image-1.2-dev libsdl-gfx-dev libsdl-mixer-1.2-dev libfribidi-dev liblzo-dev libfreetype-dev libsqlite3-dev libasound2 python-sqlite3 libcurl4 libxrandr-dev libxrender-dev libmad-dev libmysqlclient-dev libpcre-dev libdbus-glib-1-dev hal-dev libfontconfig-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev
 
 Unfortunately this will only install the packages that are available through opkg. There will be further packages that need to be installed.
 Either use the method mentioned below, or selectively find and install packages, mentioned at the bottom of this README.
