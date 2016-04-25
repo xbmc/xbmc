@@ -9,7 +9,7 @@ DEPENDS = \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng \
-	libogg libvorbis libflac fribidi \
+	libogg libvorbis fribidi \
 	libass \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python27 libshairplay \
@@ -84,7 +84,6 @@ libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 curl: openssl
 libvorbis: libogg
-libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
 libmicrohttpd: gnutls libgcrypt libgpg-error
