@@ -2734,7 +2734,7 @@ namespace XBMCAddon
     /// @{
     /// @brief **Used for a volume slider.**
     ///
-    /// \python_class{ ControlSlider(x, y, width, height[, textureback, texture, texturefocus]) }
+    /// \python_class{ ControlSlider(x, y, width, height[, textureback, texture, texturefocus, orientation]) }
     ///
     /// The slider control is used for things where a sliding bar best represents
     /// the operation at hand (such as a volume control or seek control). You can
@@ -2749,6 +2749,7 @@ namespace XBMCAddon
     /// @param textureback          [opt] string - image filename
     /// @param texture              [opt] string - image filename
     /// @param texturefocus         [opt] string - image filename
+    /// @param orientation          [opt] integer - orientation of slider (xbmcgui.HORIZONTAL / xbmcgui.VERTICAL (default))
     ///
     ///
     /// @note You can use the above as keywords for arguments and skip certain
@@ -2773,7 +2774,7 @@ namespace XBMCAddon
       ControlSlider(long x, long y, long width, long height, 
                     const char* textureback = NULL, 
                     const char* texture = NULL,
-                    const char* texturefocus = NULL);
+                    const char* texturefocus = NULL, int orientation = 1);
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -2826,7 +2827,8 @@ namespace XBMCAddon
 #ifndef SWIG
       std::string strTextureBack;
       std::string strTexture;
-      std::string strTextureFoc;    
+      std::string strTextureFoc;
+      int iOrientation;
 
       SWIGHIDDENVIRTUAL CGUIControl* Create();
 
