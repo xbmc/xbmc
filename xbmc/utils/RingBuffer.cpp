@@ -42,7 +42,7 @@ CRingBuffer::~CRingBuffer()
 }
 
 /* Create a ring buffer with the specified 'size' */
-bool CRingBuffer::Create(unsigned int size)
+bool CRingBuffer::Create(uint64_t size)
 {
   CSingleLock lock(m_critSection);
   m_buffer = (char*)malloc(size);
@@ -118,7 +118,7 @@ bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
   bool bOk = size <= rBuf.getMaxWriteSize() && size <= getMaxReadSize();
   if (bOk)
   {
-    unsigned int chunksize = std::min(size, m_size - m_readPtr);
+    unsigned int chunksize = std::min((uint64_t)size, m_size - m_readPtr);
     bOk = rBuf.WriteData(&getBuffer()[m_readPtr], chunksize);
     if (bOk && chunksize < size)
       bOk = rBuf.WriteData(&getBuffer()[0], size - chunksize);
@@ -170,7 +170,7 @@ bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
   if (bOk)
   {
     unsigned int readpos = rBuf.getReadPtr();
-    unsigned int chunksize = std::min(size, rBuf.getSize() - readpos);
+    unsigned int chunksize = std::min((uint64_t)size, rBuf.getSize() - readpos);
     bOk = WriteData(&rBuf.getBuffer()[readpos], chunksize);
     if (bOk && chunksize < size)
       bOk = WriteData(&rBuf.getBuffer()[0], size - chunksize);
@@ -227,18 +227,18 @@ char *CRingBuffer::getBuffer()
   return m_buffer;
 }
 
-unsigned int CRingBuffer::getSize()
+uint64_t CRingBuffer::getSize()
 {
   CSingleLock lock(m_critSection);
   return m_size;
 }
 
-unsigned int CRingBuffer::getReadPtr() const
+uint64_t CRingBuffer::getReadPtr() const
 {
   return m_readPtr;
 }
 
-unsigned int CRingBuffer::getWritePtr()
+uint64_t CRingBuffer::getWritePtr()
 {
   CSingleLock lock(m_critSection);
   return m_writePtr;
