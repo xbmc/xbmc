@@ -198,7 +198,6 @@ libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
 libplist_disabled="== AirPlay support disabled. =="
 alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
-sdl_joystick_not_found="== Could not find SDL2. Joystick support disabled. =="
 libcap_disabled="== Capabilities detection support disabled. =="
 libcap_not_found="== Could not find libcap. Capabilities detection support disabled. =="
 gtest_enabled="== Google Test Framework will be configured. =="
@@ -587,7 +586,6 @@ case $host in
      use_libcec=no
      use_vtbdecoder=yes
      use_optical_drive=no
-     use_dvdcss=no
      use_gles=yes
      use_cpu=cortex-a8
      ARCH="arm-osx"
@@ -650,7 +648,6 @@ case $host in
      CORE_SYSTEM_NAME=linux
      ARCH="mips"
      use_arch="mips"
-     use_joystick=no
      use_gles=no
      use_gl=yes
      use_sdl=yes
