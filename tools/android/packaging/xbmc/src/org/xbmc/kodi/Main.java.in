@@ -159,14 +159,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     super.onStart();
     getWindow().setFormat(PixelFormat.TRANSPARENT);
+
+    Choreographer.getInstance().removeFrameCallback(this);
+    Choreographer.getInstance().postFrameCallback(this);
   }
 
   @Override
   public void onResume()
   {
     super.onResume();
-
-    Choreographer.getInstance().postFrameCallback(this);
 
     if (android.os.Build.VERSION.SDK_INT >= 19) {
       // Immersive mode
@@ -188,8 +189,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onPause()
   {
     super.onPause();
-    
-    Choreographer.getInstance().removeFrameCallback(this);
   }
   
   public void onDestroy()
