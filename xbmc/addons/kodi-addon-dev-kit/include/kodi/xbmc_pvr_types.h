@@ -32,6 +32,7 @@
 #endif
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "xbmc_addon_types.h"
 #include "xbmc_epg_types.h"
