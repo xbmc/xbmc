@@ -1,10 +1,7 @@
 /*!
 
 \page general_parts General Development parts
-\brief \htmlonly
-      <h3><span  style="text-decoration: underline;"><span  style="font-style: italic;"><span
-               style="color: rgb(102, 102, 102);">General Add-On Development parts</span></span></span></h3>
-       \endhtmlonly
+\brief \doc_header{ General Add-On Development parts }
 
 \subpage modules__General__List_of_gui_access
 \subpage page_List_of_built_in_functions
