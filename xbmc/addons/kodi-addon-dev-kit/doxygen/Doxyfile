@@ -806,7 +806,7 @@ INPUT                  = main.txt \
                          ../../../guilib/GUIVideoControl.dox \
                          ../../../guilib/GUIVisualisationControl.dox \
                          ../../../guilib/GUIWrappingListContainer.dox \
-                         ../../../guilib/_Controls.txt \
+                         ../../../guilib/_Controls.dox \
                          ../../../interfaces/builtins/AddonBuiltins.cpp \
                          ../../../interfaces/builtins/AndroidBuiltins.cpp \
                          ../../../interfaces/builtins/ApplicationBuiltins.cpp \
