@@ -102,7 +102,7 @@ nettle: gmp
 pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
 pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
-libxslt: libgcrypt
+libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 libcec: platform
 crossguid: $(CROSSGUID_DEPS)

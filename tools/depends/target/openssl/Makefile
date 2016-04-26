@@ -13,8 +13,7 @@ ifeq ($(OS), android)
   CONFIGURE=./Configure shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32
 endif
 ifeq ($(OS), ios)
-  # No darwin-arm-cc so use darwin-i386-cc and patch files after configure
-  CONFIGURE=./Configure darwin-i386-cc zlib no-asm no-krb5 --openssldir=$(PREFIX)
+  CONFIGURE=./Configure iphoneos-cross zlib no-asm no-krb5 --openssldir=$(PREFIX)
 endif
 ifeq ($(OS), osx)
   ifeq ($(CPU),x86_64)
@@ -34,17 +33,16 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	#when compiled on darwin it just won't realise that we do crosscompiling
-	#so it would stick in -arch i386 or -arch x86_64 into the cflags
-	#that would break the cross compile so we have to get rid of these
 	cd $(PLATFORM); AR="$(AR)" CFLAGS="$(CFLAGS)" CC=$(CC) RANLIB=$(RANLIB) $(CONFIGURE)
 	if test "$(OS)" = "osx"; then \
 		sed -ie "s|CC= /usr/bin/gcc-4.2|CC= $(CC)|" "$(PLATFORM)/Makefile"; \
 		sed -ie "s|CFLAG= |CFLAG=$(CFLAGS) |" "$(PLATFORM)/Makefile"; \
 	fi
+	# for iphoneos-cross config a sysroot argument is added
+	# however sysroot already set in Makefile.include, so remove this 	
 	if test "$(OS)" = "ios"; then \
 		sed -ie "s|CFLAG= |CFLAG=$(CFLAGS) |" "$(PLATFORM)/Makefile"; \
-		sed -ie "s|-arch i386|-arch $(CPU)|" "$(PLATFORM)/Makefile"; \
+		sed -ie "s|-isysroot \$$(CROSS_TOP)/SDKs/\$$(CROSS_SDK) ||" "$(PLATFORM)/Makefile"; \
 		sed -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
 	fi
 	sed -ie "s|apps test||" "$(PLATFORM)/Makefile"; \
