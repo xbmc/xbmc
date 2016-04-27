@@ -52,6 +52,6 @@ endif()
 
 core_add_library(videorenderers_hwdec)
 
-if(ENABLE_INTERNAL_FFMPEG)
+if(ENABLE_INTERNAL_FFMPEG AND SOURCES)
   add_dependencies(videorenderers_hwdec ffmpeg)
 endif()
