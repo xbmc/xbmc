@@ -192,6 +192,15 @@ public:
   static int FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore);
   static bool ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords);
 
+  /*! \brief Convert the string of binary chars to the actual string.
+
+  Convert the string representation of binary chars to the actual string.
+  For example \1\2\3 is converted to a string with binary char \1, \2 and \3
+
+  \param param String to convert
+  \return Converted string
+  */
+  static std::string BinaryStringToString(const std::string& in);
   /*! \brief Format the string with locale separators.
 
   Format the string with locale separators.
@@ -204,7 +213,11 @@ public:
   static std::string FormatNumber(T num)
   {
     std::stringstream ss;
+// ifdef is needed because when you set _ITERATOR_DEBUG_LEVEL=0 and you use custom numpunct you will get runtime error in debug mode
+// for more info https://connect.microsoft.com/VisualStudio/feedback/details/2655363
+#if !(defined(_DEBUG) && defined(TARGET_WINDOWS))
     ss.imbue(g_langInfo.GetOriginalLocale());
+#endif
     ss.precision(1);
     ss << std::fixed << num;
     return ss.str();

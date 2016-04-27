@@ -215,6 +215,9 @@ CLangInfo::CRegion::CRegion(const CRegion& region):
   m_strMeridiemSymbols[MeridiemSymbolAM] = region.m_strMeridiemSymbols[MeridiemSymbolAM];
   m_tempUnit=region.m_tempUnit;
   m_speedUnit=region.m_speedUnit;
+  m_cThousandsSep = region.m_cThousandsSep;
+  m_strGrouping = region.m_strGrouping;
+  m_cDecimalSep = region.m_cDecimalSep;
 }
 
 CLangInfo::CRegion::CRegion()
@@ -273,16 +276,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
     strLocale += ".UTF-8";
 #endif
   }
-
-  try
-  {
-    g_langInfo.m_originalLocale = std::locale(strLocale.c_str());
-  }
-  catch (std::runtime_error) 
-  {
-    CLog::Log(LOGERROR, "failed to set m_originalLocale to %s", strLocale.c_str());
-    g_langInfo.m_originalLocale = std::locale("");
-  }
+  g_langInfo.m_originalLocale = std::locale(std::locale::classic(), new custom_numpunct(m_cDecimalSep, m_cThousandsSep, m_strGrouping));
 
   CLog::Log(LOGDEBUG, "trying to set locale to %s", strLocale.c_str());
 
@@ -499,6 +493,33 @@ bool CLangInfo::Load(const std::string& strLanguage)
       const TiXmlNode *pTimeZone=pRegion->FirstChild("timezone");
       if (pTimeZone && !pTimeZone->NoChildren())
         region.SetTimeZone(pTimeZone->FirstChild()->ValueStr());
+
+      const TiXmlElement *pThousandsSep = pRegion->FirstChildElement("thousandsseparator");
+      if (pThousandsSep)
+      {
+        if (!pThousandsSep->NoChildren())
+        {
+          region.m_cThousandsSep = pThousandsSep->FirstChild()->Value()[0];
+          if (pThousandsSep->Attribute("groupingformat"))
+            region.m_strGrouping = StringUtils::BinaryStringToString(pThousandsSep->Attribute("groupingformat"));
+          else
+            region.m_strGrouping = "\3";
+        }
+      }
+      else
+      {
+        region.m_cThousandsSep = ',';
+        region.m_strGrouping = "\3";
+      }
+
+      const TiXmlElement *pDecimalSep = pRegion->FirstChildElement("decimalseparator");
+      if (pDecimalSep)
+      {
+        if (!pDecimalSep->NoChildren())
+          region.m_cDecimalSep = pDecimalSep->FirstChild()->Value()[0];
+      }
+      else
+        region.m_cDecimalSep = '.';
 
       m_regions.insert(PAIR_REGIONS(region.m_strName, region));
 
