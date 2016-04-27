@@ -56,7 +56,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 24;
+  return 25;
 }
 
 void CAddonDatabase::CreateTables()
@@ -92,7 +92,8 @@ void CAddonDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create installed table");
   m_pDS->exec("CREATE TABLE installed (id INTEGER PRIMARY KEY, addonID TEXT UNIQUE, "
-      "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT) \n");
+      "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT, "
+      "origin TEXT NOT NULL DEFAULT '') \n");
 }
 
 void CAddonDatabase::CreateAnalytics()
@@ -208,6 +209,10 @@ void CAddonDatabase::UpdateTables(int version)
     m_pDS->exec("DELETE FROM addonlinkrepo");
     m_pDS->exec("DELETE FROM repo");
   }
+  if (version < 25)
+  {
+    m_pDS->exec("ALTER TABLE installed ADD origin TEXT NOT NULL DEFAULT ''");
+  }
 }
 
 void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
@@ -260,7 +265,12 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
     }
 
     for (const auto& id : system)
+    {
       m_pDS->exec(PrepareSQL("UPDATE installed SET enabled=1 WHERE addonID='%s'", id.c_str()));
+      // Set origin *only* for addons that do not have one yet as it may have been changed by an update.
+      m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s' AND origin=''",
+          ORIGIN_SYSTEM, id.c_str()));
+    }
 
     CommitTransaction();
   }
@@ -286,6 +296,7 @@ void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
       it->SetInstallDate(CDateTime::FromDBDateTime(m_pDS->fv(3).get_asString()));
       it->SetLastUpdated(CDateTime::FromDBDateTime(m_pDS->fv(4).get_asString()));
       it->SetLastUsed(CDateTime::FromDBDateTime(m_pDS->fv(5).get_asString()));
+      it->SetOrigin(m_pDS->fv(6).get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -305,6 +316,23 @@ bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime&
 
     m_pDS->exec(PrepareSQL("UPDATE installed SET lastUpdated='%s' WHERE addonID='%s'",
         dateTime.GetAsDBDateTime().c_str(), addonId.c_str()));
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonId.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::SetOrigin(const std::string& addonId, const std::string& origin)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    m_pDS->exec(PrepareSQL("UPDATE installed SET origin='%s' WHERE addonID='%s'", origin.c_str(), addonId.c_str()));
     return true;
   }
   catch (...)

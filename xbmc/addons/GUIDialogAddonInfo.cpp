@@ -233,7 +233,8 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
   for (const auto& versionInfo : versions)
   {
     CFileItem item(StringUtils::Format(g_localizeStrings.Get(21339).c_str(), versionInfo.first.asString().c_str()));
-    if (m_localAddon && m_localAddon->Version() == versionInfo.first)
+    if (m_localAddon && m_localAddon->Version() == versionInfo.first
+        && m_item->GetAddonInfo()->Origin() == versionInfo.second)
       item.Select(true);
 
     AddonPtr repo;
