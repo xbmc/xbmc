@@ -2797,6 +2797,13 @@ void CApplication::Stop(int exitCode)
     else
       CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
 
+    // kodi may crash or deadlock during exit (shutdown / reboot) due to
+    // either a bug in core or misbehaving addons. so try saving
+    // skin settings early
+    CLog::Log(LOGNOTICE, "Saving skin settings");
+    if (g_SkinInfo != nullptr)
+      g_SkinInfo->SaveSettings();
+
     m_bStop = true;
     m_AppFocused = false;
     m_ExitCode = exitCode;
