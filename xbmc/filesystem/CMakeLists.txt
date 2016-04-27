@@ -30,7 +30,6 @@ set(SOURCES AddonsDirectory.cpp
             ISO9660Directory.cpp
             ISOFile.cpp
             LibraryDirectory.cpp
-            MemBufferCache.cpp
             MultiPathDirectory.cpp
             MultiPathFile.cpp
             MusicDatabaseDirectory.cpp
@@ -114,7 +113,6 @@ set(HEADERS AddonsDirectory.h
             ISOFile.h
             iso9660.h
             LibraryDirectory.h
-            MemBufferCache.h
             MultiPathDirectory.h
             MultiPathFile.h
             MusicDatabaseDirectory.h
