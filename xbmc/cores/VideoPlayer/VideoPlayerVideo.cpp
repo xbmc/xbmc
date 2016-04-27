@@ -853,7 +853,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   int timeToDisplay = DVD_TIME_TO_MSEC(pts - iPlayingClock);
   // make sure waiting time is not negative
-  int maxWaitTime = std::max(timeToDisplay + 500, 50);
+  int maxWaitTime = std::min(std::max(timeToDisplay + 500, 50), 500);
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
     maxWaitTime = std::max(timeToDisplay, 0);
