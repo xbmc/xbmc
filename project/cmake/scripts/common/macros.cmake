@@ -41,9 +41,12 @@ endfunction()
 
 # Add a test library, and add sources to list for gtest integration macros
 function(core_add_test_library name)
+  # Backup the old SOURCES variable, since we'll append SUPPORT_SOURCES to it
+  set(TEST_ONLY_SOURCES ${SOURCES})
+  set(SOURCES ${SOURCES} ${SUPPORT_SOURCES})
   core_add_library(${name} NO_MAIN_DEPENDS)
   set_target_properties(${name} PROPERTIES EXCLUDE_FROM_ALL 1)
-  foreach(src ${SOURCES})
+  foreach(src ${TEST_ONLY_SOURCES})
     # This will prepend CMAKE_CURRENT_SOURCE_DIR if the path is relative,
     # otherwise use the absolute path.
     get_filename_component(src_path "${src}" ABSOLUTE)
