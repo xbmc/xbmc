@@ -8,9 +8,7 @@ DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls curl \
-	libjpeg-turbo libpng \
-	libogg libvorbis libflac fribidi \
-	libass \
+	libjpeg-turbo libpng fribidi libass \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python27 libshairplay \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
@@ -83,8 +81,6 @@ gettext: $(ICONV)
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 curl: openssl
-libvorbis: libogg
-libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
 libmicrohttpd: gnutls libgcrypt libgpg-error
@@ -103,7 +99,7 @@ pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-s
 pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt libxml2
-ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
 libcec: platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread

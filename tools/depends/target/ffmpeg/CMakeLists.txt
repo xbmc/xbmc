@@ -16,8 +16,7 @@ if(CROSSCOMPILING)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL linux)
-  list(APPEND ffmpeg_conf --enable-vdpau --enable-vaapi
-                          --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis)
+  list(APPEND ffmpeg_conf --enable-vdpau --enable-vaapi)
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   if(CPU MATCHES arm)
     list(APPEND ffmpeg_conf --cpu=cortex-a9)

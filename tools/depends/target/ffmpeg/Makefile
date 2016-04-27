@@ -27,7 +27,6 @@ endif
 ifeq ($(OS), linux)
   ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
   ffmpg_config += --enable-vdpau --enable-vaapi
-  ffmpg_config += --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 endif
 ifeq ($(OS), android)
   ifeq ($(findstring arm, $(CPU)), arm)

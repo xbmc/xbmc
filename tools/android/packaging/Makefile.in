@@ -3,7 +3,6 @@ include ../../depends/Makefile.include
 OBJS = libcurl.so \
   librtmp.so \
   libplist.so libshairplay.so \
-  libxbogg.so libxbvorbis.so libxbvorbisfile.so \
   libnfs.so libass.so \
   libbluray.so libsmbclient.so
 
