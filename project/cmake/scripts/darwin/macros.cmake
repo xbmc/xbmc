@@ -10,6 +10,7 @@ function(core_link_library lib wraplib)
   set(export -bundle -undefined dynamic_lookup -read_only_relocs suppress
              -Wl,-alias_list,${CORE_BUILD_DIR}/cores/dll-loader/exports/wrapper.def
              ${CORE_BUILD_DIR}/${wrapper_obj})
+  set(extension ${CMAKE_SHARED_MODULE_SUFFIX})
   set(check_arg "")
   if(TARGET ${lib})
     set(target ${lib})
@@ -26,7 +27,8 @@ function(core_link_library lib wraplib)
     set(export ${export}
         -Wl,--version-script=${ARGV3})
   elseif(check_arg STREQUAL nowrap)
-    set(export ${data_arg})
+    set(export -undefined dynamic_lookup -dynamiclib ${data_arg})
+    set(extension ${CMAKE_SHARED_LIBRARY_SUFFIX})
   elseif(check_arg STREQUAL extras)
     foreach(arg ${data_arg})
       list(APPEND export ${arg})
@@ -39,19 +41,19 @@ function(core_link_library lib wraplib)
   # We need to do this handstand first ...
   separate_arguments(CUSTOM_COMMAND_ARGS_LDFLAGS UNIX_COMMAND "${CMAKE_SHARED_LINKER_FLAGS}")
 
-  add_custom_command(OUTPUT ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
+  add_custom_command(OUTPUT ${wraplib}-${ARCH}${extension}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
                      COMMAND ${CMAKE_C_COMPILER}
                      ARGS    ${CUSTOM_COMMAND_ARGS_LDFLAGS} ${export} -Wl,-force_load ${link_lib}
-                             -o ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
+                             -o ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${extension}
                      DEPENDS ${target} wrapper.def wrapper
                      VERBATIM)
 
   # Uncomment to create wrap_<lib> targets for debugging
   #get_filename_component(libname ${wraplib} NAME_WE)
-  #add_custom_target(wrap_${libname} ALL DEPENDS ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX})
+  #add_custom_target(wrap_${libname} ALL DEPENDS ${wraplib}-${ARCH}${extension})
 
-  list(APPEND WRAP_FILES ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX})
+  list(APPEND WRAP_FILES ${wraplib}-${ARCH}${extension})
   set(WRAP_FILES ${WRAP_FILES} PARENT_SCOPE)
 endfunction()
 
