@@ -490,6 +490,19 @@ void CDVDVideoCodecFFmpeg::SetFilters()
   }
 }
 
+void CDVDVideoCodecFFmpeg::UpdateName()
+{
+  if(m_pCodecContext->codec->name)
+    m_name = std::string("ff-") + m_pCodecContext->codec->name;
+  else
+    m_name = "ffmpeg";
+
+  if(m_pHardware)
+    m_name += "-" + m_pHardware->Name();
+
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: %s", m_name.c_str());
+}
+
 union pts_union
 {
   double  pts_d;
