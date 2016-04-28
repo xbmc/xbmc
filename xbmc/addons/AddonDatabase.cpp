@@ -240,8 +240,11 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     BeginTransaction();
     for (const auto& id : added)
+    {
+      int enable = CAddonMgr::GetInstance().EnabledOnSync(id) ? 1 : 0;
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "
-          "VALUES('%s', 0, '%s')", id.c_str(), now.c_str()));
+          "VALUES('%s', %d, '%s')", id.c_str(), enable, now.c_str()));
+    }
 
     for (const auto& id : removed)
     {

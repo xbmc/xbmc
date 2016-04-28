@@ -1158,6 +1158,38 @@ void CAddonMgr::StopServices(const bool onlylogin)
   }
 }
 
+bool CAddonMgr::EnabledOnSync(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+
+  bool bEnabled = false;
+
+  cp_status_t status;
+  cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, id.c_str(), &status);
+  if (status == CP_OK && cpaddon)
+  {
+    AddonPtr addon = Factory(cpaddon, ADDON_UNKNOWN);
+    if (addon)
+    {
+      switch (addon->Type())
+      {
+      case ADDON_PERIPHERALDLL:
+        bEnabled = true; // Enabled by default until addon-manifest.xml supports "optional" add-ons
+        break;
+      case ADDON_GAME_CONTROLLER:
+        bEnabled = true;
+        break;
+      default:
+        break;
+      }
+    }
+  }
+  if (cpaddon)
+    m_cpluff->release_info(m_cp_context, cpaddon);
+
+  return bEnabled;
+}
+
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if (lvl >= CP_LOG_ERROR)

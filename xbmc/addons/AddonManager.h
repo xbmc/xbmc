@@ -250,6 +250,11 @@ namespace ADDON
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
+    /*! \brief Return true if the addon should be enabled when syncing
+               installed add-ons to the database
+    */
+    bool EnabledOnSync(const std::string& id);
+
   private:
 
     /* libcpluff */
