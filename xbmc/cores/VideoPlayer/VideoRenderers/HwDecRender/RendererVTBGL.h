@@ -26,11 +26,11 @@
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 
-class CRendererVDA : public CLinuxRendererGL
+class CRendererVTB : public CLinuxRendererGL
 {
 public:
-  CRendererVDA();
-  virtual ~CRendererVDA();
+  CRendererVTB();
+  virtual ~CRendererVTB();
 
   // Player functions
   virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);

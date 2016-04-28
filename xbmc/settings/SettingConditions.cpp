@@ -317,7 +317,7 @@ void CSettingConditions::Initialize()
     m_simpleConditions.insert("hasvideotoolboxdecoder");
 #endif
 #ifdef TARGET_DARWIN_OSX
-  m_simpleConditions.insert("HasVDA");
+  m_simpleConditions.insert("HasVTB");
 #endif
 #ifdef HAS_LIBAMCODEC
   if (aml_present())

@@ -6608,7 +6608,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13429"
-msgid "Allow hardware acceleration - VDADecoder"
+msgid "Allow hardware acceleration - VTBDecoder"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -16340,10 +16340,10 @@ msgctxt "#36159"
 msgid "Enable CrystalHD decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VDADecoder)" with label #13429
+#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VideoToolbox)" with label #13429
 #: system/settings/settings.xml
 msgctxt "#36160"
-msgid "Enable VDA hardware decoding of video files."
+msgid "Enable VTB hardware decoding of video files."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (OpenMax)" with label #13430

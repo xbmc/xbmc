@@ -18,7 +18,7 @@
  *
  */
 
-#include "RendererVDA.h"
+#include "RendererVTBGL.h"
 
 #if defined(TARGET_DARWIN_OSX)
 
@@ -31,17 +31,17 @@
 #include <OpenGL/CGLIOSurface.h>
 #include "windowing/WindowingFactory.h"
 
-CRendererVDA::CRendererVDA()
+CRendererVTB::CRendererVTB()
 {
 
 }
 
-CRendererVDA::~CRendererVDA()
+CRendererVTB::~CRendererVTB()
 {
 
 }
 
-void CRendererVDA::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+void CRendererVTB::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
   if (buf.hwDec)
@@ -51,7 +51,7 @@ void CRendererVDA::AddVideoPictureHW(DVDVideoPicture &picture, int index)
   CVBufferRetain(picture.cvBufferRef);
 }
 
-void CRendererVDA::ReleaseBuffer(int idx)
+void CRendererVTB::ReleaseBuffer(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
   if (buf.hwDec)
@@ -60,34 +60,34 @@ void CRendererVDA::ReleaseBuffer(int idx)
 }
 
 
-bool CRendererVDA::Supports(EINTERLACEMETHOD method)
+bool CRendererVTB::Supports(EINTERLACEMETHOD method)
 {
   return false;
 }
 
-bool CRendererVDA::Supports(EDEINTERLACEMODE mode)
+bool CRendererVTB::Supports(EDEINTERLACEMODE mode)
 {
   return false;
 }
 
-EINTERLACEMETHOD CRendererVDA::AutoInterlaceMethod()
+EINTERLACEMETHOD CRendererVTB::AutoInterlaceMethod()
 {
   return VS_INTERLACEMETHOD_NONE;
 }
 
-bool CRendererVDA::LoadShadersHook()
+bool CRendererVTB::LoadShadersHook()
 {
   CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
-  // m_renderMethod = RENDER_CVREF;
+  m_renderMethod = RENDER_CVREF;
   m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
   return false;
 }
 
-bool CRendererVDA::CreateTexture(int index)
+bool CRendererVTB::CreateTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
+  YUVPLANES &planes = fields[0];
 
   DeleteTexture(index);
 
@@ -97,76 +97,111 @@ bool CRendererVDA::CreateTexture(int index)
   im.bpp    = 1;
   im.width  = m_sourceWidth;
   im.height = m_sourceHeight;
-  im.cshift_x = 0;
-  im.cshift_y = 0;
+  im.cshift_x = 1;
+  im.cshift_y = 1;
 
-  plane.pixpertex_x = 2;
-  plane.pixpertex_y = 1;
-  plane.texwidth    = im.width  / plane.pixpertex_x;
-  plane.texheight   = im.height / plane.pixpertex_y;
+  planes[0].texwidth  = im.width;
+  planes[0].texheight = im.height;
 
-  if(m_renderMethod & RENDER_POT)
+  planes[1].texwidth  = planes[0].texwidth >> im.cshift_x;
+  planes[1].texheight = planes[0].texheight >> im.cshift_y;
+  planes[2].texwidth  = planes[1].texwidth;
+  planes[2].texheight = planes[1].texheight;
+
+  for (int p = 0; p < 3; p++)
   {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
+    planes[p].pixpertex_x = 1;
+    planes[p].pixpertex_y = 1;
   }
 
   glEnable(m_textureTarget);
-  glGenTextures(1, &plane.id);
+  glGenTextures(1, &planes[0].id);
+  glGenTextures(1, &planes[1].id);
+  planes[2].id = planes[1].id;
   glDisable(m_textureTarget);
 
   return true;
 }
 
-void CRendererVDA::DeleteTexture(int index)
+void CRendererVTB::DeleteTexture(int index)
 {
-  YUVPLANE  &plane = m_buffers[index].fields[0][0];
+  YUVPLANES  &planes = m_buffers[index].fields[0];
 
   if (m_buffers[index].hwDec)
     CVBufferRelease((struct __CVBuffer *)m_buffers[index].hwDec);
   m_buffers[index].hwDec = NULL;
 
-  if (plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id), plane.id = 0;
+  if (planes[0].id && glIsTexture(planes[0].id))
+  {
+    glDeleteTextures(1, &planes[0].id);
+  }
+  if (planes[1].id && glIsTexture(planes[1].id))
+  {
+    glDeleteTextures(1, &planes[1].id);
+  }
+  planes[0].id = 0;
+  planes[1].id = 0;
+  planes[2].id = 0;
 }
 
-bool CRendererVDA::UploadTexture(int index)
+bool CRendererVTB::UploadTexture(int index)
 {
-  YUVBUFFER &buf    = m_buffers[index];
+  YUVBUFFER &buf = m_buffers[index];
   YUVFIELDS &fields = buf.fields;
+  YUVPLANES &planes = fields[0];
 
-  CVBufferRef cvBufferRef = (struct __CVBuffer *)m_buffers[index].hwDec;
+  CVImageBufferRef cvBufferRef = (struct __CVBuffer *)m_buffers[index].hwDec;
 
   glEnable(m_textureTarget);
 
-  if (cvBufferRef && fields[m_currentField][0].flipindex != buf.flipindex)
+  // It is the fastest way to render a CVPixelBuffer backed
+  // with an IOSurface as there is no CPU -> GPU upload.
+  CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
+  IOSurfaceRef surface  = CVPixelBufferGetIOSurface(cvBufferRef);
+  OSType format_type = IOSurfaceGetPixelFormat(surface);
+
+  if (format_type != kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
   {
-
-    // It is the fastest way to render a CVPixelBuffer backed
-    // with an IOSurface as there is no CPU -> GPU upload.
-    CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
-    IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
-    GLsizei       texWidth = IOSurfaceGetWidth(surface);
-    GLsizei       texHeight= IOSurfaceGetHeight(surface);
-    OSType        format_type = IOSurfaceGetPixelFormat(surface);
-
-    glBindTexture(m_textureTarget, fields[FIELD_FULL][0].id);
-
-    if (format_type == kCVPixelFormatType_422YpCbCr8)
-      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
-                             texWidth / 2, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
-    else if (format_type == kCVPixelFormatType_32BGRA)
-      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
-                             texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
-
-    glBindTexture(m_textureTarget, 0);
-    fields[FIELD_FULL][0].flipindex = buf.flipindex;
-
+    return false;
   }
 
+  GLsizei surfplanes = IOSurfaceGetPlaneCount(surface);
+
+  if (surfplanes != 2)
+  {
+    return false;
+  }
+
+  GLsizei widthY = IOSurfaceGetWidthOfPlane(surface, 0);
+  GLsizei widthUV = IOSurfaceGetWidthOfPlane(surface, 1);
+  GLsizei heightY = IOSurfaceGetHeightOfPlane(surface, 0);
+  GLsizei heightUV = IOSurfaceGetHeightOfPlane(surface, 1);
+
+  glBindTexture(m_textureTarget, planes[0].id);
+
+  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_LUMINANCE,
+                         widthY, heightY, GL_LUMINANCE, GL_UNSIGNED_BYTE, surface, 0);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glBindTexture(m_textureTarget, planes[1].id);
+
+  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_LUMINANCE_ALPHA,
+                         widthUV, heightUV, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, surface, 1);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glBindTexture(m_textureTarget, 0);
+  planes[0].flipindex = buf.flipindex;
+
+  glDisable(m_textureTarget);
 
   CalculateTextureSourceRects(index, 3);
-  glDisable(m_textureTarget);
+
 
   return true;
 }
