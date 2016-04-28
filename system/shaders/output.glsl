@@ -9,7 +9,11 @@ void main()
   vec4 rgb        = process();
 
 #if defined(XBMC_FULLRANGE)
+#if __VERSION__ <= 120
+  rgb = (rgb-(16.0/255.0)) * 255.0/219.0;
+#else
   rgb             = clamp((rgb-(16.0/255.0)) * 255.0/219.0, 0, 1);
+#endif
 #endif
 
 #if defined(XBMC_DITHER)
