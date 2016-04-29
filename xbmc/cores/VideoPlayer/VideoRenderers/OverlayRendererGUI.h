@@ -37,19 +37,21 @@ class CDVDOverlayText;
 
 namespace OVERLAY {
 
-class COverlayText
-: public COverlay
+class COverlayText : public COverlay
 {
 public:
   COverlayText() {}
   COverlayText(CDVDOverlayText* src);
   virtual ~COverlayText();
   virtual void Render(SRenderState& state);
-  virtual void PrepareRender();
+  virtual void PrepareRender(const std::string &font, int color, int height, int style,
+                             const std::string &fontcache, const std::string &fontbordercache);
+  virtual CGUITextLayout* GetFontLayout(const std::string &font, int color, int height, int style,
+                                        const std::string &fontcache, const std::string &fontbordercache);
 
   CGUITextLayout* m_layout;
-  std::string     m_text;
-  int             m_subalign;
+  std::string m_text;
+  int m_subalign;
 };
 
 }

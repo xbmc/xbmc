@@ -1,0 +1,549 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/kodi-main/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "正在播放"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "查找..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "显示媒体同人画为背景"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "影院模式"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "改变模式"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "按2D模式观看"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "随机电影"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "未观看电影"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "无免责声明"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "下载图标"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "在观看电影"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "常播电影"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "随机专辑"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "随机歌手"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "未播专辑"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "最近录像"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "最近播放的频道"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "已评分"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "常播频道"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "天气预报"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "操作"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "其他选项"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "排序"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "视图类型"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "下一首"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "未找到收藏。你可以从媒体浏览使用上下文菜单添加收藏项目。"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "进入专辑"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "进入歌曲"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "显示同人画"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "最近登录"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "己用内存"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "版本信息"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "顺序"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "你的评分"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "扩展信息"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "页"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "项"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "曲目列表"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "回退"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "快进"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "取消更新"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "相机制造商"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "播放列表选项"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "设定类型并添加规则来创建智能播放列表。这些播放列表通过你选用的规则动态从数据库所有媒体项目中选取。"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "增加组"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "更名组"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "删除组"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "阅读更多..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "可用"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "按 [B]上[/B] 回退或快进"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "按 [B]确定[/B] 停止"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "切换语言"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "已筛选"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "基于 Arial 字体"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "按 [B]左[/B] 回退，[B]右[/B] 快进"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "字幕下载"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "进入播放列表"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "启动时显示登录界面"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "启动时自动登录"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "可更新"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "分钟"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "主菜单项"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "每类媒体的“文件”区快捷方式。到那里为数据库添加源。"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "区"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "未观看"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "视频播放列表"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "音乐播放列表"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "事件日志"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "选择预置"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "最近修改"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "添加媒体源"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "于"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "电源选项"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "标题"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "资料库根"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "电影集"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "播放光盘"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "上一位置"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "下一位置"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "演员不可用"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "结束于"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "专辑信息"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "歌词插件"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "歌词插件设置"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "可视化效果设置"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "频道组"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "提供者设置"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "内容扫描选项"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "可用组"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "搜索预告片"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "下载字幕"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "视频菜单"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "在顶部栏显示天气信息"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "显示电影/剧集/音乐电视的媒体标识"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "使用幻灯动画"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "本地字幕可用"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "频道选项"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "选择 Kodi 用户配置文件[CR]登录并继续"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "图标墙"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "平移"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "信息墙"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "墙"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "此处输入文本..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "你的资料库为空。要从你的媒体生成资料库，请进入“文件”区，添加媒体源并设置，当源被添加并索引后，你就能在资料库中浏览了。"
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "添加视频源并设置相应的内容类型以生成你的资料库。"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "图文字幕"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "宽列表"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "使用自定义全局背景"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "选择图片路径"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "进入文件区"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "浏览你的个人图片或通过官方插件库图片插件下载。"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "切换音频流"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "搜索本地资料库"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "搜索 YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "搜索 TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "删除此主菜单项"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "编辑节点"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "进入插件浏览"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "尚未安排插件。请到插件浏览器使用我们的插件库来提升 Kodi 使用体验。"
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "尚未设置天气提供者。需设置天气提供者及你的位置后才能获取天气信息。"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "设置天气提供者"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "未观看剧集"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "同一导演"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "在地图上显示图像"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "按“上”为演员信息"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "按“确认”阅读剧情"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "显示图标"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "贡献者"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "常规设置用于皮肤的所有区域。"
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "主菜单相关设置：按喜好设置主界面。"
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "选择主界面同人画包"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "分"

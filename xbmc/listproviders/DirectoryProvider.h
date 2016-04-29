@@ -30,13 +30,13 @@
 class TiXmlElement;
 class CVariant;
 
-typedef enum
+enum class InfoTagType
 {
   VIDEO,
   AUDIO,
   PICTURE,
   PROGRAM
-} InfoTagType;
+};
 
 class CDirectoryProvider :
   public IListProvider,
@@ -59,6 +59,8 @@ public:
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const;
   virtual void Reset(bool immediately = false);
   virtual bool OnClick(const CGUIListItemPtr &item);
+  bool OnInfo(const CGUIListItemPtr &item) override;
+  bool OnContextMenu(const CGUIListItemPtr &item) override;
   virtual bool IsUpdating() const;
 
   // callback from directory job

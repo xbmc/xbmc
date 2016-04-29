@@ -1,0 +1,305 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: French (Canada) (http://www.transifex.com/projects/p/kodi-main/language/fr_CA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_CA\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Paramètres audio"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Verr.[CR]maj."
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Options de visualisation"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Préréglages des visualisations"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Menu contextuel"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Travail en cours..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Récent"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Films"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Épisodes"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albums"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Page"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Liste d'infos"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Connexion"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Mis à jour :"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "AVANCE RAPIDE"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "RETOUR RAPIDE"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Heure de fin"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Trier : croissant"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Trier : décroissant"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Ouvrir la liste de lecture"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Enregistrer la liste de lecture"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Fermer la liste de lecture"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Fichiers musicaux du système"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Liste de lecture actuelle"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Retour"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Emplacement"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Vue"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Température actuelle"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Dernière mise à jour"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Fournisseur de données"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Mémoire utilisée :"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Dernière connexion"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Diffusé"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Menu vidéo"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Télécharger les sous-titres"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Télétexte"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Valeur par défaut de l'habillage"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Basé sur Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Changer l'habillage · Définir la langue et la région · Changer les options de listage des fichiers · Définir un économiseur d'écran"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Gérer la vidéothèque · Définir les paramètres de lecture des vidéos · Changer les options de listage des vidéos - Définir les polices des sous-titres"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Gérer l'audiothèque · Définir les options de lecture · Changer les options de listage de la musique · Paramétrer les envois de chansons"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Définir les options de listage d'images · Configurer les diaporamas"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Définir trois villes pour recueillir des informations météo"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Paramétrer le contrôle de Kodi par UPnP et HTTP · Configurer le partage de fichiers · Définir les options d'accès à Internet"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Configurer et étalonner les affichages · Configurer les sorties audio · Configurer les télécommandes · Définir les options d'économie d'énergie · Activer le débogage · Configurer le verrou maître"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Gérer les addiciels installés · Parcourir et installer des addiciels à partir de kodi.tv · Modifier les paramètres des addiciels"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et continuer"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Boutons de catégorie du menu d'accueil"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Liens rapides de l'addiciel sur la page d'accueil"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Options diverses"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Infos météo et bouton Météo de l'écran d'accueil"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Raccourci de l'addiciel"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNCHRO"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Utiliser un arrière-plan personnalisé"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Arrière-plan : "
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Configurer les paramètres télé - Changer les infos en plein écran - Gérer les paramètres des données du GÉP"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Télé en direct"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Cacher l'arrière-plan de la vidéo"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Cacher l'arrière-plan de visualisation"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Paramètres des chaînes"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Groupes proposés"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Ajouter un groupe"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Renommer le groupe"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Supprimer le groupe"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Afficher ce qui est caché"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Afficher ce qui est supprimé"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Premier démarrage"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Pour parcourir Estouchy, vous devez savoir deux choses"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Le logo Kodi fonctionne comme un bouton « ACCUEIL ». Lorsque vous le touchez, vous retournerez à l'écran d'accueil."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Lorsque vous lisez de l'audio ou une vidéo, le titre de l'élément apparaîtra en haut de l'écran. Le toucher vous amènera à la visualisation en plein écran ou la fenêtre vidéo.  "
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Titre de la lecture en cours..."

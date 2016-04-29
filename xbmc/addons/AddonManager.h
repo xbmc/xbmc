@@ -69,6 +69,12 @@ namespace ADDON
     bool Init();
     void DeInit();
 
+    CAddonMgr();
+    CAddonMgr(const CAddonMgr&);
+    CAddonMgr const& operator=(CAddonMgr const&);
+    virtual ~CAddonMgr();
+
+
     IAddonMgrCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
     void UnregisterAddonMgrCallback(TYPE type);
@@ -105,6 +111,11 @@ namespace ADDON
 
     bool GetDisabledAddons(VECADDONS& addons, const TYPE& type);
 
+    /*! Get all installable addons */
+    bool GetInstallableAddons(VECADDONS& addons);
+
+    bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
+
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
@@ -117,7 +128,17 @@ namespace ADDON
 
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
-    void FindAddons();
+
+    /*! \brief Checks for new / updated add-ons
+     \return True if everything went ok, false otherwise
+     */
+    bool FindAddons();
+
+    /*! \brief Checks for new / updated add-ons and notifies all observers
+    \return True if everything went ok, false otherwise
+    */
+    bool FindAddonsAndNotify();
+
     void UnregisterAddon(const std::string& ID);
 
     /*! Hook for clearing internal state after uninstall. */
@@ -151,6 +172,10 @@ namespace ADDON
     \param addon addon to be checked
     */
     bool CanAddonBeInstalled(const AddonPtr& addon);
+
+    bool CanUninstall(const AddonPtr& addon);
+
+    bool IsSystemAddon(const std::string& id);
 
     bool AddToUpdateBlacklist(const std::string& id);
     bool RemoveFromUpdateBlacklist(const std::string& id);
@@ -226,8 +251,6 @@ namespace ADDON
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
   private:
-    void LoadAddons(const std::string &path,
-                    std::map<std::string, AddonPtr>& unresolved);
 
     /* libcpluff */
     cp_context_t *m_cp_context;
@@ -240,21 +263,15 @@ namespace ADDON
      */
     static bool PlatformSupportsAddon(const cp_plugin_info_t *info);
 
-    static bool CheckUserDirs(const cp_cfg_element_t *element);
-
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
-
-    // private construction, and no assignements; use the provided singleton methods
-    CAddonMgr();
-    CAddonMgr(const CAddonMgr&);
-    CAddonMgr const& operator=(CAddonMgr const&);
-    virtual ~CAddonMgr();
+    bool EnableSingle(const std::string& id);
 
     std::set<std::string> m_disabled;
     std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
+    std::set<std::string> m_systemAddons;
   };
 
 }; /* namespace ADDON */

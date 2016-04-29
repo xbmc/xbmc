@@ -27,50 +27,23 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include <linux/mxcfb.h>
+#include "linux/imx/IMX.h"
 
-/*
- *  official imx6 -SR tree
- *  https://github.com/SolidRun/linux-fslc.git
- *
- */
-
-#include <linux/mxc_dcic.h>
-
-#include <sys/ioctl.h>
-
-CVideoSyncIMX::CVideoSyncIMX()
+CVideoSyncIMX::CVideoSyncIMX(CVideoReferenceClock *clock) : CVideoSync(clock)
 {
-  m_fddcic = open("/dev/mxc_dcic0", O_RDWR);
+  g_IMX.Initialize();
 }
 
 CVideoSyncIMX::~CVideoSyncIMX()
 {
-  if (m_fddcic > 0)
-    close(m_fddcic);
+  g_IMX.Deinitialize();
 }
 
 bool CVideoSyncIMX::Setup(PUPDATECLOCK func)
 {
-  struct fb_var_screeninfo screen_info;
-
   UpdateClock = func;
+
   m_abort = false;
-
-  if (m_fddcic < 0)
-    return false;
-
-  int fb0 = open("/dev/fb0", O_RDONLY | O_NONBLOCK);
-  if (fb0 < 0)
-    return false;
-
-  bool bContinue = !ioctl(fb0, FBIOGET_VSCREENINFO, &screen_info);
-  if (bContinue)
-    bContinue = !ioctl(m_fddcic, DCIC_IOC_CONFIG_DCIC, &screen_info.sync);
-
-  close(fb0);
-  if (!bContinue)
-    return false;
 
   g_Windowing.Register(this);
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up IMX");
@@ -79,19 +52,15 @@ bool CVideoSyncIMX::Setup(PUPDATECLOCK func)
 
 void CVideoSyncIMX::Run(volatile bool& stop)
 {
-  unsigned long counter;
-  unsigned long last = 0;
+  int counter;
 
-  ioctl(m_fddcic, DCIC_IOC_START_VSYNC, 0);
   while (!stop && !m_abort)
   {
-    read(m_fddcic, &counter, sizeof(unsigned long));
+    counter = g_IMX.WaitVsync();
     uint64_t now = CurrentHostCounter();
 
-    UpdateClock((unsigned int)(counter - last), now);
-    last = counter;
+    UpdateClock(counter, now, m_refClock);
   }
-  ioctl(m_fddcic, DCIC_IOC_STOP_VSYNC, 0);
 }
 
 void CVideoSyncIMX::Cleanup()

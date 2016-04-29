@@ -1,0 +1,101 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Maltese (Malta) (http://www.transifex.com/projects/p/kodi-main/language/mt_MT/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: mt_MT\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Qed jindaqq bħalissa"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Fittex..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Ibdel il-modalita'"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Ara bħala 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Tbassir tat-temp"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Azzjonijiet"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Għażliet mixxelanji"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "L-aħħar login"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Lura"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Għaġġel quddiem"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Għażliet tal-playlist"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Żid grupp"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Ibdel l-isem ta' grupp"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Ħassar grupp"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Ibbażat fuq l-Arial"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Info tal-Album"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Add-on tal-lirika"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Għażliet ta' kif jitfittex il-kontenut"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Niżżel is-sottotitoli"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Għażliet tal-istazzjon"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Kbar"

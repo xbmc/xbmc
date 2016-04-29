@@ -530,21 +530,6 @@ void CExternalPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 
-void CExternalPlayer::GetAudioInfo(std::string& strAudioInfo)
-{
-  strAudioInfo = "CExternalPlayer:GetAudioInfo";
-}
-
-void CExternalPlayer::GetVideoInfo(std::string& strVideoInfo)
-{
-  strVideoInfo = "CExternalPlayer:GetVideoInfo";
-}
-
-void CExternalPlayer::GetGeneralInfo(std::string& strGeneralInfo)
-{
-  strGeneralInfo = "CExternalPlayer:GetGeneralInfo";
-}
-
 void CExternalPlayer::SwitchToNextAudioLanguage()
 {
 }

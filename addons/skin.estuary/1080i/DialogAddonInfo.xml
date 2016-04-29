@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<onload condition="!ListItem.Property(addon.isinstalled) + Window.IsActive(addonbrowser)">SetFocus(6)</onload>
+	<onload>SetProperty(infobackground,$INFO[ListItem.Art(fanart)],home)</onload>
+	<onunload>ClearProperty(infobackground,home)</onunload>
+	<controls>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<control type="button">
+				<left>770</left>
+				<top>162</top>
+				<width>1040</width>
+				<height>559</height>
+				<label>-</label>
+			</control>
+			<control type="textbox">
+				<left>840</left>
+				<top>200</top>
+				<width>900</width>
+				<height>380</height>
+				<font>font_textbox</font>
+				<label>$INFO[ListItem.AddonSummary,[B],[/B][CR]][COLOR=white]$INFO[ListItem.AddonDescription][/COLOR][COLOR=white][CR][/COLOR]</label>
+				<textcolor>button_focus</textcolor>
+			</control>
+			<control type="textbox">
+				<left>840</left>
+				<top>610</top>
+				<width>900</width>
+				<height>70</height>
+				<font>font_textbox</font>
+				<label fallback="31008">$INFO[ListItem.AddonDisclaimer,$LOCALIZE[24052]: ]</label>
+				<textcolor>button_focus</textcolor>
+			</control>
+			<control type="image">
+				<left>790</left>
+				<top>600</top>
+				<width>1000</width>
+				<height>3</height>
+				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="grouplist" id="9000">
+				<left>90</left>
+				<top>820</top>
+				<width>1740</width>
+				<height>300</height>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<align>center</align>
+				<itemgap>-18</itemgap>
+				<orientation>horizontal</orientation>
+				<include content="InfoDialogButton">
+					<param name="id" value="12" />
+					<param name="icon" value="icons/infodialogs/launch.png" />
+					<param name="label" value="$LOCALIZE[518]" />
+				</include>
+				<include content="InfoDialogButton">
+					<param name="id" value="9" />
+					<param name="icon" value="icons/infodialogs/configure.png" />
+					<param name="label" value="$LOCALIZE[24020]" />
+				</include>
+				<include content="InfoDialogButton">
+					<param name="id" value="8" />
+					<param name="icon" value="icons/infodialogs/update.png" />
+					<param name="label" value="$LOCALIZE[24069]" />
+				</include>
+				<control type="radiobutton" id="13">
+					<width>262</width>
+					<height>140</height>
+					<align>center</align>
+					<aligny>top</aligny>
+					<textoffsetx>35</textoffsetx>
+					<textoffsety>76</textoffsety>
+					<radioposx>81</radioposx>
+					<radioposy>14</radioposy>
+					<radiowidth>100</radiowidth>
+					<font>font12</font>
+					<visible>Control.IsEnabled(13)</visible>
+				</control>
+				<include content="InfoDialogButton">
+					<param name="id" value="10" />
+					<param name="icon" value="icons/infodialogs/changelog.png" />
+					<param name="label" value="$LOCALIZE[24036]" />
+				</include>
+				<include content="InfoDialogToggleButton">
+					<param name="id" value="7" />
+					<param name="icon_on" value="icons/infodialogs/disable.png" />
+					<param name="icon_off" value="icons/infodialogs/enabled.png" />
+					<param name="selected" value="!String.StartsWith(Control.GetLabel(7),$LOCALIZE[24022]) | !Window.IsActive(addonbrowser)" />
+					<param name="label" value="" />
+				</include>
+				<include content="InfoDialogToggleButton">
+					<param name="id" value="6" />
+					<param name="icon_on" value="icons/infodialogs/uninstall.png" />
+					<param name="icon_off" value="icons/infodialogs/install.png" />
+					<param name="selected" value="ListItem.Property(addon.isinstalled) | !Window.IsActive(addonbrowser)" />
+					<param name="label" value="" />
+				</include>
+			</control>
+		</control>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<left>120</left>
+			<control type="image">
+				<top>162</top>
+				<width>559</width>
+				<height>559</height>
+				<aspectratio>scale</aspectratio>
+				<texture colordiffuse="border_alpha">colors/black.png</texture>
+				<bordertexture border="20">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>186</top>
+				<width>511</width>
+				<height>511</height>
+				<aspectratio aligny="top">scale</aspectratio>
+				<fadetime>300</fadetime>
+				<texture background="true" fallback="DefaultFolderSquare.png">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+			<control type="group">
+				<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>
+				<include>OpenClose_Fade</include>
+				<control type="image">
+					<left>24</left>
+					<top>186</top>
+					<width>511</width>
+					<height>511</height>
+					<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+				</control>
+				<control type="textbox">
+					<left>24</left>
+					<top>186</top>
+					<width>511</width>
+					<height>511</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[24096]</label>
+					<font>font24_title</font>
+				</control>
+			</control>
+		</control>
+		<include content="InfoDialogTopBarInfo">
+			<param name="main_label" value="$INFO[ListItem.AddonName]" />
+			<param name="sub_label" value="$INFO[ListItem.AddonVersion,[COLOR grey],[/COLOR]]$INFO[ListItem.AddonCreator, $LOCALIZE[31071] ]" />
+		</include>
+	</controls>
+</window>

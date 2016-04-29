@@ -36,7 +36,7 @@
  */
 
 #include "XBDateTime.h"
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
 
 class CVideoDatabase;
@@ -203,19 +203,30 @@ namespace PVR
     bool IsDeleted() const { return m_bIsDeleted; }
 
     /*!
-     * @return Broadcast id of the EPG event associated with this recording
+     * @brief Check whether this is a tv or radio recording
+     * @return true if this is a radio recording, false if this is a tv recording
      */
-    unsigned int EpgEvent(void) const { return m_iEpgEventId; }
+    bool IsRadio() const { return m_bRadio; }
+
+    /*!
+     * @return Broadcast id of the EPG event associated with this recording or EPG_TAG_INVALID_UID
+     */
+    unsigned int BroadcastUid(void) const { return m_iEpgEventId; }
+
+    /*!
+     * @return channel id associated with this recording or PVR_CHANNEL_INVALID_UID
+     */
+    int ChannelUid(void) const { return m_iChannelUid; }
 
     /*!
      * @return Get the channel on which this recording is/was running
-     * @note Only works if the recording has an EPG id provided by the add-on
+     * @note Only works if the recording has a channel uid provided by the add-on
      */
     CPVRChannelPtr Channel(void) const;
 
     /*!
      * @return True while the recording is running
-     * @note Only works if the recording has an EPG id provided by the add-on
+     * @note Only works if the recording has a channel uid and an EPG id provided by the add-on
      */
     bool IsBeingRecorded(void) const;
 
@@ -230,6 +241,8 @@ namespace PVR
     bool         m_bGotMetaData;
     bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
     unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
+    int          m_iChannelUid;   /*!< channel uid associated with this recording */
+    bool         m_bRadio;        /*!< radio or tv recording */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

@@ -111,7 +111,7 @@ private:
    \param text the string to format
    \param temp the temperature (in degrees celcius).
    */
-  static void FormatTemperature(std::string &text, int temp);
+  static void FormatTemperature(std::string &text, double temp);
 
   struct ci_less : std::binary_function<std::string, std::string, bool>
   {

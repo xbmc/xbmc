@@ -64,11 +64,11 @@ bool CTextureCache::IsCachedImage(const std::string &url) const
 {
   if (url != "-" && !CURL::IsFullPath(url))
     return true;
-  if (URIUtils::IsInPath(url, "special://skin/") ||
-      URIUtils::IsInPath(url, "special://temp/") ||
-      URIUtils::IsInPath(url, "resource://") ||
-      URIUtils::IsInPath(url, "androidapp://")   ||
-      URIUtils::IsInPath(url, CProfilesManager::GetInstance().GetThumbnailsFolder()))
+  if (URIUtils::PathHasParent(url, "special://skin", true) ||
+      URIUtils::PathHasParent(url, "special://temp", true) ||
+      URIUtils::PathHasParent(url, "resource://", true) ||
+      URIUtils::PathHasParent(url, "androidapp://", true)   ||
+      URIUtils::PathHasParent(url, CProfilesManager::GetInstance().GetThumbnailsFolder(), true))
     return true;
   return false;
 }

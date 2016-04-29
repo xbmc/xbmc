@@ -30,7 +30,6 @@
 #include "TextureManager.h"
 #include "input/InputManager.h"
 #include "GUIWindowManager.h"
-#include "video/VideoReferenceClock.h"
 
 using namespace KODI::MESSAGING;
 
@@ -331,7 +330,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
   {
     bool allowDesktopRes = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
     if (m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
-      SetVideoResolution(g_application.m_pPlayer->GetRenderResolution());
+      g_application.m_pPlayer->TriggerUpdateResolution();
     else if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
     else
@@ -434,9 +433,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     g_Windowing.SetFullScreen(false, info_org, false);
   else
     g_Windowing.ResizeWindow(info_org.iWidth, info_org.iHeight, -1, -1);
-
-  //tell the videoreferenceclock that we changed the refreshrate
-  g_VideoReferenceClock.RefreshChanged();
 
   // make sure all stereo stuff are correctly setup
   SetStereoView(RENDER_STEREO_VIEW_OFF);
@@ -981,6 +977,9 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 
 void CGraphicContext::Flip(bool rendered)
 {
+  if (IsFullScreenVideo())
+    g_Windowing.FinishPipeline();
+
   g_Windowing.PresentRender(rendered);
 
   if(m_stereoMode != m_nextStereoMode)

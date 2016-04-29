@@ -238,7 +238,15 @@ TAB_SIZE               = 2
 # "Side Effects:". You can put \n's in the value part of an alias to insert
 # newlines.
 
-ALIASES                = 
+ALIASES                = "table_start=<table width= 100% style= border bgcolor= 576f9f border= 0>" \
+                         "table_end=</table>" \
+                         "table_h2_l{2}=<tr bgcolor= 576f9f><th width= 40% align=left>\1</th><th width= 60% align=left>\2</th></tr>" \
+                         "table_row2_l{2}=<tr bgcolor=white><td width= 40% align=left>\1</td><td width= 60% align=left>\2</td></tr>" \
+                         "table_h3{3}=<tr bgcolor= 576f9f><th width= 30% align=left>\1</th><th width= 10% align=left>\2</th><th width= 60% align=left>\3</th></tr>" \
+                         "table_row3{3}=<tr bgcolor=white><td width= 30% align=left>\1</td><td width= 10% align=left>\2</td><td width= 60% align=left>\3</td></tr>" \
+                         "python_func{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
+                         "python_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
+                         "doc_header{1}=\htmlonly <h3><span style=\"text-decoration: underline;\"><span  style=\"font-style: italic;\"><span style=\"color: rgb(102, 102, 102);\">\1</span></span></span></h3> \endhtmlonly"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -782,6 +790,7 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = ../xbmc \
+                         ../CODING_GUIDELINES.dox \
                          .
 
 # This tag can be used to specify the character encoding of the source files

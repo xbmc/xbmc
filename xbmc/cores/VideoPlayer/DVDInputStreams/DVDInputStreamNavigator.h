@@ -21,6 +21,7 @@
  */
 
 #include "DVDInputStream.h"
+#include "DVDDemuxers/DVDDemux.h"
 #include "../IVideoPlayer.h"
 #include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include <string>
@@ -63,8 +64,6 @@ struct DVDNavAudioStreamInfo : DVDNavStreamInfo
 
 struct DVDNavSubtitleStreamInfo : DVDNavStreamInfo
 {
-  std::string name;
-  std::string language;
   CDemuxStream::EFlags flags;
 
   DVDNavSubtitleStreamInfo() : DVDNavStreamInfo(),
@@ -104,11 +103,11 @@ class CDVDInputStreamNavigator
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IChapter
-  , public CDVDInputStream::ISeekTime
+  , public CDVDInputStream::IPosTime
   , public CDVDInputStream::IMenus
 {
 public:
-  CDVDInputStreamNavigator(IVideoPlayer* player, CFileItem& fileitem);
+  CDVDInputStreamNavigator(IVideoPlayer* player, const CFileItem& fileitem);
   virtual ~CDVDInputStreamNavigator();
 
   virtual bool Open();
@@ -168,12 +167,14 @@ public:
   int64_t GetChapterPos(int ch=-1);
   bool SeekChapter(int iChapter);
 
+  CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
   int GetTotalTime(); // the total time in milli seconds
   int GetTime(); // the current position in milli seconds
 
   float GetVideoAspectRatio();
 
-  bool SeekTime(int iTimeInMsec); //seek within current pg(c)
+  CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
+  bool PosTime(int iTimeInMsec); //seek within current pg(c)
 
   std::string GetDVDTitleString();
   std::string GetDVDSerialString();

@@ -62,7 +62,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
   items.Clear();
 
   std::string pathWithSlash(url.Get());
-  if (pathWithSlash.back() != '\\')
+  if (!pathWithSlash.empty() && pathWithSlash.back() != '\\')
     pathWithSlash.push_back('\\');
 
   std::wstring searchMask(CWIN32Util::ConvertPathToWin32Form(pathWithSlash));
@@ -88,7 +88,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     std::wstring itemNameW(findData.cFileName);
     if (itemNameW == L"." || itemNameW == L"..")
       continue;
-    
+
     std::string itemName;
     if (!g_charsetConverter.wToUTF8(itemNameW, itemName, true) || itemName.empty())
     {
@@ -104,18 +104,18 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     else
       pItem->SetPath(pathWithSlash + itemName);
 
-    if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0 
+    if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0
           || itemName.front() == '.') // mark files starting from dot as hidden
       pItem->SetProperty("file:hidden", true);
 
-    // calculation of size and date costs a little on win32 
+    // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
     FILETIME localTime;
     if (FileTimeToLocalFileTime(&findData.ftLastWriteTime, &localTime) == TRUE)
       pItem->m_dateTime = localTime;
     else
       pItem->m_dateTime = 0;
- 
+
     if (!pItem->m_bIsFolder)
         pItem->m_dwSize = (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
 
@@ -123,7 +123,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
   } while (FindNextFileW(hSearch, &findData));
 
   FindClose(hSearch);
-  
+
   return true;
 }
 

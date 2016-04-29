@@ -111,8 +111,7 @@ private:
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
       FLOAT tu, tv;   // Y Texture coordinates
-      FLOAT tu2, tv2; // U Texture coordinates
-      FLOAT tu3, tv3; // V Texture coordinates
+      FLOAT tu2, tv2; // U and V Textures coordinates
   };
 };
 

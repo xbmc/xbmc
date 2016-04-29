@@ -32,12 +32,14 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
 #include "settings/SettingAddon.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
+#include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN_OSX)
@@ -76,6 +78,14 @@ bool CheckPVRParentalPin(const std::string &condition, const std::string &value,
 bool HasPeripherals(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return PERIPHERALS::g_peripherals.GetNumberOfPeripherals() > 0;
+}
+
+bool SupportsPeripheralControllers(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  using namespace PERIPHERALS;
+
+  PeripheralBusAddonPtr bus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+  return bus != nullptr && bus->HasFeature(FEATURE_JOYSTICK);
 }
 
 bool IsFullscreen(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
@@ -172,6 +182,74 @@ bool ProfileLockMode(const std::string &condition, const std::string &value, con
   return CProfilesManager::GetInstance().GetCurrentProfile().getLockMode() == lock;
 }
 
+bool GreaterThan(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  if (setting == NULL)
+    return false;
+
+  const CSettingInt *settingInt = dynamic_cast<const CSettingInt*>(setting);
+  if (settingInt == NULL)
+    return false;
+
+  char *tmp = NULL;
+
+  int lhs = settingInt->GetValue();
+  int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
+
+  return lhs > rhs;
+}
+
+bool GreaterThanOrEqual(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  if (setting == NULL)
+    return false;
+
+  const CSettingInt *settingInt = dynamic_cast<const CSettingInt*>(setting);
+  if (settingInt == NULL)
+    return false;
+
+  char *tmp = NULL;
+
+  int lhs = settingInt->GetValue();
+  int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
+
+  return lhs >= rhs;
+}
+
+bool LessThan(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  if (setting == NULL)
+    return false;
+
+  const CSettingInt *settingInt = dynamic_cast<const CSettingInt*>(setting);
+  if (settingInt == NULL)
+    return false;
+
+  char *tmp = NULL;
+
+  int lhs = settingInt->GetValue();
+  int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
+
+  return lhs < rhs;
+}
+
+bool LessThanOrEqual(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  if (setting == NULL)
+    return false;
+
+  const CSettingInt *settingInt = dynamic_cast<const CSettingInt*>(setting);
+  if (settingInt == NULL)
+    return false;
+
+  char *tmp = NULL;
+
+  int lhs = settingInt->GetValue();
+  int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
+
+  return lhs <= rhs;
+}
+
 std::set<std::string> CSettingConditions::m_simpleConditions;
 std::map<std::string, SettingConditionCheck> CSettingConditions::m_complexConditions;
 
@@ -206,17 +284,14 @@ void CSettingConditions::Initialize()
 #if HAS_GLES == 2
   m_simpleConditions.insert("has_glesv2");
 #endif
-#ifdef HAS_SDL_JOYSTICK
-  m_simpleConditions.insert("has_sdl_joystick");
-#endif
-#ifdef HAS_TOUCH_SKIN
-  m_simpleConditions.insert("has_touch_skin");
-#endif
 #ifdef HAS_TIME_SERVER
   m_simpleConditions.insert("has_time_server");
 #endif
 #ifdef HAS_WEB_SERVER
   m_simpleConditions.insert("has_web_server");
+#endif
+#ifdef HAS_FILESYSTEM_SMB
+  m_simpleConditions.insert("has_filesystem_smb");
 #endif
 #ifdef HAS_ZEROCONF
   m_simpleConditions.insert("has_zeroconf");
@@ -268,6 +343,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("checkmasterlock",               CheckMasterLock));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("checkpvrparentalpin",           CheckPVRParentalPin));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("hasperipherals",                HasPeripherals));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("supportsperipheralcontrollers", SupportsPeripheralControllers));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isfullscreen",                  IsFullscreen));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("ismasteruser",                  IsMasterUser));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isusingttfsubtitles",           IsUsingTTFSubtitles));
@@ -286,6 +362,10 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("profilelockmode",               ProfileLockMode));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("aesettingvisible",              CAEFactory::IsSettingVisible));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("codecoptionvisible",            CDVDVideoCodec::IsSettingVisible));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("gt",                            GreaterThan));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("gte",                           GreaterThanOrEqual));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lt",                            LessThan));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lte",                           LessThanOrEqual));
 }
 
 bool CSettingConditions::Check(const std::string &condition, const std::string &value /* = "" */, const CSetting *setting /* = NULL */)

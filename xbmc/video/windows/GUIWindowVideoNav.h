@@ -49,7 +49,7 @@ public:
   virtual bool OnAction(const CAction &action) override;
   virtual bool OnMessage(CGUIMessage& message) override;
 
-  virtual void OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr &info) override;
+  virtual void OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr &info) override;
 
   /*! \brief Load video information from the database for these items (public static version)
    Useful for grabbing information for file listings, from watched status to full metadata
@@ -80,6 +80,7 @@ protected:
   virtual void OnDeleteItem(CFileItemPtr pItem) override;
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  bool OnAddMediaSource() override;
   virtual bool OnClick(int iItem, const std::string &player = "") override;
   virtual std::string GetStartFolder(const std::string &dir) override;
 

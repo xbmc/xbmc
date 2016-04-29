@@ -22,7 +22,6 @@ set(SOURCES AddonsDirectory.cpp
             FTPDirectory.cpp
             FTPParse.cpp
             HTTPDirectory.cpp
-            HTTPFile.cpp
             IDirectory.cpp
             IFile.cpp
             ImageFile.cpp
@@ -48,7 +47,6 @@ set(SOURCES AddonsDirectory.cpp
             PlaylistFileDirectory.cpp
             PluginDirectory.cpp
             PVRDirectory.cpp
-            PVRFile.cpp
             RarDirectory.cpp
             RarFile.cpp
             RarManager.cpp
@@ -105,12 +103,10 @@ set(HEADERS AddonsDirectory.h
             FileFactory.h
             FileReaderFile.h
             HTTPDirectory.h
-            HTTPFile.h
             IDirectory.h
             IFile.h
             IFileDirectory.h
             IFileTypes.h
-            ILiveTV.h
             ImageFile.h
             ISO9660Directory.h
             ISOFile.h
@@ -128,7 +124,6 @@ set(HEADERS AddonsDirectory.h
             OverrideDirectory.h
             OverrideFile.h
             PVRDirectory.h
-            PVRFile.h
             PipeFile.h
             PipesManager.h
             PlaylistDirectory.h

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_502_FanArt">
+		<include content="UpDownArrows">
+			<param name="container_id" value="502" />
+			<param name="visible" value="!System.HasModalDialog" />
+		</include>
+		<control type="group">
+			<description>Fanart Viewtype</description>
+			<left>90</left>
+			<top>167</top>
+			<control type="group">
+				<include>OpenClose_Right</include>
+				<visible>Control.IsVisible(502)</visible>
+				<include>Visible_Right</include>
+				<control type="image">
+					<left>720</left>
+					<top>-4</top>
+					<width>1046</width>
+					<height>750</height>
+					<texture border="22">dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="image">
+					<left>747</left>
+					<top>24</top>
+					<width>992</width>
+					<height>558</height>
+					<fadetime>300</fadetime>
+					<texture border="2" fallback="DefaultVideo.png" background="true">$VAR[FanartImageVar]</texture>
+					<aspectratio align="center" aligny="bottom">keep</aspectratio>
+				</control>
+				<control type="group">
+					<left>1680</left>
+					<top>30</top>
+					<include>UserRatingCircle</include>
+				</control>
+				<control type="image">
+					<left>747</left>
+					<top>582</top>
+					<width>992</width>
+					<height>136</height>
+					<texture colordiffuse="A0000000">colors/black.png</texture>
+				</control>
+				<control type="textbox">
+					<left>757</left>
+					<top>589</top>
+					<width>972</width>
+					<height>121</height>
+					<font>font12</font>
+					<label>$INFO[ListItem.Plot]</label>
+				</control>
+			</control>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<top>18</top>
+				<visible>Control.IsVisible(502)</visible>
+				<include>Visible_Left</include>
+				<include content="ListContainer">
+					<param name="list_id" value="502" />
+					<param name="viewtype_label" value="$LOCALIZE[20445]" />
+				</include>
+			</control>
+		</control>
+	</include>
+</includes>

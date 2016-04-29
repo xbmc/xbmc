@@ -186,7 +186,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   g_RBP.Initialize();
 
   /* if we are raw need to let gpu know */
-  m_passthrough = m_format.m_dataFormat == AE_FMT_RAW;
+  m_passthrough = format.m_dataFormat == AE_FMT_RAW;
 
   m_initDevice = device;
   m_initFormat = format;

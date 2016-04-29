@@ -82,7 +82,7 @@ namespace OVERLAY {
     virtual ~CRenderer();
 
     void AddOverlay(CDVDOverlay* o, double pts, int index);
-    void Render(int idx);
+    virtual void Render(int idx);
     void Flush();
     void Release(int idx);
     bool HasOverlay(int idx);
@@ -114,5 +114,6 @@ namespace OVERLAY {
     std::map<unsigned int, COverlay*> m_textureCache;
     static unsigned int m_textureid;
     CRect m_rv, m_rs, m_rd;
+    std::string m_font, m_fontBorder;
   };
 }

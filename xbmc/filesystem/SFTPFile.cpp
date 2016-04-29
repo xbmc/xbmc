@@ -101,7 +101,7 @@ static const char * SFTPErrorText(int sftp_error)
 
 CSFTPSession::CSFTPSession(const std::string &host, unsigned int port, const std::string &username, const std::string &password)
 {
-  CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s:%d' with user '%s'", host.c_str(), port, username.c_str());
+  CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s:%d'", host.c_str(), port);
   CSingleLock lock(m_critSect);
   if (!Connect(host, port, username, password))
     Disconnect();

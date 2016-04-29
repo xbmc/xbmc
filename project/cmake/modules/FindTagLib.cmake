@@ -20,10 +20,8 @@ endif()
 find_path(TAGLIB_INCLUDE_DIR taglib/tag.h
                              PATHS ${PC_TAGLIB_INCLUDEDIR})
 find_library(TAGLIB_LIBRARY_RELEASE NAMES tag
-                                    PATH_SUFFIXES ${CONFIGURATION_LIBDIR_RELEASE}
                                     PATHS ${PC_TAGLIB_LIBDIR})
-find_library(TAGLIB_LIBRARY_DEBUG NAMES tag
-                                  PATH_SUFFIXES ${CONFIGURATION_LIBDIR_DEBUG}
+find_library(TAGLIB_LIBRARY_DEBUG NAMES tagd
                                   PATHS ${PC_TAGLIB_LIBDIR})
 set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
 

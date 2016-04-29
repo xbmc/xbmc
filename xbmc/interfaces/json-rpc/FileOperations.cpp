@@ -32,6 +32,7 @@
 #include "utils/URIUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoDatabase.h"
 
 using namespace XFILE;
 using namespace JSONRPC;
@@ -211,6 +212,51 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
 
   HandleFileItem("id", true, "filedetails", item, parameterObject, param["properties"], result, false);
   return OK;
+}
+
+JSONRPC_STATUS CFileOperations::SetFileDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  std::string media = parameterObject["media"].asString();
+  StringUtils::ToLower(media);
+
+  if (media.compare("video") != 0)
+    return InvalidParams;
+
+  std::string file = parameterObject["file"].asString();
+  if (!CFile::Exists(file))
+    return InvalidParams;
+
+  if (!CFileUtils::RemoteAccessAllowed(file))
+    return InvalidParams;
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  int fileId = videodatabase.AddFile(file);
+
+  CVideoInfoTag infos;
+  if (!videodatabase.GetFileInfo("", infos, fileId))
+    return InvalidParams;
+
+  CDateTime lastPlayed = infos.m_lastPlayed;
+  int playcount = infos.m_playCount;
+  if (!parameterObject["lastplayed"].isNull())
+  {
+    lastPlayed.Reset();
+    SetFromDBDateTime(parameterObject["lastplayed"], lastPlayed);
+    playcount = lastPlayed.IsValid() ? std::max(1, playcount) : 0;
+  }
+  if (!parameterObject["playcount"].isNull())
+    playcount = parameterObject["playcount"].asInteger();
+  if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+    videodatabase.SetPlayCount(CFileItem(infos), playcount, lastPlayed);
+
+  CVideoLibrary::UpdateResumePoint(parameterObject, infos, videodatabase);
+
+  videodatabase.GetFileInfo("", infos, fileId);
+  CJSONRPCUtils::NotifyItemUpdated(infos);
+  return ACK;
 }
 
 JSONRPC_STATUS CFileOperations::PrepareDownload(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

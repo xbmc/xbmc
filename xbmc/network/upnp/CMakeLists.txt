@@ -23,5 +23,6 @@ include_directories(${CORE_SOURCE_DIR}/lib/libUPnP
                     ${CORE_SOURCE_DIR}/lib/libUPnP/Neptune/Source/Core)
 
 add_definitions(-DNPT_CONFIG_ENABLE_LOGGING)
-  
+
 core_add_library(network_upnp)
+add_dependencies(network_upnp libcpluff)

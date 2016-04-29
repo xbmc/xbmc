@@ -1,0 +1,389 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/kodi-main/language/pl_PL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Teraz odtwarzane"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Szukaj..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Pokazuj fototapety mediów w tle interfejsu"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Tryb kinowy"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Zmień tryb "
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Odtwarzaj w trybie 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Filmy losowe"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Film nieobejrzane"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Pobierz ikony"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmy w trakcie oglądania"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Albumy najczęściej odtwarzane"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Albumy losowe"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Prognoza"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Operacje"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Opcje dodatkowe"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sortuj"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Widok"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Kolejne utwory"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Przejdź do albumów"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Przejdź do utworów"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Pokazuj fototapetę"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Ostatnio zalogowany"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Użycie pamięci"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Informacje o wersji"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Kolejność"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Twoja ocena"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Rozszerzone"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Strony"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "pozycji"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Lista utworów"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Cofnij"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Przewiń"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Anuluj aktualizację"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Opcje listy odtwarzania"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Dodaj grupę"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Przemianuj grupę"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Usuń grupę"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Więcej informacji..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Dostępne"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Przełącz język"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Bazujące na Arialu"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Pobierz napisy"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Przejdź do listy odtwarzania"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Pokazuj ekran logowania po uruchomieniu"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Loguj automatycznie po uruchomieniu"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Dostępne aktualizacje"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minut"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Pozycje menu startowego"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Sekcje"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "nieobejrzane"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Lista wideo"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Lista utworów"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Dziennik zdarzeń"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Wybierz szablon"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Ostatnia aktualizacja"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Dodaj źródła mediów"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "po"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Opcje zasilania"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Tytuły"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Serie filmowe"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Odtwarzaj dysk"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Poprzednia lokalizacja"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Następna lokalizacja"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Brak obsady"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Koniec o"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Informacje o albumie"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Dodatek Tekst utworu"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Ustawienia dodatku tekstu utworu"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Ustawienia wizializacji"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Grupa kanałów"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadane"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Ustawienia dostawcy"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Opcje skanowania zawartości"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Dostępne grupy"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Szukaj zwiastunu"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Pobierz napisy"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Menu wideo"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Pokazuj informacje o pogodzie w górnym pasku"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Pokazuj etykiety mediów dla filmów /odcinków / teledysków"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Używaj animacji przesuwania"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Dostępne lokalne napisy"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Opcje kanału"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Wprowadź tekst..."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletekst"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Używaj niestandardowego globalnego tła"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Wybierz ścieżkę do folderu z obrazem"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Seriale nieobejrzane"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Ustaw dostawcę pogody"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Seriale nieobejrzane"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Pokazuj obrazy na mapie"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Pokazuj ikony"

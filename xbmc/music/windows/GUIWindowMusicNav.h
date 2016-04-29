@@ -46,7 +46,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual bool OnClick(int iItem);
+  virtual bool OnClick(int iItem, const std::string &player = "") override;
   virtual std::string GetStartFolder(const std::string &url);
 
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);

@@ -24,6 +24,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/TextureManager.h"
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
@@ -62,7 +63,16 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
   AddAddonsSource("executable", g_localizeStrings.Get(1043), "DefaultAddonProgram.png");
 #if defined(TARGET_ANDROID)
-  AddAndroidSource("apps", g_localizeStrings.Get(20244), "DefaultProgram.png");
+  {
+    CMediaSource source;
+    source.strPath = "androidapp://sources/apps/";
+    source.strName = g_localizeStrings.Get(20244);
+    if (g_TextureManager.HasTexture("DefaultProgram.png"))
+      source.m_strThumbnailImage = "DefaultProgram.png";
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    source.m_ignore = true;
+    m_sources.emplace_back(std::move(source));
+  }
 #endif
 
   VECSOURCES *programSources = CMediaSourceSettings::GetInstance().GetSources("programs");

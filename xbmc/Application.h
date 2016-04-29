@@ -27,6 +27,7 @@
 #include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
+#include "ServiceManager.h"
 
 #include <map>
 #include <memory>
@@ -92,7 +93,6 @@ namespace MUSIC_INFO
 #define VOLUME_MINIMUM 0.0f        // -60dB
 #define VOLUME_MAXIMUM 1.0f        // 0dB
 #define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
-#define VOLUME_CONTROL_STEPS 90    // 90 steps
 
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)
@@ -150,7 +150,6 @@ public:
 
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
-  void StartPVRManager();
   void StopPVRManager();
   bool IsCurrentThread() const;
   void Stop(int exitCode);
@@ -180,7 +179,7 @@ public:
   bool PlayMedia(const CFileItem& item, const std::string &player, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
-  PlayBackRet PlayFile(const CFileItem& item, const std::string& player, bool bRestart = false);
+  PlayBackRet PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
   void UpdateFileState();
   void LoadVideoSettings(const CFileItem& item);
@@ -389,6 +388,8 @@ public:
    */
   void UnregisterActionListener(IActionListener *listener);
 
+  std::unique_ptr<CServiceManager> m_ServiceManager;
+
 protected:
   virtual bool OnSettingsSaving() const override;
 
@@ -461,8 +462,6 @@ protected:
   int m_currentStackPosition;
   int m_nextPlaylistItem;
 
-  bool m_bPresentFrame;
-  unsigned int m_lastFrameTime;
   unsigned int m_lastRenderTime;
   bool m_skipGuiRender;
 

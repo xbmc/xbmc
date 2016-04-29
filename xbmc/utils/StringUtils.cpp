@@ -37,13 +37,10 @@
 #endif
 #include "utils/fstrcmp.h"
 #include "Util.h"
-#include "LangInfo.h"
-#include <locale>
 #include <functional>
 
 #include <assert.h>
 #include <math.h>
-#include <sstream>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
@@ -403,6 +400,10 @@ void StringUtils::ToCapitalize(std::wstring &str)
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
 {
+  // before we do the char-by-char comparison, first compare sizes of both strings.
+  // This led to a 33% improvement in benchmarking on average. (size() just returns a member of std::string)
+  if (str1.size() != str2.size())
+    return false;
   return EqualsNoCase(str1.c_str(), str2.c_str());
 }
 
@@ -755,26 +756,56 @@ std::vector<std::string> StringUtils::Split(const std::string& input, const char
   return results;
 }
 
-std::vector<std::string> StringUtils::SplitMulti(const std::string& input, const char* delimiters, size_t iMaxStrings /*= 0*/)
+std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string> &input, const std::vector<std::string> &delimiters, unsigned int iMaxStrings /* = 0 */)
 {
-  std::vector<std::string> results;
   if (input.empty())
+    return std::vector<std::string>(); 
+
+  std::vector<std::string> results(input);
+
+  if (delimiters.empty() || (iMaxStrings > 0 && iMaxStrings <= input.size()))
     return results;
 
-  size_t nextDelim;
-  size_t textPos = 0;
-  do
+  std::vector<std::string> strings1;
+  if (iMaxStrings == 0)
   {
-    if (--iMaxStrings == 0)
+    for (size_t di = 0; di < delimiters.size(); di++)
     {
-      results.push_back(input.substr(textPos));
-      break;
+      for (size_t i = 0; i < results.size(); i++)
+      {
+        std::vector<std::string> substrings = StringUtils::Split(results[i], delimiters[di]);
+        for (size_t j = 0; j < substrings.size(); j++)
+          strings1.push_back(substrings[j]);
+      }
+      results = strings1;
+      strings1.clear();
     }
-    nextDelim = input.find_first_of(delimiters, textPos);
-    results.push_back(input.substr(textPos, nextDelim - textPos));
-    textPos = nextDelim + 1;
-  } while (nextDelim != std::string::npos);
+    return results;
+  }
 
+  // Control the number of strings input is split into, keeping the original strings. 
+  // Note iMaxStrings > input.size() 
+  int iNew = iMaxStrings - results.size();
+  for (size_t di = 0; di < delimiters.size(); di++)
+  {
+    for (size_t i = 0; i < results.size(); i++)
+    {
+      if (iNew > 0)
+      {
+        std::vector<std::string> substrings = StringUtils::Split(results[i], delimiters[di], iNew + 1);
+        iNew = iNew - substrings.size() + 1;
+        for (size_t j = 0; j < substrings.size(); j++)
+          strings1.push_back(substrings[j]);
+      }
+      else
+        strings1.push_back(results[i]);
+    }
+    results = strings1;
+    iNew = iMaxStrings - results.size();
+    strings1.clear();
+    if ((iNew <= 0))
+      break;  //Stop trying any more delimiters
+  }
   return results;
 }
 

@@ -1,0 +1,305 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/kodi-main/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "音频设置"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "大写锁定"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "可视化效果选项"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "可视化效果预设"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "上下文菜单"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "工作中..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "最近"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "电影"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "集"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "专辑"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "页"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "信息列表"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "登录"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "已更新："
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "快进"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "回退"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "结束时间"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "排序：升序"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "排序：降序"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "打开播放列表"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "保存播放列表"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "关闭播放列表"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "系统音乐文件"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "当前播放列表"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "返回"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "位置"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "视图"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "当前温度"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "最后更新"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "数据来源"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "内存使用："
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "最近登录"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "首播"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "视频菜单"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "下载字幕"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "图文字幕"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "皮肤默认"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "基于 Arial 字体"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "变换皮肤 · 设置语言和区域 · 修改文件列表参数 · 设置屏幕保护"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "管理视频资料库 · 设置视频播放参数 · 修改视频列表参数 · 设置字幕字体"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "管理音乐资料库 · 设置音乐播放选项 · 修改音乐列表选项 · 设置歌曲提交 "
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "设置图片列表参数 · 设置幻灯片播放"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "设置三个获取天气信息的城市"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "设置通过 UPnP 和 HTTP 控制 Kodi · 设置文件共享 · 设置互联网访问参数"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电参数 · 启用调试 · 设置管理员和锁定"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "管理你安装的插件 · 在 kodi.tv 浏览并安装插件 · 修改插件设置"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "选择您的用户配置文件[CR]登录并继续"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "主菜单按钮"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "主界面插件快速链接"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "其他选项"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "主界面天气信息和按钮"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "插件快捷方式"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "同步"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "使用自定义背景"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "背景："
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "配置电视设置 · 更改全屏信息 · 管理电子节目单数据设置"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "直播电视"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "隐藏视频背景"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "隐藏可视化效果背景"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "频道设置"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "可用组"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "增加组"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "更名组"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "删除组"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "显示隐藏的"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "显示已删除"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "首次运行"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "关于 Estouchy 导航需要知道两点"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi Logo 图标同时是一个“主页”按钮。任何时候点击它，将回到主界面。"
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "播放音频或视频时，点击屏幕顶部的项目标题，将进入全屏可视化效果或全屏视频窗口。"
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "正在播放标题..."

@@ -54,11 +54,6 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-AddonPtr CRepository::Clone() const
-{
-  return AddonPtr(new CRepository(*this));
-}
-
 std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
   DirList dirs;
@@ -136,7 +131,7 @@ std::string CRepository::GetAddonHash(const AddonPtr& addon) const
   std::string checksum;
   DirList::const_iterator it;
   for (it = m_dirs.begin();it != m_dirs.end(); ++it)
-    if (URIUtils::IsInPath(addon->Path(), it->datadir))
+    if (URIUtils::PathHasParent(addon->Path(), it->datadir, true))
       break;
   if (it != m_dirs.end() && it->hashes)
   {
@@ -158,7 +153,7 @@ std::string CRepository::GetAddonHash(const AddonPtr& addon) const
 bool CRepository::FetchIndex(const std::string& url, VECADDONS& addons)
 {
   XFILE::CCurlFile http;
-  http.SetContentEncoding("gzip");
+  http.SetAcceptEncoding("gzip");
 
   std::string content;
   if (!http.Get(url, content))
@@ -266,7 +261,7 @@ bool CRepositoryUpdateJob::DoWork()
     textureDB.CommitMultipleExecute();
   }
 
-  database.AddRepository(m_repo->ID(), addons, newChecksum, m_repo->Version());
+  database.UpdateRepositoryContent(m_repo->ID(), addons, newChecksum, m_repo->Version());
 
   //Update broken status
   database.BeginMultipleExecute();

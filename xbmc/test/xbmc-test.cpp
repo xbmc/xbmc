@@ -29,20 +29,10 @@
 #include <cstdio>
 #include <cstdlib>
 
-class NullLogger : public XbmcCommons::ILogger
-{
-public:
-  void log(int loglevel, const char* message) {}
-};
-
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);
   CXBMCTestUtils::Instance().ParseArgs(argc, argv);
-
-  // we need to configure CThread to use a dummy logger
-  NullLogger* nullLogger = new NullLogger();
-  CThread::SetLogger(nullLogger);
 
   if (!testing::AddGlobalTestEnvironment(new TestBasicEnvironment()))
   {
@@ -50,8 +40,6 @@ int main(int argc, char **argv)
     exit(EXIT_FAILURE);
   }
   int ret = RUN_ALL_TESTS();
-
-  delete nullLogger;
 
   return ret;
 }

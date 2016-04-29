@@ -36,9 +36,9 @@ protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true);
   virtual bool OnPlayMedia(int iItem);
-  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  bool OnAddMediaSource() override;
   virtual std::string GetStartFolder(const std::string &dir);
 
   CGUIDialogProgress* m_dlgProgress;

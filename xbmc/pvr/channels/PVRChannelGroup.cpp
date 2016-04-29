@@ -23,11 +23,13 @@
  * - use Observable here, so we can use event driven operations later
  */
 
+#include "PVRChannelGroup.h"
+#include "PVRChannelGroupsContainer.h"
+
 #include "Util.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
-#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -38,9 +40,6 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-
-#include "PVRChannelGroup.h"
-#include "PVRChannelGroupsContainer.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -458,7 +457,7 @@ CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 
   {
     channel = it->second.channel;
     if (channel->ChannelID() != iCurrentChannel &&
-        g_PVRClients->IsConnectedClient(channel->ClientID()) &&
+        g_PVRClients->IsCreatedClient(channel->ClientID()) &&
         channel->LastWatched() > 0 &&
         (!returnChannel || channel->LastWatched() > returnChannel->LastWatched()))
     {

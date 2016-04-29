@@ -1,0 +1,62 @@
+/*!
+
+\page Progress_Control Progress Control
+\brief **Used to show the progress of a particular operation.**
+
+\tableofcontents
+
+The progress control is used to show the progress of an item that may take a
+long time, or to show how far through a movie you are. You can choose the
+position, size, and look of the progress control.
+
+
+--------------------------------------------------------------------------------
+\section Progress_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="progress" id="12">
+      <description>My first progress control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>30</height>
+      <visible>true</visible>
+      <reveal>false</reveal>
+      <texturebg>mybackgroundtexture.png</texturebg>
+      <lefttexture>mydowntexture.png</lefttexture>
+      <midtexture>mymidtexture.png</midtexture>
+      <righttexture>myrighttexture.png</righttexture>
+      <overlaytexture>myoverlaytexture.png</overlaytexture>
+      <info></info>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Progress_Control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag             | Description                                                   |
+|----------------:|:--------------------------------------------------------------|
+| reveal          | If set to true the midtexture will reveal itself instead of stretching to fill the gap (works best when its the same size as **texturebg**)
+| texturebg       | Specifies the image file which should be displayed in the background of the progress control. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| lefttexture     | Specifies the image file which should be displayed for the left side of the progress bar. This is rendered on the left side of the bar.
+| midtexture      | Specifies the image file which should be displayed for the middle portion of the progress bar. This is the `fill` texture used to fill up the bar. It's positioned on the right of the <b>`<lefttexture>`</b> texture, and fills the gap between the <b>`<lefttexture>`</b> and <b>`<righttexture>`</b> textures, depending on how far progressed the item is.
+| righttexture    | Specifies the image file which should be displayed for the right side of the progress bar. This is rendered on the right side of the bar.
+| overlaytexture  | Specifies the image file which should be displayed over the top of all other images in the progress bar. It is centered vertically and horizontally within the space taken up by the background image.
+| info            | Specifies the information that the progress bar is reporting on. [See here for more information](http://kodi.wiki/view/InfoLabels).
+
+
+--------------------------------------------------------------------------------
+\section Progress_Control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+
+*/

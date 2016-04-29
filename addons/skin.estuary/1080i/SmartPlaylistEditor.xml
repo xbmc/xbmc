@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">22</defaultcontrol>
+	<coordinates>
+		<left>310</left>
+		<top>80</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<include content="DialogBackgroundCommons">
+				<param name="DialogBackgroundWidth" value="1300" />
+				<param name="DialogBackgroundHeight" value="920" />
+				<param name="DialogHeaderLabel" value="-" />
+				<param name="DialogHeaderId" value="2" />
+			</include>
+			<control type="grouplist" id="500">
+				<orientation>vertical</orientation>
+				<left>10</left>
+				<top>95</top>
+				<onright>10</onright>
+				<onleft>10</onleft>
+				<ondown>9001</ondown>
+				<onup>9001</onup>
+				<itemgap>-20</itemgap>
+				<control type="spincontrolex" id="22">
+					<description>Set Playlist type</description>
+					<width>660</width>
+					<include>SettingsItemCommon</include>
+					<label>$LOCALIZE[467]</label>
+				</control>
+				<control type="label" id="1100">
+					<description>Name Label</description>
+					<width>660</width>
+					<label>$LOCALIZE[21433]</label>
+					<include>SettingsLabelCommon</include>
+				</control>
+				<control type="edit" id="12">
+					<description>Name Button</description>
+					<width>660</width>
+					<include>SettingsItemCommon</include>
+				</control>
+				<control type="label" id="1101">
+					<description>Name Label</description>
+					<width>660</width>
+					<label>$LOCALIZE[31042]</label>
+					<include>SettingsLabelCommon</include>
+				</control>
+				<control type="spincontrolex" id="16">
+					<width>660</width>
+					<label>$LOCALIZE[21424]</label>
+					<include>SettingsItemCommon</include>
+				</control>
+				<control type="spincontrolex" id="17">
+					<width>660</width>
+					<label>$LOCALIZE[21427]</label>
+					<include>SettingsItemCommon</include>
+				</control>
+				<control type="spincontrolex" id="18">
+					<label>$LOCALIZE[21429]</label>
+					<width>660</width>
+					<include>SettingsItemCommon</include>
+				</control>
+				<control type="togglebutton" id="19">
+					<width>660</width>
+					<include>SettingsItemCommon</include>
+					<label>$LOCALIZE[31032]: $LOCALIZE[21431]</label>
+					<altlabel>$LOCALIZE[31032]: $LOCALIZE[21430]</altlabel>
+				</control>
+				<control type="spincontrolex" id="23">
+					<width>660</width>
+					<label>$LOCALIZE[21458]</label>
+					<include>SettingsItemCommon</include>
+				</control>
+				<control type="radiobutton" id="24">
+					<width>660</width>
+					<include>SettingsItemCommon</include>
+					<label>$LOCALIZE[467]: $LOCALIZE[21459]</label>
+				</control>
+			</control>
+			<control type="grouplist" id="9001">
+				<orientation>horizontal</orientation>
+				<left>0</left>
+				<width>1300</width>
+				<align>center</align>
+				<top>820</top>
+				<onup>24</onup>
+				<ondown>22</ondown>
+				<include content="DefaultDialogButton">
+					<param name="id" value="20" />
+					<param name="label" value="$LOCALIZE[186]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="21" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+			<control type="image">
+				<left>650</left>
+				<top>95</top>
+				<width>640</width>
+				<height>485</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="list" id="10">
+				<description>Rules List Control</description>
+				<left>670</left>
+				<top>115</top>
+				<width>600</width>
+				<height>435</height>
+				<onleft>500</onleft>
+				<onright>500</onright>
+				<ondown>9001</ondown>
+				<onup>9001</onup>
+				<include content="DefaultSimpleListLayout">
+					<param name="width" value="600" />
+					<param name="list_id" value="10" />
+				</include>
+			</control>
+			<control type="textbox">
+				<left>680</left>
+				<top>570</top>
+				<width>540</width>
+				<height>248</height>
+				<aligny>top</aligny>
+				<label>$LOCALIZE[31043]</label>
+				<textcolor>grey</textcolor>
+				<font>font12</font>
+			</control>
+		</control>
+	</controls>
+</window>

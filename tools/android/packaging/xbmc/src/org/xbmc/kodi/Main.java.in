@@ -3,9 +3,11 @@ package org.xbmc.@APP_NAME_LC@;
 import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.View;
 import android.view.Surface;
 import android.widget.RelativeLayout;
@@ -14,17 +16,19 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import org.xbmc.@APP_NAME_LC@.XBMCVideoView;
 
-public class Main extends NativeActivity
+public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
   private static final String TAG = "@APP_NAME_LC@";
 
   private XBMCSettingsContentObserver mSettingsContentObserver;
+  private XBMCInputDeviceListener mInputDeviceListener;
   private XBMCVideoView mVideoView = null;
   private RelativeLayout mVideoLayout = null;
   private View thisView = null;
   private Handler handler = new Handler();
 
   native void _onNewIntent(Intent intent);
+  native void _doFrame(long frameTimeNanos);
 
   public Main()
   {
@@ -101,6 +105,11 @@ public class Main extends NativeActivity
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, new Handler());
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
 
+    // register the InputDeviceListener implementation
+    mInputDeviceListener = new XBMCInputDeviceListener();
+    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+    manager.registerInputDeviceListener(mInputDeviceListener, new Handler());
+
     thisView = getWindow().getDecorView();
     thisView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
           {
@@ -150,6 +159,9 @@ public class Main extends NativeActivity
   {
     super.onStart();
     getWindow().setFormat(PixelFormat.TRANSPARENT);
+
+    Choreographer.getInstance().removeFrameCallback(this);
+    Choreographer.getInstance().postFrameCallback(this);
   }
 
   @Override
@@ -174,10 +186,26 @@ public class Main extends NativeActivity
   }
 
   @Override
+  public void onPause()
+  {
+    super.onPause();
+  }
+  
   public void onDestroy()
   {
+    // unregister the InputDeviceListener implementation
+    InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
+    manager.unregisterInputDeviceListener(mInputDeviceListener);
+
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     super.onDestroy();
+  }
+  
+  @Override
+  public void doFrame(long frameTimeNanos)
+  {
+    Choreographer.getInstance().postFrameCallback(this);
+    _doFrame(frameTimeNanos);
   }
 
   private native void _callNative(long funcAddr, long variantAddr);

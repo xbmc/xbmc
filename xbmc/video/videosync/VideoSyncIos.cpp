@@ -52,7 +52,7 @@ void CVideoSyncIos::Run(volatile bool& stop)
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!stop && !m_abort)
   {
-    Sleep(100);
+    usleep(100000);
   }
 }
 
@@ -82,14 +82,14 @@ void CVideoSyncIos::IosVblankHandler()
   int64_t       nowtime = CurrentHostCounter();
   
   //calculate how many vblanks happened
-  VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)g_VideoReferenceClock.GetFrequency();
+  VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)CurrentHostFrequency();
   NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
   
   //save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = nowtime;
   
   //update the vblank timestamp, update the clock and send a signal that we got a vblank
-  UpdateClock(NrVBlanks, nowtime);
+  UpdateClock(NrVBlanks, nowtime, m_refClock);
 }
 
 bool CVideoSyncIos::InitDisplayLink()

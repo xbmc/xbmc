@@ -1,0 +1,265 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "오디오 설정"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "시각화 옵션"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "시각화 사전설정"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "컨텍스트 메뉴"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "작업 중..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "영화"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "에피소드"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "앨범"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "페이지"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "정보표시 목록"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "로그인"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "빠르게"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "뒤로"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "종료 시간"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "정렬: 오름차순"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "정렬: 내림차순"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "재생목록 열기"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "재생목록 저장"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "재생목록 닫기"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "시스템 음악 파일"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "현재 재생목록"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "뒤로"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "위치"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "보기"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "현재 온도"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "마지막 업데이트"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "날씨 정보 제공"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "사용 메모리:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "마지막 로그인"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "방송"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "비디오 메뉴"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "자막 다운로드"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "스킨 기본값"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial based"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "스킨 변경 · 언어 및 지역 설정 · 파일 목록 옵션 변경 · 화면보호기 설정"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "비디오 라이브러리 관리 · 비디오 재생 옵션 변경 · 비디오 목록 옵션 변경 · 자막 글꼴 설정"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "사진 목록 옵션 설정 · 슬라이드쇼 설정"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "날씨 정보를 수집할 세 도시 설정"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "UPnP와 HTTP를 통한 Kodi 제어 설정 · 파일 공유 설정 · 인터넷 접근 옵션 설정"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정 · 전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "로그인할 Kodi 사용자 프로파일을[CR]선택하고 계속하세요"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "홈화면에 표시할 메뉴"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "홈화면에 표시할 애드온 버튼"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "기타 옵션"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "홈화면 날씨 정보와 버튼"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "애드온 바로가기"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "싱크"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "사용자 배경 사용"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "배경:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "TV 설정 - 전체화면 정보 변경 - EPG 데이터 설정 관리"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "TV 시청"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "비디오 배경 숨김"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "시각화 배경 숨김"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "채널 설정"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "사용 가능한 그룹"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "그룹 추가"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "그룹 이름 변경"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "그룹 삭제"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "숨김 항목 표시"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "삭제 항목 표시"

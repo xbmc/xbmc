@@ -1,0 +1,121 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Croatian (Croatia) (http://www.transifex.com/projects/p/kodi-main/language/hr_HR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hr_HR\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Trenutno se reproducira"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Traži..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Promijeni način"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Gledaj kao 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Prognoza"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Radnje"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Ostale mogućnosti"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Posljednji prijavljen"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Premotavanje unazad"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Premotavanje unaprijed"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Mogućnosti popisa izvođenja"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Dodaj grupu"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Preimenuj grupu"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Obriši grupu"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Temeljen na Arialu "
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Posljednje ažurirano"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Mogućnosti energije"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Informacije albuma"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Dodatak za tekstove pjesama"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Grupa programa"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Mogućnosti pretraživanja sadržaja"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Preuzmanje podnaslova"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Lokalni podnaslovi dostupni"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Mogućnosti programa"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Odaberite svoj Kodi korisnički profil[CR]za prijavu i nastavak"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

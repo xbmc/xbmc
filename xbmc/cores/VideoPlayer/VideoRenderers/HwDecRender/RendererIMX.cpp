@@ -40,7 +40,7 @@ CRendererIMX::CRendererIMX()
 
 CRendererIMX::~CRendererIMX()
 {
-
+  UnInit();
 }
 
 bool CRendererIMX::RenderCapture(CRenderCapture* capture)
@@ -152,7 +152,7 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     if (stereo_mode)
       g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
 
-    ManageDisplay();
+    ManageRenderArea();
 
     if (stereo_mode)
       g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
@@ -214,6 +214,7 @@ bool CRendererIMX::CreateTexture(int index)
 
 void CRendererIMX::DeleteTexture(int index)
 {
+  ReleaseBuffer(index);
 }
 
 bool CRendererIMX::UploadTexture(int index)

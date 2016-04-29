@@ -5,11 +5,13 @@ SET cur_dir=%CD%
 SET base_dir=%cur_dir%\..\..
 SET builddeps_dir=%cur_dir%\..\..\project\BuildDependencies
 SET bin_dir=%builddeps_dir%\bin
-SET msys_bin_dir=%builddeps_dir%\msys\bin
+SET msys_dir=%builddeps_dir%\msys64
+IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
+SET awk_exe=%msys_dir%\usr\bin\awk.exe
 REM read the version values from version.txt
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/COMPANY_NAME/ {print $2}" %base_dir%\version.txt') DO SET COMPANY=%%i
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
+FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
+FOR /f %%i IN ('%awk_exe% "/COMPANY_NAME/ {print $2}" %base_dir%\version.txt') DO SET COMPANY=%%i
+FOR /f %%i IN ('%awk_exe% "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
 
 rem ----Usage----
 rem BuildSetup [clean|noclean]
@@ -17,6 +19,7 @@ rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
 rem nomingwlibs to skip building all libs built with mingw
+rem cmake to build with cmake instead of VS solution
 CLS
 COLOR 1B
 TITLE %APP_NAME% for Windows Build Script
@@ -33,28 +36,30 @@ SET buildmingwlibs=true
 SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
+SET cmake=0
 SET BRANCH=na
-FOR %%b in (%1, %2, %3, %4, %5) DO (
+FOR %%b in (%1, %2, %3, %4, %5, %6) DO (
   IF %%b==clean SET buildmode=clean
   IF %%b==noclean SET buildmode=noclean
   IF %%b==noprompt SET promptlevel=noprompt
   IF %%b==nomingwlibs SET buildmingwlibs=false
   IF %%b==nobinaryaddons SET buildbinaryaddons=false
   IF %%b==sh SET useshell=sh
+  IF %%b==cmake SET cmake=1
 )
 
 SET buildconfig=Release
 set WORKSPACE=%CD%\..\..
 
 
-  REM look for MSBuild.exe delivered with Visual Studio 2013
-  FOR /F "tokens=2,* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0 /v MSBuildToolsRoot') DO SET MSBUILDROOT=%%B
-  SET NET="%MSBUILDROOT%12.0\bin\MSBuild.exe"
+  REM look for MSBuild.exe delivered with Visual Studio 2015
+  FOR /F "tokens=2,* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0 /v MSBuildToolsRoot') DO SET MSBUILDROOT=%%B
+  SET NET="%MSBUILDROOT%14.0\bin\MSBuild.exe"
 
   IF EXIST "!NET!" (
     set msbuildemitsolution=1
-    set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120" /m
-    set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120"
+    set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V140" /m
+    set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V140"
   )
 
   IF NOT EXIST %NET% (
@@ -107,15 +112,16 @@ set WORKSPACE=%CD%\..\..
     )
     rem only use sh to please jenkins
     IF %useshell%==sh (
-      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat sh noprompt
+      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat sh noprompt %buildmode%
     ) ELSE (
-      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat noprompt
+      call ..\..\tools\buildsteps\win32\make-mingwlibs.bat noprompt %buildmode%
     )
     IF EXIST errormingw (
       set DIETEXT="failed to build mingw libs"
       goto DIE
     )
   )
+  IF %cmake%==1 goto COMPILE_CMAKE_EXE
   IF %buildmode%==clean goto COMPILE_EXE
   goto COMPILE_NO_CLEAN_EXE
   
@@ -155,6 +161,40 @@ set WORKSPACE=%CD%\..\..
   ECHO ------------------------------------------------------------
   GOTO MAKE_BUILD_EXE
 
+
+:COMPILE_CMAKE_EXE
+  ECHO Wait while preparing the build.
+  ECHO ------------------------------------------------------------
+  ECHO Compiling %APP_NAME% branch %BRANCH%...
+
+  IF %buildmode%==clean (
+    RMDIR /S /Q %WORKSPACE%\kodi-build
+  )
+  MKDIR %WORKSPACE%\kodi-build
+  PUSHD %WORKSPACE%\kodi-build
+
+  cmake.exe -G "Visual Studio 14" %WORKSPACE%\project\cmake
+  IF %errorlevel%==1 (
+    set DIETEXT="%APP_NAME%.EXE failed to build!"
+    goto DIE
+  )
+
+  cmake.exe --build . --config "%buildconfig%"
+  IF %errorlevel%==1 (
+    set DIETEXT="%APP_NAME%.EXE failed to build!"
+    goto DIE
+  )
+
+  set EXE="%WORKSPACE%\kodi-build\%buildconfig%\%APP_NAME%.exe"
+  set PDB="%WORKSPACE%\kodi-build\%buildconfig%\%APP_NAME%.pdb"
+  set D3D="%WORKSPACE%\kodi-build\D3DCompile*.DLL"
+
+  POPD
+  ECHO Done!
+  ECHO ------------------------------------------------------------
+  GOTO MAKE_BUILD_EXE
+
+
 :MAKE_BUILD_EXE
   ECHO Copying files...
   IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
@@ -183,14 +223,9 @@ set WORKSPACE=%CD%\..\..
   Echo userdata\database\>>exclude.txt
   Echo userdata\playlists\>>exclude.txt
   Echo userdata\thumbnails\>>exclude.txt
-  rem Exclude non Windows addons
-  Echo addons\repository.pvr-android.xbmc.org\>>exclude.txt
-  Echo addons\repository.pvr-ios.xbmc.org\>>exclude.txt
-  Echo addons\repository.pvr-osx32.xbmc.org\>>exclude.txt
-  Echo addons\repository.pvr-osx64.xbmc.org\>>exclude.txt
   rem Exclude skins as they're copied by their own script
-  Echo addons\skin.re-touched\>>exclude.txt
-  Echo addons\skin.confluence\>>exclude.txt
+  Echo addons\skin.estuary\>>exclude.txt
+  Echo addons\skin.estouchy\>>exclude.txt
   
   md BUILD_WIN32\application
 
@@ -226,17 +261,15 @@ set WORKSPACE=%CD%\..\..
   )
 
   ECHO ------------------------------------------------------------
-  ECHO Building Confluence Skin...
-  cd ..\..\addons\skin.confluence
+  ECHO Building Estuary Skin...
+  cd ..\..\addons\skin.estuary
   call build.bat > NUL
   cd %build_path%
-  
-  IF EXIST  ..\..\addons\skin.re-touched\build.bat (
-    ECHO Building Touch Skin...
-    cd ..\..\addons\skin.re-touched
-    call build.bat > NUL
-    cd %build_path%
-  )
+
+  ECHO Building Estouchy Skin...
+  cd ..\..\addons\skin.estouchy
+  call build.bat > NUL
+  cd %build_path%
   
   rem restore color and title, some scripts mess these up
   COLOR 1B

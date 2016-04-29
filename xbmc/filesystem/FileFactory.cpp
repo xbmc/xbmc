@@ -30,7 +30,6 @@
 #include "win32/Win32File.h"
 #endif // TARGET_WINDOWS
 #include "CurlFile.h"
-#include "HTTPFile.h"
 #include "DAVFile.h"
 #include "ShoutcastFile.h"
 #include "FileReaderFile.h"
@@ -46,9 +45,6 @@
 #endif
 #ifdef HAS_FILESYSTEM
 #include "ISOFile.h"
-#endif
-#ifdef HAS_PVRCLIENTS
-#include "PVRFile.h"
 #endif
 #if defined(TARGET_ANDROID)
 #include "APKFile.h"
@@ -151,8 +147,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   {
     if (url.IsProtocol("ftp")
     ||  url.IsProtocol("ftps")
-    ||  url.IsProtocol("rss")) return new CCurlFile();
-    else if (url.IsProtocol("http") ||  url.IsProtocol("https")) return new CHTTPFile();
+    ||  url.IsProtocol("rss")
+    ||  url.IsProtocol("http") 
+    ||  url.IsProtocol("https")) return new CCurlFile();
     else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();
 #ifdef HAS_FILESYSTEM_SFTP
     else if (url.IsProtocol("sftp") || url.IsProtocol("ssh")) return new CSFTPFile();
@@ -164,9 +161,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #else
     else if (url.IsProtocol("smb")) return new CSMBFile();
 #endif
-#endif
-#ifdef HAS_PVRCLIENTS
-    else if (url.IsProtocol("pvr")) return new CPVRFile();
 #endif
 #ifdef HAS_FILESYSTEM_NFS
     else if (url.IsProtocol("nfs")) return new CNFSFile();

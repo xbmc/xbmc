@@ -18,18 +18,14 @@
  *
  */
 
-#include "Application.h"
+#include "PVRRadioRDSInfoTag.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-
-#include "PVRRadioRDSInfoTag.h"
 
 using namespace PVR;
 
@@ -349,7 +345,7 @@ void CPVRRadioRDSInfoTag::SetInfoNews(const std::string& strNews)
   if (m_strInfoNews.size() >= 10)
     m_strInfoNews.pop_front();
 
-  m_strInfoNews.push_back(tmpStr);
+  m_strInfoNews.emplace_back(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
@@ -393,7 +389,7 @@ void CPVRRadioRDSInfoTag::SetInfoNewsLocal(const std::string& strNews)
   if (m_strInfoNewsLocal.size() >= 10)
     m_strInfoNewsLocal.pop_back();
 
-  m_strInfoNewsLocal.push_front(tmpStr);
+  m_strInfoNewsLocal.emplace_front(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
@@ -437,7 +433,7 @@ void CPVRRadioRDSInfoTag::SetInfoSport(const std::string& strSport)
   if (m_strInfoSport.size() >= 10)
     m_strInfoSport.pop_back();
 
-  m_strInfoSport.push_front(tmpStr);
+  m_strInfoSport.emplace_front(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
@@ -481,7 +477,7 @@ void CPVRRadioRDSInfoTag::SetInfoStock(const std::string& strStock)
   if (m_strInfoStock.size() >= 10)
     m_strInfoStock.pop_back();
 
-  m_strInfoStock.push_front(tmpStr);
+  m_strInfoStock.emplace_front(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
@@ -525,7 +521,7 @@ void CPVRRadioRDSInfoTag::SetInfoWeather(const std::string& strWeather)
   if (m_strInfoWeather.size() >= 10)
     m_strInfoWeather.pop_back();
 
-  m_strInfoWeather.push_front(tmpStr);
+  m_strInfoWeather.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
@@ -568,7 +564,7 @@ void CPVRRadioRDSInfoTag::SetInfoLottery(const std::string& strLottery)
   if (m_strInfoLottery.size() >= 10)
     m_strInfoLottery.pop_back();
 
-  m_strInfoLottery.push_front(tmpStr);
+  m_strInfoLottery.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
@@ -654,7 +650,7 @@ void CPVRRadioRDSInfoTag::SetInfoHoroscope(const std::string& strHoroscope)
   if (m_strInfoHoroscope.size() >= 10)
     m_strInfoHoroscope.pop_back();
 
-  m_strInfoHoroscope.push_front(tmpStr);
+  m_strInfoHoroscope.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
@@ -697,7 +693,7 @@ void CPVRRadioRDSInfoTag::SetInfoCinema(const std::string& strCinema)
   if (m_strInfoCinema.size() >= 10)
     m_strInfoCinema.pop_back();
 
-  m_strInfoCinema.push_front(tmpStr);
+  m_strInfoCinema.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the fileitem radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
@@ -740,7 +736,7 @@ void CPVRRadioRDSInfoTag::SetInfoOther(const std::string& strOther)
   if (m_strInfoOther.size() >= 10)
     m_strInfoOther.pop_back();
 
-  m_strInfoOther.push_front(tmpStr);
+  m_strInfoOther.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the fileitem radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);

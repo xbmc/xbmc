@@ -8,8 +8,9 @@ executable (but no packaging or dependency management yet) for the following
 platforms:
 
 - Linux (GNU Makefiles)
-- Windows (NMake Makefiles, Visual Studio 12 (2013))
+- Windows (NMake Makefiles, Visual Studio 14 (2015))
 - OSX (GNU Makefiles, Xcode)
+- Android (GNU Makefiles)
 
 Before building Kodi with CMake, please ensure that you have the platform
 specific dependencies installed.
@@ -26,10 +27,17 @@ automatically.
 The dependencies required to build on Linux can be found in
 [docs/README.xxx](https://github.com/xbmc/xbmc/tree/master/docs).
 
+### Raspberry Pi
+
+The cross compilation environment for the Raspberry Pi as well as the
+dependencies have to be installed as explained in
+[docs/README.raspberrypi](https://github.com/xbmc/xbmc/tree/master/docs/README.raspberrypi).
+
 ### Windows
 
 For Windows the dependencies can be found in the
-[Wiki](http://kodi.wiki/view/HOW-TO:Compile_Kodi_for_Windows) (Step 1-4).
+[Wiki](http://kodi.wiki/view/HOW-TO:Compile_Kodi_for_Windows) (Step 1-4). If not already available on your pc, you should
+install the [Windows Software Development Kit (SDK)](https://dev.windows.com/en-us/downloads/sdk-archive) for your Windows version. This is required for HLSL shader offline compiling with the [Effect-Compiler Tool](https://msdn.microsoft.com/de-de/library/windows/desktop/bb232919(v=vs.85).aspx) (fxc.exe).
 
 On Windows, the CMake based buildsystem requires that the binary dependencies
 are downloaded using `DownloadBuildDeps.bat` and `DownloadMingwBuildEnv.bat`
@@ -45,6 +53,13 @@ On OSX it is necessary to build the dependencies in `tools/depends` using
 `./bootstrap && ./configure --host=<PLATFORM> && make`. The other steps such
 as `make -C tools/depends/target/xbmc` and `make xcode_depends` are not needed
 as these steps are covered already by the CMake project.
+
+### Android
+
+The dependencies needed to compile for Android can be found in
+[docs/README.osx](https://github.com/xbmc/xbmc/tree/master/docs/README.android)
+. All described steps have to be executed (except 5.2 which is replaced by the
+respective CMake command below).
 
 ## Building Kodi
 
@@ -72,22 +87,29 @@ cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ./kodi.bin
 ```
 
-`CMAKE_BUILD_TYPE` defaults to `Debug`.
+`CMAKE_BUILD_TYPE` defaults to `Release`.
+
+### Raspberry Pi with GNU Makefiles
+
+```
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
+cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
+```
 
 ### Windows with NMake Makefiles
 
 ```
 cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release <KODI_SRC>/project/cmake/
 cmake --build .  # or: nmake
-./kodi.bin
+kodi.exe
 ```
 
 ### Windows with Visual Studio project files
 
 ```
-cmake -G "Visual Studio 12" <KODI_SRC>/project/cmake/
+cmake -G "Visual Studio 14" <KODI_SRC>/project/cmake/
 cmake --build . --config "Debug"  # or: Build solution with Visual Studio
-KODI_HOME=%CD% Debug/kodi.bin
+set KODI_HOME="%CD%" && Debug\kodi.exe
 ```
 
 ### OSX with GNU Makefiles
@@ -104,6 +126,13 @@ cmake --build . -- VERBOSE=1 -j$(sysctl -n hw.ncpu)  # or: make VERBOSE=1 -j$(sy
 cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake -G "Xcode" <KODI_SRC>/project/cmake/
 cmake --build . --config "Release" -- -verbose -jobs $(sysctl -n hw.ncpu)  # or: Build solution with Xcode
 KODI_HOME=$(pwd) ./Release/kodi.bin
+```
+
+### Android with GNU Makefiles
+
+```
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
+cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
 
 ## Extra targets

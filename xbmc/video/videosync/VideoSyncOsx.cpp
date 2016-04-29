@@ -31,6 +31,7 @@
 #include <QuartzCore/CVDisplayLink.h>
 #include <CoreVideo/CVHostTime.h>
 #include "platform/darwin/osx/CocoaInterface.h"
+#include <unistd.h>
 
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
 {
@@ -55,14 +56,14 @@ void CVideoSyncOsx::Run(volatile bool& stop)
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!stop && !m_displayLost && !m_displayReset)
   {
-    Sleep(100);
+    usleep(100000);
   }
 
   m_lostEvent.Set();
 
   while(!stop && m_displayLost && !m_displayReset)
   {
-    Sleep(10);
+    usleep(10000);
   }
 
   DeinitDisplayLink();
@@ -114,7 +115,7 @@ void CVideoSyncOsx::VblankHandler(int64_t nowtime, uint32_t timebase)
     NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
 
     //update the vblank timestamp, update the clock and send a signal that we got a vblank
-    UpdateClock(NrVBlanks, Now);
+    UpdateClock(NrVBlanks, Now, m_refClock);
   }
 
   //save the timestamp of this vblank so we can calculate how many happened next time

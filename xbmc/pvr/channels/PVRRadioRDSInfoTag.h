@@ -19,18 +19,18 @@
  *
  */
 
-#include "FileItem.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
 
-#include <vector>
+#include <memory>
 #include <deque>
 #include <string>
-#include <stdint.h>
 
 namespace PVR
 {
+  class CPVRRadioRDSInfoTag;
+  typedef std::shared_ptr<CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 
 class CPVRRadioRDSInfoTag : public IArchivable, public ISerializable
 {

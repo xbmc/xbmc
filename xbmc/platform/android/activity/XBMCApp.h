@@ -33,6 +33,7 @@
 #include "platform/android/jni/Activity.h"
 #include "platform/android/jni/BroadcastReceiver.h"
 #include "platform/android/jni/AudioManager.h"
+#include "platform/android/jni/View.h"
 #include "threads/Event.h"
 
 #include "JNIMainActivity.h"
@@ -41,6 +42,9 @@
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
+class IInputDeviceCallbacks;
+class IInputDeviceEventHandler;
+class CVideoSyncAndroid;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -57,7 +61,9 @@ struct androidPackage
   int icon;
 };
 
-class CXBMCApp : public IActivityHandler, public CJNIMainActivity, public CJNIBroadcastReceiver, public CJNIAudioManagerAudioFocusChangeListener
+class CXBMCApp : public IActivityHandler, public CJNIMainActivity,
+                 public CJNIBroadcastReceiver,
+                 public CJNIAudioManagerAudioFocusChangeListener
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
@@ -66,6 +72,12 @@ public:
   virtual void onNewIntent(CJNIIntent intent);
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
+  virtual void doFrame(int64_t frameTimeNanos);
+
+  // implementation of CJNIInputManagerInputDeviceListener
+  void onInputDeviceAdded(int deviceId) override;
+  void onInputDeviceChanged(int deviceId) override;
+  void onInputDeviceRemoved(int deviceId) override;
 
   bool isValid() { return m_activity != NULL; }
 
@@ -120,6 +132,19 @@ public:
   static void OnPlayBackStopped();
   static void OnPlayBackEnded();
 
+  // input device methods
+  static void RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler);
+  static void UnregisterInputDeviceCallbacks();
+  static const CJNIViewInputDevice GetInputDevice(int deviceId);
+  static std::vector<int> GetInputDeviceIds();
+
+  static void RegisterInputDeviceEventHandler(IInputDeviceEventHandler* handler);
+  static void UnregisterInputDeviceEventHandler();
+  static bool onInputDeviceEvent(const AInputEvent* event);
+
+  static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
+  static void DeinitFrameCallback();
+
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
 protected:
@@ -143,6 +168,8 @@ private:
   static int m_batteryLevel;
   static bool m_hasFocus;
   static bool m_headsetPlugged;
+  static IInputDeviceCallbacks* m_inputDeviceCallbacks;
+  static IInputDeviceEventHandler* m_inputDeviceEventHandler;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;
@@ -151,6 +178,8 @@ private:
 
   static ANativeWindow* m_window;
   static CEvent m_windowCreated;
+
+  static CVideoSyncAndroid* m_syncImpl;
 
   void XBMC_Pause(bool pause);
   void XBMC_Stop();

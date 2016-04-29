@@ -77,7 +77,7 @@ namespace XFILE
     unsigned     m_chunkSize;
     unsigned     m_writeRate;
     unsigned     m_writeRateActual;
-    bool         m_cacheFull;
+    int64_t      m_forwardCacheSize;
     std::atomic<int64_t> m_fileSize;
     unsigned int m_flags;
     CCriticalSection m_sync;

@@ -9,7 +9,7 @@ if(NOT ENABLE_EXTERNAL_LIBAV)
   list(APPEND HEADERS DVDVideoPPFFmpeg.h)
 endif()
 
-if(AMLCODEC_FOUND)
+if(AML_FOUND)
   list(APPEND SOURCES AMLCodec.cpp
                       DVDVideoCodecAmlogic.cpp)
   list(APPEND HEADERS AMLCodec.h
@@ -41,10 +41,8 @@ if(VAAPI_FOUND)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL darwin)
-  list(APPEND SOURCES DVDVideoCodecVDA.cpp
-                      VDA.cpp)
-  list(APPEND HEADERS DVDVideoCodecVDA.h
-                      VDA.h)
+  list(APPEND SOURCES VDA.cpp)
+  list(APPEND HEADERS VDA.h)
 endif()
 
 if(VTB_FOUND)
@@ -56,6 +54,8 @@ endif()
 if(MMAL_FOUND)
   list(APPEND SOURCES MMALCodec.cpp)
   list(APPEND HEADERS MMALCodec.h)
+  list(APPEND SOURCES MMALFFmpeg.cpp)
+  list(APPEND HEADERS MMALFFmpeg.h)
 endif()
 
 if(IMX_FOUND)

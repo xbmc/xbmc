@@ -1,4 +1,21 @@
+set(dvdlibs libdvdread libdvdnav)
+if(ENABLE_DVDCSS)
+  list(APPEND dvdlibs libdvdcss)
+endif()
+
 if(NOT WIN32)
+  foreach(dvdlib ${dvdlibs})
+    file(GLOB VERSION_FILE ${CORE_SOURCE_DIR}/tools/depends/target/${dvdlib}/DVD*-VERSION)
+    file(STRINGS ${VERSION_FILE} VER)
+    string(REGEX MATCH "VERSION=[^ ]*$.*" ${dvdlib}_VER "${VER}")
+    list(GET ${dvdlib}_VER 0 ${dvdlib}_VER)
+    string(SUBSTRING "${${dvdlib}_VER}" 8 -1 ${dvdlib}_VER)
+    string(REGEX MATCH "BASE_URL=([^ ]*)" ${dvdlib}_BASE_URL "${VER}")
+    list(GET ${dvdlib}_BASE_URL 0 ${dvdlib}_BASE_URL)
+    string(SUBSTRING "${${dvdlib}_BASE_URL}" 9 -1 ${dvdlib}_BASE_URL)
+  endforeach()
+
+  set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
   if(CMAKE_CROSSCOMPILING)
     set(EXTRA_FLAGS "CC=${CMAKE_C_COMPILER}")
   endif()
@@ -8,11 +25,10 @@ if(NOT WIN32)
   endif()
 
   if(ENABLE_DVDCSS)
-    ExternalProject_ADD(dvdcss SOURCE_DIR ${CORE_SOURCE_DIR}/lib/libdvd/libdvdcss/
+    ExternalProject_ADD(dvdcss URL ${libdvdcss_BASE_URL}/archive/${libdvdcss_VER}.tar.gz
                                PREFIX ${CORE_BUILD_DIR}/libdvd
-                        PATCH_COMMAND rm -f config.status
-                        UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                        CONFIGURE_COMMAND  <SOURCE_DIR>/configure
+                               UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                               CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                           --target=${ARCH}
                                           --host=${ARCH}
                                           --disable-doc
@@ -33,11 +49,10 @@ if(NOT WIN32)
     set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -DHAVE_DVDCSS_DVDCSS_H -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
   endif(ENABLE_DVDCSS)
 
-  ExternalProject_ADD(dvdread SOURCE_DIR ${CORE_SOURCE_DIR}/lib/libdvd/libdvdread/
+  ExternalProject_ADD(dvdread URL ${libdvdread_BASE_URL}/archive/${libdvdread_VER}.tar.gz
                               PREFIX ${CORE_BUILD_DIR}/libdvd
-                      PATCH_COMMAND rm -f config.status
-                      UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                      CONFIGURE_COMMAND <SOURCE_DIR>/configure
+                              UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                              CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                         --target=${ARCH}
                                         --host=${ARCH}
                                         --enable-static
@@ -54,52 +69,44 @@ if(NOT WIN32)
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a
                     system/players/VideoPlayer/libdvdread dvdread)
 
-  ExternalProject_ADD(dvdnav SOURCE_DIR ${CORE_SOURCE_DIR}/lib/libdvd/libdvdnav/
+  if(ENABLE_DVDCSS)
+    set(DVDNAV_LIBS -ldvdcss)
+  endif(ENABLE_DVDCSS)
+
+  ExternalProject_ADD(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
                              PREFIX ${CORE_BUILD_DIR}/libdvd
-                      PATCH_COMMAND rm -f config.status
-                      UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                      CONFIGURE_COMMAND <SOURCE_DIR>/configure
+                             UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                             CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                         --target=${ARCH}
                                         --host=${ARCH}
-                                        --disable-shared
                                         --enable-static
+                                        --disable-shared
                                         --with-pic
                                         --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-                                        --with-dvdread-config=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/bin/dvdread-config
                                         "${EXTRA_FLAGS}"
                                         "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
                                         "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                        "LIBS=-ldvdcss")
+                                        "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
+                                        "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.la"
+                                        "LIBS=${DVDNAV_LIBS}")
   add_dependencies(dvdnav dvdread)
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
                     system/players/VideoPlayer/libdvdnav dvdnav)
 
-  set(dvdnav_internal_headers ${CORE_SOURCE_DIR}/lib/libdvd/libdvdnav/src/dvdnav_internal.h
-                              ${CORE_SOURCE_DIR}/lib/libdvd/libdvdnav/src/vm/vm.h)
-
-  foreach(dvdnav_header ${dvdnav_internal_headers})
-   add_custom_command(TARGET dvdnav
-                     COMMAND ${CMAKE_COMMAND} -E copy ${dvdnav_header}
-                             ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include/dvdnav)
-  endforeach()
-
+  set(LIBDVD_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include)
+  set(LIBDVD_LIBRARIES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
+                       ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
   if(ENABLE_DVDCSS)
-    set(LIBDVD_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include)
-    set(LIBDVD_LIBRARIES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
-                         ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a
-                         ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a
-        CACHE STRING "libdvd libraries" FORCE)
-    set(LIBDVD_FOUND 1 CACHE BOOL "libdvd found" FORCE)
+     list(APPEND LIBDVD_LIBRARIES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
   endif()
+  set(LIBDVD_LIBRARIES ${LIBDVD_LIBRARIES} CACHE STRING "libdvd libraries" FORCE)
+  set(LIBDVD_FOUND 1 CACHE BOOL "libdvd found" FORCE)
 else()
   # Dynamically loaded on Windows
-  find_path(LIBDVD_INCLUDE_DIR dvdcss/dvdcss.h
-                               PATH_SUFFIXES libdvd/includes
-                               PATHS ${PC_BLURAY_INCLUDEDIR})
+  find_path(LIBDVD_INCLUDE_DIR dvdcss/dvdcss.h PATHS ${CORE_SOURCE_DIR}/lib/libdvd/include)
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(LIBDVD
-                                    REQUIRED_VARS LIBDVD_INCLUDE_DIR)
+  find_package_handle_standard_args(LIBDVD REQUIRED_VARS LIBDVD_INCLUDE_DIR)
 
   if(LIBDVD_FOUND)
     set(LIBDVD_INCLUDE_DIRS ${LIBDVD_INCLUDE_DIR})

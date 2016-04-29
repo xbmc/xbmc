@@ -138,8 +138,7 @@ protected:
   virtual void DeleteHardwareTexture() = 0;
 
   // modifying glyphs
-  void EmboldenGlyph(FT_GlyphSlot slot);
-  void LightenGlyph(FT_GlyphSlot slot);
+  void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);
   static void ObliqueGlyph(FT_GlyphSlot slot);
 
   CBaseTexture* m_texture;        // texture that holds our rendered characters (8bit alpha only)

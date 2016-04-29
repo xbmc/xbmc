@@ -20,6 +20,7 @@
 
 #include "LangInfo.h"
 
+#include <stdexcept>
 #include <algorithm>
 
 #include "addons/AddonInstaller.h"
@@ -255,8 +256,6 @@ void CLangInfo::CRegion::SetTimeZone(const std::string& strTimeZone)
   m_strTimeZone = strTimeZone;
 }
 
-// set the locale associated with this region global. This affects string
-// sorting & transformations
 void CLangInfo::CRegion::SetGlobalLocale()
 {
   std::string strLocale;
@@ -273,6 +272,16 @@ void CLangInfo::CRegion::SetGlobalLocale()
 #ifdef TARGET_POSIX
     strLocale += ".UTF-8";
 #endif
+  }
+
+  try
+  {
+    g_langInfo.m_originalLocale = std::locale(strLocale.c_str());
+  }
+  catch (std::runtime_error) 
+  {
+    CLog::Log(LOGERROR, "failed to set m_originalLocale to %s", strLocale.c_str());
+    g_langInfo.m_originalLocale = std::locale("");
   }
 
   CLog::Log(LOGDEBUG, "trying to set locale to %s", strLocale.c_str());
@@ -816,6 +825,11 @@ const std::string& CLangInfo::GetRegionLocale() const
   return m_currentRegion->m_strRegionLocaleName;
 }
 
+const std::locale& CLangInfo::GetOriginalLocale() const
+{
+  return m_originalLocale;
+}
+
 // Returns the format string for the date of the current language
 const std::string& CLangInfo::GetDateFormat(bool bLongDate /* = false */) const
 {
@@ -947,7 +961,7 @@ void CLangInfo::GetRegionNames(std::vector<std::string>& array)
     std::string strName=it->first;
     if (strName=="N/A")
       strName=g_localizeStrings.Get(416);
-    array.push_back(strName);
+    array.emplace_back(std::move(strName));
   }
 }
 
@@ -1137,7 +1151,7 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(const CSetting *setting, std::
     return;
 
   for (ADDON::VECADDONS::const_iterator addon = addons.begin(); addon != addons.end(); ++addon)
-    list.push_back(make_pair((*addon)->Name(), (*addon)->Name()));
+    list.emplace_back((*addon)->Name(), (*addon)->Name());
 
   sort(list.begin(), list.end(), SortLanguage());
 }
@@ -1148,31 +1162,31 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(const CSetting *setting, st
   std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(CLangCodeExpander::ISO_639_1, true);
   sort(languages.begin(), languages.end(), sortstringbyname());
   for (std::vector<std::string>::const_iterator language = languages.begin(); language != languages.end(); ++language)
-    list.push_back(std::make_pair(*language, *language));
+    list.emplace_back(*language, *language);
 }
 
 void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
-  list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
+  list.emplace_back(g_localizeStrings.Get(308), "original");
+  list.emplace_back(g_localizeStrings.Get(309), "default");
 
   AddLanguages(list);
 }
 
 void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(231), "none"));
-  list.push_back(make_pair(g_localizeStrings.Get(13207), "forced_only"));
-  list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
-  list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
+  list.emplace_back(g_localizeStrings.Get(231), "none");
+  list.emplace_back(g_localizeStrings.Get(13207), "forced_only");
+  list.emplace_back(g_localizeStrings.Get(308), "original");
+  list.emplace_back(g_localizeStrings.Get(309), "default");
 
   AddLanguages(list);
 }
 
 void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
-  list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
+  list.emplace_back(g_localizeStrings.Get(308), "original");
+  list.emplace_back(g_localizeStrings.Get(309), "default");
 
   AddLanguages(list);
 }
@@ -1187,7 +1201,7 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
   for (unsigned int i = 0; i < regions.size(); ++i)
   {
     std::string region = regions[i];
-    list.push_back(std::make_pair(region, region));
+    list.emplace_back(region, region);
 
     if (!match && region == ((CSettingString*)setting)->GetValue())
     {

@@ -27,6 +27,8 @@
 #include "dialogs/GUIDialogContextMenu.h"
 
 
+using ContextMenuView = std::vector<std::shared_ptr<const IContextMenuItem>>;
+
 class CContextMenuManager
 {
 public:
@@ -35,23 +37,9 @@ public:
 
   static CContextMenuManager& GetInstance();
 
-  /*!
-   * \param id - id of the context button clicked on.
-   * \param item - the selected file item.
-   * \return true on success, otherwise false.
-   */
-  bool OnClick(unsigned int id, const CFileItemPtr& item);
+  ContextMenuView GetItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
-  /*!
-   * \brief Adds all registered context item to the list.
-   * \param item - the currently selected item.
-   * \param list - the context menu.
-   * \param root - the context menu responsible for this call.
-   */
-  void AddVisibleItems(
-    const CFileItemPtr& item,
-    CContextButtons& list,
-    const CContextMenuItem& root = MAIN);
+  ContextMenuView GetAddonItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
   /*!
    * \brief Adds a context item to this manager.
@@ -74,8 +62,22 @@ private:
   bool IsVisible(
     const CContextMenuItem& menuItem,
     const CContextMenuItem& root,
-    const CFileItemPtr& fileItem);
+    const CFileItem& fileItem) const;
 
-  std::vector<std::pair<unsigned int, CContextMenuItem>> m_items;
-  unsigned int m_nextButtonId;
+  CCriticalSection m_criticalSection;
+  std::vector<CContextMenuItem> m_addonItems;
+  std::vector<std::shared_ptr<IContextMenuItem>> m_items;
 };
+
+namespace CONTEXTMENU
+{
+  /*!
+   * Starts the context menu loop for a file item.
+   * */
+  bool ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& root=CContextMenuManager::MAIN);
+
+  /*!
+   * Shortcut for continuing the context menu loop from an exisiting menu item.
+   */
+  bool LoopFrom(const IContextMenuItem& menu, const CFileItemPtr& fileItem);
+}

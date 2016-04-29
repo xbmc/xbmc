@@ -80,7 +80,7 @@ void CHTTPFileHandler::SetFile(const std::string& file, int responseStatus)
 
     // determine the last modified date
     XFILE::CFile fileObj;
-    if (!fileObj.Open(m_url, READ_NO_CACHE))
+    if (!fileObj.Open(m_url, XFILE::READ_NO_CACHE))
     {
       m_response.type = HTTPError;
       m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;

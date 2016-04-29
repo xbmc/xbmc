@@ -1,0 +1,233 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/kodi-main/language/el_GR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el_GR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Ρυθμίσεις Ήχου"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "Πρωτόκολλο Internet (IP)"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Ρυθμίσεις Οπτικοποίησης"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Προρυθμίσεις Οπτικοποιητή"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Μενού Επιλογών"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Απασχολημένο..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Ταινίες"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Επεισόδια"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Άλμπουμ"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Σελίδα"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Λίστα Πληροφοριών"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Σύνδεση"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ΜΠΡΟΣΤΑ"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ΠΙΣΩ"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Χρόνος Λήξης"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Ταξ.: Αύξουσα"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Ταξ.: Φθίνουσα"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Άνοιγμα λίστας αναπ/γής"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Αποθήκευση λίστας αναπ/γής"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Κλείσιμο λίστας αναπ/γής"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Αρχεία μουσικής συστήματος"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Τρέχουσα λίστα αναπ/γής"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Πίσω"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Τοποθεσία"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Προβολή"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Τρέχουσα Θερμοκρασία"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Τελευταία Ενημέρωση"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Πάροχος δεδομένων"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Χρήση Μνήμης:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Τελευταία Είσοδος"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Πρώτη προβολή"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Μενού Βίντεο"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Λήψη Υποτίτλων"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Προεπιλογή"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Βασισμένη σε Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Αλλαγή κελύφους ·  Αλλαγή χώρας και γλώσσας συστήματος ·  Επιλογές καταλόγου αρχείων · Προσαρμογή της προφύλαξης οθόνης"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Διαχείριση της συλλογής βίντεο · Ρύθμιση αναπαραγωγής βίντεο · Επιλογές καταλόγου ταινιών · Ρύθμιση γραμματοσειράς υποτίτλων"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Επιλογές καταλόγου εικόνων · Ρύθμιση παρουσίασης διαφανειών"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Ορισμός τριών πόλεων για τις οποίες θα γίνεται πρόγνωση καιρού"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Χειρισμός του Kodi μέσω UPnP και HTTP · Ρύθμιση κοινής χρήσης αρχείων · Ρύθμιση επιλογών σύνδεσης διαδικτύου"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Διαμόρφωση και βαθμονόμηση οθονών · Ρύθμιση εξόδου ήχου · Εγκατάσταση τηλεχειριστηρίων · Ρύθμιση εξοικονόμησης ενέργειας · Εντοπισμός σφαλμάτων (debug) · Ρύθμιση κεντρικού κλειδώματος"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Πλήκτρα Κατηγοριών Κεντρικού Μενού"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Ταχείς Σύνδεσμοι Πρόσθετων Αρχικής Οθόνης"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Διάφορες Επιλογές"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Πληροφορίες Καιρού Αρχικής Οθόνης και πλήκτρο"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Συντόμευση Πρόσθετου"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Απόκρυψη υποβάθρου βίντεο"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Διαθέσιμα γκρουπ"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Προσθήκη Γκρουπ"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Ονομασία Γκρουπ"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Διαγραφή Γκρουπ"

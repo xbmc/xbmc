@@ -45,10 +45,6 @@
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/TextureManager.h"
 
-#if defined(TARGET_ANDROID)
-#include "filesystem/AndroidAppDirectory.h"
-#endif
-
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
@@ -445,26 +441,6 @@ void CGUIViewState::AddAddonsSource(const std::string &content, const std::strin
     m_sources.push_back(source);
   }
 }
-
-#if defined(TARGET_ANDROID)
-void CGUIViewState::AddAndroidSource(const std::string &content, const std::string &label, const std::string &thumb)
-{
-  CFileItemList items;
-  XFILE::CAndroidAppDirectory apps;
-  const CURL pathToUrl(content);
-  if (apps.GetDirectory(pathToUrl, items))
-  {
-    CMediaSource source;
-    source.strPath = "androidapp://sources/" + content + "/";
-    source.strName = label;
-    if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
-      source.m_strThumbnailImage = thumb;
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    source.m_ignore = true;
-    m_sources.push_back(source);
-  }
-}
-#endif
 
 void CGUIViewState::AddLiveTVSources()
 {

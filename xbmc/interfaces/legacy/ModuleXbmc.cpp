@@ -62,6 +62,10 @@
 
 using namespace KODI::MESSAGING;
 
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
+
 namespace XBMCAddon
 {
 

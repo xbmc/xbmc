@@ -28,6 +28,7 @@
 #include "threads/SingleLock.h"
 #include "input/touch/ITouchInputHandler.h"
 #include "input/touch/generic/IGenericTouchGestureDetector.h"
+#include "threads/Thread.h"
 
 struct KeymapEntry
 {
@@ -102,10 +103,22 @@ public:
   size_t Size() { return m_devices.size(); }
 private:
   CCriticalSection m_devicesListLock;
+  bool IsUdevJoystick(const char *devpath);
   bool CheckDevice(const char *device);
   std::vector<CLinuxInputDevice*> m_devices;
   bool m_bReInitialize;
-  time_t m_lastHotplugCheck;
+};
+
+class CLinuxInputDevicesCheckHotplugged : protected CThread
+{
+public:
+  CLinuxInputDevicesCheckHotplugged(CLinuxInputDevices &parent);
+  ~CLinuxInputDevicesCheckHotplugged();
+private:
+  CLinuxInputDevices &m_parent;
+  CEvent m_quitEvent;
+protected:
+  virtual void Process();
 };
 
 #endif /* LINUXINPUTDEVICES_H_ */

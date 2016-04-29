@@ -106,8 +106,6 @@ public:
   virtual bool ClearBuffers(color_t color) = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 
-  virtual void SetVSync(bool vsync) = 0;
-  bool GetVSync() { return m_bVSync; }
   virtual void FinishPipeline() {};
 
   virtual void SetViewPort(CRect& viewPort) = 0;
@@ -146,7 +144,7 @@ public:
   bool SupportsBGRA() const;
   bool SupportsBGRAApple() const;
   bool SupportsNPOT(bool dxt) const;
-  bool SupportsStereo(RENDER_STEREO_MODE mode) const;
+  virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
   unsigned int GetRenderQuirks() const { return m_renderQuirks; }

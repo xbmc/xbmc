@@ -1,0 +1,53 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Armenian (Armenia) (http://www.transifex.com/projects/p/kodi-main/language/hy_AM/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hy_AM\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Փոխել ռեժիմը"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Դիտել որպես 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Տեսություն"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Գործողություններ"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Հետդարձ"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial-հիմքով"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Վերջին թարմացումներ"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Անջատման տարբերակներ"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Ալիքների խումբ"

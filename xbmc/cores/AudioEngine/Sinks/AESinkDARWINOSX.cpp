@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "linux/XMemUtils.h"
 
 static void EnumerateDevices(CADeviceList &list)
 {

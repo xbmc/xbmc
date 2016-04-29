@@ -36,6 +36,7 @@
 #include "utils/BitstreamStats.h"
 #include "linux/DllBCM.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include <atomic>
 
 class OMXPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
@@ -50,13 +51,13 @@ protected:
   COMXVideo                 m_omxVideo;
   float                     m_fFrameRate;
   bool                      m_hdmi_clock_sync;
-  double                    m_iVideoDelay;
   int                       m_speed;
   bool                      m_stalled;
   bool                      m_started;
   bool                      m_sync;
   bool                      m_flush;
   std::string               m_codecname;
+  std::atomic_bool          m_bAbortOutput;
   double                    m_iSubtitleDelay;
   bool                      m_bRenderSubs;
   bool                      m_bAllowFullscreen;
@@ -86,7 +87,7 @@ protected:
   virtual void Process();
 private:
 public:
-  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager);
+  OMXPlayerVideo(OMXClock *av_clock, CDVDOverlayContainer* pOverlayContainer, CDVDMessageQueue& parent, CRenderManager& renderManager, CProcessInfo &processInfo);
   ~OMXPlayerVideo();
   bool OpenStream(CDVDStreamInfo &hints);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
@@ -109,8 +110,6 @@ public:
   double GetFPS() { return m_fFrameRate; };
   void  SubmitEOS();
   bool SubmittedEOS() const { return m_omxVideo.SubmittedEOS(); }
-  void SetDelay(double delay) { m_iVideoDelay = delay; }
-  double GetDelay() { return m_iVideoDelay; }
   void SetSpeed(int iSpeed);
   std::string GetPlayerInfo();
   int GetVideoBitrate();

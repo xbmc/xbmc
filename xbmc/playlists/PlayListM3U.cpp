@@ -22,7 +22,6 @@
 #include "filesystem/File.h"
 #include "URL.h"
 #include "Util.h"
-#include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -32,13 +31,13 @@
 using namespace PLAYLIST;
 using namespace XFILE;
 
-#define M3U_START_MARKER "#EXTM3U"
-#define M3U_INFO_MARKER  "#EXTINF"
-#define M3U_ARTIST_MARKER  "#EXTART"
-#define M3U_ALBUM_MARKER  "#EXTALB"
-#define M3U_STREAM_MARKER  "#EXT-X-STREAM-INF"
-#define M3U_BANDWIDTH_MARKER  "BANDWIDTH"
-#define M3U_OFFSET_MARKER  "#EXT-KX-OFFSET"
+const char* CPlayListM3U::StartMarker = "#EXTCPlayListM3U::M3U";
+const char* CPlayListM3U::InfoMarker = "#EXTINF";
+const char* CPlayListM3U::ArtistMarker = "#EXTART";
+const char* CPlayListM3U::AlbumMarker = "#EXTALB";
+const char* CPlayListM3U::StreamMarker = "#EXT-X-STREAM-INF";
+const char* CPlayListM3U::BandwidthMarker = "BANDWIDTH";
+const char* CPlayListM3U::OffsetMarker = "#EXT-KX-OFFSET";
 
 // example m3u file:
 //   #EXTM3U
@@ -93,7 +92,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     strLine = szLine;
     StringUtils::Trim(strLine);
 
-    if (StringUtils::StartsWith(strLine, M3U_INFO_MARKER))
+    if (StringUtils::StartsWith(strLine, InfoMarker))
     {
       // start of info
       size_t iColon = strLine.find(":");
@@ -111,7 +110,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         g_charsetConverter.unknownToUTF8(strInfo);
       }
     }
-    else if (StringUtils::StartsWith(strLine, M3U_OFFSET_MARKER))
+    else if (StringUtils::StartsWith(strLine, OffsetMarker))
     {
       size_t iColon = strLine.find(":");
       size_t iComma = strLine.find(",");
@@ -126,9 +125,9 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         iEndOffset = atoi(strLine.substr(iComma).c_str());
       }
     }
-    else if (strLine != M3U_START_MARKER &&
-             !StringUtils::StartsWith(strLine, M3U_ARTIST_MARKER) &&
-             !StringUtils::StartsWith(strLine, M3U_ALBUM_MARKER))
+    else if (strLine != StartMarker &&
+             !StringUtils::StartsWith(strLine, ArtistMarker) &&
+             !StringUtils::StartsWith(strLine, AlbumMarker))
     {
       std::string strFileName = strLine;
 
@@ -200,7 +199,7 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
     return;
   }
-  std::string strLine = StringUtils::Format("%s\n",M3U_START_MARKER);
+  std::string strLine = StringUtils::Format("%s\n",StartMarker);
   if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
     return; // error
 
@@ -209,12 +208,12 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     CFileItemPtr item = m_vecItems[i];
     std::string strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
-    strLine = StringUtils::Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
+    strLine = StringUtils::Format( "%s:%i,%s\n", InfoMarker, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
     if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
       return; // error
     if (item->m_lStartOffset != 0 || item->m_lEndOffset != 0)
     {
-      strLine = StringUtils::Format("%s:%i,%i\n", M3U_OFFSET_MARKER, item->m_lStartOffset, item->m_lEndOffset);
+      strLine = StringUtils::Format("%s:%i,%i\n", OffsetMarker, item->m_lStartOffset, item->m_lEndOffset);
       file.Write(strLine.c_str(),strLine.size());
     }
     std::string strFileName = ResolveURL(item);
@@ -226,97 +225,16 @@ void CPlayListM3U::Save(const std::string& strFileName) const
   file.Close();
 }
 
-std::string CPlayListM3U::GetBestBandwidthStream(const std::string &strFileName, size_t bandwidth)
-{
-  // we may be passed a playlist that does not contain playlists of different
-  // bitrates (eg: this playlist is really the HLS video). So, default the
-  // return to the filename so it can be played
-  char szLine[4096];
-  std::string strLine;
-  size_t maxBandwidth = 0;
-
-  // open the file, and if it fails, return
-  CFile file;
-  if (!file.Open(strFileName) )
-  {
-    file.Close();
-    return strFileName;
-  }
-
-  // get protocol options if they were set, so we can restore them again at the end
-  CURL playlistUrl(strFileName);
-  
-  // and set the fallback value
-  CURL subStreamUrl = CURL(strFileName);
-  
-  // determine the base
-  CURL basePlaylistUrl(URIUtils::GetParentPath(strFileName));
-  basePlaylistUrl.SetOptions("");
-  basePlaylistUrl.SetProtocolOptions("");
-  std::string basePart = basePlaylistUrl.Get();
-
-  // convert bandwidth specified in kbps to bps used by the m3u8
-  bandwidth *= 1000;
-
-  while (file.ReadString(szLine, 1024))
-  {
-    // read and trim a line
-    strLine = szLine;
-    StringUtils::Trim(strLine);
-
-    // skip the first line
-    if (strLine == M3U_START_MARKER)
-        continue;
-    else if (StringUtils::StartsWith(strLine, M3U_STREAM_MARKER))
-    {
-      // parse the line so we can pull out the bandwidth
-      std::map< std::string, std::string > params = ParseStreamLine(strLine);
-      std::map< std::string, std::string >::iterator it = params.find(M3U_BANDWIDTH_MARKER);
-
-      if (it != params.end())
-      {
-        size_t streamBandwidth = atoi(it->second.c_str());
-        if ((maxBandwidth < streamBandwidth) && (streamBandwidth <= bandwidth))
-        {
-          // read the next line
-          if (!file.ReadString(szLine, 1024))
-            continue;
-
-          strLine = szLine;
-          StringUtils::Trim(strLine);
-
-          // this line was empty
-          if (strLine.empty())
-            continue;
-
-          // store the max bandwidth
-          maxBandwidth = streamBandwidth;
-
-          // if the path is absolute just use it
-          if (CURL::IsFullPath(strLine))
-            subStreamUrl = CURL(strLine);
-          else
-            subStreamUrl = CURL(basePart + strLine);
-        }
-      }
-    }
-  }
-
-  // if any protocol options were set, restore them
-  subStreamUrl.SetProtocolOptions(playlistUrl.GetProtocolOptions());
-  return subStreamUrl.Get();
-}
-
 std::map< std::string, std::string > CPlayListM3U::ParseStreamLine(const std::string &streamLine)
 {
   std::map< std::string, std::string > params;
 
   // ensure the line has something beyond the stream marker and ':'
-  if (streamLine.size() < strlen(M3U_STREAM_MARKER) + 2)
+  if (streamLine.size() < strlen(StreamMarker) + 2)
     return params;
 
   // get the actual params following the :
-  std::string strParams(streamLine.substr(strlen(M3U_STREAM_MARKER) + 1));
+  std::string strParams(streamLine.substr(strlen(StreamMarker) + 1));
 
   // separate the parameters
   std::vector<std::string> vecParams = StringUtils::Split(strParams, ",");

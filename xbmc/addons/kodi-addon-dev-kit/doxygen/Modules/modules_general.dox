@@ -1,0 +1,8 @@
+/*!
+
+\page general_parts General Development parts
+\brief \doc_header{ General Add-On Development parts }
+
+\subpage modules__General__List_of_gui_access
+\subpage page_List_of_built_in_functions
+*/

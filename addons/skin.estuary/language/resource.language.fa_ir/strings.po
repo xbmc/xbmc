@@ -1,0 +1,97 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Persian (Iran) (http://www.transifex.com/projects/p/kodi-main/language/fa_IR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "در حال پخش"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "جستجو ..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "تغییر حالت"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "تماشا بصورت دو بعدی"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "پیش بینی"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "عملیات"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "سایر تنظیمات"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "بازکشت"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "افزودن گروه"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "تغییر نام گروه"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "حذف گروه"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "بر اساس قلم Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "آخرین بروزرسانی"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "گزینه های صرفه جویی در مصرف انرژی"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "اطلاعات آلبوم"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "افزونه متن ترانه"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "گروه کانال ها"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "دانلود زیر نویس ها"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "زیر نویس محلی موجود"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

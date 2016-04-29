@@ -20,16 +20,6 @@
 
 #include "DVDDemux.h"
 
-std::string CDemuxStreamTeletext::GetStreamInfo()
-{
-  return "Teletext Data Stream";
-}
-
-std::string CDemuxStreamRadioRDS::GetStreamInfo()
-{
-  return "Radio Data Stream (RDS)";
-}
-
 std::string CDemuxStreamAudio::GetStreamType()
 {
   char sInfo[64] = {0};
@@ -63,31 +53,24 @@ std::string CDemuxStreamAudio::GetStreamType()
   return sInfo;
 }
 
-int CDVDDemux::GetNrOfSubtitleStreams()
+int CDVDDemux::GetNrOfStreams(StreamType streamType)
 {
   int iCounter = 0;
 
-  for (int i = 0; i < GetNrOfStreams(); i++)
+  for (auto pStream : GetStreams())
   {
-    CDemuxStream* pStream = GetStream(i);
-    if (pStream->type == STREAM_SUBTITLE) iCounter++;
+    if (pStream && pStream->type == streamType) iCounter++;
   }
 
   return iCounter;
+}
+
+int CDVDDemux::GetNrOfSubtitleStreams()
+{
+  return GetNrOfStreams(STREAM_SUBTITLE);
 }
 
 std::string CDemuxStream::GetStreamName()
 {
   return "";
 }
-
-AVDiscard CDemuxStream::GetDiscard()
-{
-  return AVDISCARD_NONE;
-}
-
-void CDemuxStream::SetDiscard(AVDiscard discard)
-{
-  return;
-}
-

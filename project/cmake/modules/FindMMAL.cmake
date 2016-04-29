@@ -6,7 +6,7 @@
 # MMAL_LIBRARIES - The MMAL libraries
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules (MMAL mmal)
+  pkg_check_modules(MMAL mmal QUIET)
 endif()
 
 if(NOT MMAL_FOUND)
@@ -19,15 +19,17 @@ if(NOT MMAL_FOUND)
   find_library(BCM_LIBRARY bcm_host)
   find_library(VCHIQ_LIBRARY vchiq_arm)
   find_library(VCOS_LIBRARY vcos)
+  find_library(VCSM_LIBRARY vcsm)
+  find_library(CONTAINER_LIBRARY containers)
 
   set(MMAL_LIBRARIES ${MMAL_LIBRARY} ${MMALCORE_LIBRARY} ${MMALUTIL_LIBRARY}
                      ${MMALCLIENT_LIBRARY} ${MMALCOMPONENT_LIBRARY}
-                     ${BCM_LIBRARY} ${VCHIQ_LIBRARY} ${VCOS_LIBRARY}
+                     ${BCM_LIBRARY} ${VCHIQ_LIBRARY} ${VCOS_LIBRARY} ${VCSM_LIBRARY} ${CONTAINER_LIBRARY}
       CACHE STRING "mmal libraries" FORCE)
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(MMAL DEFAULT_MSG MMAL_INCLUDE_DIRS MMAL_LIBRARIES)
+find_package_handle_standard_args(MMAL DEFAULT_MSG MMAL_LIBRARIES MMAL_INCLUDE_DIRS)
 
 list(APPEND MMAL_DEFINITIONS -DHAVE_MMAL=1 -DHAS_MMAL=1)
 

@@ -72,10 +72,12 @@ void CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant line0, CVariant li
 
 void CGUIDialogOK::OnInitWindow()
 {
-  CGUIDialogBoxBase::OnInitWindow();
-
-  SET_CONTROL_VISIBLE(CONTROL_YES_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_NO_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
   SET_CONTROL_FOCUS(CONTROL_YES_BUTTON, 0);
+
+  CGUIDialogBoxBase::OnInitWindow();
 }
 
 int CGUIDialogOK::GetDefaultLabelID(int controlId) const

@@ -24,6 +24,9 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 
@@ -176,7 +179,7 @@ void CGLTexture::LoadToGPU()
 #endif
   VerifyGLState();
 
-  delete [] m_pixels;
+  _aligned_free(m_pixels);
   m_pixels = NULL;
 
   m_loadedToGPU = true;

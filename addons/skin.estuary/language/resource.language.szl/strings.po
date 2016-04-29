@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Silesian (http://www.transifex.com/projects/p/kodi-main/language/szl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: szl\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Terŏz grŏ"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Szukej..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Zmiyń tryb"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Ôbezdrzeć we 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Prognoza"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Akcyje"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Roztōmajte nasztalowania"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Ôstatnie logowaniy"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Nazŏd"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Do przodku"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Nasztalowania playlisty"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Przidej skupinã"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Przemianuj skupinã"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Wyciep skupinã"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Podane na Arial"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Info ô albumie"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Przidŏwka tekstōw śpiywek"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Nasztalowania podszukowaniŏ zawartości"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Sciōngnōńć podnapisy"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Lokalne podnapisy dostympne"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Nasztalowania kanału"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Ôbier swōj profil Kodi,[CR]coby sie zalogować i kōntynuować"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

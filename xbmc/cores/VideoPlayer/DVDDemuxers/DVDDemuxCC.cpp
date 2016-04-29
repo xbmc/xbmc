@@ -108,12 +108,30 @@ CDVDDemuxCC::~CDVDDemuxCC()
   Dispose();
 }
 
-CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId)
+CDemuxStream* CDVDDemuxCC::GetStream(int iStreamId) const
 {
-  return &m_streams[iStreamId];
+  for (int i=0; i<GetNrOfStreams(); i++)
+  {
+    if (m_streams[i].uniqueId == iStreamId)
+      return const_cast<CDemuxStreamSubtitle*>(&m_streams[i]);
+  }
+  return nullptr;
 }
 
-int CDVDDemuxCC::GetNrOfStreams()
+std::vector<CDemuxStream*> CDVDDemuxCC::GetStreams() const
+{
+  std::vector<CDemuxStream*> streams;
+
+  int num = GetNrOfStreams();
+  for (int i = 0; i < num; ++i)
+  {
+    streams.push_back(const_cast<CDemuxStreamSubtitle*>(&m_streams[i]));
+  }
+
+  return streams;
+}
+
+int CDVDDemuxCC::GetNrOfStreams() const
 {
   return m_streams.size();
 }
@@ -307,8 +325,7 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
     CDemuxStreamSubtitle stream;
     strcpy(stream.language, "cc");
     stream.codec = AV_CODEC_ID_TEXT;
-    stream.iPhysicalId = service;
-    stream.iId = idx;
+    stream.uniqueId = service;
     ctx->m_streams.push_back(stream);
 
     streamdata data;

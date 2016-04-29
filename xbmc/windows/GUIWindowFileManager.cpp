@@ -56,6 +56,9 @@
 #include "utils/Variant.h"
 #include "Autorun.h"
 #include "URL.h"
+#ifdef TARGET_POSIX
+#include "linux/XFileUtils.h"
+#endif
 
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -70,7 +73,6 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTNMOVE                 7
 #define CONTROL_BTNNEWFOLDER            8
 #define CONTROL_BTNCALCSIZE             9
-#define CONTROL_BTNGOTOROOT             10
 #define CONTROL_BTNSWITCHMEDIA          11
 #define CONTROL_BTNCANCELJOB            12
 
@@ -1009,7 +1011,6 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     choices.Add(CONTROL_BTNNEWFOLDER, 20309);
   if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
     choices.Add(CONTROL_BTNCALCSIZE, 13393);
-  choices.Add(CONTROL_BTNGOTOROOT, 20128);
   choices.Add(CONTROL_BTNSWITCHMEDIA, 523);
   if (CJobManager::GetInstance().IsProcessing("filemanager"))
     choices.Add(CONTROL_BTNCANCELJOB, 167);
@@ -1074,11 +1075,6 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
     if (progress)
       progress->Close();
-  }
-  if (btnid == CONTROL_BTNGOTOROOT)
-  {
-    Update(list,"");
-    return;
   }
   if (btnid == CONTROL_BTNSWITCHMEDIA)
   {

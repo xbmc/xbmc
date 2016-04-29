@@ -411,6 +411,177 @@ static int ToggleDirty(const std::vector<std::string>&)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_5 GUI built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`Action(action[\,window])`</b>
+///     ,
+///     Executes an action (same as in keymap) for the given window or the
+///     active window if the parameter window is omitted. The parameter window
+///     can either be the window's id\, or in the case of a standard window\, the
+///     window's name. See here for a list of window names\, and their respective
+///     ids.
+///     @param[in] action                Action to execute.
+///     @param[in] window                Window to send action to (optional).
+///   }
+///   \table_row2_l{
+///     <b>`CancelAlarm(name[\,silent])`</b>
+///     ,
+///     Cancel a running alarm. Set silent to true to hide the alarm notification.
+///     @param[in] silent                Send "true" or "silent" to silently cancel alarm (optional).
+///   }
+///   \table_row2_l{
+///     <b>`AlarmClock(name\,command\,time[\,silent\,loop])`</b>
+///     ,
+///     Pops up a dialog asking for the length of time for the alarm (unless the
+///     parameter time is specified)\, and starts a timer. When the timer runs out\,
+///     it'll execute the built-in command (the parameter command) if it is
+///     specified\, otherwise it'll pop up an alarm notice. Add silent to hide the
+///     alarm notification. Add loop for the alarm to execute the command each
+///     time the specified time interval expires.
+///     @param[in] name                  name
+///     @param[in] command               command
+///     @param[in] time                  Length in seconds (optional).
+///     @param[in] silent                Send "silent" to suppress notifications.
+///     @param[in] loop                  Send "loop" to loop the alarm.
+///   }
+///   \table_row2_l{
+///     <b>`ActivateWindow(window[\,dir])`</b>
+///     ,
+///     Opens the given window. The parameter window can either be the window's id\,
+///     or in the case of a standard window\, the window's name. See here for a list
+///     of window names\, and their respective ids. If\, furthermore\, the window is
+///     Music\, Video\, Pictures\, or Program files\, then the optional dir parameter
+///     specifies which folder Kodi should default to once the window is opened.
+///     This must be a source as specified in sources.xml\, or a subfolder of a
+///     valid source. For some windows (MusicLibrary and VideoLibrary)\, the return
+///     parameter may be specified\, which indicates that Kodi should use this
+///     folder as the "root" of the level\, and thus the "parent directory" action
+///     from within this folder will return the user to where they were prior to
+///     the window activating.
+///     @param[in] window                The window name.
+///     @param[in] dir                   Window starting folder (optional).
+///   }
+///   \table_row2_l{
+///     <b>`ActivateWindowAndFocus(id1\, id2\,item1\, id3\,item2)`</b>
+///     ,
+///     Activate window with id1\, first focus control id2 and then focus control
+///     id3. if either of the controls is a container\, you can specify which
+///     item to focus (else\, set it to 0).
+///     @param[in] id1                   The window name.
+///     @param[in] params[1\,...]         Pair of (container ID\, focus item).
+///   }
+///   \table_row2_l{
+///     <b>`ClearProperty(key[\,id])`</b>
+///     ,
+///     Clears a window property for the current focused window/dialog(key)\, or
+///     the specified window (key\,id).
+///     @param[in] key                   The property to clear.
+///     @param[in] id                    The window to clear property in (optional).
+///   }
+///   \table_row2_l{
+///     <b>`Dialog.Close(dialog[\,force])`</b>
+///     ,
+///     Close a dialog. Set force to true to bypass animations. Use (all\,true)
+///     to close all opened dialogs at once.
+///     @param[in] dialog                Send "all" to close all dialogs\, or dialog name.
+///     @param[in] force                 Send "true" to force close (skip animations) (optional).
+///   }
+///   \table_row2_l{
+///     <b>`Notification(header\,message[\,time\,image])`</b>
+///     ,
+///     Will display a notification dialog with the specified header and message\,
+///     in addition you can set the length of time it displays in milliseconds
+///     and a icon image.
+///     @param[in] header                Notification title.
+///     @param[in] message               Notification text.
+///     @param[in] time                  Display time in milliseconds (optional).
+///     @param[in] image                 Notification icon (optional).
+///   }
+///   \table_row2_l{
+///     <b>`RefreshRSS`</b>
+///     ,
+///     Reload RSS feeds from RSSFeeds.xml
+///   }
+///   \table_row2_l{
+///     <b>`ReplaceWindow(window\,dir)`</b>
+///     ,
+///     Replaces the current window with the given window. This is the same as
+///     ActivateWindow() but it doesn't update the window history list\, so when
+///     you go back from the new window it will not return to the previous
+///     window\, rather will return to the previous window's previous window.
+///     @param[in] window                The window name.
+///     @param[in] dir                   Window starting folder (optional).
+///   }
+///   \table_row2_l{
+///     <b>`ReplaceWindowAndFocus(id1\, id2\,item1\, id3\,item2)`</b>
+///     ,
+///     Replace window with id1\, first focus control id2 and then focus control
+///     id3. if either of the controls is a container\, you can specify which
+///     item to focus (else\, set it to 0).
+///     @param[in] id1                   The window name.
+///     @param[in] params[1\,...]        Pair of (container ID\, focus item).
+///   }
+///   \table_row2_l{
+///     <b>`Resolution(resIdent)`</b>
+///     ,
+///     Change Kodi's Resolution (default is 4x3).
+///     param[in] resIdent               A resolution identifier.
+///     |          | Identifiers |          |
+///     |:--------:|:-----------:|:--------:|
+///     | pal      | pal16x9     | ntsc     |
+///     | ntsc16x9 | 720p        | 720psbs  |
+///     | 720ptb   | 1080psbs    | 1080ptb  |
+///     | 1080i    |             |          |
+///   }
+///   \table_row2_l{
+///     <b>`SetGUILanguage(lang)`</b>
+///     ,
+///     Set GUI Language
+///     @param[in] lang                  The language to use.
+///   }
+///   \table_row2_l{
+///     <b>`SetProperty(key\,value[\,id])`</b>
+///     ,
+///     Sets a window property for the current window (key\,value)\, or the 
+///     specified window (key\,value\,id).
+///     @param[in] key                   The property to set.
+///     @param[in] value                 The property value.
+///     @param[in] id                    The window to set property in (optional).
+///   }
+///   \table_row2_l{
+///     <b>`SetStereoMode(ident)`</b>
+///     ,
+///     Changes the stereo mode of the GUI.
+///     Params can be:
+///     toggle\, next\, previous\, select\, tomono or any of the supported stereomodes (off\,
+///     split_vertical\, split_horizontal\, row_interleaved\, hardware_based\, anaglyph_cyan_red\, anaglyph_green_magenta\, monoscopic)
+///     @param[in] ident                 Stereo mode identifier.
+///   }
+///   \table_row2_l{
+///     <b>`TakeScreenshot(url[\,sync)`</b>
+///     ,
+///     Takes a Screenshot
+///     @param[in] url                   URL to save file to. Blank to use default.
+///     @param[in] sync                  Add "sync" to run synchronously (optional).
+///   }
+///   \table_row2_l{
+///     <b>`ToggleDirtyRegionVisualization`</b>
+///     ,
+///     makes dirty regions visible for debugging proposes.
+///   }
+///  \table_end
+///
+
 CBuiltins::CommandMap CGUIBuiltins::GetOperations() const
 {
   return {

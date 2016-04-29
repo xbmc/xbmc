@@ -35,6 +35,7 @@
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#include "filesystem/SmartPlaylistDirectory.h" 
 #include "GUIInfoManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -73,6 +74,7 @@ CMusicInfoScanner::CMusicInfoScanner() : CThread("MusicInfoScanner"), m_fileCoun
   m_currentItem=0;
   m_itemCount=0;
   m_flags = 0;
+  m_bClean = false;
 }
 
 CMusicInfoScanner::~CMusicInfoScanner()
@@ -316,8 +318,14 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
   }
   else
   {
-    if (URIUtils::HasSlashAtEnd(strDirectory)) // directory
+    if (URIUtils::IsMusicDb(strDirectory))
       CDirectory::GetDirectory(strDirectory,items);
+    else if (StringUtils::EndsWith(strDirectory, ".xsp"))
+    {
+      CURL url(strDirectory);
+      CSmartPlaylistDirectory dir;
+      dir.GetDirectory(url, items);
+    }
     else
     {
       CFileItemPtr item(new CFileItem(strDirectory,false));
@@ -355,13 +363,19 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
   if (strDirectory.empty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetArtistsNav("musicdb://artists/", items, false, -1);
+    m_musicDatabase.GetArtistsNav("musicdb://artists/", items, !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
     m_musicDatabase.Close();
   }
   else
   {
-    if (URIUtils::HasSlashAtEnd(strDirectory)) // directory
+    if (URIUtils::IsMusicDb(strDirectory))
       CDirectory::GetDirectory(strDirectory,items);
+    else if (StringUtils::EndsWith(strDirectory, ".xsp"))
+    {
+      CURL url(strDirectory);
+      CSmartPlaylistDirectory dir;
+      dir.GetDirectory(url, items);
+    }
     else
     {
       CFileItemPtr newItem(new CFileItem(strDirectory,false));
@@ -795,6 +809,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
       if (!albumScraper || !artistScraper)
         continue;
 
+      bool albumartistsonly = !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS);
+
       INFO_RET albumScrapeStatus = INFO_NOT_FOUND;
       if (!m_musicDatabase.HasAlbumBeenScraped(album->idAlbum))
         albumScrapeStatus = UpdateDatabaseAlbumInfo(*album, albumScraper, false);
@@ -815,27 +831,29 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
             UpdateDatabaseArtistInfo(artist, artistScraper, false);
           }
         }
-
-        for (VECSONGS::iterator song  = album->songs.begin();
-                                song != album->songs.end();
-                                ++song)
+        if (!albumartistsonly)
         {
-          if (m_bStop)
-            break;
-
-          for (VECARTISTCREDITS::const_iterator artistCredit  = song->artistCredits.begin();
-                                                artistCredit != song->artistCredits.end();
-                                              ++artistCredit)
+          for (VECSONGS::iterator song = album->songs.begin();
+            song != album->songs.end();
+            ++song)
           {
             if (m_bStop)
               break;
 
-            CMusicArtistInfo musicArtistInfo;
-            if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
+            for (VECARTISTCREDITS::const_iterator artistCredit = song->artistCredits.begin();
+              artistCredit != song->artistCredits.end();
+              ++artistCredit)
             {
-              CArtist artist;
-              m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
-              UpdateDatabaseArtistInfo(artist, artistScraper, false);
+              if (m_bStop)
+                break;
+
+              CMusicArtistInfo musicArtistInfo;
+              if (!m_musicDatabase.HasArtistBeenScraped(artistCredit->GetArtistId()))
+              {
+                CArtist artist;
+                m_musicDatabase.GetArtist(artistCredit->GetArtistId(), artist);
+                UpdateDatabaseArtistInfo(artist, artistScraper, false);
+              }
             }
           }
         }

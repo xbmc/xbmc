@@ -20,7 +20,7 @@
  */
 
 #include "windows/GUIMediaWindow.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "utils/Observer.h"
 
 #define CONTROL_BTNVIEWASICONS            2
 #define CONTROL_BTNSORTBY                 3
@@ -54,6 +54,12 @@ namespace PVR
     EPG_SELECT_ACTION_PLAY_RECORDING = 4,
   };
 
+  class CPVRChannelGroup;
+  typedef std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupPtr;
+
+  class CPVRTimerInfoTag;
+  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
+
   class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
   {
   public:
@@ -68,18 +74,22 @@ namespace PVR
     virtual bool OnAction(const CAction &action) override;
     virtual bool OnBack(int actionID) override;
     virtual bool OpenGroupSelectionDialog(void);
-    virtual void ResetObservers(void) {};
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
     virtual void SetInvalid() override;
     virtual bool CanBeActivated() const override;
 
+    void ResetObservers(void);
+
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
 
-    static bool ShowTimerSettings(CFileItem *item);
-    static bool AddTimer(CFileItem *item, bool bAdvanced);
+    static bool ShowTimerSettings(const CPVRTimerInfoTagPtr &timer);
+    static bool AddTimer(CFileItem *item, bool bShowTimerSettings = false);
+    static bool AddTimerRule(CFileItem *item, bool bShowTimerSettings = true);
     static bool EditTimer(CFileItem *item);
+    static bool EditTimerRule(CFileItem *item);
     static bool DeleteTimer(CFileItem *item);
+    static bool DeleteTimerRule(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
 
   protected:
@@ -89,6 +99,7 @@ namespace PVR
     virtual CPVRChannelGroupPtr GetGroup(void);
     virtual void SetGroup(CPVRChannelGroupPtr group);
 
+    virtual bool ActionShowTimerRule(CFileItem *item);
     virtual bool ActionToggleTimer(CFileItem *item);
     virtual bool ActionPlayChannel(CFileItem *item);
     virtual bool ActionPlayEpg(CFileItem *item, bool bPlayRecording);
@@ -106,6 +117,10 @@ namespace PVR
 
     bool OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDeleteTimerRule(CFileItem *item, CONTEXT_BUTTON button);
+
+    virtual void RegisterObservers(void) {};
+    virtual void UnregisterObservers(void) {};
 
     static CCriticalSection m_selectedItemPathsLock;
     static std::string m_selectedItemPaths[2];
@@ -116,23 +131,24 @@ namespace PVR
   private:
     /*!
      * @brief Open a dialog to confirm timer delete.
-     * @param item the timer to delete.
+     * @param timer the timer to delete.
      * @param bDeleteRule in: ignored
      *                    out, for one shot timer scheduled by a timer rule: true to also delete the timer
      *                    rule that has scheduled this timer, false to only delete the one shot timer.
      *                    out, for one shot timer not scheduled by a timer rule: ignored
      * @return true, to proceed with delete, false otherwise.
      */
-    static bool ConfirmDeleteTimer(CFileItem *item, bool &bDeleteRule);
+    static bool ConfirmDeleteTimer(const CPVRTimerInfoTagPtr &timer, bool &bDeleteRule);
 
     /*!
      * @brief Open a dialog to confirm stop recording.
-     * @param item the recording to stop (actually the timer to delete).
+     * @param timer the recording to stop (actually the timer to delete).
      * @return true, to proceed with delete, false otherwise.
      */
-    static bool ConfirmStopRecording(CFileItem *item);
+    static bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer);
 
-    static bool DeleteTimer(CFileItem *item, bool bIsRecording);
+    static bool DeleteTimer(CFileItem *item, bool bIsRecording, bool bDeleteRule);
+    static bool AddTimer(CFileItem *item, bool bCreateRule, bool bShowTimerSettings);
 
     CPVRChannelGroupPtr m_group;
     XbmcThreads::EndTime m_refreshTimeout;

@@ -31,6 +31,9 @@ if(ENABLE_INTERNAL_FFMPEG)
                       URL ${FFMPEG_BASE_URL}/${FFMPEG_VER}.tar.gz
                       PREFIX ${CORE_BUILD_DIR}/ffmpeg
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                                 -DFFMPEG_VER=${FFMPEG_VER}
+                                 -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                  ${CROSS_ARGS}
                       PATCH_COMMAND ${CMAKE_COMMAND} -E copy
                                     ${CORE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
@@ -51,8 +54,7 @@ then
   swresample=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
   gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
   vorbisenc=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors vorbisenc`
-  dcadec=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors dcadec`
-  $@ $avcodec $avformat $avcodec $avfilter $swscale $swresample -lpostproc $gnutls $vorbisenc $dcadec
+  $@ $avcodec $avformat $avcodec $avfilter $swscale $swresample -lpostproc $gnutls $vorbisenc
 else
   $@
 fi")

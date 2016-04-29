@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<onload condition="String.IsEmpty(Skin.String(FirstRun))">ActivateWindow(1111)</onload>
+	<controls>
+		<control type="label">
+			<posx>-10</posx>
+			<posy>-10</posy>
+			<width>0</width>
+			<height>0</height>
+			<label>$INFO[Weather.FanartCode]</label> <!-- trigger weather retrieval -->
+		</control>
+		<include>CommonBackground</include>
+		<include>Header</include>
+		<include>CommonNowPlaying</include>
+		<include>Footer</include>
+		<control type="group">
+			<include>Window_OpenClose_Animation</include>
+			<animation effect="slide" start="0,0" end="106,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
+			<visible>Library.HasContent(Movies) | Library.HasContent(TVShows) | Library.HasContent(Music) | Integer.IsGreater(Container(2400).NumItems,0)</visible>
+			<control type="button">
+				<posx>509r</posx>
+				<posy>120</posy>
+				<width>33</width>
+				<height>55</height>
+				<texturenofocus>arrow_left.png</texturenofocus>
+				<texturefocus colordiffuse="blue">arrow_left.png</texturefocus>
+				<onclick>Control.Move(9010,-1)</onclick>
+			</control>
+			<control type="button">
+				<posx>176r</posx>
+				<posy>120</posy>
+				<width>33</width>
+				<height>55</height>
+				<texturenofocus>arrow_right.png</texturenofocus>
+				<texturefocus colordiffuse="blue">arrow_right.png</texturefocus>
+				<onclick>Control.Move(9010,1)</onclick>
+			</control>
+			<control type="wraplist" id="9010">
+				<include>VisibleFadeEffect</include>
+				<posx>426r</posx>
+				<posy>78</posy>
+				<width>200</width>
+				<height>140</height>
+				<onup>9000</onup>
+				<ondown>9002</ondown>
+				<scrolltime>0</scrolltime>
+				<orientation>Horizontal</orientation>
+				<itemlayout width="200" height="140">
+					<control type="image">
+						<posx>20</posx>
+						<posy>20</posy>
+						<height>100</height>
+						<width>160</width>
+						<texture>button_nofocus.png</texture>
+					</control>
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<height>140</height>
+						<width>190</width>
+						<label>$INFO[ListItem.Label]</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<textcolor>white</textcolor>
+						<font>font22</font>
+					</control>
+				</itemlayout>
+				<focusedlayout width="200" height="140">
+					<control type="image">
+						<posx>20</posx>
+						<posy>20</posy>
+						<height>100</height>
+						<width>160</width>
+						<texture>button_nofocus.png</texture>
+						<visible>!Control.HasFocus(9010)</visible>
+					</control>
+					<control type="image">
+						<posx>20</posx>
+						<posy>20</posy>
+						<height>100</height>
+						<width>160</width>
+						<texture>list_focus.png</texture>
+						<visible>Control.HasFocus(9010)</visible>
+					</control>
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<height>140</height>
+						<width>190</width>
+						<label>$INFO[ListItem.Label]</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<textcolor>white</textcolor>
+						<font>font22</font>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>$LOCALIZE[31011][CR]$LOCALIZE[31013]</label>
+						<onclick>Control.Move(9010,1)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>Library.HasContent(Movies)</visible>
+					</item>
+					<item id="2">
+						<label>$LOCALIZE[31011][CR]$LOCALIZE[31014]</label>
+						<onclick>Control.Move(9010,1)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>Library.HasContent(TVShows)</visible>
+					</item>
+					<item id="3">
+						<label>$LOCALIZE[31011][CR]$LOCALIZE[31016]</label>
+						<onclick>Control.Move(9010,1)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>Library.HasContent(Music)</visible>
+					</item>
+					<item id="4">
+						<label>24001</label>
+						<onclick>Control.Move(9010,1)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>Integer.IsGreater(Container(2400).NumItems,0)</visible>
+					</item>
+				</content>
+			</control>
+		</control>
+		<control type="group">
+			<animation effect="slide" start="0,0" end="212,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !Integer.IsGreater(Container(2400).NumItems,0)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="323,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3) + !Library.HasContent(Movies) + !Library.HasContent(TVShows) + !Library.HasContent(Music) + !Integer.IsGreater(Container(2400).NumItems,0)">Conditional</animation>
+			<include content="HomeMenu" condition="String.IsEqual(Skin.AspectRatio,16:9)">
+				<param name="panel-width">1000</param>
+				<param name="layout-width">500</param>
+				<param name="list-width">480</param>
+				<param name="label-posx-left">110</param>
+				<param name="label-posx-right">0</param>
+				<param name="label-width">370</param>
+				<param name="icon-posx-left">6</param>
+				<param name="icon-posx-right">386</param>
+				<param name="iconback-posx">383</param>
+				<param name="iconback-width">98</param>
+			</include>
+			<include content="HomeMenu" condition="String.IsEqual(Skin.AspectRatio,4:3)">
+				<param name="panel-width">832</param>
+				<param name="layout-width">416</param>
+				<param name="list-width">400</param>
+				<param name="label-posx-left">90</param>
+				<param name="label-posx-right">-20</param>
+				<param name="label-width">330</param>
+				<param name="icon-posx-left">-6</param>
+				<param name="icon-posx-right">318</param>
+				<param name="iconback-posx">326</param>
+				<param name="iconback-width">75</param>
+			</include>
+			<control type="panel" id="9002">
+				<include>Window_OpenClose_Animation</include>
+				<posx>240</posx>
+				<posy>185r</posy>
+				<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(Home)">WindowClose</animation>
+				<animation effect="fade" end="100" start="0" time="300" condition="Window.Previous(Home)">WindowOpen</animation>
+				<animation effect="slide" start="0,0" end="60,0" time="0" condition="String.IsEqual(Container(9002).NumItems,4)">conditional</animation>
+				<animation effect="slide" start="0,0" end="120,0" time="0" condition="String.IsEqual(Container(9002).NumItems,3)">conditional</animation>
+				<animation effect="slide" start="0,0" end="-100,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
+				<width>802</width>
+				<height>120</height>
+				<onleft>9002</onleft>
+				<onright>9002</onright>
+				<onup>9001</onup>
+				<ondown>20</ondown>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>300</scrolltime>
+				<orientation>Horizontal</orientation>
+				<itemlayout height="100" width="120">
+					<control type="image">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>90</width>
+						<height>90</height>
+						<texture>button_nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>10</posx>
+						<posy>5</posy>
+						<width>80</width>
+						<height>80</height>
+						<bordersize>12</bordersize>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+				</itemlayout>
+				<focusedlayout height="100" width="120">
+					<control type="image">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>90</width>
+						<height>90</height>
+						<texture>list_focus.png</texture>
+					</control>
+					<control type="image">
+						<posx>10</posx>
+						<posy>5</posy>
+						<width>80</width>
+						<height>80</height>
+						<bordersize>12</bordersize>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>13012</label>
+						<onclick>Quit</onclick>
+						<icon>icon_button_shutdown.png</icon>
+					</item>
+					<item>
+						<label>20126</label>
+						<onclick>System.LogOff</onclick>
+						<icon>icon_button_logoff.png</icon>
+						<visible>System.HasLoginScreen | Integer.IsGreater(System.ProfileCount,1)</visible>
+					</item>
+					<item>
+						<label>5</label>
+						<onclick>ActivateWindow(Settings)</onclick>
+						<icon>icon_button_settings.png</icon>
+					</item>
+					<item>
+						<label>13376</label>
+						<onclick>ActivateWindow(FileManager)</onclick>
+						<icon>icon_button_filemanager.png</icon>
+					</item>
+					<item>
+						<label>1036</label>
+						<onclick>ActivateWindow(Favourites)</onclick>
+						<icon>icon_button_favourites.png</icon>
+					</item>
+					<item>
+						<label>20183</label>
+						<onclick>ReloadSkin</onclick>
+						<icon>icon_button_refresh.png</icon>
+						<visible>false</visible>
+					</item>
+				</content>
+			</control>
+		</control>
+		<include content="HomeRecentlyAddedInfo" condition="String.IsEqual(Skin.AspectRatio,16:9)">
+			<param name="group-posx">640r</param>
+			<param name="panel-width">630</param>
+		</include>
+		<include content="HomeRecentlyAddedInfo" condition="String.IsEqual(Skin.AspectRatio,4:3)">
+			<param name="group-posx">430r</param>
+			<param name="panel-width">420</param>
+		</include>
+	</controls>	
+</window>

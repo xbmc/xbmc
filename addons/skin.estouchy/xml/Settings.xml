@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<controls>
+		<include>CommonBackground</include>
+		<include>Header</include>
+		<include>CommonNowPlaying</include>
+		<include>Footer</include>
+		<control type="label">
+			<description>Window label</description>
+			<include>MediaWindowTitleCommons</include>
+			<label>$LOCALIZE[5]</label>
+		</control>
+		<control type="panel" id="9002">
+			<include>VisibleFadeEffect</include>
+			<include>BottomMenuLayout</include>
+			<content>
+				<item>
+					<label>31200</label>
+					<onclick>Back</onclick>
+					<icon>icon_button_back.png</icon>
+				</item>
+				<item>
+					<label>13200</label>
+					<onclick>ActivateWindow(Profiles)</onclick>
+					<icon>icon_button_profile.png</icon>
+				</item>
+				<item>
+					<label>130</label>
+					<onclick>ActivateWindow(SystemInfo)</onclick>
+					<icon>icon_button_systeminfo.png</icon>
+				</item>
+				<item>
+					<label>1036</label>
+					<onclick>ActivateWindow(Favourites)</onclick>
+					<icon>icon_button_favourites.png</icon>
+				</item>
+			</content>
+		</control>
+		<control type="panel" id="9000">
+			<include>16x9_xPos_Relocation</include>
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<posx>40</posx>
+			<posy>100</posy>
+			<width>1200</width>
+			<height>750</height>
+			<onposx>9000</onposx>
+			<onright>9001</onright>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>300</scrolltime>
+			<itemlayout height="250" width="400">
+				<control type="image">
+					<posx>20</posx>
+					<posy>20</posy>
+					<width>360</width>
+					<height>210</height>
+					<texture>button_nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>20</posx>
+					<posy>180</posy>
+					<width>360</width>
+					<height>50</height>
+					<texture colordiffuse="40000000">black.png</texture>
+				</control>
+				<control type="image">
+					<posx>80</posx>
+					<posy>10</posy>
+					<width>240</width>
+					<height>240</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<align>center</align>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>190</posy>
+					<width>400</width>
+					<height>400</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font20_title</font>
+					<align>center</align>
+					<textcolor>white</textcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout height="250" width="400">
+				<control type="group">
+					<animation type="Focus" reversible="false">
+						<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+					</animation>
+					<animation type="UnFocus" reversible="false">
+						<effect type="zoom" center="auto" start="108" end="100" time="250" tween="sine" />
+					</animation>
+					<control type="image">
+						<posx>20</posx>
+						<posy>20</posy>
+						<width>360</width>
+						<height>210</height>
+						<texture>button_nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>20</posx>
+						<posy>20</posy>
+						<width>360</width>
+						<height>210</height>
+						<texture>list_focus.png</texture>
+						<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+					</control>
+					<control type="image">
+						<posx>20</posx>
+						<posy>180</posy>
+						<width>360</width>
+						<height>50</height>
+						<texture colordiffuse="40000000">black.png</texture>
+					</control>
+					<control type="image">
+						<posx>80</posx>
+						<posy>10</posy>
+						<width>240</width>
+						<height>240</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<align>center</align>
+					</control>
+					<control type="label">
+						<posx>0</posx>
+						<posy>190</posy>
+						<width>400</width>
+						<height>400</height>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font20_title</font>
+						<align>center</align>
+					</control>
+				</control>
+			</focusedlayout>
+			<content>
+				<item id="1">
+					<label>480</label>
+					<label2>31400</label2>
+					<onclick>ActivateWindow(AppearanceSettings)</onclick>
+					<icon>icon_settings_appearance.png</icon>
+				</item>
+				<item id="2">
+					<label>157</label>
+					<label2>31401</label2>
+					<onclick>ActivateWindow(VideosSettings)</onclick>
+					<icon>icon_settings_video.png</icon>
+				</item>
+				<item id="3">
+					<label>2</label>
+					<label2>31402</label2>
+					<onclick>ActivateWindow(MusicSettings)</onclick>
+					<icon>icon_settings_music.png</icon>
+				</item>
+				<item id="4">
+					<label>1</label>
+					<label2>31403</label2>
+					<onclick>ActivateWindow(PicturesSettings)</onclick>
+					<icon>icon_settings_pictures.png</icon>
+				</item>
+				<item id="5">
+					<label>8</label>
+					<label2>31404</label2>
+					<onclick>ActivateWindow(WeatherSettings)</onclick>
+					<icon>icon_settings_weather.png</icon>
+				</item>
+				<item id="6">
+					<label>31556</label>
+					<label2>31555</label2>
+					<onclick>ActivateWindow(PVRSettings)</onclick>
+					<icon>icon_settings_tv.png</icon>
+				</item>
+				<item id="7">
+					<label>14036</label>
+					<label2>31405</label2>
+					<onclick>ActivateWindow(ServiceSettings)</onclick>
+					<icon>icon_settings_network.png</icon>
+				</item>
+				<item id="8">
+					<label>13000</label>
+					<label2>31406</label2>
+					<onclick>ActivateWindow(SystemSettings)</onclick>
+					<icon>icon_settings_system.png</icon>
+				</item>
+				<item id="9">
+					<label>24001</label>
+					<label2>31407</label2>
+					<onclick>ActivateWindow(AddonBrowser)</onclick>
+					<icon>icon_settings_addons.png</icon>
+				</item>
+			</content>
+		</control>
+	</controls>
+</window>

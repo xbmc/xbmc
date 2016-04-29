@@ -19,14 +19,17 @@
  *
  */
 
-#include "epg/GUIEPGGridContainer.h"
-#include "threads/SystemClock.h"
+#include <atomic>
+#include <memory>
+#include "threads/Thread.h"
 #include "GUIWindowPVRBase.h"
 
 class CSetting;
 
 namespace PVR
 {
+  class CPVRRefreshTimelineItemsThread;
+
   class CGUIWindowPVRGuide : public CGUIWindowPVRBase
   {
   public:
@@ -34,19 +37,23 @@ namespace PVR
     virtual ~CGUIWindowPVRGuide(void);
 
     virtual void OnInitWindow() override;
+    virtual void OnDeinitWindow(int nextWindowID) override;
     virtual bool OnMessage(CGUIMessage& message) override;
     virtual bool OnAction(const CAction &action) override;
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual void ResetObservers(void) override;
-    void UnregisterObservers(void);
     virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
     virtual void UpdateButtons(void) override;
+    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
+
+    bool RefreshTimelineItems();
 
   protected:
     virtual void UpdateSelectedItemPath() override;
     virtual std::string GetDirectoryPath(void) override { return ""; }
     virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+    virtual void RegisterObservers(void) override;
+    virtual void UnregisterObservers(void) override;
 
   private:
     bool SelectPlayingFile(void);
@@ -65,11 +72,26 @@ namespace PVR
     void GetViewNextItems(CFileItemList &items);
     void GetViewTimelineItems(CFileItemList &items);
 
-    CFileItemList      *m_cachedTimeline;
+    void StartRefreshTimelineItemsThread();
+    void StopRefreshTimelineItemsThread();
+
+    std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
+    std::atomic_bool m_bRefreshTimelineItems;
+
+    std::shared_ptr<CFileItemList> m_cachedTimeline;
     CPVRChannelGroupPtr m_cachedChannelGroup;
+    std::shared_ptr<CFileItemList> m_newTimeline;
+  };
 
-    bool m_bUpdateRequired;
+  class CPVRRefreshTimelineItemsThread : public CThread
+  {
+  public:
+    CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuide *pGuideWindow);
+    virtual ~CPVRRefreshTimelineItemsThread() {}
 
-    XbmcThreads::EndTime m_nextUpdateTimeout;
+    virtual void Process();
+
+  private:
+    CGUIWindowPVRGuide *m_pGuideWindow;
   };
 }

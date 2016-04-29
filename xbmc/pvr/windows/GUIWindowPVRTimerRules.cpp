@@ -18,10 +18,11 @@
  *
  */
 
-#include "utils/StringUtils.h"
+#include "GUIWindowPVRTimerRules.h"
+#include "utils/URIUtils.h"
 #include "pvr/timers/PVRTimers.h"
 
-#include "GUIWindowPVRTimerRules.h"
+#include "FileItem.h"
 
 using namespace PVR;
 
@@ -33,5 +34,5 @@ CGUIWindowPVRTimerRules::CGUIWindowPVRTimerRules(bool bRadio) :
 std::string CGUIWindowPVRTimerRules::GetDirectoryPath(void)
 {
   const std::string basePath(CPVRTimersPath(m_bRadio, true).GetPath());
-  return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
+  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }

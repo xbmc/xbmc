@@ -128,7 +128,7 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
   UnInit();
 
   if (m_rgbBuffer != NULL) {
-    delete [] m_rgbBuffer;
+    av_free(m_rgbBuffer);
     m_rgbBuffer = NULL;
   }
 
@@ -172,7 +172,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  ManageRenderArea();
 
   m_bConfigured = true;
   m_bImageReady = false;
@@ -415,7 +415,7 @@ void CLinuxRendererGLES::Update()
 {
   if (!m_bConfigured)
     return;
-  ManageDisplay();
+  ManageRenderArea();
   ValidateRenderTarget();
 }
 
@@ -447,7 +447,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (buf.image.flags==0)
     return;
 
-  ManageDisplay();
+  ManageRenderArea();
 
   m_iLastRenderBuffer = index;
 
@@ -498,7 +498,7 @@ void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
 
   if (m_renderMethod & RENDER_BYPASS)
   {
-    ManageDisplay();
+    ManageRenderArea();
     return;
   }
 }
@@ -690,7 +690,7 @@ void CLinuxRendererGLES::UnInit()
 
   if (m_rgbBuffer != NULL)
   {
-    delete [] m_rgbBuffer;
+    av_free(m_rgbBuffer);
     m_rgbBuffer = NULL;
   }
   m_rgbBufferSize = 0;
@@ -1272,9 +1272,9 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   {
     if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
     {
-      delete [] m_rgbBuffer;
+      av_free(m_rgbBuffer);
       m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-      m_rgbBuffer = new BYTE[m_rgbBufferSize];
+      m_rgbBuffer = (BYTE*) av_malloc(m_rgbBufferSize);
     }
 
 #if defined(__ARM_NEON__) && !defined(__LP64__)
@@ -1922,7 +1922,7 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
   CRenderInfo info;
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
-  info.optimal_buffer_size = 3;
+  info.optimal_buffer_size = 4;
   return info;
 }
 

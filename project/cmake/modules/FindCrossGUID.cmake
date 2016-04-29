@@ -30,10 +30,8 @@ if(ENABLE_INTERNAL_CROSSGUID)
 else()
   find_path(CROSSGUID_INCLUDE_DIR guid.h)
 
-  find_library(CROSSGUID_LIBRARY_RELEASE NAMES crossguid
-                                         ${CONFIGURATION_LIBDIR_RELEASE})
-  find_library(CROSSGUID_LIBRARY_DEBUG NAMES crossguidd
-                                       ${CONFIGURATION_LIBDIR_DEBUG})
+  find_library(CROSSGUID_LIBRARY_RELEASE NAMES crossguid)
+  find_library(CROSSGUID_LIBRARY_DEBUG NAMES crossguidd)
 
   include(SelectLibraryConfigurations)
   select_library_configurations(CROSSGUID)

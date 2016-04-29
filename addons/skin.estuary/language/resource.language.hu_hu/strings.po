@@ -1,0 +1,549 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/kodi-main/language/hu_HU/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu_HU\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Most játszott"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Keresés…"
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Médiaillusztrációk megjelenítése a háttérben"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Mozi mód"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Mód változtatása"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Megnézés 2D-ként"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Véletlenszerű filmek"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Nem látott filmek"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Nincs jogi nyilatkozat"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Ikonok letöltése"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Folyamatban lévő filmek"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Legtöbbet játszott albumok"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Véletlenszerű albumok"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Véletlenszerű előadók"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Nem játszott albumok"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Friss felvételek"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Mostanában játszott csatornák"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Értékelés"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Legtöbbet játszott csatornák"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Előrejelzés"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Műveletek"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Egyéb beállítások"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Rendezés"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Nézettípus"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Következő számok"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Nem találhatóak kedvencek. Bármely elemet hozzáadhat ehhez a listához a média nézetekből, a környezeti menü használatával."
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Albumokhoz"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Számokhoz"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Illusztráció megjelenítése"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Utoljára bejelentkezve"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Memóriahasználat"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Verzióinformáció"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Rendezés"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Értékelés"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Bővített információ"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Oldalak"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "elem"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Számlista"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Visszatekerés"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Előretekerés"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Frissítés megszakítása"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Fényképezőkép gyártó"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Lejátszáslista lehetőségek"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Adja meg a típust és a szabályokat az intelligens lejátszólista létrehozásához. Ezek a lejátszólisták dinamikusak, és minden médiaelemet figyelembe vesznek az adatbázisban, amelyekre alkalmazhatóak a választott szabályok."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Csoport hozzáadása"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Csoport átnevezése"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Csoport törlése"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Olvasson tovább…"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Elérhető"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Nyomja meg a [B]Fel[/B] gombot a tekeréshez"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Nyomjon [B]OK[/B]-ot a leállításhoz"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Nyelv váltása"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "szűrt"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial betűkészlet"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Nyomja meg a [B]Bal[/B] gombot a vissza-, vagy a [B]Jobb[/B] gombot az előretekeréshez"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Felirat letöltése"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Lejátszólistához"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Bejelentkezési képernyő megjelenítése indításkor"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automatikus bejelentkezés indításkor"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Frissítések elérhetők"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "perc"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Főmenü elemek"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Hivatkozások a „Fájlok” szakaszhoz, minden egyes médiatípusnál. Ugorjon oda további források hozzáadásához az adatbázisba."
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Szakaszok"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "nem látott"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Videó lejátszólista"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Zenei lejátszólista"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Eseménynapló"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Válassz előbeállítást"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Utoljára frissítve"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Médiaforrások hozzáadása"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "készítette"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Kikapcsolási lehetőségek"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Címek"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Médiatár gyökere"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Film gyűjtemények"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Optikai lemez lejátszása"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Előző hely"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Következő hely"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Szereposztás nem elérhető"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Befejezési időpont"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albuminfó"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Dalszöveg kiegészítő"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Dalszöveg kiegészítő beállítások"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Vizualizáció beállítások"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Csatorna csoportok"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Szolgáltató beállítások"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Tartalomkeresési lehetőségek"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Elérhető csoportok"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Filmajánló keresése"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Felirat letöltése"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Videó menü"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Időjárás információ megjelenítése a felső sávban"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Médiajelzők megjelenítése a filmekhez / epizódokhoz / zenei videókhoz"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Dia animációk használata"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Helyi felirat elérhető"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Csatorna opciók"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Válaszd ki a Kodi felhasználói profilod[CR]a belépéshez"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Ikonfal"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "InfóFal"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Fal"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Ide írja a szöveget…"
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "A médiatár jelenleg üres. A saját médiafájlok hozzáadásához, menjen a \"Fájlok\" menüponthoz, adjon hozzá egy médiaforrást és konfigurálja azt. Miután a forrás hozzáadásra és indexelésre került, böngészni fogja tudni a médiatárat."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Adjon hozzá videóforrásokat és állítsa be a megfelelő tartalomtípust a videótárak kialakításához."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "SzélesLista"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Egyéni globális háttér használata"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Válassz kép útvonalat"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Fájlok megadása szakasz"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Nézd meg a saját fényképeidet vagy tölts le egyet a sok képkiegészítő közül a hivatalos kiegészítő tárhelyről."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Hangfolyam ki- és bekapcsolása"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Helyi könyvtár keresése"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "YouTube keresés"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr " TheMovieDB keresés"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Főmenü elem eltávolítása"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Csomópontok szerkesztése"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Belépés a kiegészítő böngészőbe"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Még nincs telepített kiegészítő. Látogass el a kiegészítő böngészőhöz és válassz a gyűjteményből a Kodi felhasználói élmény javítása érdekében."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Még nem állítottál be időjárás szolgáltatót. Az időjárási adatok megtekintéséhez, válassz egy szolgáltatót és állítsd be a helyet."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Időjárás-szolgáltató beállítása"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Nem látott TV sorozatok"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Egyazon rendező"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Képek megjelenítése a térképen"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Nyomja meg a fel gombot a színész információkhoz"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Nyomjon OK-t a tartalom elolvasához"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Ikonok megjelenítése"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Közreműködők"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Általános beállítások a felület minden egyes területére vonatkozóan."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Főmenüvel kapcsolatos beállítások: állítsa be a főképernyőt az ízlésének megfelelően."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Válasszon főkepernyő illusztráció csomagot"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "perc"

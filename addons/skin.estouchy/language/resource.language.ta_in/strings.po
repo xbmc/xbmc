@@ -1,0 +1,221 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/kodi-main/language/ta_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "கேட்பொலி அமைப்புகள்"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "பெரியெழுத்து[CR]பூட்டு"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "காட்சி விருப்பங்கள்"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "காட்சி முன் நிறுவுகள்"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "சூழல் மெனு"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "சற்று காத்திருக்கவும்..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "திரைப்படங்கள்"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "அத்தியாயங்கள்"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "ஆல்பங்கள்"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "பக்கம்"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "தகவல் பட்டியல்"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "புகுபதிகை"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "முன்சுற்று"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "பின்சுற்று"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "முடியும் நேரம்"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "வரிசைபடுத்து : ஏறுவரிசை"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "வரிசைபடுத்து : இறங்குவரிசை"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "பட்டியலை திற"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "பட்டியலை சேமி"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "பட்டியலை முடு"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "அமைப்பு இசை கோப்புகள்"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "தற்போதைய பட்டியல்"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "பின்செல்"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "இருப்பிடம்"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "காண்பி"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "தற்போதைய வெப்பம்"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "கடைசியாக புதுபித்தது"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "தரவு வழங்குநர்"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "பயன்படுத்தப்பட்டுள்ள நினைவகம்"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "கடைசியாக உள்நுழைந்தது"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "வாசிக்கப்பட்டுள்ளது"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "நிகழ்பட மெனு"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "துணைத்தலைப்பை பதிவிறக்கு"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "இயல்புநிலை அலங்கார அமைப்பு"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "ஏரியல் தொடர்பான"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "தோல் மாற்ற · மொழி மற்றும் பிராந்தியம் அமைக்க · கோப்பு பட்டியல் விருப்பங்களை மாற்ற · திரை காப்பான் அமைக்க"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "உங்கள் வீடியோ நூலகத்தை நிர்வகிக்க · வீடியோ பின்னணி விருப்பங்களை அமைக்க · வீடியோ பட்டியல் விருப்பங்களை மாற்ற · வசன எழுத்துருக்களை அமைக்க"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "படம் பட்டியல் விருப்பங்களை அமைக்கவும் · படக்காட்சி கட்டமைக்க"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "வானிலை தகவல்களை சேகரிக்க மூன்று நகரங்களின் பெயரை அமைக்க"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "UPnP மற்றும் HTTP வழியாக Kodiஅமைப்பு கட்டுப்பாடு  · கோப்பு பகிர்வு கட்டமைப்பு · இணைய அணுகல் விருப்பங்களை அமைக்க"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "காட்சிகளை அமைப்பது மற்றும் அளவீடு · ஆடியோ வெளியீடு கட்டமைக்க · ரிமோட் கண்ட்ரோல்கள் அமைப்பதற்கு · மின் ஆற்றல் சேமிப்பு விருப்பங்கள் அமைக்க · பிழைத்திருத்தம் செயல்படுத்த · மாஸ்டர் பூட்டு அமைப்பு"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "உங்கள் Kodi பயனர் விவரங்களை தேர்வுசெய்து[CR]உள்நுழைய தொடரச்செய்யவும்"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "முகப்புப்பக்க துணைப்-பயன் விரைவு இணைப்புகள்"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "இதர விருப்பங்கள்"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "முகப்புப்பக்க வானியல் தகவல் மற்றும் பொத்தான்"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "துணை-பயன் குறுக்குவழி"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "நேரடி தொலைக்காட்சி"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "குழுவை சேர்க்க"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "குழுவுக்கு வேறு பெயரிடு"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "குழுவை நீக்கு"

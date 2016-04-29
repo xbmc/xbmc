@@ -34,7 +34,6 @@
 #include "GUIUserMessages.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
-#include "ContextMenuManager.h"
 
 #define CONTROL_LABELFILES        12
 
@@ -317,15 +316,6 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
   }
   else if (item && !item->IsParentFolder() && !m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 15019);
-
-  if (m_playlist->Size())
-  {
-    buttons.Add(CONTEXT_BUTTON_SAVE, 190);
-    buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
-  }
-  buttons.Add(CONTEXT_BUTTON_LOAD, 21385);
-
-  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -340,17 +330,6 @@ bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTT
     OnMovePlaylistItem(GetCurrentPlaylistItem(), 1);
     return true;
 
-  case CONTEXT_BUTTON_SAVE:
-    OnSavePlaylist();
-    return true;
-
-  case CONTEXT_BUTTON_CLEAR:
-    ClearPlaylist();
-    return true;
-
-  case CONTEXT_BUTTON_LOAD:
-    OnLoadPlaylist();
-    return true;
   case CONTEXT_BUTTON_DELETE:
     OnDeletePlaylistItem(GetCurrentPlaylistItem());
     return true;

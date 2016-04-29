@@ -65,7 +65,7 @@
 #define SETTING_AUDIO_MAKE_DEFAULT             "audio.makedefault"
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml"),
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "DialogSettings.xml"),
     m_passthrough(false),
     m_dspEnabled(false)
 { }
@@ -263,6 +263,9 @@ void CGUIDialogAudioSubtitleSettings::SetupView()
   CGUIDialogSettingsManualBase::SetupView();
 
   SetHeading(13396);
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_OKAY_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_CUSTOM_BUTTON);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 15067);
 }
 
 void CGUIDialogAudioSubtitleSettings::InitializeSettings()

@@ -43,7 +43,8 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
-#include "addons/AddonManager.h"
+#include "ServiceBroker.h"
+#include "addons/BinaryAddonCache.h"
 #include "addons/AudioDecoder.h"
 
 using namespace ADDON;
@@ -64,20 +65,23 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
   std::string strExtension=URIUtils::GetExtension(url);
   StringUtils::ToLower(strExtension);
-  VECADDONS codecs;
-  CAddonMgr::GetInstance().GetAddons(codecs, ADDON_AUDIODECODER);
-  for (size_t i=0;i<codecs.size();++i)
+  if (!strExtension.empty())
   {
-    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
-    if (!strExtension.empty() && dec->HasTracks() &&
-        dec->GetExtensions().find(strExtension) != std::string::npos)
+    VECADDONS codecs;
+    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+    addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
+    for (size_t i=0;i<codecs.size();++i)
     {
-      CAudioDecoder* result = new CAudioDecoder(*dec);
-      static_cast<AudioDecoderDll&>(*result).Create();
-      if (result->ContainsFiles(url))
-        return result;
-      delete result;
-      return NULL;
+      std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+      if (dec->HasTracks() && dec->GetExtensions().find(strExtension) != std::string::npos)
+      {
+        CAudioDecoder* result = new CAudioDecoder(*dec);
+        static_cast<AudioDecoderDll&>(*result).Create();
+        if (result->ContainsFiles(url))
+          return result;
+        delete result;
+        return NULL;
+      }
     }
   }
 

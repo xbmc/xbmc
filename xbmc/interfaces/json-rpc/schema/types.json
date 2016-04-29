@@ -404,11 +404,11 @@
       "thumbnail": { "type": "string" }
     }
   },
-  "Library.Fields.Role": {
+  "Audio.Fields.Role": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string", "enum": [ "title" ] }
   },
-  "Library.Details.Role": {
+  "Audio.Details.Role": {
     "extends": "Item.Details.Base",
     "properties": {
       "roleid": { "$ref": "Library.Id", "required": true },
@@ -418,10 +418,12 @@
   "Audio.Fields.Artist": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
+      "description": "Requesting the (song)genreid/genre, or roleid/role fields will result in increased response times",
       "enum": [ "instrument", "style", "mood", "born", "formed",
                 "description", "genre", "died", "disbanded",
                 "yearsactive", "musicbrainzartistid", "fanart",
-                "thumbnail", "compilationartist", "dateadded" ]
+                "thumbnail", "compilationartist", "dateadded",
+                "roles", "songgenres", "isalbumartist"]
     }
   },
   "Audio.Fields.Album": {
@@ -460,12 +462,34 @@
   "Audio.Contributors": {
     "type": "array",
     "items": { "type": "object",
+      "description": "The artist and the role they contribute to a song",
       "properties": {
         "name": { "type": "string", "required": true },
         "role": { "type": "string", "required": true },
-        "artistid": { "type": "integer", "required": true }
+        "roleid": { "$ref": "Library.Id", "required": true },
+        "artistid": { "$ref": "Library.Id", "required": true }
       },
       "additionalProperties": false
+    }
+  },
+  "Audio.Artist.Roles": {
+    "type": "array",
+    "items": { "type": "object",
+      "description": "The various roles contributed by an artist to one or more songs",
+      "properties": {
+        "roleid": { "$ref": "Library.Id", "required": true },
+        "role": { "type": "string", "required": true }
+      },
+      "additionalProperties": false
+    }
+  },
+  "Audio.Details.Genres": {
+    "type": "array",
+    "items": { "type": "object",
+      "properties": {
+        "genreid": { "$ref": "Library.Id", "required": true },
+        "title": { "type": "string" }
+	  }
     }
   },
   "Audio.Details.Base": {
@@ -506,7 +530,10 @@
       "disbanded": { "type": "string" },
       "yearsactive": { "$ref": "Array.String" },
       "compilationartist": { "type": "boolean" },
-      "musicbrainzartistid": { "type": "string" }
+      "musicbrainzartistid": { "type": "string" },
+      "roles": {"$ref": "Audio.Artist.Roles"},
+      "songgenres": {"$ref": "Audio.Details.Genres"},
+      "isalbumartist": { "type": "boolean" }
     }
   },
   "Audio.Details.Album": {
@@ -551,6 +578,16 @@
       "displaylyricist": { "type": "string"}
     }
   },
+  "Audio.Property.Name": {
+    "type": "string",
+    "enum": [ "missingartistid" ]
+  },
+  "Audio.Property.Value": {
+    "type": "object",
+    "properties": {
+      "missingartistid": { "$ref": "Library.Id" }
+    }
+  },
   "Video.Fields.Movie": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
@@ -578,7 +615,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "art", "userrating", "ratings" ]
+                "dateadded", "tag", "art", "userrating", "ratings", "runtime" ]
     }
   },
   "Video.Fields.Season": {
@@ -776,7 +813,8 @@
       "season": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
       "userrating": { "type": "integer" },
-      "ratings": { "type": "Video.Ratings" }
+      "ratings": { "type": "Video.Ratings" },
+      "runtime": { "type": "integer", "description": "Runtime in seconds" }
     }
   },
   "Video.Details.Season": {
@@ -966,7 +1004,7 @@
       "enum": [ "title", "plot", "plotoutline", "genre", "playcount",
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
-                "directory" ]
+                "directory", "radio" ]
     }
   },
   "PVR.Details.Recording": {
@@ -988,7 +1026,8 @@
       "art": { "$ref": "Media.Artwork" },
       "streamurl": { "type": "string" },
       "file": { "type": "string" },
-      "directory": { "type": "string" }
+      "directory": { "type": "string" },
+      "radio": { "type": "boolean" }
     }
   },
   "Textures.Details.Size": {

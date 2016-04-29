@@ -34,8 +34,6 @@
 #include "utils/StringUtils.h"
 #endif
 
-std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
-
 void CSpecialProtocol::SetProfilePath(const std::string &dir)
 {
   SetPath("profile", dir);

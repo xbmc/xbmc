@@ -64,6 +64,7 @@
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
+#include "games/controllers/guicontrols/GUIGameController.h"
 #include "Util.h"
 
 using namespace EPG;
@@ -105,6 +106,7 @@ static const ControlMapping controls[] =
     {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
     {"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
     {"multiselect",       CGUIControl::GUICONTROL_MULTISELECT},
+    {"gamecontroller",    CGUIControl::GUICONTROL_GAMECONTROLLER},
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
@@ -732,12 +734,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float buttonGap = 5;
   int iMovementRange = 0;
   CAspectRatio aspect;
-  if (g_SkinInfo && g_SkinInfo->APIVersion() < ADDON::AddonVersion("5.1.0"))
-  {
-    if (insideContainer)  // default for inside containers is keep
-      aspect.ratio = CAspectRatio::AR_KEEP;
-  }
-
   std::string allowHiddenFocus;
   std::string enableCondition;
 
@@ -972,11 +968,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   // the <texture> tag can be overridden by the <info> tag
   GetInfoTexture(pControlNode, "texture", texture, textureFile, parentID);
-  if (g_SkinInfo && g_SkinInfo->APIVersion() < ADDON::AddonVersion("5.1.0"))
-  {
-    if (type == CGUIControl::GUICONTROL_IMAGE && insideContainer && textureFile.IsConstant())
-      aspect.ratio = CAspectRatio::AR_STRETCH;
-  }
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
 
@@ -1493,6 +1484,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     break;
   case CGUIControl::GUICONTROL_RENDERADDON:
     control = new CGUIRenderingControl(parentID, id, posX, posY, width, height);
+    break;
+  case CGUIControl::GUICONTROL_GAMECONTROLLER:
+    control = new GAME::CGUIGameController(parentID, id, posX, posY, width, height);
     break;
   default:
     break;

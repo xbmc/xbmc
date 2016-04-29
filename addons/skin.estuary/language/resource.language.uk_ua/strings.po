@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Ukrainian (Ukraine) (http://www.transifex.com/projects/p/kodi-main/language/uk_UA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk_UA\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Відтворюється"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Пошук"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Зміна режиму"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Переглядати як 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Прогноз"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Дії"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Інші параметри"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Останній вхід"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Перемотка назад"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Перемотка вперед"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Параметри списку відтворення"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Додати групу"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Перейменувати групу"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Видалити групу"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Стиль Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Останнє оновлення"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Налаштування живлення"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Відомості про альбом"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Надбудова \"Тексти\""
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Група каналів"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Параметри сканування вмісту"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Доступні групи"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Завантажити субтитри"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Доступні локальні субтитри"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Параметри канала"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Виберіть профіль користувача Kodi,[CR]щоб увійти до системи"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

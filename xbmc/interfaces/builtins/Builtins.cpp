@@ -67,6 +67,10 @@ CBuiltins::CBuiltins()
   RegisterCommands<CSystemBuiltins>();
   RegisterCommands<CWeatherBuiltins>();
 
+#if defined(HAVE_LIBCEC)
+  RegisterCommands<CCECBuiltins>();
+#endif
+
 #if defined(TARGET_ANDROID)
   RegisterCommands<CAndroidBuiltins>();
 #endif

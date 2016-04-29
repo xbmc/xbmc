@@ -1,0 +1,33 @@
+V1.0.8
+- Updated language files from Transifex
+
+V1.0.7
+- Updated language files from Transifex
+
+V1.0.6
+- Updated language files from Transifex
+
+V1.0.5
+- Add gamecontrollers support
+
+V1.0.4
+- Updated language files from Transifex
+
+V1.0.3
+- Updated language files from Transifex
+
+V1.0.2
+- Cosmetics
+
+V1.0.1
+- Fixes
+
+V1.0.0
+- Initial release
+
+V0.0.1
+- Initial beta
+
+V0.0.0
+- XML from re-touched
+- Graphics from Estuary

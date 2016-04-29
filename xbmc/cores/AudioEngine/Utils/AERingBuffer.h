@@ -28,6 +28,9 @@
 
 #include "utils/log.h"  //CLog
 #include <string.h>     //memset, memcpy
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 /**
  * This buffer can be used by one read and one write thread at any one time

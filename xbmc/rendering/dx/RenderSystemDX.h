@@ -110,12 +110,19 @@ protected:
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
   void CheckInterlasedStereoView(void);
-  void Register(ID3DResource *resource);
-  void Unregister(ID3DResource *resource);
+  void SetMaximumFrameLatency(uint8_t latency = -1);
 
+  bool GetStereoEnabled() const;
+  bool GetDisplayStereoEnabled() const;
+  void SetDisplayStereoEnabled(bool enable);
+  void UpdateDisplayStereoStatus(bool isfirst = false);
+
+  virtual void Register(ID3DResource *resource);
+  virtual void Unregister(ID3DResource *resource);
   virtual void UpdateMonitor() {};
   virtual void OnDisplayLost() {};
   virtual void OnDisplayReset() {};
+  virtual void OnDisplayBack() {};
 
   // our adapter could change as we go
   bool                        m_needNewDevice;
@@ -141,7 +148,6 @@ protected:
   IDXGIFactory1*              m_dxgiFactory;
   ID3D11Device*               m_pD3DDev;
   IDXGIAdapter1*              m_adapter;
-  int                         m_adapterIndex;
   IDXGIOutput*                m_pOutput;
   ID3D11DeviceContext*        m_pContext;
   ID3D11DeviceContext*        m_pImdContext;
@@ -171,6 +177,8 @@ protected:
 #ifdef _DEBUG
   ID3D11Debug*                m_d3dDebug = NULL;
 #endif
+  bool                        m_bDefaultStereoEnabled;
+  bool                        m_bStereoEnabled;
 };
 
 #endif

@@ -93,6 +93,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   std::string frameListener = "org/xbmc/" + appName + "/XBMCOnFrameAvailableListener";
   std::string settingsObserver = "org/xbmc/" + appName + "/XBMCSettingsContentObserver";
   std::string audioFocusChangeListener = "org/xbmc/" + appName + "/XBMCOnAudioFocusChangeListener";
+  std::string inputDeviceListener = "org/xbmc/" + appName + "/XBMCInputDeviceListener";
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
@@ -103,6 +104,13 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIMainActivity::_onNewIntent
     };
     env->RegisterNatives(cMain, &mOnNewIntent, 1);
+
+    JNINativeMethod mDoFrame = {
+      "_doFrame",
+      "(J)V",
+      (void*)&CJNIMainActivity::_doFrame
+    };
+    env->RegisterNatives(cMain, &mDoFrame, 1);
 
     JNINativeMethod mCallNative = {
       "_callNative",
@@ -154,6 +162,17 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIMainActivity::_onAudioFocusChange
     };
     env->RegisterNatives(cAudioFocusChangeListener, &mOnAudioFocusChange, 1);
+  }
+
+  jclass cInputDeviceListener = env->FindClass(inputDeviceListener.c_str());
+  if(cInputDeviceListener)
+  {
+    JNINativeMethod mInputDeviceCallbacks[3] = {
+      { "_onInputDeviceAdded", "(I)V", (void*)&CJNIMainActivity::_onInputDeviceAdded },
+      { "_onInputDeviceChanged", "(I)V", (void*)&CJNIMainActivity::_onInputDeviceChanged },
+      { "_onInputDeviceRemoved", "(I)V", (void*)&CJNIMainActivity::_onInputDeviceRemoved }
+    };
+    env->RegisterNatives(cInputDeviceListener, mInputDeviceCallbacks, 3);
   }
 
   return version;

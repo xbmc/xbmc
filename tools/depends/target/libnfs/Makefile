@@ -30,13 +30,8 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libnfs.la $(PREFIX)/lib/libnfs.so $(PREFIX)/lib/libnfs.so.8
-	mv -f $(PREFIX)/lib/libnfs.so.8.1.1 $(PREFIX)/lib/libnfs.so
-	$(RPL) -e "libnfs.so.8" "libnfs.so\x00\x00" $(PREFIX)/lib/libnfs.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libnfs.so | grep ibrary
-endif
 	touch $@
+
 clean:
 	$(MAKE) -C $(PLATFORM) clean
 	rm -r .installed-$(PLATFORM)

@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "epg/EpgSearchFilter.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/LocalizeStrings.h"

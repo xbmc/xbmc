@@ -28,7 +28,7 @@ if(MMAL_FOUND)
   list(APPEND HEADERS MMALRenderer.h)
 endif()
 
-if(AMLCODEC_FOUND)
+if(AML_FOUND)
   list(APPEND SOURCES RendererAML.cpp)
   list(APPEND HEADERS RendererAML.h)
 endif()
@@ -52,6 +52,6 @@ endif()
 
 core_add_library(videorenderers_hwdec)
 
-if(ENABLE_INTERNAL_FFMPEG)
+if(ENABLE_INTERNAL_FFMPEG AND SOURCES)
   add_dependencies(videorenderers_hwdec ffmpeg)
 endif()

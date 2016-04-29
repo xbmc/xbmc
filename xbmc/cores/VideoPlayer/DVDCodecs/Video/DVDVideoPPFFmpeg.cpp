@@ -21,6 +21,9 @@
 #include "DVDVideoPPFFmpeg.h"
 #include "utils/log.h"
 #include "cores/FFmpeg.h"
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const std::string& mType):
   m_sType(mType)

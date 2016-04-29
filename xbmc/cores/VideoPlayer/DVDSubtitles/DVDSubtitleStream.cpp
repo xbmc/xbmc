@@ -19,6 +19,7 @@
  */
 
 #include <cstring>
+#include <memory>
 
 #include "DVDSubtitleStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
@@ -41,22 +42,20 @@ CDVDSubtitleStream::~CDVDSubtitleStream()
 
 bool CDVDSubtitleStream::Open(const std::string& strFile)
 {
-  CDVDInputStream* pInputStream;
   CFileItem item(strFile, false);
   item.SetContentLookup(false);
-  pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  std::unique_ptr<CDVDInputStream> pInputStream(CDVDFactoryInputStream::CreateInputStream(NULL, item));
   if (pInputStream && pInputStream->Open())
   {
     // prepare buffer
     size_t totalread = 0;
     XUTILS::auto_buffer buf(1024);
 
-    if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream, buf, &totalread))
+    if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream.get(), buf, &totalread))
     {
       CLog::Log(LOGDEBUG, "%s: file %s seems to be a vob sub"
         "file without an idx file, skipping it", __FUNCTION__, CURL::GetRedacted(pInputStream->GetFileName()).c_str());
       buf.clear();
-      delete pInputStream;
       return false;
     }
 
@@ -73,7 +72,6 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
         totalread += read;
     } while (read > 0);
 
-    delete pInputStream;
     if (!totalread)
       return false;
 
@@ -105,7 +103,6 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
     return true;
   }
 
-  delete pInputStream;
   return false;
 }
 

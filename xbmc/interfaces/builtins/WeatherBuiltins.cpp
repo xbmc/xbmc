@@ -50,6 +50,41 @@ static int SwitchLocation(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_16 Weather built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`Weather.Refresh`</b>
+///     ,
+///     Force weather data refresh.
+///   }
+///   \table_row2_l{
+///     <b>`Weather.LocationNext`</b>
+///     ,
+///     Switch to next weather location
+///   }
+///   \table_row2_l{
+///     <b>`Weather.LocationPrevious`</b>
+///     ,
+///     Switch to previous weather location
+///   }
+///   \table_row2_l{
+///     <b>`Weather.LocationSet`</b>
+///     ,
+///     Switch to given weather location (parameter can be 1-3).
+///     @param[in] parameter             1-3
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap CWeatherBuiltins::GetOperations() const
 {
   return {

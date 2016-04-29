@@ -72,7 +72,7 @@ CRenderInfo CRendererVAAPI::GetRenderInfo()
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
   if (m_format == RENDER_FMT_VAAPINV12)
-    info.optimal_buffer_size = 3;
+    info.optimal_buffer_size = 4;
   else
     info.optimal_buffer_size = 5;
   return info;

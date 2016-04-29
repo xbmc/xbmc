@@ -68,7 +68,7 @@ namespace XBMCAddon
        * \n
        * example:\n
        *   - dialog = xbmcgui.Dialog()\n
-       *   - ret = dialog.yesno('Kodi', 'Do you want to exit this script?')n\n
+       *   - ret = dialog.yesno('Kodi', 'Do you want to exit this script?')\n\n
        */
       bool yesno(const String& heading, const String& line1, 
                  const String& line2 = emptyString,
@@ -76,6 +76,19 @@ namespace XBMCAddon
                  const String& nolabel = emptyString,
                  const String& yeslabel = emptyString,
                  int autoclose = 0);
+
+      /**
+       * contextmenu(list) -- Show a context menu.\n
+       * \n
+       * list           : string list - list of items.\n
+       * \n
+       * *Note, Returns the position of the highlighted item as an integer (-1 if cancelled).\n
+       * \n
+       * example:\n
+       *   - dialog = xbmcgui.Dialog()\n
+       *   - ret = dialog.contextmenu(['Option #1', 'Option #2', 'Option #3'])\n\n
+       */
+      int contextmenu(const std::vector<String>& list);
 
       /**
        * select(heading, list) -- Show a select dialog.\n
@@ -88,7 +101,7 @@ namespace XBMCAddon
        * \n
        * example:\n
        *   - dialog = xbmcgui.Dialog()\n
-       *   - ret = dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])n\n
+       *   - ret = dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])\n\n
        */
       int select(const String& heading, const std::vector<String>& list, int autoclose=0);
 
@@ -120,7 +133,7 @@ namespace XBMCAddon
        * \n
        * example:\n
        *   - dialog = xbmcgui.Dialog()\n
-       *   - ok = dialog.ok('XBMC', 'There was an error.')n\n
+       *   - ok = dialog.ok('XBMC', 'There was an error.')\n\n
        */
       bool ok(const String& heading, const String& line1, 
               const String& line2 = emptyString,
@@ -134,7 +147,7 @@ namespace XBMCAddon
       * \n
       * example:\n
       *   - dialog = xbmcgui.Dialog()\n
-      *   - dialog.textviewer('Plot', 'Some movie plot.')n\n
+      *   - dialog.textviewer('Plot', 'Some movie plot.')\n\n
       */
       void textviewer(const String& heading, const String& text);
 
@@ -304,7 +317,7 @@ namespace XBMCAddon
        *\n
        * example:
        *   - dialog = xbmcgui.Dialog()
-       *   - d = dialog.input('Enter secret code', type=xbmcgui.INPUT_ALPHANUM, option=xbmcgui.ALPHANUM_HIDE_INPUT)n
+       *   - d = dialog.input('Enter secret code', type=xbmcgui.INPUT_ALPHANUM, option=xbmcgui.ALPHANUM_HIDE_INPUT)\n
        */
       String input(const String& heading,
                    const String& defaultt = emptyString,

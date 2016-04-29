@@ -90,7 +90,7 @@ void CVideoSyncD3D::Run(volatile bool& stop)
     NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
 
     // update the vblank timestamp, update the clock and send a signal that we got a vblank
-    UpdateClock(NrVBlanks, Now);
+    UpdateClock(NrVBlanks, Now, m_refClock);
 
     // save the timestamp of this vblank so we can calculate how many vblanks happened next time
     LastVBlankTime = Now;
@@ -120,7 +120,6 @@ void CVideoSyncD3D::Run(volatile bool& stop)
 void CVideoSyncD3D::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Cleaning up Direct3d");
-  CSingleLock lock(g_graphicsContext);
 
   m_lostEvent.Set();
   g_Windowing.Unregister(this);

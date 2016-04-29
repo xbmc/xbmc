@@ -1,0 +1,4 @@
+LIBNAME=libdvdread
+BASE_URL=https://github.com/xbmc/libdvdread
+VERSION=master
+

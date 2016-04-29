@@ -1,0 +1,15 @@
+xbmc/linux                       linuxsupport
+xbmc/input/touch                 input/touch
+xbmc/input/touch/generic         input/touch/generic
+xbmc/network/linux               network/linux
+xbmc/network/osx                 network/osx
+xbmc/peripherals/bus/osx         peripherals/bus/osx
+xbmc/powermanagement/osx         powermanagement/osx
+xbmc/storage/osx                 storage/osx
+xbmc/platform/posix              posix
+xbmc/platform/darwin             platform_darwin
+xbmc/platform/darwin/ios         platform_ios
+xbmc/platform/darwin/ios-common  platform_ios-common
+xbmc/filesystem/posix            filesystem/posix
+xbmc/utils/posix                 utils_posix
+xbmc/windowing/osx               windowing/osx

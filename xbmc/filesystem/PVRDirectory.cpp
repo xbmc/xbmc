@@ -122,14 +122,26 @@ bool CPVRDirectory::IsLiveTV(const std::string& strPath)
   return URIUtils::IsLiveTV(filename);
 }
 
-bool CPVRDirectory::HasRecordings()
-{
-  return g_PVRManager.IsStarted() ? 
-    g_PVRRecordings->GetNumRecordings() > 0 : false;
-}
-
-bool CPVRDirectory::HasDeletedRecordings()
+bool CPVRDirectory::HasTVRecordings()
 {
   return g_PVRManager.IsStarted() ?
-    g_PVRRecordings->HasDeletedRecordings() : false;
+    g_PVRRecordings->GetNumTVRecordings() > 0 : false;
+}
+
+bool CPVRDirectory::HasDeletedTVRecordings()
+{
+  return g_PVRManager.IsStarted() ?
+    g_PVRRecordings->HasDeletedTVRecordings() : false;
+}
+
+bool CPVRDirectory::HasRadioRecordings()
+{
+  return g_PVRManager.IsStarted() ?
+    g_PVRRecordings->GetNumRadioRecordings() > 0 : false;
+}
+
+bool CPVRDirectory::HasDeletedRadioRecordings()
+{
+  return g_PVRManager.IsStarted() ?
+    g_PVRRecordings->HasDeletedRadioRecordings() : false;
 }

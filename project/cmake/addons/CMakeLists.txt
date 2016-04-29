@@ -120,6 +120,7 @@ endif()
 if(NOT ADDONS_TO_BUILD)
   set(ADDONS_TO_BUILD "all")
 else()
+  string(STRIP "${ADDONS_TO_BUILD}" ADDONS_TO_BUILD)
   message(STATUS "Building following addons: ${ADDONS_TO_BUILD}")
   separate_arguments(ADDONS_TO_BUILD)
 endif()
@@ -132,6 +133,7 @@ endif()
 get_filename_component(ADDONS_DEFINITION_DIR "${ADDONS_DEFINITION_DIR}" ABSOLUTE)
 
 if(ADDON_SRC_PREFIX)
+  get_filename_component(ADDON_SRC_PREFIX "${ADDON_SRC_PREFIX}" ABSOLUTE)
   message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
 endif()
 
@@ -196,12 +198,12 @@ if(NOT addons)
     file(MAKE_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
   endif()
 
+  string (REPLACE ";" " " ADDONS_TO_BUILD_STR "${ADDONS_TO_BUILD}")
   # generate the bootstrap buildsystem
   execute_process(COMMAND ${CMAKE_COMMAND} ${PROJECT_SOURCE_DIR}/bootstrap
-                                           -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                                            -DCMAKE_INSTALL_PREFIX:PATH=${ADDONS_DEFINITION_DIR}
                                            -DBUILD_DIR:PATH=${BOOTSTRAP_BUILD_DIR}
-                                           -DADDONS_TO_BUILD=${ADDONS_TO_BUILD}
+                                           -DADDONS_TO_BUILD:STRING=${ADDONS_TO_BUILD_STR}
                   WORKING_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
 
   # execute the generated bootstrap buildsystem

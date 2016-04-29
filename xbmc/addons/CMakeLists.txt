@@ -1,12 +1,6 @@
 set(SOURCES Addon.cpp
             AddonBuilder.cpp
-            AddonCallbacksAddon.cpp
-            AddonCallbacksAudioDSP.cpp
-            AddonCallbacksAudioEngine.cpp
-            AddonCallbacksCodec.cpp
-            AddonCallbacks.cpp
-            AddonCallbacksGUI.cpp
-            AddonCallbacksPVR.cpp
+            BinaryAddonCache.cpp
             AddonDatabase.cpp
             AddonInstaller.cpp
             AddonManager.cpp
@@ -16,13 +10,16 @@ set(SOURCES Addon.cpp
             AudioDecoder.cpp
             AudioEncoder.cpp
             ContextMenuAddon.cpp
+            ContextMenus.cpp
             GUIDialogAddonInfo.cpp
             GUIDialogAddonSettings.cpp
             GUIViewStateAddonBrowser.cpp
             GUIWindowAddonBrowser.cpp
             ImageResource.cpp
+            InputStream.cpp
             LanguageResource.cpp
             PluginSource.cpp
+            PVRClient.cpp
             Repository.cpp
             RepositoryUpdater.cpp
             Scraper.cpp
@@ -35,13 +32,7 @@ set(SOURCES Addon.cpp
 
 set(HEADERS Addon.h
             AddonBuilder.h
-            AddonCallbacks.h
-            AddonCallbacksAddon.h
-            AddonCallbacksAudioDSP.h
-            AddonCallbacksAudioEngine.h
-            AddonCallbacksCodec.h
-            AddonCallbacksGUI.h
-            AddonCallbacksPVR.h
+            BinaryAddonCache.h
             AddonDatabase.h
             AddonDll.h
             AddonInstaller.h
@@ -52,6 +43,7 @@ set(HEADERS Addon.h
             AudioDecoder.h
             AudioEncoder.h
             ContextMenuAddon.h
+            ContextMenus.h
             DllAddon.h
             DllAudioDSP.h
             DllLibCPluff.h
@@ -62,8 +54,10 @@ set(HEADERS Addon.h
             GUIWindowAddonBrowser.h
             IAddon.h
             ImageResource.h
+            InputStream.h
             LanguageResource.h
             PluginSource.h
+            PVRClient.h
             Repository.h
             RepositoryUpdater.h
             Resource.h

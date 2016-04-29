@@ -35,13 +35,13 @@ class CWinSystemX11GLContext : public CWinSystemX11, public CRenderSystemGL
 public:
   CWinSystemX11GLContext();
   virtual ~CWinSystemX11GLContext();
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
-  virtual bool DestroyWindowSystem();
-  virtual bool DestroyWindow();
+  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction) override;
+  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
+  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool DestroyWindowSystem() override;
+  bool DestroyWindow() override;
 
-  virtual bool IsExtSupported(const char* extension);
+  bool IsExtSupported(const char* extension) override;
 
   GLXWindow GetWindow() const;
   GLXContext GetGlxContext() const;
@@ -51,13 +51,13 @@ public:
   EGLConfig GetEGLConfig() const;
 
 protected:
-  virtual bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL);
-  virtual void PresentRenderImpl(bool rendered);
-  virtual void SetVSyncImpl(bool enable);
-  virtual bool RefreshGLContext(bool force);
-  virtual XVisualInfo* GetVisual();
+  bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) override;
+  void PresentRenderImpl(bool rendered) override;
+  void SetVSyncImpl(bool enable) override;
+  bool RefreshGLContext(bool force);
+  XVisualInfo* GetVisual() override;
 
-  CGLContext *m_pGLContext;
+  CGLContext *m_pGLContext = nullptr;
   bool m_newGlContext;
 };
 

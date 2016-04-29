@@ -11,7 +11,6 @@ ifeq (@USE_VAAPI@,1)
 SRCS += VAAPI.cpp
 endif
 ifeq ($(findstring osx,@ARCH@),osx)
-SRCS += DVDVideoCodecVDA.cpp
 SRCS += VDA.cpp
 endif
 ifeq (@USE_OPENMAX@,1)
@@ -34,7 +33,7 @@ SRCS += DVDVideoCodecAndroidMediaCodec.cpp
 endif
 
 ifeq (@USE_MMAL@,1)
-SRCS += MMALCodec.cpp
+SRCS += MMALCodec.cpp MMALFFmpeg.cpp
 endif
 
 LIB=Video.a

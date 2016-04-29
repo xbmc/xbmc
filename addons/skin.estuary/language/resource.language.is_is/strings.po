@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Icelandic (Iceland) (http://www.transifex.com/projects/p/kodi-main/language/is_IS/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is_IS\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Í spilun"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Leita..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Breyta ham"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Horfa á í 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Veðurspá"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Aðgerðir"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Ýmsir valkostir"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Síðast skráður inn"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Til baka"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Hratt áfram"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Valkostir lagalista"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Bæta við hóp"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Endurnefna hóp"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Eyða hóp"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Byggt á Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Síðast uppfært"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Orkukostir"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Hljómplötuupplýsingar"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Viðbót fyrir lagatexta"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Rásarhópur"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Stillingar fyrir skönnun innihalds"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Tiltækir hópar"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Sækja þýðingartexta"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Staðvær þýðingartexti tiltækur"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Valkostir rásar"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Veldu Kodi notanda[CR]til að skrá þig inn og halda áfram"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

@@ -42,6 +42,7 @@ protected:
   bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  bool OnAddMediaSource() override;
   std::string GetStartFolder(const std::string &dir) override;
 
   void OnRegenerateThumbs();

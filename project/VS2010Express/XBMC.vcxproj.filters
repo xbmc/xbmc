@@ -385,6 +385,69 @@
     <Filter Include="addons\test">
       <UniqueIdentifier>{a1795e15-75aa-4cfe-b5a3-4dab057dfe0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\Process">
+      <UniqueIdentifier>{45ab3e06-b8d3-44f5-994e-d6130258c99c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include">
+      <UniqueIdentifier>{353ba04b-a59a-4fb3-90d0-630277d5305b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary">
+      <UniqueIdentifier>{7e9ec20b-4be7-4724-84d1-4db46fd59066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces">
+      <UniqueIdentifier>{a697a64f-fd0e-47b8-b5cd-b97c3682aafd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1">
+      <UniqueIdentifier>{766a713d-c6fe-4200-a040-749023a13831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Addon">
+      <UniqueIdentifier>{58b266a7-3b69-420e-a453-096606ba7025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\AudioDSP">
+      <UniqueIdentifier>{5e8ea5bd-7ae5-4c79-8799-6b0b2e467641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\AudioEngine">
+      <UniqueIdentifier>{46f9b975-d582-439f-9f92-0ec9cccdaafd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Codec">
+      <UniqueIdentifier>{abafaa85-cfd4-477a-9b99-4b2d4f91ed35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\GUI">
+      <UniqueIdentifier>{300ee331-e0b8-4028-a2d3-7ddffdefa1d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\InputStream">
+      <UniqueIdentifier>{b13a0591-86af-4316-9f4e-d41efcf87de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\PVR">
+      <UniqueIdentifier>{c3708f40-3139-4ee9-b8f6-c6bcc22bb1c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input\joysticks">
+      <UniqueIdentifier>{5d8049b8-4689-4ff0-bf4f-1f0a308e5b44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input\joysticks\generic">
+      <UniqueIdentifier>{80a8356f-f3be-46b5-be2e-714a42764ee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\addons">
+      <UniqueIdentifier>{15c34cc2-9101-4038-9df4-4357d83a9d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\bus\virtual">
+      <UniqueIdentifier>{6b33e5ae-5edf-4c33-b87f-3ee9115eb01d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api1\Peripheral">
+      <UniqueIdentifier>{bc7eb8ab-3f2e-4346-8546-7243b658fa30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games">
+      <UniqueIdentifier>{336d29fc-9a49-40a8-9295-a8d1062c540c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers">
+      <UniqueIdentifier>{d0ae0c22-0869-416b-92c7-aa1dc14a58be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers\guicontrols">
+      <UniqueIdentifier>{891f4e3d-e135-4ea9-8571-2b6ad3b1622d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="games\controllers\windows">
+      <UniqueIdentifier>{9e3dd585-08e1-4dae-bc21-05e49697ef94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -732,6 +795,9 @@
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContextMenus.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp">
       <Filter>addons</Filter>
     </ClCompile>
@@ -775,6 +841,9 @@
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\Artist.cpp">
+      <Filter>music</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\ContextMenus.cpp">
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\GUIViewStateMusic.cpp">
@@ -1060,9 +1129,6 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\TextureBundleXBT.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\TextureBundleXPR.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\VisibleEffect.cpp">
@@ -1434,6 +1500,9 @@
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp">
       <Filter>video</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\ContextMenus.cpp">
+      <Filter>video</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp">
       <Filter>video</Filter>
     </ClCompile>
@@ -1578,9 +1647,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\PVRFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Observer.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -1656,9 +1722,6 @@
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.cpp">
       <Filter>pvr\channels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\addons\PVRClient.cpp">
-      <Filter>pvr\addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -1691,18 +1754,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\addons\PVRClients.cpp">
       <Filter>pvr\addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
@@ -2202,9 +2253,6 @@
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\windows\WINJoystick.cpp">
-      <Filter>input\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ImageFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2554,9 +2602,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PVROperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\HTTPFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\GroupUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2568,9 +2613,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\PyContext.cpp">
       <Filter>interfaces\python</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\FFmpegVideoDecoder.cpp">
-      <Filter>video</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\view\GUIViewControl.cpp">
       <Filter>view</Filter>
@@ -2704,9 +2746,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\PythonInvoker.cpp">
       <Filter>interfaces\python</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
@@ -2890,9 +2929,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.cpp">
       <Filter>cores\AudioEngine\DSPAddons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp">
       <Filter>utils</Filter>
@@ -3159,9 +3195,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.cpp">
       <Filter>interfaces\builtins</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp">
       <Filter>input</Filter>
     </ClCompile>
@@ -3172,6 +3205,9 @@
       <Filter>pvr</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.cpp">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.cpp">
       <Filter>cores\VideoPlayer\VideoRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.cpp">
@@ -3265,7 +3301,7 @@
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.cpp">
       <Filter>pvr\recordings</Filter>
     </ClCompile>
-     <ClCompile Include="..\..\xbmc\addons\AddonBuilder.cpp">
+    <ClCompile Include="..\..\xbmc\addons\AddonBuilder.cpp">
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\test\TestAddonBuilder.cpp">
@@ -3276,6 +3312,152 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\test\TestAddonVersion.cpp">
       <Filter>addons\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.cpp">
+      <Filter>cores\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\InputStream.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamAddon.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.cpp">
+      <Filter>addons\binary\interfaces\api1\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiSource.cpp">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.cpp">
+      <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DemuxMultiSource.cpp">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.cpp">
+      <Filter>addons\binary\interfaces\api1\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.cpp">
+      <Filter>addons\binary\interfaces\api1\Codec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.cpp">
+      <Filter>addons\binary\interfaces\api1\InputStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.cpp">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.cpp">
+      <Filter>addons\binary\interfaces\api1\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.cpp">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\DriverPrimitive.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickMonitor.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickTranslator.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\KeymapHandler.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\PeripheralAddon.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusAddon.cpp">
+      <Filter>peripherals\bus\virtual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\EventScanner.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\EventScanRate.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.cpp">
+      <Filter>addons\binary\interfaces\api1\Peripheral</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\Controller.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerFeature.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerLayout.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\ControllerTranslator.cpp">
+      <Filter>games\controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\DefaultJoystick.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.cpp">
+      <Filter>games\controllers\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.cpp">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\InputHandling.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.cpp">
+      <Filter>input\joysticks\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonInputHandling.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\addons\AddonButtonMap.cpp">
+      <Filter>peripherals\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\BinaryAddonCache.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\ServiceBroker.cpp" />
+    <ClCompile Include="..\..\xbmc\ServiceManager.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\PVRClient.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3362,9 +3544,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h">
       <Filter>cores\VideoPlayer\DVDCodecs\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DllLibMpeg2.h">
-      <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDCodecs\Video\DVDVideoCodec.h">
       <Filter>cores\VideoPlayer\DVDCodecs\Video</Filter>
@@ -3709,6 +3888,9 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\ContextMenus.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h">
@@ -4059,9 +4241,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureBundleXBT.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\TextureBundleXPR.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TransformMatrix.h">
@@ -4487,6 +4666,9 @@
     <ClInclude Include="..\..\xbmc\video\Bookmark.h">
       <Filter>video</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\ContextMenus.h">
+      <Filter>video</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\video\GUIViewStateVideo.h">
       <Filter>video</Filter>
     </ClInclude>
@@ -4643,9 +4825,6 @@
     <ClInclude Include="..\..\xbmc\epg\EpgInfoTag.h">
       <Filter>epg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\PVRFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\PVRDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -4727,9 +4906,6 @@
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.h">
       <Filter>pvr\channels</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\addons\PVRClient.h">
-      <Filter>pvr\addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.h">
       <Filter>dialogs</Filter>
     </ClInclude>
@@ -4765,18 +4941,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h">
       <Filter>pvr\addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksGUI.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
@@ -4950,9 +5114,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\IFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\iso9660.h">
@@ -5313,9 +5474,6 @@
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h">
-      <Filter>input\windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5533,9 +5691,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\GroupUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -5550,9 +5705,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h">
-      <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\view\GUIViewControl.h">
       <Filter>view</Filter>
@@ -5710,9 +5862,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\generic\ILanguageInvocationHandler.h">
       <Filter>interfaces\generic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.h">
       <Filter>interfaces\json-rpc</Filter>
@@ -5931,9 +6080,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.h">
       <Filter>cores\AudioEngine\DSPAddons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAudioDSP.h">
       <Filter>addons</Filter>
@@ -6214,9 +6360,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.h">
       <Filter>interfaces\builtins</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.h">
-      <Filter>addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEStreamData.h">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClInclude>
@@ -6236,6 +6379,9 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\BaseRenderer.h">
+      <Filter>cores\VideoPlayer\VideoRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\DebugRenderer.h">
       <Filter>cores\VideoPlayer\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoRenderers\OverlayRenderer.h">
@@ -6304,6 +6450,272 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecordingsPath.h">
       <Filter>pvr\recordings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\Process\ProcessInfo.h">
+      <Filter>cores\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiSource.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DemuxMultiSource.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_audiodec_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_audiodec_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_audioengine_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_inputstream_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_inputstream_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_vfs_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_addon_cpp_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_addon_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_addon_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_audioenc_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_audioenc_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_codec_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_epg_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_pvr_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_pvr_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_scr_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_scr_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\InputStream.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.h">
+      <Filter>addons\binary\interfaces\api1\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h">
+      <Filter>addons\binary\interfaces\api1\AudioDSP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDInputStreams\InputStreamMultiStreams.h">
+      <Filter>cores\VideoPlayer\DVDInputStreams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDDemuxers\DVDDemuxPacket.h">
+      <Filter>cores\VideoPlayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioEngine\AddonCallbacksAudioEngine.h">
+      <Filter>addons\binary\interfaces\api1\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Codec\AddonCallbacksCodec.h">
+      <Filter>addons\binary\interfaces\api1\Codec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.h">
+      <Filter>addons\binary\interfaces\api1\InputStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonCallbacksGUI.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIRenderingControl.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\GUI\AddonGUIWindow.h">
+      <Filter>addons\binary\interfaces\api1\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.h">
+      <Filter>addons\binary\interfaces\api1\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.h">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h">
+      <Filter>addons\binary\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\DriverPrimitive.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IKeymapHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickMonitor.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTranslator.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTypes.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickUtils.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\KeymapHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\DllPeripheral.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddonTranslator.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\PeripheralAddon.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusAddon.h">
+      <Filter>peripherals\bus\virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\EventScanner.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\EventScanRate.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.h">
+      <Filter>addons\binary\interfaces\api1\Peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_callbacks.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_peripheral_utils.hpp">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTranslator.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerTypes.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\Controller.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerDefinitions.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerFeature.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\ControllerLayout.h">
+      <Filter>games\controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\DefaultJoystick.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIGameController.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIFeatureList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\IConfigurationWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIConfigurationWizard.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerDefines.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerList.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\windows\GUIControllerWindow.h">
+      <Filter>games\controllers\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIAnalogStickButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIControllerButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\controllers\guicontrols\GUIScalarFeatureButton.h">
+      <Filter>games\controllers\guicontrols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\ButtonMapping.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\FeatureHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\InputHandling.h">
+      <Filter>input\joysticks\generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMapper.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IDriverHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IInputHandler.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\IButtonMap.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMapping.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonInputHandling.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\addons\AddonButtonMap.h">
+      <Filter>peripherals\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\BinaryAddonCache.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\ContextMenus.h">
+      <Filter>music</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\ServiceBroker.h" />
+    <ClInclude Include="..\..\xbmc\ServiceManager.h" />
+    <ClInclude Include="..\..\xbmc\addons\PVRClient.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

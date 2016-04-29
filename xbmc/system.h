@@ -98,7 +98,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_SDL_JOYSTICK
 #define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
@@ -264,8 +263,8 @@
 /****************
  * default skin
  ****************/
-#if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS)
-#define DEFAULT_SKIN          "skin.re-touched"
+#if defined(TARGET_DARWIN_IOS)
+#define DEFAULT_SKIN          "skin.estouchy"
 #else
-#define DEFAULT_SKIN          "skin.confluence"
+#define DEFAULT_SKIN          "skin.estuary"
 #endif

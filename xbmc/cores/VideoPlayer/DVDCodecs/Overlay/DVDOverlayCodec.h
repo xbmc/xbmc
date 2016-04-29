@@ -20,7 +20,6 @@
  *
  */
 
-#include "DVDOverlay.h"
 #include "PlatformDefs.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 
@@ -31,6 +30,7 @@
 #define OC_BUFFER   0x00000002  // the decoder needs more data
 #define OC_OVERLAY  0x00000004  // the decoder decoded an overlay, call Decode(NULL, 0) again to parse the rest of the data
 
+class CDVDOverlay;
 class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;

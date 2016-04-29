@@ -23,6 +23,7 @@
 #include <vector>
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 class CDVDVideoCodec;
 class CDVDAudioCodec;
@@ -33,12 +34,13 @@ class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
 
-class IVPClockCallback;
 
 class CDVDFactoryCodec
 {
 public:
-  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info = CRenderInfo(), IVPClockCallback* clock = NULL);
+  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
+                                          CProcessInfo &processInfo,
+                                          const CRenderInfo &info = CRenderInfo());
   static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, bool allowpassthrough = true, bool allowdtshddecode = true);
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint );
 

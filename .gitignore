@@ -114,14 +114,17 @@ cmake_install.cmake
 
 # /addons/
 /addons/packages
-/addons/skin.confluence/media/Makefile
-/addons/skin.confluence/media/Textures.xbt
+/addons/skin.estuary/media/Makefile
+/addons/skin.estuary/media/*.xbt
+/addons/skin.estouchy/media/Makefile
+/addons/skin.estouchy/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
 /addons/audioencoder.*
 /addons/pvr.*
 /addons/adsp.*
+/addons/peripheral.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
@@ -140,6 +143,7 @@ cmake_install.cmake
 /lib/addons/library.kodi.adsp/Makefile
 /lib/addons/library.xbmc.pvr/Makefile
 /lib/addons/library.xbmc.codec/Makefile
+/lib/addons/library.kodi.peripheral/Makefile
 /lib/addons/library.xbmc.addon/project/VS2010Express/Release
 /lib/addons/library.xbmc.addon/project/VS2010Express/Debug
 /lib/addons/library.kodi.adsp/project/VS2010Express/Release
@@ -151,6 +155,9 @@ cmake_install.cmake
 /lib/addons/library.kodi.audioengine/Makefile
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
+/lib/addons/library.kodi.inputstream/Makefile
+/lib/addons/library.kodi.peripheral/project/VS2010Express/Release
+/lib/addons/library.kodi.peripheral/project/VS2010Express/Debug
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -243,7 +250,11 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/downloads2
 /project/BuildDependencies/include
 /project/BuildDependencies/lib
-/project/BuildDependencies/msys
+/project/BuildDependencies/msys32
+/project/BuildDependencies/msys64
+/project/BuildDependencies/local32
+/project/BuildDependencies/local64
+/project/BuildDependencies/build
 /project/BuildDependencies/scripts/tmp
 /project/BuildDependencies/src
 /project/BuildDependencies/bin/swig
@@ -268,9 +279,6 @@ lib/cpluff/stamp-h1
 /project/VS2010Express/*.metaproj.tmp
 /project/VS2010Express/.vs
 /project/VS2010Express/XBMC for Windows.VC.opendb
-
-# /skin/
-/skin/Confluence/media/Textures.xbt
 
 # /system
 /system/cpluff.dll
@@ -319,9 +327,6 @@ lib/cpluff/stamp-h1
 # /system
 /system/zlib1.dll
 
-# /skin/Confluence/
-/skin/Confluence/BUILD
-
 #/tools/android
 /tools/android/packaging/Makefile
 /tools/android/packaging/xbmc/activity_main.xml
@@ -329,6 +334,7 @@ lib/cpluff/stamp-h1
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java
+/tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCInputDeviceListener.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java
 /tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java
@@ -343,6 +349,16 @@ lib/cpluff/stamp-h1
 /tools/depends/target/ffmpeg/ffmpeg-*-*.tar.gz
 /tools/depends/target/ffmpeg/ffmpeg-*-*/
 /tools/depends/target/ffmpeg/ffmpeg-install/
+/tools/depends/target/ffmpeg/ffmpeg-release/
+/tools/depends/target/libdvdcss/dvdcss-install/
+/tools/depends/target/libdvdcss/libdvdcss-*.tar.gz
+/tools/depends/target/libdvdcss/native/
+/tools/depends/target/libdvdnav/dvdnav-install/
+/tools/depends/target/libdvdnav/libdvdnav-*.tar.gz
+/tools/depends/target/libdvdnav/native/
+/tools/depends/target/libdvdread/dvdread-install/
+/tools/depends/target/libdvdread/libdvdread-*.tar.gz
+/tools/depends/target/libdvdread/native/
 /tools/depends/target/Toolchain_binaddons.cmake
 /tools/depends/target/config-binaddons.site
 
@@ -397,6 +413,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/addons/
 /xbmc/addons/Makefile
+/xbmc/addons/binary/interfaces/Makefile
 
 # /xbmc/platform/android
 /xbmc/platform/android/Makefile
@@ -420,6 +437,7 @@ lib/cpluff/stamp-h1
 /xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile
 /xbmc/cores/VideoPlayer/DVDDemuxers/Makefile
 /xbmc/cores/VideoPlayer/DVDSubtitles/Makefile
+/xbmc/cores/VideoPlayer/Process/Makefile
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/Makefile
 /xbmc/cores/omxplayer/Makefile
 /xbmc/cores/paplayer/Makefile
@@ -485,6 +503,7 @@ lib/cpluff/stamp-h1
 /xbmc/platform/darwin/osx/ios/IOS-Info.plist
 
 # /xbmc/peripherals/
+/xbmc/peripherals/addons/Makefile
 /xbmc/peripherals/bus/Makefile
 /xbmc/peripherals/devices/Makefile
 
@@ -501,126 +520,11 @@ lib/cpluff/stamp-h1
 /xbmc/windowing/egl/Makefile
 
 # /lib/libdvd/
+/lib/libdvd/bin
+/lib/libdvd/include
+/lib/libdvd/lib
 /lib/libdvd/Makefile
-
-# /lib/libdvd/includes/
-/lib/libdvd/includes/dv
-/lib/libdvd/includes/dvdcss/dvdcss.h
-
-# /lib/libdvd/includes/dvdread/
-/lib/libdvd/includes/dvdread/ifo_print.h
-/lib/libdvd/includes/dvdread/dvd_udf.h
-/lib/libdvd/includes/dvdread/dvd_input.h
-/lib/libdvd/includes/dvdread/bswap.h
-/lib/libdvd/includes/dvdread/nav_read.h
-/lib/libdvd/includes/dvdread/dvd_reader.h
-/lib/libdvd/includes/dvdread/nav_print.h
-/lib/libdvd/includes/dvdread/ifo_types.h
-/lib/libdvd/includes/dvdread/bitreader.h
-/lib/libdvd/includes/dvdread/md5.h
-/lib/libdvd/includes/dvdread/dvdread
-/lib/libdvd/includes/dvdread/dvdread_internal.h
-/lib/libdvd/includes/dvdread/ifo_read.h
-/lib/libdvd/includes/dvdread/nav_types.h
-
-# /lib/libdvd/includes/dvdnav
-/lib/libdvd/includes/dvdnav/dvd_types.h
-/lib/libdvd/includes/dvdnav/dvdnav.h
-/lib/libdvd/includes/dvdnav/dvdnav_events.h
-
-# /lib/libdvd/libdvdcss/
-/lib/libdvd/libdvdcss/.auto/
-/lib/libdvd/libdvdcss/Makefile
-/lib/libdvd/libdvdcss/Makefile.in
-/lib/libdvd/libdvdcss/aclocal.m4
-/lib/libdvd/libdvdcss/autom4te.cache/
-/lib/libdvd/libdvdcss/compile
-/lib/libdvd/libdvdcss/config.guess
-/lib/libdvd/libdvdcss/config.h
-/lib/libdvd/libdvdcss/config.h.in
-/lib/libdvd/libdvdcss/config.h.in~
-/lib/libdvd/libdvdcss/config.status
-/lib/libdvd/libdvdcss/config.sub
-/lib/libdvd/libdvdcss/config.log
-/lib/libdvd/libdvdcss/config.st
-/lib/libdvd/libdvdcss/configure
-/lib/libdvd/libdvdcss/configure.lineno
-/lib/libdvd/libdvdcss/depcomp
-/lib/libdvd/libdvdcss/install-sh
-/lib/libdvd/libdvdcss/libtool
-/lib/libdvd/libdvdcss/ltmain.sh
-/lib/libdvd/libdvdcss/missing
-/lib/libdvd/libdvdcss/stamp-h1
-/lib/libdvd/libdvdcss/m4/libtool.m4
-/lib/libdvd/libdvdcss/m4/ltoptions.m4
-/lib/libdvd/libdvdcss/m4/ltsugar.m4
-/lib/libdvd/libdvdcss/m4/ltversion.m4
-/lib/libdvd/libdvdcss/m4/lt~obsolete.m4
-/lib/libdvd/libdvdcss/src/d
-/lib/libdvd/libdvdcss/src/Makefile
-/lib/libdvd/libdvdcss/src/dvdcss/Makefile
-/lib/libdvd/libdvdcss/src/.dirstamp
-/lib/libdvd/libdvdcss/src/Makefile.in
-/lib/libdvd/libdvdcss/src/dvdcss/Makefile.in
-/lib/libdvd/libdvdcss/stamp-doxygen
-/lib/libdvd/libdvdcss/test/Makefile
-/lib/libdvd/libdvdcss/doc/doxygen.cfg
-/lib/libdvd/libdvdcss/doc/doxygen_sqlite3.db
-/lib/libdvd/libdvdcss/doc/Makefile
-/lib/libdvd/libdvdcss/doc/Makefile.in
-/lib/libdvd/libdvdcss/doc/html/
-/lib/libdvd/libdvdcss/test/Makefile.in
-/lib/libdvd/libdvdcss/test/csstest
-/lib/libdvd/libdvdcss/test/csstest.exe
-
-# /lib/libdvd/libdvdnav/
-/lib/libdvd/libdvdnav/conf
-/lib/libdvd/libdvdnav/obj
-/lib/libdvd/libdvdnav/compile
-/lib/libdvd/libdvdnav/config.mak
-/lib/libdvd/libdvdnav/config.h
-/lib/libdvd/libdvdnav/config.status
-/lib/libdvd/libdvdnav/Makefile.in
-/lib/libdvd/libdvdnav/aclocal.m4
-/lib/libdvd/libdvdnav/config.guess
-/lib/libdvd/libdvdnav/config.h.in
-/lib/libdvd/libdvdnav/config.sub
-/lib/libdvd/libdvdnav/configure
-/lib/libdvd/libdvdnav/depcomp
-/lib/libdvd/libdvdnav/doc/Makefile.in
-/lib/libdvd/libdvdnav/examples/Makefile.in
-/lib/libdvd/libdvdnav/install-sh
-/lib/libdvd/libdvdnav/ltmain.sh
-/lib/libdvd/libdvdnav/m4/Makefile.in
-/lib/libdvd/libdvdnav/misc/Makefile.in
-/lib/libdvd/libdvdnav/missing
-/lib/libdvd/libdvdnav/src/Makefile.in
-/lib/libdvd/libdvdnav/src/vm/Makefile.in
-/lib/libdvd/libdvdnav/INSTALL
-/lib/libdvd/libdvdnav/autom4te.cache
-/lib/libdvd/libdvdnav/config.h.in~
-
-# /lib/libdvd/libdvdread/
-/lib/libdvd/libdvdread/compile
-/lib/libdvd/libdvdread/config.h
-/lib/libdvd/libdvdread/obj
-/lib/libdvd/libdvdread/config.mak
-/lib/libdvd/libdvdread/Makefile.in
-/lib/libdvd/libdvdread/aclocal.m4
-/lib/libdvd/libdvdread/config.guess
-/lib/libdvd/libdvdread/config.h.in
-/lib/libdvd/libdvdread/config.sub
-/lib/libdvd/libdvdread/configure
-/lib/libdvd/libdvdread/depcomp
-/lib/libdvd/libdvdread/install-sh
-/lib/libdvd/libdvdread/ltmain.sh
-/lib/libdvd/libdvdread/m4/Makefile.in
-/lib/libdvd/libdvdread/misc/Makefile.in
-/lib/libdvd/libdvdread/missing
-/lib/libdvd/libdvdread/src/Makefile.in
-/lib/libdvd/libdvdread/INSTALL
-/lib/libdvd/libdvdread/autom4te.cache
-/lib/libdvd/libdvdread/config.h.in~
+/lib/libdvd/share
 
 #/lib/win32
 /lib/win32/*.tar*
@@ -658,22 +562,10 @@ lib/cpluff/stamp-h1
 
 # Doxygen generated files
 /docs/html
-
-# files removed in Jarvis
-/addons/visualization.dxspectrum/*
-/addons/visualization.milkdrop/*
-/addons/visualization.vortex/*
-/addons/visualization.waveform/*
-
-# files to be removed in K*****
-/system/players/dvdplayer/
-/xbmc/cores/dvdplayer/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
-/xbmc/cores/dvdplayer/DVDDemuxers/Makefile
-/xbmc/cores/dvdplayer/DVDSubtitles/Makefile
-/xbmc/cores/dvdplayer/VideoRenderers/Makefile
-/xbmc/cores/VideoRenderers/Makefile
+system/libmysql.dll
+system/python27.dll
+system/zlib.dll
+lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
+lib/addons/library.kodi.inputstream/project/VS2010Express/Release
+/project/VS2010Express/XBMC for Windows.VC.db
+/project/VS2010Express/XBMC for Windows.VC.VC.opendb

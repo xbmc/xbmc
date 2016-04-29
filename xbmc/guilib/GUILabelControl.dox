@@ -1,0 +1,112 @@
+/*!
+
+\page Label_Control Label Control
+\brief **Used to show some lines of text.**
+
+\tableofcontents
+
+The label control is used for displaying text in Kodi. You can choose the font,
+size, colour, location and contents of the text to be displayed.
+
+
+--------------------------------------------------------------------------------
+\section Label_Control_sect1 Example
+
+~~~~~~~~~~~~~
+  <control type="label" id="1">
+        <description>My First label</description>
+        <posx>80</posx>
+        <posy>60</posy>
+        <width>250</width>
+        <visible>true</visible>
+        <align>center</align>
+        <aligny>center</aligny>
+        <scroll>false</scroll>
+        <label>6</label>
+        <info>MusicPlayer.Artist</info>
+        <number></number>
+        <angle>30</angle>
+        <haspath>false</haspath>
+        <font>font14</font>
+        <textcolor>FFB2D4F5</textcolor>
+        <shadowcolor>ff000000</shadowcolor>
+        <wrapmultiline>false</wrapmultiline>
+        <scrollspeed>50</scrollspeed>
+        <scrollsuffix> - </scrollsuffix>
+  </control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Label_Control_sect2 Auto size labels
+Wrapping your label in a grouplist with the auto width and appropriate minium and
+maximum values. Allows the labels width to dynamically change relevalant to how
+long the label text is. This allows a image or other control to be alligned to
+the right of the actual label text no matter how wide the label is.
+
+~~~~~~~~~~~~~
+   <width min="29" max="200">auto</width>
+~~~~~~~~~~~~~
+
+As of XBMC Gotham, simply specifying <b>`<width>auto</width>`</b> is also supported.
+
+
+--------------------------------------------------------------------------------
+\section Label_Control_sect3 Multi-line labels
+
+If you want your label control to span multiple lines, you can insert a new line
+character in your label. For example:
+
+~~~~~~~~~~~~~
+   <label>This will be on the first line[CR]And this will be on the second line</label>
+~~~~~~~~~~~~~
+
+Also, if you want your label control to conform to the <b>`<width>`</b> parameter, but still
+want to be able to give it more content than will fit on one line, then setting:
+
+~~~~~~~~~~~~~
+   <wrapmultiline>true</wrapmultiline>
+~~~~~~~~~~~~~
+
+will cause the text to be cut up (at the spaces in the text) onto multiple lines.
+Note that if a single word is larger than <b>`<width>`</b> then it will not be cut, and
+will still overflow.
+
+
+--------------------------------------------------------------------------------
+\section Label_Control_sect4 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| align         | Can be left, right, or center. Aligns the text within the given label <b>`<width>`</b>. Defaults to left
+| aligny        | Can be top or center. Aligns the text within its given label <b>`<height>`</b>. Defaults to top
+| scroll        | When true, the text will scroll if longer than the label's <b>`<width>`</b>. If false, the text will be truncated. Defaults to false.
+| label         | Specifies the text which should be drawn. You should specify an entry from the strings.xml here (either the Kodi strings.xml or your skin's strings.xml file), however you may also hardcode a piece of text also if you wish, though of course it will not be localisable. You can use the full [label formatting syntax](http://kodi.wiki/view/Label_Formatting) and [you may also specify more than one piece of information here by using the $INFO and $LOCALIZE formats](http://kodi.wiki/view/Label_Parsing).
+| info          | Specifies the information that should be presented. Kodi will auto-fill in this info in place of the <b>`<label>`</b>. [See here for more information](http://kodi.wiki/view/InfoLabels).
+| number        | Specifies a number that should be presented. This is just here to allow a skinner to use a number rather than a text label (as any number given to <b>`<label>`</b> will be used to lookup in strings.xml)
+| angle         | The angle the text should be rendered at, in degrees. A value of 0 is horizontal.
+| haspath       | Specifies whether or not this label is filled with a path. Long paths are shortened by compressing the file path while keeping the actual filename full length.
+| font          | Specifies the font to use from the font.xml file.
+| textcolor     | Specifies the color the text should be, in hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| shadowcolor   | Specifies the color of the drop shadow on the text, in **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| wrapmultiline | If true, any text that doesn't fit on one line will be wrapped onto multiple lines.
+| scrollspeed   | Scroll speed of text in pixels per second. Defaults to 60.
+| scrollsuffix  | Specifies the suffix used in scrolling labels. Defaults to <b>`"¦"`</b>.
+
+
+
+--------------------------------------------------------------------------------
+\section Label_Control_sect5 See also
+
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+
+*/

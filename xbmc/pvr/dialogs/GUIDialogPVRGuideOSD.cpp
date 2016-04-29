@@ -133,7 +133,7 @@ void CGUIDialogPVRGuideOSD::ShowInfo(int item)
     return;
 
   /* inform dialog about the file item and open dialog window */
-  pDlgInfo->SetProgInfo(pItem.get());
+  pDlgInfo->SetProgInfo(pItem->GetEPGInfoTag());
   pDlgInfo->Open();
 }
 

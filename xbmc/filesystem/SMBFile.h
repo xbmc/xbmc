@@ -89,7 +89,8 @@ public:
   virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
-  virtual int  GetChunkSize() {return 1;}
+  virtual int GetChunkSize() { return 1; }
+  virtual int IoControl(EIoControl request, void* param);
 
 protected:
   CURL m_url;
@@ -97,6 +98,6 @@ protected:
   std::string GetAuthenticatedPath(const CURL &url);
   int64_t m_fileSize;
   int m_fd;
+  bool m_allowRetry;
 };
 }
-

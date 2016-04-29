@@ -190,10 +190,12 @@ namespace XBMCAddon
        *     - date          : string (%d.%m.%Y / 01.01.2009) - file date
        * - Video Values:
        *     - genre         : string (Comedy)
+       *     - country       : string (Germany)
        *     - year          : integer (2009)
        *     - episode       : integer (4)
        *     - season        : integer (1)
        *     - top250        : integer (192)
+       *     - setid         : integer (14)
        *     - tracknumber   : integer (3)
        *     - rating        : float (6.4) - range is 0..10
        *     - userrating    : integer (9) - range is 1..10
@@ -216,7 +218,9 @@ namespace XBMCAddon
        *     - tvshowtitle   : string (Heroes)
        *     - premiered     : string (2005-03-04)
        *     - status        : string (Continuing) - status of a TVshow
-       *     - code          : string (tt0110293) - IMDb code
+       *     - set           : string (Batman Collection) - name of the collection
+       *     - imdbnumber    : string (tt0110293) - IMDb code
+       *     - code          : string (101) - Production code
        *     - aired         : string (2008-12-07)
        *     - credits       : string (Andy Kaufman) - writing credits
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
@@ -226,6 +230,7 @@ namespace XBMCAddon
        *     - trailer       : string (/home/user/trailer.avi)
        *     - dateadded     : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
        *     - mediatype     : string - "video", "movie", "tvshow", "season", "episode" or "musicvideo"
+       *     - dbid          : integer (23) - Only add this for items which are part of the local db. You also need to set the correct 'mediatype'!
        * - Music Values:
        *     - tracknumber   : integer (8)
        *     - discnumber    : integer (2)
@@ -240,6 +245,7 @@ namespace XBMCAddon
        *     - lyrics        : string (On a dark desert highway...)
        *     - playcount     : integer (2) - number of times this item has been played
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
+       *     - mediatype     : string - "music", "song", "album", "artist"
        * - Picture Values:
        *     - title         : string (In the last summer-1)
        *     - picturepath   : string (/home/username/pictures/img001.jpg)
@@ -280,7 +286,7 @@ namespace XBMCAddon
        * items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.
        *   - label           : string or unicode - item's label.
        *   - action          : string or unicode - any built-in function to perform.
-       * replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).
+       * replaceItems        : [opt] bool - Deprecated.
        * \n
        * List of functions - http://kodi.wiki/view/List_of_Built_In_Functions \n
        * \n
@@ -325,6 +331,27 @@ namespace XBMCAddon
        *   - AspectRatio = self.list.getSelectedItem().getProperty('AspectRatio')
        */
       String getProperty(const char* key);
+
+      /**
+       * getArt(key) -- Returns a listitem art path as a string, similar to an infolabel.\n
+       * \n
+       * key            : string - art name.\n
+       * \n
+       *
+       * - Some default art values (any string possible):
+       *     - thumb         : string - image path
+       *     - poster        : string - image path
+       *     - banner        : string - image path
+       *     - fanart        : string - image path
+       *     - clearart      : string - image path
+       *     - clearlogo     : string - image path
+       *     - landscape     : string - image path
+       *     - icon          : string - image path
+       *
+       * example:
+       *   - poster = self.list.getSelectedItem().getArt('poster')
+       */
+      String getArt(const char* key);
 
       /**
        * setPath(path) -- Sets the listitem's path.\n

@@ -108,6 +108,7 @@ public:
   virtual dvdnav_status_t dvdnav_get_title_string(dvdnav_t *self, const char **title_str)=0;
   virtual dvdnav_status_t dvdnav_get_serial_string(dvdnav_t *self, const char **serial_str)=0;
   virtual uint32_t dvdnav_describe_title_chapters(dvdnav_t* self, uint32_t title, uint64_t** times, uint64_t* duration)=0;
+  virtual int64_t dvdnav_get_current_time(dvdnav_t* self) = 0;
   virtual void dvdnav_free(void* pdata) = 0;
   virtual int dvdnav_get_video_resolution(dvdnav_t* self, uint32_t* width, uint32_t* height)=0;
 };
@@ -313,6 +314,7 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_title_string, (dvdnav_t *p1, const char **p2))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_serial_string, (dvdnav_t *p1, const char **p2))
   DEFINE_METHOD4(uint32_t, dvdnav_describe_title_chapters, (dvdnav_t* p1, uint32_t p2, uint64_t** p3, uint64_t* p4))
+  DEFINE_METHOD1(int64_t, dvdnav_get_current_time, (dvdnav_t* p1))
   DEFINE_METHOD1(void, dvdnav_free, (void *p1))
   DEFINE_METHOD3(int, dvdnav_get_video_resolution, (dvdnav_t* p1, uint32_t* p2, uint32_t* p3))
   BEGIN_METHOD_RESOLVE()
@@ -377,6 +379,7 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
     RESOLVE_METHOD(dvdnav_get_title_string)
     RESOLVE_METHOD(dvdnav_get_serial_string)
     RESOLVE_METHOD(dvdnav_describe_title_chapters)
+    RESOLVE_METHOD(dvdnav_get_current_time)
     RESOLVE_METHOD(dvdnav_free)
     RESOLVE_METHOD(dvdnav_get_video_resolution)
 END_METHOD_RESOLVE()

@@ -24,6 +24,9 @@
 #include <stdexcept>
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 #include "system.h"
 

@@ -166,7 +166,7 @@ public:
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
 
 protected:
-  bool ChangeResolution(RESOLUTION_INFO res, bool forceChange = false);
+  bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();
@@ -184,7 +184,9 @@ protected:
   virtual void Unregister(IDispResource *resource);
   void OnDisplayLost();
   void OnDisplayReset();
-  virtual void ResolutionChanged();
+  void OnDisplayBack();
+  void ResolutionChanged();
+  void SetForegroundWindowInternal(HWND hWnd);
 
   HWND m_hWnd;
   std::vector<HWND> m_hBlankWindows;

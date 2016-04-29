@@ -33,6 +33,9 @@
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
+#ifdef TARGET_POSIX
+#include "XTimeUtils.h"
+#endif
 
 static const char* ShaderNames[SM_ESHADERCOUNT] =
     {"guishader_frag_default.glsl",
@@ -50,8 +53,6 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
 
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
- , m_pGUIshader(0)
- , m_method(SM_DEFAULT)
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
 }
@@ -275,10 +276,15 @@ static int64_t abs64(int64_t a)
 
 void CRenderSystemGLES::PresentRender(bool rendered)
 {
+  SetVSync(true);
+
   if (!m_bRenderCreated)
     return;
 
   PresentRenderImpl(rendered);
+
+  if (!rendered)
+    Sleep(40);
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)
@@ -652,7 +658,7 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
   return -1;
 }
 
-bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode)
+bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode) const
 {
   switch(mode)
   {

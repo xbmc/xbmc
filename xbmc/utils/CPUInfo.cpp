@@ -108,8 +108,8 @@ CCPUInfo::CCPUInfo(void)
   m_fProcStat = m_fProcTemperature = m_fCPUFreq = NULL;
   m_cpuInfoForFreq = false;
 #elif defined(TARGET_WINDOWS)
-  m_cpuQueryFreq = NULL;
-  m_cpuQueryLoad = NULL;
+  m_cpuQueryFreq = nullptr;
+  m_cpuQueryLoad = nullptr;
 #endif
   m_lastUsedPercentage = 0;
   m_cpuFeatures = 0;
@@ -159,7 +159,7 @@ CCPUInfo::CCPUInfo(void)
     std::vector<CoreInfo> cpuCores;
     wchar_t subKeyName[200]; // more than enough
     DWORD subKeyNameLen = sizeof(subKeyName) / sizeof(wchar_t);
-    while (RegEnumKeyExW(hKeyCpuRoot, num++, subKeyName, &subKeyNameLen, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
+    while (RegEnumKeyExW(hKeyCpuRoot, num++, subKeyName, &subKeyNameLen, nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS)
     {
       HKEY hCpuKey;
       if (RegOpenKeyExW(hKeyCpuRoot, subKeyName, 0, KEY_QUERY_VALUE, &hCpuKey) == ERROR_SUCCESS)
@@ -170,7 +170,7 @@ CCPUInfo::CCPUInfo(void)
         wchar_t buf[300]; // more than enough
         DWORD bufSize = sizeof(buf);
         DWORD valType;
-        if (RegQueryValueExW(hCpuKey, L"ProcessorNameString", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS &&
+        if (RegQueryValueExW(hCpuKey, L"ProcessorNameString", nullptr, &valType, LPBYTE(buf), &bufSize) == ERROR_SUCCESS &&
             valType == REG_SZ)
         {
           g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strModel);
@@ -179,7 +179,7 @@ CCPUInfo::CCPUInfo(void)
           StringUtils::Trim(cpuCore.m_strModel);
         }
         bufSize = sizeof(buf);
-        if (RegQueryValueExW(hCpuKey, L"VendorIdentifier", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS &&
+        if (RegQueryValueExW(hCpuKey, L"VendorIdentifier", nullptr, &valType, LPBYTE(buf), &bufSize) == ERROR_SUCCESS &&
             valType == REG_SZ)
         {
           g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strVendor);
@@ -187,7 +187,7 @@ CCPUInfo::CCPUInfo(void)
         }
         DWORD mhzVal;
         bufSize = sizeof(mhzVal);
-        if (RegQueryValueExW(hCpuKey, L"~MHz", NULL, &valType, (LPBYTE)&mhzVal, &bufSize) == ERROR_SUCCESS &&
+        if (RegQueryValueExW(hCpuKey, L"~MHz", nullptr, &valType, LPBYTE(&mhzVal), &bufSize) == ERROR_SUCCESS &&
             valType == REG_DWORD)
           cpuCore.m_fSpeed = double(mhzVal);
 
@@ -214,24 +214,24 @@ CCPUInfo::CCPUInfo(void)
   GetNativeSystemInfo(&siSysInfo);
   m_cpuCount = siSysInfo.dwNumberOfProcessors;
 
-  if (PdhOpenQueryW(NULL, 0, &m_cpuQueryFreq) == ERROR_SUCCESS)
+  if (PdhOpenQueryW(nullptr, 0, &m_cpuQueryFreq) == ERROR_SUCCESS)
   {
     if (PdhAddEnglishCounterW(m_cpuQueryFreq, L"\\Processor Information(0,0)\\Processor Frequency", 0, &m_cpuFreqCounter) != ERROR_SUCCESS)
-      m_cpuFreqCounter = NULL;
+      m_cpuFreqCounter = nullptr;
   }
   else
-    m_cpuQueryFreq = NULL;
+    m_cpuQueryFreq = nullptr;
   
-  if (PdhOpenQueryW(NULL, 0, &m_cpuQueryLoad) == ERROR_SUCCESS)
+  if (PdhOpenQueryW(nullptr, 0, &m_cpuQueryLoad) == ERROR_SUCCESS)
   {
     for (size_t i = 0; i < m_cores.size(); i++)
     {
       if (PdhAddEnglishCounterW(m_cpuQueryLoad, StringUtils::Format(L"\\Processor(%d)\\%% Idle Time", int(i)).c_str(), 0, &m_cores[i].m_coreCounter) != ERROR_SUCCESS)
-        m_cores[i].m_coreCounter = NULL;
+        m_cores[i].m_coreCounter = nullptr;
     }
   }
   else
-    m_cpuQueryLoad = NULL;
+    m_cpuQueryLoad = nullptr;
 #elif defined(TARGET_FREEBSD)
   size_t len;
   int i;
@@ -417,6 +417,14 @@ CCPUInfo::CCPUInfo(void)
 #if defined(TARGET_ANDROID)
     if (CAndroidFeatures::GetCPUCount() > m_cpuCount)
     {
+      for (int i = m_cpuCount; i < CAndroidFeatures::GetCPUCount(); i++)
+      {
+        // Copy info from cpu 0
+        CoreInfo core(m_cores[0]);
+        core.m_id = i;
+        m_cores[core.m_id] = core;
+      }
+
       m_cpuCount = CAndroidFeatures::GetCPUCount();
     }
 #endif
@@ -499,7 +507,7 @@ int CCPUInfo::getUsedPercentage()
 
   if(userTicks + niceTicks + systemTicks + idleTicks + ioTicks == 0)
     return m_lastUsedPercentage;
-  int result = (int) (double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
+  int result = static_cast<int>(double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
 
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;

@@ -1245,6 +1245,11 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         outputFormat.m_channelLayout.ResolveChannels(m_sinkFormat.m_channelLayout);
       }
 
+      // internally we use ffmpeg layouts, means that layout won't change in resample
+      // stage. preserve correct layout for sink stage where remapping is done
+      uint64_t avlayout = CAEUtil::GetAVChannelLayout(outputFormat.m_channelLayout);
+      outputFormat.m_channelLayout = CAEUtil::GetAEChannelLayout(avlayout);
+
       // TODO: adjust to decoder
       sinkInputFormat = outputFormat;
     }
@@ -1502,8 +1507,8 @@ void CActiveAE::FlushEngine()
 
 void CActiveAE::ClearDiscardedBuffers()
 {
-  std::list<CActiveAEBufferPool*>::iterator it;
-  for (it=m_discardBufferPools.begin(); it!=m_discardBufferPools.end(); ++it)
+  auto it = m_discardBufferPools.begin();
+  while (it != m_discardBufferPools.end())
   {
     CActiveAEBufferPoolResample *rbuf = dynamic_cast<CActiveAEBufferPoolResample*>(*it);
     if (rbuf)
@@ -1515,9 +1520,10 @@ void CActiveAE::ClearDiscardedBuffers()
     {
       delete (*it);
       CLog::Log(LOGDEBUG, "CActiveAE::ClearDiscardedBuffers - buffer pool deleted");
-      m_discardBufferPools.erase(it);
-      return;
+      it = m_discardBufferPools.erase(it);
     }
+    else
+      ++it;
   }
 }
 
@@ -1652,7 +1658,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
       CAEChannelInfo stdLayout(stdChannelLayout);
 
       if (m_settings.config == AE_CONFIG_FIXED || settings.dspaddonsenabled || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
-        format.m_channelLayout = CActiveAEDSP::GetInstance().GetInternalChannelLayout(stdChannelLayout);
+        format.m_channelLayout = CServiceBroker::GetADSP().GetInternalChannelLayout(stdChannelLayout);
       else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
         format.m_channelLayout = m_internalFormat.m_channelLayout;
       else
@@ -3027,9 +3033,8 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       len = avcodec_decode_audio4(dec_ctx, decoded_frame, &got_frame, &avpkt);
       if (len < 0)
       {
-        avcodec_close(dec_ctx);
-        av_free(dec_ctx);
-        av_free(&decoded_frame);
+        av_frame_free(&decoded_frame);
+        avcodec_free_context(&dec_ctx);
         avformat_close_input(&fmt_ctx);
         if (io_ctx)
         {
@@ -3052,12 +3057,12 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
         sound->StoreSound(true, decoded_frame->extended_data,
                           decoded_frame->nb_samples, decoded_frame->linesize[0]);
       }
+      av_packet_unref(&avpkt);
     }
-    avcodec_close(dec_ctx);
   }
 
-  av_free(dec_ctx);
-  av_free(decoded_frame);
+  av_frame_free(&decoded_frame);
+  avcodec_free_context(&dec_ctx);
   avformat_close_input(&fmt_ctx);
   if (io_ctx)
   {

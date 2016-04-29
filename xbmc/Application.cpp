@@ -198,6 +198,7 @@
 
 #ifdef TARGET_POSIX
 #include "XHandle.h"
+#include "XTimeUtils.h"
 #endif
 
 #if defined(TARGET_ANDROID)
@@ -285,7 +286,6 @@ CApplication::CApplication(void)
   /* for now always keep this around */
   m_currentStack = new CFileItemList;
 
-  m_bPresentFrame = false;
   m_bPlatformDirectories = true;
 
   m_bStandalone = false;
@@ -299,7 +299,6 @@ CApplication::CApplication(void)
   m_threadID = 0;
   m_progressTrackingPlayCountUpdate = false;
   m_currentStackPosition = 0;
-  m_lastFrameTime = 0;
   m_lastRenderTime = 0;
   m_skipGuiRender = false;
   m_bTestMode = false;
@@ -429,6 +428,12 @@ bool CApplication::SetupNetwork()
 
 bool CApplication::Create()
 {
+  m_ServiceManager.reset(new CServiceManager());
+  if (!m_ServiceManager->Init1())
+  {
+    return false;
+  }
+
   SetupNetwork();
   Preflight();
 
@@ -632,6 +637,14 @@ bool CApplication::Create()
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 #endif // TARGET_WINDOWS
 
+  // initialize the addon database (must be before the addon manager is init'd)
+  CDatabaseManager::GetInstance().Initialize(true);
+
+  if (!m_ServiceManager->Init2())
+  {
+    return false;
+  }
+
   // start the AudioEngine
   if (!CAEFactory::StartEngine())
   {
@@ -649,21 +662,6 @@ bool CApplication::Create()
   m_replayGainSettings.iPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
   m_replayGainSettings.iNoGainPreAmp = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
   m_replayGainSettings.bAvoidClipping = CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
-
-  // initialize the addon database (must be before the addon manager is init'd)
-  CDatabaseManager::GetInstance().Initialize(true);
-
-#ifdef HAS_PYTHON
-  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(&g_pythonParser, ".py");
-#endif // HAS_PYTHON
-
-  // start-up Addons Framework
-  // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
-  if (!CAddonMgr::GetInstance().Init())
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
-    return false;
-  }
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
@@ -685,8 +683,7 @@ bool CApplication::Create()
 
   g_mediaManager.Initialize();
 
-  m_lastFrameTime = XbmcThreads::SystemClockMillis();
-  m_lastRenderTime = m_lastFrameTime;
+  m_lastRenderTime = XbmcThreads::SystemClockMillis();
   return true;
 }
 
@@ -705,10 +702,6 @@ bool CApplication::CreateGUI()
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
-#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
-  sdlFlags |= SDL_INIT_JOYSTICK;
-#endif
-
   //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
   //this might bring the monitor out of standby, so we have to disable it explicitly
   //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
@@ -717,13 +710,6 @@ bool CApplication::CreateGUI()
 #endif
 
 #endif // HAS_SDL
-
-#ifdef TARGET_POSIX
-  // for nvidia cards - vsync currently ALWAYS enabled.
-  // the reason is that after screen has been setup changing this env var will make no difference.
-  setenv("__GL_SYNC_TO_VBLANK", "1", 0);
-  setenv("__GL_YIELD", "USLEEP", 0);
-#endif
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
@@ -1159,9 +1145,6 @@ bool CApplication::Initialize()
 #endif
       ADDON::CAddonMgr::GetInstance().StartServices(false);
 
-      // start the PVR manager
-      StartPVRManager();
-
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
       g_windowManager.ActivateWindow(firstWindow);
@@ -1170,7 +1153,11 @@ bool CApplication::Initialize()
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
       CStereoscopicsManager::GetInstance().Initialize();
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE); // send a blocking message to active AudioDSP engine
+
+      if (!m_ServiceManager->Init3())
+      {
+        CLog::Log(LOGERROR, "Application - Init3 failed");
+      }
     }
 
   }
@@ -1212,11 +1199,6 @@ bool CApplication::Initialize()
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
-
-#ifdef HAS_SDL_JOYSTICK
-  CInputManager::GetInstance().SetEnabledJoystick(CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEJOYSTICK) &&
-                    CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
-#endif
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
@@ -1275,14 +1257,6 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   CSettings::GetInstance().Save();
 
   return ret;
-}
-
-void CApplication::StartPVRManager()
-{
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
-    return;
-
-  g_PVRManager.Start(true);
 }
 
 void CApplication::StopPVRManager()
@@ -1853,70 +1827,15 @@ void CApplication::Render()
   if (m_bStop)
     return;
 
-  MEASURE_FUNCTION;
-
-  int vsync_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
-
   bool hasRendered = false;
-  bool limitFrames = false;
-  unsigned int singleFrameTime = 40; // default limit 25 fps
-  bool vsync = true;
 
   // Whether externalplayer is playing and we're unfocused
   bool extPlayerActive = m_pPlayer->IsExternalPlaying() && !m_AppFocused;
 
+  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
   {
-    // Less fps in DPMS
-    bool lowfps = g_Windowing.EnableFrameLimiter();
-
-    m_bPresentFrame = false;
-    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
-    {
-      m_bPresentFrame = m_pPlayer->HasFrame();
-    }
-    else
-    {
-      // engage the frame limiter as needed
-      limitFrames = lowfps || extPlayerActive;
-
-      // TODO:
-      // remove those useless modes, they don't do any good
-      if (vsync_mode == VSYNC_DISABLED || vsync_mode == VSYNC_VIDEO)
-      {
-        limitFrames = true; // not using vsync.
-        singleFrameTime = 10;
-      }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 100)
-      {
-        limitFrames = true; // using vsync, but it isn't working.
-      }
-
-      if (limitFrames)
-      {
-        if (extPlayerActive)
-        {
-          ResetScreenSaver();  // Prevent screensaver dimming the screen
-          singleFrameTime = 1000;  // 1 fps, high wakeup latency but v.low CPU usage
-        }
-        else if (lowfps)
-          singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
-      }
-
-    }
-  }
-
-  if (g_graphicsContext.IsFullScreenVideo() && m_pPlayer->IsPlaying() && vsync_mode == VSYNC_VIDEO)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode == VSYNC_ALWAYS)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode != VSYNC_DRIVER)
-  {
-    g_Windowing.SetVSync(false);
-    vsync = false;
-  }
-
-  if (m_bPresentFrame && m_pPlayer->IsPlaying() && !m_pPlayer->IsPaused())
     ResetScreenSaver();
+  }
 
   if(!g_Windowing.BeginRender())
     return;
@@ -1945,6 +1864,8 @@ void CApplication::Render()
     }
     // execute post rendering actions (finalize window closing)
     g_windowManager.AfterRender();
+
+    m_lastRenderTime = XbmcThreads::SystemClockMillis();
   }
 
   // render video layer
@@ -1957,45 +1878,17 @@ void CApplication::Render()
   // isn't called)
   g_infoManager.ResetCache();
 
-
-  unsigned int now = XbmcThreads::SystemClockMillis();
   if (hasRendered)
   {
     g_infoManager.UpdateFPS();
-    m_lastRenderTime = now;
   }
 
-  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
-  {
-    g_Windowing.FinishPipeline();
-  }
-  m_pPlayer->AfterRender();
+  // TODO: find better solution
+  // if video is rendered to a separate layer, we should not block this thread
+  if (!m_pPlayer->IsRenderingVideoLayer() || hasRendered)
+    g_graphicsContext.Flip(hasRendered);
 
-  //when nothing has been rendered for m_guiDirtyRegionNoFlipTimeout milliseconds,
-  //we don't call g_graphicsContext.Flip() anymore, this saves gpu and cpu usage
-  bool flip;
-  if (g_advancedSettings.m_guiDirtyRegionNoFlipTimeout >= 0)
-    flip = hasRendered || (now - m_lastRenderTime) < (unsigned int)g_advancedSettings.m_guiDirtyRegionNoFlipTimeout;
-  else
-    flip = true;
-
-  //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
-  if (limitFrames || !(flip || m_bPresentFrame))
-  {
-    unsigned int frameTime = now - m_lastFrameTime;
-    if (frameTime < singleFrameTime)
-      Sleep(singleFrameTime - frameTime);
-  }
-
-  g_graphicsContext.Flip(flip);
-
-  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
-  {
-    m_pPlayer->FrameWait(100);
-  }
-
-  m_lastFrameTime = XbmcThreads::SystemClockMillis();
-  CTimeUtils::UpdateFrameTime(flip);
+  CTimeUtils::UpdateFrameTime(hasRendered);
 }
 
 void CApplication::SetStandAlone(bool value)
@@ -2129,13 +2022,6 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SHOW_INFO)
   {
     g_infoManager.ToggleShowInfo();
-    return true;
-  }
-
-  // codec info : Shows the current song, video or picture codec information
-  if (action.GetID() == ACTION_SHOW_CODEC)
-  {
-    g_infoManager.ToggleShowCodec();
     return true;
   }
 
@@ -2355,7 +2241,7 @@ bool CApplication::OnAction(const CAction &action)
       if (!player.empty())
       {
         item.m_lStartOffset = (int)(GetTime() * 75);
-        PlayFile(item, player, true);
+        PlayFile(std::move(item), player, true);
       }
     }
     else
@@ -2365,8 +2251,7 @@ bool CApplication::OnAction(const CAction &action)
       std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
       if (!player.empty())
       {
-        CFileItem item;
-        PlayFile(item, player, false);
+        PlayFile(CFileItem(), player, false);
       }
     }
   }
@@ -2402,11 +2287,16 @@ bool CApplication::OnAction(const CAction &action)
       if (m_muted)
         UnMute();
       float volume = m_volumeLevel;
+      int volumesteps = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS);
+      // sanity check
+      if (volumesteps == 0)
+        volumesteps = 90;
+
 // Android has steps based on the max available volume level
 #if defined(TARGET_ANDROID)
       float step = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / CXBMCApp::GetMaxSystemVolume();
 #else
-      float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / VOLUME_CONTROL_STEPS;
+      float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / volumesteps;
 
       if (action.GetRepeat())
         step *= action.GetRepeat() * 50; // 50 fps
@@ -2516,18 +2406,11 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 #endif
 
-  case TMSG_SETPVRMANAGERSTATE:
-    if (pMsg->param1 != 0)
-      StartPVRManager();
-    else
-      StopPVRManager();
-    break;
-
   case TMSG_SETAUDIODSPSTATE:
     if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)
-      ActiveAE::CActiveAEDSP::GetInstance().Activate(pMsg->param2 == ACTIVE_AE_DSP_ASYNC_ACTIVATE);
+      CServiceBroker::GetADSP().Activate();
     else if(pMsg->param1 == ACTIVE_AE_DSP_STATE_OFF)
-      ActiveAE::CActiveAEDSP::GetInstance().Deactivate();
+      CServiceBroker::GetADSP().Deactivate();
     break;
 
   case TMSG_START_ANDROID_ACTIVITY:
@@ -2809,12 +2692,18 @@ bool CApplication::Cleanup()
 {
   try
   {
+    CLog::Log(LOGNOTICE, "unload skin");
+    UnloadSkin();
+
+    // stop all remaining scripts; must be done after skin has been unloaded,
+    // not before some windows still need it when deinitializing during skin
+    // unloading
+    CScriptInvocationManager::GetInstance().Uninitialize();
+
+    g_Windowing.DestroyRenderSystem();
+    g_Windowing.DestroyWindow();
+    g_Windowing.DestroyWindowSystem();
     g_windowManager.DestroyWindows();
-
-    CAddonMgr::GetInstance().DeInit();
-
-    CLog::Log(LOGNOTICE, "closing down remote control service");
-    CInputManager::GetInstance().DisableRemoteControl();
 
     CLog::Log(LOGNOTICE, "unload sections");
 
@@ -2861,6 +2750,13 @@ bool CApplication::Cleanup()
 
     delete m_network;
     m_network = NULL;
+
+    // Cleanup was called more than once on exit during my tests
+    if (m_ServiceManager)
+    {
+      m_ServiceManager->Deinit();
+      m_ServiceManager.reset();
+    }
 
     return true;
   }
@@ -2916,17 +2812,14 @@ void CApplication::Stop(int exitCode)
     if (CVideoLibraryQueue::GetInstance().IsRunning())
       CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF); // send a blocking message to deactivate AudioDSP engine
+    CServiceBroker::GetADSP().Deactivate();
     CApplicationMessenger::GetInstance().Cleanup();
 
     CLog::Log(LOGNOTICE, "stop player");
     m_pPlayer->ClosePlayer();
 
-    CAnnouncementManager::GetInstance().Deinitialize();
-
     StopPVRManager();
     StopServices();
-    //Sleep(5000);
 
 #ifdef HAS_ZEROCONF
     if(CZeroconfBrowser::IsInstantiated())
@@ -2950,9 +2843,6 @@ void CApplication::Stop(int exitCode)
     smb.Deinit();
 #endif
 
-    CLog::Log(LOGNOTICE, "unload skin");
-    UnloadSkin();
-
 #if defined(TARGET_DARWIN_OSX)
     if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
       XBMCHelper::GetInstance().Stop();
@@ -2967,19 +2857,13 @@ void CApplication::Stop(int exitCode)
     UnregisterActionListener(&CSeekHandler::GetInstance());
     UnregisterActionListener(&CPlayerController::GetInstance());
 
-    // stop all remaining scripts; must be done after skin has been unloaded,
-    // not before some windows still need it when deinitializing during skin
-    // unloading
-    CScriptInvocationManager::GetInstance().Uninitialize();
-
-    g_Windowing.DestroyRenderSystem();
-    g_Windowing.DestroyWindow();
-    g_Windowing.DestroyWindowSystem();
-
     g_audioManager.DeInitialize();
     // shutdown the AudioEngine
     CAEFactory::Shutdown();
     CAEFactory::UnLoadEngine();
+
+    CLog::Log(LOGNOTICE, "closing down remote control service");
+    CInputManager::GetInstance().DisableRemoteControl();
 
     // unregister ffmpeg lock manager call back
     av_lockmgr_register(NULL);
@@ -2991,9 +2875,6 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
   }
 
-  // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
-  // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
-  Destroy();
   cleanup_emu_environ();
 
   Sleep(200);
@@ -3222,11 +3103,11 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   return PLAYBACK_FAIL;
 }
 
-PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& player, bool bRestart)
+PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
 {
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
-    const_cast<CFileItem&>(item).FillInMimeType();
+    item.FillInMimeType();
 
   if (!bRestart)
   {
@@ -3275,7 +3156,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& pla
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
-      return PlayFile(item_new, player, false);
+      return PlayFile(std::move(item_new), player, false);
     return PLAYBACK_FAIL;
   }
 
@@ -3292,7 +3173,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, const std::string& pla
   {
     CFileItem item_new(item);
     if (XFILE::CUPnPDirectory::GetResource(item.GetURL(), item_new))
-      return PlayFile(item_new, player, false);
+      return PlayFile(std::move(item_new), player, false);
     return PLAYBACK_FAIL;
   }
 #endif
@@ -3855,12 +3736,12 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
   CVideoDatabase dbs;
   if (dbs.Open())
   {
-    CLog::Log(LOGDEBUG, "Loading settings for %s", item.GetPath().c_str());
-    
+    CLog::Log(LOGDEBUG, "Loading settings for %s", CURL::GetRedacted(item.GetPath()).c_str());
+
     // Load stored settings if they exist, otherwise use default
     if (!dbs.GetVideoSettings(item, CMediaSettings::GetInstance().GetCurrentVideoSettings()))
       CMediaSettings::GetInstance().GetCurrentVideoSettings() = CMediaSettings::GetInstance().GetDefaultVideoSettings();
-    
+
     dbs.Close();
   }
 }

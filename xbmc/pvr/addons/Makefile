@@ -1,5 +1,4 @@
-SRCS=PVRClient.cpp \
-     PVRClients.cpp
+SRCS=PVRClients.cpp
 
 LIB=pvraddons.a
 

@@ -1,0 +1,305 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/kodi-main/language/nl_NL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Geluidsinstellingen"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Visualisatie Opties"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Visualisatie voorinstellingen"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Context Menu"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Bezig..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Recent"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Speelfilms"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Afleveringen"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albums"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Pagina"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Info Lijst"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Inloggen"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Geüpdated:"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "VOORUITSPOELEN"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "TERUGSPOELEN"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Eind tijd"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sorteren: Oplopend"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sorteren: Aflopend"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Open afspeellijst"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Bewaar afspeellijst"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Sluit afspeellijst"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Systeem muziekbestanden"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Huidige afspeellijst"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Terug"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Locatie"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Bekijken"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Huidige temperatuur"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Laatst geüpdatet"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Gegevens aanbieder"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Geheugen-verbruik:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Laatste login"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Uitgezonden"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video Menu"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Ondertitels downloaden"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Standaard Skin"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial lettertype"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Verander je Skin · Instellen van Taal en Land · Verander bestandslijst opties · Stel een schermbeveiliging in"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Beheer je video bibliotheek · Afspeelopties voor Video · Verander videolijst opties · Stel ondertitel lettertype in"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Beheer uw muziekbibliotheek · Configureer muziekafspeelopties · Wijzig muziek lijst opties - Configureer nummer indienen"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Stel fotolijst opties in · Configureer diavoorstelling"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Stel drie steden in om weerinformatie te verzamelen"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Instellingen voor bedienen Kodi via UPnP en HTTP  · instellingen voor delen van bestanden · Internet instellingen"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Instellen en kalibreren van scherm · Configureer geluidsuitgang · Instellen van afstandsbediening · Instellingen voor energiebesparing · Zet debugging aan · Instellingen voor vergrendeling"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Beheer uw geïnstalleerde add-ons · Zoek naar en installeer add-ons van Kodi.tv - Wijzig add-on instellingen"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Kies je Kodi gebruikersprofiel[CR]om in te loggen en door te gaan"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Begin menu categorie knoppen"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Beginpagina add-on snelkoppelingen"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Diverse opties"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Beginscherm weerinformatie en knop"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Add-on snelkoppelingen"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Gebruik aangepaste achtergrond"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Achtergrond:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Configureer TV instellingen · Verander volledig scherm info · beheer EPG gegens instellingen"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Verberg video achtergrond"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Verberg visualisatie achtergrond"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanaal instellingen"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Beschikbare groepen"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Groep toevoegen"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Groep hernoemen"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Groep verwijderen"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Toon verborgen"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Toon verwijderde"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Eerste sessie"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Er zijn twee dingen om te weten over navigatie bij Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Het Kodi logo functioneert als een 'HOME' knop. Wanneer u deze aanraakt wordt u terug gebracht naar het startscherm."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Wanneer u audio of video afspeelt dan zal de item titel verschijnen bovenaan het scherm. Deze aanraken brengt u naar de scherm vullende weergave of video scherm."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Nu spelende titel..."

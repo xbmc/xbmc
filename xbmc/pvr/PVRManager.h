@@ -20,7 +20,7 @@
  */
 
 #include "FileItem.h"
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
@@ -31,6 +31,7 @@
 #include "pvr/recordings/PVRRecording.h"
 
 #include <map>
+#include <memory>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -94,11 +95,13 @@ namespace PVR
   {
     friend class CPVRClients;
 
-  private:
+public:
     /*!
      * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
      */
     CPVRManager(void);
+
+private:
 
     /*!
      * @brief Updates the last watched timestamps of the channel and group which are currently playing.
@@ -133,31 +136,30 @@ namespace PVR
      * @brief Get the channel groups container.
      * @return The groups container.
      */
-    CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups; }
+    CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups.get(); }
 
     /*!
      * @brief Get the recordings container.
      * @return The recordings container.
      */
-    CPVRRecordings *Recordings(void) const { return m_recordings; }
+    CPVRRecordings *Recordings(void) const { return m_recordings.get(); }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRTimers *Timers(void) const { return m_timers; }
+    CPVRTimers *Timers(void) const { return m_timers.get(); }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRClients *Clients(void) const { return m_addons; }
+    CPVRClients *Clients(void) const { return m_addons.get(); }
 
     /*!
-     * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
-     * @param bAsync True to (re)start the manager from another thread
+     * @brief Init PVRManager.
      */
-    void Start(bool bAsync = false);
+    void Init(void);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -178,24 +180,6 @@ namespace PVR
      * @return True when the given window id is an PVR window, false otherwise.
      */
     static bool IsPVRWindow(int windowId);
-
-    /*!
-     * @brief Check whether an add-on can be upgraded or installed without restarting the pvr manager, when the add-on is in use or the pvr window is active
-     * @param strAddonId The add-on to check.
-     * @return True when the add-on can be installed, false otherwise.
-     */
-    bool InstallAddonAllowed(const std::string& strAddonId) const;
-
-    /*!
-     * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
-     * @param strAddonId The add-on to mark as outdated
-     */
-    void MarkAsOutdated(const std::string& strAddonId);
-
-    /*!
-     * @return True when updated, false when the pvr manager failed to load after the attempt
-     */
-    bool UpgradeOutdatedAddons(void);
 
     /*!
      * @brief Get the TV database.
@@ -266,11 +250,6 @@ namespace PVR
       return GetState() == ManagerStateStarted;
     }
 
-    /**
-     * Called by OnEnable() and OnDisable() to check if the manager should be restarted
-     * @return True if it should be restarted, false otherwise
-     */
-    bool RestartManagerOnAddonDisabled(void) const;
 
     /*!
      * @brief Check whether the PVRManager is stopping
@@ -569,6 +548,16 @@ namespace PVR
     bool SetWakeupCommand(void);
 
     /*!
+     * @brief Propagate event on system sleep
+     */
+    void OnSleep();
+
+    /*!
+     * @brief Propagate event on system wake
+     */
+    void OnWake();
+
+    /*!
      * @brief Wait until the pvr manager is loaded
      * @return True when loaded, false otherwise
      */
@@ -586,7 +575,17 @@ namespace PVR
     */
     std::string GetPlayingTVGroupName();
 
+    /*!
+     * @brief Signal a connection change of a client
+     */
+    void ConnectionStateChange(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
+
   protected:
+    /*!
+     * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
+     */
+    void Start();
+    
     /*!
      * @brief PVR update and control thread.
      */
@@ -596,9 +595,10 @@ namespace PVR
     /*!
      * @brief Load at least one client and load all other PVR data after loading the client.
      * If some clients failed to load here, the pvrmanager will retry to load them every second.
+     * @param bShowProgress True, to show a progress dialog for the different load stages.
      * @return If at least one client and all pvr data was loaded, false otherwise.
      */
-    bool Load(void);
+    bool Load(bool bShowProgress);
 
     /*!
      * @brief Reset all properties.
@@ -613,16 +613,6 @@ namespace PVR
      * @return True if the switch was successful, false otherwise.
      */
     bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
-
-    /*!
-     * @brief Stop the EPG and PVR threads but do not remove their data.
-     */
-    void StopUpdateThreads(void);
-
-    /*!
-     * @brief Restart the EPG and PVR threads after they've been stopped by StopUpdateThreads()
-     */
-    bool StartUpdateThreads(void);
 
     /*!
      * @brief Continue playback on the last channel if it was stored in the database.
@@ -663,11 +653,11 @@ namespace PVR
 
     /** @name containers */
     //@{
-    CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
-    CPVRRecordings *                m_recordings;                  /*!< pointer to the recordings container */
-    CPVRTimers *                    m_timers;                      /*!< pointer to the timers container */
-    CPVRClients *                   m_addons;                      /*!< pointer to the pvr addon container */
-    CPVRGUIInfo *                   m_guiInfo;                     /*!< pointer to the guiinfo data */
+    std::unique_ptr<CPVRChannelGroupsContainer>    m_channelGroups;               /*!< pointer to the channel groups container */
+    std::unique_ptr<CPVRRecordings>                m_recordings;                  /*!< pointer to the recordings container */
+    std::unique_ptr<CPVRTimers>                    m_timers;                      /*!< pointer to the timers container */
+    std::unique_ptr<CPVRClients>                   m_addons;                      /*!< pointer to the pvr addon container */
+    std::unique_ptr<CPVRGUIInfo>                   m_guiInfo;                     /*!< pointer to the guiinfo data */
     //@}
 
     CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggered updates */
@@ -684,9 +674,18 @@ namespace PVR
 
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
-    CStopWatch                     *m_parentalTimer;
-    std::vector<std::string>        m_outdatedAddons;
+    std::unique_ptr<CStopWatch>     m_parentalTimer;
     static const int                m_pvrWindowIds[12];
+  };
+
+  class CPVRStartupJob : public CJob
+  {
+  public:
+    CPVRStartupJob(void) {}
+    virtual ~CPVRStartupJob() {}
+    virtual const char *GetType() const { return "pvr-startup"; }
+
+    virtual bool DoWork();
   };
 
   class CPVREpgsCreateJob : public CJob
@@ -760,5 +759,21 @@ namespace PVR
     virtual const char *GetType() const { return "pvr-search-missing-channel-icons"; }
 
     bool DoWork();
+  };
+
+  class CPVRClientConnectionJob : public CJob
+  {
+  public:
+    CPVRClientConnectionJob(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message) :
+    m_clientId(clientId), m_connectString(connectString), m_state(state), m_message(message) {}
+    virtual ~CPVRClientConnectionJob() {}
+    virtual const char *GetType() const { return "pvr-client-connection"; }
+
+    virtual bool DoWork();
+  private:
+    int m_clientId;
+    std::string m_connectString;
+    PVR_CONNECTION_STATE m_state;
+    std::string m_message;
   };
 }

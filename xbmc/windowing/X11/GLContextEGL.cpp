@@ -372,17 +372,6 @@ void CGLContextEGL::QueryExtensions()
   CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:%s", m_extensions.c_str());
 }
 
-bool CGLContextEGL::IsExtSupported(const char* extension)
-{
-  std::string name;
-
-  name  = " ";
-  name += extension;
-  name += " ";
-
-  return m_extensions.find(name) != std::string::npos;
-}
-
 XVisualInfo* CGLContextEGL::GetVisual()
 {
     GLint att[] =

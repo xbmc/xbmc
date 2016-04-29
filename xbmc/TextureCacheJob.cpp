@@ -176,7 +176,7 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
       additional_info = "flipped";
 
     if (thumbURL.GetOption("size") == "thumb")
-      width = height = g_advancedSettings.GetThumbSize();
+      width = height = g_advancedSettings.m_imageRes;
     else
     {
       if (thumbURL.HasOption("width") && StringUtils::IsInteger(thumbURL.GetOption("width")))

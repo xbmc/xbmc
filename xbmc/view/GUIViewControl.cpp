@@ -271,6 +271,12 @@ int CGUIViewControl::GetViewModeNumber(int number) const
   return 0;  // no view modes :(
 }
 
+// returns the amount of visible views
+int CGUIViewControl::GetViewModeCount() const
+{
+  return static_cast<int>(m_visibleViews.size());
+}
+
 int CGUIViewControl::GetViewModeByID(int id) const
 {
   for (unsigned int i = 0; i < m_visibleViews.size(); ++i)
@@ -322,7 +328,7 @@ void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
   {
     IGUIContainer *view = (IGUIContainer *)m_visibleViews[i];
     std::string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
-    labels.push_back(make_pair(label, i));
+    labels.emplace_back(std::move(label), i);
   }
   CGUIMessage msg(GUI_MSG_SET_LABELS, m_parentWindow, m_viewAsControl, m_currentView);
   msg.SetPointer(&labels);

@@ -28,6 +28,7 @@
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxCDDA.h"
 #include "DVDDemuxClient.h"
+#include "DemuxMultiSource.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
@@ -104,6 +105,16 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
   {
     bool useFastswitch = URIUtils::IsUsingFastSwitch(pInputStream->GetFileName());
     streaminfo = !useFastswitch;
+  }
+
+  // Try to open the MultiFiles demuxer
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_MULTIFILES))
+  {
+    std::unique_ptr<CDemuxMultiSource> demuxer(new CDemuxMultiSource());
+    if (demuxer->Open(pInputStream))
+      return demuxer.release();
+    else
+      return NULL;
   }
 
   std::unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());

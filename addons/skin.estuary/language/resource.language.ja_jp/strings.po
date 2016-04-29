@@ -1,0 +1,69 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/kodi-main/language/ja_JP/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja_JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "検索..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "モードを変更"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "2D で観る"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "予報"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "アクション"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "巻き戻し"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial ベース"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "最終更新時刻"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "電源オプション"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "アルバム情報"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "チャンネルグループ"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "ローカルの字幕を利用できます"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

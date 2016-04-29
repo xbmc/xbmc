@@ -22,16 +22,12 @@ endif()
 find_path(PCRE_INCLUDE_DIR pcrecpp.h
                            PATHS ${PC_PCRE_INCLUDEDIR})
 find_library(PCRECPP_LIBRARY_RELEASE NAMES pcrecpp
-                                     PATH_SUFFIXES ${CONFIGURATION_LIBDIR_RELEASE}
                                      PATHS ${PC_PCRE_LIBDIR})
 find_library(PCRE_LIBRARY_RELEASE NAMES pcre
-                                  PATH_SUFFIXES ${CONFIGURATION_LIBDIR_RELEASE}
                                   PATHS ${PC_PCRE_LIBDIR})
 find_library(PCRECPP_LIBRARY_DEBUG NAMES pcrecppd
-                                   PATH_SUFFIXES ${CONFIGURATION_LIBDIR_DEBUG}
                                    PATHS ${PC_PCRE_LIBDIR})
 find_library(PCRE_LIBRARY_DEBUG NAMES pcred
-                                   PATH_SUFFIXES ${CONFIGURATION_LIBDIR_DEBUG}
                                    PATHS ${PC_PCRE_LIBDIR})
 set(PCRE_VERSION ${PC_PCRE_VERSION})
 

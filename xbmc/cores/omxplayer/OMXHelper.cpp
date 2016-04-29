@@ -28,6 +28,7 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "cores/omxplayer/OMXPlayerAudio.h"
 #include "cores/omxplayer/OMXPlayerVideo.h"
+#include "threads/SystemClock.h"
 
 #define PREDICATE_RETURN(lh, rh) \
   do { \
@@ -74,7 +75,7 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
     for(SelectionStreams::iterator it = streams.begin(); it != streams.end(); ++it)
     {
       int iStream = it->id;
-      CDemuxStream *stream = m_pDemuxer->GetStream(iStream);
+      CDemuxStream *stream = m_pDemuxer->GetStream(it->demuxerId, iStream);
       if(!stream || stream->disabled || stream->flags & AV_DISPOSITION_ATTACHED_PIC)
         continue;
       CDVDStreamInfo hint(*stream, true);
@@ -112,8 +113,8 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
                      CCurrentStream m_CurrentAudio, CCurrentStream m_CurrentVideo, bool m_HasVideo, bool m_HasAudio, CRenderManager& m_renderManager)
 {
   bool reopen_stream = false;
-  double now = CDVDClock::GetAbsoluteClock();
-  if (m_OmxPlayerState.last_check_time == 0.0 || m_OmxPlayerState.last_check_time + DVD_MSEC_TO_TIME(20) <= now)
+  unsigned int now = XbmcThreads::SystemClockMillis();
+  if (m_OmxPlayerState.last_check_time == 0.0 || m_OmxPlayerState.last_check_time + 20 <= now)
   {
     m_OmxPlayerState.last_check_time = now;
     m_OmxPlayerState.stamp = m_OmxPlayerState.av_clock.OMXMediaTime();

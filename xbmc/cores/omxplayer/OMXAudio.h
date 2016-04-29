@@ -40,6 +40,26 @@ extern "C" {
 #define AUDIO_BUFFER_SECONDS 3
 #define VIS_PACKET_SIZE 512
 
+typedef struct tGUID
+{
+  DWORD Data1;
+  WORD  Data2, Data3;
+  BYTE  Data4[8];
+} __attribute__((__packed__)) GUID;
+
+typedef struct tWAVEFORMATEXTENSIBLE
+{
+  WAVEFORMATEX Format;
+  union
+  {
+    WORD wValidBitsPerSample;
+    WORD wSamplesPerBlock;
+    WORD wReserved;
+  } Samples;
+  DWORD dwChannelMask;
+  GUID SubFormat;
+} __attribute__((__packed__)) WAVEFORMATEXTENSIBLE;
+
 class COMXAudio
 {
 public:

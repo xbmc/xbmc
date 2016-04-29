@@ -101,7 +101,7 @@ IAESink *CAESinkFactory::TrySink(std::string &driver, std::string &device, AEAud
 #if defined(TARGET_WINDOWS)
     if (driver == "WASAPI")
       sink = new CAESinkWASAPI();
-    if (driver == "DIRECTSOUND")
+    else if (driver == "DIRECTSOUND")
       sink = new CAESinkDirectSound();
 #elif defined(TARGET_ANDROID)
     sink = new CAESinkAUDIOTRACK();

@@ -50,39 +50,39 @@ public:
   CRenderSystemGLES();
   virtual ~CRenderSystemGLES();
 
-  virtual bool InitRenderSystem();
-  virtual bool DestroyRenderSystem();
-  virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
+  bool InitRenderSystem() override;
+  bool DestroyRenderSystem() override;
+  bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate) override;
 
-  virtual bool BeginRender();
-  virtual bool EndRender();
-  virtual void PresentRender(bool rendered);
-  virtual bool ClearBuffers(color_t color);
-  virtual bool IsExtSupported(const char* extension);
+  bool BeginRender() override;
+  bool EndRender() override;
+  void PresentRender(bool rendered) override;
+  bool ClearBuffers(color_t color) override;
+  bool IsExtSupported(const char* extension) override;
 
-  virtual void SetVSync(bool vsync);
-  virtual void ResetVSync() { m_bVsyncInit = false; }
+  void SetVSync(bool vsync);
+  void ResetVSync() { m_bVsyncInit = false; }
 
-  virtual void SetViewPort(CRect& viewPort);
-  virtual void GetViewPort(CRect& viewPort);
+  void SetViewPort(CRect& viewPort) override;
+  void GetViewPort(CRect& viewPort) override;
 
-  virtual bool ScissorsCanEffectClipping();
-  virtual CRect ClipRectToScissorRect(const CRect &rect);
-  virtual void SetScissors(const CRect& rect);
-  virtual void ResetScissors();
+  bool ScissorsCanEffectClipping() override;
+  CRect ClipRectToScissorRect(const CRect &rect) override;
+  void SetScissors(const CRect& rect) override;
+  void ResetScissors() override;
 
-  virtual void CaptureStateBlock();
-  virtual void ApplyStateBlock();
+  void CaptureStateBlock() override;
+  void ApplyStateBlock() override;
 
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f);
+  void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f) override;
 
-  virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
-  virtual void RestoreHardwareTransform();
-  virtual bool SupportsStereo(RENDER_STEREO_MODE mode);
+  void ApplyHardwareTransform(const TransformMatrix &matrix) override;
+  void RestoreHardwareTransform() override;
+  bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
 
-  virtual bool TestRender();
+  bool TestRender() override;
 
-  virtual void Project(float &x, float &y, float &z);
+  void Project(float &x, float &y, float &z) override;
 
   void InitialiseGUIShader();
   void EnableGUIShader(ESHADERMETHOD method);
@@ -113,8 +113,8 @@ protected:
 
   std::string m_RenderExtensions;
 
-  CGUIShader  **m_pGUIshader;  // One GUI shader for each method
-  ESHADERMETHOD m_method;      // Current GUI Shader method
+  CGUIShader  **m_pGUIshader = nullptr; // One GUI shader for each method
+  ESHADERMETHOD m_method = SM_DEFAULT; // Current GUI Shader method
 
   GLint      m_viewPort[4];
 };

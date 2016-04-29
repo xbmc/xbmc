@@ -112,13 +112,6 @@ bool CMusicDatabaseDirectory::IsArtistDir(const std::string& strDirectory)
   return (node==NODE_TYPE_ARTIST);
 }
 
-bool CMusicDatabaseDirectory::HasAlbumInfo(const std::string& strDirectory)
-{
-  NODE_TYPE node=GetDirectoryType(strDirectory);
-  return (node!=NODE_TYPE_OVERVIEW && node!=NODE_TYPE_TOP100 &&
-          node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST && node!=NODE_TYPE_YEAR);
-}
-
 void CMusicDatabaseDirectory::ClearDirectoryCache(const std::string& strDirectory)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strDirectory);
@@ -184,6 +177,9 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       break;
     case NODE_TYPE_GENRE:
       strLabel = g_localizeStrings.Get(135); // Genres
+      break;
+    case NODE_TYPE_ROLE:
+      strLabel = g_localizeStrings.Get(38033); // Roles
       break;
     case NODE_TYPE_ARTIST:
       strLabel = g_localizeStrings.Get(133); // Artists
@@ -277,6 +273,8 @@ std::string CMusicDatabaseDirectory::GetIcon(const std::string &strDirectory)
       return "DefaultMusicArtists.png";
   case NODE_TYPE_GENRE:
       return "DefaultMusicGenres.png";
+  case NODE_TYPE_ROLE:
+    return "DefaultMusicRoles.png";
   case NODE_TYPE_TOP100:
       return "DefaultMusicTop100.png";
   case NODE_TYPE_ALBUM:

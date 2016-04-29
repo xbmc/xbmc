@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="105">
+	<controls>
+		<control type="image" id="1">
+			<description>Pointer</description>
+			<left>-10</left>
+			<width>44</width>
+			<height>50</height>
+			<texture>pointer_arrow.png</texture>
+		</control>
+		<control type="image" id="2">
+			<description>Pointer Focus</description>
+			<left>-10</left>
+			<width>44</width>
+			<height>50</height>
+			<texture>pointer_arrow.png</texture>
+		</control>
+		<control type="image" id="3">
+			<description>Pointer Drag</description>
+			<left>-10</left>
+			<width>44</width>
+			<height>50</height>
+			<texture>pointer_arrow.png</texture>
+		</control>
+		<control type="image" id="4">
+			<description>pointer_click</description>
+			<left>-10</left>
+			<width>44</width>
+			<height>50</height>
+			<texture>pointer_click.png</texture>
+		</control>
+	</controls>
+</window>

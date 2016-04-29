@@ -59,13 +59,26 @@ endif()
 
 if(WITH_CPU)
   set(CPU ${WITH_CPU})
-else()
+elseif(NOT CMAKE_TOOLCHAIN_FILE)
   set(CPU ${CMAKE_SYSTEM_PROCESSOR})
 endif()
+
+if(CMAKE_TOOLCHAIN_FILE)
+  if(NOT EXISTS "${CMAKE_TOOLCHAIN_FILE}")
+    message(FATAL_ERROR "Toolchain file ${CMAKE_TOOLCHAIN_FILE} does not exist.")
+  elseif(NOT DEPENDS_PATH OR NOT NATIVEPREFIX)
+    message(FATAL_ERROR "Toolchain did not define DEPENDS_PATH or NATIVEPREFIX. Possibly outdated depends.")
+  endif()
+endif()
+
+# Main cpp
+set(CORE_MAIN_SOURCE ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
 
 # system specific arch setup
 include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/archsetup.cmake)
 
+message(STATUS "Core system type: ${CORE_SYSTEM_NAME}")
+message(STATUS "Platform: ${PLATFORM}")
 message(STATUS "CPU: ${CPU}, ARCH: ${ARCH}")
 
 check_type(string std::u16string HAVE_STD__U16_STRING)

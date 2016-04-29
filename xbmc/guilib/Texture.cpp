@@ -35,6 +35,9 @@
 #include "URL.h"
 #include "filesystem/AndroidAppFile.h"
 #endif
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 /************************************************************************/
 /*                                                                      */
@@ -49,7 +52,8 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
 
 CBaseTexture::~CBaseTexture()
 {
-  delete[] m_pixels;
+  _aligned_free(m_pixels);
+  m_pixels = NULL;
 }
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
@@ -98,11 +102,12 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   CLAMP(m_imageWidth, m_textureWidth);
   CLAMP(m_imageHeight, m_textureHeight);
 
-  delete[] m_pixels;
+  _aligned_free(m_pixels);
   m_pixels = NULL;
   if (GetPitch() * GetRows() > 0)
   {
-    m_pixels = new unsigned char[GetPitch() * GetRows()];
+    size_t size = GetPitch() * GetRows();
+    m_pixels = (unsigned char*) _aligned_malloc(size, 16);
   }
 }
 

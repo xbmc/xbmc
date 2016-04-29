@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include "URL.h"
 #include "PlayList.h"
 
 namespace PLAYLIST
@@ -26,14 +27,19 @@ class CPlayListM3U :
       public CPlayList
 {
 public:
+  static const char *StartMarker;
+  static const char *InfoMarker;
+  static const char *ArtistMarker;
+  static const char *AlbumMarker;
+  static const char *StreamMarker;
+  static const char *BandwidthMarker;
+  static const char *OffsetMarker;
+
+public:
   CPlayListM3U(void);
   virtual ~CPlayListM3U(void);
   virtual bool Load(const std::string& strFileName);
   virtual void Save(const std::string& strFileName) const;
-
-  static std::string GetBestBandwidthStream(const std::string &strFileName, size_t bandwidth);
-
-protected:
 
   static std::map<std::string,std::string> ParseStreamLine(const std::string &streamLine);
 };

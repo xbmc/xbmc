@@ -27,7 +27,7 @@ class COpenVideoMax;
 class CDVDVideoCodecOpenMax : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecOpenMax();
+  CDVDVideoCodecOpenMax(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecOpenMax();
 
   // Required overrides

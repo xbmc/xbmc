@@ -26,7 +26,7 @@ namespace PERIPHERALS
   class CPeripheralBluetooth : public CPeripheral
   {
   public:
-    CPeripheralBluetooth(const PeripheralScanResult& scanResult);
+    CPeripheralBluetooth(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheralBluetooth(void) {};
   };
 }

@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/kodi-main/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Acum în redare"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Caută..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Schimbare mod"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Afișează în 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Prognoză"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Acțiuni"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Opțiuni diverse"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Ultimul autentificat"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Derulează înapoi"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Derulează înainte"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Opțiuni listă de redare"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Adăugare grup"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Redenumire grup"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Ștergere grup"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Cu Arial la bază"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Ultima actualizare"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Opțiuni de alimentare"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Info album"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Supliment versuri"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Grup canal"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Opțiuni scanare conținut"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Grupuri disponibile"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Descarcă subtitluri"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Este disponibil un subtitlu local"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Opțiuni canal"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Selectați profilul dumneavoastră de utilizator Kodi[CR]pentru a vă autentifica și continua"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Schimbare"

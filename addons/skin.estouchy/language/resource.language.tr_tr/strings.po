@@ -1,0 +1,305 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/kodi-main/language/tr_TR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Ses Ayarları"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Büyük Harf[CR]Kilidi"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Görsel Öğe Seçenekleri"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Görsel Öğe Önayarları"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "İçerik Menüsü"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Çalışıyor..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "En Son"
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filmler"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Bölümler"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albümler"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Sayfa"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Bilgi Listesi"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Giriş"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Güncellendi"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "İLERİ SAR"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "GERİ SAR"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Bitiş Zamanı"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sırala: Artan"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sırala: Azalan"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Çalma listesini aç"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Çalma listesini kaydet"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Çalma listesini kapat"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Sistem müzik dosyaları"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Geçerli çalma listesi"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Geri"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Konum"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Görünüm"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Mevcut Sıcaklık"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Son Güncelleme"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Veri sağlayıcı"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Kullanılan Bellek:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Son Giriş Yapan"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Gösterim"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Video Menüsü"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Altyazıları İndir"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teleteks"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Dış görünüm varsayılanı"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Arial tabanlı"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Dış görünümü değiştir · Bölge ve dili ayarla · Dosya listeleme ayarlarını değiştir · Bir ekran koruyucu ayarla"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Video kitaplığınızı yönetin · Video oynatma seçeneklerini belirle · Video listeleme seçeneklerini değiştir · Altyazı yazı tiplerini belirle"
+
+msgctxt "#31402"
+msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
+msgstr "Müzik kitaplığınızı yönetin · Müzik çalma seçeneklerini belirle · Müzik listeleme seçeneklerini değiştir · Şarkı gönderimini ayarla"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Fotoğraf listeleme seçeneklerini belirle · Slayt gösterilerini yapılandır"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Hava durumu bilgisi almak için üç şehir belirleyin"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "UPnP ve HTTP üzerinden Kodi kontrolü ayarları · Dosya paylaşımını yapılandır · İnternet erişimi seçeneklerini ayarla"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Ekranları kur ve ayarla · Ses çıkışını yapılandır · Uzaktan yönetimi kur · Güç tasarruf seçeneklerini belirle · Hata ayıklamayı etkinleştir · Yönetici kilidini kur"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Yüklü eklentilerinizi yönetin · kodi.tv sitesindeki uygulamalara gözatın ve yükleyin · Eklenti ayarlarını değiştirin"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Oturum açıp devam etmek için[CR]Kodi kullanıcı profilinizi seçin"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Ana Menü Kategori Düğmeleri"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Giriş Sayfası Hızlı Eklenti Bağlantıları"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Çeşitli Seçenekler"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Ana Ekran Hava Durumu Bilgisi ve düğmesi"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Eklenti Kısayolu"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Özel Arka Plan Kullan"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Arka plan:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "TV ayarlarını yapılandır · Tam ekran bilgisini değiştir · EPG veri ayarlarını yönet"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Canlı TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Arka plan videoyu gizle"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Arka plan görselleştirmesini gizle"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanal ayarları"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Kullanılabilir gruplar"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Grup Ekle"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Grubu Yeniden Adlandır"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Grubu Sil"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Gizlileri göster"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Silinenleri göster"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "İlk Çalıştırma"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Estouchy'de gezinme hakkında bilmeniz gereken iki şey vardır."
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi logosu 'Giriş Sayfası' düğmesi olarak işlev görür. Logoya dokunduğunuz zaman giriş ekranına geri gidersiniz."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Ses veya video oynatılırken, oynatılan öğenin başlığı ekranın üst kısmında görünür. Buna dokunmak sizi tam ekran görsel öğeye veya video penceresine götürecektir."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Şimdi Oynatılan Öğenin Başlığı..."

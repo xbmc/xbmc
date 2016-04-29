@@ -22,6 +22,7 @@
 
 #include "system.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -29,14 +30,9 @@ extern "C" {
 
 #include <vector>
 #include <string>
+#include <map>
 
 class CSetting;
-
-struct DVDCodecAvailableType
-{
-  AVCodecID codec;
-  const char* setting;
-};
 
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
@@ -53,7 +49,7 @@ class COpenMaxVideo;
 struct OpenMaxVideoBufferHolder;
 class CDVDMediaCodecInfo;
 class CDVDVideoCodecIMXBuffer;
-class CMMALVideoBuffer;
+class CMMALBuffer;
 class CDVDAmlogicInfo;
 
 
@@ -97,7 +93,7 @@ struct DVDVideoPicture
     };
 
     struct {
-      CMMALVideoBuffer *MMALBuffer;
+      CMMALBuffer *MMALBuffer;
     };
 
     struct {
@@ -175,7 +171,7 @@ class CDVDCodecOptions;
 class CDVDVideoCodec
 {
 public:
-  CDVDVideoCodec() {}
+  CDVDVideoCodec(CProcessInfo &processInfo) : m_processInfo(processInfo) {}
   virtual ~CDVDVideoCodec() {}
 
   /**
@@ -268,21 +264,24 @@ public:
   /**
    * Interact with user settings so that user disabled codecs are disabled
    */
-  static bool IsCodecDisabled(DVDCodecAvailableType* map, unsigned int size, AVCodecID id);
+  static bool IsCodecDisabled(const std::map<AVCodecID, std::string> &map, AVCodecID id);
 
   /**
    * For calculation of dropping requirements player asks for some information.
    * - pts : right after decoder, used to detect gaps (dropped frames in decoder)
-   * - droppedPics : indicates if decoder has dropped a picture
+   * - droppedFrames : indicates if decoder has dropped a frame
+   *                 -1 means that decoder has no info on this.
+   * - skippedPics : indicates if postproc has skipped a already decoded picture
    *                 -1 means that decoder has no info on this.
    *
    * If codec does not implement this method, pts of decoded frame at input
    * video player is used. In case decoder does post-proc and de-interlacing there
    * may be quite some frames queued up between exit decoder and entry player.
    */
-  virtual bool GetCodecStats(double &pts, int &droppedPics)
+  virtual bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics)
   {
-    droppedPics = -1;
+    droppedFrames = -1;
+    skippedPics = -1;
     return false;
   }
 
@@ -316,4 +315,7 @@ public:
    * Decoder request to re-open
    */
   virtual void Reopen() {};
+
+protected:
+  CProcessInfo &m_processInfo;
 };

@@ -64,8 +64,3 @@ std::string CWebinterface::GetBaseLocation() const
 
   return "";
 }
-
-AddonPtr CWebinterface::Clone() const
-{
-  return AddonPtr(new CWebinterface(*this));
-}

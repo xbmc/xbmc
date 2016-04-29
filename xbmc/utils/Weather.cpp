@@ -47,6 +47,9 @@
 #include "utils/Temperature.h"
 #include "XBDateTime.h"
 #include "XMLUtils.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 using namespace ADDON;
 using namespace XFILE;
@@ -145,7 +148,7 @@ void CWeatherJob::LocalizeOverview(std::string &str)
   str = StringUtils::Join(words, " ");
 }
 
-void CWeatherJob::FormatTemperature(std::string &text, int temp)
+void CWeatherJob::FormatTemperature(std::string &text, double temp)
 {
   CTemperature temperature = CTemperature::CreateFromCelsius(temp);
   text = StringUtils::Format("%.0f", temperature.To(g_langInfo.GetTemperatureUnit()));
@@ -259,9 +262,9 @@ void CWeatherJob::SetFromProperties()
     m_info.currentIcon = ConstructPath(window->GetProperty("Current.OutlookIcon").asString());
     LocalizeOverview(m_info.currentConditions);
     FormatTemperature(m_info.currentTemperature,
-        strtol(window->GetProperty("Current.Temperature").asString().c_str(),0,10));
+        strtod(window->GetProperty("Current.Temperature").asString().c_str(), nullptr));
     FormatTemperature(m_info.currentFeelsLike,
-        strtol(window->GetProperty("Current.FeelsLike").asString().c_str(),0,10));
+        strtod(window->GetProperty("Current.FeelsLike").asString().c_str(), nullptr));
     m_info.currentUVIndex = window->GetProperty("Current.UVIndex").asString();
     LocalizeOverview(m_info.currentUVIndex);
     CSpeed speed = CSpeed::CreateFromKilometresPerHour(strtol(window->GetProperty("Current.Wind").asString().c_str(),0,10));
@@ -277,7 +280,7 @@ void CWeatherJob::SetFromProperties()
     std::string windspeed = StringUtils::Format("%i %s", (int)speed.To(g_langInfo.GetSpeedUnit()), g_langInfo.GetSpeedUnitString().c_str());
     window->SetProperty("Current.WindSpeed",windspeed);
     FormatTemperature(m_info.currentDewPoint,
-        strtol(window->GetProperty("Current.DewPoint").asString().c_str(),0,10));
+        strtod(window->GetProperty("Current.DewPoint").asString().c_str(), nullptr));
     if (window->GetProperty("Current.Humidity").asString().empty())
       m_info.currentHumidity.clear();
     else
@@ -290,10 +293,10 @@ void CWeatherJob::SetFromProperties()
       LocalizeOverviewToken(m_info.forecast[i].m_day);
       strDay = StringUtils::Format("Day%i.HighTemp",i);
       FormatTemperature(m_info.forecast[i].m_high,
-                    strtol(window->GetProperty(strDay).asString().c_str(),0,10));
+                    strtod(window->GetProperty(strDay).asString().c_str(), nullptr));
       strDay = StringUtils::Format("Day%i.LowTemp",i);
       FormatTemperature(m_info.forecast[i].m_low,
-                    strtol(window->GetProperty(strDay).asString().c_str(),0,10));
+                    strtod(window->GetProperty(strDay).asString().c_str(), nullptr));
       strDay = StringUtils::Format("Day%i.OutlookIcon",i);
       m_info.forecast[i].m_icon = ConstructPath(window->GetProperty(strDay).asString());
       strDay = StringUtils::Format("Day%i.Outlook",i);

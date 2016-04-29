@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.estouchy" version="1.0.8" name="Estouchy" provider-name="Team Kodi">
+	<requires>
+		<import addon="xbmc.gui" version="5.11.0"/>
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1280" height="960" aspect="4:3" folder="xml"/>
+		<res width="1706" height="960" aspect="16:9" default="true" folder="xml"/>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="bg_BG">Облик за устройства с екран чувствителен на допир</summary>
+		<summary lang="cs_CZ">Skin pro dotyková zařízení</summary>
+		<summary lang="de_DE">Skin für Touchscreen-Geräte</summary>
+		<summary lang="en_GB">Skin for touchscreen devices</summary>
+		<summary lang="en_US">Skin for touchscreen devices</summary>
+		<summary lang="es_ES">Plantilla para dispositivos táctiles</summary>
+		<summary lang="fr_CA">Habillage pour appareils à écran tactile</summary>
+		<summary lang="fr_FR">Habillage pour les appareils à écran tactile</summary>
+		<summary lang="hu_HU">Felület érintőképernyős eszközöknek</summary>
+		<summary lang="it_IT">Skin per dispositivi touchscreen</summary>
+		<summary lang="lt_LT">Teminė išvaizda liečiamiesiems įrenginiams</summary>
+		<summary lang="ms_MY">Kulit untuk peranti skrin sentuh</summary>
+		<summary lang="nl_NL">Skin voor aanraakscherm apparaten</summary>
+		<summary lang="pt_BR">Skin para dispositivos com telas de toque</summary>
+		<summary lang="sk_SK">Grafický vzhľad pre zariadenia s dotykovým displejom</summary>
+		<summary lang="sr_RS">Маска за уређаје са екраном осетљивим на додир</summary>
+		<summary lang="sr_RS@latin">Maska za uređaje sa ekranom osetljivim na dodir</summary>
+		<summary lang="sv_SE">Skin för enheter med touchskärm</summary>
+		<summary lang="tr_TR">Dokunmatik ekranlı aygıtlar için dış görünüm</summary>
+		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
+		<description lang="cs_CZ">Skin navržený pro zařízení s dotykovou obrazovkou, jako jsou tablety a smartphony.</description>
+		<description lang="de_DE">Dieses Skin wurde für die Benutzung mit Touchscreen-Geräten wie Tablets und Handys entworfen</description>
+		<description lang="en_GB">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
+		<description lang="en_US">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
+		<description lang="es_ES">Esta plantilla está diseñada para usarla en dispositivos táctiles como tabletas y smartphones</description>
+		<description lang="fr_CA">Habillage conçu pour être utilisé sur les appareils à écran tactile comme les tablettes et les téléphones intelligents</description>
+		<description lang="fr_FR">Habillage conçu pour les appareils à écran tactile comme les tablettes et les téléphones</description>
+		<description lang="hu_HU">Egy érintőképernyős eszközökre, például táblagépekre és okostelefonokra tervezett felület</description>
+		<description lang="it_IT">Skin progettata per essere usata su dispositivi touchscreen come tablet e smartphone</description>
+		<description lang="lt_LT">Teminė išvaizda pritaikyta naudojimui įrenginiuose su liečiamaisiais ekranais, tokiuose kaip planšetiniai kompiuteriai ar išmanieji telefonai</description>
+		<description lang="ms_MY">Kulit direka untuk digunakan pada peranti berskrin sentuh seperti tablet dan telefon pintar</description>
+		<description lang="nl_NL">Skin ontworpen voor gebruik bij aanraakscherm apparaten zoals tablets en smartphones</description>
+		<description lang="pt_BR">Skin concebida para ser usada em dispositivos com telas de toque como tablets e smartphones</description>
+		<description lang="sk_SK">Grafický vzhľad určený pre použitie na dotykových zariadeniach ako sú tablety alebo mobilné telefóny</description>
+		<description lang="sr_RS">Маска дизајнирана да би била коришћена на уређајима са екранима осетљивим на додир као што су таблети и паметни телефони</description>
+		<description lang="sr_RS@latin">Maska dizajnirana da bi bila korišćena na uređajima sa ekranima osetljivim na dodir kao što su tableti i pametni telefoni</description>
+		<description lang="tr_TR">Bu dış görünüm tabletler ve akıllı telefonlar gibi dokunmatik ekranlı aygıtlarda kullanılmak üzere tasarlandı</description>
+		<description lang="zh_CN">为触屏设备如平板电脑和智能手机而设计的皮肤</description>
+		<platform>all</platform>
+		<license>Creative Commons Attribution-Share Alike 3.0 United States</license>
+		<forum>http://forum.kodi.tv/forumdisplay.php?fid=261</forum>
+		<website></website>
+		<email></email>
+		<source>https://github.com/xbmc/skin.estouchy/</source>
+	</extension>
+</addon>

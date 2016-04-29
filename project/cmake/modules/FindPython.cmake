@@ -20,7 +20,11 @@ if(NOT PYTHON_FOUND)
     find_library(EXPAT_LIBRARY expat)
     find_library(INTL_LIBRARY intl)
 
-    set(PYTHON_LIBRARIES ${PYTHON_LIBRARY} ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} -lpthread -ldl -lutil
+    if(NOT CORE_SYSTEM_NAME STREQUAL android)
+        set(PYTHON_DEP_LIBRARIES -lpthread -ldl -lutil)
+    endif()
+
+    set(PYTHON_LIBRARIES ${PYTHON_LIBRARY} ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} ${PYTHON_DEP_LIBRARIES}
         CACHE INTERNAL "python libraries" FORCE)
   else()
     find_package(PythonLibs)

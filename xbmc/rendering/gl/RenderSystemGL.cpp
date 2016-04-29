@@ -34,13 +34,13 @@
 #include "utils/SystemInfo.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
-  m_glslMajor = 0;
-  m_glslMinor = 0;
-  m_latencyCounter = 0;
 }
 
 CRenderSystemGL::~CRenderSystemGL()
@@ -292,11 +292,16 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
 
 void CRenderSystemGL::PresentRender(bool rendered)
 {
+  SetVSync(true);
+
   if (!m_bRenderCreated)
     return;
 
   PresentRenderImpl(rendered);
   m_latencyCounter++;
+
+  if (!rendered)
+    Sleep(40);
 }
 
 void CRenderSystemGL::SetVSync(bool enable)
@@ -643,7 +648,7 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
 
 }
 
-bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode)
+bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode) const
 {
   switch(mode)
   {

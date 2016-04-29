@@ -19,7 +19,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "include/kodi_audiodec_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_audiodec_types.h"
 #include "cores/paplayer/ICodec.h"
 #include "music/tags/ImusicInfoTagLoader.h"
 #include "filesystem/MusicFileDirectory.h"
@@ -57,12 +57,11 @@ namespace ADDON
         bool tracks, std::string codecName, std::string strExt);
 
     virtual ~CAudioDecoder() {}
-    virtual AddonPtr Clone() const;
 
     // Things that MUST be supplied by the child classes
     bool Init(const std::string& strFile, unsigned int filecache);
     int ReadPCM(uint8_t* buffer, int size, int* actualsize);
-    int64_t Seek(int64_t time);
+    bool Seek(int64_t time);
     bool CanInit() { return true; }
     void DeInit();
     void Destroy();

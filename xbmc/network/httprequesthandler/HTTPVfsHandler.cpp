@@ -67,7 +67,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
             for (std::vector<std::string>::const_iterator path = source->vecPaths.begin(); path != source->vecPaths.end(); ++path)
             {
               std::string realSourcePath = URIUtils::GetRealPath(*path);
-              if (URIUtils::IsInPath(realPath, realSourcePath))
+              if (URIUtils::PathHasParent(realPath, realSourcePath, true))
               {
                 accessible = true;
                 break;

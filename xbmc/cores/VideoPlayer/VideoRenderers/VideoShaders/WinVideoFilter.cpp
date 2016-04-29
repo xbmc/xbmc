@@ -304,7 +304,6 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
     { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT,    0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    { "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT,    0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
   };
 
   if (!CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout)))
@@ -353,32 +352,32 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
     v[0].z = 0.0f;
     v[0].tu = sourceRect.x1 / m_sourceWidth;
     v[0].tv = sourceRect.y1 / m_sourceHeight;
-    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
-    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
+    v[0].tu2 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
+    v[0].tv2 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
     v[1].x = m_dest[1].x;
     v[1].y = m_dest[1].y;
     v[1].z = 0.0f;
     v[1].tu = sourceRect.x2 / m_sourceWidth;
     v[1].tv = sourceRect.y1 / m_sourceHeight;
-    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
-    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
+    v[1].tu2 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
+    v[1].tv2 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
     v[2].x = m_dest[2].x;
     v[2].y = m_dest[2].y;
     v[2].z = 0.0f;
     v[2].tu = sourceRect.x2 / m_sourceWidth;
     v[2].tv = sourceRect.y2 / m_sourceHeight;
-    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
-    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
+    v[2].tu2 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
+    v[2].tv2 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
 
     v[3].x = m_dest[3].x;
     v[3].y = m_dest[3].y;
     v[3].z = 0.0f;
     v[3].tu = sourceRect.x1 / m_sourceWidth;
     v[3].tv = sourceRect.y2 / m_sourceHeight;
-    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
-    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
+    v[3].tu2 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
+    v[3].tv2 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
 
     CWinShader::UnlockVertexBuffer();
   }
@@ -392,12 +391,15 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
 void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
 {
   m_effect.SetTechnique("YUV2RGB_T");
+  SVideoPlane *planes = YUVbuf->planes;
+  ID3D11ShaderResourceView* ppSRView[3] =
+  {
+    planes[0].texture.GetShaderResource(),
+    planes[1].texture.GetShaderResource(),
+    planes[2].texture.GetShaderResource(),
+  };
+  m_effect.SetResources("g_Texture", ppSRView, YUVbuf->GetActivePlanes());
   m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
-  m_effect.SetTexture("g_YTexture", YUVbuf->planes[0].texture);
-  if (YUVbuf->GetActivePlanes() > 1)
-    m_effect.SetTexture("g_UTexture", YUVbuf->planes[1].texture);
-  if (YUVbuf->GetActivePlanes() > 2)
-    m_effect.SetTexture("g_VTexture", YUVbuf->planes[2].texture);
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
   UINT numPorts = 1;
@@ -469,7 +471,7 @@ bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
   }
 
   if (m_floattex)
-    delete[] kernelVals;
+    delete[] (HALF*)kernelVals;
 
   return true;
 }
@@ -901,14 +903,28 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
 }
 
 //==========================================================
+#define SHADER_SOURCE(...) #__VA_ARGS__
 
 bool CTestShader::Create()
 {
-  std::string effectString = "special://xbmc/system/shaders/testshader.fx";
+  std::string strShader = SHADER_SOURCE(
+    float4 TEST() : SV_TARGET
+    {
+      return float4(0.0, 0.0, 0.0, 0.0);
+    }
 
-  if(!LoadEffect(effectString, nullptr))
+    technique11 TEST_T
+    {
+      pass P0
+      {
+        SetPixelShader(CompileShader(ps_4_0_level_9_1, TEST()));
+      }
+    };
+  );
+
+  if (!m_effect.Create(strShader, nullptr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create test shader: %s", strShader.c_str());
     return false;
   }
   return true;

@@ -28,9 +28,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "MusicInfoTag.h"
-#include "SpecialProtocol.h"
-#include "PlayList.h"
+#include "music/tags/MusicInfoTag.h"
+#include "filesystem/SpecialProtocol.h"
+#include "playlists/PlayList.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
@@ -70,7 +70,6 @@ const NSString *MPNowPlayingInfoPropertyPlaybackQueueCount = @"MPNowPlayingInfoP
 #import "IOSEAGLView.h"
 
 #import "XBMCController.h"
-#import "platform/darwin/ios-common/AnnounceReceiver.h"
 #import "IOSScreenManager.h"
 #import "XBMCApplication.h"
 #import "XBMCDebugHelpers.h"
@@ -612,9 +611,7 @@ XBMCController *g_xbmcController;
   }
 
   [m_window makeKeyAndVisible];
-  g_xbmcController = self;  
-  
-  CAnnounceReceiver::GetInstance()->Initialize();
+  g_xbmcController = self;
 
   return self;
 }
@@ -653,7 +650,6 @@ XBMCController *g_xbmcController;
   [m_networkAutoSuspendTimer invalidate];
   [self enableNetworkAutoSuspend:nil];
 
-  CAnnounceReceiver::GetInstance()->DeInitialize();
   [m_glView stopAnimation];
   [m_glView release];
   [m_window release];

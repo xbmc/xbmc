@@ -8,7 +8,7 @@
 #   TexturePacker::TexturePacker   - The TexturePacker executable
 
 if(NOT TARGET TexturePacker::TexturePacker)
-  if(CMAKE_CROSS_COMPILING)
+  if(CMAKE_CROSSCOMPILING)
     add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
     set_target_properties(TexturePacker::TexturePacker PROPERTIES
                                                        IMPORTED_LOCATION "${NATIVEPREFIX}/bin/TexturePacker")

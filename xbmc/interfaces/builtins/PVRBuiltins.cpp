@@ -23,25 +23,6 @@
 #include "Application.h"
 #include "pvr/PVRManager.h"
 
-/*! \brief Start the PVR manager.
- *  \param params (ignored)
- */
-static int Start(const std::vector<std::string>& params)
-{
-  g_application.StartPVRManager();
-
-  return 0;
-}
-
-/*! \brief Stop the PVR manager.
- *   \param params (ignored)
- */
-static int Stop(const std::vector<std::string>& params)
-{
-  g_application.StopPVRManager();
-
-  return 0;
-}
 
 /*! \brief Search for missing channel icons
  *   \param params (ignored)
@@ -53,13 +34,28 @@ static int SearchMissingIcons(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_10 PVR built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`PVR.SearchMissingChannelIcons`</b>
+///     ,
+///     Will start a search for missing channel icons
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap CPVRBuiltins::GetOperations() const
 {
   return {
-           {"startpvrmanager",                {"(Re)Starts the PVR manager",       0, Start}}, // deprecated alias
-           {"pvr.startmanager",               {"(Re)Starts the PVR manager",       0, Start}},
-           {"stoppvrmanager",                 {"Stops the PVR manager",            0, Stop}},
-           {"pvr.stopmanager",                {"Stops the PVR manager",            0, Stop}},
            {"pvr.searchmissingchannelicons",  {"Search for missing channel icons", 0, SearchMissingIcons}}
          };
 }

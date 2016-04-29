@@ -92,6 +92,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 
   CFileItem fileitem(urlFile, false);
   fileitem.SetMimeType(m_strContentType);
+  fileitem.SetMimeTypeForInternetFile();
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);
   if (!m_pInputStream)
   {
@@ -138,12 +139,14 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
 
   CDemuxStream* pStream = NULL;
   m_nAudioStream = -1;
-  for (int i = 0; i < m_pDemuxer->GetNrOfStreams(); i++)
+  int64_t demuxerId = -1;
+  for (auto stream : m_pDemuxer->GetStreams())
   {
-    pStream = m_pDemuxer->GetStream(i);
-    if (pStream && pStream->type == STREAM_AUDIO)
+    if (stream && stream->type == STREAM_AUDIO)
     {
-      m_nAudioStream = i;
+      m_nAudioStream = stream->uniqueId;
+      demuxerId = stream->demuxerId;
+      pStream = stream;
       break;
     }
   }
@@ -211,7 +214,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   m_bCanSeek = false;
   if (m_pInputStream->Seek(0, SEEK_POSSIBLE))
   {
-    if (Seek(1) != DVD_NOPTS_VALUE)
+    if (Seek(1))
     {
       // rewind stream to beginning
       Seek(0);
@@ -239,7 +242,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   {
     m_bitRate = (int)(((m_pInputStream->GetLength()*1000) / m_TotalTime) * 8);
   }
-  m_CodecName = m_pDemuxer->GetStreamCodecName(m_nAudioStream);
+  m_CodecName = m_pDemuxer->GetStreamCodecName(demuxerId, m_nAudioStream);
 
   m_needConvert = false;
   if (NeedConvert(m_srcFormat.m_dataFormat))
@@ -317,7 +320,7 @@ void VideoPlayerCodec::DeInit()
   m_bInited = false;
 }
 
-int64_t VideoPlayerCodec::Seek(int64_t iSeekTime)
+bool VideoPlayerCodec::Seek(int64_t iSeekTime)
 {
   // default to announce backwards seek if !m_pPacket to not make FFmpeg
   // skip mpeg audio frames at playback start
@@ -335,10 +338,7 @@ int64_t VideoPlayerCodec::Seek(int64_t iSeekTime)
 
   m_nDecodedLen = 0;
 
-  if (!ret)
-    return DVD_NOPTS_VALUE;
-
-  return iSeekTime;
+  return ret;
 }
 
 int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)

@@ -20,8 +20,6 @@
  *
  */
 
-#include "DVDStreamInfo.h"
-#include "DVDMessageQueue.h"
 #include "DVDClock.h"
 
 #define VideoPlayer_AUDIO    1
@@ -35,6 +33,9 @@ template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
 
 class DVDNavResult;
+class CDVDMsg;
+class CDVDStreamInfo;
+class CProcessInfo;
 
 struct SPlayerState
 {
@@ -56,8 +57,6 @@ struct SPlayerState
     recording     = false;
     canpause      = false;
     canseek       = false;
-    demux_video   = "";
-    demux_audio   = "";
     cache_bytes   = 0;
     cache_level   = 0.0;
     cache_delay   = 0.0;
@@ -86,9 +85,6 @@ struct SPlayerState
   bool canpause;            // pvr: can pause the current playing item
   bool canseek;             // pvr: can seek in the current playing item
 
-  std::string demux_video;
-  std::string demux_audio;
-
   int64_t cache_bytes;   // number of bytes current's cached
   double  cache_level;   // current estimated required cache level
   double  cache_delay;   // time until cache is expected to reach estimated level
@@ -113,6 +109,7 @@ public:
 class IDVDStreamPlayer
 {
 public:
+  IDVDStreamPlayer(CProcessInfo &processInfo) : m_processInfo(processInfo) {};
   virtual ~IDVDStreamPlayer() {}
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
@@ -128,6 +125,8 @@ public:
     SYNC_WAITSYNC,
     SYNC_INSYNC
   };
+protected:
+  CProcessInfo &m_processInfo;
 };
 
 class CDVDVideoCodec;
@@ -135,13 +134,11 @@ class CDVDVideoCodec;
 class IDVDStreamPlayerVideo : public IDVDStreamPlayer
 {
 public:
+  IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerVideo() {}
-  float GetRelativeUsage() { return 0.0f; }
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
-  virtual bool StepFrame() { return false; };
   virtual void Flush(bool sync) = 0;
-  virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool HasData() const = 0;
   virtual int  GetLevel() const = 0;
@@ -150,8 +147,6 @@ public:
   virtual void EnableSubtitle(bool bEnable) = 0;
   virtual bool IsSubtitleEnabled() = 0;
   virtual void EnableFullscreen(bool bEnable) = 0;
-  virtual double GetDelay() = 0;
-  virtual void SetDelay(double delay) = 0;
   virtual double GetSubtitleDelay() = 0;
   virtual void SetSubtitleDelay(double delay) = 0;
   virtual bool IsStalled() const = 0;
@@ -163,21 +158,19 @@ public:
   virtual void SetSpeed(int iSpeed) = 0;
   virtual int  GetDecoderBufferSize() { return 0; }
   virtual int  GetDecoderFreeSpace() = 0;
-  virtual bool IsEOS() = 0;
-  virtual bool SubmittedEOS() const = 0;
+  virtual bool IsEOS() { return false; };
 };
 
 class CDVDAudioCodec;
 class IDVDStreamPlayerAudio : public IDVDStreamPlayer
 {
 public:
+  IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerAudio() {}
-  float GetRelativeUsage() { return 0.0f; }
   virtual bool OpenStream(CDVDStreamInfo &hints) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SetSpeed(int speed) = 0;
   virtual void Flush(bool sync) = 0;
-  virtual void WaitForBuffers() = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool HasData() const = 0;
   virtual int  GetLevel() const = 0;
@@ -193,5 +186,5 @@ public:
   virtual bool IsStalled() const = 0;
   virtual bool IsPassthrough() const = 0;
   virtual float GetDynamicRangeAmplification() const = 0;
-  virtual bool IsEOS() = 0;
+  virtual bool IsEOS() { return false; };
 };

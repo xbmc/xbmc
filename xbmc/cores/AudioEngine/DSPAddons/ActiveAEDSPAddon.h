@@ -50,7 +50,6 @@ namespace ActiveAE
     virtual void OnPostInstall(bool restart, bool update);
     virtual void OnPreUnInstall();
     virtual void OnPostUnInstall();
-    virtual bool CanInstall();
 
     /** @name Audio DSP add-on methods */
     //@{

@@ -32,6 +32,10 @@
 #include "utils/TimeUtils.h"
 #include <string>
 
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
+#endif
+
 Display* CVideoSyncGLX::m_Dpy = NULL;
 
 void CVideoSyncGLX::OnLostDisplay()
@@ -206,7 +210,7 @@ void CVideoSyncGLX::Run(volatile bool& stop)
 
     if (VblankCount > PrevVblankCount)
     {
-      UpdateClock((int)(VblankCount - PrevVblankCount), Now);
+      UpdateClock((int)(VblankCount - PrevVblankCount), Now, m_refClock);
       IsReset = false;
     }
     else

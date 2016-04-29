@@ -2,7 +2,7 @@ param (
 [string]$ProjectDir
 )
 
-$LIB_INTERFACE = "$ProjectDir\..\..\..\..\..\addons\library.kodi.guilib\libKODI_guilib.h"
+$LIB_INTERFACE = "$ProjectDir\..\..\..\..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\libKODI_guilib.h"
 $GENERATED_ADDON_GUILIB = "$ProjectDir\..\..\..\..\..\addons\kodi.guilib\addon.xml"
 
 $LIB_VERSION = ""

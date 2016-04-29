@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/kodi-main/language/ar_SA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_SA\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "غير الوضع"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "شاهد كـ ثنائى الابعاد"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "توقعات الطقس"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "الإجراءات"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "إرجاع"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial based"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "اخر تحديث"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "إعدادات الطاقه"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "معلومات الألبوم "
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "مجموعة القناة"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "تتوفر ترجمات محليه"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "تغير"

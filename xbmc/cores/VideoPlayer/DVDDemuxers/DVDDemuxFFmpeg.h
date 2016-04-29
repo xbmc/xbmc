@@ -45,7 +45,6 @@ public:
   {}
   std::string      m_description;
 
-  virtual std::string GetStreamInfo() override;
   virtual std::string GetStreamName() override;
 };
 
@@ -62,7 +61,6 @@ public:
   {}
   std::string m_description;
 
-  virtual std::string GetStreamInfo() override;
   virtual std::string GetStreamName() override;
 };
 
@@ -78,7 +76,6 @@ public:
   {}
   std::string m_description;
 
-  virtual std::string GetStreamInfo() override;
   virtual std::string GetStreamName() override;
 
 };
@@ -106,8 +103,9 @@ public:
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   bool SeekByte(int64_t pos);
   int GetStreamLength();
-  CDemuxStream* GetStream(int iStreamId);
-  int GetNrOfStreams();
+  CDemuxStream* GetStream(int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override;
 
   bool SeekChapter(int chapter, double* startpts = NULL);
   int GetChapterCount();
@@ -127,16 +125,15 @@ protected:
   friend class CDemuxStreamSubtitleFFmpeg;
 
   int ReadFrame(AVPacket *packet);
-  CDemuxStream* AddStream(int iId);
-  void AddStream(int iId, CDemuxStream* stream);
-  CDemuxStream* GetStreamInternal(int iStreamId);
+  CDemuxStream* AddStream(int streamIdx);
+  void AddStream(int streamIdx, CDemuxStream* stream);
   void CreateStreams(unsigned int program = UINT_MAX);
   void DisposeStreams();
   void ParsePacket(AVPacket *pkt);
   bool IsVideoReady();
   void ResetVideoStreams();
 
-  AVDictionary *GetFFMpegOptionsFromURL(const CURL &url);
+  AVDictionary *GetFFMpegOptionsFromInput();
   double ConvertTimestamp(int64_t pts, int den, int num);
   void UpdateCurrentPTS();
   bool IsProgramChange();
@@ -149,7 +146,6 @@ protected:
 
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
-  std::vector<std::map<int, CDemuxStream*>::iterator> m_stream_index;
 
   AVIOContext* m_ioContext;
 
@@ -171,5 +167,7 @@ protected:
 
   bool m_streaminfo;
   bool m_checkvideo;
+  int m_displayTime;
+  double m_dtsAtDisplayTime;
 };
 

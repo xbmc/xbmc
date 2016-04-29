@@ -301,14 +301,13 @@ private:
 class CDVDVideoCodecIMX : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecIMX();
+  CDVDVideoCodecIMX(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecIMX();
 
   // Methods from CDVDVideoCodec which require overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
-  virtual void SetSkipMode();
   virtual void Reset();
   virtual bool ClearPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);

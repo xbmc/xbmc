@@ -1,0 +1,549 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/kodi-main/language/tr_TR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Şimdi oynatılıyor"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Ara..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Ortam fanartını arka plan olarak göster"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Sinema modu"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Modu değiştir"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "2 boyutlu olarak izle"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Rastgele filmler"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "İzlenmemiş filmler"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Yasal uyarı yok"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Simgeleri indir"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Devam eden filmler"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "En sık çalınan albümler"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Rastgele albümler"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Rastgele sanatçılar"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Çalınmamış albümler"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "En son kayıtlar"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Son oynatılan kanallar"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Derecelendirildi"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "En sık oynatılan kanallar"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Hava Tahmini"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Eylemler"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Çeşitli seçenekler"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sırala"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Görünüm türü"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Sonraki parçalar"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Hiçbir sık kullanılan bulunamadı. İçerik menüsünü kullanarak ortam görünümlerindeki herhangi bir öğeyi bu listeye ekleyebilirsiniz."
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Albümlere git"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Şarkılara git"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Fanartı göster"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Son giriş yapan"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Kullanılan bellek"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Sürüm bilgisi"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Düzen"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Derecelendirmeniz"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Genişletilmiş bilgi"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Sayfa"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Öğe"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Parça listesi"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Geri sar"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "İleri sar"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Güncellemeyi iptal et"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Kamera üreticisi"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Çalma listesi seçenekleri"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Akıllı çalma listesi oluşturmak için kurallar ekleyin ve türünü ayarlayın. Bu çalma listeleri dinamiktir ve seçtiğiniz kuralları veritabanınızdaki tüm ortam öğelerine uygular."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Grup ekle"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Grubu yeniden adlandır"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Grubu sil"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Devamını oku..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Mevcut"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Geri veya ileri sarmak için [B]Yukarı[/B] tuşuna basın"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Durdurmak için [B]OK[/B] tuşuna basın"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Dili değiştir"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrelendi"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial tabanlı"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Geri sarmak için [B]Sol[/B] tuşuna, ileri sarmak için [B]Sağ[/B] tuşana basın"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Altyazı indir"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Çalma listesine git"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Başlangıçta oturum açma ekranını göster"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Başlangıçta otomatik olarak oturum aç"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Güncellemeler var"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "dakika"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Ana menü öğeleri"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Her bir ortam türünün \"Dosyalar\" bölümüne kısayolları. Veritabanınıza ek kaynaklar eklemek için oraya gidin."
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Bölümler"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "izlenmemiş"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Video oynatma listesi"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Müzik çalma listesi"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Olay günlüğü"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Önayarları seç"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Son Güncelleme"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Ortam kaynağı ekle"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "yazan:"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Güç Seçenekleri"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Başlıklar"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Kitaplık kökü"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Film kümeleri"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Optik diski oynat"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Önceki konum"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Sonraki konum"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Oyuncu bilgileri mevcut değil"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Bitiş zamanı"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albüm bilgisi"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Şarkı sözleri eklentisi"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Şarkı sözleri eklentisi ayarları"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Görsel öğe ayarları"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Kanal Grubu"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Meta veriler"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Sağlayıcı ayarları"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "İçerik tarama seçenekleri"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Kullanılabilir gruplar"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Fragman ara"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Altyazıları indir"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Video menüsü"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Hava durumu bilgisini üst çubukta göster"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Filmler / bölümler / müzik videoları için ortam etiketlerini göster "
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Kayma animasyonlarını kullan"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Yerel altyazı mevcut"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanal seçenekleri"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Oturum açıp devam etmek için[CR]Kodi kullanıcı profilinizi seçin"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Simge Duvarı"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Kaydır"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Bilgi Duvarı"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Duvar"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Metni buraya girin..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Kitaplığınız şu anda boş. Kitaplığınızı kişisel medyalarınız ile doldurmak için \"Dosyalar\" bölümüne girdikten sonra bir ortam kaynağını ekleyin ve yapılandırın."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Video kitaplığınızı doldurmak için video kaynakları ekleyin ve  uygun içerik türünü ayarlayın."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teleteks"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Geniş Liste"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Özel genel arka plan kullan"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Resim yolu seç"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Dosyalar bölümüne gir"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Kişisel resimlerinizi görüntüleyin veya resmi depodaki birçok resim eklentisinden birini indirin."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Ses akışını değiştir"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Yerel kitaplıkta ara"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "YouTube'da ara"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "TheMovieDB'de ara"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Bu ana menü öğesini kaldır"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Düğümleri düzenle"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Eklenti tarayıcısına gir"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Henüz yüklü herhangi bir eklenti yok. Kodi deneyiminizi geliştirmek için eklenti tarayıcımızı ziyaret edip koleksiyonumuza gözatın."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Henüz bir hava durumu bilgisi sağlayıcı ayarlamamışsınız. Hava durumu bilgilerini görüntülemek için, bir hava durumu bilgisi sağlayıcı seçin ve konumunuzu ayarlayın."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Hava durumu sağlayıcısını ayarla"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "İzlenmemiş TV Programları"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Aynı yönetmen"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Haritada resimleri göster"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Aktör bilgisi için yukarı tuşuna basın"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Özeti okumak için OK tuşuna basın"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Simgeleri göster"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Katkıda bulunanlar"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Genel ayarlar dış görünümün tüm alanlarına uygulanır."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Ana menü ile ilgili ayarlar: Ana ekranı kendi zevkinize göre yapılandırın."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Ana ekran için fanart paketi seçin"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "dk"

@@ -683,27 +683,6 @@ void CApplicationPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
     player->GetSubtitleCapabilities(subCaps);
 }
 
-void CApplicationPlayer::GetAudioInfo(std::string& strAudioInfo)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->GetAudioInfo(strAudioInfo);
-}
-
-void CApplicationPlayer::GetVideoInfo(std::string& strVideoInfo)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->GetVideoInfo(strVideoInfo);
-}
-
-void CApplicationPlayer::GetGeneralInfo(std::string& strVideoInfo)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->GetGeneralInfo(strVideoInfo);
-}
-
 int  CApplicationPlayer::SeekChapter(int iChapter)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -795,13 +774,6 @@ void CApplicationPlayer::FrameMove()
     player->FrameMove();
 }
 
-void CApplicationPlayer::FrameWait(int ms)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->FrameWait(ms);
-}
-
 bool CApplicationPlayer::HasFrame()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -816,13 +788,6 @@ void CApplicationPlayer::Render(bool clear, uint32_t alpha, bool gui)
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->Render(clear, alpha, gui);
-}
-
-void CApplicationPlayer::AfterRender()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->AfterRender();
 }
 
 void CApplicationPlayer::FlushRenderer()
@@ -846,15 +811,6 @@ float CApplicationPlayer::GetRenderAspectRatio()
     return player->GetRenderAspectRatio();
   else
     return 1.0;
-}
-
-RESOLUTION CApplicationPlayer::GetRenderResolution()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetRenderResolution();
-  else
-    return RES_INVALID;
 }
 
 void CApplicationPlayer::TriggerUpdateResolution()
@@ -957,15 +913,6 @@ bool CApplicationPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned
     return player->RenderCaptureGetPixels(captureId, millis, buffer, size);
   else
     return false;
-}
-
-std::string CApplicationPlayer::GetRenderVSyncState()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetRenderVSyncState();
-  else
-    return "";
 }
 
 bool CApplicationPlayer::IsExternalPlaying()

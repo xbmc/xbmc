@@ -938,7 +938,7 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
   if (values.size() % 2 != 0) // Must contain an even number of entries 
     return;
 
-  for (size_t i = 0; i < values.size() - 1; i += 2)
+  for (size_t i = 0; i + 1 < values.size(); i += 2)
     tag.AddArtistRole(values[i], StringUtils::Split(values[i + 1], ","));
 }
 

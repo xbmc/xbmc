@@ -20,8 +20,10 @@
  *
  */
 
-#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
-struct AVPicture;
+#include <stdint.h>
+
+struct AVFrame;
+class CDVDOverlaySpu;
 
 typedef struct SPUData
 {
@@ -36,11 +38,11 @@ SPUData;
 // upto 32 streams can exist
 #define DVD_MAX_SPUSTREAMS 32
 
-class CDVDDemuxSPU
+class CDVDDemuxSPU final
 {
 public:
   CDVDDemuxSPU();
-  virtual ~CDVDDemuxSPU();
+  ~CDVDDemuxSPU();
 
   CDVDOverlaySpu* AddData(uint8_t* data, int iSize, double pts); // returns a packet from ParsePacket if possible
 

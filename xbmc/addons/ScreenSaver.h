@@ -20,7 +20,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "include/xbmc_scr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"
 
 typedef DllAddon<ScreenSaver, SCR_PROPS> DllScreenSaver;
 
@@ -34,7 +34,6 @@ public:
   explicit CScreenSaver(const char *addonID);
 
   virtual ~CScreenSaver() {}
-  virtual AddonPtr Clone() const;
   virtual bool IsInUse() const;
 
   // Things that MUST be supplied by the child classes

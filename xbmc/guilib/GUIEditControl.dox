@@ -1,0 +1,60 @@
+/*!
+
+\page skin_Edit_control Edit control
+\brief **Used as an input control for the osd keyboard and other input fields.**
+
+\tableofcontents
+
+The edit control allows a user to input text in Kodi. You can choose the font,
+size, colour, location and header of the text to be displayed.
+
+--------------------------------------------------------------------------------
+\section skin_Edit_control_sect1 Example
+
+~~~~~~~~~~~~~
+  <control type="edit" id="1">
+        <description>My First edit control</description>
+        <posx>80</posx>
+        <posy>60</posy>
+        <width>250</width>
+        <visible>true</visible>
+        <aligny>center</aligny>
+        <label>Search</label>
+        <hinttext>Enter search string</hinttext>
+        <font>font14</font>
+        <textoffsetx>10</textoffsetx>
+        <textcolor>FFB2D4F5</textcolor>
+        <disabledcolor>FF000000</disabledcolor>
+        <invalidcolor>FFFFFFFF</invalidcolor>
+        <texturefocus>button-focus.png</texturefocus>
+        <texturenofocus>button-nofocus.png</texturenofocus>
+        <pulseonselect>no</pulseonselect>
+  </control>
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section skin_Edit_control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is **lower case** only. This is
+important, as `xml` tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| aligny        | Can be top or center. Aligns the text within its given control <b>`<height>`</b>. Defaults to top
+| label         | Specifies the header text which should be shown. You should specify an entry from the **strings.xml** here (either the Kodi strings.xml or your skin's strings.xml file), however you may also hardcode a piece of text also if you wish, though of course it will not be localized. You can use the full [label formatting syntax](http://kodi.wiki/view/Label_Formatting) and [you may also specify more than one piece of information here by using the $INFO and $LOCALIZE formats.strings.xml](http://kodi.wiki/view/Label_Parsing))
+| hinttext      | Specifies the text which should be displayed in the edit label control, until the user enters some text. It can be used to provide a clue as to what a user should enter in this control.
+| font          | Specifies the font to use from the **font.xml** file.
+| textcolor     | Specifies the color the text should be, in hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
+| textwidth     | Will truncate any text that's too long.
+
+
+--------------------------------------------------------------------------------
+\section skin_Edit_control_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

@@ -70,7 +70,6 @@ set(SOURCES DDSImage.cpp
             StereoscopicsManager.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
-            TextureBundleXPR.cpp
             Texture.cpp
             TextureManager.cpp
             VisibleEffect.cpp
@@ -163,7 +162,6 @@ set(HEADERS DDSImage.h
             Texture.h
             TextureBundle.h
             TextureBundleXBT.h
-            TextureBundleXPR.h
             TextureManager.h
             TransformMatrix.h
             Tween.h
@@ -183,7 +181,7 @@ if(OPENGL_FOUND)
                       TextureGL.h)
 endif()
 
-if(GLES_FOUND)
+if(OPENGLES_FOUND)
   list(APPEND SOURCES GUIFontTTFGL.cpp
                       GUIShader.cpp
                       GUITextureGLES.cpp
@@ -243,4 +241,5 @@ if(CORE_SYSTEM_NAME STREQUAL windows)
                   ps_4_0_level_9_1
                   PS)
   endforeach()
+  add_dependencies(guilib d3dx11effects)
 endif()

@@ -22,13 +22,11 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
 
 class CEdl
 {
 public:
   CEdl();
-  virtual ~CEdl(void);
 
   typedef enum
   {

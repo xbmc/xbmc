@@ -24,10 +24,9 @@
 
 class CDVDInputStreamFFmpeg
   : public CDVDInputStream
-  , public CDVDInputStream::ISeekable
 {
 public:
-  CDVDInputStreamFFmpeg(CFileItem& fileitem);
+  CDVDInputStreamFFmpeg(const CFileItem& fileitem);
   virtual ~CDVDInputStreamFFmpeg();
   virtual bool Open();
   virtual void Close();
@@ -37,11 +36,20 @@ public:
   virtual bool IsEOF();
   virtual int64_t GetLength();
 
-  virtual void    Abort()    { m_aborted = true;  }
-  bool            Aborted()  { return m_aborted;  }
+  virtual void  Abort() { m_aborted = true;  }
+  bool Aborted() { return m_aborted;  }
 
-  bool            CanSeek()  { return m_can_seek; }
-  bool            CanPause() { return m_can_pause; }
+  bool CanSeek() { return m_can_seek; }
+  bool CanPause() { return m_can_pause; }
+
+  std::string GetProxyType() const;
+  std::string GetProxyHost() const;
+  uint16_t GetProxyPort() const;
+  std::string GetProxyUser() const;
+  std::string GetProxyPassword() const;
+
+private:
+  CURL GetM3UBestBandwidthStream(const CURL &url, size_t bandwidth);
 
 protected:
   bool m_can_pause;

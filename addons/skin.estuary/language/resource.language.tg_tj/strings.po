@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tajik (Tajikistan) (http://www.transifex.com/projects/p/kodi-main/language/tg_TJ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tg_TJ\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Тағйир додани ҳолат"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Тамошо кардан дар 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Пешгӯии обу ҳаво"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Амалҳо"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Ба ақиб бурдан"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Дар асоси шрифти Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Навсозии охирин"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Имконоти барқ"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Иттилооти албом"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Гурӯҳи шабакавӣ"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Зерунвонҳои маҳаллӣ дастрасанд"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

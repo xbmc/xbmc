@@ -24,6 +24,11 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 #include "utils/log.h"
+#include "system.h"
+
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -78,6 +83,7 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
     pPacket->dts       = DVD_NOPTS_VALUE;
     pPacket->pts       = DVD_NOPTS_VALUE;
     pPacket->iStreamId = -1;
+    pPacket->dispTime = 0;
   }
   catch(...)
   {

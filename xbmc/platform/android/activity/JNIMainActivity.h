@@ -20,9 +20,10 @@
  */
 
 #include "platform/android/jni/Activity.h"
+#include "platform/android/jni/InputManager.h"
 #include "platform/android/jni/Surface.h"
 
-class CJNIMainActivity : public CJNIActivity
+class CJNIMainActivity : public CJNIActivity, public CJNIInputManagerInputDeviceListener
 {
 public:
   CJNIMainActivity(const ANativeActivity *nativeActivity);
@@ -33,6 +34,10 @@ public:
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
   static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
   static void _onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange);
+  static void _doFrame(JNIEnv *env, jobject context, jlong frameTimeNanos);
+  static void _onInputDeviceAdded(JNIEnv *env, jobject context, jint deviceId);
+  static void _onInputDeviceChanged(JNIEnv *env, jobject context, jint deviceId);
+  static void _onInputDeviceRemoved(JNIEnv *env, jobject context, jint deviceId);
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
   static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
@@ -50,4 +55,5 @@ protected:
   virtual void onNewIntent(CJNIIntent intent)=0;
   virtual void onVolumeChanged(int volume)=0;
   virtual void onAudioFocusChange(int focusChange)=0;
+  virtual void doFrame(int64_t frameTimeNanos)=0;
 };

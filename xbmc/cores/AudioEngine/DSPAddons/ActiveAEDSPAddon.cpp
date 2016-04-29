@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "ActiveAEDSPAddon.h"
 #include "ActiveAEDSP.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 #include "commons/Exception.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -48,23 +49,20 @@ CActiveAEDSPAddon::~CActiveAEDSPAddon(void)
 
 void CActiveAEDSPAddon::OnDisabled()
 {
-  // restart the ADSP manager if we're disabling a client
-  if (CActiveAEDSP::GetInstance().IsActivated())
-    CActiveAEDSP::GetInstance().Activate(true);
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::OnEnabled()
 {
-  // restart the ADSP manager if we're enabling a client
-  CActiveAEDSP::GetInstance().Activate(true);
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
 {
-  if (CActiveAEDSP::GetInstance().IsActivated())
+  if (CServiceBroker::GetADSP().IsActivated())
   {
     AddonPtr adspAddon;
-    if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(ID(), adspAddon))
+    if (CServiceBroker::GetADSP().GetAudioDSPAddon(ID(), adspAddon))
       return adspAddon;
   }
   return CAddon::GetRunningInstance();
@@ -72,36 +70,23 @@ AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
 
 void CActiveAEDSPAddon::OnPreInstall()
 {
-  // stop the ADSP manager, so running ADSP add-ons are stopped and closed
-  CActiveAEDSP::GetInstance().Deactivate();
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::OnPostInstall(bool restart, bool update)
 {
-  // (re)start the ADSP manager
-  CActiveAEDSP::GetInstance().Activate(true);
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::OnPreUnInstall()
 {
   // stop the ADSP manager, so running ADSP add-ons are stopped and closed
-  CActiveAEDSP::GetInstance().Deactivate();
+  CServiceBroker::GetADSP().Deactivate();
 }
 
 void CActiveAEDSPAddon::OnPostUnInstall()
 {
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
-    CActiveAEDSP::GetInstance().Activate(true);
-}
-
-bool CActiveAEDSPAddon::CanInstall()
-{
-  if (!CActiveAEDSP::GetInstance().InstallAddonAllowed(ID()))
-  {
-    CActiveAEDSP::GetInstance().MarkAsOutdated(ID());
-    return false;
-  }
-  return CAddon::CanInstall();
+  CServiceBroker::GetADSP().UpdateAddons();
 }
 
 void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_ID */)

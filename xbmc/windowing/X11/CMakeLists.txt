@@ -1,5 +1,6 @@
 set(SOURCES GLContextEGL.cpp
             GLContextGLX.cpp
+            GLContext.cpp
             WinSystemX11.cpp
             WinSystemX11GLContext.cpp
             WinSystemX11GLESContext.cpp
@@ -14,3 +15,4 @@ set(HEADERS GLContext.h
             XRandR.h)
 
 core_add_library(windowing_X11)
+add_dependencies(windowing_X11 libcpluff)

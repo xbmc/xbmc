@@ -1,0 +1,91 @@
+# CodeDocs Configuration File
+
+# Optional project name, if left empty the GitHub repository name will be used.
+PROJECT_NAME = "Kodi Documentation"
+
+# One or more directories and files that contain example code to be included.
+EXAMPLE_PATH =
+
+# One or more directories and files to exclude from documentation generation.
+# Use relative paths with respect to the repository root directory.
+EXCLUDE =
+
+# One or more wildcard patterns to exclude files and directories from document
+# generation.
+EXCLUDE_PATTERNS       = */*Codec/* \
+                         doxygen.hpp
+
+# One or more symbols to exclude from document generation. Symbols can be
+# namespaces, classes, or functions.
+EXCLUDE_SYMBOLS =
+
+# Override the default parser (language) used for each file extension.
+EXTENSION_MAPPING =
+
+# Set the wildcard patterns used to filter out the source-files.
+# If left blank the default is:
+# *.c, *.cc, *.cxx, *.cpp, *.c++, *.java, *.ii, *.ixx, *.ipp, *.i++, *.inl,
+# *.idl, *.ddl, *.odl, *.h, *.hh, *.hxx, *.hpp, *.h++, *.cs, *.d, *.php,
+# *.php4, *.php5, *.phtml, *.inc, *.m, *.markdown, *.md, *.mm, *.dox, *.py,
+# *.f90, *.f, *.for, *.tcl, *.vhd, *.vhdl, *.ucf, *.qsf, *.as and *.js.
+FILE_PATTERNS          = *.c \
+                         *.cc \
+                         *.cxx \
+                         *.cpp \
+                         *.c++ \
+                         *.d \
+                         *.java \
+                         *.ii \
+                         *.ixx \
+                         *.ipp \
+                         *.i++ \
+                         *.inl \
+                         *.h \
+                         *.hh \
+                         *.hxx \
+                         *.hpp \
+                         *.h++ \
+                         *.idl \
+                         *.odl \
+                         *.cs \
+                         *.php \
+                         *.php3 \
+                         *.inc \
+                         *.m \
+                         *.mm \
+                         *.dox \
+                         *.py \
+                         *.f90 \
+                         *.f \
+                         *.vhd \
+                         *.vhdl
+
+ALIASES                = "table_start=<table width= 100% style= border bgcolor= 576f9f border= 0>" \
+                         "table_end=</table>" \
+                         "table_h2_l{2}=<tr bgcolor= 576f9f><th width= 40% align=left>\1</th><th width= 60% align=left>\2</th></tr>" \
+                         "table_row2_l{2}=<tr bgcolor=white><td width= 40% align=left>\1</td><td width= 60% align=left>\2</td></tr>" \
+                         "table_h3{3}=<tr bgcolor= 576f9f><th width= 30% align=left>\1</th><th width= 10% align=left>\2</th><th width= 60% align=left>\3</th></tr>" \
+                         "table_row3{3}=<tr bgcolor=white><td width= 30% align=left>\1</td><td width= 10% align=left>\2</td><td width= 60% align=left>\3</td></tr>" \
+                         "python_func{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
+                         "python_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
+                         "doc_header{1}=\htmlonly <h3><span style=\"text-decoration: underline;\"><span  style=\"font-style: italic;\"><span style=\"color: rgb(102, 102, 102);\">\1</span></span></span></h3> \endhtmlonly"
+
+# Hide undocumented class members.
+HIDE_UNDOC_MEMBERS =
+
+# Hide undocumented classes.
+HIDE_UNDOC_CLASSES =
+
+# Specify a markdown page whose contents should be used as the main page
+# (index.html). This will override a page marked as \mainpage. For example, a
+# README.md file usually serves as a useful main page.
+USE_MDFILE_AS_MAINPAGE =
+
+# Specify external repository to link documentation with.
+# This is similar to Doxygen's TAGFILES option, but will automatically link to
+# tags of other repositories already using CodeDocs. List each repository to
+# link with by giving its location in the form of owner/repository.
+# For example:
+#   TAGLINKS = doxygen/doxygen CodeDocs/osg
+# Note: these repositories must already be built on CodeDocs.
+TAGLINKS =

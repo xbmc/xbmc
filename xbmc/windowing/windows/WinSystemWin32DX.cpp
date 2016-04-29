@@ -21,6 +21,8 @@
 
 #include "WinSystemWin32DX.h"
 #include "guilib/gui3d.h"
+#include "guilib/GraphicContext.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
@@ -48,6 +50,8 @@ void CWinSystemWin32DX::PresentRender(bool rendered)
     m_delayDispReset = false;
     CWinSystemWin32::OnDisplayReset();
   }
+  if (!rendered)
+    Sleep(40);
 }
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
@@ -116,33 +120,33 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
     CRenderSystemDX::SetFullScreenInternal();
 
   if (!m_useWindowedDX)
-  {
-    // if the window isn't focused, bring it to front or SetFullScreen will fail
-    BYTE keyState[256] = { 0 };
-    // to unlock SetForegroundWindow we need to imitate Alt pressing
-    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
-      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+    SetForegroundWindowInternal(m_hWnd);
 
-    BringWindowToTop(m_hWnd);
+  // most 3D content has 23.976fps, so switch for this mode
+  if (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
+    res = CDisplaySettings::GetInstance().GetResolutionInfo(CResolutionUtils::ChooseBestResolution(24.f / 1.001f, res.iWidth, true));
 
-    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
-      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
-  }
-
-  // to disable stereo mode in windowed mode we must recreate swapchain and then change display mode
   // so this flags delays call SetFullScreen _after_ resetting render system
-  bool delaySetFS = CRenderSystemDX::m_bHWStereoEnabled && UseWindowedDX(fullScreen);
+  bool delaySetFS = CRenderSystemDX::m_bHWStereoEnabled;
   if (!delaySetFS)
     CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
 
   // this needed to prevent resize/move events from DXGI during changing mode
   CWinSystemWin32::m_IsAlteringWindow = true;
   CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
-  CWinSystemWin32::m_IsAlteringWindow = false;
 
   if (delaySetFS)
+  {
     // now resize window and force changing resolution if stereo mode disabled
-    CWinSystemWin32::SetFullScreenEx(fullScreen, res, blankOtherDisplays, !CRenderSystemDX::m_bHWStereoEnabled);
+    if (UseWindowedDX(fullScreen))
+      CWinSystemWin32::SetFullScreenEx(fullScreen, res, blankOtherDisplays, !CRenderSystemDX::m_bHWStereoEnabled);
+    else
+    {
+      CRenderSystemDX::SetFullScreenInternal();
+      CRenderSystemDX::CreateWindowSizeDependentResources();
+    }
+  }
+  CWinSystemWin32::m_IsAlteringWindow = false;
 
   return true;
 }
@@ -181,42 +185,13 @@ void CWinSystemWin32DX::NotifyAppFocusChange(bool bGaining)
   {
     CRenderSystemDX::m_useWindowedDX = !bGaining;
     CRenderSystemDX::SetFullScreenInternal();
-    CRenderSystemDX::CreateWindowSizeDependentResources();
+    if (bGaining)
+      CRenderSystemDX::CreateWindowSizeDependentResources();
 
     // minimize window on lost focus
     if (!bGaining)
-      ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
+      ShowWindow(m_hWnd, SW_FORCEMINIMIZE);
   }
-}
-
-void CWinSystemWin32DX::Register(ID3DResource *resource)
-{
-  CRenderSystemDX::Register(resource);
-}
-
-void CWinSystemWin32DX::Unregister(ID3DResource *resource)
-{
-  CRenderSystemDX::Unregister(resource);
-}
-
-void CWinSystemWin32DX::Register(IDispResource *resource)
-{
-  CWinSystemWin32::Register(resource);
-}
-
-void CWinSystemWin32DX::Unregister(IDispResource *resource)
-{
-  CWinSystemWin32::Unregister(resource);
-}
-
-void CWinSystemWin32DX::OnDisplayLost()
-{
-  CWinSystemWin32::OnDisplayLost();
-}
-
-void CWinSystemWin32DX::OnDisplayReset()
-{
-  CWinSystemWin32::OnDisplayReset();
 }
 
 #endif

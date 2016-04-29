@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="1100">
+	<defaultcontrol>9000</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="multiimage">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<aspectratio>scale</aspectratio>
+			<fadetime>600</fadetime>
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+			<animation effect="fade" time="400">VisibleChange</animation>
+			<imagepath background="true" colordiffuse="35FFFFFF">$VAR[AddonsFanartVar]</imagepath>
+			<visible>!Player.HasMedia</visible>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<control type="group">
+				<left>90</left>
+				<top>185</top>
+				<include>OpenClose_Left</include>
+				<control type="image">
+					<left>-20</left>
+					<top>-20</top>
+					<width>424</width>
+					<height>660</height>
+					<texture border="22">dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="list" id="9000">
+					<left>1</left>
+					<top>1</top>
+					<width>382</width>
+					<height>671</height>
+					<pagecontrol>70</pagecontrol>
+					<onup>700</onup>
+					<ondown>700</ondown>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),video) + Control.IsVisible(500)">500</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),music) + Control.IsVisible(501)">501</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),addons) + Control.IsVisible(502)">502</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),pictures) + Control.IsVisible(503)">503</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),outdated) + Control.IsVisible(504)">504</onright>
+					<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),android) + Control.IsVisible(506)">506</onright>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<focusedlayout height="120">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>382</width>
+							<height>120</height>
+							<texture border="90,3,90,3">lists/separator.png</texture>
+						</control>
+						<control type="group">
+							<control type="image">
+								<left>0</left>
+								<top>0</top>
+								<width>382</width>
+								<height>120</height>
+								<texture colordiffuse="button_focus">lists/focus.png</texture>
+								<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+							</control>
+							<control type="label">
+								<left>20</left>
+								<top>55</top>
+								<height>70</height>
+								<width>350</width>
+								<aligny>center</aligny>
+								<align>center</align>
+								<font>font12</font>
+								<label>$INFO[ListItem.Label]</label>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+							<control type="image">
+								<left>0</left>
+								<top>-10</top>
+								<width>382</width>
+								<aspectratio>keep</aspectratio>
+								<height>120</height>
+								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+							</control>
+						</control>
+					</focusedlayout>
+					<itemlayout height="120">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>382</width>
+							<height>120</height>
+							<texture border="90,3,90,3">lists/separator.png</texture>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>55</top>
+							<height>70</height>
+							<width>350</width>
+							<aligny>center</aligny>
+							<align>center</align>
+							<font>font12</font>
+							<label>$INFO[ListItem.Label]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>-10</top>
+							<width>382</width>
+							<aspectratio>keep</aspectratio>
+							<height>120</height>
+							<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+						</control>
+					</itemlayout>
+					<content>
+						<item id="1">
+							<label>$LOCALIZE[1037]</label>
+							<onclick>ActivateWindow(videos,addons://sources/video/,return)</onclick>
+							<thumb>icons/settings/video.png</thumb>
+							<property name="id">video</property>
+							<property name="path">addons://sources/video/</property>
+						</item>
+						<item id="2">
+							<label>$LOCALIZE[1038]</label>
+							<onclick>ActivateWindow(music,addons://sources/audio/,return)</onclick>
+							<thumb>icons/settings/music.png</thumb>
+							<property name="id">music</property>
+							<property name="path">addons://sources/audio/</property>
+						</item>
+						<item id="3">
+							<label>$LOCALIZE[1043]</label>
+							<onclick>ActivateWindow(programs,addons://sources/executable/,return)</onclick>
+							<thumb>icons/settings/appearance.png</thumb>
+							<property name="id">addons</property>
+							<property name="path">addons://sources/executable/</property>
+						</item>
+						<item id="4">
+							<label>$LOCALIZE[1043]</label>
+							<onclick>ActivateWindow(programs,androidapps://,return)</onclick>
+							<thumb>icons/settings/android.png</thumb>
+							<property name="id">android</property>
+							<property name="path">androidapps://</property>
+							<visible>System.Platform.Android</visible>
+						</item>
+						<item id="5">
+							<label>$LOCALIZE[1039]</label>
+							<onclick>ActivateWindow(pictures,addons://sources/image/,return)</onclick>
+							<thumb>icons/settings/pictures.png</thumb>
+							<property name="id">pictures</property>
+							<property name="path">addons://sources/executable/</property>
+						</item>
+						<!-- 					<item id="6">
+						     <label>Available Updates</label>
+						     <onclick>ActivateWindow(addonbrowser,addons://outdated/,return)</onclick>
+						     <thumb>icons/settings/update-available.png</thumb>
+						     <property name="id">outdated</property>
+						     </item> -->
+					</content>
+				</control>
+			</control>
+			<control type="grouplist" id="700">
+				<orientation>horizontal</orientation>
+				<itemgap>-22</itemgap>
+				<left>70</left>
+				<top>795</top>
+				<onup>SetFocus(9000,99)</onup>
+				<onup>9000</onup>
+				<ondown>SetFocus(9000,0)</ondown>
+				<include>OpenClose_Left</include>
+				<onright>400</onright>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="radiobutton" id="801">
+					<width>157</width>
+					<height>110</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<onclick>ActivateWindow(addonbrowser,root)</onclick>
+					<font>font10</font>
+					<label>-</label>
+					<textoffsetx>40</textoffsetx>
+					<textwidth>230</textwidth>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+					<radioposx>55</radioposx>
+					<radioposy>0</radioposy>
+					<radiowidth>40</radiowidth>
+					<radioheight>40</radioheight>
+					<textureradioonfocus>icons/submenu/add-ons.png</textureradioonfocus>
+					<textureradioonnofocus>icons/submenu/add-ons.png</textureradioonnofocus>
+					<textureradioofffocus>icons/submenu/add-ons.png</textureradioofffocus>
+					<textureradiooffnofocus>icons/submenu/add-ons.png</textureradiooffnofocus>
+				</control>
+				<control type="radiobutton" id="802">
+					<width>157</width>
+					<height>110</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<onclick>ActivateWindow(addonbrowser,addons://outdated/,return)</onclick>
+					<font>font10</font>
+					<label>-</label>
+					<textoffsetx>40</textoffsetx>
+					<textwidth>230</textwidth>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+					<radioposx>35</radioposx>
+					<radioposy>0</radioposy>
+					<radiowidth>40</radiowidth>
+					<radioheight>40</radioheight>
+					<enable>Integer.IsGreater(Container(8000).NumItems,0)</enable>
+					<textureradioonfocus>icons/submenu/updatelibrary.png</textureradioonfocus>
+					<textureradioonnofocus>icons/submenu/updatelibrary.png</textureradioonnofocus>
+					<textureradioofffocus>icons/submenu/updatelibrary.png</textureradioofffocus>
+					<textureradiooffnofocus>icons/submenu/updatelibrary.png</textureradiooffnofocus>
+					<textureradioondisabled colordiffuse="disabled">icons/submenu/updatelibrary.png</textureradioondisabled>
+					<textureradiooffdisabled colordiffuse="disabled">icons/submenu/updatelibrary.png</textureradiooffdisabled>
+				</control>
+				<control type="radiobutton" id="803">
+					<width>157</width>
+					<height>110</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<onclick>ActivateWindow(systemsettings,addons)</onclick>
+					<font>font10</font>
+					<label>-</label>
+					<textoffsetx>40</textoffsetx>
+					<textwidth>230</textwidth>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+					<radioposx>55</radioposx>
+					<radioposy>0</radioposy>
+					<radiowidth>40</radiowidth>
+					<radioheight>40</radioheight>
+					<textureradioonfocus>icons/settings.png</textureradioonfocus>
+					<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
+					<textureradioofffocus>icons/settings.png</textureradioofffocus>
+					<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
+				</control>
+				<control type="label" id="804">
+					<left>-217</left>
+					<top>20</top>
+					<height>70</height>
+					<width>100</width>
+					<aligny>center</aligny>
+					<align>center</align>
+					<font>font20_title</font>
+					<label>$VAR[AddonCountLabel]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+				</control>
+			</control>
+			<control type="group" id="400">
+				<include>OpenClose_Right</include>
+				<include content="AddonLauncherPanel">
+					<param name="container_id" value="500" />
+					<param name="visible" value="Container(9000).HasFocus(1)" />
+					<param name="container_path" value="addons://sources/video/" />
+					<param name="container_target" value="videos" />
+				</include>
+				<include content="AddonLauncherPanel">
+					<param name="container_id" value="501" />
+					<param name="visible" value="Container(9000).HasFocus(2)" />
+					<param name="container_path" value="addons://sources/audio/" />
+					<param name="container_target" value="music" />
+				</include>
+				<include content="AddonLauncherPanel">
+					<param name="container_id" value="502" />
+					<param name="visible" value="Container(9000).HasFocus(3)" />
+					<param name="container_path" value="addons://sources/executable/" />
+					<param name="container_target" value="programs" />
+				</include>
+				<include content="AddonLauncherPanel" condition="System.Platform.Android">
+					<param name="container_id" value="506" />
+					<param name="visible" value="Container(9000).HasFocus(4)" />
+					<param name="container_path" value="androidapps://" />
+					<param name="container_target" value="programs" />
+				</include>
+				<include content="AddonLauncherPanel">
+					<param name="container_id" value="503" />
+					<param name="visible" value="Container(9000).HasFocus(5)" />
+					<param name="container_path" value="addons://sources/image/" />
+					<param name="container_target" value="pictures" />
+				</include>
+				<!-- 			<include content="AddonLauncherPanel">
+				     <param name="container_id" value="504" />
+				     <param name="visible" value="Container(9000).HasFocus(6)" />
+				     <param name="container_path" value="addons://outdated/" />
+				     <param name="container_target" value="" />
+				     </include>
+				     <include content="AddonLauncherPanel">
+				     <param name="container_id" value="505" />
+				     <param name="visible" value="Container(9000).HasFocus(7)" />
+				     <param name="container_path" value="addons://all/" />
+				     <param name="container_target" value="" />
+				     </include> -->
+			</control>
+			<control type="scrollbar" id="531">
+				<left>1907</left>
+				<top>80</top>
+				<width>13</width>
+				<height>919</height>
+				<onleft>400</onleft>
+				<onright>noop</onright>
+				<orientation>vertical</orientation>
+				<texturesliderbackground colordiffuse="22FFFFFF">colors/white.png</texturesliderbackground>
+				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />
+				<param name="breadcrumbs_icon" value="icons/settings/addons.png" />
+			</include>
+			<include>BottomBar</include>
+			<include content="UpDownArrows">
+				<param name="container_id" value="500" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include content="UpDownArrows">
+				<param name="container_id" value="501" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include content="UpDownArrows">
+				<param name="container_id" value="502" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include content="UpDownArrows">
+				<param name="container_id" value="503" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include content="UpDownArrows">
+				<param name="container_id" value="504" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include content="UpDownArrows">
+				<param name="container_id" value="505" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<include content="InfoList">
+				<param name="path" value="addons://outdated/" />
+				<param name="height" value="1" />
+				<param name="width" value="1" />
+				<param name="list_id" value="8000" />
+				<param name="item_label" value="" />
+			</include>
+		</control>
+	</controls>
+</window>

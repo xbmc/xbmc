@@ -27,6 +27,7 @@
 class CVideoSyncDRM : public CVideoSync, IDispResource
 {
 public:
+  CVideoSyncDRM(CVideoReferenceClock *clock) : CVideoSync(clock) {};
   virtual bool Setup(PUPDATECLOCK func);
   virtual void Run(volatile bool& stop);
   virtual void Cleanup();

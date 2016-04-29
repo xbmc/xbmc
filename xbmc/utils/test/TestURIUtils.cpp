@@ -39,10 +39,10 @@ protected:
   }
 };
 
-TEST_F(TestURIUtils, IsInPath)
+TEST_F(TestURIUtils, PathHasParent)
 {
-  EXPECT_TRUE(URIUtils::IsInPath("/path/to/movie.avi", "/path/to/"));
-  EXPECT_FALSE(URIUtils::IsInPath("/path/to/movie.avi", "/path/2/"));
+  EXPECT_TRUE(URIUtils::PathHasParent("/path/to/movie.avi", "/path/to/"));
+  EXPECT_FALSE(URIUtils::PathHasParent("/path/to/movie.avi", "/path/2/"));
 }
 
 TEST_F(TestURIUtils, GetDirectory)

@@ -513,7 +513,8 @@ std::string CStereoscopicsManager::GetVideoStereoMode()
 
 bool CStereoscopicsManager::IsVideoStereoscopic()
 {
-  return !GetVideoStereoMode().empty();
+  std::string mode = GetVideoStereoMode();
+  return !mode.empty() && mode != "mono";
 }
 
 void CStereoscopicsManager::OnPlaybackStarted(void)

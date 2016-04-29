@@ -7,7 +7,8 @@ set(SOURCES BaseRenderer.cpp
             OverlayRendererUtil.cpp
             RenderCapture.cpp
             RenderFlags.cpp
-            RenderManager.cpp)
+            RenderManager.cpp
+            DebugRenderer.cpp)
 
 set(HEADERS BaseRenderer.h
             OverlayRenderer.h
@@ -16,7 +17,8 @@ set(HEADERS BaseRenderer.h
             RenderCapture.h
             RenderFlags.h
             RenderFormats.h
-            RenderManager.h)
+            RenderManager.h
+            DebugRenderer.h)
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES WinRenderer.cpp
@@ -32,14 +34,14 @@ if(OPENGL_FOUND)
                       LinuxRendererGL.h)
 endif()
 
-if(GLES_FOUND)
+if(OPENGLES_FOUND)
   list(APPEND SOURCES LinuxRendererGLES.cpp
                       OverlayRendererGL.cpp)
   list(APPEND HEADERS LinuxRendererGLES.h
                       OverlayRendererGL.h)
 endif()
 
-if(ARCH STREQUAL arm)
+if(ARCH MATCHES arm)
   list(APPEND SOURCES yuv2rgb.neon.S)
   list(APPEND HEADERS yuv2rgb.neon.h)
 endif()
@@ -48,4 +50,8 @@ core_add_library(videorenderers)
 
 if(ENABLE_INTERNAL_FFMPEG)
   add_dependencies(videorenderers ffmpeg)
+endif()
+
+if(CORE_SYSTEM_NAME STREQUAL windows)
+  add_dependencies(videorenderers d3dx11effects)
 endif()

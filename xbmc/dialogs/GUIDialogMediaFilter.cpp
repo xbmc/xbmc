@@ -40,9 +40,9 @@
 
 #define CONTROL_HEADING             2
 
-#define CONTROL_CLEAR_BUTTON       27
 #define CONTROL_OKAY_BUTTON        28
 #define CONTROL_CANCEL_BUTTON      29
+#define CONTROL_CLEAR_BUTTON       30
 
 #define CHECK_ALL                  -1
 #define CHECK_NO                    0
@@ -122,7 +122,7 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
 #define NUM_FILTERS sizeof(filterList) / sizeof(CGUIDialogMediaFilter::Filter)
 
 CGUIDialogMediaFilter::CGUIDialogMediaFilter()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_MEDIA_FILTER, "DialogMediaFilter.xml"),
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_MEDIA_FILTER, "DialogSettings.xml"),
     m_dbUrl(NULL),
     m_filter(NULL)
 { }
@@ -362,6 +362,9 @@ void CGUIDialogMediaFilter::SetupView()
 
   // set the heading
   SET_CONTROL_LABEL(CONTROL_HEADING, StringUtils::Format(g_localizeStrings.Get(1275).c_str(), g_localizeStrings.Get(localizedMediaId).c_str()));
+
+  SET_CONTROL_LABEL(CONTROL_OKAY_BUTTON, 186);
+  SET_CONTROL_LABEL(CONTROL_CLEAR_BUTTON, 192);
 }
 
 void CGUIDialogMediaFilter::InitializeSettings()
@@ -417,7 +420,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       if (filter.settingType == SettingTypeString)
         filter.setting = AddEdit(group, settingId, filter.label, 0, data.asString(), true, false, filter.label, true);
       else if (filter.settingType == SettingTypeInteger)
-        filter.setting = AddEdit(group, settingId, filter.label, 0, static_cast<int>(data.asInteger()), 0, 1, 0, false, filter.label, true);
+        filter.setting = AddEdit(group, settingId, filter.label, 0, static_cast<int>(data.asInteger()), 0, 1, 0, false,  static_cast<int>(filter.label), true);
       else if (filter.settingType == SettingTypeNumber)
         filter.setting = AddEdit(group, settingId, filter.label, 0, data.asFloat(), 0.0f, 1.0f, 0.0f, false, filter.label, true);
     }

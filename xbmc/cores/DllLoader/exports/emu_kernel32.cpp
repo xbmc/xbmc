@@ -34,7 +34,10 @@
 #include "filesystem/SpecialProtocol.h"
 
 #ifdef TARGET_POSIX
-#include "../../../linux/PlatformInclude.h"
+#include "linux/PlatformInclude.h"
+#include "linux/XFileUtils.h"
+#include "linux/XTimeUtils.h"
+#include "linux/ConvUtils.h"
 #define __except catch
 #endif
 
@@ -80,12 +83,14 @@ extern "C" ATOM WINAPI dllDeleteAtomA(ATOM nAtom)
 {
 }*/
 
+#ifdef TARGET_WINDOWS
+
 extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 {
   return FindClose(hFile);
 }
 
-#ifdef TARGET_WINDOWS
+
 #define CORRECT_SEP_STR(str) \
   if (strstr(str, "://") == NULL) \
   { \
@@ -153,7 +158,6 @@ static void to_WIN32_FIND_DATAW(LPWIN32_FIND_DATA data, LPWIN32_FIND_DATAW wdata
   wdata->dwReserved0 = data->dwReserved0;
   wdata->dwReserved1 = data->dwReserved1;
 }
-#endif
 
 extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
 {
@@ -220,6 +224,7 @@ extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
   return GetFileAttributes(str);
 #endif
 }
+#endif
 
 extern "C" void WINAPI dllSleep(DWORD dwTime)
 {

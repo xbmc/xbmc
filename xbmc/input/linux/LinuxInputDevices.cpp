@@ -43,6 +43,10 @@ typedef unsigned long kernel_ulong_t;
 
 #include <linux/input.h>
 
+#if defined(HAVE_LIBUDEV)
+#include <libudev.h>
+#endif
+
 #ifndef EV_CNT
 #define EV_CNT (EV_MAX+1)
 #define KEY_CNT (KEY_MAX+1)
@@ -269,6 +273,7 @@ KeyMap keyMap[] = {
   { KEY_FILE          , XBMCK_LAUNCH_FILE_BROWSER},
   { KEY_SELECT        , XBMCK_RETURN      },
   { KEY_CONFIG        , XBMCK_CONFIG      },
+  { KEY_EPG           , XBMCK_EPG         },
   // The Little Black Box Remote Additions
   { 384               , XBMCK_LEFT        }, // Red
   { 378               , XBMCK_RIGHT       }, // Green
@@ -707,7 +712,7 @@ bool CLinuxInputDevice::mtAbsEvent(const struct input_event& levt)
   case ABS_MT_POSITION_X:
     if (m_mt_currentSlot < TOUCH_MAX_POINTERS)
     {
-      m_mt_x[m_mt_currentSlot] = levt.value;
+      m_mt_x[m_mt_currentSlot] = (int)((float)levt.value * g_advancedSettings.m_screenAlign_xStretchFactor) + g_advancedSettings.m_screenAlign_xOffset; // stretch and shift touch x coordinates
       if (m_mt_event[m_mt_currentSlot] == TouchInputUnchanged)
         m_mt_event[m_mt_currentSlot] = TouchInputMove;
     }
@@ -716,7 +721,7 @@ bool CLinuxInputDevice::mtAbsEvent(const struct input_event& levt)
   case ABS_MT_POSITION_Y:
     if (m_mt_currentSlot < TOUCH_MAX_POINTERS)
     {
-      m_mt_y[m_mt_currentSlot] = levt.value;
+      m_mt_y[m_mt_currentSlot] = (int)((float)levt.value * g_advancedSettings.m_screenAlign_yStretchFactor) + g_advancedSettings.m_screenAlign_yOffset; // stretch and shift touch y coordinates;
       if (m_mt_event[m_mt_currentSlot] == TouchInputUnchanged)
         m_mt_event[m_mt_currentSlot] = TouchInputMove;
     }
@@ -1081,6 +1086,97 @@ bool CLinuxInputDevice::IsUnplugged()
   return m_bUnplugged;
 }
 
+CLinuxInputDevicesCheckHotplugged::CLinuxInputDevicesCheckHotplugged(CLinuxInputDevices &parent) :
+    CThread("CLinuxInputDevicesCheckHotplugged"), m_parent(parent)
+{
+  Create();
+  SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+}
+
+CLinuxInputDevicesCheckHotplugged::~CLinuxInputDevicesCheckHotplugged()
+{
+  m_bStop = true;
+  m_quitEvent.Set();
+  StopThread(true);
+}
+
+void CLinuxInputDevicesCheckHotplugged::Process()
+{
+  while (!m_bStop)
+  {
+    m_parent.CheckHotplugged();
+    // every ten seconds
+    m_quitEvent.WaitMSec(10000);
+  }
+}
+
+/*
+ * this function is not powerful because it reinitializes a new udev search each
+ * time it would be nicer to call this only one time + one time at each hotplug
+ * but it is already very fast, so, let's keep it simple and non intrusive
+ */
+bool CLinuxInputDevices::IsUdevJoystick(const char *devpath)
+{
+#if defined(HAVE_LIBUDEV)
+  struct udev *udev;
+  struct udev_enumerate *enumerate;
+  struct udev_list_entry *devices, *dev_list_entry;
+  struct udev_device *dev;
+  const char *path;
+  const char *devfoundpath;
+
+  udev = udev_new();
+  if (!udev)
+    return false; // can't create udev
+
+  enumerate = udev_enumerate_new(udev);
+  if (enumerate == NULL)
+  {
+    udev_unref(udev);
+    return false;
+  }
+
+  if (udev_enumerate_add_match_subsystem(enumerate, "input") == 0)
+  {
+    if (udev_enumerate_add_match_property(enumerate, "ID_INPUT_JOYSTICK", "1") == 0)
+    {
+      if (udev_enumerate_scan_devices(enumerate) >= 0)
+      {
+        devices = udev_enumerate_get_list_entry(enumerate);
+
+        udev_list_entry_foreach(dev_list_entry, devices)
+        {
+          path = udev_list_entry_get_name(dev_list_entry);
+          dev = udev_device_new_from_syspath(udev, path);
+          if (dev != NULL)
+          {
+            devfoundpath = udev_device_get_devnode(dev);
+            if (devfoundpath != NULL)
+            {
+              // found (finally !)
+              //printf("=> %s\n", devfoundpath);
+              if (strcmp(devfoundpath, devpath) == 0)
+              {
+                udev_device_unref(dev);
+                udev_enumerate_unref(enumerate);
+                udev_unref(udev);
+                return true;
+              }
+            }
+            udev_device_unref(dev);
+          }
+        }
+      }
+    }
+  }
+
+  udev_enumerate_unref(enumerate);
+  udev_unref(udev);
+#endif
+
+  return false;
+}
+
 bool CLinuxInputDevices::CheckDevice(const char *device)
 {
   int fd;
@@ -1094,6 +1190,13 @@ bool CLinuxInputDevices::CheckDevice(const char *device)
   fd = open(device, O_RDWR);
   if (fd < 0)
     return false;
+
+  // let others handle joysticks
+  if (IsUdevJoystick(device))
+  {
+    close(fd);
+    return false;
+  }
 
   if (ioctl(fd, EVIOCGRAB, 1) && errno != EINVAL)
   {
@@ -1147,10 +1250,6 @@ void CLinuxInputDevices::InitAvailable()
  */
 void CLinuxInputDevices::CheckHotplugged()
 {
-  CSingleLock lock(m_devicesListLock);
-
-  int deviceId = m_devices.size();
-
   /* No devices specified. Try to guess some. */
   for (int i = 0; i < MAX_LINUX_INPUT_DEVICES; i++)
   {
@@ -1158,18 +1257,22 @@ void CLinuxInputDevices::CheckHotplugged()
     bool ispresent = false;
 
     snprintf(buf, 32, "/dev/input/event%d", i);
-
-    for (size_t j = 0; j < m_devices.size(); j++)
     {
-      if (m_devices[j]->GetFileName().compare(buf) == 0)
+      CSingleLock lock(m_devicesListLock);
+      for (size_t j = 0; j < m_devices.size(); j++)
       {
-        ispresent = true;
-        break;
+        if (m_devices[j]->GetFileName().compare(buf) == 0)
+        {
+          ispresent = true;
+          break;
+        }
       }
     }
 
     if (!ispresent && CheckDevice(buf))
     {
+      CSingleLock lock(m_devicesListLock);
+      int deviceId = m_devices.size();
       CLog::Log(LOGINFO, "Found input device %s", buf);
       m_devices.push_back(new CLinuxInputDevice(buf, deviceId));
       ++deviceId;
@@ -1360,18 +1463,6 @@ XBMC_Event CLinuxInputDevices::ReadEvent()
     InitAvailable();
     m_bReInitialize = false;
   }
-  else
-  {
-    time_t now;
-    time(&now);
-
-    if ((now - m_lastHotplugCheck) >= 10)
-    {
-      CheckHotplugged();
-      m_lastHotplugCheck = now;
-    }
-  }
-
   CSingleLock lock(m_devicesListLock);
 
   XBMC_Event event;

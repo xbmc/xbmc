@@ -6,3 +6,4 @@ set(HEADERS MessagePrinter.h
             XbmcContext.h)
 
 core_add_library(platform_common)
+add_dependencies(platform_common libcpluff)

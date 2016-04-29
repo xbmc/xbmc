@@ -142,6 +142,94 @@ static int Suspend(const std::vector<std::string>& params)
   return 0;
 }
 
+
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_15 System built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`ActivateScreensaver`</b>
+///     ,
+///     Starts the screensaver
+///   }
+///   \table_row2_l{
+///     <b>`Hibernate`</b>
+///     ,
+///     Hibernate (S4) the System
+///   }
+///   \table_row2_l{
+///     <b>`InhibitIdleShutdown(true/false)`</b>
+///     ,
+///     Prevent the system to shutdown on idle.
+///     @param[in] value                 "true" to inhibit shutdown timer (optional).
+///   }
+///   \table_row2_l{
+///     <b>`Minimize`</b>
+///     ,
+///     Minimizes Kodi
+///   }
+///   \table_row2_l{
+///     <b>`Powerdown`</b>
+///     ,
+///     Powerdown system
+///   }
+///   \table_row2_l{
+///     <b>`Quit`</b>
+///     ,
+///     Quits Kodi
+///   }
+///   \table_row2_l{
+///     <b>`Reboot`</b>
+///     ,
+///     Cold reboots the system (power cycle)
+///   }
+///   \table_row2_l{
+///     <b>`Reset`</b>
+///     ,
+///     Reset the system (same as reboot)
+///   }
+///   \table_row2_l{
+///     <b>`Restart`</b>
+///     ,
+///     Restart the system (same as reboot)
+///   }
+///   \table_row2_l{
+///     <b>`RestartApp`</b>
+///     ,
+///     Restarts Kodi (only implemented under Windows and Linux)
+///   }
+///   \table_row2_l{
+///     <b>`ShutDown`</b>
+///     ,
+///     Trigger default Shutdown action defined in System Settings
+///   }
+///   \table_row2_l{
+///     <b>`Suspend`</b>
+///     ,
+///     Suspends (S3 / S1 depending on bios setting) the System
+///   }
+///   \table_row2_l{
+///     <b>`System.Exec(exec)`</b>
+///     ,
+///     Execute shell commands
+///     @param[in] exec                  The path to the executable
+///   }
+///   \table_row2_l{
+///     <b>`System.ExecWait(exec)`</b>
+///     ,
+///     Execute shell commands and freezes Kodi until shell is closed
+///     @param[in] exec                  The path to the executable
+///   }
+/// \table_end
+///
+
 CBuiltins::CommandMap CSystemBuiltins::GetOperations() const
 {
   return {

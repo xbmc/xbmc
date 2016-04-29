@@ -1,0 +1,79 @@
+/*!
+
+\page Scroll_Bar_Control Scroll Bar Control
+\brief **Used for a implementing a scroll bar.**
+
+\tableofcontents
+
+The scroll bar control is used as a page control for lists, panels, wraplists,
+fixedlists, textboxes, and grouplists. You can choose the position, size, and
+look of the scroll bar.
+
+
+--------------------------------------------------------------------------------
+\section Scroll_Bar_Control_sect Example
+
+~~~~~~~~~~~~~
+<control type="scrollbar" id="17">
+      <description>My first scroll bar control</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>30</height>
+      <visible>true</visible>
+      <texturesliderbackground>scroll-background.png</texturesliderbackground>
+      <texturesliderbar>bar.png</texturesliderbar>
+      <texturesliderbarfocus>bar-focus.png</texturesliderbarfocus>
+      <textureslidernib>nib.png</textureslidernib>
+      <textureslidernibfocus>nib-focus.png</textureslidernibfocus>
+      <pulseonselect></pulseonselect>
+      <orientation>vertical</orientation>
+      <showonepage>false</showonepage>
+      <onup>2</onup>
+      <ondown>3</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Scroll_Bar_Control_sect2 Available tags
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is lower case only. This is
+important, as xml tags are case-sensitive.
+
+| Tag                     | Description                                                   |
+|------------------------:|:--------------------------------------------------------------|
+| texturesliderbackground | Specifies the image file which should be displayed in the background of the scroll bar control. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| texturesliderbar        | Specifies the image file which should be displayed for the scroll bar. As the size of the scroll bar is dynamic, it is often useful to [use the border attribute of this texture](http://kodi.wiki/view/Texture_Attributes).
+| texturesliderbarfocus   | Specifies the image file which should be displayed for the scroll bar when it has focus.
+| textureslidernib        | Specifies the image file which should be displayed for the scroll bar nib. The nib is always centered within the scroll bar.
+| textureslidernibfocus   | Specifies the image file which should be displayed for the scroll bar nib when it has focus. The nib is always centered within the scroll bar.
+| orientation             | Specifies whether this scrollbar is horizontal or vertical. Defaults to vertical.
+| showonepage             | Specifies whether the scrollbar will show if the container it's controlling has just one page. Defaults to true.
+
+\section Scroll_Bar_Control_sect3 Adding Up and Down buttons above and below a scrollbar
+To add arrow buttons above and below the scrollbar, you need to add 2 additional button controls to the window, and set their <b>`<onclick>`</b> tag to
+
+~~~~~~~~~~~~~
+<onclick>pageup(id)</onclick>
+~~~~~~~~~~~~~
+or
+~~~~~~~~~~~~~
+<onclick>pagedown(id)</onclick>
+~~~~~~~~~~~~~
+
+where id is the id of this scroll bar.
+
+
+--------------------------------------------------------------------------------
+\section Scroll_Bar_Control_sect4 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

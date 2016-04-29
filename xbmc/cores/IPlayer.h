@@ -258,9 +258,6 @@ public:
   virtual void SetVolume(float volume){}
   virtual bool ControlsVolume(){ return false;}
   virtual void SetDynamicRangeCompression(long drc){}
-  virtual void GetAudioInfo(std::string& strAudioInfo) = 0;
-  virtual void GetVideoInfo(std::string& strVideoInfo) = 0;
-  virtual void GetGeneralInfo(std::string& strGeneralInfo) = 0;
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};
@@ -393,21 +390,15 @@ public:
    */
   virtual void FrameMove() {};
 
-  virtual void FrameWait(int ms) {};
-
   virtual bool HasFrame() { return false; };
 
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
-
-  virtual void AfterRender() {};
 
   virtual void FlushRenderer() {};
 
   virtual void SetRenderViewMode(int mode) {};
 
   virtual float GetRenderAspectRatio() { return 1.0; };
-
-  virtual RESOLUTION GetRenderResolution() { return RES_INVALID; };
 
   virtual void TriggerUpdateResolution() {};
 
@@ -426,8 +417,6 @@ public:
   virtual void RenderCaptureRelease(unsigned int captureId) {};
   virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
   virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
-
-  virtual std::string GetRenderVSyncState() { return ""; };
 
   std::string m_name;
   std::string m_type;

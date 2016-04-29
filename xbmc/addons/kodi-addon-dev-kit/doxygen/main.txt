@@ -1,0 +1,49 @@
+/*!
+
+@mainpage
+
+### Welcome to the Documentation of Kodi for Add-On Development.
+
+__Kodi®__ media center, formerly known as XBMC Media Center, is a free and
+open-source media player software developed by the XBMC Foundation, a non-profit
+technology consortium. Kodi is available for multiple operating systems and
+hardware platforms, with a software 10-foot user interface for use with
+televisions and remote controls. It allows users to play and view most videos,
+music, such as audio and video podcasts from the internet, and all common
+digital media files from local and network storage media.
+
+Add-ons are extensions that can be run from inside the Kodi GUI and in
+addition to binary add-ons for the use of different systems. They are usual
+written by third party developers and published to our official repository.
+Add-ons can also be published in other repositories or as stand alone zip
+files anywhere on the internet. Examples of Add-ons include video website
+streams, scrapers, skins and scripts.
+
+#### Supported systems
+
+Currently support Kodi Add-Ons based upon Python and C++.
+
+#### Tutorials and Examples
+
+In the distribution of the library  you find the two directories *tutorials*
+and *examples*. They contain subdirectories for the packages...
+The demos use third party libraries for the graphical user interface. The
+examples don't have this dependency and most examples are refered to in the
+user manual.
+
+#### License
+
+Kodi is distributed under a [GNU General Public License version 2](./LICENSE.GPL).
+
+\htmlonly
+<div style="display:none">
+\endhtmlonly
+
+\subpage general
+\subpage general_parts
+
+\htmlonly
+</div>
+\endhtmlonly
+
+*/

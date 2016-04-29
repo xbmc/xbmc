@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../../xbmc/addons/include -I../../../xbmc -I../../../xbmc/cores/VideoPlayer/DVDDemuxers
+INCLUDES=-I. -I../../../xbmc/addons/kodi-addon-dev-kit/include -I../../../xbmc/addons/kodi-addon-dev-kit/include -I../../../xbmc -I../../../xbmc/cores/VideoPlayer/DVDDemuxers
 DEFINES+=
 CXXFLAGS=-fPIC
 LIBNAME=libXBMC_pvr

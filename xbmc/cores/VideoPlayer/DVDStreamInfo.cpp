@@ -39,6 +39,7 @@ void CDVDStreamInfo::Clear()
 {
   codec = AV_CODEC_ID_NONE;
   type = STREAM_NONE;
+  uniqueId = -1;
   realtime = false;
   software = false;
   codec_tag  = 0;
@@ -65,7 +66,6 @@ void CDVDStreamInfo::Clear()
   ptsinvalid = false;
   forced_aspect = false;
   bitsperpixel = 0;
-  pid = 0;
   stereo_mode.clear();
 
   channels   = 0;
@@ -82,6 +82,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
 {
   if( codec     != right.codec
   ||  type      != right.type
+  ||  uniqueId  != right.uniqueId
   ||  realtime  != right.realtime
   ||  codec_tag != right.codec_tag
   ||  flags     != right.flags)
@@ -109,7 +110,6 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  ptsinvalid != right.ptsinvalid
   ||  forced_aspect != right.forced_aspect
   ||  bitsperpixel != right.bitsperpixel
-  ||  pid != right.pid
   ||  vfr      != right.vfr
   ||  stereo_mode != right.stereo_mode ) return false;
 
@@ -140,6 +140,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
 {
   codec = right.codec;
   type = right.type;
+  uniqueId = right.uniqueId;
   realtime = right.realtime;
   codec_tag = right.codec_tag;
   flags = right.flags;
@@ -177,7 +178,6 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   forced_aspect = right.forced_aspect;
   orientation = right.orientation;
   bitsperpixel = right.bitsperpixel;
-  pid = right.pid;
   vfr = right.vfr;
   software = right.software;
   stereo_mode = right.stereo_mode;
@@ -199,6 +199,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 
   codec = right.codec;
   type = right.type;
+  uniqueId = right.uniqueId;
   realtime = right.realtime;
   codec_tag = right.codec_fourcc;
   profile   = right.profile;
@@ -239,7 +240,6 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     forced_aspect = stream->bForcedAspect;
     orientation = stream->iOrientation;
     bitsperpixel = stream->iBitsPerPixel;
-    pid = stream->iPhysicalId;
     stereo_mode = stream->stereo_mode;
   }
   else if(  right.type == STREAM_SUBTITLE )

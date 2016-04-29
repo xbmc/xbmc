@@ -8,17 +8,17 @@ DEPENDS = \
 	pcre expat gettext sqlite3 libgpg-error \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls curl \
-	libjpeg-turbo libpng \
-	libogg libvorbis libflac fribidi \
-	libass \
+	libjpeg-turbo libpng fribidi libass \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python27 libshairplay \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
-	libxslt ffmpeg platform crossguid libdcadec
+	libxslt ffmpeg platform crossguid \
+        libdvdread libdvdnav libdvdcss
 
-FFMPEG_DEPENDS = gnutls libdcadec
+
+FFMPEG_DEPENDS = gnutls
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -27,10 +27,12 @@ else
 endif
 
 ifeq ($(OS),ios)
-  EXCLUDED_DEPENDS = libcec libusb
-ifeq ($(TARGET_PLATFORM),appletvos)
-  DEPENDS += boblight
-endif
+  EXCLUDED_DEPENDS = libcec libusb libdvdcss
+  ifeq ($(TARGET_PLATFORM),appletvos)
+    DEPENDS += boblight
+  endif
+else
+  DVDREAD_DEPS = libdvdcss
 endif
 
 ifeq ($(OS),osx)
@@ -79,8 +81,6 @@ gettext: $(ICONV)
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 curl: openssl
-libvorbis: libogg
-libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
 libmicrohttpd: gnutls libgcrypt libgpg-error
@@ -89,7 +89,7 @@ libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
 libbluray: $(ICONV) libxml2
 libssh: libgcrypt openssl $(ZLIB)
-mysql: openssl
+mysql: openssl $(ZLIB)
 libzip: $(ZLIB)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
@@ -98,10 +98,12 @@ nettle: gmp
 pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
 pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
-libxslt: libgcrypt
-ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
+libxslt: libgcrypt libxml2
+ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
 libcec: platform
 crossguid: $(CROSSGUID_DEPS)
+libdvdnav: libdvdread
+libdvdread: $(DVDREAD_DEPS)
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

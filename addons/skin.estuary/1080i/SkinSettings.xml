@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>9000</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<left>110</left>
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<description>Menu Panel</description>
+				<left>-20</left>
+				<top>138</top>
+				<width>440</width>
+				<height>792</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="list" id="9000">
+				<description>button area</description>
+				<left>0</left>
+				<top>160</top>
+				<width>400</width>
+				<height>700</height>
+				<onleft>10000</onleft>
+				<onright>10000</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<include content="DefaultSimpleListLayout">
+					<param name="align" value="center" />
+					<param name="width" value="400" />
+					<param name="height" value="120" />
+					<param name="list_id" value="9000" />
+				</include>
+				<content>
+					<item id="1">
+						<label>$LOCALIZE[128]</label>
+						<onclick>noop</onclick>
+					</item>
+					<item id="2">
+						<label>$LOCALIZE[31061]</label>
+						<onclick>noop</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+		<control type="group" id="10000">
+			<left>110</left>
+			<include>OpenClose_Right</include>
+			<control type="image">
+				<left>420</left>
+				<top>138</top>
+				<width>1300</width>
+				<height>792</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="image">
+				<left>442</left>
+				<top>802</top>
+				<width>1256</width>
+				<height>3</height>
+				<texture colordiffuse="button_focus" border="2">dialogs/separator.png</texture>
+			</control>
+			<include content="UpDownArrows">
+				<param name="container_id" value="600" />
+				<param name="posx" value="1045" />
+				<param name="up_posy" value="130" />
+				<param name="down_posy" value="910" />
+				<param name="visible" value="!System.HasModalDialog" />
+			</include>
+			<control type="grouplist" id="600">
+				<left>442</left>
+				<top>160</top>
+				<width>1256</width>
+				<height>610</height>
+				<onleft>9000</onleft>
+				<onright>60</onright>
+				<onup>600</onup>
+				<ondown>600</ondown>
+				<visible>Container(9000).HasFocus(1)</visible>
+				<control type="radiobutton" id="601">
+					<label>$LOCALIZE[31095]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_slide_animations)</selected>
+					<onclick>Skin.ToggleSetting(no_slide_animations)</onclick>
+				</control>
+				<control type="radiobutton" id="602">
+					<label>$LOCALIZE[20189]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(autoscroll)</onclick>
+					<selected>Skin.HasSetting(autoscroll)</selected>
+				</control>
+				<control type="radiobutton" id="603">
+					<label>$LOCALIZE[31093]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(show_weatherinfo)</onclick>
+					<selected>Skin.HasSetting(show_weatherinfo)</selected>
+				</control>
+				<control type="radiobutton" id="604">
+					<label>$LOCALIZE[31094]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(show_mediaflags)</onclick>
+					<selected>Skin.HasSetting(show_mediaflags)</selected>
+				</control>
+				<control type="radiobutton" id="605">
+					<label>$LOCALIZE[31002]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(no_fanart)</onclick>
+					<selected>!Skin.HasSetting(no_fanart)</selected>
+				</control>
+				<control type="button" id="608">
+					<label>$LOCALIZE[31131]</label>
+					<label2>$INFO[Skin.String(HomeFanart.name)]</label2>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<onclick condition="System.HasAddon(script.image.resource.select)">RunScript(script.image.resource.select,property=HomeFanart&amp;type=resource.images.skinbackgrounds)</onclick>
+					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+					<enable>!Skin.HasSetting(no_fanart)</enable>
+				</control>
+				<control type="radiobutton" id="606">
+					<label>$LOCALIZE[31108]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(use_custom_bg)</onclick>
+					<selected>Skin.HasSetting(use_custom_bg)</selected>
+				</control>
+				<control type="button" id="607">
+					<label>$LOCALIZE[31109]</label>
+					<label2>$INFO[Skin.String(custom_background)]</label2>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.SetImage(custom_background)</onclick>
+					<enable>Skin.HasSetting(use_custom_bg)</enable>
+				</control>
+			</control>
+			<control type="grouplist" id="610">
+				<left>442</left>
+				<top>160</top>
+				<width>1256</width>
+				<height>610</height>
+				<onleft>9000</onleft>
+				<onright>60</onright>
+				<onup>610</onup>
+				<ondown>610</ondown>
+				<visible>Container(9000).HasFocus(2)</visible>
+				<control type="radiobutton" id="611">
+					<label>$LOCALIZE[342]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoMovieButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoMovieButton)</onclick>
+				</control>
+				<control type="radiobutton" id="612">
+					<label>$LOCALIZE[20343]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoTVShowButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoTVShowButton)</onclick>
+				</control>
+				<control type="radiobutton" id="613">
+					<label>$LOCALIZE[2]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoMusicButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoMusicButton)</onclick>
+				</control>
+				<control type="radiobutton" id="614">
+					<label>$LOCALIZE[24001]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoProgramsButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoProgramsButton)</onclick>
+				</control>
+				<control type="radiobutton" id="615">
+					<label>$LOCALIZE[1]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoPicturesButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoPicturesButton)</onclick>
+				</control>
+				<control type="radiobutton" id="616">
+					<label>$LOCALIZE[3]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoVideosButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoVideosButton)</onclick>
+				</control>
+				<control type="radiobutton" id="617">
+					<label>$LOCALIZE[8]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoWeatherButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoWeatherButton)</onclick>
+				</control>
+			</control>
+			<control type="textbox" id="6">
+				<description>description area</description>
+				<left>480</left>
+				<top>810</top>
+				<width>1150</width>
+				<height>83</height>
+				<font>font12</font>
+				<align>justify</align>
+				<textcolor>button_focus</textcolor>
+				<label>$VAR[SkinSettingsHelpTextVar]</label>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+			</control>
+		</control>
+		<include content="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[5] / $LOCALIZE[20077]" />
+			<param name="breadcrumbs_icon" value="icons/settings/skin.png" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

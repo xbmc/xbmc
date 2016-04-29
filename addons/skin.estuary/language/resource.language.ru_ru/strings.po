@@ -1,0 +1,261 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/kodi-main/language/ru_RU/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru_RU\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Сейчас воспроизводится:"
+
+msgctxt "#31001"
+msgid "Search..."
+msgstr "Поиск…"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Изменить режим"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Смотреть в 2D"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Случайные альбомы"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Случайные исполнители"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Непрослушанные альбомы"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Недавние записи"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Недавно проигранные каналы"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Самые проигрываемые каналы"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Прогноз"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Действия"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Другие параметры"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Сорт. по"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Перейти к альбомам"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Перейти к композициям"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Последний вход"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Порядок"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Страницы"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Объекты"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Перемотка назад"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Перемотка вперед"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Отменить обновление"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Производитель камеры"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Параметры плейлиста"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Добавить группу"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Переименовать группу"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Удалить группу"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Читать далее..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Доступно"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Нажмите [B]OK[/B] для остановки"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Переключить язык"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "На основе Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Нажмите [B]Влево[/B] для перемотки назад или [B]Вправо[/B] для перемотки вперед"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Доступны обновления"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "мин."
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Журнал событий"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Последнее обновление"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Добавить источники медиаданных"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Настройки питания"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Сведения об альбоме"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Дополнение текстов песен"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Настройки визуализации"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Группа каналов"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Параметры сканирования содержимого"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Доступные группы"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Загрузить субтитры"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Показывать сведения о погоде на верхней панели"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Использовать скользящую анимацию"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Доступны локальные субтитры"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Настройки канала"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Выберите профиль пользователя Kodi,[CR]чтобы войти и продолжить"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Стена иконок"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Стена информации"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Стена"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Введите текст здесь..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Ваша библиотека сейчас пуста. Чтобы заполнить её данными войдите в раздел \"Файлы\", добавьте медиаисточник и настройте его. После того как источник будет добавлен и проиндексирован вы сможете просматривать библиотеку."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Добавьте медиаисточник и установите правильный тип его содержимого для заполнения видеобиблиотеки."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Телетекст"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Широкий список"

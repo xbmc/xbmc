@@ -20,10 +20,9 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
-class CGUIDialogNetworkSetup :
-      public CGUIDialog
+class CGUIDialogNetworkSetup : public CGUIDialogSettingsManualBase
 {
 public:
   enum NET_PROTOCOL { NET_PROTOCOL_SMB = 0,
@@ -51,6 +50,18 @@ public:
   bool IsConfirmed() const { return m_confirmed; };
 
 protected:
+  // implementations of ISettingCallback
+  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingAction(const CSetting *setting);
+
+  // specialization of CGUIDialogSettingsBase
+  bool AllowResettingSettings() const override { return false; }
+  virtual void Save() { }
+  virtual void SetupView();
+
+  // specialization of CGUIDialogSettingsManualBase
+  virtual void InitializeSettings();
+
   void OnProtocolChange();
   void OnServerBrowse();
   void OnOK();

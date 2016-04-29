@@ -44,18 +44,18 @@ that are used to build Kodi packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
 Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
-  dcadec-dev, default-jre, gawk, gperf, libao-dev, libasound2-dev,
+  default-jre, gawk, gperf, libao-dev, libasound2-dev,
   libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev,
   libbluray-dev (>= 0.7.0), libbz2-dev, libcap-dev,
   libcdio-dev, libcec-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev,
   libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libfontconfig-dev, libfreetype6-dev,
   libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
   libiso9660-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev,
-  libmodplug-dev, libmpcdec-dev, libmysqlclient-dev, libnfs-dev, libogg-dev,
+  libmodplug-dev, libmpcdec-dev, libmysqlclient-dev, libnfs-dev,
   libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev, librtmp-dev,libsdl2-dev,
   libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, libswscale-dev,
   libtag1-dev (>= 1.8), libtinyxml-dev (>= 2.6.2), libtool, libudev-dev,
-  libusb-dev, libva-dev, libvdpau-dev, libvorbis-dev, libxinerama-dev, libxml2-dev,
+  libusb-dev, libva-dev, libvdpau-dev, libxinerama-dev, libxml2-dev,
   libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, libyajl-dev (>=2.0), lsb-release,
   nasm [!amd64], python-dev, python-imaging, python-support, swig, unzip, uuid-dev, yasm,
   zip, zlib1g-dev
@@ -133,6 +133,12 @@ Audio decoders:
 
 Audio encoders:
     audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
+
+Inputstream addons:
+    inputstream.mpd
+
+Peripheral addons:
+    peripheral.joystick
 
 PVR addons:
     pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hdhomerun, pvr.hts, pvr.iptvsimple,

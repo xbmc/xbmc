@@ -27,6 +27,32 @@
 #include "URL.h"
 #include <map>
 
+static XbmcThreads::ThreadLocal<CFFmpegLog> CFFmpegLogTls;
+
+void CFFmpegLog::SetLogLevel(int level)
+{
+  CFFmpegLog::ClearLogLevel();
+  CFFmpegLog *log = new CFFmpegLog();
+  log->level = level;
+  CFFmpegLogTls.set(log);
+}
+
+int CFFmpegLog::GetLogLevel()
+{
+  CFFmpegLog* log = CFFmpegLogTls.get();
+  if (!log)
+    return -1;
+  return log->level;
+}
+
+void CFFmpegLog::ClearLogLevel()
+{
+  CFFmpegLog* log = CFFmpegLogTls.get();
+  CFFmpegLogTls.set(nullptr);
+  if (log)
+    delete log;
+}
+
 /* callback for the ffmpeg lock manager */
 int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation)
 {
@@ -88,34 +114,46 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
-  if(level >= AV_LOG_DEBUG &&
+  int maxLevel = AV_LOG_WARNING;
+  if (CFFmpegLog::GetLogLevel() > 0)
+    maxLevel = AV_LOG_INFO;
+
+  if (level > maxLevel &&
      !g_advancedSettings.CanLogComponent(LOGFFMPEG))
     return;
-  else if(g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
+  else if (g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
     return;
 
   int type;
-  switch(level)
+  switch (level)
   {
-    case AV_LOG_INFO   : type = LOGINFO;    break;
-    case AV_LOG_ERROR  : type = LOGERROR;   break;
-    case AV_LOG_DEBUG  :
-    default            : type = LOGDEBUG;   break;
+    case AV_LOG_INFO:
+      type = LOGINFO;
+      break;
+
+    case AV_LOG_ERROR:
+      type = LOGERROR;
+      break;
+
+    case AV_LOG_DEBUG:
+    default:
+      type = LOGDEBUG;
+      break;
   }
 
   std::string message = StringUtils::FormatV(format, va);
   std::string prefix = StringUtils::Format("ffmpeg[%lX]: ", threadId);
-  if(avc)
+  if (avc)
   {
-    if(avc->item_name)
+    if (avc->item_name)
       prefix += std::string("[") + avc->item_name(ptr) + "] ";
-    else if(avc->class_name)
+    else if (avc->class_name)
       prefix += std::string("[") + avc->class_name + "] ";
   }
 
   buffer += message;
   int pos, start = 0;
-  while( (pos = buffer.find_first_of('\n', start)) >= 0 )
+  while ((pos = buffer.find_first_of('\n', start)) >= 0)
   {
     if(pos > start)
     {

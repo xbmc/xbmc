@@ -177,7 +177,7 @@ else()
   set_source_files_properties(fstrcmp.c PROPERTIES LANGUAGE CXX)
 endif()
 
-if(AMLCODEC_FOUND)
+if(AML_FOUND)
   list(APPEND SOURCES AMLUtils.cpp
                       ScreenshotAML.cpp)
   list(APPEND HEADERS AMLUtils.h

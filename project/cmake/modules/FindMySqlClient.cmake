@@ -15,10 +15,10 @@
 #   MySqlClient::MySqlClient   - The MySqlClient library
 
 find_path(MYSQLCLIENT_INCLUDE_DIR mysql/mysql_time.h)
-find_library(MYSQLCLIENT_LIBRARY_RELEASE NAMES mysqlclient mysqlclient_r
-                                         PATH_SUFFIXES ${CONFIGURATION_LIBDIR_RELEASE} mysql)
-find_library(MYSQLCLIENT_LIBRARY_DEBUG NAMES mysqlclient
-                                       PATH_SUFFIXES ${CONFIGURATION_LIBDIR_DEBUG} mysql)
+find_library(MYSQLCLIENT_LIBRARY_RELEASE NAMES mysqlclient libmysql
+                                         PATH_SUFFIXES mysql)
+find_library(MYSQLCLIENT_LIBRARY_DEBUG NAMES mysqlclient libmysql
+                                       PATH_SUFFIXES mysql)
 
 include(SelectLibraryConfigurations)
 select_library_configurations(MYSQLCLIENT)

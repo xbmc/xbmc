@@ -121,6 +121,8 @@ static void ErrNonfatal(const char* const msg, int a1, int a2);
 // NOTE: Remember to change NUM_FORMATS if you define a new format
 #define NUM_FORMATS   12
 
+const unsigned int BytesPerFormat[NUM_FORMATS] = { 1,1,2,4,8,1,1,2,4,8,4,8 };
+
 //--------------------------------------------------------------------------
 // Internationalisation string IDs. The enum order must match that in the
 // language file (e.g. 'language/English/strings.xml', and EXIF_PARSE_STRING_ID_BASE
@@ -198,10 +200,8 @@ static void ErrNonfatal(const char* const msg, int a1, int a2)
 //--------------------------------------------------------------------------
 CExifParse::CExifParse () : m_FocalPlaneXRes(0.0),
         m_FocalPlaneUnits(0.0), m_ExifImageWidth(0), m_MotorolaOrder(false),
-        m_DateFound(false)
-{
-  m_ExifInfo = NULL;
-}
+        m_DateFound(false), m_LargestExifOffset(0), m_ExifInfo(nullptr)
+{}
 
 //--------------------------------------------------------------------------
 // Convert a 16 bit unsigned value from file's native byte order
@@ -358,9 +358,6 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     }
   }
 
-  const int BytesPerFormat[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
-
-
   for (int de=0;de<NumDirEntries;de++)
   {
     int Tag, Format, Components;
@@ -372,9 +369,8 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     Format = Get16(DirEntry+2, m_MotorolaOrder);
     Components = Get32(DirEntry+4, m_MotorolaOrder);
 
-    if ((Format-1) >= NUM_FORMATS)
+    if (Format <= 0 || Format > NUM_FORMATS)
     {
-      // (-1) catches illegal zero case as unsigned underflows to positive large.
       ErrNonfatal("Illegal number format %d for tag %04x", Format, Tag);
       continue;
     }
@@ -385,7 +381,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       continue;
     }
 
-    ByteCount = Components * BytesPerFormat[Format];
+    ByteCount = Components * BytesPerFormat[Format - 1];
 
     if (ByteCount > 4)
     {
@@ -423,8 +419,26 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         m_ExifInfo->Description[length] = '\0';
         break;
       }
-      case TAG_MAKE:              strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, 32);    break;
-      case TAG_MODEL:             strncpy(m_ExifInfo->CameraModel, (char *)ValuePtr, 40);    break;
+      case TAG_MAKE:
+      {
+        int space = sizeof(m_ExifInfo->CameraMake);
+        if (space > 0)
+        {
+          strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, space - 1);
+          m_ExifInfo->CameraMake[space - 1] = '\0';
+        }
+        break;
+      }
+      case TAG_MODEL:
+      {
+        int space = sizeof(m_ExifInfo->CameraModel);
+        if (space > 0)
+        {
+          strncpy(m_ExifInfo->CameraModel, (char *)ValuePtr, space - 1);
+          m_ExifInfo->CameraModel[space - 1] = '\0';
+        }
+        break;
+      }
 //      case TAG_SOFTWARE:          strncpy(m_ExifInfo->Software, ValuePtr, 5);    break;
       case TAG_FOCALPLANEXRES:    m_FocalPlaneXRes  = ConvertAnyFormat(ValuePtr, Format);               break;
       case TAG_THUMBNAIL_OFFSET:  m_ExifInfo->ThumbnailOffset = (unsigned)ConvertAnyFormat(ValuePtr, Format);     break;
@@ -435,22 +449,34 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       break;
 
       case TAG_DATETIME_ORIGINAL:
-        // If we get a DATETIME_ORIGINAL, we use that one.
-        strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, 20);
-        m_DateFound = true;
-      break;
+      {
 
+        int space = sizeof(m_ExifInfo->DateTime);
+        if (space > 0)
+        {
+          strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, space - 1);
+          m_ExifInfo->DateTime[space - 1] = '\0';
+          // If we get a DATETIME_ORIGINAL, we use that one.
+          m_DateFound = true;
+        }
+        break;
+      }
       case TAG_DATETIME_DIGITIZED:
       case TAG_DATETIME:
+      {
         if (m_DateFound == false)
         {
           // If we don't already have a DATETIME_ORIGINAL, use whatever
           // time fields we may have.
-          strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, 20);
-//          LocaliseDate();
+          int space = sizeof(m_ExifInfo->DateTime);
+          if (space > 0)
+          {
+            strncpy(m_ExifInfo->DateTime, (char *)ValuePtr, space - 1);
+            m_ExifInfo->DateTime[space - 1] = '\0';
+          }
         }
-      break;
-
+        break;
+      }
       case TAG_USERCOMMENT:
       {
         // The UserComment allows comments without the charset limitations of ImageDescription.
@@ -866,15 +892,13 @@ void CExifParse::ProcessGpsInfo(
     unsigned Tag        = Get16(DirEntry, m_MotorolaOrder);
     unsigned Format     = Get16(DirEntry+2, m_MotorolaOrder);
     unsigned Components = (unsigned)Get32(DirEntry+4, m_MotorolaOrder);
-    if ((Format-1) >= NUM_FORMATS)
+    if (Format == 0 || Format > NUM_FORMATS)
     {
-      // (-1) catches illegal zero case as unsigned underflows to positive large.
       ErrNonfatal("Illegal number format %d for tag %04x", Format, Tag);
       continue;
     }
 
-    const int BytesPerFormat[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
-    int ComponentSize  = BytesPerFormat[Format];
+    unsigned ComponentSize = BytesPerFormat[Format - 1];
     unsigned ByteCount = Components * ComponentSize;
 
     const unsigned char* ValuePtr;

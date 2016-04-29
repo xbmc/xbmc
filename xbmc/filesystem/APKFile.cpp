@@ -251,7 +251,7 @@ int CAPKFile::Stat(const CURL& url, struct __stat64* buffer)
     for (int i = 0; i < numFiles; i++)
     {
       std::string name = zip_get_name(zip_archive, i, zip_flags);
-      if (!name.empty() && StringUtils::StartsWith(name, path))
+      if (!name.empty() && URIUtils::PathHasParent(name, path))
       {
         buffer->st_gid  = 0;
         buffer->st_mode = _S_IFDIR;

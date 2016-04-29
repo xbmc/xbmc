@@ -200,7 +200,7 @@ const std::string CMusicInfoTag::GetArtistString() const
   else if (!m_artist.empty())
     return StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
   else
-    return std::string();
+    return StringUtils::Empty;
 }
 
 const std::string& CMusicInfoTag::GetAlbum() const
@@ -225,7 +225,7 @@ const std::string CMusicInfoTag::GetAlbumArtistString() const
   if (!m_albumArtist.empty())
     return StringUtils::Join(m_albumArtist, g_advancedSettings.m_musicItemSeparator);
   else
-    return std::string();
+    return StringUtils::Empty;
 }
 
 
@@ -621,6 +621,11 @@ void CMusicInfoTag::SetAlbumReleaseType(CAlbum::ReleaseType releaseType)
   m_albumReleaseType = releaseType;
 }
 
+void CMusicInfoTag::SetType(const MediaType mediaType)
+{
+  m_type = mediaType;
+}
+
 void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
@@ -755,6 +760,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     CVariant contributor;
     contributor["name"] = role.GetArtist();
     contributor["role"] = role.GetRoleDesc();
+    contributor["roleid"] = (int)(role.GetRoleId());
     contributor["artistid"] = (int)(role.GetArtistId());
     value["contributors"].push_back(contributor);
   }
