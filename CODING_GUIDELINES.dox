@@ -1,0 +1,372 @@
+/*!
+
+\page code_guidelines Code guidelines and formatting conventions
+
+@brief \doc_header{ Code guidelines and formatting conventions }
+
+\tableofcontents
+
+These are conventions which we try to follow when writing code for Kodi. They
+are this way mainly for reasons of taste, however, sticking to a common set of
+formatting rules also makes it slightly easier to read through our sources. If
+you want to submit patches, please try to follow these rules.
+
+As such we don't follow these rules slavishly, in certain cases it is ok (and
+in fact favorable) to stray from them.
+
+================================================================================
+\section code_guidelines_1 Indentation
+
+Use spaces as tab policy with an indentation size of 2
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_1_1 Statements
+
+No multiple statements on a single line, like this:
+~~~~~~~~~~~~~
+std::vector<std::string> test; test.push_back("foobar"); // This is the bad way
+~~~~~~~~~~~~~
+
+Always use a new line for a new statement:
+~~~~~~~~~~~~~
+std::vector<std::string> test;
+test.push_back("foobar");
+~~~~~~~~~~~~~
+
+With them becomes it much more easy for debugging of faults to see direct on the
+line what has created the fault.
+
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_1_2 Namespaces
+
+Namespaces are not required to use any indentation to simplify nested namespaces
+and wrapping `.cpp` files in a namespace
+
+~~~~~~~~~~~~~
+namespace KODI
+{
+namespace UTILS
+{
+class ILogger
+{
+  void Log(...) = 0;
+}
+}
+}
+~~~~~~~~~~~~~
+
+\subsection code_guidelines_1_3 Headers
+
+Included header files `*.h`, are to sort alphabetical to prevent double used file
+definition and allow better overview
+
+- On cpp define used header first to confirm needed headers are present on them itself
+- As next use the global system headers e.g. `<cassert>` or `"system.h"`
+- Then insert all the headers needed for the file itself
+
+~~~~~~~~~~~~~
+#include "PVRManager.h"
+
+#include <cassert>
+#include <utility>
+
+#include "Application.h"
+#include "Util.h"
+#include "addons/AddonInstaller.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "music/tags/MusicInfoTag.h"
+#include "network/Network.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannel.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/JobManager.h"
+#include "utils/log.h"
+#include "utils/Variant.h"
+#include "video/VideoDatabase.h"
+~~~~~~~~~~~~~
+
+================================================================================
+\section code_guidelines_2 Braces
+
+Braces should go to newline and your code should look like the following example:
+
+~~~~~~~~~~~~~
+if (int i = 0; i < t; i++)
+{
+  [...]
+}
+else
+{
+  [...]
+}
+
+class Dummy()
+{
+  [...]
+}
+~~~~~~~~~~~~~
+
+================================================================================
+\section code_guidelines_3 Whitespaces
+
+Conventional operators should be surrounded by a whitespace.
+
+~~~~~~~~~~~~~
+a = (b + c) * d;
+~~~~~~~~~~~~~
+
+Reserved words should be separated from opening parentheses by a whitespace.
+
+~~~~~~~~~~~~~
+while (true)
+for (int i = 0; i < x; ++i)
+~~~~~~~~~~~~~
+
+Commas should be followed by a whitespace.
+
+~~~~~~~~~~~~~
+void Dummy::Method(int a, int b, int c);
+int d, e;
+~~~~~~~~~~~~~
+
+Semicolons should be followed by a whitespace if there is more than one
+expression per line.
+
+~~~~~~~~~~~~~
+for (int i = 0; i < x; ++i)
+doSomething(e); doSomething(f); // this is probably bad style anyway
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_3_1 No vertical alignment
+
+Do not use whitespaces to align value names together, this becomes problematic
+on updates to see the change, if the whitspaces need to change on all.
+
+This should be not used:
+~~~~~~~~~~~~~
+...
+
+int                  value1             = 0;
+int                  value2             = 0;
+CExampleClass       *exampleClass       = nullptr;
+CBiggerExampleClass *biggerExampleClass = nullptr;
+
+exampleClass       = new CExampleClass      (value1, value2);
+biggerExampleClass = new CBiggerExampleClass(value1, value2);
+
+exampleClass      ->InitExample();
+biggerExampleClass->InitExample();
+
+...
+~~~~~~~~~~~~~
+
+Use it as:
+~~~~~~~~~~~~~
+...
+
+int value1 = 0;
+int value2 = 0;
+CExampleClass *exampleClass = nullptr;
+CBiggerExampleClass *biggerExampleClass = nullptr;
+
+exampleClass = new CExampleClass(value1, value2);
+biggerExampleClass = new CBiggerExampleClass(value1, value2);
+
+exampleClass->InitExample();
+biggerExampleClass->InitExample();
+
+...
+~~~~~~~~~~~~~
+
+================================================================================
+\section code_guidelines_4 Control statements
+
+Insert new line before
+
+- else in an if statement
+- catch in a try statement
+- while in a do statement
+
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_4_1 if else
+
+- put then statement, return or throw to new line
+- keep else if on one line 
+
+~~~~~~~~~~~~~
+if (true)
+  return;
+
+if (true)
+{
+  [...]
+} 
+else if (false)
+{
+  return;
+} 
+else
+  return;
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_4_2 switch / case
+
+~~~~~~~~~~~~~[.cpp}
+switch (cmd)
+{
+  case x:
+  {
+    doSomething();
+    break;
+  }
+  case x:
+  case z:
+    return true;
+  default:
+    doSomething();
+}
+~~~~~~~~~~~~~
+
+================================================================================
+\section code_guidelines_5 Naming
+\subsection code_guidelines_5_1 Namespaces
+
+Namespaces should be in uppercase letters
+
+~~~~~~~~~~~~~
+namespace KODI
+{
+...
+}
+~~~~~~~~~~~~~
+
+\subsection code_guidelines_5_2 Constants
+
+Use upper case with underscore spacing where necessary.
+
+~~~~~~~~~~~~~
+const int MY_CONSTANT = 1;
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_5_3 Enums
+
+Use CamelCase for the enum name and upper case for the values.
+
+~~~~~~~~~~~~~
+enum Dummy
+{
+  VALUE_X,
+  VALUE_Y
+};
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_5_4 Interfaces
+
+We use CamelCase for interface names and they should be prefixed with an
+uppercase I. Filename should match the interface name, e.g. `ILogger.h`
+
+~~~~~~~~~~~~~
+class ILogger
+{
+  void Log(...) = 0;
+}
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_5_5 Classes
+
+We use CamelCase for class names and they should be prefixed with an uppercase C.
+Filename should match the class name without the prefixed C, e.g. `Logger.cpp`
+
+~~~~~~~~~~~~~
+class CLogger : public ILogger
+{
+  void Log(...)
+}
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_5_6 Methods
+
+We use CamelCase for method names and first letter should always be upper case.
+Even if the methods are private or protected.
+
+~~~~~~~~~~~~~
+void MyDummyClass::DoSomething();
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_5_7 Variables
+
+We use CamelCase for variables. Type prefixing is optional.
+\subsubsection code_guidelines_5_7_1 Global Variables
+
+Prefix global variables with g_
+
+~~~~~~~~~~~~~
+int g_globalVariableA;
+~~~~~~~~~~~~~
+
+\warning Use of globals reduces the chance of submitted code to be accepted to a minimum
+
+\subsubsection code_guidelines_5_7_2 Member Variables
+
+Prefix member variables with m_
+
+~~~~~~~~~~~~~
+int m_variableA;
+~~~~~~~~~~~~~
+
+================================================================================
+\section code_guidelines_6 Conventions
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_6_1 Casts
+
+New code should use C++ style casts and not older C style casts. When modifying
+existing code the developer can choose to update it to C++ style casts or leave
+as is. Remember that whenever a dynamic_cast is used the result can be a nullptr
+and needs to be checked accordingly.
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_6_2 NULL vs nullptr
+
+Prefer the use of nullptr instead of NULL. nullptr is a typesafe version and as
+such can't be implicitly converted to int or anything else.
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_6_3 auto
+
+Feel free to use auto wherever it improves readability. Good places are
+iterators or when dealing with containers.
+
+~~~~~~~~~~~~~
+std::map<std::string, std::vector<int>>::iterator i = var.begin();
+vs
+auto i = var.being();
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\subsection code_guidelines_6_4 for loops
+
+Use newer style foreach loops whenever it makes sense. If iterators are used see
+above about using auto.
+
+~~~~~~~~~~~~~
+for (auto& : var)
+{
+  ...
+}
+~~~~~~~~~~~~~
+
+Use const auto& if there's no reason to modify the value.
+
+*/

@@ -1,0 +1,90 @@
+/*!
+
+@page Doxygen_On_Addon Doxygen on Kodi's Add-On headers
+
+### This page is for notes on using Doxygen to document the Kodi's Add-On headers source code.
+
+[Doxygen](http://www.stack.nl/~dimitri/doxygen/index.html), is a documentation
+system for C++, C, Java, and some other weird languages. It can generate html
+docs documenting a projects source code, by either extracting special tags from
+the source code (put there by people wanting to make use of doxygen), or doxygen
+attempts to build documentation from existing source.
+
+Doxygen seems to be installed on the NMR systems, type:
+~~~~~~~~~~~~~
+doxygen --version
+~~~~~~~~~~~~~
+
+
+_ _ _
+
+Start doxygen documentation for add-ons always with `///` and on Kodi itself with `/*!`, this makes it more easy to see for which place the documentation is.
+
+<b>Here a axample on add-on about function coding style:</b>
+
+\verbatim
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_xbmcgui_window
+  /// @brief Sets the resolution
+  ///
+  /// That the coordinates of all controls are defined in.  Allows Kodi
+  /// to scale control positions and width/heights to whatever resolution
+  /// Kodi is currently using.
+  ///
+  /// @param[in] res                Coordinate resolution to set
+  ///  Resolution is one of the following:
+  ///  | value | Resolution                |
+  ///  |:-----:|:--------------------------|
+  ///  |   0   | 1080i      (1920x1080)
+  ///  |   1   | 720p       (1280x720)
+  ///  |   2   | 480p 4:3   (720x480)
+  ///  |   3   | 480p 16:9  (720x480)
+  ///  |   4   | NTSC 4:3   (720x480)
+  ///  |   5   | NTSC 16:9  (720x480)
+  ///  |   6   | PAL 4:3    (720x576)
+  ///  |   7   | PAL 16:9   (720x576)
+  ///  |   8   | PAL60 4:3  (720x480)
+  ///  |   9   | PAL60 16:9 (720x480)
+  /// @return                       Nothing only added as example here :)
+  /// @param[out] nothingExample    Example here, if on value pointer data becomes
+  ///                               returned.
+  /// @throws TypeError             If supplied argument is not of List type, or a
+  ///                               control is not of Control type
+  /// @throws ReferenceError        If control is already used in another window
+  /// @throws RuntimeError          Should not happen :-)
+  ///
+  ///
+  ///--------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.py}
+  /// ..
+  /// win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+  /// win.setCoordinateResolution(0)
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  setCoordinateResolution(...);
+#else
+  SWIGHIDDENVIRTUAL bool setCoordinateResolution(long res, int &nothingExample);
+#endif
+\endverbatim
+- \verbatim /// \ingroup\endverbatim - Define the group where the documentation part comes in.
+- \verbatim /// @brief\endverbatim - Add a small text of part there.
+- \verbatim /// TEXT_FIELD\endverbatim - Add a bigger text there if needed.
+- \verbatim /// @param[in] VALUE_NAME                 VALUE_TEXT\endverbatim - To set input paramter defined by name and add a description. There the example also add a small table which is useful to descripe values.
+- \verbatim /// @param[out] VALUE_NAME                VALUE_TEXT\endverbatim - To set output paramter defined by name and add a description.
+- \verbatim /// @return                               VALUE_TEXT\endverbatim - To add a description of return value.
+- \verbatim /// @throws ERROR_TYPE                    ERROR_TEXT\endverbatim - If also exception becomes handled, can you use this for description.
+- \verbatim /// TEXT_FIELD\endverbatim - Add a much bigger text there if needed.
+- \verbatim /// ------------------\endverbatim - Use this to define a field line, e.g. if you add example add this always before, further must you make two empty lines before to prevent add of them on string before!
+- \verbatim /// ~~~~~~~~~~~~~ \endverbatim - Here can you define a code example which must start and end with the defination string, also can you define the code style with e.g. <b>{.py}</b> for Python or <b>{.cpp}</b> for CPP code on the first line of them.
+
+@note Start all `VALUE_TEXT` at same character to hold a clean code on <c>*.cpp</c> or <c>*.h</c> files.\n\n
+      The `#ifdef DOXYGEN_SHOULD_USE_THIS` on example above can be becomes used
+      if for Doxygen another function is needed to descripe.
+
+If you want to prevent a part from doxygen can you define <b>`#ifndef DOXYGEN_SHOULD_SKIP_THIS`</b>
+or <b>`#ifdef DOXYGEN_SHOULD_USE_THIS`</b> on the related code.
+*/
