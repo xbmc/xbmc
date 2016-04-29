@@ -689,6 +689,8 @@
 		7CED593D1CD341280093F573 /* VTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593B1CD341280093F573 /* VTB.cpp */; };
 		7CED593E1CD341280093F573 /* VTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593B1CD341280093F573 /* VTB.cpp */; };
 		7CED59411CD343260093F573 /* RendererVTBGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593F1CD343260093F573 /* RendererVTBGLES.cpp */; };
+		7CED59431CD350B70093F573 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CED59421CD350B70093F573 /* CoreVideo.framework */; };
+		7CED59451CD350DD0093F573 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CED59441CD350DD0093F573 /* OpenGLES.framework */; };
 		7CEE587D1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CEE587E1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CF0504B190A1D7200222135 /* FFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF05049190A1D7200222135 /* FFmpeg.cpp */; };
@@ -1389,9 +1391,7 @@
 		E499108E174D0D2600741B6D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E499108D174D0D2600741B6D /* Foundation.framework */; };
 		E4991090174D0D2600741B6D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E499108F174D0D2600741B6D /* CoreGraphics.framework */; };
 		E49910E3174E549400741B6D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E2174E549400741B6D /* QuartzCore.framework */; };
-		E49910E5174E54A100741B6D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E4174E54A100741B6D /* OpenGLES.framework */; };
 		E49910E7174E54B400741B6D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E6174E54B300741B6D /* CoreMedia.framework */; };
-		E49910E9174E54C300741B6D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910E8174E54C300741B6D /* CoreVideo.framework */; };
 		E49910ED174E54D200741B6D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910EC174E54D200741B6D /* AudioToolbox.framework */; };
 		E49910EF174E54E400741B6D /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910EE174E54E400741B6D /* ImageIO.framework */; };
 		E49910F1174E54ED00741B6D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49910F0174E54EC00741B6D /* CFNetwork.framework */; };
@@ -3401,6 +3401,8 @@
 		7CED593C1CD341280093F573 /* VTB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTB.h; sourceTree = "<group>"; };
 		7CED593F1CD343260093F573 /* RendererVTBGLES.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RendererVTBGLES.cpp; path = HwDecRender/RendererVTBGLES.cpp; sourceTree = "<group>"; };
 		7CED59401CD343260093F573 /* RendererVTBGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RendererVTBGLES.h; path = HwDecRender/RendererVTBGLES.h; sourceTree = "<group>"; };
+		7CED59421CD350B70093F573 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreVideo.framework; sourceTree = DEVELOPER_DIR; };
+		7CED59441CD350DD0093F573 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = DEVELOPER_DIR; };
 		7CEE107B1C970BB800E0D426 /* kodi_inputstream_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_inputstream_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h"; sourceTree = "<group>"; };
 		7CEE107C1C970BB800E0D426 /* kodi_inputstream_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_inputstream_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"; sourceTree = "<group>"; };
 		7CEE107D1C970BB800E0D426 /* libKODI_inputstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_inputstream.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"; sourceTree = "<group>"; };
@@ -4721,9 +4723,7 @@
 		E49910D4174E2E0000741B6D /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		E49910D5174E2E0000741B6D /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		E49910E2174E549400741B6D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		E49910E4174E54A100741B6D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		E49910E6174E54B300741B6D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		E49910E8174E54C300741B6D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		E49910EA174E54C900741B6D /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		E49910EC174E54D200741B6D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E49910EE174E54E400741B6D /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -5050,15 +5050,15 @@
 				E49910F1174E54ED00741B6D /* CFNetwork.framework in Frameworks */,
 				E49910EF174E54E400741B6D /* ImageIO.framework in Frameworks */,
 				E49910ED174E54D200741B6D /* AudioToolbox.framework in Frameworks */,
-				E49910E9174E54C300741B6D /* CoreVideo.framework in Frameworks */,
 				E49910E7174E54B400741B6D /* CoreMedia.framework in Frameworks */,
-				E49910E5174E54A100741B6D /* OpenGLES.framework in Frameworks */,
 				7CED593A1CD340460093F573 /* VideoToolbox.framework in Frameworks */,
 				E49910E3174E549400741B6D /* QuartzCore.framework in Frameworks */,
 				E499108C174D0D2600741B6D /* UIKit.framework in Frameworks */,
+				7CED59451CD350DD0093F573 /* OpenGLES.framework in Frameworks */,
 				E499108E174D0D2600741B6D /* Foundation.framework in Frameworks */,
 				E4991090174D0D2600741B6D /* CoreGraphics.framework in Frameworks */,
 				DFF0EBB7175281E1002DA3A4 /* CoreAudio.framework in Frameworks */,
+				7CED59431CD350B70093F573 /* CoreVideo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8866,16 +8866,16 @@
 		E49910F6174E55D400741B6D /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				7CED59441CD350DD0093F573 /* OpenGLES.framework */,
+				7CED59421CD350B70093F573 /* CoreVideo.framework */,
 				7CED59381CD340460093F573 /* VideoToolbox.framework */,
 				E49910EC174E54D200741B6D /* AudioToolbox.framework */,
 				E49910F2174E54FB00741B6D /* AVFoundation.framework */,
 				E49910F0174E54EC00741B6D /* CFNetwork.framework */,
 				E49910EA174E54C900741B6D /* CoreAudio.framework */,
 				E49910E6174E54B300741B6D /* CoreMedia.framework */,
-				E49910E8174E54C300741B6D /* CoreVideo.framework */,
 				E49910EE174E54E400741B6D /* ImageIO.framework */,
 				E49910F4174E550200741B6D /* MediaPlayer.framework */,
-				E49910E4174E54A100741B6D /* OpenGLES.framework */,
 				E499108B174D0D2600741B6D /* UIKit.framework */,
 				E499108D174D0D2600741B6D /* Foundation.framework */,
 				E499108F174D0D2600741B6D /* CoreGraphics.framework */,

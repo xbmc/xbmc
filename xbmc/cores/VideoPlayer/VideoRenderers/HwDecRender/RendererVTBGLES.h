@@ -25,6 +25,7 @@
 #if defined(TARGET_DARWIN_IOS)
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include <CoreVideo/CVOpenGLESTextureCache.h>
 
 class CRendererVTB : public CLinuxRendererGLES
 {
@@ -33,28 +34,33 @@ public:
   virtual ~CRendererVTB();
 
   // Player functions
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
-  virtual void ReleaseBuffer(int idx);
-  virtual void ReorderDrawPoints();
+  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  virtual void ReleaseBuffer(int idx) override;
 
   // Feature support
-  virtual bool Supports(EINTERLACEMETHOD method);
-  virtual bool Supports(EDEINTERLACEMODE mode);
-  
-
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
-  virtual CRenderInfo GetRenderInfo();
+  virtual bool Supports(EINTERLACEMETHOD method) override;
+  virtual bool Supports(EDEINTERLACEMODE mode) override;
+  virtual EINTERLACEMETHOD AutoInterlaceMethod() override;
+  virtual CRenderInfo GetRenderInfo() override;
 
 protected:
   // hooks for hw dec renderer
-  virtual bool LoadShadersHook();
-  virtual bool RenderHook(int index);  
-  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual bool LoadShadersHook() override;
+  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) override;
 
   // textures
-  virtual bool UploadTexture(int index);
-  virtual void DeleteTexture(int index);
-  virtual bool CreateTexture(int index);
+  virtual bool UploadTexture(int index) override;
+  virtual void DeleteTexture(int index) override;
+  virtual bool CreateTexture(int index) override;
+
+  CVOpenGLESTextureCacheRef m_textureCache;
+  struct CRenderBuffer
+  {
+    CVOpenGLESTextureRef m_textureY;
+    CVOpenGLESTextureRef m_textureUV;
+    CVBufferRef m_videoBuffer;
+  };
+  CRenderBuffer m_vtbBuffers[NUM_BUFFERS];
 };
 
 #endif

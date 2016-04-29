@@ -32,49 +32,52 @@
 
 CRendererVTB::CRendererVTB()
 {
+  m_textureCache = nullptr;
+  CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
+                                              NULL,
+                                              g_Windowing.GetEAGLContextObj(),
+                                              NULL,
+                                              &m_textureCache);
+  if (ret != kCVReturnSuccess)
+  {
+    CLog::Log(LOGERROR, "CRendererVTB::CRendererVTB - Error creating texture cache (err: %d)", ret);
+  }
 
+  for (auto &buf : m_vtbBuffers)
+  {
+    buf.m_textureY = nullptr;
+    buf.m_textureUV = nullptr;
+    buf.m_videoBuffer = nullptr;
+  }
 }
 
 CRendererVTB::~CRendererVTB()
 {
-
+  if (m_textureCache)
+    CFRelease(m_textureCache);
 }
 
 void CRendererVTB::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 {
-  YUVBUFFER &buf = m_buffers[index];
-  if (buf.hwDec)
-    CVBufferRelease((struct __CVBuffer *)buf.hwDec);
-  buf.hwDec = picture.cvBufferRef;
+  CRenderBuffer &buf = m_vtbBuffers[index];
+  if (buf.m_videoBuffer)
+    CVBufferRelease(buf.m_videoBuffer);
+  buf.m_videoBuffer = picture.cvBufferRef;
   // retain another reference, this way VideoPlayer and renderer can issue releases.
   CVBufferRetain(picture.cvBufferRef);
 }
 
 void CRendererVTB::ReleaseBuffer(int idx)
 {
-  YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
-    CVBufferRelease((struct __CVBuffer *)buf.hwDec);
-  buf.hwDec = NULL;
+  CRenderBuffer &buf = m_vtbBuffers[idx];
+  if (buf.m_videoBuffer)
+    CVBufferRelease(buf.m_videoBuffer);
+  buf.m_videoBuffer = nullptr;
 }
 
 int CRendererVTB::GetImageHook(YV12Image *image, int source, bool readonly)
 {
   return source;
-}
-
-void CRendererVTB::ReorderDrawPoints()
-{
-  CLinuxRendererGLES::ReorderDrawPoints();//call base impl. for rotating the points
-  
-  // cvbuf is flipped in y
-  CPoint tmp;
-  tmp = m_rotatedDestCoords[0];
-  m_rotatedDestCoords[0] = m_rotatedDestCoords[3];
-  m_rotatedDestCoords[3] = tmp;
-  tmp = m_rotatedDestCoords[1];
-  m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
-  m_rotatedDestCoords[2] = tmp;
 }
 
 bool CRendererVTB::Supports(EINTERLACEMETHOD method)
@@ -97,7 +100,7 @@ CRenderInfo CRendererVTB::GetRenderInfo()
   CRenderInfo info;
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
-  info.optimal_buffer_size = 2;
+  info.optimal_buffer_size = 4;
   return info;
 }
 
@@ -106,89 +109,36 @@ bool CRendererVTB::LoadShadersHook()
   float ios_version = CDarwinUtils::GetIOSVersion();
   CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
   m_textureTarget = GL_TEXTURE_2D;
+  m_renderMethod = RENDER_CVREF;
 
-  if (ios_version < 5.0 && m_format == RENDER_FMT_YUV420P)
+  if (ios_version < 5.0)
   {
-    CLog::Log(LOGNOTICE, "GL: Using software color conversion/RGBA render method");
-    m_renderMethod = RENDER_SW;
+    CLog::Log(LOGNOTICE, "GL: ios version < 5 is not supported");
+    return false;
   }
-  else
+
+  if (!m_textureCache)
   {
-    m_renderMethod = RENDER_CVREF;
+    CLog::Log(LOGNOTICE, "CRendererVTB::LoadShadersHook: no texture cache");
+    return false;
   }
-  ReorderDrawPoints();// cvref needs a reorder because its flipped in y direction
+
+  CVReturn ret = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
+                                              NULL,
+                                              g_Windowing.GetEAGLContextObj(),
+                                              NULL,
+                                              &m_textureCache);
+  if (ret != kCVReturnSuccess)
+    return false;
 
   return false;
 }
 
-bool CRendererVTB::RenderHook(int index)
-{
-  YUVPLANE &plane = m_buffers[index].fields[m_currentField][0];
-  
-  glDisable(GL_DEPTH_TEST);
-  
-  glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, plane.id);
-  
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
-  
-  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
-  glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-  GLfloat ver[4][4];
-  GLfloat tex[4][2];
-  GLfloat col[3] = {1.0f, 1.0f, 1.0f};
-  
-  GLint   posLoc = g_Windowing.GUIShaderGetPos();
-  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
-  GLint   colLoc = g_Windowing.GUIShaderGetCol();
-  
-  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
-  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
-  
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(texLoc);
-  glEnableVertexAttribArray(colLoc);
-  
-  // Set vertex coordinates
-  for(int i = 0; i < 4; i++)
-  {
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;// set z to 0
-    ver[i][3] = 1.0f;
-  }
-  
-  // Set texture coordinates (corevideo is flipped in y)
-  tex[0][0] = tex[3][0] = plane.rect.x1;
-  tex[0][1] = tex[1][1] = plane.rect.y2;
-  tex[1][0] = tex[2][0] = plane.rect.x2;
-  tex[2][1] = tex[3][1] = plane.rect.y1;
-  
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-  
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(texLoc);
-  glDisableVertexAttribArray(colLoc);
-  
-  g_Windowing.DisableGUIShader();
-  VerifyGLState();
-  
-  glDisable(m_textureTarget);
-  VerifyGLState();
-  return true;
-}
-
 bool CRendererVTB::CreateTexture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YV12Image &im = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
+  YUVPLANES &planes = fields[0];
   
   DeleteTexture(index);
   
@@ -196,123 +146,116 @@ bool CRendererVTB::CreateTexture(int index)
   memset(&fields, 0, sizeof(fields));
   
   im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
+  im.width = m_sourceWidth;
   
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-  
-  if(m_renderMethod & RENDER_POT)
-  {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
-  }
-  glEnable(m_textureTarget);
-  glGenTextures(1, &plane.id);
-  VerifyGLState();
-  
-  glBindTexture(m_textureTarget, plane.id);
-#if !TARGET_OS_IPHONE
-#ifdef GL_UNPACK_ROW_LENGTH
-  // Set row pixels
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, m_sourceWidth);
-#endif
-#ifdef GL_TEXTURE_STORAGE_HINT_APPLE
-  // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-  glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-  // Set client storage
-#endif
-  glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
-#endif
-  
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  // This is necessary for non-power-of-two textures
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, NULL);
-  
-#if !TARGET_OS_IPHONE
-  // turn off client storage so it doesn't get picked up for the next texture
-  glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_FALSE);
-#endif
-  glBindTexture(m_textureTarget, 0);
-  glDisable(m_textureTarget);
+  planes[0].texwidth  = im.width;
+  planes[0].texheight = im.height;
+  planes[1].texwidth  = planes[0].texwidth >> im.cshift_x;
+  planes[1].texheight = planes[0].texheight >> im.cshift_y;
+  planes[2].texwidth  = planes[1].texwidth;
+  planes[2].texheight = planes[1].texheight;
 
+  for (int p = 0; p < 3; p++)
+  {
+    planes[p].pixpertex_x = 1;
+    planes[p].pixpertex_y = 1;
+  }
+
+  planes[0].id = 1;
   return true;
 }
 
 void CRendererVTB::DeleteTexture(int index)
 {
-  YUVPLANE &plane = m_buffers[index].fields[0][0];
+  CRenderBuffer &buf = m_vtbBuffers[index];
   
-  if (m_buffers[index].hwDec)
-    CVBufferRelease((struct __CVBuffer *)m_buffers[index].hwDec);
-  m_buffers[index].hwDec = NULL;
-  
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
-  plane.id = 0;
+  if (buf.m_videoBuffer)
+    CVBufferRelease(buf.m_videoBuffer);
+  buf.m_videoBuffer = nullptr;
+
+  if (buf.m_textureY)
+    CFRelease(buf.m_textureY);
+  buf.m_textureY = nullptr;
+
+  if (buf.m_textureUV)
+    CFRelease(buf.m_textureUV);
+  buf.m_textureUV = nullptr;
+
+  YUVFIELDS &fields = m_buffers[index].fields;
+  fields[FIELD_FULL][0].id = 0;
+  fields[FIELD_FULL][1].id = 0;
+  fields[FIELD_FULL][2].id = 0;
 }
 
 bool CRendererVTB::UploadTexture(int index)
 {
-  bool ret = false;
-  CVBufferRef cvBufferRef = (struct __CVBuffer *)m_buffers[index].hwDec;
-  
-  if (cvBufferRef)
+  CRenderBuffer &buf = m_vtbBuffers[index];
+
+  if (!buf.m_videoBuffer)
+    return false;
+
+  CVOpenGLESTextureCacheFlush(m_textureCache, 0);
+
+  if (buf.m_textureY)
+    CFRelease(buf.m_textureY);
+  buf.m_textureY = nullptr;
+
+  if (buf.m_textureUV)
+    CFRelease(buf.m_textureUV);
+  buf.m_textureUV = nullptr;
+
+  YV12Image &im = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANES &planes = fields[0];
+
+  CVReturn ret;
+  ret = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                                                     m_textureCache,
+                                                     buf.m_videoBuffer, NULL, GL_TEXTURE_2D, GL_LUMINANCE,
+                                                     im.width, im.height, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+                                                     0,
+                                                     &buf.m_textureY);
+
+  if (ret != kCVReturnSuccess)
   {
-    YUVPLANE &plane = m_buffers[index].fields[0][0];
-    
-    CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-#if !TARGET_OS_IPHONE
-    int rowbytes = CVPixelBufferGetBytesPerRow(cvBufferRef);
-#endif
-    int bufferWidth = CVPixelBufferGetWidth(cvBufferRef);
-    int bufferHeight = CVPixelBufferGetHeight(cvBufferRef);
-    unsigned char *bufferBase = (unsigned char *)CVPixelBufferGetBaseAddress(cvBufferRef);
-    
-    glEnable(m_textureTarget);
-    VerifyGLState();
-    
-    glBindTexture(m_textureTarget, plane.id);
-#if !TARGET_OS_IPHONE
-#ifdef GL_UNPACK_ROW_LENGTH
-    // Set row pixels
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, rowbytes);
-#endif
-#ifdef GL_TEXTURE_STORAGE_HINT_APPLE
-    // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-    glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-#endif
-#endif
-    
-    // Using BGRA extension to pull in video frame data directly
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, bufferWidth, bufferHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bufferBase);
-    
-#if !TARGET_OS_IPHONE
-#ifdef GL_UNPACK_ROW_LENGTH
-    // Unset row pixels
-    glPixelStorei( GL_UNPACK_ROW_LENGTH, 0);
-#endif
-#endif
-    glBindTexture(m_textureTarget, 0);
-    
-    glDisable(m_textureTarget);
-    VerifyGLState();
-    
-    CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-    CVBufferRelease((struct __CVBuffer *)m_buffers[index].hwDec);
-    m_buffers[index].hwDec = NULL;
-    
-    plane.flipindex = m_buffers[index].flipindex;
-    ret = true;
+    CLog::Log(LOGERROR, "CRendererVTB::UploadTexture - Error uploading texture Y (err: %d)", ret);
+    return false;
   }
-  
-  CalculateTextureSourceRects(index, 1);
-  return ret;
+
+  ret = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+                                                     m_textureCache,
+                                                     buf.m_videoBuffer, NULL, GL_TEXTURE_2D, GL_LUMINANCE_ALPHA,
+                                                     im.width/2, im.height/2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
+                                                     1,
+                                                     &buf.m_textureUV);
+
+  if (ret != kCVReturnSuccess)
+  {
+    CLog::Log(LOGERROR, "CRendererVTB::UploadTexture - Error uploading texture UV (err: %d)", ret);
+    return false;
+  }
+
+  // set textures
+  planes[0].id = CVOpenGLESTextureGetName(buf.m_textureY);
+  planes[1].id = CVOpenGLESTextureGetName(buf.m_textureUV);
+  planes[2].id = CVOpenGLESTextureGetName(buf.m_textureUV);
+
+  glEnable(m_textureTarget);
+
+  for (int p=0; p<2; p++)
+  {
+    glBindTexture(m_textureTarget, planes[p].id);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(m_textureTarget, 0);
+    VerifyGLState();
+  }
+
+  CalculateTextureSourceRects(index, 3);
+  return true;
 }
 
 #endif

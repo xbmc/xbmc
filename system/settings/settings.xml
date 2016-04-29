@@ -811,12 +811,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usevideotoolbox" type="boolean" label="13432" help="36162">
-          <requirement>HasVideoToolBoxDecoder</requirement>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.usevtb" type="boolean" label="13429" help="36160">
           <requirement>HasVTB</requirement>
           <level>2</level>

@@ -210,8 +210,11 @@ int CLinuxRendererGLES::NextYV12Texture()
 
 int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
 {
-  if (!image) return -1;
-  if (!m_bValidated) return -1;
+  if (!image)
+    return -1;
+
+  if (!m_bValidated)
+    return -1;
 
   /* take next available buffer */
   if( source == AUTOSOURCE )
