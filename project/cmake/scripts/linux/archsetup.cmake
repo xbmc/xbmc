@@ -17,5 +17,5 @@ endif()
 
 find_package(CXX11 REQUIRED)
 
-set(LIRC_DEVICE          "\"/dev/lircd\"" CACHE STRING "LIRC device to use")
+set(LIRC_DEVICE "\"/dev/lircd\"" CACHE STRING "LIRC device to use")
 set(DEP_DEFINES -DLIRC_DEVICE=${LIRC_DEVICE})

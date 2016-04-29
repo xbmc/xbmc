@@ -9,5 +9,3 @@ configure_file(${CORE_SOURCE_DIR}/addons/kodi.guilib/addon.xml.in
                ${CMAKE_BINARY_DIR}/addons/kodi.guilib/addon.xml @ONLY)
 configure_file(${CORE_SOURCE_DIR}/xbmc/CompileInfo.cpp.in
                ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp @ONLY)
-set(prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
-set(APP_LIBDIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/kodi)
