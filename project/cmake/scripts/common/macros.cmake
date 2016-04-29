@@ -16,6 +16,12 @@ include(${CORE_SOURCE_DIR}/project/cmake/scripts/${CORE_SYSTEM_NAME}/macros.cmak
 #   Library will be built, optionally added to ${core_DEPENDS}
 function(core_add_library name)
   cmake_parse_arguments(arg "NO_MAIN_DEPENDS" "" "" ${ARGN})
+
+  if(NOT SOURCES)
+      message(STATUS "No sources added to ${name} skipping")
+      return()
+  endif()
+
   add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
   set_target_properties(${name} PROPERTIES PREFIX "")
   if(NOT arg_NO_MAIN_DEPENDS)
