@@ -39,6 +39,7 @@ Kodi is distributed under a [GNU General Public License version 2](./LICENSE.GPL
 <div style="display:none">
 \endhtmlonly
 
+\subpage general
 \subpage general_parts
 
 \htmlonly

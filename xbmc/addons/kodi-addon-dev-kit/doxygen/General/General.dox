@@ -1,0 +1,18 @@
+/*!
+
+\page general General
+\brief \doc_header{ General descriptions }
+
+The used code guidelines from Kodi
+@note Is not direct needed on C++ add-ons but makes it more easy for reviews and
+changes from the others.
+
+\subpage code_guidelines
+
+--------------------------------------------------------------------------------
+
+Guideline for Kodi's developers to create documentation
+
+\subpage Doxygen_On_Addon
+
+*/
