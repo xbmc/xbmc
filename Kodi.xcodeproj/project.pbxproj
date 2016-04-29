@@ -3117,6 +3117,136 @@
 		7646982B1CA7360F00AB1347 /* StreamUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StreamUtils.hpp; path = "kodi-addon-dev-kit/include/kodi/api2/pvr/StreamUtils.hpp"; sourceTree = "<group>"; };
 		7646982C1CA7360F00AB1347 /* Transfer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Transfer.hpp; path = "kodi-addon-dev-kit/include/kodi/api2/pvr/Transfer.hpp"; sourceTree = "<group>"; };
 		7646982D1CA7360F00AB1347 /* Trigger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Trigger.hpp; path = "kodi-addon-dev-kit/include/kodi/api2/pvr/Trigger.hpp"; sourceTree = "<group>"; };
+		767615121CB8063A008C7A67 /* AddonInterfaceBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonInterfaceBase.cpp; path = addons/binary/interfaces/api3/AddonInterfaceBase.cpp; sourceTree = "<group>"; };
+		767615131CB8063A008C7A67 /* AddonInterfaceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonInterfaceBase.h; path = addons/binary/interfaces/api3/AddonInterfaceBase.h; sourceTree = "<group>"; };
+		7676151D1CB806DB008C7A67 /* Addon_Audio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_Audio.cpp; path = addons/binary/interfaces/api3/Addon/Addon_Audio.cpp; sourceTree = "<group>"; };
+		7676151E1CB806DB008C7A67 /* Addon_Audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_Audio.h; path = addons/binary/interfaces/api3/Addon/Addon_Audio.h; sourceTree = "<group>"; };
+		7676151F1CB806DB008C7A67 /* Addon_Directory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_Directory.cpp; path = addons/binary/interfaces/api3/Addon/Addon_Directory.cpp; sourceTree = "<group>"; };
+		767615201CB806DB008C7A67 /* Addon_Directory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_Directory.h; path = addons/binary/interfaces/api3/Addon/Addon_Directory.h; sourceTree = "<group>"; };
+		767615211CB806DB008C7A67 /* Addon_File.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_File.cpp; path = addons/binary/interfaces/api3/Addon/Addon_File.cpp; sourceTree = "<group>"; };
+		767615221CB806DB008C7A67 /* Addon_File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_File.h; path = addons/binary/interfaces/api3/Addon/Addon_File.h; sourceTree = "<group>"; };
+		767615231CB806DB008C7A67 /* Addon_General.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_General.cpp; path = addons/binary/interfaces/api3/Addon/Addon_General.cpp; sourceTree = "<group>"; };
+		767615241CB806DB008C7A67 /* Addon_General.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_General.h; path = addons/binary/interfaces/api3/Addon/Addon_General.h; sourceTree = "<group>"; };
+		767615251CB806DB008C7A67 /* Addon_Network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_Network.cpp; path = addons/binary/interfaces/api3/Addon/Addon_Network.cpp; sourceTree = "<group>"; };
+		767615261CB806DB008C7A67 /* Addon_Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_Network.h; path = addons/binary/interfaces/api3/Addon/Addon_Network.h; sourceTree = "<group>"; };
+		7676152C1CB806F2008C7A67 /* Addon_AudioEngineGeneral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_AudioEngineGeneral.cpp; path = addons/binary/interfaces/api3/AudioEngine/Addon_AudioEngineGeneral.cpp; sourceTree = "<group>"; };
+		7676152D1CB806F2008C7A67 /* Addon_AudioEngineGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_AudioEngineGeneral.h; path = addons/binary/interfaces/api3/AudioEngine/Addon_AudioEngineGeneral.h; sourceTree = "<group>"; };
+		7676152E1CB806F2008C7A67 /* Addon_AudioEngineStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_AudioEngineStream.cpp; path = addons/binary/interfaces/api3/AudioEngine/Addon_AudioEngineStream.cpp; sourceTree = "<group>"; };
+		7676152F1CB806F2008C7A67 /* Addon_AudioEngineStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_AudioEngineStream.h; path = addons/binary/interfaces/api3/AudioEngine/Addon_AudioEngineStream.h; sourceTree = "<group>"; };
+		767615321CB80720008C7A67 /* Addon_GUIControlButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlButton.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlButton.cpp; sourceTree = "<group>"; };
+		767615331CB80720008C7A67 /* Addon_GUIControlButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlButton.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlButton.h; sourceTree = "<group>"; };
+		767615341CB80720008C7A67 /* Addon_GUIControlEdit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlEdit.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlEdit.cpp; sourceTree = "<group>"; };
+		767615351CB80720008C7A67 /* Addon_GUIControlEdit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlEdit.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlEdit.h; sourceTree = "<group>"; };
+		767615361CB80720008C7A67 /* Addon_GUIControlFadeLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlFadeLabel.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlFadeLabel.cpp; sourceTree = "<group>"; };
+		767615371CB80720008C7A67 /* Addon_GUIControlFadeLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlFadeLabel.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlFadeLabel.h; sourceTree = "<group>"; };
+		767615381CB80720008C7A67 /* Addon_GUIControlImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlImage.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlImage.cpp; sourceTree = "<group>"; };
+		767615391CB80720008C7A67 /* Addon_GUIControlImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlImage.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlImage.h; sourceTree = "<group>"; };
+		7676153A1CB80720008C7A67 /* Addon_GUIControlLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlLabel.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlLabel.cpp; sourceTree = "<group>"; };
+		7676153B1CB80720008C7A67 /* Addon_GUIControlLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlLabel.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlLabel.h; sourceTree = "<group>"; };
+		7676153C1CB80720008C7A67 /* Addon_GUIControlProgress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlProgress.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlProgress.cpp; sourceTree = "<group>"; };
+		7676153D1CB80720008C7A67 /* Addon_GUIControlProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlProgress.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlProgress.h; sourceTree = "<group>"; };
+		7676153E1CB80720008C7A67 /* Addon_GUIControlRadioButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlRadioButton.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlRadioButton.cpp; sourceTree = "<group>"; };
+		7676153F1CB80720008C7A67 /* Addon_GUIControlRadioButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlRadioButton.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlRadioButton.h; sourceTree = "<group>"; };
+		767615401CB80720008C7A67 /* Addon_GUIControlRendering.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlRendering.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlRendering.cpp; sourceTree = "<group>"; };
+		767615411CB80720008C7A67 /* Addon_GUIControlRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlRendering.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlRendering.h; sourceTree = "<group>"; };
+		767615421CB80720008C7A67 /* Addon_GUIControlSettingsSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlSettingsSlider.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlSettingsSlider.cpp; sourceTree = "<group>"; };
+		767615431CB80720008C7A67 /* Addon_GUIControlSettingsSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlSettingsSlider.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlSettingsSlider.h; sourceTree = "<group>"; };
+		767615441CB80720008C7A67 /* Addon_GUIControlSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlSlider.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlSlider.cpp; sourceTree = "<group>"; };
+		767615451CB80720008C7A67 /* Addon_GUIControlSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlSlider.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlSlider.h; sourceTree = "<group>"; };
+		767615461CB80720008C7A67 /* Addon_GUIControlSpin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlSpin.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlSpin.cpp; sourceTree = "<group>"; };
+		767615471CB80720008C7A67 /* Addon_GUIControlSpin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlSpin.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlSpin.h; sourceTree = "<group>"; };
+		767615481CB80720008C7A67 /* Addon_GUIControlTextBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIControlTextBox.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlTextBox.cpp; sourceTree = "<group>"; };
+		767615491CB80720008C7A67 /* Addon_GUIControlTextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIControlTextBox.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIControlTextBox.h; sourceTree = "<group>"; };
+		7676154A1CB80720008C7A67 /* Addon_GUIDialogExtendedProgressBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogExtendedProgressBar.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogExtendedProgressBar.cpp; sourceTree = "<group>"; };
+		7676154B1CB80720008C7A67 /* Addon_GUIDialogExtendedProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogExtendedProgressBar.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogExtendedProgressBar.h; sourceTree = "<group>"; };
+		7676154C1CB80720008C7A67 /* Addon_GUIDialogFileBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogFileBrowser.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogFileBrowser.cpp; sourceTree = "<group>"; };
+		7676154D1CB80720008C7A67 /* Addon_GUIDialogFileBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogFileBrowser.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogFileBrowser.h; sourceTree = "<group>"; };
+		7676154E1CB80720008C7A67 /* Addon_GUIDialogKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogKeyboard.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogKeyboard.cpp; sourceTree = "<group>"; };
+		7676154F1CB80720008C7A67 /* Addon_GUIDialogKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogKeyboard.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogKeyboard.h; sourceTree = "<group>"; };
+		767615501CB80720008C7A67 /* Addon_GUIDialogNumeric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogNumeric.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogNumeric.cpp; sourceTree = "<group>"; };
+		767615511CB80720008C7A67 /* Addon_GUIDialogNumeric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogNumeric.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogNumeric.h; sourceTree = "<group>"; };
+		767615521CB80720008C7A67 /* Addon_GUIDialogOK.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogOK.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogOK.cpp; sourceTree = "<group>"; };
+		767615531CB80720008C7A67 /* Addon_GUIDialogOK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogOK.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogOK.h; sourceTree = "<group>"; };
+		767615541CB80720008C7A67 /* Addon_GUIDialogProgress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogProgress.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogProgress.cpp; sourceTree = "<group>"; };
+		767615551CB80720008C7A67 /* Addon_GUIDialogProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogProgress.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogProgress.h; sourceTree = "<group>"; };
+		767615561CB80720008C7A67 /* Addon_GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogSelect.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogSelect.cpp; sourceTree = "<group>"; };
+		767615571CB80720008C7A67 /* Addon_GUIDialogSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogSelect.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogSelect.h; sourceTree = "<group>"; };
+		767615581CB80720008C7A67 /* Addon_GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogTextViewer.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
+		767615591CB80720008C7A67 /* Addon_GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogTextViewer.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogTextViewer.h; sourceTree = "<group>"; };
+		7676155A1CB80720008C7A67 /* Addon_GUIDialogYesNo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIDialogYesNo.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogYesNo.cpp; sourceTree = "<group>"; };
+		7676155B1CB80720008C7A67 /* Addon_GUIDialogYesNo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIDialogYesNo.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIDialogYesNo.h; sourceTree = "<group>"; };
+		7676155C1CB80720008C7A67 /* Addon_GUIGeneral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIGeneral.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIGeneral.cpp; sourceTree = "<group>"; };
+		7676155D1CB80720008C7A67 /* Addon_GUIGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIGeneral.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIGeneral.h; sourceTree = "<group>"; };
+		7676155E1CB80720008C7A67 /* Addon_GUIListItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIListItem.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIListItem.cpp; sourceTree = "<group>"; };
+		7676155F1CB80720008C7A67 /* Addon_GUIListItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIListItem.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIListItem.h; sourceTree = "<group>"; };
+		767615601CB80720008C7A67 /* Addon_GUIWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_GUIWindow.cpp; path = addons/binary/interfaces/api3/GUI/Addon_GUIWindow.cpp; sourceTree = "<group>"; };
+		767615611CB80720008C7A67 /* Addon_GUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_GUIWindow.h; path = addons/binary/interfaces/api3/GUI/Addon_GUIWindow.h; sourceTree = "<group>"; };
+		7676157A1CB8074C008C7A67 /* Addon_InputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_InputStream.cpp; path = addons/binary/interfaces/api3/InputStream/Addon_InputStream.cpp; sourceTree = "<group>"; };
+		7676157B1CB8074C008C7A67 /* Addon_InputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_InputStream.h; path = addons/binary/interfaces/api3/InputStream/Addon_InputStream.h; sourceTree = "<group>"; };
+		7676157D1CB8075E008C7A67 /* Addon_Peripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_Peripheral.cpp; path = addons/binary/interfaces/api3/Peripheral/Addon_Peripheral.cpp; sourceTree = "<group>"; };
+		7676157E1CB8075E008C7A67 /* Addon_Peripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_Peripheral.h; path = addons/binary/interfaces/api3/Peripheral/Addon_Peripheral.h; sourceTree = "<group>"; };
+		767615801CB80777008C7A67 /* Addon_InfoTagMusic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_InfoTagMusic.cpp; path = addons/binary/interfaces/api3/Player/Addon_InfoTagMusic.cpp; sourceTree = "<group>"; };
+		767615811CB80777008C7A67 /* Addon_InfoTagMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_InfoTagMusic.h; path = addons/binary/interfaces/api3/Player/Addon_InfoTagMusic.h; sourceTree = "<group>"; };
+		767615821CB80777008C7A67 /* Addon_InfoTagVideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_InfoTagVideo.cpp; path = addons/binary/interfaces/api3/Player/Addon_InfoTagVideo.cpp; sourceTree = "<group>"; };
+		767615831CB80777008C7A67 /* Addon_InfoTagVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_InfoTagVideo.h; path = addons/binary/interfaces/api3/Player/Addon_InfoTagVideo.h; sourceTree = "<group>"; };
+		767615841CB80777008C7A67 /* Addon_Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_Player.cpp; path = addons/binary/interfaces/api3/Player/Addon_Player.cpp; sourceTree = "<group>"; };
+		767615851CB80777008C7A67 /* Addon_Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_Player.h; path = addons/binary/interfaces/api3/Player/Addon_Player.h; sourceTree = "<group>"; };
+		767615861CB80777008C7A67 /* Addon_PlayList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_PlayList.cpp; path = addons/binary/interfaces/api3/Player/Addon_PlayList.cpp; sourceTree = "<group>"; };
+		767615871CB80777008C7A67 /* Addon_PlayList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_PlayList.h; path = addons/binary/interfaces/api3/Player/Addon_PlayList.h; sourceTree = "<group>"; };
+		7676158C1CB807A1008C7A67 /* Addon_PVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon_PVR.cpp; path = addons/binary/interfaces/api3/PVR/Addon_PVR.cpp; sourceTree = "<group>"; };
+		7676158D1CB807A1008C7A67 /* Addon_PVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon_PVR.h; path = addons/binary/interfaces/api3/PVR/Addon_PVR.h; sourceTree = "<group>"; };
+		767615B61CB809F4008C7A67 /* AddonLib.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AddonLib.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/AddonLib.hpp"; sourceTree = "<group>"; };
+		767615B71CB809F4008C7A67 /* definitions-all.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "definitions-all.hpp"; path = "kodi-addon-dev-kit/include/kodi/api3/definitions-all.hpp"; sourceTree = "<group>"; };
+		767615B81CB809F4008C7A67 /* definitions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/definitions.hpp"; sourceTree = "<group>"; };
+		767615B91CB80A11008C7A67 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = "kodi-addon-dev-kit/src/api3/version.h"; sourceTree = "<group>"; };
+		767615BB1CB80A42008C7A67 /* definitions_pvr.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions_pvr.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/pvr/definitions_pvr.hpp"; sourceTree = "<group>"; };
+		767615BC1CB80A42008C7A67 /* General.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = General.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/pvr/General.hpp"; sourceTree = "<group>"; };
+		767615BD1CB80A42008C7A67 /* StreamUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StreamUtils.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/pvr/StreamUtils.hpp"; sourceTree = "<group>"; };
+		767615BE1CB80A42008C7A67 /* Transfer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Transfer.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/pvr/Transfer.hpp"; sourceTree = "<group>"; };
+		767615BF1CB80A42008C7A67 /* Trigger.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Trigger.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/pvr/Trigger.hpp"; sourceTree = "<group>"; };
+		767615C71CB80B18008C7A67 /* AddonLib_internal.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AddonLib_internal.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/.internal/AddonLib_internal.hpp"; sourceTree = "<group>"; };
+		767615C81CB80B54008C7A67 /* definitions_addon.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions_addon.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/addon/definitions_addon.hpp"; sourceTree = "<group>"; };
+		767615C91CB80B54008C7A67 /* General.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = General.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/addon/General.hpp"; sourceTree = "<group>"; };
+		767615CA1CB80B54008C7A67 /* Network.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Network.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/addon/Network.hpp"; sourceTree = "<group>"; };
+		767615CB1CB80B54008C7A67 /* SoundPlay.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SoundPlay.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/addon/SoundPlay.hpp"; sourceTree = "<group>"; };
+		767615CC1CB80B54008C7A67 /* VFSUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = VFSUtils.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/addon/VFSUtils.hpp"; sourceTree = "<group>"; };
+		767615CD1CB80B84008C7A67 /* definitions_audioengine.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions_audioengine.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/audioengine/definitions_audioengine.hpp"; sourceTree = "<group>"; };
+		767615CE1CB80B84008C7A67 /* General.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = General.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/audioengine/General.hpp"; sourceTree = "<group>"; };
+		767615CF1CB80B84008C7A67 /* Stream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Stream.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/audioengine/Stream.hpp"; sourceTree = "<group>"; };
+		767615D01CB80BA8008C7A67 /* ControlButton.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlButton.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlButton.hpp"; sourceTree = "<group>"; };
+		767615D11CB80BA8008C7A67 /* ControlEdit.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlEdit.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlEdit.hpp"; sourceTree = "<group>"; };
+		767615D21CB80BA8008C7A67 /* ControlFadeLabel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlFadeLabel.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlFadeLabel.hpp"; sourceTree = "<group>"; };
+		767615D31CB80BA8008C7A67 /* ControlImage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlImage.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlImage.hpp"; sourceTree = "<group>"; };
+		767615D41CB80BA8008C7A67 /* ControlLabel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlLabel.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlLabel.hpp"; sourceTree = "<group>"; };
+		767615D51CB80BA8008C7A67 /* ControlProgress.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlProgress.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlProgress.hpp"; sourceTree = "<group>"; };
+		767615D61CB80BA8008C7A67 /* ControlRadioButton.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlRadioButton.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlRadioButton.hpp"; sourceTree = "<group>"; };
+		767615D71CB80BA8008C7A67 /* ControlRendering.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlRendering.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlRendering.hpp"; sourceTree = "<group>"; };
+		767615D81CB80BA8008C7A67 /* ControlSettingsSlider.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlSettingsSlider.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlSettingsSlider.hpp"; sourceTree = "<group>"; };
+		767615D91CB80BA8008C7A67 /* ControlSlider.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlSlider.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlSlider.hpp"; sourceTree = "<group>"; };
+		767615DA1CB80BA8008C7A67 /* ControlSpin.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlSpin.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlSpin.hpp"; sourceTree = "<group>"; };
+		767615DB1CB80BA8008C7A67 /* ControlTextBox.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControlTextBox.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ControlTextBox.hpp"; sourceTree = "<group>"; };
+		767615DC1CB80BA8008C7A67 /* definitions_gui.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions_gui.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/definitions_gui.hpp"; sourceTree = "<group>"; };
+		767615DD1CB80BA8008C7A67 /* DialogExtendedProgress.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogExtendedProgress.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogExtendedProgress.hpp"; sourceTree = "<group>"; };
+		767615DE1CB80BA8008C7A67 /* DialogFileBrowser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogFileBrowser.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogFileBrowser.hpp"; sourceTree = "<group>"; };
+		767615DF1CB80BA8008C7A67 /* DialogKeyboard.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogKeyboard.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogKeyboard.hpp"; sourceTree = "<group>"; };
+		767615E01CB80BA8008C7A67 /* DialogNumeric.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogNumeric.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogNumeric.hpp"; sourceTree = "<group>"; };
+		767615E11CB80BA8008C7A67 /* DialogOK.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogOK.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogOK.hpp"; sourceTree = "<group>"; };
+		767615E21CB80BA8008C7A67 /* DialogProgress.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogProgress.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogProgress.hpp"; sourceTree = "<group>"; };
+		767615E31CB80BA8008C7A67 /* DialogSelect.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogSelect.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogSelect.hpp"; sourceTree = "<group>"; };
+		767615E41CB80BA8008C7A67 /* DialogTextViewer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogTextViewer.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogTextViewer.hpp"; sourceTree = "<group>"; };
+		767615E51CB80BA8008C7A67 /* DialogYesNo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DialogYesNo.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/DialogYesNo.hpp"; sourceTree = "<group>"; };
+		767615E61CB80BA8008C7A67 /* General.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = General.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/General.hpp"; sourceTree = "<group>"; };
+		767615E71CB80BA8008C7A67 /* ListItem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ListItem.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/ListItem.hpp"; sourceTree = "<group>"; };
+		767615E81CB80BA8008C7A67 /* Window.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Window.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/gui/Window.hpp"; sourceTree = "<group>"; };
+		767615E91CB80BE8008C7A67 /* definitions_inputstream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions_inputstream.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/inputstream/definitions_inputstream.hpp"; sourceTree = "<group>"; };
+		767615EA1CB80BE8008C7A67 /* InputStream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = InputStream.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/inputstream/InputStream.hpp"; sourceTree = "<group>"; };
+		767615EB1CB80C05008C7A67 /* definitions_peripheral.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions_peripheral.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/peripheral/definitions_peripheral.hpp"; sourceTree = "<group>"; };
+		767615EC1CB80C05008C7A67 /* Peripheral.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Peripheral.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/peripheral/Peripheral.hpp"; sourceTree = "<group>"; };
+		767615ED1CB80C1C008C7A67 /* definitions_player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = definitions_player.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/player/definitions_player.hpp"; sourceTree = "<group>"; };
+		767615EE1CB80C1C008C7A67 /* InfoTagMusic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = InfoTagMusic.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/player/InfoTagMusic.hpp"; sourceTree = "<group>"; };
+		767615EF1CB80C1C008C7A67 /* InfoTagVideo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = InfoTagVideo.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/player/InfoTagVideo.hpp"; sourceTree = "<group>"; };
+		767615F01CB80C1C008C7A67 /* Player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Player.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/player/Player.hpp"; sourceTree = "<group>"; };
+		767615F11CB80C1C008C7A67 /* PlayList.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PlayList.hpp; path = "kodi-addon-dev-kit/include/kodi/api3/player/PlayList.hpp"; sourceTree = "<group>"; };
 		76A849631CA7752100223B66 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = "kodi-addon-dev-kit/src/api2/version.h"; sourceTree = "<group>"; };
 		76F4C37C1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksInputStream.cpp; path = addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.cpp; sourceTree = "<group>"; };
 		76F4C37D1C8E92E000A1E64B /* AddonCallbacksInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksInputStream.h; path = addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h; sourceTree = "<group>"; };
@@ -6777,6 +6907,22 @@
 			name = audioengine;
 			sourceTree = "<group>";
 		};
+		767615111CB80589008C7A67 /* api3 */ = {
+			isa = PBXGroup;
+			children = (
+				7676151C1CB806AC008C7A67 /* Addon */,
+				7676151B1CB806A2008C7A67 /* AudioEngine */,
+				7676151A1CB80698008C7A67 /* GUI */,
+				767615191CB8068D008C7A67 /* InputStream */,
+				767615181CB80674008C7A67 /* Peripheral */,
+				767615171CB8065C008C7A67 /* Player */,
+				767615161CB80655008C7A67 /* PVR */,
+				767615121CB8063A008C7A67 /* AddonInterfaceBase.cpp */,
+				767615131CB8063A008C7A67 /* AddonInterfaceBase.h */,
+			);
+			name = api3;
+			sourceTree = "<group>";
+		};
 		767615161CB80655008C7A67 /* PVR */ = {
 			isa = PBXGroup;
 			children = (
@@ -6900,6 +7046,25 @@
 				767615261CB806DB008C7A67 /* Addon_Network.h */,
 			);
 			name = Addon;
+			sourceTree = "<group>";
+		};
+		767615B51CB80985008C7A67 /* api3 */ = {
+			isa = PBXGroup;
+			children = (
+				767615C61CB80A90008C7A67 /* .internal */,
+				767615C51CB80A89008C7A67 /* addon */,
+				767615C41CB80A80008C7A67 /* audioengine */,
+				767615C31CB80A7A008C7A67 /* gui */,
+				767615C21CB80A70008C7A67 /* inputstream */,
+				767615C11CB80A5E008C7A67 /* peripheral */,
+				767615C01CB80A57008C7A67 /* player */,
+				767615BA1CB80A1E008C7A67 /* pvr */,
+				767615B61CB809F4008C7A67 /* AddonLib.hpp */,
+				767615B71CB809F4008C7A67 /* definitions-all.hpp */,
+				767615B81CB809F4008C7A67 /* definitions.hpp */,
+				767615B91CB80A11008C7A67 /* version.h */,
+			);
+			name = api3;
 			sourceTree = "<group>";
 		};
 		767615BA1CB80A1E008C7A67 /* pvr */ = {
@@ -9780,6 +9945,7 @@
 			isa = PBXGroup;
 			children = (
 				764697F31CA7302E00AB1347 /* api2 */,
+				767615B51CB80985008C7A67 /* api3 */,
 				EDE8C70D1C7F618500A86ECC /* kodi_adsp_dll.h */,
 				EDE8C70E1C7F618500A86ECC /* kodi_adsp_types.h */,
 				EDE8C70F1C7F618500A86ECC /* kodi_audiodec_dll.h */,
@@ -9834,6 +10000,7 @@
 			children = (
 				EDED2E7F1C878C87000F5E80 /* api1 */,
 				7646976E1CA72D7500AB1347 /* api2 */,
+				767615111CB80589008C7A67 /* api3 */,
 				EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */,
 				EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */,
 				EDED2E9C1C878F70000F5E80 /* IAddonInterface.h */,
