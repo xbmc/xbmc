@@ -19,6 +19,15 @@ configure_file(${CORE_SOURCE_DIR}/project/cmake/${APP_NAME_LC}-config.cmake.in
 
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC} @ONLY)
+
+# Set XBMC_STANDALONE_SH_PULSE so we can insert PulseAudio block into kodi-standalone
+if(EXISTS ${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse)
+  if(ENABLE_PULSEAUDIO AND PULSEAUDIO_FOUND)
+    file(READ "${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse" pulse_content)
+    set(XBMC_STANDALONE_SH_PULSE ${pulse_content})
+  endif()
+endif()
+
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone @ONLY)
 
