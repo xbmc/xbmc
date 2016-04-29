@@ -46,7 +46,7 @@
 #include "HwDecRender/MMALRenderer.h"
 #endif
 #if defined(TARGET_DARWIN_IOS)
-#include "HwDecRender/RendererVTB.h"
+#include "HwDecRender/RendererVTBGLES.h"
 #endif
 #if defined(HAS_IMXVPU)
 #include "HwDecRender/RendererIMX.h"
@@ -522,9 +522,7 @@ void CRenderManager::CreateRenderer()
     }
     else if (m_format == RENDER_FMT_CVBREF)
     {
-#if defined(TARGET_DARWIN_OSX)
-      m_pRenderer = new CRendererVTB;
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN)
       m_pRenderer = new CRendererVTB;
 #endif
     }

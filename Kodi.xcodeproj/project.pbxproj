@@ -480,8 +480,6 @@
 		7CC7B6C919186A8800DDB120 /* SettingConditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC7B6C619186A8800DDB120 /* SettingConditions.cpp */; };
 		7CC82C9318284F9F0010DF30 /* CharsetDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */; };
 		7CC82C9418284F9F0010DF30 /* CharsetDetection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */; };
-		7CCA95C11BC6E6670091D308 /* RendererVTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCA95BD1BC6E6670091D308 /* RendererVTB.cpp */; };
-		7CCA95C21BC6E6670091D308 /* RendererVTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCA95BD1BC6E6670091D308 /* RendererVTB.cpp */; };
 		7CCA95C81BC6E6F90091D308 /* Resolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCA95C71BC6E6F90091D308 /* Resolution.cpp */; };
 		7CCA95C91BC6E6F90091D308 /* Resolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCA95C71BC6E6F90091D308 /* Resolution.cpp */; };
 		7CCA95CC1BC6E71D0091D308 /* GLSLOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCA95CA1BC6E71D0091D308 /* GLSLOutput.cpp */; };
@@ -690,6 +688,7 @@
 		7CED593A1CD340460093F573 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CED59381CD340460093F573 /* VideoToolbox.framework */; };
 		7CED593D1CD341280093F573 /* VTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593B1CD341280093F573 /* VTB.cpp */; };
 		7CED593E1CD341280093F573 /* VTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593B1CD341280093F573 /* VTB.cpp */; };
+		7CED59411CD343260093F573 /* RendererVTBGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593F1CD343260093F573 /* RendererVTBGLES.cpp */; };
 		7CEE587D1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CEE587E1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CF0504B190A1D7200222135 /* FFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF05049190A1D7200222135 /* FFmpeg.cpp */; };
@@ -3041,8 +3040,6 @@
 		7CC7B6C719186A8800DDB120 /* SettingConditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingConditions.h; sourceTree = "<group>"; };
 		7CC82C9118284F9F0010DF30 /* CharsetDetection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CharsetDetection.cpp; sourceTree = "<group>"; };
 		7CC82C9218284F9F0010DF30 /* CharsetDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharsetDetection.h; sourceTree = "<group>"; };
-		7CCA95BD1BC6E6670091D308 /* RendererVTB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RendererVTB.cpp; path = HwDecRender/RendererVTB.cpp; sourceTree = "<group>"; };
-		7CCA95BE1BC6E6670091D308 /* RendererVTB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RendererVTB.h; path = HwDecRender/RendererVTB.h; sourceTree = "<group>"; };
 		7CCA95C71BC6E6F90091D308 /* Resolution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Resolution.cpp; sourceTree = "<group>"; };
 		7CCA95CA1BC6E71D0091D308 /* GLSLOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLSLOutput.cpp; sourceTree = "<group>"; };
 		7CCA95CB1BC6E71D0091D308 /* GLSLOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSLOutput.h; sourceTree = "<group>"; };
@@ -3402,6 +3399,8 @@
 		7CED59381CD340460093F573 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		7CED593B1CD341280093F573 /* VTB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VTB.cpp; sourceTree = "<group>"; };
 		7CED593C1CD341280093F573 /* VTB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTB.h; sourceTree = "<group>"; };
+		7CED593F1CD343260093F573 /* RendererVTBGLES.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RendererVTBGLES.cpp; path = HwDecRender/RendererVTBGLES.cpp; sourceTree = "<group>"; };
+		7CED59401CD343260093F573 /* RendererVTBGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RendererVTBGLES.h; path = HwDecRender/RendererVTBGLES.h; sourceTree = "<group>"; };
 		7CEE107B1C970BB800E0D426 /* kodi_inputstream_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_inputstream_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h"; sourceTree = "<group>"; };
 		7CEE107C1C970BB800E0D426 /* kodi_inputstream_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_inputstream_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"; sourceTree = "<group>"; };
 		7CEE107D1C970BB800E0D426 /* libKODI_inputstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_inputstream.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"; sourceTree = "<group>"; };
@@ -6398,8 +6397,8 @@
 			children = (
 				7C87F5C61CD1E9D4009AC381 /* RendererVTBGL.cpp */,
 				7C87F5C71CD1E9D4009AC381 /* RendererVTBGL.h */,
-				7CCA95BD1BC6E6670091D308 /* RendererVTB.cpp */,
-				7CCA95BE1BC6E6670091D308 /* RendererVTB.h */,
+				7CED593F1CD343260093F573 /* RendererVTBGLES.cpp */,
+				7CED59401CD343260093F573 /* RendererVTBGLES.h */,
 			);
 			name = HwDecRender;
 			sourceTree = "<group>";
@@ -10472,7 +10471,6 @@
 				DF402A581644613B001C56B8 /* AddonModuleXbmc.cpp in Sources */,
 				DF402A591644613B001C56B8 /* AddonModuleXbmcaddon.cpp in Sources */,
 				DF402A5A1644613B001C56B8 /* AddonModuleXbmcgui.cpp in Sources */,
-				7CCA95C11BC6E6670091D308 /* RendererVTB.cpp in Sources */,
 				DF402A5B1644613B001C56B8 /* AddonModuleXbmcplugin.cpp in Sources */,
 				DF402A5C1644613B001C56B8 /* AddonModuleXbmcvfs.cpp in Sources */,
 				DF402A63164461B0001C56B8 /* CallbackHandler.cpp in Sources */,
@@ -11606,6 +11604,7 @@
 				E4991547174E642900741B6D /* ThumbLoader.cpp in Sources */,
 				E4991548174E642900741B6D /* ThumbnailCache.cpp in Sources */,
 				E4991549174E642900741B6D /* URL.cpp in Sources */,
+				7CED59411CD343260093F573 /* RendererVTBGLES.cpp in Sources */,
 				DF396ED61C42AC5100214C1A /* AESinkDARWINIOS.mm in Sources */,
 				E499154A174E642900741B6D /* Util.cpp in Sources */,
 				E499154B174E642900741B6D /* XBApplicationEx.cpp in Sources */,
@@ -11723,7 +11722,6 @@
 				7CCDA0DC192753E30074CF51 /* PltAction.cpp in Sources */,
 				7CCDA0E5192753E30074CF51 /* PltArgument.cpp in Sources */,
 				7CCDA0EE192753E30074CF51 /* PltConstants.cpp in Sources */,
-				7CCA95C21BC6E6670091D308 /* RendererVTB.cpp in Sources */,
 				7CCDA0F7192753E30074CF51 /* PltCtrlPoint.cpp in Sources */,
 				7CCDA100192753E30074CF51 /* PltCtrlPointTask.cpp in Sources */,
 				7CCDA109192753E30074CF51 /* PltDatagramStream.cpp in Sources */,

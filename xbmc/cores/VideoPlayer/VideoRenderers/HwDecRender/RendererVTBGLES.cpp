@@ -18,7 +18,7 @@
  *
  */
 
-#include "RendererVTB.h"
+#include "RendererVTBGLES.h"
 
 #if defined(TARGET_DARWIN_IOS)
 #include "cores/IPlayer.h"
