@@ -54,6 +54,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "ServiceBroker.h"
 
 using namespace XFILE;
@@ -190,7 +191,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
   }
 }
 
-static bool LoadManifest(std::set<std::string>& addons)
+static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
 {
   CXBMCTinyXML doc;
   if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
@@ -210,7 +211,12 @@ static bool LoadManifest(std::set<std::string>& addons)
   while (elem)
   {
     if (elem->FirstChild())
-      addons.insert(elem->FirstChild()->ValueStr());
+    {
+      if (XMLUtils::GetAttribute(elem, "optional") == "true")
+        optional.insert(elem->FirstChild()->ValueStr());
+      else
+        system.insert(elem->FirstChild()->ValueStr());
+    }
     elem = elem->NextSiblingElement("addon");
   }
   return true;
@@ -310,7 +316,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  if (!LoadManifest(m_systemAddons))
+  if (!LoadManifest(m_systemAddons, m_optionalAddons))
   {
     CLog::Log(LOGERROR, "ADDONS: Failed to read manifest");
     return false;
@@ -671,7 +677,7 @@ bool CAddonMgr::FindAddons()
       for (int i = 0; i < n; ++i)
         installed.insert(cp_addons[i]->identifier);
       m_cpluff->release_info(m_cp_context, cp_addons);
-      m_database.SyncInstalled(installed, m_systemAddons);
+      m_database.SyncInstalled(installed, m_systemAddons, m_optionalAddons);
     }
 
     // Reload caches
