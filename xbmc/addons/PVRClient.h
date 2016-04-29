@@ -69,10 +69,10 @@ namespace PVR
 
     virtual void OnDisabled() override;
     virtual void OnEnabled() override;
-    virtual void SaveSettings() override;
     virtual void OnPostInstall(bool update, bool modal) override;
     virtual void OnPreUnInstall() override;
     virtual void OnPostUnInstall() override;
+    ADDON::AddonPtr GetRunningInstance() const override;
 
     /** @name PVR add-on methods */
     //@{
