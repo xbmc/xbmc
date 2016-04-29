@@ -4911,6 +4911,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE streamdetails ADD strVideoLanguage text");
   }
 
+<<<<<<< Updated upstream
   if (iVersion < 104)
   {
     m_pDS->exec("ALTER TABLE tvshow ADD duration INTEGER");
