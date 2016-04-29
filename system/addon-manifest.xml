@@ -42,4 +42,5 @@
   <addon>xbmc.pvr</addon>
   <addon>xbmc.python</addon>
   <addon>xbmc.webinterface</addon>
+  <addon optional="true">peripheral.joystick</addon>
 </addons>
