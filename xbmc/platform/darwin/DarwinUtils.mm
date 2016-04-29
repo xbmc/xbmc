@@ -480,44 +480,6 @@ bool CDarwinUtils::IsIosSandboxed(void)
   return ret == 1;
 }
 
-bool CDarwinUtils::HasVideoToolboxDecoder(void)
-{
-  static int DecoderAvailable = -1;
-
-  if (DecoderAvailable == -1)
-  {
-    {
-      /* When XBMC is started from a sandbox directory we have to check the sysctl values */      
-      if (IsIosSandboxed())
-      {
-        uint64_t proc_enforce = 0;
-        uint64_t vnode_enforce = 0; 
-        size_t size = sizeof(vnode_enforce);
-
-        sysctlbyname("security.mac.proc_enforce",  &proc_enforce,  &size, NULL, 0);  
-        sysctlbyname("security.mac.vnode_enforce", &vnode_enforce, &size, NULL, 0);
-
-        if (vnode_enforce && proc_enforce)
-        {
-          DecoderAvailable = 1;
-          CLog::Log(LOGINFO, "VideoToolBox decoder not available. Use : sysctl -w security.mac.proc_enforce=0; sysctl -w security.mac.vnode_enforce=0\n");
-        }
-        else
-        {
-          DecoderAvailable = 1;
-          CLog::Log(LOGINFO, "VideoToolBox decoder available\n");
-        }  
-      }
-      else
-      {
-        DecoderAvailable = 1;
-      }
-    }
-  }
-
-  return (DecoderAvailable == 1);
-}
-
 int CDarwinUtils::BatteryLevel(void)
 {
   float batteryLevel = 0;

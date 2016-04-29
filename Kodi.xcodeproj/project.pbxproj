@@ -678,7 +678,6 @@
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CD46A141CCDEA7500BF4AD4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD46A131CCDEA7500BF4AD4 /* VideoToolbox.framework */; };
 		7CD46A161CCDF09500BF4AD4 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD46A151CCDF09500BF4AD4 /* CoreMedia.framework */; };
-		7CD46A191CCDF21300BF4AD4 /* VTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD46A181CCDF21300BF4AD4 /* VTB.cpp */; };
 		7CD4F7EC1C60DBC10015214B /* VideoFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD4F7EA1C60DBC10015214B /* VideoFileItemListModifier.cpp */; };
 		7CD4F7ED1C60DBC10015214B /* VideoFileItemListModifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD4F7EA1C60DBC10015214B /* VideoFileItemListModifier.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
@@ -687,6 +686,10 @@
 		7CE3FB901C9D40EA00366A4C /* ServiceBroker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CE3FB8E1C9D40EA00366A4C /* ServiceBroker.cpp */; };
 		7CE3FB911C9D40EA00366A4C /* ServiceBroker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CE3FB8E1C9D40EA00366A4C /* ServiceBroker.cpp */; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
+		7CED59391CD340460093F573 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CED59381CD340460093F573 /* VideoToolbox.framework */; };
+		7CED593A1CD340460093F573 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CED59381CD340460093F573 /* VideoToolbox.framework */; };
+		7CED593D1CD341280093F573 /* VTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593B1CD341280093F573 /* VTB.cpp */; };
+		7CED593E1CD341280093F573 /* VTB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CED593B1CD341280093F573 /* VTB.cpp */; };
 		7CEE587D1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CEE587E1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE587C1B5A3FFB007C2B5A /* AudioDSPSettings.cpp */; };
 		7CF0504B190A1D7200222135 /* FFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF05049190A1D7200222135 /* FFmpeg.cpp */; };
@@ -2151,7 +2154,6 @@
 		E499158A174E68D800741B6D /* LinuxRendererGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4991588174E68D700741B6D /* LinuxRendererGLES.cpp */; };
 		E499158B174E68EE00741B6D /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; };
 		E499158C174E68EE00741B6D /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
-		E4991591174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */; };
 		E4991592174E6B5C00741B6D /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		E4991596174E70BF00741B6D /* yuv2rgb.neon.S in Sources */ = {isa = PBXBuildFile; fileRef = E4991595174E70BF00741B6D /* yuv2rgb.neon.S */; };
 		E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */; };
@@ -3387,8 +3389,6 @@
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
 		7CD46A131CCDEA7500BF4AD4 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		7CD46A151CCDF09500BF4AD4 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		7CD46A171CCDF1FD00BF4AD4 /* VTB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTB.h; sourceTree = "<group>"; };
-		7CD46A181CCDF21300BF4AD4 /* VTB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VTB.cpp; sourceTree = "<group>"; };
 		7CD4F7EA1C60DBC10015214B /* VideoFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoFileItemListModifier.cpp; sourceTree = "<group>"; };
 		7CD4F7EB1C60DBC10015214B /* VideoFileItemListModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFileItemListModifier.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
@@ -3399,6 +3399,9 @@
 		7CE3FB8F1C9D40EA00366A4C /* ServiceBroker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceBroker.h; sourceTree = "<group>"; };
 		7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolDirectory.cpp; sourceTree = "<group>"; };
 		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
+		7CED59381CD340460093F573 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		7CED593B1CD341280093F573 /* VTB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VTB.cpp; sourceTree = "<group>"; };
+		7CED593C1CD341280093F573 /* VTB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTB.h; sourceTree = "<group>"; };
 		7CEE107B1C970BB800E0D426 /* kodi_inputstream_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_inputstream_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h"; sourceTree = "<group>"; };
 		7CEE107C1C970BB800E0D426 /* kodi_inputstream_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_inputstream_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"; sourceTree = "<group>"; };
 		7CEE107D1C970BB800E0D426 /* libKODI_inputstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_inputstream.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"; sourceTree = "<group>"; };
@@ -4743,8 +4746,6 @@
 		E4991573174E661300741B6D /* WinSystemIOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = WinSystemIOS.mm; path = osx/WinSystemIOS.mm; sourceTree = "<group>"; };
 		E4991588174E68D700741B6D /* LinuxRendererGLES.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxRendererGLES.cpp; sourceTree = "<group>"; };
 		E4991589174E68D800741B6D /* LinuxRendererGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxRendererGLES.h; sourceTree = "<group>"; };
-		E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecVideoToolBox.cpp; sourceTree = "<group>"; };
-		E4991590174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecVideoToolBox.h; sourceTree = "<group>"; };
 		E4991594174E70BE00741B6D /* yuv2rgb.neon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = yuv2rgb.neon.h; sourceTree = "<group>"; };
 		E4991595174E70BF00741B6D /* yuv2rgb.neon.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = yuv2rgb.neon.S; sourceTree = "<group>"; };
 		E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
@@ -5034,6 +5035,7 @@
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
 				F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */,
 				E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */,
+				7CED59391CD340460093F573 /* VideoToolbox.framework in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */,
 				DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */,
@@ -5052,6 +5054,7 @@
 				E49910E9174E54C300741B6D /* CoreVideo.framework in Frameworks */,
 				E49910E7174E54B400741B6D /* CoreMedia.framework in Frameworks */,
 				E49910E5174E54A100741B6D /* OpenGLES.framework in Frameworks */,
+				7CED593A1CD340460093F573 /* VideoToolbox.framework in Frameworks */,
 				E49910E3174E549400741B6D /* QuartzCore.framework in Frameworks */,
 				E499108C174D0D2600741B6D /* UIKit.framework in Frameworks */,
 				E499108E174D0D2600741B6D /* Foundation.framework in Frameworks */,
@@ -7974,12 +7977,10 @@
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
 				E38E153E0D25F9F900618676 /* DVDVideoCodecFFmpeg.h */,
-				E499158F174E6ABD00741B6D /* DVDVideoCodecVideoToolBox.cpp */,
-				E4991590174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.h */,
 				E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */,
 				E38E15420D25F9F900618676 /* DVDVideoPPFFmpeg.h */,
-				7CD46A171CCDF1FD00BF4AD4 /* VTB.h */,
-				7CD46A181CCDF21300BF4AD4 /* VTB.cpp */,
+				7CED593C1CD341280093F573 /* VTB.h */,
+				7CED593B1CD341280093F573 /* VTB.cpp */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -8866,6 +8867,7 @@
 		E49910F6174E55D400741B6D /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				7CED59381CD340460093F573 /* VideoToolbox.framework */,
 				E49910EC174E54D200741B6D /* AudioToolbox.framework */,
 				E49910F2174E54FB00741B6D /* AVFoundation.framework */,
 				E49910F0174E54EC00741B6D /* CFNetwork.framework */,
@@ -9385,6 +9387,11 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				TargetAttributes = {
+					E4991088174D0D2600741B6D = {
+						DevelopmentTeam = 4489HXHVBM;
+					};
+				};
 			};
 			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Kodi" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -10225,7 +10232,6 @@
 				433219D812E4C6A500CD7486 /* udf25.cpp in Sources */,
 				433219D912E4C6A500CD7486 /* UDFDirectory.cpp in Sources */,
 				7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
-				7CD46A191CCDF21300BF4AD4 /* VTB.cpp in Sources */,
 				18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
 				F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */,
 				7C84A59E12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */,
@@ -10371,6 +10377,7 @@
 				C84828D5156CFCD8005A996F /* PVRGUIInfo.cpp in Sources */,
 				C84828D6156CFCD8005A996F /* PVRManager.cpp in Sources */,
 				C84828D8156CFCD8005A996F /* PVRRecording.cpp in Sources */,
+				7CED593D1CD341280093F573 /* VTB.cpp in Sources */,
 				C84828D9156CFCD8005A996F /* PVRRecordings.cpp in Sources */,
 				C84828DB156CFCD8005A996F /* PVRTimerInfoTag.cpp in Sources */,
 				C84828DC156CFCD8005A996F /* PVRTimers.cpp in Sources */,
@@ -10769,6 +10776,7 @@
 				68AE5C1C1C92438E00C4D527 /* GUIControllerButton.cpp in Sources */,
 				E499116A174E5CC300741B6D /* recvol.cpp in Sources */,
 				E499116B174E5CC300741B6D /* resource.cpp in Sources */,
+				7CED593E1CD341280093F573 /* VTB.cpp in Sources */,
 				E499116C174E5CC300741B6D /* rijndael.cpp in Sources */,
 				E499116D174E5CC300741B6D /* rs.cpp in Sources */,
 				E499116E174E5CC300741B6D /* savepos.cpp in Sources */,
@@ -11646,7 +11654,6 @@
 				E499158A174E68D800741B6D /* LinuxRendererGLES.cpp in Sources */,
 				E499158B174E68EE00741B6D /* DVDCodecUtils.cpp in Sources */,
 				E499158C174E68EE00741B6D /* DVDFactoryCodec.cpp in Sources */,
-				E4991591174E6ABE00741B6D /* DVDVideoCodecVideoToolBox.cpp in Sources */,
 				E4991592174E6B5C00741B6D /* fstrcmp.c in Sources */,
 				E4991596174E70BF00741B6D /* yuv2rgb.neon.S in Sources */,
 				0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
@@ -12007,8 +12014,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -12017,6 +12024,8 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_BUNDLE_IDENTIFIER = org.xbmc.fernet;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -12032,8 +12041,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -12041,6 +12050,8 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				INFOPLIST_FILE = "$(SRCROOT)/xbmc/platform/darwin/ios/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = org.xbmc.fernet;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

@@ -22,12 +22,13 @@
 
 #if defined(TARGET_DARWIN_IOS)
 #include "cores/IPlayer.h"
-#include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "platform/darwin/DarwinUtils.h"
+#include <CoreVideo/CVBuffer.h>
+#include <CoreVideo/CVPixelBuffer.h>
 
 CRendererVTB::CRendererVTB()
 {

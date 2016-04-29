@@ -57,7 +57,7 @@
 #ifdef HAVE_LIBVA
 #include "VAAPI.h"
 #endif
-#ifdef TARGET_DARWIN_OSX
+#ifdef TARGET_DARWIN
 #include "VTB.h"
 #endif
 #ifdef HAS_MMAL
@@ -164,7 +164,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
     }
 #endif
 
-#ifdef TARGET_DARWIN_OSX
+#ifdef TARGET_DARWIN
     if (*cur == AV_PIX_FMT_VIDEOTOOLBOX && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
     {
       VTB::CDecoder* dec = new VTB::CDecoder();
@@ -289,7 +289,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
       tryhw = true;
 #endif
-#ifdef TARGET_DARWIN_OSX
+#ifdef TARGET_DARWIN
     if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
       tryhw = true;
 #endif

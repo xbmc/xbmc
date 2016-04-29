@@ -45,7 +45,7 @@
 #if defined(HAS_MMAL)
 #include "HwDecRender/MMALRenderer.h"
 #endif
-#if defined(HAVE_VIDEOTOOLBOXDECODER)
+#if defined(TARGET_DARWIN_IOS)
 #include "HwDecRender/RendererVTB.h"
 #endif
 #if defined(HAS_IMXVPU)
@@ -524,7 +524,7 @@ void CRenderManager::CreateRenderer()
     {
 #if defined(TARGET_DARWIN_OSX)
       m_pRenderer = new CRendererVTB;
-#elif defined(HAVE_VIDEOTOOLBOXDECODER)
+#elif defined(TARGET_DARWIN_IOS)
       m_pRenderer = new CRendererVTB;
 #endif
     }

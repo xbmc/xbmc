@@ -311,12 +311,7 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_ANDROID
   m_simpleConditions.insert("has_mediacodec");
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  m_simpleConditions.insert("have_videotoolboxdecoder");
-  if (g_sysinfo.HasVideoToolBoxDecoder())
-    m_simpleConditions.insert("hasvideotoolboxdecoder");
-#endif
-#ifdef TARGET_DARWIN_OSX
+#ifdef TARGET_DARWIN
   m_simpleConditions.insert("HasVTB");
 #endif
 #ifdef HAS_LIBAMCODEC
