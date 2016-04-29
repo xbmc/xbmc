@@ -101,13 +101,6 @@ void CPVRClient::OnEnabled()
   CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
-void CPVRClient::SaveSettings()
-{
-  CAddon::SaveSettings();
-  ReCreate();
-  CPVRManager::GetInstance().Clients()->UpdateAddons();
-}
-
 void CPVRClient::OnPostInstall(bool update, bool modal)
 {
   CAddon::OnPostInstall(update, modal);
@@ -125,6 +118,13 @@ void CPVRClient::OnPostUnInstall()
 {
   CAddon::OnPostUnInstall();
   CPVRManager::GetInstance().Clients()->UpdateAddons();
+}
+
+ADDON::AddonPtr CPVRClient::GetRunningInstance() const
+{
+  ADDON::AddonPtr addon;
+  CPVRManager::GetInstance().Clients()->GetClient(ID(), addon);
+  return addon;
 }
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
