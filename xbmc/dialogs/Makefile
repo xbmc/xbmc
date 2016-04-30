@@ -9,6 +9,7 @@ SRCS=GUIDialogBoxBase.cpp \
      GUIDialogGamepad.cpp \
      GUIDialogKaiToast.cpp \
      GUIDialogKeyboardGeneric.cpp \
+     GUIDialogKeyboardTouch.cpp \
      GUIDialogMediaFilter.cpp \
      GUIDialogMediaSource.cpp \
      GUIDialogNumeric.cpp \
