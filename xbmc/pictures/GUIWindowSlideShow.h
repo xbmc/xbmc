@@ -21,7 +21,7 @@
  */
 
 #include <set>
-#include "guilib/GUIWindow.h"
+#include "guilib/GUIDialog.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -59,7 +59,7 @@ private:
   CGUIWindowSlideShow *m_pCallback;
 };
 
-class CGUIWindowSlideShow : public CGUIWindow
+class CGUIWindowSlideShow : public CGUIDialog
 {
 public:
   CGUIWindowSlideShow(void);

@@ -147,7 +147,7 @@ void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const std::string
 }
 
 CGUIWindowSlideShow::CGUIWindowSlideShow(void)
-    : CGUIWindow(WINDOW_SLIDESHOW, "SlideShow.xml")
+    : CGUIDialog(WINDOW_SLIDESHOW, "SlideShow.xml")
 {
   m_pBackgroundLoader = NULL;
   m_Resolution = RES_INVALID;
@@ -267,7 +267,7 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
   }
   g_infoManager.ResetCurrentSlide();
 
-  CGUIWindow::OnDeinitWindow(nextWindowID);
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 void CGUIWindowSlideShow::Add(const CFileItem *picture)
@@ -624,10 +624,13 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
   RenderPause();
   CGUIWindow::Process(currentTime, regions);
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowSlideShow::Render()
 {
+  g_graphicsContext.Clear(0xff000000);
+
   if (m_Image[m_iCurrentPic].IsLoaded())
     m_Image[m_iCurrentPic].Render();
 
@@ -743,13 +746,10 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       }
     }
     break;
-
-  case ACTION_PREVIOUS_MENU:
-  case ACTION_NAV_BACK:
   case ACTION_STOP:
     if (m_slides.size())
       AnnouncePlayerStop(m_slides.at(m_iCurrentSlide));
-    g_windowManager.PreviousWindow();
+    Close();
     break;
 
   case ACTION_NEXT_PICTURE:
@@ -873,7 +873,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     break;
 
   default:
-    return CGUIWindow::OnAction(action);
+    return CGUIDialog::OnAction(action);
   }
   return true;
 }
@@ -907,7 +907,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       else
         m_Resolution = g_graphicsContext.GetVideoResolution();
 
-      CGUIWindow::OnMessage(message);
+      CGUIDialog::OnMessage(message);
 
       // turn off slideshow if we only have 1 image
       if (m_slides.size() <= 1)
@@ -998,7 +998,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       }
       break;
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIDialog::OnMessage(message);
 }
 
 void CGUIWindowSlideShow::RenderPause()
