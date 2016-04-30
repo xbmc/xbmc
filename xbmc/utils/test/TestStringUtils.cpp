@@ -525,3 +525,26 @@ TEST(TestStringUtils, sortstringbyname)
   EXPECT_STREQ("B", strarray[1].c_str());
   EXPECT_STREQ("c", strarray[2].c_str());
 }
+
+TEST(TestStringUtils, FileSizeFormat)
+{
+  EXPECT_STREQ("0B", StringUtils::FormatFileSize(0).c_str());
+
+  EXPECT_STREQ("999B", StringUtils::FormatFileSize(999).c_str());
+  EXPECT_STREQ("0.98kB", StringUtils::FormatFileSize(1000).c_str());
+
+  EXPECT_STREQ("1.00kB", StringUtils::FormatFileSize(1024).c_str());
+  EXPECT_STREQ("9.99kB", StringUtils::FormatFileSize(10229).c_str());
+
+  EXPECT_STREQ("10.1kB", StringUtils::FormatFileSize(10387).c_str());
+  EXPECT_STREQ("99.9kB", StringUtils::FormatFileSize(102297).c_str());
+
+  EXPECT_STREQ("100kB", StringUtils::FormatFileSize(102400).c_str());
+  EXPECT_STREQ("999kB", StringUtils::FormatFileSize(1023431).c_str());
+
+  EXPECT_STREQ("0.98MB", StringUtils::FormatFileSize(1023897).c_str());
+  EXPECT_STREQ("0.98MB", StringUtils::FormatFileSize(1024000).c_str());
+
+  //Last unit should overflow the 3 digit limit
+  EXPECT_STREQ("5432PB", StringUtils::FormatFileSize(6115888293969133568).c_str());
+}
