@@ -11,6 +11,7 @@ if(NOT WIN32)
   get_filename_component(expat_dir ${EXPAT_LIBRARY} PATH)
   set(ldflags "-L${expat_dir}")
   ExternalProject_Add(libcpluff SOURCE_DIR ${CORE_SOURCE_DIR}/lib/cpluff
+                      BUILD_IN_SOURCE 1
                       PREFIX ${CORE_BUILD_DIR}/cpluff
                       PATCH_COMMAND rm -f config.status
                       UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
