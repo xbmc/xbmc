@@ -56,7 +56,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 23;
+  return 24;
 }
 
 void CAddonDatabase::CreateTables()
@@ -200,7 +200,7 @@ void CAddonDatabase::UpdateTables(int version)
   {
     m_pDS->exec("DROP TABLE system");
   }
-  if (version < 23)
+  if (version < 24)
   {
     m_pDS->exec("DELETE FROM addon");
     m_pDS->exec("DELETE FROM addonextra");
@@ -734,7 +734,7 @@ void CAddonDatabase::DeleteRepository(const std::string& id)
     if (NULL == m_pDS.get()) return;
 
     m_pDS->query(PrepareSQL("SELECT id FROM repo WHERE addonID='%s'", id.c_str()));
-    if (!m_pDS->eof())
+    if (m_pDS->eof())
       return;
 
     int idRepo = m_pDS->fv(0).get_asInt();
@@ -764,10 +764,11 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& id, const VECADD
     if (!SetLastChecked(id, version, CDateTime::GetCurrentDateTime().GetAsDBDateTime()))
       return false;
 
-    m_pDB->start_transaction();
-    m_pDS->exec(PrepareSQL("UPDATE repo SET checksum='%s' WHERE addonID='%s'", checksum.c_str(), id.c_str()));
-
     int idRepo = static_cast<int>(m_pDS->lastinsertid());
+    assert(idRepo > 0);
+
+    m_pDB->start_transaction();
+    m_pDS->exec(PrepareSQL("UPDATE repo SET checksum='%s' WHERE id='%d'", checksum.c_str(), idRepo));
     for (const auto& addon : addons)
       AddAddon(addon, idRepo);
 
