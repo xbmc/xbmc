@@ -272,6 +272,7 @@ namespace ADDON
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
     std::set<std::string> m_systemAddons;
+    std::set<std::string> m_optionalAddons;
   };
 
 }; /* namespace ADDON */

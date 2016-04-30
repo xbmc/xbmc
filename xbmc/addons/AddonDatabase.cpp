@@ -210,7 +210,9 @@ void CAddonDatabase::UpdateTables(int version)
   }
 }
 
-void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::set<std::string>& enabled)
+void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
+                                   const std::set<std::string>& system,
+                                   const std::set<std::string>& optional)
 {
   try
   {
@@ -240,8 +242,15 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     BeginTransaction();
     for (const auto& id : added)
+    {
+      int enable = 0;
+
+      if (system.find(id) != system.end() || optional.find(id) != optional.end())
+        enable = 1;
+
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "
-          "VALUES('%s', 0, '%s')", id.c_str(), now.c_str()));
+        "VALUES('%s', %d, '%s')", id.c_str(), enable, now.c_str()));
+    }
 
     for (const auto& id : removed)
     {
@@ -250,7 +259,7 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids, const std::
       DeleteRepository(id);
     }
 
-    for (const auto& id : enabled)
+    for (const auto& id : system)
       m_pDS->exec(PrepareSQL("UPDATE installed SET enabled=1 WHERE addonID='%s'", id.c_str()));
 
     CommitTransaction();
