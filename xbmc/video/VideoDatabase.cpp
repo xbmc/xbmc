@@ -4935,7 +4935,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->close();
   }
 
-  if (iVersion < 106)
+  if (iVersion < 107)
   { // add bookmarkName to bookmark table
     m_pDS->exec("ALTER TABLE bookmark ADD bookmarkName text");
   }
@@ -4943,7 +4943,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 106;
+  return 107;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
