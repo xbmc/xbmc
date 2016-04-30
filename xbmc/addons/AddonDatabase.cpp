@@ -44,6 +44,7 @@ static std::string SerializeMetadata(const IAddon& addon)
   variant["author"] = addon.Author();
   variant["disclaimer"] = addon.Disclaimer();
   variant["broken"] = addon.Broken();
+  variant["size"] = addon.PackageSize();
 
   variant["path"] = addon.Path();
   variant["fanart"] = addon.FanArt();
@@ -81,6 +82,7 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
   builder.SetAuthor(variant["author"].asString());
   builder.SetDisclaimer(variant["disclaimer"].asString());
   builder.SetBroken(variant["broken"].asString());
+  builder.SetPackageSize(variant["size"].asUnsignedInteger());
 
   builder.SetPath(variant["path"].asString());
   builder.SetFanart(variant["fanart"].asString());

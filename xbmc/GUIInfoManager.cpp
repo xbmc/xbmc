@@ -3817,6 +3817,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "addonlastupdated", LISTITEM_ADDON_LAST_UPDATED },
                                   { "addonlastused",    LISTITEM_ADDON_LAST_USED },
                                   { "addonorigin",      LISTITEM_ADDON_ORIGIN },
+                                  { "addonsize",        LISTITEM_ADDON_SIZE },
 };
 
 /// \page modules__General__List_of_gui_access
@@ -10244,6 +10245,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return origin->Name();
       return g_localizeStrings.Get(13205);
     }
+    break;
+  case LISTITEM_ADDON_SIZE:
+    if (item->HasAddonInfo() && item->GetAddonInfo()->PackageSize() > 0)
+      return StringUtils::FormatFileSize(item->GetAddonInfo()->PackageSize());
     break;
   }
 

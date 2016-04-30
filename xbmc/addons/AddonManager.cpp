@@ -171,6 +171,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     builder.SetDisclaimer(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "disclaimer"));
     builder.SetChangelog(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "news"));
     builder.SetLicense(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "license"));
+    builder.SetPackageSize(StringUtils::ToUint64(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "size"), 0));
 
     std::string language = CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "language");
     if (!language.empty())
