@@ -51,6 +51,11 @@
 #define WINDOW_VIDEO_PLAYLIST             10028
 
 #define WINDOW_LOGIN_SCREEN               10029
+
+#define WINDOW_SETTINGS_PLAYER            10030
+#define WINDOW_SETTINGS_LIBRARY           10031
+#define WINDOW_SETTINGS_INTERFACE         10032
+
 #define WINDOW_SETTINGS_PROFILES          10034
 #define WINDOW_SKIN_SETTINGS              10035
 

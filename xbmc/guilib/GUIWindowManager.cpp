@@ -403,6 +403,9 @@ bool CGUIWindowManager::DestroyWindows()
     Remove(WINDOW_SETTINGS_SERVICE);
     Remove(WINDOW_SETTINGS_APPEARANCE);
     Remove(WINDOW_SETTINGS_MYPVR);
+    Remove(WINDOW_SETTINGS_PLAYER);
+    Remove(WINDOW_SETTINGS_LIBRARY);
+    Remove(WINDOW_SETTINGS_INTERFACE);
     Remove(WINDOW_DIALOG_KAI_TOAST);
 
     Remove(WINDOW_DIALOG_SEEK_BAR);
@@ -847,7 +850,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
 {
   switch (pMsg->dwMessage)
   {
-  case TMSG_GUI_DIALOG_OPEN:  
+  case TMSG_GUI_DIALOG_OPEN:
   {
     if (pMsg->lpVoid)
       static_cast<CGUIDialog*>(pMsg->lpVoid)->Open(pMsg->strParam);
@@ -1034,7 +1037,7 @@ void CGUIWindowManager::RenderPass() const
   // we render the dialogs based on their render order.
   std::vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
-  
+
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
