@@ -638,4 +638,4 @@ else
 # Give a message that the framework is not configured, but don't fail.
 check testsuite testframework:
 	@echo "Google Test Framework not configured, skipping testsuite check."
-endif 
+endif
