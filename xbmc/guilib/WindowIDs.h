@@ -33,15 +33,9 @@
 #define WINDOW_TEST_PATTERN               10008
 #define WINDOW_SCREEN_CALIBRATION         10011
 
-#define WINDOW_SETTINGS_START             10012
-#define WINDOW_SETTINGS_MYPICTURES        10012
-#define WINDOW_SETTINGS_MYPROGRAMS        10013
-#define WINDOW_SETTINGS_MYWEATHER         10014
-#define WINDOW_SETTINGS_MYMUSIC           10015
+#define WINDOW_SETTINGS_START             10016
 #define WINDOW_SETTINGS_SYSTEM            10016
-#define WINDOW_SETTINGS_MYVIDEOS          10017
 #define WINDOW_SETTINGS_SERVICE           10018 // former (Eden) WINDOW_SETTINGS_NETWORK
-#define WINDOW_SETTINGS_APPEARANCE        10019
 
 #define WINDOW_SCRIPTS                    10020 // virtual window for backward compatibility
 #define WINDOW_SETTINGS_MYPVR             10021
