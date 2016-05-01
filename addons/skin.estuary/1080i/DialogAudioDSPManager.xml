@@ -66,38 +66,6 @@
 					<label>$INFO[ListItem.Label]</label>
 				</control>
 			</focusedlayout>
-			<content>
-				<item id="91">
-					<label>$LOCALIZE[15057]</label>
-					<label2>$LOCALIZE[15114]</label2>
-					<onclick>noop</onclick>
-					<property name="currentMode">InputResampling</property>
-				</item>
-				<item id="92">
-					<label>$LOCALIZE[15058]</label>
-					<label2>$LOCALIZE[15113]</label2>
-					<onclick>noop</onclick>
-					<property name="currentMode">Preprocessing</property>
-				</item>
-				<item id="93">
-					<label>$LOCALIZE[15059]</label>
-					<label2>$LOCALIZE[15115]</label2>
-					<onclick>noop</onclick>
-					<property name="currentMode">Masterprocessing</property>
-				</item>
-				<item id="94">
-					<label>$LOCALIZE[15060]</label>
-					<label2>$LOCALIZE[15117]</label2>
-					<onclick>noop</onclick>
-					<property name="currentMode">Postprocessing</property>
-				</item>
-				<item id="95">
-					<label>$LOCALIZE[15061]</label>
-					<label2>$LOCALIZE[15116]</label2>
-					<onclick>noop</onclick>
-					<property name="currentMode">OutputResampling</property>
-				</item>
-			</content>
 		</control>
 		<control type="group" id="200">
 			<description>available- and active mode lists</description>

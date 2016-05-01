@@ -55,15 +55,17 @@ typedef struct
 {
   const char* sModeType;
   int iModeType;
+  int iName;
+  int iDescription;
 } DSP_MODE_TYPES;
 
 static const DSP_MODE_TYPES dsp_mode_types[] = {
-  { "preprocessing",    AE_DSP_MODE_TYPE_PRE_PROCESS },
-  { "inputresampling",  AE_DSP_MODE_TYPE_INPUT_RESAMPLE },
-  { "masterprocessing", AE_DSP_MODE_TYPE_MASTER_PROCESS },
-  { "outputresampling", AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE },
-  { "postprocessing",   AE_DSP_MODE_TYPE_POST_PROCESS },
-  { "undefined",        AE_DSP_MODE_TYPE_UNDEFINED }
+  { "inputresampling",  AE_DSP_MODE_TYPE_INPUT_RESAMPLE,  15057, 15114 },
+  { "preprocessing",    AE_DSP_MODE_TYPE_PRE_PROCESS,     15058, 15113 },
+  { "masterprocessing", AE_DSP_MODE_TYPE_MASTER_PROCESS,  15059, 15115 },
+  { "postprocessing",   AE_DSP_MODE_TYPE_POST_PROCESS,    15060, 15117 },
+  { "outputresampling", AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE, 15061, 15116 },
+  { "undefined",        AE_DSP_MODE_TYPE_UNDEFINED,       0,     0 }
 };
 
 CGUIDialogAudioDSPManager::CGUIDialogAudioDSPManager(void)
@@ -704,14 +706,24 @@ void CGUIDialogAudioDSPManager::Update()
     return;
   }
 
-  for (int iModeType = 0; iModeType < AE_DSP_MODE_TYPE_MAX; iModeType++)
+  // construct a CFileItemList to pass 'em on to the list
+  CFileItemList items;
+  for (int i = 0; i < AE_DSP_MODE_TYPE_MAX; ++i)
   {
+    int iModeType = dsp_mode_types[i].iModeType;
+
     modes.clear();
     db.GetModes(modes, iModeType);
 
     // No modes available, nothing to do.
     if (!modes.empty())
     {
+      CFileItemPtr item(new CFileItem());
+      item->SetLabel(g_localizeStrings.Get(dsp_mode_types[i].iName));
+      item->SetLabel2(g_localizeStrings.Get(dsp_mode_types[i].iDescription));
+      item->SetProperty("currentMode", dsp_mode_types[i].sModeType);
+      items.Add(item);
+
       AE_DSP_MENUHOOK_CAT menuHook = helper_GetMenuHookCategory(iModeType);
       int continuesNo = 1;
       for (unsigned int iModePtr = 0; iModePtr < modes.size(); iModePtr++)
@@ -741,6 +753,9 @@ void CGUIDialogAudioDSPManager::Update()
 
     }
   }
+
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_MODE_SELECTION, 0, 0, &items);
+  OnMessage(msg);
 
   db.Close();
 
