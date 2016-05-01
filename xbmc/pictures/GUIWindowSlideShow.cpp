@@ -56,7 +56,7 @@ using namespace KODI::MESSAGING;
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
 
-#define IMMEDIATE_TRANSISTION_TIME          20
+#define IMMEDIATE_TRANSITION_TIME          1
 
 #define PICTURE_MOVE_AMOUNT              0.02f
 #define PICTURE_MOVE_AMOUNT_ANALOG       0.01f
@@ -544,7 +544,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     CLog::Log(LOGDEBUG, "Starting immediate transistion due to user wanting slide %s", m_slides.at(m_iNextSlide)->GetPath().c_str());
     if (m_Image[m_iCurrentPic].StartTransistion())
     {
-      m_Image[m_iCurrentPic].SetTransistionTime(1, IMMEDIATE_TRANSISTION_TIME); // only 20 frames for the transistion
+      m_Image[m_iCurrentPic].SetTransistionTime(1, IMMEDIATE_TRANSITION_TIME);
       m_bLoadNextPic = false;
     }
   }
