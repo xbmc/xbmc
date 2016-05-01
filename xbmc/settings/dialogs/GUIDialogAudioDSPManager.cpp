@@ -730,7 +730,7 @@ void CGUIDialogAudioDSPManager::Update()
             m_availableItems[iModeType]->Add(pItem);
           }
         }
-        g_windowManager.ProcessRenderLoop(false);
+        ProcessRenderLoop(false);
       }
 
       m_availableItems[iModeType]->Sort(SortByLabel, SortOrderAscending);
@@ -850,7 +850,7 @@ bool CGUIDialogAudioDSPManager::UpdateDatabase(CGUIDialogBusy* pDlgBusy)
         }
       }
 
-      g_windowManager.ProcessRenderLoop(false);
+      ProcessRenderLoop(false);
     }
 
     for (int iListPtr = 0; iListPtr < m_availableItems[i]->Size(); iListPtr++)
@@ -883,7 +883,7 @@ bool CGUIDialogAudioDSPManager::UpdateDatabase(CGUIDialogBusy* pDlgBusy)
         }
       }
 
-      g_windowManager.ProcessRenderLoop(false);
+      ProcessRenderLoop(false);
     }
   }
   db.Close();

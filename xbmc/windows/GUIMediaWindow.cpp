@@ -2002,3 +2002,8 @@ std::string CGUIMediaWindow::RemoveParameterFromPath(const std::string &strDirec
 
   return strDirectory;
 }
+
+void CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
+{
+  g_windowManager.ProcessRenderLoop(renderOnly);
+}

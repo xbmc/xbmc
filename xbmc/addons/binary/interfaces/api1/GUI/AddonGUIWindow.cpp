@@ -339,7 +339,7 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
     m_renderOrder = RENDER_ORDER_DIALOG;
     while (m_bRunning && !g_application.m_bStop)
     {
-      g_windowManager.ProcessRenderLoop();
+      ProcessRenderLoop();
     }
   }
   else // hide

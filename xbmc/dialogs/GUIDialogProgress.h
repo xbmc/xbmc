@@ -35,7 +35,6 @@ public:
   virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
   void Progress();
-  void ProgressKeys();
   bool IsCanceled() const { return m_bCanceled; }
   void SetPercentage(int iPercentage);
   int GetPercentage() const { return m_percentage; };

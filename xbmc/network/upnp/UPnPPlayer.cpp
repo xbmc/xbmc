@@ -193,25 +193,10 @@ static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime& timeout, CGUI
   if(event.WaitMSec(0))
     return NPT_SUCCESS;
 
-  if(dialog == NULL) {
-    dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    dialog->Open();
-  }
+  if (!CGUIDialogBusy::WaitOnEvent(event))
+    return NPT_FAILURE;
 
-  g_windowManager.ProcessRenderLoop(false);
-
-  do {
-    if(event.WaitMSec(100))
-      return NPT_SUCCESS;
-
-    g_windowManager.ProcessRenderLoop(false);
-
-    if(dialog->IsCanceled())
-      return NPT_FAILURE;
-
-  } while(!timeout.IsTimePast());
-
-  return NPT_FAILURE;
+  return NPT_SUCCESS;
 }
 
 int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout)

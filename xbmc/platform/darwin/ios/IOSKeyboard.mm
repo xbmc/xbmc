@@ -66,7 +66,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   if (!m_bCanceled)
   {
     [g_pIosKeyboard setCancelFlag:&m_bCanceled];
-    [g_pIosKeyboard activate]; // blocks and loops our application loop (like a modal dialog)
+    [g_pIosKeyboard activate]; // blocks and shows keyboard
     // user is done - get resulted text and confirmation
     confirmed = g_pIosKeyboard.isConfirmed;
     if (confirmed)

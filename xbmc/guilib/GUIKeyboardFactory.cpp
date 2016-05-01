@@ -32,8 +32,7 @@
 
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_IOS)
-#include "platform/darwin/ios/IOSKeyboard.h"
-#include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogKeyboardTouch.h"
 #endif
 
 using namespace KODI::MESSAGING;
@@ -88,7 +87,6 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
 {
   bool confirmed = false;
   CGUIKeyboard *kb = NULL;
-  bool needsFreeing = true;
   //heading can be a string or a localization id
   std::string headingStr;
   if (heading.isString())
@@ -97,24 +95,17 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
     headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
 
 #if defined(TARGET_DARWIN_IOS)
-  if (g_Windowing.GetCurrentScreen() == 0)
-    kb = new CIOSKeyboard();
+  kb = (CGUIDialogKeyboardTouch*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD_TOUCH);
+#else
+  kb = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 #endif
 
-  if(!kb)
-  {
-    kb = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-    needsFreeing = false;
-  }
-
-  if(kb)
+  if (kb)
   {
     g_activedKeyboard = kb;
     kb->startAutoCloseTimer(autoCloseMs);
     confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
     g_activedKeyboard = NULL;
-    if(needsFreeing)
-      delete kb;
   }
 
   if (confirmed)

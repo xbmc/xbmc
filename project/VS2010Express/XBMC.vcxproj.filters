@@ -3462,6 +3462,9 @@
     <ClCompile Include="..\..\xbmc\epg\GUIEPGGridContainerModel.cpp">
       <Filter>epg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardTouch.cpp">
+      <Filter>dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6722,6 +6725,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\epg\GUIEPGGridContainerModel.h">
       <Filter>epg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardTouch.h">
+      <Filter>dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

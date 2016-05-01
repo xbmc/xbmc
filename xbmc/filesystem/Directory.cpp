@@ -88,6 +88,11 @@ public:
     CJobManager::GetInstance().CancelJob(m_id);
   }
 
+  CEvent& GetEvent()
+  {
+    return m_result->m_event;
+  }
+
   bool Wait(unsigned int timeout)
   {
     return m_result->m_event.WaitMSec(timeout);
@@ -168,36 +173,13 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
           CSingleExit ex(g_graphicsContext);
 
           CGetDirectory get(pDirectory, realURL, url);
-          if(!get.Wait(TIME_TO_BUSY_DIALOG))
+
+          if (!CGUIDialogBusy::WaitOnEvent(get.GetEvent(), TIME_TO_BUSY_DIALOG))
           {
-            CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-            if (dialog)
-            {
-              dialog->Open();
-
-              while(!get.Wait(10))
-              {
-                CSingleLock lock(g_graphicsContext);
-
-                // update progress
-                float progress = pDirectory->GetProgress();
-                if (progress > 0)
-                  dialog->SetProgress(progress);
-
-                if (dialog->IsCanceled())
-                {
-                  cancel = true;
-                  pDirectory->CancelDirectory();
-                  break;
-                }
-
-                lock.Leave(); // prevent an occasional deadlock on exit
-                g_windowManager.ProcessRenderLoop(false);
-              }
-
-              dialog->Close();
-            }
+            cancel = true;
+            pDirectory->CancelDirectory();
           }
+
           result = get.GetDirectory(items);
         }
         else

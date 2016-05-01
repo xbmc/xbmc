@@ -9,6 +9,7 @@ set(SOURCES GUIDialogBoxBase.cpp
             GUIDialogGamepad.cpp
             GUIDialogKaiToast.cpp
             GUIDialogKeyboardGeneric.cpp
+            GUIDialogKeyboardTouch.cpp
             GUIDialogMediaFilter.cpp
             GUIDialogMediaSource.cpp
             GUIDialogNumeric.cpp
@@ -38,6 +39,7 @@ set(HEADERS GUIDialogBoxBase.h
             GUIDialogGamepad.h
             GUIDialogKaiToast.h
             GUIDialogKeyboardGeneric.h
+            GUIDialogKeyboardTouch.h
             GUIDialogMediaFilter.h
             GUIDialogMediaSource.h
             GUIDialogNumeric.h
