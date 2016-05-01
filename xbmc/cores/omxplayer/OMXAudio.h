@@ -24,6 +24,7 @@
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "linux/PlatformDefs.h"
 #include "DVDStreamInfo.h"
 
@@ -145,6 +146,7 @@ private:
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;
   OMX_AUDIO_PARAM_DTSTYPE     m_dtsParam;
   WAVEFORMATEXTENSIBLE        m_wave_header;
+  IAEStream *m_pAudioStream;
 protected:
   COMXCoreComponent m_omx_render_analog;
   COMXCoreComponent m_omx_render_hdmi;
