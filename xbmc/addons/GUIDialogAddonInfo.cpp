@@ -46,6 +46,7 @@
 #include "Util.h"
 #include "interfaces/builtins/Builtins.h"
 
+#include <functional>
 #include <utility>
 
 #define CONTROL_BTN_INSTALL          6
@@ -217,25 +218,53 @@ void CGUIDialogAddonInfo::UpdateControls()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, !isRepo);
 }
 
-static const std::string LOCAL_CACHE = "special_local_cache";
+static const std::string LOCAL_CACHE = "\\0_local_cache"; // \0 to give it the lowest priority when sorting
 
-static bool CompareVersion(const std::pair<AddonVersion, std::string>& lhs, const std::pair<AddonVersion, std::string>& rhs)
+
+int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::string>>& versions)
 {
-  return lhs.first > rhs.first;
-};
+  auto dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  dialog->Reset();
+  dialog->SetHeading(CVariant{21338});
+  dialog->SetUseDetails(true);
+
+  std::sort(versions.begin(), versions.end(), std::greater<std::pair<AddonVersion, std::string>>());
+
+  for (const auto& versionInfo : versions)
+  {
+    CFileItem item(StringUtils::Format(g_localizeStrings.Get(21339).c_str(), versionInfo.first.asString().c_str()));
+    if (m_localAddon && m_localAddon->Version() == versionInfo.first)
+      item.Select(true);
+
+    AddonPtr repo;
+    if (versionInfo.second == LOCAL_CACHE)
+    {
+      item.SetLabel2(g_localizeStrings.Get(24095));
+      item.SetIconImage("DefaultAddonRepository.png");
+      dialog->Add(item);
+    }
+    else if (CAddonMgr::GetInstance().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY))
+    {
+      item.SetLabel2(repo->Name());
+      item.SetIconImage(repo->Icon());
+      dialog->Add(item);
+    }
+  }
+
+  dialog->Open();
+  return dialog->IsConfirmed() ? dialog->GetSelectedItem() : -1;
+}
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
   if (!m_localAddon)
     return;
 
-  CAddonDatabase database;
-  if (!database.Open())
-    return;
-
   std::vector<std::pair<AddonVersion, std::string>> versions;
-  if (!database.GetAvailableVersions(m_localAddon->ID(), versions))
-    return;
+
+  CAddonDatabase database;
+  database.Open();
+  database.GetAvailableVersions(m_localAddon->ID(), versions);
 
   CFileItemList items;
   if (XFILE::CDirectory::GetDirectory("special://home/addons/packages/", items, ".zip", DIR_FLAG_NO_FILE_DIRS))
@@ -262,59 +291,24 @@ void CGUIDialogAddonInfo::OnUpdate()
   }
 
   if (versions.empty())
-  {
     CGUIDialogOK::ShowAndGetInput(CVariant{21341}, CVariant{21342});
-    return;
-  }
-
-  auto* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
-  dialog->Reset();
-  dialog->SetHeading(CVariant{21338});
-  dialog->SetUseDetails(true);
-
-  std::stable_sort(versions.begin(), versions.end(), CompareVersion);
-
-  for (const auto& versionInfo : versions)
+  else
   {
-    CFileItem item(StringUtils::Format(g_localizeStrings.Get(21339).c_str(), versionInfo.first.asString().c_str()));
-    if (versionInfo.first == m_localAddon->Version())
-      item.Select(true);
-
-    AddonPtr repo;
-    if (versionInfo.second == LOCAL_CACHE)
+    int i = AskForVersion(versions);
+    if (i != -1)
     {
-      item.SetLabel2(g_localizeStrings.Get(24095));
-      item.SetIconImage("DefaultAddonRepository.png");
-      dialog->Add(item);
+      Close();
+      //turn auto updating off if downgrading
+      if (m_localAddon->Version() > versions[i].first)
+        CAddonMgr::GetInstance().AddToUpdateBlacklist(m_localAddon->ID());
+
+      if (versions[i].second == LOCAL_CACHE)
+        CAddonInstaller::GetInstance().InstallFromZip(StringUtils::Format(
+            "special://home/addons/packages/%s-%s.zip", m_localAddon->ID().c_str(),
+            versions[i].first.asString().c_str()));
+      else
+        CAddonInstaller::GetInstance().Install(m_localAddon->ID(), versions[i].first, versions[i].second);
     }
-    else if (CAddonMgr::GetInstance().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY))
-    {
-      item.SetLabel2(repo->Name());
-      item.SetIconImage(repo->Icon());
-      dialog->Add(item);
-    }
-  }
-
-  dialog->Open();
-  if (dialog->IsConfirmed())
-  {
-    Close();
-
-    int selectedItem = dialog->GetSelectedItem();
-    if (selectedItem < 0 )
-      return;
-
-    auto selected = versions.at(selectedItem);
-
-    //turn auto updating off if downgrading
-    if (selected.first < m_localAddon->Version())
-      CAddonMgr::GetInstance().AddToUpdateBlacklist(m_localAddon->ID());
-
-    if (selected.second == LOCAL_CACHE)
-      CAddonInstaller::GetInstance().InstallFromZip(StringUtils::Format("special://home/addons/packages/%s-%s.zip",
-          m_localAddon->ID().c_str(), selected.first.asString().c_str()));
-    else
-      CAddonInstaller::GetInstance().Install(m_item->GetAddonInfo()->ID(), selected.first, selected.second);
   }
 }
 
@@ -336,11 +330,25 @@ void CGUIDialogAddonInfo::OnInstall()
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return;
 
-  if (!m_item->GetAddonInfo())
+  if (m_localAddon || !m_item->HasAddonInfo())
     return;
 
-  CAddonInstaller::GetInstance().InstallOrUpdate(m_item->GetAddonInfo()->ID());
-  Close();
+  std::string addonId = m_item->GetAddonInfo()->ID();
+  std::vector<std::pair<AddonVersion, std::string>> versions;
+
+  CAddonDatabase database;
+  if (!database.Open() || !database.GetAvailableVersions(addonId, versions) || versions.empty())
+  {
+    CLog::Log(LOGERROR, "ADDON: no available versions of %s", addonId.c_str());
+    return;
+  }
+
+  int i = versions.size() == 1 ? 0 : AskForVersion(versions);
+  if (i != -1)
+  {
+    Close();
+    CAddonInstaller::GetInstance().Install(addonId, versions[i].first, versions[i].second);
+  }
 }
 
 void CGUIDialogAddonInfo::OnSelect()
