@@ -3340,7 +3340,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#772"
-msgid "Audio output"
+msgid "Audio"
 msgstr ""
 
 #: addons/skin.estuary/1080i/Variables.xml
@@ -6670,7 +6670,7 @@ msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use MPEG-2 VDPAU" with label #13441
+#. Description of setting with label #13441 "Use MPEG-2 VDPAU"
 #: system/settings/settings.xml
 msgctxt "#13442"
 msgid "Enable this option to use hardware acceleration for MPEG-(1 / 2) codecs. If disabled the CPU will be used instead. Older Radeon Cards tend to segfault with this enabled."
@@ -6681,7 +6681,7 @@ msgctxt "#13443"
 msgid "Use MPEG-4 VDPAU"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use MPEG-4 VDPAU" with label #13443
+#. Description of setting with label #13443 "Use MPEG-4 VDPAU"
 #: system/settings/settings.xml
 msgctxt "#13444"
 msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead. Some ION hardware has problems with this being enabled by default."
@@ -6692,7 +6692,7 @@ msgctxt "#13445"
 msgid "Use VC-1 VDPAU"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use VC-1 VDPAU" with label #13445
+#. Description of setting with label #13445 "Use VC-1 VDPAU"
 #: system/settings/settings.xml
 msgctxt "#13446"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. AMD hardware with VDPAU can't decode VC-1 Simple."
@@ -6703,7 +6703,7 @@ msgctxt "#13447"
 msgid "Use MPEG-2 VAAPI"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use MPEG-2 VAAPI" with label #13447
+#. Description of setting with label #13447 "Use MPEG-2 VAAPI"
 #: system/settings/settings.xml
 msgctxt "#13448"
 msgid "Enable this option to use hardware acceleration for MPEG-(1 / 2) codecs. If disabled the CPU will be used instead. Some MPEG-2 videos might have green artifacts."
@@ -6714,7 +6714,7 @@ msgctxt "#13449"
 msgid "Use MPEG-4 VAAPI"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use MPEG-4 VAAPI" with label #13449
+#. Description of setting with label #13449 "Use MPEG-4 VAAPI"
 #: system/settings/settings.xml
 msgctxt "#13450"
 msgid "Enable this option to use hardware acceleration for the MPEG-4 codec. If disabled the CPU will be used instead."
@@ -6725,7 +6725,7 @@ msgctxt "#13451"
 msgid "Use VC-1 VAAPI"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Use VC-1 VAAPI" with label #13451
+#. Description of setting with label #13451 "Use VC-1 VAAPI"
 #: system/settings/settings.xml
 msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 interlaced fails hard on Intel hardware."
@@ -6744,7 +6744,7 @@ msgctxt "#13458"
 msgid "Allow hardware acceleration - OMXPlayer"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (OMXPlayer)" with label #13457
+#. Description of setting with label #13457 "Allow hardware acceleration (OMXPlayer)"
 #: system/settings/settings.xml
 msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
@@ -7356,7 +7356,7 @@ msgstr ""
 #. Name of a settings category related to video playback
 #: system/settings/settings.xml
 msgctxt "#14101"
-msgid "Acceleration"
+msgid "Processing"
 msgstr ""
 
 #. Name of a setting for Blu-ray playback mode
@@ -7489,7 +7489,290 @@ msgctxt "#14124"
 msgid "Region C"
 msgstr ""
 
-#empty strings from id 14125 to 15003
+#empty strings from id 14125 to 14199
+
+#: system/settings/settings.xml
+msgctxt "#14200"
+msgid "Player"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14201"
+msgid "Player settings"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14202"
+msgid "Library"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14203"
+msgid "Library settings"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14204"
+msgid "TV"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14205"
+msgid "TV settings"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14206"
+msgid "Interface"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14207"
+msgid "Interface settings"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14208"
+msgid "Service settings"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14209"
+msgid "System settings"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14210"
+msgid "Profile settings"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14210"
+msgctxt "#14215"
+msgid "Videos"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14211"
+msgctxt "#14216"
+msgid "Music"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14212"
+msgctxt "#14217"
+msgid "Pictures"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14213"
+msgctxt "#14218"
+msgid "Language"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14215"
+msgctxt "#14219"
+msgid "Databases"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14216"
+msgctxt "#14220"
+msgid "Display"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14217"
+msgctxt "#14221"
+msgid "Audio"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14218"
+msgctxt "#14222"
+msgid "Regional"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14219"
+msgctxt "#14223"
+msgid "Control"
+msgstr "
+
+#: system/settings/settings.xml
+# msgctxt "#14220"
+msgctxt "#14224"
+msgid "Other"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14225"
+msgid "Network Control"
+msgstr "
+
+#empty strings from id 14226 to 14229
+
+#: system/settings/settings.xml
+msgctxt "#14230"
+msgid "Actions"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14231"
+msgid "Processing"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14232"
+msgid "Stereoscopic 3D"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14233"
+msgid "Teletext"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14234"
+msgid "Blu-ray"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14235"
+msgid "Download Services"
+msgstr "
+
+#empty strings from id 14236 to id 14239
+
+#: system/settings/settings.xml
+msgctxt "#14240"
+msgid "Lists & Views"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14241"
+msgid "Metadata"
+msgstr "
+
+#empty strings from id 14242 to 14244
+
+#: system/settings/settings.xml
+msgctxt "#14245"
+msgid "Update library on startup"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14246"
+msgid "Hide progress of library updates"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14247"
+msgid "Clean library"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14248"
+msgid "Export library"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14249"
+msgid "Import library"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14250"
+msgid "Audio Decoder"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14251"
+msgid "Audio DSP"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14252"
+msgid "Audio Passthrough"
+msgstr "
+
+#empty strings from id 14253 to 14254
+
+#: system/settings/settings.xml
+msgctxt "#14255"
+msgid "Sleep / Shutdown"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14256"
+msgid "Wake"
+msgstr "
+
+#empty strings from id 14257 to 14259
+
+#: system/settings/settings.xml
+msgctxt "#14260"
+msgid "Debug"
+msgstr "
+
+#empty strings from id 14261 to 14269
+
+#: system/settings/settings.xml
+msgctxt "#14270"
+msgid "Unit Formats"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14271"
+msgid "Region default format"
+msgstr "
+
+#empty strings from id 14272 to 14274
+
+#: system/settings/settings.xml
+msgctxt "#14275"
+msgid "Application control"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14276"
+msgid "Allow remote control from applications on this system"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14277"
+msgid "Allow remote control from applications on other systems"
+msgstr "
+
+#empty strings from id 14278 to 14299
+
+#: system/settings/settings.xml
+msgctxt "#14300"
+msgid "PVR Manager"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14301"
+msgid "Channels"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14302"
+msgid "Icons"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14303"
+msgid "Updates"
+msgstr "
+
+#: system/settings/settings.xml
+msgctxt "#14304"
+msgid "RDS Radio"
+msgstr "
+
+#empty strings from id 14305 to 15003
 
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
@@ -11310,7 +11593,7 @@ msgctxt "#20220"
 msgid "Prefer online information"
 msgstr ""
 
-#. Description of setting "Music -> Library -> Prefer online information" with label #20220
+#. Description of setting with label #20220 "Prefer online information"
 #: system/settings/settings.xml
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
@@ -11618,7 +11901,7 @@ msgstr ""
 #. Label for showing media rating and votes (combined), for example: "9.1 (87 votes)"
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#20350"
-msgid "%s (%s votes)"
+msgid "%.1f (%i votes)"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
@@ -12339,7 +12622,7 @@ msgstr ""
 
 #: system/settings/darwin.xml
 msgctxt "#21373"
-msgid "Video output"
+msgid "Display"
 msgstr ""
 
 msgctxt "#21374"
@@ -12770,7 +13053,7 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Select first unwatched TV show season/episode" with label #21416
+#. Description of setting with label #21416 "Select first unwatched TV show season/episode"
 #: system/settings/settings.xml
 msgctxt "#21466"
 msgid "When entering a TV show season or episode view automatically select the first unwatched season or episode.[CR][On first entry] The first unwatched item will be selected only when a view is entered for the first time.[CR][Always] The first unwatched item will be selected every time a view is entered."
@@ -12812,31 +13095,31 @@ msgctxt "#21472"
 msgid "Include \"All seasons\" and \"Specials\""
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#. Description of setting with label #21472 "Include All Seasons and Specials"
 #: system/settings/settings.xml
 msgctxt "#21473"
 msgid "Whether or not to consider the items from \"All seasons\" and \"Specials\" in the unwatched item selection."
 msgstr ""
 
-#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#. One of the values valid for settings #21472 "Include All Seasons and Specials"
 #: system/settings/settings.xml
 msgctxt "#21474"
 msgid "Neither"
 msgstr ""
 
-#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#. One of the values valid for settings #21472 "Include All Seasons and Specials"
 #: system/settings/settings.xml
 msgctxt "#21475"
 msgid "Both"
 msgstr ""
 
-#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#. One of the values valid for settings #21472 "Include All Seasons and Specials"
 #: system/settings/settings.xml
 msgctxt "#21476"
 msgid "Just \"All seasons\""
 msgstr ""
 
-#. One of the values valid for "Videos -> Library -> Include All Seasons and Specials" with label #21472
+#. One of the values valid for settings #21472 "Include All Seasons and Specials"
 #: system/settings/settings.xml
 msgctxt "#21477"
 msgid "Just \"Specials\""
@@ -14030,7 +14313,7 @@ msgctxt "#24116"
 msgid "Default TV show service"
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Default TV Service" with label #24116
+#. Description of setting with label #24116 "Default TV Service"
 #: system/settings/settings.xml
 msgctxt "#24117"
 msgid "Select the service that will be used as default to search for TV show subtitles."
@@ -14041,7 +14324,7 @@ msgctxt "#24118"
 msgid "Default movie service"
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Default Movie Service" with label #24118
+#. Description of setting with label #24118 "Default Movie Service"
 #: system/settings/settings.xml
 msgctxt "#24119"
 msgid "Select the service that will be used as default to search for movie subtitles."
@@ -14063,7 +14346,7 @@ msgctxt "#24122"
 msgid "Update all"
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Pause when searching for subtitles" with label #24105
+#. Description of setting with label #24105 "Pause when searching for subtitles"
 #: system/settings/settings.xml
 msgctxt "#24123"
 msgid "Pause the current video while searching for subtitles and resume once the subtitle is available."
@@ -14084,7 +14367,7 @@ msgctxt "#24126"
 msgid "Auto download first subtitle"
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Auto download first subtitle" with label #24126
+#. Description of setting with label #24126 "Auto download first subtitle"
 #: system/settings/settings.xml
 msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
@@ -15346,7 +15629,7 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Keep audio device alive" with label #421
+#. Description of setting with label #421 "Keep audio device alive"
 #: system/settings/settings.xml
 msgctxt "#34111"
 msgid "Select the behaviour when no sound is required for either playback or GUI sounds.[CR][Always] Continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications.[CR][1-10 Minutes] Same as [Always] except that after the selected period of time audio enters a suspended state.[CR][Off] Audio output enters a suspended state. Note: Sounds can be missed if audio enters suspended state."
@@ -15999,193 +16282,193 @@ msgctxt "#36102"
 msgid "This category contains all skin related settings."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Skin" with label #166
+#. Description of setting with label #166 "Skin"
 #: system/settings/settings.xml
 msgctxt "#36103"
 msgid "Select the skin for the user interface. This will define the look and feel of the application."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Settings" with label #21417
+#. Description of setting with label #21417 "Settings"
 #: system/settings/settings.xml
 msgctxt "#36104"
 msgid "Select to change the skin specific settings. Which options are available for configuration depends on the features provided by the skin."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Theme" with label #15111
+#. Description of setting with label #15111 "Theme"
 #: system/settings/settings.xml
 msgctxt "#36105"
 msgid "Change the theme associated with your selected skin."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Colours" with label #14078
+#. Description of setting with label #14078 "Colours"
 #: system/settings/settings.xml
 msgctxt "#36106"
 msgid "Change the colours of your selected skin."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Fonts" with label #13303
+#. Description of setting with label #13303 "Fonts"
 #: system/settings/settings.xml
 msgctxt "#36107"
 msgid "Choose the fonts displayed in the user interface. The font sets are configured by your skin."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Zoom" with label #20109
+#. Description of setting with label #20109 "Zoom"
 #: system/settings/settings.xml
 msgctxt "#36108"
 msgid "Resize the view of the user interface."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Startup window" with label #512
+#. Description of setting with label #512 "Startup window"
 #: system/settings/settings.xml
 msgctxt "#36109"
 msgid "Select the media window to display on startup."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> GUI sounds" with label #15108
+#. Description of setting with label #15108 "GUI sounds"
 #: system/settings/settings.xml
 msgctxt "#36110"
 msgid "Select or disable the sounds used in the user interface."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Show RSS news feed" with label #13305
+#. Description of setting with label #13305 "Show RSS news feed"
 #: system/settings/settings.xml
 msgctxt "#36111"
 msgid "Turn this off to remove the scrolling RSS news ticker."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Edit" with label #21450
+#. Description of setting with label #21450 "Edit"
 #: system/settings/settings.xml
 msgctxt "#36112"
 msgid "Edit the RSS feeds."
 msgstr ""
 
-#. Description of settings category "Appearance -> International" with label #14090
+#. Description of settings category with label #14090 "Regional"
 #: system/settings/settings.xml
 msgctxt "#36113"
 msgid "This category contains all locale / regional settings."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Language" with label #248
+#. Description of setting with label #248 "Language"
 #: system/settings/settings.xml
 msgctxt "#36114"
 msgid "Chooses the language of the user interface."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Region" with label #20026
+#. Description of setting with label #20026 "Region"
 #: system/settings/settings.xml
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Character set" with label #14091
+#. Description of setting with label #14091 "Character set"
 #: system/settings/settings.xml
 msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the user interface."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Timezone country" with label #14079
+#. Description of setting with label #14079 "Timezone country"
 #: system/settings/settings.xml
 msgctxt "#36117"
 msgid "Select country location."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Timezone" with label #14080
+#. Description of setting with label #14080 "Timezone"
 #: system/settings/settings.xml
 msgctxt "#36118"
 msgid "Select your current timezone."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Preferred audio language" with label #285
+#. Description of setting with label #285 "Preferred audio language"
 #: system/settings/settings.xml
 msgctxt "#36119"
 msgid "Defaults to the selected audio language if more than one language is available."
 msgstr ""
 
-#. Description of setting "Video -> Subtitles -> Preferred subtitle language" with label #286
+#. Description of setting with label #286 "Preferred subtitle language"
 #: system/settings/settings.xml
 msgctxt "#36120"
 msgid "Defaults to the selected subtitle language if more than one language is available."
 msgstr ""
 
-#. Description of settings category "Appearance -> File lists" with label #14081
+#. Description of settings with label #16000 "General"
 #: system/settings/settings.xml
 msgctxt "#36121"
-msgid "This category contains the settings for how file lists are displayed."
+msgid "This category contains the settings for how media lists are displayed."
 msgstr ""
 
-#. Description of setting "Appearance -> File lists -> Show parent folder items" with label #13306
+#. Description of setting with label #13306 "Show parent folder items"
 #: system/settings/settings.xml
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr ""
 
-#. Description of setting "Appearance -> File lists -> Show file extensions" with label #497
+#. Description of setting with label #497 "Show file extensions"
 #: system/settings/settings.xml
 msgctxt "#36123"
 msgid "Show file extensions on media files, for example \"You Enjoy Myself\" would be shown as \"You Enjoy Myself.mp3\"."
 msgstr ""
 
-#. Description of setting "Appearance -> File lists -> Ignore articles when sorting with label #13399
+#. Description of setting with label #13399 "Ignore articles when sorting"
 #: system/settings/settings.xml
 msgctxt "#36124"
 msgid "Ignore certain tokens, e.g. \"The\", during sort operations. \"The Simpsons\" would for example be sorted as \"Simpsons\"."
 msgstr ""
 
-#. Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
+#. Description of setting with label #14071 "Allow file renaming and deletion"
 #: system/settings/settings.xml
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the context menu, e.g. press \"C\" on a keyboard to bring up this menu."
 msgstr ""
 
-#. Description of setting "Appearance -> File lists -> Show "Add source" buttons in files lists" with label #21382
+#. Description of setting with label #21382 Show "Add source" buttons in files lists"
 #: system/settings/settings.xml
 msgctxt "#36126"
 msgid "Show the add source button in root sections of the user interface."
 msgstr ""
 
-#. Description of setting "Appearance -> File lists -> Show hidden files and directories" with label #21330
+#. Description of setting with label #21330 "Show hidden files and directories"
 #: system/settings/settings.xml
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
 msgstr ""
 
-#. Description of settings category "Appearance -> Screensaver" with label #360
+#. Description of settings category with label #360 "Screensaver"
 #: system/settings/settings.xml
 msgctxt "#36128"
 msgid "This category contains the settings for how the screensaver add-ons are handled."
 msgstr ""
 
-#. Description of setting "Appearance -> Screensaver -> Wait time" with label #355
+#. Description of setting with label #355 "Wait time"
 #: system/settings/settings.xml
 msgctxt "#36129"
 msgid "Set the time to wait for any activity to occur before displaying the screensaver."
 msgstr ""
 
-#. Description of setting "Appearance -> Screensaver -> Screensaver mode" with label #356
+#. Description of setting with label #356 "Screensaver mode"
 #: system/settings/settings.xml
 msgctxt "#36130"
 msgid "Select the screensaver. The \"Dim\" screensaver will be forced when fullscreen video playback is paused or a dialogue box is active."
 msgstr ""
 
-#. #. Description of setting "Appearance -> Screensaver -> Settings" with label #21417
+#. #. Description of setting with label #21417 "Settings"
 #: system/settings/settings.xml
 msgctxt "#36131"
 msgid "Select to change the screensaver specific settings. Which options are available for configuration depends on the features provided by the screensaver add-on."
 msgstr ""
 
-#. Description of setting "Appearance -> Screensaver -> Preview" with label #1000
+#. Description of setting with label #1000 "Preview"
 #: system/settings/settings.xml
 msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr ""
 
-#. Description of setting "Appearance -> Screensaver -> Use visualisation if playing audio" with label #13392
+#. Description of setting with label #13392 "Use visualisation if playing audio"
 #: system/settings/settings.xml
 msgctxt "#36133"
 msgid "If music is being played, the selected visualisation will be started instead of displaying the screensaver."
 msgstr ""
 
-#. Description of setting "Appearance -> Screensaver -> Use dim if paused during video playback" with label #22014
+#. Description of setting with label #22014 "Use dim if paused during video playback"
 #: system/settings/settings.xml
 msgctxt "#36134"
 msgid "Dim the display when media is paused. Not valid for the \"Dim\" screensaver mode."
@@ -16206,207 +16489,205 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of settings section "Videos" with label #3
+#. Description of settings section with label #3 "Videos" 
 #: system/settings/settings.xml
 msgctxt "#36138"
 msgid "Section that contains settings related to videos and how they are handled."
 msgstr ""
 
-#. Description of settings category "Videos -> Library" with label #14022
+#. Description of settings category with label #14022 "Library"
 #: system/settings/settings.xml
 msgctxt "#36139"
 msgid "This category contains the settings for how the video library is handled."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Temperature unit" with label #14105
+#. Description of setting with label #14105 "Temperature unit"
 #: system/settings/settings.xml
 msgctxt "#36140"
 msgid "Choose which temperature unit is used for displaying temperatures in the user interface."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Show plot for unwatched items" with label #20369
+#. Description of setting with label #20369 "Show plot for unwatched items"
 #: system/settings/settings.xml
 msgctxt "#36141"
 msgid "Show plot information for unwatched media in the video library."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Speed unit" with label #14106
+#. Description of setting with label #14106 "Speed unit"
 #: system/settings/settings.xml
 msgctxt "#36142"
 msgid "Choose which speed unit is used for displaying speeds in the user interface."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Download actor thumbnails" with label #20402
+#. Description of setting with label #20402 "Download actor thumbnails"
 #: system/settings/settings.xml
 msgctxt "#36143"
 msgid "Downloads thumbnails for actors from online databases when adding media to the library."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Flatten TV show seasons" with label #20412
+#. Description of setting with label #20412 "Flatten TV show seasons"
 #: system/settings/settings.xml
 msgctxt "#36144"
 msgid "Select in which cases you want to hide the season nodes of TV shows. If hidden, selecting a TV show will directly jump into the episodes view."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Group movies in sets" with label #20458
+#. Description of setting with label #20458 "Group movies in sets"
 #: system/settings/settings.xml
 msgctxt "#36145"
 msgid "When enabled, movies belonging to a \"Movie set\" are grouped together under one entry for the set in the movie library, this entry can then be opened to display the individual movies. When disabled, each movie will have it's own entry in the movie library even if it belongs to a set."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Update library on startup" with label #22000
+#. Description of setting with label #22000 "Update library on startup"
 #: system/settings/settings.xml
 msgctxt "#36146"
 msgid "Check for new media files on startup."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Hide progress of library updates" with label #22001
-#. Description of setting "Music -> Library -> Hide progress of library updates" with label #22001
+#. Description of setting with label #22001 "Hide progress of library updates"
 #: system/settings/settings.xml
 msgctxt "#36147"
 msgid "Hide the library scanning progress bar during scans."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Clean library..." with label #334
-#. Description of setting "Music -> Library -> Clean library..." with label #334
+#. Description of setting with label #334 "Clean library..."
 #: system/settings/settings.xml
 msgctxt "#36148"
 msgid "Remove items from your library that can't be found (either renamed, deleted, or on removable storage that is currently unplugged)."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Export video library" with label #647
+#. Description of setting with label #647 "Export video library"
 #: system/settings/settings.xml
 msgctxt "#36149"
 msgid "Export the video library database to XML files. This will optionally overwrite your current XML files."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Import video library" with label #648
+#. Description of setting with label #648 "Import video library"
 #: system/settings/settings.xml
 msgctxt "#36150"
 msgid "Import a XML file into the video library database."
 msgstr ""
 
-#. Description of settings category "Videos -> Playback" with label #14086
+#. Description of settings category with label #14086 "Playback"
 #: system/settings/settings.xml
 msgctxt "#36151"
 msgid "This category contains the settings for how video playback is handled."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Play next video automatically" with label #13433
+#. Description of setting with label #13433 "Play next video automatically"
 #: system/settings/settings.xml
 msgctxt "#36152"
 msgid "Enable automatic playback of the next file in the list."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Render method" with label #13415
+#. Description of setting with label #13415 "Render method"
 #: system/settings/settings.xml
 msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Enable HQ Scalers for scaling above" with label #13435
+#. Description of setting with label #13435 "Enable HQ Scalers for scaling above"
 #: system/settings/settings.xml
 msgctxt "#36154"
 msgid "Use high quality scalers when upscaling a video by at least this percentage."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VDPAU)" with label #13425
+#. Description of setting with label #13425 "Allow hardware acceleration (VDPAU)"
 #: system/settings/settings.xml
 msgctxt "#36155"
 msgid "Enable VDPAU hardware decoding of video files, mainly used for NVIDIA graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VAAPI)" with label #13426
+#. Description of setting with label #13426 "Allow hardware acceleration (VAAPI)"
 #: system/settings/settings.xml
 msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Use movie sets for single movies" with label #20470
+#. Description of setting with label #20470 "Use movie sets for single movies"
 #: system/settings/settings.xml
 msgctxt "#36157"
 msgid "When enabled, a \"Movie set\" entry is used even if the movie library contains only a single movie from that set. When disabled, a \"Movie set\" entry is used only if the movie library contains more than one movie from that set."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
+#. Description of setting with label #13427 "Allow hardware acceleration (DXVA2)"
 #: system/settings/settings.xml
 msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (CrystalHD)" with label #13428
+#. Description of setting with label #13428 "Allow hardware acceleration (CrystalHD)"
 #: system/settings/settings.xml
 msgctxt "#36159"
 msgid "Enable CrystalHD decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VideoToolbox)" with label #13429
+#. Description of setting with label #13429 "Allow hardware acceleration (VDADecoder)"
 #: system/settings/settings.xml
 msgctxt "#36160"
 msgid "Enable VTB hardware decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (OpenMax)" with label #13430
+#. Description of setting with label #13430 "Allow hardware acceleration (OpenMax)"
 #: system/settings/settings.xml
 msgctxt "#36161"
 msgid "Enable OpenMax hardware decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (VideoToolbox)" with label #13432
+#. Description of setting with label #13432 "Allow hardware acceleration (VideoToolbox)"
 #: system/settings/settings.xml
 msgctxt "#36162"
 msgid "Enable VideoToolbox hardware decoding of video files."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Show empty TV shows" with label #20471
+#. Description of setting with label #20471 "Show empty TV shows"
 #: system/settings/settings.xml
 msgctxt "#36163"
 msgid "Show TV shows with no episodes when browsing the video library."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Adjust display refresh rate" with label #170
+#. Description of setting with label #170 "Adjust display refresh rate"
 #: system/settings/settings.xml
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
 msgstr ""
 
-#. Description of setting "System -> Videooutput -> Delay after change of refresh rate #13550
+#. Description of setting with label #13550 "Delay after change of refresh rate"
 #: system/settings/settings.xml
 msgctxt "#36165"
 msgid "Delay of reset event after a change of refresh rate"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Sync playback to display" with label #13510
+#. Description of setting with label #13510 "Sync playback to display"
 #: system/settings/settings.xml
 msgctxt "#36166"
 msgid "Synchronise video and audio to the refresh rate of the monitor. VideoPlayer won't use passthrough audio in this case because resampling may be required."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Time format" with label #14107
+#. Description of setting with label #14107 "Time format"
 #: system/settings/settings.xml
 msgctxt "#36167"
 msgid "Choose which time format is used for displaying the time in the user interface."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Use 12/24-hour format" with label #14108
+#. Description of setting with label #14108 "Use 12/24-hour format"
 #: system/settings/settings.xml
 msgctxt "#36168"
 msgid "Choose whether to use 12 or 24-hour format for displaying the time in the user interface."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Resample quality" with label #13505
+#. Description of setting with label #13505 "Resample quality"
 #: system/settings/settings.xml
 msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source.[CR][Low] Is fast and will have minimal impact on system resources such as the use of the CPU.[CR][Medium] & [High] Will use progressively more system resources."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Minimise black bars" with label #22021
+#. Description of setting with label #22021 "Minimise black bars"
 #: system/settings/settings.xml
 msgctxt "#36170"
 msgid "Stretch the video up to the set percentage in order to minimise black bars."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Display 4:3 videos as" with label #173
+#. Description of setting with label #173 "Display 4:3 videos as"
 #: system/settings/settings.xml
 msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
@@ -16414,49 +16695,49 @@ msgstr ""
 
 #empty string with id 36172
 
-#. Description of setting "Appearance -> International -> Short date format" with label #14109
+#. Description of setting with label #14109 "Short date format"
 #: system/settings/settings.xml
 msgctxt "#36173"
 msgid "Choose which short date format is used for displaying the date in the user interface."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Activate Teletext" with label #23050
+#. Description of setting with label #23050 "Activate Teletext"
 #: system/settings/settings.xml
 msgctxt "#36174"
 msgid "Enable teletext when watching a live TV stream."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> "Scale Teletext to 4:3" with label #23055
+#. Description of setting with label #23055 "Scale Teletext to 4:3"
 #: system/settings/settings.xml
 msgctxt "#36175"
 msgid "Scale teletext to 4:3 ratio."
 msgstr ""
 
-#. Description of settings category "Videos -> File lists" with label #14081
+#. Description of settings category with label #14081 "File lists"
 #: system/settings/settings.xml
 msgctxt "#36176"
 msgid "This category contains the settings for how video file lists are handled."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Default select action" with label #22079
+#. Description of setting with label #22079 "Default select action"
 #: system/settings/settings.xml
 msgctxt "#36177"
 msgid "Toggle between [Choose], [Play] (default), [Resume] and [Show information].[CR][Choose] Will select an item, e.g. open a directory in files mode.[CR][Resume] Will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Extract thumbnails and video information" with label #20433
+#. Description of setting with label #20433 "Extract thumbnails and video information"
 #: system/settings/settings.xml
 msgctxt "#36178"
 msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Replace file names with library titles" with label #20419
+#. Description of setting with label #20419 "Replace file names with library titles"
 #: system/settings/settings.xml
 msgctxt "#36179"
 msgid "When a file is scanned into the library it will display the metadata title instead of the file name."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Extract thumbnails and video information" with label #20433
+#. Description of setting with label #20433 "Extract thumbnails and video information"
 #: system/settings/settings.xml
 msgctxt "#36180"
 msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in library mode."
@@ -16467,91 +16748,91 @@ msgctxt "#36181"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Combine split video items" with label #20435
+#. Description of setting with label #20435 "Combine split video items"
 #: system/settings/settings.xml
 msgctxt "#36182"
 msgid "Combines multi-part video files, DVD folders or movie folders, down to a single item in non-library views."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Flatten hierarchy" with label #20456
+#. Description of setting with label #20456 "Flatten hierarchy"
 #: system/settings/settings.xml
 msgctxt "#36183"
 msgid "Removes the title, genre, etc. nodes from the library view. Selecting a category takes you straight to the title view."
 msgstr ""
 
-#. Description of settings category "Videos -> Subtitles" with label #287
+#. Description of settings category with label #287 "Subtitles"
 #: system/settings/settings.xml
 msgctxt "#36184"
 msgid "This category contains the settings for how subtitles are handled."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Font to use for text subtitles" with label #14089
+#. Description of setting with label #14089 "Font to use for text subtitles"
 #: system/settings/settings.xml
 msgctxt "#36185"
 msgid "Set the font type to be used for text based (usually downloaded) subtitles."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> - Size" with label #289
+#. Description of setting with label #289 "Size"
 #: system/settings/settings.xml
 msgctxt "#36186"
 msgid "Set the font size to be used for subtitles."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> - Style" with label #736
+#. Description of setting with label #736 "Style"
 #: system/settings/settings.xml
 msgctxt "#36187"
 msgid "Set the font style to be used for subtitles."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> - Colour" with label #737
+#. Description of setting with label #737 "Colour"
 #: system/settings/settings.xml
 msgctxt "#36188"
 msgid "Set the font colour to be used for subtitles."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> - Character set" with label #735
+#. Description of setting with label #735 "Character set"
 #: system/settings/settings.xml
 msgctxt "#36189"
 msgid "Set the font character set to be used for subtitles."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Override ASS/SSA subtitles fonts" with label #21368
+#. Description of setting with label #21368 "Override ASS/SSA subtitles fonts"
 #: system/settings/settings.xml
 msgctxt "#36190"
 msgid "Override ASS / SSA subtitles fonts."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Custom subtitle folder" with label #21366
+#. Description of setting with label #21366 "Custom subtitle folder"
 #: system/settings/settings.xml
 msgctxt "#36191"
 msgid "Set a custom directory for your subtitles. This can be a file share."
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Subtitle location on screen" with label #21460
+#. Description of setting with label #21460 "Subtitle location on screen"
 #: system/settings/settings.xml
 msgctxt "#36192"
 msgid "Location of subtitles on the screen."
 msgstr ""
 
-#. Description of settings category "Videos -> DVDs" with label #14087
+#. Description of settings category with label #14087 "DVDs"
 #: system/settings/settings.xml
 msgctxt "#36193"
-msgid "This category contains the settings for how DVDs are handled."
+msgid "This category contains the settings for how DVD's, Blu-ray, & CD's are handled."
 msgstr ""
 
-#. Description of setting "Videos -> DVDs -> Play DVDs automatically" with label #14088
+#. Description of setting with label #14088 "Play DVDs automatically"
 #: system/settings/settings.xml
 msgctxt "#36194"
 msgid "Autorun DVD video when inserted in drive."
 msgstr ""
 
-#. Description of setting "Videos -> DVDs -> Forced DVD player region" with label #21372
+#. Description of setting with label #21372 "Forced DVD player region"
 #: system/settings/settings.xml
 msgctxt "#36195"
 msgid "Force a region for DVD playback."
 msgstr ""
 
-#. Description of setting "Videos -> DVDs -> Attempt to skip introduction before DVD menu" with label #21882
+#. Description of setting label #21882 "Attempt to skip introduction before DVD menu"
 #: system/settings/settings.xml
 msgctxt "#36196"
 msgid "Attempt to skip \"unskippable\" introductions before DVD menu."
@@ -16647,7 +16928,7 @@ msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr ""
 
-#. Description of setting "Appearance -> International -> Long date format" with label #14110
+#. Description of setting with label #14110 "Long date format"
 #: system/settings/settings.xml
 msgctxt "#36215"
 msgid "Choose which long date format is used for displaying the date in the user interface."
@@ -16835,7 +17116,7 @@ msgctxt "#36252"
 msgid "This option will bring you to any specific settings for your PVR backend, if supported by the PVR add-on and backend."
 msgstr ""
 
-#. Description of settings section "Music" with label #2
+#. Description of settings section with label #2 "Music"
 #: system/settings/settings.xml
 msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
@@ -16843,31 +17124,31 @@ msgstr ""
 
 #empty string with id 36254
 
-#. Description of setting "Music -> Library -> Include artists who appear only on compilations" with label #13414
+#. Description of setting with label #13414 "Include artists who appear only on compilations"
 #: system/settings/settings.xml
 msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Fetch additional information during updates" with label #20192
+#. Description of setting with label #20192 "Fetch additional information during updates"
 #: system/settings/settings.xml
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information from information providers when adding songs to the library."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Default provider for album information" with label #20193
+#. Description of setting with label #20193 "Default provider for album information"
 #: system/settings/settings.xml
 msgctxt "#36257"
 msgid "Select the default album information provider."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Default provider for artist information" with label #20194
+#. Description of setting with label #20194 "Default provider for artist information"
 #: system/settings/settings.xml
 msgctxt "#36258"
 msgid "Select the default artist information provider."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Update library on startup" with label #22000
+#. Description of setting with label #22000 "Update library on startup"
 #: system/settings/settings.xml
 msgctxt "#36259"
 msgid "Check for new and removed media files on startup."
@@ -16878,187 +17159,187 @@ msgctxt "#36260"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of setting "LiveTV -> Playback -> Refreshrate" with label #19108
+#. Description of setting with label #19108 "Refreshrate"
 #: system/settings/settings.xml
 msgctxt "#36261"
 msgid "If enabled, this framerate is used for streams we were not able to detect fps."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Export music library" with label #20196
+#. Description of setting with label #20196 "Export music library"
 #: system/settings/settings.xml
 msgctxt "#36262"
 msgid "Export the music library database to XML files. This will optionally overwrite your current XML files."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Import music library" with label #20197
+#. Description of setting with label #20197 "Import music library"
 #: system/settings/settings.xml
 msgctxt "#36263"
 msgid "Import a XML file into the music library database."
 msgstr ""
 
-#. Description of settings category "Music -> Playback" with label #14086
+#. Description of settings category with label #14086 "Playback"
 #: system/settings/settings.xml
 msgctxt "#36264"
 msgid "This category contains the settings for how music playback is handled."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Play next song automatically" with label #489
+#. Description of setting with label #489 "Play next song automatically"
 #: system/settings/settings.xml
 msgctxt "#36265"
 msgid "Automatically plays the next item in the current folder, for example in \"Files\" view after a track has been played, the next track in the same folder will automatically play."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Queue songs on selection" with label #14084
+#. Description of setting with label #14084 "Queue songs on selection"
 #: system/settings/settings.xml
 msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Volume adjustments" with label #638
+#. Description of setting with label #638 "Volume adjustments"
 #: system/settings/settings.xml
 msgctxt "#36267"
 msgid "Read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Files with ReplayGain information" with label #641
+#. Description of setting with label #641 "Files with ReplayGain information"
 #: system/settings/settings.xml
 msgctxt "#36268"
 msgid "Reference volume (PreAmp level) to use for files with encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> PreAmp Level - Non ReplayGained files" with label #642
+#. Description of setting with label #642 "PreAmp Level - Non ReplayGained files"
 #: system/settings/settings.xml
 msgctxt "#36269"
 msgid "Reference volume (PreAmp level) to use for files without encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Avoid clipping on ReplayGained files" with label #643
+#. Description of setting with label #643 "Avoid clipping on ReplayGained files"
 #: system/settings/settings.xml
 msgctxt "#36270"
 msgid "Reduce the volume of the file if clipping will occur."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Crossfade between songs" with label #13314
+#. Description of setting with label #13314 "Crossfade between songs"
 #: system/settings/settings.xml
 msgctxt "#36271"
 msgid "Smoothly fade from one audio track to the next. You can set the amount of overlap from 1-15 seconds."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Crossfade between songs on the same album" with label #13400
+#. Description of setting with label #13400 "Crossfade between songs on the same album"
 #: system/settings/settings.xml
 msgctxt "#36272"
 msgid "Allow crossfading to occur when both tracks are from the same album."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> "Visualisation" with label #250
+#. Description of setting with label #250 "Visualisation"
 #: system/settings/settings.xml
 msgctxt "#36273"
 msgid "Select the visualisation that will be displayed while listening to music."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Enable tag reading" with label #258
+#. Description of setting with label #258 "Enable tag reading"
 #: system/settings/settings.xml
 msgctxt "#36274"
 msgid "Read the tag information from song files. For large directories this can increase read time, especially over a network."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Track naming template" with label #13307
+#. Description of setting with label #13307 "Track naming template"
 #: system/settings/settings.xml
 msgctxt "#36275"
 msgid "Control the way that the names of songs are displayed in the user interface. In order to function properly, tag reading needs to be enabled."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Track naming template - right" with label #13387
+#. Description of setting with label #13387 "Track naming template - right"
 #: system/settings/settings.xml
 msgctxt "#36276"
 msgid "Used for formatting the second column in file lists."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Now Playing - Track naming template" with label #13307
+#. Description of setting with label #13307 "Now Playing - Track naming template"
 #: system/settings/settings.xml
 msgctxt "#36277"
 msgid "Control the way that the names of songs are displayed in the now playing list."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Now Playing - Track naming template - right" with label #13387
+#. Description of setting with label #13387 "Now Playing - Track naming template - right"
 #: system/settings/settings.xml
 msgctxt "#36278"
 msgid "Used for formatting the second column in the now playing list."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Library - Track naming template" with label #13307
+#. Description of setting with label #13307 "Library - Track naming template"
 #: system/settings/settings.xml
 msgctxt "#36279"
 msgid "Control the way that the names of songs are displayed in library lists."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Library - Track naming template - right" with label #13387
+#. Description of setting with label #13387 "Library - Track naming template - right"
 #: system/settings/settings.xml
 msgctxt "#36280"
 msgid "Used for formatting the second column in library lists."
 msgstr ""
 
-#. Description of setting "Music -> File lists -> Search for thumbnails on remote shares" with label #14059
+#. Description of setting with label #14059 "Search for thumbnails on remote shares"
 #: system/settings/settings.xml
 msgctxt "#36281"
 msgid "Search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr ""
 
-#. Description of settings category "Music -> Audio CDs" with label #620
+#. Description of settings category with label #620 "Audio CDs"
 #: system/settings/settings.xml
 msgctxt "#36282"
 msgid "This category contains the settings for how CDs are handled."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Audio CD Insert Action" with label #14097
+#. Description of setting with label #14097 "Audio CD Insert Action"
 #: system/settings/settings.xml
 msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Load audio CD information from online service" with label #227
+#. Description of setting with label #227 "Load audio CD information from online service"
 #: system/settings/settings.xml
 msgctxt "#36284"
 msgid "Read the information belonging to an audio CD, like song title and artist, from the Internet database freedb.org."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Saved music folder" label #20000
+#. Description of setting label #20000 "Saved music folder"
 #: system/settings/settings.xml
 msgctxt "#36285"
 msgid "Select the location on your hard drive where ripped tracks will be saved to."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Track naming template" with label #13307
+#. Description of setting with label #13307 "Track naming template"
 #: system/settings/settings.xml
 msgctxt "#36286"
 msgid "Control how saved music is named from the tags. Tags: [B]%N[/B]: TrackNumber, [B]%S[/B]: DiscNumber, [B]%A[/B]: Artist, [B]%T[/B]: Title, [B]%B[/B]: Album, [B]%G[/B]: Genre, [B]%Y[/B]: Year, [B]%F[/B]: FileName, [B]%D[/B]: Duration, [B]%J[/B]: Date, [B]%R[/B]: Rating, [B]%I[/B]: FileSize."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Encoder" with label #621
+#. Description of setting with label #621 "Encoder"
 #: system/settings/settings.xml
 msgctxt "#36287"
 msgid "Select which audio encoder to use when ripping."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Quality" with label #622
+#. Description of setting with label #622 "Quality"
 #: system/settings/settings.xml
 msgctxt "#36288"
 msgid "Select which quality you want to rip your files."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> "Bitrate" with label #623
+#. Description of setting with label #623 "Bitrate"
 #: system/settings/settings.xml
 msgctxt "#36289"
 msgid "Select which bitrate to use for the specified audio encoder for audio compression."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Compression level" with label #665
+#. Description of setting with label #665 "Compression level"
 #: system/settings/settings.xml
 msgctxt "#36290"
 msgid "For FLAC define compression level, default 5."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> "Eject disc when CD ripping is complete" with label #14099
+#. Description of setting with label #14099 "Eject disc when CD ripping is complete"
 #: system/settings/settings.xml
 msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
@@ -17081,13 +17362,13 @@ msgctxt "#36303"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of settings section "Pictures" with label #1
+#. Description of settings section with label #1 "Pictures"
 #: system/settings/settings.xml
 msgctxt "#36304"
 msgid "Section that contains settings related to pictures and how they are handled."
 msgstr ""
 
-#. Description of settings category "Pictures -> File lists" with label #14081
+#. Description of settings category with label #14081 "File lists"
 #: system/settings/settings.xml
 msgctxt "#36305"
 msgid "This category contains the settings for how picture file lists are handled."
@@ -17095,7 +17376,7 @@ msgstr ""
 
 #empty string with id 36306
 
-#. Description of setting "Pictures -> Automatically generate thumbnails" with label #13360
+#. Description of setting with label #13360 "Automatically generate thumbnails"
 #: system/settings/settings.xml
 msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
@@ -17103,283 +17384,283 @@ msgstr ""
 
 #empty string with id 36308
 
-#. Description of setting "Pictures -> Show video files in listings" with label #22022
+#. Description of setting with label #22022 "Show video files in listings"
 #: system/settings/settings.xml
 msgctxt "#36309"
 msgid "Show videos in picture file lists."
 msgstr ""
 
-#. Description of setting "Pictures -> Resolution" with label #169
+#. Description of setting with label #169 "Resolution"
 #: system/settings/settings.xml
 msgctxt "#36310"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of settings category "Pictures -> Slideshow" with label #108
+#. Description of settings category with label #108 "Slideshow"
 #: system/settings/settings.xml
 msgctxt "#36311"
 msgid "This category contains the settings for how the picture slideshow is handled."
 msgstr ""
 
-#. Description of setting "Pictures -> Slideshow -> Amount of time to display each image" with label #12378
+#. Description of setting with label #12378 "Amount of time to display each image"
 #: system/settings/settings.xml
 msgctxt "#36312"
 msgid "Select the amount of time that each image is displayed in a slideshow."
 msgstr ""
 
-#. Description of setting "Pictures -> Slideshow -> Use pan and zoom effects" with label #12379
+#. Description of setting with label #12379 "Use pan and zoom effects"
 #: system/settings/settings.xml
 msgctxt "#36313"
 msgid "Images in a slideshow will pan and zoom while displayed."
 msgstr ""
 
-#. Description of setting "Pictures -> Slideshow -> Randomise" with label #13319
+#. Description of setting with label #13319 "Randomise"
 #: system/settings/settings.xml
 msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr ""
 
-#. Description of settings section "Weather" with label #8
+#. Description of settings section with label #8 "Weather" 
 #: system/settings/settings.xml
 msgctxt "#36315"
 msgid "Section that contains weather related settings."
 msgstr ""
 
-#. Description of settings category "Weather -> General" with label #16000
+#. Description of settings category with label #16000 "General"
 #: system/settings/settings.xml
 msgctxt "#36316"
-msgid "This category contains the settings for how weather add-ons are handled."
+msgid "This category contains the settings for how the weather service is handled."
 msgstr ""
 
-#. Description of settings category "Weather -> General -> Locations with label #0
+#. Description of settings category with label #0 "Locations"
 #: system/settings/settings.xml
 msgctxt "#36317"
 msgid "Select up to three locations for which the weather can be displayed."
 msgstr ""
 
-#. Description of settings category "Weather -> General -> Service for weather information" with label #24029
+#. Description of setting with label #24029 "Service for weather information"
 #: system/settings/settings.xml
 msgctxt "#36318"
 msgid "Specify the default weather information source. See the add-ons manager for options."
 msgstr ""
 
-#. Description of settings section "Services" with label #14036
+#. Description of settings section with label #14036  "Services"
 #: system/settings/settings.xml
 msgctxt "#36319"
-msgid "Section containing settings for how network services are handled."
+msgid "Section containing settings for how services are handled."
 msgstr ""
 
-#. Description of settings category "Services -> General" with label #16000
+#. Description of settings category with label #16000 "General"
 #: system/settings/settings.xml
 msgctxt "#36320"
 msgid "This category contains the settings used for all services."
 msgstr ""
 
-#. Description of settings category "Services -> General -> Device name" with label #1271
+#. Description of setting with label #1271 "Device name"
 #: system/settings/settings.xml
 msgctxt "#36321"
 msgid "The name to display for this device when using various network services."
 msgstr ""
 
-#. Description of settings category "Services -> UPnP/DLNA" with label #20187
+#. Description of settings category with label #20187 "UPnP/DLNA"
 #: system/settings/settings.xml
 msgctxt "#36322"
 msgid "This category contains the settings for how the UPnP service is handled. UPnP is also called DLNA on most consumer electronics."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Share my libraries" with label #21360
+#. Description of setting with label #21360 "Share my libraries"
 #: system/settings/settings.xml
 msgctxt "#36323"
 msgid "Enables the UPnP server. This allows you to stream media in your libraries to a UPnP client."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Announce library updates" with label #20188
+#. Description of setting with label #20188 "Announce library updates"
 #: system/settings/settings.xml
 msgctxt "#36324"
 msgid "When a manual or automatic library update occurs, notify UPnP clients."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Allow playback control via UPnP" with label #21881
+#. Description of setting with label #21881 "Allow playback control via UPnP"
 #: system/settings/settings.xml
 msgctxt "#36325"
 msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Look for remote UPnP players" with label #21361
+#. Description of setting with label #21361 "Look for remote UPnP players"
 #: system/settings/settings.xml
 msgctxt "#36326"
 msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control it's playback."
 msgstr ""
 
-#. Description of settings category "Services -> Webserver" with label #20187
+#. Description of settings category with label #20187 "Webserver"
 #: system/settings/settings.xml
 msgctxt "#36327"
 msgid "This category contains the settings for how the web server service is handled."
 msgstr ""
 
-#. Description of setting "Services -> Webserver -> Allow remote control via HTTP" with label #263
+#. Description of setting with label #263 "Allow remote control via HTTP"
 #: system/settings/settings.xml
 msgctxt "#36328"
 msgid "Enable remote users to control this application through the built-in web server."
 msgstr ""
 
-#. Description of setting "Services -> Webserver -> Port" with label #730
+#. Description of setting with label #730 "Port"
 #: system/settings/settings.xml
 msgctxt "#36329"
 msgid "Define the web server port."
 msgstr ""
 
-#. Description of setting "Services -> Webserver -> Username" with label #1048
+#. Description of setting with label #1048 "Username"
 #: system/settings/settings.xml
 msgctxt "#36330"
 msgid "Define the web server username. This only takes effect when both the username and the password are set."
 msgstr ""
 
-#. Description of setting "Services -> Webserver -> Password" with label #1048
+#. Description of setting with label #1048 "Password"
 #: system/settings/settings.xml
 msgctxt "#36331"
 msgid "Define the web server password. This only takes effect when both the username and the password are set."
 msgstr ""
 
-#. Description of setting "Services -> Webserver -> Web interface" with label #199
+#. Description of setting with label #199 "Web interface"
 #: system/settings/settings.xml
 msgctxt "#36332"
 msgid "Select between web interfaces installed via the add-on manager."
 msgstr ""
 
-#. Description of settings category "Services -> Remote Control" with label #790
+#. Description of settings category with label #790 "Remote Control"
 #: system/settings/settings.xml
 msgctxt "#36333"
 msgid "This category contains the settings for how the remote control service is handled."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Allow remote control from programs on this system" with label #791
+#. Description of setting with label #791 "Allow remote control from programs on this system"
 #: system/settings/settings.xml
 msgctxt "#36334"
 msgid "Allow programs on this computer to control this application via the web interface or the JSON-RPC interface protocol."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Port" with label #792
+#. Description of setting with label #792 "Port"
 #: system/settings/settings.xml
 msgctxt "#36335"
 msgid "Define the remote control port."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Port range" with label #793
+#. Description of setting with label #793 "Port range"
 #: system/settings/settings.xml
 msgctxt "#36336"
 msgid "Define the remote control port range."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Maximum number of clients" with label #797
+#. Description of setting with label #797 "Maximum number of clients"
 #: system/settings/settings.xml
 msgctxt "#36337"
 msgid "Define the maximum number of clients that can connect."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Allow remote control from programs on other systems" with label #794
+#. Description of setting with label #794 "Allow remote control from programs on other systems"
 #: system/settings/settings.xml
 msgctxt "#36338"
 msgid "Allow programs on the network to control this application."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Initial repeat delay (ms)" with label #795
+#. Description of setting with label #795 "Initial repeat delay (ms)"
 #: system/settings/settings.xml
 msgctxt "#36339"
 msgid "Initial repeat delay (ms)."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Continuous repeat delay (ms)" with label #796
+#. Description of setting with label #796 "Continuous repeat delay (ms)"
 #: system/settings/settings.xml
 msgctxt "#36340"
 msgid "Continuous repeat delay (ms)."
 msgstr ""
 
-#. Description of settings category "Services -> Zeroconf" with label #1259
+#. Description of settings category with label #1259 "Zeroconf"
 #: system/settings/settings.xml
 msgctxt "#36341"
 msgid "This category contains the settings for how the Zeroconf network discovery service is handled, required for AirPlay."
 msgstr ""
 
-#. Description of setting "Services -> Zeroconf -> Announce services to other systems"  with label #1260
+#. Description of setting with label #1260 "Announce services to other systems"
 #: system/settings/settings.xml
 msgctxt "#36342"
 msgid "Allows applications on the network to discover enabled services via Zeroconf."
 msgstr ""
 
-#. Description of setting "Services -> AirPlay -> Enable AirPlay support" with label #1270
+#. Description of setting with label #1270 "Enable AirPlay support"
 #: system/settings/settings.xml
 msgctxt "#36343"
 msgid "If enabled, the content from other AirPlay devices or applications can be received."
 msgstr ""
 
-#. Description of setting "Services -> AirPlay -> Use password protection" with label #1272
+#. Description of setting with label #1272 "Use password protection"
 #: system/settings/settings.xml
 msgctxt "#36344"
 msgid "Enable AirPlay password protection."
 msgstr ""
 
-#. Description of setting "Services -> AirPlay -> Password" with label #733
+#. Description of setting with label #733 "Password"
 #: system/settings/settings.xml
 msgctxt "#36345"
 msgid "Sets the AirPlay password."
 msgstr ""
 
-#. Description of settings category "Services -> SMB Client" with label #1200
+#. Description of settings category with label #1200 "SMB Client"
 #: system/settings/settings.xml
 msgctxt "#36346"
 msgid "This category contains the settings for how the SMB client (Samba) service is handled."
 msgstr ""
 
-#. Description of setting "Services -> SMB Client -> WINS server" with label #1207
+#. Description of setting with label #1207 "WINS server"
 #: system/settings/settings.xml
 msgctxt "#36347"
 msgid "If a WINS server is running on the network, enter its IP address here. Otherwise, leave blank."
 msgstr ""
 
-#. Description of setting "Services -> SMB Client -> Workgroup" with label #1202
+#. Description of setting with label #1202 "Workgroup"
 #: system/settings/settings.xml
 msgctxt "#36348"
 msgid "If a WINS server is running on the network, enter its workgroup name here. Otherwise, leave blank."
 msgstr ""
 
-#. Description of settings section "System" with label #13000
+#. Description of settings section with label #13000 "System"
 #: system/settings/settings.xml
 msgctxt "#36349"
 msgid "Section that contains the system related settings for the device this application is installed on."
 msgstr ""
 
-#. Description of setting "System -> Power saving -> Try to wake remote servers on access" with label #13026
+#. Description of setting with label #13026 "Try to wake remote servers on access"
 #: system/settings/settings.xml
 msgctxt "#36350"
 msgid "Automatically send Wake-on-LAN to server(s) right before trying to access shared files or services."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Display Mode" with label #21373
+#. Description of setting with label #21373 "Display Mode"
 #: system/settings/settings.xml
 msgctxt "#36351"
 msgid "Changes the way this application is displayed on the selected screen. Either in a window or fullscreen."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Resolution" with label #169
+#. Description of setting with label #169 "Resolution"
 #: system/settings/settings.xml
 msgctxt "#36352"
 msgid "Changes the resolution that the user interface is displayed in."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Refresh Rate" with label #243
+#. Description of setting with label #243 "Refresh Rate"
 #: system/settings/settings.xml
 msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Use fullscreen window" with label #14083
+#. Description of setting with label #14083 "Use fullscreen window"
 #: system/settings/settings.xml
 msgctxt "#36354"
 msgid "If enabled, fullscreen mode will be applied by using a window instead of a real fullscreen mode. The main benefit is for multi-screen configurations, so that other applications can be used in parallel more easily. This uses more resources so playback may be less smooth."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Blank other displays" with label #13130
+#. Description of setting with label #13130 "Blank other displays"
 #: system/settings/settings.xml
 msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
@@ -17387,37 +17668,37 @@ msgstr ""
 
 #empty strings from id 36356 to 36356
 
-#. Description of setting "System -> Video output -> Video calibration..." with label #214
+#. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
 msgctxt "#36357"
 msgid "Calibrate the user interface by adjusting the overscan. Use this tool if the image being displayed is too large or small for your display."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Test patterns..." with label #226
+#. Description of setting with label #226 "Test patterns..."
 #: system/settings/settings.xml
 msgctxt "#36358"
 msgid "Test patterns for display hardware calibration."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Use limited colour range (16-235)" with label #36042
+#. Description of setting with label #36042 "Use limited colour range (16-235)"
 #: system/settings/settings.xml
 msgctxt "#36359"
 msgid "Use limited colour range (16-235) instead of full colour range (0-255). Limited range should be used if your display is a regular HDMI TV and doesn't have a PC or other mode to display full range colour, however if your display is a PC monitor then leave this disabled to get proper blacks."
 msgstr ""
 
-#. Description of settings category "System -> Audio output" with label #772
+#. Description of settings category with label #772 "Audio"
 #: system/settings/settings.xml
 msgctxt "#36360"
 msgid "This category contains the settings for how audio output is handled."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Output configuration" with label #337
+#. Description of setting with label #337 "Output configuration"
 #: system/settings/settings.xml
 msgctxt "#36361"
 msgid "Select how the properties of the audio output are set: [Fixed] Output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] Output properties are set to always be as close a match to the source properties as possible; [Optimized] Output properties are set at the start of playback and will not change if the properties of the source change."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Number of channels" with label #34100
+#. Description of setting with label #34100 "Number of channels"
 #: system/settings/settings.xml
 msgctxt "#36362"
 msgid "Select the number of channels supported by the audio connection, or the number of speakers if connected by analogue connections. This setting does not apply to passthrough audio. Note: S/PDIF supports 2.0 channels only but can still output multichannel audio using a format supported by passthrough."
@@ -17428,19 +17709,19 @@ msgctxt "#36363"
 msgid "Boost AC3 streams that have been downmixed to 2 channels."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Number of channels" with label #252
+#. Description of setting with label #252 "Stereo upmix"
 #: system/settings/settings.xml
 msgctxt "#36364"
 msgid "Select to enable upmixing of 2 channel audio to the number of audio channels specified by the channel configuration."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Dolby Digital (AC3) capable receiver" with label #364
+#. Description of setting with label #364 "Dolby Digital (AC3) capable receiver"
 #: system/settings/settings.xml
 msgctxt "#36365"
 msgid "Select this option if your receiver is capable of decoding Dolby Digital (AC3) streams."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> DTS capable receiver" with label #254
+#. Description of setting with label #254 "DTS capable receiver"
 #: system/settings/settings.xml
 msgctxt "#36366"
 msgid "Select this option if your receiver is capable of decoding DTS streams.
@@ -17451,253 +17732,253 @@ msgctxt "#36367"
 msgid "Select the maximum number of audio channels / speakers available for decoded audio. If optical / coax digital outputs are used, this must be set to 2.0"
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Enable passthrough" with label #348
+#. Description of setting with label #348 "Enable passthrough"
 #: system/settings/settings.xml
 msgctxt "#36368"
 msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital (AC3), DTS, etc."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> TrueHD capable receiver" with label #349
+#. Description of setting with label #349 "TrueHD capable receiver"
 #: system/settings/settings.xml
 msgctxt "#36369"
 msgid "Select this option if your receiver is capable of decoding TrueHD streams."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> DTS-HD capable receiver" with label #347
+#. Description of setting with label #347 "DTS-HD capable receiver"
 #: system/settings/settings.xml
 msgctxt "#36370"
 msgid "Select this option if your receiver is capable of decoding DTS-HD streams."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Audio output device" with label #545
+#. Description of setting with label #545 "Audio output device"
 #: system/settings/settings.xml
 msgctxt "#36371"
 msgid "Select the device to be used for playback of audio that has been decoded such as mp3."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Passthrough output device" with label #546
+#. Description of setting with label #546 "Passthrough output device"
 #: system/settings/settings.xml
 msgctxt "#36372"
 msgid "Select the device to be used for playback of encoded formats, these are any of the formats below in the capable receiver options."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Play GUI sounds" with label #34120
+#. Description of setting with label #34120 "Play GUI sounds"
 #: system/settings/settings.xml
 msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr ""
 
-#. Description of settings category "System -> Input devices" with label #14094
+#. Description of settings category with label #14219 "Control"
 #: system/settings/settings.xml
 msgctxt "#36374"
 msgid "This category contains the settings for how input devices are handled."
 msgstr ""
 
-#. Description of setting "System -> Input devices -> Peripherals" with label #35000
+#. Description of setting with label #35000 "Peripherals"
 #: system/settings/settings.xml
 msgctxt "#36375"
 msgid "Configure any attached peripheral devices."
 msgstr ""
 
-#. Description of setting "System -> Input devices -> Remote control sends keyboard presses" with label #21449
+#. Description of setting with label #21449 "Remote control sends keyboard presses"
 #: system/settings/settings.xml
 msgctxt "#36376"
 msgid "When activated, your keyboard arrows will move the selection on the virtual keyboard. When deactivated, they will move the cursor from your text."
 msgstr ""
 
-#. Description of setting "System -> Input devices -> Enable mouse and Touch Screen support" with label #21369
+#. Description of setting with label #21369 "Enable mouse and Touch Screen support"
 #: system/settings/settings.xml
 msgctxt "#36377"
 msgid "Use a mouse or touch screen device to control the interface. Note: Disabling will cause you to lose control over this application when no keyboard or remote is present."
 msgstr ""
 
-#. Description of setting "System -> Input devices -> Enable joystick and gamepad support" with label #35100
+#. Description of setting with label #35100 "Enable joystick and gamepad support"
 #: system/settings/settings.xml
 msgctxt "#36378"
 msgid "Use a joystick to control the interface."
 msgstr ""
 
-#. Description of settings category "System -> Internet access" with label #798
+#. Description of settings category with label #798 Internet access
 #: system/settings/settings.xml
 msgctxt "#36379"
 msgid "This category contains the settings for how Internet access is handled. The default web interface can also be selected here."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Use proxy server" with label #708
+#. Description of setting with label #708 "Use proxy server"
 #: system/settings/settings.xml
 msgctxt "#36380"
 msgid "If your Internet connection uses a proxy server, configure it here."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Proxy type" with label #1180
+#. Description of setting with label #1180 "Proxy type"
 #: system/settings/settings.xml
 msgctxt "#36381"
 msgid "Configure which proxy type is used."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Server" with label #706
+#. Description of setting with label #706 "Server"
 #: system/settings/settings.xml
 msgctxt "#36382"
 msgid "Configure the proxy server address."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Port" with label #730
+#. Description of setting with label #730 "Port"
 #: system/settings/settings.xml
 msgctxt "#36383"
 msgid "Configure the proxy server port."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Username" with label #1048
+#. Description of setting with label #1048 "Username"
 #: system/settings/settings.xml
 msgctxt "#36384"
 msgid "Configure the proxy server username."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Password" with label #733
+#. Description of setting with label #733 "Password"
 #: system/settings/settings.xml
 msgctxt "#36385"
 msgid "Configure the proxy server password."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Internet connection bandwidth limitation" with label #14041
+#. Description of setting with label #14041 "Internet connection bandwidth limitation"
 #: system/settings/settings.xml
 msgctxt "#36386"
 msgid "If your Internet connection has limited bandwidth available, use this setting to keep bandwidth usage by this application within defined limits."
 msgstr ""
 
-#. Description of settings category "System -> Power saving" with label #14095
+#. Description of settings category with label #14095 "Power saving"
 #: system/settings/settings.xml
 msgctxt "#36387"
 msgid "This category contains the settings for power saving."
 msgstr ""
 
-#. Description of setting "System -> Power saving -> Put display to sleep when idle" with label #1450
+#. Description of setting with label #1450 "Put display to sleep when idle"
 #: system/settings/settings.xml
 msgctxt "#36388"
 msgid "Turn off display when idle. Useful for TVs that turn off when there is no display signal detected."
 msgstr ""
 
-#. Description of setting "System -> Power saving -> Shutdown function timer" with label #357
+#. Description of setting with label #357 "Shutdown function timer"
 #: system/settings/settings.xml
 msgctxt "#36389"
 msgid "Set the time to wait for any activity to occur before shutting down."
 msgstr ""
 
-#. Description of setting "System -> Power saving -> Shutdown function" with label #13008
+#. Description of setting with label #13008 "Shutdown function"
 #: system/settings/settings.xml
 msgctxt "#36390"
 msgid "Define what action to perform when the shutdown function timer lapsed."
 msgstr ""
 
-#. Description of settings category "System -> Logging" with label #14092
+#. Description of settings category with label #14092 "Logging"
 #: system/settings/settings.xml
 msgctxt "#36391"
 msgid "This category contains the settings for enabling event and debug logging. You can also enable component-specific debug logging in order to help troubleshoot related issues in more detail."
 msgstr ""
 
-#. Description of setting "System -> Logging -> Enable debug logging" with label #20191
+#. Description of setting with label #20191 "Enable debug logging"
 #: system/settings/settings.xml
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr ""
 
-#. Description of setting "System -> Logging -> Screenshot folder" with label #20004
+#. Description of setting with label #20004 "Screenshot folder"
 #: system/settings/settings.xml
 msgctxt "#36393"
 msgid "Select the folder where screenshots should be saved in."
 msgstr ""
 
-#. Description of setting "System -> Logging -> Enable component-specific logging" with label #666
+#. Description of setting with label #666 "Enable component-specific logging"
 #: system/settings/settings.xml
 msgctxt "#36394"
 msgid "Enables verbose messages from additional libraries to be included in the debug log."
 msgstr ""
 
-#. Description of settings category "System -> Master lock" with label #12360
+#. Description of settings category with label #12360 "Master lock"
 #: system/settings/settings.xml
 msgctxt "#36395"
 msgid "This category contains the settings for how the master lock function is handled."
 msgstr ""
 
-#. Description of setting "System -> Master lock -> Master lock code and settings" with label #20100
+#. Description of setting with label #20100 "Master lock code and settings"
 #: system/settings/settings.xml
 msgctxt "#36396"
 msgid "Here you can enable or disable master lock and define the PIN code used to unlock it. You can also specify which areas of the application would need a PIN to access them."
 msgstr ""
 
-#. Description of setting "System -> Master lock -> Ask for master lock code on startup" with label #20076
+#. Description of setting with label #20076 "Ask for master lock code on startup"
 #: system/settings/settings.xml
 msgctxt "#36397"
 msgid "If enabled, the master lock code is required to unlock this application on startup."
 msgstr ""
 
-#. Description of setting "System -> Master lock -> Max Retries" with label #20076
+#. Description of setting with label #20076 "Max Retries"
 #: system/settings/settings.xml
 msgctxt "#36398"
 msgid "Define the maximum number of retries before this application is closed down."
 msgstr ""
 
-#. Description of settings category "System -> Cache" with label #439
+#. Description of settings category with label #439 "Cache"
 #: system/settings/settings.xml
 msgctxt "#36399"
 msgid "This category contains the settings for how the cache function is handled."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Video/Audio/DVD cache - Hard disk" with label #14025
+#. Description of settings category with label #14025 "Video/Audio/DVD cache - Hard disk"
 #: system/settings/settings.xml
 msgctxt "#36400"
 msgid "Enable cache for playback of video, audio or DVDs from hard disk."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Video cache - DVD-ROM" with label #14026
+#. Description of settings category with label #14026 "Video cache - DVD-ROM"
 #: system/settings/settings.xml
 msgctxt "#36401"
 msgid "Enable cache for playback of video from DVD-ROM."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Video cache - Local Network" with label #14027
+#. Description of settings category with label #14027 "Video cache - Local Network"
 #: system/settings/settings.xml
 msgctxt "#36402"
 msgid "Enable cache for video playback from local network."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Video cache - Internet" with label #14028
+#. Description of settings category with label #14028 "Video cache - Internet"
 #: system/settings/settings.xml
 msgctxt "#36403"
 msgid "Enable cache for video playback from Internet."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Audio cache - DVD-ROM" with label #14030
+#. Description of settings category with label #14030 "Audio cache - DVD-ROM"
 #: system/settings/settings.xml
 msgctxt "#36404"
 msgid "Enable cache for playback of audio from DVD-ROM."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Audio cache - Local Network" with label #14031
+#. Description of settings category with label #14031 "Audio cache - Local Network"
 #: system/settings/settings.xml
 msgctxt "#36405"
 msgid "Enable cache for audio playback from local network."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Audio cache - Internet" with label #14032
+#. Description of settings category with label #14032 "Audio cache - Internet"
 #: system/settings/settings.xml
 msgctxt "#36406"
 msgid "Enable cache for audio playback from Internet."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> DVD cache - DVD-ROM" with label #14034
+#. Description of setting with label #14034 "DVD cache - DVD-ROM"
 #: system/settings/settings.xml
 msgctxt "#36407"
 msgid "Enable cache for playback of DVD from DVD-ROM."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> DVD cache - Local Network" with label #14037
+#. Description of setting with label #14037 "DVD cache - Local Network"
 #: system/settings/settings.xml
 msgctxt "#36408"
 msgid "Enable cache for DVD playback from local network."
 msgstr ""
 
-#. Description of settings category "System -> Cache -> Unknown type cache - Internet" with label #14060
+#. Description of setting with label #14060 "Unknown type cache - Internet"
 #: system/settings/settings.xml
 msgctxt "#36409"
 msgid "Enable cache of unknown types from Internet."
@@ -17733,49 +18014,49 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of setting "System -> Input Devices -> Apple remote" with label #13600
+#. Description of setting with label #13600 "Apple remote"
 #: system/settings/settings.xml
 msgctxt "#36416"
 msgid "Specify the type of remote used."
 msgstr ""
 
-#. Description of setting "System -> Input Devices -> Allow start of Kodi with remote" with label #13602
+#. Description of setting with label #13602 "Allow start of Kodi with remote"
 #: system/settings/settings.xml
 msgctxt "#36417"
 msgid "Always run a Kodi helper so that the remote can be used to start Kodi."
 msgstr ""
 
-#. Description of setting "System -> Input Devices -> Sequence delay time" with label #13603
+#. Description of setting with label #13603 "Sequence delay time"
 #: system/settings/settings.xml
 msgctxt "#36418"
 msgid "Specify the delay between button sequences on a universal remote."
 msgstr ""
 
-#. Description of settings category "Weather -> General -> Settings" with label #21417
+#. Description of setting with label #21417 "Settings"
 #: system/settings/settings.xml
 msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Look for external subtitles" with label #20222
+#. Description of setting with label #20222 "Look for external subtitles"
 #: system/settings/settings.xml
 msgctxt "#36420"
 msgid "Look for external subtitles for videos provided by the UPnP server. This can cause extensive CPU, filesystem and network load."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Prefer VDPAU Video Mixer" with label #13437
+#. Description of setting with label #13437 "Prefer VDPAU Video Mixer"
 #: system/settings/settings.xml
 msgctxt "#36421"
 msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allow hardware acceleration (amcodec)" with label #13438
+#. Description of setting with label #13438 "Allow hardware acceleration (amcodec)"
 #: system/settings/settings.xml
 msgctxt "#36422"
 msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
-#. Description of setting "TV -> Recording -> Prevent duplicate episodes" with label #812
+#. Description of setting with label #812 "Prevent duplicate episodes"
 #: system/settings/settings.xml
 msgctxt "#36423"
 msgid "Timer rules shall only record new episodes. Not supported by all add-ons and backends."
@@ -17806,67 +18087,67 @@ msgctxt "#36428"
 msgid "Record"
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Enable Dolby Digital transcoding" with label #667
+#. Description of setting with label #667 "Enable Dolby Digital transcoding"
 #: system/settings/settings.xml
 msgctxt "#36429"
 msgid "Select this if the audio out connection only supports multichannel audio as Dolby Digital 5.1 (AC-3), such as a S/PDIF connection. If your system supports PCM multichannel audio via HDMI, leave this disabled."
 msgstr ""
 
-#. Description for setting category #14101: Video Acceleration
+#. Description for setting category #14101: "Video Acceleration"
 #: system/settings/settings.xml
 msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
 msgstr ""
 
-#. Description of setting "System -> Logging -> Show event log" with label #13438
+#. Description of setting with label #13438 "Show event log"
 #: system/settings/settings.xml
 msgctxt "#36431"
 msgid "Shows all events in the event log for the current profile with options to only show specific levels."
 msgstr ""
 
-#. Description for international setting #310: Keyboard layouts
+#. Description for setting #310: "Keyboard layouts"
 #: system/settings/settings.xml
 msgctxt "#36432"
 msgid "Select virtual keyboard layouts."
 msgstr ""
 
-#. Description for video related setting #13457: vaapi sw filter
+#. Description for video related setting #13457: "vaapi sw filter"
 #: system/settings/settings.xml
 msgctxt "#36433"
 msgid "When enabled, VAAPI render method is preferred and the CPU has less load. If you experience hangs, disable this option."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
+#. Description of setting "Enable MMAL hardware decoding of video files"
 #: system/settings/settings.xml
 msgctxt "#36434"
 msgid "Allow hardware acceleration - MMAL"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
+#. Description of setting "Enable MMAL hardware decoding of video files"
 #: system/settings/settings.xml
 msgctxt "#36435"
 msgid "Use VideoPlayer for decoding of video files with MMAL acceleration."
 msgstr ""
 
-#. Button on settings "System -> Audio output" to opend DSP manager dialog
+#. Button on settings to opend DSP manager dialog
 #: system/settings/settings.xml
 msgctxt "#36436"
 msgid "Audio DSP manager..."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Audio DSP manager..." with label 36436
+#. Description of setting with label 36436 "Audio DSP manager..."
 #: system/settings/settings.xml
 msgctxt "#36437"
 msgid "Allows to configure available modes for different stages in audio processing and to arrange the steps within the processing chain of each selected mode."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Enable Audio DSP processing" with label 36441
+#. Description of setting with label 36441 "Enable Audio DSP processing"
 #: system/settings/settings.xml
 msgctxt "#36438"
 msgid "Enables digital signal processing (DSP) of audio channels specified by the speaker configuration."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 14082
+#. Description of setting with label 14082 "Reset the Audio DSP database..."
 #: system/settings/settings.xml
 msgctxt "#36439"
 msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database will be erased."
@@ -17892,13 +18173,13 @@ msgstr ""
 
 #empty strings from id 36443 to 36459
 
-#. Description of settings "System -> Logging -> Enable event logging" with label #14112
+#. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml
 msgctxt "#36460"
 msgid "Event logging allows to keep track of what has happened."
 msgstr ""
 
-#. Description of settings "System -> Logging -> Enable notification event logging" with label #14113
+#. Description of settings with label #14113 "Enable notification event logging"
 #: system/settings/settings.xml
 msgctxt "#36461"
 msgid "Notification event describe regular processes and actions performed by the system or the user."
@@ -18000,7 +18281,7 @@ msgstr ""
 
 #empty string with id 36522
 
-#. Description of setting "System -> Audio output -> Limit sampling rate (kHz)" with label #458
+#. Description of setting with label #458 "Limit sampling rate (kHz)"
 #: system/settings/settings.xml
 msgctxt "#36523"
 msgid "Maximum sampling rate for S/PDIF or sampling rate for fixed output configuration."
@@ -18051,13 +18332,13 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Normalize levels on downmix" with label #346
+#. Description of setting with label #346 "Normalize levels on downmix"
 #: settings/DisplaySettings.cpp
 msgctxt "#36533"
 msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0.[CR][Enabled] Maintains volume level of the original audio source however the dynamic range is compressed.[CR][Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
 msgstr ""
 
-#. Description of setting "System -> Logging -> Component-specific logging..." with label #668
+#. Description of setting with label #668 "Component-specific logging..."
 #: system/settings/settings.xml
 msgctxt "#36534"
 msgid "Specify additional libraries whose verbose messages are to be included in the debug log."
@@ -18077,31 +18358,31 @@ msgctxt "#36536"
 msgid "Invert stereoscopic 3D mode (flip eyes)"
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Playback mode of stereoscopic videos" with label #36520
+#. Description of setting with label #36520 "Playback mode of stereoscopic videos"
 #: system/settings/settings.xml
 msgctxt "#36537"
 msgid "Select in which mode stereoscopic 3D videos will be played.[CR][Ask me] Will show a dialogue to select the desired mode for each playback.[CR][Preferred mode] Will use the preferred mode specified in the \"System -> Video hardware\" section of the settings.[CR][Monoscopic / 2D] Will play the video in mono / 2D.[CR][Ignore] Disables any stereoscopic 3D processing and handling."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Disable stereoscopic mode when playback is stopped" with label #36526
+#. Description of setting with label #36526 Disable stereoscopic mode when playback is stopped
 #: system/settings/settings.xml
 msgctxt "#36538"
 msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode, between videos in a playlist or when playback ended.[CR][Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists with mixed stereoscopic 3D and 2D content, then the GUI will also stay in stereoscopic 3D mode even when a non-stereoscopic 2D video is playing."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Stereoscopic mode (current)" with label #36500
+#. Description of setting with label #36500 "Stereoscopic mode (current)"
 #: system/settings/settings.xml
 msgctxt "#36539"
 msgid "Changes the stereoscopic 3D mode of the user interface."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Preferred mode" with label #36524
+#. Description of setting with label #36524 "Preferred mode"
 #: system/settings/settings.xml
 msgctxt "#36540"
 msgid "The preferred mode in which stereoscopic 3D media such as videos should be played."
 msgstr ""
 
-#. Description of setting "Services -> AirPlay -> Allow volume control" with label #1269
+#. Description of setting with label #1269 "Allow volume control"
 #: system/settings/settings.xml
 msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
@@ -18128,7 +18409,7 @@ msgctxt "#36545"
 msgid "Stereoscopic 3D depth of subtitles"
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Subtitle stereoscopic depth" with label #36545
+#. Description of setting with label #36545 "Subtitle stereoscopic depth"
 #: system/settings/settings.xml
 msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
@@ -18144,7 +18425,7 @@ msgctxt "#36548"
 msgid "Limits resolution of GUI to save memory. Does not affect video playback. Requires restart."
 msgstr ""
 
-#. Description of setting "Services -> AirPlay -> iOS 8 compatibility mode" with label #1268
+#. Description of setting with label #1268 "iOS 8 compatibility mode"
 #: system/settings/settings.xml
 msgctxt "#36549"
 msgid "Enables support for receiving \"Videos\" and \"Pictures\" via AirPlay. This needs to be disabled when using iOS 9 or later clients to restore music streaming via AirPlay. \"Videos\" and \"Pictures\" are only supported for iOS clients using iOS 8.x and older."
@@ -18157,7 +18438,7 @@ msgctxt "#36550"
 msgid "Stereoscopic 3D effect strength"
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Stereoscopic 3D effect strength" with label #36550
+#. Description of setting with label #36550 "Stereoscopic 3D effect strength"
 #: system/settings/settings.xml
 msgctxt "#36551"
 msgid "Defines the strength of the stereoscopic 3D effect in the GUI. This is done by controlling the depth of perception within the GUI, so the higher the value, the more elements will pop out of the screen. [Zero] Disables the stereoscopic 3D effect of the GUI.[CR]For a good visual experience, the value should be higher for small screens and lower for large screens. Note: this is not supported by all skins."
@@ -18165,13 +18446,13 @@ msgstr ""
 
 #empty strings from id 36552 to 36599
 
-#. Description of setting "System -> Video output -> Dither" with label #36099
+#. Description of setting with label #36099 "Dither"
 #: system/settings/settings.xml
 msgctxt "#36598"
 msgid "Eliminate banding caused by RGB level conversion or other processing by adding a small amount of noise to the picture. This can be disabled for slower systems, or when Kodi is set to limited range RGB output and no video processing is needed."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Dither depth" with label #36100
+#. Description of setting with label #36100 "Dither depth"
 #: system/settings/settings.xml
 msgctxt "#36599"
 msgid "Video dithering output precision in bits. Use the highest setting that doesn't show banding. The default of 8 is recommended for most systems. If your GPU is set to scale the output RGB levels or you use a laptop screen, a 7 or 6 bit setting may eliminate more banding. Lower settings are available for testing purposes only to make it easy to see whether dithering is applied and that the dither noise pixel size matches the display resolution."
@@ -18179,28 +18460,28 @@ msgstr ""
 
 #reserved strings 365XX
 
-#. Description of settings category "Music -> Library" with label #14022
+#. Description of settings category with label #14022 "Library"
 #: system/settings/settings.xml
 msgctxt "#36600"
 msgid "This category contains the settings for how the music library is handled."
 msgstr ""
 
-#. Description of settings category "Music -> File lists" with label #14081
+#. Description of settings category with label #14081 "File lists"
 #: system/settings/settings.xml
 msgctxt "#36601"
 msgid "This category contains the settings for how music file lists are handled."
 msgstr ""
 
-#. Description of settings category "Services -> AirPlay" with label #1273
+#. Description of settings category with label #1273 "AirPlay"
 #: system/settings/settings.xml
 msgctxt "#36602"
 msgid "This category contains the settings for how the AirPlay service is handled."
 msgstr ""
 
-#. Description of settings category "System -> Video output" with label #21373
+#. Description of settings category with label #14216 Display
 #: system/settings/settings.xml
 msgctxt "#36603"
-msgid "This category contains the settings for how video output is handled."
+msgid "This category contains the settings for displays."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18231,30 +18512,30 @@ msgctxt "#36609"
 msgid "Show notifications"
 msgstr ""
 
-#. Description of settings category "System -> Add-ons"
+#. Description of settings category "Add-ons"
 #: system/settings/settings.xml
 msgctxt "#36610"
 msgid "This category contains settings for the add-on system."
 msgstr ""
 
-#. Description of setting "System -> Add-ons -> Updates" with label #36605
+#. Description of setting with label #36605 "Updates"
 #: system/settings/settings.xml
 msgctxt "#36611"
 msgid "Change how auto updating of add-ons are handled."
 msgstr ""
 
-#. Description of setting "System -> Add-ons -> Show notifications" with label #36609
+#. Description of setting with label #36609 "Show notifications"
 #: system/settings/settings.xml
 msgctxt "#36612"
 msgid "Show notification when an add-on have been updated."
 msgstr ""
 
-#. Description of setting "System -> Add-ons -> Manage dependencies" with label #24996
+#. Description of setting with label #24996 "Manage dependencies"
 msgctxt "#36613"
 msgid "Manage modules and support libraries that have been automatically installed as a dependency to other add-ons. Items listed as \"Orphaned\" are no longer required by any add-ons and are safe to uninstall."
 msgstr ""
 
-#. Description of setting "System -> Add-ons -> Running" with label #24994
+#. Description of setting with label #24994 "Running"
 #: system/settings/settings.xml
 msgctxt "#36614"
 msgid "Show add-ons that are currently running in the background."
@@ -18266,7 +18547,7 @@ msgctxt "#36615"
 msgid "Unknown sources"
 msgstr ""
 
-#. Description of setting "System -> Add-ons -> Unknown sources" with label #36615
+#. Description of setting with label #36615 "Unknown sources"
 #: system/settings/settings.xml
 msgctxt "#36616"
 msgid "Allow installation of add-ons from unknown sources."
@@ -18441,7 +18722,7 @@ msgctxt "#37015"
 msgid "Browse into"
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Dolby Digital Plus (E-AC3) capable receiver" with label #448
+#. Description of setting with label #448 "Dolby Digital Plus (E-AC3) capable receiver"
 #: system/settings/settings.xml
 msgctxt "#37016"
 msgid "Select this option if your receiver is capable of decoding Dolby Digital Plus (E-AC3) streams."
@@ -18514,31 +18795,31 @@ msgctxt "#37030"
 msgid "Unlimited"
 msgstr ""
 
-#. Description of setting #14102 Settings -> Video -> Discs -> Blu-ray playback mode
+#. Description of setting #14102 Blu-ray playback mode
 #: system/settings/settings.xml
 msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened / played back. Note: Some disc menus are not fully supported and may cause problems."
 msgstr ""
 
-#. Title of category #37032 Settings -> Video -> Accessibility
+#. Title of category #37032 Accessibility
 #: system/settings/settings.xml
 msgctxt "#37032"
 msgid "Accessibility"
 msgstr ""
 
-#. Description of category #37032 Settings -> Video -> Accessibility
+#. Description of category #37032 Accessibility
 #: system/settings/settings.xml
 msgctxt "#37033"
 msgid "Video playback related accessibility settings, e.g. \"Prefer subtitles for the hearing impaired\"."
 msgstr ""
 
-#. Setting #37034 Settings -> Video -> Accessibility
+#. Setting #37034 Accessibility
 #: system/settings/settings.xml
 msgctxt "#37034"
 msgid "Prefer audio stream for the visually impaired"
 msgstr ""
 
-#. Description of setting #37034 Settings -> Video -> Accessibility
+#. Description of setting #37034 Accessibility
 #: system/settings/settings.xml
 msgctxt "#37035"
 msgid "Prefer the audio stream for the visually impaired to other audio streams of the same language"
@@ -18550,55 +18831,55 @@ msgctxt "#37036"
 msgid "Prefer audio stream for the hearing impaired"
 msgstr ""
 
-#. Description of setting #37036 Settings -> Video -> Accessibility
+#. Description of setting #37036 Accessibility
 #: system/settings/settings.xml
 msgctxt "#37037"
 msgid "Prefer the audio stream for the hearing impaired to other audio streams of the same language"
 msgstr ""
 
-#. Setting #37038 Settings -> Video -> Accessibility
+#. Setting #37038 Accessibility
 #: system/settings/settings.xml
 msgctxt "#37038"
 msgid "Prefer subtitles for the hearing impaired"
 msgstr ""
 
-#. Description of setting #37038 Settings -> Video -> Accessibility
+#. Description of setting #37038 Accessibility
 #: system/settings/settings.xml
 msgctxt "#37039"
 msgid "Prefer the subtitle stream for the hearing impaired to other subtitle streams of the same language"
 msgstr ""
 
-#. Setting #37040 Settings -> Video -> Playback
+#. Setting #37040 Playback
 #: system/settings/settings.xml
 msgctxt "#37040"
 msgid "Prefer default audio streams"
 msgstr ""
 
-#. Description of setting #37040 Settings -> Video -> Playback
+#. Description of setting #37040 Playback
 #: system/settings/settings.xml
 msgctxt "#37041"
 msgid "If enabled, audio streams that are flagged as default (and match the preferred language) are preferred over audio streams with higher quality (number of channels, codec, ...)."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Skip steps"
+#. Description of setting Skip steps
 #: system/settings/settings.xml
 msgctxt "#37042"
 msgid "Defines which step sizes to use when pressing the skip buttons. If more steps are selected for a skip direction, these can be applied by subsequent presses on the skip button within the defined skip delay. Forward (positive) and backward (negative) steps can be defined independently."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Skip delay"
+#. Description of setting Skip delay
 #: system/settings/settings.xml
 msgctxt "#37043"
 msgid "Defines the time to wait for subsequent key presses before performing the skip. Only applies when using smart skipping (when using more than one skip step for a direction)."
 msgstr ""
 
-#. Setting #37044 Settings -> Video -> File lists -> Extract chapter thumbnails
+#. Setting #37044 Extract chapter thumbnails
 #: system/settings/settings.xml
 msgctxt "#37044"
 msgid "Extract chapter thumbnails"
 msgstr ""
 
-#. Description of setting #37044 "Video -> File lists -> Extract chapter thumbnails"
+#. Description of setting #37044 Extract chapter thumbnails"
 #: system/settings/settings.xml
 msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters / bookmarks dialogue. This might increase CPU load."
@@ -18611,13 +18892,13 @@ msgctxt "#38010"
 msgid "GPU accelerated"
 msgstr ""
 
-#. Setting #38011 "Videos -> Library -> Show All Items entry"
+#. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml
 msgctxt "#38011"
 msgid "Show \"All items\" entry"
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Show All Items entry"
+#. Description of setting "Show All Items entry"
 #: system/settings/settings.xml
 msgctxt "#38012"
 msgid "Show \"All items\" entry in directory, e.g. \"All albums\" or \"All seasons\"."
@@ -18629,7 +18910,7 @@ msgctxt "#38013"
 msgid "Limit GUI updates during playback"
 msgstr ""
 
-#. Description for the setting Video -> Acceleration -> Limit GUI updates when playing video with label #38013
+#. Description for the setting with label #38013 "Limit GUI updates when playing video"
 #: system/settings/settings.xml
 msgctxt "#38014"
 msgid "Limits the speed (fps) used to update the GUI while playing videos. This can reduce CPU load and fix playback issues while the GUI is shown."
@@ -18647,7 +18928,7 @@ msgctxt "#38016"
 msgid "%d fps"
 msgstr ""
 
-#. Description of setting #14111 Settings -> Video -> Discs -> Blu-ray region code
+#. Description of setting #14111 "Blu-ray region code"
 #: system/settings/settings.xml
 msgctxt "#38017"
 msgid "Region A - Americas, East Asia and Southeast Asia. Region B - Africa, Middle East, Southwest Asia, Europe, Australia, New Zealand. Region C - Central Asia, mainland China, Mongolia, South Asia, Belarus, Russia, Ukraine, Kazakhstan."
@@ -18691,7 +18972,7 @@ msgctxt "#38027"
 msgid "Decode the stereo stream from 3D files"
 msgstr ""
 
-#. Description of setting "Decode the stereo stream from 3D files" with label #38027
+#. Description of setting with label #38027 "Decode the stereo stream from 3D files"
 #: system/settings/rbp.xml
 msgctxt "#38028"
 msgid "If enabled, videos created in Multiview Video Coding (MVC) format can also be watched in stereoscopic 3D. MVC format is typically found on 3D Blu-rays.[CR]Note: Processing of this data may reduce playback performance, so only enable if you require stereoscopic 3D support."
@@ -18770,4 +19051,76 @@ msgstr ""
 #: music/MusicDatabase.cpp
 msgctxt "#38042"
 msgid "[Missing]"
+msgstr ""
+
+#. Description of section #14200 "Player""
+#: system/settings/settings.xml
+msgctxt "#38100"
+msgid "Section that contains the settings for the playback of media"
+msgstr ""
+
+#. Description of section #14201 "Library"
+#: system/settings/settings.xml
+msgctxt "#38101"
+msgid "Section that contains the settings for how media information is collected, stored, shown, and navigated"
+msgstr ""
+
+#. Description of section #14203 "Customise"
+#: system/settings/settings.xml
+msgctxt "#38102"
+msgid "Section that contains the settings influencing the GUI experience and for controlling the GUI/system"
+msgstr ""
+
+#. Description of category #14210 "Videos"
+#: system/settings/settings.xml
+msgctxt "#38103"
+msgid "This category contains the settings for the playback of videos"
+msgstr ""
+
+#. Description of category #14211 "Music"
+#: system/settings/settings.xml
+msgctxt "#38104"
+msgid "This category contains the settings for the playback of music"
+msgstr ""
+
+#. Description of category #14212 "Pictures"
+#: system/settings/settings.xml
+msgctxt "#38105"
+msgid "This category contains the settings for playback of pictures via a slideshow"
+msgstr ""
+
+#. Description of category #14213 "Language"
+#: system/settings/settings.xml
+msgctxt "#38106"
+msgid "This category contains the settings for audio & subtitle language"
+msgstr ""
+
+#. Description of category #14210 "Videos"
+#: system/settings/settings.xml
+msgctxt "#38107"
+msgid "This category contains the settings for how information for videos is collected, stored, shown, and navigated"
+msgstr ""
+
+#. Description of category #14211 "Music"
+#: system/settings/settings.xml
+msgctxt "#38108"
+msgid "This category contains the settings for how information for music is collected, stored, shown, and navigated"
+msgstr ""
+
+#. Description of category #14212 "Pictures"
+#: system/settings/settings.xml
+msgctxt "#38109"
+msgid "This category contains the settings for how information for pictures is shown and navigated"
+msgstr ""
+
+#. Description of category #14215 "Databases"
+#: system/settings/settings.xml
+msgctxt "#38110"
+msgid "This category contains the settings for the library databases"
+msgstr ""
+
+#. Description of category #14224 "Other"
+#: system/settings/settings.xml
+msgctxt "#38111"
+msgid "This category contains other settings for the GUI interface"
 msgstr ""
