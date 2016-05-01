@@ -117,7 +117,7 @@ void CEventButtonState::Load()
     }
     
     if (m_mapName.length() > 3 &&
-        (StringUtils::StartsWith(m_mapName, "CS")) ) // custom map - CS:<controlelrName>
+        (StringUtils::StartsWith(m_mapName, "CC")) ) // custom map - CC:<controllerName>
     {
       m_customControllerName = m_mapName.substr(3);
     }
