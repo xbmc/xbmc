@@ -72,7 +72,7 @@ public:
   void SetFiltering(GLenum target, GLenum mode);
 
   // Create a new texture and bind to it
-  bool CreateAndBindToTexture(GLenum target, int width, int height, GLenum format,
+  bool CreateAndBindToTexture(GLenum target, int width, int height, GLenum format, GLenum type=GL_UNSIGNED_BYTE,
                               GLenum filter=GL_LINEAR, GLenum clampmode=GL_CLAMP_TO_EDGE);
 
   // Return the internally created texture ID

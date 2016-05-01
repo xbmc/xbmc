@@ -94,7 +94,7 @@ void CFrameBufferObject::Cleanup()
   m_bound = false;
 }
 
-bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int height, GLenum format,
+bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int height, GLenum format, GLenum type,
                                                 GLenum filter, GLenum clampmode)
 {
   if (!IsValid())
@@ -105,7 +105,7 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
 
   glGenTextures(1, &m_texid);
   glBindTexture(target, m_texid);
-  glTexImage2D(target, 0, format,  width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(target, 0, format,  width, height, 0, GL_RGBA, type, NULL);
   glTexParameteri(target, GL_TEXTURE_WRAP_S, clampmode);
   glTexParameteri(target, GL_TEXTURE_WRAP_T, clampmode);
   glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);

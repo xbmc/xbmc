@@ -825,7 +825,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
         break;
       }
 
-      if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+      if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA16, GL_SHORT))
       {
         CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
         break;
@@ -1185,7 +1185,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
       return;
     }
 
-    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+    if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA16, GL_SHORT))
     {
       CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
       return;
