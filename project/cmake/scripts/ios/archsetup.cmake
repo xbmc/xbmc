@@ -30,9 +30,8 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework QuartzCore" "-framework MediaPlayer"
                     "-framework CFNetwork" "-framework CoreGraphics"
                     "-framework Foundation" "-framework UIKit"
-                    "-framework CoreMedia" "-framework AVFoundation")
+                    "-framework CoreMedia" "-framework AVFoundation"
+                    "-framework VideoToolbox")
 
 set(ENABLE_DVDCSS OFF)
 set(ENABLE_OPTICAL OFF)
-set(ENABLE_VTB ON)
-set(VTB_FOUND 1 CACHE INTERNAL "VTB")
