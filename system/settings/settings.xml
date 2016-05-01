@@ -100,7 +100,7 @@
           </and>
         </requirement>
       </group>
-      <group id="4" label="14231">  
+      <group id="4" label="14231">
         <setting id="videoplayer.rendermethod" type="integer" label="13415" help="36153">
           <level>2</level>
           <default>0</default> <!-- RENDER_METHOD_AUTO -->
@@ -550,7 +550,7 @@
           <control type="toggle" />
         </setting>
       </group>
-    </category>    
+    </category>
     <category id="language" label="14218" help="38106">
       <group id="1" label="14221">
         <setting id="locale.audiolanguage" type="string" label="285" help="36119">
@@ -560,7 +560,7 @@
             <options>audiostreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
-        </setting>        
+        </setting>
         <setting id="videoplayer.preferdefaultflag" type="boolean" label="37040" help="37041">
           <level>1</level>
           <default>true</default>
@@ -1100,7 +1100,7 @@
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
-        </setting> 
+        </setting>
         <setting id="musiclibrary.backgroundupdate" type="boolean" label="14246" help="36147">
           <level>1</level>
           <default>false</default>
@@ -1954,7 +1954,7 @@
       </group>
     </category>
     <category id="audio" label="14221" help="36360">
-      <group id="1" label="14250">        
+      <group id="1" label="14250">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
           <level>0</level>
           <default>Default</default> <!-- will be properly set on startup -->
@@ -2309,7 +2309,7 @@
           </control>
         </setting>
       </group>
-    </category> 
+    </category>
     <category id="powermanagement" label="14095" help="36387">
       <group id="1" label="14255">
         <setting id="powermanagement.displaysoff" type="integer" label="1450" help="36388">
@@ -2689,7 +2689,7 @@
             </options>
           </constraints>
           <control type="list" format="string" />
-        </setting> 
+        </setting>
         <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
           <default>resource.uisounds.confluence</default>
