@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <section id="system">
-    <category id="videoscreen">
-      <group id="1">
-        <setting id="videoscreen.fakefullscreen">
-          <visible>false</visible>
-        </setting>
-      </group>
-    </category>
-  </section>
-  <section id="videos">
-    <category id="videoacceleration">
-      <group id="3">
+  <section id="player">
+    <category id="videoplayer">
+      <group id="4">
         <setting id="videoplayer.limitguiupdate" type="integer" label="38013" help="38014">
           <level>2</level>
           <default>10</default>
@@ -24,6 +15,15 @@
             <formatlabel>38016</formatlabel>
           </control>
           <control type="edit" format="integer" />
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="system">
+    <category id="display">
+      <group id="1">
+        <setting id="videoscreen.fakefullscreen">
+          <visible>false</visible>
         </setting>
       </group>
     </category>

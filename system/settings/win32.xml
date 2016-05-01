@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <section id="appearance">
-    <category id="locale">
-      <group id="2">
-        <visible>false</visible>
-      </group>
-    </category>
-  </section>
   <section id="services">
-    <category id="zeroconf">
-      <group id="1">
+    <category id="general">
+      <group id="2">
         <setting id="services.zeroconf">
           <default>false</default>
         </setting>
@@ -20,17 +13,17 @@
     </category>
   </section>
   <section id="system">
-    <category id="videoscreen">
+    <category id="display">
       <group id="1">
         <setting id="videoscreen.fakefullscreen">
           <requirement negated="true">HAS_GL</requirement>
         </setting>
       </group>
     </category>
-    <category id="audiooutput" label="772" help="36360">
+    <category id="audio">
       <group id="1">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
-          <level>1</level>
+          <level>0</level>
           <default>DIRECTSOUND:default</default>
           <constraints>
             <options>audiodevices</options>
@@ -40,7 +33,7 @@
       </group>
       <group id="3">
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
-          <level>2</level>
+          <level>1</level>
           <default>DIRECTSOUND:default</default>
           <constraints>
             <options>audiodevicespassthrough</options>
@@ -58,4 +51,21 @@
       </group>
     </category>
   </section>
+  <section id="interface">
+    <category id="regional">
+      <group id="2">
+        <setting id="locale.timezonecountry">
+          <visible>false</visible>
+        </setting>
+        <setting id="locale.timezone">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
+
+
+
+
+

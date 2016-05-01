@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <section id="videos">
+  <section id="player" label="14200" help="">
     <category id="videoplayer">
-      <group id="3">
+      <group id="2">
         <setting id="videoplayer.adjustrefreshrate">
           <visible>false</visible>
         </setting>
       </group>
-    </category>
-    <category id="videoacceleration">
-      <group id="1">
+      <group id="4">  
         <setting id="videoplayer.hqscalers">
           <visible>false</visible>
         </setting>
       </group>
     </category>
-  </section>
-  <section id="music">
-    <category id="audiocds">
+    <category id="discs">
+      <group id="3">
       <visible>false</visible>
+      </group>
     </category>
   </section>
   <section id="system">
-    <category id="videoscreen">
+    <category id="display">
       <group id="1">
         <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>
@@ -34,8 +32,8 @@
           <visible>false</visible>
         </setting>
       </group>
-    </category>
-    <category id="audiooutput">
+	</category>
+    <category id="audio">
       <group id="1">
         <setting id="audiooutput.audiodevice" type="string">
           <default>Default</default>
@@ -49,32 +47,33 @@
         </setting>
       </group>
     </category>
-    <category id="input">
-      <group id="1">
-        <setting id="input.peripherals">
-          <visible>false</visible>
-        </setting>
-        <setting id="input.appleremotemode">
-          <visible>false</visible>
-        </setting>
-        <setting id="input.appleremotesequencetime">
-          <visible>false</visible>
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="input.enablemouse">
-          <visible>false</visible>
-        </setting>
-      </group>
-    </category>
   </section>
-  <section id="appearance">
-    <category id="lookandfeel">
+  <section id="interface">
+    <category id="skin">
       <group id="1">
         <setting id="lookandfeel.skin" type="addon">
           <default>skin.estouchy</default>
         </setting>
       </group>
     </category>
+    <category id="control">
+      <group id="1">
+        <setting id="input.peripherals">
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="input.appleremotemode" type="integer" label="13600" help="36416">
+          <visible>false</visible>
+        </setting>
+        <setting id="input.appleremotesequencetime" type="integer" label="13603" help="36418">
+          <visible>false</visible>
+        </setting>
+        <setting id="input.enablemouse">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>
+

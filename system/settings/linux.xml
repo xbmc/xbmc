@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<settings>
   <section id="system">
-    <category id="videoscreen">
+    <category id="display">
       <group id="1">
         <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>

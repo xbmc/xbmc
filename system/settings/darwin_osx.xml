@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
   <section id="system">
-    <category id="input">
-      <group id="1">
-        <setting id="input.appleremotealwayson">
-          <level>1</level>
-        </setting>
-      </group>
-    </category>
-    <category id="videoscreen" label="21373" help="36603">
+    <category id="display">
       <group id="1">
         <setting id="videoscreen.fakefullscreen" type="boolean" parent="videoscreen.screen" label="14083" help="36354">
           <requirement>OsxIsSnowLeopard</requirement>
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="interface">
+    <category id="control">
+      <group id="2">
+        <setting id="input.appleremotealwayson">
+          <level>1</level>
         </setting>
       </group>
     </category>
