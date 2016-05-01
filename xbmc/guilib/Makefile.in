@@ -3,7 +3,6 @@ SRCS += DirectXGraphics.cpp
 SRCS += DirtyRegionSolvers.cpp
 SRCS += DirtyRegionTracker.cpp
 SRCS += FFmpegImage.cpp
-SRCS += FrameBufferObject.cpp
 SRCS += GraphicContext.cpp
 SRCS += GUIAction.cpp
 SRCS += GUIAudioManager.cpp
@@ -99,5 +98,3 @@ include @abs_top_srcdir@/Makefile.include
 
 try : try.o TextureBundle.o DirectXGraphics.o GUIFontTTF.o
 	g++ -o try try.o TextureBundle.o DirectXGraphics.o GraphicContext.o GUIIncludes.o ../utils/CriticalSection.o ../XBVideoConfig.o SkinInfo.o ../linux/CriticalSection.o GUIFontTTF.o GUIFontBase.o GUIFontManager.o GUIFont.o ../utils/XMLUtils.o GUIImage.o GUIControl.o TextureManager.o GUIMessage.o ../utils/SingleLock.o VisibleEffect.o GUIWindowManager.o -llzo -lfreetype
-
-

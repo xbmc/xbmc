@@ -25,7 +25,7 @@
 
 #include "system_gl.h"
 
-#include "xbmc/guilib/FrameBufferObject.h"
+#include "FrameBufferObject.h"
 #include "xbmc/guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"

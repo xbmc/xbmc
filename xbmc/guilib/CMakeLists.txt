@@ -3,7 +3,6 @@ set(SOURCES DDSImage.cpp
             DirtyRegionSolvers.cpp
             DirtyRegionTracker.cpp
             FFmpegImage.cpp
-            FrameBufferObject.cpp
             GraphicContext.cpp
             GUIAction.cpp
             GUIAudioManager.cpp
@@ -83,7 +82,6 @@ set(HEADERS DDSImage.h
             DirtyRegionTracker.h
             DispResource.h
             FFmpegImage.h
-            FrameBufferObject.h
             Geometry.h
             GraphicContext.h
             gui3d.h
