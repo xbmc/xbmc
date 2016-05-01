@@ -53,8 +53,7 @@ protected:
   bool                      m_hdmi_clock_sync;
   int                       m_speed;
   bool                      m_stalled;
-  bool                      m_started;
-  bool                      m_sync;
+  IDVDStreamPlayer::ESyncState m_syncState;
   bool                      m_flush;
   std::string               m_codecname;
   std::atomic_bool          m_bAbortOutput;

@@ -73,7 +73,7 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent, CPr
   m_av_clock      = av_clock;
   m_pAudioCodec   = NULL;
   m_speed         = DVD_PLAYSPEED_NORMAL;
-  m_started       = false;
+  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_stalled       = false;
   m_audioClock    = DVD_NOPTS_VALUE;
   m_buffer_empty  = false;
@@ -135,7 +135,7 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_speed           = DVD_PLAYSPEED_NORMAL;
   m_audioClock      = DVD_NOPTS_VALUE;
   m_silence         = false;
-  m_started         = false;
+  m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_flush           = false;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_format = GetDataFormat(m_hints);
@@ -167,7 +167,6 @@ void OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
   CloseDecoder();
 
   m_speed         = DVD_PLAYSPEED_NORMAL;
-  m_started       = false;
 }
 
 void OMXPlayerAudio::OnStartup()
@@ -328,10 +327,9 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay)
     m_stalled = false;
 
   // signal to our parent that we have initialized
-  if(m_started == false && !bDropPacket && settings_changed)
+  if (m_syncState == IDVDStreamPlayer::SYNC_STARTING && !bDropPacket && settings_changed)
   {
-    m_started = true;
-    m_sync = false;
+    m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
     SStartMsg msg;
     msg.player = VideoPlayer_AUDIO;
     msg.cachetotal = DVD_SEC_TO_TIME(m_omxAudio.GetCacheTotal());
@@ -355,13 +353,13 @@ void OMXPlayerAudio::Process()
     // read next packet and return -1 on error
     int priority = 1;
     //Do we want a new audio frame?
-    if (m_started == false ||              /* when not started */
+    if (m_syncState == IDVDStreamPlayer::SYNC_STARTING ||              /* when not started */
         m_speed == DVD_PLAYSPEED_NORMAL || /* when playing normally */
         m_speed <  DVD_PLAYSPEED_PAUSE  || /* when rewinding */
        (m_speed >  DVD_PLAYSPEED_NORMAL && m_audioClock < m_av_clock->GetClock())) /* when behind clock in ff */
       priority = 0;
 
-    if (m_started && !m_sync)
+    if (m_syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
       priority = 1;
 
     // consider stream stalled if queue is empty
@@ -392,7 +390,7 @@ void OMXPlayerAudio::Process()
 
       #ifdef _DEBUG
       CLog::Log(LOGINFO, "Audio: dts:%.0f pts:%.0f size:%d (s:%d f:%d d:%d l:%d) s:%d %d/%d late:%d,%d", pPacket->dts, pPacket->pts,
-           (int)pPacket->iSize, m_started, m_flush, bPacketDrop, m_stalled, m_speed, 0, 0, (int)m_omxAudio.GetAudioRenderingLatency(), (int)m_hints_current.samplerate);
+           (int)pPacket->iSize, m_syncState, m_flush, bPacketDrop, m_stalled, m_speed, 0, 0, (int)m_omxAudio.GetAudioRenderingLatency(), (int)m_hints_current.samplerate);
       #endif
       if(Decode(pPacket, bPacketDrop, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0))
       {
@@ -417,22 +415,23 @@ void OMXPlayerAudio::Process()
       CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f)", pts);
 
       m_audioClock = pts;
-      m_sync = true;
+      m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
       CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESET");
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
-      m_started = false;
+      m_syncState = IDVDStreamPlayer::SYNC_STARTING;
       m_audioClock = DVD_NOPTS_VALUE;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
-      CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_FLUSH");
+      bool sync = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_FLUSH(%d)", sync);
       m_omxAudio.Flush();
       m_stalled   = true;
-      m_started   = false;
+      m_syncState = IDVDStreamPlayer::SYNC_STARTING;
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
@@ -582,8 +581,6 @@ bool OMXPlayerAudio::OpenDecoder()
     CLog::Log(LOGINFO, "Audio codec %s channels %d samplerate %d bitspersample %d\n",
       m_codec_name.c_str(), m_hints.channels, m_hints.samplerate, m_hints.bitspersample);
   }
-
-  m_started = false;
 
   return bAudioRenderOpen;
 }

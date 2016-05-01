@@ -54,8 +54,7 @@ protected:
   double                    m_audioClock;
 
   bool                      m_stalled;
-  bool                      m_started;
-  bool                      m_sync;
+  IDVDStreamPlayer::ESyncState m_syncState;
 
   BitstreamStats            m_audioStats;
 
