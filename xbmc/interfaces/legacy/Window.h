@@ -440,7 +440,6 @@ namespace XBMCAddon
        *   -ControlFadeLabel
        *   -ControlTextBox
        *   -ControlButton
-       *   -ControlCheckMark
        *   -ControlList
        *   -ControlGroup
        *   -ControlImage
