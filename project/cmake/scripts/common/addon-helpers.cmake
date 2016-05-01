@@ -61,6 +61,9 @@ macro (build_addon target prefix libs)
     FILE(READ ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in addon_file)
     STRING(CONFIGURE "${addon_file}" addon_file_conf @ONLY)
     FILE(GENERATE OUTPUT ${PROJECT_SOURCE_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
+    if(${APP_NAME_UC}_BUILD_DIR)
+      FILE(GENERATE OUTPUT ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/addon.xml CONTENT "${addon_file_conf}")
+    endif()
   ENDIF()
 
   # set zip as default if addon-package is called without PACKAGE_XXX
@@ -137,6 +140,20 @@ macro (build_addon target prefix libs)
     INSTALL(TARGETS ${target} DESTINATION ${CMAKE_INSTALL_LIBDIR}/addons/${target})
     INSTALL(DIRECTORY ${target} DESTINATION share/${APP_NAME_LC}/addons PATTERN "addon.xml.in" EXCLUDE)
   ENDIF(PACKAGE_ZIP OR PACKAGE_TGZ)
+  if(${APP_NAME_UC}_BUILD_DIR)
+    file(GLOB_RECURSE files ${CMAKE_CURRENT_SOURCE_DIR}/${target}/*)
+    foreach(file ${files})
+      string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/${target}/" "" name "${file}")
+      # A good way to deal with () in filenames
+      if(NOT ${file} MATCHES addon.xml.in)
+        configure_file(${file} ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/${name} COPYONLY)
+      endif()
+    endforeach()
+    add_custom_command(TARGET ${target} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy
+                                   ${LIBRARY_LOCATION}
+                                   ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/${LIBRARY_FILENAME})
+  endif()
 endmacro()
 
 # finds a path to a given file (recursive)
@@ -169,3 +186,6 @@ IF(ADDONS_PREFER_STATIC_LIBS)
   SET(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 ENDIF(ADDONS_PREFER_STATIC_LIBS)
 
+if(${APP_NAME_UC}_BUILD_DIR)
+  list(APPEND CMAKE_PREFIX_PATH ${${APP_NAME_UC}_BUILD_DIR}/build)
+endif()
