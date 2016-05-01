@@ -313,9 +313,6 @@ COMXCoreComponent::COMXCoreComponent()
 
   m_exit = false;
 
-  m_omx_input_use_buffers  = false;
-  m_omx_output_use_buffers = false;
-
   m_omx_events.clear();
   m_ignore_error = OMX_ErrorNone;
 
@@ -566,11 +563,9 @@ OMX_ERRORTYPE COMXCoreComponent::WaitForOutputDone(long timeout /*=200*/)
 }
 
 
-OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers(bool use_buffers /* = false **/)
+OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers()
 {
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
-  m_omx_input_use_buffers = use_buffers; 
 
   if(!m_handle)
     return OMX_ErrorUndefined;
@@ -606,25 +601,12 @@ OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers(bool use_buffers /* = false *
   for (size_t i = 0; i < portFormat.nBufferCountActual; i++)
   {
     OMX_BUFFERHEADERTYPE *buffer = NULL;
-    OMX_U8* data = NULL;
 
-    if(m_omx_input_use_buffers)
-    {
-      data = (OMX_U8*)_aligned_malloc(portFormat.nBufferSize, m_input_alignment);
-      omx_err = OMX_UseBuffer(m_handle, &buffer, m_input_port, NULL, portFormat.nBufferSize, data);
-    }
-    else
-    {
-      omx_err = OMX_AllocateBuffer(m_handle, &buffer, m_input_port, NULL, portFormat.nBufferSize);
-    }
+    omx_err = OMX_AllocateBuffer(m_handle, &buffer, m_input_port, NULL, portFormat.nBufferSize);
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "COMXCoreComponent::AllocInputBuffers component(%s) - OMX_UseBuffer failed with omx_err(0x%x)\n",
         m_componentName.c_str(), omx_err);
-
-      if(m_omx_input_use_buffers && data)
-        _aligned_free(data);
-
       return omx_err;
     }
     buffer->nInputPortIndex = m_input_port;
@@ -647,14 +629,12 @@ OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers(bool use_buffers /* = false *
   return omx_err;
 }
 
-OMX_ERRORTYPE COMXCoreComponent::AllocOutputBuffers(bool use_buffers /* = false */)
+OMX_ERRORTYPE COMXCoreComponent::AllocOutputBuffers()
 {
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
 
   if(!m_handle)
     return OMX_ErrorUndefined;
-
-  m_omx_output_use_buffers = use_buffers; 
 
   OMX_PARAM_PORTDEFINITIONTYPE portFormat;
   OMX_INIT_STRUCTURE(portFormat);
@@ -687,25 +667,12 @@ OMX_ERRORTYPE COMXCoreComponent::AllocOutputBuffers(bool use_buffers /* = false 
   for (size_t i = 0; i < portFormat.nBufferCountActual; i++)
   {
     OMX_BUFFERHEADERTYPE *buffer = NULL;
-    OMX_U8* data = NULL;
 
-    if(m_omx_output_use_buffers)
-    {
-      data = (OMX_U8*)_aligned_malloc(portFormat.nBufferSize, m_output_alignment);
-      omx_err = OMX_UseBuffer(m_handle, &buffer, m_output_port, NULL, portFormat.nBufferSize, data);
-    }
-    else
-    {
-      omx_err = OMX_AllocateBuffer(m_handle, &buffer, m_output_port, NULL, portFormat.nBufferSize);
-    }
+    omx_err = OMX_AllocateBuffer(m_handle, &buffer, m_output_port, NULL, portFormat.nBufferSize);
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "COMXCoreComponent::AllocOutputBuffers component(%s) - OMX_UseBuffer failed with omx_err(0x%x)\n",
         m_componentName.c_str(), omx_err);
-
-      if(m_omx_output_use_buffers && data)
-       _aligned_free(data);
-
       return omx_err;
     }
     buffer->nOutputPortIndex = m_output_port;
@@ -747,13 +714,7 @@ OMX_ERRORTYPE COMXCoreComponent::FreeInputBuffers()
 
   for (size_t i = 0; i < m_omx_input_buffers.size(); i++)
   {
-    uint8_t *buf = m_omx_input_buffers[i]->pBuffer;
-
     omx_err = OMX_FreeBuffer(m_handle, m_input_port, m_omx_input_buffers[i]);
-
-    if(m_omx_input_use_buffers && buf)
-      _aligned_free(buf);
-
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "COMXCoreComponent::FreeInputBuffers error deallocate omx input buffer on component %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
@@ -805,13 +766,7 @@ OMX_ERRORTYPE COMXCoreComponent::FreeOutputBuffers()
 
   for (size_t i = 0; i < m_omx_output_buffers.size(); i++)
   {
-    uint8_t *buf = m_omx_output_buffers[i]->pBuffer;
-
     omx_err = OMX_FreeBuffer(m_handle, m_output_port, m_omx_output_buffers[i]);
-
-    if(m_omx_output_use_buffers && buf)
-      _aligned_free(buf);
-
     if(omx_err != OMX_ErrorNone)
     {
       CLog::Log(LOGERROR, "COMXCoreComponent::FreeOutputBuffers error deallocate omx output buffer on component %s omx_err(0x%08x)\n", m_componentName.c_str(), omx_err);
@@ -1276,8 +1231,6 @@ OMX_ERRORTYPE COMXCoreComponent::UseEGLImage(OMX_BUFFERHEADERTYPE** ppBufferHdr,
   if(!m_handle)
     return OMX_ErrorUndefined;
 
-  m_omx_output_use_buffers = false;
-
   OMX_PARAM_PORTDEFINITIONTYPE portFormat;
   OMX_INIT_STRUCTURE(portFormat);
   portFormat.nPortIndex = m_output_port;
@@ -1370,9 +1323,6 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
   m_eos                 = false;
 
   m_exit = false;
-
-  m_omx_input_use_buffers  = false;
-  m_omx_output_use_buffers = false;
 
   m_omx_events.clear();
   m_ignore_error = OMX_ErrorNone;
