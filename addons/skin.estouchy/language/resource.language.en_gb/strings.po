@@ -242,18 +242,30 @@ msgid "Set three cities to collect weather information"
 msgstr ""
 
 msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
 msgstr ""
 
 msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
 msgstr ""
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr ""
 
-#empty strings from id 31408 to 31420
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr ""
+
+msgctxt "#31409"
+msgid "Configure how the library/file views display media content ·  Configure how library lists/views are navigated · Configure the media database options"
+msgstr ""
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr ""
+
+#empty strings from id 31411 to 31420
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
