@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
+<!-- gamepads.                                                                                     -->
+
+<!-- The format is:                      -->
+<!--    <device>                         -->
+<!--      <button>action</key>        -->
+<!--    </device>                        -->
+
+<!-- To map keys from other remotes using the RCA protocol, you may add <customcontroller name="Harmony"> blocks -->
+<!-- In this case, the tags used are <button id=""#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <customcontroller name="Harmony"> block to the window or <global> section:       -->
+<!--    <customcontroller name="Harmony">             -->
+<!--       <button id="45">Stop</button>
+<!--    </customcontroller>            -->
+
+<!-- Note that the action can be a built-in function.                 -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                         -->
+<!-- would automatically go to My Music on the press of the B button. -->
+
+<!-- Joysticks / Gamepads:                                                                    -->
+<!--   See the sample PS3 controller configuration below for the format.                      -->
+<!--                                                                                          -->
+<!--  Joystick Name:                                                                          -->
+<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
+<!--   detected joysticks. The name used in the configuration should match the detected name. -->
+<!--                                                                                          -->
+<!--  Button Ids:                                                                             -->
+<!--   'id' is the button ID used by SDL. Joystick key ids of connected joysticks appear   -->
+<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
+<!--                                                                                          -->
+<!--  Axis Ids / Analog Controls                                                              -->
+<!--   Coming soon.                                                                           -->
+<keymap>
+  <global>
+    <customcontroller name="Harmony">
+      <!-- up       	-->      <button id="101">Up</button>
+      <!-- minus      	-->      <button id="102">Down</button>
+      <!-- left       	-->      <button id="103">Left</button>
+      <!-- right      	-->      <button id="104">Right</button>
+      <!-- OK		-->      <button id="105">Select</button>
+      <!-- menu       	-->      <button id="106">ContextMenu</button>
+      <!-- hold play  	-->      <button id="107">Fullscreen</button>
+      <!-- hold menu  	-->      <button id="108">ContextMenu</button>
+      <!-- hold right 	-->      <button id="109">Right</button>
+      <!-- hold left  	-->      <button id="110">Left</button>
+      <!-- Stop       	-->      <button id="115">Stop</button>
+      <!-- Stop Hold   	-->      <key id="117"/>
+      <!-- Play       	-->      <button id="116">Play</button>
+      <!-- Play Hold   	-->      <key id="118"/>
+      <!-- Replay       -->      <button id="191">SkipPrevious</button>
+      <!-- Skip      	-->      <button id="192">SkipNext</button>
+      <!-- Record	-->      <button id="152">Screenshot</button>
+      <!-- Rew       	-->      <button id="141">Rewind</button>
+      <!-- Fwd  	-->      <button id="142">FastForward</button>
+      <!-- Pause	-->      <button id="126">Pause</button>
+      <!-- Prev		-->      <button id="132">ParentDir</button>
+      <!-- Guide  	-->      <button id="165">FullScreen</button>
+      <!-- Info  	-->      <button id="131">Info</button>
+      <!-- Exit 	-->      <button id="151">PreviousMenu</button>
+      <!-- Channel Up  	-->      <button id="171">PageUp</button>
+      <!-- Channel Down -->      <button id="172">PageDown</button>
+      <!-- looks like buttons below are duplicates of those above
+      Arrow Up  	 <button id="171"></button>
+      Arrow Down 	 <button id="172"></button>
+	  -->
+      <!-- Volume + 	-->  <button id="121">VolumeUp</button>
+      <!-- Volume - 	-->  <button id="122">VolumeDown</button>
+      <!-- 1 		-->      <button id="111">Number1</button>
+      <!-- 2 		-->      <button id="112">Number2</button>
+      <!-- 3 		-->      <button id="113">Number3</button>
+      <!-- 4 		-->      <button id="114">Number4</button>
+      <!-- 5 		-->      <button id="123">Number5</button>
+      <!-- 6 		-->      <button id="124">Number6</button>
+      <!-- 7 		-->      <button id="133">Number7</button>
+      <!-- 8 		-->      <button id="134">Number8</button>
+      <!-- 9 		-->      <button id="143">Number9</button>
+      <!-- 0 		-->      <button id="144">Number0</button>
+      <!-- * clear 	-->      <button id="145">Back</button>
+      <!-- # enter 	-->      <button id="136">Select</button>
+      <!-- Mute		-->      <button id="125">Mute</button>
+      <!-- Aspect	-->      <button id="161">AspectRatio</button>
+      <!-- F1		-->      <button id="153">ActivateWindow(Music)</button>
+      <!-- F3		-->      <button id="155">ActivateWindow(videolibrary,tvshowtitles,return)</button>
+      <!-- F2		-->      <button id="154">ActivateWindow(videolibrary,movietitles,return)</button>
+      <!-- F4		-->      <button id="156">ActivateWindow(Weather)</button>
+      <!-- F5			-->  <button id="193">OSD</button>
+      <!-- F7			-->  <button id="195">ActivateWindow(Home)</button>
+      <!-- F6			-->  <button id="194">ActivateWindow(Scripts)</button>
+      <!-- F8			-->  <button id="196">ActivateWindow(favourites)</button>
+      <!-- F9			-->  <button id="173">ShowVideoMenu</button>
+      <!-- F10			-->  <button id="174">ShowSubtitles</button>
+      <!-- F11			-->  <button id="175">NextSubtitle</button>
+      <!-- F12			-->  <button id="176">ActivateWindow(VideoFiles)</button>
+      <!-- F13			-->  <button id="163">Playlist</button>
+      <!-- F14			-->  <button id="164">AudioNextLanguage</button>
+      <!-- Large Down	-->  <button id="182">PageDown</button>
+      <!-- Large Up	-->      <button id="181">PageUp</button>
+      <!-- pwrToggle   -->   <button id="166">ShutDown()</button>
+      <!-- Queue	-->      <button id="162">Queue</button>
+      <!-- Sleep	-->      <button id="146">Suspend()</button>
+      <!-- Red		-->      <button id="183">CodecInfo</button>
+      <!-- Green	-->      <button id="184">ActivateWindow(Settings)</button>
+      <!-- Yellow	-->      <button id="185">xbmc.ActivateWindow(SystemSettings)</button>
+      <!-- Blue		-->      <button id="186">ActivateWindow(SystemInfo)</button>
+    </customcontroller>
+  </global>
+  <Home>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="16">ActivateWindow(PlayerControls)</button>
+      <!-- Info  	-->      <button id="131">ActivateWindow(Settings)</button>
+      <!-- Exit 	-->      <button id="151">ActivateWindow(ShutdownMenu)</button>
+      <!-- #enter	-->      <button id="136">ActivateWindow(SystemInfo)</button>
+      <!-- 1 		-->      <button id="111">ToggleFullScreen</button>
+    </customcontroller>
+  </Home>
+  <MyFiles>
+    <customcontroller name="Harmony">
+      <!-- 1 		-->      <button id="111">Highlight</button>
+      <!-- 4 		-->      <button id="114">Copy</button>
+      <!-- 7 		-->      <button id="133">Move</button>
+      <!-- * clear 	-->      <button id="145">Delete</button>
+    </customcontroller>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <customcontroller name="Harmony">
+      <!-- * clear 	-->      <button id="145">Delete</button>
+      <!-- Channel Up  	-->      <button id="171">MoveItemUp</button>
+      <!-- Channel Down -->      <button id="172">MoveItemDown</button>
+    </customcontroller>
+  </MyMusicPlaylist>
+  <MyMusicFiles>
+    <customcontroller name="Harmony">
+      <!-- * clear 	-->      <button id="145">Delete</button>
+      <!-- 1 		-->      <button id="111">number1</button>
+      <!-- 2 		-->      <button id="112">JumpSMS2</button>
+      <!-- 3 		-->      <button id="113">JumpSMS3</button>
+      <!-- 4 		-->      <button id="114">JumpSMS4</button>
+      <!-- 5 		-->      <button id="123">JumpSMS5</button>
+      <!-- 6 		-->      <button id="124">JumpSMS6</button>
+      <!-- 7 		-->      <button id="133">JumpSMS7</button>
+      <!-- 8 		-->      <button id="134">JumpSMS8</button>
+      <!-- 9 		-->      <button id="143">JumpSMS9</button>
+    </customcontroller>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <customcontroller name="Harmony">
+      <!-- 1 		-->      <button id="111">number1</button>
+      <!-- 2 		-->      <button id="112">JumpSMS2</button>
+      <!-- 3 		-->      <button id="113">JumpSMS3</button>
+      <!-- 4 		-->      <button id="114">JumpSMS4</button>
+      <!-- 5 		-->      <button id="123">JumpSMS5</button>
+      <!-- 6 		-->      <button id="124">JumpSMS6</button>
+      <!-- 7 		-->      <button id="133">JumpSMS7</button>
+      <!-- 8 		-->      <button id="134">JumpSMS8</button>
+      <!-- 9 		-->      <button id="143">JumpSMS9</button>
+    </customcontroller>
+  </MyMusicLibrary>
+  <FullscreenVideo>
+    <customcontroller name="Harmony">
+      <!-- up       	-->      <button id="101">ChapterOrBigStepForward</button>
+      <!-- down      	-->      <button id="102">ChapterOrBigStepBack</button>
+      <!-- left       	-->      <button id="103">StepBack</button>
+      <!-- right      	-->      <button id="104">StepForward</button>
+      <!-- menu       	-->      <button id="106">OSD</button>
+      <!-- Prev		-->      <button id="132">SmallStepBack</button>
+      <!-- Info  	-->      <button id="131">Info</button>
+      <!-- F7		-->      <button id="195">NextSubtitle</button>
+      <!-- F6		-->      <button id="194">ShowSubtitles</button>
+    </customcontroller>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <customcontroller name="Harmony">
+      <!-- up       	-->      <button id="101">ChannelUp</button>
+      <!-- down      	-->      <button id="102">ChannelDown</button>
+      <!-- left       	-->      <button id="103">PreviousChannelGroup</button>
+      <!-- right      	-->      <button id="104">NextChannelGroup</button>
+    </customcontroller>
+  </FullscreenLiveTV>
+  <FullscreenRadio>
+    <customcontroller name="Harmony">
+      <!-- up       	-->      <button id="101">ChannelUp</button>
+      <!-- down      	-->      <button id="102">ChannelDown</button>
+      <!-- left       	-->      <button id="103">PreviousChannelGroup</button>
+      <!-- right      	-->      <button id="104">NextChannelGroup</button>
+    </customcontroller>
+  </FullscreenRadio>
+  <FullscreenInfo>
+    <customcontroller name="Harmony">
+      <!-- Info  	-->      <button id="131">Back</button>
+    </customcontroller>
+  </FullscreenInfo>
+  <PlayerControls>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </PlayerControls>
+  <Visualisation>
+    <customcontroller name="Harmony">
+      <!-- up       	-->      <button id="101">IncreaseRating</button>
+      <!-- minus      	-->      <button id="102">DecreaseRating</button>
+      <!-- left       	-->      <button id="103">PreviousPreset</button>
+      <!-- right      	-->      <button id="104">NextPreset</button>
+      <!-- menu       	-->      <button id="106">OSD</button>
+      <!-- Prev		-->      <button id="132">LockPreset</button>
+      <!-- Info  	-->      <button id="131">Info</button>
+      <!-- F8		-->      <button id="196">ActivateWindow(VisualisationPresetList)</button>
+      <!-- F9		-->      <button id="173">ActivateWindow(VisualisationSettings)</button>
+    </customcontroller>
+  </Visualisation>
+  <MusicOSD>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+      <!-- Info  	-->      <button id="131">CodecInfo</button>
+    </customcontroller>
+  </MusicOSD>
+  <VisualisationSettings>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </VisualisationPresetList>
+  <SlideShow>
+    <customcontroller name="Harmony">
+      <!-- 1 		-->      <button id="111">ZoomLevel1</button>
+      <!-- 2 		-->      <button id="112">ZoomLevel2</button>
+      <!-- 3 		-->      <button id="113">ZoomLevel3</button>
+      <!-- 4 		-->      <button id="114">ZoomLevel4</button>
+      <!-- 5 		-->      <button id="123">ZoomLevel5</button>
+      <!-- 6 		-->      <button id="124">ZoomLevel6</button>
+      <!-- 7 		-->      <button id="133">ZoomLevel7</button>
+      <!-- 8 		-->      <button id="134">ZoomLevel8</button>
+      <!-- 9 		-->      <button id="143">ZoomLevel9</button>
+      <!-- 0 		-->      <button id="144">ZoomNormal</button>
+      <!-- Skip      	-->      <button id="192">NextPicture</button>
+      <!-- Replay       -->      <button id="191">PreviousPicture</button>
+      <!-- Info  	-->      <button id="131">Info</button>
+      <!-- OK		-->      <button id="105">Rotate</button>
+    </customcontroller>
+  </SlideShow>
+  <ScreenCalibration>
+    <customcontroller name="Harmony">
+      <!-- OK		-->      <button id="105">NextCalibration</button>
+      <!-- 0 		-->      <button id="144">ResetCalibration</button>
+      <!-- # enter 	-->      <button id="136">NextCalibration</button>
+      <!-- Guide  	-->      <button id="165">NextResolution</button>
+    </customcontroller>
+  </ScreenCalibration>
+  <GUICalibration>
+    <customcontroller name="Harmony">
+      <!-- OK		-->      <button id="105">NextCalibration</button>
+      <!-- 0 		-->      <button id="144">ResetCalibration</button>
+      <!-- # enter 	-->      <button id="136">NextCalibration</button>
+    </customcontroller>
+  </GUICalibration>
+  <VideoOSD>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </VideoOSD>
+  <VideoMenu>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">OSD</button>
+      <!-- Info  	-->      <button id="131">Info</button>
+    </customcontroller>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+      <!-- * clear 	-->      <button id="145">Delete</button>
+    </customcontroller>
+  </VideoBookmarks>
+  <MyVideoLibrary>
+    <customcontroller name="Harmony">
+      <!-- * clear 	-->      <button id="145">Delete</button>
+      <!-- # enter 	-->      <button id="136">ToggleWatched</button>
+      <!-- 1 		-->      <button id="111">number1</button>
+      <!-- 2 		-->      <button id="112">JumpSMS2</button>
+      <!-- 3 		-->      <button id="113">JumpSMS3</button>
+      <!-- 4 		-->      <button id="114">JumpSMS4</button>
+      <!-- 5 		-->      <button id="123">JumpSMS5</button>
+      <!-- 6 		-->      <button id="124">JumpSMS6</button>
+      <!-- 7 		-->      <button id="133">JumpSMS7</button>
+      <!-- 8 		-->      <button id="134">JumpSMS8</button>
+      <!-- 9 		-->      <button id="143">JumpSMS9</button>
+    </customcontroller>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <customcontroller name="Harmony">
+      <!-- * clear 	-->      <button id="145">Delete</button>
+      <!-- 1 		-->      <button id="111">number1</button>
+      <!-- 2 		-->      <button id="112">JumpSMS2</button>
+      <!-- 3 		-->      <button id="113">JumpSMS3</button>
+      <!-- 4 		-->      <button id="114">JumpSMS4</button>
+      <!-- 5 		-->      <button id="123">JumpSMS5</button>
+      <!-- 6 		-->      <button id="124">JumpSMS6</button>
+      <!-- 7 		-->      <button id="133">JumpSMS7</button>
+      <!-- 8 		-->      <button id="134">JumpSMS8</button>
+      <!-- 9 		-->      <button id="143">JumpSMS9</button>
+    </customcontroller>
+  </MyVideoFiles>
+  <MyVideoPlaylist>
+    <customcontroller name="Harmony">
+      <!-- * clear 	-->      <button id="145">Delete</button>
+      <!-- Channel Up  	-->      <button id="171">MoveItemUp</button>
+      <!-- Channel Down -->      <button id="172">MoveItemDown</button>
+    </customcontroller>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <customcontroller name="Harmony">
+      <!-- Prev		-->      <button id="132">BackSpace</button>
+      <!-- * clear 	-->      <button id="145">Shift</button>
+      <!-- # enter 	-->      <button id="136">Symbols</button>
+      <!-- 1 		-->      <button id="111">Number1</button>
+      <!-- 2 		-->      <button id="112">Number2</button>
+      <!-- 3 		-->      <button id="113">Number3</button>
+      <!-- 4 		-->      <button id="114">Number4</button>
+      <!-- 5 		-->      <button id="123">Number5</button>
+      <!-- 6 		-->      <button id="124">Number6</button>
+      <!-- 7 		-->      <button id="133">Number7</button>
+      <!-- 8 		-->      <button id="134">Number8</button>
+      <!-- 9 		-->      <button id="143">Number9</button>
+      <!-- 0 		-->      <button id="144">Number0</button>
+      <!-- Rew       	-->      <button id="141">CursorLeft</button>
+      <!-- Fwd  	-->      <button id="142">CursorRight</button>
+    </customcontroller>
+  </VirtualKeyboard>
+  <Scripts>
+    <customcontroller name="Harmony">
+      <!-- Info  	-->      <button id="131">info</button>
+    </customcontroller>
+  </Scripts>
+  <NumericInput>
+    <customcontroller name="Harmony">
+      <!-- 1 		-->      <button id="111">Number1</button>
+      <!-- 2 		-->      <button id="112">Number2</button>
+      <!-- 3 		-->      <button id="113">Number3</button>
+      <!-- 4 		-->      <button id="114">Number4</button>
+      <!-- 5 		-->      <button id="123">Number5</button>
+      <!-- 6 		-->      <button id="124">Number6</button>
+      <!-- 7 		-->      <button id="133">Number7</button>
+      <!-- 8 		-->      <button id="134">Number8</button>
+      <!-- 9 		-->      <button id="143">Number9</button>
+      <!-- 0 		-->      <button id="144">Number0</button>
+      <!-- Prev		-->      <button id="132">BackSpace</button>
+    </customcontroller>
+  </NumericInput>
+  <MusicInformation>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </MusicInformation>
+  <MovieInformation>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </MovieInformation>
+  <LockSettings>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </LockSettings>
+  <ProfileSettings>
+    <customcontroller name="Harmony">
+      <!-- menu       	-->      <button id="106">Back</button>
+    </customcontroller>
+  </ProfileSettings>
+  <PictureInfo>
+    <customcontroller name="Harmony">
+      <!-- Replay       -->      <button id="191">PreviousPicture</button>
+      <!-- Skip      	-->      <button id="192">NextPicture</button>
+      <!-- Info  	-->      <button id="131">Back</button>
+    </customcontroller>
+  </PictureInfo>
+</keymap>
