@@ -185,6 +185,8 @@ public:
   virtual IPosTime* GetIPosTime() { return nullptr; }
   virtual IDisplayTime* GetIDisplayTime() { return nullptr; }
 
+  const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
+
 protected:
   DVDStreamType m_streamType;
   BitstreamStats m_stats;
