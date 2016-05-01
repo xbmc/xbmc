@@ -22,11 +22,11 @@
 
 #include "system.h"
 
-#if defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_OSX)
 
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 
-class CRendererVTB : public CLinuxRendererGLES
+class CRendererVTB : public CLinuxRendererGL
 {
 public:
   CRendererVTB();
@@ -35,21 +35,15 @@ public:
   // Player functions
   virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
   virtual void ReleaseBuffer(int idx);
-  virtual void ReorderDrawPoints();
 
   // Feature support
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(EDEINTERLACEMODE mode);
-  
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
-  virtual CRenderInfo GetRenderInfo();
 
 protected:
-  // hooks for hw dec renderer
   virtual bool LoadShadersHook();
-  virtual bool RenderHook(int index);  
-  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
 
   // textures
   virtual bool UploadTexture(int index);

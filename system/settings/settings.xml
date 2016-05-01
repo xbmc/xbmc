@@ -811,14 +811,8 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.usevideotoolbox" type="boolean" label="13432" help="36162">
-          <requirement>HasVideoToolBoxDecoder</requirement>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usevda" type="boolean" label="13429" help="36160">
-          <requirement>HasVDA</requirement>
+        <setting id="videoplayer.usevtb" type="boolean" label="13429" help="36160">
+          <requirement>HasVTB</requirement>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -1049,7 +1043,7 @@
           <level>1</level>
           <default></default>
           <constraints>
-            <allowempty>true</allowempty>		  
+            <allowempty>true</allowempty>
             <addontype>xbmc.subtitle.module</addontype>
           </constraints>
           <control type="button" format="addon">

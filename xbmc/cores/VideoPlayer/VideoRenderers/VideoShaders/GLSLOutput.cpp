@@ -49,11 +49,11 @@ GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth,
 
 std::string GLSLOutput::GetDefines()
 {
-  std::string defines = "#define XBMC_OUTPUT 1\n";
+  std::string defines;
   if (m_dither)
-    defines += "#define XBMC_DITHER 1\n";
+    defines += "#define XBMC_DITHER\n";
   if (m_fullRange)
-    defines += "#define XBMC_FULLRANGE 1\n";
+    defines += "#define XBMC_FULLRANGE\n";
   return defines;
 }
 

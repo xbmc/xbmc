@@ -57,8 +57,8 @@
 #ifdef HAVE_LIBVA
 #include "VAAPI.h"
 #endif
-#ifdef TARGET_DARWIN_OSX
-#include "VDA.h"
+#ifdef TARGET_DARWIN
+#include "VTB.h"
 #endif
 #ifdef HAS_MMAL
 #include "MMALFFmpeg.h"
@@ -164,10 +164,10 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
     }
 #endif
 
-#ifdef TARGET_DARWIN_OSX
-    if (*cur == AV_PIX_FMT_VDA && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && g_advancedSettings.m_useFfmpegVda)
+#ifdef TARGET_DARWIN
+    if (*cur == AV_PIX_FMT_VIDEOTOOLBOX && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
     {
-      VDA::CDecoder* dec = new VDA::CDecoder();
+      VTB::CDecoder* dec = new VTB::CDecoder();
       if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
       {
         ctx->SetHardware(dec);
@@ -289,8 +289,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
       tryhw = true;
 #endif
-#ifdef TARGET_DARWIN_OSX
-    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
+#ifdef TARGET_DARWIN
+    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
       tryhw = true;
 #endif
 #ifdef HAS_MMAL
@@ -488,6 +488,19 @@ void CDVDVideoCodecFFmpeg::SetFilters()
     if (filters & FILTER_DEINTERLACE_FLAGGED)
       m_filters_next += ":1";
   }
+}
+
+void CDVDVideoCodecFFmpeg::UpdateName()
+{
+  if(m_pCodecContext->codec->name)
+    m_name = std::string("ff-") + m_pCodecContext->codec->name;
+  else
+    m_name = "ffmpeg";
+
+  if(m_pHardware)
+    m_name += "-" + m_pHardware->Name();
+
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: %s", m_name.c_str());
 }
 
 union pts_union

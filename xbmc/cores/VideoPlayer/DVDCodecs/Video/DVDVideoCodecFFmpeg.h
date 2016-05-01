@@ -83,17 +83,7 @@ protected:
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
   void SetFilters();
-
-  void UpdateName()
-  {
-    if(m_pCodecContext->codec->name)
-      m_name = std::string("ff-") + m_pCodecContext->codec->name;
-    else
-      m_name = "ffmpeg";
-
-    if(m_pHardware)
-      m_name += "-" + m_pHardware->Name();
-  }
+  void UpdateName();
 
   AVFrame* m_pFrame;
   AVFrame* m_pDecodedFrame;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2016 Team XBMC
  *      http://xbmc.org
  *
  *  This library is free software; you can redistribute it and/or
@@ -23,10 +23,7 @@
 
 #include "DVDVideoCodecFFmpeg.h"
 
-struct AVVDAContext;
-class CBitstreamConverter;
-
-namespace VDA
+namespace VTB
 {
 
 class CDecoder
@@ -40,14 +37,13 @@ public:
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual int Check(AVCodecContext* avctx);
   virtual void Close();
-  virtual const std::string Name() { return "vda"; }
+  virtual const std::string Name() { return "vtb"; }
   virtual unsigned GetAllowedReferences();
 
 protected:
-  bool Create(AVCodecContext* avctx);
   unsigned m_renderbuffers_count;
-  struct AVVDAContext* m_ctx;
-  CBitstreamConverter *m_bitstream;
+  AVCodecContext *m_avctx;
+
 };
 
 }

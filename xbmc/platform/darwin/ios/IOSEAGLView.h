@@ -54,6 +54,7 @@
 @property (readonly, nonatomic, getter=isReadyToRun) BOOL readyToRun;
 @property (readonly, nonatomic, getter=isPause) BOOL pause;
 @property (readonly, getter=getCurrentScreen) UIScreen *currentScreen;
+@property (readonly, getter=getCurrentEAGLContext) EAGLContext *context;
 @property BOOL framebufferResizeRequested;
 
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;

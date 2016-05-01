@@ -902,10 +902,11 @@ void CLinuxRendererGL::LoadShaders(int field)
         // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
         GLSLOutput *out = nullptr;
         if (m_renderQuality == RQ_SINGLEPASS)
-          out = new GLSLOutput(3, m_useDithering, m_ditherDepth, m_fullRange);
+          out = new GLSLOutput(3, m_useDithering, m_ditherDepth, false);
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
                                                     out);
+        m_pYUVShader->SetForceLimitedColorRange(false);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 

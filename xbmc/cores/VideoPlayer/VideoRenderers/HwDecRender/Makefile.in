@@ -11,7 +11,7 @@ SRCS += MMALRenderer.cpp
 endif
 
 ifeq (@USE_OPENGLES@,1)
-SRCS += RendererVTB.cpp
+SRCS += RendererVTBGLES.cpp
 SRCS += RendererIMX.cpp
 SRCS += RendererOpenMax.cpp
 SRCS += RendererMediaCodec.cpp
@@ -23,7 +23,7 @@ SRCS += RendererAML.cpp
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
-SRCS += RendererVDA.cpp
+SRCS += RendererVTBGL.cpp
 endif
 
 LIB=HwDecRender.a

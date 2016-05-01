@@ -1096,4 +1096,9 @@ XBMCController *g_xbmcController;
 //  LOG(@"userInfo: %@", [notification userInfo]);
 }
 
+- (void*) getEAGLContextObj
+{
+  return [m_glView getCurrentEAGLContext];
+}
+
 @end
