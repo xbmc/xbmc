@@ -11,7 +11,7 @@ To get your questions answered, please ask in the [Kodi community forum's](http:
 
 #### Issue or bug reports and discussions
 
-Issue or bug reports are created and reviewed at [Kodi's bug tracker](http://trac.kodi.tv) using the Kodi forum's *username* and *password*.
+Issue or bug reports are created and reviewed at [Kodi's bug tracker](http://jira.kodi.tv).
 
 If you can, we encourage you to investigate the issue yourself and create a [pull request](https://help.github.com/articles/creating-a-pull-request/) for us to review.
 

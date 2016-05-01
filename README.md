@@ -48,7 +48,7 @@ See [docs/README.xxx] (https://github.com/xbmc/xbmc/tree/master/docs) for specif
 ## Useful links
 
 * [Kodi wiki] (http://kodi.wiki/)
-* [Kodi bug tracker] (http://trac.kodi.tv)
+* [Kodi bug tracker] (http://jira.kodi.tv)
 * [Kodi community forums] (http://forum.kodi.tv/)
 * [Kodi website] (http://kodi.tv)
 
