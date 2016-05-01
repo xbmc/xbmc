@@ -62,7 +62,7 @@ namespace EVENTSERVER
     void StopServer(bool bWait);
 
     // get events
-    unsigned int GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);
+    unsigned int GetButtonCode(std::string& strMapName, bool& isAxis, float& amount, bool &isJoystick);
     bool ExecuteNextAction();
     bool GetMousePos(float &x, float &y);
     int GetNumberOfClients();
