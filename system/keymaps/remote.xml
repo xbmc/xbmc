@@ -459,46 +459,31 @@
       <back>Close</back>
     </remote>
   </TextViewer>
-  <MyPicturesSettings>
+  <PlayerSettings>
     <remote>
       <back>PreviousMenu</back>
     </remote>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
+  </PlayerSettings>
+  <LibrarySettings>
     <remote>
       <back>PreviousMenu</back>
     </remote>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyMusicSettings>
+  </LibrarySettings>
   <SystemSettings>
     <remote>
       <back>PreviousMenu</back>
     </remote>
   </SystemSettings>
-  <MyVideosSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyVideosSettings>
   <NetworkSettings>
     <remote>
       <back>PreviousMenu</back>
     </remote>
   </NetworkSettings>
-  <AppearanceSettings>
+  <InterfaceSettings>
     <remote>
       <back>PreviousMenu</back>
     </remote>
-  </AppearanceSettings>
+  </InterfaceSettings>
   <Profiles>
     <remote>
       <back>PreviousMenu</back>
