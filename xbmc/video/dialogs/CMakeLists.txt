@@ -1,4 +1,5 @@
 set(SOURCES GUIDialogAudioSubtitleSettings.cpp
+            GUIDialogCMSSettings.cpp
             GUIDialogFullScreenInfo.cpp
             GUIDialogSubtitles.cpp
             GUIDialogTeletext.cpp
@@ -8,6 +9,7 @@ set(SOURCES GUIDialogAudioSubtitleSettings.cpp
             GUIDialogVideoSettings.cpp)
 
 set(HEADERS GUIDialogAudioSubtitleSettings.h
+            GUIDialogCMSSettings.h
             GUIDialogFullScreenInfo.h
             GUIDialogSubtitles.h
             GUIDialogTeletext.h

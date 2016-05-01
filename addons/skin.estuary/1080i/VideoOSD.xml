@@ -22,7 +22,7 @@
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 			<control type="group">
 				<top>900</top>
-				<visible>!Window.IsVisible(fullscreeninfo) + !Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(PVROSDChannels) + !Window.IsActive(PVROSDGuide)</visible>
+				<visible>!Window.IsVisible(fullscreeninfo) + !Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(osdcmssettings) + !Window.IsActive(PVROSDChannels) + !Window.IsActive(PVROSDGuide)</visible>
 				<animation effect="fade" end="100" time="200">WindowOpen</animation>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -309,6 +309,12 @@
 						<include>DefaultSettingButton</include>
 						<label>$LOCALIZE[13395]</label>
 						<onclick>ActivateWindow(osdvideosettings)</onclick>
+					</control>
+					<control type="button" id="11105">
+						<width>470</width>
+						<include>DefaultSettingButton</include>
+						<label>$LOCALIZE[36560]</label>
+						<onclick>ActivateWindow(osdcmssettings)</onclick>
 					</control>
 					<control type="button" id="11103">
 						<width>470</width>
