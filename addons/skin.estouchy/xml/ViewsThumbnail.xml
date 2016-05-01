@@ -182,7 +182,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="360" width="218">
+			<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="375" width="218">
 				<control type="image">
 					<posx>10</posx>
 					<posy>5</posy>

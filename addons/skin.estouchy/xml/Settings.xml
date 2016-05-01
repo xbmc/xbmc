@@ -21,16 +21,6 @@
 					<icon>icon_button_back.png</icon>
 				</item>
 				<item>
-					<label>13200</label>
-					<onclick>ActivateWindow(Profiles)</onclick>
-					<icon>icon_button_profile.png</icon>
-				</item>
-				<item>
-					<label>130</label>
-					<onclick>ActivateWindow(SystemInfo)</onclick>
-					<icon>icon_button_systeminfo.png</icon>
-				</item>
-				<item>
 					<label>1036</label>
 					<onclick>ActivateWindow(Favourites)</onclick>
 					<icon>icon_button_favourites.png</icon>
@@ -44,7 +34,7 @@
 			<posy>100</posy>
 			<width>1200</width>
 			<height>750</height>
-			<onposx>9000</onposx>
+			<onleft>9000</onleft>
 			<onright>9001</onright>
 			<onup>9000</onup>
 			<ondown>9000</ondown>
@@ -138,13 +128,13 @@
 					<label>14200</label>
 					<label2>31408</label2>
 					<onclick>ActivateWindow(PlayerSettings)</onclick>
-					<icon>icon_menu_videos.png</icon>
+					<icon>icon_settings_player.png</icon>
 				</item>
 				<item id="2">
 					<label>14202</label>
 					<label2>31409</label2>
 					<onclick>ActivateWindow(LibrarySettings)</onclick>
-					<icon>icon_settings_pictures.png</icon>
+					<icon>icon_settings_library.png</icon>
 				</item>
 				<item id="3">
 					<label>31556</label>
@@ -156,13 +146,13 @@
 					<label>14036</label>
 					<label2>31405</label2>
 					<onclick>ActivateWindow(ServiceSettings)</onclick>
-					<icon>icons/settings/network.png</icon>
+					<icon>icon_settings_services.png</icon>
 				</item>
 				<item id="5">
 					<label>14206</label>
 					<label2>31410</label2>
 					<onclick>ActivateWindow(InterfaceSettings)</onclick>
-					<icon>icon_settings_appearance.png</icon>
+					<icon>icon_settings_interface.png</icon>
 				</item>
 				<item id="6">
 					<label>13000</label>
@@ -176,7 +166,30 @@
 					<onclick>ActivateWindow(AddonBrowser)</onclick>
 					<icon>icon_settings_addons.png</icon>
 				</item>
+				<item id="8">
+					<label>13200</label>
+					<label2>31411</label2>
+					<onclick>ActivateWindow(Profiles)</onclick>
+					<icon>icon_settings_profiles.png</icon>
+				</item>
+				<item id="9">
+					<label>130</label>
+					<label2>31412</label2>
+					<onclick>ActivateWindow(SystemInfo)</onclick>
+					<icon>icon_settings_systeminfo.png</icon>
+				</item>
 			</content>
+		</control>
+		<control type="textbox">
+			<description>Settings Description</description>
+			<posx>250</posx>
+			<posy>70r</posy>
+			<width>780</width>
+			<height>60</height>
+			<label>$INFO[Container(9000).ListItem.Label2]</label>
+			<font>font22</font>
+			<textcolor>blue</textcolor>
+			<align>center</align>
 		</control>
 	</controls>
 </window>

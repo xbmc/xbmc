@@ -1,8 +1,14 @@
+V1.0.10
+- Settings changes
+
+V1.0.9
+- Cosmetics
+
 V1.0.8
 - Updated language files from Transifex
 
 V1.0.7
-- Updated language files from Transifex
+- Include syntax changes
 
 V1.0.6
 - Updated language files from Transifex
