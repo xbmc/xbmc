@@ -28,11 +28,18 @@
           <control type="edit" format="integer" />
         </setting>
       </group>
+      <group id="5">
+        <setting id="videoplayer.supportmvc" type="boolean" label="38027" help="38028">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
   </section>
   <section id="library">
     <category id="video">
-	  <group id="3" label="14241">
+      <group id="3">
         <setting id="myvideos.extractchapterthumbs">
           <default>false</default>
         </setting>
@@ -72,6 +79,13 @@
           <control type="edit" format="integer" />
         </setting>
       </group>
+      <group id="2">
+        <setting id="videoscreen.framepacking" type="boolean" label="38029" help="38030">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="audio">
       <group id="1">
@@ -83,7 +97,7 @@
         <setting id="audiooutput.ac3transcode" help="37024">
         </setting>
       </group>
-    </category>	
+    </category>
   </section>
 </settings>
 
