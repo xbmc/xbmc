@@ -1,4 +1,4 @@
-if(CORE_SYSTEM_NAME STREQUAL "darwin")
+if(CORE_SYSTEM_NAME STREQUAL darwin)
   set(SOURCES WinEventsOSX.mm
               WinSystemOSX.mm
               WinSystemOSXGL.mm)
@@ -7,7 +7,7 @@ if(CORE_SYSTEM_NAME STREQUAL "darwin")
               WinSystemOSXGL.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL "ios")
+if(CORE_SYSTEM_NAME STREQUAL ios)
   set(SOURCES WinEventsIOS.mm
               WinSystemIOS.mm)
   set(HEADERS WinEventsIOS.h
@@ -15,3 +15,4 @@ if(CORE_SYSTEM_NAME STREQUAL "ios")
 endif()
 
 core_add_library(windowing_osx)
+add_dependencies(windowing_osx libcpluff)

@@ -28,11 +28,11 @@ elseif(CORE_SYSTEM_NAME STREQUAL ios)
   if(NOT CPU MATCHES arm64)
     list(APPEND ffmpeg_conf --cpu=cortex-a8)
   endif()
-  list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --disable-videotoolbox
+  list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
                           --target-os=darwin)
 elseif(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND ffmpeg_conf --disable-outdev=sdl
-                          --disable-decoder=mpeg_xvmc --enable-vda --disable-crystalhd --disable-videotoolbox
+                          --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
                           --target-os=darwin
                           --disable-securetransport)
 endif()

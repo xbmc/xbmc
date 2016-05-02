@@ -27,8 +27,6 @@ option(ENABLE_CEC         "Enable CEC support?" ON)
 if(UNIX)
   if(NOT APPLE)
     option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" ON)
-  else()
-    option(ENABLE_VTB "Enable VTB support?" OFF)
   endif()
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
@@ -95,7 +93,7 @@ list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 # Required dependencies
 set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
                   TinyXML Python Yajl Xslt
-                  JPEG Lzo2 Fribidi TagLib FFMPEG CrossGUID)
+                  Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
   list(APPEND required_deps LibSmbClient ZLIB)
 else()
@@ -170,10 +168,6 @@ if(ENABLE_AIRTUNES)
   if(SHAIRPLAY_FOUND)
     core_require_dyload_dep(Shairplay)
   endif()
-endif()
-
-if(ENABLE_VTB)
-  list(APPEND DEP_DEFINES -DHAVE_VIDEOTOOLBOXDECODER=1)
 endif()
 
 if(NOT WIN32)

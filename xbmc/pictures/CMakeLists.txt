@@ -22,6 +22,7 @@ set(HEADERS DllLibExif.h
             SlideShowPicture.h)
 
 core_add_library(pictures)
+add_dependencies(pictures libcpluff)
 
 if(ENABLE_INTERNAL_FFMPEG)
   add_dependencies(pictures ffmpeg)

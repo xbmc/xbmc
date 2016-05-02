@@ -31,4 +31,5 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework IOSurface" "-framework SystemConfiguration"
                     "-framework ApplicationServices" "-framework AppKit"
                     "-framework CoreAudio" "-framework AudioToolbox"
-                    "-framework CoreGraphics")
+                    "-framework CoreGraphics" "-framework CoreMedia"
+                    "-framework VideoToolbox")

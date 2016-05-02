@@ -40,15 +40,10 @@ if(VAAPI_FOUND)
   list(APPEND HEADERS VAAPI.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL darwin)
-  list(APPEND SOURCES VDA.cpp)
-  list(APPEND HEADERS VDA.h)
-endif()
-
-if(VTB_FOUND)
-  list(APPEND SOURCES DVDVideoCodecVideoToolBox.cpp)
+if(CORE_SYSTEM_NAME STREQUAL darwin OR CORE_SYSTEM_NAME STREQUAL ios)
+  list(APPEND SOURCES VTB.cpp)
   list(APPEND HEADERS DllVideoToolBox.h
-                      DVDVideoCodecVideoToolBox.h)
+                      VTB.h)
 endif()
 
 if(MMAL_FOUND)
