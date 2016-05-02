@@ -1089,7 +1089,7 @@
       </group>
     </category>
     <category id="databases" label="14219" help="38110">
-      <group id="1"label="14215">
+      <group id="1" label="14215">
         <setting id="videolibrary.updateonstartup" type="boolean" label="14245" help="36146">
           <level>1</level>
           <default>false</default>
@@ -1113,7 +1113,7 @@
           <control type="button" format="action" />
         </setting>
       </group>
-      <group id="2"label="14216">
+      <group id="2" label="14216">
         <setting id="musiclibrary.updateonstartup" type="boolean" label="14245" help="36259">
           <level>1</level>
           <default>false</default>
