@@ -280,6 +280,16 @@ protected:
   bool  m_nonLinStretch;
   bool  m_nonLinStretchGui;
   float m_pixelRatio;
+
+  // color management
+  GLuint    m_tCLUTTex;
+  uint16_t *m_CLUT;
+  int       m_CLUTsize;
+  int       m_cmsToken;
+  bool      m_cmsOn;
+
+  bool LoadCLUT();
+  void DeleteCLUT();
 };
 
 

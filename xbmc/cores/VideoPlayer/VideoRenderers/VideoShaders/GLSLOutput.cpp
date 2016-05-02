@@ -25,26 +25,36 @@
 
 #include "GLSLOutput.h"
 #include "dither.h"
+#include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 
 using namespace Shaders;
 
-GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange)
+GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange, GLuint clutTex, int clutSize, unsigned videoflags)
 {
   // set member variable initial values
   m_1stTexUnit = texunit;
   m_uDither = m_1stTexUnit+0;
+  m_uCLUT = m_1stTexUnit+1;
+  m_flags = videoflags;
 
   //   textures
   m_tDitherTex  = 0;
+  m_tCLUTTex  = clutTex;
 
   //   shader attribute handles
   m_hDither      = -1;
   m_hDitherQuant = -1;
   m_hDitherSize  = -1;
+  m_hCLUT        = -1;
+  m_hCLUTSize    = -1;
 
   m_dither = useDithering;
   m_ditherDepth = ditherDepth;
   m_fullRange = fullrange;
+  // make sure CMS is enabled - this allows us to keep the texture
+  // around to quickly switch between CMS on and off
+  m_3DLUT = CColorManager::Get().IsEnabled() && (clutTex > 0);
+  m_uCLUTSize = clutSize;
 }
 
 std::string GLSLOutput::GetDefines()
@@ -54,6 +64,8 @@ std::string GLSLOutput::GetDefines()
     defines += "#define XBMC_DITHER\n";
   if (m_fullRange)
     defines += "#define XBMC_FULLRANGE\n";
+  if (m_3DLUT)
+    defines += "#define KODI_3DLUT\n";
   return defines;
 }
 
@@ -68,6 +80,11 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
     m_hDither = glGetUniformLocation(programHandle, "m_dither");
     m_hDitherQuant = glGetUniformLocation(programHandle, "m_ditherquant");
     m_hDitherSize = glGetUniformLocation(programHandle, "m_dithersize");
+  }
+  //   3DLUT
+  if (m_3DLUT) {
+    m_hCLUT        = glGetUniformLocation(programHandle, "m_CLUT");
+    m_hCLUTSize    = glGetUniformLocation(programHandle, "m_CLUTsize");
   }
 
   if (m_dither)
@@ -126,6 +143,19 @@ bool GLSLOutput::OnEnabled()
     VerifyGLState();
   }
 
+  if (m_3DLUT) {
+    // set texture units
+    glUniform1i(m_hCLUT, m_uCLUT);
+    glUniform1f(m_hCLUTSize, m_uCLUTSize);
+    VerifyGLState();
+
+    // bind textures
+    glActiveTexture(GL_TEXTURE0 + m_uCLUT);
+    glBindTexture(GL_TEXTURE_3D, m_tCLUTTex);
+    glActiveTexture(GL_TEXTURE0);
+    VerifyGLState();
+  }
+
   VerifyGLState();
   return true;
 }
@@ -137,6 +167,10 @@ void GLSLOutput::OnDisabled()
   {
     glActiveTexture(GL_TEXTURE0 + m_uDither);
     glDisable(GL_TEXTURE_2D);
+  }
+  if (m_3DLUT) {
+    glActiveTexture(GL_TEXTURE0 + m_uCLUT);
+    glDisable(GL_TEXTURE_3D);
   }
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
