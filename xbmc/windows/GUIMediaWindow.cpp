@@ -900,7 +900,10 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     else if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
 
-    return OnAddMediaSource();
+    if (OnAddMediaSource())
+      Refresh(true);
+
+    return true;
   }
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))
