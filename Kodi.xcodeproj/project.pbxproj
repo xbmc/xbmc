@@ -1154,7 +1154,6 @@
 		E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16890D25F9FA00618676 /* DNSNameCache.cpp */; };
 		E38E1FFC0D25F9FD00618676 /* DynamicDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E168C0D25F9FA00618676 /* DynamicDll.cpp */; };
 		E38E1FFF0D25F9FD00618676 /* FileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16920D25F9FA00618676 /* FileItem.cpp */; };
-		E38E20010D25F9FD00618676 /* MemBufferCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16970D25F9FA00618676 /* MemBufferCache.cpp */; };
 		E38E20020D25F9FD00618676 /* CacheStrategy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16990D25F9FA00618676 /* CacheStrategy.cpp */; };
 		E38E20030D25F9FD00618676 /* CDDADirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E169B0D25F9FA00618676 /* CDDADirectory.cpp */; };
 		E38E20040D25F9FD00618676 /* cddb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E169D0D25F9FA00618676 /* cddb.cpp */; };
@@ -1628,7 +1627,6 @@
 		E4991276174E5D8F00741B6D /* ISO9660Directory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16F30D25F9FA00618676 /* ISO9660Directory.cpp */; };
 		E4991277174E5D8F00741B6D /* ISOFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6771444A8B0007C6459 /* ISOFile.cpp */; };
 		E4991278174E5D8F00741B6D /* LibraryDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1F6EB913ECCFA7001726AB /* LibraryDirectory.cpp */; };
-		E4991279174E5D8F00741B6D /* MemBufferCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16970D25F9FA00618676 /* MemBufferCache.cpp */; };
 		E499127A174E5D8F00741B6D /* MultiPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17080D25F9FA00618676 /* MultiPathDirectory.cpp */; };
 		E499127B174E5D8F00741B6D /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		E499127C174E5D9900741B6D /* DirectoryNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E170B0D25F9FA00618676 /* DirectoryNode.cpp */; };
@@ -4219,8 +4217,6 @@
 		E38E168D0D25F9FA00618676 /* DynamicDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicDll.h; sourceTree = "<group>"; };
 		E38E16920D25F9FA00618676 /* FileItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItem.cpp; sourceTree = "<group>"; };
 		E38E16930D25F9FA00618676 /* FileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
-		E38E16970D25F9FA00618676 /* MemBufferCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemBufferCache.cpp; sourceTree = "<group>"; };
-		E38E16980D25F9FA00618676 /* MemBufferCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemBufferCache.h; sourceTree = "<group>"; };
 		E38E16990D25F9FA00618676 /* CacheStrategy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheStrategy.cpp; sourceTree = "<group>"; };
 		E38E169A0D25F9FA00618676 /* CacheStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheStrategy.h; sourceTree = "<group>"; };
 		E38E169B0D25F9FA00618676 /* CDDADirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDDADirectory.cpp; sourceTree = "<group>"; };
@@ -8247,8 +8243,6 @@
 				DF93D6781444A8B0007C6459 /* ISOFile.h */,
 				7C1F6EB913ECCFA7001726AB /* LibraryDirectory.cpp */,
 				7C1F6EBA13ECCFA7001726AB /* LibraryDirectory.h */,
-				E38E16970D25F9FA00618676 /* MemBufferCache.cpp */,
-				E38E16980D25F9FA00618676 /* MemBufferCache.h */,
 				E38E17080D25F9FA00618676 /* MultiPathDirectory.cpp */,
 				E38E17090D25F9FA00618676 /* MultiPathDirectory.h */,
 				F50629780E57B9680066625A /* MultiPathFile.cpp */,
@@ -9716,7 +9710,6 @@
 				EDED2E971C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp in Sources */,
 				E38E1FFC0D25F9FD00618676 /* DynamicDll.cpp in Sources */,
 				E38E1FFF0D25F9FD00618676 /* FileItem.cpp in Sources */,
-				E38E20010D25F9FD00618676 /* MemBufferCache.cpp in Sources */,
 				E38E20020D25F9FD00618676 /* CacheStrategy.cpp in Sources */,
 				E38E20030D25F9FD00618676 /* CDDADirectory.cpp in Sources */,
 				E38E20040D25F9FD00618676 /* cddb.cpp in Sources */,
@@ -11023,7 +11016,6 @@
 				68AE5BE81C92421800C4D527 /* PeripheralAddonTranslator.cpp in Sources */,
 				E4991277174E5D8F00741B6D /* ISOFile.cpp in Sources */,
 				E4991278174E5D8F00741B6D /* LibraryDirectory.cpp in Sources */,
-				E4991279174E5D8F00741B6D /* MemBufferCache.cpp in Sources */,
 				E499127A174E5D8F00741B6D /* MultiPathDirectory.cpp in Sources */,
 				76AEFB3D1C8F79D500EF2EC0 /* AddonCallbacksGUI.cpp in Sources */,
 				E499127B174E5D8F00741B6D /* MultiPathFile.cpp in Sources */,

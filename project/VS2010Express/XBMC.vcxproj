@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -402,7 +402,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\filesystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ISOFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\LibraryDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\MemBufferCache.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MultiPathDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MultiPathFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory.cpp" />
@@ -1399,7 +1398,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryCache.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FavouritesDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileCache.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h" />
     <ClInclude Include="..\..\xbmc\filesystem\AddonsDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\BlurayDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CacheStrategy.h" />
