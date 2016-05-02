@@ -1,36 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <section id="appearance">
-    <category id="locale">
-      <group id="2">
-        <visible>false</visible>
-      </group>
-    </category>
-  </section>
-  <section id="videos">
-    <category id="videoacceleration">
-      <group id="3">
-        <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">
-          <visible>HAS_MEDIACODEC</visible>
-          <level>2</level>
-          <default>true</default>
-          <updates>
-            <update type="change" />
-          </updates>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
-          <visible>HAS_MEDIACODEC</visible>
-          <level>2</level>
-          <default>true</default>
-          <updates>
-            <update type="change" />
-          </updates>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-  </section>
   <section id="system">
     <category id="videoscreen">
       <group id="1">
@@ -47,6 +16,18 @@
           <visible>false</visible>
         </setting>
         <setting id="videoscreen.blankdisplays">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="interface">
+    <category id="regional">
+      <group id="2">
+        <setting id="locale.timezonecountry">
+          <visible>false</visible>
+        </setting>
+        <setting id="locale.timezone">
           <visible>false</visible>
         </setting>
       </group>

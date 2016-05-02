@@ -130,6 +130,24 @@
           </updates>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">
+          <requirement>HAS_MEDIACODEC</requirement>
+          <level>2</level>
+          <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
+          <requirement>HAS_MEDIACODEC</requirement>
+          <level>2</level>
+          <default>true</default>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
           <requirement>HAVE_LIBVDPAU</requirement>
           <level>2</level>
