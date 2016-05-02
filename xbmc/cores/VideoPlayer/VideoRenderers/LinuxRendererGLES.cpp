@@ -149,6 +149,8 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
 
      // create the yuv textures
     LoadShaders();
+    if (m_renderMethod < 0)
+      return false;
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       CreateTexture(i);
@@ -187,7 +189,7 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
 
   m_iLastRenderBuffer = -1;
 
-  if ((m_format == RENDER_FMT_BYPASS))
+  if (m_format == RENDER_FMT_BYPASS)
   {
     m_renderFeatures.clear();
     m_scalingMethods.clear();
@@ -445,7 +447,8 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   if (RenderUpdateCheckForEmptyField())
   {
-    if (!buf.fields[FIELD_FULL][0].id) return;
+    if (!buf.fields[FIELD_FULL][0].id)
+      return;
   }
   if (buf.image.flags==0)
     return;
@@ -639,15 +642,14 @@ void CLinuxRendererGLES::LoadShaders(int field)
           {
             ReleaseShaders();
             CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
-            // drop through and try SW
+            m_renderMethod = -1;
+            break;
           }
         }
-      case RENDER_METHOD_SOFTWARE:
       default:
         {
-          // Use software YUV 2 RGB conversion if user requested it or GLSL failed
-          m_renderMethod = RENDER_SW ;
-          CLog::Log(LOGNOTICE, "GL: Using software color conversion/RGBA rendering");
+          m_renderMethod = -1 ;
+          CLog::Log(LOGERROR, "GL: render method not supported");
         }
     }
   }
@@ -819,16 +821,9 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
       VerifyGLState();
       break;
 
-    case RQ_SOFTWARE:
-      RenderSoftware(index, m_currentField);
-      VerifyGLState();
+    default:
       break;
     }
-  }
-  else
-  {
-    RenderSoftware(index, m_currentField);
-    VerifyGLState();
   }
 }
 
@@ -1128,70 +1123,6 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGLES::RenderSoftware(int index, int field)
-{
-  YUVPLANES &planes = m_buffers[index].fields[field];
-
-  glDisable(GL_DEPTH_TEST);
-
-  // Y
-  glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, planes[0].id);
-
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
-
-  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
-  glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-  GLfloat ver[4][4];
-  GLfloat tex[4][2];
-  GLfloat col[3] = {1.0f, 1.0f, 1.0f};
-
-  GLint   posLoc = g_Windowing.GUIShaderGetPos();
-  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
-  GLint   colLoc = g_Windowing.GUIShaderGetCol();
-
-  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
-  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(texLoc);
-  glEnableVertexAttribArray(colLoc);
-
-  // Set vertex coordinates
-  for(int i = 0; i < 4; i++)
-  {
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;// set z to 0
-    ver[i][3] = 1.0f;
-  }
-
-  // Set texture coordinates
-  tex[0][0] = tex[3][0] = planes[0].rect.x1;
-  tex[0][1] = tex[1][1] = planes[0].rect.y1;
-  tex[1][0] = tex[2][0] = planes[0].rect.x2;
-  tex[2][1] = tex[3][1] = planes[0].rect.y2;
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(texLoc);
-  glDisableVertexAttribArray(colLoc);
-
-  g_Windowing.DisableGUIShader();
-
-  VerifyGLState();
-
-  glDisable(m_textureTarget);
-  VerifyGLState();
-}
-
 bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 {
   if (!m_bValidated)
@@ -1270,38 +1201,6 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     return;
   }
 
-  // if we don't have a shader, fallback to SW YUV2RGB for now
-  if (m_renderMethod & RENDER_SW)
-  {
-    if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
-    {
-      av_free(m_rgbBuffer);
-      m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-      m_rgbBuffer = (BYTE*) av_malloc(m_rgbBufferSize);
-    }
-
-#if defined(__ARM_NEON__) && !defined(__LP64__)
-    if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
-    {
-      yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],
-        m_sourceWidth, m_sourceHeight, im->stride[0], im->stride[1], m_sourceWidth * 4);
-    }
-    else
-#endif
-    {
-      m_sw_context = sws_getCachedContext(m_sw_context,
-        im->width, im->height, AV_PIX_FMT_YUV420P,
-        im->width, im->height, AV_PIX_FMT_RGBA,
-        SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
-      uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
-      int srcStride[] = { int(im->stride[0]), int(im->stride[1]), int(im->stride[2]), 0 };
-      uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
-      int dstStride[] = { int(m_sourceWidth*4), 0, 0, 0 };
-      sws_scale(m_sw_context, src, srcStride, 0, im->height, dst, dstStride);
-    }
-  }
-
   bool deinterlacing = false;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
@@ -1311,45 +1210,22 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   glEnable(m_textureTarget);
   VerifyGLState();
 
-  if (m_renderMethod & RENDER_SW)
-  {
-    // Load RGB image
-    if (deinterlacing)
-    {
-      LoadPlane( fields[FIELD_TOP][0] , GL_RGBA, buf.flipindex
-               , im->width, im->height >> 1
-               , m_sourceWidth*8, im->bpp, m_rgbBuffer );
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-      LoadPlane( fields[FIELD_BOT][0], GL_RGBA, buf.flipindex
-               , im->width, im->height >> 1
-               , m_sourceWidth*8, im->bpp, m_rgbBuffer + m_sourceWidth*4);
-    }
-    else
-    {
-      LoadPlane( fields[FIELD_FULL][0], GL_RGBA, buf.flipindex
-               , im->width, im->height
-               , m_sourceWidth*4, im->bpp, m_rgbBuffer );
-    }
-  }
-  else
-  {
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-    // Load Y plane
-    LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
+  // Load Y plane
+  LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
         , im->width, im->height
         , im->stride[0], im->bpp, im->plane[0] );
 
-    //load U plane
-    LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
+  //load U plane
+  LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
         , im->width >> im->cshift_x, im->height >> im->cshift_y
                                                    , im->stride[1], im->bpp, im->plane[1] );
 
-    //load V plane
-    LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
+  //load V plane
+  LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
         , im->width >> im->cshift_x, im->height >> im->cshift_y
                                                    , im->stride[2], im->bpp, im->plane[2] );
-  }
 
   VerifyGLState();
 
@@ -1461,20 +1337,10 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
     planes[0].texwidth  = im.width;
     planes[0].texheight = im.height >> fieldshift;
 
-    if (m_renderMethod & RENDER_SW)
-    {
-      planes[1].texwidth  = 0;
-      planes[1].texheight = 0;
-      planes[2].texwidth  = 0;
-      planes[2].texheight = 0;
-    }
-    else
-    {
-      planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
-      planes[1].texheight = planes[0].texheight >> im.cshift_y;
-      planes[2].texwidth  = planes[0].texwidth  >> im.cshift_x;
-      planes[2].texheight = planes[0].texheight >> im.cshift_y;
-    }
+    planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
+    planes[1].texheight = planes[0].texheight >> im.cshift_y;
+    planes[2].texwidth  = planes[0].texwidth  >> im.cshift_x;
+    planes[2].texheight = planes[0].texheight >> im.cshift_y;
 
     for (int p = 0; p < 3; p++)
     {
@@ -1498,33 +1364,21 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         continue;
 
       glBindTexture(m_textureTarget, plane.id);
-      if (m_renderMethod & RENDER_SW)
-      {
-        if(m_renderMethod & RENDER_POT)
-          CLog::Log(LOGDEBUG, "GL: Creating RGB POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-        else
-          CLog::Log(LOGDEBUG,  "GL: Creating RGB NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-        glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      }
+      GLenum format;
+      GLint internalformat;
+      if (p == 2) //V plane needs an alpha texture
+        format = GL_ALPHA;
       else
-      {
-        GLenum format;
-        GLint internalformat;
-        if (p == 2) //V plane needs an alpha texture
-          format = GL_ALPHA;
-        else
-          format = GL_LUMINANCE;
-        internalformat = GetInternalFormat(format, im.bpp);
+        format = GL_LUMINANCE;
+      internalformat = GetInternalFormat(format, im.bpp);
 
-        if(m_renderMethod & RENDER_POT)
-          CLog::Log(LOGDEBUG, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-        else
-          CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
+      if(m_renderMethod & RENDER_POT)
+        CLog::Log(LOGDEBUG, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
+      else
+        CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
-        glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
-      }
+      glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1659,20 +1513,10 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
     planes[0].texwidth  = im.width;
     planes[0].texheight = im.height >> fieldshift;
 
-    if (m_renderMethod & RENDER_SW)
-    {
-      planes[1].texwidth  = 0;
-      planes[1].texheight = 0;
-      planes[2].texwidth  = 0;
-      planes[2].texheight = 0;
-    }
-    else
-    {
-      planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
-      planes[1].texheight = planes[0].texheight >> im.cshift_y;
-      planes[2].texwidth  = planes[1].texwidth;
-      planes[2].texheight = planes[1].texheight;
-    }
+    planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
+    planes[1].texheight = planes[0].texheight >> im.cshift_y;
+    planes[2].texwidth  = planes[1].texwidth;
+    planes[2].texheight = planes[1].texheight;
 
     for (int p = 0; p < 3; p++)
     {
@@ -1696,17 +1540,11 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
         continue;
 
       glBindTexture(m_textureTarget, plane.id);
-      if (m_renderMethod & RENDER_SW)
-      {
-        glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      }
+
+      if (p == 1)
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
       else
-      {
-        if (p == 1)
-          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
-        else
-          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      }
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1783,18 +1621,15 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
       VerifyGLState();
 
-      if (!(m_renderMethod & RENDER_SW))
-      {
-        glBindTexture(m_textureTarget, fields[f][1].id);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
-        VerifyGLState();
+      glBindTexture(m_textureTarget, fields[f][1].id);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+      VerifyGLState();
 
-        glBindTexture(m_textureTarget, fields[f][2].id);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
-        VerifyGLState();
-      }
+      glBindTexture(m_textureTarget, fields[f][2].id);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+      VerifyGLState();
     }
   }
 }
