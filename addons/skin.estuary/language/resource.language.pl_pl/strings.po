@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Film nieobejrzane"
 
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Brak zastrzeżeń"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Pobierz ikony"
@@ -63,6 +67,26 @@ msgstr "Albumy najczęściej odtwarzane"
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Albumy losowe"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Wykonawcy losowy"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Albumy nieodtwarzane"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Najnowsze nagrania"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Kanały ostatnio odtwarzane"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Kanały najczęściej odtwarzane"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -148,6 +172,10 @@ msgctxt "#31040"
 msgid "Cancel update"
 msgstr "Anuluj aktualizację"
 
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Producent aparatu"
+
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Opcje listy odtwarzania"
@@ -171,6 +199,14 @@ msgstr "Więcej informacji..."
 msgctxt "#31048"
 msgid "Available"
 msgstr "Dostępne"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Naciśnij [B]GÓRA[/B], aby cofać lub przewijać"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Naciśnij [B]OK[/B], aby zatrzymać"
 
 msgctxt "#31051"
 msgid "Toggle language"
@@ -367,6 +403,10 @@ msgstr "Używaj niestandardowego globalnego tła"
 msgctxt "#31109"
 msgid "Choose image path"
 msgstr "Wybierz ścieżkę do folderu z obrazem"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Usuń pozycję menu startowego"
 
 msgctxt "#31117"
 msgid "Edit nodes"

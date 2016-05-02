@@ -16,6 +16,10 @@ msgstr ""
 "Language: mk_MK\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Сега се изведува"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Барај..."
@@ -35,6 +39,10 @@ msgstr "Прогноза"
 msgctxt "#31020"
 msgid "Actions"
 msgstr "Дела"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Други опции"
 
 msgctxt "#31038"
 msgid "Rewind"

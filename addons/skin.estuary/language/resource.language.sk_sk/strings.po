@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Nepozreté filmy"
 
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Žiadne podmienky"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Prevziať ikony"

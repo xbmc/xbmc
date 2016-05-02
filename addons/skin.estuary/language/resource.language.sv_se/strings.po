@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "Spelas nu"
+msgstr "Spelas just nu"
 
 msgctxt "#31001"
 msgid "Search..."
@@ -43,6 +43,10 @@ msgstr "Slumpmässiga filmer"
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Osedda filmer"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Ingen ansvarsfriskrivning"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -72,6 +76,14 @@ msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Nya inspelningar"
 
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Senast spelade kanaler"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Betygsatt"
+
 msgctxt "#31018"
 msgid "Most played channels"
 msgstr "Mest spelade kanaler"
@@ -99,6 +111,10 @@ msgstr "Vytyp"
 msgctxt "#31024"
 msgid "Next tracks"
 msgstr "Nästa spår"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Inga favoriter hittades. Du kan lägga till objekt från media visningar till den här listan genom att använda snabbmenyn."
 
 msgctxt "#31026"
 msgid "Go to albums"
@@ -188,6 +204,10 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Tillgänglig"
 
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Tryck [B]Upp[/B] för att spola tillbaka eller snabbspola framåt"
+
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Tryck på [B]OK[/B] för att stoppa"
@@ -203,6 +223,10 @@ msgstr "filtrerad"
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arialbaserad"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Tryck [B]Vänster[/B] för att spola tillbaka eller [B]Höger[/B] för att snabbspola framåt"
 
 msgctxt "#31055"
 msgid "Subtitle download"
@@ -232,6 +256,10 @@ msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Huvudmeny objekt"
 
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Genvägar till avsnitt \"Filer\" för varje mediatyp. Gå dit för att lägga till ytterligare källor för dina databaser."
+
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sektioner"
@@ -244,13 +272,25 @@ msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Spellista för video"
 
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Spellista för musik"
+
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Händelselogg"
 
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Välj förinställningar"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Senast uppdaterad"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Lägg till mediakällor"
 
 msgctxt "#31071"
 msgid "by"
@@ -264,6 +304,10 @@ msgctxt "#31073"
 msgid "Titles"
 msgstr "Titlar"
 
+msgctxt "#31074"
+msgid "Library root"
+msgstr "bibliotek root"
+
 msgctxt "#31076"
 msgid "Play optical disc"
 msgstr "Spela optisk skiva"
@@ -276,6 +320,10 @@ msgctxt "#31078"
 msgid "Next location"
 msgstr "Nästa plats"
 
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Roller inte tillgängliga"
+
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Slutar vid"
@@ -286,7 +334,11 @@ msgstr "Albuminfo"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Sångtextstillägg"
+msgstr "Sångtext tillägg"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Sångtext tilläggsinställningar"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -324,9 +376,17 @@ msgctxt "#31092"
 msgid "Video menu"
 msgstr "Video-meny"
 
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Visa väderleksinformation i översta fältet"
+
 msgctxt "#31094"
 msgid "Show media flags for movies / episodes / music videos"
 msgstr "Visa media-flaggor för filmer / avsnitt / musikvideor"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Använd slidanimeringar"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -352,6 +412,14 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Fyll i text här..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Biblioteket är för nuvarande tomt. För att fylla den med din personliga media, ange \"Filer\"-avsnittet, lägg till en mediekälla och konfigurera den. Efter källan har lagts till och den har indexerats kommer du att kunna bläddra i biblioteket."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Lägg till videokällor och ange lämplig innehållstyp för att fylla dina videobibliotek."
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Texttv"
@@ -359,6 +427,18 @@ msgstr "Texttv"
 msgctxt "#31108"
 msgid "Use custom global background"
 msgstr "Använd en anpassad global bakgrund"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Välj bild sökväg"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Ange filavsnitt"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Visa dina personliga bilder eller ladda ner en av de många bild tilläggen från det officiella förrådet."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -376,9 +456,29 @@ msgctxt "#31115"
 msgid "Search TheMovieDB"
 msgstr "Sök i TheMovieDB"
 
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Ta bort det här huvudmeny objektet"
+
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "Redigera noder"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Ange tilläggsutforskare"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Du har inte några tillägg installerade ännu. Besök vår tilläggsutforskare för att bläddra igenom vår samling och förbättra din Kodi upplevelse."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Du har ställt in en väderleksleverantör ännu. För att visa väderleksinformation, välj en väderleksleverantör och ställ in din plats."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Ställ in väderleksleverantör"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
@@ -392,6 +492,14 @@ msgctxt "#31124"
 msgid "Show images on map"
 msgstr "Visa bilder på kartan"
 
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Tryck upp för skådespelarinformation"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Tryck på OK för att läsa handling"
+
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "Visa ikoner"
@@ -399,3 +507,15 @@ msgstr "Visa ikoner"
 msgctxt "#31128"
 msgid "Contributors"
 msgstr "Medarbetare"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Allmänna inställningar som gäller för alla områden av skalet."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Huvudmeny relaterade inställningar: Konfigurera startskärmen till ditt tycke och smak."
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

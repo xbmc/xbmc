@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Cereka belum ditonton"
 
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Tiada penolak tuntutan"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Muat turun ikon"

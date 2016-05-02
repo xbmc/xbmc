@@ -16,9 +16,17 @@ msgstr ""
 "Language: eu_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Orain erreproduzitzen"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Bilatu..."
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Aldatu modua"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
@@ -32,9 +40,41 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "Akzioak"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Bestelako aukerak"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Azkenekoz sartuta"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Atzera"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Azkar aurrera"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Erreprodukzio zerrenda aukerak"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Gehitu taldea"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Berrizendatu taldea"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Ezabatu taldea"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial-en oinarritua"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -48,6 +88,10 @@ msgctxt "#31081"
 msgid "Album info"
 msgstr "Albumaren info"
 
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Letren gehigarria"
+
 msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Kate taldea"
@@ -59,6 +103,14 @@ msgstr "Deskargatu azpitituluak"
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Azpititulu lokala erabilgarri"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kate aukerak"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Aukeratu zure Kodi profila[CR] saio hasi eta jarraitzeko"
 
 msgctxt "#31100"
 msgid "Shift"

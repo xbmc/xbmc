@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Негледани филми"
 
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Няма опровержение"
+
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Следени филми"
@@ -439,3 +443,7 @@ msgstr "Основни настройки, прилагани из всяка ч
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Настройки свързани с началния екран."
+
+msgctxt "#31132"
+msgid "min"
+msgstr "мин"

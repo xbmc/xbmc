@@ -16,6 +16,10 @@ msgstr ""
 "Language: vi_VN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Đang phát"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Tìm Kiếm..."
@@ -40,6 +44,18 @@ msgctxt "#31038"
 msgid "Rewind"
 msgstr "Quay Lại"
 
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Thêm nhóm"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Đổi tên nhóm"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Xóa nhóm"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Theo chuẩn Arial"
@@ -63,3 +79,7 @@ msgstr "Nhóm kênh"
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Phụ đề sẵn có trong máy"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Thiết lập kênh"

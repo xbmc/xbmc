@@ -24,6 +24,10 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Buscar..."
 
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Modo cine"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Trocar o modo"
@@ -31,6 +35,54 @@ msgstr "Trocar o modo"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Ver como 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Filmes ó chou"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Filmes non vistos"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Descargar iconas"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmes en progreso"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Álbums máis reproducidos"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Álbums ó chou"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Artistas ó chou"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Álbums non reproducidos"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Gravacións recentes"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Canles reproducidos recentemente"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Valoración"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Canles máis vistos"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -44,9 +96,61 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Outras opcións"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Ordenar por"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Tipo de vista"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Pistas seguintes"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Ir a álbums"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Ir a cancións"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Amosar cartel"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Último ingreso"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Memoria empregada"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Información de versión"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Ordenar"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "A túa valoración"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Información extendida"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Páxinas"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Elementos"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -55,6 +159,14 @@ msgstr "Atrás"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Axiña adiante"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Cancelar actualización"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Fabricante de cámara"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -72,17 +184,137 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Eliminar grupo"
 
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Ler máis..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Dispoñible"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Premer [B]Arriba[/B] para rebobinar ou avanzar rápido"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Premer [B]Aceptar[/B] para parar"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Cambiar idioma"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrado"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Baseado en Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Premer [B]Esquerda[/B] para rebobinar, ou [B]Dereita[/B] para avanzar rápido"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Descargar subtítulo"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Ir a listaxes de reproducción"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Amosar a pantalla de inicio de sesión ao arrancar"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Amosar o inicio de sesión ao arrancar"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Actualizacións dispoñibles"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minutos"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Elementos do menú principal"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Seccións"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "Non visto"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Lista de reprodución de vídeo"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Lista de reprodución de música"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Rexistro de eventos"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Escoller preconfiguracións"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Última actualización"
 
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Engadir fontes de medios"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "por"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opcións de enerxía"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Títulos"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Biblioteca raíz"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Conxuntos de filmes"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Reproducir disco óptico"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Localización anterior"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Localización seguinte"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Emisión non dispoñible"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Remata en"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -92,9 +324,25 @@ msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Complemento de letras"
 
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Configuración do complemento de letras"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Configuración de visualizacións"
+
 msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Canle do Grupo"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Axustes do provedor"
 
 msgctxt "#31088"
 msgid "Content scanning options"
@@ -104,9 +352,25 @@ msgctxt "#31089"
 msgid "Available groups"
 msgstr "Grupos dispoñíbeis"
 
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Buscar tráiler"
+
 msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "Descargar subtítulos"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Menú de vídeo"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Amosar información metorolóxica na barra superior"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Empregar animacións de diapositivas"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -120,6 +384,102 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecione o seu perfíl de usuario de Kodi[CR]para ingresar e continuar"
 
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Muro das iconas"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "InfoMuro"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Muro"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Introducir texto aquí..."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletexto"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Lista ancha"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Usar fondo personalizado global"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Escoller a ruta da imaxe"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Introducir sección de arquivos"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Escoller fluxo de audio"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Buscar biblioteca local"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Buscar en YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Buscar en TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Eliminar este elemento do menú principal"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Editar nodos"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Introducir buscador de engadidos"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Escoller provedor meteorolóxico"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "O mesmo director"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Amosar as imaxes no mapa"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Premer arriba para info de actor"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Premer Aceptar para ler punto"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Amosar iconas"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Colaboradores"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "mín."

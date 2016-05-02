@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Niet bekeken films"
 
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Geen vrijwaringsclosule"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Download pictogrammen"

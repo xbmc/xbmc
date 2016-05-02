@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Pesquisar..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Mostrar fanart em segundo plano"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Modo de cinema"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Modo de alteração"
@@ -31,6 +39,54 @@ msgstr "Modo de alteração"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Ver em 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Filmes aleatórios"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Filmes não vistos"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Descarregar ícones"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmes em curso"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Álbuns mais reproduzidos"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Álbuns aleatórios"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Artistas aleatórios"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Álbuns não reproduzidos"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Gravações recentes"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Canais recentes"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Avaliados"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Canais mais reproduzidos"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -44,9 +100,65 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Opções diversas"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Ordenar por"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Próximas faixas"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Não há favoritos. Pode adicionar qualquer item a esta lista utilizando o menu de contexto."
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Ir para álbuns"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Ir para faixas"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Mostrar fanart"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Última vez ligado"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Memória utilizada"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Info da versão"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Ordem"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "A sua avaliação"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Info detalhada"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Páginas"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "itens"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Lista de faixas"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -56,9 +168,21 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Avançar"
 
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Cancelar atualização"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Fabricante da câmara"
+
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Opções da lista de reprodução"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Defina o tipo e as regras da lista de reprodução inteligente. Estas listas de reprodução são dinâmicas e incluem todos os itens multimédia que coincidam com as regras aplicaveis."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -72,17 +196,117 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Apagar grupo"
 
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Saber mais..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Disponível"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Alternar idioma"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrados"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Baseada em Arial"
 
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Descarregar legendas"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Ir para lista de reprodução"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Mostrar ecrã de sessão ao arrancar"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Iniciar sessão ao arrancar"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Atualizações disponíveis"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minutos"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Itens do menu principal"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Secções"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "não vistos"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Lista de reprodução de vídeo"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Lista de reprodução de música"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Registos"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Escolher pré-ajustes"
+
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "Última Actualização"
+msgstr "Última atualização"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Adicionar fontes multimédia"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "de"
 
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opções de energia"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Títulos"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Raiz da coleção"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Conjuntos de filme"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Reproduzir disco"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Localização anterior"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Localização seguinte"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -108,6 +332,10 @@ msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "Descarregar legendas"
 
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Menu de vídeo"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Legenda local disponível"
@@ -123,3 +351,7 @@ msgstr "Selecione o seu perfil de utilizador do Kodi[CR]para iniciar sessão e c
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletexto"
