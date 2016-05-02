@@ -31,6 +31,10 @@ endif()
 include(ExternalProject)
 
 ### setup all the necessary paths
+if(APP_ROOT)
+  set(CORE_SOURCE_DIR ${APP_ROOT})
+  message(WARNING "APP_ROOT is deprecated. Please use CORE_SOURCE_DIR instead.")
+endif()
 if(NOT CORE_SOURCE_DIR AND NOT XBMCROOT)
   set(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../../..)
 elseif(NOT CORE_SOURCE_DIR)

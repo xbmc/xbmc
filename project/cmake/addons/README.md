@@ -41,6 +41,10 @@ The buildsystem uses the following variables (which can be passed into it when e
 - `ARCH_DEFINES` specifies the platform-specific C/C++ preprocessor defines (defaults to empty)
 - `ADDON_TARBALL_CACHING` specifies whether downloaded add-on source tarballs should be cached or not (defaults to *ON*)
 
+## Deprecated buildsystem variables
+Buildsystem will print a warning if you use any of the below-listed variables. For now they still work but you should adapt your workflow to the new variables.
+- `APP_ROOT` - Use `CORE_SOURCE_DIR` instead
+
 ## Building
 The buildsystem makes some assumptions about the environment which must be met by whoever uses it:
 - Any dependencies of the add-ons must already be built and their include and library files must be present in the path pointed to by `<CMAKE_PREFIX_PATH>` (in *include* and *lib* sub-directories)
