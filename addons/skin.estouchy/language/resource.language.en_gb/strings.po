@@ -225,6 +225,8 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr ""
 
+#empty strings from id 31401 to 31404
+
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
 msgstr ""
@@ -257,7 +259,7 @@ msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
 msgstr ""
 
-#empty strings from id 31411 to 31420
+#empty strings from id 31413 to 31420
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
