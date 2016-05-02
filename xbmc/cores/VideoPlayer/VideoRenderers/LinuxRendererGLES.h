@@ -127,33 +127,30 @@ public:
   virtual bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation);
-  virtual bool IsConfigured() { return m_bConfigured; }
-  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual void         FlipPage(int source);
-  virtual void         PreInit();
-  virtual void         UnInit();
-  virtual void         Reset(); /* resets renderer after seek for example */
-  virtual void         Flush();
-  virtual void         ReorderDrawPoints();
-  virtual void         ReleaseBuffer(int idx){ };
-  virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
-  virtual bool         IsGuiLayer();
-
-  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  virtual bool RenderUpdateCheckForEmptyField() { return true; }
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation) override;
+  virtual bool IsConfigured() override { return m_bConfigured; }
+  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) override;
+  virtual void ReleaseImage(int source, bool preserve = false) override;
+  virtual void FlipPage(int source) override;
+  virtual void PreInit() override;
+  virtual void UnInit() override;
+  virtual void Reset() override;
+  virtual void Flush() override;
+  virtual void ReorderDrawPoints() override;
+  virtual void ReleaseBuffer(int idx) override { };
+  virtual void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
+  virtual bool IsGuiLayer() override;
+  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering();
-  virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(EDEINTERLACEMODE mode);
-  virtual bool Supports(EINTERLACEMETHOD method);
-  virtual bool Supports(ESCALINGMETHOD method);
+  virtual bool SupportsMultiPassRendering() override;
+  virtual bool Supports(ERENDERFEATURE feature) override;
+  virtual bool Supports(EDEINTERLACEMODE mode) override;
+  virtual bool Supports(EINTERLACEMETHOD method) override;
+  virtual bool Supports(ESCALINGMETHOD method) override;
+  virtual EINTERLACEMETHOD AutoInterlaceMethod() override;
 
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
-
-  virtual CRenderInfo GetRenderInfo();
+  virtual CRenderInfo GetRenderInfo() override;
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -189,13 +186,13 @@ protected:
   // renderers
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
-  void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
   
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; }
   virtual bool RenderHook(int idx) { return false; }
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; }
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
+  virtual bool RenderUpdateCheckForEmptyField() { return true; }
 
   CFrameBufferObject m_fbo;
 
@@ -208,8 +205,8 @@ protected:
   std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
   GLenum m_textureTarget;
-  unsigned short m_renderMethod;
-  unsigned short m_oldRenderMethod;
+  int m_renderMethod;
+  int m_oldRenderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;

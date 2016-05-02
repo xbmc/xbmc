@@ -81,7 +81,6 @@ enum RenderMethod
 {
   RENDER_GLSL=0x01,
   RENDER_ARB=0x02,
-  RENDER_SW=0x04,
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
   RENDER_VAAPI=0x20,
@@ -169,11 +168,6 @@ protected:
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
 
-  bool UploadRGBTexture(int index);
-  void ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf);
-  void ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf);
-  void SetupRGBBuffer();
-
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -203,7 +197,7 @@ protected:
   std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
   GLenum m_textureTarget;
-  unsigned short m_renderMethod;
+  int m_renderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   

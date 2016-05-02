@@ -567,6 +567,5 @@ void CBaseRenderer::SettingOptionsRenderMethodsFiller(const CSetting *setting, s
 #ifdef HAS_GL
   list.push_back(make_pair(g_localizeStrings.Get(13417), RENDER_METHOD_ARB));
   list.push_back(make_pair(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL));
-  list.push_back(make_pair(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
 #endif
 }
