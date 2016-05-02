@@ -24,7 +24,6 @@
 #include "YUV2RGBShader.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
-#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "utils/GLUtils.h"
@@ -108,7 +107,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
       coef.m[row][col] = conv[col][row];
   coef.identity = false;
 
-  if(g_Windowing.UseLimitedColor() || limited)
+  if (limited)
   {
     matrix *= TransformMatrix::CreateTranslation(+ 16.0f / 255
                                                , + 16.0f / 255
@@ -293,7 +292,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   GLfloat matrix[4][4];
   // keep video levels
-  CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, m_forceLimitedColorRange);
+  CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, !m_convertFullRange);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
 #if HAS_GLES == 2
@@ -436,7 +435,7 @@ void YUV2RGBProgressiveShaderARB::OnCompiledAndLinked()
 bool YUV2RGBProgressiveShaderARB::OnEnabled()
 {
   GLfloat matrix[4][4];
-  CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, false);
+  CalculateYUVMatrixGL(matrix, m_flags, m_format, m_black, m_contrast, !m_convertFullRange);
 
   for(int i=0;i<4;i++)
     glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, i

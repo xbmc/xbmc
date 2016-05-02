@@ -821,7 +821,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
 
     GLSLOutput *out;
-    out = new GLSLOutput(3, m_useDithering, m_ditherDepth, m_fullRange);
+    out = new GLSLOutput(3, m_useDithering, m_ditherDepth, false);
     m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch, out);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
@@ -894,7 +894,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
                                                     out);
-        m_pYUVShader->SetForceLimitedColorRange(false);
+        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
@@ -922,6 +922,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format);
+        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
 
         if (m_pYUVShader && m_pYUVShader->CompileAndLink())
