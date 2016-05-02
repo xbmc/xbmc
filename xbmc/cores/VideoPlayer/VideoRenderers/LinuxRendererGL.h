@@ -25,7 +25,7 @@
 #ifdef HAS_GL
 #include "system_gl.h"
 
-#include "guilib/FrameBufferObject.h"
+#include "FrameBufferObject.h"
 #include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"

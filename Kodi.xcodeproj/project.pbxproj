@@ -30,7 +30,6 @@
 		18B7C7AB1294222E009E7A26 /* D3DResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7561294222E009E7A26 /* D3DResource.cpp */; };
 		18B7C7AC1294222E009E7A26 /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7571294222E009E7A26 /* DDSImage.cpp */; };
 		18B7C7AD1294222E009E7A26 /* DirectXGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7581294222E009E7A26 /* DirectXGraphics.cpp */; };
-		18B7C7AE1294222E009E7A26 /* FrameBufferObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */; };
 		18B7C7AF1294222E009E7A26 /* GraphicContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75A1294222E009E7A26 /* GraphicContext.cpp */; };
 		18B7C7B01294222E009E7A26 /* GUIAudioManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75B1294222E009E7A26 /* GUIAudioManager.cpp */; };
 		18B7C7B11294222E009E7A26 /* GUIBaseContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75C1294222E009E7A26 /* GUIBaseContainer.cpp */; };
@@ -448,6 +447,8 @@
 		7C908895196358A8003D0619 /* auto_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C908892196358A8003D0619 /* auto_buffer.cpp */; };
 		7C920CF9181669FF00DA1477 /* TextureOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C920CF7181669FF00DA1477 /* TextureOperations.cpp */; };
 		7C920CFA181669FF00DA1477 /* TextureOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C920CF7181669FF00DA1477 /* TextureOperations.cpp */; };
+		7C921F921CD6042500684D0B /* FrameBufferObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C921F8F1CD603C600684D0B /* FrameBufferObject.cpp */; };
+		7C921F931CD6042500684D0B /* FrameBufferObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C921F8F1CD603C600684D0B /* FrameBufferObject.cpp */; };
 		7C973CF11B5037EF0002A874 /* ActiveAEDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CE71B5037EF0002A874 /* ActiveAEDSP.cpp */; };
 		7C973CF21B5037EF0002A874 /* ActiveAEDSPAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CE91B5037EF0002A874 /* ActiveAEDSPAddon.cpp */; };
 		7C973CF31B5037EF0002A874 /* ActiveAEDSPDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CEB1B5037EF0002A874 /* ActiveAEDSPDatabase.cpp */; };
@@ -1711,7 +1712,6 @@
 		E49912DE174E5DAD00741B6D /* DirectXGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7581294222E009E7A26 /* DirectXGraphics.cpp */; };
 		E49912DF174E5DAD00741B6D /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */; };
 		E49912E0174E5DAD00741B6D /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
-		E49912E1174E5DAD00741B6D /* FrameBufferObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */; };
 		E49912E2174E5DAD00741B6D /* GraphicContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75A1294222E009E7A26 /* GraphicContext.cpp */; };
 		E49912E3174E5DAD00741B6D /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF3488E513FD958F0026A711 /* GUIAction.cpp */; };
 		E49912E4174E5DAD00741B6D /* GUIAudioManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C75B1294222E009E7A26 /* GUIAudioManager.cpp */; };
@@ -2353,7 +2353,6 @@
 		18B7C6F81294222D009E7A26 /* D3DResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = D3DResource.h; sourceTree = "<group>"; };
 		18B7C6F91294222D009E7A26 /* DDSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDSImage.h; sourceTree = "<group>"; };
 		18B7C6FA1294222D009E7A26 /* DirectXGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectXGraphics.h; sourceTree = "<group>"; };
-		18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameBufferObject.h; sourceTree = "<group>"; };
 		18B7C6FC1294222D009E7A26 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
 		18B7C6FD1294222D009E7A26 /* GraphicContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicContext.h; sourceTree = "<group>"; };
 		18B7C6FE1294222D009E7A26 /* gui3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gui3d.h; sourceTree = "<group>"; };
@@ -2439,7 +2438,6 @@
 		18B7C7561294222E009E7A26 /* D3DResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = D3DResource.cpp; sourceTree = "<group>"; };
 		18B7C7571294222E009E7A26 /* DDSImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DDSImage.cpp; sourceTree = "<group>"; };
 		18B7C7581294222E009E7A26 /* DirectXGraphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectXGraphics.cpp; sourceTree = "<group>"; };
-		18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBufferObject.cpp; sourceTree = "<group>"; };
 		18B7C75A1294222E009E7A26 /* GraphicContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicContext.cpp; sourceTree = "<group>"; };
 		18B7C75B1294222E009E7A26 /* GUIAudioManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAudioManager.cpp; sourceTree = "<group>"; };
 		18B7C75C1294222E009E7A26 /* GUIBaseContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIBaseContainer.cpp; sourceTree = "<group>"; };
@@ -2995,6 +2993,8 @@
 		7C908893196358A8003D0619 /* auto_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = auto_buffer.h; sourceTree = "<group>"; };
 		7C920CF7181669FF00DA1477 /* TextureOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureOperations.cpp; sourceTree = "<group>"; };
 		7C920CF8181669FF00DA1477 /* TextureOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureOperations.h; sourceTree = "<group>"; };
+		7C921F8F1CD603C600684D0B /* FrameBufferObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBufferObject.cpp; sourceTree = "<group>"; };
+		7C921F901CD603C600684D0B /* FrameBufferObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FrameBufferObject.h; sourceTree = "<group>"; };
 		7C973CE71B5037EF0002A874 /* ActiveAEDSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSP.cpp; path = xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp; sourceTree = SOURCE_ROOT; };
 		7C973CE81B5037EF0002A874 /* ActiveAEDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActiveAEDSP.h; path = xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.h; sourceTree = SOURCE_ROOT; };
 		7C973CE91B5037EF0002A874 /* ActiveAEDSPAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSPAddon.cpp; path = xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSPAddon.cpp; sourceTree = SOURCE_ROOT; };
@@ -5200,8 +5200,6 @@
 				F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */,
 				39C38CDF1BCD600E000F59F5 /* FFmpegImage.cpp */,
 				39C38CE01BCD600E000F59F5 /* FFmpegImage.h */,
-				18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */,
-				18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */,
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
 				18B7C75A1294222E009E7A26 /* GraphicContext.cpp */,
 				18B7C6FD1294222D009E7A26 /* GraphicContext.h */,
@@ -8133,6 +8131,8 @@
 				7CAA20501079C8160096DE39 /* BaseRenderer.h */,
 				7CAA57461C8AF6C20032A326 /* DebugRenderer.h */,
 				7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */,
+				7C921F8F1CD603C600684D0B /* FrameBufferObject.cpp */,
+				7C921F901CD603C600684D0B /* FrameBufferObject.h */,
 				E38E165F0D25F9FA00618676 /* LinuxRendererGL.cpp */,
 				E38E16600D25F9FA00618676 /* LinuxRendererGL.h */,
 				E4991588174E68D700741B6D /* LinuxRendererGLES.cpp */,
@@ -10130,7 +10130,6 @@
 				18B7C7AB1294222E009E7A26 /* D3DResource.cpp in Sources */,
 				18B7C7AC1294222E009E7A26 /* DDSImage.cpp in Sources */,
 				18B7C7AD1294222E009E7A26 /* DirectXGraphics.cpp in Sources */,
-				18B7C7AE1294222E009E7A26 /* FrameBufferObject.cpp in Sources */,
 				18B7C7AF1294222E009E7A26 /* GraphicContext.cpp in Sources */,
 				18B7C7B01294222E009E7A26 /* GUIAudioManager.cpp in Sources */,
 				18B7C7B11294222E009E7A26 /* GUIBaseContainer.cpp in Sources */,
@@ -10660,6 +10659,7 @@
 				7CCDA209192753E30074CF51 /* ContentDirectorywSearchSCPD.cpp in Sources */,
 				68AE5BCE1C9241F800C4D527 /* ButtonMapping.cpp in Sources */,
 				EDED2E9B1C878F61000F5E80 /* AddonInterfaces.cpp in Sources */,
+				7C921F921CD6042500684D0B /* FrameBufferObject.cpp in Sources */,
 				7CCDA214192753E30074CF51 /* PltDidl.cpp in Sources */,
 				7CCDA21D192753E30074CF51 /* PltFileMediaServer.cpp in Sources */,
 				7CCDA226192753E30074CF51 /* PltMediaBrowser.cpp in Sources */,
@@ -10755,6 +10755,7 @@
 				DF29BCFE1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
 				DF4BF0181A4EF31E0053AC56 /* cc_decoder708.cpp in Sources */,
 				DF1D2DF41B6E85EE002BB9DB /* XbtManager.cpp in Sources */,
+				7C921F931CD6042500684D0B /* FrameBufferObject.cpp in Sources */,
 				E499114F174E5CC300741B6D /* archive.cpp in Sources */,
 				68AE5BF01C92424400C4D527 /* PeripheralJoystick.cpp in Sources */,
 				E4991150174E5CC300741B6D /* arcread.cpp in Sources */,
@@ -11129,7 +11130,6 @@
 				E49912DE174E5DAD00741B6D /* DirectXGraphics.cpp in Sources */,
 				E49912DF174E5DAD00741B6D /* DirtyRegionSolvers.cpp in Sources */,
 				E49912E0174E5DAD00741B6D /* DirtyRegionTracker.cpp in Sources */,
-				E49912E1174E5DAD00741B6D /* FrameBufferObject.cpp in Sources */,
 				E49912E2174E5DAD00741B6D /* GraphicContext.cpp in Sources */,
 				E49912E3174E5DAD00741B6D /* GUIAction.cpp in Sources */,
 				E49912E4174E5DAD00741B6D /* GUIAudioManager.cpp in Sources */,

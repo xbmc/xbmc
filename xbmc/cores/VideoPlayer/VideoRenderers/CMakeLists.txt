@@ -29,16 +29,20 @@ endif()
 
 if(OPENGL_FOUND)
   list(APPEND SOURCES OverlayRendererGL.cpp
-                      LinuxRendererGL.cpp)
+                      LinuxRendererGL.cpp
+                      FrameBufferObject.cpp)
   list(APPEND HEADERS OverlayRendererGL.h
-                      LinuxRendererGL.h)
+                      LinuxRendererGL.h
+                      FrameBufferObject.h)
 endif()
 
 if(OPENGLES_FOUND)
   list(APPEND SOURCES LinuxRendererGLES.cpp
-                      OverlayRendererGL.cpp)
+                      OverlayRendererGL.cpp
+                      FrameBufferObject.cpp)
   list(APPEND HEADERS LinuxRendererGLES.h
-                      OverlayRendererGL.h)
+                      OverlayRendererGL.h
+                      FrameBufferObject.cpp)
 endif()
 
 if(ARCH MATCHES arm)

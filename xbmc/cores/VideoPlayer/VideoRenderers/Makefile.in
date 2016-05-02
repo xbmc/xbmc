@@ -14,14 +14,16 @@ endif
 ifeq (@USE_OPENGL@,1)
 SRCS += LinuxRendererGL.cpp
 SRCS += OverlayRendererGL.cpp
+SRCS += FrameBufferObject.cpp
 endif
 
 ifeq (@USE_OPENGLES@,1)
 SRCS += LinuxRendererGLES.cpp
 SRCS += OverlayRendererGL.cpp
+SRCS += FrameBufferObject.cpp
 endif
 
 LIB = VideoRenderer.a
 
 include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS)))) 
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS))))
