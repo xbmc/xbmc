@@ -30,14 +30,8 @@
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
-#define SETTINGS_PICTURES               WINDOW_SETTINGS_MYPICTURES - WINDOW_SETTINGS_START
-#define SETTINGS_PROGRAMS               WINDOW_SETTINGS_MYPROGRAMS - WINDOW_SETTINGS_START
-#define SETTINGS_WEATHER                WINDOW_SETTINGS_MYWEATHER - WINDOW_SETTINGS_START
-#define SETTINGS_MUSIC                  WINDOW_SETTINGS_MYMUSIC - WINDOW_SETTINGS_START
 #define SETTINGS_SYSTEM                 WINDOW_SETTINGS_SYSTEM - WINDOW_SETTINGS_START
-#define SETTINGS_VIDEOS                 WINDOW_SETTINGS_MYVIDEOS - WINDOW_SETTINGS_START
 #define SETTINGS_SERVICE                WINDOW_SETTINGS_SERVICE - WINDOW_SETTINGS_START
-#define SETTINGS_APPEARANCE             WINDOW_SETTINGS_APPEARANCE - WINDOW_SETTINGS_START
 #define SETTINGS_PVR                    WINDOW_SETTINGS_MYPVR - WINDOW_SETTINGS_START
 #define SETTINGS_PLAYER                 WINDOW_SETTINGS_PLAYER - WINDOW_SETTINGS_START
 #define SETTINGS_LIBRARY                WINDOW_SETTINGS_LIBRARY - WINDOW_SETTINGS_START
@@ -50,14 +44,8 @@ typedef struct {
   std::string name;
 } SettingGroup;
 
-static const SettingGroup s_settingGroupMap[] = { { SETTINGS_PICTURES,    "pictures" },
-                                                  { SETTINGS_PROGRAMS,    "programs" },
-                                                  { SETTINGS_WEATHER,     "weather" },
-                                                  { SETTINGS_MUSIC,       "music" },
-                                                  { SETTINGS_SYSTEM,      "system" },
-                                                  { SETTINGS_VIDEOS,      "videos" },
+static const SettingGroup s_settingGroupMap[] = { { SETTINGS_SYSTEM,      "system" },
                                                   { SETTINGS_SERVICE,     "services" },
-                                                  { SETTINGS_APPEARANCE,  "appearance" },
                                                   { SETTINGS_PVR,         "pvr" },
                                                   { SETTINGS_PLAYER,      "player" },
                                                   { SETTINGS_LIBRARY,     "library" },
@@ -66,7 +54,7 @@ static const SettingGroup s_settingGroupMap[] = { { SETTINGS_PICTURES,    "pictu
 #define SettingGroupSize sizeof(s_settingGroupMap) / sizeof(SettingGroup)
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
-    : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml"),
+    : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_SYSTEM, "SettingsCategory.xml"),
       m_settings(CSettings::GetInstance()),
       m_iSection(0),
       m_returningFromSkinLoad(false)
@@ -75,14 +63,8 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
 
   // set the correct ID range...
   m_idRange.clear();
-  m_idRange.push_back(WINDOW_SETTINGS_MYPICTURES);
-  m_idRange.push_back(WINDOW_SETTINGS_MYPROGRAMS);
-  m_idRange.push_back(WINDOW_SETTINGS_MYWEATHER);
-  m_idRange.push_back(WINDOW_SETTINGS_MYMUSIC);
   m_idRange.push_back(WINDOW_SETTINGS_SYSTEM);
-  m_idRange.push_back(WINDOW_SETTINGS_MYVIDEOS);
   m_idRange.push_back(WINDOW_SETTINGS_SERVICE);
-  m_idRange.push_back(WINDOW_SETTINGS_APPEARANCE);
   m_idRange.push_back(WINDOW_SETTINGS_MYPVR);
   m_idRange.push_back(WINDOW_SETTINGS_PLAYER);
   m_idRange.push_back(WINDOW_SETTINGS_LIBRARY);

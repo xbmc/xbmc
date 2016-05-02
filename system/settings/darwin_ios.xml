@@ -7,7 +7,7 @@
           <visible>false</visible>
         </setting>
       </group>
-      <group id="4">  
+      <group id="4">
         <setting id="videoplayer.hqscalers">
           <visible>false</visible>
         </setting>
@@ -32,7 +32,7 @@
           <visible>false</visible>
         </setting>
       </group>
-	</category>
+    </category>
     <category id="audio">
       <group id="1">
         <setting id="audiooutput.audiodevice" type="string">
@@ -76,4 +76,3 @@
     </category>
   </section>
 </settings>
-

@@ -8,7 +8,7 @@
         </setting>
         <setting id="videoplayer.hqscalers">
           <visible>false</visible>
-        </setting>	  
+        </setting>
         <setting id="videoplayer.usemmal" type="boolean" label="36434" help="36435">
           <level>2</level>
           <default>true</default>
@@ -100,5 +100,3 @@
     </category>
   </section>
 </settings>
-
-

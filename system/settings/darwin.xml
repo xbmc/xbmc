@@ -7,7 +7,7 @@
       </group>
     </category>
     <category id="audio">
-      <group id="1">        
+      <group id="1">
         <setting id="audiooutput.channels" help="36367" />
       </group>
       <group id="3">

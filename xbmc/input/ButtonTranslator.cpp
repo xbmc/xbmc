@@ -330,15 +330,9 @@ static const ActionMapping windows[] =
     { "testpattern"              , WINDOW_TEST_PATTERN },
     { "screencalibration"        , WINDOW_SCREEN_CALIBRATION },
     { "guicalibration"           , WINDOW_SCREEN_CALIBRATION },        // backward compat
-    { "picturessettings"         , WINDOW_SETTINGS_MYPICTURES },
-    { "programssettings"         , WINDOW_SETTINGS_MYPROGRAMS },
-    { "weathersettings"          , WINDOW_SETTINGS_MYWEATHER },
-    { "musicsettings"            , WINDOW_SETTINGS_MYMUSIC },
     { "systemsettings"           , WINDOW_SETTINGS_SYSTEM },
-    { "videossettings"           , WINDOW_SETTINGS_MYVIDEOS },
     { "networksettings"          , WINDOW_SETTINGS_SERVICE },          // backward compat
     { "servicesettings"          , WINDOW_SETTINGS_SERVICE },
-    { "appearancesettings"       , WINDOW_SETTINGS_APPEARANCE },
     { "pvrsettings"              , WINDOW_SETTINGS_MYPVR },
     { "tvsettings"               , WINDOW_SETTINGS_MYPVR },            // backward compat
     { "playersettings"           , WINDOW_SETTINGS_PLAYER },
