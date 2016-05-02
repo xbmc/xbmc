@@ -176,26 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Ändra skalet · Ange språk och region · Ange fillistningsalternativ · Ange en skärmsläckare"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra videoförteckningsalternativ · Konfigurera undertextfonter"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Ange bildlistningsalternativ · Justera bildspel"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Ange tre städer för att insamling av väderinformation"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Ange kontroll av Kodi via UPnP och HTTP · Konfigurera fildelning · Konfigurera internetaccessalternativ"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Ange och kalibrera bildskärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller · Ange energisparalternativ · Aktivera debuggningen · Konfigurera huvudkod och lås"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
@@ -232,6 +212,10 @@ msgctxt "#31554"
 msgid "Background:"
 msgstr "Bakgrund:"
 
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Konfigurera TV-inställningar · Ändra helskärms information · Hantera EPG datainställningar "
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Live-TV"
@@ -239,6 +223,10 @@ msgstr "Live-TV"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Dölj videobakgrund"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Dölj visualisering bakgrund"
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -267,3 +255,23 @@ msgstr "Visa dolda"
 msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Visa borttagna"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Första körningen"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Det finns två saker att veta om navigering av Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi logon fungerar som en \"hem\"-knapp. När du trycker på den, kommer du att tas tillbaka till startskärmen."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "När du spelar upp ljud eller video, kommer objektets titel visas högst upp på skärmen. Genom att vidrör det kommer det att ta dig till fullskärmsvisualisering eller videofönstret ."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Nu spelas titel..."

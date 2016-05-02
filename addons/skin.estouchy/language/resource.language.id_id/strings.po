@@ -164,14 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Ubah Tampilan . Tetapkan bahasa dan wilayah . Ubah file Opsi daftar . Tetapkan sebuah screensaver"
 
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Atur tiga kota untuk mengumpulkan informasi cuaca"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Setel kontrol Kodi melalui UPnP dan HTTP. Konfigurasikan layanan berbagi berkas. setel pilihan akses internet"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Pilih profil pengguna Kodi Anda [CR]untuk login dan meneruskan"

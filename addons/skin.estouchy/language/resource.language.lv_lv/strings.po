@@ -164,10 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Mainīt apvalku · Iestatīt valodu un reģionu · Izmanīt failu attēlošanu · Iestatīt ekrānsaudzētāju"
 
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Iestatīt trīs pilsētas, lai savāktu laikapstākļu informāciju"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Atlasiet savu Kodi lietotāja profilu,[CR]lai pieslēgtos un turpinātu"

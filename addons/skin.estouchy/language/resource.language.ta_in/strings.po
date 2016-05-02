@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "தோல் மாற்ற · மொழி மற்றும் பிராந்தியம் அமைக்க · கோப்பு பட்டியல் விருப்பங்களை மாற்ற · திரை காப்பான் அமைக்க"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "உங்கள் வீடியோ நூலகத்தை நிர்வகிக்க · வீடியோ பின்னணி விருப்பங்களை அமைக்க · வீடியோ பட்டியல் விருப்பங்களை மாற்ற · வசன எழுத்துருக்களை அமைக்க"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "படம் பட்டியல் விருப்பங்களை அமைக்கவும் · படக்காட்சி கட்டமைக்க"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "வானிலை தகவல்களை சேகரிக்க மூன்று நகரங்களின் பெயரை அமைக்க"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "UPnP மற்றும் HTTP வழியாக Kodiஅமைப்பு கட்டுப்பாடு  · கோப்பு பகிர்வு கட்டமைப்பு · இணைய அணுகல் விருப்பங்களை அமைக்க"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "காட்சிகளை அமைப்பது மற்றும் அளவீடு · ஆடியோ வெளியீடு கட்டமைக்க · ரிமோட் கண்ட்ரோல்கள் அமைப்பதற்கு · மின் ஆற்றல் சேமிப்பு விருப்பங்கள் அமைக்க · பிழைத்திருத்தம் செயல்படுத்த · மாஸ்டர் பூட்டு அமைப்பு"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "உங்கள் Kodi பயனர் விவரங்களை தேர்வுசெய்து[CR]உள்நுழைய தொடரச்செய்யவும்"

@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "작업 중..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "최근"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "영화"
@@ -67,6 +71,10 @@ msgstr "정보표시 목록"
 msgctxt "#31038"
 msgid "Login"
 msgstr "로그인"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "업데이트:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "자막 다운로드"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "문자다중방송"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "스킨 기본값"
@@ -164,25 +176,9 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "스킨 변경 · 언어 및 지역 설정 · 파일 목록 옵션 변경 · 화면보호기 설정"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "비디오 라이브러리 관리 · 비디오 재생 옵션 변경 · 비디오 목록 옵션 변경 · 자막 글꼴 설정"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "사진 목록 옵션 설정 · 슬라이드쇼 설정"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "날씨 정보를 수집할 세 도시 설정"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "UPnP와 HTTP를 통한 Kodi 제어 설정 · 파일 공유 설정 · 인터넷 접근 옵션 설정"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정 · 전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정"
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "설치한 애드온 관리 · kodi.tv에서 애드온 탐색 및 설치 · 애드온 설정"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -263,3 +259,23 @@ msgstr "숨김 항목 표시"
 msgctxt "#31565"
 msgid "Show deleted"
 msgstr "삭제 항목 표시"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "처음 실행"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Estouchy 사용에 관해 알아야 할 두가지"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi 로고는 \"홈\" 버튼 기능을 합니다. 로고를 터치하면 홈 화면으로 돌아갑니다."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "오디오나 비디오를 재생할 때 제목이 화면 상단에 표시됩니다. 제목을 터치하면 전체화면 시각화 화면이나 비디오 창으로 전환됩니다."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "지금 재생 중 제목..."

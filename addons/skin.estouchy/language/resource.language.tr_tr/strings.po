@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Dış görünümü değiştir · Bölge ve dili ayarla · Dosya listeleme ayarlarını değiştir · Bir ekran koruyucu ayarla"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Video kitaplığınızı yönetin · Video oynatma seçeneklerini belirle · Video listeleme seçeneklerini değiştir · Altyazı yazı tiplerini belirle"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Müzik kitaplığınızı yönetin · Müzik çalma seçeneklerini belirle · Müzik listeleme seçeneklerini değiştir · Şarkı gönderimini ayarla"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Fotoğraf listeleme seçeneklerini belirle · Slayt gösterilerini yapılandır"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Hava durumu bilgisi almak için üç şehir belirleyin"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "UPnP ve HTTP üzerinden Kodi kontrolü ayarları · Dosya paylaşımını yapılandır · İnternet erişimi seçeneklerini ayarla"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Ekranları kur ve ayarla · Ses çıkışını yapılandır · Uzaktan yönetimi kur · Güç tasarruf seçeneklerini belirle · Hata ayıklamayı etkinleştir · Yönetici kilidini kur"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Yüklü eklentilerinizi yönetin · kodi.tv sitesindeki uygulamalara gözatın ve yükleyin · Eklenti ayarlarını değiştirin"

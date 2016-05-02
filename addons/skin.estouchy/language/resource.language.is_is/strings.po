@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Breyta útlitinu · Breyta tungumáli og landssvæði · Breyta útliti skráarlista · Velja skjáhvílu"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Vinna með myndefnissafn · Stillingar á myndefnisafspilun · Breyta útliti myndefnislista · Velja leturgerð þýðingartexta"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Breyta útliti myndalista · Stilla myndasýningar"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Velja allt að þrjár borgin til að safna veðurupplýsingum um"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Stýring á Kodi með UPnP og HTTP · Stilla skráardeilingu · Stilla tengingu við internetið"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Setja upp og stilla skjái · Stilla hljóðúttak · Stilla fjarstýringar · Stilla orkusparnaðar möguleika · Virkja kembiúttak · Setja upp notendalæsingar"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Veldu Kodi notanda[CR]til að skrá inn og hala áfram"

@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Αλλαγή κελύφους ·  Αλλαγή χώρας και γλώσσας συστήματος ·  Επιλογές καταλόγου αρχείων · Προσαρμογή της προφύλαξης οθόνης"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Διαχείριση της συλλογής βίντεο · Ρύθμιση αναπαραγωγής βίντεο · Επιλογές καταλόγου ταινιών · Ρύθμιση γραμματοσειράς υποτίτλων"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Επιλογές καταλόγου εικόνων · Ρύθμιση παρουσίασης διαφανειών"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Ορισμός τριών πόλεων για τις οποίες θα γίνεται πρόγνωση καιρού"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Χειρισμός του Kodi μέσω UPnP και HTTP · Ρύθμιση κοινής χρήσης αρχείων · Ρύθμιση επιλογών σύνδεσης διαδικτύου"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Διαμόρφωση και βαθμονόμηση οθονών · Ρύθμιση εξόδου ήχου · Εγκατάσταση τηλεχειριστηρίων · Ρύθμιση εξοικονόμησης ενέργειας · Εντοπισμός σφαλμάτων (debug) · Ρύθμιση κεντρικού κλειδώματος"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"

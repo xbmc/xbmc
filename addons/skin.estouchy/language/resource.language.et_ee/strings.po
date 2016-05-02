@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Muuda rüüd · Määra keel ja regioon · Muuda faililoendi valikuid · Seadista ekraanisäästja"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Halda oma videokogu · Määra video esituse valikud · Muuda videoloendi valikuid · Määra subtiitrite font"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Määra piltide loendi valikud · Konfigureeri slaidiesitlusi"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Määra kolm linna, mille ilmaandmeid koguda"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Seadista Kodi juhtimine läbi UPnP ja HTTP · Konfigureeri failide ühiskasutust · Määra internetiühenduse valikud"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Seadista ja kalibreeri ekraane · Konfigureeri heliväljundit · Seadista pulte · Määra energiasäästu seaded · Luba silumine · Seadista pealukk"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Vali enda Kodi profiil[CR]ja jätka"

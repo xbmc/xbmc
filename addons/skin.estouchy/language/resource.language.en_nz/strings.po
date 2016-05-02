@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Working..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Recent"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Movies"
@@ -67,6 +71,10 @@ msgstr "Info List"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Login"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Updated:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Download Subtitles"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletext"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Skin default"
@@ -164,25 +176,9 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Set picture listing options · Configure slideshows"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Set three cities to collect weather information"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -204,6 +200,22 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Add-on Shortcut"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Use Custom Background"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Background:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Configure TV settings · Change full screen info · Manage EPG data settings"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Live TV"
@@ -211,6 +223,14 @@ msgstr "Live TV"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Hide video background"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Hide visualisation background"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Channel settings"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -227,3 +247,31 @@ msgstr "Rename Group"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Delete Group"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Show hidden"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Show deleted"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "First Run"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "There are two things to know about navigating Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualisation or video window."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Now Playing Title..."

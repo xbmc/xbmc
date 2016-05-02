@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Felszín választás · Nyelv és régió beállítás · Fájllista beállítások · Képernyővédő beállítása"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Filmkönyvtár kezelése · Filmlejátszási opciók · Filmlistázási opciók · Feliratok betűtípusa"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Zenekönyvtár kezelése · Zenelejátszási opciók · Zenelistázási opciók · Zenebeküldés beállítása"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Képlistázási opciók · Diavetítés beállítása"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "3 város beállítása az időjáráshoz"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Az Kodi beállítása UPnP-n és HTTP-n történő eléréshez · Fájlmegosztások · Internet hozzáférési opciók"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Kijelző beállítása / kalibrálása · Hangkimenet beállítása · Távvzérlés beállítása · Energiagazdálkodási opciók · Debug · Mesterzár beállítása"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése a kodi.tv-ről · Kiegészítőbeállítások módosítása"

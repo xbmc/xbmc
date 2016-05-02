@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Verander die oortreksel · Stel taal en gebied · Verander lêer lys opsies · Stel 'n skermskut op"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Bestuur jou video biblioteek · Stel video speel opsies · Verander video lys opsies · Stel subtitel skrifte"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Stel prentjie lys opsies · Konfigureer skyfievertoning"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Stel drie stede om weer inligting te versamel"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Stel beheer op van Kodi via UPnP en HTTP · Konfigureer lêer deling · Stel internet toegang opsies"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Stel vertone op en kalibreer · Konfigureer oudio uittree · Stel afstandbehere op · Stel kragbesparings opsies · Stel ontfouting in staat · Stel meester slot op"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selekteer jou Kodi gebruiker Profiel[CR]om in te log en voort te gaan"

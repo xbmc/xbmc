@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Změnit vzhled · Nastavit jazyk a region · Změnit možnosti výpisu souborů · Nastavit spořič obrazovky"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Spravovat vaši knihovnu videa · Nastavit možnosti přehrávání videa · Změnit možnosti výpisu videa · Nastavit font titulků"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Spravuj hudební knihovnu · Nastav možnosti přehrávání hudby · Změň možnosti hudebních seznamů · Nastav odesílání skladeb"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Nastavit možnosti výpisu obrázků · Nastavit promítání"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Zadejte tři města pro sběr informací o počasí"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Nastavit ovládání Kodi skrze UPnP a HTTP · Nastavit sdílení souborů · Nastavit možnosti přístupu k internetu"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Nastavit a kalibrovat obrazovky · Nastavit zvukový výstup · Nastavit dálková ovládání · Nastavit možnosti úspory energie · Povolit Ladění · Nastavit rodičovský zámek"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Spravujte nainstalované doplňky · Procházejte a instalujte doplňky z kodi.tv · Upravujte nastavení doplňků"

@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Cambiar la skin - Seleccionar idioma y zona - Cambiar la visualización de los archivos - Elegir un salvapantallas"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Gestionar la colección de vídeo - Opciones de la reproducción de vídeo - Cambiar la visualización de la lista de vídeos - Elegir el tipo de letra para los subtítulos"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Gestiona tu biblioteca de música · Ajusta las opciones de reproducción de música · Cambia las opciones de listados de música · Configura la presentación de canciones"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Cambiar las opciones de la lista de imágenes - Ajustes de las presentaciones"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Elige tres ciudades para el informe meteorológico"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Ajustes para el control de Kodi por UPnP y HTTP - Ajustes de la compartición de archivos - Ajustes del acceso a internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Ajustes y calibrado de la pantalla - Ajustes de la salida de audio - Ajustes de los controles remotos - Ajustes de ahorro de energía - Activar depuración - Ajustes del bloqueo maestro"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Gestiona los add-ons instalados · Busca e instala add-ons desde kodi.tv · Modifica los ajustes de los add-ons"

@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Promijenite presvlaku · Postavite jezik i regiju · Izmijenite mogućnosti popisa datoteka   · Postavite čuvara zaslona"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "UpravljaJte Vašom videotekom · Postavite mogućnosti video reprodukcije · Promijenite mogućnosti popisa video snimki · Postavite slova podnaslova"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Promijenite mogućnosti popisa slika · Podesite slikovnu prezentaciju"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Postavite tri grada za prikupljanje vremenskih informacija"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Postavite upravljanje Kodi-om putem UPnP-a i HTTP-a · Uredite dijeljenje datoteka ·  Postavite mogućnosti pristupa Internetu"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Postavite i kalibrirajte zaslon · Podesite zvučni izlaz · Postavite daljinsko upravljanje · Postavite mogućnosti uštede energije · Omogućite otklanjanje grešaka · Postavite glavno zaključavanje"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Odaberite svoj Kodi korisnički profil[CR]za prijavu i nastavite"

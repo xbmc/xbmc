@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Canvia la pell · Estableix la llengua i la regió · Canvia les opcions de llistat · Estableix un protector de pantalla"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Gestiona la biblioteca de video · Estableix les opcions de reproducció de video · Canvia les opcions de llistat de video · Estableix les fonts dels subtítols"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Estableix les opcions de llistat d'imatges · Configure la projecció de diapositives"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Estableix tres ciutats d'on obtenir informació meteorològica"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Configura el control de l'Kodi via UPnP i HTTP · Configura la compartició de fitxers · Estableix les opcions d'accés a internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Configura i calibra les pantalles · Configura la sortida d'àudio · Configura els controls remots · Estableix les opcions d'estalvi d'energia · Activa la depuració · Configura el bloqueig mestre"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Seleccioneu el vostre perfil d'usuari de l'Kodi[CR]per iniciar la sessió i continuar"

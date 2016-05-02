@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "เปลี่ยนหน้าตา · กำหนดภาษาและภูมิภาค · เปลี่ยนตัวเลือกการแสดงรายการแฟ้ม · ตั้งค่าการพักหน้าจอ"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "จัดการคลังข้อมูลวิดีโอ · กำหนดตัวเลือกการเล่นวิดีโอ · เปลี่ยนตัวเลือกการแสดงรายการวิดีโอ · กำหนดแบบอักษรคำบรรยาย"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "กำหนดตัวเลือกแสดงรายการภาพ · ตั้งค่าการแสดงสไลด์"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "กำหนดสามเมือง เพื่อเก็บรวบรวมข้อมูลสภาพอากาศ"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "ตั้งค่าการควบคุม Kodi ผ่าน UPnP และ HTTP · กำหนดค่าใช้แฟ้มร่วมกัน · กำหนดตัวเลือกการเข้าถึงอินเทอร์เน็ต"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "ตั้งค่าและปรับเทียบจอแสดงผล · กำหนดค่าส่งออกเสียง · ตั้งค่าการควบคุมด้วยรีโมท · กำหนดตัวเลือกการประหยัดพลังงาน · เปิดใช้การแก้ไขข้อบกพร่อง · ตั้งค่าล็อคหลัก"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "เลือกโปรไฟล์ผู้ใช้ Kodi ของคุณ[CR]เพื่อเข้าระบบและดำเนินการต่อไป"

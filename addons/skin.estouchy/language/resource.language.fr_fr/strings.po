@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Changement de l'habillage · Définition de la langue et de la région · Modification des options de listes de fichiers · Configuration d'un économiseur d'écran"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Gestion de la vidéothèque · Définition des options de lecture de vidéos · Modification des options de listes de vidéos · Définition des polices de sous-titres"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Gestion de l'audiothèque · Définition des options de lecture de musique · Modification des options de listes de musique · Configuration de la soumission de chanson"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Définition des options de listes d'images · Configuration des diaporamas"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Définition des trois villes pour collecter les informations météo"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Configuration du contrôle de Kodi via UPnP et HTTP · Configuration du partage de fichiers · Définition des options d'accès Internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Configuration et calibration des écrans · Configuration de la sortie audio · Configuration des contrôles à distance · Définition des options de gestion d'énergie · Activation du débogage · Configuration du verrouillage maître"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Gestion des extensions installées · Parcours et installation des extensions depuis kodi.tv[CR]Modification des paramètres des extensions"

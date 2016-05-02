@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Промените маску · Поставите језик и регију - Промените опције излиставања датотека - Поставите чувара екрана"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Управљајте вашом видео библиотеком · Поставите опције видео репродукције - Промените опције излиставања филмова - Поставите слова титлова"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Управљајте вашом музичком библиотеком · Поставите опције репродукције музике - Промените опције излиставања музике - Поставите слање песама"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Поставите опције излиставања слика · Подесите репродукцију слајдова"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Поставите три града за прикупљање информација о временским приликама"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Подесите контролу Kodi путем UPnP и HTTP · Подесите дељење датотека - Поставите опције интернет приступа"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Подесите и калибришите екране · Подесите звучни излаз - Подесите даљинско управљање - Поставите опције уштеде енергије - Омогућите евиденцију грешака · Подесите главну лозинку"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Управљајте вашим инсталираним додатним програмима · Потражите и инсталирајте додатне програме са kodi.tv - Подесите подешавања додатних програма"

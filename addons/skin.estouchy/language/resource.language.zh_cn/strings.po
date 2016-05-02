@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "变换皮肤 · 设置语言和区域 · 修改文件列表参数 · 设置屏幕保护"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "管理视频资料库 · 设置视频播放参数 · 修改视频列表参数 · 设置字幕字体"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "管理音乐资料库 · 设置音乐播放选项 · 修改音乐列表选项 · 设置歌曲提交 "
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "设置图片列表参数 · 设置幻灯片播放"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "设置三个获取天气信息的城市"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "设置通过 UPnP 和 HTTP 控制 Kodi · 设置文件共享 · 设置互联网访问参数"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电参数 · 启用调试 · 设置管理员和锁定"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "管理你安装的插件 · 在 kodi.tv 浏览并安装插件 · 修改插件设置"

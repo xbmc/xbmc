@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Ubah kulit · Tetapkan bahasa dan wilayah · Ubah pilihan penyenaraian fail · Pasang penyelamat skrin"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Urus pustaka video anda · Tetapkan pilihan main balik video · Ubah pilihan penyenaraian video · Tetapkan fon sarikata"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Urus pustaka muzik anda · Tetapkan pilihan main balik muzik · Ubah pilihan penyenaraian muzik · Pasang penyerahan lagu"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Tetapkan pilihan penyenaraian gambar · Konfigur paparan slaid"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Tetapkan tiga bandar untuk kutip maklumat cuaca"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Persediaan kawalan Kodi melalui UPnP dan HTTP · Konfigur perkongsian fail · Tetapkan pilihan capaian internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Sedia dan tentukur paparan · Konfigur output audio · Persediaan kawalan jauh · Tetapkan pilihan penjimatan kuasa · Benarkan penyahpepijatan · Persediaan kunci master"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Urus tambahan terpasang anda · Layar dan pasang tambahan dari kodi.tv · Ubahsuai tetapan tambahan"

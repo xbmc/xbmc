@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "تغيير القالب. ضبط اللغة و المنطقة. تغيير خيارات إدراج الملف. إعداد شاشة التوقف"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "إدارة مكتبة الفيديو الخاصة بك. ضبط خيارات تشغيل الفيديو. تغيير خيارات إدراج الفيديو. ضبط خطوط الترجمة"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "ضبط خيارات إدراج الصورة. إعداد عرض الشرائح"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "حدد ثلاث مدن ليتم جمع معلومات الطقس"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "إعداد التحكم بـKodi عبر UPnP و HTTP. ضبط مشاركة الملفات. تحديد خيارات الوصول للإنترنت"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "إعداد و معايرة العروض. تكوين مخرج الصوت. إعداد التحكم عن بعد. إعداد خيارات توفير الطاقة. تمكين التصحيح. إعداد قفل رئيسي"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "للدخول والإستمرارا [CR]Kodi  حدد ملفك الشخصي الخاص بـ"

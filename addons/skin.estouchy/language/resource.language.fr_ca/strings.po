@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Changer l'habillage · Définir la langue et la région · Changer les options de listage des fichiers · Définir un économiseur d'écran"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Gérer la vidéothèque · Définir les paramètres de lecture des vidéos · Changer les options de listage des vidéos - Définir les polices des sous-titres"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Gérer l'audiothèque · Définir les options de lecture · Changer les options de listage de la musique · Paramétrer les envois de chansons"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Définir les options de listage d'images · Configurer les diaporamas"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Définir trois villes pour recueillir des informations météo"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Paramétrer le contrôle de Kodi par UPnP et HTTP · Configurer le partage de fichiers · Définir les options d'accès à Internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Configurer et étalonner les affichages · Configurer les sorties audio · Configurer les télécommandes · Définir les options d'économie d'énergie · Activer le débogage · Configurer le verrou maître"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Gérer les addiciels installés · Parcourir et installer des addiciels à partir de kodi.tv · Modifier les paramètres des addiciels"

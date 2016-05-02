@@ -152,6 +152,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Descargar subtítulos"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletexto"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Pel por defecto"
@@ -163,26 +167,6 @@ msgstr "Baseado en Arial"
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Trocar pel · Estabrecer lingua e rexión · Trocar opcións do listado de arquivos · Configurar un gardapantallas"
-
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Xestionar a bibloteca de video · Estabrecer as opcións de reprodución de video · Trocar as opcións do listade de videos · Estabrecer fonte de subtítulos"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Estabrecer as opcións do listado de imaxes · Configurar presentacións"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Estabrecer tres cidades para colleitar información meteorolóxica"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Configurar o control de Kodi vía UPnP e HTTP · Configurar a compartición de arquivos · Estabrecer as opcións de acceso a internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Configurar e calibrar as pantallas · Configurar a saída de audio · Configurar os controis remotos · Estabrecer as opcións de aforro enerxético · Activar depurado · Configurar bloque mestre"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

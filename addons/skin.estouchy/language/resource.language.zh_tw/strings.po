@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "改變佈景主題 · 設定語言和地區 · 修改檔案列表選項 · 設定螢幕保護程式"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "管理視訊資料庫 · 設定視訊播放選項 · 修改視訊列表選項 · 設定字幕字型"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "設定圖片制表選項 · 設置投影片播放"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "設定三個要收集天氣資訊的城市"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "設定透過 UPnP 或 HTTP 來控制 Kodi· 設定檔案共享· 設定網際網路存取選項"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "設定並校正顯示器 · 設置音訊輸出 · 設定遠端遙控 · 設定省電選項 · 啟用除錯 · 設定主密碼"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "選擇您的 Kodi 使用者設定檔[CR]登入並繼續"

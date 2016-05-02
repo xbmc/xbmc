@@ -148,22 +148,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Newid y croen · Gosod iaith ac ardal · Newid dewisiadau rhestru ffeiliau · Gosod yr arbedwr sgrin"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Rheoli eich llyfrgell fideo · Gosod dewisiadau chwarae fideo · Newid dewisiadau rhestru fideo · Gosod ffontiau isdeitlau"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Gosod dewisiadau rhestru lluniau · Ffurfweddu sioeau sleidiau"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Gosod tair dinas i gasglu gwybodaeth tywydd"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Gosod a chalibro dangosyddion · Ffurfweddu allbwn sain · Gosod rheolyddion pell · Gosod dewisiadau pŵer · Galluogi dadfygio · Gosod prif glo"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Dewiswch eich Proffil[CR] defnyddiwr Kodi i fewngofnodi a pharhau"

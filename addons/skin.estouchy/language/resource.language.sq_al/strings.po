@@ -160,26 +160,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Ndrysho maskën - Cakto gjuhen dhe rajonin - Ndrysho opcionet e listës skedeve - Cakto një Ekran-ruajtese"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Menaxho bibliotekën video tënde - Cakto opcione të luarjes video - Ndrysho pamjen e listës video - Cakto shkrimin e subtitrave"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Cakto pamjen e listës imazhe - Konfiguro slideshows"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Cakto tri shtete për shkarkimin së informatave për motin"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Konfiguro kontrollimin së Kodi nëpërmjet UPnP dhe HTTP - Konfiguro shpërndimin e skedeve - Cakto opcionet e lidhjes së internetit"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Konfiguro dhe kalibro Ekranet - Konfiguro daljen zërit - Konfiguro telekomandët - Cakto opcionet për kursimin e rrymës - Aktivo debugging - Konfiguro dryrin përdorues"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Zgjedho Kodi profilin [CR]për të rregjistruar dhe vazhdo"

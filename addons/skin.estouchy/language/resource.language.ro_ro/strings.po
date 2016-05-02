@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "schimbă skinul · Configurează limba și regiunea · Schimbă modul cum sunt afișate fișierele · Schimbă protecția ecranului"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Aranjează libraria video · Configurează opțiunile de tip video · Schimbă opțiunile de afișare video · Configurează dimensiunea subtitrării"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Configurează opțiunile de afișare a imaginilor - Configurează diaporama"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Configurează trei orașe pentru care să se colecteze informații despre vreme"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Setați controlul Kodi prin UPnP sau HTTP Configurați sharingul de fișiere · Setați opțiunile de acces la internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Setați și calibrați display-ul · Configurați ieșirea audio · Setați controalele telecomenzii · Setați opțiunile de power saving · Activați debugging-ul · Setați parola principală"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selectați profilul dumneavoastră de utilizator Kodi[CR]pentru a vă autentifica și a continua"

@@ -164,26 +164,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Bytt skall · Velg språl og region · Endre innstillinger for filvisning· Innstillinger for skjermsparer"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Organiser ditt videobibliotek · Endre innstillinger for videoavspilling· Endre video visningsalternativer · Endre undertekst font"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Sett opp bildevisning · Konfigurer bildefremvisning"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Velg inntil tre byer for innsamling av værinformasjon"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Sett opp kontroll av Kodi via UPnP og HTTP - Konfigurer fildeling - Sett opp tilgang fra internett"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Sett opp og kalibrer skjermer - Konfigurer lydutgang - Sett opp fjernkontroller - Endre strømsparingsinnstillinger - Aktiver feilsøking - Sett en hovedlås"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Velg din Kodi brukerprofil[CR]for å logge inn og fortsette"

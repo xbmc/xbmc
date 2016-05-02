@@ -176,25 +176,9 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "החלפת מעטפת · בחירת שפה ואזור זמן · שינוי אפשרויות תצוגת קבצים · הגדרת שומר מסך"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "ניהול ספריית הווידאו · קביעת העדפות ניגון וידאו · שינוי אפשרויות תצוגת קבצי וידאו · הגדרת גופן כתוביות"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "הגדרת אפשרויות תצוגת קבצי תמונה · הגדרת אפשרויות מצגת תמונה"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "בחירת עד שלוש ערים עבורן תוצג תחזית מזג אוויר"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "הגדרות שליטה על Kodi דרך UPnP ו־HTTP · הגדרות שיתוף קבצים · הפעלת Zeroconf · הגדרות AirPlay"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "הגדרת וכיול התקני תצוגה · הגדרת התקן פלט שמע · הגדרת שלט רחוק · קביעת העדפות חיסכון בחשמל · הפעלת יומן רישום מורחב · הגדרת קוד נעילה ראשי"
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "נהל את התוספים שלך · חפש והתקן תוספים מ kodi.tv · שנה הגדרות תוספים"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -279,6 +263,18 @@ msgstr "הראה מחוק"
 msgctxt "#31900"
 msgid "First Run"
 msgstr "הפעלה ראשונית"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "ישנם שני דברים לדעת על ניווט ב Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "הצלמית של קודי משמשת ככפתור 'בית'. בלחיצה עליו תועבר למסך הבית."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "בזמן ניגון שמע או וידאו, כותרת הפריט מופיעה בחלקו העליון של המסך. לחיצה עליה תעביר אותך לתצוגת חלון מלא."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

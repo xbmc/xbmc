@@ -176,30 +176,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Verander je Skin · Instellen van Taal en Land · Verander bestandslijst opties · Stel een schermbeveiliging in"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Beheer je video bibliotheek · Afspeelopties voor Video · Verander videolijst opties · Stel ondertitel lettertype in"
-
-msgctxt "#31402"
-msgid "Manage your music library · Set music playback options · Change music listing options · Setup song submission"
-msgstr "Beheer uw muziekbibliotheek · Configureer muziekafspeelopties · Wijzig muziek lijst opties - Configureer nummer indienen"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Stel fotolijst opties in · Configureer diavoorstelling"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Stel drie steden in om weerinformatie te verzamelen"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Instellingen voor bedienen Kodi via UPnP en HTTP  · instellingen voor delen van bestanden · Internet instellingen"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Instellen en kalibreren van scherm · Configureer geluidsuitgang · Instellen van afstandsbediening · Instellingen voor energiebesparing · Zet debugging aan · Instellingen voor vergrendeling"
-
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Beheer uw geïnstalleerde add-ons · Zoek naar en installeer add-ons van Kodi.tv - Wijzig add-on instellingen"

@@ -160,26 +160,6 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Thay đổi skin · Đặt ngôn ngữ và vùng · Thay đổi cách liệt kê file · Cài đặt trình bảo vệ màn hình"
 
-msgctxt "#31401"
-msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
-msgstr "Quản lý thư viện video · Đặt chế độ chơi video · Thay đổi cách liệt kê video · Đặt font phụ đề"
-
-msgctxt "#31403"
-msgid "Set picture listing options · Configure slideshows"
-msgstr "Đặt cách liệt kê hình ảnh · Tuỳ chỉnh trình chiếu ảnh"
-
-msgctxt "#31404"
-msgid "Set three cities to collect weather information"
-msgstr "Đặt ba thành phố để thu thập thông tin thời tiết"
-
-msgctxt "#31405"
-msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
-msgstr "Cài đặt điều khiển Kodi thông qua UPnP và HTTP · Tuỳ chỉnh chia sẻ file · Đặt cách truy cập Internet"
-
-msgctxt "#31406"
-msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
-msgstr "Cài đặt và điều chỉnh màn hình · Tuỳ chỉnh đầu ra Audio · Cài đặt bộ điều khiển từ xa · Đặt cách tiết kiệm năng lượng · Bật chế độ tìm sửa lỗi · Đặt khoá chủ"
-
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Chọn profile Kodi[CR]để tiếp tục đăng nhập"
@@ -203,6 +183,10 @@ msgstr "Phím nhanh add-on"
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "TV trực tuyến"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Cài đặt kênh"
 
 msgctxt "#31561"
 msgid "Add Group"
