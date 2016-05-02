@@ -344,6 +344,10 @@ bool CWinEventsX11Imp::MessagePump()
 
     switch (xevent.type)
     {
+      case SelectionNotify:
+        ret = true;
+        break;
+
       case MapNotify:
       {
         g_application.SetRenderGUI(true);
