@@ -1085,7 +1085,7 @@
 		<height>76</height>
 		<texturenofocus colordiffuse="grey2">white.png</texturenofocus>
 		<texturefocus>list_focus.png</texturefocus>
-		<font>font25</font>
+		<font>font30</font>
 		<align>center</align>
 		<aligny>center</aligny>
 	</include>
