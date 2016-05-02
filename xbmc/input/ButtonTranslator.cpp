@@ -331,8 +331,8 @@ static const ActionMapping windows[] =
     { "screencalibration"        , WINDOW_SCREEN_CALIBRATION },
     { "guicalibration"           , WINDOW_SCREEN_CALIBRATION },        // backward compat
     { "systemsettings"           , WINDOW_SETTINGS_SYSTEM },
-    { "networksettings"          , WINDOW_SETTINGS_SERVICE },          // backward compat
     { "servicesettings"          , WINDOW_SETTINGS_SERVICE },
+    { "networksettings"          , WINDOW_SETTINGS_SERVICE },          // backward compat
     { "pvrsettings"              , WINDOW_SETTINGS_MYPVR },
     { "tvsettings"               , WINDOW_SETTINGS_MYPVR },            // backward compat
     { "playersettings"           , WINDOW_SETTINGS_PLAYER },
