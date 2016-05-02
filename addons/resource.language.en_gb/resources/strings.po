@@ -3836,6 +3836,8 @@ msgctxt "#1019"
 msgid "Enter the username"
 msgstr ""
 
+#empty string with id 1020
+
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: addons/skin.estuary/1080i/DialogMediaSource.xml
 msgctxt "#1021"
@@ -3876,6 +3878,7 @@ msgctxt "#1027"
 msgid "Edit source"
 msgstr ""
 
+#empty string with id 1028
 
 msgctxt "#1029"
 msgid "Enter the new label"
@@ -3952,6 +3955,8 @@ msgstr ""
 msgctxt "#1044"
 msgid "Set plug-in thumb"
 msgstr ""
+
+#empty string with id 1045
 
 msgctxt "#1046"
 msgid "Access points"
@@ -7494,283 +7499,275 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#14200"
 msgid "Player"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14201"
 msgid "Player settings"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14202"
 msgid "Library"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14203"
 msgid "Library settings"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14204"
 msgid "TV"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14205"
 msgid "TV settings"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14206"
 msgid "Interface"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14207"
 msgid "Interface settings"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14208"
 msgid "Service settings"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14209"
 msgid "System settings"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14210"
 msgid "Profile settings"
-msgstr "
+msgstr ""
+
+#empty strings from id 14211 to 14214
 
 #: system/settings/settings.xml
-# msgctxt "#14210"
 msgctxt "#14215"
 msgid "Videos"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14211"
 msgctxt "#14216"
 msgid "Music"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14212"
 msgctxt "#14217"
 msgid "Pictures"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14213"
 msgctxt "#14218"
 msgid "Language"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14215"
 msgctxt "#14219"
 msgid "Databases"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14216"
 msgctxt "#14220"
 msgid "Display"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14217"
 msgctxt "#14221"
 msgid "Audio"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14218"
 msgctxt "#14222"
 msgid "Regional"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14219"
 msgctxt "#14223"
 msgid "Control"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
-# msgctxt "#14220"
 msgctxt "#14224"
 msgid "Other"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14225"
 msgid "Network Control"
-msgstr "
+msgstr ""
 
 #empty strings from id 14226 to 14229
 
 #: system/settings/settings.xml
 msgctxt "#14230"
 msgid "Actions"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14231"
 msgid "Processing"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14232"
 msgid "Stereoscopic 3D"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14233"
 msgid "Teletext"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14234"
 msgid "Blu-ray"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14235"
 msgid "Download Services"
-msgstr "
+msgstr ""
 
-#empty strings from id 14236 to id 14239
+#empty strings from id 14236 to 14239
 
 #: system/settings/settings.xml
 msgctxt "#14240"
 msgid "Lists & Views"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14241"
 msgid "Metadata"
-msgstr "
+msgstr ""
 
 #empty strings from id 14242 to 14244
 
 #: system/settings/settings.xml
 msgctxt "#14245"
 msgid "Update library on startup"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14246"
 msgid "Hide progress of library updates"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14247"
 msgid "Clean library"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14248"
 msgid "Export library"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14249"
 msgid "Import library"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14250"
 msgid "Audio Decoder"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14251"
 msgid "Audio DSP"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14252"
 msgid "Audio Passthrough"
-msgstr "
+msgstr ""
 
 #empty strings from id 14253 to 14254
 
 #: system/settings/settings.xml
 msgctxt "#14255"
 msgid "Sleep / Shutdown"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14256"
 msgid "Wake"
-msgstr "
+msgstr ""
 
 #empty strings from id 14257 to 14259
 
 #: system/settings/settings.xml
 msgctxt "#14260"
 msgid "Debug"
-msgstr "
+msgstr ""
 
 #empty strings from id 14261 to 14269
 
 #: system/settings/settings.xml
 msgctxt "#14270"
 msgid "Unit Formats"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14271"
 msgid "Region default format"
-msgstr "
+msgstr ""
 
 #empty strings from id 14272 to 14274
 
 #: system/settings/settings.xml
 msgctxt "#14275"
 msgid "Application control"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14276"
 msgid "Allow remote control from applications on this system"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14277"
 msgid "Allow remote control from applications on other systems"
-msgstr "
+msgstr ""
 
 #empty strings from id 14278 to 14299
 
 #: system/settings/settings.xml
 msgctxt "#14300"
 msgid "PVR Manager"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14301"
 msgid "Channels"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14302"
 msgid "Icons"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14303"
 msgid "Updates"
-msgstr "
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14304"
 msgid "RDS Radio"
-msgstr "
+msgstr ""
 
 #empty strings from id 14305 to 15003
 
@@ -11265,7 +11262,7 @@ msgctxt "#20126"
 msgid "Log off"
 msgstr ""
 
-#empty string from id 20127 to 20128
+#empty strings from id 20127 to 20128
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#20129"
@@ -16258,8 +16255,7 @@ msgctxt "#36045"
 msgid "Pause Playback"
 msgstr ""
 
-
-#empty strings from id 36046 to 36100
+#empty strings from id 36046 to 36098
 
 #: system/settings/settings.xml
 msgctxt "#36099"
@@ -16492,7 +16488,7 @@ msgctxt "#36137"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of settings section with label #3 "Videos" 
+#. Description of settings section with label #3 "Videos"
 #: system/settings/settings.xml
 msgctxt "#36138"
 msgid "Section that contains settings related to videos and how they are handled."
@@ -17423,7 +17419,7 @@ msgctxt "#36314"
 msgid "View slideshow images in a random order."
 msgstr ""
 
-#. Description of settings section with label #8 "Weather" 
+#. Description of settings section with label #8 "Weather"
 #: system/settings/settings.xml
 msgctxt "#36315"
 msgid "Section that contains weather related settings."
@@ -17669,7 +17665,7 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#empty strings from id 36356 to 36356
+#empty string with id 36356
 
 #. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
@@ -17727,7 +17723,7 @@ msgstr ""
 #. Description of setting with label #254 "DTS capable receiver"
 #: system/settings/settings.xml
 msgctxt "#36366"
-msgid "Select this option if your receiver is capable of decoding DTS streams.
+msgid "Select this option if your receiver is capable of decoding DTS streams."
 msgstr ""
 
 #: system/settings/darwin_osx.xml
@@ -18435,7 +18431,6 @@ msgid "Enables support for receiving \"Videos\" and \"Pictures\" via AirPlay. Th
 msgstr ""
 
 #. Name of a setting
-
 #: system/settings/settings.xml
 msgctxt "#36550"
 msgid "Stereoscopic 3D effect strength"
@@ -18453,7 +18448,7 @@ msgctxt "#36552"
 msgid "Defines the number of presentation buffers used by the graphics driver. Select 2 if the driver uses double buffering or 3 for triple buffering."
 msgstr ""
 
-#empty strings from id 36553 to 36599
+#empty strings from id 36553 to 36597
 
 #. Description of setting with label #36099 "Dither"
 #: system/settings/settings.xml
@@ -18492,6 +18487,8 @@ msgstr ""
 msgctxt "#36603"
 msgid "This category contains the settings for displays."
 msgstr ""
+
+#empty string with id 36604
 
 #: system/settings/settings.xml
 msgctxt "#36605"
@@ -18949,7 +18946,7 @@ msgctxt "#38018"
 msgid "My rating"
 msgstr ""
 
-#empty string with id 38021
+#empty strings from id 38019 to 38021
 
 #. Used for the viewstate selection
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
@@ -19061,6 +19058,8 @@ msgstr ""
 msgctxt "#38042"
 msgid "[Missing]"
 msgstr ""
+
+#empty strings from id 38043 to 38099
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
