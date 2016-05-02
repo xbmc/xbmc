@@ -34,12 +34,16 @@ The buildsystem uses the following variables (which can be passed into it when e
 - `CMAKE_INSTALL_PREFIX` points to the directory where the built add-ons and their additional files (addon.xml, resources, ...) will be installed to (defaults to `<DEPENDS_PATH>`)
 - `CMAKE_TOOLCHAIN_FILE` can be used to pass a toolchain file into the add-on builds
 - `DEPENDS_PATH` points to the directory containing the *include* and *lib* directories of the add-ons' dependencies.
-- `APP_ROOT` points to the root directory of the project (default is the absolute representation of ../../.. starting from this directory)
+- `CORE_SOURCE_DIR` points to the root directory of the project (default is the absolute representation of ../../.. starting from this directory)
 - `BUILD_DIR` points to the directory where the add-ons and their dependencies will be downloaded and built
 - `PACKAGE_ZIP=ON` means that the add-ons will be 'packaged' into a common folder, rather than being placed in `<CMAKE_INSTALL_PREFIX>/lib/kodi/addons` and `<CMAKE_INSTALL_PREFIX>/share/kodi/addons`
 - `PACKAGE_DIR` points to the directory where the ZIP archived add-ons will be stored after they have been packaged (defaults to `<BUILD_DIR>/zips`)
 - `ARCH_DEFINES` specifies the platform-specific C/C++ preprocessor defines (defaults to empty)
 - `ADDON_TARBALL_CACHING` specifies whether downloaded add-on source tarballs should be cached or not (defaults to *ON*)
+
+## Deprecated buildsystem variables
+Buildsystem will print a warning if you use any of the below-listed variables. For now they still work but you should adapt your workflow to the new variables.
+- `APP_ROOT` - Use `CORE_SOURCE_DIR` instead
 
 ## Building
 The buildsystem makes some assumptions about the environment which must be met by whoever uses it:
@@ -55,7 +59,7 @@ In case of additional options the call might look like this:
 
 cmake `<path>` [-G `<generator>`] \  
       -DCMAKE_BUILD_TYPE=Release \  
-      -DAPP_ROOT="`<path-to-app-root>`" \  
+      -DCORE_SOURCE_DIR="`<path-to-app-root>`" \  
       -DARCH_DEFINES="-DTARGET_LINUX" \  
       -DDEPENDS_PATH=`<path-to-built-depends>` \  
       -DCMAKE_INSTALL_PREFIX="`<path-to-install-directory`"
