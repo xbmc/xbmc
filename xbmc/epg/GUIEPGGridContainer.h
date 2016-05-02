@@ -177,7 +177,6 @@ namespace EPG
 
     CGUITexture m_guiProgressIndicatorTexture;
 
-    GridItemsPtr *m_item;
     CFileItemPtr m_lastItem;
     CFileItemPtr m_lastChannel;
 
@@ -195,5 +194,7 @@ namespace EPG
     std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_outdatedGridModel;
+
+    GridItemsPtr *m_item;
   };
 }

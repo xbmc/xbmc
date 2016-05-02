@@ -49,107 +49,104 @@ static const int PAGE_NOW_OFFSET     = 30 / CGUIEPGGridContainerModel::MINSPERBL
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width,
                                            float height, int scrollTime, int preloadItems, int timeBlocks, int rulerUnit,
                                            const CTextureInfo& progressIndicatorTexture)
-    : IGUIContainer(parentID, controlID, posX, posY, width, height)
-    , m_guiProgressIndicatorTexture(posX, posY, width, height, progressIndicatorTexture)
-    , m_gridModel(new CGUIEPGGridContainerModel)
+: IGUIContainer(parentID, controlID, posX, posY, width, height),
+  m_channelLayout(nullptr),
+  m_focusedChannelLayout(nullptr),
+  m_programmeLayout(nullptr),
+  m_focusedProgrammeLayout(nullptr),
+  m_rulerLayout(nullptr),
+  m_rulerUnit(rulerUnit),
+  m_channelsPerPage(0),
+  m_programmesPerPage(0),
+  m_channelCursor(0),
+  m_channelOffset(0),
+  m_blocksPerPage(timeBlocks),
+  m_blockCursor(0),
+  m_blockOffset(0),
+  m_cacheChannelItems(preloadItems),
+  m_cacheProgrammeItems(preloadItems),
+  m_cacheRulerItems(preloadItems),
+  m_rulerPosX(0),
+  m_rulerPosY(0),
+  m_rulerHeight(0),
+  m_rulerWidth(0),
+  m_channelPosX(0),
+  m_channelPosY(0),
+  m_channelHeight(0),
+  m_channelWidth(0),
+  m_gridPosX(0),
+  m_gridPosY(0),
+  m_gridWidth(0),
+  m_gridHeight(0),
+  m_blockSize(0),
+  m_analogScrollCount(0),
+  m_guiProgressIndicatorTexture(posX, posY, width, height, progressIndicatorTexture),
+  m_scrollTime(scrollTime ? scrollTime : 1),
+  m_programmeScrollLastTime(0),
+  m_programmeScrollSpeed(0),
+  m_programmeScrollOffset(0),
+  m_channelScrollLastTime(0),
+  m_channelScrollSpeed(0),
+  m_channelScrollOffset(0),
+  m_gridModel(new CGUIEPGGridContainerModel),
+  m_item(nullptr)
 {
-  ControlType             = GUICONTAINER_EPGGRID;
-  m_blocksPerPage         = timeBlocks;
-  m_rulerUnit             = rulerUnit;
-  m_channelCursor         = 0;
-  m_blockCursor           = 0;
-  m_channelOffset         = 0;
-  m_blockOffset           = 0;
-  m_channelScrollOffset   = 0;
-  m_channelScrollSpeed    = 0;
-  m_channelScrollLastTime = 0;
-  m_programmeScrollOffset = 0;
-  m_programmeScrollSpeed  = 0;
-  m_programmeScrollLastTime  = 0;
-  m_programmesPerPage     = 0;
-  m_channelsPerPage       = 0;
-  m_scrollTime            = scrollTime ? scrollTime : 1;
-  m_item                  = NULL;
-  m_programmeLayout       = NULL;
-  m_focusedProgrammeLayout= NULL;
-  m_channelLayout         = NULL;
-  m_focusedChannelLayout  = NULL;
-  m_rulerLayout           = NULL;
-  m_rulerPosX             = 0;
-  m_rulerPosY             = 0;
-  m_rulerHeight           = 0;
-  m_rulerWidth            = 0;
-  m_channelPosX           = 0;
-  m_channelPosY           = 0;
-  m_channelHeight         = 0;
-  m_channelWidth          = 0;
-  m_gridPosX              = 0;
-  m_gridPosY              = 0;
-  m_gridWidth             = 0;
-  m_gridHeight            = 0;
-  m_blockSize             = 0;
-  m_analogScrollCount     = 0;
-  m_cacheChannelItems     = preloadItems;
-  m_cacheRulerItems       = preloadItems;
-  m_cacheProgrammeItems   = preloadItems;
+  ControlType = GUICONTAINER_EPGGRID;
 }
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
-    : IGUIContainer(other)
-    , m_guiProgressIndicatorTexture(other.m_guiProgressIndicatorTexture)
+: IGUIContainer(other),
+  m_renderOffset(other.m_renderOffset),
+  m_channelLayouts(other.m_channelLayouts),
+  m_focusedChannelLayouts(other.m_focusedChannelLayouts),
+  m_focusedProgrammeLayouts(other.m_focusedProgrammeLayouts),
+  m_programmeLayouts(other.m_programmeLayouts),
+  m_rulerLayouts(other.m_rulerLayouts),
+  m_channelLayout(other.m_channelLayout),
+  m_focusedChannelLayout(other.m_focusedChannelLayout),
+  m_programmeLayout(other.m_programmeLayout),
+  m_focusedProgrammeLayout(other.m_focusedProgrammeLayout),
+  m_rulerLayout(other.m_rulerLayout),
+  m_rulerUnit(other.m_rulerUnit),
+  m_channelsPerPage(other.m_channelsPerPage),
+  m_programmesPerPage(other.m_programmesPerPage),
+  m_channelCursor(other.m_channelCursor),
+  m_channelOffset(other.m_channelOffset),
+  m_blocksPerPage(other.m_blocksPerPage),
+  m_blockCursor(other.m_blockCursor),
+  m_blockOffset(other.m_blockOffset),
+  m_cacheChannelItems(other.m_cacheChannelItems),
+  m_cacheProgrammeItems(other.m_cacheProgrammeItems),
+  m_cacheRulerItems(other.m_cacheRulerItems),
+  m_rulerPosX(other.m_rulerPosX),
+  m_rulerPosY(other.m_rulerPosY),
+  m_rulerHeight(other.m_rulerHeight),
+  m_rulerWidth(other.m_rulerWidth),
+  m_channelPosX(other.m_channelPosX),
+  m_channelPosY(other.m_channelPosY),
+  m_channelHeight(other.m_channelHeight),
+  m_channelWidth(other.m_channelWidth),
+  m_gridPosX(other.m_gridPosX),
+  m_gridPosY(other.m_gridPosY),
+  m_gridWidth(other.m_gridWidth),
+  m_gridHeight(other.m_gridHeight),
+  m_blockSize(other.m_blockSize),
+  m_analogScrollCount(other.m_analogScrollCount),
+  m_guiProgressIndicatorTexture(other.m_guiProgressIndicatorTexture),
+  m_lastItem(other.m_lastItem),
+  m_lastChannel(other.m_lastChannel),
+  m_scrollTime(other.m_scrollTime),
+  m_programmeScrollLastTime(other.m_programmeScrollLastTime),
+  m_programmeScrollSpeed(other.m_programmeScrollSpeed),
+  m_programmeScrollOffset(other.m_programmeScrollOffset),
+  m_channelScrollLastTime(other.m_channelScrollLastTime),
+  m_channelScrollSpeed(other.m_channelScrollSpeed),
+  m_channelScrollOffset(other.m_channelScrollOffset),
+  m_gridModel(new CGUIEPGGridContainerModel(*other.m_gridModel)),
+  m_updatedGridModel(new CGUIEPGGridContainerModel(*other.m_updatedGridModel)),
+  m_outdatedGridModel(new CGUIEPGGridContainerModel(*other.m_outdatedGridModel)),
+  m_item(GetItem(m_channelCursor)) // pointer to grid model internal data.
 {
-  m_renderOffset            = other.m_renderOffset;
-  m_channelLayouts          = other.m_channelLayouts;
-  m_focusedChannelLayouts   = other.m_focusedChannelLayouts;
-  m_focusedProgrammeLayouts = other.m_focusedProgrammeLayouts;
-  m_programmeLayouts        = other.m_programmeLayouts;
-  m_rulerLayouts            = other.m_rulerLayouts;
-  m_channelLayout           = other.m_channelLayout;
-  m_focusedChannelLayout    = other.m_focusedChannelLayout;
-  m_programmeLayout         = other.m_programmeLayout;
-  m_focusedProgrammeLayout  = other.m_focusedProgrammeLayout;
-  m_rulerLayout             = other.m_rulerLayout;
-  m_rulerUnit               = other.m_rulerUnit;
-  m_channelsPerPage         = other.m_channelsPerPage;
-  m_programmesPerPage       = other.m_programmesPerPage;
-  m_channelCursor           = other.m_channelCursor;
-  m_channelOffset           = other.m_channelOffset;
-  m_blocksPerPage           = other.m_blocksPerPage;
-  m_blockCursor             = other.m_blockCursor;
-  m_blockOffset             = other.m_blockOffset;
-  m_cacheChannelItems       = other.m_cacheChannelItems;
-  m_cacheProgrammeItems     = other.m_cacheProgrammeItems;
-  m_cacheRulerItems         = other.m_cacheRulerItems;
-  m_rulerPosX               = other.m_rulerPosX;
-  m_rulerPosY               = other.m_rulerPosY;
-  m_rulerHeight             = other.m_rulerHeight;
-  m_rulerWidth              = other.m_rulerWidth;
-  m_channelPosX             = other.m_channelPosX;
-  m_channelPosY             = other.m_channelPosY;
-  m_channelHeight           = other.m_channelHeight;
-  m_channelWidth            = other.m_channelWidth;
-  m_gridPosX                = other.m_gridPosX;
-  m_gridPosY                = other.m_gridPosY;
-  m_gridWidth               = other.m_gridWidth;
-  m_gridHeight              = other.m_gridHeight;
-  m_blockSize               = other.m_blockSize;
-  m_analogScrollCount       = other.m_analogScrollCount;
-  m_lastItem                = other.m_lastItem;
-  m_lastChannel             = other.m_lastChannel;
-  m_scrollTime              = other.m_scrollTime;
-  m_programmeScrollLastTime = other.m_programmeScrollLastTime;
-  m_programmeScrollSpeed    = other.m_programmeScrollSpeed;
-  m_programmeScrollOffset   = other.m_programmeScrollOffset;
-  m_channelScrollLastTime   = other.m_channelScrollLastTime;
-  m_channelScrollSpeed      = other.m_channelScrollSpeed;
-  m_channelScrollOffset     = other.m_channelScrollOffset;
-
-  m_gridModel.reset(new CGUIEPGGridContainerModel(*other.m_gridModel));
-  m_updatedGridModel.reset(new CGUIEPGGridContainerModel(*other.m_updatedGridModel));
-  m_outdatedGridModel.reset(new CGUIEPGGridContainerModel(*other.m_outdatedGridModel));
-
-  // pointer to grid model internal data.
-  m_item = GetItem(m_channelCursor);
 }
 
 void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
