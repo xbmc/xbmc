@@ -42,19 +42,18 @@ void CalculateYUVMatrix(TransformMatrix &matrix
 
 namespace Shaders {
 
-  class BaseYUV2RGBShader
-    : virtual public CShaderProgram
+  class BaseYUV2RGBShader : virtual public CShaderProgram
   {
   public:
-    BaseYUV2RGBShader() : m_forceLimitedColorRange(true) {};
-    virtual ~BaseYUV2RGBShader()      {};
-    virtual void SetField(int field)  {};
-    virtual void SetWidth(int width)  {};
+    BaseYUV2RGBShader() : m_convertFullRange(false) {};
+    virtual ~BaseYUV2RGBShader() {};
+    virtual void SetField(int field) {};
+    virtual void SetWidth(int width) {};
     virtual void SetHeight(int width) {};
 
-    virtual void SetBlack(float black)          {};
-    virtual void SetContrast(float contrast)    {};
-    virtual void SetNonLinStretch(float stretch){};
+    virtual void SetBlack(float black) {};
+    virtual void SetContrast(float contrast) {};
+    virtual void SetNonLinStretch(float stretch) {};
 #if HAS_GLES == 2
     virtual GLint GetVertexLoc() { return 0; };
     virtual GLint GetYcoordLoc() { return 0; };
@@ -62,12 +61,12 @@ namespace Shaders {
     virtual GLint GetVcoordLoc() { return 0; };
 
     virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
-    virtual void SetAlpha(GLfloat alpha)             {};
+    virtual void SetAlpha(GLfloat alpha) {};
 #endif
-    void SetForceLimitedColorRange(bool forceLimitedColorRange) { m_forceLimitedColorRange = forceLimitedColorRange; }
+    void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
 
   protected:
-    bool  m_forceLimitedColorRange;
+    bool m_convertFullRange;
   };
 
 
