@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.gui" version="5.11.0" provider-name="Team Kodi">
-  <backwards-compatibility abi="5.11.0"/>
+<addon id="xbmc.gui" version="5.12.0" provider-name="Team Kodi">
+  <backwards-compatibility abi="5.12.0"/>
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>

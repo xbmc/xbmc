@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="skin.estuary" version="0.7.9" name="Estuary" provider-name="phil65, Piers">
 	<requires>
-		<import addon="xbmc.gui" version="5.11.0"/>
+		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
