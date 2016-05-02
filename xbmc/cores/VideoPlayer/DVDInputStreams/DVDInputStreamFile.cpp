@@ -67,14 +67,12 @@ bool CDVDInputStreamFile::Open()
    */
   if (!URIUtils::IsOnDVD(m_item.GetPath()) && !URIUtils::IsBluray(m_item.GetPath())) // Never cache these
   {
-    if (g_advancedSettings.m_networkBufferMode == 0 || g_advancedSettings.m_networkBufferMode == 2)
+    if ((g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_INTERNET && URIUtils::IsInternetStream(m_item.GetPath(), false))
+     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET && URIUtils::IsInternetStream(m_item.GetPath(), true))
+     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_REMOTE && URIUtils::IsRemote(m_item.GetPath()))
+     || (g_advancedSettings.m_cacheBufferMode == CACHE_BUFFER_MODE_ALL))
     {
-      if (URIUtils::IsInternetStream(CURL(m_item.GetPath()), (g_advancedSettings.m_networkBufferMode == 0) ) )
-        flags |= READ_CACHED;
-    }
-    else if (g_advancedSettings.m_networkBufferMode == 1)
-    {
-      flags |= READ_CACHED; // In buffer mode 1 force cache for (almost) all files
+      flags |= READ_CACHED;
     }
   }
 
