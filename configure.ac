@@ -607,7 +607,7 @@ case $host in
      CORE_SYSTEM_NAME=linux
      ARCH="powerpc-linux"
      ;;
-  powerpc64-*-linux-gnu*|powerpc64-*-linux-uclibc*)
+  powerpc64*-*-linux-gnu*|powerpc64*-*-linux-uclibc*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
      ARCH="powerpc64-linux"
