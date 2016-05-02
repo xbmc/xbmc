@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.29"
+       version="1.0.30"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -86,7 +86,7 @@
     <description lang="fi_FI">Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%.</description>
     <description lang="fr_CA">L'économiseur Dim est un économiseur d'écran simple qui abaissera la luminosité de votre écran à une valeur réglable entre 20 à 100 %.</description>
     <description lang="fr_FR">L'économiseur Dim est un simple économiseur qui assombrira l'écran. L'assombrissement est paramétrable de 20 à 100 %.</description>
-    <description lang="gl_ES">O  protector de pantalla de Atenuación atenuará a súa pantalla nun valor configurábel entre o 20% e o 100%</description>
+    <description lang="gl_ES">Este protector de pantalla atenuará a súa pantalla nun valor configurábel entre o 20% e o 100%.</description>
     <description lang="he_IL">שומר המסך Dim הוא שומר מסך פשוט אשר מעמעם את המסך לערך מוגדר בין 20% ל־100%.</description>
     <description lang="hr_HR">Dim čuvar zaslona je jednostavan čuvar zaslona koji će zatamniti (postepeno isčeznuti) vaš zaslon na odabranu vrijednost između 20 i 100% .</description>
     <description lang="hu_HU">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>

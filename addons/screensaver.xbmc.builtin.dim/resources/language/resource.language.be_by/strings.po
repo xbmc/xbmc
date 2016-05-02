@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Dim
 # Addon id: screensaver.xbmc.builtin.dim
-# Addon Provider: Team-Kodi
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"

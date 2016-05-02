@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="Kodi Add-on repository"
-		version="2.5.1"
+		version="2.5.2"
 		provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -36,7 +36,7 @@
 		<summary lang="es_MX">Installar Add-ons de Kodi.tv</summary>
 		<summary lang="et_EE">Paigalda lisasid lehelt Kodi.tv</summary>
 		<summary lang="eu_ES">Instalatu Kodi.tv-eko gehigarriak</summary>
-		<summary lang="fa_IR">نصب افزونه ها از سایت Kodi.tv</summary>
+		<summary lang="fa_IR">‫نصف افزونه‌ها از Kodi.tv</summary>
 		<summary lang="fi_FI">Asenna lisäosia Kodi.tv -sivustolta</summary>
 		<summary lang="fr_CA">Installer des addiciels depuis Kodi.tv</summary>
 		<summary lang="fr_FR">Installer des extensions depuis Kodi.tv</summary>
@@ -59,12 +59,12 @@
 		<summary lang="nl_NL">Add-ons van Kodi.tv installeren</summary>
 		<summary lang="pl_PL">Instaluj dodatki z Kodi.tv</summary>
 		<summary lang="pt_BR">Instale Add-ons do Kodi.tv</summary>
-		<summary lang="pt_PT">Instalar Add-ons a partir de Kodi.tv</summary>
+		<summary lang="pt_PT">Instalar add-ons a partir de Kodi.tv</summary>
 		<summary lang="ro_RO">Instalați suplimente de la Kodi.tv</summary>
 		<summary lang="ru_RU">Установить дополнения с сайта Kodi.tv</summary>
 		<summary lang="sk_SK">Inštalovať rozšírenia z Kodi.tv</summary>
 		<summary lang="sl_SI">Namestite dodatke s Kodi.tv</summary>
-		<summary lang="sr_RS">Инсталирај додатке са Kodi.tv</summary>
+		<summary lang="sr_RS">Инсталирај додатне програме са Kodi.tv</summary>
 		<summary lang="sr_RS@latin">Instaliraj dodatne programe sa Kodi.tv</summary>
 		<summary lang="sv_SE">Installera tillägg från Kodi.tv</summary>
 		<summary lang="tg_TJ">Насб кардани барномаҳои иловагӣ аз Kodi.tv</summary>
