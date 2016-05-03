@@ -39,6 +39,7 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-confi
               ${PROJECT_SOURCE_DIR}/scripts/common/addoptions.cmake
               ${PROJECT_SOURCE_DIR}/scripts/common/addon-helpers.cmake
         DESTINATION lib/${APP_NAME_LC})
+install(FILES ${cmake_files} DESTINATION ${libdir}/${APP_NAME_LC})
 
 install(TARGETS ${APP_NAME_LC} DESTINATION ${libdir}/${APP_NAME_LC})
 if(ENABLE_X11 AND XRANDR_FOUND)
