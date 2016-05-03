@@ -136,7 +136,6 @@
   <MyMusicFiles>
     <universalremote>
       <!-- * clear 	-->      <obc145>Delete</obc145>
-      <!-- 1 		-->      <obc111>JumpSMS1</obc111>
       <!-- 2 		-->      <obc112>JumpSMS2</obc112>
       <!-- 3 		-->      <obc113>JumpSMS3</obc113>
       <!-- 4 		-->      <obc114>JumpSMS4</obc114>
@@ -149,7 +148,6 @@
   </MyMusicFiles>
   <MyMusicLibrary>
     <universalremote>
-      <!-- 1 		-->      <obc111>JumpSMS1</obc111>
       <!-- 2 		-->      <obc112>JumpSMS2</obc112>
       <!-- 3 		-->      <obc113>JumpSMS3</obc113>
       <!-- 4 		-->      <obc114>JumpSMS4</obc114>
@@ -292,7 +290,6 @@
     <universalremote>
       <!-- * clear 	-->      <obc145>Delete</obc145>
       <!-- # enter 	-->      <obc136>ToggleWatched</obc136>
-      <!-- 1 		-->      <obc111>JumpSMS1</obc111>
       <!-- 2 		-->      <obc112>JumpSMS2</obc112>
       <!-- 3 		-->      <obc113>JumpSMS3</obc113>
       <!-- 4 		-->      <obc114>JumpSMS4</obc114>
@@ -306,7 +303,6 @@
   <MyVideoFiles>
     <universalremote>
       <!-- * clear 	-->      <obc145>Delete</obc145>
-      <!-- 1 		-->      <obc111>JumpSMS1</obc111>
       <!-- 2 		-->      <obc112>JumpSMS2</obc112>
       <!-- 3 		-->      <obc113>JumpSMS3</obc113>
       <!-- 4 		-->      <obc114>JumpSMS4</obc114>
