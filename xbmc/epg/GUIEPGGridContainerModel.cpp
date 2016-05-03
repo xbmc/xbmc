@@ -251,8 +251,6 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
 void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int &newChannelIndex, int &newBlockIndex) const
 {
   const CDateTimeSpan blockDuration(0, 0, MINSPERBLOCK, 0);
-
-  bool bFoundPrevTag     = false;
   bool bFoundPrevChannel = false;
 
   for (size_t channel = 0; channel < m_channelItems.size(); ++channel)
@@ -274,21 +272,15 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
 
         if (gridCursor < tag->EndAsUTC())
         {
-          if (!bFoundPrevTag && broadcastUid > 0 && tag->UniqueBroadcastID() == broadcastUid)
+          if (broadcastUid > 0 && tag->UniqueBroadcastID() == broadcastUid)
           {
             newChannelIndex = channel;
             newBlockIndex   = block + eventOffset;
-            if (bFoundPrevChannel)
-              return; // both found; done.
-
-            bFoundPrevTag = true;
+            return; // both found. done.
           }
-          if (!bFoundPrevTag && !bFoundPrevChannel && channelUid > -1 && tag->ChannelTag()->UniqueID() == channelUid)
+          if (!bFoundPrevChannel && channelUid > -1 && tag->ChannelTag()->UniqueID() == channelUid)
           {
             newChannelIndex = channel;
-            if (bFoundPrevTag)
-              return; // both found; done.
-
             bFoundPrevChannel = true;
           }
           break; // next block
