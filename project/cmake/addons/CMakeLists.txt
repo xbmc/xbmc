@@ -174,11 +174,16 @@ if(NOT WIN32)
 endif()
 
 ### prepare the build environment for the binary addons
-# copy the PrepareEnv.cmake script to the depends path so that we can include it
-file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/PrepareEnv.cmake DESTINATION ${APP_LIB_DIR})
+# copy GenerateVersionStrings.cmake and PrepareEnv.cmake scripts to the depends path so that we can include them
+file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/GenerateVersionStrings.cmake
+          ${CORE_SOURCE_DIR}/project/cmake/scripts/common/PrepareEnv.cmake
+     DESTINATION ${APP_LIB_DIR})
 
-# add the location of PrepareEnv.cmake to CMAKE_MODULE_PATH so that it is found
+# add the location of Generateversionstrings.cmake and PrepareEnv.cmake to CMAKE_MODULE_PATH so that they are found
 list(APPEND CMAKE_MODULE_PATH ${APP_LIB_DIR})
+
+# include GenerateVersionStrings.cmake which contains the logic to set version variables
+include(GenerateVersionStrings)
 
 # include PrepareEnv.cmake which contains the logic to install the addon header bindings etc
 include(PrepareEnv)
