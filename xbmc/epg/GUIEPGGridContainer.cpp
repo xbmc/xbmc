@@ -141,8 +141,8 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_channelScrollSpeed(other.m_channelScrollSpeed),
   m_channelScrollOffset(other.m_channelScrollOffset),
   m_gridModel(new CGUIEPGGridContainerModel(*other.m_gridModel)),
-  m_updatedGridModel(new CGUIEPGGridContainerModel(*other.m_updatedGridModel)),
-  m_outdatedGridModel(new CGUIEPGGridContainerModel(*other.m_outdatedGridModel)),
+  m_updatedGridModel(other.m_updatedGridModel ? new CGUIEPGGridContainerModel(*other.m_updatedGridModel) : nullptr),
+  m_outdatedGridModel(other.m_outdatedGridModel ? new CGUIEPGGridContainerModel(*other.m_outdatedGridModel) : nullptr),
   m_item(GetItem(m_channelCursor)) // pointer to grid model internal data.
 {
 }
