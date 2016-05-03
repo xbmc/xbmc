@@ -12,8 +12,8 @@
 #ifndef CODEC_CTRL_H_
 #define CODEC_CTRL_H_
 
-#include <codec_type.h>
-#include <codec_error.h>
+#include "codec_type.h"
+#include "codec_error.h"
 
 
 int codec_init(codec_para_t *);
