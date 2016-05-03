@@ -79,7 +79,10 @@ void CInputStream::SaveSettings()
 void CInputStream::UpdateConfig()
 {
   std::string pathList;
-  Create();
+  ADDON_STATUS status = Create();
+  if (status == ADDON_STATUS_PERMANENT_FAILURE)
+    return;
+
   try
   {
     pathList = m_pStruct->GetPathList();
