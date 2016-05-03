@@ -759,7 +759,7 @@
       </group>
     </category>
     <category id="accessibility" label="37032" help="37033">
-      <group id="1" label="14217">
+      <group id="1" label="14221">
         <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
           <level>0</level>
           <default>false</default>
