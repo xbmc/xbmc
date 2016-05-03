@@ -33,6 +33,7 @@
 #include "GUIPassword.h"
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
@@ -342,6 +343,28 @@ void CGUIViewState::SetSortMethod(SortBy sortBy, SortOrder sortOrder /* = SortOr
 void CGUIViewState::SetSortMethod(SortDescription sortDescription)
 {
   return SetSortMethod(sortDescription.sortBy, sortDescription.sortOrder);
+}
+
+bool CGUIViewState::ChooseSortMethod()
+{
+  
+  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  if (!dialog)
+    return false;
+  dialog->Reset();
+  dialog->SetHeading(CVariant{ 32104 }); // Label "Sort by"
+  for (auto &sortMethod : m_sortMethods)
+    dialog->Add(g_localizeStrings.Get(sortMethod.m_buttonLabel));
+  dialog->SetSelected(m_currentSortMethod);
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+  // check if selection has changed
+  if (!dialog->IsConfirmed() || newSelected < 0 || newSelected == m_currentSortMethod)
+    return false;
+
+  m_currentSortMethod = newSelected;
+  SaveViewState();
+  return true;
 }
 
 SortDescription CGUIViewState::SetNextSortMethod(int direction /* = 1 */)

@@ -282,9 +282,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSORTBY) // sort by
       {
-        if (m_guiState.get())
-          m_guiState->SetNextSortMethod();
-        UpdateFileList();
+        if (m_guiState.get() && m_guiState->ChooseSortMethod())
+          UpdateFileList();
         return true;
       }
       else if (iControl == CONTROL_BTN_FILTER)
