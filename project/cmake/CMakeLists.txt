@@ -61,13 +61,13 @@ set(CORE_BUILD_DIR build)
 message(STATUS "Source directory: ${CORE_SOURCE_DIR}")
 message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
 
-include(scripts/common/generatorsetup.cmake)
-include(scripts/common/addoptions.cmake)
-include(scripts/common/archsetup.cmake)
-include(scripts/common/macros.cmake)
-include(scripts/common/managestring.cmake)
-include(scripts/common/projectmacros.cmake)
-include(scripts/common/pathsetup.cmake)
+include(scripts/common/GeneratorSetup.cmake)
+include(scripts/common/AddOptions.cmake)
+include(scripts/common/ArchSetup.cmake)
+include(scripts/common/Macros.cmake)
+include(scripts/common/ManageString.cmake)
+include(scripts/common/ProjectMacros.cmake)
+include(scripts/common/PathSetup.cmake)
 include(ExternalProject)
 
 core_find_git_rev()
@@ -214,7 +214,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
                                             -DAPP_SCMID=${APP_SCMID}
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                            -P ${PROJECT_SOURCE_DIR}/scripts/common/generateversionedfiles.cmake
+                                            -P ${PROJECT_SOURCE_DIR}/scripts/common/GenerateVersionedFiles.cmake
                   DEPENDS ${CORE_SOURCE_DIR}/version.txt
                           ${CORE_SOURCE_DIR}/addons/xbmc.addon/addon.xml.in
                           ${CORE_SOURCE_DIR}/addons/kodi.guilib/addon.xml.in
@@ -340,7 +340,7 @@ if(NOT CMAKE_CROSSCOMPILING)
   add_dependencies(check ${APP_NAME_LC}-test)
 
   # For testing commit series
-  add_custom_target(check-commits ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/checkcommits.cmake
+  add_custom_target(check-commits ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/CheckCommits.cmake
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
 endif()
 
@@ -374,10 +374,10 @@ set(APP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/${APP_NAME_LC}
 set(CXX11_SWITCH "-std=c++11")
 configure_file(${PROJECT_SOURCE_DIR}/kodi-config.cmake.in
                ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/${APP_NAME_LC}-config.cmake @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/scripts/common/addon-helpers.cmake
-               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/addon-helpers.cmake COPYONLY)
-configure_file(${PROJECT_SOURCE_DIR}/scripts/common/addoptions.cmake
-               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/addoptions.cmake COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/scripts/common/AddonHelpers.cmake
+               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/AddonHelpers.cmake COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/scripts/common/AddOptions.cmake
+               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/AddOptions.cmake COPYONLY)
 
 # Status
 message(STATUS "#---- CONFIGURATION ----#")

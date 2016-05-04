@@ -36,8 +36,8 @@ set(CXX11_SWITCH "-std=c++11")
 configure_file(${PROJECT_SOURCE_DIR}/kodi-config.cmake.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-config.cmake @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-config.cmake
-              ${PROJECT_SOURCE_DIR}/scripts/common/addoptions.cmake
-              ${PROJECT_SOURCE_DIR}/scripts/common/addon-helpers.cmake
+              ${PROJECT_SOURCE_DIR}/scripts/common/AddOptions.cmake
+              ${PROJECT_SOURCE_DIR}/scripts/common/AddonHelpers.cmake
         DESTINATION lib/${APP_NAME_LC})
 install(FILES ${cmake_files} DESTINATION ${libdir}/${APP_NAME_LC})
 

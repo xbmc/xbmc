@@ -60,8 +60,8 @@ endif()
 configure_file(${CORE_SOURCE_DIR}/project/cmake/kodi-config.cmake.in ${APP_LIB_DIR}/kodi-config.cmake @ONLY)
 
 # copy cmake helpers to lib/kodi
-file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/addon-helpers.cmake
-          ${CORE_SOURCE_DIR}/project/cmake/scripts/common/addoptions.cmake
+file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddonHelpers.cmake
+          ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddOptions.cmake
      DESTINATION ${APP_LIB_DIR})
 
 # generate xbmc-config.cmake for backwards compatibility to xbmc

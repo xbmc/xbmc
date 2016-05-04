@@ -1,1 +1,1 @@
-include(${PROJECT_SOURCE_DIR}/scripts/linux/pathsetup.cmake)
+include(${PROJECT_SOURCE_DIR}/scripts/linux/PathSetup.cmake)
