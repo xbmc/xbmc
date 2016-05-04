@@ -104,7 +104,7 @@ function archiveRepo {
     DEST="kodi-${RELEASEV}~git${BUILD_DATE}-${TAG}"
     [[ -d debian ]] && rm -rf debian
     cd ..
-    tar -czf ${DEST}.tar.gz -h --exclude .git $(basename $REPO_DIR)
+    tar -czf ${DEST}.tar.gz --exclude .git $(basename $REPO_DIR)
     ln -s ${DEST}.tar.gz ${DEST/-/_}.orig.tar.gz
     echo "Output Archive: ${DEST}.tar.gz"
 
