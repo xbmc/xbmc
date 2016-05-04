@@ -4,7 +4,7 @@ VERSION.TXT := $(XBMCROOT)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 all:
-	mkdir $(XBMCROOT)/build
+	mkdir -p $(XBMCROOT)/build
 	cd $(XBMCROOT)/build; $(CMAKE) $(XBMCROOT)/project/cmake
 
 clean:

@@ -34,11 +34,10 @@ fi
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_macosx-intel-${ARCHITECTURE}
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
-${SUDO} rm -rf $DIRNAME/$ARCHIVE
+rm -rf $DIRNAME/$ARCHIVE.dmg
 
-if [ -e "/Volumes/$ARCHIVE" ]
-then 
-  umount /Volumes/$ARCHIVE
+if [ -e "/Volumes/@APP_NAME_LC@" ]; then
+  umount /Volumes/@APP_NAME_LC@
 fi
 
 #generate volume iconset

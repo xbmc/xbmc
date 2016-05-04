@@ -93,6 +93,8 @@ if(NOT WIN32)
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
                     system/players/VideoPlayer/libdvdnav dvdnav)
 
+  set(WRAP_FILES ${WRAP_FILES} PARENT_SCOPE)
+
   set(LIBDVD_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include)
   set(LIBDVD_LIBRARIES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
                        ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
