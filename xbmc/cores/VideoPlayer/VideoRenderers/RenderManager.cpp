@@ -1400,7 +1400,7 @@ void CRenderManager::CheckEnableClockSync()
   }
   else
   {
-    m_clockSync.m_enabled = true;
+    m_clockSync.m_enabled = false;
     m_dvdClock.SetSpeedAdjust(0);
   }
 }
