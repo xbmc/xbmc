@@ -47,7 +47,8 @@ namespace ADDON
 CCriticalSection CAddonStatusHandler::m_critSection;
 
 CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATUS status, std::string message, bool sameThread)
-  : CThread(("AddonStatus " + addonID).c_str())
+  : CThread(("AddonStatus " + addonID).c_str()),
+    m_status(ADDON_STATUS_UNKNOWN)
 {
   if (!CAddonMgr::GetInstance().GetAddon(addonID, m_addon))
     return;
