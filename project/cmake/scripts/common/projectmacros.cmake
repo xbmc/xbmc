@@ -54,6 +54,9 @@ function(GTEST_ADD_TESTS executable extra_args)
         message(FATAL_ERROR "Missing ARGN: Read the documentation for GTEST_ADD_TESTS")
     endif()
     foreach(source ${ARGN})
+        # This assumes that every source file passed in exists. Consider using
+        # SUPPORT_SOURCES for source files which do not contain tests and might
+        # have to be generated.
         file(READ "${source}" contents)
         string(REGEX MATCHALL "TEST_?[F]?\\(([A-Za-z_0-9 ,]+)\\)" found_tests ${contents})
         foreach(hit ${found_tests})
