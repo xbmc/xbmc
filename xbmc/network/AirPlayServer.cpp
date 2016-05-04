@@ -465,6 +465,7 @@ CAirPlayServer::CTCPClient::CTCPClient()
 }
 
 CAirPlayServer::CTCPClient::CTCPClient(const CTCPClient& client)
+: m_lastEvent(EVENT_NONE)
 {
   Copy(client);
   m_httpParser = new HttpParser();
