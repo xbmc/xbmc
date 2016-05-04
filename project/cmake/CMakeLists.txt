@@ -360,7 +360,7 @@ if(CORE_SYSTEM_NAME STREQUAL darwin)
   add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/OSXRemote build/XBMCHelper)
 endif()
 
-include(scripts/${CORE_SYSTEM_NAME}/install.cmake)
+include(scripts/${CORE_SYSTEM_NAME}/Install.cmake)
 
 # Prepare add-on build env
 foreach(binding ${addon_bindings})

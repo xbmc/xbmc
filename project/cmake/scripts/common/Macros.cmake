@@ -1,7 +1,7 @@
 # This script holds the main functions used to construct the build system
 
 # include system specific macros
-include(${CORE_SOURCE_DIR}/project/cmake/scripts/${CORE_SYSTEM_NAME}/macros.cmake)
+include(${CORE_SOURCE_DIR}/project/cmake/scripts/${CORE_SYSTEM_NAME}/Macros.cmake)
 
 # Add a library, optionally as a dependency of the main application
 # Arguments:
