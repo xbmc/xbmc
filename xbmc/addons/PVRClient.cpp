@@ -479,7 +479,7 @@ bool CPVRClient::GetAddonProperties(void)
                                         PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
                                         PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
                                         PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-        size++;
+        ++size;
 
         // Repeating manual
         memset(&types_array[size], 0, sizeof(types_array[size]));
@@ -495,7 +495,7 @@ bool CPVRClient::GetAddonProperties(void)
                                         PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY      |
                                         PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS       |
                                         PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-        size++;
+        ++size;
 
         if (addonCapabilities.bSupportsEPG)
         {
@@ -510,7 +510,7 @@ bool CPVRClient::GetAddonProperties(void)
                                           PVR_TIMER_TYPE_SUPPORTS_PRIORITY          |
                                           PVR_TIMER_TYPE_SUPPORTS_LIFETIME          |
                                           PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-          size++;
+          ++size;
         }
 
         retval = PVR_ERROR_NO_ERROR;
@@ -1538,9 +1538,9 @@ bool CPVRClient::HaveMenuHooks(PVR_MENUHOOK_CAT cat) const
   bool bReturn(false);
   if (m_bReadyToUse && !m_menuhooks.empty())
   {
-    for (unsigned int i = 0; i < m_menuhooks.size(); i++)
+    for (auto hook : m_menuhooks)
     {
-      if (m_menuhooks[i].category == cat || m_menuhooks[i].category == PVR_MENUHOOK_ALL)
+      if (hook.category == cat || hook.category == PVR_MENUHOOK_ALL)
       {
         bReturn = true;
         break;

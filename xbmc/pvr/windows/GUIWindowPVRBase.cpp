@@ -805,7 +805,7 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
             m_viewControl.SetSelectedItem(itemIndex);
           return true;
         }
-        itemIndex++;
+        ++itemIndex;
       }
     }
   }

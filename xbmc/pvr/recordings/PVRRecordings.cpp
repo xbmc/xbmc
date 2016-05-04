@@ -91,9 +91,9 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
   std::set<CFileItemPtr> unwatchedFolders;
   bool bRadio = recParentPath.IsRadio();
 
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+  for (const auto recording : m_recordings)
   {
-    CPVRRecordingPtr current = it->second;
+    CPVRRecordingPtr current = recording.second;
     if (current->IsDeleted())
       continue;
 
@@ -136,8 +136,8 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
   }
 
   // Remove the watched overlay from folders containing unwatched entries
-  for (std::set<CFileItemPtr>::iterator it = unwatchedFolders.begin(); it != unwatchedFolders.end(); ++it)
-    (*it)->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, true);
+  for (auto item : unwatchedFolders)
+    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, true);
 }
 
 int CPVRRecordings::Load(void)
@@ -210,8 +210,8 @@ bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
   VECFILEITEMS itemList = items.GetList();
   CFileItem item;
 
-  for (VECFILEITEMS::const_iterator it = itemList.begin(); it != itemList.end(); ++it)
-    allDeleted &= Delete(*(it->get()));
+  for (const auto item : itemList)
+    allDeleted &= Delete(*(item.get()));
 
   return allDeleted;
 }
@@ -327,9 +327,9 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       GetSubDirectories(recPath, &items);
 
     // get all files of the currrent directory or recursively all files starting at the current directory if in flatten mode
-    for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+    for (const auto recording : m_recordings)
     {
-      CPVRRecordingPtr current = it->second;
+      CPVRRecordingPtr current = recording.second;
 
       // Omit recordings not matching criteria
       if (!IsDirectoryMember(strDirectory, current->m_strDirectory) ||
@@ -374,9 +374,9 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
 void CPVRRecordings::GetAll(CFileItemList &items, bool bDeleted)
 {
   CSingleLock lock(m_critSection);
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+  for (const auto recording : m_recordings)
   {
-    CPVRRecordingPtr current = it->second;
+    CPVRRecordingPtr current = recording.second;
     if (current->IsDeleted() != bDeleted)
       continue;
 
@@ -397,10 +397,10 @@ CFileItemPtr CPVRRecordings::GetById(unsigned int iId) const
 {
   CFileItemPtr item;
   CSingleLock lock(m_critSection);
-  for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+  for (const auto recording : m_recordings)
   {
-    if (iId == it->second->m_iRecordingId)
-      item = CFileItemPtr(new CFileItem(it->second));
+    if (iId == recording.second->m_iRecordingId)
+      item = CFileItemPtr(new CFileItem(recording.second));
   }
 
   return item;
@@ -416,9 +416,9 @@ CFileItemPtr CPVRRecordings::GetByPath(const std::string &path)
     bool bDeleted = recPath.IsDeleted();
     bool bRadio   = recPath.IsRadio();
 
-    for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
+    for (const auto recording : m_recordings)
     {
-      CPVRRecordingPtr current = it->second;
+      CPVRRecordingPtr current = recording.second;
       // Omit recordings not matching criteria
       if (!URIUtils::PathEquals(path, current->m_strFileNameAndPath) ||
           bDeleted != current->IsDeleted() || bRadio != current->IsRadio())
@@ -488,9 +488,9 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
     if (newTag->IsRadio())
-      m_iRadioRecordings++;
+      ++m_iRadioRecordings;
     else
-      m_iTVRecordings++;
+      ++m_iTVRecordings;
   }
 }
 
@@ -499,17 +499,17 @@ void CPVRRecordings::UpdateEpgTags(void)
   CSingleLock lock(m_critSection);
   unsigned int iEpgEvent;
   CPVRChannelPtr channel;
-  for (PVR_RECORDINGMAP_ITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
+  for (const auto recording : m_recordings)
   {
-    iEpgEvent = it->second->BroadcastUid();
-    if (iEpgEvent != EPG_TAG_INVALID_UID && !it->second->IsDeleted())
+    iEpgEvent = recording.second->BroadcastUid();
+    if (iEpgEvent != EPG_TAG_INVALID_UID && recording.second->IsDeleted())
     {
-      channel = it->second->Channel();
+      channel = recording.second->Channel();
       if (channel)
       {
         const EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(channel, iEpgEvent);
         if (epgTag)
-          epgTag->SetRecording(it->second);
+          epgTag->SetRecording(recording.second);
       }
     }
   }
