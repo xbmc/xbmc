@@ -68,7 +68,7 @@ private:
   std::map<SeekType, int > m_seekDelays;
   bool m_requireSeek;
   bool m_analogSeek;
-  int m_seekSize;
+  double m_seekSize;
   int m_seekStep;
   std::map<SeekType, std::vector<int> > m_forwardSeekSteps;
   std::map<SeekType, std::vector<int> > m_backwardSeekSteps;
