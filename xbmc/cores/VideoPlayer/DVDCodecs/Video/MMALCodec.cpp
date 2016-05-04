@@ -525,8 +525,11 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_renderer = (CMMALRenderer *)options.m_opaque_pointer;
   MMAL_STATUS_T status;
 
-  m_decoded_width = m_decoded_aligned_width = hints.width;
-  m_decoded_height = m_decoded_aligned_height = hints.height;
+  m_decoded_width = hints.width;
+  m_decoded_height = hints.height;
+
+  m_decoded_aligned_width = ALIGN_UP(m_decoded_width, 32);
+  m_decoded_aligned_height = ALIGN_UP(m_decoded_height, 16);
 
   // use aspect in stream if available
   if (m_hints.forced_aspect)
@@ -622,13 +625,13 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   m_dec_input->format->type = MMAL_ES_TYPE_VIDEO;
   m_dec_input->format->encoding = m_codingType;
-  if (m_hints.width && m_hints.height)
+  if (m_decoded_width && m_decoded_height)
   {
-    m_dec_input->format->es->video.crop.width = m_hints.width;
-    m_dec_input->format->es->video.crop.height = m_hints.height;
+    m_dec_input->format->es->video.crop.width = m_decoded_width;
+    m_dec_input->format->es->video.crop.height = m_decoded_height;
 
-    m_dec_input->format->es->video.width = ALIGN_UP(m_hints.width, 32);
-    m_dec_input->format->es->video.height = ALIGN_UP(m_hints.height, 16);
+    m_dec_input->format->es->video.width = m_decoded_aligned_width;
+    m_dec_input->format->es->video.height = m_decoded_aligned_width;
   }
   if (hints.fpsrate > 0 && hints.fpsscale > 0)
   {
