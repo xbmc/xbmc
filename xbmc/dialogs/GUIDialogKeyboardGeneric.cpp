@@ -69,6 +69,8 @@ using namespace KODI::MESSAGING;
 CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
 : CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
 , CGUIKeyboard()
+, m_num(0)
+, m_listfont(nullptr)
 , m_pCharCallback(NULL)
 {
   m_bIsConfirmed = false;
