@@ -104,15 +104,15 @@ DLLEXPORT void ADSP_release_sound_play(CAddonSoundPlay* p)
 }
 
 CAddonSoundPlay::CAddonSoundPlay(void *hdl, void *cb, const char *filename)
- : m_Filename(filename)
+ : m_Filename(filename),
+   m_Handle(hdl),
+   m_cb(cb)
 {
   m_PlayHandle = NULL;
   if (!hdl || !cb)
     fprintf(stderr, "libKODI_adsp-ERROR: ADSP_get_sound_play is called with NULL handle !!!\n");
   else
   {
-    m_Handle     = hdl;
-    m_cb         = cb;
     m_PlayHandle = ((CB_ADSPLib*)m_cb)->SoundPlay_GetHandle(((AddonCB*)m_Handle)->addonData, m_Filename.c_str());
     if (!m_PlayHandle)
       fprintf(stderr, "libKODI_adsp-ERROR: ADSP_get_sound_play can't get callback table from KODI !!!\n");
