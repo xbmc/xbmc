@@ -65,7 +65,11 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MUSIC_GRABBER;
 using namespace ADDON;
 
-CMusicInfoScanner::CMusicInfoScanner() : CThread("MusicInfoScanner"), m_fileCountReader(this, "MusicFileCounter")
+CMusicInfoScanner::CMusicInfoScanner()
+: CThread("MusicInfoScanner"),
+  m_needsCleanup(false),
+  m_scanType(0),
+  m_fileCountReader(this, "MusicFileCounter")
 {
   m_bRunning = false;
   m_showDialog = false;
