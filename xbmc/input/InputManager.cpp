@@ -609,6 +609,17 @@ bool CInputManager::ExecuteInputAction(const CAction &action)
   return bResult;
 }
 
+bool CInputManager::HasBuiltin(const std::string& command)
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  return command == "lirc.stop"  ||
+         command ==" lirc.start" ||
+         command == "lirc.send";
+#endif
+
+  return false;
+}
+
 int CInputManager::ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params)
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
