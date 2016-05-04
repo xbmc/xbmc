@@ -112,6 +112,8 @@ public:
   static bool TranslateActionString(const char *szAction, int &action);
 
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
+  
+  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 
@@ -141,6 +143,7 @@ private:
 
   void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
   void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
+  void MapCustomControllerActions(int windowID, TiXmlNode *pCustomController);
 
   bool LoadKeymap(const std::string &keymapPath);
   bool LoadLircMap(const std::string &lircmapPath);
@@ -151,6 +154,15 @@ private:
   typedef std::map<std::string, std::string> lircButtonMap;
   std::map<std::string, lircButtonMap*> lircRemotesMap;
 
+  // maps button id to action
+  typedef std::map<int, std::string> CustomControllerButtonMap;
+  // maps window id to controller button map
+  typedef std::map<int, CustomControllerButtonMap> CustomControllerWindowMap;
+  // maps custom controller name to controller Window map
+  std::map<std::string, CustomControllerWindowMap> m_customControllersMap;
+  int GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const;
+
+  
   void MapTouchActions(int windowID, TiXmlNode *pTouch);
   static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
   int GetTouchActionCode(int window, int action, std::string &actionString);
