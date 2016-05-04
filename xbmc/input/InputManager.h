@@ -204,6 +204,10 @@ public:
    */
   void SetRemoteControlName(const std::string& name);
 
+  /*! \brief Returns whether or not we can handle a given built-in command. */
+
+  bool HasBuiltin(const std::string& command);
+
   /*! \brief Parse a builtin command and execute any input action
    *  currently only LIRC commands implemented
    *

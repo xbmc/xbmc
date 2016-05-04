@@ -92,6 +92,10 @@ bool CBuiltins::HasCommand(const std::string& execString)
   std::vector<std::string> parameters;
   CUtil::SplitExecFunction(execString, function, parameters);
   StringUtils::ToLower(function);
+
+  if (CInputManager::GetInstance().HasBuiltin(function))
+    return true;
+
   const auto& it = m_command.find(function);
   if (it != m_command.end())
   {
