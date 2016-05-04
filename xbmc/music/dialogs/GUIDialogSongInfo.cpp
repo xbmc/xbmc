@@ -52,6 +52,7 @@ using namespace XFILE;
 CGUIDialogSongInfo::CGUIDialogSongInfo(void)
     : CGUIDialog(WINDOW_DIALOG_SONG_INFO, "DialogMusicInfo.xml")
     , m_song(new CFileItem)
+    , m_albumId(-1)
 {
   m_cancelled = false;
   m_needsUpdate = false;
