@@ -491,7 +491,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
           PVRChannelGroupMember newMember = { channel, (unsigned int)iChannelNumber };
           group.m_sortedMembers.push_back(newMember);
           group.m_members.insert(std::make_pair(channel->StorageId(), newMember));
-          iReturn++;
+          ++iReturn;
         }
         else
         {

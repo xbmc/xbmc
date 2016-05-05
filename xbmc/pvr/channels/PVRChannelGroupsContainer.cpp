@@ -129,7 +129,7 @@ bool CPVRChannelGroupsContainer::GetGroupsDirectory(CFileItemList *results, bool
 
 CFileItemPtr CPVRChannelGroupsContainer::GetByPath(const std::string &strPath) const
 {
-  for (unsigned int bRadio = 0; bRadio <= 1; bRadio++)
+  for (unsigned int bRadio = 0; bRadio <= 1; ++bRadio)
   {
     const CPVRChannelGroups *groups = Get(bRadio == 1);
     CFileItemPtr retVal = groups->GetByPath(strPath);
