@@ -23,9 +23,12 @@
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
 
 bool CServiceManager::Init1()
 {
+  V1::KodiAPI::PVR::CAddonCallbacksPVR::EnableInterface(false);
+
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
   m_announcementManager->Start();
 
@@ -46,6 +49,7 @@ bool CServiceManager::Init2()
 
   m_ADSPManager.reset(new ActiveAE::CActiveAEDSP());
   m_PVRManager.reset(new PVR::CPVRManager());
+  V1::KodiAPI::PVR::CAddonCallbacksPVR::EnableInterface(true);
 
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
@@ -63,6 +67,8 @@ bool CServiceManager::Init3()
 
 void CServiceManager::Deinit()
 {
+  V1::KodiAPI::PVR::CAddonCallbacksPVR::EnableInterface(false);
+
   m_binaryAddonCache.reset();
   m_PVRManager.reset();
   m_ADSPManager.reset();
