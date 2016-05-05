@@ -20,6 +20,7 @@
  *
  */
 
+#include <atomic>
 #include "addons/binary/interfaces/AddonInterfaces.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
@@ -95,6 +96,8 @@ class CAddonCallbacksPVR : public ADDON::IAddonInterface
 public:
   CAddonCallbacksPVR(ADDON::CAddon* addon);
   virtual ~CAddonCallbacksPVR(void);
+
+  static void EnableInterface(bool enable) { m_enabled = enable; }
 
   /*!
    * @return The callback table.
@@ -237,6 +240,7 @@ private:
   static void UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued);
 
   CB_PVRLib    *m_callbacks; /*!< callback addresses */
+  static std::atomic_bool m_enabled;
 };
 
 } /* namespace PVR */

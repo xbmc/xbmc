@@ -36,7 +36,7 @@ namespace ADDON
   {
   public:
     IAddonInterface(CAddon *addon, int apiLevel, const std::string& version) :
-      m_addon(addon), m_apiLevel(apiLevel), m_version(version)  {}
+      m_addon(addon), m_apiLevel(apiLevel), m_version(version) {}
 
     CAddon*            GetAddon()       { return m_addon;    }
     const CAddon*      GetAddon() const { return m_addon;    }

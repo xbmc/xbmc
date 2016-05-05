@@ -50,6 +50,8 @@ namespace KodiAPI
 namespace PVR
 {
 
+std::atomic_bool CAddonCallbacksPVR::m_enabled;
+
 CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   : ADDON::IAddonInterface(addon, 1, XBMC_PVR_API_VERSION),
     m_callbacks(new CB_PVRLib)
@@ -82,6 +84,9 @@ CAddonCallbacksPVR::~CAddonCallbacksPVR()
 
 CPVRClient *CAddonCallbacksPVR::GetPVRClient(void *addonData)
 {
+  if (!m_enabled)
+    return nullptr;
+
   CAddonInterfaces *addon = static_cast<CAddonInterfaces *>(addonData);
   if (!addon || !addon->PVRLib_GetHelper())
   {
@@ -94,6 +99,9 @@ CPVRClient *CAddonCallbacksPVR::GetPVRClient(void *addonData)
 
 void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
+  if (!m_enabled)
+    return;
+
   if (!handle)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
@@ -120,6 +128,9 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HA
 
 void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
+  if (!m_enabled)
+    return;
+
   if (!handle)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
@@ -148,6 +159,9 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
 
 void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
 {
+  if (!m_enabled)
+    return;
+
   if (!handle)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
@@ -167,6 +181,9 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE
 
 void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
 {
+  if (!m_enabled)
+    return;
+
   if (!handle)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
@@ -188,6 +205,9 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
 
 void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
 {
+  if (!m_enabled)
+    return;
+
   if (!handle)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
@@ -209,6 +229,9 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
 
 void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer)
 {
+  if (!m_enabled)
+    return;
+
   if (!handle)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
@@ -233,6 +256,9 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
 
 void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
 {
+  if (!m_enabled)
+    return;
+
   CPVRClient *client = GetPVRClient(addonData);
   if (!hook || !client)
   {
@@ -255,6 +281,9 @@ void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
 
 void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, const char *strFileName, bool bOnOff)
 {
+  if (!m_enabled)
+    return;
+
   CPVRClient *client = GetPVRClient(addonData);
   if (!client || !strFileName)
   {
@@ -279,30 +308,45 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
 
 void CAddonCallbacksPVR::PVRTriggerChannelUpdate(void *addonData)
 {
+  if (!m_enabled)
+    return;
+
   /* update the channels table in the next iteration of the pvrmanager's main loop */
   g_PVRManager.TriggerChannelsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerTimerUpdate(void *addonData)
 {
+  if (!m_enabled)
+    return;
+
   /* update the timers table in the next iteration of the pvrmanager's main loop */
   g_PVRManager.TriggerTimersUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
 {
+  if (!m_enabled)
+    return;
+
   /* update the recordings table in the next iteration of the pvrmanager's main loop */
   g_PVRManager.TriggerRecordingsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
 {
+  if (!m_enabled)
+    return;
+
   /* update all channel groups in the next iteration of the pvrmanager's main loop */
   g_PVRManager.TriggerChannelGroupsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChannelUid)
 {
+  if (!m_enabled)
+    return;
+
   // get the client
   CPVRClient *client = GetPVRClient(addonData);
   if (!client)
@@ -316,16 +360,25 @@ void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChan
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)
 {
+  if (!m_enabled)
+    return;
+
   CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 }
 
 DemuxPacket* CAddonCallbacksPVR::PVRAllocateDemuxPacket(void *addonData, int iDataSize)
 {
+  if (!m_enabled)
+    return nullptr;
+
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }
 
 void CAddonCallbacksPVR::PVRConnectionStateChange(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
 {
+  if (!m_enabled)
+    return;
+
   CPVRClient *client = GetPVRClient(addonData);
   if (!client || !strConnectionString)
   {
@@ -365,6 +418,9 @@ typedef struct EpgEventStateChange
 
 void CAddonCallbacksPVR::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued)
 {
+  if (!m_enabled)
+    return;
+
   const CPVRChannelPtr channel(g_PVRChannelGroups->GetByUniqueID(ch.iUniqueChannelId, ch.iClientId));
   if (channel)
   {
@@ -388,6 +444,9 @@ void CAddonCallbacksPVR::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQue
 
 void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
 {
+  if (!m_enabled)
+    return;
+
   CPVRClient *client = GetPVRClient(addonData);
   if (!client || !tag)
   {
