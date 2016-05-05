@@ -15,7 +15,7 @@
 #   CEC::CEC   - The libCEC library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_CEC libCEC>=3.0.0 QUIET)
+  pkg_check_modules(PC_CEC libCEC>=3.1.0 QUIET)
 endif()
 
 find_path(CEC_INCLUDE_DIR libCEC/CEC.h
