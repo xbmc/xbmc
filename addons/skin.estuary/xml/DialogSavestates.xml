@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">2</defaultcontrol>
+	<coordinates>
+		<left>210</left>
+		<top>150</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include content="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="1500" />
+			<param name="DialogBackgroundHeight" value="800" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[35269]" />
+			<param name="DialogHeaderId" value="" />
+		</include>
+		<control type="image">
+			<left>10</left>
+			<top>80</top>
+			<width>1130</width>
+			<height>720</height>
+			<texture border="40">buttons/dialogbutton-nofo.png</texture>
+		</control>
+		<control type="panel" id="11">
+			<left>40</left>
+			<top>105</top>
+			<width>1110</width>
+			<height>680</height>
+			<onleft>9001</onleft>
+			<onright>9001</onright>
+			<preloaditems>2</preloaditems>
+			<scrolltime tween="sine">200</scrolltime>
+			<orientation>vertical</orientation>
+			<itemlayout width="370" height="340">
+				<control type="group">
+					<control type="image">
+						<left>0</left>
+						<top>5</top>
+						<width>330</width>
+						<height>250</height>
+						<aspectratio>scale</aspectratio>
+						<texture border="4" fallback="DefaultAddonGame.png">$INFO[ListItem.Art(thumb)]</texture>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<control type="label">
+						<left>20</left>
+						<top>255</top>
+						<width>290</width>
+						<height>40</height>
+						<label>$INFO[ListItem.Label][CR][COLOR grey]$INFO[ListItem.Duration][/COLOR]</label>
+						<font>font12</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>center</align>
+					</control>
+				</control>
+			</itemlayout>
+			<focusedlayout width="370" height="340">
+				<control type="group">
+					<control type="image">
+						<left>0</left>
+						<top>5</top>
+						<width>330</width>
+						<height>250</height>
+						<aspectratio>scale</aspectratio>
+						<texture border="4" fallback="DefaultAddonGame.png">$INFO[ListItem.Art(thumb)]</texture>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>5</top>
+						<width>330</width>
+						<height>250</height>
+						<texture background="true" border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+					</control>
+					<control type="label">
+						<left>20</left>
+						<top>255</top>
+						<width>290</width>
+						<height>40</height>
+						<label>$INFO[ListItem.Label][CR][COLOR grey]$INFO[ListItem.Duration][/COLOR]</label>
+						<font>font12</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>center</align>
+					</control>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="grouplist" id="9001">
+			<orientation>vertical</orientation>
+			<left>1140</left>
+			<top>85</top>
+			<width>1500</width>
+			<height>800</height>
+			<onleft>11</onleft>
+			<onright>11</onright>
+			<include content="DefaultDialogButton">
+				<param name="id" value="2" />
+				<param name="label" value="$LOCALIZE[35270]" />
+				<param name="width" value="350" />
+			</include>
+			<include content="DefaultDialogButton">
+				<param name="id" value="3" />
+				<param name="label" value="$LOCALIZE[35271]" />
+				<param name="width" value="350" />
+			</include>
+			<!--
+			<include content="DefaultDialogButton">
+				<param name="id" value="4" />
+				<param name="label" value="$LOCALIZE[20406]" />
+				<param name="width" value="350" />
+				<param name="visible" value="Control.IsEnabled(4)" />
+			</include>
+			-->
+		</control>
+		<include content="UpDownArrows">
+			<param name="container_id" value="11" />
+			<param name="posx" value="726" />
+			<param name="up_posy" value="-40" />
+			<param name="down_posy" value="820" />
+		</include>
+	</controls>
+</window>
