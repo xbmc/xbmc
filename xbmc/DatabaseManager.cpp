@@ -63,6 +63,7 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
   { CPVREpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
   { CActiveAEDSPDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseADSP); }
+  { KODI::GAME::CSavestateDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseSavestates); }
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
   m_bIsUpgrading = false;
 }

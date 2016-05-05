@@ -19,11 +19,13 @@
  */
 #pragma once
 
+#include "dbwrappers/DenormalizedDatabase.h"
+#include "dbwrappers/DatabaseQuery.h"
+
 #include <string>
 
 #define SAVESTATES_DATABASE_NAME  "Savestates"
 
-class CFileItem;
 class CFileItemList;
 class CVariant;
 
@@ -33,11 +35,15 @@ namespace GAME
 {
   class CSavestate;
 
-  class CSavestateDatabase
+  class CSavestateDatabase : public CDenormalizedDatabase,
+                             public IDatabaseQueryRuleFactory
   {
   public:
     CSavestateDatabase();
     virtual ~CSavestateDatabase() = default;
+
+    // implementation of CDatabase
+    virtual bool Open() override;
 
     bool AddSavestate(const CSavestate& save);
 
@@ -51,8 +57,20 @@ namespace GAME
 
     bool ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient = "");
 
-  private:
-    CFileItem* CreateFileItem(const CVariant& object) const;
+    // implementation of IDatabaseQueryRuleFactory
+    virtual CDatabaseQueryRule *CreateRule() const override { return nullptr; } // TODO
+    virtual CDatabaseQueryRuleCombination *CreateCombination() const override { return nullptr; } // TODO
+
+  protected:
+    // implementation of CDatabase
+    virtual void UpdateTables(int version) override;
+    virtual int GetSchemaVersion() const override { return 1; }
+    virtual const char *GetBaseDBName() const override { return SAVESTATES_DATABASE_NAME; }
+
+    // implementation of CDenormalizedDatabase
+    virtual bool Exists(const CVariant& object, int& idObject) override;
+    virtual bool IsValid(const CVariant& object) const override;
+    virtual CFileItem* CreateFileItem(const CVariant& object) const override;
   };
 }
 }

@@ -39,42 +39,128 @@ using namespace GAME;
 
 #define SAVESTATE_OBJECT  "savestate"
 
-CSavestateDatabase::CSavestateDatabase() = default;
+CSavestateDatabase::CSavestateDatabase() :
+  CDenormalizedDatabase(SAVESTATE_OBJECT)
+{
+  BeginDeclarations();
+  DeclareIndex(SAVESTATE_FIELD_PATH, "VARCHAR(512)");
+  DeclareOneToMany(SAVESTATE_FIELD_GAMECLIENT, "VARCHAR(64)");
+  DeclareOneToMany(SAVESTATE_FIELD_GAME_PATH, "VARCHAR(1024)");
+  DeclareOneToMany(SAVESTATE_FIELD_GAME_CRC, "CHAR(8)");
+}
+
+bool CSavestateDatabase::Open()
+{
+  return CDatabase::Open(g_advancedSettings.m_databaseSavestates);
+}
+
+void CSavestateDatabase::UpdateTables(int version)
+{
+  if (version < 1)
+  {
+    BeginDeclarations();
+    DeclareIndex(SAVESTATE_FIELD_PATH, "VARCHAR(512)");
+    DeclareOneToMany(SAVESTATE_FIELD_GAMECLIENT, "VARCHAR(64)");
+    DeclareOneToMany(SAVESTATE_FIELD_GAME_PATH, "VARCHAR(1024)");
+    DeclareOneToMany(SAVESTATE_FIELD_GAME_CRC, "CHAR(8)");
+  }
+}
 
 bool CSavestateDatabase::AddSavestate(const CSavestate& save)
 {
-  //! @todo
-  return false;
+  if (!AddObject(&save))
+  {
+    CLog::Log(LOGERROR, "Failed to update the database with savestate information");
+    return false;
+  }
+  return true;
 }
 
 bool CSavestateDatabase::GetSavestate(const std::string& path, CSavestate& save)
 {
-  //! @todo
-  return false;
+  return GetObjectByIndex(SAVESTATE_FIELD_PATH, path, &save);
 }
 
 bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items, const std::string& gamePath, const std::string& gameClient /* = "" */)
 {
-  //! @todo
+  std::map<std::string, int> predicates;
+  if (GetItemID(SAVESTATE_FIELD_GAME_PATH, gamePath, predicates[SAVESTATE_FIELD_GAME_PATH]))
+  {
+    if (!gameClient.empty())
+      GetItemID(SAVESTATE_FIELD_GAMECLIENT, gameClient, predicates[SAVESTATE_FIELD_GAMECLIENT]);
+
+    return GetObjectsNav(items, predicates);
+  }
   return false;
 }
 
 bool CSavestateDatabase::RenameSavestate(const std::string& path, const std::string& label)
 {
-  //! @todo
+  CSavestate save;
+  if (GetObjectByIndex(SAVESTATE_FIELD_PATH, path, &save))
+  {
+    if (save.Label() != label)
+    {
+      save.SetLabel(label);
+      return AddObject(&save) != -1;
+    }
+  }
   return false;
 }
 
 bool CSavestateDatabase::DeleteSavestate(const std::string& path)
 {
-  //! @todo
-  return false;
+  using namespace XFILE;
+
+  bool bSuccess = false;
+
+  if (DeleteObjectByIndex(SAVESTATE_FIELD_PATH, path))
+  {
+    if (!CFile::Delete(path))
+      CLog::Log(LOGERROR, "Failed to delete savestate %s", path.c_str());
+    else
+    {
+      std::string thumbPath = CSavestateUtils::MakeThumbPath(path);
+      if (CFile::Exists(thumbPath))
+      {
+        if (!CFile::Delete(thumbPath))
+          CLog::Log(LOGERROR, "Failed to delete thumbnail %s", thumbPath.c_str());
+      }
+
+      bSuccess = true;
+    }
+  }
+
+  return bSuccess;
 }
 
 bool CSavestateDatabase::ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient /* = "" */)
 {
-  //! @todo
+  CFileItemList items;
+  if (GetSavestatesNav(items, gamePath, gameClient))
+  {
+    bool bSuccess = true;
+
+    for (int i = 0; i < items.Size(); i++)
+      bSuccess &= DeleteSavestate(items[i]->GetPath());
+
+    return bSuccess;
+  }
   return false;
+}
+
+bool CSavestateDatabase::Exists(const CVariant& object, int& idObject)
+{
+  if (!IsValid(object))
+    return false;
+
+  CSavestate dummy;
+  return GetObjectByIndex(SAVESTATE_FIELD_PATH, object[SAVESTATE_FIELD_PATH], &dummy);
+}
+
+bool CSavestateDatabase::IsValid(const CVariant& object) const
+{
+  return !object[SAVESTATE_FIELD_PATH].asString().empty();
 }
 
 CFileItem* CSavestateDatabase::CreateFileItem(const CVariant& object) const
