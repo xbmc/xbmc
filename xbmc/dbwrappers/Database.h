@@ -139,12 +139,6 @@ public:
   bool CommitMultipleExecute();
 
   /*!
-   * @brief Open a new dataset.
-   * @return True if the dataset was created successfully, false otherwise.
-   */
-  bool OpenDS();
-
-  /*!
    * @brief Put an INSERT or REPLACE query in the queue.
    * @param strQuery The query to queue.
    * @return True if the query was added successfully, false otherwise.
