@@ -40,10 +40,6 @@
 #define INPUTSTREAM_HELPER_DLL "/library.kodi.inputstream/" INPUTSTREAM_HELPER_DLL_NAME
 #endif
 
-#if defined(ANDROID)
-#include <sys/stat.h>
-#endif
-
 /* current input stream API version */
 #define KODI_INPUTSTREAM_API_VERSION "1.0.0"
 
@@ -77,15 +73,6 @@ public:
     std::string libBasePath;
     libBasePath  = ((cb_array*)m_Handle)->libPath;
     libBasePath += INPUTSTREAM_HELPER_DLL;
-
-#if defined(ANDROID)
-    struct stat st;
-    if (stat(libBasePath.c_str(), &st) != 0)
-    {
-      std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-      libBasePath = tempbin + "/" + INPUTSTREAM_HELPER_DLL_NAME;
-    }
-#endif
 
     m_libKODI_inputstream = dlopen(libBasePath.c_str(), RTLD_LAZY);
     if (m_libKODI_inputstream == nullptr)
