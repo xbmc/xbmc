@@ -359,7 +359,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was added successfully, false otherwise.
      */
-    PVR_ERROR AddTimer(const CPVRTimerInfoTag &timer);
+    PVRError AddTimer(const CPVRTimerInfoTag &timer);
 
     /*!
      * @brief Update a timer on the backend.
@@ -367,7 +367,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was updated successfully, false otherwise.
      */
-    PVR_ERROR UpdateTimer(const CPVRTimerInfoTag &timer);
+    PVRError UpdateTimer(const CPVRTimerInfoTag &timer);
 
     /*!
      * @brief Delete a timer from the backend.
@@ -376,7 +376,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
+    PVRError DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
 
     /*!
      * @brief Rename a timer on the backend.
@@ -385,22 +385,22 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the timer was renamed successfully, false otherwise.
      */
-    PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
+    PVRError RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
 
     /*!
      * @brief Get all supported timer types.
      * @param results The container to store the result in.
-     * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+     * @return PVRError_NO_ERROR if the list has been fetched successfully.
      */
-    PVR_ERROR GetTimerTypes(CPVRTimerTypes& results) const;
+    PVRError GetTimerTypes(CPVRTimerTypes& results) const;
 
     /*!
      * @brief Get all timer types supported by a certain client.
      * @param iClientId The id of the client.
      * @param results The container to store the result in.
-     * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+     * @return PVRError_NO_ERROR if the list has been fetched successfully.
      */
-    PVR_ERROR GetTimerTypes(CPVRTimerTypes& results, int iClientId) const;
+    PVRError GetTimerTypes(CPVRTimerTypes& results, int iClientId) const;
 
     //@}
 
@@ -427,7 +427,7 @@ namespace PVR
      * @param deleted Return deleted recordings
      * @return The amount of recordings that were added.
      */
-    PVR_ERROR GetRecordings(CPVRRecordings *recordings, bool deleted);
+    PVRError GetRecordings(CPVRRecordings *recordings, bool deleted);
 
     /*!
      * @brief Rename a recordings on the backend.
@@ -435,7 +435,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the recording was renamed successfully, false otherwise.
      */
-    PVR_ERROR RenameRecording(const CPVRRecording &recording);
+    PVRError RenameRecording(const CPVRRecording &recording);
 
     /*!
      * @brief Delete a recording from the backend.
@@ -443,7 +443,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the recordings was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteRecording(const CPVRRecording &recording);
+    PVRError DeleteRecording(const CPVRRecording &recording);
 
     /*!
      * @brief Undelete a recording from the backend.
@@ -451,13 +451,13 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the recording was undeleted successfully, false otherwise.
      */
-    PVR_ERROR UndeleteRecording(const CPVRRecording &recording);
+    PVRError UndeleteRecording(const CPVRRecording &recording);
 
     /*!
      * @brief Delete all recordings permanent which in the deleted folder on the backend.
-     * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
+     * @return PVRError_NO_ERROR if the recordings has been deleted successfully.
      */
-    PVR_ERROR DeleteAllRecordingsFromTrash();
+    PVRError DeleteAllRecordingsFromTrash();
 
     /*!
      * @brief Set play count of a recording on the backend.
@@ -466,7 +466,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the recording's play count was set successfully, false otherwise.
      */
-    bool SetRecordingPlayCount(const CPVRRecording &recording, int count, PVR_ERROR *error);
+    bool SetRecordingPlayCount(const CPVRRecording &recording, int count, PVRError *error);
 
     /*!
      * @brief Set the last watched position of a recording on the backend.
@@ -475,7 +475,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the last played position was updated successfully, false otherwise
     */
-    bool SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition, PVR_ERROR *error);
+    bool SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition, PVRError *error);
 
     /*!
     * @brief Retrieve the last watched position of a recording on the backend.
@@ -524,16 +524,16 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the EPG was transfered successfully, false otherwise.
      */
-    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start, time_t end);
+    PVRError GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start, time_t end);
 
     /*!
      * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
      * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
      * client needs to know about the epg time frame Kodi uses.
      * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
-     * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+     * @return PVRError_NO_ERROR if new value was successfully set.
      */
-    PVR_ERROR SetEPGTimeFrame(int iDays);
+    PVRError SetEPGTimeFrame(int iDays);
 
     //@}
 
@@ -546,7 +546,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return The amount of channels that were added.
      */
-    PVR_ERROR GetChannels(CPVRChannelGroupInternal *group);
+    PVRError GetChannels(CPVRChannelGroupInternal *group);
 
     /*!
      * @brief Check whether a client supports channel groups.
@@ -561,7 +561,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return The amount of groups that were added.
      */
-    PVR_ERROR GetChannelGroups(CPVRChannelGroups *groups);
+    PVRError GetChannelGroups(CPVRChannelGroups *groups);
 
     /*!
      * @brief Get all group members of a channel group.
@@ -569,7 +569,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return The amount of channels that were added.
      */
-    PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group);
+    PVRError GetChannelGroupMembers(CPVRChannelGroup *group);
 
     //@}
 
