@@ -501,8 +501,12 @@ void CGUIEPGGridContainer::UpdateItems()
     if (prevSelectedEpgTag->StartAsUTC().IsValid()) // "normal" tag selected
     {
       newBlockIndex = (prevSelectedEpgTag->StartAsUTC() - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
-      channelUid    = prevSelectedEpgTag->ChannelTag()->UniqueID();
-      broadcastUid  = prevSelectedEpgTag->UniqueBroadcastID();
+
+      const CPVRChannelPtr channel(prevSelectedEpgTag->ChannelTag());
+      if (channel)
+        channelUid = channel->UniqueID();
+
+      broadcastUid = prevSelectedEpgTag->UniqueBroadcastID();
     }
     else // "gap" tag seleceted
     {
@@ -513,8 +517,12 @@ void CGUIEPGGridContainer::UpdateItems()
         if (tag && tag->EndAsUTC().IsValid())
         {
           newBlockIndex = (tag->EndAsUTC() - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
-          channelUid    = tag->ChannelTag()->UniqueID();
-          broadcastUid  = tag->UniqueBroadcastID();
+
+          const CPVRChannelPtr channel(tag->ChannelTag());
+          if (channel)
+            channelUid = channel->UniqueID();
+
+          broadcastUid = tag->UniqueBroadcastID();
         }
       }
     }
