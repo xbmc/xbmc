@@ -91,9 +91,8 @@ public:
 
   /*! \brief Check whether an addon has been marked as broken via BreakAddon.
    \param addonID id of the addon to check
-   \return reason if the addon is broken, blank otherwise
    \sa BreakAddon */
-  std::string IsAddonBroken(const std::string &addonID);
+  bool IsAddonBroken(const std::string &addonID);
 
   bool BlacklistAddon(const std::string& addonID);
   bool RemoveAddonFromBlacklist(const std::string& addonID);

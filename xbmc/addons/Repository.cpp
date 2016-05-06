@@ -282,7 +282,7 @@ bool CRepositoryUpdateJob::DoWork()
 
     if (localAddon)
     {
-      bool brokenInDb = !database.IsAddonBroken(addon->ID()).empty();
+      bool brokenInDb = database.IsAddonBroken(addon->ID());
       if (!broken.empty() && !brokenInDb)
       {
         //newly broken

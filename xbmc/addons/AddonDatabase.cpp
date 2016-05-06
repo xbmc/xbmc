@@ -1002,9 +1002,9 @@ bool CAddonDatabase::GetBlacklisted(std::set<std::string>& addons)
   return false;
 }
 
-std::string CAddonDatabase::IsAddonBroken(const std::string &addonID)
+bool CAddonDatabase::IsAddonBroken(const std::string &addonID)
 {
-  return GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str()));
+  return !GetSingleValue(PrepareSQL("SELECT reason FROM broken WHERE addonID='%s'", addonID.c_str())).empty();
 }
 
 bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
