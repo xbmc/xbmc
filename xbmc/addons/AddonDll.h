@@ -191,7 +191,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   {
     delete m_pDll;
     m_pDll = NULL;
-    new CAddonStatusHandler(ID(), ADDON_STATUS_UNKNOWN, "Can't load Dll", false);
+    new CAddonStatusHandler(shared_from_this(), ADDON_STATUS_UNKNOWN, "Can't load Dll", false);
     return false;
   }
 
@@ -238,12 +238,12 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
       if ((status = TransferSettings()) == ADDON_STATUS_OK)
         m_initialized = true;
       else
-        new CAddonStatusHandler(ID(), status, "", false);
+        new CAddonStatusHandler(shared_from_this(), status, "", false);
     }
     else
     { // Addon failed initialization
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
-      new CAddonStatusHandler(ID(), status, "", false);
+      new CAddonStatusHandler(shared_from_this(), status, "", false);
     }
   }
   catch (std::exception &e)
@@ -524,7 +524,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
 
   if (restart || reportStatus != ADDON_STATUS_OK)
   {
-    new CAddonStatusHandler(ID(), restart ? ADDON_STATUS_NEED_RESTART : reportStatus, "", true);
+    new CAddonStatusHandler(shared_from_this(), restart ? ADDON_STATUS_NEED_RESTART : reportStatus, "", true);
   }
 
   return ADDON_STATUS_OK;
