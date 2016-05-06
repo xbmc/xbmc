@@ -30,7 +30,7 @@ namespace MUSIC_INFO
   class EmbeddedArtInfo : public IArchivable
   {
   public:
-    EmbeddedArtInfo() { }
+    EmbeddedArtInfo() : size(0) { }
     EmbeddedArtInfo(size_t size, const std::string &mime);
     ~EmbeddedArtInfo() { }
 

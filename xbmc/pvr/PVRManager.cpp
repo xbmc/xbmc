@@ -94,6 +94,7 @@ CPVRManager::CPVRManager(void) :
     m_currentFile(NULL),
     m_database(NULL),
     m_bFirstStart(true),
+    m_bIsSwitchingChannels(false),
     m_bEpgsCreated(false),
     m_progressHandle(NULL),
     m_managerState(ManagerStateStopped)

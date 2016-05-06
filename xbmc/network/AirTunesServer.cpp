@@ -625,7 +625,8 @@ void CAirTunesServer::StopServer(bool bWait)
  }
 
 CAirTunesServer::CAirTunesServer(int port, bool nonlocal)
-: CThread("AirTunesActionThread")
+: CThread("AirTunesActionThread"),
+  m_pRaop(nullptr)
 {
   m_port = port;
   m_pLibShairplay = new DllLibShairplay();
