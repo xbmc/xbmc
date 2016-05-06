@@ -30,15 +30,17 @@ namespace ADDON
 std::map<std::string, CInputStream::Config> CInputStream::m_configMap;
 CCriticalSection CInputStream::m_parentSection;
 
-std::unique_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::shared_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
   std::string listitemprops = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@listitemprops");
   std::string extensions = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
   std::string name(ext->plugin->identifier);
-  return std::unique_ptr<CInputStream>(new CInputStream(std::move(props),
+  std::shared_ptr<CInputStream> istr(new CInputStream(std::move(props),
                                                         std::move(name),
                                                         std::move(listitemprops),
                                                         std::move(extensions)));
+  istr->CheckConfig();
+  return istr;
 }
 
 CInputStream::CInputStream(AddonProps props, std::string name, std::string listitemprops, std::string extensions)
@@ -56,7 +58,17 @@ CInputStream::CInputStream(AddonProps props, std::string name, std::string listi
   {
     StringUtils::Trim(ext);
   }
+}
 
+void CInputStream::SaveSettings()
+{
+  CAddon::SaveSettings();
+  if (!m_bIsChild)
+    UpdateConfig();
+}
+
+void CInputStream::CheckConfig()
+{
   bool hasConfig = false;
 
   {
@@ -66,13 +78,6 @@ CInputStream::CInputStream(AddonProps props, std::string name, std::string listi
   }
 
   if (!m_bIsChild && !hasConfig)
-    UpdateConfig();
-}
-
-void CInputStream::SaveSettings()
-{
-  CAddon::SaveSettings();
-  if (!m_bIsChild)
     UpdateConfig();
 }
 

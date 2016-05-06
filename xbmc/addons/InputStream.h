@@ -37,7 +37,7 @@ namespace ADDON
   {
   public:
 
-    static std::unique_ptr<CInputStream> FromExtension(AddonProps props, const cp_extension_t* ext);
+    static std::shared_ptr<CInputStream> FromExtension(AddonProps props, const cp_extension_t* ext);
 
     explicit CInputStream(AddonProps props)
       : InputStreamDll(std::move(props))
@@ -91,6 +91,7 @@ namespace ADDON
     void UpdateStreams();
     void DisposeStreams();
     void UpdateConfig();
+    void CheckConfig();
 
     std::vector<std::string> m_fileItemProps;
     std::vector<std::string> m_extensionsList;
