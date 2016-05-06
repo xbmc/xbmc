@@ -1284,3 +1284,11 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
     dataPos = input.find_first_not_of(delimiter, nextDelimPos);
   }
 }
+
+uint64_t StringUtils::ToUint64(std::string str, uint64_t fallback) noexcept
+{
+  std::istringstream iss(str);
+  uint64_t result(fallback);
+  iss >> result;
+  return result;
+}

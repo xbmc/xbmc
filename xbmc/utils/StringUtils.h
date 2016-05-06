@@ -244,6 +244,7 @@ public:
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
   static std::vector<std::string> Tokenize(const std::string& input, const char delimiter);
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter);
+  static uint64_t ToUint64(std::string str, uint64_t fallback) noexcept;
 };
 
 struct sortstringbyname
