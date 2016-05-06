@@ -19,7 +19,7 @@
  */
 
 #include "AddonUtils.h"
-#include "guilib/GraphicContext.h"
+#include "Application.h"
 #include "utils/XBMCTinyXML.h"
 #include "addons/Skin.h"
 #ifdef ENABLE_XBMC_TRACE_API
@@ -33,12 +33,12 @@ namespace XBMCAddonUtils
   // Some simple helpers
   void guiLock()
   {
-    g_graphicsContext.Lock();
+    g_application.LockFrameMoveGuard();
   }
 
   void guiUnlock()
   {
-    g_graphicsContext.Unlock();
+    g_application.UnlockFrameMoveGuard();
   }
   //***********************************************************
   
