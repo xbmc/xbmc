@@ -168,6 +168,10 @@ void CPVRClients::Unload(void)
   m_bIsPlayingRecording  = false;
   m_strPlayingClientName = "";
 
+  for (const auto &client : m_clientMap)
+  {
+    client.second->Destroy();
+  }
   m_clientMap.clear();
 }
 
