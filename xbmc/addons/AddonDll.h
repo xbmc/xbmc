@@ -243,7 +243,6 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
     else
     { // Addon failed initialization
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
-      new CAddonStatusHandler(shared_from_this(), status, "", false);
     }
   }
   catch (std::exception &e)
