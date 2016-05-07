@@ -273,12 +273,6 @@ namespace XBMCAddon
       // Player_GetSubtitles
       String getSubtitles();
 
-      /**
-       * DisableSubtitles() -- disable subtitles
-       */
-      // Player_DisableSubtitles
-      void disableSubtitles();
-
       // Player_getAvailableSubtitleStreams
       /**
        * getAvailableSubtitleStreams() -- get Subtitle stream names
