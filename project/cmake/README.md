@@ -57,7 +57,7 @@ as these steps are covered already by the CMake project.
 ### Android
 
 The dependencies needed to compile for Android can be found in
-[docs/README.osx](https://github.com/xbmc/xbmc/tree/master/docs/README.android)
+[docs/README.android](https://github.com/xbmc/xbmc/tree/master/docs/README.android)
 . All described steps have to be executed (except 5.2 which is replaced by the
 respective CMake command below).
 
