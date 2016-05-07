@@ -129,32 +129,14 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
       // link profiles
       // TODO: intent selection, switch output to 16 bits?
       cmsSetAdaptationState(0.0);
-#ifdef _DEBUG
-      int64_t start;
-      start = CurrentHostCounter();
-#endif
       cmsHTRANSFORM deviceLink =
         cmsCreateTransform(sourceProfile, TYPE_RGB_FLT,
             m_hProfile, TYPE_RGB_FLT,
             INTENT_ABSOLUTE_COLORIMETRIC, 0);
-#ifdef _DEBUG
-      int64_t end, freq;
-      end = CurrentHostCounter();
-      freq = CurrentHostFrequency();
-      CLog::Log(LOGDEBUG,"Profile linking: %.2fms", 1000.f * (end - start) / freq);
-#endif
 
       // sample the transformation
       *clutSize = 1 << CSettings::GetInstance().GetInt("videoscreen.cmslutsize");
-#ifdef _DEBUG
-      start = CurrentHostCounter();
-#endif
       Create3dLut(deviceLink, clutData, clutSize);
-#ifdef _DEBUG
-      end = CurrentHostCounter();
-      freq = CurrentHostFrequency();
-      CLog::Log(LOGDEBUG,"Profile sampling: %.2fms", 1000.f * (end - start) / freq);
-#endif
 
       // free gamma curve, source profile and transformation
       cmsDeleteTransform(deviceLink);
@@ -327,18 +309,6 @@ bool CColorManager::Load3dLut(const std::string filename, uint16_t **CLUT, int *
     }
 
     lutFile.Close();
-
-#ifdef _DEBUG // debug 3dLUT greyscale
-    for (int y=0; y<rSize; y+=1)
-    {
-      int index = 3*(y*rSize*rSize + y*rSize + y);
-      CLog::Log(LOGDEBUG, "  %d (%d): %d %d %d\n",
-          (int)round(y * 255 / (rSize-1.0)), y,
-          (int)round((*CLUT)[index+0]/256),
-          (int)round((*CLUT)[index+1]/256),
-          (int)round((*CLUT)[index+2]/256));
-    }
-#endif
 
     return true;
 }
@@ -526,18 +496,6 @@ bool CColorManager::Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, in
       }
     }
 
-#ifdef _DEBUG // debug 3dLUT greyscale
-/* RGB stripes to verify near black resolution
-    (*clutData)[3*(0*lutResolution*lutResolution + 0*lutResolution + 0)] = 65535;
-    (*clutData)[3*(0*lutResolution*lutResolution + 0*lutResolution + 0)+1] = 0;
-    (*clutData)[3*(0*lutResolution*lutResolution + 0*lutResolution + 0)+2] = 0;
-    (*clutData)[3*(1*lutResolution*lutResolution + 1*lutResolution + 1)] = 0;
-    (*clutData)[3*(1*lutResolution*lutResolution + 1*lutResolution + 1)+1] = 65535;
-    (*clutData)[3*(1*lutResolution*lutResolution + 1*lutResolution + 1)+2] = 0;
-    (*clutData)[3*(2*lutResolution*lutResolution + 2*lutResolution + 2)] = 0;
-    (*clutData)[3*(2*lutResolution*lutResolution + 2*lutResolution + 2)+1] = 0;
-    (*clutData)[3*(2*lutResolution*lutResolution + 2*lutResolution + 2)+2] = 65535;
-*/
     for (int y=0; y<lutResolution; y+=1)
     {
       int index = 3*(y*lutResolution*lutResolution + y*lutResolution + y);
