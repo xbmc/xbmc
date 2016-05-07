@@ -1,3 +1,6 @@
+[B]2.8.5[/B]
+- fixed: metacritic rating
+
 [B]2.8.4[/B]
 - update author name
 

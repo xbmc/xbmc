@@ -70,6 +70,9 @@
 			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
 				<expression>&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;</expression>
 			</RegExp>
+			<RegExp input="$$5" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+"> 
+				<expression>&lt;Runtime&gt;([^&lt;]+)&lt;/Runtime&gt;</expression> 
+			</RegExp>
 			<RegExp input="$INFO[RatingS]" output="$$12" dest="4+">
 				<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="12+">
 					<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>

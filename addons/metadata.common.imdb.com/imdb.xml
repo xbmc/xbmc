@@ -78,7 +78,7 @@
 	<ParseMetaCriticRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;rating&gt;\1.\2&lt;/rating&gt;" dest="2">
-				<expression>&lt;a\shref=&quot;criticreviews[^&quot;]*?&quot;\stitle[^&gt;]*?&gt;\s(\d*)(\d)/</expression>
+				<expression>&lt;div\sclass=&quot;metacriticScore\sscore_favorable\stitleReviewBarSubItem&quot;&gt;.*?&lt;span&gt;(\d*)(\d)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
