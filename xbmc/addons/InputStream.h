@@ -91,6 +91,7 @@ namespace ADDON
     void UpdateStreams();
     void DisposeStreams();
     void UpdateConfig();
+    void CheckConfig();
 
     std::vector<std::string> m_fileItemProps;
     std::vector<std::string> m_extensionsList;
@@ -103,6 +104,7 @@ namespace ADDON
     {
       std::vector<std::string> m_pathList;
       bool m_parentBusy;
+      bool m_ready;
     };
     static std::map<std::string, Config> m_configMap;
   };

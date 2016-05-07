@@ -26,11 +26,14 @@
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
 #include "addons/binary/interfaces/AddonInterfaces.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogOK.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 #include "Util.h"
@@ -191,7 +194,18 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   {
     delete m_pDll;
     m_pDll = NULL;
-    new CAddonStatusHandler(ID(), ADDON_STATUS_UNKNOWN, "Can't load Dll", false);
+
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (pDialog)
+    {
+      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      pDialog->SetHeading(CVariant{heading});
+      pDialog->SetLine(1, CVariant{24070});
+      pDialog->SetLine(2, CVariant{24071});
+      pDialog->SetLine(2, CVariant{"Can't load shared library"});
+      pDialog->Open();
+    }
+
     return false;
   }
 
@@ -243,7 +257,16 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
     else
     { // Addon failed initialization
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
-      new CAddonStatusHandler(ID(), status, "", false);
+      
+      CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (pDialog)
+      {
+        std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+        pDialog->SetHeading(CVariant{heading});
+        pDialog->SetLine(1, CVariant{24070});
+        pDialog->SetLine(2, CVariant{24071});
+        pDialog->Open();
+      }
     }
   }
   catch (std::exception &e)

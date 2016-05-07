@@ -50,6 +50,8 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATU
   : CThread(("AddonStatus " + addonID).c_str()),
     m_status(ADDON_STATUS_UNKNOWN)
 {
+  // TODO: the status handled CAddonStatusHandler by is related to the class, not the instance
+  // having CAddonMgr construct an instance makes no sense
   if (!CAddonMgr::GetInstance().GetAddon(addonID, m_addon))
     return;
 
@@ -88,31 +90,8 @@ void CAddonStatusHandler::Process()
 
   std::string heading = StringUtils::Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
 
-  /* AddOn lost connection to his backend (for ones that use Network) */
-  if (m_status == ADDON_STATUS_LOST_CONNECTION)
-  {
-    if (m_addon->Type() == ADDON_PVRDLL)
-    {
-      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, m_addon->Name().c_str(), g_localizeStrings.Get(36030)); // connection lost
-      // TODO handle disconnects after the add-on's been initialised
-    }
-    else
-    {
-      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      if (!pDialog) return;
-
-      pDialog->SetHeading(CVariant{heading});
-      pDialog->SetLine(1, CVariant{24070});
-      pDialog->SetLine(2, CVariant{24073});
-      pDialog->Open();
-
-      if (pDialog->IsConfirmed())
-        CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
-    }
-  }
   /* Request to restart the AddOn and data structures need updated */
-  else if (m_status == ADDON_STATUS_NEED_RESTART)
+  if (m_status == ADDON_STATUS_NEED_RESTART)
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
@@ -146,18 +125,6 @@ void CAddonStatusHandler::Process()
       m_addon->SaveSettings();
       CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }
-  }
-  /* A unknown event has occurred */
-  else if (m_status == ADDON_STATUS_UNKNOWN)
-  {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(CVariant{heading});
-    pDialog->SetLine(1, CVariant{24070});
-    pDialog->SetLine(2, CVariant{24071});
-    pDialog->SetLine(3, CVariant{m_message});
-    pDialog->Open();
   }
 }
 
