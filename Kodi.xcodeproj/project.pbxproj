@@ -139,6 +139,8 @@
 		228FA65E1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
 		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
+		2AB491701CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AB4916E1CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp */; };
+		2AB491711CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AB4916E1CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp */; };
 		2AC7EB5A1C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */; };
 		2AC7EB5B1C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */; };
 		2AC7EB5C1C2330B300BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */; };
@@ -2580,6 +2582,8 @@
 		228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoScanner.cpp; sourceTree = "<group>"; };
 		2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
 		2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
+		2AB4916E1CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPRequestHandlerUtils.cpp; sourceTree = "<group>"; };
+		2AB4916F1CDDF1920004C263 /* HTTPRequestHandlerUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPRequestHandlerUtils.h; sourceTree = "<group>"; };
 		2AC7EB561C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRTimerRules.cpp; sourceTree = "<group>"; };
 		2AC7EB571C21F6BA00BDAA95 /* GUIWindowPVRTimerRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowPVRTimerRules.h; sourceTree = "<group>"; };
 		2AC7EB581C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowPVRTimersBase.cpp; sourceTree = "<group>"; };
@@ -7482,6 +7486,8 @@
 				DFCA6ABC152245CD000BFAAE /* HTTPJsonRpcHandler.h */,
 				395C29E11A98A15700EBC7AD /* HTTPPythonHandler.cpp */,
 				395C29E21A98A15700EBC7AD /* HTTPPythonHandler.h */,
+				2AB4916E1CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp */,
+				2AB4916F1CDDF1920004C263 /* HTTPRequestHandlerUtils.h */,
 				DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */,
 				DFCA6ABE152245CD000BFAAE /* HTTPVfsHandler.h */,
 				DFCA6ABF152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp */,
@@ -10160,6 +10166,7 @@
 				18B7C7CD1294222E009E7A26 /* GUIListItemLayout.cpp in Sources */,
 				18B7C7CE1294222E009E7A26 /* GUIListLabel.cpp in Sources */,
 				18B7C7CF1294222E009E7A26 /* GUIMessage.cpp in Sources */,
+				2AB491701CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */,
 				18B7C7D01294222E009E7A26 /* GUIMoverControl.cpp in Sources */,
 				18B7C7D11294222E009E7A26 /* GUIMultiImage.cpp in Sources */,
 				18B7C7D21294222E009E7A26 /* GUIMultiSelectText.cpp in Sources */,
@@ -11321,6 +11328,7 @@
 				E49913B2174E5F3700741B6D /* WebSocket.cpp in Sources */,
 				E49913B3174E5F3700741B6D /* WebSocketManager.cpp in Sources */,
 				E49913B4174E5F3700741B6D /* WebSocketV13.cpp in Sources */,
+				2AB491711CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */,
 				E49913B5174E5F3700741B6D /* WebSocketV8.cpp in Sources */,
 				E49913B6174E5F3C00741B6D /* AirPlayServer.cpp in Sources */,
 				E49913B7174E5F3C00741B6D /* AirTunesServer.cpp in Sources */,
