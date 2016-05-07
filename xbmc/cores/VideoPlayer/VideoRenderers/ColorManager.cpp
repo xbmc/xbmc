@@ -505,8 +505,6 @@ bool CColorManager::Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, in
         (int)round((*clutData)[index+1]),
         (int)round((*clutData)[index+2]));
   }
-#endif
-
 }
 
 
