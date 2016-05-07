@@ -46,12 +46,11 @@ namespace ADDON
 
 CCriticalSection CAddonStatusHandler::m_critSection;
 
-CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATUS status, std::string message, bool sameThread)
-  : CThread(("AddonStatus " + addonID).c_str()),
+CAddonStatusHandler::CAddonStatusHandler(AddonPtr addon, ADDON_STATUS status, std::string message, bool sameThread)
+  : CThread(("AddonStatus " + addon->ID()).c_str()),
     m_status(ADDON_STATUS_UNKNOWN)
 {
-  if (!CAddonMgr::GetInstance().GetAddon(addonID, m_addon))
-    return;
+  m_addon = addon;
 
   CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
 
