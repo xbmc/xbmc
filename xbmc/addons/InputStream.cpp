@@ -85,18 +85,19 @@ void CInputStream::UpdateConfig()
 {
   std::string pathList;
   ADDON_STATUS status = Create();
-  if (status == ADDON_STATUS_PERMANENT_FAILURE)
-    return;
 
-  try
+  if (status != ADDON_STATUS_PERMANENT_FAILURE)
   {
-    pathList = m_pStruct->GetPathList();
+    try
+    {
+      pathList = m_pStruct->GetPathList();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "CInputStream::Supports - could not get a list of paths. Reason: %s", e.what());
+    }
+    Destroy();
   }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::Supports - could not get a list of paths. Reason: %s", e.what());
-  }
-  Destroy();
 
   Config config;
   config.m_pathList = StringUtils::Tokenize(pathList, "|");
@@ -111,6 +112,10 @@ void CInputStream::UpdateConfig()
     config.m_parentBusy = false;
   else
     config.m_parentBusy = it->second.m_parentBusy;
+
+  config.m_ready = true;
+  if (status == ADDON_STATUS_PERMANENT_FAILURE)
+    config.m_ready = false;
 
   m_configMap[ID()] = config;
 }
@@ -131,6 +136,16 @@ bool CInputStream::UseParent()
 
 bool CInputStream::Supports(const CFileItem &fileitem)
 {
+  {
+    CSingleLock lock(m_parentSection);
+
+    auto it = m_configMap.find(ID());
+    if (it == m_configMap.end())
+      return false;
+    if (!it->second.m_ready)
+      return false;
+  }
+
   // check if a specific inputstream addon is requested
   CVariant addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())

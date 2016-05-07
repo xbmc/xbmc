@@ -104,6 +104,7 @@ namespace ADDON
     {
       std::vector<std::string> m_pathList;
       bool m_parentBusy;
+      bool m_ready;
     };
     static std::map<std::string, Config> m_configMap;
   };
