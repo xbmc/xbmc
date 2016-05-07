@@ -167,7 +167,6 @@ private:
   CMS_TRC_TYPE curIccGammaMode;
   int curIccGamma;  // gamma multiplied by 100
 
- 
 };
 
 
