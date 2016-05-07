@@ -82,7 +82,8 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
     m_hDitherSize = glGetUniformLocation(programHandle, "m_dithersize");
   }
   //   3DLUT
-  if (m_3DLUT) {
+  if (m_3DLUT)
+  {
     m_hCLUT        = glGetUniformLocation(programHandle, "m_CLUT");
     m_hCLUTSize    = glGetUniformLocation(programHandle, "m_CLUTsize");
   }
@@ -143,7 +144,8 @@ bool GLSLOutput::OnEnabled()
     VerifyGLState();
   }
 
-  if (m_3DLUT) {
+  if (m_3DLUT)
+  {
     // set texture units
     glUniform1i(m_hCLUT, m_uCLUT);
     glUniform1f(m_hCLUTSize, m_uCLUTSize);
@@ -168,7 +170,8 @@ void GLSLOutput::OnDisabled()
     glActiveTexture(GL_TEXTURE0 + m_uDither);
     glDisable(GL_TEXTURE_2D);
   }
-  if (m_3DLUT) {
+  if (m_3DLUT)
+  {
     glActiveTexture(GL_TEXTURE0 + m_uCLUT);
     glDisable(GL_TEXTURE_3D);
   }
