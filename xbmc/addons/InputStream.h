@@ -91,6 +91,7 @@ namespace ADDON
     void UpdateStreams();
     void DisposeStreams();
     void UpdateConfig();
+    void CheckConfig();
 
     std::vector<std::string> m_fileItemProps;
     std::vector<std::string> m_extensionsList;
