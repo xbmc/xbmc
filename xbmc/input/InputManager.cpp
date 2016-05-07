@@ -229,7 +229,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
           
           m_Mouse.SetActive(false);
           
-          return ExecuteInputAction(CAction(actionID, 0.0f, 0.0f, actionName));
+          return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName));
         }
         else
         {
