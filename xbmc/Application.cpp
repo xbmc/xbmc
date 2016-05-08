@@ -2681,6 +2681,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // Window size can be between 2 and 10ms and depends on number of continuous requests
     if (m_WaitingExternalCalls)
     {
+      CSingleExit ex(g_graphicsContext);
       m_frameMoveGuard.unlock();
       // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, static_cast<unsigned int>(10)));
@@ -4408,10 +4409,13 @@ void CApplication::Process()
 
   // handle any active scripts
 
-  // Allow processing of script threads to let them shut down properly.
-  m_frameMoveGuard.unlock();
-  CScriptInvocationManager::GetInstance().Process();
-  m_frameMoveGuard.lock();
+  {
+    // Allow processing of script threads to let them shut down properly.
+    CSingleExit ex(g_graphicsContext);
+    m_frameMoveGuard.unlock();
+    CScriptInvocationManager::GetInstance().Process();
+    m_frameMoveGuard.lock();
+  }
 
   // process messages, even if a movie is playing
   CApplicationMessenger::GetInstance().ProcessMessages();
