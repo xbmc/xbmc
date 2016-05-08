@@ -82,6 +82,9 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
     m_programmeItems.emplace_back(fileItem);
 
     channel = fileItem->GetEPGInfoTag()->ChannelTag();
+    if (!channel)
+      continue;
+
     int iCurrentChannelID = channel->ChannelID();
     if (iCurrentChannelID != iLastChannelID)
     {
@@ -258,8 +261,9 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
     CDateTime gridCursor(m_gridStart); //reset cursor for new channel
     unsigned long progIdx = m_epgItemsPtr[channel].start;
     unsigned long lastIdx = m_epgItemsPtr[channel].stop;
-    int iEpgId            = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
+    int iEpgId = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
     CEpgInfoTagPtr tag;
+    CPVRChannelPtr chan;
 
     for (int block = 0; block < m_blocks; ++block)
     {
@@ -278,10 +282,14 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
             newBlockIndex   = block + eventOffset;
             return; // both found. done.
           }
-          if (!bFoundPrevChannel && channelUid > -1 && tag->ChannelTag()->UniqueID() == channelUid)
+          if (!bFoundPrevChannel && channelUid > -1)
           {
-            newChannelIndex = channel;
-            bFoundPrevChannel = true;
+            chan = tag->ChannelTag();
+            if (chan && chan->UniqueID() == channelUid)
+            {
+              newChannelIndex = channel;
+              bFoundPrevChannel = true;
+            }
           }
           break; // next block
         }
