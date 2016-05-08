@@ -529,9 +529,7 @@ bool CVideoPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
   if (m_synctype == SYNC_DISCON)
   {
-    double limit, error;
-    error = syncerror;
-
+    double error = syncerror;
     double correction = m_pClock->ErrorAdjust(error, "CVideoPlayerAudio::OutputPacket");
     if (correction != 0)
     {
