@@ -28,7 +28,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "threads/SingleLock.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
@@ -450,87 +450,24 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
 
 bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scriptId, const std::string &scriptName, bool retrievingDir)
 {
-  const unsigned int timeBeforeProgressBar = 1500;
-  const unsigned int timeToKillScript = 1000;
-
-  unsigned int startTime = XbmcThreads::SystemClockMillis();
-  CGUIDialogProgress *progressBar = NULL;
   bool cancelled = false;
 
-  CLog::Log(LOGDEBUG, "%s - waiting on the %s (id=%d) plugin...", __FUNCTION__, scriptName.c_str(), scriptId);
-  while (true)
+  if (!m_fetchComplete.WaitMSec(20))
   {
-    {
-      CSingleExit ex(g_graphicsContext);
-      // check if the python script is finished
-      if (m_fetchComplete.WaitMSec(20))
-      { // python has returned
-        CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
-        break;
-      }
-    }
-    // check our script is still running
-    if (!CScriptInvocationManager::GetInstance().IsRunning(scriptId))
-    { // check whether we exited normally
-      if (!m_fetchComplete.WaitMSec(0))
-      { // python didn't return correctly
-        CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
-        m_success = false;
-      }
-      break;
-    }
-
-    // check whether we should pop up the progress dialog
-    if (!retrievingDir && !progressBar && XbmcThreads::SystemClockMillis() - startTime > timeBeforeProgressBar)
-    { // loading takes more then 1.5 secs, show a progress dialog
-      progressBar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-      // if script has shown progressbar don't override it
-      if (progressBar && progressBar->IsActive())
-      {
-        startTime = XbmcThreads::SystemClockMillis();
-        progressBar = NULL;
-      }
-
-      if (progressBar)
-      {
-        progressBar->SetHeading(CVariant{scriptName});
-        progressBar->SetLine(0, CVariant{10214});
-        progressBar->SetLine(1, CVariant{""});
-        progressBar->SetLine(2, CVariant{""});
-        progressBar->ShowProgressBar(false);
-        progressBar->Open();
-      }
-    }
-
-    if (progressBar)
-    { // update the progress bar and check for user cancel
-      progressBar->Progress();
-      if (progressBar->IsCanceled())
-      { // user has cancelled our process - cancel our process
-        m_cancelled = true;
-      }
-    }
-
-    if (!cancelled && m_cancelled)
+    if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
     {
       cancelled = true;
-      startTime = XbmcThreads::SystemClockMillis();
-    }
-
-    if ((cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript))
-    { // cancel our script
-      if (scriptId != -1 && CScriptInvocationManager::GetInstance().IsRunning(scriptId))
-      {
-        CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, scriptName.c_str(), scriptId);
-        CScriptInvocationManager::GetInstance().Stop(scriptId);
-        break;
-      }
     }
   }
 
-  if (progressBar)
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, 0, static_cast<void*>(progressBar));
+  if (cancelled)
+  { // cancel our script
+    if (scriptId != -1 && CScriptInvocationManager::GetInstance().IsRunning(scriptId))
+    {
+      CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, scriptName.c_str(), scriptId);
+      CScriptInvocationManager::GetInstance().Stop(scriptId);
+    }
+  }
 
   return !cancelled && m_success;
 }
