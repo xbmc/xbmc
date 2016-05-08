@@ -1,4 +1,6 @@
 LIBNAME=libdvdread
 BASE_URL=https://github.com/xbmc/libdvdread
 VERSION=master
-
+ARCHIVE=$(LIBNAME)-$(VERSION).zip
+REMOTE=https://github.com/xbmc/libdvdread/archive/master.zip
+LOCAL=libdvdread-master.zip
