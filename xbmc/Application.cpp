@@ -387,9 +387,14 @@ extern "C" void __stdcall cleanup_emu_environ();
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/Kodi.
 //
-static void CopyUserDataIfNeeded(const std::string &strPath, const std::string &file)
+static void CopyUserDataIfNeeded(const std::string &strPath, const std::string &file, const std::string &destname = "")
 {
-  std::string destPath = URIUtils::AddFileToFolder(strPath, file);
+  std::string destPath;
+  if (destname == "")
+    destPath = URIUtils::AddFileToFolder(strPath, file);
+  else
+    destPath = URIUtils::AddFileToFolder(strPath, destname);
+  
   if (!CFile::Exists(destPath))
   {
     // need to copy it across
@@ -469,7 +474,12 @@ bool CApplication::Create()
   win32_exception::install_handler();
 
 #endif
-
+  
+  #if defined(TARGET_POSIX)
+    // set special://envhome
+    CSpecialProtocol::SetEnvHomePath(getenv("HOME"));
+  #endif
+    
   // only the InitDirectories* for the current platform should return true
   bool inited = InitDirectoriesLinux();
   if (!inited)
@@ -481,6 +491,10 @@ bool CApplication::Create()
   CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+  
+  #ifdef TARGET_DARWIN_IOS
+    CopyUserDataIfNeeded("special://masterprofile/", "iOS/sources.xml", "sources.xml");
+  #endif
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath("special://logpath").c_str()))
   {
