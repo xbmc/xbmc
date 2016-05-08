@@ -417,16 +417,6 @@ namespace XBMCAddon
       return NULL;
     }
 
-    void Player::disableSubtitles()
-    {
-      XBMC_TRACE;
-      CLog::Log(LOGWARNING,"'xbmc.Player().disableSubtitles()' is deprecated and will be removed in future releases, please use 'xbmc.Player().showSubtitles(false)' instead");
-      if (g_application.m_pPlayer->HasPlayer())
-      {
-        g_application.m_pPlayer->SetSubtitleVisible(false);
-      }
-    }
-
     std::vector<String> Player::getAvailableSubtitleStreams()
     {
       if (g_application.m_pPlayer->HasPlayer())
