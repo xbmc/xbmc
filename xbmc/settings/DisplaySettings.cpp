@@ -801,56 +801,33 @@ void CDisplaySettings::ClearCustomResolutions()
 
 void CDisplaySettings::SettingOptionsCmsModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  const static std::string cmsModeLabels[] = { "3DLUT", "ICC profile" }; // FIXME: should be moved to ColorManager.h?
-  for (int i = 0; i < CMS_MODE_COUNT; i++)
-  {
-    CMS_MODE mode = (CMS_MODE) i;
-#ifndef HAVE_LCMS2
-    if (mode == CMS_MODE_PROFILE) continue;
+  list.push_back(std::make_pair(g_localizeStrings.Get(36580), CMS_MODE_3DLUT));
+#ifdef HAVE_LCMS2
+  list.push_back(std::make_pair(g_localizeStrings.Get(36581), CMS_MODE_PROFILE));
 #endif
-    list.push_back(std::make_pair(cmsModeLabels[i], mode));
-  }
 }
 
 void CDisplaySettings::SettingOptionsCmsWhitepointsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  const static std::string cmsWhitepointLabels[] = { "D65", "D93" }; // FIXME: should be moved to ColorManager.h?
-  for (int i = 0; i < CMS_WHITEPOINT_COUNT; i++)
-  {
-    CMS_WHITEPOINT whitepoint = (CMS_WHITEPOINT) i;
-    list.push_back(std::make_pair(cmsWhitepointLabels[i], whitepoint));
-  }
+  list.push_back(std::make_pair(g_localizeStrings.Get(36586), CMS_WHITEPOINT_D65));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36587), CMS_WHITEPOINT_D93));
 }
 
 void CDisplaySettings::SettingOptionsCmsPrimariesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  const static std::string cmsPrimariesLabels[] = {
-    "Automatic",
-    "HDTV",
-    "SDTV",
-    "NTSC 1953",
-    "PAL/SECAM 1975",
-    "HDTV 1988",
-  }; // FIXME: should be moved to ColorManager.h?
-  for (int i = 0; i < CMS_PRIMARIES_COUNT; i++)
-  {
-    CMS_PRIMARIES primaries = (CMS_PRIMARIES) i;
-    list.push_back(std::make_pair(cmsPrimariesLabels[i], primaries));
-  }
+  list.push_back(std::make_pair(g_localizeStrings.Get(36588), CMS_PRIMARIES_AUTO));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36589), CMS_PRIMARIES_BT709));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36590), CMS_PRIMARIES_170M));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36591), CMS_PRIMARIES_BT470M));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36592), CMS_PRIMARIES_BT470BG));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36593), CMS_PRIMARIES_240M));
 }
 
 void CDisplaySettings::SettingOptionsCmsGammaModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  const static std::string cmsGammaModeLabels[] = {
-    "BT.1886",
-    "Input offset",
-    "Output offset",
-    "Absolute",
-  }; // FIXME: should be moved to ColorManager.h?
-  for (int i = 0; i < CMS_TRC_COUNT; i++)
-  {
-    CMS_TRC_TYPE mode = (CMS_TRC_TYPE) i;
-    list.push_back(std::make_pair(cmsGammaModeLabels[i], mode));
-  }
+  list.push_back(std::make_pair(g_localizeStrings.Get(36582), CMS_TRC_BT1886));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36583), CMS_TRC_INPUT_OFFSET));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36584), CMS_TRC_OUTPUT_OFFSET));
+  list.push_back(std::make_pair(g_localizeStrings.Get(36585), CMS_TRC_ABSOLUTE));
 }
 
