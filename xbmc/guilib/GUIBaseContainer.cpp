@@ -352,7 +352,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     if (m_listProvider)
     {
       int selected = GetSelectedItem();
-      if (selected >= 0 && selected < m_items.size())
+      if (selected >= 0 && selected < static_cast<int>(m_items.size()))
       {
         m_listProvider->OnContextMenu(m_items[selected]);
         return true;
@@ -363,7 +363,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     if (m_listProvider)
     {
       int selected = GetSelectedItem();
-      if (selected >= 0 && selected < m_items.size())
+      if (selected >= 0 && selected < static_cast<int>(m_items.size()))
       {
         m_listProvider->OnInfo(m_items[selected]);
         return true;

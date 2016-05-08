@@ -612,15 +612,15 @@ namespace XBMCAddon
 
     void ListItem::addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems /* = false */)
     {
-      for (int i = 0; i < items.size(); ++i)
+      for (size_t i = 0; i < items.size(); ++i)
       {
         auto& tuple = items[i];
         if (tuple.GetNumValuesSet() != 2)
           throw ListItemException("Must pass in a list of tuples of pairs of strings. One entry in the list only has %d elements.",tuple.GetNumValuesSet());
 
         LOCKGUI;
-        item->SetProperty(StringUtils::Format("contextmenulabel(%i)", i), tuple.first());
-        item->SetProperty(StringUtils::Format("contextmenuaction(%i)", i), tuple.second());
+        item->SetProperty(StringUtils::Format("contextmenulabel(%zu)", i), tuple.first());
+        item->SetProperty(StringUtils::Format("contextmenuaction(%zu)", i), tuple.second());
       }
     }
 

@@ -1038,7 +1038,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   //temporary workaround until the context menu ids are removed
   const int addonItemOffset = 10000;
   auto addonItems = CContextMenuManager::GetInstance().GetAddonItems(*item, CContextMenuManager::MANAGE);
-  for (int i = 0; i < addonItems.size(); ++i)
+  for (size_t i = 0; i < addonItems.size(); ++i)
     buttons.Add(addonItemOffset + i, addonItems[i]->GetLabel(*item));
 
   bool result = false;
