@@ -6741,7 +6741,18 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 interlaced fails hard on Intel hardware."
 msgstr ""
 
-#empty strings from id 13453 to 13456
+#: system/settings/settings.xml
+msgctxt "#13453"
+msgid "Use amcodec for SD content"
+msgstr ""
+
+#. Description of setting with label #13453 "Use amcodec for SD content"
+#: system/settings/settings.xml
+msgctxt "#13454"
+msgid "Enable this option to use hardware acceleration for MPEG-(1 / 2) SD content. If disabled the CPU will be used instead."
+msgstr ""
+
+#empty strings from id 13455 to 13456
 
 #. Option for video related setting #13454: sw filter
 #: system/settings/settings.xml
