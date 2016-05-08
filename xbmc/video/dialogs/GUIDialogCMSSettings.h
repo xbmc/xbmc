@@ -30,17 +30,16 @@ public:
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
-  // virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
 
   // specialization of CGUIDialogSettingsBase
-  virtual bool AllowResettingSettings() const { return false; }
-  virtual bool OnBack(int actionID);
-  virtual void Save();
-  virtual void SetupView();
+  virtual bool AllowResettingSettings() const override { return false; }
+  virtual bool OnBack(int actionID) override;
+  virtual void Save() override;
+  virtual void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
+  virtual void InitializeSettings() override;
 
 private:
   bool m_viewModeChanged;
