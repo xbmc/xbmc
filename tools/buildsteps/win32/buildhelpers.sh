@@ -32,10 +32,11 @@ fi
 do_wget() {
   local URL="$1"
   local archive="$2"
-
   if [[ -z $archive ]]; then
+    do_print_status  "wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL" "$green_color" "wget"
     wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL
   else
+    do_print_status  "wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL -O $archive" "$green_color" "wget"
     wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL -O $archive
   fi
 }
@@ -117,13 +118,20 @@ do_clean() {
 do_download() {
   if [ ! -d $LIBNAME ]; then
     if [ ! -f $ARCHIVE ]; then
-      do_print_status "$ARCHIVE" "$orange_color" "Downloading"
-      do_wget $BASE_URL/$VERSION.tar.gz $ARCHIVE
+      do_wget "$REMOTE" "$LOCALY"
     fi
 
     do_print_status "$ARCHIVE" "$blue_color" "Extracting"
-    mkdir $LIBNAME && cd $LIBNAME
-    tar -xaf ../$ARCHIVE --strip 1
+    
+    if [[ $LOCALY =~ \.tar.gz$ ]]; then
+        mkdir $LIBNAME && cd $LIBNAME
+        tar -xaf ../$LOCALY --strip 1
+    fi
+    if [[ $LOCALY =~ \.zip$ ]]; then
+        miniunzip -o $LOCALY 
+        mv $LIBNAME-$VERSION $LIBNAME
+        cd $LIBNAME
+    fi
   else
     cd $LIBNAME
   fi
@@ -142,6 +150,8 @@ do_loaddeps() {
     ARCHIVE=$LIBNAME-$GITREV.tar.gz
     BASE_URL=$BASE_URL/archive
   fi
+  REMOTE=$(grep "REMOTE=" $file | sed 's/REMOTE=//g;s/#.*$//g;/^$/d')
+  LOCALY=$(grep "LOCAL=" $file | sed 's/LOCAL=//g;s/#.*$//g;/^$/d')
 }
 
 do_clean_get() {

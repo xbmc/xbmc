@@ -84,8 +84,8 @@ setfilepath /xbmc/system/players/VideoPlayer
 checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
 echo "-------------------------------------------------"
 echo " building of FFmpeg $BITS done..."
-echo "-------------------------------------------------"
 
+echo "-------------------------------------------------"
 echo -ne "\033]0;building libdvd $BITS\007"
 echo "-------------------------------------------------"
 echo " building libdvd $BITS"

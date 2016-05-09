@@ -3,3 +3,5 @@ BASE_URL=https://github.com/xbmc/FFmpeg/archive
 VERSION=release/3.0-xbmc
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 GNUTLS_VER=3.4.9
+REMOTE=https://github.com/xbmc/FFmpeg/archive/release/3.0-xbmc.tar.gz
+LOCAL=ffmpeg-release-3.0-xbmc.tar.gz
