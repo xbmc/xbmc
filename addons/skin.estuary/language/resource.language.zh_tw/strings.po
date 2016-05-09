@@ -96,6 +96,10 @@ msgctxt "#31085"
 msgid "Channel Group"
 msgstr "頻道群組"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "詮釋資料"
+
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "內容掃描選項"
@@ -119,3 +123,7 @@ msgstr "選擇您的 Kodi 使用者設定檔[CR]登入並繼續"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "轉換"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "電傳聞訊"

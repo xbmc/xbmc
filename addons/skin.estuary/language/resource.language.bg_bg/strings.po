@@ -118,7 +118,7 @@ msgstr "Последно влизане"
 
 msgctxt "#31030"
 msgid "Memory used"
-msgstr "Памет в употреба:"
+msgstr "Памет в употреба"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -260,6 +260,10 @@ msgctxt "#31070"
 msgid "Add media sources"
 msgstr "Добавяне на медиен източик"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "от"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Изключи..."
@@ -360,6 +364,10 @@ msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Въведете текст тук..."
 
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Библиотеката е празна. За да добавите медийните си файлове влезте в раздела \"Файлове\", от където можете да настроите източниците с медийно съдържание. След като добавите източниците и те бъдат сканирани библиотеката ще бъде попълнена."
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Телетекст"
@@ -378,7 +386,7 @@ msgstr "Път до катината"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Секция Файлове"
+msgstr "Раздел Файлове"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."

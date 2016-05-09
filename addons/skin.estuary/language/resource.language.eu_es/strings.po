@@ -96,6 +96,10 @@ msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Kate taldea"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadatuak"
+
 msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "Deskargatu azpitituluak"
@@ -115,3 +119,7 @@ msgstr "Aukeratu zure Kodi profila[CR] saio hasi eta jarraitzeko"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletestua"
