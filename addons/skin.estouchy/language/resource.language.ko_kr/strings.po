@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "스킨 변경 · 언어 및 지역 설정 · 파일 목록 옵션 변경 · 화면보호기 설정"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "미디어 공유 서비스 설정 및 관리 · 날씨 서비스 설정 및 관리"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "화면 설정 · 오디오 설정 · 인터넷 접속 설정 · 전원 절약 설정 · 로깅 설정"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "설치한 애드온 관리 · kodi.tv에서 애드온 탐색 및 설치 · 애드온 설정"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "재생 중 동작 설정 ·  미디어 콘텐츠 재생 방법 설정"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "미디어 목록 표시 방법 설정 · 라이브러리 탐색 설정 · 데이터베이스 옵션 설정"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "스킨 설정 · 지역 설정 · 제어 설정 · 화면 보호기 설정 · 마스터 잠금 설정"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "프로파일 설정 · 잠금 옵션 설정 · 로그인 화면 켜기"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "시스템 정보 보기 · 하드웨어 통계 · 저장 공간 확인 · 네트워크 환경 보기"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

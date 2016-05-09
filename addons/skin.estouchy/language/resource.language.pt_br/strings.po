@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Altere a skin · Defina idioma e região · Altere opções de listagem de arquivos · Configure um protetor de tela"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configurar & gerenciar serviços de compartilhamento de mídias · Configurar e gerenciar o serviço meteorológico"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configurar a exibição · Configurar áudio · Configurar Acesso à Internet · Configurar economia de energia · Configurar log de depuração"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Gerencie seus addons instalados. Navegue e instale addons via repositório do kodi.tv - Altere ajustes dos addons"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configurar as ações que podem ser usadas durante a reprodução · Configurar o modo como o conteúdo de mídia é reproduzido"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Configurar o modo como as listas de mídia são exibidas · Configure navegabilidade nas coleções - Configurar opções de banco de dados"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configurar skin - Configurar região - Configurar controle - Configurar proteção de tela - Configurar trava mestre."
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Configurar seus perfis - Setar opções de travamento - Ativar tela de login"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Mostrar informações do sistema - Estatísticas de Hardware - Verificar disponibilidade de armazenamento - Verificar configuração de rede"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

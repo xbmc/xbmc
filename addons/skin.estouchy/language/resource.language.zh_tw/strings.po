@@ -152,6 +152,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "下載字幕"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "電傳聞訊"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "主題預設"
