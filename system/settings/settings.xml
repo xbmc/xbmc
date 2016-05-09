@@ -79,17 +79,6 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="lookandfeel.skinvideoaction" type="string" label="38024" help="38025">
-          <level>1</level>
-          <default>Default</default>
-          <constraints>
-            <options>videoactions</options>
-          </constraints>
-          <dependencies>
-            <dependency type="update" setting="lookandfeel.skin" />
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
         <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
           <default>resource.uisounds.confluence</default>
@@ -327,6 +316,17 @@
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
+        </setting>
+        <setting id="filelists.videoaction" type="string" label="38024" help="38025">
+          <level>1</level>
+          <default>PLAY</default>
+          <constraints>
+            <options>videoactions</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>

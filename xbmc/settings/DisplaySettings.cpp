@@ -631,7 +631,7 @@ RESOLUTION CDisplaySettings::GetResolutionForScreen()
 void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   list.push_back(std::make_pair(g_localizeStrings.Get(13551), 0));
-          
+
   for (int i = 1; i <= MAX_REFRESH_CHANGE_DELAY; i++)
     list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0), i));
 }
@@ -778,6 +778,17 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std
     list.push_back(std::make_pair(monitors[i], monitors[i]));
   }
 #endif
+}
+
+void CDisplaySettings::SettingOptionsVideoActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+
+  list.push_back(std::make_pair(g_localizeStrings.Get(38026), VIDEO_ACTION_PLAY));
+  list.push_back(std::make_pair(g_localizeStrings.Get(38027), VIDEO_ACTION_INFO));
+
+  if (settingValue != VIDEO_ACTION_PLAY && settingValue != VIDEO_ACTION_INFO)
+    current = list[0].second;
 }
 
 void CDisplaySettings::ClearCustomResolutions()

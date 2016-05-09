@@ -46,6 +46,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
@@ -158,7 +159,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_PLAYER_PLAY)
         {
-          std::string videoAction = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_VIDEOACTION);
+          std::string videoAction = CSettings::GetInstance().GetString(CSettings::SETTING_FILELISTS_VIDEOACTION);
+          CLog::Log(LOGDEBUG,"videoAction = %s", videoAction.c_str());
 
           if (videoAction == VIDEO_ACTION_INFO)
           {
@@ -306,8 +308,8 @@ void CGUIWindowVideoBase::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scrape
 
 bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, bool fromDB)
 {
-  /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
+  /*
   CLog::Log(LOGDEBUG,"  strMovie  = [%s]", strMovie.c_str());
   CLog::Log(LOGDEBUG,"  strFile   = [%s]", strFile.c_str());
   CLog::Log(LOGDEBUG,"  strFolder = [%s]", strFolder.c_str());
@@ -644,7 +646,9 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
-  std::string videoAction = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_VIDEOACTION);
+  std::string videoAction = CSettings::GetInstance().GetString(CSettings::SETTING_FILELISTS_VIDEOACTION);
+
+  CLog::Log(LOGDEBUG,"videoAction = %s", videoAction.c_str());
 
   // Reset the current start offset. The actual resume
   // option is set in the switch, based on the action passed.

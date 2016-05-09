@@ -480,17 +480,6 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
     current = list[0].second;
 }
 
-void CSkinInfo::SettingOptionsVideoActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
-{
-  std::string settingValue = ((const CSettingString*)setting)->GetValue();
-
-  list.push_back(std::make_pair(g_localizeStrings.Get(38026), VIDEO_ACTION_PLAY));
-  list.push_back(std::make_pair(g_localizeStrings.Get(38027), VIDEO_ACTION_INFO));
-
-  if (settingValue != VIDEO_ACTION_PLAY && settingValue != VIDEO_ACTION_INFO)
-    current = list[0].second;
-}
-
 void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   // get the choosen theme and remove the extension from the current theme (backward compat)

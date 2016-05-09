@@ -95,7 +95,6 @@ const std::string CSettings::SETTING_LOOKANDFEEL_SKIN = "lookandfeel.skin";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS = "lookandfeel.skinsettings";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINTHEME = "lookandfeel.skintheme";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINCOLORS = "lookandfeel.skincolors";
-const std::string CSettings::SETTING_LOOKANDFEEL_VIDEOACTION = "lookandfeel.skinvideoaction";
 const std::string CSettings::SETTING_LOOKANDFEEL_FONT = "lookandfeel.font";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINZOOM = "lookandfeel.skinzoom";
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.startupwindow";
@@ -121,6 +120,7 @@ const std::string CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING = "filelists
 const std::string CSettings::SETTING_FILELISTS_ALLOWFILEDELETION = "filelists.allowfiledeletion";
 const std::string CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS = "filelists.showaddsourcebuttons";
 const std::string CSettings::SETTING_FILELISTS_SHOWHIDDEN = "filelists.showhidden";
+const std::string CSettings::SETTING_FILELISTS_VIDEOACTION = "filelists.videoaction";
 const std::string CSettings::SETTING_SCREENSAVER_MODE = "screensaver.mode";
 const std::string CSettings::SETTING_SCREENSAVER_SETTINGS = "screensaver.settings";
 const std::string CSettings::SETTING_SCREENSAVER_PREVIEW = "screensaver.preview";
@@ -945,7 +945,6 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("skincolors", ADDON::CSkinInfo::SettingOptionsSkinColorsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinfonts", ADDON::CSkinInfo::SettingOptionsSkinFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinthemes", ADDON::CSkinInfo::SettingOptionsSkinThemesFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("videoactions", ADDON::CSkinInfo::SettingOptionsVideoActionsFiller);
 #ifdef TARGET_LINUX
   m_settingsManager->RegisterSettingOptionsFiller("timezonecountries", CLinuxTimezone::SettingOptionsTimezoneCountriesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
@@ -954,6 +953,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("loggingcomponents", CAdvancedSettings::SettingOptionsLoggingComponentsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("pvrrecordmargins", PVR::CPVRSettings::MarginTimeFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("videoactions", CDisplaySettings::SettingOptionsVideoActionsFiller);
 }
 
 void CSettings::InitializeConditions()
@@ -1074,7 +1074,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_VIDEOACTION);
+  settingSet.insert(CSettings::SETTING_FILELISTS_VIDEOACTION);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
