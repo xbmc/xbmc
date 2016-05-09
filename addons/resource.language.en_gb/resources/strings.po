@@ -18110,3 +18110,28 @@ msgstr ""
 msgctxt "#38023"
 msgid "Set my rating"
 msgstr ""
+
+
+#. Setting #38024 "Settings -> Skin -> Action on video click"
+#: system/settings/settings.xml
+msgctxt "#38024"
+msgid "Action on video click"
+msgstr ""
+
+#. Help message for Setting #38024 "Settings -> Skin -> Action on video click"
+#: system/settings/settings.xml
+msgctxt "#38025"
+msgid "What to do when click on video"
+msgstr ""
+
+#. Setting #38024 value
+#: system/settings/settings.xml
+msgctxt "#38026"
+msgid "Play video"
+msgstr ""
+
+#. Setting #38024 value
+#: system/settings/settings.xml
+msgctxt "#38027"
+msgid "Show informations"
+msgstr ""

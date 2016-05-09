@@ -31,6 +31,9 @@
 
 #define CREDIT_LINE_LENGTH 50
 
+#define VIDEO_ACTION_PLAY "PLAY"
+#define VIDEO_ACTION_INFO "INFO"
+
 class CSetting;
 
 namespace ADDON
@@ -175,6 +178,7 @@ public:
 
   static void SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsVideoActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 

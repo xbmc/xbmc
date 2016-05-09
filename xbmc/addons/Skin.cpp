@@ -374,7 +374,7 @@ void CSkinInfo::OnPreInstall()
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  if (IsInUse() || (!update && !modal && 
+  if (IsInUse() || (!update && !modal &&
     HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) == DialogResponse::YES))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
@@ -400,7 +400,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
 
   // There is a default theme (just defaults.xml)
   // any other *.xml files are additional color themes on top of this one.
-  
+
   // add the default label
   list.push_back(std::make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard defaults.xml will be used!
 
@@ -477,6 +477,17 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
   }
 
   if (!currentValueSet)
+    current = list[0].second;
+}
+
+void CSkinInfo::SettingOptionsVideoActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+
+  list.push_back(std::make_pair(g_localizeStrings.Get(38026), VIDEO_ACTION_PLAY));
+  list.push_back(std::make_pair(g_localizeStrings.Get(38027), VIDEO_ACTION_INFO));
+
+  if (settingValue != VIDEO_ACTION_PLAY && settingValue != VIDEO_ACTION_INFO)
     current = list[0].second;
 }
 

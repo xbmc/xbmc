@@ -95,6 +95,7 @@ const std::string CSettings::SETTING_LOOKANDFEEL_SKIN = "lookandfeel.skin";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS = "lookandfeel.skinsettings";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINTHEME = "lookandfeel.skintheme";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINCOLORS = "lookandfeel.skincolors";
+const std::string CSettings::SETTING_LOOKANDFEEL_VIDEOACTION = "lookandfeel.skinvideoaction";
 const std::string CSettings::SETTING_LOOKANDFEEL_FONT = "lookandfeel.font";
 const std::string CSettings::SETTING_LOOKANDFEEL_SKINZOOM = "lookandfeel.skinzoom";
 const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.startupwindow";
@@ -450,7 +451,7 @@ bool CSettings::Initialize()
 
   m_settingsManager->SetInitialized();
 
-  InitializeISettingsHandlers();  
+  InitializeISettingsHandlers();
   InitializeISubSettings();
   InitializeISettingCallbacks();
 
@@ -581,6 +582,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("skincolors");
   m_settingsManager->UnregisterSettingOptionsFiller("skinfonts");
   m_settingsManager->UnregisterSettingOptionsFiller("skinthemes");
+  m_settingsManager->UnregisterSettingOptionsFiller("videoactions");
 #if defined(TARGET_LINUX)
   m_settingsManager->UnregisterSettingOptionsFiller("timezonecountries");
   m_settingsManager->UnregisterSettingOptionsFiller("timezones");
@@ -764,7 +766,7 @@ bool CSettings::Initialize(const std::string &file)
   }
 
   CLog::Log(LOGDEBUG, "CSettings: loaded settings definition from %s", file.c_str());
-  
+
   TiXmlElement *root = xmlDoc.RootElement();
   if (root == NULL)
     return false;
@@ -943,6 +945,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("skincolors", ADDON::CSkinInfo::SettingOptionsSkinColorsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinfonts", ADDON::CSkinInfo::SettingOptionsSkinFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinthemes", ADDON::CSkinInfo::SettingOptionsSkinThemesFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("videoactions", ADDON::CSkinInfo::SettingOptionsVideoActionsFiller);
 #ifdef TARGET_LINUX
   m_settingsManager->RegisterSettingOptionsFiller("timezonecountries", CLinuxTimezone::SettingOptionsTimezoneCountriesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
@@ -1034,7 +1037,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE);
   m_settingsManager->RegisterCallback(&CDisplaySettings::GetInstance(), settingSet);
-  
+
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
@@ -1071,6 +1074,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_VIDEOACTION);
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
@@ -1207,7 +1211,7 @@ bool CSettings::Reset()
   // try to delete the settings file
   if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))
     CLog::Log(LOGWARNING, "Unable to delete old settings file at %s", settingsFile.c_str());
-  
+
   // unload any loaded settings
   Unload();
 
