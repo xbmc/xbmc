@@ -307,8 +307,6 @@ CApplication::CApplication(void)
 
   m_muted = false;
   m_volumeLevel = VOLUME_MAXIMUM;
-
-  m_frameMoveGuard.lock();
 }
 
 CApplication::~CApplication(void)
@@ -693,6 +691,8 @@ bool CApplication::Create()
 
 bool CApplication::CreateGUI()
 {
+  m_frameMoveGuard.lock();
+
   m_renderGUI = true;
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
