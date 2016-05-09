@@ -299,19 +299,8 @@ lib/cpluff/stamp-h1
 /system/libxslt.dll
 /system/ssleay32.dll
 
-# /system/cdrip
-/system/cdrip/lame_enc.dll
-/system/cdrip/ogg.dll
-/system/cdrip/vorbis.dll
-/system/cdrip/vorbisenc.dll
-
 # /system/players/VideoPlayer
 /system/players/VideoPlayer/*
-
-# /system/players/paplayer
-/system/players/paplayer/vorbisfile.dll
-/system/players/paplayer/adpcm.dll
-/system/players/paplayer/libFLAC.dll
 
 # /system
 /system/profiles.xml
