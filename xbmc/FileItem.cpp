@@ -881,7 +881,6 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   {
     if(IsSmartPlayList()
     || (IsPlayList() && g_advancedSettings.m_playlistAsFolders)
-    || IsAPK()
     || IsZIP()
     || IsRAR()
     || IsRSS()
@@ -983,11 +982,6 @@ bool CFileItem::IsBDFile() const
 bool CFileItem::IsRAR() const
 {
   return URIUtils::IsRAR(m_strPath);
-}
-
-bool CFileItem::IsAPK() const
-{
-  return URIUtils::IsAPK(m_strPath);
 }
 
 bool CFileItem::IsZIP() const

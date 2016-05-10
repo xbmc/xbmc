@@ -156,13 +156,9 @@ set(HEADERS AddonsDirectory.h
             ZipManager.h)
 
 if(CORE_SYSTEM_NAME STREQUAL android)
-  list(APPEND SOURCES APKDirectory.cpp
-                      APKFile.cpp
-                      AndroidAppDirectory.cpp
+  list(APPEND SOURCES AndroidAppDirectory.cpp
                       AndroidAppFile.cpp)
-  list(APPEND HEADERS APKDirectory.h
-                      APKFile.h
-                      AndroidAppDirectory.h
+  list(APPEND HEADERS AndroidAppDirectory.h
                       AndroidAppFile.h)
 endif()
 

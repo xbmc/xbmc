@@ -45,9 +45,6 @@
 #ifdef HAS_FILESYSTEM
 #include "ISOFile.h"
 #endif
-#if defined(TARGET_ANDROID)
-#include "APKFile.h"
-#endif
 #include "XbtFile.h"
 #include "ZipFile.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -101,9 +98,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   if (!CWakeOnAccess::GetInstance().WakeUpHost(url))
     return NULL;
 
-#if defined(TARGET_ANDROID)
-  if (url.IsProtocol("apk")) return new CAPKFile();
-#endif
+  if (url.IsProtocol("apk")) return new CZipFile();
   if (url.IsProtocol("zip")) return new CZipFile();
   else if (url.IsProtocol("rar"))
   {

@@ -155,7 +155,6 @@ public:
   static bool IsUPnP(const std::string& strFile);
   static bool IsURL(const std::string& strFile);
   static bool IsVideoDb(const std::string& strFile);
-  static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
   static bool IsArchive(const std::string& strFile);
   static bool IsBluray(const std::string& strFile);

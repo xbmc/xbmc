@@ -72,8 +72,6 @@ SRCS += ZipFile.cpp
 SRCS += ZipManager.cpp
 
 ifeq (@USE_ANDROID@,1)
-SRCS += APKDirectory.cpp
-SRCS += APKFile.cpp
 SRCS += AndroidAppFile.cpp
 SRCS += AndroidAppDirectory.cpp
 endif
