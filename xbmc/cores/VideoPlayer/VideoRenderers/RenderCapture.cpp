@@ -98,16 +98,17 @@ void CRenderCaptureIMX::ReadOut()
 
 CRenderCaptureDispmanX::CRenderCaptureDispmanX()
 {
+  m_pixels = nullptr;
 }
 
 CRenderCaptureDispmanX::~CRenderCaptureDispmanX()
 {
-	delete[] m_pixels;
+  delete[] m_pixels;
 }
 
 int CRenderCaptureDispmanX::GetCaptureFormat()
 {
-	return CAPTUREFORMAT_BGRA;
+  return CAPTUREFORMAT_BGRA;
 }
 
 void CRenderCaptureDispmanX::BeginRender()
@@ -116,14 +117,15 @@ void CRenderCaptureDispmanX::BeginRender()
 
 void CRenderCaptureDispmanX::EndRender()
 {
-	m_pixels = g_RBP.CaptureDisplay(m_width, m_height, NULL, true);
+  delete[] m_pixels;
+  m_pixels = g_RBP.CaptureDisplay(m_width, m_height, NULL, true);
 
-	SetState(CAPTURESTATE_DONE);
+  SetState(CAPTURESTATE_DONE);
 }
 
 void* CRenderCaptureDispmanX::GetRenderBuffer()
 {
-    return m_pixels;
+  return m_pixels;
 }
 
 void CRenderCaptureDispmanX::ReadOut()
