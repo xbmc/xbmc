@@ -85,6 +85,8 @@
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
+#define PLUGIN_REFRESH_DELAY 200
+
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
@@ -506,6 +508,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (message.GetParam1() != WINDOW_INVALID)
       { // first time to this window - make sure we set the root path
         m_startDirectory = returning ? dir : GetRootPath();
+      }
+      if (message.GetParam2() == PLUGIN_REFRESH_DELAY)
+      {
+        Refresh();
+        return true;
       }
     }
     break;
@@ -1486,7 +1493,21 @@ void CGUIMediaWindow::OnInitWindow()
 
   // the start directory may change during Refresh
   bool updateStartDirectory = URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true);
-  Refresh();
+
+  // we have python scripts hooked in everywhere :(
+  // those scripts may open windows and we can't open a window
+  // while opening this one.
+  // for plugin sources delay call to Refresh
+  if (!URIUtils::IsPlugin(m_vecItems->GetPath()))
+  {
+    Refresh();
+  }
+  else
+  {
+    CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, 0, PLUGIN_REFRESH_DELAY);
+    g_windowManager.SendThreadMessage(msg, m_controlID);
+  }
+
   if (updateStartDirectory)
   {
     // reset the start directory to the path of the items

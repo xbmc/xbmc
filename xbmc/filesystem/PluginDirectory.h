@@ -29,6 +29,7 @@
 #include "PlatformDefs.h"
 
 #include "threads/Event.h"
+#include "threads/Thread.h"
 
 class CURL;
 class CFileItem;
@@ -81,5 +82,16 @@ private:
   bool          m_cancelled;    // set to true when we are cancelled
   bool          m_success;      // set by script in EndOfDirectory
   int    m_totalItems;   // set by script in AddDirectoryItem
+
+  class CScriptObserver : public CThread
+  {
+  public:
+    CScriptObserver(int scriptId, CEvent &event);
+    void Abort();
+  protected:
+    void Process() override;
+    int m_scriptId;
+    CEvent &m_event;
+  };
 };
 }
