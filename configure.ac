@@ -622,6 +622,16 @@ case $host in
      use_gl=no
      USE_STATIC_FFMPEG=1
      ;;
+  aarch64*-*-linux-gnu*|aarch64*-*-linux-uclibc*)
+     target_platform=target_linux
+     ARCH="aarch64"
+     use_arch="aarch64"
+     use_neon=yes
+     use_gles=yes
+     use_gl=no
+     use_wayland=no
+     USE_STATIC_FFMPEG=1
+     ;;
   arm*-*linux-android*)
      target_platform=target_android
      CORE_SYSTEM_NAME=android
