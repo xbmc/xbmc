@@ -46,6 +46,30 @@ std::map<int, CPluginDirectory *> CPluginDirectory::globalHandles;
 int CPluginDirectory::handleCounter = 0;
 CCriticalSection CPluginDirectory::m_handleLock;
 
+CPluginDirectory::CScriptObserver::CScriptObserver(int scriptId, CEvent &event) :
+  CThread("scriptobs"), m_scriptId(scriptId), m_event(event)
+{
+  Create();
+}
+
+void CPluginDirectory::CScriptObserver::Process()
+{
+  while (!m_bStop)
+  {
+    if (!CScriptInvocationManager::GetInstance().IsRunning(m_scriptId))
+    {
+      m_event.Set();
+      break;
+    }
+    Sleep(20);
+  }
+}
+
+void CPluginDirectory::CScriptObserver::Abort()
+{
+  m_bStop = true;
+}
+
 CPluginDirectory::CPluginDirectory()
   : m_cancelled(false)
   , m_success(false)
@@ -454,10 +478,12 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
 
   if (!m_fetchComplete.WaitMSec(20))
   {
+    CScriptObserver scriptObs(scriptId, m_fetchComplete);
     if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
     {
       cancelled = true;
     }
+    scriptObs.Abort();
   }
 
   if (cancelled)
