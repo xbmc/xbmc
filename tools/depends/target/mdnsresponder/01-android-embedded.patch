@@ -1,7 +1,7 @@
 diff -uPr ./mDNSCore/mDNSEmbeddedAPI.h ./mDNSCore/mDNSEmbeddedAPI.h
 --- ./mDNSCore/mDNSEmbeddedAPI.h	2012-10-24 01:18:23.000000000 +0200
 +++ ./mDNSCore/mDNSEmbeddedAPI.h	2013-06-10 18:45:59.000000000 +0200
-@@ -1144,6 +1144,10 @@
+@@ -1328,6 +1328,10 @@
      McastResolver_FlagNew    = 2
  };
  
@@ -252,7 +252,7 @@ diff -uPr ./mDNSShared/dnssd_clientshim.c ./mDNSShared/dnssd_clientshim.c
  
      // Allocate memory, and handle failure
      x = (mDNS_DirectOP_Browse *)mDNSPlatformMemAllocate(sizeof(*x));
-@@ -668,7 +683,7 @@
+@@ -674,7 +689,7 @@
      x->q.ExpectUnique        = mDNSfalse;
      x->q.ForceMCast          = (flags & kDNSServiceFlagsForceMulticast) != 0;
      x->q.ReturnIntermed      = (flags & kDNSServiceFlagsReturnIntermediates) != 0;
@@ -264,7 +264,7 @@ diff -uPr ./mDNSShared/dnssd_clientshim.c ./mDNSShared/dnssd_clientshim.c
 diff -uPr ./mDNSShared/dns_sd.h ./mDNSShared/dns_sd.h
 --- ./mDNSShared/dns_sd.h	2013-04-10 01:08:48.000000000 +0200
 +++ ./mDNSShared/dns_sd.h	2013-06-10 18:45:59.000000000 +0200
-@@ -93,7 +93,7 @@
+@@ -82,7 +82,7 @@
  /* standard calling convention under Win32 is __stdcall */
  /* Note: When compiling Intel EFI (Extensible Firmware Interface) under MS Visual Studio, the */
  /* _WIN32 symbol is defined by the compiler even though it's NOT compiling code for Windows32 */
@@ -335,17 +335,17 @@ diff -uPr ./mDNSShared/PlatformCommon.c ./mDNSShared/PlatformCommon.c
  #if APPLE_OSX_mDNSResponder && LogTimeStamps
      extern mDNS mDNSStorage;
      extern mDNSu32 mDNSPlatformClockDivisor;
-@@ -193,4 +205,5 @@
+@@ -199,4 +211,5 @@
  #endif
-         syslog(syslog_level, "%s", buffer);
+         }
      }
 +#endif
  }
 diff -uPr ./mDNSShared/uds_daemon.h ./mDNSShared/uds_daemon.h
 --- ./mDNSShared/uds_daemon.h	2012-07-12 23:57:14.000000000 +0200
 +++ ./mDNSShared/uds_daemon.h	2013-06-10 18:45:59.000000000 +0200
-@@ -22,6 +22,11 @@
- 
+@@ -15,6 +15,11 @@
+  * limitations under the License.
   */
  
 +#ifdef ANDROID
@@ -359,7 +359,7 @@ diff -uPr ./mDNSShared/uds_daemon.h ./mDNSShared/uds_daemon.h
 diff -uPr ./mDNSWindows/mDNSWin32.c ./mDNSWindows/mDNSWin32.c
 --- ./mDNSWindows/mDNSWin32.c	2012-10-31 00:24:17.000000000 +0100
 +++ ./mDNSWindows/mDNSWin32.c	2013-06-10 18:45:59.000000000 +0200
-@@ -2920,10 +2920,7 @@
+@@ -3024,10 +3024,7 @@
  		sa4.sin_family 		= AF_INET;
  		sa4.sin_port 		= port.NotAnInteger;
  		sa4.sin_addr.s_addr	= ipv4.NotAnInteger;
@@ -371,7 +371,7 @@ diff -uPr ./mDNSWindows/mDNSWin32.c ./mDNSWindows/mDNSWin32.c
  		// Turn on option to receive destination addresses and receiving interface.
  		
  		option = 1;
-@@ -2964,6 +2961,9 @@
+@@ -3068,6 +3065,9 @@
  		err = setsockopt( sock, IPPROTO_IP, IP_MULTICAST_TTL, (char *) &option, sizeof( option ) );
  		check_translated_errno( err == 0, errno_compat(), kOptionErr );
  
@@ -381,7 +381,7 @@ diff -uPr ./mDNSWindows/mDNSWin32.c ./mDNSWindows/mDNSWin32.c
  	}
  	else if( inAddr->sa_family == AF_INET6 )
  	{
-@@ -2981,10 +2981,7 @@
+@@ -3085,10 +3085,7 @@
  		sa6.sin6_flowinfo	= 0;
  		sa6.sin6_addr		= sa6p->sin6_addr;
  		sa6.sin6_scope_id	= sa6p->sin6_scope_id;
@@ -393,7 +393,7 @@ diff -uPr ./mDNSWindows/mDNSWin32.c ./mDNSWindows/mDNSWin32.c
  		// Turn on option to receive destination addresses and receiving interface.
  		
  		option = 1;
-@@ -3034,6 +3031,10 @@
+@@ -3138,6 +3135,10 @@
  		option = 255;
  		err = setsockopt( sock, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (char *) &option, sizeof( option ) );
  		check_translated_errno( err == 0, errno_compat(), kOptionErr );
