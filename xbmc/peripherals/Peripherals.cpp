@@ -727,7 +727,7 @@ void CPeripherals::ProcessEvents(void)
 {
   std::vector<PeripheralBusPtr> busses;
   {
-    CSingleLock lock(m_critSection);
+    CSingleLock lock(m_critSectionBusses);
     busses = m_busses;
   }
 
