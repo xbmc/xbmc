@@ -819,14 +819,6 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
       if (pPacket)
       {
-        // lavf sometimes bugs out and gives 0 dts/pts instead of no dts/pts
-        // since this could only happens on initial frame under normal
-        // circomstances, let's assume it is wrong all the time
-        if(m_pkt.pkt.dts == 0)
-          m_pkt.pkt.dts = AV_NOPTS_VALUE;
-        if(m_pkt.pkt.pts == 0)
-          m_pkt.pkt.pts = AV_NOPTS_VALUE;
-
         if(m_bMatroska && stream->codec && stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         { // matroska can store different timestamps
           // for different formats, for native stored
