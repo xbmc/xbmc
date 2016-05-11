@@ -2504,11 +2504,9 @@ void CVideoPlayer::HandleMessages()
           }
           // dts after successful seek
           if (start == DVD_NOPTS_VALUE)
-            m_State.dts = DVD_MSEC_TO_TIME(time) - m_State.time_offset;
-          else
-          {
-            m_State.dts = start;
-          }
+            start = DVD_MSEC_TO_TIME(time) - m_State.time_offset;
+
+          m_State.dts = start;
 
           FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate(), msg.GetSync());
         }
