@@ -2306,7 +2306,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
     /*
      * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, false, m_omxplayer_mode, true, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, false, false, true, false, true));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -2330,7 +2330,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
       /*
        * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
        */
-      m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, m_omxplayer_mode, true, false, true));
+      m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, false, true, false, true));
     }
 
     /*
