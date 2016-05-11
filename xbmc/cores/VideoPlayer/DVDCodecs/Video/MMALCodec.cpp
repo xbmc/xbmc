@@ -217,6 +217,8 @@ void CMMALVideo::dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buff
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p, len %d cmd:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd);
   mmal_buffer_header_release(buffer);
+  CSingleLock lock(m_output_mutex);
+  m_output_cond.notifyAll();
 }
 
 static void dec_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -852,9 +854,10 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     slept = true;
     {
       // otherwise we busy spin
-      CSingleExit unlock(m_sharedSection);
-      CSingleLock lock(m_output_mutex);
-      m_output_cond.wait(lock, 30);
+      lock.Leave();
+      CSingleLock output_lock(m_output_mutex);
+      m_output_cond.wait(output_lock, 30);
+      lock.Enter();
     }
     if (!m_output_ready.empty())
       ret |= VC_PICTURE;
