@@ -1599,7 +1599,7 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
     return true;
 
   int idx = CGUIDialogContextMenu::Show(buttons);
-  if (idx < 0 || idx >= buttons.size())
+  if (idx < 0 || idx >= static_cast<int>(buttons.size()))
     return false;
 
   if (InRange(idx, pluginMenuRange))
