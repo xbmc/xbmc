@@ -148,7 +148,7 @@ do_print_status "$LIBNAME-$VERSION (${BITS})" "$blue_color" "Configuring"
   --extra-cflags="$extra_cflags" --extra-ldflags="$extra_ldflags"
 
 do_makelib &&
-cp $FFMPEGDESTDIR/bin/*.dll /xbmc/system/ &&
+cp $FFMPEGDESTDIR/bin/*.dll /xbmc/system/
 
 #remove the bgprocessfile for signaling the process end
 if [ -f $BGPROCESSFILE ]; then
