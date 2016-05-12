@@ -327,6 +327,7 @@ bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, uns
   {
     ret = true;
     *userdata = tex;
+    CLog::Log(LOGDEBUG, "%s: decoded %s %dx%d", __func__, file->GetFilename(), width, height);
   }
   else
   {
@@ -909,7 +910,7 @@ bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
   OMX_IMAGE_CODINGTYPE eCompressionFormat = GetCodingType(m_width, m_height, orientation);
   if(eCompressionFormat != OMX_IMAGE_CodingJPEG || m_width < 1 || m_height < 1)
   {
-    CLog::Log(LOGDEBUG, "%s::%s %s GetCodingType=0x%x (%dx%x)\n", CLASSNAME, __func__, m_filename, eCompressionFormat, m_width, m_height);
+    CLog::Log(LOGDEBUG, "%s::%s %s GetCodingType=0x%x (%dx%d)\n", CLASSNAME, __func__, m_filename, eCompressionFormat, m_width, m_height);
     return false;
   }
 

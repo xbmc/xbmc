@@ -972,6 +972,11 @@ void COMXAudio::Flush()
   if ( m_omx_render_hdmi.IsInitialized() )
     m_omx_render_hdmi.FlushAll();
 
+  if ( m_omx_render_analog.IsInitialized() )
+    m_omx_render_analog.ResetEos();
+  if ( m_omx_render_hdmi.IsInitialized() )
+    m_omx_render_hdmi.ResetEos();
+
   m_last_pts      = DVD_NOPTS_VALUE;
   m_submitted     = 0.0f;
   m_maxLevel      = 0.0f;
