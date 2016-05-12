@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -x
+set -ux
 
 function check_dyloaded_depends
 {

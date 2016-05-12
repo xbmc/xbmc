@@ -2,7 +2,6 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=osx64
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-# Temporarily disabled because packaging not implement for CMake
 if [ "$CMAKE_BUILD" = true ]; then
   cd $WORKSPACE/build;make -j$BUILDTHREADS dmg
   cd $WORKSPACE/build/tools/darwin/packaging/osx/

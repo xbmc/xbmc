@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -ex
+
 # usage: ./mkdeb-ios.sh release/debug (case insensitive)
 # Allows us to run mkdeb-ios.sh from anywhere in the three, rather than the tools/darwin/packaging/ios folder only
 XBMC_DEPENDS_ROOT=@DEPENDS_ROOT_FOR_XCODE@
