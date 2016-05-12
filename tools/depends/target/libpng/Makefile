@@ -3,8 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libpng
-#VERSION=1.4.4
-VERSION=1.5.13
+VERSION=1.6.21
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
