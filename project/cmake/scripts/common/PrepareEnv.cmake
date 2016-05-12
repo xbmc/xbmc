@@ -56,16 +56,16 @@ if(NOT WIN32)
   endif()
 endif()
 
-# generate the proper kodi-config.cmake file
-configure_file(${CORE_SOURCE_DIR}/project/cmake/kodi-config.cmake.in ${APP_LIB_DIR}/kodi-config.cmake @ONLY)
+# generate the proper KodiConfig.cmake file
+configure_file(${CORE_SOURCE_DIR}/project/cmake/KodiConfig.cmake.in ${APP_LIB_DIR}/KodiConfig.cmake @ONLY)
 
 # copy cmake helpers to lib/kodi
 file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddonHelpers.cmake
           ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddOptions.cmake
      DESTINATION ${APP_LIB_DIR})
 
-# generate xbmc-config.cmake for backwards compatibility to xbmc
-configure_file(${CORE_SOURCE_DIR}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
+# generate XBMCConfig.cmake for backwards compatibility to xbmc
+configure_file(${CORE_SOURCE_DIR}/project/cmake/XBMCConfig.cmake.in ${XBMC_LIB_DIR}/XBMCConfig.cmake @ONLY)
 
 ### copy all the addon binding header files to include/kodi
 # parse addon-bindings.mk to get the list of header files to copy

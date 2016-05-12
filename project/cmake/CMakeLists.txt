@@ -372,8 +372,8 @@ endforeach()
 set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
 set(APP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/${APP_NAME_LC})
 set(CXX11_SWITCH "-std=c++11")
-configure_file(${PROJECT_SOURCE_DIR}/kodi-config.cmake.in
-               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/${APP_NAME_LC}-config.cmake @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/KodiConfig.cmake.in
+               ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/${APP_NAME_LC}Config.cmake @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/scripts/common/AddonHelpers.cmake
                ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/AddonHelpers.cmake COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/scripts/common/AddOptions.cmake
