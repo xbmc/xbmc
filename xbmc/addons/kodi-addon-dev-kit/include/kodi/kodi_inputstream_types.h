@@ -30,6 +30,9 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
 
+/* current input stream API version */
+#define KODI_INPUTSTREAM_API_VERSION "1.0.0"
+
 extern "C" {
 
   // this are properties given to the addon on create

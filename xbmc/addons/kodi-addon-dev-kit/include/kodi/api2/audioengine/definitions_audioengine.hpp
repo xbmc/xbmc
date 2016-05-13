@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2015 Team Kodi
+ *      Copyright (C) 2016 Team KODI
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,112 +14,84 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Kodi; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-/*!
- * Common data structures shared between KODI and KODI's binary add-ons
- */
-
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
-#ifndef __cdecl
-#define __cdecl
-#endif
-#ifndef __declspec
-#define __declspec(X)
-#endif
-#endif
-
-#include <cstddef>
+#include "../definitions-all.hpp"
 
 #ifdef BUILD_KODI_ADDON
-  #include "kodi/AEChannelData.h"
+#include "kodi/AEChannelData.h"
 #else
-  #include "cores/AudioEngine/Utils/AEChannelData.h"
+#include "cores/AudioEngine/Utils/AEChannelData.h"
 #endif
 
-#undef ATTRIBUTE_PACKED
-#undef PRAGMA_PACK_BEGIN
-#undef PRAGMA_PACK_END
+API_NAMESPACE
 
-#if defined(__GNUC__)
-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
-#define ATTRIBUTE_PACKED __attribute__ ((packed))
-#define PRAGMA_PACK 0
-#endif
-#endif
+namespace KodiAPI
+{
+extern "C"
+{
 
-#if !defined(ATTRIBUTE_PACKED)
-#define ATTRIBUTE_PACKED
-#define PRAGMA_PACK 1
-#endif
+  /*!
+  \defgroup CPP_KodiAPI_AudioEngine 3. Audio Engine
+  \ingroup cpp
+  \brief <b><em>Functions and clases to use for Audio DSP system</em></b>
+  */
 
-/* current Audio DSP API version */
-#define KODI_AUDIOENGINE_API_VERSION                 "0.0.1"
-
-/* min. Audio DSP API version */
-#define KODI_AUDIOENGINE_MIN_API_VERSION             "0.0.1"
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-  /**
-   * A stream handle pointer, which is only used internally by the addon stream handle
-   */
+  //============================================================================
+  ///
+  /// \ingroup CPP_KodiAPI_AudioEngine_CStream_Defs
+  /// @{
+  /// @brief A stream handle pointer, which is only used internally by the addon
+  /// stream handle
+  ///
   typedef void AEStreamHandle;
+  /// @}
+  //----------------------------------------------------------------------------
 
-  /**
-   * The audio format structure that fully defines a stream's audio information
-   */
+
+  //============================================================================
+  /// @ingroup CPP_KodiAPI_AudioEngine_CStream_Defs
+  /// @{
+  /// @brief The audio format structure that fully defines a stream's audio
+  /// information
+  ///
   typedef struct AudioEngineFormat
   {
-    /**
-     * The stream's data format (eg, AE_FMT_S16LE)
-     */
+    /// The stream's data format (eg, AE_FMT_S16LE)
     enum AEDataFormat m_dataFormat;
 
-    /**
-     * The stream's sample rate (eg, 48000)
-     */
+    /// The stream's sample rate (eg, 48000)
     unsigned int m_sampleRate;
 
-    /**
-     * The encoded streams sample rate if a bitstream, otherwise undefined
-     */
+    /// The encoded streams sample rate if a bitstream, otherwise undefined
     unsigned int m_encodedRate;
 
-    /**
-     * The amount of used speaker channels
-     */
-    unsigned int   m_channelCount;
+    /// The amount of used speaker channels
+    unsigned int m_channelCount;
 
-    /**
-     * The stream's channel layout
-     */
+    /// The stream's channel layout
     enum AEChannel m_channels[AE_CH_MAX];
 
-    /**
-     * The number of frames per period
-     */
+    /// The number of frames per period
     unsigned int m_frames;
 
-    /**
-     * The size of one frame in bytes
-     */
+    /// The number of samples in one frame
+    unsigned int m_frameSamples;
+
+    /// The size of one frame in bytes
     unsigned int m_frameSize;
 
+    /// Structure constructor to set with null values.
     AudioEngineFormat()
     {
       m_dataFormat = AE_FMT_INVALID;
       m_sampleRate = 0;
       m_encodedRate = 0;
       m_frames = 0;
+      m_frameSamples = 0;
       m_frameSize = 0;
       m_channelCount = 0;
 
@@ -130,6 +101,10 @@ extern "C" {
       }
     }
 
+    /// Compare this audio engine format with another
+    ///
+    /// @param[in] fmt The other format to compare with
+    /// @return true if format is equal with the other
     bool compareFormat(const AudioEngineFormat *fmt)
     {
       if (!fmt)
@@ -141,12 +116,13 @@ extern "C" {
           m_sampleRate    != fmt->m_sampleRate    ||
           m_encodedRate   != fmt->m_encodedRate   ||
           m_frames        != fmt->m_frames        ||
+          m_frameSamples  != fmt->m_frameSamples  ||
           m_frameSize     != fmt->m_frameSize     ||
           m_channelCount  != fmt->m_channelCount)
       {
         return false;
       }
-      
+
       for (unsigned int ch = 0; ch < AE_CH_MAX; ch++)
       {
         if (fmt->m_channels[ch] != m_channels[ch])
@@ -155,11 +131,13 @@ extern "C" {
         }
       }
 
-      return  true;
+      return true;
     }
   } AudioEngineFormat;
+  /// @}
+  //----------------------------------------------------------------------------
 
-#ifdef __cplusplus
-}
-#endif
+} /* extern "C" */
+} /* namespace KodiAPI */
 
+END_NAMESPACE()
