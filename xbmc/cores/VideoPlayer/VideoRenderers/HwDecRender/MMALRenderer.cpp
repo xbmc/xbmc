@@ -42,7 +42,8 @@
 MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, bool opaque)
 {
   CSingleLock lock(m_sharedSection);
-  if (!m_bMMALConfigured)
+  bool formatChanged = m_format != format || m_opaque != opaque;
+  if (!m_bMMALConfigured || formatChanged)
     m_bMMALConfigured = init_vout(format, opaque);
 
   return m_vout_input_pool;
