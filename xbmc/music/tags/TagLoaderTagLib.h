@@ -21,6 +21,9 @@
 
 #include "ImusicInfoTagLoader.h"
 
+#include <string>
+#include <vector>
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
