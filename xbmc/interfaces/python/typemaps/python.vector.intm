@@ -24,6 +24,8 @@
     String accessor = ispointer ? '->' : '.'
     int seq = sequence.increment()
 %>
+    // check ${slarg} to confirm available data present if a optional list is not used.
+    if (${slarg} != nullptr)
     {
       bool isTuple = PyObject_TypeCheck(${slarg},&PyTuple_Type);
       if (!isTuple && !PyObject_TypeCheck(${slarg},&PyList_Type))
