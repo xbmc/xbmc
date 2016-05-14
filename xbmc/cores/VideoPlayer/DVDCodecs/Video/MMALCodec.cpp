@@ -51,10 +51,12 @@ using namespace KODI::MESSAGING;
 
 #define CLASSNAME "CMMALVideoBuffer"
 
+#define VERBOSE 0
+
 CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv)
     : m_omv(omv)
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
   mmal_buffer = NULL;
   m_width = 0;
@@ -69,7 +71,7 @@ CMMALVideoBuffer::~CMMALVideoBuffer()
 {
   if (mmal_buffer)
     mmal_buffer_header_release(mmal_buffer);
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
 }
 
@@ -885,7 +887,7 @@ void CMMALVideo::Prime()
   assert(m_renderer);
   MMAL_POOL_T *render_pool = m_renderer->GetPool(RENDER_FMT_MMAL, true);
   assert(render_pool);
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - queue(%p)", CLASSNAME, __func__, render_pool);
   while (buffer = mmal_queue_get(render_pool->queue), buffer)
     Recycle(buffer);
@@ -958,7 +960,7 @@ void CMMALVideo::SetSpeed(int iSpeed)
 void CMMALVideo::Recycle(MMAL_BUFFER_HEADER_T *buffer)
 {
   CSingleLock lock(m_sharedSection);
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, buffer);
 
   if (m_finished)
@@ -970,7 +972,7 @@ void CMMALVideo::Recycle(MMAL_BUFFER_HEADER_T *buffer)
   MMAL_STATUS_T status;
   mmal_buffer_header_reset(buffer);
   buffer->cmd = 0;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s Send buffer %p from pool to decoder output port %p ready_queue(%d)", CLASSNAME, __func__, buffer, m_dec_output,
       m_output_ready.size());
   status = mmal_port_send_buffer(m_dec_output, buffer);
@@ -1044,7 +1046,7 @@ bool CMMALVideo::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
   CSingleLock lock(m_sharedSection);
   if (pDvdVideoPicture->format == RENDER_FMT_MMAL)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - %p (%p)", CLASSNAME, __func__, pDvdVideoPicture->MMALBuffer, pDvdVideoPicture->MMALBuffer->mmal_buffer);
     SAFE_RELEASE(pDvdVideoPicture->MMALBuffer);
   }

@@ -37,6 +37,7 @@
 
 #define CLASSNAME "CMMALRenderer"
 
+#define VERBOSE 0
 
 MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, bool opaque)
 {
@@ -67,8 +68,8 @@ void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *
   assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_TRANSMISSION_FAILED));
   buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER2;
   CMMALBuffer *omvb = (CMMALBuffer *)buffer->user_data;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s YUV port:%p omvb:%p mmal:%p:%p len:%d cmd:%x flags:%x flight:%d", CLASSNAME, __func__, port, omvb, buffer, omvb->mmal_buffer, buffer->length, buffer->cmd, buffer->flags, m_inflight);
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s port:%p omvb:%p mmal:%p:%p len:%d cmd:%x flags:%x flight:%d", CLASSNAME, __func__, port, omvb, buffer, omvb->mmal_buffer, buffer->length, buffer->cmd, buffer->flags, m_inflight);
   assert(buffer == omvb->mmal_buffer);
   m_inflight--;
   omvb->Release();
@@ -246,7 +247,7 @@ void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
 
   CMMALBuffer *buffer = pic.MMALBuffer;
   assert(buffer);
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s MMAL - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
 
   m_buffers[index] = buffer->Acquire();
@@ -310,7 +311,7 @@ void CMMALRenderer::ReleaseBuffer(int idx)
   }
 
   CMMALBuffer *omvb = m_buffers[idx];
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: source:%d omvb:%p mmal:%p flight:%d", CLASSNAME, __func__, idx, omvb, omvb ? omvb->mmal_buffer:NULL, m_inflight);
   if (omvb)
     SAFE_RELEASE(m_buffers[idx]);
@@ -423,7 +424,7 @@ void CMMALRenderer::FlipPage(int source)
     return;
   }
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - source:%d", CLASSNAME, __func__, source);
 
   m_iYV12RenderBuffer = source;
@@ -450,7 +451,7 @@ void CMMALRenderer::PreInit()
 
 void CMMALRenderer::ReleaseBuffers()
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   for (int i=0; i<NUM_BUFFERS; i++)
     ReleaseBuffer(i);
