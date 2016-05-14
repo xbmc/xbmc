@@ -54,6 +54,8 @@
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>F</tempunit>
       <speedunit>mph</speedunit>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="USA (24h)" locale="US">
@@ -62,6 +64,8 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>F</tempunit>
       <speedunit>mph</speedunit>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="UK (12h)" locale="GB">
@@ -71,6 +75,8 @@
       <tempunit>C</tempunit>
       <speedunit>mph</speedunit>
       <timezone>GMT</timezone>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="UK (24h)" locale="GB">
@@ -80,6 +86,8 @@
       <tempunit>C</tempunit>
       <speedunit>mph</speedunit>
       <timezone>GMT</timezone>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="Canada" locale="CA">
@@ -88,6 +96,8 @@
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="Australia (12h)" locale="AU">
@@ -97,6 +107,8 @@
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
       <timezone>GMT</timezone>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="Australia (24h)" locale="AU">
@@ -106,6 +118,8 @@
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
       <timezone>GMT</timezone>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
     
     <region name="Central Europe" locale="DE">
@@ -115,6 +129,8 @@
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
       <timezone>CET</timezone>
+      <thousandsseparator groupingformat="\3">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="India (12h)" locale="IN">
@@ -124,6 +140,8 @@
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
       <timezone>GMT</timezone>
+      <thousandsseparator groupingformat="\3\2">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
 
     <region name="India (24h)" locale="IN">
@@ -133,6 +151,8 @@
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
       <timezone>IST</timezone>
+      <thousandsseparator groupingformat="\3\2">,</thousandsseparator>
+      <decimalseparator>.</decimalseparator>
     </region>
   </regions>
 </language>

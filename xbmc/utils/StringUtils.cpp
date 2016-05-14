@@ -1032,6 +1032,29 @@ std::string StringUtils::SizeToString(int64_t size)
   return strLabel;
 }
 
+std::string StringUtils::BinaryStringToString(const std::string& in)
+{
+  std::string out;
+  out.reserve(in.size() / 2);
+  for (const char *cur = in.c_str(), *end = cur + in.size(); cur != end; ++cur) {
+    if (*cur == '\\') {
+      ++cur;                                                                             
+      if (cur == end) {
+        break;
+      }
+      if (isdigit(*cur)) {                                                             
+        char* end;
+        unsigned long num = strtol(cur, &end, 10);
+        cur = end - 1;
+        out.push_back(num);
+        continue;
+      }
+    }
+    out.push_back(*cur);
+  }
+  return out;
+}
+
 // return -1 if not, else return the utf8 char length.
 int IsUTF8Letter(const unsigned char *str)
 {
