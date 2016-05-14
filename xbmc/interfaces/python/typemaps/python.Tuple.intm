@@ -24,13 +24,14 @@
     int seq = sequence.increment()
     tupleAccess = [ 'first', 'second', 'third', 'fourth' ]
 %>
+    if(${slarg})
     {
       bool isTuple = PyObject_TypeCheck(${slarg},&PyTuple_Type);
       if (!isTuple && !PyObject_TypeCheck(${slarg},&PyList_Type))
         throw WrongTypeException("The parameter \"${api}\" must be either a Tuple or a List.");
       int vecSize = (isTuple ? PyTuple_Size(${slarg}) : PyList_Size(${slarg}));
 <%
-      types.eachWithIndex { curType, entryIndex -> 
+      types.eachWithIndex { curType, entryIndex ->
 %>
       if (vecSize > ${entryIndex})
       {
