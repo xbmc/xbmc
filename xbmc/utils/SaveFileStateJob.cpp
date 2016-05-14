@@ -51,7 +51,7 @@ bool CSaveFileStateJob::DoWork()
       progressTrackingFile = original;
   }
 
-  if (progressTrackingFile != "")
+  if (!progressTrackingFile.empty())
   {
 #ifdef HAS_UPNP
     // checks if UPnP server of this file is available and supports updating
