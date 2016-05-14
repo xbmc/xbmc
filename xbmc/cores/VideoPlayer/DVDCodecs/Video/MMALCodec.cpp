@@ -106,6 +106,7 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
   m_codingType = 0;
 
   m_es_format = mmal_format_alloc();
+  m_preroll = true;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_fps = 0.0f;
   m_num_decoded = 0;
@@ -726,6 +727,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
 
   Prime();
+  m_preroll = !m_hints.stills;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   return true;
@@ -844,11 +846,11 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   int ret = 0;
 
   unsigned int pics = m_output_ready.size();
-  if (pics > 0)
+  if (m_preroll && (pics >= GetAllowedReferences() || m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+    m_preroll = false;
+  if (pics > 0 && !m_preroll)
     ret |= VC_PICTURE;
-  if (pics <= 1 && mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
-    ret |= VC_BUFFER;
-  else if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN && !ret)
+  if ((m_preroll || pics <= 1) && mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
     ret |= VC_BUFFER;
 
   bool slept = false;
@@ -863,16 +865,16 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
       lock.Enter();
     }
     unsigned int pics = m_output_ready.size();
-    if (pics > 0)
+    if (m_preroll && (pics >= GetAllowedReferences() || m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+      m_preroll = false;
+    if (pics > 0 && !m_preroll)
       ret |= VC_PICTURE;
-    if (pics <= 1 && mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
-      ret |= VC_BUFFER;
-    else if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN && !ret)
+    if ((m_preroll || pics <= 1) && (mmal_queue_length(m_dec_input_pool->queue) > 0 || m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
       ret |= VC_BUFFER;
   }
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%d) queued(%.2f) (%.2f:%.2f) full(%d) flags(%x)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), slept, queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full, m_codecControlFlags);
+    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%d) queued(%.2f) (%.2f:%.2f) full(%d) flags(%x) preroll(%d)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), slept, queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full, m_codecControlFlags,  m_preroll);
 
   return ret;
 }
@@ -942,6 +944,7 @@ void CMMALVideo::Reset(void)
   m_demuxerPts = DVD_NOPTS_VALUE;
   m_codecControlFlags = 0;
   m_dropState = false;
+  m_preroll = !m_hints.stills && (m_speed == DVD_PLAYSPEED_NORMAL || m_speed == DVD_PLAYSPEED_PAUSE);
 }
 
 void CMMALVideo::SetSpeed(int iSpeed)

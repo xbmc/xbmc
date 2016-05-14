@@ -132,6 +132,7 @@ protected:
   int               m_speed;
   int               m_codecControlFlags;
   bool              m_dropState;
+  bool              m_preroll;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_dec;
