@@ -224,6 +224,10 @@ if(NOT addons)
   endif()
 endif()
 
+# Track if at least one addon has been found. Everything else is likely an
+# error either in ADDONS_TO_BUILD or in the directory configuration.
+set(SUPPORTED_ADDON_FOUND FALSE)
+
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
@@ -243,6 +247,7 @@ foreach(addon ${addons})
 
     if(ADDON_FOUND)
       message(STATUS "\n-- ---- Configuring addon ${addon} ----")
+      set(SUPPORTED_ADDON_FOUND TRUE)
 
       get_filename_component(dir ${addon} PATH)
 
@@ -418,6 +423,12 @@ if(NEED_SUDO)
                     COMMAND sudo ${CMAKE_COMMAND} -E copy_directory ${ADDON_INSTALL_DIR}/ ${CMAKE_INSTALL_PREFIX}/
                     COMMAND sudo ${CMAKE_COMMAND} -E remove_directory ${ADDON_INSTALL_DIR}/
                     COMMAND sudo -k)
+endif()
+
+if(NOT SUPPORTED_ADDON_FOUND)
+  message(FATAL_ERROR "${ADDONS_TO_BUILD} did not match any of the supported addons. \
+                       A list of supported addons can be viewed by building the 'supported_addons' target. \
+                       Addon definitions are loaded from ADDONS_DEFINITION_DIR (${ADDONS_DEFINITION_DIR}).")
 endif()
 
 # add custom target "supported_addons" that returns all addons that are supported on this platform
