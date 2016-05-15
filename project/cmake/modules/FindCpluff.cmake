@@ -38,6 +38,8 @@ else()
                       BUILD_COMMAND msbuild ${CORE_SOURCE_DIR}/project/VS2010Express/XBMC\ for\ Windows.sln
                                             /t:cpluff /p:Configuration=${CORE_BUILD_CONFIG}
                       INSTALL_COMMAND "")
+  copy_file_to_buildtree(${CORE_SOURCE_DIR}/system/cpluff.dll ${CORE_SOURCE_DIR})
+  add_dependencies(export-files libcpluff)
 endif()
 
 set(CPLUFF_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/include)
