@@ -184,6 +184,7 @@ list(APPEND CMAKE_MODULE_PATH ${APP_LIB_DIR})
 include(prepare-env)
 
 ### add the depends subdirectory for any general dependencies
+message(STATUS "\n-- ---- Preparing general dependencies ----")
 add_subdirectory(depends)
 
 # add a custom target "package-addons" which will package and install all addons
@@ -241,6 +242,8 @@ foreach(addon ${addons})
     endif()
 
     if(ADDON_FOUND)
+      message(STATUS "\n-- ---- Configuring addon ${addon} ----")
+
       get_filename_component(dir ${addon} PATH)
 
       # check if the addon has a platforms.txt
@@ -406,6 +409,7 @@ foreach(addon ${addons})
     endif()
   endif()
 endforeach()
+message(STATUS "")
 
 if(NEED_SUDO)
   add_custom_target(install
