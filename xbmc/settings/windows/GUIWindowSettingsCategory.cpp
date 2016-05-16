@@ -27,6 +27,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/SettingSection.h"
+#include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
@@ -81,11 +82,37 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     case GUI_MSG_WINDOW_INIT:
     {
       m_iSection = (int)message.GetParam2() - (int)CGUIDialogSettingsManagerBase::GetID();
+
+      // Ensure the setting we are about to focus will be visible.
+      auto focusSetting = message.GetStringParam(1);
+      if (!focusSetting.empty())
+      {
+        auto setting = GetSetting(focusSetting);
+        if (setting)
+        {
+          if (CViewStateSettings::GetInstance().GetSettingLevel() < setting->GetLevel())
+            CViewStateSettings::GetInstance().SetSettingLevel(setting->GetLevel());
+        }
+        else
+          CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: could not find setting '%s'.", focusSetting.c_str());
+      }
+
       CGUIDialogSettingsManagerBase::OnMessage(message);
       m_returningFromSkinLoad = false;
+      SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
 
+      // TODO: should check the level to ensure it can be focused, same as above
       if (!message.GetStringParam(0).empty())
         FocusCategory(message.GetStringParam(0));
+
+      if (!focusSetting.empty())
+      {
+        auto control = GetSettingControl(focusSetting);
+        if (control)
+          SET_CONTROL_FOCUS(control->GetID(), 0);
+        else
+          CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: failed to get control for setting '%s'.", focusSetting.c_str());
+      }
 
       return true;
     }
@@ -172,12 +199,6 @@ bool CGUIWindowSettingsCategory::OnBack(int actionID)
 {
   Save();
   return CGUIDialogSettingsManagerBase::OnBack(actionID);
-}
-
-void CGUIWindowSettingsCategory::OnWindowLoaded()
-{
-  SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
-  CGUIDialogSettingsManagerBase::OnWindowLoaded();
 }
 
 int CGUIWindowSettingsCategory::GetSettingLevel() const
