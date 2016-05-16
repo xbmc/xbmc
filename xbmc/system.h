@@ -259,12 +259,3 @@
 #define GET_R(color)            ((color >> 16) & 0xFF)
 #define GET_G(color)            ((color >>  8) & 0xFF)
 #define GET_B(color)            ((color >>  0) & 0xFF)
-
-/****************
- * default skin
- ****************/
-#if defined(TARGET_DARWIN_IOS)
-#define DEFAULT_SKIN          "skin.estouchy"
-#else
-#define DEFAULT_SKIN          "skin.estuary"
-#endif
