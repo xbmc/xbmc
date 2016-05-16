@@ -39,9 +39,6 @@ public:
   virtual bool IsDialog() const { return false; }
 
 protected:
-  // specialization of CGUIWindow
-  virtual void OnWindowLoaded();
-
   // implementation of CGUIDialogSettingsBase
   virtual int GetSettingLevel() const;
   virtual CSettingSection* GetSection();
