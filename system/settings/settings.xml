@@ -2401,7 +2401,7 @@
           <control type="button" format="action" />
         </setting>
         <setting id="addons.unknownsources" type="boolean" label="36615" help="36616">
-          <level>2</level>
+          <level>0</level>
           <default>false</default>
           <control type="toggle" />
         </setting>

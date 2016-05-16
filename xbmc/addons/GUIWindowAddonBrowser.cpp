@@ -174,7 +174,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
     if (!CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES))
     {
       if (ShowYesNoDialogText(13106, 36617, 186, 10004) == DialogResponse::YES)
-        g_windowManager.ActivateWindow(WINDOW_SETTINGS_SYSTEM, "addons");
+        g_windowManager.ActivateWindow(WINDOW_SETTINGS_SYSTEM, CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
     }
     else
     {
