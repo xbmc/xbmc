@@ -431,7 +431,7 @@ static bool Repos(const CURL& path, CFileItemList &items)
 
 static void RootDirectory(CFileItemList& items)
 {
-  items.SetLabel(g_localizeStrings.Get(24033));
+  items.SetLabel(g_localizeStrings.Get(10040));
   {
     CFileItemPtr item(new CFileItem("addons://user/", true));
     item->SetLabel(g_localizeStrings.Get(24998));
