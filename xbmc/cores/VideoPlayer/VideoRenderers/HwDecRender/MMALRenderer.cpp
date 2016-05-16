@@ -39,12 +39,12 @@
 
 #define VERBOSE 0
 
-MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, bool opaque)
+MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque)
 {
   CSingleLock lock(m_sharedSection);
   bool formatChanged = m_format != format || m_opaque != opaque;
   if (!m_bMMALConfigured || formatChanged)
-    m_bMMALConfigured = init_vout(format, opaque);
+    m_bMMALConfigured = init_vout(format, pixfmt, opaque);
 
   return m_vout_input_pool;
 }
@@ -82,7 +82,7 @@ static void vout_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *b
   mmal->vout_input_port_cb(port, buffer);
 }
 
-bool CMMALRenderer::init_vout(ERenderFormat format, bool opaque)
+bool CMMALRenderer::init_vout(ERenderFormat format, AVPixelFormat pixfmt, bool opaque)
 {
   CSingleLock lock(m_sharedSection);
   bool formatChanged = m_format != format || m_opaque != opaque;
@@ -282,7 +282,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageRenderArea();
 
-  m_bMMALConfigured = init_vout(format, m_opaque);
+  m_bMMALConfigured = init_vout(format, AV_PIX_FMT_YUV420P, m_opaque);
   m_bConfigured = m_bMMALConfigured;
   assert(m_bConfigured);
   return m_bConfigured;
