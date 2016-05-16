@@ -27,6 +27,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/SettingSection.h"
+#include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
@@ -85,7 +86,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_returningFromSkinLoad = false;
 
       if (!message.GetStringParam(0).empty())
-        FocusCategory(message.GetStringParam(0));
+        FocusElement(message.GetStringParam(0));
 
       return true;
     }
@@ -201,15 +202,32 @@ void CGUIWindowSettingsCategory::Save()
   m_settings.Save();
 }
 
-void CGUIWindowSettingsCategory::FocusCategory(const std::string& categoryId)
+void CGUIWindowSettingsCategory::FocusElement(const std::string& elementId)
 {
-  auto category = std::find_if(m_categories.cbegin(), m_categories.cend(),
-    [&categoryId](const CSettingCategory* category) { return category->GetId() == categoryId; });
-  if (category == m_categories.end())
+  for (size_t i = 0; i < m_categories.size(); ++i)
   {
-    CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: asked to focus unknown category '%s'.", categoryId.c_str());
-    return;
-  }
+    if (m_categories[i]->GetId() == elementId)
+    {
+      SET_CONTROL_FOCUS(CONTROL_SETTINGS_START_BUTTONS + i, 0);
+      return;
+    }
+    for (const auto& group: m_categories[i]->GetGroups())
+    {
+      for (const auto& setting : group->GetSettings())
+      {
+        if (setting->GetId() == elementId)
+        {
+          SET_CONTROL_FOCUS(CONTROL_SETTINGS_START_BUTTONS + i, 0);
 
-  SET_CONTROL_FOCUS(CONTROL_SETTINGS_START_BUTTONS + std::distance(m_categories.cbegin(), category), 0);
+          auto control = GetSettingControl(elementId);
+          if (control)
+            SET_CONTROL_FOCUS(control->GetID(), 0);
+          else
+            CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: failed to get control for setting '%s'.", elementId.c_str());
+          return;
+        }
+      }
+    }
+  }
+  CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: failed to set focus. unknown category/setting id '%s'.", elementId.c_str());
 }

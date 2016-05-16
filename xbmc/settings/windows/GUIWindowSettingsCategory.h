@@ -47,7 +47,11 @@ protected:
   virtual CSettingSection* GetSection();
   virtual void Save();
 
-  void FocusCategory(const std::string& categoryId);
+  /*!
+   * Set focus to a category or setting in this window. The setting/category must be active in the
+   * current level.
+   */
+  void FocusElement(const std::string& elementId);
 
   CSettings& m_settings;
   int m_iSection;
