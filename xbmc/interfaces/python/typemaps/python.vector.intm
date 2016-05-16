@@ -24,6 +24,7 @@
     String accessor = ispointer ? '->' : '.'
     int seq = sequence.increment()
 %>
+    if (${slarg})
     {
       bool isTuple = PyObject_TypeCheck(${slarg},&PyTuple_Type);
       if (!isTuple && !PyObject_TypeCheck(${slarg},&PyList_Type))
