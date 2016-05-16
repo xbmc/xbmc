@@ -714,7 +714,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureRadioOnFocus, textureRadioOnNoFocus;
   CTextureInfo textureRadioOffFocus, textureRadioOffNoFocus;
   CTextureInfo textureRadioOnDisabled, textureRadioOffDisabled;
-  CTextureInfo imageNoFocus, imageFocus;
   CTextureInfo textureProgressIndicator;
   CGUIInfoLabel texturePath;
   CRect borderSize;
@@ -964,9 +963,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetInfoTexture(pControlNode, "texture", texture, textureFile, parentID);
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
-
-  GetTexture(pControlNode, "imagefolder", imageNoFocus);
-  GetTexture(pControlNode, "imagefolderfocus", imageFocus);
 
   // fade label can have a whole bunch, but most just have one
   std::vector<CGUIInfoLabel> infoLabels;
