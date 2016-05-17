@@ -119,18 +119,18 @@ CNetworkServices::CNetworkServices()
 #endif // HAS_WEB_SERVER
 {
 #ifdef HAS_WEB_SERVER
-  CWebServer::RegisterRequestHandler(&m_httpImageHandler);
-  CWebServer::RegisterRequestHandler(&m_httpImageTransformationHandler);
-  CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
+  m_webserver.RegisterRequestHandler(&m_httpImageHandler);
+  m_webserver.RegisterRequestHandler(&m_httpImageTransformationHandler);
+  m_webserver.RegisterRequestHandler(&m_httpVfsHandler);
 #ifdef HAS_JSONRPC
-  CWebServer::RegisterRequestHandler(&m_httpJsonRpcHandler);
+  m_webserver.RegisterRequestHandler(&m_httpJsonRpcHandler);
 #endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
 #ifdef HAS_PYTHON
-  CWebServer::RegisterRequestHandler(&m_httpPythonHandler);
+  m_webserver.RegisterRequestHandler(&m_httpPythonHandler);
 #endif
-  CWebServer::RegisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
-  CWebServer::RegisterRequestHandler(&m_httpWebinterfaceHandler);
+  m_webserver.RegisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
+  m_webserver.RegisterRequestHandler(&m_httpWebinterfaceHandler);
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
 }
@@ -138,25 +138,25 @@ CNetworkServices::CNetworkServices()
 CNetworkServices::~CNetworkServices()
 {
 #ifdef HAS_WEB_SERVER
-  CWebServer::UnregisterRequestHandler(&m_httpImageHandler);
+  m_webserver.UnregisterRequestHandler(&m_httpImageHandler);
   delete &m_httpImageHandler;
-  CWebServer::UnregisterRequestHandler(&m_httpImageTransformationHandler);
+  m_webserver.UnregisterRequestHandler(&m_httpImageTransformationHandler);
   delete &m_httpImageTransformationHandler;
-  CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
+  m_webserver.UnregisterRequestHandler(&m_httpVfsHandler);
   delete &m_httpVfsHandler;
 #ifdef HAS_JSONRPC
-  CWebServer::UnregisterRequestHandler(&m_httpJsonRpcHandler);
+  m_webserver.UnregisterRequestHandler(&m_httpJsonRpcHandler);
   delete &m_httpJsonRpcHandler;
   CJSONRPC::Cleanup();
 #endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
 #ifdef HAS_PYTHON
-  CWebServer::UnregisterRequestHandler(&m_httpPythonHandler);
+  m_webserver.UnregisterRequestHandler(&m_httpPythonHandler);
   delete &m_httpPythonHandler;
 #endif
-  CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
+  m_webserver.UnregisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
   delete &m_httpWebinterfaceAddonsHandler;
-  CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceHandler);
+  m_webserver.UnregisterRequestHandler(&m_httpWebinterfaceHandler);
   delete &m_httpWebinterfaceHandler;
 #endif // HAS_WEB_INTERFACE
   delete &m_webserver;

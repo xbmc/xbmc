@@ -28,6 +28,10 @@
 #include "filesystem/File.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPVfsHandler.h"
+#ifdef HAS_JSONRPC
+#include "network/httprequesthandler/HTTPJsonRpcHandler.h"
+#endif // HAS_JSONRPC
 #include "settings/MediaSourceSettings.h"
 #include "test/TestUtils.h"
 #include "utils/JSONVariantParser.h"
@@ -63,12 +67,17 @@ protected:
     SetupMediaSources();
 
     webserver.Start(WEBSERVER_PORT, "", "");
+    webserver.RegisterRequestHandler(&m_jsonRpcHandler);
+    webserver.RegisterRequestHandler(&m_vfsHandler);
   }
 
   virtual void TearDown()
   {
     if (webserver.IsStarted())
       webserver.Stop();
+
+    webserver.UnregisterRequestHandler(&m_vfsHandler);
+    webserver.UnregisterRequestHandler(&m_jsonRpcHandler);
 
     TearDownMediaSources();
   }
@@ -331,6 +340,8 @@ protected:
   }
 
   CWebServer webserver;
+  CHTTPJsonRpcHandler m_jsonRpcHandler;
+  CHTTPVfsHandler m_vfsHandler;
   std::string baseUrl;
   std::string sourcePath;
 };
