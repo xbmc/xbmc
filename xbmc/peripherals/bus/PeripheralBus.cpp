@@ -114,7 +114,6 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
 
 void CPeripheralBus::RegisterNewDevices(const PeripheralScanResults &results)
 {
-  CSingleLock lock(m_critSection);
   for (unsigned int iResultPtr = 0; iResultPtr < results.m_results.size(); iResultPtr++)
   {
     const PeripheralScanResult& result = results.m_results.at(iResultPtr);
