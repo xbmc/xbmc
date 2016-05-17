@@ -103,6 +103,7 @@ protected:
   bool                      m_StereoInvert;
   int                       m_inflight;
   bool                      m_opaque;
+  AVPixelFormat m_pixfmt;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_vout;
