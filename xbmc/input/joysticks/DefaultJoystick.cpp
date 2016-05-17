@@ -22,6 +22,7 @@
 #include "KeymapHandler.h"
 #include "JoystickTranslator.h"
 #include "input/Key.h"
+#include "Application.h"
 
 #include <algorithm>
 #include <cmath>
@@ -56,6 +57,11 @@ bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
     return true;
 
   return false;
+}
+
+bool CDefaultJoystick::AcceptsInput()
+{
+  return g_application.IsAppFocused();
 }
 
 INPUT_TYPE CDefaultJoystick::GetInputType(const FeatureName& feature) const

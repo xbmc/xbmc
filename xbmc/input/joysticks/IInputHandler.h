@@ -40,7 +40,19 @@ namespace JOYSTICK
      */
     virtual std::string ControllerID(void) const = 0;
 
+    /*!
+     * \brief Return true if the input handler accepts the given feature
+     *
+     * \param feature A feature belonging to the controller specified by ControllerID()
+     *
+     * \return True if the feature is used for input, false otherwise
+     */
     virtual bool HasFeature(const FeatureName& feature) const = 0;
+
+    /*!
+     * \brief Return true if the input handler is currently accepting input
+     */
+    virtual bool AcceptsInput(void) = 0;
 
     /*!
      * \brief Get the type of input handled by the specified feature
