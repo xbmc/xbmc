@@ -714,7 +714,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureRadioOnFocus, textureRadioOnNoFocus;
   CTextureInfo textureRadioOffFocus, textureRadioOffNoFocus;
   CTextureInfo textureRadioOnDisabled, textureRadioOffDisabled;
-  CTextureInfo imageNoFocus, imageFocus;
   CTextureInfo textureProgressIndicator;
   CGUIInfoLabel texturePath;
   CRect borderSize;
@@ -753,7 +752,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   int preloadItems = 0;
 
   CLabelInfo labelInfo;
-  CLabelInfo spinInfo;
 
   CGUIInfoColor hitColor(0xFFFFFFFF);
   CGUIInfoColor textColor3;
@@ -897,11 +895,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
   GetTexture(pControlNode, "texturerightfocus", textureRightFocus);
 
-  GetInfoColor(pControlNode, "spincolor", spinInfo.textColor, parentID);
-  if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
-    spinInfo.font = g_fontManager.GetFont(strFont);
-  if (!spinInfo.font) spinInfo.font = labelInfo.font;
-
   XMLUtils::GetFloat(pControlNode, "spinwidth", spinWidth);
   XMLUtils::GetFloat(pControlNode, "spinheight", spinHeight);
   XMLUtils::GetFloat(pControlNode, "spinposx", spinPosX);
@@ -970,9 +963,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetInfoTexture(pControlNode, "texture", texture, textureFile, parentID);
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
-
-  GetTexture(pControlNode, "imagefolder", imageNoFocus);
-  GetTexture(pControlNode, "imagefolderfocus", imageFocus);
 
   // fade label can have a whole bunch, but most just have one
   std::vector<CGUIInfoLabel> infoLabels;
@@ -1091,10 +1081,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     stereo = std::max(-1.f, std::min(1.f, stereo));
 
   XMLUtils::GetInt(pControlNode, "scrollspeed", labelInfo.scrollSpeed);
-  spinInfo.scrollSpeed = labelInfo.scrollSpeed;
 
   GetString(pControlNode, "scrollsuffix", labelInfo.scrollSuffix);
-  spinInfo.scrollSuffix = labelInfo.scrollSuffix;
 
   XMLUtils::GetString(pControlNode, "action", action);
 
