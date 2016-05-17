@@ -1,41 +1,23 @@
 function(core_link_library lib wraplib)
-#  set(export -Wl,--unresolved-symbols=ignore-all
-#             `cat ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cores/dll-loader/exports/wrapper.def`
-#             ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cores/dll-loader/exports/CMakeFiles/wrapper.dir/wrapper.c.o)
-#  set(check_arg "")
-#  if(TARGET ${lib})
-#    set(target ${lib})
-#    set(link_lib ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${lib}/${lib}.a)
-#    set(check_arg ${ARGV2})
-#    set(data_arg  ${ARGV3})
-#  else()
-#    set(target ${ARGV2})
-#    set(link_lib ${lib})
-#    set(check_arg ${ARGV3})
-#    set(data_arg ${ARGV4})
-#  endif()
-#  if(check_arg STREQUAL "export")
-#    set(export ${export}
-#        -Wl,--version-script=${ARGV3})
-#  elseif(check_arg STREQUAL "nowrap")
-#    set(export ${data_arg})
-#  elseif(check_arg STREQUAL "extras")
-#    foreach(arg ${data_arg})
-#      list(APPEND export ${arg})
-#    endforeach()
-#  endif()
-#  get_filename_component(dir ${wraplib} PATH)
-#  add_custom_command(OUTPUT ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
-#                     COMMAND cmake -E make_directory ${dir}
-#                     COMMAND ${CMAKE_C_COMPILER}
-#                     ARGS    -Wl,--whole-archive
-#                             ${link_lib}
-#                             -Wl,--no-whole-archive -lm
-#                             -shared -o ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
-#                             ${export}
-#                     DEPENDS ${target} wrapper.def wrapper)
-#  list(APPEND WRAP_FILES ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX})
-#  set(WRAP_FILES ${WRAP_FILES} PARENT_SCOPE)
+  # On Windows there is no need to wrap libraries.
+  # Since we cannot build a DLL from an existing LIB, we simply compile the DLL.
+  # TODO: core_add_library and core_link_library should be refactored so that we have
+  #       decoupled functions for generating the shared libraries. Libs that are not
+  #       wrapped should directly be compiled into shared libs.
+  if(TARGET ${lib})
+    get_property(SOURCES TARGET ${lib} PROPERTY SOURCES)
+    get_property(SOURCE_DIR TARGET ${lib} PROPERTY SOURCE_DIR)
+    get_property(INCLUDES TARGET ${lib} PROPERTY INCLUDE_DIRECTORIES)
+    get_property(DEFINITIONS TARGET ${lib} PROPERTY COMPILE_DEFINITIONS)
+    foreach(source IN LISTS SOURCES)
+      list(APPEND SOURCES_ABS ${SOURCE_DIR}/${source})
+    endforeach()
+
+    add_library(wrap_${lib} SHARED ${SOURCES_ABS})
+    set_target_properties(wrap_${lib} PROPERTIES OUTPUT_NAME ${wraplib})
+    target_include_directories(wrap_${lib} PRIVATE ${INCLUDES})
+    target_compile_definitions(wrap_${lib} PRIVATE ${DEFINITIONS})
+  endif()
 endfunction()
 
 function(find_soname lib)
