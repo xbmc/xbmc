@@ -32,6 +32,14 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Смотреть в 2D"
 
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Не просмотреные фильмы"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Загрузить иконки"
+
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Случайные альбомы"
@@ -80,13 +88,29 @@ msgctxt "#31027"
 msgid "Go to songs"
 msgstr "Перейти к композициям"
 
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Показать фанарт"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Последний вход"
 
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Использовано памяти"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Информация о версии"
+
 msgctxt "#31032"
 msgid "Order"
 msgstr "Порядок"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Дополнительная информация"
 
 msgctxt "#31035"
 msgid "Pages"
