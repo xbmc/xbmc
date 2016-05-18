@@ -19,6 +19,8 @@
  *
  */
 
+#include "linux/imx/IMX.h"
+
 #include "threads/CriticalSection.h"
 #include "threads/Condition.h"
 #include "threads/Thread.h"
@@ -71,33 +73,6 @@ enum RENDER_TASK
 {
   RENDER_TASK_AUTOPAGE = -1,
   RENDER_TASK_CAPTURE  = -2,
-};
-
-
-/*>> TO BE MOVED TO A MORE CENTRAL PLACE IN THE SOURCE DIR >>>>>>>>>>>>>>>>>>>*/
-// Generell description of a buffer used by
-// the IMX context, e.g. for blitting
-class CIMXBuffer {
-public:
-  CIMXBuffer() : m_iRefs(0) {}
-
-  // Shared pointer interface
-  virtual void Lock() = 0;
-  virtual long Release() = 0;
-  virtual bool IsValid() = 0;
-
-  virtual void BeginRender() = 0;
-  virtual void EndRender() = 0;
-
-public:
-  uint32_t     iWidth;
-  uint32_t     iHeight;
-  int          pPhysAddr;
-  uint8_t     *pVirtAddr;
-  int          iFormat;
-
-protected:
-  long         m_iRefs;
 };
 
 

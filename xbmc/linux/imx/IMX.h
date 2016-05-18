@@ -53,3 +53,28 @@ private:
 };
 
 extern CIMX g_IMX;
+
+// Generell description of a buffer used by
+// the IMX context, e.g. for blitting
+class CIMXBuffer {
+public:
+  CIMXBuffer() : m_iRefs(0) {}
+
+  // Shared pointer interface
+  virtual void Lock() = 0;
+  virtual long Release() = 0;
+
+  int          GetFormat()  { return iFormat; }
+
+public:
+  uint32_t     iWidth;
+  uint32_t     iHeight;
+  int          pPhysAddr;
+  uint8_t     *pVirtAddr;
+  int          iFormat;
+  double       m_fps;
+
+protected:
+  std::atomic<long> m_iRefs;
+};
+
