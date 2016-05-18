@@ -90,6 +90,7 @@ namespace ADDON
     /*\_________________________________________________________________________
     \*/
     static void*        AddOnLib_RegisterMe            (void* addonData);
+    static void*        AddOnLib_RegisterLevel         (void* addonData, int level);
     static void         AddOnLib_UnRegisterMe          (void* addonData, void* cbTable);
     void*               AddOnLib_GetHelper()          { return m_helperAddOn; }
     /*\_________________________________________________________________________

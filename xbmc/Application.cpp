@@ -220,6 +220,8 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIWindowLoginScreen.h"
 
+#include "addons/binary/AddonInterfaceManager.h"
+
 using namespace ADDON;
 using namespace XFILE;
 #ifdef HAS_DVD_DRIVE
@@ -1148,6 +1150,7 @@ bool CApplication::Initialize()
       CJSONRPC::Initialize();
 #endif
       ADDON::CAddonMgr::GetInstance().StartServices(false);
+      CServiceBroker::GetAddonInterfaceManager().StartManager();
 
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
@@ -1171,6 +1174,7 @@ bool CApplication::Initialize()
     CJSONRPC::Initialize();
 #endif
     ADDON::CAddonMgr::GetInstance().StartServices(false);
+    CServiceBroker::GetAddonInterfaceManager().StartManager();
   }
 
   g_sysinfo.Refresh();
@@ -3555,6 +3559,7 @@ void CApplication::OnQueueNextItem()
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   if(m_bPlaybackStarting)
     return;
+
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON

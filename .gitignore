@@ -402,7 +402,16 @@ lib/cpluff/stamp-h1
 
 # /xbmc/addons/
 /xbmc/addons/Makefile
+/xbmc/addons/binary/Makefile
 /xbmc/addons/binary/interfaces/Makefile
+/xbmc/addons/binary/interfaces/api2/Makefile
+/xbmc/addons/binary/interfaces/api2/Addon/Makefile
+/xbmc/addons/binary/interfaces/api2/AudioEngine/Makefile
+/xbmc/addons/binary/interfaces/api2/GUI/Makefile
+/xbmc/addons/binary/interfaces/api2/InputStream/Makefile
+/xbmc/addons/binary/interfaces/api2/PVR/Makefile
+/xbmc/addons/binary/interfaces/api2/Peripheral/Makefile
+/xbmc/addons/binary/interfaces/api2/Player/Makefile
 
 # /xbmc/platform/android
 /xbmc/platform/android/Makefile
