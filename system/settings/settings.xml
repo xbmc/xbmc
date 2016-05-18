@@ -133,6 +133,20 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.useamcodecmpeg4" type="boolean" label="13455" help="13456">
+          <requirement>HAVE_AMCODEC</requirement>
+          <level>2</level>
+          <default>false</default>
+          <updates>
+            <update type="change" />
+          </updates>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.useamcodec" operator="is">true</condition> <!-- USE AMCODEC -->
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">
           <requirement>HAS_MEDIACODEC</requirement>
           <level>2</level>

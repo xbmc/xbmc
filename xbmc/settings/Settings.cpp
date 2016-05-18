@@ -160,6 +160,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD = "videoplayer.ren
 const std::string CSettings::SETTING_VIDEOPLAYER_HQSCALERS = "videoplayer.hqscalers";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEAMCODEC = "videoplayer.useamcodec";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEAMCODEC_MPEG2 = "videoplayer.useamcodecmpeg2";
+const std::string CSettings::SETTING_VIDEOPLAYER_USEAMCODEC_MPEG4 = "videoplayer.useamcodecmpeg4";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC = "videoplayer.usemediacodec";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE = "videoplayer.usemediacodecsurface";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVDPAU = "videoplayer.usevdpau";
@@ -1079,6 +1080,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_TESTPATTERN);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC_MPEG2);
+  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC_MPEG4);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS);
