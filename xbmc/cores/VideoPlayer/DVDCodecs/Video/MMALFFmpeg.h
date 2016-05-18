@@ -27,6 +27,7 @@
 #include "MMALCodec.h"
 
 class CMMALRenderer;
+class CMMALPool;
 struct MMAL_BUFFER_HEADER_T;
 class CGPUMEM;
 
@@ -76,6 +77,7 @@ protected:
   unsigned int m_shared;
   CCriticalSection m_section;
   CMMALRenderer *m_renderer;
+  std::shared_ptr<CMMALPool> m_pool;
   std::deque<CGPUMEM *> m_freeBuffers;
   bool m_closing;
 };
