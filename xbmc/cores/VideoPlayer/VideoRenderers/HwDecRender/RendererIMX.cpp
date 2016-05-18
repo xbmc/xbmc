@@ -34,6 +34,7 @@
 #define RENDER_FLAG_FIELDS (RENDER_FLAG_FIELD0 | RENDER_FLAG_FIELD1)
 
 CRendererIMX::CRendererIMX()
+  : buffer_p(nullptr)
 {
 
 }
@@ -41,6 +42,8 @@ CRendererIMX::CRendererIMX()
 CRendererIMX::~CRendererIMX()
 {
   UnInit();
+  SAFE_RELEASE(buffer_p);
+  g_IMXContext.Clear();
 }
 
 bool CRendererIMX::RenderCapture(CRenderCapture* capture)
@@ -86,8 +89,11 @@ bool CRendererIMX::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(method == VS_INTERLACEMETHOD_IMX_FASTMOTION
-  || method == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)
+  if(method == VS_INTERLACEMETHOD_IMX_ADVMOTION
+  || method == VS_INTERLACEMETHOD_IMX_WEAVE
+  || method == VS_INTERLACEMETHOD_IMX_FASTMOTION
+  || method == VS_INTERLACEMETHOD_RENDER_BOB
+  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
     return true;
   else
     return false;
@@ -105,12 +111,12 @@ bool CRendererIMX::Supports(EDEINTERLACEMODE mode)
 
 bool CRendererIMX::Supports(ESCALINGMETHOD method)
 {
-  return false;
+  return method == VS_SCALINGMETHOD_AUTO;
 }
 
 EINTERLACEMETHOD CRendererIMX::AutoInterlaceMethod()
 {
-  return VS_INTERLACEMETHOD_IMX_FASTMOTION;
+  return VS_INTERLACEMETHOD_IMX_ADVMOTION;
 }
 
 CRenderInfo CRendererIMX::GetRenderInfo()
@@ -178,25 +184,25 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     //CLog::Log(LOGDEBUG, "BLIT RECTS: source x1 %f x2 %f y1 %f y2 %f dest x1 %f x2 %f y1 %f y2 %f", srcRect.x1, srcRect.x2, srcRect.y1, srcRect.y2, dstRect.x1, dstRect.x2, dstRect.y1, dstRect.y2);
     g_IMXContext.SetBlitRects(srcRect, dstRect);
 
-    uint8_t fieldFmt = 0;
-    if (g_graphicsContext.IsFullScreenVideo())
+    uint8_t fieldFmt = flags & RENDER_FLAG_FIELDMASK;
+    if (flags & RENDER_FLAG_FIELDS && g_graphicsContext.IsFullScreenVideo())
     {
-      fieldFmt |= flags & RENDER_FLAG_FIELDMASK;
-      if (flags & RENDER_FLAG_FIELDS)
+      fieldFmt |= IPU_DEINTERLACE_RATE_EN;
+      if (flags & RENDER_FLAG_FIELD1)
       {
-        fieldFmt |= IPU_DEINTERLACE_RATE_EN;
-        if (flags & RENDER_FLAG_FIELD1)
-        {
-          fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
-          // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
-          // this makes IPU render same picture as before, just shifted one line.
-          // let's correct this
-          fieldFmt ^= RENDER_FLAG_FIELDMASK;
-        }
+        fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
+        // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
+        // this makes IPU render same picture as before, just shifted one line.
+        // let's correct this
+        fieldFmt ^= RENDER_FLAG_FIELDMASK;
       }
     }
 
-    g_IMXContext.Blit(NULL, buffer, fieldFmt);
+    g_IMXContext.Blit(buffer_p, buffer, fieldFmt);
+
+    SAFE_RELEASE(buffer_p);
+    buffer_p = buffer;
+    buffer_p->Lock();
   }
 
 #if 0

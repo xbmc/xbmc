@@ -1485,8 +1485,26 @@ void CIMXContext::SetFieldData(uint8_t fieldFmt, double fps)
 inline
 bool checkIPUStrideOffset(struct ipu_deinterlace *d)
 {
-  return ((d->field_fmt & MASK1) == VAL1) ||
-         ((d->field_fmt & MASK2) == VAL2);
+  switch (d->motion)
+  {
+  case HIGH_MOTION:
+    return ((d->field_fmt & MASK1) == VAL1) || ((d->field_fmt & MASK2) == VAL2);
+  case MED_MOTION:
+    return ((d->field_fmt & MASK2) == VAL1);
+  default:
+    return true;
+  }
+}
+
+inline
+int setIPUMotion(bool hasPrev, EINTERLACEMETHOD imethod)
+{
+  if (hasPrev && imethod == VS_INTERLACEMETHOD_IMX_WEAVE)
+    return LOW_MOTION;
+  else if (hasPrev && (imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION || imethod == VS_INTERLACEMETHOD_AUTO))
+    return MED_MOTION;
+
+  return HIGH_MOTION;
 }
 
 void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, uint8_t fieldFmt, int page, CRect *dest)
