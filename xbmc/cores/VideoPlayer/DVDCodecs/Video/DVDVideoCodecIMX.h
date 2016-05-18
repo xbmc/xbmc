@@ -54,10 +54,24 @@
 //#define IMX_PROFILE
 //#define TRACE_FRAMES
 
+#define RENDER_USE_G2D 0
+
 // If uncommented a file "stream.dump" will be created in the current
 // directory whenever a new stream is started. This is only for debugging
 // and performance tests. This define must never be active in distributions.
 //#define DUMP_STREAM
+
+inline
+double recalcPts(double pts)
+{
+  return (double)(pts == DVD_NOPTS_VALUE ? 0.0 : pts*1e-6);
+}
+
+enum RENDER_TASK
+{
+  RENDER_TASK_AUTOPAGE = -1,
+  RENDER_TASK_CAPTURE  = -2,
+};
 
 
 /*>> TO BE MOVED TO A MORE CENTRAL PLACE IN THE SOURCE DIR >>>>>>>>>>>>>>>>>>>*/
@@ -95,46 +109,34 @@ public:
   CIMXContext();
   ~CIMXContext();
 
-  bool Configure();
+  bool AdaptScreen(bool allocate = false);
   bool TaskRestart();
-  bool CloseDevices();
+  void CloseDevices();
+  void g2dCloseDevices();
+  void g2dOpenDevices();
   bool OpenDevices();
 
   bool Blank();
   bool Unblank();
   bool SetVSync(bool enable);
 
-  bool IsValid() const { return IsRunning() && m_bFbIsConfigured; }
-
-  // Populates a CIMXBuffer with attributes of a page
-  bool GetPageInfo(CIMXBuffer *info, int page);
-
   // Blitter configuration
   bool IsDoubleRate() const { return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN; }
 
   void SetBlitRects(const CRect &srcRect, const CRect &dstRect);
 
-  // Blits a buffer to a particular page.
+  // Blits a buffer to a particular page (-1 for auto page)
   // source_p (previous buffer) is required for de-interlacing
   // modes LOW_MOTION and MED_MOTION.
-  bool Blit(int targetPage, CIMXBuffer *source_p,
-            CIMXBuffer *source,
-            uint8_t fieldFmt = 0);
-
-  // Same as blit but runs in another thread and returns after the task has
-  // been queued. BlitAsync renders always to the current backbuffer and
-  // swaps the pages.
-  bool BlitAsync(CIMXBuffer *source_p, CIMXBuffer *source,
-                 uint8_t fieldFmt = 0, CRect *dest = NULL);
+  void Blit(CIMXBuffer *source_p, CIMXBuffer *source,
+            uint8_t fieldFmt = 0, int targetPage = RENDER_TASK_AUTOPAGE,
+            CRect *dest = NULL);
 
   // Shows a page vsynced
   bool ShowPage(int page, bool shift = false);
 
-  // Returns the visible page
-  int  GetCurrentPage() const { return m_fbCurrentPage; }
-
   // Clears the pages or a single page with 'black'
-  void Clear(int page = -1);
+  void Clear(int page = RENDER_TASK_AUTOPAGE);
 
   // Captures the current visible frame buffer page and blends it into
   // the passed overlay. The buffer format is BGRA (4 byte)
@@ -145,6 +147,8 @@ public:
 
   void OnResetDisplay();
 
+  static const int  m_fbPages;
+
 private:
   struct IPUTask
   {
@@ -154,39 +158,36 @@ private:
       memset(&task, 0, sizeof(task));
     }
 
-    void Done()
-    {
-      SAFE_RELEASE(previous);
-      SAFE_RELEASE(current);
-    }
-
     // Kept for reference
     CIMXBuffer *previous;
     CIMXBuffer *current;
 
     // The actual task
     struct ipu_task task;
-  };
+
+    int page;
+    int shift;
+  } IPUTask_t;
 
   bool GetFBInfo(const std::string &fbdev, struct fb_var_screeninfo *fbVar);
 
-  bool PushTask(const IPUTask &);
-  void PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
+  void PrepareTask(IPUTask *ipu, CIMXBuffer *source_p, CIMXBuffer *source,
                    CRect *dest = NULL);
-  bool DoTask(IPUTask &ipu, int targetPage);
+  bool DoTask(IPUTask *ipu);
+  bool TileTask(IPUTask *ipu);
 
-  void SetFieldData(uint8_t fieldFmt);
+  void SetFieldData(uint8_t fieldFmt, double fps);
 
   void MemMap(struct fb_fix_screeninfo *fb_fix = NULL);
   void Dispose();
+  void Stop(bool bWait = true);
 
   virtual void OnStartup();
   virtual void OnExit();
-  virtual void StopThread(bool bWait = true);
   virtual void Process();
 
 private:
-  typedef std::vector<IPUTask> TaskQueue;
+  lkFIFO<IPUTask*>               m_input;
 
   int                            m_fbHandle;
   int                            m_fbCurrentPage;
@@ -203,25 +204,17 @@ private:
   bool                           m_vsync;
   CRect                          m_srcRect;
   CRect                          m_dstRect;
-  CRectInt                       m_inputRect;
-  CRectInt                       m_outputRect;
   CRectInt                      *m_pageCrops;
   bool                           m_bFbIsConfigured;
 
   CCriticalSection               m_pageSwapLock;
-  TaskQueue                      m_input;
-  volatile int                   m_beginInput, m_endInput;
-  volatile size_t                m_bufferedInput;
-  XbmcThreads::ConditionVariable m_inputNotEmpty;
-  XbmcThreads::ConditionVariable m_inputNotFull;
-  mutable CCriticalSection       m_monitor;
-
-  void                           *m_g2dHandle;
-  struct g2d_buf                 *m_bufferCapture;
+public:
+  void                          *m_g2dHandle;
+  struct g2d_buf                *m_bufferCapture;
   bool                           m_CaptureDone;
-  static const int               m_fbPages;
 
   std::string                    m_deviceName;
+  double                         m_fps;
 };
 
 

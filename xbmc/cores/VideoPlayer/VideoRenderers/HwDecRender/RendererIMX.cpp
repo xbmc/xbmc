@@ -196,7 +196,7 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
       }
     }
 
-    g_IMXContext.BlitAsync(NULL, buffer, fieldFmt);
+    g_IMXContext.Blit(NULL, buffer, fieldFmt);
   }
 
 #if 0
