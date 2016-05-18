@@ -1046,7 +1046,7 @@ bool CMMALVideo::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - %p (%p)", CLASSNAME, __func__, pDvdVideoPicture->MMALBuffer, pDvdVideoPicture->MMALBuffer->mmal_buffer);
-    pDvdVideoPicture->MMALBuffer->Release();
+    SAFE_RELEASE(pDvdVideoPicture->MMALBuffer);
   }
   memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
   return true;
