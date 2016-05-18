@@ -785,7 +785,8 @@ bool CPVRManager::SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnO
     /* timers are supported on this channel */
     if (bOnOff && !channel->IsRecording())
     {
-      const CPVRTimerInfoTagPtr newTimer(CPVRTimerInfoTag::CreateInstantTimerTag(channel));
+      const CEpgInfoTagPtr epgTag(channel->GetEPGNow());
+      const CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, false) : CPVRTimerInfoTag::CreateInstantTimerTag(channel));
 
       if (newTimer)
         bReturn = newTimer->AddToClient();
