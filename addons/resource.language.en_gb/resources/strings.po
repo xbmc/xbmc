@@ -19137,3 +19137,23 @@ msgstr ""
 msgctxt "#38111"
 msgid "This category contains other settings for the GUI interface"
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39000"
+msgid "HD and up"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39001"
+msgid "Accelerate MPEG2"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39002"
+msgid "Accelerate MPEG4"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39003"
+msgid "Accelerate h264"
+msgstr ""
