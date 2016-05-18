@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "guilib/GraphicContext.h"
 #include "utils/StringUtils.h"
 #include "settings/MediaSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
@@ -1246,6 +1247,7 @@ CIMXContext::CIMXContext()
   , m_bufferCapture(NULL)
   , m_deviceName("/dev/fb1")
 {
+  m_waitVSync.Reset();
   m_onStartup.Reset();
   m_waitFlip.Reset();
   m_flip.clear();
@@ -1606,16 +1608,16 @@ bool CIMXContext::ShowPage()
   if (ioctl(m_fbHandle, FBIOPAN_DISPLAY, &m_fbVar) < 0)
   {
     CLog::Log(LOGWARNING, "Panning failed: %s\n", strerror(errno));
-    return false;
+    ret = false;
   }
 
   m_waitVSync.Set();
 
   // Wait for flip
-  if (m_vsync && ioctl(m_fbHandle, FBIO_WAITFORVSYNC, 0) < 0)
+  if (ret && m_vsync && ioctl(m_fbHandle, FBIO_WAITFORVSYNC, 0) < 0)
   {
     CLog::Log(LOGWARNING, "Vsync failed: %s\n", strerror(errno));
-    return false;
+    ret = false;
   }
   return ret;
 }

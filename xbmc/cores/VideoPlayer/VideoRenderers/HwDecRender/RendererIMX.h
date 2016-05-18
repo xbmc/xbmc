@@ -25,6 +25,8 @@
 #if defined(HAS_IMXVPU)
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "linux/imx/IMX.h"
+#include "DVDCodecs/Video/DVDVideoCodecIMX.h"
 
 class CRendererIMX : public CLinuxRendererGLES
 {
@@ -61,7 +63,8 @@ protected:
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
-  CDVDVideoCodecIMXBuffer *buffer_p;
+  std::deque<CDVDVideoCodecIMXBuffer*> m_bufHistory;
+  static void Release(CDVDVideoCodecIMXBuffer *&t) { if (t) t->Release(); }
 };
 
 #endif
