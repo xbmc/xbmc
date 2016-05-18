@@ -166,7 +166,7 @@ function (kodi_find_path var_name filename search_path strip_file)
 endfunction()
 
 # Cmake build options
-include(addoptions)
+include(AddOptions)
 include(TestCXXAcceptsFlag)
 OPTION(PACKAGE_ZIP "Package Zip file?" OFF)
 OPTION(PACKAGE_TGZ "Package TGZ file?" OFF)

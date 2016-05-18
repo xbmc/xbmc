@@ -2200,8 +2200,8 @@ OUTPUT_FILES="Makefile \
     tools/darwin/packaging/migrate_to_kodi_ios.sh \
     xbmc/platform/darwin/osx/Info.plist \
     xbmc/platform/darwin/ios/Info.plist \
-    project/cmake/kodi-config.cmake \
-    project/cmake/xbmc-config.cmake \
+    project/cmake/KodiConfig.cmake \
+    project/cmake/XBMCConfig.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
     tools/android/packaging/Makefile \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java \
@@ -2228,7 +2228,7 @@ OUTPUT_FILES="$OUTPUT_FILES \
   xbmc/interfaces/python/Makefile \
   xbmc/interfaces/python/test/Makefile"
 
-# needed for kodi-config.cmake
+# needed for KodiConfig.cmake
 if echo "$libdir" | grep -q '${exec_prefix}'; then
   if test "${prefix}" = "NONE" || test "${prefix}" = ""; then
     prefix="/usr/local"

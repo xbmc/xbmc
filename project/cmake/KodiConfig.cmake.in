@@ -28,4 +28,4 @@ if(NOT CORE_SYSTEM_NAME)
   endif()
 endif()
 
-include(addon-helpers)
+include(AddonHelpers)
