@@ -136,13 +136,6 @@ namespace PVR
     bool DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
 
     /*!
-     * @brief Create a new instant timer on a channel.
-     * @param channel The channel to create the timer on.
-     * @return True if the timer was created, false otherwise.
-     */
-    bool InstantTimer(const CPVRChannelPtr &channel);
-
-    /*!
      * @return Next event time (timer or daily wake up)
      */
     CDateTime GetNextEventTime(void) const;

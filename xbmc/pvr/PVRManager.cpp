@@ -758,37 +758,26 @@ void CPVRManager::ResetPlayingTag(void)
 
 bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
 {
-  bool bReturn = false;
-
-  CPVRChannelPtr channel(m_channelGroups->GetChannelById(iChannelId));
+  const CPVRChannelPtr channel(m_channelGroups->GetChannelById(iChannelId));
   if (!channel)
-    return bReturn;
+    return false;
 
-  if (m_addons->HasTimerSupport(channel->ClientID()))
-  {
-    /* timers are supported on this channel */
-    if (!channel->IsRecording())
-    {
-      bReturn = m_timers->InstantTimer(channel);
-      if (!bReturn)
-        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19164});
-    }
-    else
-    {
-      /* delete active timers */
-      bReturn = m_timers->DeleteTimersOnChannel(channel, true, true);
-    }
-  }
-
-  return bReturn;
+  return SetRecordingOnChannel(channel, !channel->IsRecording());
 }
 
 bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 {
+  return SetRecordingOnChannel(m_addons->GetPlayingChannel(), bOnOff);
+}
+
+bool CPVRManager::SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff)
+{
   bool bReturn = false;
 
-  CPVRChannelPtr channel(m_addons->GetPlayingChannel());
   if (!channel)
+    return bReturn;
+
+  if (!g_PVRManager.CheckParentalLock(channel))
     return bReturn;
 
   if (m_addons->HasTimerSupport(channel->ClientID()))
@@ -796,7 +785,11 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     /* timers are supported on this channel */
     if (bOnOff && !channel->IsRecording())
     {
-      bReturn = m_timers->InstantTimer(channel);
+      const CPVRTimerInfoTagPtr newTimer(CPVRTimerInfoTag::CreateInstantTimerTag(channel));
+
+      if (newTimer)
+        bReturn = newTimer->AddToClient();
+
       if (!bReturn)
         CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19164});
     }

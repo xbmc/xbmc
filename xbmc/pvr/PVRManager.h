@@ -643,6 +643,14 @@ private:
      */
     void QueueJob(CJob *job);
 
+     /*!
+     * @brief Start or stop recording on a given channel.
+     * @param channel the channel to start/stop recording.
+     * @param bOnOff True to start recording, false to stop.
+     * @return True if the recording was started or stopped successfully, false otherwise.
+     */
+    bool SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff);
+
     ManagerState GetState(void) const;
 
     void SetState(ManagerState state);
