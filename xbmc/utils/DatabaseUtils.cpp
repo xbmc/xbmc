@@ -516,6 +516,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldPath) return CMusicDatabase::song_strPath;
     else if (field == FieldGenre) return CMusicDatabase::song_strGenres;
     else if (field == FieldArtist || field == FieldAlbumArtist) return CMusicDatabase::song_strArtists;
+    else if (field == FieldDateAdded) return CMusicDatabase::song_dateAdded;
   }
   else if (mediaType == MediaTypeArtist)
   {
