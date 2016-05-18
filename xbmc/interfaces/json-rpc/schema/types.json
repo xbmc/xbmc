@@ -1066,13 +1066,14 @@
   },
   "Profiles.Fields.Profile": {
     "extends": "Item.Fields.Base",
-    "items": { "type": "string", "enum": [ "thumbnail", "lockmode" ] }
+    "items": { "type": "string", "enum": [ "thumbnail", "lockmode", "directory" ] }
   },
   "Profiles.Details.Profile": {
     "extends": "Item.Details.Base",
     "properties": {
       "thumbnail": { "type": "string" },
-      "lockmode": { "type": "integer" }
+      "lockmode": { "type": "integer" },
+      "directory": { "type": "string" }
     }
   },
   "List.Filter.Rule": {

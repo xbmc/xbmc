@@ -23,6 +23,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/md5.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
@@ -42,26 +43,36 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITran
 
   HandleFileItemList("profileid", false, "profiles", listItems, parameterObject, result);
 
-  for (CVariant::const_iterator_array propertyiter = parameterObject["properties"].begin_array(); propertyiter != parameterObject["properties"].end_array(); ++propertyiter)
+  for (CVariant::iterator_array profileIter = result["profiles"].begin_array(); profileIter != result["profiles"].end_array(); ++profileIter)
   {
-    if (propertyiter->isString() &&
-        propertyiter->asString() == "lockmode")
+    std::string profileName((*profileIter)["label"].asString());
+    int index = CProfilesManager::GetInstance().GetProfileIndex(profileName);
+    const CProfile *profile = CProfilesManager::GetInstance().GetProfile(index);
+
+    for (CVariant::const_iterator_array propertyIter = parameterObject["properties"].begin_array(); propertyIter != parameterObject["properties"].end_array(); ++propertyIter)
     {
-      for (CVariant::iterator_array profileiter = result["profiles"].begin_array(); profileiter != result["profiles"].end_array(); ++profileiter)
+      if (propertyIter->isString())
       {
-        std::string profilename = (*profileiter)["label"].asString();
-        int index = CProfilesManager::GetInstance().GetProfileIndex(profilename);
-        const CProfile *profile = CProfilesManager::GetInstance().GetProfile(index);
-        LockType locktype = LOCK_MODE_UNKNOWN;
-        if (index == 0)
-          locktype = CProfilesManager::GetInstance().GetMasterProfile().getLockMode();
-        else
-          locktype = profile->getLockMode();
-        (*profileiter)["lockmode"] = locktype;
+        if (propertyIter->asString() == "lockmode")
+        {
+          LockType lockType(LOCK_MODE_UNKNOWN);
+          if (index == 0)
+            lockType = CProfilesManager::GetInstance().GetMasterProfile().getLockMode();
+          else
+            lockType = profile->getLockMode();
+          (*profileIter)["lockmode"] = lockType;
+        }
+        else if (propertyIter->asString() == "directory")
+        {
+          std::string path(CProfilesManager::GetInstance().GetUserDataFolder());
+          if (index > 0)
+            path = URIUtils::AddFileToFolder(path, profile->getDirectory());
+          (*profileIter)["directory"] = path;
+        }
       }
-      break;
     }
   }
+
   return OK;
 }
 
@@ -78,6 +89,8 @@ JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method,
         profileVariant["lockmode"] = currentProfile.getLockMode();
       else if (propertyiter->asString() == "thumbnail")
         profileVariant["thumbnail"] = currentProfile.getThumb();
+      else if (propertyiter->asString() == "directory")
+        profileVariant["directory"] = CProfilesManager::GetInstance().GetProfileUserDataFolder();
     }
   }
 
