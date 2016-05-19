@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -ex
+
 # usage: ./mkdeb-ios.sh release/debug (case insensitive)
 # Allows us to run mkdeb-ios.sh from anywhere in the three, rather than the tools/darwin/packaging/ios folder only
 XBMC_DEPENDS_ROOT=@DEPENDS_ROOT_FOR_XCODE@
@@ -39,10 +41,11 @@ if [ ! -d $APP ]; then
   echo "@APP_NAME@.app not found! are you sure you built $1 target?"
   exit 1
 fi
-if [ -f "${XBMC_DEPENDS_ROOT}/buildtools-native/bin/fakeroot" ]; then
+
+# also check for SIP (System Integrity Protection) here (via csrutil) - fakeroot et al are not working when it is enabled
+# fall back to oldschool sudo in that case
+if [ -f "${XBMC_DEPENDS_ROOT}/buildtools-native/bin/fakeroot" -a "`csrutil status | grep enabled`"x == "x" ]; then
   SUDO="${XBMC_DEPENDS_ROOT}/buildtools-native/bin/fakeroot"
-elif [ -f "/usr/libexec/fauxsu/libfauxsu.dylib" ]; then
-  export DYLD_INSERT_LIBRARIES=/usr/libexec/fauxsu/libfauxsu.dylib
 elif [ -f "/usr/bin/sudo" ]; then
   SUDO="/usr/bin/sudo"
 fi

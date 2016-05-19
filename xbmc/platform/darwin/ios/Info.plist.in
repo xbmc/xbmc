@@ -2,14 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
-	<key>CFBundleDocumentTypes</key>
-	<array/>
-	<key>CFBundleExecutable</key>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+		<string>opengles-2</string>
+		<string>wifi</string>
+	</array>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>UIInterfaceOrientation</key>
+	<string>UIInterfaceOrientationLandscapeLeft</string>
+	<key>DTPlatformVersion</key>
+	<string>9.3</string>
+	<key>CFBundleName</key>
 	<string>@APP_NAME@</string>
+	<key>DTSDKName</key>
+	<string>iphoneos9.3</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -23,6 +33,103 @@
 			</array>
 		</dict>
 	</dict>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIRequiresPersistentWiFi</key>
+	<string>YES</string>
+	<key>CFBundleDisplayName</key>
+	<string>@APP_NAME@</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+	<key>CFBundleDocumentTypes</key>
+	<array/>
+	<key>DTSDKBuild</key>
+	<string>13E230</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>iPhoneOS</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>BuildMachineOSBuild</key>
+	<string>15E65</string>
+	<key>DTPlatformBuild</key>
+	<string>13E230</string>
+	<key>UIFileSharingEnabled</key>
+	<string>YES</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>UIPrerenderedIcon</key>
+	<true/>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>DTXcodeBuild</key>
+	<string>7D175</string>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>MinimumOSVersion</key>
+	<string>5.1</string>
+	<key>UILaunchImages</key>
+	<array>
+		<dict>
+			<key>UILaunchImageSize</key>
+			<string>{375, 667}</string>
+			<key>UILaunchImageName</key>
+			<string>Default-667h</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>8.0</string>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageSize</key>
+			<string>{414, 736}</string>
+			<key>UILaunchImageName</key>
+			<string>Default-736h</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>8.0</string>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageSize</key>
+			<string>{414, 736}</string>
+			<key>UILaunchImageName</key>
+			<string>Default-Landscape-736h</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>8.0</string>
+			<key>UILaunchImageOrientation</key>
+			<string>Landscape</string>
+		</dict>
+		<dict>
+			<key>UILaunchImageSize</key>
+			<string>{320, 568}</string>
+			<key>UILaunchImageName</key>
+			<string>Default-568h</string>
+			<key>UILaunchImageMinimumOSVersion</key>
+			<string>8.0</string>
+			<key>UILaunchImageOrientation</key>
+			<string>Portrait</string>
+		</dict>
+	</array>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>CFBundleIdentifier</key>
+	<string>org.xbmc.@APP_NAME_LC@-ios</string>
+	<key>DTXcode</key>
+	<string>0730</string>
+	<key>CFBundleExecutable</key>
+	<string>@APP_NAME@</string>
 	<key>CFBundleIcons~ipad</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -39,91 +146,11 @@
 			</array>
 		</dict>
 	</dict>
-	<key>CFBundleIdentifier</key>
-	<string>org.xbmc.@APP_NAME_LC@-ios</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>@APP_NAME@</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string></string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-	</array>
-	<key>UIFileSharingEnabled</key>
-	<string>YES</string>
-	<key>UIInterfaceOrientation</key>
-	<string>UIInterfaceOrientationLandscapeLeft</string>
-	<key>UIPrerenderedIcon</key>
-	<true/>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-		<string>opengles-2</string>
-		<string>wifi</string>
-	</array>
-	<key>UIRequiresPersistentWiFi</key>
-	<string>YES</string>
-	<key>UIStatusBarHidden</key>
-	<true/>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-  <key>UILaunchImages</key>
-  <array>
-    <dict>
-      <key>UILaunchImageMinimumOSVersion</key>
-      <string>8.0</string>
-      <key>UILaunchImageName</key>
-      <string>Default-667h</string>
-      <key>UILaunchImageOrientation</key>
-      <string>Portrait</string>
-      <key>UILaunchImageSize</key>
-      <string>{375, 667}</string>
-    </dict>
-    <dict>
-      <key>UILaunchImageMinimumOSVersion</key>
-      <string>8.0</string>
-      <key>UILaunchImageName</key>
-      <string>Default-736h</string>
-      <key>UILaunchImageOrientation</key>
-      <string>Portrait</string>
-      <key>UILaunchImageSize</key>
-      <string>{414, 736}</string>
-    </dict>
-    <dict>
-      <key>UILaunchImageMinimumOSVersion</key>
-      <string>8.0</string>
-      <key>UILaunchImageName</key>
-      <string>Default-Landscape-736h</string>
-      <key>UILaunchImageOrientation</key>
-      <string>Landscape</string>
-      <key>UILaunchImageSize</key>
-      <string>{414, 736}</string>
-    </dict>
-    <dict>
-      <key>UILaunchImageMinimumOSVersion</key>
-      <string>8.0</string>
-      <key>UILaunchImageName</key>
-      <string>Default-568h</string>
-      <key>UILaunchImageOrientation</key>
-      <string>Portrait</string>
-      <key>UILaunchImageSize</key>
-      <string>{320, 568}</string>
-    </dict>
-  </array>
+	<key>DTPlatformName</key>
+	<string>iphoneos</string>
+	<key>DTCompiler</key>
+	<string>com.apple.compilers.llvm.clang.1_0</string>
 </dict>
 </plist>

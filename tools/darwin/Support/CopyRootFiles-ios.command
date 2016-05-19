@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eux
+
 echo "copy root files"
 
 if [ "$ACTION" = build ] ; then

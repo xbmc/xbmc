@@ -15,3 +15,4 @@ set(HEADERS IOSEAGLView.h
             XBMCDebugHelpers.h)
 
 core_add_library(platform_ios)
+add_dependencies(platform_ios libcpluff)

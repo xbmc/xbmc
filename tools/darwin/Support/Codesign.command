@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 #this is the list of binaries we have to sign for being able to run un-jailbroken
 LIST_BINARY_EXTENSIONS="dylib so"
 
