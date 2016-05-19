@@ -218,6 +218,7 @@ static std::string getValueFromLsb_release(enum lsb_rel_info_type infoType)
   default:
     return "";
   }
+  command += " 2>/dev/null";
   FILE* lsb_rel = popen(command.c_str(), "r");
   if (lsb_rel == NULL)
     return "";
