@@ -1,0 +1,30 @@
+SRCS=Addon_GUIControlButton.cpp \
+     Addon_GUIControlEdit.cpp \
+     Addon_GUIControlFadeLabel.cpp \
+     Addon_GUIControlImage.cpp \
+     Addon_GUIControlLabel.cpp \
+     Addon_GUIControlProgress.cpp \
+     Addon_GUIControlRadioButton.cpp \
+     Addon_GUIControlRendering.cpp \
+     Addon_GUIControlSettingsSlider.cpp \
+     Addon_GUIControlSlider.cpp \
+     Addon_GUIControlSpin.cpp \
+     Addon_GUIControlTextBox.cpp \
+     Addon_GUIDialogContextMenu.cpp \
+     Addon_GUIDialogExtendedProgressBar.cpp \
+     Addon_GUIDialogFileBrowser.cpp \
+     Addon_GUIDialogKeyboard.cpp \
+     Addon_GUIDialogNumeric.cpp \
+     Addon_GUIDialogOK.cpp \
+     Addon_GUIDialogProgress.cpp \
+     Addon_GUIDialogSelect.cpp \
+     Addon_GUIDialogTextViewer.cpp \
+     Addon_GUIDialogYesNo.cpp \
+     Addon_GUIGeneral.cpp \
+     Addon_GUIListItem.cpp \
+     Addon_GUIWindow.cpp \
+
+LIB=addon-interface-gui.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -50,3 +50,8 @@ ActiveAE::CActiveAEDSP &CServiceBroker::GetADSP()
 {
   return g_application.m_ServiceManager->GetADSPManager();
 }
+
+ADDON::CAddonInterfaceManager &CServiceBroker::GetAddonInterfaceManager()
+{
+  return g_application.m_ServiceManager->GetAddonInterfaceManager();
+}

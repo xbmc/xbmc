@@ -22,6 +22,7 @@
 
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
+#include "addons/binary/AddonInterfaceManager.h"
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
 #include <memory>
@@ -58,6 +59,7 @@ public:
   XBPython& GetXBPython();
   PVR::CPVRManager& GetPVRManager();
   ActiveAE::CActiveAEDSP& GetADSPManager();
+  ADDON::CAddonInterfaceManager& GetAddonInterfaceManager();
 
 protected:
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
@@ -66,4 +68,5 @@ protected:
   std::unique_ptr<XBPython> m_XBPython;
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
+  std::unique_ptr<ADDON::CAddonInterfaceManager> m_addonInterfaceManager;
 };

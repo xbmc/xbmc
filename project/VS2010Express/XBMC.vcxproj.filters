@@ -448,6 +448,108 @@
     <Filter Include="games\controllers\windows">
       <UniqueIdentifier>{9e3dd585-08e1-4dae-bc21-05e49697ef94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\binary\interfaces\api2">
+      <UniqueIdentifier>{62db76b8-fa69-4e06-9814-9d8f2e0b9934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api2\Addon">
+      <UniqueIdentifier>{b8406882-607c-4fba-ade5-b9cc31561cab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api2\AudioEngine">
+      <UniqueIdentifier>{46500a24-57b1-4b40-93a5-84f3a290f8bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api2\GUI">
+      <UniqueIdentifier>{b264e79f-c430-4112-aa75-19a3a8177086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api2\InputStream">
+      <UniqueIdentifier>{8b709827-1f79-4de6-93e7-5d75a9df3d04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api2\Player">
+      <UniqueIdentifier>{bac53018-be4b-44c9-ac16-f13edbd72927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api2\Peripheral">
+      <UniqueIdentifier>{893c5221-6b29-453c-ba1a-4597e10891d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api2\PVR">
+      <UniqueIdentifier>{e63e19ad-ad67-4815-9f2f-0cc202511710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2">
+      <UniqueIdentifier>{662c0561-6003-4d48-b2a6-1621911144ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\addon">
+      <UniqueIdentifier>{4014bd6f-943e-45b6-a81d-ebfa402358e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\audioengine">
+      <UniqueIdentifier>{9be6074d-c53c-45f3-b2b9-2580fb69a667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\gui">
+      <UniqueIdentifier>{6333960e-413a-48ed-a3f2-8aab76a41352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\inputstream">
+      <UniqueIdentifier>{85260359-1d7b-478b-8fb0-52d3358d6cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\peripheral">
+      <UniqueIdentifier>{72eccf7d-b3c7-47bb-98dd-234231a8cf96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\player">
+      <UniqueIdentifier>{8d7c78a2-fbb7-4568-8cb3-1682e40997ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\pvr">
+      <UniqueIdentifier>{8301878f-963d-4f94-b810-e753f0652b22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api2\.internal">
+      <UniqueIdentifier>{5d003aaf-d12c-4149-845f-d9ebbed03fea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3">
+      <UniqueIdentifier>{3f076ac0-f64e-4de9-a4a6-9729d78f4e31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\.internal">
+      <UniqueIdentifier>{f10f08cc-3a37-4106-9ff3-d7730a1e22ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\addon">
+      <UniqueIdentifier>{dbbd7048-beeb-4488-b638-2cf7de36f54b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\audioengine">
+      <UniqueIdentifier>{1321dfb7-352e-455f-825b-525f82e08ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\gui">
+      <UniqueIdentifier>{6fee0c5e-456d-4e8b-8988-b6256b49dd64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\inputstream">
+      <UniqueIdentifier>{749fadb1-ae92-4f9a-a7cb-3e870078f031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\peripheral">
+      <UniqueIdentifier>{719bd0ec-51d6-47dc-b908-b8bf66a89bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\player">
+      <UniqueIdentifier>{76820380-5327-4432-b87a-a3c51a5773d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\include\api3\pvr">
+      <UniqueIdentifier>{10ea06d1-b476-49b6-aa62-77f77727a1eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3">
+      <UniqueIdentifier>{d2e76de9-4e91-4300-9375-f9ad59e092b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3\Addon">
+      <UniqueIdentifier>{408e4764-a00a-4a37-a6d4-65eadc69e1cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3\AudioEngine">
+      <UniqueIdentifier>{2e26a7a8-fd50-4a80-9e67-96074329068c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3\GUI">
+      <UniqueIdentifier>{294a8a3f-cd75-402e-977b-9bf5524af33c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3\InputStream">
+      <UniqueIdentifier>{62d57be8-e545-42a8-a3b2-5eb6e88b22c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3\Peripheral">
+      <UniqueIdentifier>{cdebf10a-a52e-4ed8-8b91-297d4da52ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3\Player">
+      <UniqueIdentifier>{7516088a-0f17-4407-b761-23583188ae4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\binary\interfaces\api3\PVR">
+      <UniqueIdentifier>{64be36a5-88f0-4a29-a6d2-03b30a968c2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3466,6 +3568,246 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardTouch.cpp">
       <Filter>dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\AddonInterfaceManager.cpp">
+      <Filter>addons\binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\ExceptionHandling.cpp">
+      <Filter>addons\binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\AddonInterfaceBase.cpp">
+      <Filter>addons\binary\interfaces\api2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Audio.cpp">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Directory.cpp">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_File.cpp">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_General.cpp">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Network.cpp">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineGeneral.cpp">
+      <Filter>addons\binary\interfaces\api2\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineStream.cpp">
+      <Filter>addons\binary\interfaces\api2\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlButton.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlEdit.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlFadeLabel.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlImage.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlLabel.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlProgress.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRadioButton.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRendering.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSettingsSlider.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSlider.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSpin.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlTextBox.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogExtendedProgressBar.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogFileBrowser.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogKeyboard.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogNumeric.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogOK.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogProgress.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogSelect.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogTextViewer.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogYesNo.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIGeneral.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIListItem.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIWindow.cpp">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\InputStream\Addon_InputStream.cpp">
+      <Filter>addons\binary\interfaces\api2\InputStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Peripheral\Addon_Peripheral.cpp">
+      <Filter>addons\binary\interfaces\api2\Peripheral</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagMusic.cpp">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagVideo.cpp">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_Player.cpp">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_PlayList.cpp">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\PVR\Addon_PVR.cpp">
+      <Filter>addons\binary\interfaces\api2\PVR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\AddonInterfaceBase.cpp">
+      <Filter>addons\binary\interfaces\api3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_Audio.cpp">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_Directory.cpp">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_File.cpp">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_General.cpp">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_Network.cpp">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\AudioEngine\Addon_AudioEngineGeneral.cpp">
+      <Filter>addons\binary\interfaces\api3\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\AudioEngine\Addon_AudioEngineStream.cpp">
+      <Filter>addons\binary\interfaces\api3\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlButton.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlEdit.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlFadeLabel.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlImage.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlLabel.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlProgress.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlRadioButton.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlRendering.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlSettingsSlider.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlSlider.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlSpin.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlTextBox.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogExtendedProgressBar.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogFileBrowser.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogKeyboard.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogNumeric.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogOK.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogProgress.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogSelect.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogTextViewer.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogYesNo.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIGeneral.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIListItem.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIWindow.cpp">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\InputStream\Addon_InputStream.cpp">
+      <Filter>addons\binary\interfaces\api3\InputStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Peripheral\Addon_Peripheral.cpp">
+      <Filter>addons\binary\interfaces\api3\Peripheral</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_InfoTagMusic.cpp">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_InfoTagVideo.cpp">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_Player.cpp">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_PlayList.cpp">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api3\PVR\Addon_PVR.cpp">
+      <Filter>addons\binary\interfaces\api3\PVR</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6731,6 +7073,552 @@
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPRequestHandlerUtils.h">
       <Filter>network\httprequesthandler</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\AddonInterfaceManager.h">
+      <Filter>addons\binary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\ExceptionHandling.h">
+      <Filter>addons\binary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\AddonInterfaceBase.h">
+      <Filter>addons\binary\interfaces\api2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Audio.h">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Directory.h">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_File.h">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_General.h">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Network.h">
+      <Filter>addons\binary\interfaces\api2\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineGeneral.h">
+      <Filter>addons\binary\interfaces\api2\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineStream.h">
+      <Filter>addons\binary\interfaces\api2\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlButton.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlEdit.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlFadeLabel.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlImage.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlLabel.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlProgress.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRadioButton.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRendering.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSettingsSlider.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSlider.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSpin.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlTextBox.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogExtendedProgressBar.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogFileBrowser.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogKeyboard.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogNumeric.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogOK.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogProgress.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogSelect.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogTextViewer.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogYesNo.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIGeneral.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIListItem.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIWindow.h">
+      <Filter>addons\binary\interfaces\api2\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\InputStream\Addon_InputStream.h">
+      <Filter>addons\binary\interfaces\api2\InputStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Peripheral\Addon_Peripheral.h">
+      <Filter>addons\binary\interfaces\api2\Peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_PlayList.h">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagMusic.h">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagVideo.h">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_Player.h">
+      <Filter>addons\binary\interfaces\api2\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\PVR\Addon_PVR.h">
+      <Filter>addons\binary\interfaces\api2\PVR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\AddonLib.hpp">
+      <Filter>addons\include\api2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\definitions.hpp">
+      <Filter>addons\include\api2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\definitions-all.hpp">
+      <Filter>addons\include\api2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\.internal\AddonLib_internal.hpp">
+      <Filter>addons\include\api2\.internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\definitions_addon.hpp">
+      <Filter>addons\include\api2\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\General.hpp">
+      <Filter>addons\include\api2\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\Network.hpp">
+      <Filter>addons\include\api2\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\SoundPlay.hpp">
+      <Filter>addons\include\api2\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\VFSUtils.hpp">
+      <Filter>addons\include\api2\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\definitions_audioengine.hpp">
+      <Filter>addons\include\api2\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\General.hpp">
+      <Filter>addons\include\api2\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\Stream.hpp">
+      <Filter>addons\include\api2\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlButton.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlEdit.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlFadeLabel.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlImage.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlLabel.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlProgress.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlRadioButton.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlRendering.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlSettingsSlider.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlSlider.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlSpin.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlTextBox.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\definitions_gui.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogExtendedProgress.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogFileBrowser.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogKeyboard.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogNumeric.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogOK.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogProgress.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogSelect.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogTextViewer.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogYesNo.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\General.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ListItem.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\Window.hpp">
+      <Filter>addons\include\api2\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\inputstream\definitions_inputstream.hpp">
+      <Filter>addons\include\api2\inputstream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\inputstream\InputStream.hpp">
+      <Filter>addons\include\api2\inputstream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\peripheral\Peripheral.hpp">
+      <Filter>addons\include\api2\peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\definitions_player.hpp">
+      <Filter>addons\include\api2\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\InfoTagMusic.hpp">
+      <Filter>addons\include\api2\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\InfoTagVideo.hpp">
+      <Filter>addons\include\api2\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\Player.hpp">
+      <Filter>addons\include\api2\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\PlayList.hpp">
+      <Filter>addons\include\api2\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\definitions_pvr.hpp">
+      <Filter>addons\include\api2\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\General.hpp">
+      <Filter>addons\include\api2\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\StreamUtils.hpp">
+      <Filter>addons\include\api2\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\Transfer.hpp">
+      <Filter>addons\include\api2\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\Trigger.hpp">
+      <Filter>addons\include\api2\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api2\version.h">
+      <Filter>addons\include\api2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\AddonLib.hpp">
+      <Filter>addons\include\api3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\definitions.hpp">
+      <Filter>addons\include\api3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\definitions-all.hpp">
+      <Filter>addons\include\api3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\.internal\AddonLib_internal.hpp">
+      <Filter>addons\include\api3\.internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\definitions_addon.hpp">
+      <Filter>addons\include\api3\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\General.hpp">
+      <Filter>addons\include\api3\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\Network.hpp">
+      <Filter>addons\include\api3\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\SoundPlay.hpp">
+      <Filter>addons\include\api3\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\VFSUtils.hpp">
+      <Filter>addons\include\api3\addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\definitions_audioengine.hpp">
+      <Filter>addons\include\api3\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\General.hpp">
+      <Filter>addons\include\api3\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\Stream.hpp">
+      <Filter>addons\include\api3\audioengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlButton.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlEdit.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlFadeLabel.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlImage.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlLabel.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlProgress.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlRadioButton.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlRendering.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlSettingsSlider.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlSlider.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlSpin.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ControlTextBox.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\definitions_gui.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogExtendedProgress.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogFileBrowser.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogKeyboard.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogNumeric.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogOK.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogProgress.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogSelect.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogTextViewer.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\DialogYesNo.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\General.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\ListItem.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\Window.hpp">
+      <Filter>addons\include\api3\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\inputstream\definitions_inputstream.hpp">
+      <Filter>addons\include\api3\inputstream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\inputstream\InputStream.hpp">
+      <Filter>addons\include\api3\inputstream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\peripheral\definitions_peripheral.hpp">
+      <Filter>addons\include\api3\peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\peripheral\Peripheral.hpp">
+      <Filter>addons\include\api3\peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\definitions_player.hpp">
+      <Filter>addons\include\api3\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\InfoTagMusic.hpp">
+      <Filter>addons\include\api3\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\InfoTagVideo.hpp">
+      <Filter>addons\include\api3\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\Player.hpp">
+      <Filter>addons\include\api3\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\PlayList.hpp">
+      <Filter>addons\include\api3\player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\definitions_pvr.hpp">
+      <Filter>addons\include\api3\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\General.hpp">
+      <Filter>addons\include\api3\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\StreamUtils.hpp">
+      <Filter>addons\include\api3\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\Transfer.hpp">
+      <Filter>addons\include\api3\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\Trigger.hpp">
+      <Filter>addons\include\api3\pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\AddonInterfaceBase.h">
+      <Filter>addons\binary\interfaces\api3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_Audio.h">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_Directory.h">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_File.h">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_General.h">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Addon\Addon_Network.h">
+      <Filter>addons\binary\interfaces\api3\Addon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\AudioEngine\Addon_AudioEngineGeneral.h">
+      <Filter>addons\binary\interfaces\api3\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\AudioEngine\Addon_AudioEngineStream.h">
+      <Filter>addons\binary\interfaces\api3\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlButton.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlEdit.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlFadeLabel.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlImage.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlLabel.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlProgress.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlRadioButton.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlRendering.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlSettingsSlider.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlSlider.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlSpin.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIControlTextBox.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogExtendedProgressBar.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogFileBrowser.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogKeyboard.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogNumeric.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogOK.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogProgress.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogSelect.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogTextViewer.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIDialogYesNo.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIGeneral.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIListItem.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\GUI\Addon_GUIWindow.h">
+      <Filter>addons\binary\interfaces\api3\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\InputStream\Addon_InputStream.h">
+      <Filter>addons\binary\interfaces\api3\InputStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Peripheral\Addon_Peripheral.h">
+      <Filter>addons\binary\interfaces\api3\Peripheral</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_InfoTagMusic.h">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_InfoTagVideo.h">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_Player.h">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\Player\Addon_PlayList.h">
+      <Filter>addons\binary\interfaces\api3\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api3\PVR\Addon_PVR.h">
+      <Filter>addons\binary\interfaces\api3\PVR</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
@@ -6816,5 +7704,55 @@
     <FxCompile Include="..\..\system\shaders\guishader_common.hlsl">
       <Filter>shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\AddonLib.i">
+      <Filter>addons\include\api2</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\KodiAPI_AddOn.i">
+      <Filter>addons\include\api2\addon</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\KodiAPI_AudioEngine.i">
+      <Filter>addons\include\api2\audioengine</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\KodiAPI_GUI.i">
+      <Filter>addons\include\api2\gui</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\inputstream\KodiAPI_InputStream.i">
+      <Filter>addons\include\api2\inputstream</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\peripheral\KodiAPI_Peripheral.i">
+      <Filter>addons\include\api2\peripheral</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\KodiAPI_Player.i">
+      <Filter>addons\include\api2\player</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\KodiAPI_PVR.i">
+      <Filter>addons\include\api2\pvr</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\AddonLib.i">
+      <Filter>addons\include\api3</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\addon\KodiAPI_AddOn.i">
+      <Filter>addons\include\api3\addon</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\audioengine\KodiAPI_AudioEngine.i">
+      <Filter>addons\include\api3\audioengine</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\gui\KodiAPI_GUI.i">
+      <Filter>addons\include\api3\gui</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\inputstream\KodiAPI_InputStream.i">
+      <Filter>addons\include\api3\inputstream</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\peripheral\KodiAPI_Peripheral.i">
+      <Filter>addons\include\api3\peripheral</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\player\KodiAPI_Player.i">
+      <Filter>addons\include\api3\player</Filter>
+    </None>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api3\pvr\KodiAPI_PVR.i">
+      <Filter>addons\include\api3\pvr</Filter>
+    </None>
   </ItemGroup>
 </Project>

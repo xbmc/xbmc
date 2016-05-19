@@ -228,6 +228,11 @@ endif()
 # error either in ADDONS_TO_BUILD or in the directory configuration.
 set(SUPPORTED_ADDON_FOUND FALSE)
 
+ExternalProject_Add(kodi-addon-dev-kit
+                    SOURCE_DIR ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit
+                    INSTALL_DIR ${DEPENDS_PATH}
+                    CMAKE_ARGS ${BUILD_ARGS})
+
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
@@ -373,7 +378,7 @@ foreach(addon ${addons})
                                    ALWAYS 1)
 
           # add "kodi-platform" as a dependency to every addon
-          add_dependencies(${id} kodi-platform)
+          add_dependencies(${id} kodi-platform kodi-addon-dev-kit)
 
           set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
 

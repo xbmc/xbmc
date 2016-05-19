@@ -24,12 +24,6 @@
  * Common data structures shared between KODI and KODI's binary add-ons
  */
 
-#ifdef BUILD_KODI_ADDON
-  #include "kodi/AudioEngine/AEChannelInfo.h"
-#else
-  #include "cores/AudioEngine/Utils/AEChannelInfo.h"
-#endif
-
 #ifdef TARGET_WINDOWS
 #include <windows.h>
 #else
@@ -42,6 +36,12 @@
 #endif
 
 #include <cstddef>
+
+#ifdef BUILD_KODI_ADDON
+  #include "kodi/AEChannelData.h"
+#else
+  #include "cores/AudioEngine/Utils/AEChannelData.h"
+#endif
 
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN

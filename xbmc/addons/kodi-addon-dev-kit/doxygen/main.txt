@@ -33,7 +33,7 @@ user manual.
 
 #### License
 
-Kodi is distributed under a [GNU General Public License version 2](./LICENSE.GPL).
+Kodi is distributed under a [GNU General Public License version 2](https://raw.githubusercontent.com/xbmc/xbmc/master/LICENSE.GPL).
 
 \htmlonly
 <div style="display:none">
