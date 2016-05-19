@@ -444,7 +444,7 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
   if (conHandler == nullptr || conHandler->requestHandler == nullptr ||
       key == nullptr || data == nullptr || size == 0)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: unable to handle HTTP POST field", reinterpret_cast<CWebServer*>(cls)->m_port);
+    CLog::Log(LOGERROR, "CWebServer: unable to handle HTTP POST field");
     return MHD_NO;
   }
 
@@ -1066,7 +1066,7 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
   delete context;
 
   if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-    CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] done", reinterpret_cast<CWebServer*>(cls)->m_port);
+    CLog::Log(LOGDEBUG, "CWebServer [OUT] done");
 }
 
 // local helper
