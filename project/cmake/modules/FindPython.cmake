@@ -27,7 +27,7 @@ if(NOT PYTHON_FOUND)
     set(PYTHON_LIBRARIES ${PYTHON_LIBRARY} ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} ${PYTHON_DEP_LIBRARIES}
         CACHE INTERNAL "python libraries" FORCE)
   else()
-    find_package(PythonLibs)
+    find_package(PythonLibs 2.7 REQUIRED)
   endif()
 endif()
 
