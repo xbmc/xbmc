@@ -749,7 +749,7 @@ bool CPVRTimerInfoTag::SetDuration(int iDuration)
   return false;
 }
 
-CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr &channel)
+CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr &channel, int iDuration /* = DEFAULT_PVRRECORD_INSTANTRECORDTIME */)
 {
   if (!channel)
   {
@@ -792,7 +792,9 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
   newTimer->SetStartFromUTC(startTime);
   newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
 
-  int iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+  if (iDuration == DEFAULT_PVRRECORD_INSTANTRECORDTIME)
+    iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+
   CDateTime endTime = CDateTime::GetUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
   newTimer->SetEndFromUTC(endTime);
 

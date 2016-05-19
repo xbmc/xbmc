@@ -1478,6 +1478,18 @@
     </category>
     <category id="pvrrecord" label="19043" help="36233">
       <group id="1" label="128">
+        <setting id="pvrrecord.instantrecordaction" type="integer" label="19086" help="36254">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="19087">0</option>   <!-- Record current show -->
+              <option label="19088">1</option>   <!-- Record for a fixed time period -->
+              <option label="19089">2</option>   <!-- Ask what to do -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="pvrrecord.instantrecordtime" type="integer" label="19172" help="36234">
           <level>1</level>
           <default>120</default>

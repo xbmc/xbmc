@@ -418,9 +418,9 @@ bool CDVDInputStreamPVRManager::IsRecording()
   return g_PVRClients->IsRecordingOnPlayingChannel();
 }
 
-bool CDVDInputStreamPVRManager::Record(bool bOnOff)
+void CDVDInputStreamPVRManager::Record(bool bOnOff)
 {
-  return g_PVRManager.StartRecordingOnPlayingChannel(bOnOff);
+  g_PVRManager.StartRecordingOnPlayingChannel(bOnOff);
 }
 
 bool CDVDInputStreamPVRManager::CanPause()

@@ -70,7 +70,7 @@ public:
 
   bool CanRecord();
   bool IsRecording();
-  bool Record(bool bOnOff);
+  void Record(bool bOnOff);
   bool CanSeek() override;
   bool CanPause() override;
   void Pause(bool bPaused);

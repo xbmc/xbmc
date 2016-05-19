@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "epg/EpgContainer.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -765,10 +766,120 @@ bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
   return SetRecordingOnChannel(channel, !channel->IsRecording());
 }
 
-bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
+void CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 {
-  return SetRecordingOnChannel(m_addons->GetPlayingChannel(), bOnOff);
+  // can be called from VideoPlayer thread. SetRecordingOnChannel can open a dialog. Thus, execute async.
+  CJobManager::GetInstance().AddJob(new CPVRSetRecordingOnChannelJob(m_addons->GetPlayingChannel(), bOnOff), NULL);
 }
+
+namespace
+{
+enum PVRRECORD_INSTANTRECORDACTION
+{
+  NONE = -1,
+  RECORD_CURRENT_SHOW = 0,
+  RECORD_INSTANTRECORDTIME = 1,
+  ASK = 2,
+  RECORD_30_MINUTES = 3,
+  RECORD_60_MINUTES = 4,
+  RECORD_120_MINUTES = 5,
+  RECORD_NEXT_SHOW = 6
+};
+
+class InstantRecordingActionSelector
+{
+public:
+  InstantRecordingActionSelector();
+  virtual ~InstantRecordingActionSelector() {}
+
+  void AddAction(PVRRECORD_INSTANTRECORDACTION eAction, const std::string &title);
+  void PreSelectAction(PVRRECORD_INSTANTRECORDACTION eAction);
+  PVRRECORD_INSTANTRECORDACTION Select();
+
+private:
+  CGUIDialogSelect *m_pDlgSelect; // not owner!
+  std::map<PVRRECORD_INSTANTRECORDACTION, int> m_actions;
+};
+
+InstantRecordingActionSelector::InstantRecordingActionSelector()
+: m_pDlgSelect(dynamic_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT)))
+{
+  if (m_pDlgSelect)
+  {
+    m_pDlgSelect->SetMultiSelection(false);
+    m_pDlgSelect->SetHeading(CVariant{19086}); // Instant recording action
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "InstantRecordingActionSelector - %s - unable to obtain WINDOW_DIALOG_SELECT instance", __FUNCTION__);
+  }
+}
+
+void InstantRecordingActionSelector::AddAction(PVRRECORD_INSTANTRECORDACTION eAction, const std::string &title)
+{
+  if (m_actions.find(eAction) == m_actions.end())
+  {
+    switch (eAction)
+    {
+      case RECORD_INSTANTRECORDTIME:
+        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(),
+                                              CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME))); // Record next <default duration> minutes
+        break;
+      case RECORD_30_MINUTES:
+        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 30));  // Record next 30 minutes
+        break;
+      case RECORD_60_MINUTES:
+        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 60));  // Record next 60 minutes
+        break;
+      case RECORD_120_MINUTES:
+        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 120)); // Record next 120 minutes
+        break;
+      case RECORD_CURRENT_SHOW:
+        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19091).c_str(), title.c_str())); // Record current show (<title>)
+        break;
+      case RECORD_NEXT_SHOW:
+        m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19092).c_str(), title.c_str())); // Record next show (<title>)
+        break;
+      case NONE:
+      case ASK:
+      default:
+        return;
+    }
+
+    m_actions.insert(std::make_pair(eAction, m_actions.size()));
+  }
+}
+
+void InstantRecordingActionSelector::PreSelectAction(PVRRECORD_INSTANTRECORDACTION eAction)
+{
+  const auto &it = m_actions.find(eAction);
+  if (it != m_actions.end())
+    m_pDlgSelect->SetSelected(it->second);
+}
+
+PVRRECORD_INSTANTRECORDACTION InstantRecordingActionSelector::Select()
+{
+  PVRRECORD_INSTANTRECORDACTION eAction = NONE;
+
+  m_pDlgSelect->Open();
+
+  if (m_pDlgSelect->IsConfirmed())
+  {
+    int iSelection = m_pDlgSelect->GetSelectedItem();
+    for (const auto &action : m_actions)
+    {
+      if (action.second == iSelection)
+      {
+        eAction = action.first;
+        break;
+      }
+    }
+  }
+
+  return eAction;
+}
+
+} // unnamed namespace
 
 bool CPVRManager::SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff)
 {
@@ -785,8 +896,104 @@ bool CPVRManager::SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnO
     /* timers are supported on this channel */
     if (bOnOff && !channel->IsRecording())
     {
-      const CEpgInfoTagPtr epgTag(channel->GetEPGNow());
-      const CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, false) : CPVRTimerInfoTag::CreateInstantTimerTag(channel));
+      CEpgInfoTagPtr epgTag;
+      int iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+
+      int iAction = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION);
+      switch (iAction)
+      {
+        case RECORD_CURRENT_SHOW:
+          epgTag = channel->GetEPGNow();
+          break;
+
+        case RECORD_INSTANTRECORDTIME:
+          epgTag.reset();
+          break;
+
+        case ASK:
+        {
+          PVRRECORD_INSTANTRECORDACTION ePreselect = RECORD_INSTANTRECORDTIME;
+          InstantRecordingActionSelector selector;
+          CEpgInfoTagPtr epgTagNext;
+
+          // fixed length recordings
+          selector.AddAction(RECORD_30_MINUTES, "");
+          selector.AddAction(RECORD_60_MINUTES, "");
+          selector.AddAction(RECORD_120_MINUTES, "");
+
+          const int iDurationDefault = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+          if (iDurationDefault != 30 && iDurationDefault != 60 && iDurationDefault != 120)
+            selector.AddAction(RECORD_INSTANTRECORDTIME, "");
+
+          // epg-based recordings
+          epgTag = channel->GetEPGNow();
+          if (epgTag)
+          {
+            // "now"
+            selector.AddAction(RECORD_CURRENT_SHOW, epgTag->Title());
+            ePreselect = RECORD_CURRENT_SHOW;
+
+            // "next"
+            epgTagNext = channel->GetEPGNext();
+            if (epgTagNext)
+            {
+              selector.AddAction(RECORD_NEXT_SHOW, epgTagNext->Title());
+
+              // be smart. if current show is almost over, preselect next show.
+              if (epgTag->ProgressPercentage() > 90.0f)
+                ePreselect = RECORD_NEXT_SHOW;
+            }
+          }
+
+          selector.PreSelectAction(ePreselect);
+
+          PVRRECORD_INSTANTRECORDACTION eSelected = selector.Select();
+          switch (eSelected)
+          {
+            case NONE:
+              return false; // dialog canceled
+
+            case RECORD_30_MINUTES:
+              iDuration = 30;
+              epgTag.reset();
+              break;
+
+            case RECORD_60_MINUTES:
+              iDuration = 60;
+              epgTag.reset();
+              break;
+
+            case RECORD_120_MINUTES:
+              iDuration = 120;
+              epgTag.reset();
+              break;
+
+            case RECORD_INSTANTRECORDTIME:
+              iDuration = iDurationDefault;
+              epgTag.reset();
+              break;
+
+            case RECORD_CURRENT_SHOW:
+              break;
+
+            case RECORD_NEXT_SHOW:
+              epgTag = epgTagNext;
+              break;
+
+            default:
+              CLog::Log(LOGERROR, "PVRManager - %s - unknown instant record action selection (%d), defaulting to fixed length recording.", __FUNCTION__, eSelected);
+              epgTag.reset();
+              break;
+          }
+          break;
+        }
+
+        default:
+          CLog::Log(LOGERROR, "PVRManager - %s - unknown instant record action setting value (%d), defaulting to fixed length recording.", __FUNCTION__, iAction);
+          break;
+      }
+
+      const CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, false) : CPVRTimerInfoTag::CreateInstantTimerTag(channel, iDuration));
 
       if (newTimer)
         bReturn = newTimer->AddToClient();
@@ -1644,6 +1851,12 @@ bool CPVRSearchMissingChannelIconsJob::DoWork(void)
 bool CPVRClientConnectionJob::DoWork(void)
 {
   g_PVRClients->ConnectionStateChange(m_clientId, m_connectString, m_state, m_message);
+  return true;
+}
+
+bool CPVRSetRecordingOnChannelJob::DoWork(void)
+{
+  g_PVRManager.SetRecordingOnChannel(m_channel, m_bOnOff);
   return true;
 }
 
