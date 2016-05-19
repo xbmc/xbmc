@@ -107,6 +107,13 @@ namespace PVR
     bool IsRecordingOnChannel(const CPVRChannel &channel) const;
 
     /*!
+     * @brief Obtain the active timer for a given channel.
+     * @param channel The channel to check.
+     * @return the timer, null otherwise.
+     */
+    CPVRTimerInfoTagPtr GetActiveTimerForChannel(const CPVRChannelPtr &channel) const;
+
+    /*!
      * @return The amount of timers that are currently recording
      */
     int AmountActiveRecordings(void) const;

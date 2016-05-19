@@ -666,6 +666,23 @@ bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel &channel) const
   return false;
 }
 
+CPVRTimerInfoTagPtr CPVRTimers::GetActiveTimerForChannel(const CPVRChannelPtr &channel) const
+{
+  CSingleLock lock(m_critSection);
+  for (const auto &tagsEntry : m_tags)
+  {
+    for (const auto &timersEntry : *tagsEntry.second)
+    {
+      if (timersEntry->IsRecording() &&
+          timersEntry->m_iClientChannelUid == channel->UniqueID() &&
+          timersEntry->m_iClientId == channel->ClientID())
+        return timersEntry;
+    }
+  }
+
+  return CPVRTimerInfoTagPtr();
+}
+
 CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) const
 {
   if (epgTag)
