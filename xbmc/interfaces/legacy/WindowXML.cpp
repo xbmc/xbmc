@@ -191,6 +191,20 @@ namespace XBMCAddon
       }
     }
 
+    void WindowXML::addItems(const std::vector<Alternative<String, const XBMCAddon::xbmcgui::ListItem* > > & items)
+    {
+    XBMC_TRACE;
+    LOCKGUI;
+    for (auto item : items)
+      {
+        AddonClass::Ref<ListItem> ritem = item.which() == XBMCAddon::first ? ListItem::fromString(item.former()) : AddonClass::Ref<ListItem>(item.later());
+        CFileItemPtr& fileItem = ritem->item;
+        A(m_vecItems)->Add(fileItem);
+      }
+      A(m_viewControl).SetItems(*(A(m_vecItems)));
+    }
+
+
     void WindowXML::removeItem(int position)
     {
       XBMC_TRACE;
