@@ -185,7 +185,6 @@ namespace XBMCAddon
             A(m_vecItems)->AddFront(fileItem,position);
           }
           A(m_viewControl).SetItems(*(A(m_vecItems)));
-          A(UpdateButtons());
         }
         //----------------------------------------------------
       }
@@ -212,7 +211,6 @@ namespace XBMCAddon
       LOCKGUI;
       A(m_vecItems)->Remove(position);
       A(m_viewControl).SetItems(*(A(m_vecItems)));
-      A(UpdateButtons());
     }
 
     int WindowXML::getCurrentListPosition()
@@ -267,7 +265,6 @@ namespace XBMCAddon
       A(ClearFileItems());
 
       A(m_viewControl).SetItems(*(A(m_vecItems)));
-      A(UpdateButtons());
     }
 
     void WindowXML::setContainerProperty(const String& key, const String& value)
@@ -481,7 +478,6 @@ namespace XBMCAddon
     void WindowXML::SetupShares()
     {
       XBMC_TRACE;
-      A(UpdateButtons());
     }
 
     bool WindowXML::Update(const String &strPath)
