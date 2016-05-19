@@ -90,7 +90,7 @@ CSong::CSong(CFileItem& item)
     { // Either hints or artist names (or both) matches number of musicbrainz id
       // If hints mis-match, use artists
       if (musicBrainzArtistHints.size() != tag.GetMusicBrainzArtistID().size())
-        musicBrainzArtistHints = tag.GetAlbumArtist();
+        musicBrainzArtistHints = tag.GetArtist();
     }
 
     for (size_t i = 0; i < tag.GetMusicBrainzArtistID().size(); i++)
