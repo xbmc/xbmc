@@ -239,12 +239,15 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
 
   if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS)
   {
-    if (IsActivated())
+    if (!IsActivated() || !HasAvailableModes())
     {
-      CGUIDialogAudioDSPManager *dialog = (CGUIDialogAudioDSPManager *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
-      if (dialog)
-        dialog->Open();
+      CGUIDialogOK::ShowAndGetInput(14117, 0, 15065, 0);
+      return;
     }
+
+    CGUIDialogAudioDSPManager *dialog = (CGUIDialogAudioDSPManager *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
+    if (dialog)
+      dialog->Open();
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB)
   {
@@ -526,6 +529,19 @@ unsigned int CActiveAEDSP::GetActiveStreamId(void)
   CSingleLock lock(m_critSection);
 
   return m_activeProcessId;
+}
+
+bool CActiveAEDSP::HasAvailableModes(void) const
+{
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int i = 0; i < AE_DSP_MODE_TYPE_MAX; ++i)
+  {
+    if (!m_modes[i].empty())
+      return true;
+  }
+
+  return false;
 }
 
 const AE_DSP_MODELIST &CActiveAEDSP::GetAvailableModes(AE_DSP_MODE_TYPE modeType)
