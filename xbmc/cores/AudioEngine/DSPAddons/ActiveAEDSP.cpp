@@ -313,6 +313,9 @@ bool CActiveAEDSP::TranslateBoolInfo(DWORD dwInfo) const
 
   CSingleLock lock(m_critSection);
 
+  if (dwInfo == ADSP_HAS_MODES)
+    return HasAvailableModes();
+
   if (!IsProcessing() || !m_usedProcesses[m_activeProcessId])
     return bReturn;
 
