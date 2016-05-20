@@ -56,7 +56,7 @@ public:
     RangeSelectorUpper = 1
   } RangeSelector;
 
-  CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType);
+  CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType, ORIENTATION orientation);
   virtual ~CGUISliderControl(void);
   virtual CGUISliderControl *Clone() const { return new CGUISliderControl(*this); };
 
@@ -70,7 +70,7 @@ public:
   virtual void SetRange(int iStart, int iEnd);
   virtual void SetFloatRange(float fStart, float fEnd);
   virtual bool OnMessage(CGUIMessage& message);
-  bool ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScaleY, RangeSelector selector);
+  bool ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScale, RangeSelector selector);
   void SetRangeSelection(bool rangeSelection);
   bool GetRangeSelection() const { return m_rangeSelection; }
   void SetRangeSelector(RangeSelector selector);
@@ -129,5 +129,6 @@ protected:
   std::string m_textValue; ///< Allows overriding of the text value to be displayed (parent must update when the slider updates)
   const SliderAction *m_action; ///< Allows the skin to configure the action of a click on the slider \sa SendClick
   bool m_dragging; ///< Whether we're in a (mouse/touch) drag operation or not - some actions are sent only on release.
+  ORIENTATION m_orientation;
 };
 #endif

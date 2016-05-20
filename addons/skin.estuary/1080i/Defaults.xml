@@ -145,6 +145,7 @@
 		<texturesliderbar border="10">dialogs/mediasource/slider-back.png</texturesliderbar>
 		<textureslidernib>dialogs/mediasource/slider-nib-nf.png</textureslidernib>
 		<textureslidernibfocus colordiffuse="button_focus">dialogs/mediasource/slider-nib-nf.png</textureslidernibfocus>
+		<orientation>horizontal</orientation>
 	</default>
 	<default type="sliderex">
 		<height>35</height>

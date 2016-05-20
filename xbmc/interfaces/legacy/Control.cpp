@@ -423,12 +423,13 @@ namespace XBMCAddon
     ControlSlider::ControlSlider(long x, long y, long width, long height,
                                  const char* textureback,
                                  const char* texture,
-                                 const char* texturefocus)
+                                 const char* texturefocus, int orientation)
     {
       dwPosX = x;
       dwPosY = y;
       dwWidth = width;
       dwHeight = height;
+      iOrientation = orientation;
 
       // if texture is supplied use it, else get default ones
       strTextureBack = textureback ? textureback :
@@ -455,7 +456,7 @@ namespace XBMCAddon
       pGUIControl = new CGUISliderControl(iParentId, iControlId,(float)dwPosX, (float)dwPosY,
                                           (float)dwWidth,(float)dwHeight,
                                           CTextureInfo(strTextureBack),CTextureInfo(strTexture),
-                                          CTextureInfo(strTextureFoc),0);
+                                          CTextureInfo(strTextureFoc), 0, ORIENTATION(iOrientation));
 
       return pGUIControl;
     }

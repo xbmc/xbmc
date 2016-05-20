@@ -29,6 +29,7 @@ the position, size, and look of the slider control.
       <controloffsetx></controloffsetx>
       <controloffsety></controloffsety>
       <pulseonselect></pulseonselect>
+      <orientation>vertical</orientation>
       <onup>2</onup>
       <ondown>3</ondown>
       <onleft>1</onleft>
@@ -52,6 +53,7 @@ important, as xml tags are case-sensitive.
 | controloffsetx        | Amount to offset the slider background texture from the left edge of the control. Only useful if a value is being rendered as well (ie in int or float mode).
 | controloffsety        | Amount to offset the slider background texture from the top edge of the control.
 | info                  | Specifies the information that the slider controls. [See here for more information](http://kodi.wiki/view/InfoLabels).
+| orientation           | Specifies whether this scrollbar is horizontal or vertical. Defaults to vertical.
 | action                | Can be <b>'volume'</b> to adjust the volume or 'seek' to change the seek position.
 
 
