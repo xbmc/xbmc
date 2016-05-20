@@ -34,8 +34,6 @@
 #include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
 #include "addons/binary/interfaces/api2/AddonInterfaceBase.h"
 #include "addons/binary/interfaces/api2/GUI/Addon_GUIWindow.h"
-#include "addons/binary/interfaces/api3/AddonInterfaceBase.h"
-#include "addons/binary/interfaces/api3/GUI/Addon_GUIWindow.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
@@ -137,10 +135,6 @@ void* CAddonInterfaces::AddOnLib_RegisterLevel(void *addonData, int level)
       addon->m_helperAddOn = new V2::KodiAPI::CAddonInterfaceAddon(addon->m_addon);
       cb = static_cast<V2::KodiAPI::CAddonInterfaceAddon*>(addon->m_helperAddOn)->GetCallbacks();
       break;
-    case 3:
-      addon->m_helperAddOn = new V3::KodiAPI::CAddonInterfaceAddon(addon->m_addon);
-      cb = static_cast<V3::KodiAPI::CAddonInterfaceAddon*>(addon->m_helperAddOn)->GetCallbacks();
-      break;
     };
     if (!cb)
     {
@@ -173,9 +167,6 @@ void CAddonInterfaces::AddOnLib_UnRegisterMe(void *addonData, void *cbTable)
     break;
   case 2:
     delete static_cast<V2::KodiAPI::CAddonInterfaceAddon*>(addon->m_helperAddOn);
-    break;
-  case 3:
-    delete static_cast<V3::KodiAPI::CAddonInterfaceAddon*>(addon->m_helperAddOn);
     break;
   };
   addon->m_helperAddOn = nullptr;
