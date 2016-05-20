@@ -609,6 +609,14 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording, bool bDe
   {
     timer = item->GetEPGInfoTag()->Timer();
   }
+  else if (item->IsPVRChannel())
+  {
+    const CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
+    if (epgTag)
+      timer = epgTag->Timer();
+    else
+      timer = g_PVRTimers->GetActiveTimerForChannel(item->GetPVRChannelInfoTag());
+  }
 
   if (!timer)
   {
