@@ -228,10 +228,22 @@ endif()
 # error either in ADDONS_TO_BUILD or in the directory configuration.
 set(SUPPORTED_ADDON_FOUND FALSE)
 
+message(STATUS "BUILD_ARGS=${BUILD_ARGS}")
+if(platformdefines)
+  set(KODI_ADDON_DEV_KIT_BUILD_ARGS ${BUILD_ARGS})
+  set(__C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_DEFINES}")
+  set(__CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_DEFINES}")
+  list(APPEND KODI_ADDON_DEV_KIT_BUILD_ARGS -DCMAKE_C_FLAGS=${__C_FLAGS}
+                                            -DCMAKE_CXX_FLAGS=${__CXX_FLAGS})
+else()
+  set(KODI_ADDON_DEV_KIT_BUILD_ARGS ${BUILD_ARGS})
+endif()
+
 ExternalProject_Add(kodi-addon-dev-kit
                     SOURCE_DIR ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit
                     INSTALL_DIR ${DEPENDS_PATH}
-                    CMAKE_ARGS ${BUILD_ARGS})
+                    CMAKE_ARGS ${KODI_ADDON_DEV_KIT_BUILD_ARGS})
+message(STATUS "KODI_ADDON_DEV_KIT_BUILD_ARGS=${KODI_ADDON_DEV_KIT_BUILD_ARGS}")
 
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
