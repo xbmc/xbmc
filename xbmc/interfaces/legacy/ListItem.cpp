@@ -277,6 +277,12 @@ namespace XBMCAddon
       return item->GetPath();
     }
 
+    String ListItem::getPath()
+    {
+      LOCKGUI;
+      return item->GetPath();
+    }
+
     void ListItem::setInfo(const char* type, const InfoLabelDict& infoLabels)
     {
       LOCKGUI;

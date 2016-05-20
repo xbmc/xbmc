@@ -620,7 +620,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// self.list.getSelectedItem().setPath(path='ActivateWindow(Weather)')
+      /// self.list.getSelectedItem().setPath(path='/path/to/some/file.ext')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -691,9 +691,8 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getdescription() }
       ///-----------------------------------------------------------------------
-      /// Returns the description of this PlayListItem.
+      /// @warning Deprecated.
       ///
-      /// @return Description string of play list item
       ///
       getdescription();
 #else
@@ -705,9 +704,8 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getduration() }
       ///-----------------------------------------------------------------------
-      /// Returns the duration of this PlayListItem
+      /// @warning Deprecated.
       ///
-      /// @return duration as string
       ///
       getduration();
 #else
@@ -719,13 +717,26 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getfilename() }
       ///-----------------------------------------------------------------------
-      /// Returns the filename of this PlayListItem.
+      /// @warning Deprecated.
       ///
-      /// @return [string] filename
       ///
       getfilename();
 #else
       String getfilename();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getPath() }
+      ///-----------------------------------------------------------------------
+      /// Returns the path of this listitem.
+      ///
+      /// @return [string] filename
+      ///
+      getPath();
+#else
+      String getPath();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
