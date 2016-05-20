@@ -84,6 +84,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_MPEG1VIDEO:
     case AV_CODEC_ID_MPEG2VIDEO:
     case AV_CODEC_ID_MPEG2VIDEO_XVMC:
+      if (m_hints.width <= CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECMPEG2))
+        return false;
       m_mpeg2_sequence_pts = 0;
       m_mpeg2_sequence = new mpeg2_sequence;
       m_mpeg2_sequence->width  = m_hints.width;
@@ -98,6 +100,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_pFormatName = "am-mpeg2";
       break;
     case AV_CODEC_ID_H264:
+      if (m_hints.width <= CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECH264))
+        return false;
       if ((!aml_support_h264_4k2k()) && ((m_hints.width > 1920) || (m_hints.height > 1088)))
       {
         // 4K is supported only on Amlogic S802/S812 chip
@@ -122,7 +126,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
     case AV_CODEC_ID_MSMPEG4V3:
-      if (hints.width <= 800)
+      if (m_hints.width <= CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECMPEG4))
         return false;
       m_pFormatName = "am-mpeg4";
       break;
