@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Zmeniť vzhľad · Nastaviť jazyk a región · Zmeniť možnosti výpisu súborov · Nastaviť šetrič obrazovky"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Konfigurovať a spravovať služby pre zdieľanie médií · Konfigurovať a spravovať službu pre počasie"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Konfigurovať obrazovku · Konfigurovať zvuk · Konfigurovať prístup k internetu · Konfigurovať úsporný režim· Konfigurovať záznam udalostí"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Správa nainštalovaných doplnkov · Prezeranie a inštalácia doplnkov z kodi.tv · Úprava nastavení doplnkov"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Konfigurovať akcie, ktoré je možné použiť počas prehrávania · Konfigurovať ako sa má prehrávať mediálny obsah"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Konfigurovať ako zoznamy médií zobrazia obsah ·  Konfigurovať ako sa má navigovať v zoznamoch knižnice · Konfigurovať možnosti databázy"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Konfigurovať vzhľad · Konfigurovať región · Konfigurovať ovládanie · Konfigurovať šetrič obrazovky · Konfigurovať hlavný zámok"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Konfigurovať vaše profily · Nastaviť možnosti uzamknutia · Zapnúť prihlasovaciu obrazovku"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Zobraziť systémové informácie · Štatistika hardvéru · Kontrolovať dostupnosť úložného priestoru · Zobraziť konfiguráciu siete"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

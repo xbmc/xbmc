@@ -160,7 +160,7 @@ if(EXISTS ${PLATFORM_DIR}/defines.txt)
 endif()
 
 # include check_target_platform() function
-include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/check_target_platform.cmake)
+include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/CheckTargetPlatform.cmake)
 
 set(ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 if(NOT WIN32)
@@ -174,14 +174,14 @@ if(NOT WIN32)
 endif()
 
 ### prepare the build environment for the binary addons
-# copy the prepare-env.cmake script to the depends path so that we can include it
-file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/prepare-env.cmake DESTINATION ${APP_LIB_DIR})
+# copy the PrepareEnv.cmake script to the depends path so that we can include it
+file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/PrepareEnv.cmake DESTINATION ${APP_LIB_DIR})
 
-# add the location of prepare-env.cmake to CMAKE_MODULE_PATH so that it is found
+# add the location of PrepareEnv.cmake to CMAKE_MODULE_PATH so that it is found
 list(APPEND CMAKE_MODULE_PATH ${APP_LIB_DIR})
 
-# include prepare-env.cmake which contains the logic to install the addon header bindings etc
-include(prepare-env)
+# include PrepareEnv.cmake which contains the logic to install the addon header bindings etc
+include(PrepareEnv)
 
 ### add the depends subdirectory for any general dependencies
 message(STATUS "\n-- ---- Preparing general dependencies ----")
@@ -227,6 +227,11 @@ endif()
 # Track if at least one addon has been found. Everything else is likely an
 # error either in ADDONS_TO_BUILD or in the directory configuration.
 set(SUPPORTED_ADDON_FOUND FALSE)
+
+ExternalProject_Add(kodi-addon-dev-kit
+                    SOURCE_DIR ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit
+                    INSTALL_DIR ${DEPENDS_PATH}
+                    CMAKE_ARGS ${BUILD_ARGS})
 
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
@@ -373,12 +378,12 @@ foreach(addon ${addons})
                                    ALWAYS 1)
 
           # add "kodi-platform" as a dependency to every addon
-          add_dependencies(${id} kodi-platform)
+          add_dependencies(${id} kodi-platform kodi-addon-dev-kit)
 
           set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
 
           if(EXISTS ${${id}_DEPENDS_DIR})
-            include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/handle-depends.cmake)
+            include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/HandleDepends.cmake)
             add_addon_depends(${id} ${${id}_DEPENDS_DIR})
             if(${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
               message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")

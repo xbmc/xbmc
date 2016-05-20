@@ -44,6 +44,9 @@ enum HTTPMethod
   HEAD
 };
 
+HTTPMethod GetHTTPMethod(const char *method);
+std::string GetHTTPMethod(HTTPMethod method);
+
 typedef enum HTTPResponseType
 {
   HTTPNone,

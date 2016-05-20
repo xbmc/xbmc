@@ -1335,6 +1335,9 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(const CSetting *se
 #ifdef HAS_JSONRPC
   list.push_back(std::make_pair(g_localizeStrings.Get(675), LOGJSONRPC));
 #endif
+#ifdef HAS_WEB_SERVER
+  list.push_back(std::make_pair(g_localizeStrings.Get(681), LOGWEBSERVER));
+#endif
 #ifdef HAS_AIRTUNES
   list.push_back(std::make_pair(g_localizeStrings.Get(677), LOGAIRTUNES));
 #endif

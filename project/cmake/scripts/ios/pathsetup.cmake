@@ -1,1 +1,0 @@
-../darwin/pathsetup.cmake

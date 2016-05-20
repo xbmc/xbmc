@@ -5,6 +5,5 @@ set(SOURCES ExifParse.cpp
 
 set(CMAKE_POSITION_INDEPENDENT_CODE 1)
 
-add_definitions(-D_LINUX -D_DLL)
-
 core_add_library(exif NO_MAIN_DEPENDS)
+target_compile_definitions(exif PRIVATE _LINUX _DLL)

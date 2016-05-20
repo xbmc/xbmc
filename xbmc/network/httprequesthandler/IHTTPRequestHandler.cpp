@@ -19,12 +19,45 @@
  */
 
 #include <limits>
+#include <utility>
 
 #include "IHTTPRequestHandler.h"
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/StringUtils.h"
 
-#include <utility>
+static const std::string HTTPMethodHead = "HEAD";
+static const std::string HTTPMethodGet = "GET";
+static const std::string HTTPMethodPost = "POST";
+
+HTTPMethod GetHTTPMethod(const char *method)
+{
+  if (HTTPMethodGet.compare(method) == 0)
+    return GET;
+  if (HTTPMethodPost.compare(method) == 0)
+    return POST;
+  if (HTTPMethodHead.compare(method) == 0)
+    return HEAD;
+
+  return UNKNOWN;
+}
+
+std::string GetHTTPMethod(HTTPMethod method)
+{
+  switch (method)
+  {
+  case HEAD:
+    return HTTPMethodHead;
+
+  case GET:
+    return HTTPMethodGet;
+
+  case POST:
+    return HTTPMethodPost;
+  }
+
+  return "";
+}
 
 IHTTPRequestHandler::IHTTPRequestHandler()
   : m_request(),
@@ -97,7 +130,7 @@ bool IHTTPRequestHandler::GetRequestedRanges(uint64_t totalLength)
   if (totalLength == 0)
     return true;
 
-  return m_request.webserver->GetRequestedRanges(m_request.connection, totalLength, m_request.ranges);
+  return HTTPRequestHandlerUtils::GetRequestedRanges(m_request.connection, totalLength, m_request.ranges);
 }
 
 bool IHTTPRequestHandler::GetHostnameAndPort(std::string& hostname, uint16_t &port)
@@ -105,7 +138,7 @@ bool IHTTPRequestHandler::GetHostnameAndPort(std::string& hostname, uint16_t &po
   if (m_request.webserver == NULL || m_request.connection == NULL)
     return false;
 
-  std::string hostnameAndPort = m_request.webserver->GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_HOST);
+  std::string hostnameAndPort = HTTPRequestHandlerUtils::GetRequestHeaderValue(m_request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_HOST);
   if (hostnameAndPort.empty())
     return false;
 

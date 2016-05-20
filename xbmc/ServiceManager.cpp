@@ -29,6 +29,7 @@ bool CServiceManager::Init1()
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
   m_announcementManager->Start();
 
+  m_addonInterfaceManager.reset(new ADDON::CAddonInterfaceManager());
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
 
@@ -69,6 +70,7 @@ void CServiceManager::Deinit()
   m_addonMgr.reset();
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
+  m_addonInterfaceManager.reset();
   m_announcementManager.reset();
 }
 
@@ -100,4 +102,9 @@ PVR::CPVRManager& CServiceManager::GetPVRManager()
 ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
 {
   return *m_ADSPManager;
+}
+
+ADDON::CAddonInterfaceManager& CServiceManager::GetAddonInterfaceManager()
+{
+  return *m_addonInterfaceManager;
 }

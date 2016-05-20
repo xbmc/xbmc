@@ -78,8 +78,8 @@ IF "%addon%" NEQ "" (
 rem execute cmake to generate Visual Studio 12 project files
 cmake "%ADDONS_PATH%" -G "Visual Studio 12" ^
       -DCMAKE_BUILD_TYPE=Debug ^
-      -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/c-flag-overrides.cmake" ^
-      -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/cxx-flag-overrides.cmake" ^
+      -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/CFlagOverrides.cmake" ^
+      -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/CXXFlagOverrides.cmake" ^
       -DCMAKE_INSTALL_PREFIX=%WORKDIR%\addons ^
       -DCORE_SOURCE_DIR=%WORKDIR% ^
       -DBUILD_DIR=%ADDONS_BUILD_PATH% ^

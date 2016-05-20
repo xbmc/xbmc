@@ -25,6 +25,7 @@
 #include "interfaces/python/XBPython.h"
 #include "filesystem/File.h"
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "network/httprequesthandler/HTTPWebinterfaceHandler.h"
 #include "network/httprequesthandler/python/HTTPPythonInvoker.h"
 #include "network/httprequesthandler/python/HTTPPythonWsgiInvoker.h"
@@ -136,8 +137,8 @@ int CHTTPPythonHandler::HandleRequest()
     HTTPPythonRequest* pythonRequest = new HTTPPythonRequest();
     pythonRequest->connection = m_request.connection;
     pythonRequest->file = URIUtils::GetFileName(m_request.pathUrl);
-    CWebServer::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, pythonRequest->getValues);
-    CWebServer::GetRequestHeaderValues(m_request.connection, MHD_HEADER_KIND, pythonRequest->headerValues);
+    HTTPRequestHandlerUtils::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, pythonRequest->getValues);
+    HTTPRequestHandlerUtils::GetRequestHeaderValues(m_request.connection, MHD_HEADER_KIND, pythonRequest->headerValues);
     pythonRequest->method = m_request.method;
     pythonRequest->postValues = m_postFields;
     pythonRequest->requestContent = m_requestData;

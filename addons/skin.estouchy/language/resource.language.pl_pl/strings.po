@@ -86,15 +86,15 @@ msgstr "DO TYŁU"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Koniec o godzinie"
+msgstr "Koniec o"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Sortuj: Rosnąco"
+msgstr "Porządek: Rosnąco"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Sortuj: Malejąco"
+msgstr "Porządek: Malejąco"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Wybór skóry · Ustawienia regionalne · Listy plików · Wygaszacz ekranu"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Konfiguracja i zarządzanie usługami udostępniania · Konfiguracja i zarządzanie usługą informacji pogodowych"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Konfiguracja wyświetlacza · Konfiguracja dźwięku · Konfiguracja dostępu do Internetu · Konfiguracja zasilania · Konfiguracja diagnostyki"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Zarządzanie zainstalowanymi dodatkami · Przeglądanie i instalowanie dodatków · Ustawienia dodatków"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Konfiguracja dostępnych funkcji odtwarzacza · Konfiguracja odtwarzania mediów"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Konfiguracja wyświetlania widoków mediów · Konfiguracja przeglądania multimediów · Konfiguracja opcji baz danych"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Konfiguracja skóry · Konfiguracja regionu · Konfiguracja sterowania · Konfiguracja wygaszacza · Konfiguracja dostępu"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Konfiguracja profili · Ustawienia dostępu · Aktywacja ekranu logowania"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Informacje o systemie · Statystyki sprzętu · Dostępna przestrzeń dyskowa · Podgląd konfiguracji sieciowej"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -263,3 +291,19 @@ msgstr "Pokazuj usunięte"
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Pierwsze uruchomienie"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Musisz wiedzieć dwie rzeczy o nawigacji w przypadku Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Logo Kodi funkcjonuje jako przycisk 'Start'. Kiedykolwiek go naciśniesz zostaniesz przeniesiony do ekranu startowego."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Podczas odtwarzania muzyki lub wideo, tytuł pozycji będzie wyświetlany na górze ekranu. Jeśli go naciśniesz, zostaniesz przeniesiony do pełnoekranowej wizualizacji lub okna wideo."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Teraz odtwarzane..."
