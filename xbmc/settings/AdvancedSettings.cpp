@@ -280,6 +280,7 @@ void CAdvancedSettings::Initialize()
   m_strMusicLibraryAlbumFormat = "";
   m_prioritiseAPEv2tags = false;
   m_musicItemSeparator = " / ";
+  m_musicArtistSeparators = { ";", ":", "|", " feat. ", " ft. " };
   m_videoItemSeparator = " / ";
   m_iMusicLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
@@ -702,6 +703,19 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "albumformat", m_strMusicLibraryAlbumFormat);
     XMLUtils::GetString(pElement, "itemseparator", m_musicItemSeparator);
     XMLUtils::GetInt(pElement, "dateadded", m_iMusicLibraryDateAdded);
+    //Music artist name separators
+    TiXmlElement* separators = pElement->FirstChildElement("artistseparators");
+    if (separators)
+    {
+      m_musicArtistSeparators.clear();
+      TiXmlNode* separator = separators->FirstChild("separator");
+      while (separator)
+      {
+        if (separator->FirstChild())
+          m_musicArtistSeparators.push_back(separator->FirstChild()->ValueStr());
+        separator = separator->NextSibling("separator");
+      }
+    }
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");
