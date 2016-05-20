@@ -34,13 +34,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#ifdef API_LEVELS_ACTIVE
-  #include KITINCLUDE(ADDON_API_LEVEL, inputstream/InputStream.hpp)
-#else
-  #include "xbmc_codec_types.h"
-#endif
 #include "xbmc_addon_types.h"
 #include "xbmc_epg_types.h"
+#include "xbmc_codec_types.h"
 
 /*! @note Define "USE_DEMUX" at compile time if demuxing in the PVR add-on is used.
  *        Also XBMC's "DVDDemuxPacket.h" file must be in the include path of the add-on,
@@ -287,13 +283,8 @@ extern "C" {
     struct PVR_STREAM
     {
       unsigned int      iPID;               /*!< @brief (required) PID */
-#ifdef API_LEVELS_ACTIVE
-      API_NAMESPACE_NAME::KodiAPI::kodi_codec_type iCodecType;         /*!< @brief (required) codec type this stream */
-      API_NAMESPACE_NAME::KodiAPI::kodi_codec_id   iCodecId;           /*!< @brief (required) codec id of this stream */
-#else
       xbmc_codec_type_t iCodecType;         /*!< @brief (required) codec type this stream */
       xbmc_codec_id_t   iCodecId;           /*!< @brief (required) codec id of this stream */
-#endif
       char              strLanguage[4];     /*!< @brief (required) language id */
       int               iSubtitleInfo;      /*!< @brief (required) Subtitle Info */
       int               iFPSScale;          /*!< @brief (required) scale of 1000 and a rate of 29970 will result in 29.97 fps */
