@@ -19,6 +19,7 @@
  */
 
 #include "swighelper.h"
+#include <vector>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 namespace XBMCAddon
@@ -84,6 +85,30 @@ namespace XBMCAddon
     long getCurrentWindowDialogId();
 #endif
     ///@}
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcgui
+    /// @brief \python_func{ xbmcgui.getMousePosition() }
+    ///-------------------------------------------------------------------------
+    /// Returns the current mouse position as a x,y integer tuple.
+    ///
+    /// @return                        The current mouse position
+    ///
+    ///
+    ///--------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// pos = xbmcgui.getMousePosition()
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+getMousePosition()
+#else
+    std::vector<int> getMousePosition();
+#endif
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     SWIG_CONSTANT2(int,ICON_OVERLAY_NONE, CGUIListItem::ICON_OVERLAY_NONE);

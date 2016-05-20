@@ -22,6 +22,7 @@
 #include "LanguageHook.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/MathUtils.h"
 
 #define NOTIFICATION_INFO     "info"
 #define NOTIFICATION_WARNING  "warning"
@@ -43,6 +44,30 @@ namespace XBMCAddon
       DelayedCallGuard dg;
       CSingleLock gl(g_graphicsContext);
       return g_windowManager.GetTopMostModalDialogID();
+    }
+
+    std::vector<int> getMousePosition()
+    {
+      std::vector<int> pos(2);
+
+      DelayedCallGuard dg;
+      CSingleLock gl(g_graphicsContext);
+      CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+      CGUIWindow *pointer = g_windowManager.GetWindow(WINDOW_DIALOG_POINTER);
+      CPoint point;
+      if (pointer)
+        point = CPoint(pointer->GetXPosition(), pointer->GetYPosition());
+      if (window)
+      {
+        // transform the mouse coordinates to this window's coordinates
+        g_graphicsContext.SetScalingResolution(window->GetCoordsRes(), true);
+        point.x *= g_graphicsContext.GetGUIScaleX();
+        point.y *= g_graphicsContext.GetGUIScaleY();
+        g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
+      }
+      pos[0] = MathUtils::round_int(point.x);
+      pos[1] = MathUtils::round_int(point.y);
+      return pos;
     }
 
     const char* getNOTIFICATION_INFO()    { return NOTIFICATION_INFO; }
