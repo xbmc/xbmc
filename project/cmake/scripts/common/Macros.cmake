@@ -238,7 +238,7 @@ function(core_file_read_filtered result filepattern)
     file(STRINGS ${filename} fstrings REGEX "^[^#//]")
     foreach(fstring ${fstrings})
       string(REGEX REPLACE "^(.*)#(.*)" "\\1" fstring ${fstring})
-      string(REGEX REPLACE "//.*" "" fstring ${fstring})
+      string(REGEX REPLACE "[ \n\r\t]//.*" "" fstring ${fstring})
       string(STRIP ${fstring} fstring)
       list(APPEND filename_strings ${fstring})
     endforeach()
@@ -367,13 +367,32 @@ function(core_find_git_rev)
   endif()
 endfunction()
 
+# Parses version.txt and libKODI_guilib.h and sets variables
+# used to construct dirs structure, file naming, API version, etc.
+#
+# The following variables are set from version.txt:
+#   APP_NAME - app name
+#   APP_NAME_LC - lowercased app name
+#   APP_NAME_UC - uppercased app name
+#   COMPANY_NAME - company name
+#   APP_VERSION_MAJOR - the app version major
+#   APP_VERSION_MINOR - the app version minor
+#   APP_VERSION_TAG - the app version tag
+#   APP_VERSION_TAG_LC - lowercased app version tag
+#   APP_VERSION - the app version (${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG})
+#   APP_ADDON_API - the addon API version in the form of 16.9.702
+#   FILE_VERSION - file version in the form of 16,9,702,0 - Windows only
+#
+# The following variables are set from libKODI_guilib.h:
+#   guilib_version - current ADDONGUI API version
+#   guilib_version_min - minimal ADDONGUI API version
 macro(core_find_versions)
   include(CMakeParseArguments)
   core_file_read_filtered(version_list ${CORE_SOURCE_DIR}/version.txt)
   string(REPLACE " " ";" version_list "${version_list}")
-  cmake_parse_arguments(APP "" "VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API;APP_NAME;COMPANY_NAME" "" ${version_list})
+  cmake_parse_arguments(APP "" "APP_NAME;COMPANY_NAME;WEBSITE;VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API" "" ${version_list})
 
-  set(APP_NAME ${APP_APP_NAME}) # inconsistency in upstream
+  set(APP_NAME ${APP_APP_NAME}) # inconsistency but APP_APP_NAME looks weird
   string(TOLOWER ${APP_APP_NAME} APP_NAME_LC)
   string(TOUPPER ${APP_APP_NAME} APP_NAME_UC)
   set(COMPANY_NAME ${APP_COMPANY_NAME})
@@ -387,4 +406,17 @@ macro(core_find_versions)
   string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version ${guilib_version})
   file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version_min REGEX "^.*GUILIB_MIN_API_VERSION (.*)$")
   string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version_min ${guilib_version_min})
+  # unset variables not used anywhere else
+  unset(version_list)
+  unset(APP_APP_NAME)
+
+  # bail if we can't parse version.txt
+  if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
+    message(FATAL_ERROR "Could not determine app version! Make sure that ${CORE_SOURCE_DIR}/version.txt exists")
+  endif()
+
+  # bail if we can't parse libKODI_guilib.h
+  if(NOT DEFINED guilib_version OR NOT DEFINED guilib_version_min)
+    message(FATAL_ERROR "Could not determine add-on API version! Make sure that ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h exists")
+  endif()
 endmacro()
