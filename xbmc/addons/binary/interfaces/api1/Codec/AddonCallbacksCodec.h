@@ -57,5 +57,5 @@ private:
 
 } /* namespace Codec */
 
-} /* namespace KodiAPI */
+} /* namespace KoidAPI */
 } /* namespace V1 */

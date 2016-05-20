@@ -2133,18 +2133,7 @@ OUTPUT_FILES="Makefile \
     addons/skin.estuary/media/Makefile \
     addons/skin.estouchy/media/Makefile \
     xbmc/Makefile \
-    xbmc/addons/binary/Makefile \
     xbmc/addons/binary/interfaces/Makefile \
-    xbmc/addons/binary/interfaces/api2/Makefile \
-    xbmc/addons/binary/interfaces/api2/Addon/Makefile \
-    xbmc/addons/binary/interfaces/api2/AudioEngine/Makefile \
-    xbmc/addons/binary/interfaces/api2/GUI/Makefile \
-    xbmc/addons/binary/interfaces/api2/InputStream/Makefile \
-    xbmc/addons/binary/interfaces/api2/PVR/Makefile \
-    xbmc/addons/binary/interfaces/api2/Peripheral/Makefile \
-    xbmc/addons/binary/interfaces/api2/Player/Makefile \
-    xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2-config.cmake \
-    xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2.pc \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoPlayer/VideoRenderers/Makefile \

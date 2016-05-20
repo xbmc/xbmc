@@ -1,1 +1,0 @@
-export PATH="@prefix@/@tool_dir@/bin:$PATH"

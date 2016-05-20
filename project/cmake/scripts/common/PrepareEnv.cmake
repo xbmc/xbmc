@@ -68,8 +68,7 @@ file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddonHelpers.cmake
 configure_file(${CORE_SOURCE_DIR}/project/cmake/XBMCConfig.cmake.in ${XBMC_LIB_DIR}/XBMCConfig.cmake @ONLY)
 
 ### copy all the addon binding header files to include/kodi
-# parse addon-bindings.mk to get the list of kodi's own header files to copy
-# Note: Need to improve in future to use add-ons without Kodi's own headers!
+# parse addon-bindings.mk to get the list of header files to copy
 file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk bindings)
 string(REPLACE "\n" ";" bindings "${bindings}")
 foreach(binding ${bindings})

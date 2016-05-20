@@ -23,7 +23,6 @@
 namespace ADDON {
 class CAddonMgr;
 class CBinaryAddonCache;
-class CAddonInterfaceManager;
 }
 
 namespace ActiveAE {
@@ -51,5 +50,4 @@ public:
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
   static ActiveAE::CActiveAEDSP& GetADSP();
-  static ADDON::CAddonInterfaceManager &GetAddonInterfaceManager();
 };

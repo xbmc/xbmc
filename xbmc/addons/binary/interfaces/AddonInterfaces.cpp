@@ -22,7 +22,7 @@
 #include "AddonInterfaces.h"
 
 #include "addons/Addon.h"
-#include "addons/binary/ExceptionHandling.h"
+
 #include "addons/binary/interfaces/api1/Addon/AddonCallbacksAddon.h"
 #include "addons/binary/interfaces/api1/AudioDSP/AddonCallbacksAudioDSP.h"
 #include "addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h"
@@ -32,8 +32,6 @@
 #include "addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
 #include "addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.h"
 #include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
-#include "addons/binary/interfaces/api2/AddonInterfaceBase.h"
-#include "addons/binary/interfaces/api2/GUI/Addon_GUIWindow.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
@@ -78,7 +76,7 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
 
 CAddonInterfaces::~CAddonInterfaces()
 {
-  AddOnLib_UnRegisterMe(this, nullptr);
+  delete static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(m_helperAddOn);
   delete static_cast<V1::KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(m_helperAudioEngine);
   delete static_cast<V1::KodiAPI::PVR::CAddonCallbacksPVR*>(m_helperPVR);
   delete static_cast<V1::KodiAPI::GUI::CAddonCallbacksGUI*>(m_helperGUI);
@@ -92,83 +90,31 @@ CAddonInterfaces::~CAddonInterfaces()
 }
 
 /*\_____________________________________________________________________________
-| | exported functions used from add-on for connection.
-\*/
-
-A_DLLEXPORT void* AddOnLib_Register(void *hdl, int level)
-{
-  return CAddonInterfaces::AddOnLib_RegisterLevel(((AddonCB*)hdl)->addonData, level);
-}
-
-A_DLLEXPORT void AddOnLib_UnRegister(void *hdl, void *cb)
-{
-  CAddonInterfaces::AddOnLib_UnRegisterMe(((AddonCB*)hdl)->addonData, cb);
-}
-
-/*\_____________________________________________________________________________
 \*/
 
 void* CAddonInterfaces::AddOnLib_RegisterMe(void *addonData)
 {
-  return AddOnLib_RegisterLevel(addonData, 1);
-}
-  
-void* CAddonInterfaces::AddOnLib_RegisterLevel(void *addonData, int level)
-{
-  try
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
   {
-    CAddonInterfaces* addon = static_cast<CAddonInterfaces *>(addonData);
-    if (addon == nullptr)
-    {
-      CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
-      return nullptr;
-    }
-
-    void* cb = nullptr;
-    switch (level)
-    {
-    case 1:
-      addon->m_helperAddOn = new V1::KodiAPI::AddOn::CAddonCallbacksAddon(addon->m_addon);
-      cb = static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(addon->m_helperAddOn)->GetCallbacks();
-      break;
-    case 2:
-      addon->m_helperAddOn = new V2::KodiAPI::CAddonInterfaceAddon(addon->m_addon);
-      cb = static_cast<V2::KodiAPI::CAddonInterfaceAddon*>(addon->m_helperAddOn)->GetCallbacks();
-      break;
-    };
-    if (!cb)
-    {
-      CLog::Log(LOGERROR, "%s: %s/%s - called with not supported API level '%i'",
-                            __FUNCTION__,
-                            TranslateType(addon->m_addon->Type()).c_str(),
-                            addon->m_addon->Name().c_str(), level);
-      AddOnLib_UnRegisterMe(addonData, cb);
-    }
-    return cb;
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
   }
-  HANDLE_ADDON_EXCEPTION
 
-  return nullptr;
+  addon->m_helperAddOn = new V1::KodiAPI::AddOn::CAddonCallbacksAddon(addon->m_addon);
+  return static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(addon->m_helperAddOn)->GetCallbacks();
 }
 
 void CAddonInterfaces::AddOnLib_UnRegisterMe(void *addonData, void *cbTable)
 {
   CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
-  if (addon == nullptr || addon->m_helperAddOn == nullptr)
+  if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  switch (static_cast<IAddonInterface*>(addon->m_helperAddOn)->APILevel())
-  {
-  case 1:
-    delete static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(addon->m_helperAddOn);
-    break;
-  case 2:
-    delete static_cast<V2::KodiAPI::CAddonInterfaceAddon*>(addon->m_helperAddOn);
-    break;
-  };
+  delete static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(addon->m_helperAddOn);
   addon->m_helperAddOn = nullptr;
 }
 
@@ -375,10 +321,6 @@ void CAddonInterfaces::OnApplicationMessage(ThreadMessage* pMsg)
       {
       case 1:
         static_cast<V1::KodiAPI::GUI::CGUIAddonWindowDialog*>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
-        break;
-      case 2:
-      case 3:
-        static_cast<V2::KodiAPI::GUI::CGUIAddonWindowDialog*>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
         break;
       };
     }
