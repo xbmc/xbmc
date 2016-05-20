@@ -14,8 +14,5 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 add_subdirectory(src/api2/kodi-addon-sharedlibrary)
-if(BUILD_DEV_LEVEL)
-  add_subdirectory(src/api3/kodi-addon-sharedlibrary)
-endif(BUILD_DEV_LEVEL)
 
 install(DIRECTORY include/kodi DESTINATION include)
