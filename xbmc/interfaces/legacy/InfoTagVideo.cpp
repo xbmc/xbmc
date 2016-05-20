@@ -142,6 +142,11 @@ namespace XBMCAddon
       return infoTag->GetRating().rating;
     }
 
+    int InfoTagVideo::getUserRating()
+    {
+      return infoTag->m_iUserRating;
+    }
+
     int InfoTagVideo::getPlayCount()
     {
       return infoTag->m_playCount;
