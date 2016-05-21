@@ -4,6 +4,7 @@ function(core_link_library lib wraplib)
   # TODO: core_add_library and core_link_library should be refactored so that we have
   #       decoupled functions for generating the shared libraries. Libs that are not
   #       wrapped should directly be compiled into shared libs.
+  message(STATUS "core_add_library lib=${lib}")
   if(TARGET ${lib})
     get_property(SOURCES TARGET ${lib} PROPERTY SOURCES)
     get_property(SOURCE_DIR TARGET ${lib} PROPERTY SOURCE_DIR)
@@ -14,9 +15,16 @@ function(core_link_library lib wraplib)
     endforeach()
 
     add_library(wrap_${lib} SHARED ${SOURCES_ABS})
-    set_target_properties(wrap_${lib} PROPERTIES OUTPUT_NAME ${wraplib})
+    set_target_properties(wrap_${lib} PROPERTIES OUTPUT_NAME lib${lib})
     target_include_directories(wrap_${lib} PRIVATE ${INCLUDES})
     target_compile_definitions(wrap_${lib} PRIVATE ${DEFINITIONS})
+    
+    if (MSVC)
+      string(REPLACE "/lib${lib}" "" libdir ${wraplib})
+      set_target_properties(wrap_${lib} PROPERTIES  RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${libdir}"
+                                                    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/${libdir}")
+      # etc for the other available configuration types (MinSizeRel, RelWithDebInfo)
+    endif()
   endif()
 endfunction()
 
