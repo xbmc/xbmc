@@ -92,8 +92,6 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   {
   case CGUIControl::GUICONTROL_BUTTON:
     lpszType = "button"; break;
-  case CGUIControl::GUICONTROL_CHECKMARK:
-    lpszType = "checkmark"; break;
   case CGUIControl::GUICONTROL_FADELABEL:
     lpszType = "fadelabel"; break;
   case CGUIControl::GUICONTROL_IMAGE:

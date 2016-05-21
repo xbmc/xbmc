@@ -30,7 +30,6 @@
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
-#include "GUICheckMarkControl.h"
 #include "GUIToggleButtonControl.h"
 #include "GUITextBox.h"
 #include "GUIVideoControl.h"
@@ -77,7 +76,6 @@ typedef struct
 
 static const ControlMapping controls[] =
    {{"button",            CGUIControl::GUICONTROL_BUTTON},
-    {"checkmark",         CGUIControl::GUICONTROL_CHECKMARK},
     {"fadelabel",         CGUIControl::GUICONTROL_FADELABEL},
     {"image",             CGUIControl::GUICONTROL_IMAGE},
     {"largeimage",        CGUIControl::GUICONTROL_IMAGE},
@@ -708,7 +706,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureUpDisabled, textureDownDisabled;
   CTextureInfo texture, borderTexture;
   CGUIInfoLabel textureFile;
-  CTextureInfo textureCheckMark, textureCheckMarkNF;
   CTextureInfo textureFocus, textureNoFocus;
   CTextureInfo textureAltFocus, textureAltNoFocus;
   CTextureInfo textureRadioOnFocus, textureRadioOnNoFocus;
@@ -904,8 +901,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetFloat(pControlNode, "markheight", checkHeight);
   XMLUtils::GetFloat(pControlNode, "sliderwidth", sliderWidth);
   XMLUtils::GetFloat(pControlNode, "sliderheight", sliderHeight);
-  GetTexture(pControlNode, "texturecheckmark", textureCheckMark);
-  GetTexture(pControlNode, "texturecheckmarknofocus", textureCheckMarkNF);
   if (!GetTexture(pControlNode, "textureradioonfocus", textureRadioOnFocus) || !GetTexture(pControlNode, "textureradioonnofocus", textureRadioOnNoFocus))
   {
     GetTexture(pControlNode, "textureradiofocus", textureRadioOnFocus);    // backward compatibility
@@ -1212,16 +1207,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
       ((CGUIToggleButtonControl *)control)->SetUnFocusActions(unfocusActions);
       ((CGUIToggleButtonControl *)control)->SetToggleSelect(toggleSelect);
-    }
-    break;
-  case CGUIControl::GUICONTROL_CHECKMARK:
-    {
-      control = new CGUICheckMarkControl(
-        parentID, id, posX, posY, width, height,
-        textureCheckMark, textureCheckMarkNF,
-        checkWidth, checkHeight, labelInfo);
-
-      ((CGUICheckMarkControl *)control)->SetLabel(strLabel);
     }
     break;
   case CGUIControl::GUICONTROL_RADIO:
