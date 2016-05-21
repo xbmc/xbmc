@@ -40,7 +40,7 @@ namespace PVR
                        const std::string &strDirectory, const std::string &strTitle,
                        int iSeason, int iEpisode, int iYear,
                        const std::string &strSubtitle, const std::string &strChannelName,
-                       const CDateTime &recordingTime);
+                       const CDateTime &recordingTime, const std::string &strId);
 
     operator std::string() const { return m_path; }
 
