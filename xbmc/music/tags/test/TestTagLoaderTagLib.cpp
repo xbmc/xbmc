@@ -27,6 +27,8 @@
 #include <taglib/apetag.h>
 #include <taglib/xiphcomment.h>
 #include <taglib/id3v1genres.h>
+#include <taglib/asftag.h>
+#include <taglib/mp4tag.h>
 
 using namespace TagLib;
 using namespace MUSIC_INFO;
