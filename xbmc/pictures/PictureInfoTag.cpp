@@ -325,14 +325,14 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDE_COMMENT:
-    g_charsetConverter.unknownToUTF8(m_exifInfo.FileComment, value);
+    CCharsetConverter::UnknownToUtf8(m_exifInfo.FileComment, value);
     break;
   case SLIDE_EXIF_COMMENT:
     // The charset used for the UserComment is stored in CommentsCharset:
     // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
     if (m_exifInfo.CommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
     {
-      g_charsetConverter.Ucs2ToUtf8(std::u16string((char16_t*)m_exifInfo.Comments), value);
+      CCharsetConverter::Ucs2ToUtf8(std::u16string((char16_t*)m_exifInfo.Comments), value);
     }
     else
     {
@@ -340,13 +340,13 @@ const std::string CPictureInfoTag::GetInfo(int info) const
       // Archived data is already converted (EXIF_COMMENT_CHARSET_CONVERTED)
       // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
       // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
-      g_charsetConverter.UnknownToUtf8(m_exifInfo.Comments, value);
+      CCharsetConverter::UnknownToUtf8(m_exifInfo.Comments, value);
     }
     break;
   case SLIDE_EXIF_XPCOMMENT:
     if (m_exifInfo.XPCommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
     {
-      g_charsetConverter.ucs2ToUTF8(std::u16string((char16_t*)m_exifInfo.XPComment), value);
+      CCharsetConverter::Ucs2ToUtf8(std::u16string((char16_t*)m_exifInfo.XPComment), value);
     }
     else
     {

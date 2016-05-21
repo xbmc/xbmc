@@ -129,7 +129,7 @@ namespace XFILE
 
       // determine the entry's filename
       std::string label = pathTokens[filePathTokens.size()];
-      g_charsetConverter.unknownToUTF8(label);
+      CCharsetConverter::UnknownToUtf8(label);
 
       // convert the entry into a CFileItem
       CFileItemPtr item = converter(entry.second, label, itemPath, isFolder);

@@ -912,7 +912,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiostreamsilence", CAEFactory::SettingOptionsAudioStreamsilenceFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("charsets", CLangInfo::SettingOptionsCharsetsFiller);
+  //m_settingsManager->RegisterSettingOptionsFiller("charsets", CLangInfo::SettingOptionsCharsetsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("languagenames", CLangInfo::SettingOptionsLanguageNamesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("refreshchangedelays", CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller);
@@ -1089,11 +1089,6 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&g_audioManager, settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_SUBTITLES_CHARSET);
-  settingSet.insert(CSettings::SETTING_LOCALE_CHARSET);
-  m_settingsManager->RegisterCallback(&g_charsetConverter, settingSet);
-
-  settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
   m_settingsManager->RegisterCallback(&g_graphicsContext, settingSet);
 
@@ -1108,6 +1103,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_LOCALE_USE24HOURCLOCK);
   settingSet.insert(CSettings::SETTING_LOCALE_TEMPERATUREUNIT);
   settingSet.insert(CSettings::SETTING_LOCALE_SPEEDUNIT);
+  settingSet.insert(CSettings::SETTING_SUBTITLES_CHARSET);
+  settingSet.insert(CSettings::SETTING_LOCALE_CHARSET);
   m_settingsManager->RegisterCallback(&g_langInfo, settingSet);
 
   settingSet.clear();

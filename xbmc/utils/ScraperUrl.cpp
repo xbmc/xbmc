@@ -272,7 +272,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     {
       CLog::Log(LOGDEBUG, "%s: Using \"%s\" charset for XML \"%s\"", __FUNCTION__, realXmlCharset.c_str(), scrURL.m_url.c_str());
       std::string converted;
-      g_charsetConverter.ToUtf8(realXmlCharset, strHTML, converted);
+      CCharsetConverter::ToUtf8(realXmlCharset, strHTML, converted);
       strHTML = converted;
     }
   }
@@ -292,7 +292,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
     if (reportedCharset != "UTF-8")
     {
       std::string converted;
-      g_charsetConverter.ToUtf8(reportedCharset, strHTML, converted);
+      CCharsetConverter::ToUtf8(reportedCharset, strHTML, converted);
       strHTML = converted;
     }
   }

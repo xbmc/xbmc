@@ -9806,7 +9806,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       std::string letter;
       std::wstring character(1, item->GetSortLabel()[0]);
       StringUtils::ToUpper(character);
-      g_charsetConverter.WToUtf8(character, letter);
+      CCharsetConverter::WToUtf8(character, letter);
       return letter;
     }
     break;

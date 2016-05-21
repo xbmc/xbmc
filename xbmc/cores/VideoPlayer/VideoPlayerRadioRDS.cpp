@@ -1134,7 +1134,7 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
 
       std::string rdsline = m_RT_Text[m_RT_Index];
       rtrim_str(rdsline);
-      g_charsetConverter.unknownToUTF8(rdsline);
+      CCharsetConverter::UnknownToUtf8(rdsline);
       m_RT.push_front(StringUtils::Trim(rdsline));
 
       if ((int)m_RT.size() > m_RT_MaxSize)
@@ -1341,7 +1341,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
         case RTPLUS_ITEM_GENRE:
           {
             std::string str = m_RTPlus_Temptext;
-            g_charsetConverter.unknownToUTF8(str);
+            CCharsetConverter::UnknownToUtf8(str);
             m_RTPlus_GenrePresent = true;
             m_currentInfoTag->SetProgStyle(str);
           }
@@ -1505,13 +1505,13 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
       str = m_currentInfoTag->GetBand();
 
     if (!str.empty())
-      g_charsetConverter.unknownToUTF8(str);
+      CCharsetConverter::UnknownToUtf8(str);
     else if (m_currentChannel)
       str = m_currentChannel->ChannelName();
     currentMusic->SetArtist(str);
 
     str = m_RTPlus_Title;
-    g_charsetConverter.unknownToUTF8(str);
+    CCharsetConverter::UnknownToUtf8(str);
     currentMusic->SetTitle(str);
     m_currentInfoTag->SetTitle(str);
     m_currentFileUpdate = true;

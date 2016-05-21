@@ -173,7 +173,7 @@ CCPUInfo::CCPUInfo(void)
         if (RegQueryValueExW(hCpuKey, L"ProcessorNameString", nullptr, &valType, LPBYTE(buf), &bufSize) == ERROR_SUCCESS &&
             valType == REG_SZ)
         {
-          g_charsetConverter.WToUtf8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strModel);
+          CCharsetConverter::WToUtf8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strModel);
           cpuCore.m_strModel = cpuCore.m_strModel.substr(0, cpuCore.m_strModel.find(char(0))); // remove extra null terminations
           StringUtils::RemoveDuplicatedSpacesAndTabs(cpuCore.m_strModel);
           StringUtils::Trim(cpuCore.m_strModel);
@@ -182,7 +182,7 @@ CCPUInfo::CCPUInfo(void)
         if (RegQueryValueExW(hCpuKey, L"VendorIdentifier", nullptr, &valType, LPBYTE(buf), &bufSize) == ERROR_SUCCESS &&
             valType == REG_SZ)
         {
-          g_charsetConverter.WToUtf8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strVendor);
+          CCharsetConverter::WToUtf8(std::wstring(buf, bufSize / sizeof(wchar_t)), cpuCore.m_strVendor);
           cpuCore.m_strVendor = cpuCore.m_strVendor.substr(0, cpuCore.m_strVendor.find(char(0))); // remove extra null terminations
         }
         DWORD mhzVal;

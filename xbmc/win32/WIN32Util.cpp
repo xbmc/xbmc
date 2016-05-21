@@ -297,9 +297,9 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
   }
 
   std::wstring WstrExe, WstrParams, WstrWorkingDir;
-  g_charsetConverter.Utf8ToW(strExe, WstrExe);
-  g_charsetConverter.Utf8ToW(strParams, WstrParams);
-  g_charsetConverter.Utf8ToW(strWorkingDir, WstrWorkingDir);
+  CCharsetConverter::Utf8ToW(strExe, WstrExe);
+  CCharsetConverter::Utf8ToW(strParams, WstrParams);
+  CCharsetConverter::Utf8ToW(strWorkingDir, WstrWorkingDir);
 
   bool ret;
   SHELLEXECUTEINFOW ShExecInfo = {0};
@@ -394,7 +394,7 @@ std::string CWIN32Util::GetSpecialFolder(int csidl)
   if(SUCCEEDED(SHGetFolderPathW(NULL, csidl, NULL, SHGFP_TYPE_CURRENT, buf)))
   {
     buf[bufSize-1] = 0;
-    g_charsetConverter.WToUtf8(buf, strProfilePath);
+    CCharsetConverter::WToUtf8(buf, strProfilePath);
     strProfilePath = UncToSmb(strProfilePath);
   }
   else
@@ -485,25 +485,25 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
   { // assume local file path in form 'C:\Folder\File.ext'
     std::string formedPath("\\\\?\\"); // insert "\\?\" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8, '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path
-    convertResult = g_charsetConverter.Utf8ToWSystemSafe(formedPath, result);
+    convertResult = CCharsetConverter::Utf8ToWSystemSafe(formedPath, result);
   }
   else if (pathUtf8.compare(0, 8, "\\\\?\\UNC\\", 8) == 0) // pathUtf8 starts from "\\?\UNC\"
   {
     std::string formedPath("\\\\?\\UNC"); // start from "\\?\UNC" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8.substr(7), '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path, don't touch "\\?\UNC" prefix,
-    convertResult = g_charsetConverter.Utf8ToWSystemSafe(formedPath, result); 
+    convertResult = CCharsetConverter::Utf8ToWSystemSafe(formedPath, result); 
   }
   else if (pathUtf8.compare(0, 4, "\\\\?\\", 4) == 0) // pathUtf8 starts from "\\?\", but it's not UNC path
   {
     std::string formedPath("\\\\?"); // start from "\\?" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8.substr(3), '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path, don't touch "\\?" prefix,
-    convertResult = g_charsetConverter.Utf8ToWSystemSafe(formedPath, result);
+    convertResult = CCharsetConverter::Utf8ToWSystemSafe(formedPath, result);
   }
   else // pathUtf8 starts from "\\", but not from "\\?\UNC\"
   { // assume UNC path in form '\\server\share\folder\file.ext'
     std::string formedPath("\\\\?\\UNC"); // append "\\?\UNC" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8), '\\'); // fix duplicated and forward slashes, resolve relative path, transform "\\" prefix to single "\"
-    convertResult = g_charsetConverter.Utf8ToWSystemSafe(formedPath, result);
+    convertResult = CCharsetConverter::Utf8ToWSystemSafe(formedPath, result);
   }
 
   if (!convertResult)
@@ -525,7 +525,7 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const CURL& url)
   if (url.GetProtocol().empty())
   {
     std::wstring result;
-    if (g_charsetConverter.Utf8ToWSystemSafe("\\\\?\\" +
+    if (CCharsetConverter::Utf8ToWSystemSafe("\\\\?\\" +
           URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(url.GetFileName(), '\\'), '\\'), result))
       return result;
   }
@@ -535,7 +535,7 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const CURL& url)
       return std::wstring(); // empty string
     
     std::wstring result;
-    if (g_charsetConverter.Utf8ToWSystemSafe("\\\\?\\UNC\\" +
+    if (CCharsetConverter::Utf8ToWSystemSafe("\\\\?\\UNC\\" +
           URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(url.GetHostName() + '\\' + url.GetFileName(), '\\'), '\\'),
           result))
       return result;
@@ -578,7 +578,7 @@ void CWIN32Util::ExtendDllPath()
     std::string strPath; std::wstring strPathW;
 
     strPath = CSpecialProtocol::TranslatePath(vecEnv[i]);
-    g_charsetConverter.utf8ToW(strPath, strPathW);
+    CCharsetConverter::Utf8ToW(strPath, strPathW);
 
     strEnv.append(";" + strPath);
     AddDllDirectory(strPathW.c_str());
@@ -910,9 +910,9 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
          ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
         //share.strPath = strWdrive;
-        g_charsetConverter.WToUtf8(strWdrive, share.strPath);
+        CCharsetConverter::WToUtf8(strWdrive, share.strPath);
         if( cVolumeName[0] != L'\0' )
-          g_charsetConverter.WToUtf8(cVolumeName, share.strName);
+          CCharsetConverter::WToUtf8(cVolumeName, share.strName);
         if( uDriveType == DRIVE_CDROM && nResult)
         {
           // Has to be the same as auto mounted devices
@@ -982,7 +982,7 @@ extern "C"
   {
     std::string modetmp = _Mode;
     std::wstring wfilename, wmode(modetmp.begin(), modetmp.end());
-    g_charsetConverter.Utf8ToWSystemSafe(_Filename, wfilename);
+    CCharsetConverter::Utf8ToWSystemSafe(_Filename, wfilename);
     return _wfopen(wfilename.c_str(), wmode.c_str());
   }
 }

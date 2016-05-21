@@ -199,7 +199,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
     std::wstring wch = L"";
     wch.insert(wch.begin(), action.GetUnicode());
     std::string ch;
-    g_charsetConverter.wToUTF8(wch, ch);
+    CCharsetConverter::WToUtf8(wch, ch);
     handled = CodingCharacter(ch);
     if (!handled)
     {
@@ -374,9 +374,9 @@ void CGUIDialogKeyboardGeneric::Backspace()
   if (m_codingtable && m_hzcode.length() > 0)
   {
     std::wstring tmp;
-    g_charsetConverter.utf8ToW(m_hzcode, tmp);
+    CCharsetConverter::Utf8ToW(m_hzcode, tmp);
     tmp.erase(tmp.length() - 1, 1);
-    g_charsetConverter.wToUTF8(tmp, m_hzcode);
+    CCharsetConverter::WToUtf8(tmp, m_hzcode);
     
     switch (m_codingtable->GetType())
     {
@@ -702,7 +702,7 @@ void CGUIDialogKeyboardGeneric::ShowWordList(int direct)
   if (m_pos + m_num < static_cast<int>(m_words.size()))
     hzlist.insert(hzlist.length(), 1, L'>');
   std::string utf8String;
-  g_charsetConverter.wToUTF8(hzlist, utf8String);
+  CCharsetConverter::WToUtf8(hzlist, utf8String);
   SET_CONTROL_LABEL(CTL_LABEL_HZLIST, utf8String);
 }
 
@@ -738,7 +738,7 @@ bool CGUIDialogKeyboardGeneric::CodingCharacter(const std::string &ch)
         m_hzcode = "";
         SetControlLabel(CTL_LABEL_HZCODE, m_hzcode);
         std::string utf8String;
-        g_charsetConverter.wToUTF8(m_words[i], utf8String);
+        CCharsetConverter::WToUtf8(m_words[i], utf8String);
         NormalCharacter(utf8String);
       }
       return true;

@@ -24,7 +24,7 @@
 int stat64_utf8(const char* __file, struct stat64* __buf)
 {
   std::wstring fileW;
-  if (!g_charsetConverter.Utf8ToWSystemSafe(__file, fileW))
+  if (!CCharsetConverter::Utf8ToWSystemSafe(__file, fileW))
   {
     errno = EINVAL;
     return -1;

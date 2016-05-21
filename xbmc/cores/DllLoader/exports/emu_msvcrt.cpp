@@ -253,7 +253,7 @@ static int convert_fmode(const char* mode)
 static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 {
   std::string strname;
-  g_charsetConverter.WToUtf8(wdata->name, strname);
+  CCharsetConverter::WToUtf8(wdata->name, strname);
   size_t size = sizeof(data->name) / sizeof(char);
   strncpy(data->name, strname.c_str(), size);
   if (size)
@@ -268,7 +268,7 @@ static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
 {
   std::wstring strwname;
-  g_charsetConverter.Utf8ToWSystemSafe(data->name, strwname);
+  CCharsetConverter::Utf8ToWSystemSafe(data->name, strwname);
   size_t size = sizeof(wdata->name) / sizeof(wchar_t);
   wcsncpy(wdata->name, strwname.c_str(), size);
   if (size)
@@ -847,7 +847,7 @@ extern "C"
       // Make sure the slashes are correct & translate the path
       struct _wfinddata64i32_t wdata;
       std::wstring strwfile;
-      g_charsetConverter.Utf8ToWSystemSafe(CUtil::ValidatePath(CSpecialProtocol::TranslatePath(str)), strwfile);
+      CCharsetConverter::Utf8ToWSystemSafe(CUtil::ValidatePath(CSpecialProtocol::TranslatePath(str)), strwfile);
       intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
       if (ret != -1)
         to_finddata64i32(&wdata, data);
@@ -1974,7 +1974,7 @@ extern "C"
     std::string strPath = CUtil::ValidatePath(CSpecialProtocol::TranslatePath(dir));
 #ifndef TARGET_POSIX
     std::wstring strWPath;
-    g_charsetConverter.Utf8ToWSystemSafe(strPath, strWPath);
+    CCharsetConverter::Utf8ToWSystemSafe(strPath, strWPath);
     return _wmkdir(strWPath.c_str());
 #else
     return mkdir(strPath.c_str(), 0755);

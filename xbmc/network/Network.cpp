@@ -169,8 +169,7 @@ bool CNetwork::GetHostName(std::string& hostname)
 
 #ifdef TARGET_WINDOWS
   std::string hostStr;
-#ifdef TARGET_WINDOWS
-  g_charsetConverter.SystemToUtf8(hostName, hostStr);
+  CCharsetConverter::SystemToUtf8(hostName, hostStr);
   hostname = hostStr;
 #else
   hostname = hostName;

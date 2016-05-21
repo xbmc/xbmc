@@ -975,7 +975,7 @@ void CGUIBaseContainer::UpdateScrollByLetter()
     std::string nextLetter;
     std::wstring character = item->GetSortLabel().substr(0, 1);
     StringUtils::ToUpper(character);
-    g_charsetConverter.WToUtf8(character, nextLetter);
+    CCharsetConverter::WToUtf8(character, nextLetter);
     if (currentMatch != nextLetter)
     {
       currentMatch = nextLetter;

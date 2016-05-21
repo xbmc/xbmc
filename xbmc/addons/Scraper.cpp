@@ -578,7 +578,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const std:
     StringUtils::Replace(sTitle, '-',' ');
 
   std::vector<std::string> vcsIn(1);
-  g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
+  CCharsetConverter::Utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   vcsIn[0] = CURL::Encode(vcsIn[0]);
   if (fFirst && !sYear.empty())
     vcsIn.push_back(sYear);
@@ -703,8 +703,8 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const std::st
   // scraper function is given the album and artist as parameters and
   // returns an XML <url> element parseable by CScraperUrl
   std::vector<std::string> extras(2);
-  g_charsetConverter.utf8To(SearchStringEncoding(), sAlbum, extras[0]);
-  g_charsetConverter.utf8To(SearchStringEncoding(), sArtist, extras[1]);
+  CCharsetConverter::Utf8To(SearchStringEncoding(), sAlbum, extras[0]);
+  CCharsetConverter::Utf8To(SearchStringEncoding(), sArtist, extras[1]);
   extras[0] = CURL::Encode(extras[0]);
   extras[1] = CURL::Encode(extras[1]);
   CScraperUrl scurl;
@@ -800,7 +800,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl,
   // scraper function is given the artist as parameter and
   // returns an XML <url> element parseable by CScraperUrl
   std::vector<std::string> extras(1);
-  g_charsetConverter.utf8To(SearchStringEncoding(), sArtist, extras[0]);
+  CCharsetConverter::Utf8To(SearchStringEncoding(), sArtist, extras[0]);
   extras[0] = CURL::Encode(extras[0]);
   CScraperUrl scurl;
   std::vector<std::string> vcsOut = RunNoThrow("CreateArtistSearchUrl", scurl, fcurl, &extras);

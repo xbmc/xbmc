@@ -46,11 +46,7 @@
 #define WCHAR_CHARSET UTF32_CHARSET
 #elif defined(TARGET_WINDOWS)
   #define WCHAR_CHARSET UTF16_CHARSET 
-#ifdef NDEBUG
   #pragma comment(lib, "icuuc.lib")
-#else
-  #pragma comment(lib, "icuucd.lib")
-#endif
 #elif defined(TARGET_ANDROID)
 #define WCHAR_CHARSET UTF32_CHARSET 
 #else

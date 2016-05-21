@@ -76,7 +76,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
 
       // server returned filename could in utf8 or non-utf8 encoding
       // we need utf8, so convert it to utf8 anyway
-      g_charsetConverter.UnknownToUtf8(name);
+      CCharsetConverter::UnknownToUtf8(name);
 
       // convert got empty result, ignore it
       if (name.empty())

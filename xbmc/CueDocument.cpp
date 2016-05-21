@@ -425,13 +425,13 @@ std::string CCueDocument::ExtractInfo(const std::string &line)
     if (right != std::string::npos)
     {
       std::string text = line.substr(left + 1, right - left - 1);
-      g_charsetConverter.UnknownToUtf8(text);
+      CCharsetConverter::UnknownToUtf8(text);
       return text;
     }
   }
   std::string text = line;
   StringUtils::Trim(text);
-  g_charsetConverter.UnknownToUtf8(text);
+  CCharsetConverter::UnknownToUtf8(text);
   return text;
 }
 

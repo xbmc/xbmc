@@ -220,7 +220,7 @@ bool CGUITextLayout::Update(const std::string &text, float maxWidth, bool forceU
   m_lastUtf8Text = text;
   m_lastUpdateW = false;
   std::wstring utf16;
-  g_charsetConverter.Utf8ToW(text, utf16);
+  CCharsetConverter::Utf8ToW(text, utf16);
   UpdateCommon(utf16, maxWidth, forceLTRReadingOrder);
   return true;
 }
@@ -318,11 +318,11 @@ std::wstring CGUITextLayout::BidiFlip(const std::wstring &text, bool forceLTRRea
   std::wstring visualText;
 
   if (forceLTRReadingOrder)
-    g_charsetConverter.LogicalToVisualBiDi(text, visualText, CCharsetConverter::RTL |
+    CCharsetConverter::LogicalToVisualBiDi(text, visualText, CCharsetConverter::RTL |
                                                              CCharsetConverter::REMOVE_CONTROLS |
                                                              CCharsetConverter::WRITE_REVERSE);
   else
-    g_charsetConverter.LogicalToVisualBiDi(text, visualText, CCharsetConverter::LTR |
+    CCharsetConverter::LogicalToVisualBiDi(text, visualText, CCharsetConverter::LTR |
                                                              CCharsetConverter::REMOVE_CONTROLS);
 
   return visualText;
@@ -331,14 +331,14 @@ std::wstring CGUITextLayout::BidiFlip(const std::wstring &text, bool forceLTRRea
 void CGUITextLayout::Filter(std::string &text)
 {
   std::wstring utf16;
-  g_charsetConverter.Utf8ToW(text, utf16);
+  CCharsetConverter::Utf8ToW(text, utf16);
   vecColors colors;
   vecText parsedText;
   ParseText(utf16, 0, 0xffffffff, colors, parsedText);
   utf16.clear();
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += (wchar_t)(0xffff & parsedText[i]);
-  g_charsetConverter.WToUtf8(utf16, text);
+  CCharsetConverter::WToUtf8(utf16, text);
 }
 
 void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, color_t defaultColor, vecColors &colors, vecText &parsedText)
@@ -430,7 +430,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
       if (on && finish != std::string::npos && text.find(L"[/COLOR]",finish) != std::string::npos)
       {
         std::string t;
-        g_charsetConverter.WToUtf8(text.substr(pos + 5, finish - pos - 5), t);
+        CCharsetConverter::WToUtf8(text.substr(pos + 5, finish - pos - 5), t);
         color_t color = g_colorManager.GetColor(t);
         vecColors::const_iterator it = std::find(colors.begin(), colors.end(), color);
         if (it == colors.end())
@@ -653,7 +653,7 @@ std::string CGUITextLayout::GetText() const
   if (m_lastUpdateW)
   {
     std::string utf8;
-    g_charsetConverter.WToUtf8(m_lastText, utf8);
+    CCharsetConverter::WToUtf8(m_lastText, utf8);
     return utf8;
   }
   return m_lastUtf8Text;
@@ -679,7 +679,7 @@ void CGUITextLayout::AppendToUTF32(const std::string &utf8, character_t colStyle
 {
   std::wstring utf16;
   // no need to bidiflip here - it's done in BidiTransform above
-  g_charsetConverter.Utf8ToW(utf8, utf16);
+  CCharsetConverter::Utf8ToW(utf8, utf16);
   AppendToUTF32(utf16, colStyle, utf32);
 }
 

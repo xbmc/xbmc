@@ -154,7 +154,7 @@ bool Win32DllLoader::Load()
   std::string strFileName = GetFileName();
 
   std::wstring strDllW;
-  g_charsetConverter.Utf8ToW(CSpecialProtocol::TranslatePath(strFileName), strDllW);
+  CCharsetConverter::Utf8ToW(CSpecialProtocol::TranslatePath(strFileName), strDllW);
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
@@ -167,7 +167,7 @@ bool Win32DllLoader::Load()
     if (strLen != 0)
     {
       std::string strMessage;
-      g_charsetConverter.WToUtf8(std::wstring(lpMsgBuf, strLen), strMessage);
+      CCharsetConverter::WToUtf8(std::wstring(lpMsgBuf, strLen), strMessage);
       CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %lu: \"%s\"", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, strMessage.c_str());
     }
     else
@@ -240,7 +240,7 @@ bool Win32DllLoader::HasSymbols()
 void Win32DllLoader::OverrideImports(const std::string &dll)
 {
   std::wstring strdllW;
-  g_charsetConverter.Utf8ToWSystemSafe(CSpecialProtocol::TranslatePath(dll), strdllW);
+  CCharsetConverter::Utf8ToWSystemSafe(CSpecialProtocol::TranslatePath(dll), strdllW);
   BYTE* image_base = (BYTE*)GetModuleHandleW(strdllW.c_str());
 
   if (!image_base)

@@ -49,7 +49,7 @@ void CGUILabelControl::SetCursorPos(int iPos)
 {
   std::string labelUTF8 = m_infoLabel.GetLabel(m_parentID);
   std::wstring label;
-  g_charsetConverter.Utf8ToW(labelUTF8, label);
+  CCharsetConverter::Utf8ToW(labelUTF8, label);
   if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
 
@@ -80,7 +80,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
   if (m_startHighlight < m_endHighlight || m_startSelection < m_endSelection || m_bShowCursor)
   {
     std::wstring utf16;
-    g_charsetConverter.Utf8ToW(label, utf16);
+    CCharsetConverter::Utf8ToW(label, utf16);
     vecText text; text.reserve(utf16.size()+1);
     vecColors colors;
     colors.push_back(m_label.GetLabelInfo().textColor);

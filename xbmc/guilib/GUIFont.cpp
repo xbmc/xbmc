@@ -37,7 +37,7 @@ CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */, float pos /* = 0 */,
     initialPos = pos;
     SetSpeed(speed ? speed : defaultSpeed);
     std::wstring wsuffix;
-    g_charsetConverter.Utf8ToW(scrollSuffix, wsuffix);
+    CCharsetConverter::Utf8ToW(scrollSuffix, wsuffix);
     suffix.clear();
     suffix.reserve(wsuffix.size());
     for (vecText::size_type i = 0; i < wsuffix.size(); i++)

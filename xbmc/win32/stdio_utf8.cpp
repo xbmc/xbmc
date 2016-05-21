@@ -24,7 +24,7 @@
 int remove_utf8(const char* __filename)
 {
   std::wstring filenameW;
-  if (!g_charsetConverter.Utf8ToWSystemSafe(__filename, filenameW))
+  if (!CCharsetConverter::Utf8ToWSystemSafe(__filename, filenameW))
     return -1;
   return ::DeleteFileW(filenameW.c_str()) ? 0 : -1;
 }
@@ -32,8 +32,8 @@ int remove_utf8(const char* __filename)
 int rename_utf8(const char* __old, const char* __new)
 {
   std::wstring oldW, newW;
-  if (g_charsetConverter.Utf8ToWSystemSafe(__old, oldW) &&
-      g_charsetConverter.Utf8ToWSystemSafe(__new, newW))
+  if (CCharsetConverter::Utf8ToWSystemSafe(__old, oldW) &&
+      CCharsetConverter::Utf8ToWSystemSafe(__new, newW))
   {
     return ::MoveFileW(oldW.c_str(), newW.c_str()) ? 0 : -1;
   }
@@ -43,8 +43,8 @@ int rename_utf8(const char* __old, const char* __new)
 FILE* fopen64_utf8(const char* __filename, const char* __modes)
 {
   std::wstring filenameW, modesW;
-  if (g_charsetConverter.Utf8ToWSystemSafe(__filename, filenameW) &&
-      g_charsetConverter.Utf8ToWSystemSafe(__modes, modesW))
+  if (CCharsetConverter::Utf8ToWSystemSafe(__filename, filenameW) &&
+      CCharsetConverter::Utf8ToWSystemSafe(__modes, modesW))
   {
     return _wfopen(filenameW.c_str(), modesW.c_str());
   }

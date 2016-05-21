@@ -153,7 +153,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
 
         strValue = URIUtils::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);
-        g_charsetConverter.UnknownToUtf8(strValue);
+        CCharsetConverter::UnknownToUtf8(strValue);
         m_vecItems[idx - 1]->SetPath(strValue);
       }
       else if (StringUtils::StartsWith(strLeft, "title"))
@@ -164,7 +164,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
           bFailed = true;
           break;
         }
-        g_charsetConverter.UnknownToUtf8(strValue);
+        CCharsetConverter::UnknownToUtf8(strValue);
         m_vecItems[idx - 1]->SetLabel(strValue);
       }
       else if (StringUtils::StartsWith(strLeft, "length"))
@@ -180,7 +180,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
       else if (strLeft == "playlistname")
       {
         m_strPlayListName = strValue;
-        g_charsetConverter.UnknownToUtf8(m_strPlayListName);
+        CCharsetConverter::UnknownToUtf8(m_strPlayListName);
       }
     }
   }
@@ -222,16 +222,16 @@ void CPlayListPLS::Save(const std::string& strFileName) const
   std::string write;
   write += StringUtils::Format("%s\n", START_PLAYLIST_MARKER);
   std::string strPlayListName=m_strPlayListName;
-  g_charsetConverter.Utf8ToStringCharset(strPlayListName);
+  CCharsetConverter::Utf8ToStringCharset(strPlayListName);
   write += StringUtils::Format("PlaylistName=%s\n", strPlayListName.c_str() );
 
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
     std::string strFileName=item->GetPath();
-    g_charsetConverter.Utf8ToStringCharset(strFileName);
+    CCharsetConverter::Utf8ToStringCharset(strFileName);
     std::string strDescription=item->GetLabel();
-    g_charsetConverter.Utf8ToStringCharset(strDescription);
+    CCharsetConverter::Utf8ToStringCharset(strDescription);
     write += StringUtils::Format("File%i=%s\n", i + 1, strFileName.c_str() );
     write += StringUtils::Format("Title%i=%s\n", i + 1, strDescription.c_str() );
     write += StringUtils::Format("Length%i=%u\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );

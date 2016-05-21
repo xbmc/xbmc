@@ -673,5 +673,3 @@ private:
 
   class CInnerConverter;
 };
-
-XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);

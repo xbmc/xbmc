@@ -509,10 +509,10 @@ void CScraperParser::Clean(std::string& strDirty)
     {
       strBuffer = strDirty.substr(i+14,i2-i-14);
       std::wstring wbuffer;
-      g_charsetConverter.Utf8ToW(strBuffer, wbuffer);
+      CCharsetConverter::Utf8ToW(strBuffer, wbuffer);
       std::wstring wConverted;
       HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
-      g_charsetConverter.WToUtf8(wConverted, strBuffer);
+      CCharsetConverter::WToUtf8(wConverted, strBuffer);
       StringUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
       strDirty.replace(i, i2-i+14, strBuffer);

@@ -104,7 +104,7 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
   }
   else if (message.GetMessage() == GUI_MSG_INPUT_TEXT_EDIT && HasFocus())
   {
-    g_charsetConverter.Utf8ToW(message.GetLabel(), m_edit);
+    CCharsetConverter::Utf8ToW(message.GetLabel(), m_edit);
     m_editOffset = message.GetParam1();
     m_editLength = message.GetParam2();
     UpdateText(false);
@@ -284,7 +284,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       m_edit.clear();
       std::wstring str;
-      g_charsetConverter.Utf8ToW(action.GetText(), str);
+      CCharsetConverter::Utf8ToW(action.GetText(), str);
       m_text2.insert(m_cursorPos, str);
       m_cursorPos += str.size();
       UpdateText();
@@ -302,7 +302,7 @@ void CGUIEditControl::OnClick()
     return;
 
   std::string utf8;
-  g_charsetConverter.WToUtf8(m_text2, utf8);
+  CCharsetConverter::WToUtf8(m_text2, utf8);
   bool textChanged = false;
   switch (m_inputType)
   {
@@ -369,7 +369,7 @@ void CGUIEditControl::OnClick()
   {
     ClearMD5();
     m_edit.clear();
-    g_charsetConverter.Utf8ToW(utf8, m_text2);
+    CCharsetConverter::Utf8ToW(utf8, m_text2);
     m_cursorPos = m_text2.size();
     UpdateText();
     m_cursorPos = m_text2.size();
@@ -610,7 +610,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
 {
   m_edit.clear();
   std::wstring newText;
-  g_charsetConverter.Utf8ToW(text, newText);
+  CCharsetConverter::Utf8ToW(text, newText);
   if (newText != m_text2)
   {
     m_isMD5 = (m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW);
@@ -624,7 +624,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
 std::string CGUIEditControl::GetLabel2() const
 {
   std::string text;
-  g_charsetConverter.WToUtf8(m_text2, text);
+  CCharsetConverter::WToUtf8(m_text2, text);
   if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !m_isMD5)
     return XBMC::XBMC_MD5::GetMD5(text);
   return text;
@@ -690,7 +690,7 @@ void CGUIEditControl::OnPasteClipboard()
 
 // Get text from the clipboard
   utf8_text = g_Windowing.GetClipboardText();
-  g_charsetConverter.Utf8ToW(utf8_text, unicode_text);
+  CCharsetConverter::Utf8ToW(utf8_text, unicode_text);
 
   // Insert the pasted text at the current cursor position.
   if (unicode_text.length() > 0)
