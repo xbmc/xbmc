@@ -120,6 +120,7 @@
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.useamcodecmpeg2" type="integer" label="39001" >
+          <requirement>HAVE_AMCODEC</requirement>
           <level>2</level>
           <default>0</default>
           <constraints>
@@ -141,6 +142,7 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="videoplayer.useamcodecmpeg4" type="integer" label="39002">
+          <requirement>HAVE_AMCODEC</requirement>
           <level>2</level>
           <default>800</default>
           <constraints>
@@ -162,6 +164,7 @@
           <control type="edit" format="integer" />
         </setting>
         <setting id="videoplayer.useamcodech264" type="integer" label="39003">
+          <requirement>HAVE_AMCODEC</requirement>
           <level>2</level>
           <default>0</default>
           <constraints>
