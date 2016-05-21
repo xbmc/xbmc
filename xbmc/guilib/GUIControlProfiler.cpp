@@ -141,8 +141,6 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "scrollbar"; break;
   case CGUIControl::GUICONTROL_LISTLABEL:
     lpszType = "label"; break;
-  case CGUIControl::GUICONTROL_MULTISELECT:
-    lpszType = "multiselect"; break;
   case CGUIControl::GUICONTAINER_LIST:
     lpszType = "list"; break;
   case CGUIControl::GUICONTAINER_WRAPLIST:

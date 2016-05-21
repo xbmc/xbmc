@@ -1041,9 +1041,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIMultiImage.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIMultiSelectText.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIPanelContainer.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -4144,9 +4141,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIMultiImage.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIMultiSelectText.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIPanelContainer.h">

@@ -49,7 +49,6 @@
 #include "GUIWrappingListContainer.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
-#include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"
 #include "GUIInfoManager.h"
@@ -101,7 +100,6 @@ static const ControlMapping controls[] =
     {"multiimage",        CGUIControl::GUICONTROL_MULTI_IMAGE},
     {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
     {"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
-    {"multiselect",       CGUIControl::GUICONTROL_MULTISELECT},
     {"gamecontroller",    CGUIControl::GUICONTROL_GAMECONTROLLER},
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
@@ -1216,16 +1214,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIRadioButtonControl *)control)->SetClickActions(clickActions);
       ((CGUIRadioButtonControl *)control)->SetFocusActions(focusActions);
       ((CGUIRadioButtonControl *)control)->SetUnFocusActions(unfocusActions);
-    }
-    break;
-  case CGUIControl::GUICONTROL_MULTISELECT:
-    {
-      CGUIInfoLabel label;
-      if (infoLabels.size())
-        label = infoLabels[0];
-      control = new CGUIMultiSelectTextControl(
-        parentID, id, posX, posY, width, height,
-        textureFocus, textureNoFocus, labelInfo, label);
     }
     break;
   case CGUIControl::GUICONTROL_SPIN:
