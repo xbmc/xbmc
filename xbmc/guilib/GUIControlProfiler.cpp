@@ -109,8 +109,6 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "radiobutton"; break;
   case CGUIControl::GUICONTROL_RSS:
     lpszType = "rss"; break;
-  case CGUIControl::GUICONTROL_SELECTBUTTON:
-    lpszType = "selectbutton"; break;
   case CGUIControl::GUICONTROL_SLIDER:
     lpszType = "slider"; break;
   case CGUIControl::GUICONTROL_SETTINGS_SLIDER:

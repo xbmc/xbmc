@@ -71,7 +71,6 @@
 		18B7C7D71294222E009E7A26 /* GUIResizeControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7821294222E009E7A26 /* GUIResizeControl.cpp */; };
 		18B7C7D81294222E009E7A26 /* GUIRSSControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7831294222E009E7A26 /* GUIRSSControl.cpp */; };
 		18B7C7D91294222E009E7A26 /* GUIScrollBarControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7841294222E009E7A26 /* GUIScrollBarControl.cpp */; };
-		18B7C7DA1294222E009E7A26 /* GUISelectButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7851294222E009E7A26 /* GUISelectButtonControl.cpp */; };
 		18B7C7DB1294222E009E7A26 /* GUISettingsSliderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7861294222E009E7A26 /* GUISettingsSliderControl.cpp */; };
 		18B7C7DC1294222E009E7A26 /* GUIShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7871294222E009E7A26 /* GUIShader.cpp */; };
 		18B7C7DD1294222E009E7A26 /* GUISliderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7881294222E009E7A26 /* GUISliderControl.cpp */; };
@@ -1753,7 +1752,6 @@
 		E499130B174E5DAD00741B6D /* GUIResizeControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7821294222E009E7A26 /* GUIResizeControl.cpp */; };
 		E499130C174E5DAD00741B6D /* GUIRSSControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7831294222E009E7A26 /* GUIRSSControl.cpp */; };
 		E499130D174E5DAD00741B6D /* GUIScrollBarControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7841294222E009E7A26 /* GUIScrollBarControl.cpp */; };
-		E499130E174E5DAD00741B6D /* GUISelectButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7851294222E009E7A26 /* GUISelectButtonControl.cpp */; };
 		E499130F174E5DAD00741B6D /* GUISettingsSliderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7861294222E009E7A26 /* GUISettingsSliderControl.cpp */; };
 		E4991310174E5DAD00741B6D /* GUIShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7871294222E009E7A26 /* GUIShader.cpp */; };
 		E4991311174E5DAD00741B6D /* GUISliderControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7881294222E009E7A26 /* GUISliderControl.cpp */; };
@@ -2394,7 +2392,6 @@
 		18B7C7281294222D009E7A26 /* GUIResizeControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIResizeControl.h; sourceTree = "<group>"; };
 		18B7C7291294222D009E7A26 /* GUIRSSControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIRSSControl.h; sourceTree = "<group>"; };
 		18B7C72A1294222D009E7A26 /* GUIScrollBarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIScrollBarControl.h; sourceTree = "<group>"; };
-		18B7C72B1294222D009E7A26 /* GUISelectButtonControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISelectButtonControl.h; sourceTree = "<group>"; };
 		18B7C72C1294222D009E7A26 /* GUISettingsSliderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISettingsSliderControl.h; sourceTree = "<group>"; };
 		18B7C72D1294222D009E7A26 /* GUIShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIShader.h; sourceTree = "<group>"; };
 		18B7C72E1294222D009E7A26 /* GUISliderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUISliderControl.h; sourceTree = "<group>"; };
@@ -2475,7 +2472,6 @@
 		18B7C7821294222E009E7A26 /* GUIResizeControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIResizeControl.cpp; sourceTree = "<group>"; };
 		18B7C7831294222E009E7A26 /* GUIRSSControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIRSSControl.cpp; sourceTree = "<group>"; };
 		18B7C7841294222E009E7A26 /* GUIScrollBarControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIScrollBarControl.cpp; sourceTree = "<group>"; };
-		18B7C7851294222E009E7A26 /* GUISelectButtonControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISelectButtonControl.cpp; sourceTree = "<group>"; };
 		18B7C7861294222E009E7A26 /* GUISettingsSliderControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISettingsSliderControl.cpp; sourceTree = "<group>"; };
 		18B7C7871294222E009E7A26 /* GUIShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIShader.cpp; sourceTree = "<group>"; };
 		18B7C7881294222E009E7A26 /* GUISliderControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUISliderControl.cpp; sourceTree = "<group>"; };
@@ -5288,8 +5284,6 @@
 				18B7C7291294222D009E7A26 /* GUIRSSControl.h */,
 				18B7C7841294222E009E7A26 /* GUIScrollBarControl.cpp */,
 				18B7C72A1294222D009E7A26 /* GUIScrollBarControl.h */,
-				18B7C7851294222E009E7A26 /* GUISelectButtonControl.cpp */,
-				18B7C72B1294222D009E7A26 /* GUISelectButtonControl.h */,
 				18B7C7861294222E009E7A26 /* GUISettingsSliderControl.cpp */,
 				18B7C72C1294222D009E7A26 /* GUISettingsSliderControl.h */,
 				18B7C7871294222E009E7A26 /* GUIShader.cpp */,
@@ -10171,7 +10165,6 @@
 				18B7C7D71294222E009E7A26 /* GUIResizeControl.cpp in Sources */,
 				18B7C7D81294222E009E7A26 /* GUIRSSControl.cpp in Sources */,
 				18B7C7D91294222E009E7A26 /* GUIScrollBarControl.cpp in Sources */,
-				18B7C7DA1294222E009E7A26 /* GUISelectButtonControl.cpp in Sources */,
 				18B7C7DB1294222E009E7A26 /* GUISettingsSliderControl.cpp in Sources */,
 				18B7C7DC1294222E009E7A26 /* GUIShader.cpp in Sources */,
 				18B7C7DD1294222E009E7A26 /* GUISliderControl.cpp in Sources */,
@@ -11174,7 +11167,6 @@
 				395C2A251AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */,
 				E499130C174E5DAD00741B6D /* GUIRSSControl.cpp in Sources */,
 				E499130D174E5DAD00741B6D /* GUIScrollBarControl.cpp in Sources */,
-				E499130E174E5DAD00741B6D /* GUISelectButtonControl.cpp in Sources */,
 				E499130F174E5DAD00741B6D /* GUISettingsSliderControl.cpp in Sources */,
 				E4991310174E5DAD00741B6D /* GUIShader.cpp in Sources */,
 				E4991311174E5DAD00741B6D /* GUISliderControl.cpp in Sources */,

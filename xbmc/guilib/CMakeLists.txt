@@ -45,7 +45,6 @@ set(SOURCES DDSImage.cpp
             GUIResizeControl.cpp
             GUIRSSControl.cpp
             GUIScrollBarControl.cpp
-            GUISelectButtonControl.cpp
             GUISettingsSliderControl.cpp
             GUISliderControl.cpp
             GUISpinControl.cpp
@@ -127,7 +126,6 @@ set(HEADERS DDSImage.h
             GUIResizeControl.h
             GUIRSSControl.h
             GUIScrollBarControl.h
-            GUISelectButtonControl.h
             GUISettingsSliderControl.h
             GUISliderControl.h
             GUISpinControl.h

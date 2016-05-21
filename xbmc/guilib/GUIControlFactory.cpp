@@ -35,7 +35,6 @@
 #include "GUIVideoControl.h"
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
-#include "GUISelectButtonControl.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
 #include "GUISpinControlEx.h"
@@ -87,7 +86,6 @@ static const ControlMapping controls[] =
     {"progress",          CGUIControl::GUICONTROL_PROGRESS},
     {"radiobutton",       CGUIControl::GUICONTROL_RADIO},
     {"rss",               CGUIControl::GUICONTROL_RSS},
-    {"selectbutton",      CGUIControl::GUICONTROL_SELECTBUTTON},
     {"slider",            CGUIControl::GUICONTROL_SLIDER},
     {"sliderex",          CGUIControl::GUICONTROL_SETTINGS_SLIDER},
     {"spincontrol",       CGUIControl::GUICONTROL_SPIN},
@@ -700,7 +698,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool bReveal = false;
   CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
   CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
-  CTextureInfo textureLeftFocus, textureRightFocus;
   CTextureInfo textureUp, textureDown;
   CTextureInfo textureUpFocus, textureDownFocus;
   CTextureInfo textureUpDisabled, textureDownDisabled;
@@ -886,11 +883,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "texturedownfocus", textureDownFocus);
   GetTexture(pControlNode, "textureupdisabled", textureUpDisabled);
   GetTexture(pControlNode, "texturedowndisabled", textureDownDisabled);
-
-  GetTexture(pControlNode, "textureleft", textureLeft);
-  GetTexture(pControlNode, "textureright", textureRight);
-  GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
-  GetTexture(pControlNode, "texturerightfocus", textureRightFocus);
 
   XMLUtils::GetFloat(pControlNode, "spinwidth", spinWidth);
   XMLUtils::GetFloat(pControlNode, "spinheight", spinHeight);
@@ -1413,17 +1405,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         ((CGUITextBox *)control)->SetInfo(infoLabels[0]);
       ((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
       ((CGUITextBox *)control)->SetMinHeight(minHeight);
-    }
-    break;
-  case CGUIControl::GUICONTROL_SELECTBUTTON:
-    {
-      control = new CGUISelectButtonControl(
-        parentID, id, posX, posY,
-        width, height, textureFocus, textureNoFocus,
-        labelInfo,
-        textureBackground, textureLeft, textureLeftFocus, textureRight, textureRightFocus);
-
-      ((CGUISelectButtonControl *)control)->SetLabel(strLabel);
     }
     break;
   case CGUIControl::GUICONTROL_MOVER:

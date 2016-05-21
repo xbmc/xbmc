@@ -45,7 +45,6 @@ SRCS += GUIResizeControl.cpp
 SRCS += GUIRenderingControl.cpp
 SRCS += GUIRSSControl.cpp
 SRCS += GUIScrollBarControl.cpp
-SRCS += GUISelectButtonControl.cpp
 SRCS += GUISettingsSliderControl.cpp
 SRCS += GUISliderControl.cpp
 SRCS += GUISpinControl.cpp
