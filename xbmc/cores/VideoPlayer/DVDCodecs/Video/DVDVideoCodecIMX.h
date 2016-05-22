@@ -29,13 +29,17 @@
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 #include "guilib/DispResource.h"
+#include "DVDClock.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 
-#include <vector>
 #include <linux/ipu.h>
 #include <linux/mxcfb.h>
 #include <imx-mm/vpu/vpu_wrapper.h>
 #include <g2d.h>
 
+#include <unordered_map>
+#include <cstring>
+#include <stdlib.h>
 
 // The decoding format of the VPU buffer. Comment this to decode
 // as NV12. The VPU works faster with NV12 in combination with
@@ -69,12 +73,24 @@ double recalcPts(double pts)
   return (double)(pts == DVD_NOPTS_VALUE ? 0.0 : pts*1e-6);
 }
 
+enum SIGNALS
+{
+  SIGNAL_RESET         = (1 << 0),
+  SIGNAL_DISPOSE       = (1 << 1),
+  SIGNAL_SIGNAL        = (1 << 2),
+  SIGNAL_FLUSH         = (1 << 3),
+};
+
 enum RENDER_TASK
 {
   RENDER_TASK_AUTOPAGE = -1,
   RENDER_TASK_CAPTURE  = -2,
 };
 
+#define CLASS_PICTURE   (VPU_DEC_OUTPUT_DIS     | VPU_DEC_OUTPUT_MOSAIC_DIS)
+#define CLASS_NOBUF     (VPU_DEC_OUTPUT_NODIS   | VPU_DEC_NO_ENOUGH_BUF | VPU_DEC_OUTPUT_REPEAT)
+#define CLASS_FORCEBUF  (VPU_DEC_OUTPUT_EOS     | VPU_DEC_NO_ENOUGH_INBUF)
+#define CLASS_DROP      (VPU_DEC_OUTPUT_DROPPED | VPU_DEC_SKIP)
 
 // iMX context class that handles all iMX hardware
 // related stuff
@@ -153,8 +169,8 @@ private:
 
   void SetFieldData(uint8_t fieldFmt, double fps);
 
-  void MemMap(struct fb_fix_screeninfo *fb_fix = NULL);
   void Dispose();
+  void MemMap(struct fb_fix_screeninfo *fb_fix = NULL);
   void Stop(bool bWait = true);
 
   virtual void OnStartup();
@@ -189,13 +205,18 @@ public:
   bool                           m_CaptureDone;
 
   std::string                    m_deviceName;
+  int                            m_speed;
+
   double                         m_fps;
 };
 
 
 extern CIMXContext g_IMXContext;
+
 /*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 
+class CDVDVideoCodecIMX;
+class CIMXCodec;
 
 class CDecMemInfo
 {
@@ -216,111 +237,215 @@ public:
   VpuMemDesc *phyMem;
 };
 
-
 // Base class of IMXVPU and IMXIPU buffer
-class CDVDVideoCodecIMXBuffer : public CIMXBuffer {
+class CDVDVideoCodecIMXBuffer : public CIMXBuffer
+{
+friend class CIMXCodec;
+friend class CIMXContext;
 public:
-#ifdef TRACE_FRAMES
-  CDVDVideoCodecIMXBuffer(int idx);
-#else
-  CDVDVideoCodecIMXBuffer();
-#endif
+  CDVDVideoCodecIMXBuffer(VpuDecOutFrameInfo *frameInfo, double fps, int map);
+  virtual ~CDVDVideoCodecIMXBuffer();
 
   // reference counting
   virtual void Lock();
   virtual long Release();
-  virtual bool IsValid();
 
-  virtual void BeginRender();
-  virtual void EndRender();
+  void                  SetPts(double pts)      { m_pts = pts; }
+  double                GetPts() const          { return m_pts; }
 
-  void SetPts(double pts);
-  double GetPts() const { return m_pts; }
+  void                  SetDts(double dts)      { m_dts = dts; }
+  double                GetDts() const          { return m_dts; }
 
-  void SetDts(double dts);
-  double GetDts() const { return m_dts; }
+  void                  SetFlags(int flags)     { m_iFlags = flags; }
+  int                   GetFlags() const        { return m_iFlags; }
 
-  bool Rendered() const;
-  void Queue(VpuDecOutFrameInfo *frameInfo,
-             CDVDVideoCodecIMXBuffer *previous);
-  VpuDecRetCode ReleaseFramebuffer(VpuDecHandle *handle);
-  CDVDVideoCodecIMXBuffer *GetPreviousBuffer() const { return m_previousBuffer; }
-  VpuFieldType GetFieldType() const { return m_fieldType; }
-
-private:
-  // private because we are reference counted
-  virtual ~CDVDVideoCodecIMXBuffer();
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
+  int                   GetIdx()                { return m_idx; }
+#endif
+  VpuFieldType          GetFieldType() const    { return m_fieldType; }
 
 protected:
-#ifdef TRACE_FRAMES
-  int                      m_idx;
-#endif
+  unsigned int             m_pctWidth;
+  unsigned int             m_pctHeight;
 
 private:
   double                   m_pts;
   double                   m_dts;
   VpuFieldType             m_fieldType;
   VpuFrameBuffer          *m_frameBuffer;
-  bool                     m_rendered;
-  CDVDVideoCodecIMXBuffer *m_previousBuffer; // Holds the reference counted previous buffer
+  int                      m_iFlags;
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
+  unsigned char            m_idx;
+  static unsigned char     i;
+#endif
+
+public:
+  struct g2d_buf          *m_convBuffer;
 };
 
-
-class CDVDVideoCodecIMX : public CDVDVideoCodec
+class CIMXCodec : public CThread
 {
 public:
-  CDVDVideoCodecIMX(CProcessInfo &processInfo);
-  virtual ~CDVDVideoCodecIMX();
+  CIMXCodec();
+  ~CIMXCodec();
 
-  // Methods from CDVDVideoCodec which require overrides
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
-  virtual void Reset();
-  virtual bool ClearPicture(DVDVideoPicture *pDvdVideoPicture);
-  virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
-  virtual void SetDropState(bool bDrop);
-  virtual const char* GetName() { return (const char*)m_pFormatName; }
-  virtual unsigned GetAllowedReferences();
+  bool                  Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::string &m_pFormatName);
+  int                   Decode(BYTE *pData, int iSize, double dts, double pts);
 
-  static void Enter();
-  static void Leave();
+  void                  SetDropState(bool bDrop);
+
+  void                  Reset();
+
+  void                  SetSpeed(int iSpeed)                    { m_speed = iSpeed; }
+  void                  WaitStartup()                           { m_loaded.Wait(); }
+
+  bool                  GetPicture(DVDVideoPicture *pDvdVideoPicture);
+
+  bool                  GetCodecStats(double &pts, int &droppedFrames, int &skippedPics);
+  void                  SetCodecControl(int flags);
+
+  virtual void Process() override;
+
+  static void           ReleaseFramebuffer(VpuFrameBuffer* fb);
 
 protected:
+  class VPUTask
+  {
+  public:
+    VPUTask(DemuxPacket pkg = { nullptr, 0, 0, 0, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, 0, 0 },
+            CBitstreamConverter *cnv = nullptr) : demux(pkg)
+    {
+      if (IsEmpty())
+        return;
+
+      bool cok = false;
+      if (cnv && (cok = cnv->Convert(pkg.pData, pkg.iSize)))
+        demux.iSize = cnv->GetConvertSize();
+
+      posix_memalign((void**)&demux.pData, 1024, demux.iSize);
+      std::memcpy(demux.pData, cok ? cnv->GetConvertBuffer() : pkg.pData, demux.iSize);
+    }
+
+    void Release()
+    {
+      if (!IsEmpty())
+        free(demux.pData);
+      demux.pData = nullptr;
+    }
+
+    bool IsEmpty() { return !demux.pData; }
+
+    DemuxPacket demux;
+  };
+
   bool VpuOpen();
   bool VpuAllocBuffers(VpuMemInfo *);
-  bool VpuFreeBuffers();
+  bool VpuFreeBuffers(bool dispose = true);
   bool VpuAllocFrameBuffers();
-  int  VpuFindBuffer(void *frameAddr);
-  void Dispose();
 
-  static const int             m_extraVpuBuffers;   // Number of additional buffers for VPU
-  static const int             m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
+  void SetVPUParams(VpuDecConfig InDecConf, void* pInParam);
+  void SetDrainMode(VpuDecInputType drop);
+  void SetSkipMode(VpuDecSkipMode skip);
+
+  void RecycleFrameBuffers();
+
+  static void Release(VPUTask *&t)                     { SAFE_RELEASE(t); }
+  static void Release(CDVDVideoCodecIMXBuffer *&t)     { SAFE_RELEASE(t); }
+  static bool noDTS(VPUTask *&t)                       { return t->demux.dts == 0.0; }
+
+  lkFIFO<VPUTask*>             m_decInput;
+  lkFIFO<CDVDVideoCodecIMXBuffer*>
+                               m_decOutput;
+
+  static const unsigned int    m_extraVpuBuffers;   // Number of additional buffers for VPU
                                                     // by both decoding and rendering threads
-  static CCriticalSection      m_codecBufferLock;   // Lock to protect buffers handled
   CDVDStreamInfo               m_hints;             // Hints from demuxer at stream opening
-  const char                  *m_pFormatName;       // Current decoder format name
+
   VpuDecOpenParam              m_decOpenParam;      // Parameters required to call VPU_DecOpen
   CDecMemInfo                  m_decMemInfo;        // VPU dedicated memory description
   VpuDecHandle                 m_vpuHandle;         // Handle for VPU library calls
   VpuDecInitInfo               m_initInfo;          // Initial info returned from VPU at decoding start
-  bool                         m_dropRequest;       // Current drop request
-  bool                         m_dropState;         // Actual drop result
-  int                          m_vpuFrameBufferNum; // Total number of allocated frame buffers
-  VpuFrameBuffer              *m_vpuFrameBuffers;   // Table of VPU frame buffers description
-  CDVDVideoCodecIMXBuffer    **m_outputBuffers;     // Table of VPU output buffers
-  CDVDVideoCodecIMXBuffer     *m_lastBuffer;        // Keep track of previous VPU output buffer (needed by deinterlacing motion engin)
-  CDVDVideoCodecIMXBuffer     *m_currentBuffer;
-  VpuMemDesc                  *m_extraMem;          // Table of allocated extra Memory
-  int                          m_frameCounter;      // Decoded frames counter
-  bool                         m_usePTS;            // State whether pts out of decoding process should be used
+  VpuDecSkipMode               m_skipMode;          // Current drop state
+  VpuDecInputType              m_drainMode;
+  int                          m_dropped;
+
+  std::vector<VpuFrameBuffer>  m_vpuFrameBuffers;   // Table of VPU frame buffers description
+  std::unordered_map<VpuFrameBuffer*,double>
+                               m_pts;
+  double                       m_lastPTS;
   VpuDecOutFrameInfo           m_frameInfo;         // Store last VPU output frame info
   CBitstreamConverter         *m_converter;         // H264 annex B converter
-  bool                         m_convert_bitstream; // State whether bitstream conversion is required
-  int                          m_bytesToBeConsumed; // Remaining bytes in VPU
-  double                       m_previousPts;       // Enable to keep pts when needed
-  bool                         m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
   bool                         m_warnOnce;          // Track warning messages to only warn once
+  int                          m_codecControlFlags;
+  int                          m_speed;
+  CCriticalSection             m_signalLock;
+  CCriticalSection             m_queuesLock;
 #ifdef DUMP_STREAM
   FILE                        *m_dump;
 #endif
+
+private:
+  bool                         IsDraining()             { return m_drainMode || m_codecControlFlags & DVD_CODEC_CTRL_DRAIN; }
+  bool                         EOS()                    { return m_decRet & VPU_DEC_OUTPUT_EOS; }
+  bool                         FBRegistered()           { return m_vpuFrameBuffers.size(); }
+
+  bool                         getOutputFrame(VpuDecOutFrameInfo *frm);
+  void                         ProcessSignals(int signal = 0);
+  void                         AddExtraData(VpuBufferNode *bn, bool force = false);
+
+  bool                         VpuAlloc(VpuMemDesc *vpuMem);
+
+  void                         DisposeDecQueues();
+  void                         FlushVPU();
+
+  void                         Dispose();
+
+  unsigned int                 m_decSignal;
+  ThreadIdentifier             m_threadID;
+  CEvent                       m_loaded;
+  int                          m_decRet;
+  double                       m_fps;
+
+private:
+  void                         ExitError(const char *msg, ...);
+  bool                         IsCurrentThread() const;
+
+  CCriticalSection             m_openLock;
 };
+
+
+/*
+ *
+ *  CDVDVideoCodec only wraps IMXCodec class
+ *
+ */
+class CDVDVideoCodecIMX : public CDVDVideoCodec
+{
+public:
+  CDVDVideoCodecIMX(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo), m_pFormatName("iMX-xxx") {}
+  virtual ~CDVDVideoCodecIMX();
+
+  // Methods from CDVDVideoCodec which require overrides
+  virtual bool          Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
+  virtual bool          ClearPicture(DVDVideoPicture *pDvdVideoPicture);
+
+  virtual int           Decode(BYTE *pData, int iSize, double dts, double pts)  { return m_IMXCodec->Decode(pData, iSize, dts, pts); }
+
+  virtual void          Reset()                                                 { m_IMXCodec->Reset(); }
+  virtual const char*   GetName()                                               { return (const char*)m_pFormatName.c_str(); }
+
+  virtual bool          GetPicture(DVDVideoPicture *pDvdVideoPicture)           { return m_IMXCodec->GetPicture(pDvdVideoPicture); }
+  virtual void          SetDropState(bool bDrop)                                { m_IMXCodec->SetDropState(bDrop); }
+  virtual unsigned      GetAllowedReferences();
+
+  virtual bool          GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override
+                                                                                { return m_IMXCodec->GetCodecStats(pts, droppedFrames, skippedPics); }
+  virtual void          SetCodecControl(int flags) override                     { m_IMXCodec->SetCodecControl(flags); }
+  virtual void          SetSpeed(int iSpeed)                                    { m_IMXCodec->SetSpeed(iSpeed); }
+
+private:
+  std::shared_ptr<CIMXCodec> m_IMXCodec;
+
+  std::string           m_pFormatName;       // Current decoder format name
+};
+
