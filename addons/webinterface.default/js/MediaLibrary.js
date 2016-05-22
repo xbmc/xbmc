@@ -867,7 +867,11 @@ MediaLibrary.prototype = {
             'studio',
             'mpaa',
             'premiered'
-          ]
+          ],
+          'sort': {
+            'method': 'sorttitle',
+            'ignorearticle': true
+          }
         },
         'success': function (data) {
           if (data && data.result && data.result.tvshows) {
