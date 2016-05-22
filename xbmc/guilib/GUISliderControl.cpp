@@ -544,7 +544,8 @@ void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector 
   if (m_orientation == HORIZONTAL)
     fPercent = (point.x - m_guiBackground.GetXPosition()) / m_guiBackground.GetWidth();
   else
-    fPercent = (point.y - m_guiBackground.GetYPosition()) / m_guiBackground.GetHeight();
+    fPercent = (m_guiBackground.GetYPosition() + m_guiBackground.GetHeight() - point.y) / m_guiBackground.GetHeight();
+
   if (fPercent < 0) fPercent = 0;
   if (fPercent > 1) fPercent = 1;
 
