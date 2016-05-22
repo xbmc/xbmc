@@ -565,5 +565,7 @@ system/python27.dll
 system/zlib.dll
 lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
 lib/addons/library.kodi.inputstream/project/VS2010Express/Release
+/lib/win32/Effects11/objs/Effects11/Debug
+/lib/win32/Effects11/objs/Effects11/Release
 /project/VS2010Express/XBMC for Windows.VC.db
 /project/VS2010Express/XBMC for Windows.VC.VC.opendb

@@ -747,6 +747,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool loop = true;
   bool wrapMultiLine = false;
   ORIENTATION orientation = VERTICAL;
+  if (type == CGUIControl::GUICONTROL_SLIDER)
+  { // History tells us that most Kodi's sliders are horizontal.
+    // So if a skin doesn't provide the orientation tag for sliders it will be a vertial slider.
+    // This is completly wrong and draws a crappy slider.
+    // Consequently we have to set the default orientation to horizontal for sliders
+    orientation = HORIZONTAL;
+  }
   bool showOnePage = true;
   bool scrollOut = true;
   int preloadItems = 0;
