@@ -65,33 +65,28 @@ CRenderCaptureIMX::~CRenderCaptureIMX()
 
 int CRenderCaptureIMX::GetCaptureFormat()
 {
-    return CAPTUREFORMAT_BGRA;
+  return CAPTUREFORMAT_BGRA;
 }
 
 void CRenderCaptureIMX::BeginRender()
 {
-  m_asyncChecked = true;
-  m_asyncSupported = true;
 }
 
 void CRenderCaptureIMX::EndRender()
 {
-  if (m_flags & CAPTUREFLAG_IMMEDIATELY)
-    ReadOut();
+  if (g_IMXContext.CaptureDisplay(m_pixels, m_width, m_height))
+    SetState(CAPTURESTATE_DONE);
   else
-    SetState(CAPTURESTATE_NEEDSREADOUT);
+    SetState(CAPTURESTATE_FAILED);
 }
 
 void* CRenderCaptureIMX::GetRenderBuffer()
 {
-    return m_pixels;
+  return m_pixels;
 }
 
 void CRenderCaptureIMX::ReadOut()
 {
-  g_IMXContext.WaitCapture();
-  m_pixels = reinterpret_cast<uint8_t*>(g_IMXContext.GetCaptureBuffer());
-  SetState(CAPTURESTATE_DONE);
 }
 
 #elif defined(TARGET_RASPBERRY_PI)

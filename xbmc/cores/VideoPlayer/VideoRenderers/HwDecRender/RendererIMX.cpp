@@ -48,11 +48,7 @@ CRendererIMX::~CRendererIMX()
 
 bool CRendererIMX::RenderCapture(CRenderCapture* capture)
 {
-  CRect rect(0, 0, capture->GetWidth(), capture->GetHeight());
-
-  CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(m_buffers[m_iYV12RenderBuffer].hwDec);
   capture->BeginRender();
-  g_IMXContext.PushCaptureTask(buffer, &rect);
   capture->EndRender();
   return true;
 }
