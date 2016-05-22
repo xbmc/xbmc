@@ -53,4 +53,4 @@ target_link_libraries(TexturePacker
                               ${PNG_LIBRARIES}
                               ${JPEG_LIBRARIES}
                               ${LZO2_LIBRARIES})
-target_compile_options(TexturePacker PRIVATE ${ARCH_DEFINES} -DUSE_LZO_PACKING)
+target_compile_options(TexturePacker PRIVATE ${ARCH_DEFINES})

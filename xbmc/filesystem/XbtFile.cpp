@@ -22,7 +22,11 @@
 #include <string.h>
 
 #ifdef TARGET_WINDOWS
-#pragma comment(lib,"liblzo2.lib")
+#ifdef NDEBUG
+#pragma comment(lib,"lzo2.lib")
+#else
+#pragma comment(lib, "lzo2-no_idb.lib")
+#endif
 #endif
 
 #include <lzo/lzo1x.h>
