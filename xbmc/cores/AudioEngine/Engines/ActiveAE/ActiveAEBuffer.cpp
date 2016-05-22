@@ -438,6 +438,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
 
         if (m_dspSample && m_processor->Process(in, m_dspSample))
         {
+          m_dspSample->timestamp = in->timestamp;
           in->Return();
           in = m_dspSample;
           m_dspSample = NULL;
