@@ -28,11 +28,6 @@
 				<param name="align" value="center" />
 			</include>
 			<content>
-				<item>
-					<label>$LOCALIZE[250]: [COLOR button_focus]$INFO[Visualisation.Name][/COLOR]</label>
-					<onclick>Dialog.Close(all)</onclick>
-					<onclick>SendClick(500)</onclick>
-				</item>
         <item>
 					<label>$LOCALIZE[15047]</label><!--AudioDSP Settings-->
 					<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
@@ -42,6 +37,11 @@
 					<label>$LOCALIZE[15020]</label><!--AudioDSP Manager-->
 					<onclick>ActivateWindow(AudioDSPManager)</onclick>
           <visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[250]: [COLOR button_focus]$INFO[Visualisation.Name][/COLOR]</label>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick>SendClick(500)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[31084]</label>
