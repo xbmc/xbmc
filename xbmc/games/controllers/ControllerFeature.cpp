@@ -34,7 +34,7 @@ using namespace JOYSTICK;
 void CControllerFeature::Reset(void)
 {
   m_type = FEATURE_TYPE::UNKNOWN;
-  m_category = FEATURE_CATEGORY::UNKNOWN;
+  m_group.clear();
   m_strName.clear();
   m_strLabel.clear();
   m_labelId = 0;
@@ -46,7 +46,7 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
   if (this != &rhs)
   {
     m_type       = rhs.m_type;
-    m_category   = rhs.m_category;
+    m_group      = rhs.m_group;
     m_strName    = rhs.m_strName;
     m_strLabel   = rhs.m_strLabel;
     m_labelId    = rhs.m_labelId;
@@ -55,7 +55,7 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
   return *this;
 }
 
-bool CControllerFeature::Deserialize(const TiXmlElement* pElement, const CController* controller, const std::string& strCategory)
+bool CControllerFeature::Deserialize(const TiXmlElement* pElement, const CController* controller, const std::string& strGroup)
 {
   Reset();
 
@@ -72,8 +72,8 @@ bool CControllerFeature::Deserialize(const TiXmlElement* pElement, const CContro
     return false;
   }
 
-  // Category was obtained from parent XML node
-  m_category = CControllerTranslator::TranslateCategory(strCategory);
+  // Group was obtained from parent XML node
+  m_group = strGroup;
 
   // Name
   m_strName = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_FEATURE_NAME);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <layout name="default" label="30000" image="layout.png">
-  <category name="face">
+  <category name="face" label="35074">
     <button name="a" type="digital" label="30001" geometry="circle" x="651" y="266" radius="32"/>
     <button name="b" type="digital" label="30002" geometry="circle" x="709" y="210" radius="32"/>
     <button name="x" type="digital" label="30003" geometry="circle" x="583" y="210" radius="32"/>
@@ -15,15 +15,15 @@
     <button name="leftthumb" type="digital" label="30008" geometry="rectangle" x1="131" y1="0" x2="194" y2="40"/>
     <button name="rightthumb" type="digital" label="30009" geometry="rectangle" x1="567" y1="0" x2="631" y2="40"/>
   </category>
-  <category name="shoulder">
+  <category name="shoulder" label="35075">
     <button name="leftbumper" type="digital" label="30014" geometry="rectangle" x1="272" y1="321" x2="316" y2="365"/>
     <button name="rightbumper" type="digital" label="30015" geometry="rectangle" x1="198" y1="321" x2="242" y2="365"/>
   </category>
-  <category name="triggers">
+  <category name="triggers" label="35076">
     <button name="lefttrigger" type="analog" label="30016" geometry="rectangle" x1="36" y1="40" x2="207" y2="108"/>
     <button name="righttrigger" type="analog" label="30017" geometry="rectangle" x1="556" y1="40" x2="728" y2="108"/>
   </category>
-  <category name="analogsticks">
+  <category name="analogsticks" label="35077">
     <analogstick name="leftstick" label="30008" geometry="circle" x="500" y="342" r="52"/>
     <analogstick name="rightstick" label="30009" geometry="circle" x="500" y="342" r="52"/>
   </category>

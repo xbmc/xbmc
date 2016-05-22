@@ -48,32 +48,6 @@ FEATURE_TYPE CControllerTranslator::TranslateFeatureType(const std::string& strT
   return FEATURE_TYPE::UNKNOWN;
 }
 
-const char* CControllerTranslator::TranslateCategory(FEATURE_CATEGORY category)
-{
-  switch (category)
-  {
-  case FEATURE_CATEGORY::FACE:             return LAYOUT_XML_VALUE_CATEGORY_FACE;
-  case FEATURE_CATEGORY::SHOULDER:         return LAYOUT_XML_VALUE_CATEGORY_SHOULDER;
-  case FEATURE_CATEGORY::TRIGGERS:         return LAYOUT_XML_VALUE_CATEGORY_TRIGGERS;
-  case FEATURE_CATEGORY::ANALOG_STICKS:    return LAYOUT_XML_VALUE_CATEGORY_ANALOG_STICKS;
-  case FEATURE_CATEGORY::HAPTICS:          return LAYOUT_XML_VALUE_CATEGORY_HAPTICS;
-  default:
-    break;
-  }
-  return "";
-}
-
-FEATURE_CATEGORY CControllerTranslator::TranslateCategory(const std::string& strCategory)
-{
-  if (strCategory == LAYOUT_XML_VALUE_CATEGORY_FACE)           return FEATURE_CATEGORY::FACE;
-  if (strCategory == LAYOUT_XML_VALUE_CATEGORY_SHOULDER)       return FEATURE_CATEGORY::SHOULDER;
-  if (strCategory == LAYOUT_XML_VALUE_CATEGORY_TRIGGERS)       return FEATURE_CATEGORY::TRIGGERS;
-  if (strCategory == LAYOUT_XML_VALUE_CATEGORY_ANALOG_STICKS)  return FEATURE_CATEGORY::ANALOG_STICKS;
-  if (strCategory == LAYOUT_XML_VALUE_CATEGORY_HAPTICS)        return FEATURE_CATEGORY::HAPTICS;
-
-  return FEATURE_CATEGORY::UNKNOWN;
-}
-
 const char* CControllerTranslator::TranslateInputType(INPUT_TYPE type)
 {
   switch (type)

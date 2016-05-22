@@ -16042,7 +16042,29 @@ msgctxt "#35064"
 msgid "Pair your controllers with the various input devices of different game systems."
 msgstr ""
 
-#empty strings from id 35065 to 35087
+#empty strings from id 35065 to 35073
+
+#. Label for buttons that appear on the face of the controller. Used in the controller mapping dialog.
+msgctxt "#35074"
+msgid "Face buttons"
+msgstr ""
+
+#. Label for buttons that appear on the shoulders of the controller. Used in the controller mapping dialog.
+msgctxt "#35075"
+msgid "Shoulder buttons"
+msgstr ""
+
+#. Label for triggers on the controller. Used in the controller mapping dialog.
+msgctxt "#35076"
+msgid "Triggers"
+msgstr ""
+
+#. Label for analog sticks on the controller. Used in the controller mapping dialog.
+msgctxt "#35077"
+msgid "Analog sticks"
+msgstr ""
+
+#empty strings from id 35078 to 35087
 
 #. Name of the setting that enables/disables powering off controllers on exit
 #: system/settings/settings.xml
