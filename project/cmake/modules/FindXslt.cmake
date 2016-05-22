@@ -15,4 +15,8 @@ endif()
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Xslt DEFAULT_MSG XSLT_INCLUDE_DIRS XSLT_LIBRARIES)
 
+if(XSLT_FOUND)
+  set(XSLT_DEFINITIONS -DHAVE_LIBXSLT=1)
+endif()
+
 mark_as_advanced(XSLT_INCLUDE_DIRS XSLT_LIBRARIES)

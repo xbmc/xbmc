@@ -399,6 +399,12 @@ AC_ARG_ENABLE([libbluray],
   [use_libbluray=$enableval],
   [use_libbluray=auto])
 
+AC_ARG_ENABLE([libxslt],
+  [AS_HELP_STRING([--disable-libxslt],
+  [enable libxslt (XSLT scrapers) support (default is enabled)])],
+  [use_libxslt=$enableval],
+  [use_libxslt=yes])
+
 AC_ARG_ENABLE([texturepacker],
   [AS_HELP_STRING([--enable-texturepacker],
   [enable texturepacker support (default is auto)])],
@@ -1059,12 +1065,22 @@ if test "$target_platform" = "target_android" ; then
   AC_CHECK_LIB([log],         [__android_log_vprint],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jnigraphics],     [main],, AC_MSG_ERROR($missing_library))
 fi
-PKG_CHECK_MODULES([LIBXML], [libxml-2.0],
-  [INCLUDES="$INCLUDES $LIBXML_CFLAGS"; LIBS="$LIBS $LIBXML_LIBS"],
-  AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([LIBXSLT], [libxslt],
-  [INCLUDES="$INCLUDES $LIBXSLT_CFLAGS"; LIBS="$LIBS $LIBXSLT_LIBS"],
-  AC_MSG_ERROR($missing_library))
+
+# check for libbxslt
+AS_CASE([x$use_libxslt],
+  [xyes],[
+    PKG_CHECK_MODULES([LIBXML], [libxml-2.0],
+      [INCLUDES="$INCLUDES $LIBXML_CFLAGS"; LIBS="$LIBS $LIBXML_LIBS"],
+      AC_MSG_ERROR($missing_library))
+    PKG_CHECK_MODULES([LIBXSLT], [libxslt],
+      [INCLUDES="$INCLUDES $LIBXSLT_CFLAGS"; LIBS="$LIBS $LIBXSLT_LIBS"],
+      AC_MSG_ERROR($missing_library))
+    AC_DEFINE([HAVE_LIBXSLT], 1, [System has libxslt library])
+    AC_SUBST([HAVE_LIBXSLT], 1)
+  ],[
+    AC_SUBST([HAVE_LIBXSLT], 0)
+  ]
+)
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
   [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -1856,6 +1872,12 @@ if test "$use_libbluray" = "yes"; then
   final_message="$final_message\n  Bluray:\tYes"
 else
   final_message="$final_message\n  Bluray:\tNo"
+fi
+
+if test "$use_libxslt" = "yes"; then
+  final_message="$final_message\n  XSLT scrapers:\tYes"
+else
+  final_message="$final_message\n  XSLT scrapers:\tNo"
 fi
 
 if test "x$use_texturepacker" != "xno"; then
