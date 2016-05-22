@@ -258,6 +258,8 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
   if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TBL))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
   if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TBR))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
   if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TBC))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
+  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_BLOC)) m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
+  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_BROC)) m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
 
   if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_FL))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FL;
   if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_FR))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FR;
@@ -277,6 +279,8 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
   if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TBL))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
   if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TBR))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
   if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TBC))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
+  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_BLOC)) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
+  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_BROC)) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
 
   /*!
    * Setup off mode, used if dsp master processing is set off, required to have data
@@ -1196,6 +1200,9 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     if (m_idx_in[AE_CH_TBL] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
     if (m_idx_in[AE_CH_TBR] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
     if (m_idx_in[AE_CH_TBC] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
+    if (m_idx_in[AE_CH_TBR] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
+    if (m_idx_in[AE_CH_BLOC] >= 0)  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
+    if (m_idx_in[AE_CH_BROC] >= 0)  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
 
     m_addonSettings.lOutChannelPresentFlags = 0;
     if (m_idx_out[AE_CH_FL] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FL;
@@ -1216,6 +1223,8 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     if (m_idx_out[AE_CH_TBL] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
     if (m_idx_out[AE_CH_TBR] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
     if (m_idx_out[AE_CH_TBC] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
+    if (m_idx_out[AE_CH_BLOC] >= 0) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
+    if (m_idx_out[AE_CH_BROC] >= 0) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
 
     m_addonSettings.iStreamID           = m_streamId;
     m_addonSettings.iInChannels         = in->pkt->config.channels;
@@ -1565,119 +1574,51 @@ void CActiveAEDSPProcess::SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_D
   //! Initialize input channel alignmment for ffmpeg process array
   if (array_in)
   {
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FL]] = array_in[AE_DSP_CH_FL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FR]] = array_in[AE_DSP_CH_FR];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FC]] = array_in[AE_DSP_CH_FC];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_LFE)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_LFE]] = array_in[AE_DSP_CH_LFE];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BL]] = array_in[AE_DSP_CH_BL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BR]] = array_in[AE_DSP_CH_BR];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FLOC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FLOC]] = array_in[AE_DSP_CH_FLOC];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FROC]] = array_in[AE_DSP_CH_FROC];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BC]] = array_in[AE_DSP_CH_BC];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_SL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_SL]] = array_in[AE_DSP_CH_SL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_SR]] = array_in[AE_DSP_CH_SR];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFL]] = array_in[AE_DSP_CH_TFL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFR]] = array_in[AE_DSP_CH_TFR];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFC]] = array_in[AE_DSP_CH_TFC];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TC]] = array_in[AE_DSP_CH_TC];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBL]] = array_in[AE_DSP_CH_TBL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBR]] = array_in[AE_DSP_CH_TBR];
-    }
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBC]] = array_in[AE_DSP_CH_TBC];
-    }
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FL)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FL]]    = array_in[AE_DSP_CH_FL];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FR)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FR]]    = array_in[AE_DSP_CH_FR];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FC)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FC]]    = array_in[AE_DSP_CH_FC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_LFE)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_LFE]]   = array_in[AE_DSP_CH_LFE];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BL)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BL]]    = array_in[AE_DSP_CH_BL];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BR)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BR]]    = array_in[AE_DSP_CH_BR];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FLOC]]  = array_in[AE_DSP_CH_FLOC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FROC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FROC]]  = array_in[AE_DSP_CH_FROC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BC)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BC]]    = array_in[AE_DSP_CH_BC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_SL)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_SL]]    = array_in[AE_DSP_CH_SL];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_SR)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_SR]]    = array_in[AE_DSP_CH_SR];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFL)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFL]]   = array_in[AE_DSP_CH_TFL];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFR)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFR]]   = array_in[AE_DSP_CH_TFR];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFC)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFC]]   = array_in[AE_DSP_CH_TFC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TC)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TC]]    = array_in[AE_DSP_CH_TC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBL)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBL]]   = array_in[AE_DSP_CH_TBL];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBR)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBR]]   = array_in[AE_DSP_CH_TBR];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBC)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBC]]   = array_in[AE_DSP_CH_TBC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BLOC]]  = array_in[AE_DSP_CH_BLOC];
+    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BROC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BROC]]  = array_in[AE_DSP_CH_BROC];
   }
 
+  //! Initialize output channel alignmment for ffmpeg process array
   if (array_out)
   {
-    //! Initialize output channel alignmment for ffmpeg process array
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FL]] = array_out[AE_DSP_CH_FL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FR]] = array_out[AE_DSP_CH_FR];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FC]] = array_out[AE_DSP_CH_FC];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_LFE)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_LFE]] = array_out[AE_DSP_CH_LFE];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BL]] = array_out[AE_DSP_CH_BL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BR]] = array_out[AE_DSP_CH_BR];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FLOC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FLOC]] = array_out[AE_DSP_CH_FLOC];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FROC]] = array_out[AE_DSP_CH_FROC];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BC]] = array_out[AE_DSP_CH_BC];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_SL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_SL]] = array_out[AE_DSP_CH_SL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_SR]] = array_out[AE_DSP_CH_SR];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFL]] = array_out[AE_DSP_CH_TFL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFR]] = array_out[AE_DSP_CH_TFR];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFC]] = array_out[AE_DSP_CH_TFC];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TC]] = array_out[AE_DSP_CH_TC];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBL)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBL]] = array_out[AE_DSP_CH_TBL];
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBR]] = array_out[AE_DSP_CH_TBR];
-    }
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBC)
-    {
-      array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBC]] = array_out[AE_DSP_CH_TBC];
-    }
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FL)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FL]]    = array_out[AE_DSP_CH_FL];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FR)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FR]]    = array_out[AE_DSP_CH_FR];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FC)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FC]]    = array_out[AE_DSP_CH_FC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_LFE)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_LFE]]   = array_out[AE_DSP_CH_LFE];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BL)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BL]]    = array_out[AE_DSP_CH_BL];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BR)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BR]]    = array_out[AE_DSP_CH_BR];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FLOC]]  = array_out[AE_DSP_CH_FLOC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FROC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FROC]]  = array_out[AE_DSP_CH_FROC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BC)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BC]]    = array_out[AE_DSP_CH_BC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_SL)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_SL]]    = array_out[AE_DSP_CH_SL];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_SR)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_SR]]    = array_out[AE_DSP_CH_SR];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFL)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFL]]   = array_out[AE_DSP_CH_TFL];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFR)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFR]]   = array_out[AE_DSP_CH_TFR];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFC)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFC]]   = array_out[AE_DSP_CH_TFC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TC)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TC]]    = array_out[AE_DSP_CH_TC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBL)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBL]]   = array_out[AE_DSP_CH_TBL];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBR)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBR]]   = array_out[AE_DSP_CH_TBR];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBC)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBC]]   = array_out[AE_DSP_CH_TBC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BLOC]]  = array_out[AE_DSP_CH_BLOC];
+    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BROC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BROC]]  = array_out[AE_DSP_CH_BROC];
   }
 }
 
