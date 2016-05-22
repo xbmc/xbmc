@@ -20,6 +20,7 @@
 
 #include "GUIControllerList.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <iterator>
 
@@ -158,69 +159,30 @@ void CGUIControllerList::Notify(const Observable& obs, const ObservableMessage m
 
 bool CGUIControllerList::RefreshControllers(void)
 {
-  bool bChanged = false;
+  // Cache discovered add-ons between function calls
+  VECADDONS addonCache;
 
-  // Get controller add-ons
-  ADDON::VECADDONS addons;
-  CAddonMgr::GetInstance().GetAddons(addons, ADDON_GAME_CONTROLLER);
+  std::set<std::string> currentIds = GetControllerIDs();
+  std::set<std::string> newIds = GetNewControllerIDs(addonCache);
 
-  // Convert to controllers
-  ControllerVector controllers;
-  std::transform(addons.begin(), addons.end(), std::back_inserter(controllers),
-    [](const AddonPtr& addon)
-    {
-      return std::static_pointer_cast<CController>(addon);
-    });
+  std::set<std::string> added;
+  std::set<std::string> removed;
 
-  // Look for new controllers
-  ControllerVector newControllers;
-  for (ControllerVector::const_iterator it = controllers.begin(); it != controllers.end(); ++it)
-  {
-    const ControllerPtr& controller = *it;
+  std::set_difference(newIds.begin(), newIds.end(), currentIds.begin(), currentIds.end(), std::inserter(added, added.end()));
+  std::set_difference(currentIds.begin(), currentIds.end(), newIds.begin(), newIds.end(), std::inserter(removed, removed.end()));
 
-    if (std::find_if(m_controllers.begin(), m_controllers.end(),
-      [controller](const ControllerPtr& ctrl)
-      {
-        return ctrl->ID() == controller->ID();
-      }) == m_controllers.end())
-    {
-      newControllers.push_back(controller);
-    }
-  }
+  // Register new controllers
+  for (const std::string& addonId : added)
+    RegisterController(addonId, addonCache);
 
-  // Remove old controllers
-  for (ControllerVector::iterator it = m_controllers.begin(); it != m_controllers.end(); /* ++it */)
-  {
-    ControllerPtr& controller = *it;
+  // Erase removed controllers
+  for (const std::string& addonId : removed)
+    UnregisterController(addonId);
 
-    if (std::find_if(controllers.begin(), controllers.end(),
-      [controller](const ControllerPtr& ctrl)
-      {
-        return ctrl->ID() == controller->ID();
-      }) == controllers.end())
-    {
-      it = m_controllers.erase(it); // Not found, remove it
-      bChanged = true;
-    }
-    else
-    {
-      ++it;
-    }
-  }
 
-  // Add new controllers
-  for (ControllerVector::iterator it = newControllers.begin(); it != newControllers.end(); ++it)
-  {
-    ControllerPtr& newController = *it;
-
-    if (newController->LoadLayout())
-    {
-      m_controllers.push_back(newController);
-      bChanged = true;
-    }
-  }
 
   // Sort add-ons, with default controller first
+  const bool bChanged = !added.empty() || !removed.empty();
   if (bChanged)
   {
     std::sort(m_controllers.begin(), m_controllers.end(),
@@ -229,11 +191,64 @@ bool CGUIControllerList::RefreshControllers(void)
         if (i->ID() == DEFAULT_CONTROLLER_ID && j->ID() != DEFAULT_CONTROLLER_ID) return true;
         if (i->ID() != DEFAULT_CONTROLLER_ID && j->ID() == DEFAULT_CONTROLLER_ID) return false;
 
-        return i->ID() < j->ID();
+        return i->Name() < j->Name();
       });
   }
 
   return bChanged;
+}
+
+std::set<std::string> CGUIControllerList::GetControllerIDs() const
+{
+  std::set<std::string> controllerIds;
+
+  std::transform(m_controllers.begin(), m_controllers.end(), std::inserter(controllerIds, controllerIds.end()),
+    [](const ControllerPtr& addon)
+    {
+      return addon->ID();
+    });
+
+  return controllerIds;
+}
+
+std::set<std::string> CGUIControllerList::GetNewControllerIDs(ADDON::VECADDONS& addonCache) const
+{
+  std::set<std::string> controllerIds;
+
+  CAddonMgr::GetInstance().GetAddons(addonCache, ADDON_GAME_CONTROLLER);
+
+  std::transform(addonCache.begin(), addonCache.end(), std::inserter(controllerIds, controllerIds.end()),
+    [](const AddonPtr& addon)
+    {
+      return addon->ID();
+    });
+
+  return controllerIds;
+}
+
+void CGUIControllerList::RegisterController(const std::string& addonId, const ADDON::VECADDONS& addonCache)
+{
+  auto it = std::find_if(addonCache.begin(), addonCache.end(),
+    [addonId](const AddonPtr& addon)
+    {
+      return addon->ID() == addonId;
+    });
+
+  if (it != addonCache.end())
+  {
+    ControllerPtr newController = std::dynamic_pointer_cast<CController>(*it);
+    if (newController && newController->LoadLayout())
+      m_controllers.push_back(newController);
+  }
+}
+
+void CGUIControllerList::UnregisterController(const std::string& controllerId)
+{
+  m_controllers.erase(std::remove_if(m_controllers.begin(), m_controllers.end(),
+    [controllerId](const ControllerPtr& controller)
+    {
+      return controller->ID() == controllerId;
+    }), m_controllers.end());
 }
 
 void CGUIControllerList::CleanupButtons(void)
