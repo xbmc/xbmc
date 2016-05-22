@@ -11,7 +11,7 @@ ifeq (@USE_VAAPI@,1)
 SRCS += VAAPI.cpp
 endif
 ifeq ($(findstring osx,@ARCH@),osx)
-SRCS += VDA.cpp
+SRCS += VTB.cpp
 endif
 ifeq (@USE_OPENMAX@,1)
 SRCS += OpenMax.cpp
