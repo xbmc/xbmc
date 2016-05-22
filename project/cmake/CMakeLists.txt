@@ -65,13 +65,13 @@ include(scripts/common/GeneratorSetup.cmake)
 include(scripts/common/AddOptions.cmake)
 include(scripts/common/ArchSetup.cmake)
 include(scripts/common/Macros.cmake)
+include(scripts/common/GenerateVersionStrings.cmake)
 include(scripts/common/ManageString.cmake)
 include(scripts/common/ProjectMacros.cmake)
 include(scripts/common/PathSetup.cmake)
 include(ExternalProject)
 
 core_find_git_rev()
-core_find_versions()
 
 set(INCLUDES ${CORE_SOURCE_DIR}
              ${CORE_SOURCE_DIR}/addons/library.xbmc.addon

@@ -1,6 +1,6 @@
 include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/Macros.cmake)
+include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/GenerateVersionStrings.cmake)
 
-core_find_versions()
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/addons/xbmc.addon)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/addons/kodi.guilib)
 configure_file(${CORE_SOURCE_DIR}/addons/xbmc.addon/addon.xml.in

@@ -1,25 +1,4 @@
-# parse version.txt to get the version info
-if(EXISTS "${CORE_SOURCE_DIR}/version.txt")
-  file(STRINGS "${CORE_SOURCE_DIR}/version.txt" versions)
-  foreach (version ${versions})
-    if(version MATCHES "^VERSION_.*")
-      string(REGEX MATCH "^[^ ]+" version_name ${version})
-      string(REPLACE "${version_name} " "" version_value ${version})
-      set(APP_${version_name} "${version_value}")
-    else()
-      string(REGEX MATCH "^[^ ]+" name ${version})
-      string(REPLACE "${name} " "" value ${version})
-      set(${name} "${value}")
-    endif()
-  endforeach()
-  string(TOLOWER ${APP_NAME} APP_NAME_LC)
-  string(TOUPPER ${APP_NAME} APP_NAME_UC)
-endif()
-
-# bail if we can't parse versions
-if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
-  message(FATAL_ERROR "Could not determine app version! make sure that ${CORE_SOURCE_DIR}/version.txt exists")
-endif()
+include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/GenerateVersionStrings.cmake)
 
 # in case we need to download something, set KODI_MIRROR to the default if not alread set
 if(NOT DEFINED KODI_MIRROR)
