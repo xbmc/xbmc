@@ -27,6 +27,7 @@
 #include "threads/CriticalSection.h"
 #include "UnrarXLib/UnrarX.hpp"
 #include "utils/Stopwatch.h"
+#include "utils/GlobalsHandling.h"
 
 class CFileItemList;
 
@@ -86,5 +87,6 @@ protected:
   int64_t CheckFreeSpace(const std::string& strDrive);
 };
 
-extern CRarManager g_RarManager;
+XBMC_GLOBAL_REF(CRarManager, g_RarManager);
+#define g_RarManager XBMC_GLOBAL_USE(CRarManager)
 
