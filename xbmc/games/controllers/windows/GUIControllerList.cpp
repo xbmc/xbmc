@@ -34,7 +34,9 @@
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindow.h"
+#include "guilib/WindowIDs.h"
 #include "input/joysticks/DefaultJoystick.h" // for DEFAULT_CONTROLLER_ID
+#include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
 
 using namespace ADDON;
@@ -76,12 +78,12 @@ void CGUIControllerList::Deinitialize(void)
   m_controllerButton = nullptr;
 }
 
-void CGUIControllerList::Refresh(void)
+bool CGUIControllerList::Refresh(void)
 {
-  CleanupButtons();
-
   if (!RefreshControllers())
-    return;
+    return false;
+
+  CleanupButtons();
 
   if (m_controllerList)
   {
@@ -98,6 +100,8 @@ void CGUIControllerList::Refresh(void)
         break;
     }
   }
+
+  return true;
 }
 
 void CGUIControllerList::OnFocus(unsigned int controllerIndex)
@@ -143,8 +147,13 @@ void CGUIControllerList::ResetController(void)
 
 void CGUIControllerList::Notify(const Observable& obs, const ObservableMessage msg)
 {
+  using namespace KODI::MESSAGING;
+
   if (msg == ObservableMessageAddons)
-    Refresh();
+  {
+    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
+    CApplicationMessenger::GetInstance().SendGUIMessage(msg);
+  }
 }
 
 bool CGUIControllerList::RefreshControllers(void)

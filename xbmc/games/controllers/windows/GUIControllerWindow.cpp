@@ -130,6 +130,20 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
       }
       break;
     }
+    case GUI_MSG_REFRESH_LIST:
+    {
+      int controlId = message.GetControlId();
+
+      if (controlId == CONTROL_CONTROLLER_LIST)
+      {
+        if (m_controllerList && m_controllerList->Refresh())
+        {
+          CGUIDialog::OnMessage(message);
+          return true;
+        }
+      }
+      break;
+    }
     default:
       break;
   }
