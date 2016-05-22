@@ -213,10 +213,8 @@ uint32_t CRBP::WaitVsync(uint32_t target)
     target = m_vsync_count+1;
   while (!delay.IsTimePast())
   {
-    CSingleLock lock(m_critSection);
     if ((signed)(m_vsync_count - target) >= 0)
       break;
-    lock.Leave();
     if (!m_vsync_cond.wait(vlock, delay.MillisLeft()))
       break;
   }
