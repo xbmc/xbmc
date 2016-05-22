@@ -331,7 +331,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
   {
     //expand potential relative path to full path
     std::wstring strPathW;
-    g_charsetConverter.utf8ToW(strPath, strPathW, false);
+    CCharsetConverter::Utf8ToW(strPath, strPathW);
     CWIN32Util::AddExtraLongPathPrefix(strPathW);
     const unsigned int bufSize = GetFullPathNameW(strPathW.c_str(), 0, NULL, NULL);
     if (bufSize != 0)
@@ -341,7 +341,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
       {
         std::wstring expandedPathW(buf);
         CWIN32Util::RemoveExtraLongPathPrefix(expandedPathW);
-        g_charsetConverter.wToUTF8(expandedPathW, strPath);
+        CCharsetConverter::WToUtf8(expandedPathW, strPath);
       }
 
       delete [] buf;
@@ -1647,7 +1647,7 @@ std::string CUtil::ResolveExecutablePath()
   buf[0] = 0;
   ::GetModuleFileNameW(0, buf, bufSize);
   buf[bufSize-1] = 0;
-  g_charsetConverter.wToUTF8(buf,strExecutablePath);
+  CCharsetConverter::WToUtf8(buf,strExecutablePath);
   delete[] buf;
 #elif defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];

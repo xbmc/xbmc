@@ -787,7 +787,7 @@ std::string CSysInfo::GetManufacturerName(void)
       DWORD valType;
       if (RegQueryValueExW(hKey, L"SystemManufacturer", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS && valType == REG_SZ)
       {
-        g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), manufName);
+        CCharsetConverter::WToUtf8(std::wstring(buf, bufSize / sizeof(wchar_t)), manufName);
         size_t zeroPos = manufName.find(char(0));
         if (zeroPos != std::string::npos)
           manufName.erase(zeroPos); // remove any extra zero-terminations
@@ -835,7 +835,7 @@ std::string CSysInfo::GetModelName(void)
       DWORD valType; 
       if (RegQueryValueExW(hKey, L"SystemProductName", NULL, &valType, (LPBYTE)buf, &bufSize) == ERROR_SUCCESS && valType == REG_SZ)
       {
-        g_charsetConverter.wToUTF8(std::wstring(buf, bufSize / sizeof(wchar_t)), modelName);
+        CCharsetConverter::WToUtf8(std::wstring(buf, bufSize / sizeof(wchar_t)), modelName);
         size_t zeroPos = modelName.find(char(0));
         if (zeroPos != std::string::npos)
           modelName.erase(zeroPos); // remove any extra zero-terminations

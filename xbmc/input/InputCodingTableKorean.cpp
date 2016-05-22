@@ -369,8 +369,8 @@ std::string CInputCodingTableKorean::ConvertString(const std::string& strCode)
 {
   std::wstring input;
   std::string result;
-  g_charsetConverter.utf8ToW(strCode, input);
+  CCharsetConverter::Utf8ToW(strCode, input);
   InputToKorean(input);
-  g_charsetConverter.wToUTF8(InputToKorean(input), result);
+  CCharsetConverter::WToUtf8(InputToKorean(input), result);
   return m_strTextPrev + result;
 }

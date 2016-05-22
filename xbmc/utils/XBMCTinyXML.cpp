@@ -213,7 +213,7 @@ bool CXBMCTinyXML::TryParse(const std::string& data, const std::string& tryDataC
     std::string converted;
     /* some wrong conversions can leave US-ASCII XML header and structure untouched but break non-English data
      * so conversion must fail on wrong character and then other encodings will be tried */
-    if (!g_charsetConverter.ToUtf8(tryDataCharset, data, converted, true) || converted.empty())
+    if (!CCharsetConverter::TryToUtf8(tryDataCharset, data, converted) || converted.empty())
       return false; // can't convert data
 
     InternalParse(converted, TIXML_ENCODING_UTF8);

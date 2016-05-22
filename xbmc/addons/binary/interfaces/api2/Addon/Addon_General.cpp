@@ -374,7 +374,7 @@ char* CAddOnGeneral::unknown_to_utf8(
       throw ADDON::WrongValueException("CAddOnGeneral - %s - invalid data (handle='%p', strSource='%p')", __FUNCTION__, hdl, strSource);
 
     std::string string;
-    ret = g_charsetConverter.unknownToUTF8(strSource, string, failOnBadChar);
+    ret = CCharsetConverter::UnknownToUtf8(strSource, string);
     char* buffer = strdup(string.c_str());
     return buffer;
   }

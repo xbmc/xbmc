@@ -90,7 +90,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
       continue;
 
     std::string itemName;
-    if (!g_charsetConverter.wToUTF8(itemNameW, itemName, true) || itemName.empty())
+    if (!CCharsetConverter::WToUtf8SystemSafe(itemNameW, itemName) || itemName.empty())
     {
       CLog::Log(LOGERROR, "%s: Can't convert wide string name to UTF-8 encoding", __FUNCTION__);
       continue;

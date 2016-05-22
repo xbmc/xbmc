@@ -58,7 +58,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       continue;
 
     std::string itemLabel(entry->d_name);
-    CCharsetConverter::unknownToUTF8(itemLabel);
+    CCharsetConverter::UnknownToUtf8(itemLabel);
     CFileItemPtr pItem(new CFileItem(itemLabel));
     std::string itemPath(URIUtils::AddFileToFolder(root, entry->d_name));
 

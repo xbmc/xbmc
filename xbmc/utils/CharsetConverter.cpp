@@ -19,787 +19,580 @@
  */
 
 #include "CharsetConverter.h"
-
-#include <cerrno>
-#include <algorithm>
-
-#include <iconv.h>
-#include <fribidi/fribidi.h>
-
-#include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
-#include "log.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "system.h"
-#include "threads/SingleLock.h"
-#include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
+#include "utils/log.h"
+
+#include <unicode/ucnv.h>
+#include <unicode/urename.h>
+#include <unicode/ubidi.h>
+#include <unicode/uniset.h>
+#include <unicode/normalizer2.h>
+#include <memory.h>
 
 #if !defined(TARGET_WINDOWS) && defined(HAVE_CONFIG_H)
   #include "config.h"
 #endif
 
-#ifdef WORDS_BIGENDIAN
-  #define ENDIAN_SUFFIX "BE"
-#else
-  #define ENDIAN_SUFFIX "LE"
-#endif
+#define UTF8_CHARSET "UTF-8"
+#define UTF16_CHARSET "UTF16_PlatformEndian"
+#define UTF16LE_CHARSET "UTF-16LE"
+#define UTF16BE_CHARSET "UTF-16BE"
+#define UTF32_CHARSET "UTF32_PlatformEndian"
+#define UTF32LE_CHARSET "UTF-32LE"
+#define UTF32BE_CHARSET "UTF-32BE"
 
 #if defined(TARGET_DARWIN)
-  #define WCHAR_IS_UCS_4 1
-  #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX
-  #define UTF32_CHARSET "UTF-32" ENDIAN_SUFFIX
-  #define UTF8_SOURCE "UTF-8-MAC"
-  #define WCHAR_CHARSET UTF32_CHARSET
+#define WCHAR_CHARSET UTF32_CHARSET
 #elif defined(TARGET_WINDOWS)
-  #define WCHAR_IS_UTF16 1
-  #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX
-  #define UTF32_CHARSET "UTF-32" ENDIAN_SUFFIX
-  #define UTF8_SOURCE "UTF-8"
   #define WCHAR_CHARSET UTF16_CHARSET 
-#if _DEBUG
-  #pragma comment(lib, "libfribidi.lib")
-  #pragma comment(lib, "libiconvd.lib")
-#else
-  #pragma comment(lib, "libfribidi.lib")
-  #pragma comment(lib, "libiconv.lib")
-#endif
+  #pragma comment(lib, "icuuc.lib")
 #elif defined(TARGET_ANDROID)
-  #define WCHAR_IS_UCS_4 1
-  #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX
-  #define UTF32_CHARSET "UTF-32" ENDIAN_SUFFIX
-  #define UTF8_SOURCE "UTF-8"
-  #define WCHAR_CHARSET UTF32_CHARSET 
+#define WCHAR_CHARSET UTF32_CHARSET 
 #else
-  #define UTF16_CHARSET "UTF-16" ENDIAN_SUFFIX
-  #define UTF32_CHARSET "UTF-32" ENDIAN_SUFFIX
-  #define UTF8_SOURCE "UTF-8"
-  #define WCHAR_CHARSET "WCHAR_T"
-  #if __STDC_ISO_10646__
-    #ifdef SIZEOF_WCHAR_T
-      #if SIZEOF_WCHAR_T == 4
-        #define WCHAR_IS_UCS_4 1
-      #elif SIZEOF_WCHAR_T == 2
-        #define WCHAR_IS_UCS_2 1
-      #endif
-    #endif
-  #endif
+#define WCHAR_CHARSET UTF16_CHARSET
 #endif
 
-#define NO_ICONV ((iconv_t)-1)
+//specify default normalization, on Darwin we want to compose
+#if defined(TARGET_DARWIN)
+  #define NORMALIZE 1
+#else
+  #define NORMALIZE 0
+#endif
 
-enum SpecialCharset
-{
-  NotSpecialCharset = 0,
-  SystemCharset,
-  UserCharset /* locale.charset */, 
-  SubtitleCharset /* subtitles.charset */,
-};
-
-class CConverterType : public CCriticalSection
-{
-public:
-  CConverterType(const std::string&  sourceCharset,        const std::string&  targetCharset,        unsigned int targetSingleCharMaxLen = 1);
-  CConverterType(enum SpecialCharset sourceSpecialCharset, const std::string&  targetCharset,        unsigned int targetSingleCharMaxLen = 1);
-  CConverterType(const std::string&  sourceCharset,        enum SpecialCharset targetSpecialCharset, unsigned int targetSingleCharMaxLen = 1);
-  CConverterType(enum SpecialCharset sourceSpecialCharset, enum SpecialCharset targetSpecialCharset, unsigned int targetSingleCharMaxLen = 1);
-  CConverterType(const CConverterType& other);
-  ~CConverterType();
-
-  iconv_t GetConverter(CSingleLock& converterLock);
-
-  void Reset(void);
-  void ReinitTo(const std::string& sourceCharset, const std::string& targetCharset, unsigned int targetSingleCharMaxLen = 1);
-  std::string GetSourceCharset(void) const  { return m_sourceCharset; }
-  std::string GetTargetCharset(void) const  { return m_targetCharset; }
-  unsigned int GetTargetSingleCharMaxLen(void) const  { return m_targetSingleCharMaxLen; }
-
-private:
-  static std::string ResolveSpecialCharset(enum SpecialCharset charset);
-
-  enum SpecialCharset m_sourceSpecialCharset;
-  std::string         m_sourceCharset;
-  enum SpecialCharset m_targetSpecialCharset;
-  std::string         m_targetCharset;
-  iconv_t             m_iconv;
-  unsigned int        m_targetSingleCharMaxLen;
-};
-
-CConverterType::CConverterType(const std::string& sourceCharset, const std::string& targetCharset, unsigned int targetSingleCharMaxLen /*= 1*/) : CCriticalSection(),
-  m_sourceSpecialCharset(NotSpecialCharset),
-  m_sourceCharset(sourceCharset),
-  m_targetSpecialCharset(NotSpecialCharset),
-  m_targetCharset(targetCharset),
-  m_iconv(NO_ICONV),
-  m_targetSingleCharMaxLen(targetSingleCharMaxLen)
-{
-}
-
-CConverterType::CConverterType(enum SpecialCharset sourceSpecialCharset, const std::string& targetCharset, unsigned int targetSingleCharMaxLen /*= 1*/) : CCriticalSection(),
-  m_sourceSpecialCharset(sourceSpecialCharset),
-  m_sourceCharset(),
-  m_targetSpecialCharset(NotSpecialCharset),
-  m_targetCharset(targetCharset),
-  m_iconv(NO_ICONV),
-  m_targetSingleCharMaxLen(targetSingleCharMaxLen)
-{
-}
-
-CConverterType::CConverterType(const std::string& sourceCharset, enum SpecialCharset targetSpecialCharset, unsigned int targetSingleCharMaxLen /*= 1*/) : CCriticalSection(),
-  m_sourceSpecialCharset(NotSpecialCharset),
-  m_sourceCharset(sourceCharset),
-  m_targetSpecialCharset(targetSpecialCharset),
-  m_targetCharset(),
-  m_iconv(NO_ICONV),
-  m_targetSingleCharMaxLen(targetSingleCharMaxLen)
-{
-}
-
-CConverterType::CConverterType(enum SpecialCharset sourceSpecialCharset, enum SpecialCharset targetSpecialCharset, unsigned int targetSingleCharMaxLen /*= 1*/) : CCriticalSection(),
-  m_sourceSpecialCharset(sourceSpecialCharset),
-  m_sourceCharset(),
-  m_targetSpecialCharset(targetSpecialCharset),
-  m_targetCharset(),
-  m_iconv(NO_ICONV),
-  m_targetSingleCharMaxLen(targetSingleCharMaxLen)
-{
-}
-
-CConverterType::CConverterType(const CConverterType& other) : CCriticalSection(),
-  m_sourceSpecialCharset(other.m_sourceSpecialCharset),
-  m_sourceCharset(other.m_sourceCharset),
-  m_targetSpecialCharset(other.m_targetSpecialCharset),
-  m_targetCharset(other.m_targetCharset),
-  m_iconv(NO_ICONV),
-  m_targetSingleCharMaxLen(other.m_targetSingleCharMaxLen)
-{
-}
-
-CConverterType::~CConverterType()
-{
-  CSingleLock lock(*this);
-  if (m_iconv != NO_ICONV)
-    iconv_close(m_iconv);
-  lock.Leave(); // ensure unlocking before final destruction
-}
-
-iconv_t CConverterType::GetConverter(CSingleLock& converterLock)
-{
-  // ensure that this unique instance is locked externally
-  if (&converterLock.get_underlying() != this)
-    return NO_ICONV;
-
-  if (m_iconv == NO_ICONV)
-  {
-    if (m_sourceSpecialCharset)
-      m_sourceCharset = ResolveSpecialCharset(m_sourceSpecialCharset);
-    if (m_targetSpecialCharset)
-      m_targetCharset = ResolveSpecialCharset(m_targetSpecialCharset);
-
-    m_iconv = iconv_open(m_targetCharset.c_str(), m_sourceCharset.c_str());
-    
-    if (m_iconv == NO_ICONV)
-      CLog::Log(LOGERROR, "%s: iconv_open() for \"%s\" -> \"%s\" failed, errno = %d (%s)",
-                __FUNCTION__, m_sourceCharset.c_str(), m_targetCharset.c_str(), errno, strerror(errno));
-  }
-
-  return m_iconv;
-}
-
-void CConverterType::Reset(void)
-{
-  CSingleLock lock(*this);
-  if (m_iconv != NO_ICONV)
-  {
-    iconv_close(m_iconv);
-    m_iconv = NO_ICONV;
-  }
-
-  if (m_sourceSpecialCharset)
-    m_sourceCharset.clear();
-  if (m_targetSpecialCharset)
-    m_targetCharset.clear();
-
-}
-
-void CConverterType::ReinitTo(const std::string& sourceCharset, const std::string& targetCharset, unsigned int targetSingleCharMaxLen /*= 1*/)
-{
-  CSingleLock lock(*this);
-  if (sourceCharset != m_sourceCharset || targetCharset != m_targetCharset)
-  {
-    if (m_iconv != NO_ICONV)
-    {
-      iconv_close(m_iconv);
-      m_iconv = NO_ICONV;
-    }
-
-    m_sourceSpecialCharset = NotSpecialCharset;
-    m_sourceCharset = sourceCharset;
-    m_targetSpecialCharset = NotSpecialCharset;
-    m_targetCharset = targetCharset;
-    m_targetSingleCharMaxLen = targetSingleCharMaxLen;
-  }
-}
-
-std::string CConverterType::ResolveSpecialCharset(enum SpecialCharset charset)
-{
-  switch (charset)
-  {
-  case SystemCharset:
-    return "";
-  case UserCharset:
-    return g_langInfo.GetGuiCharSet();
-  case SubtitleCharset:
-    return g_langInfo.GetSubtitleCharSet();
-  case NotSpecialCharset:
-  default:
-    return "UTF-8"; /* dummy value */
-  }
-}
-
-enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverter::m_stdConversion */
-{
-  NoConversion = -1,
-  Utf8ToUtf32 = 0,
-  Utf32ToUtf8,
-  Utf32ToW,
-  WToUtf32,
-  SubtitleCharsetToUtf8,
-  Utf8ToUserCharset,
-  UserCharsetToUtf8,
-  Utf32ToUserCharset,
-  WtoUtf8,
-  Utf16LEtoW,
-  Utf16BEtoUtf8,
-  Utf16LEtoUtf8,
-  Utf8toW,
-  Utf8ToSystem,
-  SystemToUtf8,
-  Ucs2CharsetToUtf8,
-  NumberOfStdConversionTypes /* Dummy sentinel entry */
-};
-
-/* We don't want to pollute header file with many additional includes and definitions, so put 
-   here all staff that require usage of types defined in this file or in additional headers */
+/**
+ * \class CCharsetConverter::CInnerConverter
+ *
+ * We don't want to pollute header file with many additional includes and definitions, so put
+ * here all stuff that require usage of types defined in this file or in additional headers
+ */
 class CCharsetConverter::CInnerConverter
 {
+private:
+  /**
+   * Helper function to perform BiDi flip and reverse hebrew/arabic text
+   *
+   * \param[in]  srcBuffer      array of UChar containing the string to process
+   * \param[in]  srcLength      length in characters of srcBuffer
+   * \param[out] dstBuffer      empty pointer to store result in
+   *                            on success will contain the processed buffer.
+   *                            it's up to the caller to delete buffer on any successful calls.
+   * \param[out] dstLength      length in characters of processed string
+   * \param[in]  bidiOptions    options for logical to visual processing
+   *
+   * \return true on success, false on any error
+   * \sa CCharsetConverter::BiDiOptions
+   */
+  static bool BidiHelper(const UChar* srcBuffer, int32_t srcLength, 
+                                 UChar** dstBuffer, int32_t& dstLength,
+                                 const uint16_t bidiOptions);
+
+  /**
+  * Helper function to perform unicode normalization
+  *
+  * \param[in]  srcBuffer           array of UChar containing the string to process
+  * \param[in]  srcLength           length in characters of srcBuffer
+  * \param[out] dstBuffer           empty pointer to store result in
+  *                                 on success will contain the processed buffer.
+  *                                 it's up to the caller to delete buffer on any successful calls.
+  * \param[out] dstLength           length in characters of processed string
+  * \param[in]  normalizeOptions    options for logical to visual processing
+  *
+  * \return true on success, false on any error
+  * \sa CCharsetConverter::NormalizationOptions
+  */
+  static bool NormalizationHelper(const UChar* srcBuffer, int32_t srcLength,
+                                          UChar** dstBuffer, int32_t& dstLength,
+                                          const uint16_t normalizeOptions);
 public:
-  static bool logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base = FRIBIDI_TYPE_LTR, const bool failOnBadString = false);
-  
-  template<class INPUT,class OUTPUT>
-  static bool stdConvert(StdConversionType convertType, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
-  template<class INPUT,class OUTPUT>
-  static bool customConvert(const std::string& sourceCharset, const std::string& targetCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
 
-  template<class INPUT,class OUTPUT>
-  static bool convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar = false);
+  /**
+   * Converts between two encodings and optionally performs normalization and bidi conversion
+   *
+   * Input string is converted to UTF-16 and then normaliztions and
+   * BiDi processing is performed before converting the result
+   * to the specified output encoding
+   *
+   * \param[in]  sourceCharset        charset of source string
+   * \param[in]  targetCharset        charset of destination string
+   * \param[in]  strSource            source string to be processed
+   * \param[out] strDest              output string after processing
+   * \param[in]  bidiOptions          options for logical to visual processing
+   * \param[in]  normalizeOptions     options for normalization
+   * \param[in]  failOnBadString      determines if invalid byte sequences aborts processing
+   *                                  or gets skipped
+   *
+   * \return true on success, false on any error
+   * \sa CCharsetConverter::BiDiOptions
+   * \sa CCharsetConverter::NormalizationOptions
+   */
+  template<class INPUT, class OUTPUT>
+  static bool Convert(const std::string& sourceCharset, const std::string& targetCharset,
+                                  const INPUT& strSource, OUTPUT& strDest,
+                                  const uint16_t bidiOptions, const uint16_t normalizeOptions,
+                                  const bool failOnBadString = false);
 
-  static CConverterType m_stdConversion[NumberOfStdConversionTypes];
-  static CCriticalSection m_critSectionFriBiDi;
 };
 
-/* single symbol sizes in chars */
-const int CCharsetConverter::m_Utf8CharMinSize = 1;
-const int CCharsetConverter::m_Utf8CharMaxSize = 4;
 
-CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdConversionTypes] = /* keep it in sync with enum StdConversionType */
+class UConverterGuard
 {
-  /* Utf8ToUtf32 */         CConverterType(UTF8_SOURCE,     UTF32_CHARSET),
-  /* Utf32ToUtf8 */         CConverterType(UTF32_CHARSET,   "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
-  /* Utf32ToW */            CConverterType(UTF32_CHARSET,   WCHAR_CHARSET),
-  /* WToUtf32 */            CConverterType(WCHAR_CHARSET,   UTF32_CHARSET),
-  /* SubtitleCharsetToUtf8*/CConverterType(SubtitleCharset, "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
-  /* Utf8ToUserCharset */   CConverterType(UTF8_SOURCE,     UserCharset),
-  /* UserCharsetToUtf8 */   CConverterType(UserCharset,     "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
-  /* Utf32ToUserCharset */  CConverterType(UTF32_CHARSET,   UserCharset),
-  /* WtoUtf8 */             CConverterType(WCHAR_CHARSET,   "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
-  /* Utf16LEtoW */          CConverterType("UTF-16LE",      WCHAR_CHARSET),
-  /* Utf16BEtoUtf8 */       CConverterType("UTF-16BE",      "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
-  /* Utf16LEtoUtf8 */       CConverterType("UTF-16LE",      "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
-  /* Utf8toW */             CConverterType(UTF8_SOURCE,     WCHAR_CHARSET),
-  /* Utf8ToSystem */        CConverterType(UTF8_SOURCE,     SystemCharset),
-  /* SystemToUtf8 */        CConverterType(SystemCharset,   UTF8_SOURCE),
-  /* Ucs2CharsetToUtf8 */   CConverterType("UCS-2LE",       "UTF-8", CCharsetConverter::m_Utf8CharMaxSize)
+  UConverter* converter;
+public:
+  UConverterGuard() : converter(NULL) {};
+  UConverterGuard(UConverter* cnv) : converter(cnv) {};
+  ~UConverterGuard() 
+  {
+    if (converter)
+      ucnv_close(converter);
+  }
+  void Set(UConverter* cnv) { converter = cnv; }
+  operator UConverter*() const
+  {
+    return this->converter;
+  }
 };
 
-CCriticalSection CCharsetConverter::CInnerConverter::m_critSectionFriBiDi;
-
-template<class INPUT,class OUTPUT>
-bool CCharsetConverter::CInnerConverter::stdConvert(StdConversionType convertType, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar /*= false*/)
+template<class INPUT, class OUTPUT>
+bool CCharsetConverter::CInnerConverter::Convert(const std::string& sourceCharset, const std::string& targetCharset,
+                                                            const INPUT& strSource, OUTPUT& strDest,
+                                                            const uint16_t bidiOptions, const uint16_t normalizeOptions,
+                                                            const bool failOnBadString)
 {
   strDest.clear();
   if (strSource.empty())
     return true;
 
-  if (convertType < 0 || convertType >= NumberOfStdConversionTypes)
+  UErrorCode err = U_ZERO_ERROR;
+  UConverterGuard srcConv;
+  UConverterGuard dstConv;
+
+  int32_t srcLength = -1;
+  int32_t srcLengthInBytes = -1;
+  int32_t dstLength = -1;
+  int32_t dstLengthInBytes = -1;
+  int32_t resultLength = -1;
+
+  const char* srcBuffer = NULL;
+  char* dstBuffer = NULL;
+  UChar* conversionBuffer = NULL;
+  UChar* resultBuffer = NULL;
+
+  //if any of the charsets are empty we fall back to the default
+  //encoder
+  if (sourceCharset.empty())
+    srcConv.Set(ucnv_open(NULL, &err));
+  else
+    srcConv.Set(ucnv_open(sourceCharset.c_str(), &err));
+
+  if (U_FAILURE(err))
     return false;
 
-  CConverterType& convType = m_stdConversion[convertType];
-  CSingleLock converterLock(convType);
+  if (targetCharset.empty())
+    dstConv.Set(ucnv_open(NULL, &err));
+  else
+    dstConv.Set(ucnv_open(targetCharset.c_str(), &err));
 
-  return convert(convType.GetConverter(converterLock), convType.GetTargetSingleCharMaxLen(), strSource, strDest, failOnInvalidChar);
-}
+  if (U_FAILURE(err))
+    return false;
 
-template<class INPUT,class OUTPUT>
-bool CCharsetConverter::CInnerConverter::customConvert(const std::string& sourceCharset, const std::string& targetCharset, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar /*= false*/)
-{
-  strDest.clear();
-  if (strSource.empty())
-    return true;
-
-  iconv_t conv = iconv_open(targetCharset.c_str(), sourceCharset.c_str());
-  if (conv == NO_ICONV)
+  if (failOnBadString)
   {
-    CLog::Log(LOGERROR, "%s: iconv_open() for \"%s\" -> \"%s\" failed, errno = %d (%s)",
-              __FUNCTION__, sourceCharset.c_str(), targetCharset.c_str(), errno, strerror(errno));
+    ucnv_setToUCallBack(srcConv, UCNV_TO_U_CALLBACK_STOP, NULL, NULL, NULL, &err);
+    ucnv_setFromUCallBack(dstConv, UCNV_FROM_U_CALLBACK_STOP, NULL, NULL, NULL, &err);
+  }
+  else
+  {
+    ucnv_setFromUCallBack(dstConv, UCNV_FROM_U_CALLBACK_SKIP, NULL, NULL, NULL, &err);
+    ucnv_setToUCallBack(srcConv, UCNV_TO_U_CALLBACK_SKIP, NULL, NULL, NULL, &err);
+  }
+
+  if (U_FAILURE(err))
+    return false;
+
+  srcLength = strSource.length();
+  srcLengthInBytes = strSource.length() * ucnv_getMinCharSize(srcConv);
+  srcBuffer = reinterpret_cast<const char*>(strSource.c_str());
+
+  //Point of no return, remember to free dstBuffer :)
+  dstLengthInBytes = UCNV_GET_MAX_BYTES_FOR_STRING(srcLength, ucnv_getMaxCharSize(srcConv));
+  dstLength = dstLengthInBytes / 2; //we know UChar is always 2 bytes
+  conversionBuffer = new UChar[dstLength];
+
+  do 
+  {
+    err = U_ZERO_ERROR;
+    resultLength = ucnv_toUChars(srcConv, conversionBuffer, dstLength, srcBuffer, srcLengthInBytes, &err);
+
+    if (err == U_BUFFER_OVERFLOW_ERROR)
+    {
+      delete[] conversionBuffer;
+      dstLength = resultLength + 1;
+      conversionBuffer = new UChar[dstLength];
+    } 
+    else if (U_FAILURE(err))
+  {
+      delete[] conversionBuffer;
+      return false;
+  }
+  } while (err == U_BUFFER_OVERFLOW_ERROR);
+  
+#if U_ICU_VERSION_MAJOR_NUM > 48
+  if (normalizeOptions != NO_NORMALIZATION)
+  {
+    if (CInnerConverter::NormalizationHelper(conversionBuffer, resultLength, &resultBuffer, resultLength, normalizeOptions))
+  {
+      //switch the buffers to avoid ifs further down
+      delete[] conversionBuffer;
+      conversionBuffer = resultBuffer;
+      resultBuffer = NULL;
+    }
+    else
+    {
+      delete[] conversionBuffer;
+      return false;
+    }
+  }
+#endif
+  if (bidiOptions != NO_BIDI)
+  {
+    if (CInnerConverter::BidiHelper(conversionBuffer, resultLength, &resultBuffer, resultLength, bidiOptions))
+  {
+      //switch the buffers to avoid ifs further down
+      delete[] conversionBuffer;
+      conversionBuffer = resultBuffer;
+      resultBuffer = NULL;
+    }
+    else
+    {
+      delete[] conversionBuffer;
+      return false;
+    }
+  }
+
+  dstLengthInBytes = UCNV_GET_MAX_BYTES_FOR_STRING(resultLength, ucnv_getMaxCharSize(dstConv));
+  dstBuffer = new char[dstLengthInBytes];
+
+  resultLength = ucnv_fromUChars(dstConv, dstBuffer, dstLengthInBytes, conversionBuffer, resultLength, &err);
+
+  if (U_FAILURE(err))
+  {
+    delete[] conversionBuffer;
+    delete[] resultBuffer;
+    delete[] dstBuffer;
     return false;
   }
-  const int dstMultp = (targetCharset.compare(0, 5, "UTF-8") == 0) ? CCharsetConverter::m_Utf8CharMaxSize : 1;
-  const bool result = convert(conv, dstMultp, strSource, strDest, failOnInvalidChar);
-  iconv_close(conv);
 
+  resultLength /= ucnv_getMinCharSize(dstConv);
+
+  if (U_SUCCESS(err))
+  {
+    uint16_t bom = static_cast<uint16_t>(dstBuffer[0]);
+    //check for a utf-16 or utf-32 bom
+    if (bom == 65535 || bom == 65279)
+      strDest.assign(reinterpret_cast<typename OUTPUT::value_type *>(dstBuffer + 2), resultLength - 1);
+    else
+      strDest.assign(reinterpret_cast<typename OUTPUT::value_type *>(dstBuffer), resultLength);
+  }
+
+  delete[] conversionBuffer;
+  delete[] resultBuffer;
+  delete[] dstBuffer;
+
+  return true;
+}
+
+bool CCharsetConverter::CInnerConverter::BidiHelper(const UChar* srcBuffer, int32_t srcLength,
+                                                            UChar** dstBuffer, int32_t& dstLength,
+                                                            const uint16_t bidiOptions)
+{
+  bool result = false;
+  int32_t outputLength = -1;
+  int32_t requiredLength = -1;
+  UErrorCode err = U_ZERO_ERROR;
+  UBiDiLevel level = 0;
+  UBiDi* bidiConv = ubidi_open();
+  
+  //ubidi_setPara changes the srcBuffer pointer so make it const
+  //and get a local copy of it
+  UChar* inputBuffer = const_cast<UChar*>(srcBuffer);
+  UChar* outputBuffer = NULL;
+
+  if (bidiOptions & LTR)
+    level = UBIDI_DEFAULT_LTR;
+  else if (bidiOptions & RTL)
+    level = UBIDI_DEFAULT_RTL;
+  else
+    level = UBIDI_DEFAULT_LTR;
+
+  ubidi_setPara(bidiConv, inputBuffer, srcLength, level, NULL, &err);
+
+  if (U_SUCCESS(err))
+  {
+    outputLength = ubidi_getProcessedLength(bidiConv) + 1; //allow for null terminator
+    outputBuffer = new UChar[outputLength];
+
+    do
+  {
+      uint16_t options = UBIDI_DO_MIRRORING;
+      if (bidiOptions & REMOVE_CONTROLS)
+        options |= UBIDI_REMOVE_BIDI_CONTROLS;
+      if (bidiOptions & WRITE_REVERSE)
+        options |= UBIDI_OUTPUT_REVERSE;
+
+      requiredLength = ubidi_writeReordered(bidiConv, outputBuffer, outputLength, options, &err);
+
+      if (U_SUCCESS(err))
+        {
+        outputLength = requiredLength;
+        result = true;
+          break;
+        }
+
+      if (err == U_BUFFER_OVERFLOW_ERROR)
+      {
+        delete[] outputBuffer;
+        outputBuffer = new UChar[requiredLength];
+        outputLength = requiredLength;
+
+        //make sure our err is reset, some icu functions fail if it contains
+        //a previous bad result
+        err = U_ZERO_ERROR;
+      }
+
+      //We can't do much for other failures than buffer overflow
+      //clean up and bail out
+      if (U_FAILURE(err))
+      {
+        delete[] outputBuffer;
+    break;
+  }
+    } while (1);
+
+    if (result)
+  {
+      *dstBuffer = outputBuffer;
+      dstLength = outputLength;
+    }
+  }
+
+  ubidi_close(bidiConv);
+  
+  //we don't delete outBuffer, it's returned to caller and
+  //caller is responsible for freeing it
   return result;
 }
 
-/* iconv may declare inbuf to be char** rather than const char** depending on platform and version,
-    so provide a wrapper that handles both */
-struct charPtrPtrAdapter
+bool CCharsetConverter::CInnerConverter::NormalizationHelper(const UChar* srcBuffer, int32_t srcLength,
+                                                             UChar** dstBuffer, int32_t& dstLength,
+                                                             const uint16_t normalizeOptions)
 {
-  const char** pointer;
-  charPtrPtrAdapter(const char** p) :
-    pointer(p) { }
-  operator char**()
-  { return const_cast<char**>(pointer); }
-  operator const char**()
-  { return pointer; }
-};
+#if U_ICU_VERSION_MAJOR_NUM > 48
+  UErrorCode err = U_ZERO_ERROR;
+  UnicodeString src(srcBuffer, srcLength);
+  UnicodeString dst;
 
-template<class INPUT,class OUTPUT>
-bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, const INPUT& strSource, OUTPUT& strDest, bool failOnInvalidChar /*= false*/)
-{
-  if (type == NO_ICONV)
-    return false;
-
-  //input buffer for iconv() is the buffer from strSource
-  size_t      inBufSize  = (strSource.length() + 1) * sizeof(typename INPUT::value_type);
-  const char* inBuf      = (const char*)strSource.c_str();
-
-  //allocate output buffer for iconv()
-  size_t      outBufSize = (strSource.length() + 1) * sizeof(typename OUTPUT::value_type) * multiplier;
-  char*       outBuf     = (char*)malloc(outBufSize);
-  if (outBuf == NULL)
+  if (normalizeOptions & COMPOSE)
   {
-      CLog::Log(LOGSEVERE, "%s: malloc failed", __FUNCTION__);
+    //this should not be deleted, it's managed by icu
+    const Normalizer2* norm = Normalizer2::getNFCInstance(err);
+    if (U_FAILURE(err))
+      return false;
+
+    norm->normalize(src, dst, err);
+    if (U_FAILURE(err))
+      return false;
+  }
+  else if (normalizeOptions & DECOMPOSE)
+  {
+    //this should not be deleted, it's managed by icu
+    const Normalizer2* norm = Normalizer2::getNFDInstance(err);
+    if (U_FAILURE(err))
+      return false;
+
+    norm->normalize(src, dst, err);
+    if (U_FAILURE(err))
+      return false;
+    }
+  else if (normalizeOptions & DECOMPOSE_MAC)
+  {
+    //https://developer.apple.com/library/mac/qa/qa1173/_index.html
+    //which U + 2000 through U + 2FFF, U + F900 through U + FAFF, and U + 2F800 through U + 2FAFF
+    //are not decomposed(this avoids problems with round trip conversions from old Mac text encodings).
+    UnicodeString usetString("[[^\\u2000-\\u2fff][^\\uf900-\\ufaff][^\\u2f800-\\u2faff]]");
+    UnicodeSet uSet(usetString, err);
+
+    if (U_FAILURE(err))
+      return false;
+
+    //this should not be deleted, it's managed by icu
+    const Normalizer2* nfd = Normalizer2::getNFDInstance(err);
+
+    if (U_FAILURE(err))
+      return false;
+
+    FilteredNormalizer2 filteredNfd(*nfd, uSet);
+
+    filteredNfd.normalize(src, dst, err);
+
+    if (U_FAILURE(err))
       return false;
   }
 
-  size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
-  size_t      outBytesAvail = outBufSize; //how many bytes iconv() can write
-  const char* inBufStart    = inBuf;      //where in our input buffer iconv() should start reading
-  char*       outBufStart   = outBuf;     //where in out output buffer iconv() should start writing
-
-  size_t returnV;
-  while(1)
-  {
-    //iconv() will update inBufStart, inBytesAvail, outBufStart and outBytesAvail
-    returnV = iconv(type, charPtrPtrAdapter(&inBufStart), &inBytesAvail, &outBufStart, &outBytesAvail);
-
-    if (returnV == (size_t)-1)
-    {
-      if (errno == E2BIG) //output buffer is not big enough
-      {
-        //save where iconv() ended converting, realloc might make outBufStart invalid
-        size_t bytesConverted = outBufSize - outBytesAvail;
-
-        //make buffer twice as big
-        outBufSize   *= 2;
-        char* newBuf  = (char*)realloc(outBuf, outBufSize);
-        if (!newBuf)
-        {
-          CLog::Log(LOGSEVERE, "%s realloc failed with errno=%d(%s)",
-                    __FUNCTION__, errno, strerror(errno));
-          break;
-        }
-        outBuf = newBuf;
-
-        //update the buffer pointer and counter
-        outBufStart   = outBuf + bytesConverted;
-        outBytesAvail = outBufSize - bytesConverted;
-
-        //continue in the loop and convert the rest
-        continue;
-      }
-      else if (errno == EILSEQ) //An invalid multibyte sequence has been encountered in the input
-      {
-        if (failOnInvalidChar)
-          break;
-
-        //skip invalid byte
-        inBufStart++;
-        inBytesAvail--;
-        //continue in the loop and convert the rest
-        continue;
-      }
-      else if (errno == EINVAL) /* Invalid sequence at the end of input buffer */
-      {
-        if (!failOnInvalidChar)
-          returnV = 0; /* reset error status to use converted part */
-
-        break;
-      }
-      else //iconv() had some other error
-      {
-        CLog::Log(LOGERROR, "%s: iconv() failed, errno=%d (%s)",
-                  __FUNCTION__, errno, strerror(errno));
-      }
-    }
-    break;
-  }
-
-  //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
-  if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
-    CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
-
-  if (returnV == (size_t)-1)
-  {
-    free(outBuf);
-    return false;
-  }
-  //we're done
-
-  const typename OUTPUT::size_type sizeInChars = (typename OUTPUT::size_type) (outBufSize - outBytesAvail) / sizeof(typename OUTPUT::value_type);
-  typename OUTPUT::const_pointer strPtr = (typename OUTPUT::const_pointer) outBuf;
-  /* Make sure that all buffer is assigned and string is stopped at end of buffer */
-  if (strPtr[sizeInChars-1] == 0 && strSource[strSource.length()-1] != 0)
-    strDest.assign(strPtr, sizeInChars-1);
-  else
-    strDest.assign(strPtr, sizeInChars);
-
-  free(outBuf);
-
+  dstLength = dst.length();
+  *dstBuffer = new UChar[dstLength];
+  
+  memcpy(static_cast<void*>(*dstBuffer), static_cast<const void*>(dst.getTerminatedBuffer()), dstLength * 2);
+#endif
   return true;
 }
 
-bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(const std::u32string& stringSrc, std::u32string& stringDst, FriBidiCharType base /*= FRIBIDI_TYPE_LTR*/, const bool failOnBadString /*= false*/)
+bool CCharsetConverter::Utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst)
 {
-  stringDst.clear();
-
-  const size_t srcLen = stringSrc.length();
-  if (srcLen == 0)
-    return true;
-
-  stringDst.reserve(srcLen);
-  size_t lineStart = 0;
-
-  // libfribidi is not threadsafe, so make sure we make it so
-  CSingleLock lock(m_critSectionFriBiDi);
-  do
-  {
-    size_t lineEnd = stringSrc.find('\n', lineStart);
-    if (lineEnd >= srcLen) // equal to 'lineEnd == std::string::npos'
-      lineEnd = srcLen;
-    else
-      lineEnd++; // include '\n'
-    
-    const size_t lineLen = lineEnd - lineStart;
-
-    FriBidiChar* visual = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
-    if (visual == NULL)
-    {
-      free(visual);
-      CLog::Log(LOGSEVERE, "%s: can't allocate memory", __FUNCTION__);
-      return false;
-    }
-
-    bool bidiFailed = false;
-    FriBidiCharType baseCopy = base; // preserve same value for all lines, required because fribidi_log2vis will modify parameter value
-    if (fribidi_log2vis((const FriBidiChar*)(stringSrc.c_str() + lineStart), lineLen, &baseCopy, visual, NULL, NULL, NULL))
-    {
-      // Removes bidirectional marks
-      const int newLen = fribidi_remove_bidi_marks(visual, lineLen, NULL, NULL, NULL);
-      if (newLen > 0)
-        stringDst.append((const char32_t*)visual, (size_t)newLen);
-      else if (newLen < 0)
-        bidiFailed = failOnBadString;
-    }
-    else
-      bidiFailed = failOnBadString;
-
-    free(visual);
-
-    if (bidiFailed)
-      return false;
-
-    lineStart = lineEnd;
-  } while (lineStart < srcLen);
-
-  return !stringDst.empty();
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF32_CHARSET, utf8StringSrc, utf32StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-static struct SCharsetMapping
-{
-  const char* charset;
-  const char* caption;
-} g_charsets[] = {
-  { "ISO-8859-1", "Western Europe (ISO)" }
-  , { "ISO-8859-2", "Central Europe (ISO)" }
-  , { "ISO-8859-3", "South Europe (ISO)" }
-  , { "ISO-8859-4", "Baltic (ISO)" }
-  , { "ISO-8859-5", "Cyrillic (ISO)" }
-  , { "ISO-8859-6", "Arabic (ISO)" }
-  , { "ISO-8859-7", "Greek (ISO)" }
-  , { "ISO-8859-8", "Hebrew (ISO)" }
-  , { "ISO-8859-9", "Turkish (ISO)" }
-  , { "CP1250", "Central Europe (Windows)" }
-  , { "CP1251", "Cyrillic (Windows)" }
-  , { "CP1252", "Western Europe (Windows)" }
-  , { "CP1253", "Greek (Windows)" }
-  , { "CP1254", "Turkish (Windows)" }
-  , { "CP1255", "Hebrew (Windows)" }
-  , { "CP1256", "Arabic (Windows)" }
-  , { "CP1257", "Baltic (Windows)" }
-  , { "CP1258", "Vietnamesse (Windows)" }
-  , { "CP874", "Thai (Windows)" }
-  , { "BIG5", "Chinese Traditional (Big5)" }
-  , { "GBK", "Chinese Simplified (GBK)" }
-  , { "SHIFT_JIS", "Japanese (Shift-JIS)" }
-  , { "CP949", "Korean" }
-  , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)" }
-  , { NULL, NULL }
-};
-
-CCharsetConverter::CCharsetConverter()
-{
-}
-
-void CCharsetConverter::OnSettingChanged(const CSetting* setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_LOCALE_CHARSET)
-    resetUserCharset();
-  else if (settingId == CSettings::SETTING_SUBTITLES_CHARSET)
-    resetSubtitleCharset();
-}
-
-void CCharsetConverter::clear()
-{
-}
-
-std::vector<std::string> CCharsetConverter::getCharsetLabels()
-{
-  std::vector<std::string> lab;
-  for(SCharsetMapping* c = g_charsets; c->charset; c++)
-    lab.push_back(c->caption);
-
-  return lab;
-}
-
-std::string CCharsetConverter::getCharsetLabelByName(const std::string& charsetName)
-{
-  for(SCharsetMapping* c = g_charsets; c->charset; c++)
-  {
-    if (StringUtils::EqualsNoCase(charsetName,c->charset))
-      return c->caption;
-  }
-
-  return "";
-}
-
-std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetLabel)
-{
-  for(SCharsetMapping* c = g_charsets; c->charset; c++)
-  {
-    if (StringUtils::EqualsNoCase(charsetLabel, c->caption))
-      return c->charset;
-  }
-
-  return "";
-}
-
-void CCharsetConverter::reset(void)
-{
-  for (int i = 0; i < NumberOfStdConversionTypes; i++)
-    CInnerConverter::m_stdConversion[i].Reset();
-}
-
-void CCharsetConverter::resetSystemCharset(void)
-{
-  CInnerConverter::m_stdConversion[Utf8ToSystem].Reset();
-  CInnerConverter::m_stdConversion[SystemToUtf8].Reset();
-}
-
-void CCharsetConverter::resetUserCharset(void)
-{
-  CInnerConverter::m_stdConversion[UserCharsetToUtf8].Reset();
-  CInnerConverter::m_stdConversion[UserCharsetToUtf8].Reset();
-  CInnerConverter::m_stdConversion[Utf32ToUserCharset].Reset();
-  resetSubtitleCharset();
-}
-
-void CCharsetConverter::resetSubtitleCharset(void)
-{
-  CInnerConverter::m_stdConversion[SubtitleCharsetToUtf8].Reset();
-}
-
-void CCharsetConverter::reinitCharsetsFromSettings(void)
-{
-  resetUserCharset(); // this will also reinit Subtitle charsets
-}
-
-bool CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
-{
-  return CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, utf32StringDst, failOnBadChar);
-}
-
-std::u32string CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, bool failOnBadChar /*= true*/)
+std::u32string CCharsetConverter::Utf8ToUtf32(const std::string& utf8StringSrc)
 {
   std::u32string converted;
-  utf8ToUtf32(utf8StringSrc, converted, failOnBadChar);
+  Utf8ToUtf32(utf8StringSrc, converted);
   return converted;
 }
 
-bool CCharsetConverter::utf8ToUtf32Visual(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool bVisualBiDiFlip /*= false*/, bool forceLTRReadingOrder /*= false*/, bool failOnBadChar /*= false*/)
+bool CCharsetConverter::Utf8ToUtf16(const std::string& utf8StringSrc, std::u16string& utf16StringDst)
 {
-  if (bVisualBiDiFlip)
-  {
-    std::u32string converted;
-    if (!CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, converted, failOnBadChar))
-      return false;
-
-    return CInnerConverter::logicalToVisualBiDi(converted, utf32StringDst, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF, failOnBadChar);
-  }
-  return CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, utf32StringDst, failOnBadChar);
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF16_CHARSET, utf8StringSrc, utf16StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, std::string& utf8StringDst, bool failOnBadChar /*= true*/)
+bool CCharsetConverter::TryUtf8ToUtf16(const std::string & utf8StringSrc, std::u16string & utf16StringDst)
 {
-  return CInnerConverter::stdConvert(Utf32ToUtf8, utf32StringSrc, utf8StringDst, failOnBadChar);
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF16_CHARSET, utf8StringSrc, utf16StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, true);
 }
 
-std::string CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, bool failOnBadChar /*= false*/)
+std::u16string CCharsetConverter::Utf8ToUtf16(const std::string& utf8StringSrc)
+{
+  std::u16string converted;
+  Utf8ToUtf16(utf8StringSrc, converted);
+  return converted;
+}
+
+bool CCharsetConverter::Utf8ToUtf16BE(const std::string& utf8StringSrc, std::u16string& utf16StringDst)
+{
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF16BE_CHARSET, utf8StringSrc, utf16StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::Utf8ToUtf16LE(const std::string& utf8StringSrc, std::u16string& utf16StringDst)
+{
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF16LE_CHARSET, utf8StringSrc, utf16StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::Utf8ToUtf32LogicalToVisual(const std::string& utf8StringSrc, std::u32string& utf32StringDst,
+                                                   uint16_t bidiOptions /* = LTR | REMOVE_CONTROLS */)
+{
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF32_CHARSET, utf8StringSrc, utf32StringDst,
+                                                bidiOptions, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::Utf32ToUtf8(const std::u32string& utf32StringSrc, std::string& utf8StringDst)
+{
+  return CInnerConverter::Convert(UTF32_CHARSET, UTF8_CHARSET, utf32StringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
+}
+
+std::string CCharsetConverter::Utf32ToUtf8(const std::u32string& utf32StringSrc)
 {
   std::string converted;
-  utf32ToUtf8(utf32StringSrc, converted, failOnBadChar);
+  Utf32ToUtf8(utf32StringSrc, converted);
   return converted;
 }
 
-bool CCharsetConverter::utf32ToW(const std::u32string& utf32StringSrc, std::wstring& wStringDst, bool failOnBadChar /*= true*/)
+bool CCharsetConverter::Utf8ToWLogicalToVisual(const std::string& utf8StringSrc, std::wstring& wStringDst,
+                                               uint16_t bidiOptions /* = LTR | REMOVE_CONTROLS */)
 {
-#ifdef WCHAR_IS_UCS_4
-  wStringDst.assign((const wchar_t*)utf32StringSrc.c_str(), utf32StringSrc.length());
-  return true;
-#else // !WCHAR_IS_UCS_4
-  return CInnerConverter::stdConvert(Utf32ToW, utf32StringSrc, wStringDst, failOnBadChar);
-#endif // !WCHAR_IS_UCS_4
+  return CInnerConverter::Convert(UTF8_CHARSET, WCHAR_CHARSET, utf8StringSrc, wStringDst,
+                                              bidiOptions, NO_NORMALIZATION | NORMALIZE, false);
 }
 
-bool CCharsetConverter::utf32logicalToVisualBiDi(const std::u32string& logicalStringSrc, std::u32string& visualStringDst, bool forceLTRReadingOrder /*= false*/, bool failOnBadString /*= false*/)
+bool CCharsetConverter::Utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst)
 {
-  return CInnerConverter::logicalToVisualBiDi(logicalStringSrc, visualStringDst, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF, failOnBadString);
+  return CInnerConverter::Convert(UTF8_CHARSET, WCHAR_CHARSET, utf8StringSrc, wStringDst,
+                                  NO_BIDI, NO_NORMALIZATION | NORMALIZE, false);
 }
 
-bool CCharsetConverter::wToUtf32(const std::wstring& wStringSrc, std::u32string& utf32StringDst, bool failOnBadChar /*= true*/)
+bool CCharsetConverter::TryUtf8ToW(const std::string & utf8StringSrc, std::wstring & wStringDst)
 {
-#ifdef WCHAR_IS_UCS_4
-  /* UCS-4 is almost equal to UTF-32, but UTF-32 has strict limits on possible values, while UCS-4 is usually unchecked.
-   * With this "conversion" we ensure that output will be valid UTF-32 string. */
-#endif
-  return CInnerConverter::stdConvert(WToUtf32, wStringSrc, utf32StringDst, failOnBadChar);
+  return CInnerConverter::Convert(UTF8_CHARSET, WCHAR_CHARSET, utf8StringSrc, wStringDst,
+                                  NO_BIDI, NO_NORMALIZATION | NORMALIZE, true);
 }
 
-// The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
-// of the string is already made or the string is not displayed in the GUI
-bool CCharsetConverter::utf8ToW(const std::string& utf8StringSrc, std::wstring& wStringDst, bool bVisualBiDiFlip /*= true*/, 
-                                bool forceLTRReadingOrder /*= false*/, bool failOnBadChar /*= false*/)
+bool CCharsetConverter::TryWToUtf8(const std::wstring & wStringSrc, std::string & utf8StringDst)
 {
-  // Try to flip hebrew/arabic characters, if any
-  if (bVisualBiDiFlip)
-  {
-    wStringDst.clear();
-    std::u32string utf32str;
-    if (!CInnerConverter::stdConvert(Utf8ToUtf32, utf8StringSrc, utf32str, failOnBadChar))
-      return false;
-
-    std::u32string utf32flipped;
-    const bool bidiResult = CInnerConverter::logicalToVisualBiDi(utf32str, utf32flipped, forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF, failOnBadChar);
-
-    return CInnerConverter::stdConvert(Utf32ToW, utf32flipped, wStringDst, failOnBadChar) && bidiResult;
-  }
-  
-  return CInnerConverter::stdConvert(Utf8toW, utf8StringSrc, wStringDst, failOnBadChar);
+  return CInnerConverter::Convert(WCHAR_CHARSET, UTF8_CHARSET, wStringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, true);
 }
 
-bool CCharsetConverter::subtitleCharsetToUtf8(const std::string& stringSrc, std::string& utf8StringDst)
+bool CCharsetConverter::SubtitleCharsetToUtf8(const std::string& stringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(SubtitleCharsetToUtf8, stringSrc, utf8StringDst, false);
+  std::string subtitleCharset = g_langInfo.GetSubtitleCharSet();
+  return CInnerConverter::Convert(subtitleCharset, UTF8_CHARSET, stringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::fromW(const std::wstring& wStringSrc,
-                              std::string& stringDst, const std::string& enc)
+bool CCharsetConverter::Utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst)
 {
-  return CInnerConverter::customConvert(WCHAR_CHARSET, enc, wStringSrc, stringDst);
+  std::string guiCharset = g_langInfo.GetGuiCharSet();
+  return CInnerConverter::Convert(UTF8_CHARSET, guiCharset, utf8StringSrc, stringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::toW(const std::string& stringSrc,
-                            std::wstring& wStringDst, const std::string& enc)
-{
-  return CInnerConverter::customConvert(enc, WCHAR_CHARSET, stringSrc, wStringDst);
-}
-
-bool CCharsetConverter::utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst)
-{
-  return CInnerConverter::stdConvert(Utf8ToUserCharset, utf8StringSrc, stringDst);
-}
-
-bool CCharsetConverter::utf8ToStringCharset(std::string& stringSrcDst)
+bool CCharsetConverter::Utf8ToStringCharset(std::string& stringSrcDst)
 {
   std::string strSrc(stringSrcDst);
-  return utf8ToStringCharset(strSrc, stringSrcDst);
+  return Utf8ToStringCharset(strSrc, stringSrcDst);
 }
 
-bool CCharsetConverter::ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
+bool CCharsetConverter::ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst)
 {
-  if (strSourceCharset == "UTF-8")
-  { // simple case - no conversion necessary
-    utf8StringDst = stringSrc;
-    return true;
-  }
-  
-  return CInnerConverter::customConvert(strSourceCharset, "UTF-8", stringSrc, utf8StringDst, failOnBadChar);
+  return CInnerConverter::Convert(strSourceCharset, UTF8_CHARSET, stringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst)
+bool CCharsetConverter::TryToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst)
 {
-  if (strDestCharset == "UTF-8")
-  { // simple case - no conversion necessary
-    stringDst = utf8StringSrc;
-    return true;
-  }
-
-  return CInnerConverter::customConvert(UTF8_SOURCE, strDestCharset, utf8StringSrc, stringDst);
+  return CInnerConverter::Convert(strSourceCharset, UTF8_CHARSET, stringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u16string& utf16StringDst)
+bool CCharsetConverter::Utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst)
 {
-  return CInnerConverter::customConvert(UTF8_SOURCE, strDestCharset, utf8StringSrc, utf16StringDst);
+  return CInnerConverter::Convert(UTF8_CHARSET, strDestCharset, utf8StringSrc, stringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u32string& utf32StringDst)
+bool CCharsetConverter::Utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u16string& utf16StringDst)
 {
-  return CInnerConverter::customConvert(UTF8_SOURCE, strDestCharset, utf8StringSrc, utf32StringDst);
+  return CInnerConverter::Convert(UTF8_CHARSET, strDestCharset, utf8StringSrc, utf16StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::unknownToUTF8(std::string& stringSrcDst)
+bool CCharsetConverter::Utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::u32string& utf32StringDst)
+{
+  return CInnerConverter::Convert(UTF8_CHARSET, strDestCharset, utf8StringSrc, utf32StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::UnknownToUtf8(std::string& stringSrcDst)
 {
   std::string source(stringSrcDst);
-  return unknownToUTF8(source, stringSrcDst);
+  return UnknownToUtf8(source, stringSrcDst);
 }
 
-bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
+bool CCharsetConverter::UnknownToUtf8(const std::string& stringSrc, std::string& utf8StringDst)
 {
   // checks whether it's utf8 already, and if not converts using the sourceCharset if given, else the string charset
   if (CUtf8Utils::isValidUtf8(stringSrc))
@@ -807,67 +600,141 @@ bool CCharsetConverter::unknownToUTF8(const std::string& stringSrc, std::string&
     utf8StringDst = stringSrc;
     return true;
   }
-  return CInnerConverter::stdConvert(UserCharsetToUtf8, stringSrc, utf8StringDst, failOnBadChar);
+  std::string guiCharset = g_langInfo.GetGuiCharSet();
+  return CInnerConverter::Convert(guiCharset, UTF8_CHARSET, stringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
+bool CCharsetConverter::WToUtf8(const std::wstring& wStringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(WtoUtf8, wStringSrc, utf8StringDst, failOnBadChar);
+  return CInnerConverter::Convert(WCHAR_CHARSET, UTF8_CHARSET, wStringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
+bool CCharsetConverter::Utf16BEToUtf8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(Utf16BEtoUtf8, utf16StringSrc, utf8StringDst);
+  return CInnerConverter::Convert(UTF16BE_CHARSET, UTF8_CHARSET, utf16StringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf16LEtoUTF8(const std::u16string& utf16StringSrc,
-                                      std::string& utf8StringDst)
+bool CCharsetConverter::Utf16LEToUtf8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(Utf16LEtoUtf8, utf16StringSrc, utf8StringDst);
+  return CInnerConverter::Convert(UTF16LE_CHARSET, UTF8_CHARSET, utf16StringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst)
+bool CCharsetConverter::Utf16ToUtf8(const std::u16string& utf16StringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(Ucs2CharsetToUtf8, ucs2StringSrc,utf8StringDst);
+  return CInnerConverter::Convert(UTF16_CHARSET, UTF8_CHARSET, utf16StringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf16LEtoW(const std::u16string& utf16String, std::wstring& wString)
+bool CCharsetConverter::TryUtf16ToUtf8(const std::u16string utf16StringSrc, std::string & utf8StringDst)
 {
-  return CInnerConverter::stdConvert(Utf16LEtoW, utf16String, wString);
+  return CInnerConverter::Convert(UTF16_CHARSET, UTF8_CHARSET, utf16StringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, true);
 }
 
-bool CCharsetConverter::utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst)
+bool CCharsetConverter::Ucs2ToUtf8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(Utf32ToUserCharset, utf32StringSrc, stringDst);
+  //UCS2 is technically only BE and ICU includes no LE version converter
+  //Use UTF-16 converter since the only difference are lead bytes that are
+  //illegal to use in UCS2 so should not cause any issues
+  return CInnerConverter::Convert(UTF16LE_CHARSET, UTF8_CHARSET, ucs2StringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar /*= false*/)
+
+bool CCharsetConverter::Utf8ToSystem(std::string& stringSrcDst)
 {
   std::string strSrc(stringSrcDst);
-  return CInnerConverter::stdConvert(Utf8ToSystem, strSrc, stringSrcDst, failOnBadChar);
+  return CInnerConverter::Convert(UTF8_CHARSET, "", strSrc, stringSrcDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::systemToUtf8(const std::string& sysStringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
+bool CCharsetConverter::SystemToUtf8(const std::string& sysStringSrc, std::string& utf8StringDst)
 {
-  return CInnerConverter::stdConvert(SystemToUtf8, sysStringSrc, utf8StringDst, failOnBadChar);
+  return CInnerConverter::Convert("", UTF8_CHARSET, sysStringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, false);
 }
 
-bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString /*= false*/)
+bool CCharsetConverter::TrySystemToUtf8(const std::string& sysStringSrc, std::string& utf8StringDst)
 {
-  utf8StringDst.clear();
-  std::u32string utf32flipped;
-  if (!utf8ToUtf32Visual(utf8StringSrc, utf32flipped, true, true, failOnBadString))
-    return false;
-
-  return CInnerConverter::stdConvert(Utf32ToUtf8, utf32flipped, utf8StringDst, failOnBadString);
+  return CInnerConverter::Convert("", UTF8_CHARSET, sysStringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, true);
 }
 
-void CCharsetConverter::SettingOptionsCharsetsFiller(const CSetting* setting, std::vector< std::pair<std::string, std::string> >& list, std::string& current, void *data)
+bool CCharsetConverter::LogicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst,
+                                            uint16_t bidiOptions /* = LTR | REMOVE_CONTROLS */)
 {
-  std::vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
-  sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF8_CHARSET, utf8StringSrc, utf8StringDst,
+                                  bidiOptions, NO_NORMALIZATION, false);
+}
 
-  list.push_back(make_pair(g_localizeStrings.Get(13278), "DEFAULT")); // "Default"
-  for (int i = 0; i < (int) vecCharsets.size(); ++i)
-    list.push_back(make_pair(vecCharsets[i], g_charsetConverter.getCharsetNameByLabel(vecCharsets[i])));
+bool CCharsetConverter::LogicalToVisualBiDi(const std::u16string& utf16StringSrc, std::u16string& utf16StringDst,
+                                            uint16_t bidiOptions /* = LTR | REMOVE_CONTROLS */)
+{
+  return CInnerConverter::Convert(UTF16_CHARSET, UTF16_CHARSET, utf16StringSrc, utf16StringDst,
+                                  bidiOptions, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::LogicalToVisualBiDi(const std::wstring& wStringSrc, std::wstring& wStringDst,
+                                            uint16_t bidiOptions /* = LTR | REMOVE_CONTROLS */)
+{
+  return CInnerConverter::Convert(WCHAR_CHARSET, WCHAR_CHARSET, wStringSrc, wStringDst,
+                                  bidiOptions, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::LogicalToVisualBiDi(const std::u32string& utf32StringSrc, std::u32string& utf32StringDst,
+                                            uint16_t bidiOptions /* = LTR | REMOVE_CONTROLS */)
+{
+  return CInnerConverter::Convert(UTF32_CHARSET, UTF32_CHARSET, utf32StringSrc, utf32StringDst,
+                                  bidiOptions, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::ReverseRTL(const std::string& utf8StringSrc, std::string& utf8StringDst)
+{
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF8_CHARSET, utf8StringSrc, utf8StringDst, 
+                                  RTL | WRITE_REVERSE, NO_NORMALIZATION, false);
+}
+
+bool CCharsetConverter::Utf8ToSystemSafe(const std::string& stringSrc, std::string& stringDst)
+{
+  stringDst = stringSrc;
+
+  return true;
+}
+
+bool CCharsetConverter::Utf8ToWSystemSafe(const std::string& stringSrc, std::wstring& stringDst)
+{
+  //W should be win32 only and requires no special handling, make sure we fail on bad chars
+  //to avoid any weird behavior
+  return CInnerConverter::Convert(UTF8_CHARSET, WCHAR_CHARSET, stringSrc, stringDst,
+                                  NO_BIDI, NO_NORMALIZATION, true);
+}
+
+bool CCharsetConverter::WToUtf8SystemSafe(const std::wstring& wStringSrc, std::string& utf8StringDst)
+{
+  return CInnerConverter::Convert(WCHAR_CHARSET, UTF8_CHARSET, wStringSrc, utf8StringDst,
+                                  NO_BIDI, NO_NORMALIZATION, true);
+}
+
+bool CCharsetConverter::Normalize(const std::string& source, std::string& destination, uint16_t options)
+{
+  return CInnerConverter::Convert(UTF8_CHARSET, UTF8_CHARSET, source, destination, NO_BIDI, options, false);
+}
+
+bool CCharsetConverter::Normalize(const std::u16string & source, std::u16string & destination, uint16_t options)
+{
+  return CInnerConverter::Convert(UTF16_CHARSET, UTF16_CHARSET, source, destination, NO_BIDI, options, false);
+}
+
+bool CCharsetConverter::Normalize(const std::u32string & source, std::u32string & destination, uint16_t options)
+{
+  return CInnerConverter::Convert(UTF32_CHARSET, UTF32_CHARSET, source, destination, NO_BIDI, options, false);
+}
+
+bool CCharsetConverter::Normalize(const std::wstring & source, std::wstring & destination, uint16_t options)
+{
+  return CInnerConverter::Convert(WCHAR_CHARSET, WCHAR_CHARSET, source, destination, NO_BIDI, options, false);
 }

@@ -209,7 +209,7 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
 #ifndef TARGET_POSIX
   StringUtils::Replace(strPath, '/', '\\');
 #endif
-  //g_charsetConverter.unknownToUTF8(strPath);
+  //CCharsetConverter::UnknownToUtf8(strPath);
   std::string strCachedPath = URIUtils::AddFileToFolder(strDir + "rarfolder%04d",
                                            URIUtils::GetFileName(strPathInRar));
   strCachedPath = CUtil::GetNextPathname(strCachedPath, 9999);
@@ -237,9 +237,9 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
 
         /* convert to utf8 */
         if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
-          g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
+          CCharsetConverter::WToUtf8(pIterator->item.NameW, strName);
         else
-          g_charsetConverter.unknownToUTF8(pIterator->item.Name, strName);
+          CCharsetConverter::UnknownToUtf8(pIterator->item.Name, strName);
         if (strName == strPath)
         {
           iOffset = pIterator->item.iOffset;
@@ -337,9 +337,9 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const std::string& str
 
     /* convert to utf8 */
     if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
-      g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
+      CCharsetConverter::WToUtf8(pIterator->item.NameW, strName);
     else
-      g_charsetConverter.unknownToUTF8(pIterator->item.Name, strName);
+      CCharsetConverter::UnknownToUtf8(pIterator->item.Name, strName);
 
     /* replace back slashes into forward slashes */
     /* this could get us into troubles, file could two different files, one with / and one with \ */

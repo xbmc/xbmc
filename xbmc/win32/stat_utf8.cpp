@@ -24,7 +24,11 @@
 int stat64_utf8(const char* __file, struct stat64* __buf)
 {
   std::wstring fileW;
-  g_charsetConverter.utf8ToW(__file, fileW, false);
+  if (!CCharsetConverter::Utf8ToWSystemSafe(__file, fileW))
+  {
+    errno = EINVAL;
+    return -1;
+  }
   return _wstat64(fileW.c_str(), __buf);
 }
 

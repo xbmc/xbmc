@@ -376,9 +376,9 @@ void StringUtils::ToLower(std::wstring &str)
 void StringUtils::ToCapitalize(std::string &str)
 {
   std::wstring wstr;
-  g_charsetConverter.utf8ToW(str, wstr);
+  CCharsetConverter::Utf8ToW(str, wstr);
   ToCapitalize(wstr);
-  g_charsetConverter.wToUTF8(wstr, str);
+  CCharsetConverter::WToUtf8(wstr, str);
 }
 
 void StringUtils::ToCapitalize(std::wstring &str)

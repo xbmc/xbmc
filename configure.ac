@@ -1073,9 +1073,6 @@ PKG_CHECK_MODULES([LIBXML], [libxml-2.0],
 PKG_CHECK_MODULES([LIBXSLT], [libxslt],
   [INCLUDES="$INCLUDES $LIBXSLT_CFLAGS"; LIBS="$LIBS $LIBXSLT_LIBS"],
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
-  [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SQLITE3],    [sqlite3],
   [INCLUDES="$INCLUDES $SQLITE3_CFLAGS"; LIBS="$LIBS $SQLITE3_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -1095,6 +1092,9 @@ PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([TAGLIB],  [taglib >= 1.8],
   [INCLUDES="$INCLUDES $TAGLIB_CFLAGS"; LIBS="$LIBS $TAGLIB_LIBS"],
+  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([ICU_UC], [icu-uc >= 54.1],
+  [INCLUDES="$INCLUDES $ICU_UC_CFLAGS"; LIBS="$LIBS $ICU_UC_LIBS"],
   AC_MSG_ERROR($missing_library))
 
 if test "$use_optical_drive" = "yes"; then
@@ -1135,7 +1135,6 @@ AS_CASE([x$use_libbluray],
 )
 
 #Check to see if libs are needed for functions that are often built-in to libc
-AC_SEARCH_LIBS([iconv_open],iconv,,AC_SEARCH_LIBS([libiconv_open],iconv,,AC_MSG_ERROR($missing_library)))
 AC_SEARCH_LIBS([dlopen],dl)
 AC_SEARCH_LIBS([clock_gettime],rt)
 AC_SEARCH_LIBS([dn_expand],  resolv)

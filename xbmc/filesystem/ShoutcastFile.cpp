@@ -148,18 +148,18 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   if (!m_fileCharset.empty())
   {
     std::string converted;
-    g_charsetConverter.ToUtf8(m_fileCharset, strBuffer, converted);
+    CCharsetConverter::ToUtf8(m_fileCharset, strBuffer, converted);
     strBuffer = converted;
   }
   else
-    g_charsetConverter.unknownToUTF8(strBuffer);
+    CCharsetConverter::UnknownToUtf8(strBuffer);
   
   bool result=false;
 
   std::wstring wBuffer, wConverted;
-  g_charsetConverter.utf8ToW(strBuffer, wBuffer, false);
+  CCharsetConverter::Utf8ToW(strBuffer, wBuffer);
   HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
-  g_charsetConverter.wToUTF8(wConverted, strBuffer);
+  CCharsetConverter::WToUtf8(wConverted, strBuffer);
 
   CRegExp reTitle(true);
   reTitle.RegComp("StreamTitle=\'(.*?)\';");

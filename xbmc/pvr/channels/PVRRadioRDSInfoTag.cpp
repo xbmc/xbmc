@@ -259,25 +259,25 @@ void CPVRRadioRDSInfoTag::SetArtist(const std::string& strArtist)
 void CPVRRadioRDSInfoTag::SetBand(const std::string& strBand)
 {
   m_strBand = Trim(strBand);
-  g_charsetConverter.unknownToUTF8(m_strBand);
+  CCharsetConverter::UnknownToUtf8(m_strBand);
 }
 
 void CPVRRadioRDSInfoTag::SetComposer(const std::string& strComposer)
 {
   m_strComposer = Trim(strComposer);
-  g_charsetConverter.unknownToUTF8(m_strComposer);
+  CCharsetConverter::UnknownToUtf8(m_strComposer);
 }
 
 void CPVRRadioRDSInfoTag::SetConductor(const std::string& strConductor)
 {
   m_strConductor = Trim(strConductor);
-  g_charsetConverter.unknownToUTF8(m_strConductor);
+  CCharsetConverter::UnknownToUtf8(m_strConductor);
 }
 
 void CPVRRadioRDSInfoTag::SetAlbum(const std::string& strAlbum)
 {
   m_strAlbum = Trim(strAlbum);
-  g_charsetConverter.unknownToUTF8(m_strAlbum);
+  CCharsetConverter::UnknownToUtf8(m_strAlbum);
 }
 
 void CPVRRadioRDSInfoTag::SetAlbumTrackNumber(int track)
@@ -288,7 +288,7 @@ void CPVRRadioRDSInfoTag::SetAlbumTrackNumber(int track)
 void CPVRRadioRDSInfoTag::SetComment(const std::string& strComment)
 {
   m_strComment = Trim(strComment);
-  g_charsetConverter.unknownToUTF8(m_strComment);
+  CCharsetConverter::UnknownToUtf8(m_strComment);
 }
 
 const std::string& CPVRRadioRDSInfoTag::GetTitle() const
@@ -334,7 +334,7 @@ const std::string& CPVRRadioRDSInfoTag::GetComment() const
 void CPVRRadioRDSInfoTag::SetInfoNews(const std::string& strNews)
 {
   std::string tmpStr = Trim(strNews);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoNews.size(); ++i)
   {
@@ -378,7 +378,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoNews() const
 void CPVRRadioRDSInfoTag::SetInfoNewsLocal(const std::string& strNews)
 {
   std::string tmpStr = Trim(strNews);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoNewsLocal.size(); ++i)
   {
@@ -422,7 +422,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoNewsLocal() const
 void CPVRRadioRDSInfoTag::SetInfoSport(const std::string& strSport)
 {
   std::string tmpStr = Trim(strSport);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoSport.size(); ++i)
   {
@@ -466,7 +466,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoSport() const
 void CPVRRadioRDSInfoTag::SetInfoStock(const std::string& strStock)
 {
   std::string tmpStr = Trim(strStock);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoStock.size(); ++i)
   {
@@ -510,7 +510,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoStock() const
 void CPVRRadioRDSInfoTag::SetInfoWeather(const std::string& strWeather)
 {
   std::string tmpStr = Trim(strWeather);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoWeather.size(); ++i)
   {
@@ -553,7 +553,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoWeather() const
 void CPVRRadioRDSInfoTag::SetInfoLottery(const std::string& strLottery)
 {
   std::string tmpStr = Trim(strLottery);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoLottery.size(); ++i)
   {
@@ -596,7 +596,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoLottery() const
 void CPVRRadioRDSInfoTag::SetEditorialStaff(const std::string& strEditorialStaff)
 {
   std::string tmpStr = Trim(strEditorialStaff);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strEditorialStaff.size(); ++i)
   {
@@ -639,7 +639,7 @@ const std::string CPVRRadioRDSInfoTag::GetEditorialStaff() const
 void CPVRRadioRDSInfoTag::SetInfoHoroscope(const std::string& strHoroscope)
 {
   std::string tmpStr = Trim(strHoroscope);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoHoroscope.size(); ++i)
   {
@@ -682,7 +682,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoHoroscope() const
 void CPVRRadioRDSInfoTag::SetInfoCinema(const std::string& strCinema)
 {
   std::string tmpStr = Trim(strCinema);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoCinema.size(); ++i)
   {
@@ -725,7 +725,7 @@ const std::string CPVRRadioRDSInfoTag::GetInfoCinema() const
 void CPVRRadioRDSInfoTag::SetInfoOther(const std::string& strOther)
 {
   std::string tmpStr = Trim(strOther);
-  g_charsetConverter.unknownToUTF8(tmpStr);
+  CCharsetConverter::UnknownToUtf8(tmpStr);
 
   for (unsigned i = 0; i < m_strInfoOther.size(); ++i)
   {
@@ -768,67 +768,67 @@ const std::string CPVRRadioRDSInfoTag::GetInfoOther() const
 void CPVRRadioRDSInfoTag::SetProgStation(const std::string& strProgStation)
 {
   m_strProgStation = Trim(strProgStation);
-  g_charsetConverter.unknownToUTF8(m_strProgStation);
+  CCharsetConverter::UnknownToUtf8(m_strProgStation);
 }
 
 void CPVRRadioRDSInfoTag::SetProgHost(const std::string& strProgHost)
 {
   m_strProgHost = Trim(strProgHost);
-  g_charsetConverter.unknownToUTF8(m_strProgHost);
+  CCharsetConverter::UnknownToUtf8(m_strProgHost);
 }
 
 void CPVRRadioRDSInfoTag::SetProgStyle(const std::string& strProgStyle)
 {
   m_strProgStyle = Trim(strProgStyle);
-  g_charsetConverter.unknownToUTF8(m_strProgStyle);
+  CCharsetConverter::UnknownToUtf8(m_strProgStyle);
 }
 
 void CPVRRadioRDSInfoTag::SetProgWebsite(const std::string& strWebsite)
 {
   m_strProgWebsite = Trim(strWebsite);
-  g_charsetConverter.unknownToUTF8(m_strProgWebsite);
+  CCharsetConverter::UnknownToUtf8(m_strProgWebsite);
 }
 
 void CPVRRadioRDSInfoTag::SetProgNow(const std::string& strNow)
 {
   m_strProgNow = Trim(strNow);
-  g_charsetConverter.unknownToUTF8(m_strProgNow);
+  CCharsetConverter::UnknownToUtf8(m_strProgNow);
 }
 
 void CPVRRadioRDSInfoTag::SetProgNext(const std::string& strNext)
 {
   m_strProgNext = Trim(strNext);
-  g_charsetConverter.unknownToUTF8(m_strProgNext);
+  CCharsetConverter::UnknownToUtf8(m_strProgNext);
 }
 
 void CPVRRadioRDSInfoTag::SetPhoneHotline(const std::string& strHotline)
 {
   m_strPhoneHotline = Trim(strHotline);
-  g_charsetConverter.unknownToUTF8(m_strPhoneHotline);
+  CCharsetConverter::UnknownToUtf8(m_strPhoneHotline);
 }
 
 void CPVRRadioRDSInfoTag::SetEMailHotline(const std::string& strHotline)
 {
   m_strEMailHotline = Trim(strHotline);
-  g_charsetConverter.unknownToUTF8(m_strEMailHotline);
+  CCharsetConverter::UnknownToUtf8(m_strEMailHotline);
 }
 
 void CPVRRadioRDSInfoTag::SetPhoneStudio(const std::string& strPhone)
 {
   m_strPhoneStudio = Trim(strPhone);
-  g_charsetConverter.unknownToUTF8(m_strPhoneStudio);
+  CCharsetConverter::UnknownToUtf8(m_strPhoneStudio);
 }
 
 void CPVRRadioRDSInfoTag::SetEMailStudio(const std::string& strEMail)
 {
   m_strEMailStudio = Trim(strEMail);
-  g_charsetConverter.unknownToUTF8(m_strEMailStudio);
+  CCharsetConverter::UnknownToUtf8(m_strEMailStudio);
 }
 
 void CPVRRadioRDSInfoTag::SetSMSStudio(const std::string& strSMS)
 {
   m_strSMSStudio = Trim(strSMS);
-  g_charsetConverter.unknownToUTF8(m_strSMSStudio);
+  CCharsetConverter::UnknownToUtf8(m_strSMSStudio);
 }
 
 const std::string& CPVRRadioRDSInfoTag::GetProgStyle() const

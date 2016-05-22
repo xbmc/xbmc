@@ -171,7 +171,7 @@ std::string CWinSystemWin32DX::GetClipboardText(void)
     CloseClipboard();
   }
 
-  g_charsetConverter.wToUTF8(unicode_text, utf8_text);
+  CCharsetConverter::WToUtf8(unicode_text, utf8_text);
 
   return utf8_text;
 }

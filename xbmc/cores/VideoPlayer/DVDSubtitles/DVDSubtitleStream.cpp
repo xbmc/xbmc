@@ -84,7 +84,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
     else if (!enc.empty())
     {
       std::string converted;
-      g_charsetConverter.ToUtf8(enc, tmpStr, converted);
+      CCharsetConverter::ToUtf8(enc, tmpStr, converted);
       if (converted.empty())
         return false;
 
@@ -93,7 +93,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
     else
     {
       std::string converted;
-      g_charsetConverter.subtitleCharsetToUtf8(tmpStr, converted);
+      CCharsetConverter::SubtitleCharsetToUtf8(tmpStr, converted);
       if (converted.empty())
         return false;
 

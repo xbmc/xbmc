@@ -495,10 +495,10 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   WCHAR cFSName[128];
   URIUtils::AddSlashAtEnd(strDevice);
   std::wstring strDeviceW;
-  g_charsetConverter.utf8ToW(strDevice, strDeviceW);
+  CCharsetConverter::Utf8ToW(strDevice, strDeviceW);
   if(GetVolumeInformationW(strDeviceW.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
-  g_charsetConverter.wToUTF8(cVolumenName, strDevice);
+  CCharsetConverter::WToUtf8(cVolumenName, strDevice);
   return StringUtils::TrimRight(strDevice, " ");
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();

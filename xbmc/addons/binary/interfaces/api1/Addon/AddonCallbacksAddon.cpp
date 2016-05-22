@@ -297,7 +297,7 @@ char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 {
   std::string string;
   if (strSource != NULL)
-    g_charsetConverter.unknownToUTF8(strSource, string);
+    CCharsetConverter::UnknownToUtf8(strSource, string);
   else
     string = "";
   char* buffer = strdup(string.c_str());

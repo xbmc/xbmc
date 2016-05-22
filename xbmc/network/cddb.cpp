@@ -394,14 +394,14 @@ void Xcddb::addTitle(const char *buffer)
   std::vector<std::string> values = StringUtils::Split(value, " / ");
   if (values.size() > 1)
   {
-    g_charsetConverter.unknownToUTF8(values[0]);
+    CCharsetConverter::UnknownToUtf8(values[0]);
     m_mapArtists[trk_nr] += values[0];
-    g_charsetConverter.unknownToUTF8(values[1]);
+    CCharsetConverter::UnknownToUtf8(values[1]);
     m_mapTitles[trk_nr] += values[1];
   }
   else if (!values.empty())
   {
-    g_charsetConverter.unknownToUTF8(values[0]);
+    CCharsetConverter::UnknownToUtf8(values[0]);
     m_mapTitles[trk_nr] += values[0];
   }
 }
@@ -551,7 +551,7 @@ void Xcddb::parseData(const char *buffer)
         // as a fallback
         size_t iPos = strExtd.find("YEAR: ");
         if (iPos != std::string::npos) // You never know if you really get UTF-8 strings from cddb
-          g_charsetConverter.unknownToUTF8(strExtd.substr(iPos + 6, 4), m_strYear);
+          CCharsetConverter::UnknownToUtf8(strExtd.substr(iPos + 6, 4), m_strYear);
       }
 
       if (m_strGenre.empty())
@@ -607,7 +607,7 @@ void Xcddb::addExtended(const char *buffer)
   std::string strValue;
   std::string strValueUtf8=value;
   // You never know if you really get UTF-8 strings from cddb
-  g_charsetConverter.unknownToUTF8(strValueUtf8, strValue);
+  CCharsetConverter::UnknownToUtf8(strValueUtf8, strValue);
   m_mapExtended_track[trk_nr] = strValue;
 }
 
@@ -716,12 +716,12 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
 
   std::string strArtist=artist;
   // You never know if you really get UTF-8 strings from cddb
-  g_charsetConverter.unknownToUTF8(artist, strArtist);
+  CCharsetConverter::UnknownToUtf8(artist, strArtist);
   m_mapInexact_artist_list[line_cnt] = strArtist;
 
   std::string strTitle=title;
   // You never know if you really get UTF-8 strings from cddb
-  g_charsetConverter.unknownToUTF8(title, strTitle);
+  CCharsetConverter::UnknownToUtf8(title, strTitle);
   m_mapInexact_title_list[line_cnt] = strTitle;
   // char log_string[1024];
   // sprintf(log_string,"%u: %s - %s",line_cnt,artist,title);
@@ -1073,7 +1073,7 @@ std::string Xcddb::TrimToUTF8(const std::string &untrimmedText)
   std::string text(untrimmedText);
   StringUtils::Trim(text);
   // You never know if you really get UTF-8 strings from cddb
-  g_charsetConverter.unknownToUTF8(text);
+  CCharsetConverter::UnknownToUtf8(text);
   return text;
 }
 
