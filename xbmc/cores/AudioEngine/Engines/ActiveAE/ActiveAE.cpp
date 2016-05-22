@@ -3202,7 +3202,7 @@ IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int option
 {
   if (audioFormat.m_dataFormat <= AE_FMT_INVALID || audioFormat.m_dataFormat >= AE_FMT_MAX)
   {
-    return NULL;
+    return nullptr;
   }
 
   if (IsSuspended())
