@@ -180,11 +180,6 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
 
   /**
-   * Dispose, Free all resources
-   */
-  virtual void Dispose() = 0;
-
-  /**
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */

@@ -32,7 +32,6 @@ public:
 
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual void Dispose(void);
   virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
@@ -41,6 +40,7 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   
 protected:
+  void Dispose(void);
   const char        *m_pFormatName;
   COpenMaxVideo     *m_omx_decoder;
   DVDVideoPicture   m_videobuffer;

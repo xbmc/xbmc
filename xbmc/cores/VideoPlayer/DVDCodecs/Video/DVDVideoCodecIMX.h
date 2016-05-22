@@ -177,7 +177,6 @@ private:
 
   void SetFieldData(uint8_t fieldFmt);
 
-  void Dispose();
   void MemMap(struct fb_fix_screeninfo *fb_fix = NULL);
 
   virtual void OnStartup();
@@ -186,6 +185,7 @@ private:
   virtual void Process();
 
 private:
+  void Dispose();
   typedef std::vector<IPUTask> TaskQueue;
 
   int                            m_fbHandle;
