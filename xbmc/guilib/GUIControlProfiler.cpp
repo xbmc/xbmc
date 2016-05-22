@@ -97,8 +97,6 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   case CGUIControl::GUICONTROL_IMAGE:
   case CGUIControl::GUICONTROL_BORDEREDIMAGE:
     lpszType = "image"; break;
-  case CGUIControl::GUICONTROL_LARGE_IMAGE:
-    lpszType = "largeimage"; break;
   case CGUIControl::GUICONTROL_LABEL:
     lpszType = "label"; break;
   case CGUIControl::GUICONTROL_LISTGROUP:

@@ -76,7 +76,6 @@ static const ControlMapping controls[] =
    {{"button",            CGUIControl::GUICONTROL_BUTTON},
     {"fadelabel",         CGUIControl::GUICONTROL_FADELABEL},
     {"image",             CGUIControl::GUICONTROL_IMAGE},
-    {"largeimage",        CGUIControl::GUICONTROL_IMAGE},
     {"image",             CGUIControl::GUICONTROL_BORDEREDIMAGE},
     {"label",             CGUIControl::GUICONTROL_LABEL},
     {"label",             CGUIControl::GUICONTROL_LISTLABEL},
@@ -1283,9 +1282,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     break;
   case CGUIControl::GUICONTROL_IMAGE:
     {
-      if (strType == "largeimage")
-        texture.useLarge = true;
-
       // use a bordered texture if we have <bordersize> or <bordertexture> specified.
       if (borderTexture.filename.empty() && borderStr.empty())
         control = new CGUIImage(
