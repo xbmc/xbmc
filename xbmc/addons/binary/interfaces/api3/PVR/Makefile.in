@@ -1,6 +1,0 @@
-SRCS=Addon_PVR.cpp \
-
-LIB=addon-interface-pvr.a
-
-include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

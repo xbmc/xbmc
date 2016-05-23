@@ -29,8 +29,3 @@ if(NOT CORE_SYSTEM_NAME)
 endif()
 
 include(AddonHelpers)
-if(USE_KODI_API_LEVEL EQUAL 2)
-  include(kodi-addon-sharedlibrary-api2-config)
-elseif(USE_KODI_API_LEVEL EQUAL 3)
-  include(kodi-addon-sharedlibrary-api3-config)
-endif()
