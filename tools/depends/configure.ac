@@ -456,7 +456,7 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR("NDK path is required for android")
   fi
 
-  if ! test -f "$use_ndk/RELEASE.TXT" ; then
+  if ([! test -f "$use_ndk/source.properties"] && [! test -f "$use_ndk/RELEASE.TXT"]) ; then
     AC_MSG_ERROR("$use_ndk is not an NDK directory")
   fi
 
