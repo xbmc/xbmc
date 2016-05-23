@@ -56,9 +56,13 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
 {
   CSingleLock lock(m_section);
 
-  m_list.remove_if([type](const DVDMessageListItem &item){
-      return type == CDVDMsg::NONE || item.message->IsType(type);
-    });
+  m_messages.remove_if([type](const DVDMessageListItem &item){
+    return type == CDVDMsg::NONE || item.message->IsType(type);
+  });
+
+  m_prioMessages.remove_if([type](const DVDMessageListItem &item){
+    return type == CDVDMsg::NONE || item.message->IsType(type);
+  });
 
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
   {
@@ -74,7 +78,8 @@ void CDVDMessageQueue::Abort()
 
   m_bAbortRequest = true;
 
-  m_hEvent.Set(); // inform waiter for abort action
+  // inform waiter for abort action
+  m_hEvent.Set();
 }
 
 void CDVDMessageQueue::End()
@@ -88,8 +93,7 @@ void CDVDMessageQueue::End()
   m_bAbortRequest = false;
 }
 
-
-MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
+MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority, bool front)
 {
   CSingleLock lock(m_section);
 
@@ -105,11 +109,25 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
     return MSGQ_INVALID_MSG;
   }
 
-  auto it = std::find_if(m_list.begin(), m_list.end(),
-                         [priority](const DVDMessageListItem &item){
-                           return priority <= item.priority;
-                         });
-  m_list.emplace(it, pMsg, priority);
+  if (priority > 0)
+  {
+    int prio = priority;
+    if (!front)
+      prio++;
+
+    auto it = std::find_if(m_prioMessages.begin(), m_prioMessages.end(),
+                           [prio](const DVDMessageListItem &item){
+                             return prio <= item.priority;
+                           });
+    m_prioMessages.emplace(it, pMsg, priority);
+  }
+  else
+  {
+    if (front)
+      m_messages.emplace_front(pMsg, priority);
+    else
+      m_messages.emplace_back(pMsg, priority);
+  }
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) && priority == 0)
   {
@@ -129,7 +147,8 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   pMsg->Release();
 
-  m_hEvent.Set(); // inform waiter for new packet
+  // inform waiter for new packet
+  m_hEvent.Set();
 
   return MSGQ_OK;
 }
@@ -150,9 +169,11 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
   while (!m_bAbortRequest)
   {
-    if (!m_list.empty() && m_list.back().priority >= priority)
+    std::list<DVDMessageListItem> &msgs = (priority > 0 || !m_prioMessages.empty()) ? m_prioMessages : m_messages;
+
+    if (!msgs.empty() && msgs.back().priority >= priority)
     {
-      DVDMessageListItem& item(m_list.back());
+      DVDMessageListItem& item(msgs.back());
       priority = item.priority;
 
       if (item.message->IsType(CDVDMsg::DEMUXER_PACKET) && item.priority == 0)
@@ -169,7 +190,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
       }
 
       *pMsg = item.message->Acquire();
-      m_list.pop_back();
+      msgs.pop_back();
 
       ret = MSGQ_OK;
       break;
@@ -206,7 +227,12 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
     return 0;
 
   unsigned count = 0;
-  for (const auto &item : m_list)
+  for (const auto &item : m_messages)
+  {
+    if(item.message->IsType(type))
+      count++;
+  }
+  for (const auto &item : m_prioMessages)
   {
     if(item.message->IsType(type))
       count++;
