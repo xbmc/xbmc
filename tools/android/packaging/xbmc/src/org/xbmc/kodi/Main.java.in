@@ -12,7 +12,6 @@ import android.view.Choreographer;
 import android.view.View;
 import android.view.Surface;
 import android.widget.RelativeLayout;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import org.xbmc.@APP_NAME_LC@.XBMCVideoView;

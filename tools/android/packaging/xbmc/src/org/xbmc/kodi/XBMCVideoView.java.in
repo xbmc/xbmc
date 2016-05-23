@@ -6,7 +6,6 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import android.R.bool;
 import android.opengl.GLES20;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,8 +13,6 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.view.View;
 
 public class XBMCVideoView extends SurfaceView implements

@@ -6,9 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -77,6 +74,9 @@ public class XBMCImageContentProvider extends ContentProvider
 
       URL url = new URL(decodedUrl);
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      String auth = XBMCProperties.getJsonAuthorization();
+      if (!auth.isEmpty())
+        connection.setRequestProperty("Authorization", auth);
       connection.setDoInput(true);
       connection.connect();
 

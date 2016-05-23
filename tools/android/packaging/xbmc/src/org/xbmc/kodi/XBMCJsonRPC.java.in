@@ -1,5 +1,6 @@
 package org.xbmc.kodi;
 
+import android.util.Base64;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,6 +47,7 @@ public class XBMCJsonRPC
   private static String TAG = "@APP_NAME@json";
 
   private String m_jsonURL = "http://localhost:8080";
+
   private int MAX_RECOMMENDATIONS = 3;
 
   // {"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "limits": { "start" : 0, "end": 3}, "properties" : ["imdbnumber", "title", "tagline", "thumbnail", "fanart"], "sort": { "order": "descending", "method": "dateadded", "ignorearticle": true } }, "id": "1"}
@@ -82,11 +84,18 @@ public class XBMCJsonRPC
 
   private NotificationManager mNotificationManager;
 
+  public XBMCJsonRPC()
+  {
+    String jsonPort = XBMCProperties.getStringProperty("xbmc.jsonPort", "8080");
+    m_jsonURL = "http://localhost:" + jsonPort;
+  }
+
   public String request_string(String jsonRequest)
   {
     try
     {
       Log.d(TAG, "JSON in: " + jsonRequest);
+      Log.d(TAG, "JSON url: " + m_jsonURL);
 
       String returnStr = null;
       StringBuilder strbuilder = new StringBuilder();
@@ -191,6 +200,9 @@ public class XBMCJsonRPC
 
       URL url = new URL(m_jsonURL + "/" + surl);
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      String auth = XBMCProperties.getJsonAuthorization();
+      if (!auth.isEmpty())
+        connection.setRequestProperty("Authorization", auth);
       connection.setDoInput(true);
       connection.connect();
       InputStream input = connection.getInputStream();
