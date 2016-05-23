@@ -70,8 +70,8 @@ function(add_addon_depends addon searchpath)
 
         if(CMAKE_TOOLCHAIN_FILE)
           list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
-          MESSAGE("toolchain specified")
-          MESSAGE(${BUILD_ARGS})
+          message("toolchain specified")
+          message(${BUILD_ARGS})
         endif()
 
         # if there's a CMakeLists.txt use it to prepare the build
@@ -141,7 +141,7 @@ function(add_addon_depends addon searchpath)
 
         # if the patch file exists we need to set the PATCH_COMMAND
         set(PATCH_COMMAND "")
-        if (EXISTS ${PATCH_FILE})
+        if(EXISTS ${PATCH_FILE})
           set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${PATCH_FILE})
         endif()
 

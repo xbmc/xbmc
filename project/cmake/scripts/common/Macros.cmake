@@ -176,7 +176,7 @@ endfunction()
 # helper macro for optional deps
 macro(setup_enable_switch)
   string(TOUPPER ${dep} depup)
-  if (ARGV1)
+  if(ARGV1)
     set(enable_switch ${ARGV1})
   else()
     set(enable_switch ENABLE_${depup})
@@ -316,7 +316,7 @@ macro(core_add_optional_subdirs_from_filelist pattern)
 endmacro()
 
 macro(today RESULT)
-  if (WIN32)
+  if(WIN32)
     execute_process(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${RESULT})
     string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${RESULT} ${${RESULT}})
   elseif(UNIX)
@@ -336,12 +336,12 @@ function(core_find_git_rev)
     execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
                     RESULT_VARIABLE status_code
                     WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-      if (NOT status_code)
+      if(NOT status_code)
         execute_process(COMMAND ${GIT_EXECUTABLE} diff-index --ignore-submodules --quiet HEAD --
                       RESULT_VARIABLE status_code
                       WORKING_DIRECTORY ${CORE_SOURCE_DIR})
       endif()
-      if (status_code)
+      if(status_code)
         execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h-dirty" HEAD
                         OUTPUT_VARIABLE HASH
                         WORKING_DIRECTORY ${CORE_SOURCE_DIR})

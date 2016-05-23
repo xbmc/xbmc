@@ -47,27 +47,27 @@ if(ENABLE_X11 AND XRANDR_FOUND)
 endif()
 
 if(NOT EXISTS ${libdir}/xbmc)
-install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${libdir})")
+install(CODE "execute_process(COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${libdir})")
 endif()
 install(FILES ${addon_bindings} DESTINATION ${includedir}/${APP_NAME_LC})
 if(NOT EXISTS ${includedir}/xbmc)
-install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${includedir})")
+install(CODE "execute_process(COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${includedir})")
 endif()
 
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
                  ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
         DESTINATION ${bindir})
-install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC} xbmc WORKING_DIRECTORY ${bindir})")
-install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}-standalone xbmc-standalone WORKING_DIRECTORY ${bindir})")
+install(CODE "execute_process(COMMAND ln -sf ${APP_NAME_LC} xbmc WORKING_DIRECTORY ${bindir})")
+install(CODE "execute_process(COMMAND ln -sf ${APP_NAME_LC}-standalone xbmc-standalone WORKING_DIRECTORY ${bindir})")
 
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop)
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/xsessions)
-install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}.desktop xbmc.desktop WORKING_DIRECTORY ${datarootdir}/xsessions/)")
+install(CODE "execute_process(COMMAND ln -sf ${APP_NAME_LC}.desktop xbmc.desktop WORKING_DIRECTORY ${datarootdir}/xsessions/)")
 
 if(NOT EXISTS ${datarootdir}/xbmc)
-install(CODE "execute_process (COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${datarootdir})")
+install(CODE "execute_process(COMMAND ln -sf ${APP_NAME_LC}/ xbmc WORKING_DIRECTORY ${datarootdir})")
 endif()
 
 install(FILES ${CORE_SOURCE_DIR}/copying.txt
