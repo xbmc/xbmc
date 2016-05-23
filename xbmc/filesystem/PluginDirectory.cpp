@@ -18,7 +18,7 @@
  *
  */
 
-
+#include "Application.h"
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "PluginDirectory.h"
@@ -476,14 +476,28 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
 {
   bool cancelled = false;
 
-  if (!m_fetchComplete.WaitMSec(20))
+  // CPluginDirectory::GetDirectory can be called from the main and other threads.
+  // If called form the main thread, we need to bring up the BusyDialog in order to
+  // keep the render loop alive
+  if (g_application.IsCurrentThread())
   {
-    CScriptObserver scriptObs(scriptId, m_fetchComplete);
-    if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
+    if (!m_fetchComplete.WaitMSec(20))
+    {
+      CScriptObserver scriptObs(scriptId, m_fetchComplete);
+      if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
+      {
+        cancelled = true;
+      }
+      scriptObs.Abort();
+    }
+  }
+  else
+  {
+    // kill the script if it does not return within 30 seconds
+    if (!m_fetchComplete.WaitMSec(30000))
     {
       cancelled = true;
     }
-    scriptObs.Abort();
   }
 
   if (cancelled)
