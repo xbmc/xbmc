@@ -12,11 +12,11 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 
-FIND_PATH(LZO2_INCLUDE_DIRS lzo1x.h PATH_SUFFIXES lzo)
+find_path(LZO2_INCLUDE_DIRS lzo1x.h PATH_SUFFIXES lzo)
 
-FIND_LIBRARY(LZO2_LIBRARIES NAMES lzo2 liblzo2)
+find_library(LZO2_LIBRARIES NAMES lzo2 liblzo2)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Lzo2 DEFAULT_MSG LZO2_INCLUDE_DIRS LZO2_LIBRARIES)
 
-MARK_AS_ADVANCED(LZO2_INCLUDE_DIRS LZO2_LIBRARIES)
+mark_as_advanced(LZO2_INCLUDE_DIRS LZO2_LIBRARIES)
