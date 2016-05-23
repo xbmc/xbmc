@@ -24,6 +24,7 @@
 
 static const std::string dlls[] = {
   "ssh.dll",
+  "zlib.dll",
   "sqlite3.dll",
   "dnssd.dll",
   "libxslt.dll",
