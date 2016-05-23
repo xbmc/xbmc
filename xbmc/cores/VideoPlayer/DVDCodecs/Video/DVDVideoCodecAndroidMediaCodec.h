@@ -96,7 +96,6 @@ public:
 
   // required overrides
   virtual bool    Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual void    Dispose();
   virtual int     Decode(uint8_t *pData, int iSize, double dts, double pts);
   virtual void    Reset();
   virtual bool    GetPicture(DVDVideoPicture *pDvdVideoPicture);
@@ -108,6 +107,7 @@ public:
   virtual unsigned GetAllowedReferences();
 
 protected:
+  void            Dispose();
   void            FlushInternal(void);
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
