@@ -408,9 +408,9 @@ namespace EPG
     bool Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId = true);
 
     /*!
-     * @brief status function to extract IsSeries boolean from EPG iFlags bitfield
+     * @return True if this tag has any series attributes, false otherwise
      */
-    bool IsSeries() const { return (m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0; }
+    bool IsSeries() const;
 
   private:
 

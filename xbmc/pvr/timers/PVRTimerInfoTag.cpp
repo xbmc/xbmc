@@ -1008,25 +1008,6 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
   return m_epgTag;
 }
 
-bool CPVRTimerInfoTag::HasEpgInfoTag(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_epgTag != nullptr;
-}
-
-bool CPVRTimerInfoTag::HasSeriesEpgInfoTag(void) const
-{
-  CSingleLock lock(m_critSection);
-  if (m_epgTag &&
-      (m_epgTag->IsSeries() ||
-       m_epgTag->SeriesNumber() > 0 ||
-       m_epgTag->EpisodeNumber() > 0 ||
-       m_epgTag->EpisodePart() > 0))
-    return true;
-  else
-    return false;
-}
-
 void CPVRTimerInfoTag::ClearEpgTag(void)
 {
   CEpgInfoTagPtr deletedTag;

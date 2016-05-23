@@ -21,6 +21,7 @@
 #include "GUIDialogPVRTimerSettings.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "FileItem.h"
+#include "epg/EpgInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "addons/PVRClient.h"
@@ -746,15 +747,19 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
         continue;
 
       // Drop TimerTypes that require EPGInfo, if none is populated
-      if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->HasEpgInfoTag())
+      if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->GetEpgInfoTag())
         continue;
 
       // Drop TimerTypes without 'Series' EPG attributes if none are set
-      if (type->RequiresEpgSeriesOnCreate() && !m_timerInfoTag->HasSeriesEpgInfoTag())
-        continue;
+      if (type->RequiresEpgSeriesOnCreate())
+      {
+        const EPG::CEpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+        if (epgTag && !epgTag->IsSeries())
+          continue;
+      }
 
       // Drop TimerTypes that forbid EPGInfo, if it is populated
-      if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->HasEpgInfoTag())
+      if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
         continue;
 
       // Drop TimerTypes that aren't repeating if end time is in the past
