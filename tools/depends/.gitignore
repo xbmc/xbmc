@@ -38,6 +38,7 @@
 Toolchain.cmake
 config.site
 config.site.native
+config.buildsteps
 /native/*/*native/
 /JsonSchemaBuilder/bin/
 /TexturePacker/bin/

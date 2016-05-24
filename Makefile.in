@@ -25,6 +25,7 @@ VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
 
 DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/addons.a \
+                   xbmc/addons/binary/addon-manager.a \
                    xbmc/addons/binary/interfaces/addon-interfaces.a \
                    xbmc/addons/binary/interfaces/api1/Addon/addon-callbacks-addon.a \
                    xbmc/addons/binary/interfaces/api1/AudioDSP/addon-callbacks-audiodsp.a \
@@ -34,6 +35,14 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/binary/interfaces/api1/InputStream/addon-callbacks-inputstream.a \
                    xbmc/addons/binary/interfaces/api1/Peripheral/addon-callbacks-peripheral.a \
                    xbmc/addons/binary/interfaces/api1/PVR/addon-callbacks-pvr.a \
+                   xbmc/addons/binary/interfaces/api2/addon-interface-base.a \
+                   xbmc/addons/binary/interfaces/api2/Addon/addon-interface-addon.a \
+                   xbmc/addons/binary/interfaces/api2/AudioEngine/addon-interface-audioengine.a \
+                   xbmc/addons/binary/interfaces/api2/GUI/addon-interface-gui.a \
+                   xbmc/addons/binary/interfaces/api2/InputStream/addon-interface-inputstream.a \
+                   xbmc/addons/binary/interfaces/api2/PVR/addon-interface-pvr.a \
+                   xbmc/addons/binary/interfaces/api2/Peripheral/addon-interface-peripheral.a \
+                   xbmc/addons/binary/interfaces/api2/Player/addon-interface-player.a \
                    xbmc/contrib/kissfft/kissfft.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
@@ -342,6 +351,8 @@ libaddon: exports
 	$(MAKE) -C lib/addons/library.kodi.peripheral
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 	$(MAKE) -C lib/addons/library.kodi.inputstream
+addon-dev-kit:
+	$(MAKE) -C xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary
 dvdpcodecs: dllloader
 	$(MAKE) -C lib/libdvd
 
@@ -362,10 +373,10 @@ codecs: dvdpcodecs dvdpextcodecs
 
 libs: $(LIBSSE4) libexif system/libcpluff-@ARCH@.so
 
-externals: codecs libs libaddon
+externals: codecs libs libaddon addon-dev-kit
 
 xcode_depends: \
-	codecs libs eventclients skins libaddon
+	codecs libs eventclients skins libaddon addon-dev-kit
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \
@@ -419,8 +430,10 @@ DIRS= $(BIN_DIRS) $(EC_DIRS) $(DVDPCODECS_DIRS) \
 $(NWAOBJSXBMC) $(DIRECTORY_ARCHIVES) $(MAINOBJS): force
 	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
-# Binary Addon bindings
+# Binary Addon bindings from kodi itself
 include xbmc/addons/addon-bindings.mk
+# Binary Addon bindings from development kit
+include xbmc/addons/addon-dev-kit-bindings.mk
 
 lib@APP_NAME_LC@.so: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(MAINOBJS)
 ifeq ($(findstring osx,@ARCH@), osx)
@@ -498,6 +511,7 @@ else
 	@find -L addons -regextype posix-extended -type f -not -iregex ".*\.git.*" -iregex ".*\.so|.*\.so\.[0-9].*" -exec cp -d "{}" $(DESTDIR)$(libdir)/@APP_NAME_LC@/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
+	@install -m 0644 xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/libkodi.addon.sharedlibrary.api2.a $(DESTDIR)$(libdir)/libkodi.addon.sharedlibrary.api2.a
 
 install-scripts:
 	@install -d $(DESTDIR)$(bindir)
@@ -566,6 +580,13 @@ endif
 	@install -m 0644 $(BINDINGS) $(DESTDIR)$(includedir)/@APP_NAME_LC@
 	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
 	@install -m 0644 project/cmake/*.cmake project/cmake/scripts/common/*.cmake $(DESTDIR)$(libdir)/@APP_NAME_LC@
+	@for d in $(BINDINGS_DIR); do \
+	  install -d $(DESTDIR)$(includedir)/@APP_NAME_LC@/$$d; \
+	  (find xbmc/addons/kodi-addon-dev-kit/include/kodi/$$d -maxdepth 1 -not -type d -type f -exec install -m 0644 "{}" $(DESTDIR)$(includedir)/@APP_NAME_LC@/$$d \;) \
+	done
+	@install -d $(DESTDIR)$(libdir)/pkgconfig
+	@install -m 0644 xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2-config.cmake $(DESTDIR)$(libdir)/@APP_NAME_LC@;
+	@install -m 0644 xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2.pc $(DESTDIR)$(libdir)/pkgconfig;
 	@cd $(DESTDIR)$(includedir); [ -L xbmc ] || [ -d xbmc ] || ln -s @APP_NAME_LC@ xbmc
 
 uninstall:
@@ -575,7 +596,9 @@ uninstall:
 	@rm -rf $(DESTDIR)$(bindir)/@APP_NAME_LC@-standalone
 	@rm -rf $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
 	@rm -rf $(libdir)/lib@APP_NAME_LC@_*
+	@rm -rf $(libdir)/lib@APP_NAME_LC@.addon.*
 	@rm -rf $(prefix)/include/@APP_NAME_LC@
+	@rm -rf $(libdir)/pkgconfig/@APP_NAME_LC@-addon-*
 	@echo "Done!"
 
 clean-@APP_NAME_LC@.bin:
@@ -589,6 +612,7 @@ clean-libs:
 	for d in $(LIB_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-libaddons:
 	for d in $(LIBADDON_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+	$(MAKE) -C xbmc/addons/kodi-addon-dev-kit/build clean
 
 clean-codecs: clean-dvdpcodecs
 

@@ -80,7 +80,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\VideoPlayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg\include;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32\Effects11\inc;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.kodi.guilib;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;shaders;..\..\tools\depends\native\libsquish-native\src;%(AdditionalIncludeDirectories);XBMC\$(Configuration);..\..\addons\library.xbmc.adsp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\VideoPlayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg\include;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32\Effects11\inc;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.kodi.guilib;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;..\..\xbmc\addons\kodi-addon-dev-kit\include;shaders;..\..\tools\depends\native\libsquish-native\src;%(AdditionalIncludeDirectories);XBMC\$(Configuration);..\..\addons\library.xbmc.adsp</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;_SECURE_SCL=0;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -117,7 +117,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\VideoPlayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg\include;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32\Effects11\inc;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.kodi.guilib;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;shaders;..\..\lib\gtest\include;..\..\tools\depends\native\libsquish-native\src;%(AdditionalIncludeDirectories);XBMC\$(Configuration);..\..\addons\library.xbmc.adsp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\VideoPlayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg\include;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32\Effects11\inc;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.kodi.guilib;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;..\..\xbmc\addons\kodi-addon-dev-kit\include;shaders;..\..\lib\gtest\include;..\..\tools\depends\native\libsquish-native\src;%(AdditionalIncludeDirectories);XBMC\$(Configuration);..\..\addons\library.xbmc.adsp;..\..\xbmc\addons\kodi-addon-dev-kit\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CONSOLE;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;_SECURE_SCL=0;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -156,7 +156,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\VideoPlayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg\include;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32\Effects11\inc;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.kodi.guilib;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;shaders;..\..\tools\depends\native\libsquish-native\src;%(AdditionalIncludeDirectories);XBMC\$(Configuration);..\..\addons\library.xbmc.adsp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\VideoPlayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg\include;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32\Effects11\inc;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.kodi.guilib;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;..\..\xbmc\addons\kodi-addon-dev-kit\include;shaders;..\..\tools\depends\native\libsquish-native\src;%(AdditionalIncludeDirectories);XBMC\$(Configuration);..\..\addons\library.xbmc.adsp;..\..\xbmc\addons\kodi-addon-dev-kit\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;TAGLIB_STATIC;NPT_CONFIG_ENABLE_LOGGING;PLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi";PLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -195,6 +195,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\addons\AddonSystemSettings.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp" />
     <ClCompile Include="..\..\xbmc\addons\BinaryAddonCache.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\ExceptionHandling.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.cpp" />
@@ -206,6 +207,45 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.cpp" />
     <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\AddonInterfaceBase.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Audio.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Directory.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_File.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_General.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Network.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineGeneral.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineStream.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlButton.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlEdit.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlFadeLabel.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlImage.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlLabel.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlProgress.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRadioButton.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRendering.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSettingsSlider.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSlider.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSpin.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlTextBox.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogExtendedProgressBar.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogFileBrowser.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogKeyboard.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogNumeric.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogOK.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogProgress.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogSelect.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogTextViewer.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogYesNo.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIGeneral.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIListItem.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIWindow.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\InputStream\Addon_InputStream.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Peripheral\Addon_Peripheral.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagMusic.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagVideo.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_Player.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_PlayList.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\binary\interfaces\api2\PVR\Addon_PVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ContextMenus.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AudioDecoder.cpp" />
@@ -971,6 +1011,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\addons\AddonBuilder.h" />
     <ClInclude Include="..\..\xbmc\addons\AudioDecoder.h" />
     <ClInclude Include="..\..\xbmc\addons\BinaryAddonCache.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\ExceptionHandling.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\AddonInterfaces.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Addon\AddonCallbacksAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\AudioDSP\AddonCallbacksAudioDSP.h" />
@@ -982,11 +1023,100 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\InputStream\AddonCallbacksInputStream.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\Peripheral\AddonCallbacksPeripheral.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api1\PVR\AddonCallbacksPVR.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\AddonInterfaceBase.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Audio.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Directory.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_File.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_General.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Addon\Addon_Network.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineGeneral.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\AudioEngine\Addon_AudioEngineStream.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlButton.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlEdit.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlFadeLabel.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlImage.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlLabel.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlProgress.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRadioButton.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlRendering.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSettingsSlider.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSlider.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlSpin.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIControlTextBox.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogExtendedProgressBar.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogFileBrowser.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogKeyboard.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogNumeric.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogOK.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogProgress.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogSelect.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogTextViewer.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIDialogYesNo.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIGeneral.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIListItem.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\GUI\Addon_GUIWindow.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\InputStream\Addon_InputStream.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Peripheral\Addon_Peripheral.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagMusic.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_InfoTagVideo.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_Player.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\Player\Addon_PlayList.h" />
+    <ClInclude Include="..\..\xbmc\addons\binary\interfaces\api2\PVR\Addon_PVR.h" />
     <ClInclude Include="..\..\xbmc\addons\binary\interfaces\IAddonInterface.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextMenus.h" />
     <ClInclude Include="..\..\xbmc\addons\DllPeripheral.h" />
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\.internal\AddonLib_internal.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\AddonLib.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\definitions_addon.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\General.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\Network.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\SoundPlay.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\VFSUtils.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\definitions_audioengine.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\General.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\Stream.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\definitions-all.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\definitions.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlButton.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlEdit.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlFadeLabel.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlImage.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlLabel.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlProgress.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlRadioButton.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlRendering.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlSettingsSlider.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlSlider.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlSpin.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ControlTextBox.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\definitions_gui.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogExtendedProgress.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogFileBrowser.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogKeyboard.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogNumeric.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogOK.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogProgress.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogSelect.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogTextViewer.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\DialogYesNo.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\General.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\ListItem.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\Window.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\inputstream\definitions_inputstream.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\inputstream\InputStream.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\peripheral\Peripheral.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\definitions_player.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\InfoTagMusic.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\InfoTagVideo.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\Player.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\PlayList.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\definitions_pvr.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\General.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\StreamUtils.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\Transfer.hpp" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\Trigger.hpp" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_adsp_types.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\kodi_audiodec_dll.h" />
@@ -1013,6 +1143,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\xbmc_vis_types.h" />
     <ClInclude Include="..\..\xbmc\addons\InputStream.h" />
+    <ClInclude Include="..\..\xbmc\addons\kodi-addon-dev-kit\src\api2\version.h" />
     <ClInclude Include="..\..\xbmc\addons\PVRClient.h" />
     <ClInclude Include="..\..\xbmc\addons\Webinterface.h" />
     <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h" />
@@ -3140,6 +3271,16 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/Qstrip_reflect</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">/Qstrip_reflect</AdditionalOptions>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\AddonLib.i" />
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\addon\KodiAPI_AddOn.i" />
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\audioengine\KodiAPI_AudioEngine.i" />
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\gui\KodiAPI_GUI.i" />
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\inputstream\KodiAPI_InputStream.i" />
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\peripheral\KodiAPI_Peripheral.i" />
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\player\KodiAPI_Player.i" />
+    <None Include="..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\api2\pvr\KodiAPI_PVR.i" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

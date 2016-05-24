@@ -3554,6 +3554,7 @@ void CApplication::OnQueueNextItem()
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   if(m_bPlaybackStarting)
     return;
+
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
