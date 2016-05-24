@@ -69,8 +69,10 @@ void VideoPlayerCodec::SetContentType(const std::string &strContent)
   StringUtils::ToLower(m_strContentType);
 }
 
-bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
+bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 {
+  const std::string &strFile = file.GetPath();
+
   // take precaution if Init()ialized earlier
   if (m_bInited)
   {
@@ -90,7 +92,7 @@ bool VideoPlayerCodec::Init(const std::string &strFile, unsigned int filecache)
   if (urlFile.IsProtocol("shout") )
     strFileToOpen.replace(0, 8, "http://");
 
-  CFileItem fileitem(urlFile, false);
+  CFileItem fileitem(file);
   fileitem.SetMimeType(m_strContentType);
   fileitem.SetMimeTypeForInternetFile();
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);

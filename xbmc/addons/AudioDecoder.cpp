@@ -46,19 +46,19 @@ CAudioDecoder::CAudioDecoder(AddonProps props, std::string extension, std::strin
   m_strExt = std::move(strExt);
 }
 
-bool CAudioDecoder::Init(const std::string& strFile, unsigned int filecache)
+bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 {
   if (!Initialized())
     return false;
 
   // for replaygain
   CTagLoaderTagLib tag;
-  tag.Load(strFile, XFILE::CMusicFileDirectory::m_tag, NULL);
+  tag.Load(file.GetPath(), XFILE::CMusicFileDirectory::m_tag, NULL);
 
   int channels;
   int sampleRate;
 
-  m_context = m_pStruct->Init(strFile.c_str(), filecache,
+  m_context = m_pStruct->Init(file.GetPath().c_str(), filecache,
                               &channels, &sampleRate,
                               &m_bitsPerSample, &m_TotalTime,
                               &m_bitRate, &m_format.m_dataFormat, &m_channel);

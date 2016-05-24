@@ -20,6 +20,7 @@
  *
  */
 
+#include <cstddef>
 #include <vector>
 
 enum ERenderFormat {

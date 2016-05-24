@@ -152,11 +152,15 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 
   //reported fps is usually not completely correct
   if (hint.fpsrate && hint.fpsscale)
+  {
     m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
+    m_bFpsInvalid = false;
+  }
   else
+  {
     m_fFrameRate = 25;
-
-  m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
+    m_bFpsInvalid = true;
+  }
 
   m_pullupCorrection.ResetVFRDetection();
   m_bCalcFrameRate = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) ||

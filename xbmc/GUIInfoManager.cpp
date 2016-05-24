@@ -6478,16 +6478,16 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
             {
               const CEpgInfoTagPtr tag(GetEpgInfoTag());
               if (tag)
-                value = static_cast<int>(tag->ProgressPercentage());
+                value = MathUtils::round_int(tag->ProgressPercentage());
               else
-                value = static_cast<int>(g_application.GetPercentage());
+                value = MathUtils::round_int(g_application.GetPercentage());
               break;
             }
           case PLAYER_PROGRESS_CACHE:
-            value = (int)(g_application.GetCachePercentage());
+            value = MathUtils::round_int(g_application.GetCachePercentage());
             break;
           case PLAYER_SEEKBAR:
-            value = (int)GetSeekPercent();
+            value = MathUtils::round_int(GetSeekPercent());
             break;
           case PLAYER_CACHELEVEL:
             value = (int)(g_application.m_pPlayer->GetCacheLevel());
@@ -7978,7 +7978,7 @@ std::string CGUIInfoManager::GetDuration(TIME_FORMAT format) const
   }
   if (g_application.m_pPlayer->IsPlayingVideo() && !m_currentMovieDuration.empty())
     return m_currentMovieDuration;
-  unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
+  unsigned int iTotal = MathUtils::round_int(g_application.GetTotalTime());
   if (iTotal > 0)
     return StringUtils::SecondsToTimeString(iTotal, format);
   return "";
@@ -8761,7 +8761,7 @@ std::string CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
   if (g_application.m_pPlayer->IsPlaying())
-    return StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), format);
+    return StringUtils::SecondsToTimeString(MathUtils::round_int(GetPlayTime()/1000.0), format);
   return "";
 }
 
@@ -8774,13 +8774,13 @@ std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
 
 int CGUIInfoManager::GetTotalPlayTime() const
 {
-  int iTotalTime = (int)g_application.GetTotalTime();
+  int iTotalTime = MathUtils::round_int(g_application.GetTotalTime());
   return iTotalTime > 0 ? iTotalTime : 0;
 }
 
 int CGUIInfoManager::GetPlayTimeRemaining() const
 {
-  int iReverse = GetTotalPlayTime() - (int)g_application.GetTime();
+  int iReverse = GetTotalPlayTime() - MathUtils::round_int(g_application.GetTime());
   return iReverse > 0 ? iReverse : 0;
 }
 

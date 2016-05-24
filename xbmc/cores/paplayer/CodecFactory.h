@@ -22,12 +22,14 @@
 
 #include "ICodec.h"
 
+class CFileItem;
+
 class CodecFactory
 {
 public:
   CodecFactory() {}
   virtual ~CodecFactory() {}
   static ICodec* CreateCodec(const std::string &type);
-  static ICodec* CreateCodecDemux(const std::string& strFile, const std::string& strContent,unsigned int filecache);
+  static ICodec* CreateCodecDemux(const CFileItem& file, unsigned int filecache);
 };
 

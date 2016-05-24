@@ -52,10 +52,10 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
   return dvdcodec;
 }
 
-ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::string& strContent, unsigned int filecache)
+ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filecache)
 {
-  CURL urlFile(strFile);
-  std::string content = strContent;
+  CURL urlFile(file.GetPath());
+  std::string content = file.GetMimeType();
   StringUtils::ToLower(content);
   if (!content.empty())
   {
@@ -107,7 +107,7 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
   {
     VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
-    if (dvdcodec->Init(strFile, filecache))
+    if (dvdcodec->Init(file, filecache))
     {
       return dvdcodec;
     }
