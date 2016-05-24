@@ -3200,6 +3200,11 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
 
 IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int options, IAEClockCallback *clock)
 {
+  if (audioFormat.m_dataFormat <= AE_FMT_INVALID || audioFormat.m_dataFormat >= AE_FMT_MAX)
+  {
+    return nullptr;
+  }
+
   if (IsSuspended())
     return NULL;
 
