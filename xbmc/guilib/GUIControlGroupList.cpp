@@ -455,7 +455,7 @@ std::string CGUIControlGroupList::GetLabel(int info) const
 int CGUIControlGroupList::GetNumItems() const
 {
   return std::count_if(m_children.begin(), m_children.end(), [&](const CGUIControl *child) {
-    return (child->IsVisible() && child->CanFocus());
+    return (child->IsVisible() && (child->CanFocus() || child->IsDisabled()));
   });
 }
 
