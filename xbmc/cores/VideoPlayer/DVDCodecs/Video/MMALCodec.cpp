@@ -843,9 +843,12 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   bool full = queued > DVD_MSEC_TO_TIME(1000);
   int ret = 0;
 
-  if (!m_output_ready.empty())
+  unsigned int pics = m_output_ready.size();
+  if (pics > 0)
     ret |= VC_PICTURE;
-  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+  if (pics <= 1 && mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+    ret |= VC_BUFFER;
+  else if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN && !ret)
     ret |= VC_BUFFER;
 
   bool slept = false;
@@ -859,9 +862,10 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
       m_output_cond.wait(output_lock, 30);
       lock.Enter();
     }
-    if (!m_output_ready.empty())
+    unsigned int pics = m_output_ready.size();
+    if (pics > 0)
       ret |= VC_PICTURE;
-    if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+    if (pics <= 1 && mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
       ret |= VC_BUFFER;
     else if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN && !ret)
       ret |= VC_BUFFER;
