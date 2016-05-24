@@ -53,7 +53,7 @@ namespace GUI
   ///
   /// The list item control is used for creating item lists in Kodi
   ///
-  /// The with \ref ListItem.hpp "#include <kodi/api3/addon/IListItem.hpp>" given
+  /// The with \ref ListItem.hpp "#include <kodi/api2/addon/IListItem.hpp>" given
   /// class is used to create a item entry for a list on window and to support it's
   /// control.
   ///
