@@ -78,6 +78,9 @@
     <CustomBuildBeforeTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     </CustomBuildBeforeTargets>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores\VideoPlayer;..\..\xbmc\win32;..\..\lib;..\..\lib\win32\ffmpeg\include;..\..\lib\libUPnP;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32\Effects11\inc;..\..\lib\win32;..\..\xbmc\cores\AudioEngine\;..\..\addons\library.kodi.guilib;..\..\addons\library.xbmc.addon;..\..\addons\library.xbmc.pvr;..\..\addons\library.xbmc.codec;..\..\xbmc\addons\kodi-addon-dev-kit\include;shaders;..\..\tools\depends\native\libsquish-native\src;%(AdditionalIncludeDirectories);XBMC\$(Configuration);..\..\addons\library.xbmc.adsp</AdditionalIncludeDirectories>
@@ -177,6 +180,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <AdditionalLibraryDirectories>..\..\lib\win32\ffmpeg\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>VC90.CRT.x86.manifest;win81.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>

@@ -1148,6 +1148,8 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     m_idx_in[AE_CH_TBL]   = av_get_channel_layout_channel_index(m_channelLayoutIn, AV_CH_TOP_BACK_LEFT);
     m_idx_in[AE_CH_TBC]   = av_get_channel_layout_channel_index(m_channelLayoutIn, AV_CH_TOP_BACK_CENTER);
     m_idx_in[AE_CH_TBR]   = av_get_channel_layout_channel_index(m_channelLayoutIn, AV_CH_TOP_BACK_RIGHT);
+    m_idx_in[AE_CH_BLOC]  = -1; // manually disable these channels because ffmpeg does not support them
+    m_idx_in[AE_CH_BROC]  = -1;
 
     needDSPAddonsReinit = true;
   }
@@ -1175,6 +1177,8 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     m_idx_out[AE_CH_TBL]  = av_get_channel_layout_channel_index(m_channelLayoutOut, AV_CH_TOP_BACK_LEFT);
     m_idx_out[AE_CH_TBC]  = av_get_channel_layout_channel_index(m_channelLayoutOut, AV_CH_TOP_BACK_CENTER);
     m_idx_out[AE_CH_TBR]  = av_get_channel_layout_channel_index(m_channelLayoutOut, AV_CH_TOP_BACK_RIGHT);
+    m_idx_out[AE_CH_BLOC]  = -1; // manually disable these channels because ffmpeg does not support them
+    m_idx_out[AE_CH_BROC]  = -1;
 
     needDSPAddonsReinit = true;
   }
