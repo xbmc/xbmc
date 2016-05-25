@@ -303,14 +303,12 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
         case ObservableMessageCurrentItem:
         {
           SetInvalid();
-          bReturn = true;
           break;
         }
         case ObservableMessageRecordings:
         case ObservableMessageTimersReset:
         {
           Refresh(true);
-          bReturn = true;
           break;
         }
       }
