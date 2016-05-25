@@ -25,20 +25,24 @@ if(NOT WIN32)
   endif()
 
   if(ENABLE_DVDCSS)
-    ExternalProject_ADD(dvdcss URL ${libdvdcss_BASE_URL}/archive/${libdvdcss_VER}.tar.gz
+    ExternalProject_Add(dvdcss URL ${libdvdcss_BASE_URL}/archive/${libdvdcss_VER}.tar.gz
                                PREFIX ${CORE_BUILD_DIR}/libdvd
-                               UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                          --target=${ARCH}
-                                          --host=${ARCH}
-                                          --disable-doc
-                                          --enable-static
-                                          --disable-shared
-                                          --with-pic
-                                          --prefix=<INSTALL_DIR>
-                                          "${EXTRA_FLAGS}"
-                                          "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                          "LDFLAGS=${CMAKE_LD_FLAGS}")
+                                                 --target=${ARCH}
+                                                 --host=${ARCH}
+                                                 --disable-doc
+                                                 --enable-static
+                                                 --disable-shared
+                                                 --with-pic
+                                                 --prefix=<INSTALL_DIR>
+                                                 "${EXTRA_FLAGS}"
+                                                 "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
+                                                 "LDFLAGS=${CMAKE_LD_FLAGS}")
+    ExternalProject_Add_Step(dvdcss autoreconf
+                                    DEPENDEES download update patch
+                                    DEPENDERS configure
+                                    COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                    WORKING_DIRECTORY <SOURCE_DIR>)
 
     core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a
                       system/players/VideoPlayer/libdvdcss dvdcss)
@@ -49,19 +53,23 @@ if(NOT WIN32)
     set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -DHAVE_DVDCSS_DVDCSS_H -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
   endif(ENABLE_DVDCSS)
 
-  ExternalProject_ADD(dvdread URL ${libdvdread_BASE_URL}/archive/${libdvdread_VER}.tar.gz
+  ExternalProject_Add(dvdread URL ${libdvdread_BASE_URL}/archive/${libdvdread_VER}.tar.gz
                               PREFIX ${CORE_BUILD_DIR}/libdvd
-                              UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                               CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                        --target=${ARCH}
-                                        --host=${ARCH}
-                                        --enable-static
-                                        --disable-shared
-                                        --with-pic
-                                        --prefix=<INSTALL_DIR>
-                                        "${EXTRA_FLAGS}"
-                                        "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                        "LDFLAGS=${CMAKE_LD_FLAGS}")
+                                                --target=${ARCH}
+                                                --host=${ARCH}
+                                                --enable-static
+                                                --disable-shared
+                                                --with-pic
+                                                --prefix=<INSTALL_DIR>
+                                                "${EXTRA_FLAGS}"
+                                                "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
+                                                "LDFLAGS=${CMAKE_LD_FLAGS}")
+  ExternalProject_Add_Step(dvdread autoreconf
+                                   DEPENDEES download update patch
+                                   DEPENDERS configure
+                                   COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                   WORKING_DIRECTORY <SOURCE_DIR>)
   if(ENABLE_DVDCSS)
     add_dependencies(dvdread dvdcss)
   endif()
@@ -73,22 +81,26 @@ if(NOT WIN32)
     set(DVDNAV_LIBS -ldvdcss)
   endif(ENABLE_DVDCSS)
 
-  ExternalProject_ADD(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
+  ExternalProject_Add(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
                              PREFIX ${CORE_BUILD_DIR}/libdvd
-                             UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                              CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                        --target=${ARCH}
-                                        --host=${ARCH}
-                                        --enable-static
-                                        --disable-shared
-                                        --with-pic
-                                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-                                        "${EXTRA_FLAGS}"
-                                        "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
-                                        "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                        "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
-                                        "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.la"
-                                        "LIBS=${DVDNAV_LIBS}")
+                                               --target=${ARCH}
+                                               --host=${ARCH}
+                                               --enable-static
+                                               --disable-shared
+                                               --with-pic
+                                               --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
+                                               "${EXTRA_FLAGS}"
+                                               "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
+                                               "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
+                                               "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
+                                               "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.la"
+                                               "LIBS=${DVDNAV_LIBS}")
+  ExternalProject_Add_Step(dvdnav autoreconf
+                                  DEPENDEES download update patch
+                                  DEPENDERS configure
+                                  COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                  WORKING_DIRECTORY <SOURCE_DIR>)
   add_dependencies(dvdnav dvdread)
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a
                     system/players/VideoPlayer/libdvdnav dvdnav)

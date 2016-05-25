@@ -13,8 +13,6 @@ if(NOT WIN32)
   ExternalProject_Add(libcpluff SOURCE_DIR ${CORE_SOURCE_DIR}/lib/cpluff
                       BUILD_IN_SOURCE 1
                       PREFIX ${CORE_BUILD_DIR}/cpluff
-                      PATCH_COMMAND rm -f config.status
-                      UPDATE_COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                       CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} ${CORE_SOURCE_DIR}/lib/cpluff/configure
                                         --disable-nls
                                         --enable-static
@@ -25,6 +23,13 @@ if(NOT WIN32)
                                         CFLAGS=${defines}
                                         LDFLAGS=${ldflags}
                       BUILD_COMMAND make V=1)
+  ExternalProject_Add_Step(libcpluff autoreconf
+                                     DEPENDEES download update patch
+                                     DEPENDERS configure
+                                     COMMAND rm -f config.status
+                                     COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                     WORKING_DIRECTORY <SOURCE_DIR>)
+
   set(ldflags "${ldflags};-lexpat")
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a
                     system/libcpluff libcpluff extras "${ldflags}")
