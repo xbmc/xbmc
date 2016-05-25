@@ -317,6 +317,7 @@
 						<include>DefaultSettingButton</include>
 						<label>$LOCALIZE[15020]</label>
 						<onclick>ActivateWindow(AudioDSPManager)</onclick>
+						<visible>ADSP.HasModes</visible>
 					</control>
 					<control type="button" id="11104">
 						<width>470</width>

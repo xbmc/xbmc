@@ -299,6 +299,13 @@ namespace ActiveAE
      */
     unsigned int GetActiveStreamId(void);
 
+    /*!
+     * @brief Check for available modes present from add-ons
+     *
+     * @return true if one or more modes are available
+     */
+    bool HasAvailableModes(void) const;
+
     /*!>
      * Used to get all available modes on currently enabled add-ons
      * It is used from CActiveAEDSPProcess to get a sorted modes list for a processing

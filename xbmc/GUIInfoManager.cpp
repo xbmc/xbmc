@@ -4402,6 +4402,11 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///                  _boolean_,
 ///     Returns true if dsp system is enabled
 ///   }
+///   \table_row3{   <b>`ADSP.HasModes`</b>,
+///                  \anchor ADSP_HasModes
+///                  _boolean_,
+///     Returns true if one or more modes are present on any of the types
+///   }
 ///   \table_row3{   <b>`ADSP.HasInputResample`</b>,
 ///                  \anchor ADSP_HasInputResample
 ///                  _boolean_,
@@ -4468,6 +4473,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 /// -----------------------------------------------------------------------------
 /// @}
 const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE },
+                                  { "hasmodes",                 ADSP_HAS_MODES },
                                   { "hasinputresample",         ADSP_HAS_INPUT_RESAMPLE },
                                   { "haspreprocess",            ADSP_HAS_PRE_PROCESS },
                                   { "hasmasterprocess",         ADSP_HAS_MASTER_PROCESS },
