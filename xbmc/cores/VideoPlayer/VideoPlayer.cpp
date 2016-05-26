@@ -3918,11 +3918,6 @@ void CVideoPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool syn
     if(pts != DVD_NOPTS_VALUE && sync)
       m_clock.Discontinuity(pts);
     UpdatePlayState(0);
-
-    // update state, buffers are flushed and it may take some time until
-    // we get an update from players
-    CSingleLock lock(m_StateSection);
-    m_State = m_State;
   }
 
   if (m_omxplayer_mode)
