@@ -1343,17 +1343,19 @@ void CRenderManager::PrepareNextRender()
     ++iter;
     while (iter != m_queued.end())
     {
-      // the slot for rendering in time is [pts .. (pts + frametime)]
+      // the slot for rendering in time is [pts .. (pts +  x * frametime)]
       // renderer/drivers have internal queues, being slightliy late here does not mean that
-      // we are really late. If we don't recover here, player will take action
-      if (renderPts < m_Queue[*iter].pts + 0.98 * frametime)
+      // we are really late. The likelihood that we recover decreases the greater m_lateframes
+      // get. Skipping a frame is easier than having decoder dropping one (lateframes > 10)
+      double x = (m_lateframes <= 6) ? 0.98 : 0;
+      if (renderPts < m_Queue[*iter].pts + x * frametime)
         break;
       idx = *iter;
       ++iter;
     }
 
     // skip late frames
-    while(m_queued.front() != idx)
+    while (m_queued.front() != idx)
     {
       requeue(m_discard, m_queued);
       m_QueueSkip++;
@@ -1389,7 +1391,7 @@ void CRenderManager::DiscardBuffer()
 bool CRenderManager::GetStats(int &lateframes, double &pts, int &queued, int &discard)
 {
   CSingleLock lock(m_presentlock);
-  lateframes = m_lateframes / 10;;
+  lateframes = m_lateframes / 10;
   pts = m_presentpts;
   queued = m_queued.size();
   discard  = m_discard.size();
