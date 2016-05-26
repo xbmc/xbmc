@@ -243,13 +243,11 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
         case ObservableMessageCurrentItem:
         {
           SetInvalid();
-          bReturn = true;
           break;
         }
         case ObservableMessageChannelGroupReset:
         {
           Refresh(true);
-          bReturn = true;
           break;
         }
       }

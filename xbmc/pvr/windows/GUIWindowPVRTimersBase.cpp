@@ -232,13 +232,11 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
         case ObservableMessageCurrentItem:
         {
           SetInvalid();
-          bReturn = true;
           break;
         }
         case ObservableMessageTimersReset:
         {
           Refresh(true);
-          bReturn = true;
           break;
         }
       }
