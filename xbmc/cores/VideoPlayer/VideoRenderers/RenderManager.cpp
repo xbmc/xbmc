@@ -1398,7 +1398,18 @@ bool CRenderManager::GetStats(int &lateframes, double &pts, int &queued, int &di
 
 void CRenderManager::CheckEnableClockSync()
 {
-  if (fabs(m_fps - g_graphicsContext.GetFPS()) < 0.01)
+  // refresh rate can be a multiple of video fps
+  double diff = 1.0;
+
+  if (m_fps != 0)
+  {
+    if (g_graphicsContext.GetFPS() >= m_fps)
+      diff = fmod(g_graphicsContext.GetFPS(), m_fps);
+    else
+      diff = m_fps - g_graphicsContext.GetFPS();
+  }
+
+  if (diff < 0.01)
   {
     m_clockSync.m_enabled = true;
   }
