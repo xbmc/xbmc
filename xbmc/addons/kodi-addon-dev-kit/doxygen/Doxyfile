@@ -803,7 +803,6 @@ INPUT                  = main.txt \
                          ../../../guilib/GUIResizeControl.dox \
                          ../../../guilib/GUIRSSControl.dox \
                          ../../../guilib/GUIScrollBarControl.dox \
-                         ../../../guilib/GUISelectButtonControl.dox \
                          ../../../guilib/GUISettingsSliderControl.dox \
                          ../../../guilib/GUISpinControlEx.dox \
                          ../../../guilib/GUISliderControl.dox \

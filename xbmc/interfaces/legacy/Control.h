@@ -2523,7 +2523,7 @@ namespace XBMCAddon
     ///                             (e.g. 'font13')
     /// @param textColor            [opt] hexstring - color of label when control
     ///                             is enabled.
-    ///                             checkmark's label. (e.g. '0xFFFFFFFF')
+    ///                             radiobutton's label. (e.g. '0xFFFFFFFF')
     /// @param disabledColor        [opt] hexstring - color of label when control
     ///                             is disabled. (e.g. '0xFFFF3300')
     ///

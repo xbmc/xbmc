@@ -966,9 +966,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIButtonControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUICheckMarkControl.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIColorManager.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1044,9 +1041,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIMultiImage.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIMultiSelectText.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIPanelContainer.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1066,9 +1060,6 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIScrollBarControl.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUISelectButtonControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUISettingsSliderControl.cpp">
@@ -4077,9 +4068,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUICallback.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUICheckMarkControl.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIColorManager.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4155,9 +4143,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIMultiImage.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIMultiSelectText.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIPanelContainer.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4177,9 +4162,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIScrollBarControl.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUISelectButtonControl.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUISettingsSliderControl.h">

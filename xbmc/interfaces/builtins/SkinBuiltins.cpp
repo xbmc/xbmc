@@ -310,25 +310,6 @@ static int SetImage(const std::vector<std::string>& params)
   return 0;
 }
 
-/*! \brief Set a skin large image setting.
- *  \param params The parameters.
- *  \details params[0] = Name of skin setting.
- */
-static int SetLargeImage(const std::vector<std::string>& params)
-{
-  int string = CSkinSettings::GetInstance().TranslateString(params[0]);
-  std::string value = CSkinSettings::GetInstance().GetString(string);
-  VECSOURCES localShares;
-  g_mediaManager.GetLocalDrives(localShares);
-  VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources("pictures");
-  if (!shares)
-    shares = &localShares;
-  if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
-    CSkinSettings::GetInstance().SetString(string, value);
-
-  return 0;
-}
-
 /*! \brief Set a string skin setting.
  *  \param params The parameters.
  *  \details params[0] = Name of skin setting.
@@ -520,15 +501,6 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///     @param[in] url                   Extra URL to allow selection from (optional).
 ///   }
 ///   \table_row2_l{
-///     <b>`Skin.SetLargeImage(string)`</b>
-///     ,
-///     Pops up a file browser and allows the user to select an large image file
-///     to be used in an image control else where in the skin via the info tag
-///     `Skin.String(string)`. If the value parameter is specified\, then the
-///     file browser dialog does not pop up\, and the image path is set directly.
-///     @param[in] string                Name of skin setting.
-///   }
-///   \table_row2_l{
 ///     <b>`Skin.SetNumeric(numeric[\,value])`</b>
 ///     ,
 ///     Pops up a keyboard dialog and allows the user to input a numerical.
@@ -588,7 +560,6 @@ CBuiltins::CommandMap CSkinBuiltins::GetOperations() const
            {"skin.setbool",       {"Sets a skin setting on", 1, SetBool}},
            {"skin.setfile",       {"Prompts and sets a file", 1, SetFile}},
            {"skin.setimage",      {"Prompts and sets a skin image", 1, SetImage}},
-           {"skin.setlargeimage", {"Prompts and sets a large skin images", 1, SetLargeImage}},
            {"skin.setnumeric",    {"Prompts and sets numeric input", 1, SetNumeric}},
            {"skin.setpath",       {"Prompts and sets a skin path", 1, SetPath}},
            {"skin.setstring",     {"Prompts and sets skin string", 1, SetString}},

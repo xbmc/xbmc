@@ -515,7 +515,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\guilib\GUIBaseContainer.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIBorderedImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIButtonControl.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUICheckMarkControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIColorManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControlFactory.cpp" />
@@ -545,7 +544,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\guilib\GUIMessage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIMoverControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIMultiImage.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUIMultiSelectText.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIPanelContainer.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIProgressControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIRadioButtonControl.cpp" />
@@ -553,7 +551,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\guilib\GUIResizeControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIRSSControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIScrollBarControl.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUISelectButtonControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISettingsSliderControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIShader.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIShaderDX.cpp" />
@@ -2051,7 +2048,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\guilib\GUIBorderedImage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIButtonControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUICallback.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUICheckMarkControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIColorManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIControlFactory.h" />
@@ -2080,7 +2076,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\guilib\GUIMessage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIMoverControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIMultiImage.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIMultiSelectText.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIPanelContainer.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIProgressControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIRadioButtonControl.h" />
@@ -2088,7 +2083,6 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\guilib\GUIResizeControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIRSSControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIScrollBarControl.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUISelectButtonControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISettingsSliderControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIShader.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISliderControl.h" />

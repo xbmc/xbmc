@@ -358,7 +358,7 @@ namespace XBMCAddon
             CGUIControl* controlClicked = (CGUIControl*)interceptor->GetControl(iControl);
 
             // The old python way used to check list AND SELECITEM method 
-            //   or if its a button, checkmark.
+            //   or if its a button, radiobutton.
             // Its done this way for now to allow other controls without a 
             //  python version like togglebutton to still raise a onAction event
             if (controlClicked) // Will get problems if we the id is not on the window 
