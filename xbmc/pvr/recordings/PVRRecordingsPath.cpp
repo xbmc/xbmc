@@ -78,7 +78,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
                        const std::string &strDirectory, const std::string &strTitle,
                        int iSeason, int iEpisode, int iYear,
                        const std::string &strSubtitle, const std::string &strChannelName,
-                       const CDateTime &recordingTime)
+                       const CDateTime &recordingTime, const std::string &strId)
 : m_bValid(true),
   m_bRoot(false),
   m_bActive(!bDeleted),
@@ -116,7 +116,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
   m_directoryPath = StringUtils::Format("%s%s%s%s%s",
                                         strDirectoryN.c_str(), strTitleN.c_str(), strSeasonEpisodeN.c_str(),
                                         strYearN.c_str(), strSubtitleN.c_str());
-  m_params = StringUtils::Format(", TV%s, %s.pvr", strChannelNameN.c_str(), recordingTime.GetAsSaveString().c_str());
+  m_params = StringUtils::Format(", TV%s, %s, %s.pvr", strChannelNameN.c_str(), recordingTime.GetAsSaveString().c_str(), strId.c_str());
   m_path   = StringUtils::Format("pvr://recordings/%s/%s/%s%s", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active", m_directoryPath.c_str(), m_params.c_str());
 }
 
@@ -149,7 +149,7 @@ const std::string CPVRRecordingsPath::GetTitle() const
   {
     CRegExp reg(true);
     if (reg.RegComp("pvr://recordings/(.*/)*(.*), TV( \\(.*\\))?, "
-                    "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].pvr"))
+                    "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9], (.*).pvr"))
     {
       if (reg.RegFind(m_path.c_str()) >= 0)
         return reg.GetMatch(2);

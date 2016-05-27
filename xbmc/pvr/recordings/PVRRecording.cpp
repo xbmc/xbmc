@@ -448,7 +448,7 @@ void CPVRRecording::UpdatePath(void)
   else
   {
     m_strFileNameAndPath = CPVRRecordingsPath(
-      m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, m_iYear, m_strShowTitle, m_strChannelName, m_recordingTime);
+      m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, m_iYear, m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
   }
 }
 
