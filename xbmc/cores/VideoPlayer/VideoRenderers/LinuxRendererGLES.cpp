@@ -1200,12 +1200,6 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     return;
   }
 
-  bool deinterlacing = false;
-  if (m_currentField == FIELD_FULL)
-    deinterlacing = false;
-  else
-    deinterlacing = true;
-
   glEnable(m_textureTarget);
   VerifyGLState();
 
