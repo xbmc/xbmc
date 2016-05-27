@@ -2,25 +2,26 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-# Temporarily disabled because packaging not implement for CMake
-if [ "$CMAKE_BUILD" = true ]; then
-  exit 0
+if [ "x$BUILD_OBB" == "xtrue" ]; then
+  TARGET=apk-obb-unsigned
+else
+  TARGET=apk-unsigned
 fi
 
-if [ "x$BUILD_OBB" == "xtrue" ]
-then
-  cd $WORKSPACE;make apk-obb-unsigned
+if [ "$CMAKE_BUILD" = true ]; then
+  cd $WORKSPACE/build;make -j$BUILDTHREADS $TARGET
 else
-  cd $WORKSPACE;make apk-unsigned
+  cd $WORKSPACE;make -j$BUILDTHREADS $TARGET
 fi
 $RUN_SIGNSTEP
+mv tools/android/packaging/Kodi.symbols*.tar.bz2 $WORKSPACE/
+cd $WORKSPACE
 
 #rename for upload
 #e.x. xbmc-20130314-8c2fb31-Frodo-x86.apk
 UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-x86"
 mv kodiapp-x86-*.apk $UPLOAD_FILENAME.apk
-if [ -f *.obb ] 
+if [ -f *.obb ]
 then
   mv *.obb $UPLOAD_FILENAME.obb
 fi
-mv tools/android/packaging/Kodi.symbols*.tar.bz2 $WORKSPACE/
