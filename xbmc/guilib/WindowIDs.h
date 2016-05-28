@@ -33,7 +33,7 @@
 
 #define WINDOW_SETTINGS_START             10016
 #define WINDOW_SETTINGS_SYSTEM            10016
-#define WINDOW_SETTINGS_SERVICE           10018 // former (Eden) WINDOW_SETTINGS_NETWORK
+#define WINDOW_SETTINGS_SERVICE           10018
 
 #define WINDOW_SETTINGS_MYPVR             10021
 
