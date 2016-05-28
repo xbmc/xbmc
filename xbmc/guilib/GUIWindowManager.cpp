@@ -727,10 +727,6 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const std::vector<std::str
 void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector<std::string>& params, bool swappingWindows, bool force /* = false */)
 {
   // translate virtual windows
-  if (iWindowID == WINDOW_SCRIPTS)
-  { // backward compatibility for pre-Dharma
-    iWindowID = WINDOW_PROGRAMS;
-  }
   if (iWindowID == WINDOW_START)
   { // virtual start window
     iWindowID = g_SkinInfo->GetStartWindow();
