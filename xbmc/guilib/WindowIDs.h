@@ -27,7 +27,6 @@
 #define WINDOW_PICTURES                   10002
 #define WINDOW_FILES                      10003
 #define WINDOW_SETTINGS_MENU              10004
-#define WINDOW_MUSIC                      10005 // virtual window to return the music start window.
 #define WINDOW_SYSTEM_INFORMATION         10007
 #define WINDOW_TEST_PATTERN               10008
 #define WINDOW_SCREEN_CALIBRATION         10011

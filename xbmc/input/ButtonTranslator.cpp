@@ -299,7 +299,7 @@ static const ActionMapping windows[] =
     { "filemanager"              , WINDOW_FILES },
     { "files"                    , WINDOW_FILES },                      // backward compat
     { "settings"                 , WINDOW_SETTINGS_MENU },
-    { "music"                    , WINDOW_MUSIC },
+    { "music"                    , WINDOW_MUSIC_NAV },
     { "videos"                   , WINDOW_VIDEO_NAV },
     { "pvr"                      , WINDOW_TV_CHANNELS },                // backward compat
     { "tvchannels"               , WINDOW_TV_CHANNELS },
