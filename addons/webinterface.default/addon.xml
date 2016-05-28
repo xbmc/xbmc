@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.29"
+  version="2.2.30"
   name="Default webinterface"
   provider-name="Team Kodi">
   <requires>
@@ -97,7 +97,7 @@
     <description lang="fa_IR">رابط استاندارد وب برای Kodi. قابل استفاده برای همه دستگاه ها و همه رزولوشن ها</description>
     <description lang="fi_FI">Oletus WWW-käyttöliittymä Kodi:lle. Suunniteltu käytettäväksi kaiken kokoisilla laitteilla.</description>
     <description lang="fr_CA">Interface Web par défaut de Kodi - Conçue pour les appareils de toutes résolutions</description>
-    <description lang="fr_FR">Interface Web par défaut de Kodi ; adaptée aux appareils de toutes résolutions</description>
+    <description lang="fr_FR">Interface Web d'origine de Kodi ; adaptée aux appareils de toutes résolutions</description>
     <description lang="gl_ES">Interface web predefinida para Kodi, deseñada para dispositivos de todas as resolucións</description>
     <description lang="he_IL">ממשק דפדפן ברירת המחדל עבור Kodi; מותאם למכשירים בעלי אבחנות שונות</description>
     <description lang="hr_HR">Uobičajeno web sučelje za Kodi; Dizajnirano za uređaje svih razlučivosti</description>
