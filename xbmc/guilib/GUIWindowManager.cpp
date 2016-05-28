@@ -301,7 +301,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_SPLASH);
     Delete(WINDOW_MUSIC_PLAYLIST);
     Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
-    Delete(WINDOW_MUSIC_FILES);
     Delete(WINDOW_MUSIC_NAV);
     Delete(WINDOW_DIALOG_MUSIC_INFO);
     Delete(WINDOW_DIALOG_VIDEO_INFO);
@@ -729,7 +728,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
 {
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
-  if (iWindowID == WINDOW_MUSIC || iWindowID == WINDOW_MUSIC_FILES)
+  if (iWindowID == WINDOW_MUSIC)
   { // backward compatibility for pre-something
     iWindowID = WINDOW_MUSIC_NAV;
   }

@@ -62,7 +62,7 @@
 	</variable>
 	<variable name="Breadcrumb-Icon">
 		<value condition="Window.IsVisible(Videos) | Window.IsVisible(VideoPlaylist)">icon_breadcrumb_video.png</value>
-		<value condition="Window.IsVisible(MusicLibrary) | Window.IsVisible(MusicPlaylist)">icon_breadcrumb_music.png</value>
+		<value condition="Window.IsVisible(Music) | Window.IsVisible(MusicPlaylist)">icon_breadcrumb_music.png</value>
 		<value condition="Window.IsVisible(Weather)">icon_breadcrumb_weather.png</value>
 		<value condition="Window.IsVisible(Pictures)">icon_breadcrumb_pictures.png</value>
 		<value condition="Window.IsVisible(Programs) | Window.IsVisible(AddonBrowser)">icon_breadcrumb_addons.png</value>
@@ -1127,7 +1127,7 @@
 					<itemgap>0</itemgap>
 					<include condition="Window.IsVisible(AddonBrowser)">AddonsMenu</include>
 					<include condition="Window.IsVisible(EventLog)">EventLogMenu</include>
-					<include condition="Window.IsVisible(MusicLibrary)">MusicMenu</include>
+					<include condition="Window.IsVisible(Music)">MusicMenu</include>
 					<include condition="Window.IsVisible(MusicOSD)">MusicOSDMenu</include>
 					<include condition="Window.IsVisible(MusicPlaylist)">MusicPlaylistMenu</include>
 					<include condition="Window.IsVisible(MusicPlaylistEditor)">MusicPlaylistEditorMenu</include>

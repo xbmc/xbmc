@@ -384,7 +384,6 @@ static const ActionMapping windows[] =
     { "addoninformation"         , WINDOW_DIALOG_ADDON_INFO },
     { "subtitlesearch"           , WINDOW_DIALOG_SUBTITLES },
     { "musicplaylist"            , WINDOW_MUSIC_PLAYLIST },
-    { "musicfiles"               , WINDOW_MUSIC_FILES },
     { "musiclibrary"             , WINDOW_MUSIC_NAV },
     { "musicplaylisteditor"      , WINDOW_MUSIC_PLAYLIST_EDITOR },
     { "teletext"                 , WINDOW_DIALOG_OSD_TELETEXT },

@@ -111,10 +111,7 @@ bool CMediaLibraryEvent::Execute() const
         path = URIUtils::GetDirectory(path);
     }
 
-    if (URIUtils::IsMusicDb(path))
-      windowId = WINDOW_MUSIC_NAV;
-    else
-      windowId = WINDOW_MUSIC_FILES;
+    windowId = WINDOW_MUSIC_NAV;
   }
 
   if (windowId < 0)
