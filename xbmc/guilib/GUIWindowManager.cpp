@@ -733,11 +733,6 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
   { // backward compatibility for pre-something
     iWindowID = WINDOW_MUSIC_NAV;
   }
-  // virtual video window which returns the last open video window (aka the video start window)
-  if (iWindowID == WINDOW_VIDEOS)
-  { // backward compatibility for pre-Eden
-    iWindowID = WINDOW_VIDEO_NAV;
-  }
   if (iWindowID == WINDOW_SCRIPTS)
   { // backward compatibility for pre-Dharma
     iWindowID = WINDOW_PROGRAMS;

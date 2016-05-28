@@ -300,7 +300,6 @@ static const ActionMapping windows[] =
     { "files"                    , WINDOW_FILES },                      // backward compat
     { "settings"                 , WINDOW_SETTINGS_MENU },
     { "music"                    , WINDOW_MUSIC },
-    { "video"                    , WINDOW_VIDEOS },
     { "videos"                   , WINDOW_VIDEO_NAV },
     { "pvr"                      , WINDOW_TV_CHANNELS },                // backward compat
     { "tvchannels"               , WINDOW_TV_CHANNELS },

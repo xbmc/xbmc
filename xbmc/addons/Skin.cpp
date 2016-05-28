@@ -312,7 +312,7 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
   m_startupWindows.emplace_back(WINDOW_PROGRAMS, "0");
   m_startupWindows.emplace_back(WINDOW_PICTURES, "1");
   m_startupWindows.emplace_back(WINDOW_MUSIC, "2");
-  m_startupWindows.emplace_back(WINDOW_VIDEOS, "3");
+  m_startupWindows.emplace_back(WINDOW_VIDEO_NAV, "3");
   m_startupWindows.emplace_back(WINDOW_FILES, "7");
   m_startupWindows.emplace_back(WINDOW_SETTINGS_MENU, "5");
   m_startupWindows.emplace_back(WINDOW_WEATHER, "8");
