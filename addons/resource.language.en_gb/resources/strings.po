@@ -19144,6 +19144,8 @@ msgctxt "#38111"
 msgid "This category contains other settings for the GUI interface"
 msgstr ""
 
+#empty strings from id 38112 to 38999
+
 #: system/settings/settings.xml
 msgctxt "#39000"
 msgid "HD and up"
