@@ -88,10 +88,7 @@ bool CMediaLibraryEvent::Execute() const
         path = URIUtils::GetDirectory(path);
     }
 
-    if (URIUtils::IsVideoDb(path))
-      windowId = WINDOW_VIDEO_NAV;
-    else
-      windowId = WINDOW_VIDEO_FILES;
+    windowId = WINDOW_VIDEO_NAV;
   }
   else if (m_mediaType == MediaTypeMusic || m_mediaType == MediaTypeArtist ||
            m_mediaType == MediaTypeAlbum || m_mediaType == MediaTypeSong)

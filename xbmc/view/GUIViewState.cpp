@@ -121,9 +121,6 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == WINDOW_MUSIC_PLAYLIST_EDITOR)
     return new CGUIViewStateWindowMusicSongs(items);
 
-  if (windowId == WINDOW_VIDEO_FILES)
-    return new CGUIViewStateWindowVideoFiles(items);
-
   if (windowId == WINDOW_VIDEO_NAV)
     return new CGUIViewStateWindowVideoNav(items);
 

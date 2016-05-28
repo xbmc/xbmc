@@ -56,46 +56,6 @@ VECSOURCES& CGUIViewStateWindowVideo::GetSources()
   return CGUIViewState::GetSources();
 }
 
-CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
-{
-  if (items.IsVirtualDirectoryRoot())
-  {
-    AddSortMethod(SortByLabel, 551, LABEL_MASKS()); // Preformated
-    AddSortMethod(SortByDriveType, 564, LABEL_MASKS()); // Preformated
-    SetSortMethod(SortByLabel);
-
-    SetViewAsControl(DEFAULT_VIEW_LIST);
-
-    SetSortOrder(SortOrderAscending);
-  }
-  else
-  {
-    AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""),  // Label, Size | Label, empty
-      CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
-    AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Label, Size | Label, Size
-    AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Label, Date | Label, Date
-    AddSortMethod(SortByFile, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Label, Size | Label, empty
-
-    const CViewState *viewState = CViewStateSettings::GetInstance().Get("videofiles");
-    SetSortMethod(viewState->m_sortDescription);
-    SetViewAsControl(viewState->m_viewMode);
-    SetSortOrder(viewState->m_sortDescription.sortOrder);
-  }
-  LoadViewState(items.GetPath(), WINDOW_VIDEO_FILES);
-}
-
-void CGUIViewStateWindowVideoFiles::SaveViewState()
-{
-  SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_FILES, CViewStateSettings::GetInstance().Get("videofiles"));
-}
-
-VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
-{
-  VECSOURCES *videoSources = CMediaSourceSettings::GetInstance().GetSources("video");
-  AddOrReplace(*videoSources, CGUIViewStateWindowVideo::GetSources());
-  return *videoSources;
-}
-
 CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   SortAttribute sortAttributes = SortAttributeNone;

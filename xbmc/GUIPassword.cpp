@@ -383,11 +383,7 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
 
   if (iWindowID == WINDOW_VIDEO_NAV)
     if (g_windowManager.GetActiveWindow() == WINDOW_HOME)
-      iSwitch = WINDOW_VIDEO_FILES;
-
-  if (iWindowID == WINDOW_VIDEO_FILES)
-    if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)
-      iSwitch = WINDOW_HOME;
+      iSwitch = WINDOW_VIDEO_NAV;
 
   switch (iSwitch)
   {
@@ -406,7 +402,7 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     case WINDOW_MUSIC_FILES:    // Music
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().musicLocked();
       break;
-    case WINDOW_VIDEO_FILES:    // Video
+    case WINDOW_VIDEO_NAV:      // Video
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().videoLocked();
       break;
     case WINDOW_PICTURES:       // Pictures

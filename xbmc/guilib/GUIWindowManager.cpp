@@ -305,7 +305,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_MUSIC_NAV);
     Delete(WINDOW_DIALOG_MUSIC_INFO);
     Delete(WINDOW_DIALOG_VIDEO_INFO);
-    Delete(WINDOW_VIDEO_FILES);
     Delete(WINDOW_VIDEO_PLAYLIST);
     Delete(WINDOW_VIDEO_NAV);
     Delete(WINDOW_FILES);
@@ -735,7 +734,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     iWindowID = WINDOW_MUSIC_NAV;
   }
   // virtual video window which returns the last open video window (aka the video start window)
-  if (iWindowID == WINDOW_VIDEOS || iWindowID == WINDOW_VIDEO_FILES)
+  if (iWindowID == WINDOW_VIDEOS)
   { // backward compatibility for pre-Eden
     iWindowID = WINDOW_VIDEO_NAV;
   }

@@ -339,7 +339,6 @@ static const ActionMapping windows[] =
     { "librarysettings"          , WINDOW_SETTINGS_LIBRARY },
     { "interfacesettings"        , WINDOW_SETTINGS_INTERFACE },	
     { "scripts"                  , WINDOW_PROGRAMS },                  // backward compat
-    { "videofiles"               , WINDOW_VIDEO_FILES },
     { "videolibrary"             , WINDOW_VIDEO_NAV },
     { "videoplaylist"            , WINDOW_VIDEO_PLAYLIST },
     { "loginscreen"              , WINDOW_LOGIN_SCREEN },
