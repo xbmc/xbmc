@@ -178,6 +178,7 @@ private:
   void SetFieldData(uint8_t fieldFmt);
 
   void MemMap(struct fb_fix_screeninfo *fb_fix = NULL);
+  void Dispose();
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -185,7 +186,6 @@ private:
   virtual void Process();
 
 private:
-  void Dispose();
   typedef std::vector<IPUTask> TaskQueue;
 
   int                            m_fbHandle;
@@ -306,7 +306,6 @@ public:
 
   // Methods from CDVDVideoCodec which require overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual void Dispose();
   virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
   virtual void Reset();
   virtual bool ClearPicture(DVDVideoPicture *pDvdVideoPicture);
@@ -324,6 +323,7 @@ protected:
   bool VpuFreeBuffers();
   bool VpuAllocFrameBuffers();
   int  VpuFindBuffer(void *frameAddr);
+  void Dispose();
 
   static const int             m_extraVpuBuffers;   // Number of additional buffers for VPU
   static const int             m_maxVpuDecodeLoops; // Maximum iterations in VPU decoding loop
