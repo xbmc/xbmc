@@ -1,5 +1,6 @@
 xbmc                                            xbmc
 xbmc/addons                                     addons
+xbmc/addons/binary                              addonsBinary
 xbmc/addons/binary/interfaces                   addonsBinaryInterfaces
 xbmc/addons/binary/interfaces/api1/Addon        api1AddonCallbacks_Addon
 xbmc/addons/binary/interfaces/api1/AudioDSP     api1AddonCallbacks_AudioDSP

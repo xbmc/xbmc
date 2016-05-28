@@ -25,6 +25,7 @@ VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
 
 DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/addons.a \
+                   xbmc/addons/binary/addon-manager.a \
                    xbmc/addons/binary/interfaces/addon-interfaces.a \
                    xbmc/addons/binary/interfaces/api1/Addon/addon-callbacks-addon.a \
                    xbmc/addons/binary/interfaces/api1/AudioDSP/addon-callbacks-audiodsp.a \
