@@ -44,6 +44,10 @@ msgctxt "#31051"
 msgid "Sort: Descending"
 msgstr "Уруудахаар эрэмбэлэх"
 
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Одоогийн тоглох жагсаалт"
+
 msgctxt "#31200"
 msgid "Back"
 msgstr "Буцах"

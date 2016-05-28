@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Felszín választás · Nyelv és régió beállítás · Fájllista beállítások · Képernyővédő beállítása"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Médiamegosztási szolgáltatások beállítása és kezelése · Időjárási szolgáltatás beállítása és kezelése"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Kijelző beállítása · Hang beállítása · Internetelérés beállítása · Energiagazdálkodás beállítása · Naplózás beállítása"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése a kodi.tv-ről · Kiegészítőbeállítások módosítása"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "A lejátszás során elérhető műveletek beállítása · A médiatartalom lejátszásának beállítása"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "A médialisták tartalmának megjelenítésének beállítása ·  A könyvtárlisták navigációjának beállítása · Adatbázis-beállítások"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Felület beállítása · Régió beállítása · Vezérlés beállítása · Képernyővédő beállítása · Mesterzár beállítása"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Profilok beállítása · Zárolási beállítások · Bejelentkező képernyő engedélyezése"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Rendszerinformációk megjelenítése · Hardverstatisztika · Tárolóelérés ellenőrzése · Hálózati beállítások megtekintése"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

@@ -88,6 +88,10 @@ msgctxt "#31201"
 msgid "Location"
 msgstr "Kokalekua"
 
+msgctxt "#31202"
+msgid "View"
+msgstr "Ikusi"
+
 msgctxt "#31300"
 msgid "Current Temp"
 msgstr "Uneko tenperatura"

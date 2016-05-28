@@ -176,6 +176,10 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Ändra skalet · Ange språk och region · Ange fillistningsalternativ · Ange en skärmsläckare"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Konfigurera & hantera delningstjänster för media · Konfigurera & hantera väderlekstjänsten"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
