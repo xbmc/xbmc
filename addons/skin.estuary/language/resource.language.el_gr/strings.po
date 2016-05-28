@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Αναζήτηση..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Προβολή μέσων fanart ως φόντο"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Λειτουργία σινεμά"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Αλλαγή λειτουργίας"
@@ -36,17 +44,53 @@ msgctxt "#31006"
 msgid "Random movies"
 msgstr "τυχαίες ταινείες"
 
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Μη προβληθέντες ταινίες"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Χωρίς Αποποίηση ευθυνών"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Λήψη εικονιδίων"
+
 msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Ταινίες σε εξέλιξη"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Τα πιο παιγμένα άλμπουμς"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Τυχαία άλμπουμς"
 
 msgctxt "#31013"
 msgid "Random artists"
 msgstr "Τυχαία σειρά καλλιτεχνών"
 
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Μη παιγμένα άλμπουμς"
+
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Πρόσφατες εγγραφές"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Πρόσφατα παιγμένα κανάλια"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Αξιολογημένο/α"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Τα πιο παιγμένα κανάλια"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -64,13 +108,37 @@ msgctxt "#31022"
 msgid "Sort by"
 msgstr "Ταξινόμηση κατά"
 
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Τύπος προβολής"
+
 msgctxt "#31024"
 msgid "Next tracks"
 msgstr "Επόμενα κομμάτια"
 
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Δεν βρέθηκαν αγαπημένα.Μπορείτε να προσθέσετε οποιοδήποτε αντικείμενο από προβολή πολυμέσων σε αυτήν την λίστα επιλέγοντας το κεντρικό μενού"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Πήγαινε στα άλμπουμς"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Πήγαινε στα τραγούδια"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Δείξε fanart"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Τελευταία σύνδεση"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Μνήμη σε χρήση"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -96,6 +164,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "Αντικείμενα"
 
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Λίστα κομματιών"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Πίσω"
@@ -115,6 +187,10 @@ msgstr "Κατασκευαστής της φωτογραφικής μηχανή�
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Επιλογές λίστας αναπ/γής"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Ορισμός του τύπου και πρόσθεση κανόνων για την δημιουργία έξυπνης λίστας αναπαραγωγής.Αυτές οι λίστες αναπαραγωγής είναι δυναμικές και περιέχουν όλα τα αντικείμενα πολυμέσων από την βάση δεδομένων σας,η οποία εφαρμόζεται από τους επιλεγμένους κανόνες σας."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -136,9 +212,29 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Διαθέσιμος"
 
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Πίεσε [B]πάνω[/B] βελάκι για επαναφορά ή γρήγορη προώθηση"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Πίεσε [B]OK[/B] για να σταματήσει"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Εναλλαγή γλώσσας"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "φιλτραρισμένο"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Βασισμένη σε Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Πίεσε [B]αριστερά[/B] για επαναφορά,ή [B]δεξιά[/B] για γρήγορη προώθηση"
 
 msgctxt "#31055"
 msgid "Subtitle download"
@@ -148,6 +244,14 @@ msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Πήγαινε στην λίστα αναπαραγωγής"
 
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Προβολή οθόνης εισόδου στην έναρξη"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Αυτόματη είσοδο στην έναρξη"
+
 msgctxt "#31059"
 msgid "Updates available"
 msgstr "Ενημερώσεις διαθέσιμες"
@@ -156,13 +260,45 @@ msgctxt "#31060"
 msgid "minutes"
 msgstr "Λεπτά"
 
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "αντικείμενα βασικού μενού"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Συντομεύσεις στα τμήματα των \"Αρχείων\" κάθε τύπου πολυμέσου.Πήγαινε εκεί να προσθέσεις επιπρόσθετες πηγές για τις βάσεις δεδομένων σου."
+
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Τμήματα"
 
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "Μη προβληθέν"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Λίστα αναπαραγωγής βίντεο"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Λίστα αναπαραγωγής μουσικής"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Αρχείο καταγραφής συμβάντων"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Επέλεξε προρυθμίσεις"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Τελευταία Ενημέρωση"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Εισαγωγή πηγών πολυμέσων"
 
 msgctxt "#31071"
 msgid "by"
@@ -176,9 +312,29 @@ msgctxt "#31073"
 msgid "Titles"
 msgstr "Τίτλοι"
 
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Ρίζα βιβλιοθήκης"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Ομάδες ταινιών"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Αναπαραγωγή οπτικού δίσκου"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Προηγούμενη τοποθεσία"
+
 msgctxt "#31078"
 msgid "Next location"
 msgstr "Επόμενη τοποθεσία"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Μη διαθέσιμο cast"
 
 msgctxt "#31080"
 msgid "Ends at"
@@ -190,11 +346,23 @@ msgstr "Πληροφορίες άλμπουμ"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Add-on στοίχων"
+msgstr "Πρόσθετο στίχων"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Ρυθμίσεις προσθέτου στίχων"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "ρυθμίσεις Οπτικοποιήσεων"
 
 msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Γκρουπ Καναλιών"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "μεταδεδομένα"
 
 msgctxt "#31087"
 msgid "Provider settings"
@@ -208,9 +376,29 @@ msgctxt "#31089"
 msgid "Available groups"
 msgstr "Διαθέσιμα γκρουπ"
 
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Αναζήτηση τρέιλερ"
+
 msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "Λήψη Υποτίτλων"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Μενού βίντεο"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Προβολή πληροφορίας καιρού στην πάνω μπάρα"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Προβολή σημαδιών πολυμέσων για ταινίες / επεισόδια / μουσικών βίντεο"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Χρήση πλευρικών εφέ κίνησης"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -224,9 +412,61 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
 
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Εικονίδιο τοίχου"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Τοίχος πληροφοριών"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Τοίχος"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Εισαγωγή κειμένου εδώ..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Η βιβλιοθήκη σου είναι εντελώς άδεια.Για να το συμπληρώσετε με τα προσωπικά σας αρχεία πολυμέσων,καταχωρείστε τμήματα \"Αρχείων\",προσθέστε μια πηγή πολυμέσων και ρυθμίστε την.Αφού η πηγή προσθεθεί θα είστε σε θέση να περιηγηθείτε τη βιβλιοθήκη σας."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Πρόσθεσε πηγές βίντεο και όρισε το κατάλληλο είδος περιεχομένου, προκειμένου να συμπληρώσετε τις βιβλιοθήκες βίντεο σας."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Ευρεία λίστα"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Χρήση προσαρμοσμένου καθολικού φόντου"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Επιλογή τοποθεσίας φωτογραφίας"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Εισαγωγή τμήμα αρχείων"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Δείτε τις προσωπικές σας φωτογραφίες ή να κατεβάσετε ένα από τα πολλά πρόσθετα εικόνας από το επίσημο αποθετήριο."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Εναλλαγή Ηχητικής ροής"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -235,3 +475,75 @@ msgstr "Αναζήτηση στην τοπική βιβλιοθήκη"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Αναζήτηση στο  Youtube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Αναζήτηση στο TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Αφαίρεση αντικειμένου του κεντρικού μενού"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Επεξεργασία κόμβων"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Εισαγωγή Περιηγητή πρόσθετων"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Δεν έχετε εγκαταστήσει κανένα πρόσθετο ακόμα. Επισκεφθείτε  τον περιηγητή προσθέτων μας για να περιηγηθείτε στη συλλογή μας και να βελτιώσουμε την kodi εμπειρία σας "
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Δεν έχετε ορίσει ένα πάροχο καιρού ακόμα. Για να δείτε πληροφορίες για τον καιρό,επιλέξτε τον πάροχο του καιρού και ρυθμίστε την τοποθεσία σας."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Όρισε πάροχο καιρού"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Μη προβληθέντες Τηλ.Σειρές"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Ίδιος σκηνοθέτης"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Προβολή φωτογραφιών στον χάρτη"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Πίεσε πάνω βελάκι για πληροφορίες ηθοποιού"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Πίεσε ΟΚ για να διαβάσει plot"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Εμφάνιση εικονιδίων"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Συντελεστές"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Οι Γενικές ρυθμίσεις θα εφαρμοστούν σε όλες τις περιοχές του κελύφους"
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Βασικό μενού-σχετιζόμενες ρυθμίσεις: Ρυθμίστε την αρχική οθόνη στα γούστα σας."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Επέλεξε πακέτο fanart για κεντρικό"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "λεπτά"

@@ -400,9 +400,17 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
 
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Ikonvägg"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Infovägg"
 
 msgctxt "#31102"
 msgid "Wall"

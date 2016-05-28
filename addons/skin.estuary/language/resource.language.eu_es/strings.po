@@ -100,6 +100,10 @@ msgctxt "#31086"
 msgid "Metadata"
 msgstr "Metadatuak"
 
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Edukiaren eskaneatze aukerak"
+
 msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "Deskargatu azpitituluak"
