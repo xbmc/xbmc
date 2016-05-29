@@ -100,22 +100,26 @@ void CPeripherals::Initialise()
   /* load mappings from peripherals.xml */
   LoadMappings();
 
-  {
-    CSingleLock bussesLock(m_critSectionBusses);
+  std::vector<PeripheralBusPtr> busses;
+
 #if defined(HAVE_PERIPHERAL_BUS_USB)
-    m_busses.push_back(std::make_shared<CPeripheralBusUSB>(this));
+  busses.push_back(std::make_shared<CPeripheralBusUSB>(this));
 #endif
 #if defined(HAVE_LIBCEC)
-    m_busses.push_back(std::make_shared<CPeripheralBusCEC>(this));
+  busses.push_back(std::make_shared<CPeripheralBusCEC>(this));
 #endif
-    m_busses.push_back(std::make_shared<CPeripheralBusAddon>(this));
+  busses.push_back(std::make_shared<CPeripheralBusAddon>(this));
 #if defined(TARGET_ANDROID)
-    m_busses.push_back(std::make_shared<CPeripheralBusAndroid>(this));
+  busses.push_back(std::make_shared<CPeripheralBusAndroid>(this));
 #endif
 
-    /* initialise all known busses and run an initial scan for devices */
-    for (auto& bus : m_busses)
-      bus->Initialise();
+  /* initialise all known busses and run an initial scan for devices */
+  for (auto& bus : busses)
+    bus->Initialise();
+
+  {
+    CSingleLock bussesLock(m_critSectionBusses);
+    m_busses = std::move(busses);
   }
 
   m_eventScanner.Start();
@@ -727,7 +731,7 @@ void CPeripherals::ProcessEvents(void)
 {
   std::vector<PeripheralBusPtr> busses;
   {
-    CSingleLock lock(m_critSection);
+    CSingleLock lock(m_critSectionBusses);
     busses = m_busses;
   }
 
