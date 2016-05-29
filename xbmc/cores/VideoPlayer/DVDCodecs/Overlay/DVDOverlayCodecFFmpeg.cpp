@@ -45,6 +45,11 @@ CDVDOverlayCodecFFmpeg::~CDVDOverlayCodecFFmpeg()
 
 bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+
+  // decoding of this kind of subs does not work reliable
+  if (hints.codec == AV_CODEC_ID_EIA_608)
+    return false;
+
   AVCodec* pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
