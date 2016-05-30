@@ -1019,7 +1019,7 @@
       </group>
     </category>	
     <category id="music" label="14216" help="38108">
-	  <group id="1" label="14230">
+	  <group id="1" label="14240">
         <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
           <level>2</level>
           <default>true</default>
