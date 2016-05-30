@@ -2134,6 +2134,8 @@ OUTPUT_FILES="Makefile \
     addons/skin.estouchy/media/Makefile \
     xbmc/Makefile \
     xbmc/addons/binary/interfaces/Makefile \
+    xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2-config.cmake \
+    xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2.pc \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoPlayer/VideoRenderers/Makefile \
