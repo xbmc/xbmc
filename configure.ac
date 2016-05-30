@@ -2135,6 +2135,7 @@ OUTPUT_FILES="Makefile \
     xbmc/Makefile \
     xbmc/addons/binary/Makefile \
     xbmc/addons/binary/interfaces/Makefile \
+    xbmc/addons/binary/interfaces/api2/Makefile \
     xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2-config.cmake \
     xbmc/addons/kodi-addon-dev-kit/src/api2/kodi-addon-sharedlibrary/kodi-addon-sharedlibrary-api2.pc \
     xbmc/cdrip/Makefile \

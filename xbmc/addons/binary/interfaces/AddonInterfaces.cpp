@@ -32,6 +32,7 @@
 #include "addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
 #include "addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.h"
 #include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
+#include "addons/binary/interfaces/api2/AddonInterfaceBase.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
@@ -53,9 +54,12 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_helperInputStream(nullptr),
     m_helperPeripheral(nullptr)
 {
-  m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
-  m_callbacks->addonData                    = this;
+  m_addonInterface = new V2::KodiAPI::CAddonInterfaceAddon(m_addon);
+  m_callbacks->interface = static_cast<V2::KodiAPI::CAddonInterfaceAddon*>(m_addonInterface)->GetCallbacks();
+  m_callbacks->libBasePath = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
+  m_callbacks->addonData = this;
 
+  // obsolete after new level is used complete
   m_callbacks->AddOnLib_RegisterMe          = CAddonInterfaces::AddOnLib_RegisterMe;
   m_callbacks->AddOnLib_UnRegisterMe        = CAddonInterfaces::AddOnLib_UnRegisterMe;
   m_callbacks->AudioEngineLib_RegisterMe    = CAddonInterfaces::AudioEngineLib_RegisterMe;
@@ -76,6 +80,11 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
 
 CAddonInterfaces::~CAddonInterfaces()
 {
+  delete static_cast<V2::KodiAPI::CAddonInterfaceAddon*>(m_addonInterface);
+  free((char*)m_callbacks->libBasePath);
+  delete m_callbacks;
+
+  // obsolete after new level is used complete
   delete static_cast<V1::KodiAPI::AddOn::CAddonCallbacksAddon*>(m_helperAddOn);
   delete static_cast<V1::KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(m_helperAudioEngine);
   delete static_cast<V1::KodiAPI::PVR::CAddonCallbacksPVR*>(m_helperPVR);
@@ -84,9 +93,6 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<V1::KodiAPI::Codec::CAddonCallbacksCodec*>(m_helperCODEC);
   delete static_cast<V1::KodiAPI::InputStream::CAddonCallbacksInputStream*>(m_helperInputStream);
   delete static_cast<V1::KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(m_helperPeripheral);
-
-  free((char*)m_callbacks->libBasePath);
-  delete m_callbacks;
 }
 
 /*\_____________________________________________________________________________

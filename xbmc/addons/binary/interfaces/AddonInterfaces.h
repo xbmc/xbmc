@@ -54,6 +54,7 @@ typedef struct AddonCB
 {
   const char* libBasePath;  ///< Never, never change this!!!
   void*       addonData;
+  void*       interface;
   KODIAddOnLib_RegisterMe           AddOnLib_RegisterMe;
   KODIAddOnLib_UnRegisterMe         AddOnLib_UnRegisterMe;
   KODIAudioEngineLib_RegisterMe     AudioEngineLib_RegisterMe;
@@ -87,6 +88,8 @@ namespace ADDON
     AddonCB* GetCallbacks()        { return m_callbacks; }
     CAddon *GetAddon()             { return m_addon; }
     const CAddon *GetAddon() const { return m_addon; }
+    void* GetInterface() { return m_addonInterface; }
+
     /*\_________________________________________________________________________
     \*/
     static void*        AddOnLib_RegisterMe            (void* addonData);
@@ -135,6 +138,7 @@ namespace ADDON
   private:
     AddonCB*  m_callbacks;
     CAddon*   m_addon;
+    void* m_addonInterface;
 
     void*     m_helperAddOn;
     void*     m_helperAudioEngine;
