@@ -29,25 +29,18 @@
       <rightstickdown>VolumeDown</rightstickdown>
     </joystick>
   </global>
-  <Home>
-    <joystick>
-      <start>Skin.ToggleSetting(HomeViewToggle)</start>
-    </joystick>
-  </Home>
-  <MyFiles>
+  <FileManager>
     <joystick>
       <rightbumper>Highlight</rightbumper>
     </joystick>
-  </MyFiles>
+  </FileManager>
   <MyMusicPlaylist>
     <joystick>
       <leftbumper>Delete</leftbumper>
     </joystick>
   </MyMusicPlaylist>
-  <MyMusicFiles>
-  </MyMusicFiles>
-  <MyMusicLibrary>
-  </MyMusicLibrary>
+  <Music>
+  </Music>
   <FullscreenVideo>
     <joystick>
       <a>Pause</a>
@@ -115,7 +108,7 @@
     <joystick>
       <a>Pause</a>
       <b>Stop</b>
-      <x>ActivateWindow(VisualisationSettings)</x>
+      <x>ActivateWindow(AddonSettings)</x>
       <y>ActivateWindow(VisualisationPresetList)</y>
       <start>Info</start>
       <rightthumb>ActivateWindow(MusicOSD)</rightthumb>
@@ -137,11 +130,6 @@
       <start>Info</start>
     </joystick>
   </MusicOSD>
-  <VisualisationSettings>
-    <joystick>
-      <b>Close</b>
-    </joystick>
-  </VisualisationSettings>
   <VisualisationPresetList>
     <joystick>
       <b>Close</b>
@@ -173,13 +161,13 @@
       <rightbumper>NextCalibration</rightbumper>
     </joystick>
   </ScreenCalibration>
-  <GUICalibration>
+  <ScreenCalibration>
     <joystick>
       <x>ResetCalibration</x>
       <leftbumper>NextResolution</leftbumper>
       <rightbumper>NextCalibration</rightbumper>
     </joystick>
-  </GUICalibration>
+  </ScreenCalibration>
   <VideoOSD>
     <joystick>
       <b>Close</b>
@@ -210,10 +198,8 @@
       <leftbumper>Delete</leftbumper>
     </joystick>
   </VideoBookmarks>
-  <MyVideoLibrary>
-  </MyVideoLibrary>
-  <MyVideoFiles>
-  </MyVideoFiles>
+  <Videos>
+  </Videos>
   <MyVideoPlaylist>
     <joystick>
       <leftbumper>Delete</leftbumper>
@@ -234,11 +220,11 @@
       <b>Close</b>
     </joystick>
   </ContextMenu>
-  <Scripts>
+  <Programs>
     <joystick>
       <x>ContextMenu</x>
     </joystick>
-  </Scripts>
+  </Programs>
   <Settings>
     <joystick>
       <b>PreviousMenu</b>
