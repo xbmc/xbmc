@@ -9298,7 +9298,13 @@ msgctxt "#19092"
 msgid "Record next show (%s)"
 msgstr ""
 
-#empty strings from id 19093 to 19096
+#. Instant recording summary. Expands to "Instant recording: <recording start and end times>", for example "Instant recording: 31/05/2016 from 9:00 to 11:00"
+#: xbmc/pvr/PVRTimerInfoTag.cpp
+msgctxt "#19093"
+msgid "Instant recording: %s"
+msgstr ""
+
+#empty strings from id 19094 to 19096
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
