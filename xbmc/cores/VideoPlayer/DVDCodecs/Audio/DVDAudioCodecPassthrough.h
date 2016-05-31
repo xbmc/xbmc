@@ -29,10 +29,12 @@
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
 
+class CProcessInfo;
+
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {
 public:
-  CDVDAudioCodecPassthrough();
+  CDVDAudioCodecPassthrough(CProcessInfo &processInfo);
   virtual ~CDVDAudioCodecPassthrough();
 
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);

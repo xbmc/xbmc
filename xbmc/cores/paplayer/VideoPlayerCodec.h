@@ -73,6 +73,8 @@ private:
   bool m_needConvert;
   AEAudioFormat m_srcFormat;
   int m_channels;
+
+  std::unique_ptr<CProcessInfo> m_processInfo;
 };
 
 #endif

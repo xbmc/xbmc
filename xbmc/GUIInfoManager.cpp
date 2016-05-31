@@ -2108,6 +2108,22 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "episodename",      VIDEOPLAYER_EPISODENAME }
 };
 
+const infomap player_process[] =
+{
+  { "videodecoder", PLAYER_PROCESS_VIDEODECODER },
+  { "deintmethod", PLAYER_PROCESS_DEINTMETHOD },
+  { "pixformat", PLAYER_PROCESS_PIXELFORMAT },
+  { "videowidth", PLAYER_PROCESS_VIDEOWIDTH },
+  { "videoheight", PLAYER_PROCESS_VIDEOHEIGHT },
+  { "videofps", PLAYER_PROCESS_VIDEOFPS },
+  { "videodar", PLAYER_PROCESS_VIDEODAR },
+  { "videohwdecoder", PLAYER_PROCESS_VIDEOHWDECODER },
+  { "audiodecoder", PLAYER_PROCESS_AUDIODECODER },
+  { "audiochannels", PLAYER_PROCESS_AUDIOCHANNELS },
+  { "audiosamplerate", PLAYER_PROCESS_AUDIOSAMPLERATE },
+  { "audiobitspersample", PLAYER_PROCESS_AUDIOBITSPERSAMPLE }
+};
+
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_Container Container
 /// @{
@@ -5320,6 +5336,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return videoplayer[i].val;
       }
     }
+    else if (cat.name == "player_process")
+    {
+      for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); i++)
+      {
+        if (prop.name == player_process[i].str)
+          return videoplayer[i].val;
+      }
+    }
     else if (cat.name == "slideshow")
     {
       for (size_t i = 0; i < sizeof(slideshow) / sizeof(infomap); i++)
@@ -5993,6 +6017,27 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       strLabel = info.language;
     }
     break;
+  case PLAYER_PROCESS_VIDEODECODER:
+      strLabel = g_dataCacheCore.GetVideoDecoderName();
+      break;
+  case PLAYER_PROCESS_DEINTMETHOD:
+      strLabel = g_dataCacheCore.GetVideoDeintMethod();
+      break;
+  case PLAYER_PROCESS_PIXELFORMAT:
+      strLabel = g_dataCacheCore.GetVideoPixelFormat();
+      break;
+  case PLAYER_PROCESS_VIDEOFPS:
+      strLabel = StringUtils::FormatNumber(g_dataCacheCore.GetVideoFps());
+      break;
+  case PLAYER_PROCESS_VIDEODAR:
+      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoDAR());
+      break;
+  case PLAYER_PROCESS_AUDIODECODER:
+      strLabel = g_dataCacheCore.GetAudioDecoderName();
+      break;
+  case PLAYER_PROCESS_AUDIOCHANNELS:
+      strLabel = g_dataCacheCore.GetAudioChannels();
+      break;
   case RDS_AUDIO_LANG:
   case RDS_CHANNEL_COUNTRY:
   case RDS_TITLE:
@@ -6555,6 +6600,18 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case SYSTEM_BATTERY_LEVEL:
       value = g_powerManager.BatteryLevel();
       return true;
+    case PLAYER_PROCESS_VIDEOWIDTH:
+      value = g_dataCacheCore.GetVideoWidth();
+      return true;
+    case PLAYER_PROCESS_VIDEOHEIGHT:
+      value = g_dataCacheCore.GetVideoHeight();
+      return true;
+    case PLAYER_PROCESS_AUDIOSAMPLERATE:
+      value = g_dataCacheCore.GetAudioSampleRate();
+      return true;
+    case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
+      value = g_dataCacheCore.GetAudioBitsPerSampe();
+      return true;
   }
   return false;
 }
@@ -7090,6 +7147,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
                    !m_currentFile->GetPVRRadioRDSInfoTag()->GetSMSStudio().empty() ||
                    !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneStudio().empty());
     break;
+    case PLAYER_PROCESS_VIDEOHWDECODER:
+        bReturn = g_dataCacheCore.IsVideoHwDecoder();
+        break;
     default: // default, use integer value different from 0 as true
       {
         int val;

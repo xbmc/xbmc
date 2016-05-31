@@ -28,6 +28,8 @@
 #include "libavcodec/d3d11va.h"
 #include "threads/Event.h"
 
+class CProcessInfo;
+
 namespace DXVA {
 
 #define CHECK(a) \
@@ -114,7 +116,7 @@ class CDecoder
   , public ID3DResource
 {
 public:
-  CDecoder();
+  CDecoder(CProcessInfo& processInfo);
  ~CDecoder();
 
   // IHardwareDecoder overrides
@@ -163,6 +165,7 @@ protected:
   unsigned int m_surface_alignment;
   CCriticalSection m_section;
   CEvent m_event;
+  CProcessInfo& m_processInfo;
 };
 
 };

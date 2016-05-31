@@ -100,6 +100,7 @@ bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints)
 {
   m_bad_state = false;
 
+  m_processInfo.ResetAudioCodecInfo();
   COMXAudioCodecOMX *codec = new COMXAudioCodecOMX();
 
   if(!codec || !codec->Open(hints))

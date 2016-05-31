@@ -515,6 +515,8 @@ bool OMXPlayerVideo::OpenDecoder()
   if(!m_av_clock)
     return false;
 
+  m_processInfo.ResetVideoCodecInfo();
+
   if (m_hints.fpsrate && m_hints.fpsscale)
     m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * m_hints.fpsscale / m_hints.fpsrate);
   else
@@ -525,6 +527,8 @@ bool OMXPlayerVideo::OpenDecoder()
     CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder : Invalid framerate %d, using forced 25fps and just trust timestamps\n", (int)m_fFrameRate);
     m_fFrameRate = 25;
   }
+  m_processInfo.SetVideoFps(m_fFrameRate);
+
   // use aspect in stream if available
   if (m_hints.forced_aspect)
     m_fForcedAspectRatio = m_hints.aspect;
@@ -704,6 +708,9 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
     flags |= CONF_FLAGS_FULLSCREEN;
     m_bAllowFullscreen = false; // only allow on first configure
   }
+
+  m_processInfo.SetVideoDimensions(width, height);
+  m_processInfo.SetVideoAspectRatio(display_aspect);
 
   unsigned int iDisplayWidth  = width;
   unsigned int iDisplayHeight = height;

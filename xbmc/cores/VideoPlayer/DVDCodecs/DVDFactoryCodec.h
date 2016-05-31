@@ -41,7 +41,8 @@ public:
   static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
                                           CProcessInfo &processInfo,
                                           const CRenderInfo &info = CRenderInfo());
-  static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, bool allowpassthrough = true, bool allowdtshddecode = true);
+  static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo,
+                                          bool allowpassthrough = true, bool allowdtshddecode = true);
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint );
 
   static CDVDAudioCodec* OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hint, CDVDCodecOptions &options );

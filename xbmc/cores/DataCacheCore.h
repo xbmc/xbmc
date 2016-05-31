@@ -20,15 +20,68 @@
 *
 */
 
+#include <atomic>
+#include <string>
+#include "threads/CriticalSection.h"
+
 class CDataCacheCore
 {
 public:
+  CDataCacheCore();
   bool HasAVInfoChanges();
   void SignalVideoInfoChange();
   void SignalAudioInfoChange();
 
+  // player video info
+  void SetVideoDecoderName(std::string name, bool isHw);
+  std::string GetVideoDecoderName();
+  bool IsVideoHwDecoder();
+  void SetVideoDeintMethod(std::string method);
+  std::string GetVideoDeintMethod();
+  void SetVideoPixelFormat(std::string pixFormat);
+  std::string GetVideoPixelFormat();
+  void SetVideoDimensions(int width, int height);
+  int GetVideoWidth();
+  int GetVideoHeight();
+  void SetVideoFps(float fps);
+  float GetVideoFps();
+  void SetVideoDAR(float dar);
+  float GetVideoDAR();
+
+  // player audio info
+  void SetAudioDecoderName(std::string name);
+  std::string GetAudioDecoderName();
+  void SetAudioChannels(std::string channels);
+  std::string GetAudioChannels();
+  void SetAudioSampleRate(int sampleRate);
+  int GetAudioSampleRate();
+  void SetAudioBitsPerSample(int bitsPerSample);
+  int GetAudioBitsPerSampe();
+  
 protected:
-  volatile bool m_hasAVInfoChanges;
+  std::atomic_bool m_hasAVInfoChanges;
+
+  CCriticalSection m_videoPlayerSection;
+  struct SPlayerVideoInfo
+  {
+    std::string decoderName;
+    bool isHwDecoder;
+    std::string deintMethod;
+    std::string pixFormat;
+    int width;
+    int height;
+    float fps;
+    float dar;
+  } m_playerVideoInfo;
+
+  CCriticalSection m_audioPlayerSection;
+  struct SPlayerAudioInfo
+  {
+    std::string decoderName;
+    std::string channels;
+    int sampleRate;
+    int bitsPerSample;
+  } m_playerAudioInfo;
 };
 
 extern CDataCacheCore g_dataCacheCore;
