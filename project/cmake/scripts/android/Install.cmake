@@ -14,10 +14,15 @@ if(NOT ZIPALIGN_EXECUTABLE)
 endif()
 
 # Configure files into packaging environment.
+if(BREAKPAD_FOUND)
+  set(USE_BREAKPAD 1)
+endif()
 configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/Makefile.in
                ${CMAKE_BINARY_DIR}/tools/android/packaging/Makefile @ONLY)
 configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/apksign
                ${CMAKE_BINARY_DIR}/tools/android/packaging/apksign COPYONLY)
+configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/make_symbols.sh
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/make_symbols.sh COPYONLY)
 file(WRITE ${CMAKE_BINARY_DIR}/tools/depends/Makefile.include
      "$(PREFIX)/lib/${APP_NAME_LC}/lib${APP_NAME_LC}.so: ;\n")
 
@@ -90,7 +95,8 @@ if(CPU MATCHES i686)
 endif()
 foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean apk-sign)
   add_custom_target(${target}
-      COMMAND ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_BINARY_DIR}/tools/android/packaging
+      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM}
+              -C ${CMAKE_BINARY_DIR}/tools/android/packaging
               XBMCROOT=${CORE_SOURCE_DIR}
               CC=${CMAKE_C_COMPILER}
               CPU=${CPU}
