@@ -1079,9 +1079,6 @@ PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
 PKG_CHECK_MODULES([SQLITE3],    [sqlite3],
   [INCLUDES="$INCLUDES $SQLITE3_CFLAGS"; LIBS="$LIBS $SQLITE3_LIBS"],
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([PNG],        [libpng],
-  [INCLUDES="$INCLUDES $PNG_CFLAGS"; LIBS="$LIBS $PNG_LIBS"],
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRECPP],    [libpcrecpp],
   [INCLUDES="$INCLUDES $PCRECPP_CFLAGS"; LIBS="$LIBS $PCRECPP_LIBS"]; \
   AC_DEFINE([HAVE_LIBPCRECPP],[1],["Define to 1 if libpcrecpp is installed"]),
