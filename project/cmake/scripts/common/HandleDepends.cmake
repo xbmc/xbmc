@@ -10,6 +10,7 @@ function(add_addon_depends addon searchpath)
   list(APPEND cmake_input_files ${cmake_input_files2})
 
   foreach(file ${cmake_input_files})
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${file})
     if(NOT (file MATCHES CMakeLists.txt OR
             file MATCHES install.txt OR
             file MATCHES noinstall.txt OR
@@ -45,6 +46,7 @@ function(add_addon_depends addon searchpath)
 
         # check if there are any library specific flags that need to be passed on
         if(EXISTS ${dir}/flags.txt)
+          set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${dir}/flags.txt)
           file(STRINGS ${dir}/flags.txt extraflags)
           separate_arguments(extraflags)
           message(STATUS "${id} extraflags: ${extraflags}")
@@ -77,9 +79,10 @@ function(add_addon_depends addon searchpath)
         # if there's a CMakeLists.txt use it to prepare the build
         set(PATCH_FILE ${BUILD_DIR}/${id}/tmp/patch.cmake)
         if(EXISTS ${dir}/CMakeLists.txt)
+          set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${dir}/CMakeLists.txt)
           file(APPEND ${PATCH_FILE}
                "file(COPY ${dir}/CMakeLists.txt
-                   DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
+                     DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
         endif()
 
         # check if we have patches to apply
@@ -104,6 +107,7 @@ function(add_addon_depends addon searchpath)
             endif()
           endif()
 
+          set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${patch})
           file(APPEND ${PATCH_FILE}
                "execute_process(COMMAND ${PATCH_PROGRAM} -p1 -i \"${patch}\")\n")
         endforeach()
@@ -125,6 +129,7 @@ function(add_addon_depends addon searchpath)
 
         # check if there's a deps.txt containing dependencies on other libraries
         if(EXISTS ${dir}/deps.txt)
+          set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${dir}/deps.txt)
           file(STRINGS ${dir}/deps.txt deps)
           message(STATUS "${id} depends: ${deps}")
         else()
@@ -133,6 +138,7 @@ function(add_addon_depends addon searchpath)
 
         if(CROSS_AUTOCONF AND AUTOCONF_FILES)
           foreach(afile ${AUTOCONF_FILES})
+            set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${afile})
             file(APPEND ${PATCH_FILE}
                  "message(STATUS \"AUTOCONF: copying ${afile} to ${BUILD_DIR}/${id}/src/${id}\")\n
                  file(COPY ${afile} DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")

@@ -67,6 +67,7 @@ macro (build_addon target prefix libs)
 
   # if there's an addon.xml.in we need to generate the addon.xml
   if(EXISTS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
     set(PLATFORM ${CORE_SYSTEM_NAME})
 
     file(READ ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in addon_file)
