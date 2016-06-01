@@ -9255,7 +9255,56 @@ msgctxt "#19085"
 msgid "Unknown channel %u"
 msgstr ""
 
-#empty strings from id 19086 to 19096
+#. Label for "Instant recording action" setting
+#: system/settings/settings.xml
+#: xbmc/pvr/PVRMananger.cpp
+msgctxt "#19086"
+msgid "Instant recording action"
+msgstr ""
+
+#. Label for "Instant recording action" settings value
+#: system/settings/settings.xml
+msgctxt "#19087"
+msgid "Record current show (if guide data available)"
+msgstr ""
+
+#. Label for "Instant recording action" settings value
+#: system/settings/settings.xml
+msgctxt "#19088"
+msgid "Record for a fixed period of time (Instant recording duration)"
+msgstr ""
+
+#. Label for "Instant recording action" settings value
+#: system/settings/settings.xml
+msgctxt "#19089"
+msgid "Ask what to do"
+msgstr ""
+
+#. Label for "Instant recording action" dialog settings value
+#: xbmc/pvr/PVRMananger.cpp
+msgctxt "#19090"
+msgid "Record the next %d minutes"
+msgstr ""
+
+#. Label for "Instant recording action" dialog settings value
+#: xbmc/pvr/PVRMananger.cpp
+msgctxt "#19091"
+msgid "Record current show (%s)"
+msgstr ""
+
+#. Label for "Instant recording action" dialog settings value
+#: xbmc/pvr/PVRMananger.cpp
+msgctxt "#19092"
+msgid "Record next show (%s)"
+msgstr ""
+
+#. Instant recording summary. Expands to "Instant recording: <recording start and end times>", for example "Instant recording: 31/05/2016 from 9:00 to 11:00"
+#: xbmc/pvr/PVRTimerInfoTag.cpp
+msgctxt "#19093"
+msgid "Instant recording: %s"
+msgstr ""
+
+#empty strings from id 19094 to 19096
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
@@ -17033,7 +17082,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36234"
-msgid "Duration of instant recordings when pressing the record button."
+msgid "Duration of instant recordings when pressing the record button. This value will be taken into account if \"Instant recording action\" is set to \"Record for a fixed period of time\""
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17132,7 +17181,10 @@ msgctxt "#36253"
 msgid "Section that contains settings related to music files and how they are handled."
 msgstr ""
 
-#empty string with id 36254
+#: system/settings/settings.xml
+msgctxt "#36254"
+msgid "Action to perform when pressing the record button. [Record current show] will record the current show from \"now\" to the end of the show. If no TV guide data is currently available a fixed length recording starting \"now\", with the value set for \"Instant recording duration\" will be scheduled. [Record for a fixed period of time] will schedule a fixed length recording starting \"now\", with the value set for \"Instant recording duration\". [Ask what to do] will open a dialogue containing different recording actions to choose from, like \"Record current show\", \"Record next show\" and some fixed duration recordings."
+msgstr ""
 
 #. Description of setting with label #13414 "Include artists who appear only on compilations"
 #: system/settings/settings.xml

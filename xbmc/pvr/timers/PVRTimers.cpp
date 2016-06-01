@@ -547,25 +547,6 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
   return bReturn;
 }
 
-bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
-{
-  assert(channel.get());
-
-  if (!g_PVRManager.CheckParentalLock(channel))
-    return false;
-
-  CPVRTimerInfoTagPtr newTimer(CPVRTimerInfoTag::CreateInstantTimerTag(channel));
-
-  bool bReturn(false);
-  if (newTimer)
-    bReturn = newTimer->AddToClient();
-
-  if (!bReturn)
-    CLog::Log(LOGERROR, "PVRTimers - %s - unable to add an instant timer on the client", __FUNCTION__);
-
-  return bReturn;
-}
-
 /********** static methods **********/
 
 bool CPVRTimers::AddTimer(const CPVRTimerInfoTagPtr &item)

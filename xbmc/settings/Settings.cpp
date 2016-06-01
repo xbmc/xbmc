@@ -242,6 +242,7 @@ const std::string CSettings::SETTING_PVRPLAYBACK_SCANTIME = "pvrplayback.scantim
 const std::string CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH = "pvrplayback.confirmchannelswitch";
 const std::string CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT = "pvrplayback.channelentrytimeout";
 const std::string CSettings::SETTING_PVRPLAYBACK_FPS = "pvrplayback.fps";
+const std::string CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION = "pvrrecord.instantrecordaction";
 const std::string CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME = "pvrrecord.instantrecordtime";
 const std::string CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY = "pvrrecord.defaultpriority";
 const std::string CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME = "pvrrecord.defaultlifetime";

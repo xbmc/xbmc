@@ -749,7 +749,9 @@ bool CPVRTimerInfoTag::SetDuration(int iDuration)
   return false;
 }
 
-CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr &channel)
+static const time_t INSTANT_TIMER_START = 0; // PVR addon API: special start time value to denote an instant timer
+
+CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr &channel, int iDuration /* = DEFAULT_PVRRECORD_INSTANTRECORDTIME */)
 {
   if (!channel)
   {
@@ -787,17 +789,24 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
     newTimer->SetTimerType(timerType);
   }
 
-  // no matter the timer was created from an epg tag, set special instant timer start and end times.
-  CDateTime startTime(0);
-  newTimer->SetStartFromUTC(startTime);
-  newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
+  /* no matter the timer was created from an epg tag, overwrite timer start and end times. */
+  CDateTime now(CDateTime::GetUTCDateTime());
+  newTimer->SetStartFromUTC(now);
 
-  int iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
-  CDateTime endTime = CDateTime::GetUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
+  if (iDuration == DEFAULT_PVRRECORD_INSTANTRECORDTIME)
+    iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+
+  CDateTime endTime = now + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
   newTimer->SetEndFromUTC(endTime);
 
-  /* update summary string according to changed start/end time */
+  /* update summary string according to instant recording start/end time */
   newTimer->UpdateSummary();
+  newTimer->m_strSummary = StringUtils::Format(g_localizeStrings.Get(19093).c_str(), newTimer->Summary().c_str());
+
+  CDateTime startTime(INSTANT_TIMER_START);
+  newTimer->SetStartFromUTC(startTime);
+  newTimer->m_iMarginStart = 0;
+  newTimer->m_iMarginEnd = 0;
 
   /* set epg tag at timer & timer at epg tag */
   newTimer->UpdateEpgInfoTag();

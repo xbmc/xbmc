@@ -250,7 +250,6 @@ private:
       return GetState() == ManagerStateStarted;
     }
 
-
     /*!
      * @brief Check whether the PVRManager is stopping
      * @return True while the PVRManager is stopping.
@@ -342,9 +341,16 @@ private:
     /*!
      * @brief Start or stop recording on the channel that is currently being played.
      * @param bOnOff True to start recording, false to stop.
+     */
+    void StartRecordingOnPlayingChannel(bool bOnOff);
+
+    /*!
+     * @brief Start or stop recording on a given channel.
+     * @param channel the channel to start/stop recording.
+     * @param bOnOff True to start recording, false to stop.
      * @return True if the recording was started or stopped successfully, false otherwise.
      */
-    bool StartRecordingOnPlayingChannel(bool bOnOff);
+    bool SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff);
 
     /*!
      * @brief Check whether there are active timers.
@@ -775,5 +781,19 @@ private:
     std::string m_connectString;
     PVR_CONNECTION_STATE m_state;
     std::string m_message;
+  };
+
+  class CPVRSetRecordingOnChannelJob : public CJob
+  {
+  public:
+    CPVRSetRecordingOnChannelJob(const CPVRChannelPtr &channel, bool bOnOff) :
+    m_channel(channel), m_bOnOff(bOnOff) {}
+    virtual ~CPVRSetRecordingOnChannelJob() {}
+    virtual const char *GetType() const { return "pvr-set-recording-on-channel"; }
+
+    bool DoWork();
+  private:
+    CPVRChannelPtr m_channel;
+    bool m_bOnOff;
   };
 }

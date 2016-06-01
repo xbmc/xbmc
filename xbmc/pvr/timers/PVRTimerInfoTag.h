@@ -97,12 +97,15 @@ namespace PVR
 
     bool SetDuration(int iDuration);
 
+    static const int DEFAULT_PVRRECORD_INSTANTRECORDTIME = -1;
+
     /*!
      * @brief create a tag for an instant timer for a given channel
-     * @parame the channel the instant timer is be created for
+     * @param channel is the channel the instant timer is to be created for
+     * @param iDuration is the duration for the instant timer, DEFAULT_PVRRECORD_INSTANTRECORDTIME denotes system default (setting value)
      * @return the timer or null if timer could not be created
      */
-    static CPVRTimerInfoTagPtr CreateInstantTimerTag(const CPVRChannelPtr &channel);
+    static CPVRTimerInfoTagPtr CreateInstantTimerTag(const CPVRChannelPtr &channel, int iDuration = DEFAULT_PVRRECORD_INSTANTRECORDTIME);
 
     /*!
      * @brief create a timer or timer rule for the given epg info tag.
