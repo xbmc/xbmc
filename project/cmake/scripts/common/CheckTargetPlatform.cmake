@@ -21,11 +21,11 @@ function(check_target_platform dir target_platform build)
         if(${platform_first} STREQUAL "!")
           # extract the platform
           string(LENGTH ${platform} platform_length)
-          MATH(EXPR platform_length "${platform_length} - 1")
+          math(EXPR platform_length "${platform_length} - 1")
           string(SUBSTRING ${platform} 1 ${platform_length} platform)
 
           # check if the current platform does not match the extracted platform
-          if (NOT ${platform} STREQUAL ${target_platform})
+          if(NOT ${platform} STREQUAL ${target_platform})
             set(${build} TRUE)
           endif()
         endif()

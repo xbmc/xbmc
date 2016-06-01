@@ -1,7 +1,7 @@
 # parse version.txt to get the version info
 if(EXISTS "${CORE_SOURCE_DIR}/version.txt")
   file(STRINGS "${CORE_SOURCE_DIR}/version.txt" versions)
-  foreach (version ${versions})
+  foreach(version ${versions})
     if(version MATCHES "^VERSION_.*")
       string(REGEX MATCH "^[^ ]+" version_name ${version})
       string(REPLACE "${version_name} " "" version_value ${version})
@@ -81,7 +81,7 @@ foreach(binding ${bindings})
   # auto-generate header files for backwards compatibility to xbmc with deprecation warning
   # but only do it if the file doesn't already exist
   get_filename_component(headerfile ${header} NAME)
-  if (NOT EXISTS "${XBMC_INCLUDE_DIR}/${headerfile}")
+  if(NOT EXISTS "${XBMC_INCLUDE_DIR}/${headerfile}")
     file(WRITE ${XBMC_INCLUDE_DIR}/${headerfile}
 "#pragma once
 #define DEPRECATION_WARNING \"Including xbmc/${headerfile} has been deprecated, please use kodi/${headerfile}\"

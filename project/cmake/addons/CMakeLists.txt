@@ -113,13 +113,13 @@ if(PACKAGE_ZIP)
   endif()
   list(APPEND BUILD_ARGS -DPACKAGE_DIR=${PACKAGE_DIR})
 
-  MESSAGE(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR})")
+  message(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR})")
 endif()
 
 if(CMAKE_TOOLCHAIN_FILE)
   list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
-  MESSAGE(STATUS "Toolchain specified")
-  MESSAGE(STATUS ${BUILD_ARGS})
+  message(STATUS "Toolchain specified")
+  message(STATUS ${BUILD_ARGS})
 endif()
 
 if(NOT ADDONS_TO_BUILD)
@@ -206,7 +206,7 @@ if(NOT addons)
     file(MAKE_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
   endif()
 
-  string (REPLACE ";" " " ADDONS_TO_BUILD_STR "${ADDONS_TO_BUILD}")
+  string(REPLACE ";" " " ADDONS_TO_BUILD_STR "${ADDONS_TO_BUILD}")
   # generate the bootstrap buildsystem
   execute_process(COMMAND ${CMAKE_COMMAND} ${PROJECT_SOURCE_DIR}/bootstrap
                                            -DCMAKE_INSTALL_PREFIX:PATH=${ADDONS_DEFINITION_DIR}
@@ -257,7 +257,7 @@ foreach(addon ${addons})
       set(platform_found FALSE)
       check_target_platform(${dir} ${CORE_SYSTEM_NAME} platform_found)
 
-      if (${platform_found})
+      if(${platform_found})
         # make sure the output directory is clean
         if(EXISTS "${CMAKE_INSTALL_PREFIX}/${id}")
           file(REMOVE_RECURSE "${CMAKE_INSTALL_PREFIX}/${id}/")
