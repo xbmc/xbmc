@@ -52,8 +52,8 @@ static int SendClick(const std::vector<std::string>& params)
     g_windowManager.SendMessage(message);
   }
   else
-  { // single param - assume you meant the active window
-    CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetActiveWindow());
+  { // single param - assume you meant the focused window
+    CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetFocusedWindow());
     g_windowManager.SendMessage(message);
   }
 
