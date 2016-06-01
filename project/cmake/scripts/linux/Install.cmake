@@ -29,13 +29,14 @@ configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone @ONLY)
 
 # cmake config
+
 set(APP_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/${APP_NAME_LC})
 set(APP_PREFIX ${CMAKE_INSTALL_PREFIX})
 set(APP_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include/${APP_NAME_LC})
 set(CXX11_SWITCH "-std=c++11")
 configure_file(${PROJECT_SOURCE_DIR}/KodiConfig.cmake.in
-               ${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}Config.cmake @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}Config.cmake
+               ${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cmake @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cmake
               ${PROJECT_SOURCE_DIR}/scripts/common/AddOptions.cmake
               ${PROJECT_SOURCE_DIR}/scripts/common/AddonHelpers.cmake
         DESTINATION lib/${APP_NAME_LC})
