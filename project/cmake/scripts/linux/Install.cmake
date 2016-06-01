@@ -39,9 +39,9 @@ configure_file(${PROJECT_SOURCE_DIR}/KodiConfig.cmake.in
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cmake
               ${PROJECT_SOURCE_DIR}/scripts/common/AddOptions.cmake
               ${PROJECT_SOURCE_DIR}/scripts/common/AddonHelpers.cmake
+              ${PROJECT_SOURCE_DIR}/scripts/linux/PathSetup.cmake
         DESTINATION lib/${APP_NAME_LC})
 install(FILES ${cmake_files} DESTINATION ${libdir}/${APP_NAME_LC})
-
 install(TARGETS ${APP_NAME_LC} DESTINATION ${libdir}/${APP_NAME_LC})
 if(ENABLE_X11 AND XRANDR_FOUND)
   install(TARGETS ${APP_NAME_LC}-xrandr DESTINATION ${libdir}/${APP_NAME_LC})

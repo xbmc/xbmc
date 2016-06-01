@@ -66,7 +66,7 @@ include(scripts/common/AddOptions.cmake)
 include(scripts/common/ArchSetup.cmake)
 include(scripts/common/Macros.cmake)
 include(scripts/common/ProjectMacros.cmake)
-include(scripts/common/PathSetup.cmake)
+include(scripts/${CORE_SYSTEM_NAME}/PathSetup.cmake)
 include(ExternalProject)
 
 core_find_git_rev()

@@ -7,6 +7,5 @@ project/cmake/scripts/common/GenerateVersionedFiles.cmake
 project/cmake/scripts/common/GeneratorSetup.cmake
 project/cmake/scripts/common/HandleDepends.cmake
 project/cmake/scripts/common/Macros.cmake
-project/cmake/scripts/common/PathSetup.cmake
 project/cmake/scripts/common/PrepareEnv.cmake
 project/cmake/scripts/common/ProjectMacros.cmake
