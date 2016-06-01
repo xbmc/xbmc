@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include.in Makefile
 
 # lib name, version
 LIBNAME=lzo
-VERSION=2.03
+VERSION=2.09
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
