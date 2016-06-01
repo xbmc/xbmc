@@ -5,8 +5,8 @@ if(NOT WIN32)
      pkg_check_modules (MICROHTTPD libmicrohttpd>=0.4)
 
      set(MICROHTTPD_DEFINITIONS ${MICROHTTPD_CFLAGS_OTHER})
-  endif(PKG_CONFIG_FOUND)
-endif(NOT WIN32)
+  endif()
+endif()
 
 #
 # set defaults
@@ -29,12 +29,12 @@ if(NOT MICROHTTPD_FOUND)
     if("" MATCHES "$ENV{MICROHTTPD_HOME}")
       message(STATUS "MICROHTTPD_HOME env is not set, setting it to /usr/local")
       set(MICROHTTPD_HOME ${_microhttpd_HOME})
-    else("" MATCHES "$ENV{MICROHTTPD_HOME}")
+    else()
       set(MICROHTTPD_HOME "$ENV{MICROHTTPD_HOME}")
-    endif("" MATCHES "$ENV{MICROHTTPD_HOME}")
-  else( "${MICROHTTPD_HOME}" STREQUAL "")
+    endif()
+  else()
     message(STATUS "MICROHTTPD_HOME is not empty: \"${MICROHTTPD_HOME}\"")
-  endif( "${MICROHTTPD_HOME}" STREQUAL "")
+  endif()
   ##
 
   message(STATUS "Looking for microhttpd in ${MICROHTTPD_HOME}")
@@ -43,21 +43,21 @@ if(NOT MICROHTTPD_FOUND)
       set(_microhttpd_INCLUDE_SEARCH_DIRS ${MICROHTTPD_HOME}/include ${_microhttpd_INCLUDE_SEARCH_DIRS})
       set(_microhttpd_LIBRARIES_SEARCH_DIRS ${MICROHTTPD_HOME}/lib ${_microhttpd_LIBRARIES_SEARCH_DIRS})
       set(_microhttpd_HOME ${MICROHTTPD_HOME})
-  endif( NOT ${MICROHTTPD_HOME} STREQUAL "" )
+  endif()
 
   if( NOT $ENV{MICROHTTPD_INCLUDEDIR} STREQUAL "" )
     set(_microhttpd_INCLUDE_SEARCH_DIRS $ENV{MICROHTTPD_INCLUDEDIR} ${_microhttpd_INCLUDE_SEARCH_DIRS})
-  endif( NOT $ENV{MICROHTTPD_INCLUDEDIR} STREQUAL "" )
+  endif()
 
   if( NOT $ENV{MICROHTTPD_LIBRARYDIR} STREQUAL "" )
     set(_microhttpd_LIBRARIES_SEARCH_DIRS $ENV{MICROHTTPD_LIBRARYDIR} ${_microhttpd_LIBRARIES_SEARCH_DIRS})
-  endif( NOT $ENV{MICROHTTPD_LIBRARYDIR} STREQUAL "" )
+  endif()
 
   if( MICROHTTPD_HOME )
     set(_microhttpd_INCLUDE_SEARCH_DIRS ${MICROHTTPD_HOME}/include ${_microhttpd_INCLUDE_SEARCH_DIRS})
     set(_microhttpd_LIBRARIES_SEARCH_DIRS ${MICROHTTPD_HOME}/lib ${_microhttpd_LIBRARIES_SEARCH_DIRS})
     set(_microhttpd_HOME ${MICROHTTPD_HOME})
-  endif( MICROHTTPD_HOME )
+  endif()
 
   # find the include files
   find_path(MICROHTTPD_INCLUDE_DIRS microhttpd.h
@@ -71,9 +71,9 @@ if(NOT MICROHTTPD_FOUND)
   # locate the library
   if(WIN32)
     set(MICROHTTPD_LIBRARY_NAMES ${MICROHTTPD_LIBRARY_NAMES} libmicrohttpd.lib)
-  else(WIN32)
+  else()
     set(MICROHTTPD_LIBRARY_NAMES ${MICROHTTPD_LIBRARY_NAMES} libmicrohttpd.a)
-  endif(WIN32)
+  endif()
   find_library(MICROHTTPD_LIBRARIES NAMES ${MICROHTTPD_LIBRARY_NAMES}
     HINTS
       ${_microhttpd_LIBRARIES_SEARCH_DIRS}
@@ -84,7 +84,7 @@ if(NOT MICROHTTPD_FOUND)
   # if the include and the program are found then we have it
   if(MICROHTTPD_INCLUDE_DIRS AND MICROHTTPD_LIBRARIES)
     set(MICROHTTPD_FOUND "YES")
-  endif(MICROHTTPD_INCLUDE_DIRS AND MICROHTTPD_LIBRARIES)
+  endif()
 
   if( NOT WIN32)
     find_library(GCRYPT_LIBRARY gcrypt)
@@ -93,7 +93,7 @@ if(NOT MICROHTTPD_FOUND)
     if(NOT APPLE AND NOT CORE_SYSTEM_NAME STREQUAL android)
       list(APPEND MICROHTTPD_LIBRARIES "-lrt")
     endif()
-  endif( NOT WIN32)
+  endif()
 endif()
 
 list(APPEND MICROHTTPD_DEFINITIONS -DHAVE_LIBMICROHTTPD=1)

@@ -11,7 +11,7 @@ endif()
 string(REGEX MATCH "^arm" TARGET_ARCH_ARM "${CMAKE_SYSTEM_PROCESSOR}")
 if(NOT CMAKE_CROSSCOMPILING AND NOT TARGET_ARCH_ARM)
   return()
-endif(NOT CMAKE_CROSSCOMPILING AND NOT TARGET_ARCH_ARM)
+endif()
 
 find_path(EMBEDDED_FOUND NAMES include/linux/imxfb.h include/bcm_host.h PATHS /opt/vc)
 
