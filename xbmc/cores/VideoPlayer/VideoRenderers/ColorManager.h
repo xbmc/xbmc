@@ -63,11 +63,8 @@ enum CMS_TRC_TYPE
 class CColorManager
 {
 public:
-  /*!
-   \brief Access the global color management system
-   \return the global instance
-   */
-  static CColorManager& Get();
+  CColorManager();
+  virtual ~CColorManager();
 
   /*!
    \brief Check if user has requested color management
@@ -94,10 +91,6 @@ public:
   bool CheckConfiguration(int cmsToken, int flags);
 
 private:
-  // private constructor, use the Get() method to access an instance
-  CColorManager();
-  virtual ~CColorManager();
-
   /*! \brief Check .3dlut file validity
    \param filename full path and filename
    \return true if the file can be loaded, false otherwise

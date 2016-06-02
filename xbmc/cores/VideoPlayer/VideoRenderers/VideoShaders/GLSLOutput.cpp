@@ -25,7 +25,6 @@
 
 #include "GLSLOutput.h"
 #include "dither.h"
-#include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 
 using namespace Shaders;
 
@@ -53,7 +52,7 @@ GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth,
   m_fullRange = fullrange;
   // make sure CMS is enabled - this allows us to keep the texture
   // around to quickly switch between CMS on and off
-  m_3DLUT = CColorManager::Get().IsEnabled() && (clutTex > 0);
+  m_3DLUT = clutTex > 0;
   m_uCLUTSize = clutSize;
 }
 

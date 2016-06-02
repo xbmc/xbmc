@@ -31,13 +31,8 @@
 
 using namespace XFILE;
 
-CColorManager &CColorManager::Get()
-{
-  static CColorManager s_colorManager;
-  return s_colorManager;
-}
-
-CColorManager::CColorManager()
+CColorManager::CColorManager() :
+  m_hProfile(NULL)
 {
   curVideoPrimaries = CMS_PRIMARIES_AUTO;
   curClutSize = 0;
@@ -49,6 +44,11 @@ CColorManager::CColorManager()
 
 CColorManager::~CColorManager()
 {
+  if (m_hProfile)
+  {
+    cmsCloseProfile(m_hProfile);
+    m_hProfile = NULL;
+  }
 }
 
 bool CColorManager::IsEnabled()
