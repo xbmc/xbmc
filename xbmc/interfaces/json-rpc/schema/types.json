@@ -404,6 +404,17 @@
       "thumbnail": { "type": "string" }
     }
   },
+  "Library.Fields.Tag": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string", "enum": [ "title" ] }
+  },
+  "Library.Details.Tag": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "tagid": { "$ref": "Library.Id", "required": true },
+      "title": { "type": "string" }
+    }
+  },
   "Audio.Fields.Role": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string", "enum": [ "title" ] }

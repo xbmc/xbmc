@@ -1434,6 +1434,27 @@
       }
     }
   },
+  "VideoLibrary.GetTags": {
+    "type": "method",
+    "description": "Retrieve all tags",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "type", "type": "string", "required": true, "enum": [ "movie", "tvshow", "musicvideo" ] },
+      { "name": "properties", "$ref": "Library.Fields.Tag" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "tags": { "type": "array", "required": true,
+          "items": { "$ref": "Library.Details.Tag" }
+        }
+      }
+    }
+  },
   "VideoLibrary.SetMovieDetails": {
     "type": "method",
     "description": "Update the given movie with the given details",

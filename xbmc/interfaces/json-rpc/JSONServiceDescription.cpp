@@ -123,6 +123,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 // Video Library
   { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
+  { "VideoLibrary.GetTags",                         CVideoLibrary::GetTags },
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
   { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
   { "VideoLibrary.GetMovieSets",                    CVideoLibrary::GetMovieSets },
