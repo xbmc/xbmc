@@ -82,6 +82,8 @@ CGPUMEM *CDecoder::AllocateBuffer(unsigned int size_pic)
     m_freeBuffers.pop_front();
     if (gmem->m_numbytes == size_pic)
       return gmem;
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s discarding gmem:%p size %d/%d", CLASSNAME, __FUNCTION__, gmem, gmem->m_numbytes, size_pic);
     delete gmem;
   }
 
@@ -93,6 +95,7 @@ CGPUMEM *CDecoder::AllocateBuffer(unsigned int size_pic)
 
 void CDecoder::ReleaseBuffer(CGPUMEM *gmem)
 {
+  CSingleLock lock(m_section);
   if (m_closing)
     delete gmem;
   else
