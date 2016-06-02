@@ -15,18 +15,18 @@
 
 if(NOT PULSEAUDIO_MINIMUM_VERSION)
   set(PULSEAUDIO_MINIMUM_VERSION "1.0.0")
-endif(NOT PULSEAUDIO_MINIMUM_VERSION)
+endif()
 
 if(PULSEAUDIO_INCLUDE_DIRS AND PULSEAUDIO_LIBRARY AND PULSEAUDIO_MAINLOOP_LIBRARY)
    # Already in cache, be silent
    set(PULSEAUDIO_FIND_QUIETLY TRUE)
-endif(PULSEAUDIO_INCLUDE_DIRS AND PULSEAUDIO_LIBRARY AND PULSEAUDIO_MAINLOOP_LIBRARY)
+endif()
 
 if(NOT WIN32)
    include(FindPkgConfig)
    pkg_check_modules(PC_PULSEAUDIO libpulse>=${PULSEAUDIO_MINIMUM_VERSION})
    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib)
-endif(NOT WIN32)
+endif()
 
 find_path(PULSEAUDIO_INCLUDE_DIRS pulse/pulseaudio.h
    HINTS
@@ -57,13 +57,13 @@ if(PULSEAUDIO_FOUND)
       message(STATUS "Found PulseAudio: ${PULSEAUDIO_LIBRARY}")
       if(PULSEAUDIO_MAINLOOP_LIBRARY)
           message(STATUS "Found PulseAudio Mainloop: ${PULSEAUDIO_MAINLOOP_LIBRARY}")
-      else(PULSAUDIO_MAINLOOP_LIBRARY)
+      else()
           message(STATUS "Could NOT find PulseAudio Mainloop Library")
-      endif(PULSEAUDIO_MAINLOOP_LIBRARY)
-   endif(NOT PULSEAUDIO_FIND_QUIETLY)
-else(PULSEAUDIO_FOUND)
+      endif()
+   endif()
+else()
    message(STATUS "Could NOT find PulseAudio")
-endif(PULSEAUDIO_FOUND)
+endif()
 
 set(PULSEAUDIO_LIBRARIES ${PULSEAUDIO_LIBRARY})
 

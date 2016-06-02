@@ -51,7 +51,7 @@ if(NOT WIN32)
   set(DVDREAD_CFLAGS "-D_XBMC")
   if(ENABLE_DVDCSS)
     set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -DHAVE_DVDCSS_DVDCSS_H -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
-  endif(ENABLE_DVDCSS)
+  endif()
 
   ExternalProject_Add(dvdread URL ${libdvdread_BASE_URL}/archive/${libdvdread_VER}.tar.gz
                               PREFIX ${CORE_BUILD_DIR}/libdvd
@@ -79,7 +79,7 @@ if(NOT WIN32)
 
   if(ENABLE_DVDCSS)
     set(DVDNAV_LIBS -ldvdcss)
-  endif(ENABLE_DVDCSS)
+  endif()
 
   ExternalProject_Add(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
                              PREFIX ${CORE_BUILD_DIR}/libdvd
