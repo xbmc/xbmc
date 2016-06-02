@@ -26,9 +26,19 @@
 #include "rendering/RenderSystem.h"
 #include "threads/Thread.h"
 
+#include <linux/videodev2.h>
+#include <sys/mman.h>
+#include "utils/log.h"
+
 typedef struct am_private_t am_private_t;
 
 class DllLibAmCodec;
+
+class PosixFile;
+typedef std::shared_ptr<PosixFile> PosixFilePtr;
+
+class VideoFrame;
+typedef std::shared_ptr<VideoFrame> VideoFramePtr;
 
 class CAMLCodec : public CThread
 {
@@ -45,8 +55,10 @@ public:
   bool          GetPicture(DVDVideoPicture* pDvdVideoPicture);
   void          SetSpeed(int speed);
   int           GetDataSize();
+  int           GetBufferLevel();
   double        GetTimeSize();
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
+  void          SetDropState(bool bDrop);
 
 protected:
   virtual void  Process();
@@ -60,6 +72,12 @@ private:
   void          SetVideoSaturation(const int saturation);
   void          SetVideo3dMode(const int mode3d);
   std::string   GetStereoMode();
+  bool          OpenIonVideo(const CDVDStreamInfo &hints);
+  bool          QueueFrame(VideoFramePtr frame);
+  bool          DequeueFrame(VideoFramePtr &frame);
+  bool          StartStreaming();
+  bool          StopStreaming();
+  void          CloseIonVideo();
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;
@@ -86,5 +104,9 @@ private:
   int              m_contrast;
   int              m_brightness;
 
-  double m_player_pts;
+  PosixFilePtr               m_ionFile;
+  PosixFilePtr               m_ionVideoFile;
+  std::vector<VideoFramePtr> m_videoFrames;
+  VideoFramePtr              m_lastFrame;
+  bool                       m_dropState;
 };
