@@ -20,8 +20,12 @@
 #pragma once
 
 #include "IConfigurationWindow.h"
+#include "addons/Addon.h"
 #include "games/controllers/ControllerTypes.h"
 #include "utils/Observer.h"
+
+#include <set>
+#include <string>
 
 class CGUIButtonControl;
 class CGUIControlGroupList;
@@ -41,7 +45,7 @@ namespace GAME
     // implementation of IControllerList
     virtual bool Initialize(void) override;
     virtual void Deinitialize(void) override;
-    virtual void Refresh(void) override;
+    virtual bool Refresh(void) override;
     virtual void OnFocus(unsigned int controllerIndex) override;
     virtual void OnSelect(unsigned int controllerIndex) override;
     virtual void ResetController(void) override;
@@ -51,6 +55,12 @@ namespace GAME
 
   private:
     bool RefreshControllers(void);
+
+    std::set<std::string> GetControllerIDs() const;
+    std::set<std::string> GetNewControllerIDs(ADDON::VECADDONS& addonCache) const;
+
+    void RegisterController(const std::string& controllerId, const ADDON::VECADDONS& addonCache);
+    void UnregisterController(const std::string& controllerId);
 
     void CleanupButtons(void);
 
