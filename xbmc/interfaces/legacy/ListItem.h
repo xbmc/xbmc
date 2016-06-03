@@ -258,6 +258,39 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setUniqueIDs(values) }
+      ///-----------------------------------------------------------------------
+      /// Sets the listitem's setUniqueIDs
+      ///
+      /// @param values             dictionary - pairs of `{ label: value }`.
+      ///  - Some example values (any string possible):
+      ///  | Label         | Type                                              |
+      ///  |:-------------:|:--------------------------------------------------|
+      ///  | imdb          | string - image filename
+      ///  | tvdb          | string - image filename
+      ///  | tmdb          | string - image filename
+      ///  | anidb         | string - image filename
+      ///
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # setUniqueIDs(values)
+      /// self.list.getSelectedItem().setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493' })
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setUniqueIDs(...);
+#else
+      void setUniqueIDs(const Properties& dictionary);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getArt(key) }
       ///-----------------------------------------------------------------------
       /// Returns a listitem art path as a string, similar to an infolabel.\n
@@ -289,6 +322,38 @@ namespace XBMCAddon
       getArt(key);
 #else
       String getArt(const char* key);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getUniqueID(key) }
+      ///-----------------------------------------------------------------------
+      /// Returns a listitem uniqueID as a string, similar to an infolabel.\n
+      ///
+      /// @param key            string - uniqueID type.
+      /// - Some default uniqueID values (any string possible):
+      ///  | Label         | Type                                             |
+      ///  |---------------|--------------------------------------------------|
+      ///  | imdb          | string - image filename
+      ///  | tvdb          | string - image filename
+      ///  | tmdb          | string - image filename
+      ///  | anidb         | string - image filename
+      ///
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// uniqueID = self.list.getSelectedItem().getUniqueID('imdb')
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      getUniqueID(key);
+#else
+      String getUniqueID(const char* key);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

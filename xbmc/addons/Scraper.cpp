@@ -1035,16 +1035,16 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl, const CScraperUrl &scurl,
 
 bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
 {
-  if (details.m_strIMDBNumber.empty())
+  if (!details.HasUniqueID())
     return false;
 
   CLog::Log(LOGDEBUG, "%s: Reading artwork for '%s' using %s scraper "
-    "(file: '%s', content: '%s', version: '%s')", __FUNCTION__, details.m_strIMDBNumber.c_str(),
+    "(file: '%s', content: '%s', version: '%s')", __FUNCTION__, details.GetUniqueID().c_str(),
     Name().c_str(), Path().c_str(), ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   std::vector<std::string> vcsIn;
   CScraperUrl scurl;
-  vcsIn.push_back(details.m_strIMDBNumber);
+  vcsIn.push_back(details.GetUniqueID());
   std::vector<std::string> vcsOut = RunNoThrow("GetArt", scurl, fcurl, &vcsIn);
 
   bool fRet(false);

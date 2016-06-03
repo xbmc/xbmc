@@ -203,6 +203,9 @@ void CVideoDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create rating table");
   m_pDS->exec("CREATE TABLE rating (rating_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, rating_type TEXT, rating FLOAT, votes INTEGER)");
+
+  CLog::Log(LOGINFO, "create uniqueid table");
+  m_pDS->exec("CREATE TABLE uniqueid (uniqueid_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, value TEXT, type TEXT)");
 }
 
 void CVideoDatabase::CreateLinkIndex(const char *table)
@@ -271,6 +274,9 @@ void CVideoDatabase::CreateAnalytics()
 
   m_pDS->exec("CREATE INDEX ix_rating ON rating(media_id, media_type(20))");
 
+  m_pDS->exec("CREATE INDEX ix_uniqueid1 ON uniqueid(media_id, media_type(20), type(20))");
+  m_pDS->exec("CREATE INDEX ix_uniqueid2 ON uniqueid(media_type(20), value(20))");
+
   CreateLinkIndex("tag");
   CreateLinkIndex("actor");
   CreateForeignLinkIndex("director", "actor");
@@ -291,6 +297,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM rating WHERE media_id=old.idMovie AND media_type='movie'; "
+              "DELETE FROM uniqueid WHERE media_id=old.idMovie AND media_type='movie'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
@@ -303,6 +310,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; "
               "DELETE FROM tag_link WHERE media_id=old.idShow AND media_type='tvshow'; "
               "DELETE FROM rating WHERE media_id=old.idShow AND media_type='tvshow'; "
+              "DELETE FROM uniqueid WHERE media_id=old.idShow AND media_type='tvshow'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
@@ -318,6 +326,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM writer_link WHERE media_id=old.idEpisode AND media_type='episode'; "
               "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
               "DELETE FROM rating WHERE media_id=old.idEpisode AND media_type='episode'; "
+              "DELETE FROM uniqueid WHERE media_id=old.idEpisode AND media_type='episode'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
               "DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; "
@@ -360,7 +369,9 @@ void CVideoDatabase::CreateViews()
                                       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
                                       "  rating.rating AS rating, "
                                       "  rating.votes AS votes, "
-                                      "  rating.rating_type AS rating_type "
+                                      "  rating.rating_type AS rating_type, "
+                                      "  uniqueid.value AS uniqueid_value, "
+                                      "  uniqueid.type AS uniqueid_type "
                                       "FROM episode"
                                       "  JOIN files ON"
                                       "    files.idFile=episode.idFile"
@@ -373,10 +384,13 @@ void CVideoDatabase::CreateViews()
                                       "  LEFT JOIN bookmark ON"
                                       "    bookmark.idFile=episode.idFile AND bookmark.type=1"
                                       "  LEFT JOIN rating ON"
-                                      "    rating.rating_id=episode.c%02d",
+                                      "    rating.rating_id=episode.c%02d"
+                                      "  LEFT JOIN uniqueid ON"
+                                      "    uniqueid.uniqueid_id=episode.c%02d",
                                       VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE,
                                       VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
-                                      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_RATING_ID);
+                                      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_RATING_ID,
+                                      VIDEODB_ID_EPISODE_IDENT_ID);
   m_pDS->exec(episodeview);
 
   CLog::Log(LOGINFO, "create tvshowcounts");
@@ -404,7 +418,9 @@ void CVideoDatabase::CreateViews()
                                      "  lastPlayed, totalCount, watchedcount, totalSeasons, "
                                      "  rating.rating AS rating, "
                                      "  rating.votes AS votes, "
-                                     "  rating.rating_type AS rating_type "
+                                     "  rating.rating_type AS rating_type, "
+                                     "  uniqueid.value AS uniqueid_value, "
+                                     "  uniqueid.type AS uniqueid_type "
                                      "FROM tvshow"
                                      "  LEFT JOIN tvshowlinkpath ON"
                                      "    tvshowlinkpath.idShow=tvshow.idShow"
@@ -414,8 +430,10 @@ void CVideoDatabase::CreateViews()
                                      "    tvshow.idShow = tvshowcounts.idShow "
                                      "  LEFT JOIN rating ON"
                                      "    rating.rating_id=tvshow.c%02d "
+                                     "  LEFT JOIN uniqueid ON"
+                                     "    uniqueid.uniqueid_id=tvshow.c%02d "
                                      "GROUP BY tvshow.idShow",
-                                     VIDEODB_ID_TV_RATING_ID);
+                                     VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_IDENT_ID);
   m_pDS->exec(tvshowview);
   CLog::Log(LOGINFO, "create season_view");
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
@@ -476,7 +494,9 @@ void CVideoDatabase::CreateViews()
                                       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
                                       "  rating.rating AS rating, "
                                       "  rating.votes AS votes, "
-                                      "  rating.rating_type AS rating_type "
+                                      "  rating.rating_type AS rating_type, "
+                                      "  uniqueid.value AS uniqueid_value, "
+                                      "  uniqueid.type AS uniqueid_type "
                                       "FROM movie"
                                       "  LEFT JOIN sets ON"
                                       "    sets.idSet = movie.idSet"
@@ -487,8 +507,10 @@ void CVideoDatabase::CreateViews()
                                       "  LEFT JOIN bookmark ON"
                                       "    bookmark.idFile=movie.idFile AND bookmark.type=1"
                                       "  LEFT JOIN rating ON"
-                                      "    rating.rating_id=movie.c%02d",
-                                      VIDEODB_ID_RATING_ID);
+                                      "    rating.rating_id=movie.c%02d"
+                                      "  LEFT JOIN uniqueid ON"
+                                      "    uniqueid.uniqueid_id=movie.c%02d",
+                                      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
   m_pDS->exec(movieview);
 }
 
@@ -1474,6 +1496,67 @@ int CVideoDatabase::AddRatings(int mediaId, const char *mediaType, const RatingM
   return ratingid;
 }
 
+int CVideoDatabase::UpdateUniqueIDs(int mediaId, const char *mediaType, const CVideoInfoTag& details)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    std::string sql = PrepareSQL("DELETE FROM uniqueid WHERE media_id=%i AND media_type='%s'", mediaId, mediaType);
+    m_pDS->exec(sql);
+
+    return AddUniqueIDs(mediaId, mediaType, details);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to update unique ids of (%s)", __FUNCTION__, mediaType);
+  }
+  return -1;
+}
+
+int CVideoDatabase::AddUniqueIDs(int mediaId, const char *mediaType, const CVideoInfoTag& details)
+{
+  int uniqueid = -1;
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    for (const auto& i : details.GetUniqueIDs())
+    {
+      int id;
+      std::string strSQL = PrepareSQL("SELECT uniqueid_id FROM uniqueid WHERE media_id=%i AND media_type='%s' AND type = '%s'", mediaId, mediaType, i.first.c_str());
+      m_pDS->query(strSQL);
+      if (m_pDS->num_rows() == 0)
+      {
+        m_pDS->close();
+        // doesnt exists, add it
+        strSQL = PrepareSQL("INSERT INTO uniqueid (media_id, media_type, value, type) VALUES (%i, '%s', '%s', '%s')", mediaId, mediaType, i.second.c_str(), i.first.c_str());
+        m_pDS->exec(strSQL);
+        id = (int)m_pDS->lastinsertid();
+      }
+      else
+      {
+        id = m_pDS->fv(0).get_asInt();
+        m_pDS->close();
+        strSQL = PrepareSQL("UPDATE uniqueid SET value = '%s', type = '%s' WHERE uniqueid_id = %i", i.second.c_str(), i.first.c_str(), id);
+        m_pDS->exec(strSQL);
+      }
+      if (i.first == details.GetDefaultUniqueID())
+        uniqueid = id;
+    }
+    return uniqueid;
+
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i - %s) failed", __FUNCTION__, mediaId, mediaType);
+  }
+
+  return uniqueid;
+}
+
 int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOverview /* = "" */)
 {
   if (strSet.empty())
@@ -1783,6 +1866,9 @@ void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
     m_pDS->exec(strSQL);
 
     strSQL = PrepareSQL("DELETE FROM rating WHERE media_id=%i AND media_type='tvshow'", idTvShow);
+    m_pDS->exec(strSQL);
+
+    strSQL = PrepareSQL("DELETE FROM uniqueid WHERE media_id=%i AND media_type='tvshow'", idTvShow);
     m_pDS->exec(strSQL);
 
     // remove all info other than the id
@@ -2189,8 +2275,11 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
     AddActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
     AddActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
 
-    // add ratings
+    // add ratingsu
     details.m_iIdRating = AddRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
+
+    // add unique ids
+    details.m_iIdUniqueID = AddUniqueIDs(idMovie, MediaTypeMovie, details);
 
     // add set...
     int idSet = -1;
@@ -2208,9 +2297,16 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
-    if (!details.m_strIMDBNumber.empty() && details.HasYear())
-    { // query DB for any movies matching imdbid and year
-      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed FROM movie INNER JOIN files ON files.idFile=movie.idFile WHERE movie.c%02d='%s' AND movie.premiered LIKE '%i%%' AND movie.idMovie!=%i AND files.playCount > 0", VIDEODB_ID_IDENT, details.m_strIMDBNumber.c_str(), details.GetYear(), idMovie);
+    if (!details.HasUniqueID() && details.HasYear())
+    { // query DB for any movies matching online id and year
+      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
+                                      "FROM movie "
+                                      "  INNER JOIN files "
+                                      "    ON files.idFile=movie.idFile "
+                                      "  JOIN uniqueid "
+                                      "    ON movie.idMovie=uniqueid.media_id AND uniqueid.media_type='movie' AND uniqueid.value='%s'"
+                                      "WHERE movie.premiered LIKE '%i%%' AND movie.idMovie!=%i AND files.playCount > 0", 
+                                      details.GetUniqueID().c_str(), details.GetYear(), idMovie);
       m_pDS->query(strSQL);
 
       if (!m_pDS->eof())
@@ -2286,6 +2382,8 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
       SetArtForItem(idMovie, MediaTypeMovie, artwork);
     if (updatedDetails.find("ratings") != updatedDetails.end())
       details.m_iIdRating = UpdateRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
+    if (updatedDetails.find("uniqueid") != updatedDetails.end())
+      details.m_iIdUniqueID = UpdateUniqueIDs(idMovie, MediaTypeMovie, details);
     if (updatedDetails.find("dateadded") != updatedDetails.end() && details.m_dateAdded.IsValid())
     {
       if (details.m_iFileId <= 0)
@@ -2397,10 +2495,10 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const st
 
 int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag &details)
 {
-  // first try matching on VIDEODB_ID_TV_IDENT, then on title + year
+  // first try matching on uniqueid, then on title + year
   int id = -1;
-  if (!details.m_strIMDBNumber.empty())
-    id = GetDbId(PrepareSQL("SELECT idShow from tvshow WHERE c%02d='%s'", VIDEODB_ID_TV_IDENT, details.m_strIMDBNumber.c_str()));
+  if (!details.HasUniqueID())
+    id = GetDbId(PrepareSQL("SELECT idShow from tvshow JOIN uniqueid ON uniqueid.value='%s' AND uniqueid.media_type='tvshow'", details.GetUniqueID().c_str()));
   if (id < 0)
     id = GetDbId(PrepareSQL("SELECT idShow FROM tvshow WHERE c%02d='%s' AND c%02d='%s'", VIDEODB_ID_TV_TITLE, details.m_strTitle.c_str(), VIDEODB_ID_TV_PREMIERED, details.GetPremiered().GetAsDBDate().c_str()));
   return id;
@@ -2462,6 +2560,9 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
 
   // add ratings
   details.m_iIdRating = AddRatings(idTvShow, MediaTypeTvShow, details.m_ratings, details.GetDefaultRating());
+
+  // add unique ids
+  details.m_iIdUniqueID = UpdateUniqueIDs(idTvShow, MediaTypeTvShow, details);
 
   // add "all seasons" - the rest are added in SetDetailsForEpisode
   AddSeason(idTvShow, -1);
@@ -2591,6 +2692,9 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
 
     // add ratings
     details.m_iIdRating = AddRatings(idEpisode, MediaTypeEpisode, details.m_ratings, details.GetDefaultRating());
+
+    // add unique ids
+    details.m_iIdUniqueID = UpdateUniqueIDs(idEpisode, MediaTypeEpisode, details);
 
     if (details.HasStreamDetails())
     {
@@ -3680,6 +3784,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.AddRating(record->at(VIDEODB_DETAILS_MOVIE_RATING).get_asFloat(), 
                     record->at(VIDEODB_DETAILS_MOVIE_VOTES).get_asInt(),
                     record->at(VIDEODB_DETAILS_MOVIE_RATING_TYPE).get_asString(), true);
+  details.SetUniqueID(record->at(VIDEODB_DETAILS_MOVIE_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_MOVIE_UNIQUEID_TYPE).get_asString() ,true);
   std::string premieredString = record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asString();
   if (premieredString.size() == 4)
     details.SetYear(record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asInt());
@@ -3700,6 +3805,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
     if (getDetails & VideoDbDetailsRating)
       GetRatings(details.m_iDbId, MediaTypeMovie, details.m_ratings);
+
+    if (getDetails & VideoDbDetailsUniqueID)
+     GetUniqueIDs(details.m_iDbId, MediaTypeMovie, details);
 
     details.m_strPictureURL.Parse();
 
@@ -3759,6 +3867,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.AddRating(record->at(VIDEODB_DETAILS_TVSHOW_RATING).get_asFloat(), 
                     record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt(),
                     record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString(), true);
+  details.SetUniqueID(record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_TYPE).get_asString(), true);
   details.m_duration = record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt();
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
@@ -3776,6 +3885,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
 
     if (getDetails & VideoDbDetailsRating)
       GetRatings(details.m_iDbId, MediaTypeTvShow, details.m_ratings);
+
+    if (getDetails & VideoDbDetailsUniqueID)
+      GetUniqueIDs(details.m_iDbId, MediaTypeTvShow, details);
 
     details.m_strPictureURL.Parse();
 
@@ -3836,6 +3948,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.AddRating(record->at(VIDEODB_DETAILS_EPISODE_RATING).get_asFloat(), 
                     record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt(), 
                     record->at(VIDEODB_DETAILS_EPISODE_RATING_TYPE).get_asString(), true);
+  details.SetUniqueID(record->at(VIDEODB_DETAILS_EPISODE_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_EPISODE_UNIQUEID_TYPE).get_asString(), true);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   if (getDetails)
@@ -3849,6 +3962,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 
     if (getDetails & VideoDbDetailsRating)
       GetRatings(details.m_iDbId, MediaTypeEpisode, details.m_ratings);
+
+    if (getDetails & VideoDbDetailsUniqueID)
+      GetUniqueIDs(details.m_iDbId, MediaTypeEpisode, details);
 
     details.m_strPictureURL.Parse();
     
@@ -3998,6 +4114,28 @@ void CVideoDatabase::GetRatings(int media_id, const std::string &media_type, Rat
     while (!m_pDS2->eof())
     {
       ratings[m_pDS2->fv(0).get_asString()] = CRating(m_pDS2->fv(1).get_asFloat(), m_pDS2->fv(2).get_asInt());
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i,%s) failed", __FUNCTION__, media_id, media_type.c_str());
+  }
+}
+
+void CVideoDatabase::GetUniqueIDs(int media_id, const std::string &media_type, CVideoInfoTag& details)
+{
+  try
+  {
+    if (!m_pDB.get()) return;
+    if (!m_pDS2.get()) return;
+
+    std::string sql = PrepareSQL("SELECT type, value FROM uniqueid WHERE media_id = %i AND media_type = '%s'", media_id, media_type.c_str());
+    m_pDS2->query(sql);
+    while (!m_pDS2->eof())
+    {
+      details.SetUniqueID(m_pDS2->fv(1).get_asString(), m_pDS2->fv(0).get_asString());
       m_pDS2->next();
     }
     m_pDS2->close();
@@ -4577,7 +4715,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
   if (iVersion < 83)
   {
     // drop duplicates in tvshow table, and update tvshowlinkpath accordingly
-    std::string sql = PrepareSQL("SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_IDENT);
+    std::string sql = PrepareSQL("SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_IDENT_ID);
     m_pDS->query(sql);
     std::vector<CShowItem> shows;
     while (!m_pDS->eof())
@@ -4967,11 +5105,63 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE musicvideo ADD premiered TEXT");
     m_pDS->exec(PrepareSQL("UPDATE musicvideo SET premiered=c%02d", VIDEODB_ID_MUSICVIDEO_YEAR));
   }
+
+  if (iVersion < 107)
+  {
+    // need this due to the nested GetScraperPath query
+    std::unique_ptr<Dataset> pDS;
+    pDS.reset(m_pDB->CreateDataset());
+    if (NULL == pDS.get()) return;
+
+    pDS->exec("CREATE TABLE uniqueid (uniqueid_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, value TEXT, type TEXT)");
+
+    for (int i = 0; i < 3; ++i)
+    {
+      std::string mediatype, columnID;
+      int columnUniqueID;
+      switch (i)
+      {
+      case (0):
+        mediatype = "movie";
+        columnID = "idMovie";
+        columnUniqueID = VIDEODB_ID_IDENT_ID;
+        break;
+      case (1):
+        mediatype = "tvshow";
+        columnID = "idShow";
+        columnUniqueID = VIDEODB_ID_TV_IDENT_ID;
+        break;
+      case (2):
+        mediatype = "episode";
+        columnID = "idEpisode";
+        columnUniqueID = VIDEODB_ID_EPISODE_IDENT_ID;
+        break;
+      default:
+        continue;
+      }
+      pDS->query(PrepareSQL("SELECT %s, c%02d FROM %s", columnID.c_str(), columnUniqueID, mediatype.c_str()));
+      while (!pDS->eof())
+      {
+        std::string uniqueid = pDS->fv(1).get_asString();
+        if (!uniqueid.empty())
+        {
+          int mediaid = pDS->fv(0).get_asInt();
+          if (StringUtils::StartsWith(uniqueid, "tt"))
+            m_pDS2->exec(PrepareSQL("INSERT INTO uniqueid(media_id, media_type, type, value) VALUES (%i, '%s', 'imdb', '%s')", mediaid, mediatype.c_str(), uniqueid.c_str()));
+          else
+            m_pDS2->exec(PrepareSQL("INSERT INTO uniqueid(media_id, media_type, type, value) VALUES (%i, '%s', 'unknown', '%s')", mediaid, mediatype.c_str(), uniqueid.c_str()));
+          m_pDS2->exec(PrepareSQL("UPDATE %s SET c%02d='%i' WHERE %s=%i", mediatype.c_str(), columnUniqueID, (int)m_pDS2->lastinsertid(), columnID.c_str(), mediaid));
+        }
+        pDS->next();
+      }
+      pDS->close();
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 106;
+  return 107;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

@@ -408,6 +408,14 @@
     "type": "object",
     "additionalProperties": { "type": [ "null", { "$ref": "Video.Rating", "required": true } ] }
   },
+  "Media.UniqueID": {
+    "type": "object",
+    "additionalProperties": { "$ref": "Global.String.NotEmpty" }
+  },
+  "Media.UniqueID.Set": {
+    "type": "object",
+    "additionalProperties": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ] }
+  },
   "Library.Fields.Genre": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string", "enum": [ "title", "thumbnail" ] }
@@ -618,13 +626,14 @@
   "Video.Fields.Movie": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the cast, ratings, showlink, streamdetails and/or tag field will result in increased response times",
+      "description": "Requesting the cast, ratings, showlink, streamdetails, uniqueid and/or tag field will result in increased response times",
       "enum": [ "title", "genre", "year", "rating", "director", "trailer",
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                 "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
-                "resume", "setid", "dateadded", "tag", "art", "userrating", "ratings", "premiered" ]
+                "resume", "setid", "dateadded", "tag", "art", "userrating",  
+                "ratings", "premiered", "uniqueid" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -636,13 +645,14 @@
   "Video.Fields.TVShow": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the cast, ratings and/or tag field will result in increased response times",
+      "description": "Requesting the cast, ratings, uniqueid and/or tag field will result in increased response times",
       "enum": [ "title", "genre", "year", "rating", "plot",
                 "studio", "mpaa", "cast", "playcount", "episode",
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "art", "userrating", "ratings", "runtime" ]
+                "dateadded", "tag", "art", "userrating", "ratings", 
+                "runtime", "uniqueid" ]
     }
   },
   "Video.Fields.Season": {
@@ -655,7 +665,7 @@
   "Video.Fields.Episode": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "description": "Requesting the cast, ratings, streamdetails and/or tag field will result in increased response times",
+      "description": "Requesting the cast, ratings, streamdetails, uniqueid and/or tag field will result in increased response times",
       "enum": [ "title", "plot", "votes", "rating", "writer",
                 "firstaired", "playcount", "runtime", "director",
                 "productioncode", "season", "episode", "originaltitle",
@@ -789,7 +799,8 @@
       "tag": { "$ref": "Array.String" },
       "userrating": { "type": "integer" },
       "ratings": { "type": "Video.Ratings" },
-      "premiered": { "type": "string" }
+      "premiered": { "type": "string" },
+      "uniqueid": { "$ref": "Media.UniqueID" }
     }
   },
   "Video.Details.MovieSet": {
@@ -830,7 +841,8 @@
       "tag": { "$ref": "Array.String" },
       "userrating": { "type": "integer" },
       "ratings": { "type": "Video.Ratings" },
-      "runtime": { "type": "integer", "description": "Runtime in seconds" }
+      "runtime": { "type": "integer", "description": "Runtime in seconds" },
+      "uniqueid": { "$ref": "Media.UniqueID" }
     }
   },
   "Video.Details.Season": {
@@ -856,7 +868,7 @@
       "productioncode": { "type": "string" },
       "season": { "type": "integer" },
       "episode": { "type": "integer" },
-      "uniqueid": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } },
+      "uniqueid": { "$ref": "Media.UniqueID" },
       "originaltitle": { "type": "string" },
       "showtitle": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
@@ -1392,7 +1404,7 @@
       "disc": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
       "albumartistid": { "$ref": "Array.Integer" },
-      "uniqueid": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } },
+      "uniqueid": { "$ref": "Media.UniqueID" },
       "episodeguide": { "type": "string" },
       "sorttitle": { "type": "string" },
       "description": { "type": "string" },

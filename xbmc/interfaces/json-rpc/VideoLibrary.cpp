@@ -1002,6 +1002,8 @@ int CVideoLibrary::RequiresAdditionalDetails(const MediaType& mediaType, const C
       details = details | VideoDbDetailsCast;
     else if (propertyValue == "ratings")
       details = details | VideoDbDetailsRating;
+    else if (propertyValue == "uniqueid")
+      details = details | VideoDbDetailsUniqueID;
     else if (propertyValue == "showlink")
       details = details | VideoDbDetailsShowLink;
     else if (propertyValue == "streamdetails")
@@ -1141,7 +1143,24 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "mpaa"))
     details.SetMPAARating(parameterObject["mpaa"].asString());
   if (ParameterNotNull(parameterObject, "imdbnumber"))
-    details.SetIMDBNumber(parameterObject["imdbnumber"].asString());
+    details.SetUniqueID(parameterObject["imdbnumber"].asString());
+  if (ParameterNotNull(parameterObject, "uniqueid"))
+  {
+    CVariant uniqueids = parameterObject["uniqueid"];
+    for (CVariant::const_iterator_map idIt = uniqueids.begin_map(); idIt != uniqueids.end_map(); idIt++)
+    {
+      if (idIt->second.isString() && !idIt->second.asString().empty())
+      {
+        details.SetUniqueID(idIt->second.asString(), idIt->first);
+        updatedDetails.insert("uniqueid");
+      }
+      else if (idIt->second.isNull() && idIt->first != details.GetDefaultUniqueID())
+      {
+        details.RemoveUniqueID(idIt->first);
+        updatedDetails.insert("uniqueid");
+      }
+    }
+  }
   if (ParameterNotNull(parameterObject, "premiered"))
   {
     CDateTime premiered;
