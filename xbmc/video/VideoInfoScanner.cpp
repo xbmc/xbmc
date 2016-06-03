@@ -139,7 +139,11 @@ namespace VIDEO
          * occurs.
          */
         std::string directory = *m_pathsToScan.begin();
-        if (!CDirectory::Exists(directory))
+        if (m_bStop)
+        {
+          bCancelled = true;
+        }
+        else if (!CDirectory::Exists(directory))
         {
           /*
            * Note that this will skip clean (if m_bClean is enabled) if the directory really
