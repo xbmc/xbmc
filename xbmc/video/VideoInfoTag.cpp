@@ -1210,6 +1210,11 @@ void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */)
     m_ratings[type].rating = rating;
 }
 
+void CVideoInfoTag::SetRatings(RatingMap ratings)
+{
+  m_ratings = std::move(ratings);
+}
+
 void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
 {
   if (type.empty())

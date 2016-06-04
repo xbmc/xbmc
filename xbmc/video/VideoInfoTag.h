@@ -50,10 +50,9 @@ struct SActorInfo
 class CRating
 {
 public:
-  CRating()
-    : CRating(0.0f, 0)
-  { }
-  CRating(float r, int v) { rating = r; votes = v; }
+  CRating(): rating(0.0f), votes(0) {}
+  CRating(float r): rating(r), votes(0) {}
+  CRating(float r, int v): rating(r), votes(v) {}
   float rating;
   int votes;
 };
@@ -126,6 +125,7 @@ public:
   void AddRating(float rating, int votes, const std::string& type = "");
   void AddRating(CRating rating, const std::string& type = "");
   void SetRating(float rating, const std::string& type = "");
+  void SetRatings(RatingMap ratings);
   void SetVotes(int votes, const std::string& type = "");
   void SetPremiered(CDateTime premiered);
   void SetPremieredFromDBDate(std::string premieredString);
