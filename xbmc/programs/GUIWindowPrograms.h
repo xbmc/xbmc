@@ -30,16 +30,16 @@ class CGUIWindowPrograms :
 public:
   CGUIWindowPrograms(void);
   virtual ~CGUIWindowPrograms(void);
-  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnMessage(CGUIMessage& message) override;
   virtual void OnItemInfo(int iItem);
 protected:
-  virtual void OnItemLoaded(CFileItem* pItem) {};
-  virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true);
+  virtual void OnItemLoaded(CFileItem* pItem) override {};
+  virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
   virtual bool OnPlayMedia(int iItem);
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   bool OnAddMediaSource() override;
-  virtual std::string GetStartFolder(const std::string &dir);
+  virtual std::string GetStartFolder(const std::string &dir) override;
 
   CGUIDialogProgress* m_dlgProgress;
 

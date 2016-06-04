@@ -30,14 +30,14 @@ public:
   CStaticListProvider(const std::vector<CGUIStaticItemPtr> &items); // for python
   virtual ~CStaticListProvider();
 
-  virtual bool Update(bool forceRefresh);
-  virtual void Fetch(std::vector<CGUIListItemPtr> &items) const;
-  virtual bool OnClick(const CGUIListItemPtr &item);
+  virtual bool Update(bool forceRefresh) override;
+  virtual void Fetch(std::vector<CGUIListItemPtr> &items) const override;
+  virtual bool OnClick(const CGUIListItemPtr &item) override;
   bool OnInfo(const CGUIListItemPtr &item) override { return false; }
   bool OnContextMenu(const CGUIListItemPtr &item) override { return false; }
-  virtual void SetDefaultItem(int item, bool always);
-  virtual int  GetDefaultItem() const;
-  virtual bool AlwaysFocusDefaultItem() const;
+  virtual void SetDefaultItem(int item, bool always) override;
+  virtual int  GetDefaultItem() const override;
+  virtual bool AlwaysFocusDefaultItem() const override;
 private:
   int                            m_defaultItem;
   bool                           m_defaultAlways;
