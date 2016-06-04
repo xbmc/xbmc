@@ -134,7 +134,7 @@ namespace XBMCAddon
 
     int InfoTagVideo::getYear()
     {
-      return infoTag->m_iYear;
+      return infoTag->GetYear();
     }
 
     double InfoTagVideo::getRating()
@@ -159,7 +159,7 @@ namespace XBMCAddon
 
     String InfoTagVideo::getPremiered()
     {
-      return infoTag->m_premiered.GetAsLocalizedDate();
+      return infoTag->GetPremiered().GetAsLocalizedDate();
     }
 
     String InfoTagVideo::getFirstAired()

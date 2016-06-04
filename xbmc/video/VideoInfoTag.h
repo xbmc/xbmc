@@ -85,6 +85,10 @@ public:
   virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable, Field field) const;
   const CRating GetRating(std::string type = "") const;
+  const bool HasYear() const;
+  const int GetYear() const;
+  const bool HasPremiered() const;
+  const CDateTime& GetPremiered() const;
   const std::string GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
@@ -123,6 +127,9 @@ public:
   void AddRating(CRating rating, const std::string& type = "");
   void SetRating(float rating, const std::string& type = "");
   void SetVotes(int votes, const std::string& type = "");
+  void SetPremiered(CDateTime premiered);
+  void SetPremieredFromDBDate(std::string premieredString);
+  void SetYear(int year);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);
@@ -157,7 +164,6 @@ public:
   CScraperUrl m_strPictureURL;
   std::string m_strTitle;
   std::string m_strSortTitle;
-  std::string m_strVotes;
   std::vector<std::string> m_artist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
@@ -173,6 +179,7 @@ public:
   std::string m_strOriginalTitle;
   std::string m_strEpisodeGuide;
   CDateTime m_premiered;
+  bool m_bHasPremiered;
   std::string m_strStatus;
   std::string m_strProductionCode;
   CDateTime m_firstAired;
@@ -184,7 +191,6 @@ public:
   std::map<int, std::string> m_namedSeasons;
   int m_playCount;
   int m_iTop250;
-  int m_iYear;
   int m_iSeason;
   int m_iEpisode;
   std::string m_strUniqueId;

@@ -8647,8 +8647,8 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_YEAR:
       {
         std::string strYear;
-        if (m_currentFile->GetVideoInfoTag()->m_iYear > 0)
-          strYear = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iYear);
+        if (m_currentFile->GetVideoInfoTag()->HasYear())
+          strYear = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->GetYear());
         return strYear;
       }
       break;
@@ -8657,8 +8657,8 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         CDateTime dateTime;
         if (m_currentFile->GetVideoInfoTag()->m_firstAired.IsValid())
           dateTime = m_currentFile->GetVideoInfoTag()->m_firstAired;
-        else if (m_currentFile->GetVideoInfoTag()->m_premiered.IsValid())
-          dateTime = m_currentFile->GetVideoInfoTag()->m_premiered;
+        else if (m_currentFile->GetVideoInfoTag()->HasPremiered())
+          dateTime = m_currentFile->GetVideoInfoTag()->GetPremiered();
 
         if (dateTime.IsValid())
           return dateTime.GetAsLocalizedDate();
@@ -9396,8 +9396,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_YEAR:
     {
       std::string year;
-      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iYear > 0)
-        year = StringUtils::Format("%i", item->GetVideoInfoTag()->m_iYear);
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->HasYear())
+        year = StringUtils::Format("%i", item->GetVideoInfoTag()->GetYear());
       if (item->HasMusicInfoTag())
         year = item->GetMusicInfoTag()->GetYearString();
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->Year() > 0)
@@ -9408,8 +9408,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         if (tag && tag->Year() > 0)
           year = StringUtils::Format("%i", tag->Year());
       }
-      if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iYear > 0)
-          year = StringUtils::Format("%i", item->GetPVRRecordingInfoTag()->m_iYear);
+      if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->HasYear())
+          year = StringUtils::Format("%i", item->GetPVRRecordingInfoTag()->GetYear());
       return year;
     }
   case LISTITEM_PREMIERED:
@@ -9418,8 +9418,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       CDateTime dateTime;
       if (item->GetVideoInfoTag()->m_firstAired.IsValid())
         dateTime = item->GetVideoInfoTag()->m_firstAired;
-      else if (item->GetVideoInfoTag()->m_premiered.IsValid())
-        dateTime = item->GetVideoInfoTag()->m_premiered;
+      else if (item->GetVideoInfoTag()->HasPremiered())
+        dateTime = item->GetVideoInfoTag()->GetPremiered();
 
       if (dateTime.IsValid())
         return dateTime.GetAsLocalizedDate();

@@ -68,7 +68,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       
       home->SetProperty("LatestMovie." + value + ".Title"       , item->GetLabel());
       home->SetProperty("LatestMovie." + value + ".Rating"      , strRating);
-      home->SetProperty("LatestMovie." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
+      home->SetProperty("LatestMovie." + value + ".Year"        , item->GetVideoInfoTag()->GetYear());
       home->SetProperty("LatestMovie." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
       home->SetProperty("LatestMovie." + value + ".RunningTime" , item->GetVideoInfoTag()->GetDuration() / 60);
       home->SetProperty("LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
@@ -159,7 +159,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       std::string   value = StringUtils::Format("%i", i + 1);
 
       home->SetProperty("LatestMusicVideo." + value + ".Title"       , item->GetLabel());
-      home->SetProperty("LatestMusicVideo." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
+      home->SetProperty("LatestMusicVideo." + value + ".Year"        , item->GetVideoInfoTag()->GetYear());
       home->SetProperty("LatestMusicVideo." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
       home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->GetDuration() / 60);
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);

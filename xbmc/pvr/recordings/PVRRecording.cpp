@@ -92,7 +92,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strShowTitle                   = recording.strEpisodeName;
   m_iSeason                        = recording.iSeriesNumber;
   m_iEpisode                       = recording.iEpisodeNumber;
-  m_iYear                          = recording.iYear;
+  SetYear(recording.iYear);
   m_iClientId                      = iClientId;
   m_recordingTime                  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_duration                       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
@@ -163,7 +163,7 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strShowTitle       == right.m_strShowTitle &&
        m_iSeason            == right.m_iSeason &&
        m_iEpisode           == right.m_iEpisode &&
-       m_iYear              == right.m_iYear &&
+       GetPremiered()       == right.GetPremiered() &&
        m_strIconPath        == right.m_strIconPath &&
        m_strThumbnailPath   == right.m_strThumbnailPath &&
        m_strFanartPath      == right.m_strFanartPath &&
@@ -388,7 +388,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strShowTitle      = tag.m_strShowTitle;
   m_iSeason           = tag.m_iSeason;
   m_iEpisode          = tag.m_iEpisode;
-  m_iYear             = tag.m_iYear;
+  SetPremiered(tag.GetPremiered());
   m_recordingTime     = tag.m_recordingTime;
   m_duration          = tag.m_duration;
   m_iPriority         = tag.m_iPriority;
@@ -448,7 +448,7 @@ void CPVRRecording::UpdatePath(void)
   else
   {
     m_strFileNameAndPath = CPVRRecordingsPath(
-      m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, m_iYear, m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
+      m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, GetYear(), m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
   }
 }
 

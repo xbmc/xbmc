@@ -1089,8 +1089,6 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   UpdateVideoTagField(parameterObject, "studio", studio, updatedDetails);
   details.SetStudio(studio);
 
-  if (ParameterNotNull(parameterObject, "year"))
-    details.m_iYear = (int)parameterObject["year"].asInteger();
   if (ParameterNotNull(parameterObject, "plot"))
     details.SetPlot(parameterObject["plot"].asString());
   if (ParameterNotNull(parameterObject, "album"))
@@ -1137,7 +1135,13 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "imdbnumber"))
     details.SetIMDBNumber(parameterObject["imdbnumber"].asString());
   if (ParameterNotNull(parameterObject, "premiered"))
-    SetFromDBDate(parameterObject["premiered"], details.m_premiered);
+  {
+    CDateTime premiered;
+    SetFromDBDate(parameterObject["premiered"], premiered);
+    details.SetPremiered(premiered);
+  }
+  else if (ParameterNotNull(parameterObject, "year"))
+    details.SetYear((int)parameterObject["year"].asInteger());
   if (ParameterNotNull(parameterObject, "lastplayed"))
     SetFromDBDateTime(parameterObject["lastplayed"], details.m_lastPlayed);
   if (ParameterNotNull(parameterObject, "firstaired"))
