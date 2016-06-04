@@ -4086,8 +4086,6 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
   try
   {
     total = -1;
-    // Get data from album and album_artist tables to fully populate albums
-    std::string strSQL = "SELECT %s FROM albumview JOIN albumartistview on albumartistview.idalbum = albumview.idalbum ";
 
     Filter extFilter = filter;
     CMusicDbUrl musicUrl;
@@ -4113,9 +4111,9 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
       return true;
 
     // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() &&
-      sortDescription.sortBy == SortByNone &&
-      (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    bool limited = extFilter.limit.empty() && sortDescription.sortBy == SortByNone &&
+      (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
+    if (limited)
     {
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
       albums.reserve(sortDescription.limitEnd - sortDescription.limitStart);
@@ -4123,8 +4121,19 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     else
       albums.reserve(total);
 
-    strSQL = PrepareSQL(strSQL, !filter.fields.empty() && filter.fields.compare("*") != 0 ? filter.fields.c_str() : "albumview.*, albumartistview.* ") + strSQLExtra;
-
+    std::string strSQL;
+    
+    // Get data from album, album_artist and artist tables to fully populate albums with album artists
+    // All albums have at least one artist so inner join sufficient
+    if (limited)
+      //Apply where clause and limits to albumview, then join as mutiple records in result set per album
+      strSQL = "SELECT av.*, albumartistview.* "
+               "FROM (SELECT albumview.* FROM albumview " + strSQLExtra + ") AS av "
+               "JOIN albumartistview ON albumartistview.idalbum = av.idalbum ";
+    else
+      strSQL = "SELECT albumview.*, albumartistview.* "
+               "FROM albumview JOIN albumartistview ON albumartistview.idalbum = albumview.idalbum " + strSQLExtra;
+    
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     // run query
     unsigned int time = XbmcThreads::SystemClockMillis();
@@ -4140,10 +4149,16 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
       return true;
     }
 
-    //Sort the results set - need to add sort by iOrder to maintain artist name order??
     DatabaseResults results;
-    results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeAlbum, m_pDS, results))
+    results.reserve(iRowsFound);    
+    // Do not apply any limit when sorting as have join with albumartistview so limit would 
+    // apply incorrectly (although when SortByNone limit already applied in SQL). 
+    // Apply limits later to album list rather than dataset
+    // But Artist order may be disturbed by sort???
+    sorting = sortDescription;
+    sorting.limitStart = 0;
+    sorting.limitEnd = -1;
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeAlbum, m_pDS, results))
       return false;
 
     // Get albums from returned rows. Join means there is a row for every album artist
@@ -4159,13 +4174,26 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
       if (albumId != record->at(album_idAlbum).get_asInt())
       { // New album
         albumId = record->at(album_idAlbum).get_asInt();
-        albums.push_back(GetAlbumFromDataset(record));
+        albums.emplace_back(GetAlbumFromDataset(record));
       }
       // Get artists
-      albums.back().artistCredits.push_back(GetArtistCreditFromDataset(record, albumArtistOffset));
+      albums.back().artistCredits.emplace_back(GetArtistCreditFromDataset(record, albumArtistOffset));
     }
 
     m_pDS->close(); // cleanup recordset data
+
+    // Apply any limits to sorted albums
+    if (sortDescription.sortBy != SortByNone && (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+    {
+      int limitEnd = sortDescription.limitEnd;
+      if (sortDescription.limitStart > 0 && (size_t)sortDescription.limitStart < albums.size())
+      {
+        albums.erase(albums.begin(), albums.begin() + sortDescription.limitStart);
+        limitEnd = sortDescription.limitEnd - sortDescription.limitStart;
+      }
+      if (limitEnd > 0 && (size_t)limitEnd < albums.size())
+        albums.erase(albums.begin() + limitEnd, albums.end());
+    }
     return true;
   }
   catch (...)
@@ -4246,10 +4274,16 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
 
     DatabaseResults results;
     results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeSong, m_pDS, results))
+    // Avoid sorting with limits when have join with songartistview 
+    // Limit when SortByNone already applied in SQL, 
+    // apply sort later to fileitems list rather than dataset
+    sorting = sortDescription;
+    if (artistData && sortDescription.sortBy != SortByNone)
+      sorting.sortBy = SortByNone;
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeSong, m_pDS, results))
       return false;
 
-    // Get songs from returned rows. If join songartistview then there is a row for every album artist
+    // Get songs from returned rows. If join songartistview then there is a row for every artist
     items.Reserve(total);
     int songArtistOffset = song_enumCount;
     int songId = -1;
@@ -4303,6 +4337,10 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     }
     // cleanup
     m_pDS->close();
+
+    // When have join with songartistview apply sort (and limit) to items rather than dataset
+    if (artistData && sortDescription.sortBy != SortByNone)
+      items.Sort(sortDescription);
 
     if (cueSheetData)
     { // Load some info from embedded cuesheet if present (now only ReplayGain)
