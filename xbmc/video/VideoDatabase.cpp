@@ -269,6 +269,8 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
   m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
 
+  m_pDS->exec("CREATE INDEX ix_rating ON rating(media_id, media_type(20))");
+
   CreateLinkIndex("tag");
   CreateLinkIndex("actor");
   CreateForeignLinkIndex("director", "actor");
@@ -4970,7 +4972,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 105;
+  return 106;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
