@@ -2322,7 +2322,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   double threshold = 100;
   if (stream->m_resampleMode)
   {
-    if (stream->m_pClock && stream->m_pClock->GetClockSpeed() > 1.1)
+    if (stream->m_pClock->GetClockSpeed() > 1.1)
       threshold *= 10;
     else
       threshold *= 2;
