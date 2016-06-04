@@ -1026,14 +1026,17 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
   // set list item properties
   pItem->SetProperty("ActiveMode", isActive);
   pItem->SetProperty("Number", number);
-  pItem->SetProperty("Name", modeName);
+  pItem->SetLabel(modeName);
   pItem->SetProperty("Description", description);
   pItem->SetProperty("Help", ModePointer->ModeHelp());
-  pItem->SetProperty("Icon", ModePointer->IconOwnModePath());
+  if (ModePointer->IconOwnModePath().empty())
+    pItem->SetIconImage("DefaultAddonAudioDSP.png");
+  else
+    pItem->SetIconImage(ModePointer->IconOwnModePath());
   pItem->SetProperty("SettingsDialog", dialogId);
   pItem->SetProperty("AddonId", AddonID);
   pItem->SetProperty("AddonModeNumber", ModePointer->AddonModeNumber());
-  pItem->SetProperty("AddonName", addonName);
+  pItem->SetLabel2(addonName);
   pItem->SetProperty("Changed", false);
 
   return pItem;

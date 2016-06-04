@@ -193,7 +193,7 @@
 					<top>8</top>
 					<width>64</width>
 					<height>64</height>
-					<texture fallback="DefaultAudioDSP.png">$INFO[ListItem.Property(Icon)]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio aligny="center" align="left">keep</aspectratio>
 				</control>
 				<control type="label">
@@ -203,7 +203,7 @@
 					<height>40</height>
 					<font>font12</font>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Property(AddonName)]</label>
+					<label>$INFO[ListItem.Label]</label>
 				</control>
 				<control type="label">
 					<left>82</left>
@@ -213,7 +213,7 @@
 					<font>font10</font>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
-					<label>$INFO[ListItem.Property(Name)]</label>
+					<label>$INFO[ListItem.Label2]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="80" width="470">
@@ -238,7 +238,7 @@
 					<top>8</top>
 					<width>64</width>
 					<height>64</height>
-					<texture fallback="DefaultAudioDSP.png">$INFO[ListItem.Property(Icon)]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio aligny="center" align="left">keep</aspectratio>
 				</control>
 				<control type="label">
@@ -248,7 +248,7 @@
 					<height>40</height>
 					<font>font12</font>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Property(AddonName)]</label>
+					<label>$INFO[ListItem.Label]</label>
 				</control>
 				<control type="label">
 					<left>82</left>
@@ -258,7 +258,7 @@
 					<font>font10</font>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
-					<label>$INFO[ListItem.Property(Name)]</label>
+					<label>$INFO[ListItem.Label2]</label>
 				</control>
 			</focusedlayout>
 		</control>
