@@ -673,10 +673,11 @@ const CRating CVideoInfoTag::GetRating(std::string type) const
   if (type.empty())
     type = m_strDefaultRating;
 
-  if (m_ratings.find(type) == m_ratings.end())
+  const auto& rating = m_ratings.find(type);
+  if (rating == m_ratings.end())
     return CRating();
 
-  return m_ratings.find(type)->second;
+  return rating->second;
 }
 
 const bool CVideoInfoTag::HasYear() const
