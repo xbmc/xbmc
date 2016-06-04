@@ -339,15 +339,13 @@ bool CPeripheralBusAndroid::GetDeviceId(const std::string& deviceLocation, int& 
 bool CPeripheralBusAndroid::ConvertToPeripheralScanResult(const CJNIViewInputDevice& inputDevice, PeripheralScanResult& peripheralScanResult)
 {
   int deviceId = inputDevice.getId();
-  int sources = inputDevice.getSources();
   std::string deviceName = inputDevice.getName();
   if (inputDevice.isVirtual())
   {
     CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring virtual input device \"%s\" with ID %d", deviceName.c_str(), deviceId);
     return false;
   }
-  if ((sources & CJNIViewInputDevice::SOURCE_JOYSTICK) != CJNIViewInputDevice::SOURCE_JOYSTICK &&
-      (sources & CJNIViewInputDevice::SOURCE_GAMEPAD) != CJNIViewInputDevice::SOURCE_GAMEPAD)
+  if (!inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_JOYSTICK) && !inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_GAMEPAD))
   {
     CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring unknown input device \"%s\" with ID %d", deviceName.c_str(), deviceId);
     return false;
