@@ -2334,8 +2334,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
   {
     stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
-    stream->m_resampleBuffers->m_resampleRatio = 1.0;
-    stream->m_resampleIntegral = 0;
+    stream->m_resampleBuffers->m_resampleRatio = stream->GetResampleRatio();
     stream->m_lastSyncError = error;
     CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f above threshold of %f", error, threshold);
   }
@@ -2456,12 +2455,13 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       else
       {
         stream->m_syncState = CAESyncInfo::AESyncState::SYNC_INSYNC;
-        stream->m_syncError.Flush(1000);
-        stream->m_resampleIntegral = 0;
-        stream->m_resampleBuffers->m_resampleRatio = 1.0;
+        stream->m_syncError.Flush(100);
+        stream->SetResampleRatio(stream->m_resampleBuffers->m_resampleRatio);
         CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f below threshold of %f", error, 30.0);
       }
     }
+    else
+      stream->SetResampleRatio((1.0 + stream->m_resampleBuffers->m_resampleRatio) / 2);
 
     return ret;
   }
@@ -2474,6 +2474,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     if (stream->m_resampleBuffers)
     {
       stream->m_resampleBuffers->m_resampleRatio = stream->CalcResampleRatio(error);
+      stream->SetResampleRatio(stream->m_resampleBuffers->m_resampleRatio);
     }
   }
   else if (stream->m_resampleBuffers)
