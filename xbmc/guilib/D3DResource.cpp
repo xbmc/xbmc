@@ -843,7 +843,7 @@ void CD3DVertexShader::Release()
   g_Windowing.Unregister(this);
   ReleaseShader();
   SAFE_RELEASE(m_VSBuffer);
-  SAFE_DELETE(m_vertexLayout);
+  SAFE_DELETE_ARRAY(m_vertexLayout);
 }
 
 void CD3DVertexShader::ReleaseShader()
