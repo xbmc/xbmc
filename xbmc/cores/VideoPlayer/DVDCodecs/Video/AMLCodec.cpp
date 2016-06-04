@@ -1452,12 +1452,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   am_private->video_ratio64    = ((int64_t)video_ratio.num << 32) | video_ratio.den;
 
   // handle video rate
-  if (hints.rfpsrate > 0 && hints.rfpsscale != 0)
-  {
-    // check ffmpeg r_frame_rate 1st
-    am_private->video_rate = 0.5 + (float)UNIT_FREQ * hints.rfpsscale / hints.rfpsrate;
-  }
-  else if (hints.fpsrate > 0 && hints.fpsscale != 0)
+  if (hints.fpsrate > 0 && hints.fpsscale != 0)
   {
     // then ffmpeg avg_frame_rate next
     am_private->video_rate = 0.5 + (float)UNIT_FREQ * hints.fpsscale / hints.fpsrate;
@@ -1525,8 +1520,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder "
     "hints.width(%d), hints.height(%d), hints.codec(%d), hints.codec_tag(%d)",
     hints.width, hints.height, hints.codec, hints.codec_tag);
-  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), hints.rfpsrate(%d), hints.rfpsscale(%d), video_rate(%d)",
-    hints.fpsrate, hints.fpsscale, hints.rfpsrate, hints.rfpsscale, am_private->video_rate);
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), video_rate(%d)",
+    hints.fpsrate, hints.fpsscale, am_private->video_rate);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
     hints.aspect, video_ratio.num, video_ratio.den);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.orientation(%d), hints.forced_aspect(%d), hints.extrasize(%d)",

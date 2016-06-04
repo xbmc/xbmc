@@ -91,9 +91,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_mpeg2_sequence->width  = m_hints.width;
       m_mpeg2_sequence->height = m_hints.height;
       m_mpeg2_sequence->ratio  = m_hints.aspect;
-      if (m_hints.rfpsrate > 0 && m_hints.rfpsscale != 0)
-        m_mpeg2_sequence->rate = (float)m_hints.rfpsrate / m_hints.rfpsscale;
-      else if (m_hints.fpsrate > 0 && m_hints.fpsscale != 0)
+      if (m_hints.fpsrate > 0 && m_hints.fpsscale != 0)
         m_mpeg2_sequence->rate = (float)m_hints.fpsrate / m_hints.fpsscale;
       else
         m_mpeg2_sequence->rate = 1.0;
@@ -442,43 +440,41 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
       {
         default:
         case 0x01:
-          m_hints.rfpsrate = 24000.0;
-          m_hints.rfpsscale = 1001.0;
+          m_hints.fpsrate = 24000.0;
+          m_hints.fpsscale = 1001.0;
           break;
         case 0x02:
-          m_hints.rfpsrate = 24000.0;
-          m_hints.rfpsscale = 1000.0;
+          m_hints.fpsrate = 24000.0;
+          m_hints.fpsscale = 1000.0;
           break;
         case 0x03:
-          m_hints.rfpsrate = 25000.0;
-          m_hints.rfpsscale = 1000.0;
+          m_hints.fpsrate = 25000.0;
+          m_hints.fpsscale = 1000.0;
           break;
         case 0x04:
-          m_hints.rfpsrate = 30000.0;
-          m_hints.rfpsscale = 1001.0;
+          m_hints.fpsrate = 30000.0;
+          m_hints.fpsscale = 1001.0;
           break;
         case 0x05:
-          m_hints.rfpsrate = 30000.0;
-          m_hints.rfpsscale = 1000.0;
+          m_hints.fpsrate = 30000.0;
+          m_hints.fpsscale = 1000.0;
           break;
         case 0x06:
-          m_hints.rfpsrate = 50000.0;
-          m_hints.rfpsscale = 1000.0;
+          m_hints.fpsrate = 50000.0;
+          m_hints.fpsscale = 1000.0;
           break;
         case 0x07:
-          m_hints.rfpsrate = 60000.0;
-          m_hints.rfpsscale = 1001.0;
+          m_hints.fpsrate = 60000.0;
+          m_hints.fpsscale = 1001.0;
           break;
         case 0x08:
-          m_hints.rfpsrate = 60000.0;
-          m_hints.rfpsscale = 1000.0;
+          m_hints.fpsrate = 60000.0;
+          m_hints.fpsscale = 1000.0;
           break;
       }
       m_hints.width    = m_mpeg2_sequence->width;
       m_hints.height   = m_mpeg2_sequence->height;
       m_hints.aspect   = m_mpeg2_sequence->ratio;
-      m_hints.fpsrate  = m_hints.rfpsrate;
-      m_hints.fpsscale = m_hints.rfpsscale;
     }
     return;
   }
