@@ -145,7 +145,6 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     builder.SetPath(plugin->plugin_path);
     builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, "icon.png"));
     builder.SetFanart(URIUtils::AddFileToFolder(plugin->plugin_path, "fanart.jpg"));
-    builder.SetChangelog(URIUtils::AddFileToFolder(plugin->plugin_path, "changelog.txt"));
   }
 
   {
@@ -170,6 +169,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     builder.SetSummary(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "summary"));
     builder.SetDescription(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "description"));
     builder.SetDisclaimer(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "disclaimer"));
+    builder.SetChangelog(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "news"));
     builder.SetLicense(CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "license"));
 
     std::string language = CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "language");
@@ -186,8 +186,6 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
       builder.SetFanart("");
     if (CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "noicon") == "true")
       builder.SetIcon("");
-    if (CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "nochangelog") == "true")
-      builder.SetChangelog("");
   }
 }
 

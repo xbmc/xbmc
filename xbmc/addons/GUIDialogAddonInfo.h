@@ -22,11 +22,8 @@
 
 #include "guilib/GUIDialog.h"
 #include "addons/IAddon.h"
-#include "utils/Job.h"
 
-class CGUIDialogAddonInfo :
-      public CGUIDialog,
-      public IJobCallback
+class CGUIDialogAddonInfo : public CGUIDialog
 {
 public:
   CGUIDialogAddonInfo(void);
@@ -38,9 +35,6 @@ public:
   virtual bool HasListItems() const { return true; }
 
   static bool ShowForItem(const CFileItemPtr& item);
-
-  // job callback
-  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
 private:
   void OnInitWindow();
@@ -57,7 +51,6 @@ private:
   void OnUninstall();
   void OnEnableDisable();
   void OnSettings();
-  void OnChangeLog();
   void OnSelect();
   void OnToggleAutoUpdates();
   int AskForVersion(std::vector<std::pair<ADDON::AddonVersion, std::string>>& versions);
@@ -83,7 +76,5 @@ private:
   CFileItemPtr m_item;
   ADDON::AddonPtr m_localAddon;
   bool m_addonEnabled;
-  unsigned int m_jobid;
-  bool m_changelog;
 };
 

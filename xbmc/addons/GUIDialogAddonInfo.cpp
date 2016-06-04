@@ -53,7 +53,6 @@
 #define CONTROL_BTN_ENABLE           7
 #define CONTROL_BTN_UPDATE           8
 #define CONTROL_BTN_SETTINGS         9
-#define CONTROL_BTN_CHANGELOG       10
 #define CONTROL_BTN_SELECT          12
 #define CONTROL_BTN_AUTOUPDATE      13
 
@@ -62,9 +61,7 @@ using namespace XFILE;
 
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
   : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"),
-  m_addonEnabled(false),
-  m_jobid(0),
-  m_changelog(false)
+  m_addonEnabled(false)
 {
   m_item = CFileItemPtr(new CFileItem);
   m_loadType = KEEP_IN_MEMORY;
@@ -78,13 +75,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      if (m_jobid)
-        CJobManager::GetInstance().CancelJob(m_jobid);
-    }
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -140,11 +130,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
         OnSettings();
         return true;
       }
-      else if (iControl == CONTROL_BTN_CHANGELOG)
-      {
-        OnChangeLog();
-        return true;
-      }
       else if (iControl == CONTROL_BTN_AUTOUPDATE)
       {
         OnToggleAutoUpdates();
@@ -173,7 +158,6 @@ void CGUIDialogAddonInfo::OnInitWindow()
 {
   UpdateControls();
   CGUIDialog::OnInitWindow();
-  m_changelog = false;
 }
 
 void CGUIDialogAddonInfo::UpdateControls()
@@ -215,7 +199,6 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, !isRepo);
 }
 
 static const std::string LOCAL_CACHE = "\\0_local_cache"; // \0 to give it the lowest priority when sorting
@@ -460,34 +443,6 @@ void CGUIDialogAddonInfo::OnSettings()
   CGUIDialogAddonSettings::ShowAndGetInput(m_localAddon);
 }
 
-void CGUIDialogAddonInfo::OnChangeLog()
-{
-  CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
-  std::string name = m_localAddon ? m_localAddon->Name() : m_item->GetAddonInfo()->Name();
-  pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+name);
-  if (m_item->GetProperty("Addon.Changelog").empty())
-  {
-    pDlgInfo->SetText(g_localizeStrings.Get(13413));
-    CFileItemList items;
-    if (m_localAddon && !m_item->GetProperty("Addon.HasUpdate").asBoolean())
-    {
-      items.Add(CFileItemPtr(new CFileItem(m_localAddon->ChangeLog(),false)));
-    }
-    else
-      items.Add(CFileItemPtr(new CFileItem(m_item->GetAddonInfo()->ChangeLog(),false)));
-    items[0]->Select(true);
-    m_jobid = CJobManager::GetInstance().AddJob(
-      new CFileOperationJob(CFileOperationJob::ActionCopy,items,
-                            "special://temp/"),this);
-  }
-  else
-    pDlgInfo->SetText(m_item->GetProperty("Addon.Changelog").asString());
-
-  m_changelog = true;
-  pDlgInfo->Open();
-  m_changelog = false;
-}
-
 bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
 {
   if (!item)
@@ -512,33 +467,4 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   m_localAddon.reset();
   CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN, false);
   return true;
-}
-
-void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
-                                        CJob* job)
-{
-  if (!m_changelog)
-    return;
-
-  CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
-
-  m_jobid = 0;
-  if (!success)
-  {
-    pDlgInfo->SetText(g_localizeStrings.Get(195));
-  }
-  else
-  {
-    CFile file;
-    XFILE::auto_buffer buf;
-    if (file.LoadFile("special://temp/" +
-      URIUtils::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->GetPath()), buf) > 0)
-    {
-      std::string str(buf.get(), buf.length());
-      m_item->SetProperty("Addon.Changelog", str);
-      pDlgInfo->SetText(str);
-    }
-  }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_DIALOG_TEXT_VIEWER, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
 }
