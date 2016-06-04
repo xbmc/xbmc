@@ -1228,21 +1228,9 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           st->iFpsScale = 0;
         }
 
-        // added for aml hw decoder, mkv frame-rate can be wrong.
-        if (r_frame_rate.den && r_frame_rate.num)
-        {
-          st->irFpsRate = r_frame_rate.num;
-          st->irFpsScale = r_frame_rate.den;
-        }
-        else
-        {
-          st->irFpsRate = 0;
-          st->irFpsScale = 0;
-        }
-
-        if (pStream->codec_info_nb_frames >  0
-        &&  pStream->codec_info_nb_frames <= 2
-        &&  m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+        if (pStream->codec_info_nb_frames > 0 &&
+            pStream->codec_info_nb_frames <= 2 &&
+            m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
           CLog::Log(LOGDEBUG, "%s - fps may be unreliable since ffmpeg decoded only %d frame(s)", __FUNCTION__, pStream->codec_info_nb_frames);
           st->iFpsRate  = 0;

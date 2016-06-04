@@ -418,8 +418,6 @@ void CDVDDemuxClient::RequestStreams()
 
       streamVideo->iFpsScale       = source->iFpsScale;
       streamVideo->iFpsRate        = source->iFpsRate;
-      streamVideo->irFpsScale      = source->irFpsScale;
-      streamVideo->irFpsRate       = source->irFpsRate;
       streamVideo->iHeight         = source->iHeight;
       streamVideo->iWidth          = source->iWidth;
       streamVideo->fAspect         = source->fAspect;
