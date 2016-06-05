@@ -72,6 +72,7 @@ public:
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
   static void SetLabel2(int handle, const std::string& ident);
   static int GetWatchedMode(int handle, const char *content);
+  static bool GetHideWatched(int handle, const char *content);
 
 protected:
   // implementations of CRunningScriptsHandler / CScriptRunner

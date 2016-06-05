@@ -124,7 +124,11 @@ namespace XBMCAddon
     int getWatchedMode(int handle, const char* content)
     {
       return XFILE::CPluginDirectory::GetWatchedMode(handle, content);
-    }
+		}
 
+    bool getHideWatched(int handle, const char* content)
+    {
+      return XFILE::CPluginDirectory::GetHideWatched(handle, content);
+    }
   }
 }

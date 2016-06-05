@@ -464,6 +464,7 @@ namespace XBMCAddon
     ///@}
 #else
     int getWatchedMode(int handle, const char* content = NULL);
+    bool getHideWatched(int handle, const char* content = NULL);
 #endif
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
