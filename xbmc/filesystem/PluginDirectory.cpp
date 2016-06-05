@@ -567,7 +567,7 @@ bool CPluginDirectory::GetHideWatched(int handle, const char *content)
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
   if (!dir)
-    return false;
-	return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content) == WatchedModeUnwatched;
+    return WatchedModeAll;
+	return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content);
 }
 
