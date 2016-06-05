@@ -16647,7 +16647,7 @@ msgstr ""
 #. Description of setting with label #13435 "Enable HQ Scalers for scaling above"
 #: system/settings/settings.xml
 msgctxt "#36154"
-msgid "Use high quality scalers when upscaling a video by at least this percentage."
+msgid "Use high quality scalers when upscaling a video by at least this percentage. A value below 5% makes little sense as video is processed with high GPU load without any visible picture quality improvements."
 msgstr ""
 
 #. Description of setting with label #13425 "Allow hardware acceleration (VDPAU)"
