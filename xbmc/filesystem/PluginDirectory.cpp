@@ -547,12 +547,12 @@ bool CPluginDirectory::CheckExists(const std::string& content, const std::string
   return CPluginDirectory::GetPluginResult(url.Get(), item, false);
 }
 
-bool CPluginDirectory::GetHideWatched(int handle, const char *content)
+int CPluginDirectory::GetWatchedMode(int handle, const char *content)
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
   if (!dir)
-    return false;
-	return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content) == WatchedModeUnwatched;
+    return WatchedModeAll;
+	return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content);
 }
 
