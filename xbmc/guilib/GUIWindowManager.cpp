@@ -764,10 +764,14 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
   if (!pNewWindow)
   { // nothing to see here - move along
     CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
+    if (GetActiveWindowID() == WINDOW_STARTUP_ANIM)
+      ActivateWindow(WINDOW_HOME);
     return ;
   }
   else if (!pNewWindow->CanBeActivated())
   {
+    if (GetActiveWindowID() == WINDOW_STARTUP_ANIM)
+      ActivateWindow(WINDOW_HOME);
     return;
   }
   else if (pNewWindow->IsDialog())
