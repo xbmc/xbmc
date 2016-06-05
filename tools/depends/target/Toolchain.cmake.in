@@ -11,6 +11,8 @@ endif()
 # set special CORE_SYSTEM_NAME
 if("${OS}" STREQUAL "android")
 set(CORE_SYSTEM_NAME android)
+elseif("${OS}" STREQUAL "osx")
+  set(CORE_SYSTEM_NAME osx)
 elseif("${OS}" STREQUAL "ios")
 set(CORE_SYSTEM_NAME ios)
 set(CMAKE_SYSTEM_NAME Darwin)
