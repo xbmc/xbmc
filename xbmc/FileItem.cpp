@@ -58,6 +58,7 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "utils/Mime.h"
+#include "utils/Random.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -2085,7 +2086,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
 void CFileItemList::Randomize()
 {
   CSingleLock lock(m_lock);
-  std::random_shuffle(m_items.begin(), m_items.end());
+  KODI::UTILS::RandomShuffle(m_items.begin(), m_items.end());
 }
 
 void CFileItemList::Archive(CArchive& ar)

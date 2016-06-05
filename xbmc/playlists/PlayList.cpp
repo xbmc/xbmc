@@ -25,6 +25,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
+#include "utils/Random.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
@@ -280,7 +281,7 @@ void CPlayList::Shuffle(int iPosition)
     CLog::Log(LOGDEBUG,"%s shuffling at pos:%i", __FUNCTION__, iPosition);
 
     ivecItems it = m_vecItems.begin() + iPosition;
-    std::random_shuffle(it, m_vecItems.end());
+    KODI::UTILS::RandomShuffle(it, m_vecItems.end());
 
     // the list is now shuffled!
     m_bShuffled = true;

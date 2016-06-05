@@ -19,6 +19,7 @@
  */
 
 #include "GUIFadeLabelControl.h"
+#include "utils/Random.h"
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, unsigned int timeToDelayAtEnd, bool resetOnLabelChange, bool randomized)
     : CGUIControl(parentID, controlID, posX, posY, width, height), m_label(labelInfo), m_scrollInfo(50, labelInfo.offsetX, labelInfo.scrollSpeed)
@@ -63,7 +64,7 @@ void CGUIFadeLabelControl::SetInfo(const std::vector<CGUIInfoLabel> &infoLabels)
   m_lastLabel = -1;
   m_infoLabels = infoLabels;
   if (m_randomized)
-    std::random_shuffle(m_infoLabels.begin(), m_infoLabels.end());
+    KODI::UTILS::RandomShuffle(m_infoLabels.begin(), m_infoLabels.end());
 }
 
 void CGUIFadeLabelControl::AddLabel(const std::string &label)

@@ -1354,6 +1354,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\utils\Locale.h" />
     <ClInclude Include="..\..\xbmc\utils\params_check_macros.h" />
     <ClInclude Include="..\..\xbmc\utils\ProgressJob.h" />
+    <ClInclude Include="..\..\xbmc\utils\Random.h" />
     <ClInclude Include="..\..\xbmc\utils\rfft.h" />
     <ClInclude Include="..\..\xbmc\utils\RssManager.h" />
     <ClInclude Include="..\..\xbmc\utils\Speed.h" />
