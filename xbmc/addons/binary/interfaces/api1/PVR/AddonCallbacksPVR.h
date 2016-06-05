@@ -62,6 +62,8 @@ typedef DemuxPacket* (*PVRAllocateDemuxPacket)(void *addonData, int iDataSize);
 typedef void (*PVRConnectionStateChange)(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
 typedef void (*PVREpgEventStateChange)(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
 
+typedef void (*PVRRegisterAddonInstance)(void* addonData, void* addonInstance);
+
 typedef struct CB_PVRLib
 {
   PVRTransferEpgEntry           TransferEpgEntry;
@@ -81,6 +83,7 @@ typedef struct CB_PVRLib
   PVRTransferChannelGroupMember TransferChannelGroupMember;
   PVRConnectionStateChange      ConnectionStateChange;
   PVREpgEventStateChange        EpgEventStateChange;
+  PVRRegisterAddonInstance      RegisterAddonInstance;
 } CB_PVRLib;
 
 struct EpgEventStateChange;
@@ -231,6 +234,13 @@ public:
    *        event data, not just a delta. For EPG_EVENT_DELETED, it is sufficient to fill EPG_TAG.iUniqueBroadcastId
    */
   static void PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+
+  /*!
+   * @brief To register handle address who becomes passed on all add-on calls
+   * @param addonData A pointer to the add-on.
+   * @param addonInstance pointer used on all kodi to add-on calls
+   */
+  static void PVRRegisterAddonInstance(void* addonData, void* addonInstance);
 
 private:
   static ::PVR::CPVRClient* GetPVRClient(void* addonData);
