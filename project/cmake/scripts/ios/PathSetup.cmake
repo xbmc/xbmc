@@ -1,1 +1,1 @@
-../darwin/PathSetup.cmake
+../osx/PathSetup.cmake
