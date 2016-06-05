@@ -2337,11 +2337,11 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
       sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
     else
       sql += ", userrating = NULL";
-    sql += PrepareSQL(" where idMovie=%i", idMovie);
     if (details.HasPremiered())
       sql += PrepareSQL(", premiered = '%s'", details.GetPremiered().GetAsDBDate().c_str());
     else
       sql += PrepareSQL(", premiered = '%i'", details.GetYear());
+    sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql);
 
     CommitTransaction();
