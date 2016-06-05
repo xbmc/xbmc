@@ -61,6 +61,7 @@ set(CORE_BUILD_DIR build)
 message(STATUS "Source directory: ${CORE_SOURCE_DIR}")
 message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
 
+include(modules/extra/ECMEnableSanitizers.cmake)
 include(scripts/common/GeneratorSetup.cmake)
 include(scripts/common/AddOptions.cmake)
 include(scripts/common/ArchSetup.cmake)
