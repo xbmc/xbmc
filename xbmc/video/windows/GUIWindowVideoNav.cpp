@@ -209,7 +209,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         CMediaSettings::GetInstance().CycleWatchedMode(m_vecItems->GetContent());
         CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
-        OnFilterItems(GetProperty("filter").asString());
+        if (m_vecItems->IsPlugin())
+          Refresh();
+        else
+          OnFilterItems(GetProperty("filter").asString());
         UpdateButtons();
         return true;
       }

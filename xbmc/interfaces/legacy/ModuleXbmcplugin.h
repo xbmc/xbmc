@@ -438,6 +438,32 @@ namespace XBMCAddon
     void setProperty(int handle, const char* key, const String& value);
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcplugin
+    /// @brief \python_func{ xbmcplugin.getHideWatched(handle, content) }
+    ///-------------------------------------------------------------------------
+    /// Get the watched flag for given content type.
+    ///
+    /// @param handle      integer - handle the plugin was started with.
+    /// @param content     [opt] string - content type; defaults to plugin content type.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.getHideWatched(int(sys.argv[1]), 'tvshows')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getHideWatched(...);
+    ///@}
+#else
+    bool getHideWatched(int handle, const char* content = NULL);
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     SWIG_CONSTANT(int, SORT_METHOD_NONE);
     SWIG_CONSTANT(int, SORT_METHOD_LABEL);

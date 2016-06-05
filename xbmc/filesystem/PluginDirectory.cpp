@@ -17,6 +17,7 @@
 #include "addons/PluginSource.h"
 #include "interfaces/generic/RunningScriptObserver.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -545,3 +546,13 @@ bool CPluginDirectory::CheckExists(const std::string& content, const std::string
   CFileItem item;
   return CPluginDirectory::GetPluginResult(url.Get(), item, false);
 }
+
+bool CPluginDirectory::GetHideWatched(int handle, const char *content)
+{
+  CSingleLock lock(m_handleLock);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
+    return false;
+	return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content) == WatchedModeUnwatched;
+}
+
