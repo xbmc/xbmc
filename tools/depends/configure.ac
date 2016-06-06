@@ -543,6 +543,7 @@ echo -e
   AC_SUBST(use_sdk_path)
   AC_SUBST(use_ndk)
   AC_SUBST(use_sdk)
+  AC_SUBST(build_tools_path)
 fi
 
 AC_SUBST(use_host)
@@ -574,6 +575,7 @@ echo -e "cpu:\t\t $use_cpu"
 echo -e "host:\t\t $use_host"
 if test "$platform_os" == "android"; then
   echo -e "sdk-platform:\t $use_sdk"
+  echo -e "build-tools:\t $build_tools_path"
 fi
 
 if test "$platform_os" == "ios"; then

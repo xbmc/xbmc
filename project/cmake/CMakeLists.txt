@@ -202,6 +202,10 @@ if(ENABLE_CCACHE)
   core_optional_dep(CCache)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL android)
+  core_optional_dep(Breakpad)
+endif()
+
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                           ${CMAKE_BINARY_DIR}/addons/xbmc.addon/addon.xml
@@ -311,16 +315,23 @@ add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
 set(OTHER_FILES README.md)
 
 # main binary
-add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+if(NOT CORE_SYSTEM_NAME STREQUAL android)
+  add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+else()
+  add_library(${APP_NAME_LC} SHARED ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+endif()
 whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
 target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${_MAIN_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_MAIN_LIBRARIES)
 add_dependencies(${APP_NAME_LC} export-files)
-if(NOT WIN32)
-  set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ".bin")
-else()
+
+if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
   copy_main_dlls_to_buildtree()
+elseif(CORE_SYSTEM_NAME STREQUAL android)
+  # Nothing
+else()
+  set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ".bin")
 endif()
 
 # testing
@@ -346,6 +357,9 @@ endif()
 # link wrapper
 if(FFMPEG_LINK_EXECUTABLE)
   set(CMAKE_CXX_LINK_EXECUTABLE "${FFMPEG_LINK_EXECUTABLE}")
+endif()
+if(FFMPEG_CREATE_SHARED_LIBRARY)
+  set(CMAKE_CXX_CREATE_SHARED_LIBRARY "${FFMPEG_CREATE_SHARED_LIBRARY}")
 endif()
 
 # randr

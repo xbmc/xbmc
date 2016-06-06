@@ -21,15 +21,24 @@ if(NOT WIN32)
   endif()
 
   if(APPLE)
-      set(CMAKE_LD_FLAGS "-framework IOKit -framework CoreFoundation")
+    set(CMAKE_LD_FLAGS "-framework IOKit -framework CoreFoundation")
+  endif()
+
+  set(HOST_ARCH ${ARCH})
+  if(CORE_SYSTEM_NAME STREQUAL android)
+    if(ARCH STREQUAL arm)
+      set(HOST_ARCH arm-linux-androideabi)
+    elseif(ARCH STREQUAL i486-linux)
+      set(HOST_ARCH i686-linux-android)
+    endif()
   endif()
 
   if(ENABLE_DVDCSS)
     ExternalProject_Add(dvdcss URL ${libdvdcss_BASE_URL}/archive/${libdvdcss_VER}.tar.gz
                                PREFIX ${CORE_BUILD_DIR}/libdvd
                                CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                                 --target=${ARCH}
-                                                 --host=${ARCH}
+                                                 --target=${HOST_ARCH}
+                                                 --host=${HOST_ARCH}
                                                  --disable-doc
                                                  --enable-static
                                                  --disable-shared
@@ -56,8 +65,8 @@ if(NOT WIN32)
   ExternalProject_Add(dvdread URL ${libdvdread_BASE_URL}/archive/${libdvdread_VER}.tar.gz
                               PREFIX ${CORE_BUILD_DIR}/libdvd
                               CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                                --target=${ARCH}
-                                                --host=${ARCH}
+                                                --target=${HOST_ARCH}
+                                                --host=${HOST_ARCH}
                                                 --enable-static
                                                 --disable-shared
                                                 --with-pic
@@ -84,8 +93,8 @@ if(NOT WIN32)
   ExternalProject_Add(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
                              PREFIX ${CORE_BUILD_DIR}/libdvd
                              CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
-                                               --target=${ARCH}
-                                               --host=${ARCH}
+                                               --target=${HOST_ARCH}
+                                               --host=${HOST_ARCH}
                                                --enable-static
                                                --disable-shared
                                                --with-pic
