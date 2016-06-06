@@ -39,9 +39,9 @@
 					<posy>62</posy>
 					<width>86</width>
 					<height>86</height>
-					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -93,9 +93,9 @@
 					<posy>62</posy>
 					<width>86</width>
 					<height>86</height>
-					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>10</posx>

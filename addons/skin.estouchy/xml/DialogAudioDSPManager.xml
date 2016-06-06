@@ -175,7 +175,7 @@
 							<posy>5</posy>
 							<width>90</width>
 							<height>90</height>
-							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Property(Icon)]</texture>
+							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Icon]</texture>
 							<aspectratio aligny="center" align="left">keep</aspectratio>
 						</control>
 						<control type="label">
@@ -188,7 +188,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey3</textcolor>
 							<scroll>false</scroll>
-							<label>$INFO[ListItem.AddonName)]</label>
+							<label>$INFO[ListItem.Label2)]</label>
 						</control>
 						<control type="label">
 							<posx>100</posx>
@@ -198,7 +198,7 @@
 							<font>font20</font>
 							<align>left</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Name)]</label>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</itemlayout>
 					<focusedlayout height="100" width="580">
@@ -223,7 +223,7 @@
 							<posy>5</posy>
 							<width>90</width>
 							<height>90</height>
-							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Property(Icon)]</texture>
+							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Icon]</texture>
 							<aspectratio aligny="center" align="left">keep</aspectratio>
 						</control>
 						<control type="label">
@@ -236,7 +236,7 @@
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<scroll>false</scroll>
-							<label>$INFO[ListItem.AddonName]</label>
+							<label>$INFO[ListItem.Label2]</label>
 						</control>
 						<control type="label">
 							<posx>100</posx>
@@ -246,7 +246,7 @@
 							<font>font20</font>
 							<align>left</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Name)]</label>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</focusedlayout>
 				</control>
@@ -301,7 +301,7 @@
 							<posy>5</posy>
 							<width>90</width>
 							<height>90</height>
-							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Property(Icon)]</texture>
+							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Icon]</texture>
 							<aspectratio aligny="center" align="left">keep</aspectratio>
 						</control>
 						<control type="label">
@@ -314,7 +314,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey3</textcolor>
 							<scroll>false</scroll>
-							<label>$INFO[ListItem.AddonName]</label>
+							<label>$INFO[ListItem.Label2]</label>
 						</control>
 						<control type="label">
 							<posx>100</posx>
@@ -324,7 +324,7 @@
 							<font>font20</font>
 							<align>left</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Name)]</label>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</itemlayout>
 					<focusedlayout height="100" width="580">
@@ -349,7 +349,7 @@
 							<posy>5</posy>
 							<width>90</width>
 							<height>90</height>
-							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Property(Icon)]</texture>
+							<texture fallback="DefaultAddonAudioDSP.png">$INFO[ListItem.Icon]</texture>
 							<aspectratio aligny="center" align="left">keep</aspectratio>
 						</control>
 						<control type="label">
@@ -362,7 +362,7 @@
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<scroll>false</scroll>
-							<label>$INFO[ListItem.AddonName]</label>
+							<label>$INFO[ListItem.Label2]</label>
 						</control>
 						<control type="label">
 							<posx>101</posx>
@@ -372,7 +372,7 @@
 							<font>font20</font>
 							<align>left</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Name)]</label>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</focusedlayout>
 				</control>
