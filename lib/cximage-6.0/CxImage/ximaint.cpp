@@ -26,8 +26,8 @@ void CxImage::OverflowCoordinates(long &x, long &y, OverflowMethod const ofMetho
   switch (ofMethod) {
     case OM_REPEAT:
       //clip coordinates
-      x=max(x,0); x=min(x, head.biWidth-1);
-      y=max(y,0); y=min(y, head.biHeight-1);
+      x=cxmax(x,0); x=cxmin(x, head.biWidth-1);
+      y=cxmax(y,0); y=cxmin(y, head.biHeight-1);
       break;
     case OM_WRAP:
       //wrap coordinates
@@ -59,8 +59,8 @@ void CxImage::OverflowCoordinates(float &x, float &y, OverflowMethod const ofMet
   switch (ofMethod) {
     case OM_REPEAT:
       //clip coordinates
-      x=max(x,0); x=min(x, head.biWidth-1);
-      y=max(y,0); y=min(y, head.biHeight-1);
+      x=cxmax(x,0); x=cxmin(x, head.biWidth-1);
+      y=cxmax(y,0); y=cxmin(y, head.biHeight-1);
       break;
     case OM_WRAP:
       //wrap coordinates
@@ -689,7 +689,7 @@ float CxImage::KernelBSpline(const float x)
 
 	return (0.16666666666666666667f * (a - (4.0f * b) + (6.0f * c) - (4.0f * d)));
 
-	/* equivalent <Vladimír Kloucek>
+	/* equivalent <VladimÃ­r Kloucek>
 	if (x < -2.0)
 		return(0.0f);
 	if (x < -1.0)
@@ -722,7 +722,7 @@ float CxImage::KernelLinear(const float t)
 //  if (-1<=t && t<0) return 1+t;
 //  return 0;
 	
-	//<Vladimír Kloucek>
+	//<VladimÃ­r Kloucek>
 	if (t < -1.0f)
 		return 0.0f;
 	if (t < 0.0f)
