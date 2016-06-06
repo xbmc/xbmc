@@ -345,6 +345,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldDisbanded);
     fields.push_back(FieldDied);
     fields.push_back(FieldRole);
+    fields.push_back(FieldPath);
   }
   else if (type == "tvshows")
   {
@@ -806,9 +807,14 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query += " OR ";
       query += "EXISTS (SELECT DISTINCT album_artist.idArtist FROM album_artist, album_genre, genre WHERE album_artist.idArtist = " + GetField(FieldId, strType) + " AND album_artist.idAlbum = album_genre.idAlbum AND album_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + "))";
     }
-    if (m_field == FieldRole)
+    else if (m_field == FieldRole)
     {
       query = negate + " (EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, role WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND song_artist.idRole = role.idRole AND role.strRole" + parameter + "))";
+    }
+    else if (m_field == FieldPath)
+    {
+      query = negate + " (EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist JOIN song ON song.idSong = song_artist.idSong JOIN path ON song.idpath = path.idpath ";
+      query += "WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND path.strPath" + parameter + "))";
     }
   }
   else if (strType == "movies")
