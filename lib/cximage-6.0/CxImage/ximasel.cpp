@@ -113,15 +113,15 @@ bool CxImage::SelectionAddRect(RECT r, BYTE level)
 	if (r.left<r.right) {r2.left=r.left; r2.right=r.right; } else {r2.left=r.right ; r2.right=r.left; }
 	if (r.bottom<r.top) {r2.bottom=r.bottom; r2.top=r.top; } else {r2.bottom=r.top ; r2.top=r.bottom; }
 
-	if (info.rSelectionBox.top <= r2.top) info.rSelectionBox.top = max(0L,min(head.biHeight,r2.top+1));
-	if (info.rSelectionBox.left > r2.left) info.rSelectionBox.left = max(0L,min(head.biWidth,r2.left));
-	if (info.rSelectionBox.right <= r2.right) info.rSelectionBox.right = max(0L,min(head.biWidth,r2.right+1));
-	if (info.rSelectionBox.bottom > r2.bottom) info.rSelectionBox.bottom = max(0L,min(head.biHeight,r2.bottom));
+	if (info.rSelectionBox.top <= r2.top) info.rSelectionBox.top = cxmax(0L,min(head.biHeight,r2.top+1));
+	if (info.rSelectionBox.left > r2.left) info.rSelectionBox.left = cxmax(0L,min(head.biWidth,r2.left));
+	if (info.rSelectionBox.right <= r2.right) info.rSelectionBox.right = cxmax(0L,min(head.biWidth,r2.right+1));
+	if (info.rSelectionBox.bottom > r2.bottom) info.rSelectionBox.bottom = cxmax(0L,min(head.biHeight,r2.bottom));
 
-	long ymin = max(0L,min(head.biHeight,r2.bottom));
-	long ymax = max(0L,min(head.biHeight,r2.top+1));
-	long xmin = max(0L,min(head.biWidth,r2.left));
-	long xmax = max(0L,min(head.biWidth,r2.right+1));
+	long ymin = cxmax(0L,cxmin(head.biHeight,r2.bottom));
+	long ymax = cxmax(0L,cxmin(head.biHeight,r2.top+1));
+	long xmin = cxmax(0L,cxmin(head.biWidth,r2.left));
+	long xmax = cxmax(0L,cxmin(head.biWidth,r2.right+1));
 
 	for (long y=ymin; y<ymax; y++)
 		memset(pSelection + xmin + y * head.biWidth, level, xmax-xmin);
@@ -144,18 +144,18 @@ bool CxImage::SelectionAddEllipse(RECT r, BYTE level)
 	long xcenter = (r.right + r.left)/2;
 	long ycenter = (r.top + r.bottom)/2;
 
-	if (info.rSelectionBox.left > (xcenter - xradius)) info.rSelectionBox.left = max(0L,min(head.biWidth,(xcenter - xradius)));
-	if (info.rSelectionBox.right <= (xcenter + xradius)) info.rSelectionBox.right = max(0L,min(head.biWidth,(xcenter + xradius + 1)));
-	if (info.rSelectionBox.bottom > (ycenter - yradius)) info.rSelectionBox.bottom = max(0L,min(head.biHeight,(ycenter - yradius)));
-	if (info.rSelectionBox.top <= (ycenter + yradius)) info.rSelectionBox.top = max(0L,min(head.biHeight,(ycenter + yradius + 1)));
+	if (info.rSelectionBox.left > (xcenter - xradius)) info.rSelectionBox.left = cxmax(0L,min(head.biWidth,(xcenter - xradius)));
+	if (info.rSelectionBox.right <= (xcenter + xradius)) info.rSelectionBox.right = cxmax(0L,min(head.biWidth,(xcenter + xradius + 1)));
+	if (info.rSelectionBox.bottom > (ycenter - yradius)) info.rSelectionBox.bottom = cxmax(0L,min(head.biHeight,(ycenter - yradius)));
+	if (info.rSelectionBox.top <= (ycenter + yradius)) info.rSelectionBox.top = cxmax(0L,min(head.biHeight,(ycenter + yradius + 1)));
 
-	long xmin = max(0L,min(head.biWidth,xcenter - xradius));
-	long xmax = max(0L,min(head.biWidth,xcenter + xradius + 1));
-	long ymin = max(0L,min(head.biHeight,ycenter - yradius));
-	long ymax = max(0L,min(head.biHeight,ycenter + yradius + 1));
+	long xmin = cxmax(0L,cxmin(head.biWidth,xcenter - xradius));
+	long xmax = cxmax(0L,cxmin(head.biWidth,xcenter + xradius + 1));
+	long ymin = cxmax(0L,cxmin(head.biHeight,ycenter - yradius));
+	long ymax = cxmax(0L,cxmin(head.biHeight,ycenter + yradius + 1));
 
 	long y,yo;
-	for (y=ymin; y<min(ycenter,ymax); y++){
+	for (y=ymin; y<cxmin(ycenter,ymax); y++){
 		for (long x=xmin; x<xmax; x++){
 			yo = (long)(ycenter - yradius * sqrt(1-pow((float)(x - xcenter)/(float)xradius,2)));
 			if (yo<y) pSelection[x + y * head.biWidth] = level;
@@ -268,10 +268,10 @@ bool CxImage::SelectionAddPolygon(POINT *points, long npoints, BYTE level)
 		RECT r2;
 		if (current->x < next->x) {r2.left=current->x; r2.right=next->x; } else {r2.left=next->x ; r2.right=current->x; }
 		if (current->y < next->y) {r2.bottom=current->y; r2.top=next->y; } else {r2.bottom=next->y ; r2.top=current->y; }
-		if (localbox.top < r2.top) localbox.top = max(0L,min(head.biHeight-1,r2.top+1));
-		if (localbox.left > r2.left) localbox.left = max(0L,min(head.biWidth-1,r2.left-1));
-		if (localbox.right < r2.right) localbox.right = max(0L,min(head.biWidth-1,r2.right+1));
-		if (localbox.bottom > r2.bottom) localbox.bottom = max(0L,min(head.biHeight-1,r2.bottom-1));
+		if (localbox.top < r2.top) localbox.top = cxmax(0L,min(head.biHeight-1,r2.top+1));
+		if (localbox.left > r2.left) localbox.left = cxmax(0L,min(head.biWidth-1,r2.left-1));
+		if (localbox.right < r2.right) localbox.right = cxmax(0L,min(head.biWidth-1,r2.right+1));
+		if (localbox.bottom > r2.bottom) localbox.bottom = cxmax(0L,min(head.biHeight-1,r2.bottom-1));
 
 		i++;
 	}
@@ -385,10 +385,10 @@ bool CxImage::SelectionAddPolygon(POINT *points, long npoints, BYTE level)
 		for (x=localbox.left; x<=localbox.right; x++)
 			if (plocal[x + yoffset]!=1) pSelection[x + yoffset]=level;
 	}
-	if (info.rSelectionBox.top <= localbox.top) info.rSelectionBox.top = min(head.biHeight,localbox.top + 1);
-	if (info.rSelectionBox.left > localbox.left) info.rSelectionBox.left = min(head.biWidth,localbox.left);
-	if (info.rSelectionBox.right <= localbox.right) info.rSelectionBox.right = min(head.biWidth,localbox.right + 1);
-	if (info.rSelectionBox.bottom > localbox.bottom) info.rSelectionBox.bottom = min(head.biHeight,localbox.bottom);
+	if (info.rSelectionBox.top <= localbox.top) info.rSelectionBox.top = cxmin(head.biHeight,localbox.top + 1);
+	if (info.rSelectionBox.left > localbox.left) info.rSelectionBox.left = cxmin(head.biWidth,localbox.left);
+	if (info.rSelectionBox.right <= localbox.right) info.rSelectionBox.right = cxmin(head.biWidth,localbox.right + 1);
+	if (info.rSelectionBox.bottom > localbox.bottom) info.rSelectionBox.bottom = cxmin(head.biHeight,localbox.bottom);
 
 	free(plocal);
 	free(pix);
