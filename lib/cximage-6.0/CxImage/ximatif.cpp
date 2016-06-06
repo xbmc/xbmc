@@ -470,9 +470,9 @@ bool CxImageTIF::Decode(CxFile * hFile)
 						if ( cb > 0.00304 ) cb = 1.055 * pow(cb,0.41667) - 0.055;
 							else            cb = 12.92 * cb;
 
-						c.rgbRed  =(BYTE)max(0,min(255,(int)(cr*255)));
-						c.rgbGreen=(BYTE)max(0,min(255,(int)(cg*255)));
-						c.rgbBlue =(BYTE)max(0,min(255,(int)(cb*255)));
+						c.rgbRed  =(BYTE)cxmax(0,cxmin(255,(int)(cr*255)));
+						c.rgbGreen=(BYTE)cxmax(0,cxmin(255,(int)(cg*255)));
+						c.rgbBlue =(BYTE)cxmax(0,cxmin(255,(int)(cb*255)));
 
 						SetPixelColor(xi,yi,c);
 #if CXIMAGE_SUPPORT_ALPHA
