@@ -152,6 +152,16 @@ When using the makefile builds a few extra targets are defined:
 
 - `make check` builds and executes the test suite.
 
+## Sanitizers
+
+Clang and GCC support different kinds of Sanitizers. To enable a Sanitizer call CMake with the
+option `-DECM_ENABLE_SANITIZERS=’san1;san2;...'`. For more information about enabling the
+Sanitizers read the documentation in 
+[modules/extra/ECMEnableSanitizers.cmake](https://github.com/xbmc/xbmc/tree/master/project/cmake/modules/extra/ECMEnableSanitizers.cmake).
+
+It is also recommended to read the sections about the Sanitizers in the [Clang 
+documentation](http://clang.llvm.org/docs/).
+
 ## Debugging the build
 
 This section covers some tips that can be useful for debugging a CMake
