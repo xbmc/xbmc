@@ -260,7 +260,7 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
                 avt->SetStateVariable("AVTransportURIMetaData", meta);
             }
 
-            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
+            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["player"]["speed"].asInteger()));
             avt->SetStateVariable("TransportState", "PLAYING");
 
             /* this could be a transition to next track, so clear next */
@@ -268,11 +268,11 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
             avt->SetStateVariable("NextAVTransportURIMetaData", "");
         }
         else if (strcmp(message, "OnPause") == 0) {
-            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
+            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["player"]["speed"].asInteger()));
             avt->SetStateVariable("TransportState", "PAUSED_PLAYBACK");
         }
         else if (strcmp(message, "OnSpeedChanged") == 0) {
-            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
+            avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["player"]["speed"].asInteger()));
         }
     }
     else if (flag == Application && strcmp(message, "OnVolumeChanged") == 0) {
