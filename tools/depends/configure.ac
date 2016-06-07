@@ -1,3 +1,4 @@
+
 AC_PREREQ(2.59)
 AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
 :${CFLAGS=""}
@@ -167,6 +168,14 @@ case $host in
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
+    platform_cxxflags="$platform_cflags"
+    platform_os="linux"
+  ;;
+  mipsel-*-linux*)
+    use_cpu=$host_cpu
+    use_toolchain="${use_toolchain:-/usr}"
+    platform_cflags="-Os -fPIC -DPIC"
+    platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
   ;;
