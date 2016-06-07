@@ -25,9 +25,22 @@ prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
-CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
 USERDATA_DIR="${HOME}/.${bin_name}"
 
+HDD_MOUNT_POINT="$(grep $(readlink /media/hdd || echo -n '/media/hdd') /proc/mounts)"
+if [ "$HDD_MOUNT_POINT" != "" ]; then
+    export HOME="/media/hdd"
+    CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
+else
+    export HOME="/home/root"
+    export XBMC_TEMP="/tmp"
+    CRASHLOG_DIR=${CRASHLOG_DIR:-$XBMC_TEMP}
+fi
+echo "-----------------+ XBMC ENVIRONMENTS +"
+echo "  + CRASHLOG_DIR    : "$CRASHLOG_DIR
+echo "  + HOME            : "$HOME
+echo "  + HDD_MOUNT_POINT : "$HDD_MOUNT_POINT
+echo ""
 
 # Check for some options used by this script
 while [ "$#" -gt "0" ]
