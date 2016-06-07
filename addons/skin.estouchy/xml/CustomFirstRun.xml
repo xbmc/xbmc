@@ -119,7 +119,7 @@
 			<posy>-180</posy>
 			<width>85</width>
 			<height>85</height>
-			<texture>defaulticons/DefaultFolderBack.png</texture>
+			<texture>DefaultFolderBack.png</texture>
 			<animation effect="rotate" start="0" end="-45" center="auto" condition="true">Conditional</animation>
 			<animation effect="slide" start="0,0" end="-170,160" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9)">conditional</animation>
 		</control>
@@ -139,7 +139,7 @@
 			<posy>-180</posy>
 			<width>85</width>
 			<height>85</height>
-			<texture>defaulticons/DefaultFolderBack.png</texture>
+			<texture>DefaultFolderBack.png</texture>
 			<animation effect="rotate" start="0" end="-90" center="auto" condition="true">Conditional</animation>
 		</control>
 		<control type="label">

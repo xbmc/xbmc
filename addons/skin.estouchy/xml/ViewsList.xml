@@ -44,7 +44,7 @@
 					<posy>4</posy>
 					<width>62</width>
 					<height>62</height>
-					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
@@ -186,7 +186,7 @@
 					<posy>4</posy>
 					<width>62</width>
 					<height>62</height>
-					<texture background="true">defaulticons/$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>

@@ -278,22 +278,7 @@
 				<orientation>vertical</orientation>
 			</control>
 		</control>
-		<control type="panel" id="9002">
-			<include>VisibleFadeEffect</include>
-			<include>BottomMenuLayout</include>
-			<content>
-				<item>
-					<label>31200</label>
-					<onclick>ParentDir</onclick>
-					<icon>icon_button_back.png</icon>
-				</item>
-				<item>
-					<label>1036</label>
-					<onclick>ActivateWindow(Favourites)</onclick>
-					<icon>icon_button_favourites.png</icon>
-				</item>
-			</content>
-		</control>
+		<include>BottomMenu</include>
 		<include content="PopupMenu">
 			<param name="panel-posy">320</param>
 			<param name="panel-height">240</param>

@@ -1,3 +1,7 @@
+v1.0.15
+- Fix options menu in playlist windows
+- Fix icons in music-playlists section
+
 V1.0.14
 - Updated language files from Transifex
 
