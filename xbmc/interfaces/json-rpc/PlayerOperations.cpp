@@ -111,6 +111,7 @@ JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITranspo
     switch (playerConfig->GetType())
     {
       case EPC_EXTPLAYER:
+      case EPC_E2PLAYER:
         player["type"] = "external";
         break;
 
