@@ -184,7 +184,6 @@ void CDVDClock::Discontinuity(double clock, double absolute)
   m_bReset = false;
   m_systemAdjust = 0;
   m_speedAdjust = 0;
-  m_vSyncAdjust = 0;
 }
 
 void CDVDClock::SetMaxSpeedAdjust(double speed)

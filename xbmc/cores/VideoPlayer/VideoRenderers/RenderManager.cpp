@@ -1334,6 +1334,10 @@ void CRenderManager::PrepareNextRender()
     }
     renderPts += frametime / 2 - m_clockSync.m_syncOffset;
   }
+  else
+  {
+    m_dvdClock.SetVsyncAdjust(0);
+  }
 
   if (renderPts >= nextFramePts)
   {
