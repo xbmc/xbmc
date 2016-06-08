@@ -621,7 +621,7 @@ bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CMMALRenderer::AutoInterlaceMethod()
 {
-  return m_sourceWidth * m_sourceHeight <= 576 * 720 ? VS_INTERLACEMETHOD_MMAL_ADVANCED : VS_INTERLACEMETHOD_MMAL_BOB;
+  return VS_INTERLACEMETHOD_MMAL_ADVANCED;
 }
 
 void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect)
