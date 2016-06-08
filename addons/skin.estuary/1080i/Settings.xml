@@ -106,7 +106,7 @@
 				<item>
 					<label>$LOCALIZE[14203]</label>
 					<onclick>ActivateWindow(LibrarySettings)</onclick>
-					<icon>icons/settings/video.png</icon>
+					<icon>icons/settings/library.png</icon>
 				</item>
 				<item>
 					<label>$LOCALIZE[14205]</label>

@@ -18,7 +18,7 @@
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<visible>Control.IsVisible(50) | Control.IsVisible(55)</visible>
-				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(files) | Container.Content(directors)</visible>
+				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(files) | Container.Content(directors) | Container.Content()</visible>
 				<include>Visible_Left</include>
 				<include>ListThumbInfoPanel</include>
 			</control>
@@ -108,7 +108,7 @@
 						<label>$LOCALIZE[31117]</label>
 						<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
 						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-						<visible>Container.Content() + String.IsEmpty(Container.PluginName)</visible>
+						<visible>IsEmpty(Container.FolderPath) + String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<include>MediaMenuNowPlaying</include>
 				</control>

@@ -618,7 +618,6 @@
 				<left>740</left>
 				<top>5</top>
 				<aligny>center</aligny>
-				<label>-</label>
 				<textoffsetx>10</textoffsetx>
 				<onright>21</onright>
 				<onleft>21</onleft>
@@ -647,7 +646,6 @@
 				<font>font12</font>
 				<align>justify</align>
 				<pagecontrol>60</pagecontrol>
-				<label>-</label>
 			</control>
 		</control>
 		<control type="grouplist" id="9000">

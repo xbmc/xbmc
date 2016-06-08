@@ -189,7 +189,7 @@
 							<height>30</height>
 							<textcolor>button_focus</textcolor>
 							<font>font12</font>
-							<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]$INFO[ListItem.Title,  [COLOR grey],[/COLOR]]$INFO[ListItem.Genre,      $LOCALIZE[515]: [COLOR grey],[/COLOR]]</label>
+							<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]$INFO[ListItem.EpgEventTitle,  [COLOR grey],[/COLOR]]$INFO[ListItem.EpisodeName, [COLOR grey](,)[/COLOR]]$INFO[ListItem.Genre,      $LOCALIZE[515]: [COLOR grey],[/COLOR]]</label>
 						</control>
 						<control type="textbox">
 							<top>38</top>

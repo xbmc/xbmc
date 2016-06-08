@@ -5,8 +5,9 @@
 	<onunload>ClearProperty(infobackground,home)</onunload>
 	<controls>
 		<control type="group">
+			<visible>!Window.IsActive(Slideshow)</visible>
 			<include>OpenClose_Left</include>
-				<top>160</top>
+			<top>160</top>
 			<control type="image">
 				<left>70</left>
 				<width>1280</width>

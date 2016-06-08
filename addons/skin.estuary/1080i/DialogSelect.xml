@@ -59,14 +59,12 @@
 						<texture border="40">lists/separator.png</texture>
 					</control>
 					<control type="image">
-						<left>10</left>
-						<top>5</top>
-						<width>115</width>
-						<height>115</height>
+						<left>12</left>
+						<top>7</top>
+						<width>110</width>
+						<height>110</height>
 						<texture>$INFO[Listitem.Icon]</texture>
 						<aspectratio>keep</aspectratio>
-						<bordertexture border="2" colordiffuse="border_alpha">colors/black.png</bordertexture>
-						<bordersize>2</bordersize>
 					</control>
 					<control type="label">
 						<left>135</left>
@@ -104,14 +102,12 @@
 						<visible>Control.HasFocus(6)</visible>
 					</control>
 					<control type="image">
-						<left>10</left>
-						<top>5</top>
-						<width>115</width>
-						<height>115</height>
+						<left>12</left>
+						<top>7</top>
+						<width>110</width>
+						<height>110</height>
 						<texture>$INFO[Listitem.Icon]</texture>
 						<aspectratio>keep</aspectratio>
-						<bordertexture>colors/black.png</bordertexture>
-						<bordersize>2</bordersize>
 					</control>
 					<control type="label">
 						<left>135</left>
@@ -148,7 +144,7 @@
 					<top>695</top>
 					<width>275</width>
 					<height>35</height>
-					<font>font12</font>
+					<font>font10</font>
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>

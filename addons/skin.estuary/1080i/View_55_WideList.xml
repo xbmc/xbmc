@@ -32,7 +32,7 @@
 				<onup>55</onup>
 				<ondown>55</ondown>
 				<viewtype label="$LOCALIZE[31107]">list</viewtype>
-				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos) | Container.Content(videos)</visible>
+				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content()</visible>
 				<focusedlayout height="63" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos)">
 					<control type="image">
 						<left>0</left>

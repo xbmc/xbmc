@@ -236,24 +236,10 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<textcolor>grey</textcolor>
-				<font>font12</font>
-				<label>[COLOR=button_focus]$INFO[Container(450).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages][/COLOR]</label>
+				<font>font10</font>
+				<label>$VAR[FileBrowserSelectLabel]</label>
 				<wrapmultiline>true</wrapmultiline>
 				<visible>!Control.IsVisible(451)</visible>
-			</control>
-			<control type="label">
-				<description>Page label</description>
-				<left>0</left>
-				<top>810</top>
-				<width>1270</width>
-				<height>30</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<textcolor>grey</textcolor>
-				<font>font12</font>
-				<label>[COLOR=button_focus]$INFO[Container(451).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages][/COLOR]</label>
-				<wrapmultiline>true</wrapmultiline>
-				<visible>Control.IsVisible(451)</visible>
 			</control>
 		</control>
 		<include content="UpDownArrows">

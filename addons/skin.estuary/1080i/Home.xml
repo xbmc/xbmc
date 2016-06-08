@@ -70,22 +70,22 @@
 							<param name="list_id" value="5900"/>
 							<param name="ondown_id" value="5100"/>
 							<param name="visible" value="Library.HasContent(movies)"/>
-							<param name="item1_onclick" value="ActivateWindow(videos,RecentlyAddedMovies,return)" />
+							<param name="item1_onclick" value="ActivateWindow(videos,videodb://recentlyaddedmovies/,return)" />
 							<param name="item1_icon" value="recentlyadded.png" />
 							<param name="item1_label" value="$LOCALIZE[20386]" />
-							<param name="item2_onclick" value="ActivateWindow(videos,MovieYears,return)" />
+							<param name="item2_onclick" value="ActivateWindow(videos,videodb://movies/years/,return)" />
 							<param name="item2_icon" value="years.png" />
 							<param name="item2_label" value="$LOCALIZE[652]" />
-							<param name="item3_onclick" value="ActivateWindow(videos,MovieSets,return)" />
+							<param name="item3_onclick" value="ActivateWindow(videos,videodb://movies/sets/,return)" />
 							<param name="item3_icon" value="sets.png" />
 							<param name="item3_label" value="$LOCALIZE[31075]" />
-							<param name="item4_onclick" value="ActivateWindow(videos,MovieGenres,return)" />
+							<param name="item4_onclick" value="ActivateWindow(videos,videodb://movies/genres/,return)" />
 							<param name="item4_icon" value="genres.png" />
 							<param name="item4_label" value="$LOCALIZE[135]" />
-							<param name="item5_onclick" value="ActivateWindow(videos,MovieActors,return)" />
+							<param name="item5_onclick" value="ActivateWindow(videos,videodb://movies/actors/,return)" />
 							<param name="item5_icon" value="actors.png" />
 							<param name="item5_label" value="$LOCALIZE[344]" />
-							<param name="item6_onclick" value="ActivateWindow(videos,MovieTags,return)" />
+							<param name="item6_onclick" value="ActivateWindow(videos,videodb://movies/tags/,return)" />
 							<param name="item6_icon" value="tags.png" />
 							<param name="item6_label" value="$LOCALIZE[20459]" />
 							<param name="item7_onclick" value="ActivateWindow(videos,library://video/movies/,return)" />
@@ -164,22 +164,22 @@
 							<param name="list_id" value="6900"/>
 							<param name="ondown_id" value="6100"/>
 							<param name="visible" value="Library.HasContent(tvshows)"/>
-							<param name="item1_onclick" value="ActivateWindow(Videos,RecentlyAddedEpisodes,return)" />
+							<param name="item1_onclick" value="ActivateWindow(Videos,videodb://recentlyaddedepisodes/,return)" />
 							<param name="item1_icon" value="recentlyadded.png" />
 							<param name="item1_label" value="$LOCALIZE[20387]" />
-							<param name="item2_onclick" value="ActivateWindow(Videos,TVShowYears,return)" />
+							<param name="item2_onclick" value="ActivateWindow(Videos,videodb://tvshows/years/,return)" />
 							<param name="item2_icon" value="years.png" />
 							<param name="item2_label" value="$LOCALIZE[652]" />
-							<param name="item3_onclick" value="ActivateWindow(Videos,TVShowTitles,return)" />
+							<param name="item3_onclick" value="ActivateWindow(Videos,videodb://tvshows/titles/,return)" />
 							<param name="item3_icon" value="title.png" />
 							<param name="item3_label" value="$LOCALIZE[31073]" />
-							<param name="item4_onclick" value="ActivateWindow(Videos,TVShowGenres,return)" />
+							<param name="item4_onclick" value="ActivateWindow(Videos,videodb://tvshows/genres/,return)" />
 							<param name="item4_icon" value="genres.png" />
 							<param name="item4_label" value="$LOCALIZE[135]" />
-							<param name="item5_onclick" value="ActivateWindow(Videos,TVShowActors,return)" />
+							<param name="item5_onclick" value="ActivateWindow(Videos,videodb://tvshows/actors/,return)" />
 							<param name="item5_icon" value="actors.png" />
 							<param name="item5_label" value="$LOCALIZE[344]" />
-							<param name="item6_onclick" value="ActivateWindow(Videos,TVShowTags,return)" />
+							<param name="item6_onclick" value="ActivateWindow(Videos,videodb://tvshows/tags/,return)" />
 							<param name="item6_icon" value="tags.png" />
 							<param name="item6_label" value="$LOCALIZE[20459]" />
 							<param name="item7_onclick" value="ActivateWindow(videos,library://video/tvshows/)" />
@@ -261,7 +261,7 @@
 							<param name="item1_label" value="$LOCALIZE[359]" />
 							<param name="item1_vis" value="Library.HasContent(music)" />
 							<param name="item2_onclick" value="ActivateWindow(Music,Artists,return)" />
-							<param name="item2_icon" value="actors.png" />
+							<param name="item2_icon" value="artists.png" />
 							<param name="item2_label" value="$LOCALIZE[133]" />
 							<param name="item2_vis" value="Library.HasContent(music)" />
 							<param name="item3_onclick" value="ActivateWindow(Music,Albums,return)" />
@@ -424,7 +424,7 @@
 							<param name="sub_label" value=""/>
 						</include>
 						<include content="WidgetListSquare">
-							<param name="content_path" value="androidapp://sources/apps/"/>
+							<param name="content_path" value="$VAR[AndroidAppPathVar]"/>
 							<param name="widget_header" value="$LOCALIZE[20244]"/>
 							<param name="widget_target" value="programs"/>
 							<param name="sortby" value="lastused"/>
@@ -435,7 +435,6 @@
 							<param name="single_label" value="$INFO[ListItem.Label]"/>
 							<param name="main_label" value=""/>
 							<param name="sub_label" value=""/>
-							<param name="visible" value="System.Platform.Android"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="addons://sources/image/"/>
@@ -515,7 +514,7 @@
 							<param name="list_id" value="11200"/>
 							<param name="onup_id" value="11100"/>
 							<param name="ondown_id" value="20001"/>
-							<param name="icon" value="icons/defaulticons/DefaultPlaylist.png"/>
+							<param name="icon" value="DefaultPlaylist.png"/>
 						</include>
 						<include content="ImageWidget">
 							<param name="image_path" value="special://skin/extras/home-images/tv.jpg"/>
@@ -804,7 +803,6 @@
 				</control>
 				<control type="group" id="4000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),pictures)</visible>
-					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<include>Visible_Right_Delayed</include>
 					<control type="grouplist" id="4001">
 						<orientation>vertical</orientation>
@@ -854,9 +852,9 @@
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<control type="radiobutton" id="900">
-					<left>37</left>
+					<left>33</left>
 					<top>94</top>
-					<width>420</width>
+					<width>424</width>
 					<height>110</height>
 					<onup>14200</onup>
 					<ondown>SetFocus(9000,0)</ondown>
@@ -1027,8 +1025,8 @@
 							<item>
 								<label>$LOCALIZE[342]</label>
 								<label2>$LOCALIZE[16102]: $INFO[Window(home).Property(movies.watched)]$INFO[Window(home).Property(movies.Count), / ]</label2>
-								<onclick condition="Library.HasContent(movies)">ActivateWindow(Videos,MovieTitles,return)</onclick>
-								<onclick condition="!Library.HasContent(movies)">ActivateWindow(Videos,Files,return)</onclick>
+								<onclick condition="Library.HasContent(movies)">ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
+								<onclick condition="!Library.HasContent(movies)">ActivateWindow(Videos,sources://video/,return)</onclick>
 								<thumb>icons/home/movies.png</thumb>
 								<property name="id">movies</property>
 								<visible>!Skin.HasSetting(HomeMenuNoMovieButton)</visible>
@@ -1036,8 +1034,8 @@
 							<item>
 								<label>$LOCALIZE[20343]</label>
 								<label2>$LOCALIZE[16102]: $INFO[Window(home).Property(episodes.watched)]$INFO[Window(home).Property(episodes.Count), / ]</label2>
-								<onclick condition="Library.HasContent(tvshows)">ActivateWindow(Videos,TVShowTitles,return)</onclick>
-								<onclick condition="!Library.HasContent(tvshows)">ActivateWindow(Videos,Files,return)</onclick>
+								<onclick condition="Library.HasContent(tvshows)">ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
+								<onclick condition="!Library.HasContent(tvshows)">ActivateWindow(Videos,sources://video/,return)</onclick>
 								<thumb>icons/home/tv.png</thumb>
 								<property name="id">tvshows</property>
 								<visible>!Skin.HasSetting(HomeMenuNoTVShowButton)</visible>
@@ -1097,8 +1095,8 @@
 				</control>
 				<control type="grouplist" id="700">
 					<orientation>horizontal</orientation>
-					<itemgap>-17</itemgap>
-					<left>36</left>
+					<itemgap>-16</itemgap>
+					<left>33</left>
 					<top>878</top>
 					<onup>SetFocus(9000,99)</onup>
 					<onup>9000</onup>
