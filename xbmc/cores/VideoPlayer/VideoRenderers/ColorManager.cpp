@@ -34,12 +34,12 @@ using namespace XFILE;
 CColorManager::CColorManager() :
   m_hProfile(NULL)
 {
-  curVideoPrimaries = CMS_PRIMARIES_AUTO;
-  curClutSize = 0;
-  curCmsToken = 0;
-  curCmsMode = 0;
-  cur3dlutFile = "";
-  curIccProfile = "";
+  m_curVideoPrimaries = CMS_PRIMARIES_AUTO;
+  m_curClutSize = 0;
+  m_curCmsToken = 0;
+  m_curCmsMode = 0;
+  m_cur3dlutFile = "";
+  m_curIccProfile = "";
 }
 
 CColorManager::~CColorManager()
@@ -81,10 +81,10 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
   {
   case CMS_MODE_3DLUT:
     CLog::Log(LOGDEBUG, "ColorManager: CMS_MODE_3DLUT\n");
-    cur3dlutFile = CSettings::GetInstance().GetString("videoscreen.cms3dlut");
-    if (!Load3dLut(cur3dlutFile, clutData, clutSize))
+    m_cur3dlutFile = CSettings::GetInstance().GetString("videoscreen.cms3dlut");
+    if (!Load3dLut(m_cur3dlutFile, clutData, clutSize))
       return false;
-    curCmsMode = CMS_MODE_3DLUT;
+    m_curCmsMode = CMS_MODE_3DLUT;
     break;
 
   case CMS_MODE_PROFILE:
@@ -93,7 +93,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
     {
       bool changed = false;
       // check if display profile is not loaded, or has changed
-      if (curIccProfile != CSettings::GetInstance().GetString("videoscreen.displayprofile"))
+      if (m_curIccProfile != CSettings::GetInstance().GetString("videoscreen.displayprofile"))
       {
         changed = true;
         // free old profile if there is one
@@ -108,23 +108,23 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
         {
           CLog::Log(LOGDEBUG, "black point: %f\n", m_blackPoint.Y);
         }
-        curIccProfile = CSettings::GetInstance().GetString("videoscreen.displayprofile");
+        m_curIccProfile = CSettings::GetInstance().GetString("videoscreen.displayprofile");
       }
       // create gamma curve
       cmsToneCurve* gammaCurve;
-      curIccGammaMode = (CMS_TRC_TYPE)CSettings::GetInstance().GetInt("videoscreen.cmsgammamode");
-      curIccGamma = CSettings::GetInstance().GetInt("videoscreen.cmsgamma");
+      m_m_curIccGammaMode = (CMS_TRC_TYPE)CSettings::GetInstance().GetInt("videoscreen.cmsgammamode");
+      m_curIccGamma = CSettings::GetInstance().GetInt("videoscreen.cmsgamma");
       gammaCurve =
-        CreateToneCurve(curIccGammaMode, curIccGamma/100.0f, m_blackPoint);
+        CreateToneCurve(m_m_curIccGammaMode, m_curIccGamma/100.0f, m_blackPoint);
 
       // create source profile
-      curIccWhitePoint = (CMS_WHITEPOINT)CSettings::GetInstance().GetInt("videoscreen.cmswhitepoint");
-      curIccPrimaries = (CMS_PRIMARIES)CSettings::GetInstance().GetInt("videoscreen.cmsprimaries");
-      CLog::Log(LOGDEBUG, "primaries setting: %d\n", (int)curIccPrimaries);
-      if (curIccPrimaries == CMS_PRIMARIES_AUTO) curIccPrimaries = videoPrimaries;
-      CLog::Log(LOGDEBUG, "source profile primaries: %d\n", (int)curIccPrimaries);
+      m_curIccWhitePoint = (CMS_WHITEPOINT)CSettings::GetInstance().GetInt("videoscreen.cmswhitepoint");
+      m_curIccPrimaries = (CMS_PRIMARIES)CSettings::GetInstance().GetInt("videoscreen.cmsprimaries");
+      CLog::Log(LOGDEBUG, "primaries setting: %d\n", (int)m_curIccPrimaries);
+      if (m_curIccPrimaries == CMS_PRIMARIES_AUTO) m_curIccPrimaries = videoPrimaries;
+      CLog::Log(LOGDEBUG, "source profile primaries: %d\n", (int)m_curIccPrimaries);
       cmsHPROFILE sourceProfile =
-        CreateSourceProfile(curIccPrimaries, gammaCurve, curIccWhitePoint);
+        CreateSourceProfile(m_curIccPrimaries, gammaCurve, m_curIccWhitePoint);
 
       // link profiles
       // TODO: intent selection, switch output to 16 bits?
@@ -144,7 +144,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
       cmsFreeToneCurve(gammaCurve);
     }
 
-    curCmsMode = CMS_MODE_PROFILE;
+    m_curCmsMode = CMS_MODE_PROFILE;
     break;
 #else   //defined(HAVE_LCMS2)
     return false;
@@ -156,45 +156,45 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
   }
 
   // set current state
-  curVideoPrimaries = videoPrimaries;
-  curClutSize = *clutSize;
-  *cmsToken = ++curCmsToken;
+  m_curVideoPrimaries = videoPrimaries;
+  m_curClutSize = *clutSize;
+  *cmsToken = ++m_curCmsToken;
   return true;
 }
 
 bool CColorManager::CheckConfiguration(int cmsToken, int flags)
 {
-  if (cmsToken != curCmsToken)
+  if (cmsToken != m_curCmsToken)
     return false;
-  if (curCmsMode != CSettings::GetInstance().GetInt("videoscreen.cmsmode"))
+  if (m_curCmsMode != CSettings::GetInstance().GetInt("videoscreen.cmsmode"))
     return false;   // CMS mode has changed
-  switch (curCmsMode)
+  switch (m_curCmsMode)
   {
   case CMS_MODE_3DLUT:
-    if (cur3dlutFile != CSettings::GetInstance().GetString("videoscreen.cms3dlut"))
+    if (m_cur3dlutFile != CSettings::GetInstance().GetString("videoscreen.cms3dlut"))
       return false; // different 3dlut file selected
     break;
   case CMS_MODE_PROFILE:
-    if (curIccProfile != CSettings::GetInstance().GetString("videoscreen.displayprofile"))
+    if (m_curIccProfile != CSettings::GetInstance().GetString("videoscreen.displayprofile"))
       return false; // different ICC profile selected
-    if (curIccWhitePoint != CSettings::GetInstance().GetInt("videoscreen.cmswhitepoint"))
+    if (m_curIccWhitePoint != CSettings::GetInstance().GetInt("videoscreen.cmswhitepoint"))
       return false; // whitepoint changed
     {
       CMS_PRIMARIES primaries = (CMS_PRIMARIES)CSettings::GetInstance().GetInt("videoscreen.cmsprimaries");
       if (primaries == CMS_PRIMARIES_AUTO) primaries = videoFlagsToPrimaries(flags);
-      if (curIccPrimaries != primaries)
+      if (m_curIccPrimaries != primaries)
         return false; // primaries changed
     }
-    if (curIccGammaMode != (CMS_TRC_TYPE)CSettings::GetInstance().GetInt("videoscreen.cmsgammamode"))
+    if (m_m_curIccGammaMode != (CMS_TRC_TYPE)CSettings::GetInstance().GetInt("videoscreen.cmsgammamode"))
       return false; // gamma mode changed
-    if (curIccGamma != CSettings::GetInstance().GetInt("videoscreen.cmsgamma"))
+    if (m_curIccGamma != CSettings::GetInstance().GetInt("videoscreen.cmsgamma"))
       return false; // effective gamma changed
-    if (curClutSize != 1 << CSettings::GetInstance().GetInt("videoscreen.cmslutsize"))
+    if (m_curClutSize != 1 << CSettings::GetInstance().GetInt("videoscreen.cmslutsize"))
       return false; // CLUT size changed
     // TODO: check other parameters
     break;
   default:
-    CLog::Log(LOGERROR, "%s: unexpected CMS mode: %d", __FUNCTION__, curCmsMode);
+    CLog::Log(LOGERROR, "%s: unexpected CMS mode: %d", __FUNCTION__, m_curCmsMode);
     return false;
   }
   return true;

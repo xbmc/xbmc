@@ -147,18 +147,18 @@ private:
 #endif // HAVE_LCMS2
 
   // current configuration:
-  CMS_PRIMARIES curVideoPrimaries;
-  int curClutSize;
-  int curCmsToken;
+  CMS_PRIMARIES m_curVideoPrimaries;
+  int m_curClutSize;
+  int m_curCmsToken;
   // (compare the following to system settings to see if configuration is still valid)
-  int curCmsMode;
-  std::string cur3dlutFile;
-  std::string curIccProfile;
+  int m_curCmsMode;
+  std::string m_cur3dlutFile;
+  std::string m_curIccProfile;
   // display parameters (gamma, input/output offset, primaries, whitepoint, intent?)
-  CMS_WHITEPOINT curIccWhitePoint;
-  CMS_PRIMARIES curIccPrimaries;
-  CMS_TRC_TYPE curIccGammaMode;
-  int curIccGamma;  // gamma multiplied by 100
+  CMS_WHITEPOINT m_curIccWhitePoint;
+  CMS_PRIMARIES m_curIccPrimaries;
+  CMS_TRC_TYPE m_m_curIccGammaMode;
+  int m_curIccGamma;  // gamma multiplied by 100
 
 };
 
