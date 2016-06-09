@@ -556,7 +556,6 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
   if (!xiph)
     return false;
 
-  FLAC::Picture pictures[3];
   ReplayGain replayGainInfo;
 
   const Ogg::FieldListMap& fieldListMap = xiph->fieldListMap();
@@ -650,50 +649,33 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       if (iUserrating > 0 && iUserrating <= 100)
         tag.SetUserrating((iUserrating / 10));
     }
-    else if (it->first == "METADATA_BLOCK_PICTURE")
-    {
-      const char* b64 = it->second.front().toCString();
-      std::string decoded_block = Base64::Decode(b64, it->second.front().size());
-      ByteVector bv(decoded_block.data(), decoded_block.size());
-      TagLib::FLAC::Picture* pictureFrame = new TagLib::FLAC::Picture(bv);
-
-      if      (pictureFrame->type() == FLAC::Picture::FrontCover) pictures[0].parse(bv);
-      else if (pictureFrame->type() == FLAC::Picture::Other)      pictures[1].parse(bv);
-
-      delete pictureFrame;
-    }
-    else if (it->first == "COVERART")
-    {
-      const char* b64 = it->second.front().toCString();
-      std::string decoded_block = Base64::Decode(b64, it->second.front().size());
-      ByteVector bv(decoded_block.data(), decoded_block.size());
-      pictures[2].setData(bv);
-      // Assume jpeg
-      if (pictures[2].mimeType().isEmpty())
-        pictures[2].setMimeType("image/jpeg");
-    }
-    else if (it->first == "COVERARTMIME")
-    {
-      pictures[2].setMimeType(it->second.front());
-    }
     else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized XipComment name: %s", it->first.toCString(true));
   }
 
-  // Process the extracted picture frames; 0 = CoverArt, 1 = Other, 2 = COVERART/COVERARTMIME
-  for (int i = 0; i < 3; ++i)
-    if (pictures[i].data().size())
-    {
-      std::string mime = pictures[i].mimeType().toCString();
-      if (mime.compare(0, 6, "image/") != 0)
-        continue;
-      TagLib::uint size =            pictures[i].data().size();
-      tag.SetCoverArtInfo(size, mime);
-      if (art)
-        art->set(reinterpret_cast<const uint8_t*>(pictures[i].data().data()), size, mime);
+  // TagLib::Ogg::XiphComment now handles METADATA_BLOCK_PICTURE separately from other fields.
+  // Thus, we have to use XiphComment::pictureList() in order to get cover art.
+  auto pictures = xiph->pictureList();
+  FLAC::Picture *cover[2] = {};
 
-      break;
+  for (List<FLAC::Picture *>::ConstIterator i = pictures.begin(); i != pictures.end(); ++i)
+  {
+    FLAC::Picture *picture = *i;
+    if (picture->type() == FLAC::Picture::FrontCover)
+      cover[0] = picture;
+    else // anything else is taken as second priority
+      cover[1] = picture;
+  }
+  for (unsigned int i = 0; i < 2; i++)
+  {
+    if (cover[i])
+    {
+      tag.SetCoverArtInfo(cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      if (art)
+        art->set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      break; // one is enough
     }
+  }
 
   if (xiph->comment() != String::null)
     tag.SetComment(xiph->comment().toCString(true));
