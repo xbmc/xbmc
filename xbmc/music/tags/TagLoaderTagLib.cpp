@@ -650,6 +650,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       if (iUserrating > 0 && iUserrating <= 100)
         tag.SetUserrating((iUserrating / 10));
     }
+#if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
     else if (it->first == "METADATA_BLOCK_PICTURE")
     {
       const char* b64 = it->second.front().toCString();
@@ -676,10 +677,12 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     {
       pictures[2].setMimeType(it->second.front());
     }
+#endif
     else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized XipComment name: %s", it->first.toCString(true));
   }
 
+#if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
   // Process the extracted picture frames; 0 = CoverArt, 1 = Other, 2 = COVERART/COVERARTMIME
   for (int i = 0; i < 3; ++i)
     if (pictures[i].data().size())
@@ -694,6 +697,29 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
 
       break;
     }
+#else
+  auto pictureList = xiph->pictureList();
+  FLAC::Picture *cover[2] = {};
+
+  for (auto i: pictureList)
+  {
+    FLAC::Picture *picture = i;
+    if (picture->type() == FLAC::Picture::FrontCover)
+      cover[0] = picture;
+    else // anything else is taken as second priority
+      cover[1] = picture;
+  }
+  for (unsigned int i = 0; i < 2; i++)
+  {
+    if (cover[i])
+    {
+      tag.SetCoverArtInfo(cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      if (art)
+        art->set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      break; // one is enough
+    }
+  }
+#endif
 
   if (xiph->comment() != String::null)
     tag.SetComment(xiph->comment().toCString(true));
