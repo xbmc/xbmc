@@ -20,7 +20,6 @@ SRCS += File.cpp
 SRCS += FileCache.cpp
 SRCS += FileDirectoryFactory.cpp
 SRCS += FileFactory.cpp
-SRCS += FileReaderFile.cpp
 SRCS += FTPDirectory.cpp
 SRCS += FTPParse.cpp
 SRCS += HTTPDirectory.cpp

@@ -32,7 +32,6 @@
 #include "CurlFile.h"
 #include "DAVFile.h"
 #include "ShoutcastFile.h"
-#include "FileReaderFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
 #include "win32/Win32SMBFile.h"
@@ -125,7 +124,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #elif defined(TARGET_WINDOWS)
   else if (url.IsProtocol("file") || url.GetProtocol().empty()) return new CWin32File();
 #endif // TARGET_WINDOWS 
-  else if (url.IsProtocol("filereader")) return new CFileReaderFile();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (url.IsProtocol("cdda")) return new CFileCDDA();
 #endif
