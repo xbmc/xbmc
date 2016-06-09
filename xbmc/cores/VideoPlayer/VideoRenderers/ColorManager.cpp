@@ -31,8 +31,7 @@
 
 using namespace XFILE;
 
-CColorManager::CColorManager() :
-  m_hProfile(NULL)
+CColorManager::CColorManager()
 {
   m_curVideoPrimaries = CMS_PRIMARIES_AUTO;
   m_curClutSize = 0;
@@ -40,15 +39,20 @@ CColorManager::CColorManager() :
   m_curCmsMode = 0;
   m_cur3dlutFile = "";
   m_curIccProfile = "";
+#if defined(HAVE_LCMS2)
+  m_hProfile = NULL;
+#endif  //defined(HAVE_LCMS2)
 }
 
 CColorManager::~CColorManager()
 {
+#if defined(HAVE_LCMS2)
   if (m_hProfile)
   {
     cmsCloseProfile(m_hProfile);
     m_hProfile = NULL;
   }
+#endif  //defined(HAVE_LCMS2)
 }
 
 bool CColorManager::IsEnabled()
@@ -175,6 +179,7 @@ bool CColorManager::CheckConfiguration(int cmsToken, int flags)
       return false; // different 3dlut file selected
     break;
   case CMS_MODE_PROFILE:
+#if defined(HAVE_LCMS2)
     if (m_curIccProfile != CSettings::GetInstance().GetString("videoscreen.displayprofile"))
       return false; // different ICC profile selected
     if (m_curIccWhitePoint != CSettings::GetInstance().GetInt("videoscreen.cmswhitepoint"))
@@ -192,6 +197,9 @@ bool CColorManager::CheckConfiguration(int cmsToken, int flags)
     if (m_curClutSize != 1 << CSettings::GetInstance().GetInt("videoscreen.cmslutsize"))
       return false; // CLUT size changed
     // TODO: check other parameters
+#else   //defined(HAVE_LCMS2)
+    return true;
+#endif  //defined(HAVE_LCMS2)
     break;
   default:
     CLog::Log(LOGERROR, "%s: unexpected CMS mode: %d", __FUNCTION__, m_curCmsMode);

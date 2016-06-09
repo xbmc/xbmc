@@ -106,7 +106,7 @@ private:
   bool Load3dLut(const std::string filename, uint16_t **clutData, int *clutSize);
 
 
-#ifdef HAVE_LCMS2
+#if defined(HAVE_LCMS2)
   // ProbeIccDisplayProfile
 
   // ProbeIccDeviceLink (?)
@@ -144,7 +144,12 @@ private:
   cmsHPROFILE m_hProfile;
   cmsCIEXYZ   m_blackPoint = { 0, 0, 0 };
 
-#endif // HAVE_LCMS2
+  // display parameters (gamma, input/output offset, primaries, whitepoint, intent?)
+  CMS_WHITEPOINT m_curIccWhitePoint;
+  CMS_PRIMARIES m_curIccPrimaries;
+  CMS_TRC_TYPE m_m_curIccGammaMode;
+  int m_curIccGamma;  // gamma multiplied by 100
+#endif // defined(HAVE_LCMS2)
 
   // current configuration:
   CMS_PRIMARIES m_curVideoPrimaries;
@@ -154,11 +159,6 @@ private:
   int m_curCmsMode;
   std::string m_cur3dlutFile;
   std::string m_curIccProfile;
-  // display parameters (gamma, input/output offset, primaries, whitepoint, intent?)
-  CMS_WHITEPOINT m_curIccWhitePoint;
-  CMS_PRIMARIES m_curIccPrimaries;
-  CMS_TRC_TYPE m_m_curIccGammaMode;
-  int m_curIccGamma;  // gamma multiplied by 100
 
 };
 
