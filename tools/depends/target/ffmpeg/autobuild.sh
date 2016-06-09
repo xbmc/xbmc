@@ -156,6 +156,7 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--enable-encoder=mjpeg \
 	--enable-nonfree \
 	--enable-pthreads \
+	--enable-pic \
 	--enable-zlib \
 	--disable-mipsdsp \
 	--disable-mipsdspr2 \

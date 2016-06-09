@@ -26,7 +26,7 @@ ifeq ($(CROSS_COMPILING), yes)
 endif
 ifeq ($(OS), linux)
   ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
-  ffmpg_config += --enable-vdpau --enable-vaapi
+  ffmpg_config += --enable-vdpau --enable-vaapi --enable-pic
 endif
 ifeq ($(OS), android)
   ifeq ($(findstring arm, $(CPU)), arm)
