@@ -654,7 +654,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
   }
 
   // TagLib::Ogg::XiphComment now handles METADATA_BLOCK_PICTURE separately from other fields.
-  // Thus, we have to use XiphComment::picureList() in order to get cover art.
+  // Thus, we have to use XiphComment::pictureList() in order to get cover art.
   auto pictures = xiph->pictureList();
   FLAC::Picture *cover[2] = {};
 
