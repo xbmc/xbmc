@@ -34,7 +34,7 @@ libpng-native: zlib-native
 swig-native: pcre-native
 distribute-native: python27-native
 distutilscross-native: python27-native distribute-native
-tar-native: xz-native
+tar-native: xz-native automake-native
 python27-native: zlib-native
 
 #liblzo2 has stale packaged automake files that cause borked host/build detection
