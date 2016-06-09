@@ -21,7 +21,6 @@
 
 #include "ContextMenuItem.h"
 #include "guilib/GUIWindowManager.h"
-#include "video/windows/GUIWindowVideoNav.h"
 #include "VideoLibraryQueue.h"
 
 namespace CONTEXTMENU

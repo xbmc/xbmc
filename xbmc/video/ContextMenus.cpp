@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "Autorun.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/windows/GUIWindowVideoBase.h"
 
 
 namespace CONTEXTMENU

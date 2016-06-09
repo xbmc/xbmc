@@ -29,6 +29,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "settings/Settings.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 

@@ -25,7 +25,6 @@
 #include "network/ZeroconfBrowser.h"
 
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/recordings/PVRRecordings.h"
 
 namespace EPG
 {

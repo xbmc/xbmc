@@ -42,10 +42,10 @@
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
-#include "video/windows/GUIWindowVideoBase.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "addons/Scraper.h"
 
 #define BACKGROUND_IMAGE       999
 #define GROUP_LIST             996
