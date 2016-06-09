@@ -46,7 +46,7 @@
 			<top>870</top>
 			<width>1300</width>
 			<height>25</height>
-			<label>$INFO[VideoPlayer.Title]</label>
+			<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.EpisodeName, (,)]</label>
 			<aligny>center</aligny>
 			<font>font30</font>
 		</control>

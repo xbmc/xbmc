@@ -26,6 +26,10 @@
 		<value condition="Window.IsActive(musicplaylist)">$INFO[ListItem.Duration]</value>
 		<value>$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
 	</variable>
+	<variable name="AndroidAppPathVar">
+		<value condition="!System.Platform.Android">-</value>
+		<value>androidapp://sources/apps/</value>
+	</variable>
 	<variable name="AddonCountLabel">
 		<value condition="Integer.IsGreater(Container(8000).NumItems,10)">&gt;9</value>
 		<value condition="Integer.IsGreater(Container(8000).NumItems,9)">9</value>
@@ -36,12 +40,12 @@
 		<value condition="Integer.IsGreater(Container(8000).NumItems,4)">4</value>
 		<value condition="Integer.IsGreater(Container(8000).NumItems,3)">3</value>
 		<value condition="Integer.IsGreater(Container(8000).NumItems,2)">2</value>
-		<value condition="Integer.IsGreater(Container(8000).NumItems,1)">1</value>
+		<value condition="Integer.IsGreater(Container(8000).NumItems,0)">1</value>
 		<value>[COLOR grey]0[/COLOR]</value>
 	</variable>
 	<variable name="MusicInfoTextboxVar">
 		<value condition="Container.Content(songs)">$INFO[ListItem.ContributorAndRole,[B]$LOCALIZE[31128][/B][CR][COLOR=white],[/COLOR]]</value>
-		<value condition="Container.Content(albums)">$INFO[ListItem.Property(Album_Description),[B]$LOCALIZE[183][/B][CR][COLOR=white],[/COLOR]]</value>
+		<value condition="Container.Content(albums)">$INFO[ListItem.Property(Album_Description),[B]$LOCALIZE[21821][/B][CR][COLOR=white],[/COLOR]]</value>
 		<value>$INFO[ListItem.Property(Artist_Description),[B]$LOCALIZE[21887][/B][CR][COLOR=white],[/COLOR]]</value>
 	</variable>
 	<variable name="NowPlayingSublabelVar">
@@ -71,15 +75,15 @@
 		<value>$INFO[Player.Art(thumb)]</value>
 	</variable>
 	<variable name="ShiftThumbVar">
-		<value condition="ListItem.IsParentFolder">DefaultFolderBack.png</value>
+		<value condition="ListItem.IsParentFolder">DefaultFolderBackSquare.png</value>
 		<value condition="String.IsEmpty(Listitem.Thumb) + [Container.Content(albums) | Container.Content(artists)]">DefaultAudio.png</value>
-		<value condition="ListItem.IsFolder + String.IsEmpty(ListItem.Thumb)">DefaultFolder.png</value>
+		<value condition="ListItem.IsFolder + String.IsEmpty(ListItem.Thumb)">DefaultFolderSquare.png</value>
 		<value>$INFO[ListItem.Thumb]</value>
 	</variable>
 	<variable name="IconWallThumbVar">
 		<value condition="Container.Content(studios)">$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]</value>
-		<value condition="String.StartsWith(ListItem.Icon,Default)">$INFO[ListItem.Icon,icons/defaulticons/]</value>
-		<value>$INFO[ListItem.Thumb]</value>
+		<value condition="!IsEmpty(ListItem.Thumb)">$INFO[ListItem.Thumb]</value>
+		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="ListLabel2Var">
 		<value condition="String.IsEqual(Container.SortMethod,$LOCALIZE[556])">$INFO[ListItem.Year]</value>
@@ -100,7 +104,11 @@
 	</variable>
 	<variable name="SelectLabel">
 		<value condition="Control.IsVisible(3)">[COLOR=button_focus]$INFO[Container(3).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages][/COLOR]</value>
-		<value condition="Control.IsVisible(6)">[COLOR=button_focus]$INFO[Container(6).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR]</value>
+		<value>[COLOR=button_focus]$INFO[Container(6).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR]</value>
+	</variable>
+	<variable name="FileBrowserSelectLabel">
+		<value condition="Control.IsVisible(450)">[COLOR=button_focus]$INFO[Container(450).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages][/COLOR]</value>
+		<value>[COLOR=button_focus]$INFO[Container(451).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages][/COLOR]</value>
 	</variable>
 	<variable name="BannerArtVar">
 		<value condition="ListItem.IsParentFolder">DefaultBackBanner.png</value>
@@ -111,20 +119,11 @@
 		<value condition="ListItem.IsParentFolder">special://skin/extras/home-images/movie.jpg</value>
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
-	<variable name="MusicInfoListHeaderVar">
-		<value condition="Container.Content(albums)">$LOCALIZE[31037]</value>
-		<value>$LOCALIZE[21888]</value>
-	</variable>
-	<variable name="MusicInfoListLabelVar">
-		<value condition="Container.Content(artists)">$INFO[ListItem.Label]</value>
-		<value>$INFO[ListItem.TrackNumber,[COLOR button_focus],: [/COLOR]]$INFO[ListItem.Label]</value>
-	</variable>
 	<variable name="ListBoxInfoVar">
 		<value condition="Container.Content(addons)">$INFO[ListItem.AddonDescription]</value>
-		<value condition="Container.Content(albums)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]</value>
+		<value condition="Container.Content(albums)">$INFO[ListItem.Property(album_description)]</value>
 		<value condition="Container.Content(mixed) | Container.Content(videos)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]$INFO[ListItem.Plot]</value>
-		<value condition="Container.Content(artists) + !Window.IsActive(musicinformation)">$INFO[ListItem.Property(artist_genre),[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]$INFO[ListItem.Property(artist_description)]</value>
-		<value condition="Container.Content(artists)">$INFO[ListItem.Property(artist_genre),[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]$INFO[ListItem.Property(artist_mood),[COLOR button_focus]$LOCALIZE[175]: [/COLOR],[CR]]</value>
+		<value condition="Container.Content(artists)">$INFO[ListItem.Property(artist_description)]</value>
 		<value condition="Container.Content(songs)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]$INFO[ListItem.Duration,[COLOR button_focus]$LOCALIZE[180]: [/COLOR],[CR]]$INFO[ListItem.Playcount,[COLOR button_focus]$LOCALIZE[567]: [/COLOR],[CR]]</value>
 		<value>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]</value>
 	</variable>
@@ -134,7 +133,7 @@
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="ListInfoBoxImageVar">
-		<value condition="ListItem.IsParentFolder">DefaultFolderBack.png</value>
+		<value condition="ListItem.IsParentFolder">DefaultBackFanart.png</value>
 		<value condition="Container.Content(episodes)">$INFO[ListItem.Art(thumb)]</value>
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
@@ -153,11 +152,6 @@
 		<value condition="ListItem.Property(addon.isinstalled)">OverlayWatched.png</value>
 		<value>OverlayUnwatched.png</value>
 	</variable>
-	<variable name="AudioDSPIconVar">
-		<value condition="!String.IsEmpty(ADSP.MasterOverrideIcon)">$INFO[ADSP.MasterOverrideIcon]</value>
-		<value condition="Player.HasVideo">$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]</value>
-		<value condition="Player.HasAudio">$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]</value>
-	</variable>
 	<variable name="ResolutionFlagVar">
 		<value condition="ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
 		<value condition="Integer.IsGreater(ListItem.VideoResolution,1080)">flags/videoresolution/4K.png</value>
@@ -168,13 +162,18 @@
 		<value>$INFO[ListItem.Art(tvshow.banner)]</value>
 	</variable>
 	<variable name="PosterVar">
-		<value condition="ListItem.IsParentFolder">DefaultFolderBack.png</value>
+		<value condition="ListItem.IsParentFolder">DefaultFolderBackPoster.png</value>
 		<value condition="!String.IsEmpty(Container.Art(season.poster)) + Container.Content(episodes)">$INFO[Container.Art(season.poster)]</value>
 		<value condition="!String.IsEmpty(Container.Art(tvshow.poster)) + Container.Content(episodes)">$INFO[Container.Art(tvshow.poster)]</value>
 		<value condition="!String.IsEmpty(Container.Art(tvshow.poster)) + Container.Content(seasons) + Window.IsActive(movieinformation)">$INFO[Container.Art(tvshow.poster)]</value>
 		<value condition="Container.Content(actors) | Container.Content(directors)">$INFO[Container.ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster)) + !Container.Content(seasons)">$INFO[ListItem.Art(tvshow.poster)]</value>
 		<value>$INFO[ListItem.Art(poster)]</value>
+	</variable>
+	<variable name="InfoDialogPosterVar">
+		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(season.poster))">$INFO[ListItem.Art(season.poster)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
 	</variable>
 	<variable name="ListPosterVar">
 		<value condition="ListItem.IsParentFolder">DefaultFolderBack.png</value>
@@ -260,7 +259,7 @@
 	</variable>
 	<variable name="AddonsFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
-		<value condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-ExtendedInfo Script-DialogVideoInfo.xml) | Window.IsVisible(script-ExtendedInfo Script-DialogInfo.xml) | Window.IsVisible(script-ExtendedInfo Script-VideoList.xml)">$INFO[Window(home).Property(infobackground)]</value>
+		<value condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)">$INFO[Window(home).Property(infobackground)]</value>
 		<value condition="!String.IsEmpty(Container(500).ListItem.Art(fanart)) + Control.HasFocus(500)">$INFO[Container(500).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(501).ListItem.Art(fanart)) + Control.HasFocus(501)">$INFO[Container(501).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(502).ListItem.Art(fanart)) + Control.HasFocus(502)">$INFO[Container(502).ListItem.Art(fanart)]</value>
@@ -272,7 +271,7 @@
 	</variable>
 	<variable name="HomeFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
-		<value condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-ExtendedInfo Script-DialogVideoInfo.xml) | Window.IsVisible(script-ExtendedInfo Script-DialogInfo.xml) | Window.IsVisible(script-ExtendedInfo Script-VideoList.xml)">$INFO[Window(home).Property(infobackground)]</value>
+		<value condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)">$INFO[Window(home).Property(infobackground)]</value>
 		<value condition="!String.IsEmpty(Container(5100).ListItem.Art(fanart)) + Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(5200).ListItem.Art(fanart)) + Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(5300).ListItem.Art(fanart)) + Control.HasFocus(5300)">$INFO[Container(5300).ListItem.Art(fanart)]</value>
@@ -297,7 +296,7 @@
 	</variable>
 	<variable name="MediaFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
-		<value condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-ExtendedInfo Script-DialogVideoInfo.xml) | Window.IsVisible(script-ExtendedInfo Script-DialogInfo.xml) | Window.IsVisible(script-ExtendedInfo Script-VideoList.xml)">$INFO[Window(home).Property(infobackground)]</value>
+		<value condition="Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)">$INFO[Window(home).Property(infobackground)]</value>
 		<value condition="Window.IsActive(pictures) + String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.FolderPath]</value>
 		<value condition="!String.IsEmpty(Container.Art(tvshow.fanart))">$INFO[Container.Art(tvshow.fanart)]</value>
 		<value condition="!String.IsEmpty(Container.Art(artist.fanart))">$INFO[Container.Art(artist.fanart)]</value>
@@ -317,15 +316,13 @@
 		<value>OverlayUnwatched.png</value>
 	</variable>
 	<variable name="SettingsSectionIcon">
-		<value condition="Window.IsActive(picturessettings)">icons/settings/pictures.png</value>
-		<value condition="Window.IsActive(programssettings)">icons/settings/programs.png</value>
-		<value condition="Window.IsActive(weathersettings)">icons/settings/weather.png</value>
+		<value condition="Window.IsActive(playersettings)">icons/settings/video.png</value>
+		<value condition="Window.IsActive(librarysettings)">icons/settings/library.png</value>
+		<value condition="Window.IsActive(pvrsettings)">icons/settings/livetv.png</value>
+		<value condition="Window.IsActive(servicesettings)">icons/settings/network.png</value>
+		<value condition="Window.IsActive(interfacesettings)">icons/settings/appearance.png</value>
 		<value condition="Window.IsActive(musicsettings)">icons/settings/music.png</value>
 		<value condition="Window.IsActive(systemsettings)">icons/settings/system.png</value>
-		<value condition="Window.IsActive(videossettings)">icons/settings/video.png</value>
-		<value condition="Window.IsActive(servicesettings)">icons/settings/network.png</value>
-		<value condition="Window.IsActive(appearancesettings)">icons/settings/appearance.png</value>
-		<value condition="Window.IsActive(pvrsettings)">icons/settings/livetv.png</value>
 	</variable>
 	<!-- Breadcrumbs -->
 	<variable name="BreadcrumbsVideoVar">

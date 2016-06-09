@@ -368,10 +368,17 @@
 			<height>262</height>
 			<textcolor>button_focus</textcolor>
 			<font>font24_title</font>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.EpgEventTitle]</label>
 		</control>
 		<control type="label">
 			<top>210</top>
+			<width>560</width>
+			<height>262</height>
+			<font>font12</font>
+			<label>$INFO[ListItem.EpisodeName]</label>
+		</control>
+		<control type="label">
+			<top>254</top>
 			<width>560</width>
 			<height>262</height>
 			<font>font12</font>
@@ -393,9 +400,9 @@
 			<label>$PARAM[bottom_label2]</label>
 		</control>
 		<control type="textbox">
-			<top>254</top>
+			<top>298</top>
 			<width>560</width>
-			<height>367</height>
+			<height>330</height>
 			<align>left</align>
 			<font>font12</font>
 			<label>$INFO[ListItem.Plot]</label>

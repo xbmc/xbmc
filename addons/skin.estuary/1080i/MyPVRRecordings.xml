@@ -48,12 +48,12 @@
 							<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(50)">Conditional</animation>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>10</top>
-							<width>50</width>
-							<height>50</height>
-							<aspectratio>keep</aspectratio>
-							<texture background="true">icons/defaulticons/$INFO[ListItem.Icon]</texture>
+							<left>21</left>
+							<top>20</top>
+							<width>32</width>
+							<height>32</height>
+							<texture colordiffuse="white">$VAR[ListWatchedIconVar]</texture>
+							<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
 						</control>
 						<control type="label">
 							<left>60</left>
@@ -87,12 +87,11 @@
 							<texture border="90,3,90,3">lists/separator.png</texture>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>10</top>
-							<width>50</width>
-							<height>50</height>
-							<aspectratio>keep</aspectratio>
-							<texture background="true">icons/defaulticons/$INFO[ListItem.Icon]</texture>
+							<left>21</left>
+							<top>20</top>
+							<width>32</width>
+							<height>32</height>
+							<texture>$VAR[ListWatchedIconVar]</texture>
 						</control>
 						<control type="label">
 							<left>60</left>

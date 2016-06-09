@@ -303,7 +303,7 @@
 			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14104" />
 				<param name="height" value="95" />
-				<param name="onclick" value="Next" />
+				<param name="onclick" value="PlayerControl(Next)" />
 				<param name="icon" value="icons/now-playing/next.png" />
 			</include>
 			<include content="BottomMainMenuItem">

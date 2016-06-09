@@ -155,7 +155,7 @@
 			<width>509</width>
 			<height>509</height>
 			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="border_alpha">colors/black.png</texture>
+			<texture>colors/black.png</texture>
 			<bordertexture border="20">overlays/shadow.png</bordertexture>
 			<bordersize>20</bordersize>
 		</control>
@@ -164,9 +164,9 @@
 			<top>186</top>
 			<width>461</width>
 			<height>461</height>
-			<aspectratio aligny="top">scale</aspectratio>
+			<aspectratio aligny="center">scale</aspectratio>
 			<fadetime>300</fadetime>
-			<texture background="true" fallback="DefaultFolderSquare.png">$INFO[ListItem.Art(thumb)]</texture>
+			<texture background="true" fallback="DefaultFolderSquare.png">$VAR[IconWallThumbVar]</texture>
 		</control>
 		<control type="group">
 			<left>520</left>

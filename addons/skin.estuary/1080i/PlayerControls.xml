@@ -100,8 +100,6 @@
 				<height>50</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
-				<controloffsetx>75</controloffsetx>
-				<controloffsety>0</controloffsety>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
 				<textureslidernib>osd/progress/nub_bar.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>
@@ -116,8 +114,6 @@
 				<height>50</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
-				<controloffsetx>75</controloffsetx>
-				<controloffsety>0</controloffsety>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernibfocus>

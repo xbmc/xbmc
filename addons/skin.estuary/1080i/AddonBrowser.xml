@@ -15,7 +15,7 @@
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<visible>Control.IsVisible(55)</visible>
-				<visible>Container.Content(addons)</visible>
+				<visible>Container.Content(addons) | Container.Content()</visible>
 				<include>Visible_Left</include>
 				<include>ListThumbInfoPanel</include>
 			</control>

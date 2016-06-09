@@ -17,13 +17,13 @@
 		<control type="group">
 			<top>890</top>
 			<control type="label">
-				<top>40</top>
+				<top>5</top>
 				<right>51</right>
 				<width>400</width>
 				<height>20</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13_title</font>
+				<font>font12_title</font>
 				<label>[COLOR button_focus]$LOCALIZE[21396]:  [/COLOR]$INFO[player.chapter]$INFO[player.chaptercount, / ]</label>
 				<visible>player.chaptercount + Window.IsVisible(FullScreenVideo)</visible>
 			</control>
@@ -36,6 +36,37 @@
 				<font>font12_title</font>
 				<textcolor>button_focus</textcolor>
 				<label>$VAR[SeekLabel]</label>
+			</control>
+			<control type="label">
+				<left>850</left>
+				<top>7</top>
+				<width>240</width>
+				<height>20</height>
+				<aligny>center</aligny>
+				<align>center</align>
+				<font>font12_title</font>
+				<textcolor>button_focus</textcolor>
+				<label>$LOCALIZE[31080]</label>
+			</control>
+			<control type="label">
+				<left>850</left>
+				<top>40</top>
+				<width>240</width>
+				<height>20</height>
+				<aligny>center</aligny>
+				<align>center</align>
+				<font>font13_title</font>
+				<label>$INFO[Player.FinishTime]</label>
+			</control>
+			<control type="label">
+				<top>40</top>
+				<right>51</right>
+				<width>400</width>
+				<height>20</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13_title</font>
+				<label>[COLOR button_focus]$LOCALIZE[31134]:  [/COLOR]$INFO[Player.TimeRemaining]</label>
 			</control>
 			<control type="label">
 				<left>40</left>
@@ -73,8 +104,6 @@
 				<height>50</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
-				<controloffsetx>75</controloffsetx>
-				<controloffsety>0</controloffsety>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>

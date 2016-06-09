@@ -22,6 +22,7 @@
 				<param name="DialogBackgroundHeight" value="709" />
 				<param name="DialogHeaderLabel" value="" />
 				<param name="DialogHeaderId" value="311" />
+				<param name="darken_bg" value="!Control.HasFocus(502)" />
 			</include>
 			<control type="image">
 				<description>background image</description>
@@ -506,7 +507,7 @@
 						<description>hide button</description>
 						<width>230</width>
 						<height>125</height>
-						<label>Hide</label>
+						<label>$LOCALIZE[31133]</label>
 						<align>center</align>
 						<aligny>center</aligny>
 						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>

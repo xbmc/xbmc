@@ -110,7 +110,7 @@
 					</itemlayout>
 				</control>
 				<control type="scrollbar" id="60">
-					<left>1005</left>
+					<left>810</left>
 					<top>0</top>
 					<width>12</width>
 					<height>704</height>

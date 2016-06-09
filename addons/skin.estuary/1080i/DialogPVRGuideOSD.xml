@@ -32,7 +32,7 @@
 				<height>70</height>
 				<font>font13_title</font>
 				<aligny>center</aligny>
-				<label>$INFO[VideoPlayer.ChannelGroup]</label>
+				<label>$INFO[VideoPlayer.ChannelName]</label>
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="label">
@@ -164,11 +164,11 @@
 				<top>960</top>
 				<width>450</width>
 				<height>20</height>
-				<font>font12</font>
+				<font>font10</font>
 				<textcolor>grey</textcolor>
 				<align>right</align>
 				<aligny>center</aligny>
-				<label>[COLOR=button_focus]$INFO[Container(11).NumItems][/COLOR] $LOCALIZE[19019] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR]</label>
+				<label>[COLOR=button_focus]$INFO[Container(11).NumItems][/COLOR] $LOCALIZE[31036] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR]</label>
 			</control>
 		</control>
 	</controls>

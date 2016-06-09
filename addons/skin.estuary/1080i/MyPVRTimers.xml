@@ -68,22 +68,24 @@
 								<label>$INFO[ListItem.Date]</label>
 							</control>
 							<control type="textbox">
-								<left>690</left>
+								<left>650</left>
 								<top>13</top>
 								<width>260</width>
 								<height>70</height>
 								<font>font12</font>
-								<align>right</align>
+								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Timertype]</label>
 							</control>
-							<control type="image">
-								<left>940</left>
+							<control type="textbox">
+								<left>920</left>
 								<top>13</top>
 								<width>120</width>
 								<height>75</height>
-								<texture>$VAR[TVTimerRadioButtonTexture]</texture>
-								<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
+								<font>font12</font>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Comment]</label>
 							</control>
 						</control>
 					</itemlayout>
@@ -134,22 +136,24 @@
 								<label>$INFO[ListItem.Date]</label>
 							</control>
 							<control type="textbox">
-								<left>690</left>
+								<left>650</left>
 								<top>13</top>
 								<width>260</width>
 								<height>70</height>
 								<font>font12</font>
-								<align>right</align>
+								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Timertype]</label>
 							</control>
-							<control type="image">
-								<left>940</left>
+							<control type="textbox">
+								<left>920</left>
 								<top>13</top>
 								<width>120</width>
 								<height>75</height>
-								<texture>$VAR[TVTimerRadioButtonTexture]</texture>
-								<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
+								<font>font12</font>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Comment]</label>
 							</control>
 						</control>
 					</focusedlayout>
