@@ -26,6 +26,7 @@
 
 #include "SmartPlayList.h"
 #include "Util.h"
+#include "dbwrappers/Database.h"
 #include "filesystem/File.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #include "guilib/LocalizeStrings.h"
@@ -33,12 +34,12 @@
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
+#include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/StringValidation.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
-#include "video/VideoDatabase.h"
 
 using namespace XFILE;
 

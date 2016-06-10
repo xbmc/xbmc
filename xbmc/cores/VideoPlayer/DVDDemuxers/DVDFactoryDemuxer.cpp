@@ -30,7 +30,8 @@
 #include "DVDDemuxClient.h"
 #include "DemuxMultiSource.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace PVR;
 

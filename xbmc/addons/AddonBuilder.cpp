@@ -27,6 +27,7 @@
 #include "addons/LanguageResource.h"
 #include "addons/PluginSource.h"
 #include "addons/Repository.h"
+#include "addons/Scraper.h"
 #include "addons/ScreenSaver.h"
 #include "addons/Service.h"
 #include "addons/Skin.h"

@@ -23,7 +23,6 @@
 #include "threads/SingleLock.h"
 
 #include "FileItem.h"
-#include "video/VideoDatabase.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

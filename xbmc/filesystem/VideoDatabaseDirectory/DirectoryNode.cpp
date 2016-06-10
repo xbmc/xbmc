@@ -39,7 +39,6 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
-#include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
