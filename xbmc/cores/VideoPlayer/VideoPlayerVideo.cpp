@@ -790,7 +790,8 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
 
   //try to calculate the framerate
-  CalcFrameRate();
+  if (!m_stalled)
+    CalcFrameRate();
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
