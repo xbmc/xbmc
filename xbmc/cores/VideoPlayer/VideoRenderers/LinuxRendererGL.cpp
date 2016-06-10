@@ -158,7 +158,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_nonLinStretchGui = false;
   m_pixelRatio = 0.0f;
 
-  m_ColorManager = new CColorManager();
+  m_ColorManager.reset(new CColorManager());
   m_tCLUTTex = 0;
   m_CLUT = NULL;
   m_CLUTsize = 0;
@@ -194,8 +194,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
-
-  delete m_ColorManager;
 }
 
 bool CLinuxRendererGL::ValidateRenderer()

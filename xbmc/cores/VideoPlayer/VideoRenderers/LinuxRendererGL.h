@@ -283,7 +283,7 @@ protected:
   float m_pixelRatio;
 
   // color management
-  CColorManager *m_ColorManager;
+  std::unique_ptr<CColorManager> m_ColorManager;
   GLuint    m_tCLUTTex;
   uint16_t *m_CLUT;
   int       m_CLUTsize;
