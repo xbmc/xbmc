@@ -42,7 +42,11 @@ namespace ADDON
     explicit CInputStream(AddonProps props)
       : InputStreamDll(std::move(props))
     {};
-    CInputStream(AddonProps props, std::string name, std::string listitemprops, std::string extensions);
+    CInputStream(const AddonProps& props,
+                 const std::string& name,
+                 const std::string& listitemprops,
+                 const std::string& extensions,
+                 const std::string& protocols);
     virtual ~CInputStream() {}
 
     virtual void SaveSettings() override;
@@ -95,6 +99,7 @@ namespace ADDON
 
     std::vector<std::string> m_fileItemProps;
     std::vector<std::string> m_extensionsList;
+    std::vector<std::string> m_protocolsList;
     INPUTSTREAM_CAPABILITIES m_caps;
     std::map<int, CDemuxStream*> m_streams;
 
