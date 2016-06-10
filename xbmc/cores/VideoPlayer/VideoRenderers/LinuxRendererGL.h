@@ -284,11 +284,11 @@ protected:
 
   // color management
   std::unique_ptr<CColorManager> m_ColorManager;
-  GLuint    m_tCLUTTex;
+  GLuint m_tCLUTTex;
   uint16_t *m_CLUT;
-  int       m_CLUTsize;
-  int       m_cmsToken;
-  bool      m_cmsOn;
+  int m_CLUTsize;
+  int m_cmsToken;
+  bool m_cmsOn;
 
   bool LoadCLUT();
   void DeleteCLUT();
