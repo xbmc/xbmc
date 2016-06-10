@@ -1999,6 +1999,149 @@
           </dependencies>
           <control type="spinner" format="integer" />
         </setting>
+        <setting id="videoscreen.cmsenabled" type="boolean" label="36560" help="36561">
+          <requirement>HAS_GL</requirement>
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.cmsmode" type="integer" label="36562" help="36563">
+          <requirement>HAS_GL</requirement>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>cmsmodes</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+          </dependencies>
+          <control type="list" format="integer"/>
+        </setting>
+        <setting id="videoscreen.cms3dlut" type="string" label="36564" help="36565">
+          <requirement>
+            <and>
+              <condition>HAS_GL</condition>
+            </and>
+          </requirement>
+          <level>3</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">0</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="videoscreen.displayprofile" type="string" label="36566" help="36567">
+          <requirement>
+            <and>
+              <condition>HAS_GL</condition>
+              <condition>HAVE_LCMS2</condition>
+            </and>
+          </requirement>
+          <level>3</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="videoscreen.cmswhitepoint" type="integer" label="36568" help="36569">
+          <requirement>
+            <and>
+              <condition>HAS_GL</condition>
+              <condition>HAVE_LCMS2</condition>
+            </and>
+          </requirement>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>cmswhitepoints</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
+          </dependencies>
+          <control type="list" format="integer"/>
+        </setting>
+        <setting id="videoscreen.cmsprimaries" type="integer" label="36570" help="36571">
+          <requirement>
+            <and>
+              <condition>HAS_GL</condition>
+              <condition>HAVE_LCMS2</condition>
+            </and>
+          </requirement>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>cmsprimaries</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
+          </dependencies>
+          <control type="list" format="integer"/>
+        </setting>
+        <setting id="videoscreen.cmsgammamode" type="integer" label="36572" help="36573">
+          <requirement>
+            <and>
+              <condition>HAS_GL</condition>
+              <condition>HAVE_LCMS2</condition>
+            </and>
+          </requirement>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>cmsgammamodes</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
+          </dependencies>
+          <control type="list" format="integer"/>
+        </setting>
+        <setting id="videoscreen.cmsgamma" type="integer" label="36574" help="36575">
+          <requirement>
+            <and>
+              <condition>HAS_GL</condition>
+              <condition>HAVE_LCMS2</condition>
+            </and>
+          </requirement>
+          <level>3</level>
+          <default>220</default>
+          <constraints>
+            <minimum>160</minimum>
+            <step>005</step>
+            <maximum>280</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
+            <dependency type="visible" setting="videoscreen.cmsgammamode" operator="!is">0</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="videoscreen.cmslutsize" type="integer" label="36576" help="36577">
+          <requirement>HAS_GL</requirement>
+          <level>3</level>
+          <default>6</default>
+          <constraints>
+            <minimum>4</minimum>
+            <step>1</step>
+            <maximum>8</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
+            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
       </group>
       <group id="2" label="14232">
         <setting id="videoscreen.stereoscopicmode" type="integer" label="36500" help="36539">
@@ -2545,149 +2688,6 @@
           <control type="button" format="action">
             <hidevalue>true</hidevalue>
           </control>
-        </setting>
-        <setting id="videoscreen.cmsenabled" type="boolean" label="36560" help="36561">
-          <requirement>HAS_GL</requirement>
-          <level>3</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoscreen.cmsmode" type="integer" label="36562" help="36563">
-          <requirement>HAS_GL</requirement>
-          <level>3</level>
-          <default>0</default>
-          <constraints>
-            <options>cmsmodes</options>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-          </dependencies>
-          <control type="list" format="integer"/>
-        </setting>
-        <setting id="videoscreen.cms3dlut" type="string" label="36564" help="36565">
-          <requirement>
-            <and>
-              <condition>HAS_GL</condition>
-            </and>
-          </requirement>
-          <level>3</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">0</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="videoscreen.displayprofile" type="string" label="36566" help="36567">
-          <requirement>
-            <and>
-              <condition>HAS_GL</condition>
-              <condition>HAVE_LCMS2</condition>
-            </and>
-          </requirement>
-          <level>3</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="videoscreen.cmswhitepoint" type="integer" label="36568" help="36569">
-          <requirement>
-            <and>
-              <condition>HAS_GL</condition>
-              <condition>HAVE_LCMS2</condition>
-            </and>
-          </requirement>
-          <level>3</level>
-          <default>0</default>
-          <constraints>
-            <options>cmswhitepoints</options>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
-          </dependencies>
-          <control type="list" format="integer"/>
-        </setting>
-        <setting id="videoscreen.cmsprimaries" type="integer" label="36570" help="36571">
-          <requirement>
-            <and>
-              <condition>HAS_GL</condition>
-              <condition>HAVE_LCMS2</condition>
-            </and>
-          </requirement>
-          <level>3</level>
-          <default>0</default>
-          <constraints>
-            <options>cmsprimaries</options>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
-          </dependencies>
-          <control type="list" format="integer"/>
-        </setting>
-        <setting id="videoscreen.cmsgammamode" type="integer" label="36572" help="36573">
-          <requirement>
-            <and>
-              <condition>HAS_GL</condition>
-              <condition>HAVE_LCMS2</condition>
-            </and>
-          </requirement>
-          <level>3</level>
-          <default>0</default>
-          <constraints>
-            <options>cmsgammamodes</options>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
-          </dependencies>
-          <control type="list" format="integer"/>
-        </setting>
-        <setting id="videoscreen.cmsgamma" type="integer" label="36574" help="36575">
-          <requirement>
-            <and>
-              <condition>HAS_GL</condition>
-              <condition>HAVE_LCMS2</condition>
-            </and>
-          </requirement>
-          <level>3</level>
-          <default>220</default>
-          <constraints>
-            <minimum>160</minimum>
-            <step>005</step>
-            <maximum>280</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
-            <dependency type="visible" setting="videoscreen.cmsgammamode" operator="!is">0</dependency>
-          </dependencies>
-          <control type="spinner" format="integer" />
-        </setting>
-        <setting id="videoscreen.cmslutsize" type="integer" label="36576" help="36577">
-          <requirement>HAS_GL</requirement>
-          <level>3</level>
-          <default>6</default>
-          <constraints>
-            <minimum>4</minimum>
-            <step>1</step>
-            <maximum>8</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="videoscreen.cmsenabled" operator="is">true</dependency>
-            <dependency type="visible" setting="videoscreen.cmsmode" operator="is">1</dependency>
-          </dependencies>
-          <control type="spinner" format="integer" />
         </setting>
       </group>
     </category>
