@@ -25,9 +25,7 @@
 #include "GUIDialogCMSSettings.h"
 #include "GUIPassword.h"
 #include "addons/Skin.h"
-#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#endif
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
