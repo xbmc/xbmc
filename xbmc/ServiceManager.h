@@ -22,7 +22,6 @@
 
 #include "addons/BinaryAddonCache.h"
 #include "interfaces/python/XBPython.h"
-#include "pvr/PVRManager.h"
 #include <memory>
 
 namespace ADDON {

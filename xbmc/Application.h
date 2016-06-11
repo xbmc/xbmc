@@ -75,6 +75,7 @@ namespace PLAYLIST
 #include "threads/Thread.h"
 
 #include "ApplicationPlayer.h"
+#include "FileItem.h"
 
 class CSeekHandler;
 class CInertialScrollingHandler;
