@@ -18,7 +18,6 @@ set(SOURCES AddonsDirectory.cpp
             File.cpp
             FileDirectoryFactory.cpp
             FileFactory.cpp
-            FileReaderFile.cpp
             FTPDirectory.cpp
             FTPParse.cpp
             HTTPDirectory.cpp
@@ -100,7 +99,6 @@ set(HEADERS AddonsDirectory.h
             FileCache.h
             FileDirectoryFactory.h
             FileFactory.h
-            FileReaderFile.h
             HTTPDirectory.h
             IDirectory.h
             IFile.h
