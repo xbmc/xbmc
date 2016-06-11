@@ -5,6 +5,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
   list(GET CGUID_VER 0 CGUID_VER)
   string(SUBSTRING "${CGUID_VER}" 8 -1 CGUID_VER)
 
+  set(CROSSGUID_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libcrossguid.a)
   externalproject_add(crossguid
                       URL http://mirrors.kodi.tv/build-deps/sources/crossguid-${CGUID_VER}.tar.gz
                       PREFIX ${CORE_BUILD_DIR}/crossguid
@@ -18,10 +19,11 @@ if(ENABLE_INTERNAL_CROSSGUID)
                                     <SOURCE_DIR> &&
                                     ${CMAKE_COMMAND} -E copy
                                     ${CORE_SOURCE_DIR}/tools/depends/target/crossguid/FindCXX11.cmake
-                                    <SOURCE_DIR>)
+                                    <SOURCE_DIR>
+                      BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
 
   set(CROSSGUID_FOUND 1)
-  set(CROSSGUID_LIBRARIES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libcrossguid.a)
+  set(CROSSGUID_LIBRARIES ${CROSSGUID_LIBRARY})
   set(CROSSGUID_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
 
   include(FindPackageHandleStandardArgs)

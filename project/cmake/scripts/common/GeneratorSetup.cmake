@@ -22,3 +22,8 @@ else()
   set(CORE_BUILD_CONFIG ${CMAKE_BUILD_TYPE})
   message(STATUS "Generator: Single-configuration: ${CMAKE_BUILD_TYPE} (${CMAKE_GENERATOR})")
 endif()
+
+# Ninja needs CMake 3.2 due to ExternalProject BUILD_BYPRODUCTS usage
+if(CMAKE_GENERATOR STREQUAL Ninja AND CMAKE_VERSION VERSION_LESS 3.2)
+  message(FATAL_ERROR "Generator: Ninja requires CMake 3.2 or later")
+endif()

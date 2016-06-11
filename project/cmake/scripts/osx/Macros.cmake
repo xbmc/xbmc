@@ -1,5 +1,5 @@
 function(core_link_library lib wraplib)
-  if(CMAKE_GENERATOR MATCHES "Unix Makefiles")
+  if(CMAKE_GENERATOR MATCHES "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL Ninja)
     set(wrapper_obj cores/dll-loader/exports/CMakeFiles/wrapper.dir/wrapper.c.o)
   elseif(CMAKE_GENERATOR MATCHES "Xcode")
     set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)/wrapper.build/Objects-$(CURRENT_VARIANT)/$(CURRENT_ARCH)/wrapper.o)
