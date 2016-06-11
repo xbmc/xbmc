@@ -34,16 +34,19 @@ std::unique_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, cons
 {
   std::string listitemprops = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@listitemprops");
   std::string extensions = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
+  std::string protocols = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@protocols");
   std::string name(ext->plugin->identifier);
-  std::unique_ptr<CInputStream> istr(new CInputStream(std::move(props),
-                                                      std::move(name),
-                                                      std::move(listitemprops),
-                                                      std::move(extensions)));
+  std::unique_ptr<CInputStream> istr(new CInputStream(props, name, listitemprops,
+                                                      extensions, protocols));
   istr->CheckConfig();
   return istr;
 }
 
-CInputStream::CInputStream(AddonProps props, std::string name, std::string listitemprops, std::string extensions)
+CInputStream::CInputStream(const AddonProps& props,
+                           const std::string& name,
+                           const std::string& listitemprops,
+                           const std::string& extensions,
+                           const std::string& protocols)
 : InputStreamDll(std::move(props))
 {
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
@@ -55,6 +58,12 @@ CInputStream::CInputStream(AddonProps props, std::string name, std::string listi
 
   m_extensionsList = StringUtils::Tokenize(extensions, "|");
   for (auto &ext : m_extensionsList)
+  {
+    StringUtils::Trim(ext);
+  }
+
+  m_protocolsList = StringUtils::Tokenize(protocols, "|");
+  for (auto &ext : m_protocolsList)
   {
     StringUtils::Trim(ext);
   }
@@ -153,6 +162,15 @@ bool CInputStream::Supports(const CFileItem &fileitem)
     if (addon.asString() != ID())
       return false;
     else
+      return true;
+  }
+
+  // check protocols
+  std::string protocol = fileitem.GetURL().GetProtocol();
+  if (!protocol.empty())
+  {
+    if (std::find(m_protocolsList.begin(),
+                  m_protocolsList.end(), protocol) != m_protocolsList.end())
       return true;
   }
 
