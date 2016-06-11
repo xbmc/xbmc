@@ -130,6 +130,7 @@ protected:
   float m_fForcedAspectRatio;
   int m_speed;
   bool m_stalled;
+  bool m_paused;
   IDVDStreamPlayer::ESyncState m_syncState;
   std::atomic_bool m_bAbortOutput;
 

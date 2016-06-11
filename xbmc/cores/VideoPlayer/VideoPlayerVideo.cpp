@@ -77,6 +77,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
 
   m_bRenderSubs = false;
   m_stalled = false;
+  m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iSubtitleDelay = 0;
   m_iLateFrames = 0;
@@ -259,6 +260,9 @@ void CVideoPlayerVideo::Process()
     if (m_syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
       iPriority = 1;
 
+    if (m_paused)
+      iPriority = 1;
+
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
 
@@ -395,6 +399,11 @@ void CVideoPlayerVideo::Process()
         if (decoderState & VC_BUFFER)
           break;
       }
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
+    {
+      m_paused = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_PAUSE: %d", m_paused);
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
@@ -790,7 +799,8 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
 
   //try to calculate the framerate
-  CalcFrameRate();
+  if (!m_stalled)
+    CalcFrameRate();
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
