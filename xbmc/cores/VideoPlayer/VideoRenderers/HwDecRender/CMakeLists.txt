@@ -13,7 +13,7 @@ if(VDPAU_FOUND)
   list(APPEND HEADERS RendererVDPAU.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL darwin)
+if(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND SOURCES RendererVTBGL.cpp)
   list(APPEND HEADERS RendererVTBGL.h)
 endif()

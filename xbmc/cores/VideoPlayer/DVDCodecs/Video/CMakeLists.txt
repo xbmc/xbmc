@@ -40,7 +40,7 @@ if(VAAPI_FOUND)
   list(APPEND HEADERS VAAPI.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL darwin OR CORE_SYSTEM_NAME STREQUAL ios)
+if(APPLE)
   list(APPEND SOURCES VTB.cpp)
   list(APPEND HEADERS DllVideoToolBox.h
                       VTB.h)

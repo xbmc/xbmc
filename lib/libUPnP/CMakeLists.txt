@@ -101,7 +101,7 @@ else()
   include_directories(Neptune/Source/System/Win32)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL darwin OR CORE_SYSTEM_NAME STREQUAL ios)
+if(APPLE)
   list(APPEND SOURCES Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm
                       Neptune/Source/System/Apple/NptAppleLogConfig.mm)
 endif()

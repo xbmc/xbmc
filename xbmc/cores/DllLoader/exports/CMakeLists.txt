@@ -8,7 +8,7 @@ set(HEADERS emu_dummy.h
 
 core_add_library(dllexports)
 
-if(CORE_SYSTEM_NAME STREQUAL darwin OR CORE_SYSTEM_NAME STREQUAL ios)
+if(APPLE)
   add_library(wrapper OBJECT wrapper.c)
   add_custom_target(wrapper.def ALL ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/wrapper_mach_alias wrapper.def)
   add_dependencies(wrapper.def wrapper)
