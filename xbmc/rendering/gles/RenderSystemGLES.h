@@ -56,7 +56,7 @@ public:
 
   bool BeginRender() override;
   bool EndRender() override;
-  void PresentRender(bool rendered) override;
+  void PresentRender(bool rendered, bool videoLayer) override;
   bool ClearBuffers(color_t color) override;
   bool IsExtSupported(const char* extension) override;
 

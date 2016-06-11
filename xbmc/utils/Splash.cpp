@@ -72,6 +72,6 @@ void CSplash::Show()
 
   //show it on screen
   g_Windowing.EndRender();
-  g_graphicsContext.Flip(true);
+  g_graphicsContext.Flip(true, false);
   g_graphicsContext.Unlock();
 }

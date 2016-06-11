@@ -1892,10 +1892,7 @@ void CApplication::Render()
     g_infoManager.UpdateFPS();
   }
 
-  // TODO: find better solution
-  // if video is rendered to a separate layer, we should not block this thread
-  if (!m_pPlayer->IsRenderingVideoLayer() || hasRendered)
-    g_graphicsContext.Flip(hasRendered);
+  g_graphicsContext.Flip(hasRendered, m_pPlayer->IsRenderingVideoLayer());
 
   CTimeUtils::UpdateFrameTime(hasRendered);
 }

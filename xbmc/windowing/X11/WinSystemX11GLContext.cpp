@@ -111,7 +111,7 @@ bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, c
     RefreshGLContext(m_currentOutput.compare(output) != 0);
     XSync(m_dpy, FALSE);
     g_graphicsContext.Clear(0);
-    g_graphicsContext.Flip(true);
+    g_graphicsContext.Flip(true, false);
     ResetVSync();
 
     m_windowDirty = false;
