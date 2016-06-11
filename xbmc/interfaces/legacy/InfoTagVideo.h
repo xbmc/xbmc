@@ -441,6 +441,24 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getUserRating() }
+      ///-----------------------------------------------------------------------
+      /// Get the user rating if present as integer.
+      ///
+      /// @return [integer] The user rating of the video
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      ///
+      getUserRating();
+#else
+      int getUserRating();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
       /// @brief \python_func{ getPlayCount() }
       ///-----------------------------------------------------------------------
       /// To get the number of plays of the video.

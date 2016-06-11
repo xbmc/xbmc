@@ -185,11 +185,24 @@ namespace XBMCAddon
             A(m_vecItems)->AddFront(fileItem,position);
           }
           A(m_viewControl).SetItems(*(A(m_vecItems)));
-          A(UpdateButtons());
         }
         //----------------------------------------------------
       }
     }
+
+    void WindowXML::addItems(const std::vector<Alternative<String, const XBMCAddon::xbmcgui::ListItem* > > & items)
+    {
+    XBMC_TRACE;
+    LOCKGUI;
+    for (auto item : items)
+      {
+        AddonClass::Ref<ListItem> ritem = item.which() == XBMCAddon::first ? ListItem::fromString(item.former()) : AddonClass::Ref<ListItem>(item.later());
+        CFileItemPtr& fileItem = ritem->item;
+        A(m_vecItems)->Add(fileItem);
+      }
+      A(m_viewControl).SetItems(*(A(m_vecItems)));
+    }
+
 
     void WindowXML::removeItem(int position)
     {
@@ -198,7 +211,6 @@ namespace XBMCAddon
       LOCKGUI;
       A(m_vecItems)->Remove(position);
       A(m_viewControl).SetItems(*(A(m_vecItems)));
-      A(UpdateButtons());
     }
 
     int WindowXML::getCurrentListPosition()
@@ -253,7 +265,6 @@ namespace XBMCAddon
       A(ClearFileItems());
 
       A(m_viewControl).SetItems(*(A(m_vecItems)));
-      A(UpdateButtons());
     }
 
     void WindowXML::setContainerProperty(const String& key, const String& value)
@@ -467,7 +478,6 @@ namespace XBMCAddon
     void WindowXML::SetupShares()
     {
       XBMC_TRACE;
-      A(UpdateButtons());
     }
 
     bool WindowXML::Update(const String &strPath)
