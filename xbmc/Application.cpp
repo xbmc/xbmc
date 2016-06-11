@@ -49,6 +49,7 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIColorManager.h"
 #include "guilib/StereoscopicsManager.h"
+#include "addons/BinaryAddonCache.h"
 #include "addons/LanguageResource.h"
 #include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"

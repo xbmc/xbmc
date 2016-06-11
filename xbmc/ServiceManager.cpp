@@ -19,6 +19,7 @@
  */
 
 #include "ServiceManager.h"
+#include "addons/BinaryAddonCache.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"

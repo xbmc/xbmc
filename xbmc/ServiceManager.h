@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "addons/BinaryAddonCache.h"
 #include <memory>
 
 namespace ADDON {
