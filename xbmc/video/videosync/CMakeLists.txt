@@ -20,7 +20,7 @@ if(CORE_SYSTEM_NAME STREQUAL rbpi)
   list(APPEND HEADERS VideoSyncPi.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL darwin)
+if(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND SOURCES VideoSyncOsx.cpp)
   list(APPEND HEADERS VideoSyncOsx.h)
 endif()

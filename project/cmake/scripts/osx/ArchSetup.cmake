@@ -1,5 +1,5 @@
 if(NOT CMAKE_TOOLCHAIN_FILE)
-  message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for darwin. See ${PROJECT_SOURCE_DIR}/README.md")
+  message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for osx. See ${PROJECT_SOURCE_DIR}/README.md")
 endif()
 
 set(CORE_MAIN_SOURCE ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp

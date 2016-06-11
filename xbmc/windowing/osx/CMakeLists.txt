@@ -1,4 +1,4 @@
-if(CORE_SYSTEM_NAME STREQUAL darwin)
+if(CORE_SYSTEM_NAME STREQUAL osx)
   set(SOURCES WinEventsOSX.mm
               WinSystemOSX.mm
               WinSystemOSXGL.mm)

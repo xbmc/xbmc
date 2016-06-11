@@ -95,7 +95,7 @@ if(CORE_SYSTEM_NAME STREQUAL rbpi)
                       Sinks/AESinkPi.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL darwin)
+if(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND SOURCES Sinks/AESinkDARWINOSX.cpp
                       Sinks/osx/AEDeviceEnumerationOSX.cpp
                       Sinks/osx/CoreAudioChannelLayout.cpp
