@@ -57,7 +57,7 @@ public:
 
   void Start(const std::string& strDirectory, int flags);
   void StartCleanDatabase();
-  void FetchAlbumInfo(const std::string& strDirectory, bool refresh = false);
+  void FetchAlbumInfo(const std::string& strDirectory, bool refresh = false, CGUIDialogProgress* pDialog = NULL);
   void FetchArtistInfo(const std::string& strDirectory, bool refresh = false);
   bool IsScanning();
   void Stop(bool wait = false);
@@ -66,6 +66,9 @@ public:
 
   //! \brief Set whether or not to show a progress dialog
   void ShowDialog(bool show) { m_showDialog = show; }
+
+  //! \brief Check if all albums in database have already been scraped
+  bool CheckAlbumAllScraped();
 
   /*! \brief Categorize FileItems into Albums, Songs, and Artists
    This takes a list of FileItems and turns it into a tree of Albums,
@@ -223,5 +226,6 @@ protected:
   std::set<std::string> m_seenPaths;
   int m_flags;
   CThread m_fileCountReader;
+  CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
 };
 }
