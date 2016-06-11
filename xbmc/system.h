@@ -105,7 +105,6 @@
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
 #define HAVE_LIBSSH
-#define HAS_LIBRTMP
 #define HAS_FILESYSTEM_SMB
 #define HAS_ZEROCONF
 #define HAS_MDNS

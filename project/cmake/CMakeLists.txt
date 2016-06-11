@@ -18,7 +18,6 @@ option(ENABLE_NONFREE     "Enable non-free components?" ON)
 option(ENABLE_MICROHTTPD  "Enable MicroHttpd webserver?" ON)
 option(ENABLE_MYSQLCLIENT "Enable MySql support?" ON)
 option(ENABLE_AVAHI       "Enable Avahi support?" ON)
-option(ENABLE_RTMP        "Enable RTMP support?" ON)
 option(ENABLE_BLURAY      "Enable BluRay support?" ON)
 option(ENABLE_PLIST       "Enable AirPlay support?" ON)
 option(ENABLE_NFS         "Enable NFS support?" ON)
@@ -115,7 +114,7 @@ set(optional_deps MicroHttpd MySqlClient SSH
 set(required_dyload Curl ASS)
 
 # Optional, dyloaded deps
-set(dyload_optional RTMP CEC Bluray Plist NFS)
+set(dyload_optional CEC Bluray Plist NFS)
 
 # Required by shared objects we link
 set(required_dep_libs PNG EXPAT)
