@@ -31,6 +31,7 @@
 #import "music/MusicDatabase.h"
 #import "TextureCache.h"
 #import "filesystem/SpecialProtocol.h"
+#include "PlayListPlayer.h"
 #import "playlists/PlayList.h"
 
 #import "threads/Atomics.h"

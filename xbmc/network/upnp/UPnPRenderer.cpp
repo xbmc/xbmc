@@ -34,6 +34,7 @@
 #include "pictures/PictureInfoTag.h"
 #include "interfaces/AnnouncementManager.h"
 #include "settings/Settings.h"
+#include "PlayListPlayer.h"
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
 #include "URL.h"

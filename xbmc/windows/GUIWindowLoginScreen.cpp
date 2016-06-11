@@ -42,6 +42,7 @@
 #endif
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
+#include "PlayListPlayer.h"
 #include "profiles/Profile.h"
 #include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
