@@ -20,7 +20,7 @@
  *
  */
 
-#include "input/Key.h"
+class CAction;
 
 class IActionListener
 {
