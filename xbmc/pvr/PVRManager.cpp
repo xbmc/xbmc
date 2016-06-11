@@ -39,6 +39,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
+#include "PlayListPlayer.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"

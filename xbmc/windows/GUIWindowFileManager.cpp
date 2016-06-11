@@ -41,6 +41,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/FavouritesDirectory.h"
+#include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "storage/MediaManager.h"
 #include "settings/MediaSourceSettings.h"

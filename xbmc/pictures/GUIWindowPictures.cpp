@@ -35,6 +35,7 @@
 #include "input/Key.h"
 #include "dialogs/GUIDialogOK.h"
 #include "view/GUIViewState.h"
+#include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
