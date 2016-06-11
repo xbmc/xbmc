@@ -43,6 +43,7 @@
 #include "filesystem/FavouritesDirectory.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "storage/MediaManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
