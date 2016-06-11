@@ -53,6 +53,7 @@ public:
   void SetInstallDate(CDateTime installDate) { m_props.installDate = installDate; }
   void SetLastUpdated(CDateTime lastUpdated) { m_props.lastUpdated = lastUpdated; }
   void SetLastUsed(CDateTime lastUsed) { m_props.lastUsed = lastUsed; }
+  void SetOrigin(std::string origin) { m_props.origin = std::move(origin); }
 
   const std::string& GetId() const { return m_props.id; }
   const AddonVersion& GetVersion() const { return m_props.version; }

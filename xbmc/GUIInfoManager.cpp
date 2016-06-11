@@ -3631,6 +3631,11 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     Todo
 ///   }
+//    \table_row3{   <b>`ListItem.AddonOrigin`</b>,
+///                  \anchor ListItem_AddonOrigin
+///                  _string_,
+///     Name of the repository the add-on originates from.
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -3809,7 +3814,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "addoninstalldate", LISTITEM_ADDON_INSTALL_DATE },
                                   { "addonlastupdated", LISTITEM_ADDON_LAST_UPDATED },
                                   { "addonlastused",    LISTITEM_ADDON_LAST_USED },
-
+                                  { "addonorigin",      LISTITEM_ADDON_ORIGIN },
 };
 
 /// \page modules__General__List_of_gui_access
@@ -10220,6 +10225,17 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_ADDON_LAST_USED:
     if (item->HasAddonInfo() && item->GetAddonInfo()->LastUsed().IsValid())
       return item->GetAddonInfo()->LastUsed().GetAsLocalizedDateTime();
+    break;
+  case LISTITEM_ADDON_ORIGIN:
+    if (item->HasAddonInfo())
+    {
+      if (item->GetAddonInfo()->Origin() == ORIGIN_SYSTEM)
+        return g_localizeStrings.Get(24992);
+      AddonPtr origin;
+      if (CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->Origin(), origin, ADDON_UNKNOWN, false))
+        return origin->Name();
+      return g_localizeStrings.Get(13205);
+    }
     break;
   }
 

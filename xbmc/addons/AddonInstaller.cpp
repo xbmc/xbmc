@@ -627,15 +627,12 @@ bool CAddonInstallJob::DoWork()
   //Enable it if it was previously disabled
   CAddonMgr::GetInstance().EnableAddon(m_addon->ID());
 
-  if (m_update)
   {
-    auto& addon = m_addon;
-    auto time = CDateTime::GetCurrentDateTime();
-    CJobManager::GetInstance().Submit([addon, time](){
-      CAddonDatabase db;
-      if (db.Open())
-        db.SetLastUpdated(addon->ID(), time);
-    });
+    CAddonDatabase database;
+    database.Open();
+    database.SetOrigin(m_addon->ID(), m_repo ? m_repo->ID() : "");
+    if (m_update)
+      database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
   }
 
   // notify any observers that add-ons have changed
