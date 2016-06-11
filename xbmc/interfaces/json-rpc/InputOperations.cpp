@@ -26,6 +26,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/ButtonTranslator.h"
+#include "input/Key.h"
 #include "utils/Variant.h"
 #include "input/XBMC_keyboard.h"
 #include "input/XBMC_vkeys.h"

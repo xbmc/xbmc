@@ -26,6 +26,7 @@
 #endif
 #include "filesystem/ZipManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
