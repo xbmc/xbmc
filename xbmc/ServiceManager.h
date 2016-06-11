@@ -21,7 +21,6 @@
 #pragma once
 
 #include "addons/BinaryAddonCache.h"
-#include "interfaces/python/XBPython.h"
 #include <memory>
 
 namespace ADDON {
@@ -42,6 +41,8 @@ namespace PVR
 {
 class CPVRManager;
 }
+
+class XBPython;
 
 class CServiceManager
 {
