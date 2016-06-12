@@ -2072,8 +2072,6 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
   std::vector<std::string> conditions;
   for (int i = min + 1; i < max; ++i)
   {
-    if (offsets[i].type == NULL || offsets[i].offset == NULL)
-      continue;
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:
@@ -2107,6 +2105,8 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
     case VIDEODB_TYPE_DATETIME:
       conditions.emplace_back(PrepareSQL("c%02d='%s'", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str()));
       break;
+    case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
+      continue;
     }
   }
   return StringUtils::Join(conditions, ",");
@@ -3459,8 +3459,6 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
 {
   for (int i = min + 1; i < max; i++)
   {
-    if (offsets[i].type == NULL || offsets[i].offset == NULL)
-      continue;
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:
@@ -3489,6 +3487,8 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
     case VIDEODB_TYPE_DATETIME:
       ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDateTime(record->at(i+idxOffset).get_asString());
       break;
+    case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
+      continue;
     }
   }
 }
