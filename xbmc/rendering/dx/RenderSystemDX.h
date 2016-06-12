@@ -46,47 +46,47 @@ public:
   virtual ~CRenderSystemDX();
 
   // CRenderBase
-  virtual bool InitRenderSystem();
-  virtual bool DestroyRenderSystem();
-  virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
-  virtual bool BeginRender();
-  virtual bool EndRender();
-  virtual bool ClearBuffers(color_t color);
-  virtual bool IsExtSupported(const char* extension);
+  bool InitRenderSystem() override;
+  bool DestroyRenderSystem() override;
+  bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate) override;
+  bool BeginRender() override;
+  bool EndRender() override;
+  bool ClearBuffers(color_t color) override;
+  bool IsExtSupported(const char* extension) override;
   virtual bool IsFormatSupport(DXGI_FORMAT format, unsigned int usage);
   virtual void SetVSync(bool vsync);
-  virtual void SetViewPort(CRect& viewPort);
-  virtual void GetViewPort(CRect& viewPort);
-  virtual void RestoreViewPort();
-  virtual CRect ClipRectToScissorRect(const CRect &rect);
-  virtual bool ScissorsCanEffectClipping();
-  virtual void SetScissors(const CRect &rect);
-  virtual void ResetScissors();
-  virtual void CaptureStateBlock();
-  virtual void ApplyStateBlock();
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f);
-  virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
-  virtual void RestoreHardwareTransform();
-  virtual void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view);
-  virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
-  virtual bool TestRender();
-  virtual void Project(float &x, float &y, float &z);
+  void SetViewPort(CRect& viewPort) override;
+  void GetViewPort(CRect& viewPort) override;
+  void RestoreViewPort() override;
+  CRect ClipRectToScissorRect(const CRect &rect) override;
+  bool ScissorsCanEffectClipping() override;
+  void SetScissors(const CRect &rect) override;
+  void ResetScissors() override;
+  void CaptureStateBlock() override;
+  void ApplyStateBlock() override;
+  void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) override;
+  void ApplyHardwareTransform(const TransformMatrix &matrix) override;
+  void RestoreHardwareTransform() override;
+  void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view) override;
+  bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
+  bool TestRender() override;
+  void Project(float &x, float &y, float &z) override;
   virtual CRect GetBackBufferRect() { return CRect(0.f, 0.f, static_cast<float>(m_nBackBufferWidth), static_cast<float>(m_nBackBufferHeight)); }
 
-  IDXGIOutput* GetCurrentOutput(void) { return m_pOutput; }
+  IDXGIOutput* GetCurrentOutput() const { return m_pOutput; }
   void GetDisplayMode(DXGI_MODE_DESC *mode, bool useCached = false);
-  void FinishCommandList(bool bExecute = true);
-  void FlushGPU();
+  void FinishCommandList(bool bExecute = true) const;
+  void FlushGPU() const;
 
-  ID3D11Device*           Get3D11Device()      { return m_pD3DDev; }
-  ID3D11DeviceContext*    Get3D11Context()     { return m_pContext; }
-  ID3D11DeviceContext*    GetImmediateContext(){ return m_pImdContext; }
-  CGUIShaderDX*           GetGUIShader()       { return m_pGUIShader; }
-  unsigned                GetFeatureLevel()    { return m_featureLevel; }
-  D3D11_USAGE             DefaultD3DUsage()    { return m_defaultD3DUsage; }
-  DXGI_ADAPTER_DESC       GetAIdentifier()     { return m_adapterDesc; }
-  bool                    Interlaced()         { return m_interlaced; }
-  int                     GetBackbufferCount() const { return 2; }
+  ID3D11Device*           Get3D11Device() const       { return m_pD3DDev; }
+  ID3D11DeviceContext*    Get3D11Context() const      { return m_pContext; }
+  ID3D11DeviceContext*    GetImmediateContext() const { return m_pImdContext; }
+  CGUIShaderDX*           GetGUIShader() const        { return m_pGUIShader; }
+  unsigned                GetFeatureLevel() const     { return m_featureLevel; }
+  D3D11_USAGE             DefaultD3DUsage() const     { return m_defaultD3DUsage; }
+  DXGI_ADAPTER_DESC       GetAIdentifier() const      { return m_adapterDesc; }
+  bool                    Interlaced() const          { return m_interlaced; }
+  int                     GetBackbufferCount() const  { return 2; }
   void                    SetAlphaBlendEnable(bool enable);
 
   static std::string GetErrorDescription(HRESULT hr);
@@ -110,11 +110,11 @@ protected:
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
   void CheckInterlasedStereoView(void);
-  void SetMaximumFrameLatency(uint8_t latency = -1);
+  void SetMaximumFrameLatency(uint8_t latency = -1) const;
 
   bool GetStereoEnabled() const;
   bool GetDisplayStereoEnabled() const;
-  void SetDisplayStereoEnabled(bool enable);
+  void SetDisplayStereoEnabled(bool enable) const;
   void UpdateDisplayStereoStatus(bool isfirst = false);
 
   virtual void Register(ID3DResource *resource);
