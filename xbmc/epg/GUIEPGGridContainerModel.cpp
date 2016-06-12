@@ -147,7 +147,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
     m_blocks = MAXBLOCKS;
 
   m_gridIndex.reserve(m_channelItems.size());
-  const std::vector<GridItemsPtr> blocks(m_blocks);
+  const std::vector<GridItem> blocks(m_blocks);
 
   for (size_t channel = 0; channel < m_channelItems.size(); ++channel)
   {

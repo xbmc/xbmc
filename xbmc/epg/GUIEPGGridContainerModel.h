@@ -31,14 +31,14 @@ class CFileItemList;
 
 namespace EPG
 {
-  struct GridItemsPtr
+  struct GridItem
   {
     CFileItemPtr item;
     float originWidth;
     float width;
     int progIndex;
 
-    GridItemsPtr() : originWidth(0.0), width(0.0), progIndex(-1) {}
+    GridItem() : originWidth(0.0f), width(0.0f), progIndex(-1) {}
   };
 
   class CGUIEPGGridContainerModel
@@ -72,7 +72,7 @@ namespace EPG
 
     int GetBlockCount() const { return m_blocks; }
     bool HasGridItems() const { return !m_gridIndex.empty(); }
-    GridItemsPtr *GetGridItemPtr(int iChannel, int iBlock) { return &m_gridIndex[iChannel][iBlock]; }
+    GridItem *GetGridItemPtr(int iChannel, int iBlock) { return &m_gridIndex[iChannel][iBlock]; }
     CFileItemPtr GetGridItem(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].item; }
     float GetGridItemWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].width; }
     float GetGridItemOriginWidth(int iChannel, int iBlock) const { return m_gridIndex[iChannel][iBlock].originWidth; }
@@ -100,7 +100,7 @@ namespace EPG
     std::vector<CFileItemPtr> m_channelItems;
     std::vector<CFileItemPtr> m_rulerItems;
     std::vector<ItemsPtr> m_epgItemsPtr;
-    std::vector<std::vector<GridItemsPtr> > m_gridIndex;
+    std::vector<std::vector<GridItem> > m_gridIndex;
 
     int m_blocks;
   };
