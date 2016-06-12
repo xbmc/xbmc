@@ -3029,10 +3029,7 @@ msgctxt "#672"
 msgid "Verbose logging for the [B]FFmpeg[/B] libraries"
 msgstr ""
 
-#: xbmc/settings/AdvancedSettings.cpp
-msgctxt "#673"
-msgid "Verbose logging for the [B]RTMP[/B] library"
-msgstr ""
+#empty string with id 673
 
 #: xbmc/settings/AdvancedSettings.cpp
 msgctxt "#674"

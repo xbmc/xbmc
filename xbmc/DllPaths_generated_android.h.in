@@ -30,7 +30,6 @@
 #define DLL_PATH_CPLUFF        "libcpluff-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
 
-#define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"

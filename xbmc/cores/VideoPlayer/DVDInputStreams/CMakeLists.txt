@@ -5,7 +5,6 @@ set(SOURCES DVDFactoryInputStream.cpp
             DVDInputStreamMemory.cpp
             DVDInputStreamNavigator.cpp
             DVDInputStreamPVRManager.cpp
-            DVDInputStreamRTMP.cpp
             DVDInputStreamStack.cpp
             DVDStateSerializer.cpp
             InputStreamAddon.cpp
@@ -18,11 +17,9 @@ set(HEADERS DVDFactoryInputStream.h
             DVDInputStreamMemory.h
             DVDInputStreamNavigator.h
             DVDInputStreamPVRManager.h
-            DVDInputStreamRTMP.h
             DVDInputStreamStack.h
             DVDStateSerializer.h
             DllDvdNav.h
-            DllLibRTMP.h
             InputStreamAddon.h
             InputStreamMultiStreams.h
             InputStreamMultiSource.h)
