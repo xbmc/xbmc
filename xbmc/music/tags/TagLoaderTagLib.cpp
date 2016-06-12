@@ -36,6 +36,7 @@
 #include <taglib/mpegfile.h>
 #include <taglib/oggfile.h>
 #include <taglib/oggflacfile.h>
+#include <taglib/opusfile.h>
 #include <taglib/rifffile.h>
 #include <taglib/speexfile.h>
 #include <taglib/s3mfile.h>
@@ -996,6 +997,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   TagLib::MPEG::File*        mpegFile = nullptr;
   TagLib::Ogg::Vorbis::File* oggVorbisFile = nullptr;
   TagLib::Ogg::FLAC::File*   oggFlacFile = nullptr;
+  TagLib::Ogg::Opus::File*   oggOpusFile = nullptr;
   TagLib::TrueAudio::File*   ttaFile = nullptr;
   TagLib::WavPack::File*     wvFile = nullptr;
   TagLib::RIFF::WAV::File *  wavFile = nullptr;
@@ -1035,6 +1037,8 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
       file = new XM::File(stream);
     else if (strExtension == "ogg")
       file = oggVorbisFile = new Ogg::Vorbis::File(stream);
+    else if (strExtension == "opus")
+      file = oggOpusFile = new Ogg::Opus::File(stream);
     else if (strExtension == "oga") // Leave this madness until last - oga container can have Vorbis or FLAC
     {
       file = oggFlacFile = new Ogg::FLAC::File(stream);
@@ -1088,6 +1092,8 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     xiph = dynamic_cast<Ogg::XiphComment *>(oggFlacFile->tag());
   else if (oggVorbisFile)
     xiph = dynamic_cast<Ogg::XiphComment *>(oggVorbisFile->tag());
+  else if (oggOpusFile)
+    xiph = dynamic_cast<Ogg::XiphComment *>(oggOpusFile->tag());
   else if (ttaFile)
     id3v2 = ttaFile->ID3v2Tag(false);
   else if (aiffFile)
