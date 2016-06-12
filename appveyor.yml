@@ -6,12 +6,12 @@ environment:
   CONFIG: Release
   matrix:
     - BUILD: Kodi
-    - ADDONS: adsp
-    - ADDONS: audiodecoder
-    - ADDONS: audioencoder
-    - ADDONS: pvr
-    - ADDONS: screensaver
-    - ADDONS: visualization
+    # - ADDONS: adsp
+    # - ADDONS: audiodecoder
+    # - ADDONS: audioencoder
+    # - ADDONS: pvr
+    # - ADDONS: screensaver
+    # - ADDONS: visualization
 
 install:
   - SET PATH=C:\Program Files (x86)\CMake\bin;C:\msys64\bin;C:\msys64\usr\bin;%PATH%
