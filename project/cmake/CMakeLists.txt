@@ -118,7 +118,7 @@ set(required_dyload Curl ASS)
 set(dyload_optional RTMP CEC Bluray Plist NFS)
 
 # Required by shared objects we link
-set(required_dep_libs PNG EXPAT)
+set(required_dep_libs EXPAT)
 
 # Required tools
 find_package(TexturePacker REQUIRED)
