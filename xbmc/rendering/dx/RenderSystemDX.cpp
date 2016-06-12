@@ -41,7 +41,8 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 
-#define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? (float)rational.Numerator / (float)rational.Denominator : 0.0)
+#define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? \
+ static_cast<float>(rational.Numerator) / static_cast<float>(rational.Denominator) : 0.0f)
 
 using namespace DirectX::PackedVector;
 
@@ -49,52 +50,13 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
 
-  m_hFocusWnd = nullptr;
-  m_hDeviceWnd = nullptr;
-  m_nBackBufferWidth  = 0;
-  m_nBackBufferHeight = 0;
-  m_bFullScreenDevice = false;
   m_bVSync = true;
-  m_nDeviceStatus = S_OK;
-  m_inScene = false;
-  m_needNewDevice = false;
-  m_resizeInProgress = false;
-  m_screenHeight = 0;
   m_systemFreq = CurrentHostFrequency();
-  m_defaultD3DUsage = D3D11_USAGE_DEFAULT;
-  m_featureLevel = D3D_FEATURE_LEVEL_11_1;
-  m_driverType = D3D_DRIVER_TYPE_HARDWARE;
-  m_adapter = nullptr;
-  m_pOutput = nullptr;
-  m_dxgiFactory = nullptr;
-  m_pD3DDev = nullptr;
-  m_pImdContext = nullptr;
-  m_pContext = nullptr;
 
-  m_pSwapChain = nullptr;
-  m_pSwapChain1 = nullptr;
-  m_pRenderTargetView = nullptr;
-  m_depthStencilState = nullptr;
-  m_depthStencilView = nullptr;
-  m_BlendEnableState = nullptr;
-  m_BlendDisableState = nullptr;
-  m_BlendEnabled = false;
-  m_RSScissorDisable = nullptr;
-  m_RSScissorEnable = nullptr;
-  m_ScissorsEnabled = false;
-
-  m_pTextureRight = nullptr;
-  m_pRenderTargetViewRight = nullptr;
-  m_pShaderResourceViewRight = nullptr;
-  m_pGUIShader = nullptr;
-  m_bResizeRequred = false;
-  m_bHWStereoEnabled = false;
   ZeroMemory(&m_cachedMode, sizeof(m_cachedMode));
   ZeroMemory(&m_viewPort, sizeof(m_viewPort));
   ZeroMemory(&m_scissor, sizeof(CRect));
   ZeroMemory(&m_adapterDesc, sizeof(DXGI_ADAPTER_DESC));
-  m_bDefaultStereoEnabled = false;
-  m_bStereoEnabled = false;
 }
 
 CRenderSystemDX::~CRenderSystemDX()
@@ -765,7 +727,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   {
     DXGI_SWAP_CHAIN_DESC1 scDesc;
     m_pSwapChain1->GetDesc1(&scDesc);
-    bNeedRecreate = scDesc.Stereo != bHWStereoEnabled;
+    bNeedRecreate = (scDesc.Stereo == TRUE) != bHWStereoEnabled;
   }
 
   if (!bNeedRecreate && !bNeedResize)
@@ -998,7 +960,9 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (m_viewPort.Height == 0 || m_viewPort.Width == 0)
   {
-    CRect rect(0, 0, m_nBackBufferWidth, m_nBackBufferHeight);
+    CRect rect(0.0f, 0.0f,
+      static_cast<float>(m_nBackBufferWidth),
+      static_cast<float>(m_nBackBufferHeight));
     SetViewPort(rect);
   }
 
@@ -1319,7 +1283,9 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
   if (pRTView == nullptr)
     return true;
 
-  CRect clRect(0, 0, m_nBackBufferWidth, m_nBackBufferHeight);
+  CRect clRect(0.0f, 0.0f,
+    static_cast<float>(m_nBackBufferWidth),
+    static_cast<float>(m_nBackBufferHeight));
 
   // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view. 
   // Viewport and scissor settings are not applied. So clear RT by drawing full sized rect with clear color
@@ -1564,7 +1530,9 @@ void CRenderSystemDX::ResetScissors()
   if (!m_bRenderCreated)
     return;
 
-  m_scissor.SetRect(0, 0, m_nBackBufferWidth, m_nBackBufferHeight);
+  m_scissor.SetRect(0.0f, 0.0f, 
+    static_cast<float>(m_nBackBufferWidth),
+    static_cast<float>(m_nBackBufferHeight));
 
   m_pContext->RSSetState(m_RSScissorDisable);
   m_ScissorsEnabled = false;
@@ -1658,7 +1626,7 @@ bool CRenderSystemDX::GetStereoEnabled() const
 
   IDXGIFactory2* dxgiFactory2 = nullptr;
   if (SUCCEEDED(m_dxgiFactory->QueryInterface(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgiFactory2))))
-    result = dxgiFactory2->IsWindowedStereoEnabled();
+    result = dxgiFactory2->IsWindowedStereoEnabled() == TRUE;
   SAFE_RELEASE(dxgiFactory2);
 
   return result;
@@ -1670,7 +1638,7 @@ bool CRenderSystemDX::GetDisplayStereoEnabled() const
 
   IDXGIDisplayControl * pDXGIDisplayControl = nullptr;
   if (SUCCEEDED(m_dxgiFactory->QueryInterface(__uuidof(IDXGIDisplayControl), (void **)&pDXGIDisplayControl)))
-    result = pDXGIDisplayControl->IsStereoEnabled();
+    result = pDXGIDisplayControl->IsStereoEnabled() == TRUE;
   SAFE_RELEASE(pDXGIDisplayControl);
 
   return result;
