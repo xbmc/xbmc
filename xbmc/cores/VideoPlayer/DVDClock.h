@@ -70,7 +70,6 @@ public:
   double GetAbsoluteClock(bool interpolated = true);
   double GetFrequency() { return (double)m_systemFrequency ; }
 
-  double GetRefreshRate();
   bool GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const;
   void SetVsyncAdjust(double adjustment);
   double GetVsyncAdjust();

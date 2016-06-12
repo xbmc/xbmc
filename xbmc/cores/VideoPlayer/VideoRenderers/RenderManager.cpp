@@ -876,17 +876,6 @@ RESOLUTION CRenderManager::GetResolution()
   return res;
 }
 
-float CRenderManager::GetMaximumFPS()
-{
-  float fps;
-
-  fps = (float)m_dvdClock.GetRefreshRate();
-  if (fps <= 0)
-    fps = g_graphicsContext.GetFPS();
-
-  return fps;
-}
-
 void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
   CSingleExit exitLock(g_graphicsContext);
@@ -1308,7 +1297,7 @@ void CRenderManager::PrepareNextRender()
   }
 
   double frameOnScreen = m_dvdClock.GetClock();
-  double frametime = 1.0 / GetMaximumFPS() * DVD_TIME_BASE;
+  double frametime = 1.0 / g_graphicsContext.GetFPS() * DVD_TIME_BASE;
 
   // correct display latency
   // internal buffers of driver, assume that driver lets us go one frame in advance

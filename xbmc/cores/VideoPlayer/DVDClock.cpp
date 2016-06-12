@@ -227,11 +227,6 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
   return rate;
 }
 
-double CDVDClock::GetRefreshRate()
-{
-  return m_videoRefClock->GetRefreshRate();
-}
-
 bool CDVDClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const
 {
   return m_videoRefClock->GetClockInfo(MissedVblanks, ClockSpeed, RefreshRate);
