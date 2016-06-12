@@ -540,7 +540,7 @@ void CGUITextureManager::Cleanup()
     i = m_vecTextures.erase(i);
   }
   for (int i = 0; i < 2; i++)
-    m_TexBundle[i].Cleanup();
+    m_TexBundle[i] = CTextureBundle();
   FreeUnusedTextures();
 }
 
