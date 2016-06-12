@@ -28,7 +28,6 @@
 #include <stdint.h>
 #include "Event.h"
 #include "threads/ThreadImpl.h"
-#include "threads/ThreadLocal.h"
 #include "commons/ilog.h"
 
 #ifdef TARGET_DARWIN
