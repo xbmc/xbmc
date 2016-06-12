@@ -74,6 +74,8 @@ public:
   void SetVsyncAdjust(double adjustment);
   double GetVsyncAdjust();
 
+  void Pause(bool pause);
+
 protected:
   double SystemToAbsolute(int64_t system);
   int64_t AbsoluteToSystem(double absolute);
@@ -85,6 +87,8 @@ protected:
   int64_t m_pauseClock;
   double m_iDisc;
   bool m_bReset;
+  bool m_paused;
+  int m_speedAfterPause;
   std::unique_ptr<CVideoReferenceClock> m_videoRefClock;
 
   int64_t m_systemFrequency;
