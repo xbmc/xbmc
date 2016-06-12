@@ -19,7 +19,6 @@
  */
 
 #include "LanguageHook.h"
-#include "threads/ThreadLocal.h"
 #include "utils/GlobalsHandling.h"
 
 namespace XBMCAddon
@@ -27,7 +26,7 @@ namespace XBMCAddon
   // just need a place for the vtab
   LanguageHook::~LanguageHook() {}
 
-  static XbmcThreads::ThreadLocal<LanguageHook> addonLanguageHookTls;
+  static thread_local LanguageHook* addonLanguageHookTls;
   static bool threadLocalInitilialized = false;
   static xbmcutil::InitFlag initer(threadLocalInitilialized);
 
@@ -35,18 +34,18 @@ namespace XBMCAddon
   {
     XBMC_TRACE;
     languageHook->Acquire();
-    addonLanguageHookTls.set(languageHook);
+    addonLanguageHookTls = languageHook;
   }
 
   LanguageHook* LanguageHook::GetLanguageHook()
   {
-    return threadLocalInitilialized ? addonLanguageHookTls.get() : NULL;
+    return threadLocalInitilialized ? addonLanguageHookTls : nullptr;
   }
 
   void LanguageHook::ClearLanguageHook()
   {
-    LanguageHook* lh = addonLanguageHookTls.get();
-    addonLanguageHookTls.set(NULL);
+    LanguageHook* lh = addonLanguageHookTls;
+    addonLanguageHookTls = nullptr;
     if (lh)
       lh->Release();
   }

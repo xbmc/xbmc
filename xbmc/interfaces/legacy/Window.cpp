@@ -38,7 +38,7 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-    XbmcThreads::ThreadLocal<ref> InterceptorBase::upcallTls;
+    thread_local ref* InterceptorBase::upcallTls;
 
     /**
      * Used in add/remove control. It only locks if it's given a 

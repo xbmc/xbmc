@@ -32,18 +32,15 @@
     <ClInclude Include="..\..\xbmc\threads\Lockables.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadImpl.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Win32Exception.h" />
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\threads\SystemClock.h" />
     <ClInclude Include="..\..\xbmc\threads\Thread.h" />
     <ClInclude Include="..\..\xbmc\threads\ThreadImpl.h" />
-    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="XbmcCommons.vcxproj">

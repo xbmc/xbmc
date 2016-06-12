@@ -27,30 +27,21 @@
 #include "URL.h"
 #include <map>
 
-static XbmcThreads::ThreadLocal<CFFmpegLog> CFFmpegLogTls;
+thread_local int CFFmpegLog::m_level = -1;
 
 void CFFmpegLog::SetLogLevel(int level)
 {
-  CFFmpegLog::ClearLogLevel();
-  CFFmpegLog *log = new CFFmpegLog();
-  log->level = level;
-  CFFmpegLogTls.set(log);
+  m_level = level;
 }
 
 int CFFmpegLog::GetLogLevel()
 {
-  CFFmpegLog* log = CFFmpegLogTls.get();
-  if (!log)
-    return -1;
-  return log->level;
+  return m_level;
 }
 
 void CFFmpegLog::ClearLogLevel()
 {
-  CFFmpegLog* log = CFFmpegLogTls.get();
-  CFFmpegLogTls.set(nullptr);
-  if (log)
-    delete log;
+  m_level = -1;
 }
 
 /* callback for the ffmpeg lock manager */
