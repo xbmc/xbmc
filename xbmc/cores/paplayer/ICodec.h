@@ -52,9 +52,8 @@ public:
   // Init(filename)
   // This routine should handle any initialization necessary.  At a minimum it needs to:
   // 1.  Load any dlls and make sure any buffers etc. are allocated.
-  // 2.  If it's using a filereader, initialize it with the appropriate cache size.
-  // 3.  Load the file (or at least attempt to load it)
-  // 4.  Fill in the m_TotalTime, m_SampleRate, m_BitsPerSample and m_Channels parameters.
+  // 2.  Load the file (or at least attempt to load it)
+  // 3.  Fill in the m_TotalTime, m_SampleRate, m_BitsPerSample and m_Channels parameters.
   virtual bool Init(const CFileItem &file, unsigned int filecache)=0;
 
   // DeInit()

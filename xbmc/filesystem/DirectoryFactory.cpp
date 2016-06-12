@@ -157,11 +157,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("videodb")) return new CVideoDatabaseDirectory();
   if (url.IsProtocol("library")) return new CLibraryDirectory();
   if (url.IsProtocol("favourites")) return new CFavouritesDirectory();
-  if (url.IsProtocol("filereader"))
-  {
-    CURL url2(url.GetFileName());
-    return CDirectoryFactory::Create(url2);
-  }
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("androidapp")) return new CAndroidAppDirectory();
 #endif
