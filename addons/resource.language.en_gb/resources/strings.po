@@ -14047,9 +14047,9 @@ msgctxt "#24053"
 msgid "License:"
 msgstr ""
 
-#: xbmc/addons/GUIDialogAddonInfo.cpp
+#: addons/skin.estuary/1080i/DialogAddonInfo.xml
 msgctxt "#24054"
-msgid "Changelog"
+msgid "What's new"
 msgstr ""
 
 #. Used in the Add-on Manager

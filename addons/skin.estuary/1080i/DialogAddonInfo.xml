@@ -79,11 +79,6 @@
 					<font>font12</font>
 					<visible>Control.IsEnabled(13)</visible>
 				</control>
-				<include content="InfoDialogButton">
-					<param name="id" value="10" />
-					<param name="icon" value="icons/infodialogs/changelog.png" />
-					<param name="label" value="$LOCALIZE[24036]" />
-				</include>
 				<include content="InfoDialogToggleButton">
 					<param name="id" value="7" />
 					<param name="icon_on" value="icons/infodialogs/disable.png" />
