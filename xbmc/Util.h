@@ -252,6 +252,13 @@ private:
                                              const std::vector<std::string>& item_exts,
                                              std::vector<std::string>& associatedFiles);
 
+    /** \brief Remove RAR Volumes associated with the movie strMovie from items.
+    *   \param[in]  strMovie The full path to the Movie.
+    *   \param[in]  items The list of items to filter
+    */
+    static void ExcludeMovieRar(const std::string& strMovie,
+                                CFileItemList& items);
+
 };
 
 
