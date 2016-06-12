@@ -25,6 +25,7 @@
 #include "addons/Addon.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
+#include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"

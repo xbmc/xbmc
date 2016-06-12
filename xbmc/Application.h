@@ -76,7 +76,6 @@ namespace PLAYLIST
 #include "threads/Thread.h"
 
 #include "ApplicationPlayer.h"
-#include "interfaces/IActionListener.h"
 
 class CSeekHandler;
 class CInertialScrollingHandler;
@@ -84,6 +83,7 @@ class DPMSSupport;
 class CSplash;
 class CBookmark;
 class CNetwork;
+class IActionListener;
 
 namespace VIDEO
 {
