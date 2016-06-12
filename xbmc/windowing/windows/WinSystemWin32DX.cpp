@@ -40,7 +40,7 @@ CWinSystemWin32DX::~CWinSystemWin32DX()
 
 }
 
-void CWinSystemWin32DX::PresentRender(bool rendered)
+void CWinSystemWin32DX::PresentRender(bool rendered, bool videoLayer)
 {
   if (rendered)
     PresentRenderImpl(rendered);

@@ -27,6 +27,7 @@
 #include "utils/GlobalsHandling.h"
 #include <EGL/egl.h>
 #include "windowing/WinSystem.h"
+#include "threads/SystemClock.h"
 
 class CEGLWrapper;
 class IDispResource;
@@ -84,6 +85,8 @@ protected:
   std::string           m_extensions;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
+  bool m_delayDispReset;
+  XbmcThreads::EndTime m_dispResetTimer;
 };
 
 XBMC_GLOBAL_REF(CWinSystemEGL,g_Windowing);

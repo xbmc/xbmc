@@ -290,7 +290,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   return m_RenderExtensions.find(name) != std::string::npos;
 }
 
-void CRenderSystemGL::PresentRender(bool rendered)
+void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)
 {
   SetVSync(true);
 

@@ -274,7 +274,7 @@ static int64_t abs64(int64_t a)
   return a;
 }
 
-void CRenderSystemGLES::PresentRender(bool rendered)
+void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
 {
   SetVSync(true);
 
@@ -283,7 +283,8 @@ void CRenderSystemGLES::PresentRender(bool rendered)
 
   PresentRenderImpl(rendered);
 
-  if (!rendered)
+  // if video is rendered to a separate layer, we should not block this thread
+  if (!rendered && !videoLayer)
     Sleep(40);
 }
 
