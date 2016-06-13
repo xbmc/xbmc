@@ -464,6 +464,10 @@
 		7CAA469119427AED00008885 /* PosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA468E19427AED00008885 /* PosixDirectory.cpp */; };
 		7CAA57471C8AF6C20032A326 /* DebugRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */; };
 		7CAA57481C8AF6C20032A326 /* DebugRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */; };
+		7CAEF0CE1D0E9E3800B1316C /* ColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAEF0CC1D0E9E3800B1316C /* ColorManager.cpp */; };
+		7CAEF0CF1D0E9E3800B1316C /* ColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAEF0CC1D0E9E3800B1316C /* ColorManager.cpp */; };
+		7CAEF0D21D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAEF0D01D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp */; };
+		7CAEF0D31D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAEF0D01D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp */; };
 		7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		7CC30DB116291A5C003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */; };
 		7CC30DC016291C2C003E7579 /* VideoThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DBE16291C2C003E7579 /* VideoThumbLoader.cpp */; };
@@ -3016,6 +3020,10 @@
 		7CAA468F19427AED00008885 /* PosixDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixDirectory.h; sourceTree = "<group>"; };
 		7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DebugRenderer.cpp; sourceTree = "<group>"; };
 		7CAA57461C8AF6C20032A326 /* DebugRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugRenderer.h; sourceTree = "<group>"; };
+		7CAEF0CC1D0E9E3800B1316C /* ColorManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorManager.cpp; sourceTree = "<group>"; };
+		7CAEF0CD1D0E9E3800B1316C /* ColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorManager.h; sourceTree = "<group>"; };
+		7CAEF0D01D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogCMSSettings.cpp; sourceTree = "<group>"; };
+		7CAEF0D11D0E9F0D00B1316C /* GUIDialogCMSSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogCMSSettings.h; sourceTree = "<group>"; };
 		7CBEBB8212912BA300431822 /* fstrcmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fstrcmp.c; sourceTree = "<group>"; };
 		7CC30DAF16291A5C003E7579 /* MusicThumbLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicThumbLoader.cpp; sourceTree = "<group>"; };
 		7CC30DB016291A5C003E7579 /* MusicThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicThumbLoader.h; sourceTree = "<group>"; };
@@ -5985,6 +5993,8 @@
 			children = (
 				18B7C8FE12942761009E7A26 /* GUIDialogAudioSubtitleSettings.cpp */,
 				18B7C8FF12942761009E7A26 /* GUIDialogAudioSubtitleSettings.h */,
+				7CAEF0D01D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp */,
+				7CAEF0D11D0E9F0D00B1316C /* GUIDialogCMSSettings.h */,
 				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
 				886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */,
 				7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */,
@@ -8114,6 +8124,8 @@
 				E38E166B0D25F9FA00618676 /* VideoShaders */,
 				7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */,
 				7CAA20501079C8160096DE39 /* BaseRenderer.h */,
+				7CAEF0CC1D0E9E3800B1316C /* ColorManager.cpp */,
+				7CAEF0CD1D0E9E3800B1316C /* ColorManager.h */,
 				7CAA57461C8AF6C20032A326 /* DebugRenderer.h */,
 				7CAA57451C8AF6C20032A326 /* DebugRenderer.cpp */,
 				7C921F8F1CD603C600684D0B /* FrameBufferObject.cpp */,
@@ -10539,9 +10551,11 @@
 				7C8FC6EE1829A4580045153D /* DirectoryProvider.cpp in Sources */,
 				7C4E6F721829AA9700F1068F /* GUIDialogSubtitles.cpp in Sources */,
 				7C140989183224B8009F9411 /* ISetting.cpp in Sources */,
+				7CAEF0D21D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp in Sources */,
 				7C14098C183224B8009F9411 /* ISettingControl.cpp in Sources */,
 				68AE5BDF1C92421800C4D527 /* AddonButtonMap.cpp in Sources */,
 				7C14098F183224B8009F9411 /* Setting.cpp in Sources */,
+				7CAEF0CE1D0E9E3800B1316C /* ColorManager.cpp in Sources */,
 				DF56EF241A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */,
 				7C140992183224B8009F9411 /* SettingCategoryAccess.cpp in Sources */,
 				7C140995183224B8009F9411 /* SettingConditions.cpp in Sources */,
@@ -11274,6 +11288,7 @@
 				E49913A6174E5F2100741B6D /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
 				E49913A7174E5F2100741B6D /* HTTPWebinterfaceHandler.cpp in Sources */,
 				DFD7175C1C0A031B0025D964 /* IOSEAGLView.mm in Sources */,
+				7CAEF0CF1D0E9E3800B1316C /* ColorManager.cpp in Sources */,
 				E49913A8174E5F2100741B6D /* IHTTPRequestHandler.cpp in Sources */,
 				3994425C1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				E49913A9174E5F2100741B6D /* NetworkLinux.cpp in Sources */,
@@ -11427,6 +11442,7 @@
 				E4991438174E604700741B6D /* Atomics.cpp in Sources */,
 				E4991439174E604700741B6D /* Event.cpp in Sources */,
 				E499143B174E604700741B6D /* SystemClock.cpp in Sources */,
+				7CAEF0D31D0E9F0D00B1316C /* GUIDialogCMSSettings.cpp in Sources */,
 				E499143C174E604700741B6D /* Thread.cpp in Sources */,
 				E499143D174E604700741B6D /* Timer.cpp in Sources */,
 				E499143E174E605900741B6D /* AlarmClock.cpp in Sources */,
