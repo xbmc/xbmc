@@ -51,10 +51,12 @@ using namespace KODI::MESSAGING;
 
 #define CLASSNAME "CMMALVideoBuffer"
 
+#define VERBOSE 0
+
 CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv)
     : m_omv(omv)
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
   mmal_buffer = NULL;
   m_width = 0;
@@ -69,7 +71,7 @@ CMMALVideoBuffer::~CMMALVideoBuffer()
 {
   if (mmal_buffer)
     mmal_buffer_header_release(mmal_buffer);
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
 }
 
@@ -106,6 +108,7 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
   m_codingType = 0;
 
   m_es_format = mmal_format_alloc();
+  m_preroll = true;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_fps = 0.0f;
   m_num_decoded = 0;
@@ -217,6 +220,8 @@ void CMMALVideo::dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buff
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p, len %d cmd:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd);
   mmal_buffer_header_release(buffer);
+  CSingleLock lock(m_output_mutex);
+  m_output_cond.notifyAll();
 }
 
 static void dec_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -724,6 +729,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
 
   Prime();
+  m_preroll = !m_hints.stills;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   return true;
@@ -841,9 +847,12 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   bool full = queued > DVD_MSEC_TO_TIME(1000);
   int ret = 0;
 
-  if (!m_output_ready.empty())
+  unsigned int pics = m_output_ready.size();
+  if (m_preroll && (pics >= GetAllowedReferences() || m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+    m_preroll = false;
+  if (pics > 0 && !m_preroll)
     ret |= VC_PICTURE;
-  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+  if ((m_preroll || pics <= 1) && mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
     ret |= VC_BUFFER;
 
   bool slept = false;
@@ -852,20 +861,22 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     slept = true;
     {
       // otherwise we busy spin
-      CSingleExit unlock(m_sharedSection);
-      CSingleLock lock(m_output_mutex);
-      m_output_cond.wait(lock, 30);
+      lock.Leave();
+      CSingleLock output_lock(m_output_mutex);
+      m_output_cond.wait(output_lock, 30);
+      lock.Enter();
     }
-    if (!m_output_ready.empty())
+    unsigned int pics = m_output_ready.size();
+    if (m_preroll && (pics >= GetAllowedReferences() || m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
+      m_preroll = false;
+    if (pics > 0 && !m_preroll)
       ret |= VC_PICTURE;
-    if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
-      ret |= VC_BUFFER;
-    else if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN && !ret)
+    if ((m_preroll || pics <= 1) && (mmal_queue_length(m_dec_input_pool->queue) > 0 || m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
       ret |= VC_BUFFER;
   }
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%d) queued(%.2f) (%.2f:%.2f) full(%d) flags(%x)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), slept, queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full, m_codecControlFlags);
+    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%d) queued(%.2f) (%.2f:%.2f) full(%d) flags(%x) preroll(%d)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), slept, queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full, m_codecControlFlags,  m_preroll);
 
   return ret;
 }
@@ -876,7 +887,7 @@ void CMMALVideo::Prime()
   assert(m_renderer);
   MMAL_POOL_T *render_pool = m_renderer->GetPool(RENDER_FMT_MMAL, true);
   assert(render_pool);
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - queue(%p)", CLASSNAME, __func__, render_pool);
   while (buffer = mmal_queue_get(render_pool->queue), buffer)
     Recycle(buffer);
@@ -935,6 +946,7 @@ void CMMALVideo::Reset(void)
   m_demuxerPts = DVD_NOPTS_VALUE;
   m_codecControlFlags = 0;
   m_dropState = false;
+  m_preroll = !m_hints.stills && (m_speed == DVD_PLAYSPEED_NORMAL || m_speed == DVD_PLAYSPEED_PAUSE);
 }
 
 void CMMALVideo::SetSpeed(int iSpeed)
@@ -948,7 +960,7 @@ void CMMALVideo::SetSpeed(int iSpeed)
 void CMMALVideo::Recycle(MMAL_BUFFER_HEADER_T *buffer)
 {
   CSingleLock lock(m_sharedSection);
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, buffer);
 
   if (m_finished)
@@ -960,7 +972,7 @@ void CMMALVideo::Recycle(MMAL_BUFFER_HEADER_T *buffer)
   MMAL_STATUS_T status;
   mmal_buffer_header_reset(buffer);
   buffer->cmd = 0;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s Send buffer %p from pool to decoder output port %p ready_queue(%d)", CLASSNAME, __func__, buffer, m_dec_output,
       m_output_ready.size());
   status = mmal_port_send_buffer(m_dec_output, buffer);
@@ -1007,8 +1019,8 @@ bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     }
 
     // timestamp is in microseconds
-    pDvdVideoPicture->dts = buffer->mmal_buffer->dts == MMAL_TIME_UNKNOWN || buffer->mmal_buffer->dts == 0 ? DVD_NOPTS_VALUE : buffer->mmal_buffer->dts;
-    pDvdVideoPicture->pts = buffer->mmal_buffer->pts == MMAL_TIME_UNKNOWN || buffer->mmal_buffer->pts == 0 ? DVD_NOPTS_VALUE : buffer->mmal_buffer->pts;
+    pDvdVideoPicture->dts = buffer->mmal_buffer->dts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->dts;
+    pDvdVideoPicture->pts = buffer->mmal_buffer->pts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->pts;
 
     pDvdVideoPicture->MMALBuffer->Acquire();
     pDvdVideoPicture->iFlags  = DVP_FLAG_ALLOCATED;
@@ -1034,9 +1046,9 @@ bool CMMALVideo::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
   CSingleLock lock(m_sharedSection);
   if (pDvdVideoPicture->format == RENDER_FMT_MMAL)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - %p (%p)", CLASSNAME, __func__, pDvdVideoPicture->MMALBuffer, pDvdVideoPicture->MMALBuffer->mmal_buffer);
-    pDvdVideoPicture->MMALBuffer->Release();
+    SAFE_RELEASE(pDvdVideoPicture->MMALBuffer);
   }
   memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
   return true;
