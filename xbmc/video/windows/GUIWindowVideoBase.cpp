@@ -34,6 +34,7 @@
 #include "Application.h"
 #include "NfoFile.h"
 #include "PlayListPlayer.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "GUIPassword.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"

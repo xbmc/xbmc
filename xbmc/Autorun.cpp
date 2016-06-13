@@ -29,6 +29,7 @@
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"

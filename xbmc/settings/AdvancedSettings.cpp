@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "addons/AudioDecoder.h"
+#include "addons/BinaryAddonCache.h"
 #include "addons/IAddon.h"
 #include "Application.h"
 #include "ServiceBroker.h"

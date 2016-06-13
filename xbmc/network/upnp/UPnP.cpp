@@ -37,6 +37,7 @@
 #include "network/Network.h"
 #include "utils/log.h"
 #include "URL.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

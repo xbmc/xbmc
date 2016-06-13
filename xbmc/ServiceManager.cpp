@@ -19,10 +19,13 @@
  */
 
 #include "ServiceManager.h"
+#include "addons/BinaryAddonCache.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/python/XBPython.h"
+#include "pvr/PVRManager.h"
 
 bool CServiceManager::Init1()
 {

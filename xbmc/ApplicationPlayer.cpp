@@ -20,6 +20,7 @@
 
 #include "ApplicationPlayer.h"
 #include "cores/IPlayer.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
 #include "settings/MediaSettings.h"
