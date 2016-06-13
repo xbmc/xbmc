@@ -83,7 +83,7 @@ bool CMediaLibraryEvent::Execute() const
     }
     else
     {
-      // TODO: remove the filename for now as CGUIMediaWindow::GetDirectory() can't handle it
+      //! @todo remove the filename for now as CGUIMediaWindow::GetDirectory() can't handle it
       if (m_mediaType == MediaTypeMovie || m_mediaType == MediaTypeMusicVideo || m_mediaType == MediaTypeEpisode)
         path = URIUtils::GetDirectory(path);
     }
@@ -109,7 +109,7 @@ bool CMediaLibraryEvent::Execute() const
     }
     else
     {
-      // TODO: remove the filename for now as CGUIMediaWindow::GetDirectory() can't handle it
+      //! @todo remove the filename for now as CGUIMediaWindow::GetDirectory() can't handle it
       if (m_mediaType == MediaTypeSong)
         path = URIUtils::GetDirectory(path);
     }

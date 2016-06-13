@@ -53,7 +53,7 @@ namespace XBMCAddon
 #define checkedv(methcall) { if (window.isNotNull()) xwin-> methcall ; }
 
 
-    // TODO: This should be done with template specialization
+    //! @todo This should be done with template specialization
     class WindowXMLInterceptor : public InterceptorDialog<CGUIMediaWindow>
     {
       WindowXML* xwin;
@@ -301,9 +301,9 @@ namespace XBMCAddon
       CLog::Log(LOGDEBUG,"%sMessage id:%d",_tg.getSpaces(),(int)message.GetMessage());
 #endif
 
-      // TODO: We shouldn't be dropping down to CGUIWindow in any of this ideally.
-      //       We have to make up our minds about what python should be doing and
-      //       what this side of things should be doing
+      //! @todo We shouldn't be dropping down to CGUIWindow in any of this ideally.
+      //!       We have to make up our minds about what python should be doing and
+      //!       what this side of things should be doing
       switch (message.GetMessage())
       {
       case GUI_MSG_WINDOW_DEINIT:

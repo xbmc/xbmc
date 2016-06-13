@@ -68,7 +68,7 @@ void CActiveAESound::Stop()
 
 bool CActiveAESound::IsPlaying()
 {
-  // TODO
+  //! @todo implement
   return false;
 }
 

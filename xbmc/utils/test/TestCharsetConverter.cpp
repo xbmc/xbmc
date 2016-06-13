@@ -89,7 +89,8 @@ protected:
     /* Add default settings for locale.
      * Settings here are taken from CGUISettings::Initialize()
      */
-    /* TODO
+    /*
+    //! @todo implement
     CSettingsCategory *loc = CSettings::GetInstance().AddCategory(7, "locale", 14090);
     CSettings::GetInstance().AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
                             SPIN_CONTROL_TEXT);
@@ -132,7 +133,7 @@ TEST_F(TestCharsetConverter, utf8ToW)
 //TEST_F(TestCharsetConverter, utf16LEtoW)
 //{
 //  refstrw1 = L"ｔｅｓｔ＿ｕｔｆ１６ＬＥｔｏｗ";
-//  /* TODO: Should be able to use '=' operator instead of assign() */
+//  //! @todo Should be able to use '=' operator instead of assign()
 //  std::wstring refstr16_1;
 //  refstr16_1.assign(refutf16LE1);
 //  varstrw1.clear();
@@ -248,7 +249,7 @@ TEST_F(TestCharsetConverter, isValidUtf8_4)
   EXPECT_FALSE(CUtf8Utils::isValidUtf8(refutf16LE3));
 }
 
-/* TODO: Resolve correct input/output for this function */
+//! @todo Resolve correct input/output for this function
 // TEST_F(TestCharsetConverter, ucs2CharsetToStringCharset)
 // {
 //   void ucs2CharsetToStringCharset(const std::wstring& strSource,
@@ -300,7 +301,7 @@ TEST_F(TestCharsetConverter, utf8logicalToVisualBiDi)
   EXPECT_STREQ(refstra2.c_str(), varstra1.c_str());
 }
 
-/* TODO: Resolve correct input/output for this function */
+//! @todo Resolve correct input/output for this function
 // TEST_F(TestCharsetConverter, utf32ToStringCharset)
 // {
 //   void utf32ToStringCharset(const unsigned long* strSource, std::string& strDest);

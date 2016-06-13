@@ -1803,7 +1803,7 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
 
       bool focused = (channel == m_channelOffset + m_channelCursor) && (item == m_gridModel->GetGridItem(m_channelOffset + m_channelCursor, m_blockOffset + m_blockCursor));
 
-      if (bRender) // @@@ TODO why the functional difference wrt truncate here?
+      if (bRender) //! @todo Why the functional difference wrt truncate here?
       {
         // reset to grid start position if first item is out of grid view
         if (posA2 < posA)

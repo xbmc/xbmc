@@ -383,7 +383,7 @@ void OnPreInstall(const AddonPtr& addon)
     CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));
 
   //Fallback to the pre-install callback in the addon.
-  //BUG: If primary extension point have changed we're calling the wrong method.
+  //! @bug If primary extension point have changed we're calling the wrong method.
   addon->OnPreInstall();
 }
 

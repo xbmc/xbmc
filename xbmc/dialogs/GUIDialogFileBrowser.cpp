@@ -575,7 +575,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
   }
   else if ( iDriveType == CMediaSource::SOURCE_TYPE_REMOTE )
   {
-    // TODO: Handle not connected to a remote share
+    //! @todo Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{221});

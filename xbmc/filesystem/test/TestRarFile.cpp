@@ -340,12 +340,12 @@ TEST(TestRarFile, StoredRAR)
   /* /testdir/testemptysubdir */
   strpathinrar = itemlist[2]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testemptysubdir"));
-  /* TODO: Should this set the itemlist to an empty list instead? */
+  //! @todo Should this set the itemlist to an empty list instead?
   EXPECT_FALSE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlistemptydir));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);
 
-  /* FIXME: This directory appears a second time as a file */
+  //! @todo FIXME: This directory appears a second time as a file
   strpathinrar = itemlist[3]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testsubdir"));
 
@@ -558,7 +558,7 @@ TEST(TestRarFile, NormalRAR)
   /* /testdir/testemptysubdir */
   strpathinrar = itemlist[2]->GetPath();
   ASSERT_TRUE(StringUtils::EndsWith(strpathinrar, "/testdir/testemptysubdir"));
-  /* TODO: Should this set the itemlist to an empty list instead? */
+  /* @todo Should this set the itemlist to an empty list instead? */
   EXPECT_FALSE(XFILE::CDirectory::GetDirectory(strpathinrar, itemlistemptydir));
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &stat_buffer));
   EXPECT_TRUE((stat_buffer.st_mode & S_IFMT) | S_IFDIR);

@@ -36,7 +36,7 @@ static HMODULE global_objects[MAX_OBJECTS];
 
 /* This function adds an object to the list of global objects.
  * The implementation is very simple and slow.
- * TODO: should failing this function be enough to fail the call to dlopen( )?
+ * @todo should failing this function be enough to fail the call to dlopen( )?
  */
 static void global_object_add( HMODULE hModule )
 {

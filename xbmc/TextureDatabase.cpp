@@ -183,7 +183,7 @@ void CTextureDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
   m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
   m_pDS->exec("CREATE INDEX idxSize2 ON sizes(idtexture, width, height)");
-  // TODO: Should the path index be a covering index? (we need only retrieve texture)
+  //! @todo Should the path index be a covering index? (we need only retrieve texture)
   m_pDS->exec("CREATE INDEX idxPath ON path(url, type)");
 
   CLog::Log(LOGINFO, "%s creating triggers", __FUNCTION__);

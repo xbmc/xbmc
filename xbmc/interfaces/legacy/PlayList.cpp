@@ -30,8 +30,8 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-    // TODO: need a means to check for a valid construction
-    //  either by throwing an exception or by an "isValid" check
+    //! @todo need a means to check for a valid construction
+    //!  either by throwing an exception or by an "isValid" check
     PlayList::PlayList(int playList) : 
       refs(1), iPlayList(playList), pPlayList(NULL)
     {

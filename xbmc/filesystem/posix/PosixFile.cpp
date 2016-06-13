@@ -183,8 +183,8 @@ int64_t CPosixFile::Seek(int64_t iFilePosition, int iWhence /* = SEEK_SET*/)
     return -1;
   
 #ifdef TARGET_ANDROID
-  // TODO: properly support with detection in configure
-  // Android special case: Android doesn't substitute off64_t for off_t and similar functions
+  //! @todo properly support with detection in configure
+  //! Android special case: Android doesn't substitute off64_t for off_t and similar functions
   m_filePos = lseek64(m_fd, (off64_t)iFilePosition, iWhence);
 #else  // !TARGET_ANDROID
   const off_t filePosOffT = (off_t) iFilePosition;

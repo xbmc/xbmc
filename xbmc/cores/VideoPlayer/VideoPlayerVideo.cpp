@@ -345,7 +345,7 @@ void CVideoPlayerVideo::Process()
 
       m_pullupCorrection.Flush();
       //we need to recalculate the framerate
-      //TODO: this needs to be set on a streamchange instead
+      //! @todo this needs to be set on a streamchange instead
       ResetFrameRateCalc();
       m_droppingStats.Reset();
 
@@ -617,8 +617,8 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
         m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
         SStartMsg msg;
         msg.player = VideoPlayer_VIDEO;
-        msg.cachetime = DVD_MSEC_TO_TIME(50); // TODO
-        msg.cachetotal = DVD_MSEC_TO_TIME(100); // TODO
+        msg.cachetime = DVD_MSEC_TO_TIME(50); //! @todo implement
+        msg.cachetotal = DVD_MSEC_TO_TIME(100); //! @todo implement
         msg.timestamp = hasTimestamp ? pts : DVD_NOPTS_VALUE;
         m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
       }

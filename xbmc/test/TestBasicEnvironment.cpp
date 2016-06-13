@@ -67,7 +67,8 @@ void TestBasicEnvironment::SetUp()
   std::string frameworksPath = CUtil::GetFrameworksPath();
   CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);    
 #endif
-  /* TODO: Something should be done about all the asserts in GUISettings so
+  /** 
+   * @todo Something should be done about all the asserts in GUISettings so
    * that the initialization of these components won't be needed.
    */
   g_powerManager.Initialize();
@@ -105,7 +106,7 @@ void TestBasicEnvironment::SetUp()
    * CLibcdio). This is done so that the initialization of the VFS does not
    * affect the performance results of the test cases.
    */
-  /* TODO: Make the initialization of the VFS here optional so it can be
+  /** @todo Make the initialization of the VFS here optional so it can be
    * testable in a test case.
    */
   f = XBMC_CREATETEMPFILE("");

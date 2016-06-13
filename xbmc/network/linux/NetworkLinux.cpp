@@ -333,10 +333,11 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
    return m_interfaces;
 }
 
-// Overwrite the GetFirstConnectedInterface and requery
-// the interface list if no connected device is found
-// this fixes a bug when no network is available after first start of xbmc
-// and the interface comes up during runtime
+//! @bug
+//! Overwrite the GetFirstConnectedInterface and requery
+//! the interface list if no connected device is found
+//! this fixes a bug when no network is available after first start of xbmc
+//! and the interface comes up during runtime
 CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 {
     CNetworkInterface *pNetIf=CNetwork::GetFirstConnectedInterface();
@@ -531,7 +532,7 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
    }
    else
    {
-      // TODO:
+      //! @todo implement
    }
 #endif
 }
@@ -905,7 +906,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, std::str
    FILE* fp = fopen("/etc/network/interfaces", "r");
    if (!fp)
    {
-      // TODO
+      //! @todo implement
       return;
    }
 
@@ -982,14 +983,14 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, std::str
    FILE* fr = fopen("/etc/network/interfaces", "r");
    if (!fr)
    {
-      // TODO
+      //! @todo implement
       return;
    }
 
    FILE* fw = fopen("/tmp/interfaces.temp", "w");
    if (!fw)
    {
-      // TODO
+      //! @todo implement
       fclose(fr);
       return;
    }
@@ -1059,7 +1060,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, std::str
    // Rename the file
    if (rename("/tmp/interfaces.temp", "/etc/network/interfaces") < 0)
    {
-      // TODO
+      //! @todo implement
       return;
    }
 

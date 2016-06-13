@@ -106,7 +106,7 @@ static bool IsPathToThumbnail(const std::string& strPath )
 static time_t ParseDate(const std::string & strDate)
 {
   struct tm pubDate = {0};
-  // TODO: Handle time zone
+  //! @todo Handle time zone
   strptime(strDate.c_str(), "%a, %d %b %Y %H:%M:%S", &pubDate);
   // Check the difference between the time of last check and time of the item
   return mktime(&pubDate);

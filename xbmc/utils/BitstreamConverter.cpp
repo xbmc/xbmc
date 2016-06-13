@@ -421,11 +421,12 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
       // valid hvcC data (bitstream) always starts with the value 1 (version)
       if(m_to_annexb)
       {
-        // TODO: from Amlogic
-        /* It seems the extradata is encoded as hvcC format.
-         * Temporarily, we support configurationVersion==0 until 14496-15 3rd
-         * is finalized. When finalized, configurationVersion will be 1 and we
-         * can recognize hvcC by checking if extradata[0]==1 or not. */
+       /** @todo from Amlogic
+        * It seems the extradata is encoded as hvcC format.
+        * Temporarily, we support configurationVersion==0 until 14496-15 3rd
+        * is finalized. When finalized, configurationVersion will be 1 and we
+        * can recognize hvcC by checking if extradata[0]==1 or not.
+        */
 
         if (in_extradata[0] || in_extradata[1] || in_extradata[2] > 1)
         {
@@ -448,7 +449,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
                (in_extradata[0] == 0 && in_extradata[1] == 0 && in_extradata[2] == 1) )
           {
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init");
-            // TODO: convert annexb to bitstream format
+            //! @todo convert annexb to bitstream format
             return false;
           }
           else
@@ -1404,7 +1405,7 @@ void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_s
     sps_info.seq_scaling_matrix_present_flag = nal_bs_read (&bs, 1);
     if (sps_info.seq_scaling_matrix_present_flag)
     {
-      /* TODO: unfinished */
+      //! @todo unfinished
     }
   }
   sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
@@ -1418,7 +1419,7 @@ void CBitstreamConverter::parseh264_sps(const uint8_t *sps, const uint32_t sps_s
     sps_info.log2_max_pic_order_cnt_lsb_minus4 = nal_bs_read_ue(&bs);
   }
   else if (sps_info.pic_order_cnt_type == 1)
-  { // TODO: unfinished
+  { //! @todo unfinished
     /*
     delta_pic_order_always_zero_flag = gst_nal_bs_read (bs, 1);
     offset_for_non_ref_pic = gst_nal_bs_read_se (bs);

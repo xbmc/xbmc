@@ -556,7 +556,7 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<s
 
     if (setting)
     {
-      //TODO add more types if needed
+      //! @todo add more types if needed
 
       /* set the visibility */
       setting->SetVisible(bConfigurable);

@@ -114,7 +114,7 @@ protected:
   static void CallbackAllocOMXEGLTextures(void*);
   OMX_ERRORTYPE AllocOMXOutputEGLTextures(void);
 
-  // TODO Those should move into the base class. After start actions can be executed by callbacks.
+  //! @todo Those should move into the base class. After start actions can be executed by callbacks.
   OMX_ERRORTYPE StartDecoder(void);
   OMX_ERRORTYPE StopDecoder(void);
 

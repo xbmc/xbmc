@@ -198,9 +198,9 @@ void CGUITextureBase::Render()
     v3 *= m_texCoordsScaleV;
   }
 
-  // TODO: The diffuse coloring applies to all vertices, which will
-  //       look weird for stuff with borders, as will the -ve height/width
-  //       for flipping
+  //! @todo The diffuse coloring applies to all vertices, which will
+  //!      look weird for stuff with borders, as will the -ve height/width
+  //!       for flipping
 
   // left segment (0,0,u1,v3)
   if (m_info.border.x1)

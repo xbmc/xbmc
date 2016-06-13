@@ -36,7 +36,7 @@ bool CMusicInfoTagLoaderSHN::Load(const std::string& strFileName, CMusicInfoTag&
   {
 
     tag.SetURL(strFileName);
-    tag.SetDuration((long)0); //TODO: Use libavformat to calculate duration.
+    tag.SetDuration((long)0); //! @todo Use libavformat to calculate duration.
     tag.SetLoaded(false);
 
     return true;

@@ -33,7 +33,7 @@
 
 namespace PERIPHERALS
 {
-  class CPeripheralJoystick : public CPeripheral, // TODO: extend CPeripheralHID
+  class CPeripheralJoystick : public CPeripheral, //! @todo extend CPeripheralHID
                               public JOYSTICK::IDriverHandler
   {
   public:

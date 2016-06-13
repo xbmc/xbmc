@@ -72,7 +72,7 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
 
   if (m_dither)
   {
-    // TODO: create a dither pattern
+    //! @todo create a dither pattern
 
     // create a dither texture
     glGenTextures(1, &m_tDitherTex);

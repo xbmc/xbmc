@@ -315,7 +315,7 @@ static int UDFFileIdentifier( uint8_t *data, uint8_t *FileCharacteristics,
 static int UDFDescriptor( uint8_t *data, uint16_t *TagID )
 {
   *TagID = GETN2(0);
-  /* TODO: check CRC 'n stuff */
+  //! @todo check CRC 'n stuff
   return 0;
 }
 
@@ -654,7 +654,7 @@ int udf25::UDFGetAVDP( struct avdp_t *avdp)
         lbnum = lastsector;
         terminate = 1;
       } else {
-        /* TODO: Find last sector of the disc (this is optional). */
+        //! @todo Find last sector of the disc (this is optional).
         if( lastsector )
           /* Try #2, backup anchor */
           lbnum = lastsector - 256;
@@ -720,7 +720,7 @@ int udf25::UDFFindPartition( int partnum, struct Partition *part )
       } else if( ( TagID == 6 ) && ( !volvalid ) ) {
         /* Logical Volume Descriptor */
         if( UDFLogVolume( LogBlock, part->VolumeDesc ) ) {
-          /* TODO: sector size wrong! */
+          //! @todo sector size wrong!
         } else
           volvalid = 1;
       }

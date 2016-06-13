@@ -244,7 +244,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
       const std::string id = XMLUtils::GetAttribute(setting, "id");
       const std::string type = XMLUtils::GetAttribute(setting, "type");
 
-      //Special handling for actions: does not require id attribute. TODO: refactor me.
+      //! @todo Refactor me. Special handling for actions: does not require id attribute.
       if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON && type == "action")
       {
         const char *option = setting->Attribute("option");

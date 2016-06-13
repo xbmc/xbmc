@@ -201,7 +201,8 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const s
                                          g_localizeStrings.Get(12343).c_str());
 
   std::string strUserInput;
-  if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true, autoCloseMs))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
+  //! @todo GUI Setting to enable disable this feature y/n?
+  if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true, autoCloseMs))  //bool hiddenInput = false/true ?
     return -1; // user canceled out
 
   if (!strPassword.empty())

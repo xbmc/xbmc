@@ -36,7 +36,7 @@ CGUIVideoControl::~CGUIVideoControl(void)
 
 void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  //! @todo Proper processing which marks when its actually changed. Just mark always for now.
   if (g_application.m_pPlayer->IsRenderingGuiLayer())
     MarkDirtyRegion();
 
@@ -73,8 +73,8 @@ void CGUIVideoControl::Render()
 
     g_graphicsContext.RemoveTransform();
   }
-  // TODO: remove this crap: HAS_VIDEO_PLAYBACK
-  // instantiating a video control having no playback is complete nonsense
+  //! @todo remove this crap: HAS_VIDEO_PLAYBACK
+  //! instantiating a video control having no playback is complete nonsense
   CGUIControl::Render();
 }
 

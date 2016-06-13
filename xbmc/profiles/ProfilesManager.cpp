@@ -53,10 +53,10 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
-// TODO
-// eventually the profile should dictate where special://masterprofile/ is
-// but for now it makes sense to leave all the profile settings in a user
-// writeable location like special://masterprofile/
+//! @todo
+//! eventually the profile should dictate where special://masterprofile/ is
+//! but for now it makes sense to leave all the profile settings in a user
+//! writeable location like special://masterprofile/
 #define PROFILES_FILE     "special://masterprofile/profiles.xml"
 
 #define XML_PROFILES      "profiles"

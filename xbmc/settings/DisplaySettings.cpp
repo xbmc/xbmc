@@ -501,7 +501,7 @@ void CDisplaySettings::UpdateCalibrations()
     {
       if (StringUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
       {
-        // TODO: erase calibrations with default values
+        //! @todo erase calibrations with default values
         *itCal = m_resolutions[res];
         found = true;
         break;

@@ -192,7 +192,7 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   m_omx_decoder->GetPicture(&m_videobuffer);
   *pDvdVideoPicture = m_videobuffer;
 
-  // TODO what's going on here? bool is required as return value.
+  //! @todo what's going on here? bool is required as return value.
   return VC_PICTURE | VC_BUFFER;
 }
 

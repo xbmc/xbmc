@@ -174,8 +174,8 @@ std::string CUDiskDevice::toString()
 CUDisksProvider::CUDisksProvider()
 {
   dbus_error_init (&m_error);
-  // TODO: do not use dbus_connection_pop_message() that requires the use of a
-  // private connection
+  //! @todo do not use dbus_connection_pop_message() that requires the use of a
+  //! private connection
   m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &m_error);
 
   if (m_connection)

@@ -1846,7 +1846,7 @@ void CVideoDatabase::GetMusicVideosByArtist(const std::string& strArtist, CFileI
     if (NULL == m_pDS.get()) return ;
 
     std::string strSQL;
-    if (strArtist.empty())  // TODO: SMARTPLAYLISTS what is this here for???
+    if (strArtist.empty())  //! @todo SMARTPLAYLISTS what is this here for???
       strSQL=PrepareSQL("select distinct * from musicvideo_view join actor_link on actor_link.media_id=musicvideo_view.idMVideo AND actor_link.media_type='musicvideo' join actor on actor.actor_id=actor_link.actor_id");
     else
       strSQL=PrepareSQL("select * from musicvideo_view join actor_link on actor_link.media_id=musicvideo_view.idMVideo AND actor_link.media_type='musicvideo' join actor on actor.actor_id=actor_link.actor_id where actor.name='%s'", strArtist.c_str());
@@ -3176,7 +3176,7 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
       m_pDS->exec(strSQL);
     }
 
-    // TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
+    //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove(MediaTypeMovie, idMovie);
 
@@ -3239,7 +3239,7 @@ void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */)
       }
     }
 
-    //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
+    //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove(MediaTypeTvShow, idTvShow);
 
@@ -3305,7 +3305,7 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
+    //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove(MediaTypeEpisode, idEpisode);
 
@@ -3361,7 +3361,7 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
       m_pDS->exec(strSQL);
     }
 
-    //TODO: move this below CommitTransaction() once UPnP doesn't rely on this anymore
+    //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     if (!bKeepId)
       AnnounceRemove(MediaTypeMusicVideo, idMVideo);
 
@@ -5013,7 +5013,7 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // TODO: also test a single query for the above and below
+    //! @todo also test a single query for the above and below
     std::string sql = PrepareSQL(
       "SELECT"
       "  files.strFilename, files.playCount,"
@@ -5705,12 +5705,12 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
 
   try
   {
-    // TODO: This routine (and probably others at this same level) use playcount as a reference to filter on at a later
-    //       point.  This means that we *MUST* filter these levels as you'll get double ups.  Ideally we'd allow playcount
-    //       to filter through as we normally do for tvshows to save this happening.
-    //       Also, we apply this same filtering logic to the locked or unlocked paths to prevent these from showing.
-    //       Whether or not this should happen is a tricky one - it complicates all the high level categories (everything
-    //       above titles).
+    //! @todo This routine (and probably others at this same level) use playcount as a reference to filter on at a later
+    //!       point.  This means that we *MUST* filter these levels as you'll get double ups.  Ideally we'd allow playcount
+    //!       to filter through as we normally do for tvshows to save this happening.
+    //!       Also, we apply this same filtering logic to the locked or unlocked paths to prevent these from showing.
+    //!       Whether or not this should happen is a tricky one - it complicates all the high level categories (everything
+    //!       above titles).
 
     // General routine that the other actor/director/writer routines call
 

@@ -812,7 +812,7 @@ TEST(TestDatabaseUtils, GetFieldIndex_None)
   EXPECT_EQ(refindex, varindex);
 }
 
-/* TODO: Should enums in CMusicDatabase be made public instead? */
+//! @todo Should enums in CMusicDatabase be made public instead?
 TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeAlbum)
 {
   int refindex, varindex;
@@ -1347,7 +1347,7 @@ TEST(TestDatabaseUtils, GetFieldValue)
   EXPECT_TRUE(v_string.isString());
 }
 
-/* TODO: Need some way to test this function */
+//! @todo Need some way to test this function
 // TEST(TestDatabaseUtils, GetDatabaseResults)
 // {
 //   static bool GetDatabaseResults(MediaType mediaType, const FieldList &fields,

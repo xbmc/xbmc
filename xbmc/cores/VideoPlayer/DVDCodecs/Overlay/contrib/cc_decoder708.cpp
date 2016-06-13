@@ -31,7 +31,7 @@ unsigned char get_internal_from_G1 (unsigned char g1_char)
     return g1_char;
 }
 
-// TODO: Probably not right
+//! @todo Probably not right
 // G2: Extended Control Code Set 1
 unsigned char get_internal_from_G2 (unsigned char g2_char)
 {
@@ -46,7 +46,7 @@ unsigned char get_internal_from_G2 (unsigned char g2_char)
     return 0x20;
 }
 
-// TODO: Probably not right
+//! @todo Probably not right
 // G3: Future Characters and Icon Expansion
 unsigned char get_internal_from_G3 (unsigned char g3_char)
 {
@@ -314,7 +314,7 @@ void rollupWindow(cc708_service_decoder *decoder, int window)
 how many bytes would be consumed if these codes were supported, as defined in the specs.
 Note: EXT1 not included */
 // C2: Extended Miscellaneous Control Codes
-// TODO: This code is completely untested due to lack of samples. Just following specs!
+//! @todo This code is completely untested due to lack of samples. Just following specs!
 int handle_708_C2 (cc708_service_decoder *decoder, unsigned char *data, int data_length)
 {
   if (data[0]<=0x07) // 00-07...
@@ -338,7 +338,7 @@ int handle_708_C3 (cc708_service_decoder *decoder, unsigned char *data, int data
 
   // These are variable length commands, that can even span several segments
   // (they allow even downloading fonts or graphics).
-  // TODO: Implemen if a sample ever appears
+  //! @todo Implemen if a sample ever appears
   return 0; // Unreachable, but otherwise there's compilers warnings
 }
 
@@ -346,7 +346,7 @@ int handle_708_C3 (cc708_service_decoder *decoder, unsigned char *data, int data
 // G2 (20-7F) => Mostly unmapped, except for a few characters.
 // G3 (A0-FF) => A0 is the CC symbol, everything else reserved for future expansion in EIA708-B
 // C2 (00-1F) => Reserved for future extended misc. control and captions command codes
-// TODO: This code is completely untested due to lack of samples. Just following specs!
+//! @todo This code is completely untested due to lack of samples. Just following specs!
 // Returns number of used bytes, usually 1 (since EXT1 is not counted).
 int handle_708_extended_char (cc708_service_decoder *decoder, unsigned char *data, int data_length)
 {
@@ -368,7 +368,7 @@ int handle_708_extended_char (cc708_service_decoder *decoder, unsigned char *dat
   else if (code>=0x80 && code<=0x9F)
   {
     used=handle_708_C3 (decoder, data, data_length);
-    // TODO: Something
+    //! @todo Something
   }
   // Group G3
   else
@@ -429,10 +429,10 @@ int handle_708_C0 (cc708_service_decoder *decoder, unsigned char *data, int data
       process_cr (decoder);
       break;
     case 0x0e: // HCR (Horizontal Carriage Return)
-      // TODO: Process HDR
+      //! @todo Process HDR
       break;
     case 0x0c: // FF (Form Feed)
-      // TODO: Process FF
+      //! @todo Process FF
       break;
     }
     len=1;
@@ -448,7 +448,7 @@ int handle_708_C0 (cc708_service_decoder *decoder, unsigned char *data, int data
     // Only PE16 is defined.
     if (data[0]==0x18) // PE16
     {
-      ; // TODO: Handle PE16
+      ; //! @todo Handle PE16
     }
     len=3;
   }
@@ -460,7 +460,7 @@ int handle_708_C0 (cc708_service_decoder *decoder, unsigned char *data, int data
   {
     return -1;
   }
-  // TODO: Do something useful eventually
+  //! @todo Do something useful eventually
   return len;
 }
 
@@ -505,7 +505,7 @@ void process_character (cc708_service_decoder *decoder, unsigned char internal_c
 // G0 - Code Set - ASCII printable characters
 int handle_708_G0 (cc708_service_decoder *decoder, unsigned char *data, int data_length)
 {
-  // TODO: Substitution of the music note character for the ASCII DEL character
+  //! @todo Substitution of the music note character for the ASCII DEL character
   unsigned char c=get_internal_from_G0 (data[0]);
   process_character (decoder, c);
   return 1;
@@ -603,7 +603,7 @@ void handle_708_HDW_HideWindows (cc708_service_decoder *decoder, int windows_bit
           changes=1;
           decoder->windows[i].visible=0;
         }
-        // TODO: Actually Hide Window
+        //! @todo Actually Hide Window
       }
       windows_bitmap>>=1;
     }
@@ -672,7 +672,7 @@ void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, un
   {
     // If the window is being created, all character positions in the window
     // are set to the fill color...
-    // TODO: COLORS
+    //! @todo COLORS
     // ...and the pen location is set to (0,0)
     decoder->windows[window].pen_column=0;
     decoder->windows[window].pen_row=0;
@@ -687,7 +687,7 @@ void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, un
           decoder->current_window=-1;
           for (int j=0;j<i;j++)
             free (decoder->windows[window].rows[j]);
-          return; // TODO: Warn somehow
+          return; //! @todo Warn somehow
         }
       }
       decoder->windows[window].memory_reserved=1;
@@ -745,7 +745,7 @@ void deleteWindow (cc708_service_decoder *decoder, int window)
     // or DefineWindow command.
     decoder->current_window=-1;
   }
-  // TODO: Do the actual deletion (remove from display if needed, etc), mark as
+  //! @todo Do the actual deletion (remove from display if needed, etc), mark as
   // not defined, etc
   if (decoder->windows[window].is_defined)
   {
@@ -843,13 +843,13 @@ void handle_708_SPL_SetPenLocation (cc708_service_decoder *decoder, unsigned cha
   ------------------------------------------------------- */
 void handle_708_DLY_Delay (cc708_service_decoder *decoder, int tenths_of_sec)
 {
-  // TODO: Probably ask for the current FTS and wait for this time before resuming -
+  //! @todo Probably ask for the current FTS and wait for this time before resuming -
   // not sure it's worth it though
 }
 
 void handle_708_DLC_DelayCancel (cc708_service_decoder *decoder)
 {
-  // TODO: See above
+  //! @todo See above
 }
 
 // C1 Code Set - Captioning Commands Control Codes
@@ -959,7 +959,7 @@ void process_service_block (cc708_service_decoder *decoder, unsigned char *data,
         used=handle_708_G1 (decoder,data+i,data_length-i);
       if (used==-1)
       {
-        // TODO: Not sure if a local reset is going to be helpful here.
+        //! @todo Not sure if a local reset is going to be helpful here.
         cc708_service_reset (decoder);
         return;
       }

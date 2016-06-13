@@ -265,7 +265,7 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strSortTitle)},
 };
 
-// TODO is this comment valid for seasons? There is no offset structure or am I wrong?
+//! @todo is this comment valid for seasons? There is no offset structure or am I wrong?
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
   VIDEODB_ID_SEASON_MIN = -1,

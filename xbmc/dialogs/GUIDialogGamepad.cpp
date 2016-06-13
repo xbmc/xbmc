@@ -208,7 +208,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(std::string& strNewPassword)
   std::string strUserInput;
   if (ShowAndVerifyInput(strUserInput, "12340", "12330", "12331", "", true, true))
   {
-    // TODO: Show error to user saying the password entry was blank
+    //! @todo Show error to user saying the password entry was blank
     CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12358}); // Password is empty/blank
     return false;
   }
@@ -220,7 +220,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(std::string& strNewPassword)
   // Prompt again for password input, this time sending previous input as the password to verify
   if (!ShowAndVerifyInput(strUserInput, "12341", "12330", "12331", "", false, true))
   {
-    // TODO: Show error to user saying the password re-entry failed
+    //! @todo Show error to user saying the password re-entry failed
     CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12344}); // Password do not match
     return false;
   }

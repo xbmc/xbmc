@@ -147,8 +147,8 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
       int iClass = PeripheralTypeTranslator::HexStringToInt(strClass.c_str());
       if (iClass == USB_CLASS_PER_INTERFACE)
       {
-        //TODO just assume this is a HID device for now, since the only devices that we're currently
-        //     interested in are HID devices
+        //! @todo just assume this is a HID device for now, since the only devices that we're currently
+        //!     interested in are HID devices
         iClass = USB_CLASS_HID;
       }
 

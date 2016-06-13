@@ -245,7 +245,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
   if (!dir)
     return;
 
-  // TODO: Add all sort methods and fix which labels go on the right or left
+  //! @todo Add all sort methods and fix which labels go on the right or left
   switch(sortMethod)
   {
     case SORT_METHOD_LABEL:

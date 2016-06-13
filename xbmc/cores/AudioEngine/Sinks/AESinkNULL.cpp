@@ -125,7 +125,7 @@ void CAESinkNULL::Process()
   {
     if (m_draining)
     {
-      // TODO: is it correct to not take data at the appropriate rate while draining?
+      //! @todo is it correct to not take data at the appropriate rate while draining?
       m_sinkbuffer_level = 0;
       m_draining = false;
     }

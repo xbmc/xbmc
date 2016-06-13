@@ -1520,7 +1520,7 @@ int MysqlDataset::exec(const std::string &sql) {
   }
   else
   {
-    // TODO: collect results and store in exec_res
+    //! @todo collect results and store in exec_res
     return res;
   }
 }

@@ -28,7 +28,7 @@ class CGUIRenderingControl : public CGUIControl
 public:
   CGUIRenderingControl(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIRenderingControl(const CGUIRenderingControl &from);
-  virtual CGUIRenderingControl *Clone() const { return new CGUIRenderingControl(*this); }; //TODO check for naughties
+  virtual CGUIRenderingControl *Clone() const { return new CGUIRenderingControl(*this); }; //! @todo check for naughties
 
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();

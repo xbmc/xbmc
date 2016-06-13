@@ -328,7 +328,7 @@ void CRenderSystemGLES::CaptureStateBlock()
 
   glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
   glActiveTexture(GL_TEXTURE0);
-//TODO - NOTE: Only for Screensavers & Visualisations
+//! @todo - NOTE: Only for Screensavers & Visualisations
 //  glColor3f(1.0, 1.0, 1.0);
 }
 

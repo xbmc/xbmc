@@ -293,7 +293,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   // update the channel map based on the new stream format
   devEnum.GetAEChannelMap(format.m_channelLayout, numOutputChannels);
    
-  /* TODO: Should we use the virtual format to determine our data format? */
+  //! @todo Should we use the virtual format to determine our data format?
   format.m_frameSize     = format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
   format.m_frames        = m_device.GetBufferSize();
 
@@ -315,14 +315,14 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
 
 void CAESinkDARWINOSX::SetHogMode(bool on)
 {
-  // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
-  // It appears that leaving this set will aslo restore the previous stream format when the
-  // Application exits. If auto hogging is set and we try to set hog mode, we will deadlock
-  // From the SDK docs: "If the AudioDevice is in a non-mixable mode, the HAL will automatically take hog mode on behalf of the first process to start an IOProc."
-
-  // Lock down the device.  This MUST be done PRIOR to switching to a non-mixable format, if it is done at all
-  // If it is attempted after the format change, there is a high likelihood of a deadlock
-  // We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
+  //! @todo Auto hogging sets this for us. Figure out how/when to turn it off or use it
+  //! It appears that leaving this set will aslo restore the previous stream format when the
+  //! Application exits. If auto hogging is set and we try to set hog mode, we will deadlock
+  //! From the SDK docs: "If the AudioDevice is in a non-mixable mode, the HAL will automatically take hog mode on behalf of the first process to start an IOProc."
+  //!
+  //! Lock down the device.  This MUST be done PRIOR to switching to a non-mixable format, if it is done at all
+  //! If it is attempted after the format change, there is a high likelihood of a deadlock
+  //! We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
   if (on)
   {
     // Auto-Hog does not always un-hog the device when changing back to a mixable mode.

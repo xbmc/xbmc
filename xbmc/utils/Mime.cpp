@@ -638,7 +638,7 @@ CMime::EFileType CMime::GetFileTypeFromContent(const std::string& fileContent)
 
   const unsigned char* const b = (const unsigned char*)fileContent.c_str();
 
-  // TODO: add detection for text types
+  //! @todo add detection for text types
 
   // check image types
   if (b[0] == 'B' && b[1] == 'M')
@@ -658,7 +658,7 @@ CMime::EFileType CMime::GetFileTypeFromContent(const std::string& fileContent)
   if (len >= 7 && b[0] == 'R' && b[1] == 'a' && b[2] == 'r' && b[3] == ' ' && b[4] == 0x1A && b[5] == 0x07 && b[6] == 0x00)
     return FileTypeRar;
 
-  // TODO: add detection for other types if required
+  //! @todo add detection for other types if required
 
   return FileTypeUnknown;
 }

@@ -35,9 +35,9 @@
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;
 
-//TODO the breakage of the screensaver should be refactored
-//to one central super duper place for getting rid of
-//1 million dupes
+//! @todo the breakage of the screensaver should be refactored
+//! to one central super duper place for getting rid of
+//! 1 million dupes
 bool CInputOperations::handleScreenSaver()
 {
   g_application.ResetScreenSaver();

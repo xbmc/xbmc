@@ -459,7 +459,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
     // white frame plus titlebar around the xbmc splash
     SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW|SWP_DRAWFRAME);
 
-    // TODO: Probably only need this if switching screens
+    //! @todo Probably only need this if switching screens
     ValidateRect(NULL, NULL);
   }
   return true;
@@ -702,7 +702,7 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         CLog::Log(LOGNOTICE, "Found screen: %s on %s, adapter %d.", monitorStr.c_str(), adapterStr.c_str(), adapter);
 
         // get information about the display's current position and display mode
-        // TODO: for Windows 7/Server 2008 and up, Microsoft recommends QueryDisplayConfig() instead, the API used by the control panel.
+        //! @todo for Windows 7/Server 2008 and up, Microsoft recommends QueryDisplayConfig() instead, the API used by the control panel.
         DEVMODEW dm;
         ZeroMemory(&dm, sizeof(dm));
         dm.dmSize = sizeof(dm);

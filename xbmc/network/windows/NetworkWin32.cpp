@@ -371,7 +371,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
           bss_entry.dot11Bssid[0], bss_entry.dot11Bssid[1], bss_entry.dot11Bssid[2],
           bss_entry.dot11Bssid[3], bss_entry.dot11Bssid[4], bss_entry.dot11Bssid[5]);
         int signalLevel = bss_entry.lRssi;
-        EncMode encryption = ENC_NONE; // TODO
+        EncMode encryption = ENC_NONE; //! @todo implement
         int channel = NetworkAccessPoint::FreqToChannel((float)bss_entry.ulChCenterFrequency * 1000);
         result.push_back(NetworkAccessPoint(essId, macAddress, signalLevel, encryption, channel));
       }
@@ -495,7 +495,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
     else
       CLog::Log(LOGERROR, "%s: Can't open wlan handle", __FUNCTION__);
   }
-  // Todo: get the key (WlanGetProfile, CryptUnprotectData?)
+  //! @todo get the key (WlanGetProfile, CryptUnprotectData?)
 #endif
 }
 

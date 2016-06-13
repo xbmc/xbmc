@@ -208,7 +208,7 @@ float CGUIDialogContextMenu::GetWidth() const
 
 bool CGUIDialogContextMenu::SourcesMenu(const std::string &strType, const CFileItemPtr& item, float posX, float posY)
 {
-  // TODO: This should be callable even if we don't have any valid items
+  //! @todo This should be callable even if we don't have any valid items
   if (!item)
     return false;
 
@@ -246,7 +246,7 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
     if (share)
     {
       // Note. from now on, remove source & disable plugin should mean the same thing
-      //TODO might be smart to also combine editing source & plugin settings into one concept/dialog
+      //! @todo might be smart to also combine editing source & plugin settings into one concept/dialog
       // Note. Temporarily disabled ability to remove plugin sources until installer is operational
 
       CURL url(share->strPath);

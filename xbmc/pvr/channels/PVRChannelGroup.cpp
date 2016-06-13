@@ -18,10 +18,7 @@
  *
  */
 
-/**
- * TODO:
- * - use Observable here, so we can use event driven operations later
- */
+//! @todo use Observable here, so we can use event driven operations later
 
 #include "PVRChannelGroup.h"
 #include "PVRChannelGroupsContainer.h"
@@ -341,7 +338,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     if (bUpdateDb)
       channel->Persist();
 
-    /* TODO: start channel icon scraper here if nothing was found */
+    //! @todo start channel icon scraper here if nothing was found
   }
 
   if (dlgProgressHandle)
@@ -792,7 +789,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannelPtr &channel)
   {
     if (*channel == *((*it).channel))
     {
-      // TODO notify observers
+      //! @todo notify observers
       m_members.erase((*it).channel->StorageId());
       it = m_sortedMembers.erase(it);
       bReturn = true;
@@ -837,7 +834,7 @@ bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, int iChannelNum
 
       SortAndRenumber();
 
-      // TODO notify observers
+      //! @todo notify observers
       bReturn = true;
     }
   }
@@ -1010,7 +1007,7 @@ void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
-  /* TODO: while pvr manager is starting up do accept setting changes. */
+  //! @todo while pvr manager is starting up do accept setting changes.
   if(!g_PVRManager.IsStarted())
   {
     CLog::Log(LOGWARNING, "CPVRChannelGroup setting change ignored while PVRManager is starting\n");
@@ -1257,7 +1254,7 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   if (iEPGSource == 0)
     member.channel->SetEPGScraper("client");
 
-  // TODO add other scrapers
+  //! @todo add other scrapers
   member.channel->SetEPGEnabled(bEPGEnabled);
 
   /* set new values in the channel tag */

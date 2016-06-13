@@ -75,7 +75,7 @@ CHTTPImageTransformationHandler::CHTTPImageTransformationHandler(const HTTPReque
   StringUtils::ToLower(ext);
   m_response.contentType = CMime::GetMimeType(ext);
 
-  // TODO: determine the maximum age
+  //! @todo determine the maximum age
 
   // determine the last modified date
   struct __stat64 statBuffer;

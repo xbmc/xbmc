@@ -221,7 +221,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
       }
 
       default:
-        // TODO: add more types if needed
+        //! @todo add more types if needed
         CLog::Log(LOGDEBUG, "%s - unknown type", __FUNCTION__);
         break;
     }

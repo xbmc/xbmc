@@ -692,7 +692,7 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 bool CDateTime::SetFromDateString(const std::string &date)
 {
-  /* TODO:STRING_CLEANUP */
+  //! @todo STRING_CLEANUP
   if (date.empty())
   {
     SetValid(false);

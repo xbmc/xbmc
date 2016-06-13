@@ -5268,7 +5268,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (cat.name == "library")
     {
       if (prop.name == "isscanning") return LIBRARY_IS_SCANNING;
-      else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; // TODO: change to IsScanning(Video)
+      else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; //! @todo change to IsScanning(Video)
       else if (prop.name == "isscanningmusic") return LIBRARY_IS_SCANNING_MUSIC;
       else if (prop.name == "hascontent" && prop.num_params())
       {
@@ -5288,7 +5288,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "musicplayer")
     {
-      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) // TODO: remove these, they're repeats
+      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) //! @todo remove these, they're repeats
       {
         if (prop.name == player_times[i].str)
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
@@ -5306,7 +5306,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "videoplayer")
     {
-      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) // TODO: remove these, they're repeats
+      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) //! @todo remove these, they're repeats
       {
         if (prop.name == player_times[i].str)
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
@@ -5422,7 +5422,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (cat.name == "window")
     {
       if (prop.name == "property" && prop.num_params() == 1)
-      { // TODO: this doesn't support foo.xml
+      { //! @todo this doesn't support foo.xml
         int winID = cat.param().empty() ? 0 : CButtonTranslator::TranslateWindow(cat.param());
         if (winID != WINDOW_INVALID)
           return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, ConditionalStringParameter(prop.param())));
@@ -5430,7 +5430,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       for (size_t i = 0; i < sizeof(window_bools) / sizeof(infomap); i++)
       {
         if (prop.name == window_bools[i].str)
-        { // TODO: The parameter for these should really be on the first not the second property
+        { //! @todo The parameter for these should really be on the first not the second property
           if (prop.param().find("xml") != std::string::npos)
             return AddMultiInfo(GUIInfo(window_bools[i].val, 0, ConditionalStringParameter(prop.param())));
           int winID = prop.param().empty() ? WINDOW_INVALID : CButtonTranslator::TranslateWindow(prop.param());
@@ -5443,7 +5443,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); i++)
       {
         if (prop.name == control_labels[i].str)
-        { // TODO: The parameter for these should really be on the first not the second property
+        { //! @todo The parameter for these should really be on the first not the second property
           int controlID = atoi(prop.param().c_str());
           if (controlID)
             return AddMultiInfo(GUIInfo(control_labels[i].val, controlID, 0));
@@ -5516,7 +5516,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
   else if (info.size() == 3 || info.size() == 4)
   {
     if (info[0].name == "system" && info[1].name == "platform")
-    { // TODO: replace with a single system.platform
+    { //! @todo replace with a single system.platform
       std::string platform = info[2].name;
       if (platform == "linux")
       {
@@ -5534,7 +5534,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       else if (platform == "android") return SYSTEM_PLATFORM_ANDROID;
     }
     if (info[0].name == "musicplayer")
-    { // TODO: these two don't allow duration(foo) and also don't allow more than this number of levels...
+    { //! @todo these two don't allow duration(foo) and also don't allow more than this number of levels...
       if (info[1].name == "position")
       {
         int position = atoi(info[1].param().c_str());
@@ -5579,7 +5579,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); i++)
       {
         if (prop.name == control_labels[i].str)
-        { // TODO: The parameter for these should really be on the first not the second property
+        { //! @todo The parameter for these should really be on the first not the second property
           int controlID = atoi(prop.param().c_str());
           if (controlID)
             return AddMultiInfo(GUIInfo(control_labels[i].val, controlID, atoi(info[2].param(0).c_str())));

@@ -104,7 +104,7 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
   {
     std::string strCategory = pElement->Value();
 
-    // TODO: Something with category
+    //! @todo Something with category
 
     for (const TiXmlElement* pFeature = pCategory->FirstChildElement(); pFeature != NULL; pFeature = pFeature->NextSiblingElement())
     {

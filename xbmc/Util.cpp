@@ -1463,7 +1463,7 @@ bool CUtil::RunCommandLine(const std::string& cmdLine, bool waitExit)
   // Strip quotes and whitespace around the arguments, or exec will fail.
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
-  // TODO: Maybe some python library routine can parse this more properly ?
+  //! @todo Maybe some python library routine can parse this more properly ?
   for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it)
   {
     size_t pos;

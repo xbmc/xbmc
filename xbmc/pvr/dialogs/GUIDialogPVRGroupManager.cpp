@@ -74,7 +74,7 @@ bool CGUIDialogPVRGroupManager::PersistChanges(void)
 
 bool CGUIDialogPVRGroupManager::CancelChanges(void)
 {
-  // TODO
+  //! @todo
   return false;
 }
 

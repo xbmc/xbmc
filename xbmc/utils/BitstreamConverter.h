@@ -43,8 +43,8 @@ typedef struct {
 } bits_reader_t;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: refactor this so as not to need these ffmpeg routines.
-// These are not exposed in ffmpeg's API so we dupe them here.
+//! @todo refactor this so as not to need these ffmpeg routines.
+//! These are not exposed in ffmpeg's API so we dupe them here.
 // AVC helper functions for muxers,
 //  * Copyright (c) 2006 Baptiste Coudurier <baptiste.coudurier@smartjog.com>
 // This is part of FFmpeg

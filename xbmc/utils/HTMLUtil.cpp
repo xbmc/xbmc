@@ -195,7 +195,7 @@ static const HTMLMapping mappings[] =
 
 void CHTMLUtil::ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStripped)
 {
-  /* TODO:STRING_CLEANUP */
+  //! @todo STRING_CLEANUP
   if (strHTML.empty())
   {
     strStripped.clear();

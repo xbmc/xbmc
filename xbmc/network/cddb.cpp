@@ -515,7 +515,7 @@ void Xcddb::parseData(const char *buffer)
     std::string strKeyword = *it;
     std::string strValue = keywords[strKeyword];
 
-    /* TODO:STRING_CLEANUP */
+    //! @todo STRING_CLEANUP
     if (strKeyword == "DTITLE")
     {
       // DTITLE may contain artist and disc title, separated with " / ",

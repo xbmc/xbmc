@@ -255,7 +255,7 @@ void CPeripheral::AddSetting(const std::string &strKey, const CSetting *setting,
       }
       break;
     default:
-      //TODO add more types if needed
+      //! @todo add more types if needed
       break;
     }
 

@@ -409,7 +409,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage &message)
 
 bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage &message)
 {
-  // TODO: Add EPG scraper support
+  //! @todo Add EPG scraper support
   return true;
 //  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
 //  if (pSpin)
@@ -694,7 +694,7 @@ void CGUIDialogPVRChannelManager::Update()
   {
     std::vector< std::pair<std::string, int> > labels;
     labels.push_back(std::make_pair(g_localizeStrings.Get(19210), 0));
-    /// TODO: Add Labels for EPG scrapers here
+    //! @todo Add Labels for EPG scrapers here
     SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }
 

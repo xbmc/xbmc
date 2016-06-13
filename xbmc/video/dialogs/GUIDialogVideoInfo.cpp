@@ -676,7 +676,7 @@ void CGUIDialogVideoInfo::OnGetArt()
   if (type.empty())
     return; // cancelled
 
-  // TODO: this can be removed once these are unified.
+  //! @todo this can be removed once these are unified.
   if (type == "fanart")
     OnGetFanart();
   else
@@ -712,7 +712,7 @@ void CGUIDialogVideoInfo::OnGetArt()
       item->SetIconImage("DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13513));
 
-      // TODO: Do we need to clear the cached image?
+      //! @todo Do we need to clear the cached image?
       //    CTextureCache::GetInstance().ClearCachedImage(thumb);
       items.Add(item);
     }
@@ -808,7 +808,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     item->SetIconImage("DefaultPicture.png");
     item->SetLabel(g_localizeStrings.Get(20441));
 
-    // TODO: Do we need to clear the cached image?
+    //! @todo Do we need to clear the cached image?
 //    CTextureCache::GetInstance().ClearCachedImage(thumb);
     items.Add(item);
   }
@@ -821,7 +821,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     itemLocal->SetArt("thumb", strLocal);
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
 
-    // TODO: Do we need to clear the cached image?
+    //! @todo Do we need to clear the cached image?
     CTextureCache::GetInstance().ClearCachedImage(strLocal);
     items.Add(itemLocal);
   }
@@ -1755,7 +1755,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
       item->SetLabel(g_localizeStrings.Get(13513));
       items.Add(item);
 
-      // TODO: Do we need to clear the cached image?
+      //! @todo Do we need to clear the cached image?
       //    CTextureCache::GetInstance().ClearCachedImage(thumbs[i]);
     }
 

@@ -50,8 +50,8 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATU
   : CThread(("AddonStatus " + addonID).c_str()),
     m_status(ADDON_STATUS_UNKNOWN)
 {
-  // TODO: the status handled CAddonStatusHandler by is related to the class, not the instance
-  // having CAddonMgr construct an instance makes no sense
+  //! @todo The status handled CAddonStatusHandler by is related to the class, not the instance
+  //! having CAddonMgr construct an instance makes no sense
   if (!CAddonMgr::GetInstance().GetAddon(addonID, m_addon))
     return;
 
@@ -121,7 +121,7 @@ void CAddonStatusHandler::Process()
 
     if (CGUIDialogAddonSettings::ShowAndGetInput(m_addon))
     {
-      //todo doesn't dialogaddonsettings save these automatically? should do
+      //! @todo Doesn't dialogaddonsettings save these automatically? It should do this.
       m_addon->SaveSettings();
       CAddonMgr::GetInstance().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }

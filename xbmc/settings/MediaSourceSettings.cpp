@@ -118,7 +118,7 @@ bool CMediaSourceSettings::Save()
 
 bool CMediaSourceSettings::Save(const std::string &file) const
 {
-  // TODO: Should we be specifying utf8 here??
+  //! @todo Should we be specifying utf8 here??
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(XML_SOURCES);
   TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);

@@ -902,8 +902,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
 
-  // TODO: Should cache path be given in terms of our predefined paths??
-  //       Are we even going to have predefined paths??
+  //! @todo Should cache path be given in terms of our predefined paths??
+  //! Are we even going to have predefined paths??
   std::string tmp;
   if (XMLUtils::GetPath(pRootElement, "cachepath", tmp))
     m_cachePath = tmp;

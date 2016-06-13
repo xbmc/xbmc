@@ -132,7 +132,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
     switch (GetTrayState())
     {
       case DRIVE_NONE:
-        // TODO: reduce / stop polling for drive updates
+        //! @todo reduce / stop polling for drive updates
         break;
 
       case DRIVE_OPEN:

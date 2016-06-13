@@ -66,7 +66,7 @@ void CGreedyDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegion
       float temporaryCost = m_costPerArea * (temporaryUnion.Area() - output[j].Area());
       if (temporaryCost < possibleUnionCost)
       {
-        // TODO if the temporaryCost is 0 then we could skip checking the other regions since there exist no better solution
+        //! @todo if the temporaryCost is 0 then we could skip checking the other regions since there exist no better solution
         possibleUnionRegion = temporaryUnion;
         possibleUnionNbr    = j;
         possibleUnionCost   = temporaryCost;

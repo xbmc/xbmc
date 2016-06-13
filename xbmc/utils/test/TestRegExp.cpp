@@ -18,7 +18,7 @@
  *
  */
 
-/* TODO: gtest/gtest.h needs to come in before utils/RegExp.h.
+/** @todo gtest/gtest.h needs to come in before utils/RegExp.h.
  * Investigate why.
  */
 #include "gtest/gtest.h"

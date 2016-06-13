@@ -316,7 +316,7 @@ void CAddonInterfaces::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_GUI_ADDON_DIALOG:
   {
     if (pMsg->lpVoid)
-    { // TODO: This is ugly - really these binary add-on dialogs should just be normal Kodi dialogs
+    { //! @todo This is ugly - really these binary add-on dialogs should just be normal Kodi dialogs
       switch (pMsg->param1)
       {
       case 1:

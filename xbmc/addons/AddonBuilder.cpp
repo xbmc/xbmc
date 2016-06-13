@@ -214,7 +214,7 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
     case ADDON_INPUTSTREAM:
       return AddonPtr(new CInputStream(std::move(addonProps)));
     case ADDON_PERIPHERALDLL:
-      return AddonPtr(new PERIPHERALS::CPeripheralAddon(std::move(addonProps), false, false)); // TODO
+      return AddonPtr(new PERIPHERALS::CPeripheralAddon(std::move(addonProps), false, false)); //! @todo implement
     case ADDON_GAME_CONTROLLER:
       return AddonPtr(new GAME::CController(std::move(addonProps)));
     default:

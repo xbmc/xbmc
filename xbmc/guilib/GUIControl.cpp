@@ -524,8 +524,8 @@ void CGUIControl::SetHeight(float height)
 void CGUIControl::SetVisible(bool bVisible, bool setVisState)
 {
   if (bVisible && setVisState)
-  {  // TODO: currently we only update m_visible from GUI_MSG_VISIBLE (SET_CONTROL_VISIBLE)
-     //       otherwise we just set m_forceHidden
+  {  //! @todo currently we only update m_visible from GUI_MSG_VISIBLE (SET_CONTROL_VISIBLE)
+     //!       otherwise we just set m_forceHidden
     GUIVISIBLE visible;
     if (m_visibleCondition)
       visible = m_visibleCondition->Get() ? VISIBLE : HIDDEN;

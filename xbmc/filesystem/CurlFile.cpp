@@ -235,7 +235,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   {
 //    CLog::Log(LOGDEBUG, "CCurlFile::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount);
 
-    // TODO: Limit max. amount of the overflowbuffer
+    //! @todo Limit max. amount of the overflowbuffer
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
     {
@@ -648,10 +648,11 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
 
   if (m_skipshout)
-    // For shoutcast file, content-length should not be set, and in libcurl there is a bug, if the
-    // cast file was 302 redirected then getinfo of CURLINFO_CONTENT_LENGTH_DOWNLOAD will return
-    // the 302 response's body length, which cause the next read request failed, so we ignore
-    // content-length for shoutcast file to workaround this.
+    //! @todo
+    //! For shoutcast file, content-length should not be set, and in libcurl there is a bug, if the
+    //! cast file was 302 redirected then getinfo of CURLINFO_CONTENT_LENGTH_DOWNLOAD will return
+    //! the 302 response's body length, which cause the next read request failed, so we ignore
+    //! content-length for shoutcast file to workaround this.
     g_curlInterface.easy_setopt(h, CURLOPT_IGNORE_CONTENT_LENGTH, 1);
 
   // Setup allowed TLS/SSL ciphers. New versions of cURL may deprecate things that are still in use.
@@ -731,7 +732,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (url2.GetProtocolOption("utf8") == "0")
       g_charsetConverter.utf8ToStringCharset(filename);
 
-    /* TODO: create a tokenizer that doesn't skip empty's */
+    //! @todo create a tokenizer that doesn't skip empty's
     StringUtils::Tokenize(filename, array, "/");
     filename.clear();
     for(std::vector<std::string>::iterator it = array.begin(); it != array.end(); it++)
@@ -1290,7 +1291,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   SetCommonOptions(m_state);
 
   /* caller might have changed some headers (needed for daap)*/
-  // TODO: daap is gone. is this needed for something else?
+  //! @todo daap is gone. is this needed for something else?
   SetRequestHeaders(m_state);
 
   m_state->m_filePos = nextPos;

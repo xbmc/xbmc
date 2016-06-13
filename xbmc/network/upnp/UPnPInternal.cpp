@@ -176,15 +176,15 @@ GetProtocolInfo(const CFileItem&              item,
 {
     NPT_String proto = protocol;
 
-    /* fixup the protocol just in case nothing was passed */
+    //! @todo fixup the protocol just in case nothing was passed
     if (proto.IsEmpty()) {
         proto = item.GetURL().GetProtocol().c_str();
     }
 
-    /*
-       map protocol to right prefix and use xbmc-get for
-       unsupported UPnP protocols for other xbmc clients
-       TODO: add rtsp ?
+    /**
+    *  map protocol to right prefix and use xbmc-get for
+    *  unsupported UPnP protocols for other xbmc clients
+    *  @todo add rtsp ?
     */
     if (proto == "http") {
         proto = "http-get";
@@ -567,7 +567,7 @@ BuildObject(CFileItem&                    item,
                 container->m_ChildrenCount = (NPT_Int32)count;
             } else {
                 /* this should be a standard path */
-                // TODO - get file count of this directory
+                //! @todo - get file count of this directory
             }
         }
     }

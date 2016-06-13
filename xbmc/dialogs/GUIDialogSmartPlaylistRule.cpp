@@ -342,7 +342,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     iLabel = 20459;
   }
   else
-  { // TODO: Add browseability in here.
+  { //! @todo Add browseability in here.
     assert(false);
   }
 

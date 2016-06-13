@@ -281,8 +281,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  //TODO could separate addons into different contexts
-  // would allow partial unloading of addon framework
+  //! @todo could separate addons into different contexts would allow partial unloading of addon framework
   m_cp_context = m_cpluff->create_context(&status);
   assert(m_cp_context);
   status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://home/addons").c_str());
@@ -574,7 +573,7 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
   return false;
 }
 
-//TODO handle all 'default' cases here, not just scrapers & vizs
+//! @todo handle all 'default' cases here, not just scrapers & vizs
 bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
 {
   std::string setting;
