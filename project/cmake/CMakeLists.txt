@@ -19,6 +19,7 @@ option(ENABLE_MICROHTTPD  "Enable MicroHttpd webserver?" ON)
 option(ENABLE_MYSQLCLIENT "Enable MySql support?" ON)
 option(ENABLE_AVAHI       "Enable Avahi support?" ON)
 option(ENABLE_BLURAY      "Enable BluRay support?" ON)
+option(ENABLE_XSLT        "Enable XSLT scrapers support?" ON)
 option(ENABLE_PLIST       "Enable AirPlay support?" ON)
 option(ENABLE_NFS         "Enable NFS support?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
@@ -94,7 +95,7 @@ list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
 set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
-                  TinyXML Python Yajl Xslt
+                  TinyXML Python Yajl
                   Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
   list(APPEND required_deps LibSmbClient ZLIB)
@@ -106,7 +107,7 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 # Optional dependencies
-set(optional_deps MicroHttpd MySqlClient SSH
+set(optional_deps MicroHttpd MySqlClient SSH Xslt
                   Alsa UDev Dbus Avahi
                   PulseAudio VDPAU VAAPI)
 

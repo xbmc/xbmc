@@ -74,7 +74,9 @@ SRCS += Weather.cpp
 SRCS += XBMCTinyXML.cpp
 SRCS += XMLUtils.cpp
 SRCS += Utf8Utils.cpp
+ifeq (@HAVE_LIBXSLT@,1)
 SRCS += XSLTUtils.cpp
+endif
 SRCS += ActorProtocol.cpp 
 SRCS += SysfsUtils.cpp
 
