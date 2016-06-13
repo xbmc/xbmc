@@ -126,12 +126,14 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
     return false;
   }
 
-  HWND hWnd = CreateWindow( name.c_str(), name.c_str(), fullScreen ? WS_POPUP : WS_OVERLAPPEDWINDOW,
+  HWND hWnd = CreateWindowEx(m_bAlwaysOnTop ? WS_EX_TOPMOST : NULL,
+    name.c_str(), name.c_str(),
+    fullScreen ? WS_POPUP : WS_OVERLAPPEDWINDOW,
     0, 0, m_nWidth, m_nHeight, 0,
     NULL, m_hInstance, userFunction );
   if( hWnd == NULL )
   {
-    CLog::Log(LOGERROR, "%s : CreateWindow failed with %d", __FUNCTION__, GetLastError());
+    CLog::Log(LOGERROR, "%s : CreateWindowEx failed with %d", __FUNCTION__, GetLastError());
     return false;
   }
 
@@ -838,6 +840,15 @@ bool CWinSystemWin32::Show(bool raise)
   return true;
 }
 
+void CWinSystemWin32::SetAlwaysOnTopState(bool bState)
+{
+  if (m_bAlwaysOnTop == bState)
+    return;
+  SetWindowPos(m_hWnd, bState ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
+  CLog::Log(LOGDEBUG, "%s : Always-On-Top mode is now: %s", __FUNCTION__, bState ? "ENABLED" : "DISABLED");
+  m_bAlwaysOnTop = bState;
+}
+ 
 void CWinSystemWin32::Register(IDispResource *resource)
 {
   CSingleLock lock(m_resourceSection);

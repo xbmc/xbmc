@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 #ifdef HAS_DX
 
@@ -146,9 +147,39 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
       CRenderSystemDX::CreateWindowSizeDependentResources();
     }
   }
+
+  // Make the DXGI proxy window topmost. This helps against DXGI falling back to windowed mode
+  // if anything pops up behind Kodi or if a window is moved partially or fully behind Kodi
+  if (!m_useWindowedDX)
+    RaiseProxyWindow();
+
   CWinSystemWin32::m_IsAlteringWindow = false;
 
   return true;
+}
+
+void CWinSystemWin32DX::RaiseProxyWindow()
+{
+  EnumWindows((WNDENUMPROC)RaiseProxyWindowCallback, (LPARAM)m_hWnd);
+}
+
+BOOL CALLBACK CWinSystemWin32DX::RaiseProxyWindowCallback(HWND hWnd, LPARAM phWnd)
+{
+  DWORD pid = 0;
+  GetWindowThreadProcessId(hWnd, &pid);
+  if (GetCurrentProcessId() == pid)
+  {
+    LPTSTR classname = new TCHAR[256];
+    GetClassName(hWnd, classname, 256);
+    if (!lstrcmp(classname, "DXGIFocusProxyWindow"))
+    {
+      CLog::Log(LOGDEBUG, "%s : Found DXGI Proxy window %#010x, PID %d - Positioning after main window %#010x.", __FUNCTION__, hWnd, pid, (HWND)phWnd);
+      SetWindowPos(hWnd, (HWND)phWnd, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
+      delete classname;
+      return FALSE;
+    }
+  }
+  return TRUE;
 }
 
 std::string CWinSystemWin32DX::GetClipboardText(void)

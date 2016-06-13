@@ -43,6 +43,7 @@ public:
   virtual bool WindowedMode() { return CRenderSystemDX::m_useWindowedDX; }
   virtual void NotifyAppFocusChange(bool bGaining);
   virtual void PresentRender(bool rendererd, bool videoLayer);
+  virtual void RaiseProxyWindow();
 
   std::string GetClipboardText(void);
 
@@ -71,6 +72,9 @@ protected:
   void OnDisplayLost() override { CWinSystemWin32::OnDisplayLost(); };
   void OnDisplayReset() override { CWinSystemWin32::OnDisplayReset(); };
   void OnDisplayBack() override { CWinSystemWin32::OnDisplayBack(); };
+
+private:
+  static BOOL CALLBACK RaiseProxyWindowCallback(HWND hWnd, LPARAM phWnd);
 };
 
 XBMC_GLOBAL_REF(CWinSystemWin32DX,g_Windowing);

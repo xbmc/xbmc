@@ -148,7 +148,8 @@ public:
   virtual void ShowOSMouse(bool show);
   virtual bool WindowedMode() { return true; }
   virtual bool HasInertialGestures(){ return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling
-
+  virtual void SetAlwaysOnTopState(bool bState);
+  virtual bool AlwaysOnTop() { return m_bAlwaysOnTop; }
   virtual bool Minimize();
   virtual bool Restore();
   virtual bool Hide();
