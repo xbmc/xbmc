@@ -341,13 +341,6 @@ void CAdvancedSettings::Initialize()
 
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
-#if defined(TARGET_DARWIN)
-  // default for osx is fullscreen always on top
-  m_alwaysOnTop = true;
-#else
-  // default for windows is not always on top
-  m_alwaysOnTop = false;
-#endif
 
   m_iPVRTimeCorrection             = 0;
   m_iPVRInfoToggleInterval         = 3000;
@@ -1061,8 +1054,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetString(pRootElement, "cputempcommand", m_cpuTempCmd);
   XMLUtils::GetString(pRootElement, "gputempcommand", m_gpuTempCmd);
-
-  XMLUtils::GetBoolean(pRootElement, "alwaysontop", m_alwaysOnTop);
 
   TiXmlElement *pPVR = pRootElement->FirstChildElement("pvr");
   if (pPVR)

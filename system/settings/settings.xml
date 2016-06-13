@@ -2062,6 +2062,12 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="videoscreen.alwaysontop" type="boolean" parent="videoscreen.screen" label="14085" help="36308">
+          <level>2</level>
+          <default>false</default>
+          <requirement>HAS_DX</requirement>
+          <control type="toggle" />
+        </setting>
         <setting id="videoscreen.blankdisplays" type="boolean" parent="videoscreen.screen" label="13130" help="36355">
           <level>1</level>
           <default>false</default>

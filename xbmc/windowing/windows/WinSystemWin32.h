@@ -201,6 +201,7 @@ protected:
   int m_nPrimary;
   bool m_ValidWindowedPosition;
   bool m_IsAlteringWindow;
+  bool m_bAlwaysOnTop;
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;

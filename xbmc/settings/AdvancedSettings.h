@@ -304,7 +304,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
     bool m_canWindowed;
     bool m_splashImage;
-    bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;

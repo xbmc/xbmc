@@ -339,6 +339,7 @@ const std::string CSettings::SETTING_VIDEOSCREEN_SCREEN = "videoscreen.screen";
 const std::string CSettings::SETTING_VIDEOSCREEN_RESOLUTION = "videoscreen.resolution";
 const std::string CSettings::SETTING_VIDEOSCREEN_SCREENMODE = "videoscreen.screenmode";
 const std::string CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN = "videoscreen.fakefullscreen";
+const std::string CSettings::SETTING_VIDEOSCREEN_ALWAYSONTOP = "videoscreen.alwaysontop";
 const std::string CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS = "videoscreen.blankdisplays";
 const std::string CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE = "videoscreen.stereoscopicmode";
 const std::string CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE = "videoscreen.preferedstereoscopicmode";
@@ -1120,6 +1121,7 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_ALWAYSONTOP);
   m_settingsManager->RegisterCallback(&g_graphicsContext, settingSet);
 
   settingSet.clear();
