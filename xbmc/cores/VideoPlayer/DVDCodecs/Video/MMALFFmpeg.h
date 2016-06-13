@@ -69,6 +69,7 @@ public:
   CGPUMEM *AllocateBuffer(unsigned int numbytes);
   void ReleaseBuffer(CGPUMEM *gmem);
   unsigned sizeFree() { return m_freeBuffers.size(); }
+  enum AVPixelFormat m_fmt;
 protected:
   MMAL_BUFFER_HEADER_T *GetMmal();
   AVCodecContext *m_avctx;

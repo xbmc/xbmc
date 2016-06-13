@@ -45,6 +45,7 @@ using namespace MMAL;
 CMMALYUVBuffer::CMMALYUVBuffer(CDecoder *dec, unsigned int width, unsigned int height, unsigned int aligned_width, unsigned int aligned_height)
   : m_dec(dec)
 {
+  unsigned int size_pic = 0;
   dec->Acquire();
   m_width = width;
   m_height = height;
@@ -52,7 +53,13 @@ CMMALYUVBuffer::CMMALYUVBuffer(CDecoder *dec, unsigned int width, unsigned int h
   m_aligned_height = aligned_height;
   m_aspect_ratio = 0.0f;
   mmal_buffer = nullptr;
-  unsigned int size_pic = (m_aligned_width * m_aligned_height * 3) >> 1;
+  if (dec->m_fmt == AV_PIX_FMT_YUV420P)
+    size_pic = (m_aligned_width * m_aligned_height * 3) >> 1;
+  else if (dec->m_fmt == AV_PIX_FMT_BGR0)
+    size_pic = (m_aligned_width << 2) * m_aligned_height;
+  else if (dec->m_fmt == AV_PIX_FMT_RGB565LE)
+    size_pic = (m_aligned_width << 1) * m_aligned_height;
+  else assert(0);
   gmem = m_dec->AllocateBuffer(size_pic);
   if (gmem)
     gmem->m_opaque = (void *)this;
@@ -202,9 +209,9 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
   CDVDVideoCodecFFmpeg *ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CDecoder *dec = (CDecoder*)ctx->GetHardware();
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG,"%s::%s %dx%d format:%x flags:%x", CLASSNAME, __FUNCTION__, frame->width, frame->height, frame->format, flags);
+    CLog::Log(LOGDEBUG,"%s::%s %dx%d format:%x:%x flags:%x", CLASSNAME, __FUNCTION__, frame->width, frame->height, frame->format, dec->m_fmt, flags);
 
-  if ((avctx->codec->capabilities & AV_CODEC_CAP_DR1) == 0 || frame->format != AV_PIX_FMT_YUV420P)
+  if ((avctx->codec && (avctx->codec->capabilities & AV_CODEC_CAP_DR1) == 0) || frame->format != dec->m_fmt)
   {
     assert(0);
     return avcodec_default_get_buffer2(avctx, frame, flags);
@@ -230,13 +237,29 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
     frame->linesize[i] = 0;
   }
 
-  frame->buf[0] = buf;
-  frame->linesize[0] = YUVBuffer->m_aligned_width;
-  frame->linesize[1] = YUVBuffer->m_aligned_width>>1;
-  frame->linesize[2] = YUVBuffer->m_aligned_width>>1;
-  frame->data[0] = (uint8_t *)gmem->m_arm;
-  frame->data[1] = frame->data[0] + YUVBuffer->m_aligned_width * YUVBuffer->m_aligned_height;
-  frame->data[2] = frame->data[1] + (YUVBuffer->m_aligned_width>>1) * (YUVBuffer->m_aligned_height>>1);
+  if (dec->m_fmt == AV_PIX_FMT_YUV420P)
+  {
+    frame->buf[0] = buf;
+    frame->linesize[0] = YUVBuffer->m_aligned_width;
+    frame->linesize[1] = YUVBuffer->m_aligned_width>>1;
+    frame->linesize[2] = YUVBuffer->m_aligned_width>>1;
+    frame->data[0] = (uint8_t *)gmem->m_arm;
+    frame->data[1] = frame->data[0] + YUVBuffer->m_aligned_width * YUVBuffer->m_aligned_height;
+    frame->data[2] = frame->data[1] + (YUVBuffer->m_aligned_width>>1) * (YUVBuffer->m_aligned_height>>1);
+  }
+  else if (dec->m_fmt == AV_PIX_FMT_BGR0)
+  {
+    frame->buf[0] = buf;
+    frame->linesize[0] = YUVBuffer->m_aligned_width << 2;
+    frame->data[0] = (uint8_t *)gmem->m_arm;
+  }
+  else if (dec->m_fmt == AV_PIX_FMT_RGB565LE)
+  {
+    frame->buf[0] = buf;
+    frame->linesize[0] = YUVBuffer->m_aligned_width << 1;
+    frame->data[0] = (uint8_t *)gmem->m_arm;
+  }
+  else assert(0);
   frame->extended_data = frame->data;
   // Leave extended buf alone
 
@@ -266,6 +289,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   mainctx->get_buffer2 = CDecoder::FFGetBuffer;
 
   m_avctx = mainctx;
+  m_fmt = fmt;
   return true;
 }
 
@@ -283,7 +307,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 MMAL_BUFFER_HEADER_T *CDecoder::GetMmal()
 {
-  MMAL_POOL_T *render_pool = m_renderer->GetPool(RENDER_FMT_MMAL, false);
+  MMAL_POOL_T *render_pool = m_renderer->GetPool(RENDER_FMT_MMAL, m_fmt, false);
   assert(render_pool);
   MMAL_BUFFER_HEADER_T *mmal_buffer = mmal_queue_timedwait(render_pool->queue, 500);
   if (!mmal_buffer)
@@ -306,7 +330,8 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
   if (!ret)
     return false;
 
-  if (frame->format != AV_PIX_FMT_YUV420P || frame->buf[1] != nullptr || frame->buf[0] == nullptr)
+  if ((frame->format != AV_PIX_FMT_YUV420P && frame->format != AV_PIX_FMT_BGR0 && frame->format != AV_PIX_FMT_RGB565LE) ||
+      frame->buf[1] != nullptr || frame->buf[0] == nullptr)
     return false;
 
   MMAL_BUFFER_HEADER_T *mmal_buffer = GetMmal();

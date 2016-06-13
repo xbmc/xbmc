@@ -39,11 +39,12 @@
 
 #define VERBOSE 0
 
-MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, bool opaque)
+MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque)
 {
   CSingleLock lock(m_sharedSection);
-  if (!m_bMMALConfigured)
-    m_bMMALConfigured = init_vout(format, opaque);
+  bool formatChanged = m_format != format || m_opaque != opaque;
+  if (!m_bMMALConfigured || formatChanged)
+    m_bMMALConfigured = init_vout(format, pixfmt, opaque);
 
   return m_vout_input_pool;
 }
@@ -81,21 +82,60 @@ static void vout_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *b
   mmal->vout_input_port_cb(port, buffer);
 }
 
-bool CMMALRenderer::init_vout(ERenderFormat format, bool opaque)
+static struct {
+   uint32_t encoding;
+   AVPixelFormat pixfmt;
+} pixfmt_to_encoding_table[] =
+{
+   {MMAL_ENCODING_I420,    AV_PIX_FMT_YUV420P},
+   {MMAL_ENCODING_I422,    AV_PIX_FMT_YUV422P},
+   {MMAL_ENCODING_I420,    AV_PIX_FMT_YUVJ420P}, // FIXME
+   {MMAL_ENCODING_I422,    AV_PIX_FMT_YUVJ422P}, // FIXME
+   {MMAL_ENCODING_RGB16,   AV_PIX_FMT_RGB565},
+   {MMAL_ENCODING_RGB16,   AV_PIX_FMT_RGB565LE},
+   {MMAL_ENCODING_BGR16,   AV_PIX_FMT_BGR565},
+   {MMAL_ENCODING_RGB24,   AV_PIX_FMT_RGB24},
+   {MMAL_ENCODING_BGR24,   AV_PIX_FMT_BGR24},
+   {MMAL_ENCODING_ARGB,    AV_PIX_FMT_ARGB},
+   {MMAL_ENCODING_RGBA,    AV_PIX_FMT_RGBA},
+   {MMAL_ENCODING_ABGR,    AV_PIX_FMT_ABGR},
+   {MMAL_ENCODING_BGRA,    AV_PIX_FMT_BGRA},
+   {MMAL_ENCODING_BGRA,    AV_PIX_FMT_BGR0},
+   {MMAL_ENCODING_UNKNOWN, AV_PIX_FMT_NONE}
+};
+
+static uint32_t pixfmt_to_encoding(AVPixelFormat pixfmt)
+{
+  unsigned int i;
+  for (i = 0; pixfmt_to_encoding_table[i].encoding != MMAL_ENCODING_UNKNOWN; i++)
+    if (pixfmt_to_encoding_table[i].pixfmt == pixfmt)
+      break;
+  return pixfmt_to_encoding_table[i].encoding;
+}
+
+bool CMMALRenderer::init_vout(ERenderFormat format, AVPixelFormat pixfmt, bool opaque)
 {
   CSingleLock lock(m_sharedSection);
-  bool formatChanged = m_format != format || m_opaque != opaque;
+  bool formatChanged = m_format != format || m_opaque != opaque || m_pixfmt != pixfmt;
   MMAL_STATUS_T status;
+  uint32_t encoding = pixfmt_to_encoding(pixfmt);
 
-  CLog::Log(LOGDEBUG, "%s::%s configured:%d format %d->%d opaque %d->%d", CLASSNAME, __func__, m_bConfigured, m_format, format, m_opaque, opaque);
+  CLog::Log(LOGDEBUG, "%s::%s configured:%d format %d->%d pixfmt %x->%x opaque %d->%d", CLASSNAME, __func__, m_bConfigured, m_format, format, m_pixfmt, pixfmt, m_opaque, opaque);
 
   if (m_bMMALConfigured && formatChanged)
     UnInitMMAL();
 
-  if (m_bMMALConfigured || format != RENDER_FMT_MMAL)
+  if (m_bMMALConfigured || format == RENDER_FMT_BYPASS)
     return true;
 
+  if (format != RENDER_FMT_MMAL || encoding == MMAL_ENCODING_UNKNOWN)
+  {
+    CLog::Log(LOGERROR, "%s::%s Unsupported format", CLASSNAME, __func__);
+    return false;
+  }
+
   m_format = format;
+  m_pixfmt = pixfmt;
   m_opaque = opaque;
 
   /* Create video renderer */
@@ -123,7 +163,7 @@ bool CMMALRenderer::init_vout(ERenderFormat format, bool opaque)
   es_format->es->video.width = m_sourceWidth;
   es_format->es->video.height = m_sourceHeight;
 
-  es_format->encoding = m_opaque ? MMAL_ENCODING_OPAQUE : MMAL_ENCODING_I420;
+  es_format->encoding = m_opaque ? MMAL_ENCODING_OPAQUE : encoding;
 
   status = mmal_port_parameter_set_boolean(m_vout_input, MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
   if (status != MMAL_SUCCESS)
@@ -177,6 +217,7 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer")
   memset(m_buffers, 0, sizeof m_buffers);
   m_iFlags = 0;
   m_format = RENDER_FMT_NONE;
+  m_pixfmt = AV_PIX_FMT_YUV420P;
   m_opaque = true;
   m_bConfigured = false;
   m_bMMALConfigured = false;
@@ -281,7 +322,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageRenderArea();
 
-  m_bMMALConfigured = init_vout(format, m_opaque);
+  m_bMMALConfigured = init_vout(format, m_pixfmt, m_opaque);
   m_bConfigured = m_bMMALConfigured;
   assert(m_bConfigured);
   return m_bConfigured;

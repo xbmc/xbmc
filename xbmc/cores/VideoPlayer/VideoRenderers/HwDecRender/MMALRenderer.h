@@ -83,7 +83,7 @@ public:
   virtual bool         IsGuiLayer() { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
-  MMAL_POOL_T *GetPool(ERenderFormat format, bool opaque);
+  MMAL_POOL_T *GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque);
 protected:
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -103,6 +103,7 @@ protected:
   bool                      m_StereoInvert;
   int                       m_inflight;
   bool                      m_opaque;
+  AVPixelFormat m_pixfmt;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_vout;
@@ -111,7 +112,7 @@ protected:
   MMAL_QUEUE_T *m_queue;
   double m_error;
 
-  bool init_vout(ERenderFormat format, bool opaque);
+  bool init_vout(ERenderFormat format, AVPixelFormat pixfmt, bool opaque);
   void ReleaseBuffers();
   void UnInitMMAL();
 };
