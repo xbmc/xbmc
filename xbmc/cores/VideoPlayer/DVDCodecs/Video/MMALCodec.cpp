@@ -885,7 +885,10 @@ void CMMALVideo::Prime()
 {
   MMAL_BUFFER_HEADER_T *buffer;
   assert(m_renderer);
-  MMAL_POOL_T *render_pool = m_renderer->GetPool(RENDER_FMT_MMAL, AV_PIX_FMT_YUV420P, true);
+  if (!m_pool)
+    m_pool = m_renderer->GetPool(RENDER_FMT_MMAL, AV_PIX_FMT_YUV420P, true);
+  assert(m_pool);
+  MMAL_POOL_T *render_pool = m_pool->Get();
   assert(render_pool);
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - queue(%p)", CLASSNAME, __func__, render_pool);

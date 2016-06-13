@@ -57,6 +57,7 @@ public:
 
 class CMMALVideo;
 class CMMALRenderer;
+class CMMALPool;
 
 // a mmal video frame
 class CMMALVideoBuffer : public CMMALBuffer
@@ -140,6 +141,7 @@ protected:
   MMAL_PORT_T *m_dec_output;
   MMAL_POOL_T *m_dec_input_pool;
   CMMALRenderer *m_renderer;
+  std::shared_ptr<CMMALPool> m_pool;
 
   MMAL_ES_FORMAT_T *m_es_format;
   MMAL_COMPONENT_T *m_deint;

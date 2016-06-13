@@ -39,7 +39,7 @@
 
 #define VERBOSE 0
 
-MMAL_POOL_T *CMMALRenderer::GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque)
+std::shared_ptr<CMMALPool> CMMALRenderer::GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque)
 {
   CSingleLock lock(m_sharedSection);
   bool formatChanged = m_format != format || m_opaque != opaque;
@@ -55,7 +55,7 @@ CRenderInfo CMMALRenderer::GetRenderInfo()
   CRenderInfo info;
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s cookie:%p", CLASSNAME, __func__, (void *)m_vout_input_pool);
+    CLog::Log(LOGDEBUG, "%s::%s opaque:%p", CLASSNAME, __func__, this);
 
   info.max_buffer_size = NUM_BUFFERS;
   info.optimal_buffer_size = NUM_BUFFERS;
@@ -111,6 +111,24 @@ static uint32_t pixfmt_to_encoding(AVPixelFormat pixfmt)
     if (pixfmt_to_encoding_table[i].pixfmt == pixfmt)
       break;
   return pixfmt_to_encoding_table[i].encoding;
+}
+
+CMMALPool::CMMALPool(MMAL_PORT_T *input, uint32_t num_buffers, uint32_t buffer_size)
+{
+  m_input = input;
+  m_pool = mmal_port_pool_create(input, num_buffers, buffer_size);
+  if (!m_pool)
+    CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port", CLASSNAME, __func__);
+  else
+    CLog::Log(LOGDEBUG, "%s::%s Created pool %p of size %d x %d", CLASSNAME, __func__, m_pool, num_buffers, buffer_size);
+}
+
+CMMALPool::~CMMALPool()
+{
+  CLog::Log(LOGDEBUG, "%s::%s destroying pool (%p)", CLASSNAME, __func__, m_pool);
+  mmal_port_pool_destroy(m_input, m_pool);
+  m_pool = nullptr;
+  m_input = nullptr;
 }
 
 bool CMMALRenderer::init_vout(ERenderFormat format, AVPixelFormat pixfmt, bool opaque)
@@ -193,13 +211,7 @@ bool CMMALRenderer::init_vout(ERenderFormat format, AVPixelFormat pixfmt, bool o
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "%s::%s Created pool of size %d x %d", CLASSNAME, __func__, m_vout_input->buffer_num, m_vout_input->buffer_size);
-  m_vout_input_pool = mmal_port_pool_create(m_vout_input , m_vout_input->buffer_num, m_opaque ? m_vout_input->buffer_size:0);
-  if (!m_vout_input_pool)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
+  m_vout_input_pool = std::make_shared<CMMALPool>(m_vout_input, m_vout_input->buffer_num, m_opaque ? m_vout_input->buffer_size:0);
   if (!CSettings::GetInstance().GetBool("videoplayer.usedisplayasclock"))
   {
     m_queue = mmal_queue_create();
@@ -501,7 +513,7 @@ void CMMALRenderer::ReleaseBuffers()
 void CMMALRenderer::UnInitMMAL()
 {
   CSingleLock lock(m_sharedSection);
-  CLog::Log(LOGDEBUG, "%s::%s pool(%p)", CLASSNAME, __func__, m_vout_input_pool);
+  CLog::Log(LOGDEBUG, "%s::%s pool(%p)", CLASSNAME, __func__, m_vout_input_pool ? m_vout_input_pool->Get() : nullptr);
   if (m_queue)
   {
     StopThread(true);
@@ -521,11 +533,8 @@ void CMMALRenderer::UnInitMMAL()
 
   ReleaseBuffers();
 
-  if (m_vout_input_pool)
-  {
-    mmal_port_pool_destroy(m_vout_input, m_vout_input_pool);
-    m_vout_input_pool = NULL;
-  }
+  m_vout_input_pool = NULL;
+
   m_vout_input = NULL;
 
   if (m_vout)

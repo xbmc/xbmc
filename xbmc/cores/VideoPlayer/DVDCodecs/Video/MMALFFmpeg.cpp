@@ -307,7 +307,11 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 MMAL_BUFFER_HEADER_T *CDecoder::GetMmal()
 {
-  MMAL_POOL_T *render_pool = m_renderer->GetPool(RENDER_FMT_MMAL, m_fmt, false);
+  if (!m_pool)
+    m_pool = m_renderer->GetPool(RENDER_FMT_MMAL, m_fmt, false);
+
+  assert(m_pool);
+  MMAL_POOL_T *render_pool = m_pool->Get();
   assert(render_pool);
   MMAL_BUFFER_HEADER_T *mmal_buffer = mmal_queue_timedwait(render_pool->queue, 500);
   if (!mmal_buffer)

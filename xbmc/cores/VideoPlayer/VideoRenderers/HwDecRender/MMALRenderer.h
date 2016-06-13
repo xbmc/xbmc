@@ -43,6 +43,17 @@ class CMMALBuffer;
 
 struct DVDVideoPicture;
 
+class CMMALPool
+{
+public:
+  CMMALPool(MMAL_PORT_T *input, uint32_t num_buffers, uint32_t buffer_size);
+  ~CMMALPool();
+  MMAL_POOL_T *Get() { return m_pool; }
+protected:
+  MMAL_POOL_T *m_pool;
+  MMAL_PORT_T *m_input;
+};
+
 class CMMALRenderer : public CBaseRenderer, public CThread
 {
 public:
@@ -83,7 +94,7 @@ public:
   virtual bool         IsGuiLayer() { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
-  MMAL_POOL_T *GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque);
+  std::shared_ptr<CMMALPool> GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque);
 protected:
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -108,7 +119,7 @@ protected:
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_vout;
   MMAL_PORT_T *m_vout_input;
-  MMAL_POOL_T *m_vout_input_pool;
+  std::shared_ptr<CMMALPool> m_vout_input_pool;
   MMAL_QUEUE_T *m_queue;
   double m_error;
 
