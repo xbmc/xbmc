@@ -211,7 +211,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 
   for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
     changed |= (*i)->UpdateVisibility(m_parentID);
-  return changed; // TODO: Also returned changed if properties are changed (if so, need to update scroll to letter).
+  return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
 void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)

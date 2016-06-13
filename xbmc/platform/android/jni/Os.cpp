@@ -40,7 +40,8 @@ bool CJNIOsVibrator::hasVibrator() const
 
 void CJNIOsVibrator::vibrate(std::vector<int64_t> pattern, int repeat) const
 {
-  /* TODO
+  //! @todo implement
+  /*
   call_method<void>(m_object,
     "vibrate", "([JI)F",
     jcast<jlongArray>(pattern), repeat);

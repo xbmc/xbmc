@@ -22,7 +22,7 @@
 
 #include "kodi_peripheral_types.h"
 
-#define PERIPHERAL_ADDON_JOYSTICKS // TODO
+#define PERIPHERAL_ADDON_JOYSTICKS //! @todo
 
 #ifdef __cplusplus
 extern "C"

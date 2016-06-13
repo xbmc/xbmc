@@ -61,9 +61,10 @@ extern "C" {
 #include "platform/darwin/DarwinUtils.h"
 #endif
 
-//due to a bug on osx nvidia, using gltexsubimage2d with a pbo bound and a null pointer
-//screws up the alpha, an offset fixes this, there might still be a problem if stride + PBO_OFFSET
-//is a multiple of 128 and deinterlacing is on
+//! @bug
+//! due to a bug on osx nvidia, using gltexsubimage2d with a pbo bound and a null pointer
+//! screws up the alpha, an offset fixes this, there might still be a problem if stride + PBO_OFFSET
+//! is a multiple of 128 and deinterlacing is on
 #define PBO_OFFSET 16
 
 using namespace Shaders;

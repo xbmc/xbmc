@@ -155,7 +155,7 @@ bool CVirtualDirectory::IsInSource(const std::string &path) const
     }
     return false;
   }
-  // TODO: May need to handle other special cases that GetMatchingSource() fails on
+  //! @todo May need to handle other special cases that GetMatchingSource() fails on
   return (iShare > -1);
 }
 

@@ -33,6 +33,7 @@ class TestLabelFormatter : public testing::Test
 protected:
   TestLabelFormatter()
   {
+    //! @todo implement
     /* TODO
     CSettingsCategory* fl = CSettings::GetInstance().AddCategory(7, "filelists", 14081);
     CSettings::GetInstance().AddBool(fl, CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS, 13306, true);

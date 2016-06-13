@@ -128,7 +128,7 @@ bool CContextMenuManager::IsVisible(
 ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const CContextMenuItem& root /*= MAIN*/) const
 {
   ContextMenuView result;
-  //TODO: implement group support
+  //! @todo implement group support
   if (&root == &MAIN)
   {
     CSingleLock lock(m_criticalSection);

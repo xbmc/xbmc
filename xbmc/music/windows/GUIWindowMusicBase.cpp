@@ -493,7 +493,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     {
       if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
       {
-        // TODO: should display a dialog saying no permissions
+        //! @todo should display a dialog saying no permissions
         if (m_dlgProgress)
           m_dlgProgress->Close();
         return false;
@@ -587,7 +587,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 
   OnRetrieveMusicInfo(*m_vecItems);
 
-  // \todo Scan for multitrack items here...
+  //! @todo Scan for multitrack items here...
   std::vector<std::string> itemsForRemove;
   CFileItemList itemsForAdd;
   for (int i = 0; i < m_vecItems->Size(); ++i)
@@ -1094,7 +1094,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   else
   {
     // just a single item, play it
-    // TODO: Add music-specific code for single playback of an item here (See OnClick in MediaWindow, and OnPlayMedia below)
+    //! @todo Add music-specific code for single playback of an item here (See OnClick in MediaWindow, and OnPlayMedia below)
     OnClick(iItem);
   }
 }
@@ -1149,7 +1149,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
     // following etc.
     if ( (CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT) && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR) )
     {
-      // TODO: Should the playlist be cleared if nothing is already playing?
+      //! @todo Should the playlist be cleared if nothing is already playing?
       OnQueueItem(iItem);
       return true;
     }
@@ -1219,8 +1219,8 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &pa
 
   // update the file listing - we have to update the whole lot, as it's likely that
   // more than just our thumbnaias changed
-  // TODO: Ideally this would only be done when needed - at the moment we appear to be
-  //       doing this for every lookup, possibly twice (see ShowAlbumInfo)
+  //! @todo Ideally this would only be done when needed - at the moment we appear to be
+  //!       doing this for every lookup, possibly twice (see ShowAlbumInfo)
   Refresh(true);
 
   //  Do we have to autoswitch to the thumb control?
@@ -1402,8 +1402,8 @@ void CGUIWindowMusicBase::OnScan(int iItem)
   else if (m_vecItems->Get(iItem)->m_bIsFolder)
     strPath = m_vecItems->Get(iItem)->GetPath();
   else
-  { // TODO: MUSICDB - should we allow scanning a single item into the database?
-    //       This will require changes to the info scanner, which assumes we're running on a folder
+  { //! @todo MUSICDB - should we allow scanning a single item into the database?
+    //!       This will require changes to the info scanner, which assumes we're running on a folder
     strPath = m_vecItems->GetPath();
   }
   DoScan(strPath);

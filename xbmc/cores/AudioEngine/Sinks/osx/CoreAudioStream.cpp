@@ -59,8 +59,8 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
   return true;
 }
 
-// TODO: Should it even be possible to change both the 
-// physical and virtual formats, since the devices do it themselves?
+//! @todo Should it even be possible to change both the 
+//! physical and virtual formats, since the devices do it themselves?
 void CCoreAudioStream::Close(bool restore)
 {
   if (!m_StreamId)

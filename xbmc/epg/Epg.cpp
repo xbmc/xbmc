@@ -769,7 +769,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   {
     CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%s' with scraper '%s'", __FUNCTION__, m_strName.c_str(), m_strScraperName.c_str());
     CLog::Log(LOGWARNING, "loading the EPG via scraper has not been implemented yet");
-    // TODO: Add Support for Web EPG Scrapers here
+    //! @todo Add Support for Web EPG Scrapers here
   }
 
   return bGrabSuccess;

@@ -88,7 +88,7 @@ void CInputManager::InitializeInputs()
 
 void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
 {
-  // TODO
+  //! @todo
 }
 
 bool CInputManager::ProcessRemote(int windowId)

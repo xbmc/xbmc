@@ -383,8 +383,8 @@ int DllLoader::LoadExports()
     PrintExportTable(ExportDirTable);
 #endif
 
-    // TODO - Validate all pointers are valid. Is a zero RVA valid or not? I'd guess not as it would
-    // point to the coff file header, thus not right.
+    //! @todo Validate all pointers are valid. Is a zero RVA valid or not? I'd guess not as it would
+    //! point to the coff file header, thus not right.
 
     unsigned long *ExportAddressTable = (unsigned long*)RVA2Data(ExportDirTable->ExportAddressTable_RVA);
     unsigned long *NamePointerTable = (unsigned long*)RVA2Data(ExportDirTable->NamePointerTable_RVA);

@@ -266,7 +266,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
 
   // grab the descriptive XML document from the zip, and read it in
   CFileItemList items;
-  // BUG: some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol
+  //! @bug some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol
   CURL pathToUrl(path);
   CURL zipDir = URIUtils::CreateArchivePath("zip", pathToUrl, "");
   if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
@@ -277,7 +277,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     return false;
   }
 
-  // TODO: possibly add support for github generated zips here?
+  //! @todo possibly add support for github generated zips here?
   std::string archive = URIUtils::AddFileToFolder(items[0]->GetPath(), "addon.xml");
 
   CXBMCTinyXML xml;
@@ -351,7 +351,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     }
 
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
-    // TODO: should we assume that installed deps are OK?
+    //! @todo should we assume that installed deps are OK?
     if (dep && std::find(preDeps.begin(), preDeps.end(), dep->ID()) == preDeps.end())
     {
       if (!CheckDependencies(dep, preDeps, database, failedDep))

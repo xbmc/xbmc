@@ -465,9 +465,9 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     if (!subPath.empty())
       strDownloadPath = subPath;
 
-    /* Get item's folder for sub storage, special case for RAR/ZIP items
-       TODO: We need some way to avoid special casing this all over the place
-             for rar/zip (perhaps modify GetDirectory?)
+    /** Get item's folder for sub storage, special case for RAR/ZIP items
+     * @todo We need some way to avoid special casing this all over the place
+     * for rar/zip (perhaps modify GetDirectory?)
      */
     if (URIUtils::IsInRAR(strCurrentFile) || URIUtils::IsInZIP(strCurrentFile))
       strCurrentFilePath = URIUtils::GetDirectory(CURL(strCurrentFile).GetHostName());

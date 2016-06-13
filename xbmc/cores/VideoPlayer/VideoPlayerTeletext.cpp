@@ -609,7 +609,7 @@ void CDVDTeletextData::Process()
                   case 2: /* page key */
                     break; /* ignore */
                   case 3: /* types of PTUs in DRCS */
-                    break; /* TODO */
+                    break; //! @todo implement
                   case 4: /* CLUTs 0/1, only level 3.5 */
                     break; /* ignore */
                   default:

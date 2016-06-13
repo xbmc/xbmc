@@ -1545,7 +1545,7 @@ bool COMXImageReEnc::HandlePortSettingChange(unsigned int resize_width, unsigned
       }
     }
 
-    // TODO: jpeg decoder can decimate by factors of 2
+    //! @todo jpeg decoder can decimate by factors of 2
     port_def.format.image.eColorFormat = OMX_COLOR_FormatYUV420PackedPlanar;
     if (m_omx_resize.IsInitialized())
       port_def.format.image.nSliceHeight = 16;
@@ -2004,7 +2004,7 @@ bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned in
     return false;
   }
 
-  // TODO: jpeg decoder can decimate by factors of 2
+  //! @todo jpeg decoder can decimate by factors of 2
   port_def.format.image.eColorFormat = OMX_COLOR_FormatYUV420PackedPlanar;
   port_def.format.image.nSliceHeight = 16;
   port_def.format.image.nStride = 0;

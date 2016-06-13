@@ -81,7 +81,7 @@ void CGUIRenderingControl::UpdateVisibility(const CGUIListItem *item)
 
 void CGUIRenderingControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  // TODO Add processing to the addon so it could mark when actually changing
+  //! @todo Add processing to the addon so it could mark when actually changing
   CSingleLock lock(m_rendering);
   if (m_callback && m_callback->IsDirty())
     MarkDirtyRegion();
@@ -113,7 +113,7 @@ void CGUIRenderingControl::FreeResources(bool immediately)
 
   if (!m_callback) return;
 
-  g_graphicsContext.CaptureStateBlock(); //TODO locking
+  g_graphicsContext.CaptureStateBlock(); //! @todo locking
   m_callback->Stop();
   g_graphicsContext.ApplyStateBlock();
   m_callback = NULL;

@@ -128,7 +128,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_lastKeypress             = 0;
   m_lastChange               = VOLUME_CHANGE_NONE;
   m_iExitCode                = EXITCODE_QUIT;
-  m_bIsMuted                 = false; // TODO fetch the correct initial value when system audiostatus is implemented in libCEC
+  m_bIsMuted                 = false; //! @todo fetch the correct initial value when system audiostatus is implemented in libCEC
   m_bGoingToStandby          = false;
   m_bIsRunning               = false;
   m_bDeviceRemoved           = false;

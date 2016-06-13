@@ -645,7 +645,7 @@ bool CPartyModeManager::AddInitialSongs(std::vector< std::pair<int,int > > &song
     {
       CFileItemPtr item(items[i]);
       Add(item);
-      // TODO: Allow "relaxed restrictions" later?
+      //! @todo Allow "relaxed restrictions" later?
     }
   }
   return true;

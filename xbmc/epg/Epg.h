@@ -331,7 +331,7 @@ namespace EPG
 
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
-     * TODO: not implemented yet for non-pvr EPGs
+     * @todo not implemented yet for non-pvr EPGs
      * @param start Get entries with a start date after this time.
      * @param end Get entries with an end date before this time.
      * @return True if the update was successful, false otherwise.

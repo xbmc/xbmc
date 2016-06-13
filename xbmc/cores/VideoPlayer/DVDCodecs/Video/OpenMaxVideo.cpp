@@ -55,8 +55,8 @@ using namespace KODI::MESSAGING;
 
 #define CLASSNAME "COpenMaxVideo"
 
-// TODO: These are Nvidia Tegra2 dependent, need to dynamiclly find the
-// right codec matched to video format.
+//! @todo These are Nvidia Tegra2 dependent, need to dynamiclly find the
+//! right codec matched to video format.
 #define OMX_H264BASE_DECODER    "OMX.Nvidia.h264.decode"
 // OMX.Nvidia.h264ext.decode segfaults, not sure why.
 //#define OMX_H264MAIN_DECODER  "OMX.Nvidia.h264ext.decode"
@@ -168,7 +168,7 @@ bool COpenMaxVideo::Open(CDVDStreamInfo &hints)
       decoder_name = OMX_MPEG4_DECODER;
     break;
     /*
-    TODO: what mpeg4 formats are "ext" ????
+    @todo what mpeg4 formats are "ext" ????
     case NvxStreamType_MPEG4Ext:
       // (role name) video_decoder.mpeg4
       // MPEG-4, DivX 4/5 and Xvid compatible
@@ -197,9 +197,9 @@ bool COpenMaxVideo::Open(CDVDStreamInfo &hints)
     return false;
   }
 
-  // TODO: Find component from role name.
-  // Get the port information. This will obtain information about the
-  // number of ports and index of the first port.
+  //! @todo Find component from role name.
+  //! Get the port information. This will obtain information about the
+  //! number of ports and index of the first port.
   OMX_PORT_PARAM_TYPE port_param;
   OMX_INIT_STRUCTURE(port_param);
   omx_err = OMX_GetParameter(m_omx_decoder, OMX_IndexParamVideoInit, &port_param);
@@ -216,7 +216,7 @@ bool COpenMaxVideo::Open(CDVDStreamInfo &hints)
     CLASSNAME, __func__, m_omx_decoder, m_omx_input_port, m_omx_output_port);
   #endif
 
-  // TODO: Set role for the component because components could have multiple roles.
+  //! @todo Set role for the component because components could have multiple roles.
   //QueryCodec();
 
   // Component will be in OMX_StateLoaded now so we can alloc omx input/output buffers.
@@ -357,7 +357,7 @@ int COpenMaxVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     demux_packet.pts = pts;
 
     demux_packet.size = demuxer_bytes;
-    // TODO memory leak? where does this memory get does get freed?
+    //! @todo memory leak? where does this memory get does get freed?
     demux_packet.buff = new OMX_U8[demuxer_bytes];
     memcpy(demux_packet.buff, demuxer_content, demuxer_bytes);
 
@@ -422,7 +422,7 @@ void COpenMaxVideo::Reset(void)
 
     StartDecoder();
 
-    // TODO error checking?
+    //! @todo error checking?
   }
   ::Sleep(100);
 }
@@ -441,7 +441,7 @@ void COpenMaxVideo::ReleaseBuffer(OpenMaxVideoBuffer* releaseBuffer)
   if (!releaseBuffer)
     return;
 
-  // TODO this is NOT multithreading safe. Buffer lifetime managment needs to be adopted.
+  //! @todo this is NOT multithreading safe. Buffer lifetime managment needs to be adopted.
 
   pthread_mutex_lock(&m_omx_queue_mutex);
   OpenMaxVideoBuffer *buffer = releaseBuffer;
@@ -1211,7 +1211,7 @@ void OpenMaxVideoBuffer::ReleaseTexture()
   DeleteImageInfo *deleteInfo = new DeleteImageInfo;
 
   // add egl resources to deletion info
-  // TODO delete from constructor!
+  //! @todo delete from constructor!
   deleteInfo->egl_image = egl_image;
   deleteInfo->egl_sync = eglSync;
   deleteInfo->texture_id = texture_id;
@@ -1222,7 +1222,7 @@ void OpenMaxVideoBuffer::ReleaseTexture()
   }
   else
   {
-    // TODO put the callbackData pointer into userptr so that it can be delete afterwards
+    //! @todo put the callbackData pointer into userptr so that it can be delete afterwards
     deleteInfo->callback.callback = &OpenMaxDeleteTextures;
     deleteInfo->callback.userptr = (void *)deleteInfo;
 

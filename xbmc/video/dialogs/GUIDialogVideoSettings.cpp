@@ -170,7 +170,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
       return;
     g_windowManager.ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
-  // TODO
+  //! @todo implement
   else if (settingId == SETTING_VIDEO_MAKE_DEFAULT)
     Save();
 }

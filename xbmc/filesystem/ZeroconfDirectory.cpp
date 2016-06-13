@@ -211,7 +211,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         service.SetPort(zeroconf_service.GetPort());
         service.SetHostName(zeroconf_service.GetIP());
         //do protocol conversion (_smb._tcp -> smb)
-        //ToDo: try automatic conversion -> remove leading '_' and '._tcp'?
+        //! @todo try automatic conversion -> remove leading '_' and '._tcp'?
         std::string protocol;
         if(!GetXBMCProtocol(zeroconf_service.GetType(), protocol))
         {

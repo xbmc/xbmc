@@ -940,7 +940,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
 void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 {
-  // TODO: Multipass rendering does not currently work! FIX!
+  //! @todo Multipass rendering does not currently work! FIX!
   CLog::Log(LOGERROR, "GLES: MULTIPASS rendering was called! But it doesnt work!!!");
   return;
 
@@ -996,7 +996,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
     m_pYUVProgShader->SetField(0);
 
   VerifyGLState();
-//TODO
+//! @todo implement section
 //  glPushAttrib(GL_VIEWPORT_BIT);
 //  glPushAttrib(GL_SCISSOR_BIT);
   glMatrixModview.Push();
@@ -1017,7 +1017,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   }
 
 // 1st Pass to video frame size
-//TODO
+//! @todo implement section
 //  float imgwidth  = planes[0].rect.x2 - planes[0].rect.x1;
 //  float imgheight = planes[0].rect.y2 - planes[0].rect.y1;
 //  if (m_textureTarget == GL_TEXTURE_2D)
@@ -1056,7 +1056,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   glMatrixModview.PopLoad();
   glMatrixProject.PopLoad();
 
-//TODO
+//! @todo implement section
 //  glPopAttrib(); // pop scissor
 //  glPopAttrib(); // pop viewport
   VerifyGLState();
@@ -1091,7 +1091,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 
   VerifyGLState();
 
-//TODO
+//! @todo implement section
 //  imgwidth  /= m_sourceWidth;
 //  imgheight /= m_sourceHeight;
 //

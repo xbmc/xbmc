@@ -30,7 +30,8 @@ class TestJobManager : public testing::Test
 protected:
   TestJobManager()
   {
-    /* TODO
+    //! @todo implement
+    /*
     CSettingsCategory* net = CSettings::GetInstance().AddCategory(4, "network", 798);
     CSettings::GetInstance().AddBool(net, CSettings::SETTING_NETWORK_USEHTTPPROXY, 708, false);
     CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYSERVER, 706, "",

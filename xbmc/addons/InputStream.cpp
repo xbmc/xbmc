@@ -376,7 +376,7 @@ void CInputStream::UpdateStreams()
     }
     else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
     {
-      // TODO needs identifier in INPUTSTREAM_INFO
+      //! @todo needs identifier in INPUTSTREAM_INFO
       continue;
     }
     else

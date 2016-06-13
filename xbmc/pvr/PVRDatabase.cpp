@@ -64,7 +64,7 @@ void CPVRDatabase::CreateTables()
         "sEPGScraper          varchar(32), "
         "iLastWatched         integer,"
 
-        // TODO use mapping table
+        //! @todo use mapping table
         "iClientId            integer, "
 
         "idEpg                integer"

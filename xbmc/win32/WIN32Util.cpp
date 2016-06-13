@@ -328,7 +328,7 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
 
   if(bWaitForScriptExit)
   {
-    // Todo: Pause music and video playback
+    //! @todo Pause music and video playback
     WaitForSingleObject(ShExecInfo.hProcess,INFINITE);
   }
 
@@ -923,7 +923,8 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
         }
         else
         {
-          // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
+          // Lets show it, like Windows explorer do...
+          //! @todo Sorting should depend on driver letter
           switch(uDriveType)
           {
           case DRIVE_CDROM:

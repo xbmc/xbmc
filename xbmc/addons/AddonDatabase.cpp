@@ -1074,7 +1074,7 @@ void CAddonDatabase::OnPostUnInstall(const std::string& addonId)
   RemoveAddonFromBlacklist(addonId);
   DeleteRepository(addonId);
 
-  //TODO: should be done before uninstall to avoid any race conditions
+  //! @todo should be done before uninstall to avoid any race conditions
   try
   {
     if (NULL == m_pDB.get()) return;

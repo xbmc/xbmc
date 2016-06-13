@@ -245,7 +245,8 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
     modifiers |= XBMCKMOD_LCTRL;
   if (state & AMETA_CTRL_RIGHT_ON)
     modifiers |= XBMCKMOD_RCTRL;
-  /* TODO:
+  //! @todo implement
+  /*
   if (state & AMETA_SYM_ON)
     modifiers |= 0x000?;*/
 

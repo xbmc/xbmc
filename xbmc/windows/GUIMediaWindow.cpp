@@ -708,7 +708,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   int iWindow = GetID();
   std::vector<std::string> regexps;
 
-  // TODO: Do we want to limit the directories we apply the video ones to?
+  //! @todo Do we want to limit the directories we apply the video ones to?
   if (iWindow == WINDOW_VIDEO_NAV)
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
   if (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_MUSIC_NAV)
@@ -736,7 +736,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
 bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
-  // TODO: OnInitWindow calls Update() before window path has been set properly.
+  //! @todo OnInitWindow calls Update() before window path has been set properly.
   if (strDirectory == "?")
     return false;
 
@@ -1075,7 +1075,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
   }
   else if (iDriveType==CMediaSource::SOURCE_TYPE_REMOTE)
   {
-    // TODO: Handle not connected to a remote share
+    //! @todo Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{221});
@@ -1625,7 +1625,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (!item || item->IsParentFolder())
     return;
 
-  // TODO: FAVOURITES Conditions on masterlock and localisation
+  //! @todo FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->IsPath("add") && !item->IsPath("newplaylist://") &&
       !URIUtils::IsProtocol(item->GetPath(), "newsmartplaylist") && !URIUtils::IsProtocol(item->GetPath(), "newtag") &&
       !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
@@ -1871,11 +1871,11 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
       filteredItems.Add(item);
       continue;
     }
-    // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
-    // though that isn't practical.  Perhaps a better idea would be to just grab the info that we should filter on based on
-    // where we are in the library tree.
-    // Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
-    // but it's re-enabled on the way back out.
+    //! @todo Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
+    //! though that isn't practical.  Perhaps a better idea would be to just grab the info that we should filter on based on
+    //! where we are in the library tree.
+    //! Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
+    //! but it's re-enabled on the way back out.
     std::string match;
     /*    if (item->GetFocusedLayout())
      match = item->GetFocusedLayout()->GetAllText();

@@ -390,13 +390,13 @@ int CSMBFile::OpenFile(std::string& strAuth)
   std::string strPath = g_passwordManager.GetSMBAuthFilename(strAuth);
 
   fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-  // TODO: Run a loop here that prompts for our username/password as appropriate?
-  // We have the ability to run a file (eg from a button action) without browsing to
-  // the directory first.  In the case of a password protected share that we do
-  // not have the authentication information for, the above smbc_open() will have
-  // returned negative, and the file will not be opened.  While this is not a particular
-  // likely scenario, we might want to implement prompting for the password in this case.
-  // The code from SMBDirectory can be used for this.
+  //! @todo Run a loop here that prompts for our username/password as appropriate?
+  //! We have the ability to run a file (eg from a button action) without browsing to
+  //! the directory first.  In the case of a password protected share that we do
+  //! not have the authentication information for, the above smbc_open() will have
+  //! returned negative, and the file will not be opened.  While this is not a particular
+  //! likely scenario, we might want to implement prompting for the password in this case.
+  //! The code from SMBDirectory can be used for this.
   if(fd >= 0)
     strAuth = strPath;
 

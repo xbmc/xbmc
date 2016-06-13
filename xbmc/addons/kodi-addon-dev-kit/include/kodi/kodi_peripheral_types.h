@@ -268,7 +268,7 @@ extern "C"
   } ATTRIBUTE_PACKED JOYSTICK_FEATURE;
   ///}
 
-  // TODO: Mouse, light gun, multitouch
+  //! @todo Mouse, light gun, multitouch
 
   /*!
    * @brief Structure to transfer the methods from kodi_peripheral_dll.h to the frontend

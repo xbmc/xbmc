@@ -502,7 +502,7 @@ bool CCdIoSupport::IsIt(int num)
   signature_t *sigp = &sigs[num];
   int len = strlen(sigp->sig_str);
 
-  /* TODO: check that num < largest sig. */
+  //! @todo check that num < largest sig.
   return 0 == memcmp(&buffer[sigp->buf_num][sigp->offset], sigp->sig_str, len);
 }
 

@@ -589,7 +589,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   // UpdateButtons();
 }
 
-// TODO 2.0: Can this be removed, or should we run without the "special" file directories while
+//! @todo 2.0: Can this be removed, or should we run without the "special" file directories while
 // in filemanager view.
 void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
 {
@@ -653,7 +653,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
   }
   else if ( iDriveType == CMediaSource::SOURCE_TYPE_REMOTE )
   {
-    // TODO: Handle not connected to a remote share
+    //! @todo Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{221});
@@ -881,8 +881,8 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const std::string &strDirect
 
 bool CGUIWindowFileManager::CanRename(int iList)
 {
-  // TODO: Renaming of shares (requires writing to sources.xml)
-  // this might be able to be done via the webserver code stuff...
+  //! @todo Renaming of shares (requires writing to sources.xml)
+  //! this might be able to be done via the webserver code stuff...
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsReadOnly()) return false;
 
@@ -892,8 +892,8 @@ bool CGUIWindowFileManager::CanRename(int iList)
 bool CGUIWindowFileManager::CanCopy(int iList)
 {
   // can't copy if the destination is not writeable, or if the source is a share!
-  // TODO: Perhaps if the source is removeable media (DVD/CD etc.) we could
-  // put ripping/backup in here.
+  //! @todo Perhaps if the source is removeable media (DVD/CD etc.) we could
+  //! put ripping/backup in here.
   if (!CUtil::SupportsReadFileOperations(m_Directory[iList]->GetPath())) return false;
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[1 - iList]->IsVirtualDirectoryRoot()) return false;
@@ -960,7 +960,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (m_Directory[list]->IsVirtualDirectoryRoot())
   {
     if (item < 0)
-    { // TODO: We should add the option here for shares to be added if there aren't any
+    { //! @todo We should add the option here for shares to be added if there aren't any
       return ;
     }
 

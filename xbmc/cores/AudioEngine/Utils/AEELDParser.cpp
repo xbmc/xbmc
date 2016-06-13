@@ -191,7 +191,7 @@ void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info
     AEDataFormat fmt = AE_FMT_INVALID;
     switch (formatCode)
     {
-      // TODO
+      //! @todo implement
       case CEA_861_FORMAT_AC3  : fmt = AE_FMT_RAW   ; break;
       case CEA_861_FORMAT_DTS  : fmt = AE_FMT_RAW   ; break;
       case CEA_861_FORMAT_DTSHD: fmt = AE_FMT_RAW ; break;

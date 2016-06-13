@@ -201,7 +201,7 @@ int EpgSearchFilter::FilterRecordings(CFileItemList &results)
   CFileItemList recordings;
   g_PVRRecordings->GetAll(recordings);
 
-  // TODO inefficient!
+  //! @todo inefficient!
   CPVRRecordingPtr recording;
   for (int iRecordingPtr = 0; iRecordingPtr < recordings.Size(); iRecordingPtr++)
   {
@@ -235,7 +235,7 @@ int EpgSearchFilter::FilterTimers(CFileItemList &results)
     return iRemoved;
 
   std::vector<CFileItemPtr> timers = g_PVRTimers->GetActiveTimers();
-  // TODO inefficient!
+  //! @todo inefficient!
   for (unsigned int iTimerPtr = 0; iTimerPtr < timers.size(); iTimerPtr++)
   {
     CFileItemPtr fileItem = timers.at(iTimerPtr);

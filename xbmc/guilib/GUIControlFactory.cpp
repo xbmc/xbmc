@@ -778,8 +778,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if (!pControlNode->Attribute("id", (int*) &id))
     XMLUtils::GetInt(pControlNode, "id", (int&) id);       // backward compatibility - not desired
-  // TODO: Perhaps we should check here whether id is valid for focusable controls
-  // such as buttons etc.  For labels/fadelabels/images it does not matter
+  //! @todo Perhaps we should check here whether id is valid for focusable controls
+  //! such as buttons etc.  For labels/fadelabels/images it does not matter
 
   GetAlignment(pControlNode, "align", labelInfo.align);
   if (!GetDimensions(pControlNode, "left", "right", "centerleft", "centerright", "width", rect.Width(), posX, width, minWidth))

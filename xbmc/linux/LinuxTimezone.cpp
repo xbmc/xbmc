@@ -117,7 +117,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
          s = line;
          StringUtils::Trim(s);
 
-        /* TODO:STRING_CLEANUP */
+        //! @todo STRING_CLEANUP
          if (s.length() == 0)
             continue;
 

@@ -622,7 +622,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     m_videoDatabase->Close();
 
     // still empty, try grabbing from filename
-    // TODO: in case of too many false positives due to using the full path, extract the filename only using string utils
+    //! @todo in case of too many false positives due to using the full path, extract the filename only using string utils
     if (stereoMode.empty())
       stereoMode = CStereoscopicsManager::GetInstance().DetectStereoModeByString( path );
   }

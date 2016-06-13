@@ -310,7 +310,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
     strLocale = "C";
   }
 
-  g_langInfo.m_systemLocale = current_locale; // TODO: move to CLangInfo class
+  g_langInfo.m_systemLocale = current_locale; //! @todo move to CLangInfo class
   std::locale::global(current_locale);
 #endif
   g_charsetConverter.resetSystemCharset();

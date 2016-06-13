@@ -616,7 +616,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     // update ID may be wrong here, it should be the one of the container?
     NPT_CHECK(action->SetArgumentValue("UpdateId", "0"));
 
-    // TODO: We need to keep track of the overall SystemUpdateID of the CDS
+    //! @todo We need to keep track of the overall SystemUpdateID of the CDS
 
     return NPT_SUCCESS;
 }
@@ -1097,7 +1097,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
         }
 
     } else if (updated.IsMusicDb()) {
-      //TODO implement this
+      //! @todo implement this
 
     } else {
         err = 701;

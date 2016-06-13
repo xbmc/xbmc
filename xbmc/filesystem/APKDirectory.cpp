@@ -96,7 +96,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
 bool CAPKDirectory::ContainsFiles(const CURL& url)
 {
-  // TODO: why might we need this ?
+  //! @todo why might we need this ?
   return false;
 }
 

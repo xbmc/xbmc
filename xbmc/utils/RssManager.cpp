@@ -145,8 +145,8 @@ bool CRssManager::Load()
 
         if (pFeed->FirstChild() != NULL)
         {
-          // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
-          //              What about the xml encoding?
+          //! @todo UTF-8: Do these URLs need to be converted to UTF-8?
+          //!              What about the xml encoding?
           std::string strUrl = pFeed->FirstChild()->ValueStr();
           set.url.push_back(strUrl);
           set.interval.push_back(iInterval);

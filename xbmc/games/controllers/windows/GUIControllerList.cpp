@@ -114,7 +114,7 @@ void CGUIControllerList::OnFocus(unsigned int controllerIndex)
     const ControllerPtr& controller = m_controllers[controllerIndex];
     m_featureList->Load(controller);
 
-    // TODO: Activate controller for all game controller controls
+    //! @todo Activate controller for all game controller controls
     CGUIGameController* pController = dynamic_cast<CGUIGameController*>(m_guiWindow->GetControl(CONTROL_GAME_CONTROLLER));
     if (pController)
       pController->ActivateController(controller);
@@ -132,7 +132,7 @@ void CGUIControllerList::ResetController(void)
   {
     const std::string strControllerId = m_controllers[m_focusedController]->ID();
 
-    // TODO: Choose peripheral
+    //! @todo Choose peripheral
     // For now, ask the user if they would like to reset all peripherals
     // "Reset controller profile"
     // "Would you like to reset this controller profile for all devices?"

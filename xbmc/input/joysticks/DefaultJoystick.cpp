@@ -110,7 +110,7 @@ bool CDefaultJoystick::OnAnalogStickMotion(const FeatureName& feature, float x, 
 
 bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z)
 {
-  return false; // TODO
+  return false; //! @todo implement
 }
 
 bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magnitude, CARDINAL_DIRECTION dir)
@@ -193,7 +193,7 @@ unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, CARDINAL_DIR
         break;
     }
   }
-  else if (feature == "accelerometer") return 0; // TODO
+  else if (feature == "accelerometer") return 0; //! @todo implement
 
   return 0;
 }

@@ -52,7 +52,7 @@ void CGUIGameController::Render(void)
 
   if (m_currentController)
   {
-    // TODO: Render pressed buttons
+    //! @todo Render pressed buttons
   }
 }
 
@@ -66,7 +66,7 @@ void CGUIGameController::ActivateController(const ControllerPtr& controller)
 
     lock.Leave();
 
-    // TODO: Sometimes this fails on window init
+    //! @todo Sometimes this fails on window init
     SetFileName(m_currentController->ImagePath());
   }
 }

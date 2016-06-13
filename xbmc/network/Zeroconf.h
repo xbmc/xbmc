@@ -35,8 +35,8 @@ class CCriticalSection;
 /// free to add it. The main purpose currently is to provide an easy
 /// way to publish services in the different StartXXX/StopXXX methods
 /// in CApplication
-/// TODO: Make me safe for use in static initialization. CritSec is a static member :/
-///       use e.g. loki's singleton implementation to make do it properly
+//! @todo Make me safe for use in static initialization. CritSec is a static member :/
+//!       use e.g. loki's singleton implementation to make do it properly
 class CZeroconf
 {
 public:

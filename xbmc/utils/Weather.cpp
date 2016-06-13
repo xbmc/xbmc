@@ -426,7 +426,7 @@ void CWeather::OnSettingAction(const CSetting *setting)
   {
     AddonPtr addon;
     if (CAddonMgr::GetInstance().GetAddon(CSettings::GetInstance().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
-    { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
+    { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
       Refresh();
     }

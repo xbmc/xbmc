@@ -5053,7 +5053,7 @@ bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string& path)
 bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const std::string& strThumb)
 {
   SetArtForItem(idAlbum, MediaTypeAlbum, "thumb", strThumb);
-  // TODO: We should prompt the user to update the art for songs
+  //! @todo We should prompt the user to update the art for songs
   std::string sql = PrepareSQL("UPDATE art"
                               " SET url='-'"
                               " WHERE media_type='song'"
@@ -5371,7 +5371,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string &path1, MAPSONGS& son
   // from the song link tables (as otherwise if a song is added back
   // to the table with the same idSong, these tables can't be cleaned up properly later)
 
-  // TODO: SQLite probably doesn't allow this, but can we rely on that??
+  //! @todo SQLite probably doesn't allow this, but can we rely on that??
 
   // We don't need to remove orphaned albums at this point as in AddAlbum() we check
   // first whether the album has already been read during this scan, and if it hasn't
@@ -5422,7 +5422,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string &path1, MAPSONGS& son
       }
       m_pDS->close();
 
-      //TODO: move this below the m_pDS->exec block, once UPnP doesn't rely on this anymore
+      //! @todo move this below the m_pDS->exec block, once UPnP doesn't rely on this anymore
       for (MAPSONGS::iterator songit = songs.begin(); songit != songs.end(); ++songit)
         AnnounceRemove(MediaTypeSong, songit->second.idSong);
 

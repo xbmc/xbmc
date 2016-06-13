@@ -334,7 +334,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // advanced setting override for skip loop filter (see avcodec.h for valid options)
-  // TODO: allow per video setting?
+  //! @todo allow per video setting?
   if (g_advancedSettings.m_iSkipLoopFilter != 0)
   {
     m_pCodecContext->skip_loop_filter = (AVDiscard)g_advancedSettings.m_iSkipLoopFilter;

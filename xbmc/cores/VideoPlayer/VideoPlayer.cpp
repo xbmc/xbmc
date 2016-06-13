@@ -2369,10 +2369,10 @@ void CVideoPlayer::SynchronizePlayers(unsigned int sources)
 
   if (m_CurrentVideo.id >= 0)
     m_VideoPlayerVideo->SendMessage(message->Acquire());
-/* TODO - we have to rewrite the sync class, to not require
-          all other players waiting for subtitle, should only
-          be the oposite way
-  if (m_CurrentSubtitle.id >= 0)
+//! @todo we have to rewrite the sync class, to not require
+//!       all other players waiting for subtitle, should only
+//!       be the oposite way
+/*  if (m_CurrentSubtitle.id >= 0)
     m_VideoPlayerSubtitle->SendMessage(message->Acquire());
 */
   message->Release();
@@ -2485,11 +2485,11 @@ void CVideoPlayer::HandleMessages()
         int time = msg.GetRestore() ? m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
 
         // if input stream doesn't support ISeekTime, convert back to pts
-        // TODO:
-        // After demuxer we add an offset to input pts so that displayed time and clock are
-        // increasing steadily. For seeking we need to determine the boundaries and offset
-        // of the desired segment. With the current approach calculated time may point
-        // to nirvana
+        //! @todo
+        //! After demuxer we add an offset to input pts so that displayed time and clock are
+        //! increasing steadily. For seeking we need to determine the boundaries and offset
+        //! of the desired segment. With the current approach calculated time may point
+        //! to nirvana
         if (m_pInputStream->GetIPosTime() == nullptr)
           time -= DVD_TIME_TO_MSEC(m_State.time_offset);
 
@@ -2738,8 +2738,8 @@ void CVideoPlayer::HandleMessages()
       {
         FlushBuffers(false);
         CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-        // TODO find a better solution for the "otherStreaHack"
-        // a stream is not sopposed to be terminated before demuxer
+        //! @todo find a better solution for the "otherStreaHack"
+        //! a stream is not sopposed to be terminated before demuxer
         if (input && input->IsOtherStreamHack())
         {
           SAFE_DELETE(m_pDemuxer);
@@ -3714,7 +3714,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
   }
 
-  // TODO desired resolution needs to come from somewhere else
+  //! @todo desired resolution needs to come from somewhere else
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
   m_pDemuxer->SetVideoResolution(res.iWidth, res.iHeight);
 

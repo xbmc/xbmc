@@ -613,7 +613,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   {  
     if(buffer)
     {
-#if defined(TARGET_WINDOWS)// TODO get rid of this define after gotham
+#if defined(TARGET_WINDOWS)//! @todo get rid of this define after gotham v13
       memcpy(buffer, &tmpBuffer, sizeof(struct __stat64));
 #else
       memset(buffer, 0, sizeof(struct __stat64));

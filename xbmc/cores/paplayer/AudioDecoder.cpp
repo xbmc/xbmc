@@ -298,7 +298,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
       int result = m_codec->ReadRaw(&m_rawBuffer, &m_rawBufferSize);
       if (result == READ_SUCCESS && m_rawBufferSize)
       {
-        // TODO, trash this useless ringbuffer
+        //! @todo trash this useless ringbuffer
         if (m_status == STATUS_QUEUING)
         {
           m_status = STATUS_QUEUED;

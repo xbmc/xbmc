@@ -441,7 +441,7 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
       settingId == CSettings::SETTING_SMB_WORKGROUP)
   {
     // okey we really don't need to restart, only deinit samba, but that could be damn hard if something is playing
-    // TODO - General way of handling setting changes that require restart
+    //! @todo - General way of handling setting changes that require restart
     if (HELPERS::ShowYesNoDialogText(CVariant{14038}, CVariant{14039}) == DialogResponse::YES)
     {
       CSettings::GetInstance().Save();

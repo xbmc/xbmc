@@ -166,7 +166,7 @@ namespace SOCKETS
     int  Read(CAddress& addr, const int buffersize, void *buffer);
     bool Broadcast(const CAddress& addr, const int datasize, const void* data)
     {
-      // TODO
+      //! @todo implement
       return false;
     }
     SOCKET  Socket() { return m_iSock; }

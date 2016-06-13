@@ -20,7 +20,7 @@
  *
  */
 
-// TODO: Inline these methods
+//! @todo Inline these methods
 long cas(volatile long *pAddr, long expectedVal, long swapVal);
 #if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__)
 long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal);

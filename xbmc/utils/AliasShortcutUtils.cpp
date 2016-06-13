@@ -34,7 +34,7 @@ bool IsAliasShortcut(const std::string& path, bool isdirectory)
 #if defined(TARGET_DARWIN_OSX)
   // Note: regular files that have an .alias extension can be
   //   reported as an alias when clearly, they are not. Trap them out.
-  if (!URIUtils::HasExtension(path, ".alias"))// TODO - check if this is still needed with the new API
+  if (!URIUtils::HasExtension(path, ".alias"))//! @todo - check if this is still needed with the new API
   {
     rtn = CDarwinUtils::IsAliasShortcut(path, isdirectory);
   }

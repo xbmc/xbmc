@@ -59,7 +59,7 @@ namespace XBMCAddon
      * For this method we expect the PyThreadState to be passed as the user
      *  data for the check. 
      *
-     * TODO: This is a stupid way to get this information back to the handler.
+     * @todo This is a stupid way to get this information back to the handler.
      *  there should be a more language neutral means.
      */
     bool PythonCallbackHandler::shouldRemoveCallback(AddonClass* obj, void* threadState)

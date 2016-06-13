@@ -271,10 +271,10 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             SinkReply reply;
             reply.format = m_sinkFormat;
-            // TODO
-            // use max raw packet size, for now use max size of an IEC packed packet
-            // maxIECPpacket > maxRawPacket
-            // for raw packets frameSize is set to 1
+            //! @todo
+            //! use max raw packet size, for now use max size of an IEC packed packet
+            //! maxIECPpacket > maxRawPacket
+            //! for raw packets frameSize is set to 1
             if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
             {
               reply.format.m_frames = 61440;
@@ -818,7 +818,7 @@ void CActiveAESink::OpenSink()
   }
 
   // open NULL sink
-  // TODO: should not be required by ActiveAE
+  //! @todo should not be required by ActiveAE
   if (!m_sink)
   {
     device = "NULL:NULL";

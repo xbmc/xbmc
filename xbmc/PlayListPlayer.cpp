@@ -335,9 +335,9 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
   if (item->m_lStartOffset == STARTOFFSET_RESUME)
     item->m_lStartOffset = 0;
 
-  // TODO - move the above failure logic and the below success logic
-  //        to callbacks instead so we don't rely on the return value
-  //        of PlayFile()
+  //! @todo - move the above failure logic and the below success logic
+  //!        to callbacks instead so we don't rely on the return value
+  //!        of PlayFile()
 
   // consecutive error counter so reset if the current item is playing
   m_iFailedSongs = 0;

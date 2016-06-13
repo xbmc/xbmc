@@ -1098,8 +1098,8 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
 
 
-  // TODO: delete entire block in v18
-  // m_strStreamURL is deprecated
+  //! @todo delete entire block in v18
+  //! @deprecated m_strStreamURL is deprecated in v17
   if (item.IsPVR())
   {
     CPVRRecordingsPath path(item.GetPath());

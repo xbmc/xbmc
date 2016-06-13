@@ -123,16 +123,16 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
     }
     else if (PODoc.GetEntryType() == MSGID_FOUND)
     {
-      // TODO: implement reading of non-id based string entries from the PO files.
-      // These entries would go into a separate memory map, using hash codes for fast look-up.
-      // With this memory map we can implement using gettext(), ngettext(), pgettext() calls,
-      // so that we don't have to use new IDs for new strings. Even we can start converting
-      // the ID based calls to normal gettext calls.
+      //! @todo implement reading of non-id based string entries from the PO files.
+      //! These entries would go into a separate memory map, using hash codes for fast look-up.
+      //! With this memory map we can implement using gettext(), ngettext(), pgettext() calls,
+      //! so that we don't have to use new IDs for new strings. Even we can start converting
+      //! the ID based calls to normal gettext calls.
     }
     else if (PODoc.GetEntryType() == MSGID_PLURAL_FOUND)
     {
-      // TODO: implement reading of non-id based pluralized string entries from the PO files.
-      // We can store the pluralforms for each language, in the langinfo.xml files.
+      //! @todo implement reading of non-id based pluralized string entries from the PO files.
+      //! We can store the pluralforms for each language, in the langinfo.xml files.
     }
   }
 
@@ -210,7 +210,7 @@ void CLocalizeStrings::ClearSkinStrings()
 
 bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::string& language)
 {
-  //TODO: shouldn't hold lock while loading file
+  //! @todo shouldn't hold lock while loading file
   CExclusiveLock lock(m_stringsMutex);
   ClearSkinStrings();
   // load the skin strings in.

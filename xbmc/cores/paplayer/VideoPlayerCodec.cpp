@@ -102,8 +102,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     return false;
   }
 
-  // TODO:
-  // convey CFileItem::ContentLookup() into Open()
+  //! @todo
+  //! convey CFileItem::ContentLookup() into Open()
   if (!m_pInputStream->Open())
   {
     CLog::Log(LOGERROR, "%s: Error opening file %s", __FUNCTION__, strFileToOpen.c_str());

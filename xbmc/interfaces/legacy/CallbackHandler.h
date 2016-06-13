@@ -47,8 +47,8 @@ namespace XBMCAddon
    *  messages over to a language controlled thread for eventual
    *  execution.
    *
-   * TODO: Allow a cross thread synchronous execution.
-   * TODO: Fix the stupid means of calling the clearPendingCalls by passing
+   * @todo Allow a cross thread synchronous execution.
+   * Fix the stupid means of calling the clearPendingCalls by passing
    *  userData which is specific to the handler/language type.
    */
   class RetardedAsynchCallbackHandler : public CallbackHandler

@@ -52,7 +52,7 @@ CZeroconfBrowserAvahi::CZeroconfBrowserAvahi() : mp_client ( 0 ), mp_poll ( 0 )
   if ( ! ( mp_poll = avahi_threaded_poll_new() ) )
   {
     CLog::Log ( LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Could not create threaded poll object" );
-    //TODO: throw exception? can this even happen?
+    //! @todo throw exception? can this even happen?
     return;
   }
 
@@ -241,7 +241,7 @@ void CZeroconfBrowserAvahi::browseCallback (
   {
     case AVAHI_BROWSER_FAILURE:
       CLog::Log ( LOGERROR, "CZeroconfBrowserAvahi::browseCallback error: %s\n", avahi_strerror ( avahi_client_errno ( avahi_service_browser_get_client ( browser ) ) ) );
-      //TODO
+      //! @todo implement
       return;
     case AVAHI_BROWSER_NEW:
       {

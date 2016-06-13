@@ -39,7 +39,7 @@ protected:
     /* Add default settings for locale.
      * Settings here are taken from CGUISettings::Initialize()
      */
-    /* TODO
+    //! @todo implement
     CSettingsCategory *loc = CSettings::GetInstance().AddCategory(7, "locale", 14090);
     CSettings::GetInstance().AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
                             SPIN_CONTROL_TEXT);

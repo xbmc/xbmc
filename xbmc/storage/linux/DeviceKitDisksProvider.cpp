@@ -195,8 +195,8 @@ std::string CDeviceKitDiskDevice::toString()
 CDeviceKitDisksProvider::CDeviceKitDisksProvider()
 {
   dbus_error_init (&m_error);
-  // TODO: do not use dbus_connection_pop_message() that requires the use of a
-  // private connection
+  //! @todo do not use dbus_connection_pop_message() that requires the use of a
+  //! private connection
   m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &m_error);
   dbus_connection_set_exit_on_disconnect(m_connection, false);
 

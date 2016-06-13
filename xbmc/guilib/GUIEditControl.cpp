@@ -358,7 +358,7 @@ void CGUIEditControl::OnClick()
       textChanged = CGUIDialogNumeric::ShowAndVerifyNewPassword(utf8);
       break;
     case INPUT_TYPE_PASSWORD_MD5:
-      utf8 = ""; // TODO: Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
+      utf8 = ""; //! @todo Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
       // fallthrough
     case INPUT_TYPE_TEXT:
     default:
@@ -397,7 +397,7 @@ void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, CVariant he
     m_inputHeading = heading.asString();
   else if (heading.isInteger() && heading.asInteger())
     m_inputHeading = g_localizeStrings.Get(static_cast<uint32_t>(heading.asInteger()));
-  // TODO: Verify the current input string?
+  //! @todo Verify the current input string?
 }
 
 void CGUIEditControl::RecalcLabelPosition()

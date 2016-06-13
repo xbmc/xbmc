@@ -55,9 +55,9 @@ namespace PythonBindings
       return;
     }
 
-    // TODO: UTF-8: Does python use UTF-16?
-    //              Do we need to convert from the string charset to UTF-8
-    //              for non-unicode data?
+    //! @todo UTF-8: Does python use UTF-16?
+    //!              Do we need to convert from the string charset to UTF-8
+    //!              for non-unicode data?
     if (PyUnicode_Check(pObject))
     {
       // Python unicode objects are UCS2 or UCS4 depending on compilation

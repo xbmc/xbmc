@@ -71,7 +71,7 @@ std::string CAndroidStorageProvider::unescape(const std::string& str)
       i += 1;
       if (str[i] == 'u') // unicode
       {
-        // TODO
+        //! @todo implement
       }
       else if (str[i] >= '0' && str[i] <= '7') // octal
       {

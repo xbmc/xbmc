@@ -69,7 +69,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
   if (searchMask.empty())
     return false;
 
-  // TODO: support m_strFileMask, require rewrite of internal caching
+  //! @todo support m_strFileMask, require rewrite of internal caching
   searchMask += L'*';
 
   HANDLE hSearch;

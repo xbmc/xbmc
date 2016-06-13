@@ -475,8 +475,8 @@ void OMXPlayerVideo::Process()
           m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
           SStartMsg msg;
           msg.player = VideoPlayer_VIDEO;
-          msg.cachetime = DVD_MSEC_TO_TIME(50); // TODO
-          msg.cachetotal = DVD_MSEC_TO_TIME(100); // TODO
+          msg.cachetime = DVD_MSEC_TO_TIME(50); //! @todo implement
+          msg.cachetotal = DVD_MSEC_TO_TIME(100); //! @todo implement
           msg.timestamp = pts;
           m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
         }

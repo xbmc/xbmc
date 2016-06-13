@@ -272,7 +272,7 @@ bool CAddonButtonMap::AddAccelerometer(const FeatureName& feature,
       accelerometer.SetPositiveZ(CPeripheralAddonTranslator::TranslatePrimitive(positiveZ));
     }
 
-    // TODO: Unmap complementary semiaxes
+    //! @todo Unmap complementary semiaxes
 
     m_features[feature] = accelerometer;
   }

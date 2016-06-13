@@ -393,7 +393,7 @@ bool CWin32File::Rename(const CURL& urlCurrentName, const CURL& urlNewName)
   if (m_smbFile)
     m_lastSMBFileErr = ERROR_INVALID_DATA; // used to indicate internal errors, cleared by successful file operation
 
-  // TODO: check whether it's file or directory
+  //! @todo check whether it's file or directory
   std::wstring curNameW(CWIN32Util::ConvertPathToWin32Form(urlCurrentName));
   if (curNameW.empty())
     return false;

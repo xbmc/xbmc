@@ -135,7 +135,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
   ResetTimeout();
   if ( packet->Size() > 1 )
   {
-    // TODO: limit payload size
+    //! @todo limit payload size
     if (m_seqPackets[ packet->Sequence() ])
     {
       if(!m_bSequenceError)
@@ -276,8 +276,8 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
 
 bool CEventClient::OnPacketHELO(CEventPacket *packet)
 {
-  // TODO: check it last HELO packet was received less than 5 minutes back
-  //       if so, do not show notification of connection.
+  //! @todo check it last HELO packet was received less than 5 minutes back
+  //!       if so, do not show notification of connection.
   if (Greeted())
     return false;
 
