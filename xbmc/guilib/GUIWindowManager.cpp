@@ -79,7 +79,9 @@
 #include "dialogs/GUIDialogTextViewer.h"
 #include "network/GUIDialogNetworkSetup.h"
 #include "dialogs/GUIDialogMediaSource.h"
+#ifdef HAS_GL
 #include "video/dialogs/GUIDialogCMSSettings.h"
+#endif
 #include "video/dialogs/GUIDialogVideoSettings.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
@@ -214,7 +216,9 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogSlider);
   Add(new CGUIDialogMusicOSD);
   Add(new CGUIDialogVisualisationPresetList);
+#ifdef HAS_GL
   Add(new CGUIDialogCMSSettings);
+#endif
   Add(new CGUIDialogVideoSettings);
   Add(new CGUIDialogAudioSubtitleSettings);
   Add(new CGUIDialogVideoBookmarks);
