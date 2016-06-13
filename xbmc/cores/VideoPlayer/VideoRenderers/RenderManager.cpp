@@ -799,9 +799,6 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 
   EDEINTERLACEMODE deinterlacemode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
-  if(g_advancedSettings.m_videoDisableBackgroundDeinterlace && !g_graphicsContext.IsFullScreenVideo())
-    deinterlacemode = VS_DEINTERLACEMODE_OFF;
-
   if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
   {
     presentmethod = PRESENT_METHOD_SINGLE;
@@ -814,13 +811,26 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 
     else
     {
       bool invert = false;
-      if      (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)            presentmethod = PRESENT_METHOD_BLEND;
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)            presentmethod = PRESENT_METHOD_WEAVE;
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED) { presentmethod = PRESENT_METHOD_WEAVE ; invert = true; }
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)              presentmethod = PRESENT_METHOD_BOB;
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)   { presentmethod = PRESENT_METHOD_BOB; invert = true; }
-      else if (interlacemethod == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)   presentmethod = PRESENT_METHOD_BOB;
-      else                                                                    presentmethod = PRESENT_METHOD_SINGLE;
+      if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)
+        presentmethod = PRESENT_METHOD_BLEND;
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)
+        presentmethod = PRESENT_METHOD_WEAVE;
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+      {
+        presentmethod = PRESENT_METHOD_WEAVE;
+        invert = true;
+      }
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)
+        presentmethod = PRESENT_METHOD_BOB;
+      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+      {
+        presentmethod = PRESENT_METHOD_BOB;
+        invert = true;
+      }
+      else if (interlacemethod == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)
+        presentmethod = PRESENT_METHOD_BOB;
+      else
+        presentmethod = PRESENT_METHOD_SINGLE;
 
       if (presentmethod != PRESENT_METHOD_SINGLE)
       {
