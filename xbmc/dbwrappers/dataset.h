@@ -29,9 +29,10 @@
  **********************************************************************/
 
 #include <cstdio>
-#include <string>
-#include <map>
 #include <list>
+#include <map>
+#include <string>
+#include <vector>
 #include "qry_dat.h"
 #include <stdarg.h>
 

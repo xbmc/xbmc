@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "EGLNativeType.h"
 #if defined(TARGET_RASPBERRY_PI)
 #include <semaphore.h>

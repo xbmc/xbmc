@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "JNIBase.h"
 #include "MediaStore.h"
 

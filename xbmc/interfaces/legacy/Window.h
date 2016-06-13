@@ -20,6 +20,7 @@
 
 #pragma once
 #include <limits.h>
+#include <vector>
 
 #include "AddonCallback.h"
 #include "Control.h"

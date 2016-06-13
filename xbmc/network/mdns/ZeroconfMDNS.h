@@ -25,7 +25,9 @@
 #include "threads/Thread.h"
 
 #include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 class CZeroconfMDNS : public CZeroconf,public CThread
 {

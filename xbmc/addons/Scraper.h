@@ -18,6 +18,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "addons/Addon.h"
 #include "XBDateTime.h"
 #include "utils/ScraperUrl.h"

@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "FileItem.h"
 #include "PlayerCoreFactory.h"
 

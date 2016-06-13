@@ -21,6 +21,8 @@
  */
 
 #include <string>
+#include <vector>
+
 #include "FileItem.h"
 
 class CDVDInputStream;

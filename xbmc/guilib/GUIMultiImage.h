@@ -28,6 +28,8 @@
  *
  */
 
+#include <vector>
+
 #include "GUIImage.h"
 #include "utils/Stopwatch.h"
 #include "utils/Job.h"

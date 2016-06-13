@@ -50,6 +50,7 @@ namespace PERIPHERALS
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include <queue>
+#include <vector>
 
 // undefine macro isset, it collides with function in cectypes.h
 #ifdef isset

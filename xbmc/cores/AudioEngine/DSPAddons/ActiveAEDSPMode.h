@@ -19,7 +19,10 @@
  *
  */
 
+#include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "ActiveAEDSPAddon.h"
 #include "threads/CriticalSection.h"

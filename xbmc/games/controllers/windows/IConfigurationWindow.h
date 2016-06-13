@@ -23,6 +23,7 @@
 #include "input/joysticks/JoystickTypes.h"
 
 #include <string>
+#include <vector>
 
 class CEvent;
 

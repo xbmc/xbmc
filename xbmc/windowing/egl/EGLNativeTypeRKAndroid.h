@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "EGLNativeTypeAndroid.h"
 class CEGLNativeTypeRKAndroid : public CEGLNativeTypeAndroid
 {

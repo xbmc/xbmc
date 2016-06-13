@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "addons/Addon.h"
 #include "windows/GUIMediaWindow.h"
 #include "ThumbLoader.h"

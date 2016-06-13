@@ -23,7 +23,9 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
+#include <list>
 #include <string>
+#include <vector>
 
 #include "cores/AudioEngine/Sinks/osx/CoreAudioStream.h"
 

@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "utils/DatabaseUtils.h"
 #include "JSONRPC.h"
 #include "FileItemHandler.h"

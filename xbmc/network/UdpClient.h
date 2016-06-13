@@ -24,6 +24,7 @@
  */
 
 #include <string>
+#include <vector>
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include <sys/socket.h>

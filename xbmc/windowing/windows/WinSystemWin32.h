@@ -26,6 +26,7 @@
 #include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
 #include <string>
+#include <vector>
 
 struct MONITOR_DETAILS
 {

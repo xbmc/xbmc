@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "IFile.h"
 #include "URL.h"
 #include "guilib/XBTF.h"

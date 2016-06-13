@@ -19,7 +19,9 @@
  *
  */
 
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "addons/Addon.h"
 #include "addons/Repository.h"

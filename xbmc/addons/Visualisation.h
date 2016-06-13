@@ -29,6 +29,7 @@
 #include <map>
 #include <list>
 #include <memory>
+#include <vector>
 
 #define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
 #define MAX_AUDIO_BUFFERS 16

@@ -20,7 +20,9 @@
  *
  */
 
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 

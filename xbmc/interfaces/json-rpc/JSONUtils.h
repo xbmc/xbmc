@@ -21,6 +21,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "JSONRPCUtils.h"
 #include "XBDateTime.h"

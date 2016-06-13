@@ -21,6 +21,8 @@
  */
 
 #include <map>
+#include <string>
+#include <vector>
 
 #include "addons/IAddon.h"
 #include "settings/dialogs/GUIDialogSettingsManagerBase.h"

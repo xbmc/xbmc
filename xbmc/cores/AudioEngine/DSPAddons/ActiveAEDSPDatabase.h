@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "ActiveAEDSPMode.h"
 
 class CAudioSettings;

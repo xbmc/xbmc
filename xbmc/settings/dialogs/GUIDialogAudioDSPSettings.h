@@ -20,6 +20,7 @@
  */
 
 #include <utility>
+#include <vector>
 
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"

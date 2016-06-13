@@ -22,6 +22,7 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include <dns_sd.h>
 

@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "Buffer.h"
 
 class CJNIByteBuffer : public CJNIBuffer

@@ -20,6 +20,8 @@
  *
  */
 
+#include <vector>
+
 #include "URL.h"
 #include "Cfgmgr32.h"
 #include "MediaSource.h"

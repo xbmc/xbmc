@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "music/Song.h"
 
 #define MAX_PATH_SIZE 1024

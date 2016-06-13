@@ -22,6 +22,7 @@
 #include <map>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "input/KeyboardLayout.h"
 

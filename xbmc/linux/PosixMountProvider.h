@@ -18,6 +18,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <string>
+#include <vector>
+ 
 #include "storage/IStorageProvider.h"
 
 class CPosixMountProvider : public IStorageProvider

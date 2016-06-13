@@ -21,6 +21,7 @@
 
 #include <map>
 #include <memory>
+#include <vector>
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "PVRTimerInfoTag.h"

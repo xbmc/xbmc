@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "EGLNativeType.h"
 class CEGLNativeTypeAndroid : public CEGLNativeType
 {

@@ -21,6 +21,8 @@
 
 #include <set>
 #include <string>
+#include <vector>
+
 #include "IDirectory.h"
 
 namespace XFILE

@@ -24,6 +24,9 @@
 #define WINDOW_SYSTEM_IOSEGL_H
 
 #if defined(TARGET_DARWIN_IOS)
+#include <string>
+#include <vector>
+
 #include "windowing/WinSystem.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"

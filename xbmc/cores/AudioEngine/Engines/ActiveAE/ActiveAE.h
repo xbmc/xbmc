@@ -19,6 +19,10 @@
  *
  */
 
+#include <list>
+#include <string>
+#include <vector>
+
 #include "system.h"
 #include "threads/Thread.h"
 

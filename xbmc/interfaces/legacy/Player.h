@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "ListItem.h"
 #include "PlayList.h"
 #include "InfoTagVideo.h"

@@ -18,6 +18,8 @@
  *
  */
 
+#include <vector>
+
 #include "Tuple.h"
 #include "AddonString.h"
 #include "ListItem.h"

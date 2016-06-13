@@ -22,6 +22,7 @@
 #include <memory>
 #include <set>
 #include <utility>
+#include <vector>
 
 #include "addons/Scraper.h"
 #include "Bookmark.h"

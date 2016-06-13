@@ -20,6 +20,8 @@
  *
  */
 
+#include <vector>
+
 #include "utils/LabelFormatter.h"
 #include "utils/SortUtils.h"
 #include "MediaSource.h"

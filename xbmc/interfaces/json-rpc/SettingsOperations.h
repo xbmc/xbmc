@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "JSONRPC.h"
 
 class CVariant;

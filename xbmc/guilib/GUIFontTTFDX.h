@@ -30,6 +30,7 @@
 #include "D3DResource.h"
 #include "GUIFontTTF.h"
 #include <list>
+#include <vector>
 
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (2000)
 

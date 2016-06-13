@@ -27,6 +27,8 @@
 #include "utils/Observer.h"
 
 #include <atomic>
+#include <memory>
+#include <vector>
 
 namespace EPG
 {

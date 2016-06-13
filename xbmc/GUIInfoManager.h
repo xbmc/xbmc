@@ -40,6 +40,7 @@
 
 #include <list>
 #include <map>
+#include <vector>
 
 namespace MUSIC_INFO
 {

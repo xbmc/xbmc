@@ -19,6 +19,10 @@
  *
  */
 
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
 

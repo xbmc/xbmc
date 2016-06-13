@@ -26,6 +26,7 @@
 #ifdef HAS_AIRPLAY
 
 #include <map>
+#include <vector>
 #include <sys/socket.h>
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"

@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <map>
+#include <vector>
 
 #include "network/ZeroconfBrowser.h"
 #include "threads/Thread.h"

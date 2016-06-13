@@ -27,6 +27,8 @@
  *
  */
 
+#include <vector>
+
 #include "GraphicContext.h" // needed by any rendering operation (all controls)
 #include "GUIMessage.h"     // needed by practically all controls
 #include "VisibleEffect.h"  // needed for the CAnimation members

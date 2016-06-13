@@ -30,6 +30,7 @@
 
 #include <list>
 #include <utility>
+#include <vector>
 
 #include "DirtyRegionTracker.h"
 #include "guilib/WindowIDs.h"

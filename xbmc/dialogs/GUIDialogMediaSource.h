@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "guilib/GUIDialog.h"
 
 class CFileItemList;

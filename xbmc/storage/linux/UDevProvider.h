@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "storage/IStorageProvider.h"
 
 #ifdef HAVE_LIBUDEV

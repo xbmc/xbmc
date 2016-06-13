@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "JNIBase.h"
 
 class CJNIOsVibrator : public CJNIBase

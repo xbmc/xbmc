@@ -21,6 +21,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+
 #include "IListProvider.h"
 #include "guilib/GUIStaticItem.h"
 #include "utils/Job.h"

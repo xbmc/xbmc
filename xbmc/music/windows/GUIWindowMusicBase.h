@@ -23,6 +23,8 @@
  *
  */
 
+#include <vector>
+
 #include "windows/GUIMediaWindow.h"
 #include "music/MusicDatabase.h"
 #include "music/infoscanner/MusicInfoScraper.h"

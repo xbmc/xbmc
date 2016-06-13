@@ -19,6 +19,10 @@
  *
  */
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "Addon.h"
 #include "utils/Job.h"
 #include "utils/ProgressJob.h"

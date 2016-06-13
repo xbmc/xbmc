@@ -18,6 +18,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include <string>
+#include <vector>
+
 #include "PlayList.h"
 
 namespace PLAYLIST
