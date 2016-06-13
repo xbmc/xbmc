@@ -294,7 +294,7 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     m_Codec->GetPicture(&m_videobuffer);
   *pDvdVideoPicture = m_videobuffer;
 
-  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec);
+  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec, (int)m_Codec->GetCurPts());
 
   {
     CSingleLock lock(m_secure);
@@ -573,10 +573,11 @@ void CDVDVideoCodecAmlogic::RemoveInfo(CDVDAmlogicInfo *info)
   m_inflight.erase(m_inflight.find(info));
 }
 
-CDVDAmlogicInfo::CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec)
+CDVDAmlogicInfo::CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec, int omxPts)
   : m_refs(0)
   , m_codec(codec)
   , m_amlCodec(amlcodec)
+  , m_omxPts(omxPts)
 {
 }
 
