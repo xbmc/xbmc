@@ -32,9 +32,7 @@
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "win32/WIN32Util.h"
 #include "win32/dxerr.h"
 
 #pragma comment(lib, "d3d11.lib")
@@ -51,7 +49,6 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
 
   m_bVSync = true;
-  m_systemFreq = CurrentHostFrequency();
 
   ZeroMemory(&m_cachedMode, sizeof(m_cachedMode));
   ZeroMemory(&m_viewPort, sizeof(m_viewPort));

@@ -137,7 +137,6 @@ protected:
   float                       m_refreshRate;
   bool                        m_interlaced;
   HRESULT                     m_nDeviceStatus{S_OK};
-  int64_t                     m_systemFreq;
   D3D11_USAGE                 m_defaultD3DUsage{D3D11_USAGE_DEFAULT};
   bool                        m_useWindowedDX;
   CCriticalSection            m_resourceSection;
