@@ -63,8 +63,10 @@ std::string GLSLOutput::GetDefines()
     defines += "#define XBMC_DITHER\n";
   if (m_fullRange)
     defines += "#define XBMC_FULLRANGE\n";
+#ifdef HAS_GL
   if (m_3DLUT)
     defines += "#define KODI_3DLUT\n";
+#endif //HAS_GL
   return defines;
 }
 
@@ -83,8 +85,10 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
   //   3DLUT
   if (m_3DLUT)
   {
+#ifdef HAS_GL
     m_hCLUT        = glGetUniformLocation(programHandle, "m_CLUT");
     m_hCLUTSize    = glGetUniformLocation(programHandle, "m_CLUTsize");
+#endif //HAS_GL
   }
 
   if (m_dither)
@@ -145,6 +149,7 @@ bool GLSLOutput::OnEnabled()
 
   if (m_3DLUT)
   {
+#ifdef HAS_GL
     // set texture units
     glUniform1i(m_hCLUT, m_uCLUT);
     glUniform1f(m_hCLUTSize, m_uCLUTSize);
@@ -155,6 +160,7 @@ bool GLSLOutput::OnEnabled()
     glBindTexture(GL_TEXTURE_3D, m_tCLUTTex);
     glActiveTexture(GL_TEXTURE0);
     VerifyGLState();
+#endif //HAS_GL
   }
 
   VerifyGLState();
@@ -171,8 +177,10 @@ void GLSLOutput::OnDisabled()
   }
   if (m_3DLUT)
   {
+#ifdef HAS_GL
     glActiveTexture(GL_TEXTURE0 + m_uCLUT);
     glDisable(GL_TEXTURE_3D);
+#endif //HAS_GL
   }
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
