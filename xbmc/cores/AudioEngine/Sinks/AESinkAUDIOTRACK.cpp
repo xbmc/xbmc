@@ -31,10 +31,6 @@
 #include "platform/android/jni/Build.h"
 #include "utils/TimeUtils.h"
 
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
-
 //#define DEBUG_VERBOSE 1
 
 // This is an alternative to the linear weighted delay smoothing
@@ -65,12 +61,6 @@ static bool Has71Support()
 {
   /* Android 5.0 introduced side channels */
   return CJNIAudioManager::GetSDKVersion() >= 21;
-}
-
-// AMLogic helper for HD Audio
-bool CAESinkAUDIOTRACK::HasAmlHD()
-{
-  return ((CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1) && (CJNIAudioFormat::ENCODING_DTS_HD != -1));
 }
 
 static int AEStreamFormatToATFormat(const CAEStreamInfo::DataType& dt)
@@ -304,11 +294,6 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(m_format.m_channelLayout);
   m_format.m_channelLayout  = AUDIOTRACKChannelMaskToAEChannelMap(atChannelMask);
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present() && m_passthrough)
-    atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
-#endif
-
   while (!m_at_jni)
   {
     int min_buffer = CJNIAudioTrack::getMinBufferSize(m_sink_sampleRate,
@@ -515,14 +500,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     m_offset = 0;
   }
   uint32_t normHead_pos = head_pos - m_offset;
-
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present() &&
-      (m_encoding == CJNIAudioFormat::ENCODING_DTS_HD ||
-       m_encoding == CJNIAudioFormat::ENCODING_E_AC3 ||
-       m_encoding == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD))
-    normHead_pos /= m_sink_frameSize;  // AML wants sink in 48k but returns pos in 192k
-#endif
 
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
@@ -748,25 +725,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
     m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
     m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-
-#if defined(HAS_LIBAMCODEC)
-    if (aml_present())
-    {
-      // passthrough
-      m_info.m_wantsIECPassthrough = true;
-      m_sink_sampleRates.insert(44100);
-      m_sink_sampleRates.insert(48000);
-      if (HasAmlHD())
-      {
-        m_sink_sampleRates.insert(96000);
-        m_sink_sampleRates.insert(192000);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
-      }
-    }
-    else
-#endif
     {
       int test_sample[] = { 32000, 44100, 48000, 96000, 192000 };
       int test_sample_sz = sizeof(test_sample) / sizeof(int);
