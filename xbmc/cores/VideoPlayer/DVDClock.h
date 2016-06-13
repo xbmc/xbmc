@@ -70,10 +70,11 @@ public:
   double GetAbsoluteClock(bool interpolated = true);
   double GetFrequency() { return (double)m_systemFrequency ; }
 
-  double GetRefreshRate();
   bool GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const;
   void SetVsyncAdjust(double adjustment);
   double GetVsyncAdjust();
+
+  void Pause(bool pause);
 
 protected:
   double SystemToAbsolute(int64_t system);
@@ -86,6 +87,8 @@ protected:
   int64_t m_pauseClock;
   double m_iDisc;
   bool m_bReset;
+  bool m_paused;
+  int m_speedAfterPause;
   std::unique_ptr<CVideoReferenceClock> m_videoRefClock;
 
   int64_t m_systemFrequency;

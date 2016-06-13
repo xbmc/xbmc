@@ -96,7 +96,6 @@ public:
   bool Supports(ESCALINGMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
-  float GetMaximumFPS();
   int GetSkippedFrames()  { return m_QueueSkip; }
 
   // Functions called from mplayer

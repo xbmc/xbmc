@@ -5024,6 +5024,7 @@ void CVideoPlayer::OnLostDisplay()
   CLog::Log(LOGNOTICE, "VideoPlayer: OnLostDisplay received");
   m_VideoPlayerAudio->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, true), 1);
   m_VideoPlayerVideo->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, true), 1);
+  m_clock.Pause(true);
   m_displayLost = true;
 }
 
@@ -5032,5 +5033,6 @@ void CVideoPlayer::OnResetDisplay()
   CLog::Log(LOGNOTICE, "VideoPlayer: OnResetDisplay received");
   m_VideoPlayerAudio->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, false), 1);
   m_VideoPlayerVideo->SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_PAUSE, false), 1);
+  m_clock.Pause(false);
   m_displayLost = false;
 }
