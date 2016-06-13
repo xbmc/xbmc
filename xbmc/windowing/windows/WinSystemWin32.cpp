@@ -806,36 +806,52 @@ void CWinSystemWin32::ShowOSMouse(bool show)
 
 bool CWinSystemWin32::Minimize()
 {
-  ShowWindow(m_hWnd, SW_MINIMIZE);
+  if (!m_bFullScreen || CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
+    ShowWindow(m_hWnd, SW_MINIMIZE);
+  else
+    Show(FALSE);
   return true;
 }
 bool CWinSystemWin32::Restore()
 {
-  ShowWindow(m_hWnd, SW_RESTORE);
+  if (!m_bFullScreen || CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
+    ShowWindow(m_hWnd, SW_RESTORE);
+  else
+    Show();
   return true;
 }
 bool CWinSystemWin32::Hide()
 {
+  if (m_bFullScreen && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
+    Show(FALSE);
   ShowWindow(m_hWnd, SW_HIDE);
   return true;
 }
 bool CWinSystemWin32::Show(bool raise)
 {
-  HWND windowAfter = HWND_BOTTOM;
-  if (raise)
+  // can use Z ordering if in windowed mode
+  if (!m_bFullScreen || CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
   {
-    if (m_bFullScreen)
-      windowAfter = HWND_TOP;
-    else
-      windowAfter = m_bAlwaysOnTop ? HWND_TOPMOST : HWND_TOP;
+    HWND windowAfter = m_bAlwaysOnTop ? HWND_TOPMOST : HWND_TOP;
+    windowAfter = raise ? windowAfter : HWND_BOTTOM;
+    SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+    UpdateWindow(m_hWnd);
+    if (raise)
+    {
+      SetForegroundWindow(m_hWnd);
+      SetFocus(m_hWnd);
+    }
   }
-
-  SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-  UpdateWindow(m_hWnd);
-  if (raise)
+  // in fs mode, there's only show or hide, no Z ordering
+  else
   {
-    SetForegroundWindow(m_hWnd);
-    SetFocus(m_hWnd);
+    if (raise)
+      ShowWindow(m_hWnd, SW_RESTORE); 
+    // correct order is important here, otherwise DXGI_STATUS_OCCLUDED may occur when restoring fs mode
+    SetAlwaysOnTopState(raise ? CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_ALWAYSONTOP) : FALSE);
+    SendMessage(m_hWnd, raise ? WM_SETFOCUS : WM_KILLFOCUS, (WPARAM)m_hWnd, NULL);
+    if (raise && m_bAlwaysOnTop)
+      this->NotifyAppFocusChange(TRUE);
   }
   return true;
 }
