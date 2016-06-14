@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include.in Makefile
 
 # lib name, version
 LIBNAME=gettext
-VERSION=0.18.2
+VERSION=0.19.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
