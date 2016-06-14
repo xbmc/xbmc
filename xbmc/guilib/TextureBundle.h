@@ -27,10 +27,8 @@
 class CTextureBundle
 {
 public:
-  CTextureBundle(void);
-  ~CTextureBundle(void);
-
-  void Cleanup();
+  CTextureBundle();
+  ~CTextureBundle() = default;
 
   void SetThemeBundle(bool themeBundle);
   bool HasFile(const std::string& Filename);
