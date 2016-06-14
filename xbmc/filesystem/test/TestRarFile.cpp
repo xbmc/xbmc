@@ -22,6 +22,7 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/RarManager.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
@@ -86,6 +87,8 @@ TEST(TestRarFile, Read)
   EXPECT_TRUE(!memcmp("About\n-----\nXBMC is ", buf, sizeof(buf) - 1));
   EXPECT_EQ(0, file.Seek(0, SEEK_SET));
   EXPECT_EQ(-1, file.Seek(-100, SEEK_SET));
+  // Manual clear to avoid shutdown race
+  g_RarManager.ClearCache();
   file.Close();
 }
 
@@ -101,6 +104,9 @@ TEST(TestRarFile, Exists)
   strpathinrar = itemlist[0]->GetPath();
 
   EXPECT_TRUE(XFILE::CFile::Exists(strpathinrar));
+
+  // Manual clear to avoid shutdown race
+  g_RarManager.ClearCache();
 }
 
 TEST(TestRarFile, Stat)
@@ -117,6 +123,9 @@ TEST(TestRarFile, Stat)
 
   EXPECT_EQ(0, XFILE::CFile::Stat(strpathinrar, &buffer));
   EXPECT_TRUE(buffer.st_mode | _S_IFREG);
+
+  // Manual clear to avoid shutdown race
+  g_RarManager.ClearCache();
 }
 
 /* Test case to test for graceful handling of corrupted input.
@@ -192,6 +201,9 @@ TEST(TestRarFile, CorruptedFile)
   }
   file->Close();
   XBMC_DELETETEMPFILE(file);
+
+  // Manual clear to avoid shutdown race
+  g_RarManager.ClearCache();
 }
 
 TEST(TestRarFile, StoredRAR)
@@ -632,5 +644,8 @@ TEST(TestRarFile, NormalRAR)
   EXPECT_EQ(0, file.Seek(0, SEEK_SET));
   EXPECT_EQ(-1, file.Seek(-100, SEEK_SET));
   file.Close();
+
+  // Manual clear to avoid shutdown race
+  g_RarManager.ClearCache();
 }
 #endif /*HAS_FILESYSTEM_RAR*/
