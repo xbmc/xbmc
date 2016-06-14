@@ -895,6 +895,13 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
 
   // open video stream
   valid   = false;
+  
+  if (m_pDemuxer)
+  {
+    // TODO desired resolution needs to come from somewhere else
+    RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+    m_pDemuxer->SetVideoResolution(res.iWidth, res.iHeight);
+  }
 
   for (const auto &stream : m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority))
   {
@@ -3714,12 +3721,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
   }
 
-  //! @todo desired resolution needs to come from somewhere else
-  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
-  m_pDemuxer->SetVideoResolution(res.iWidth, res.iHeight);
-
   return true;
-
 }
 
 bool CVideoPlayer::OpenSubtitleStream(CDVDStreamInfo& hint)
