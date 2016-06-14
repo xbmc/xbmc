@@ -228,7 +228,8 @@ RESOLUTION CResolutionUtils::FindClosestResolution(float fps, int width, bool is
          (info.iScreenWidth < orig.iScreenWidth) || // new res is smaller
          (info.iScreenHeight < orig.iScreenHeight) || // new height would be smaller
          (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) || // don't switch to interlaced modes
-         (info.iScreen != curr.iScreen)) // skip not current displays
+         (info.iScreen != curr.iScreen) || // skip not current displays
+         (!g_advancedSettings.m_allowResolutionChange)) // user does not want us to switch resolution
       {
         continue;
       }
