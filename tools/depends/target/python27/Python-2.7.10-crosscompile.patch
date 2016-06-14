@@ -1,6 +1,6 @@
 --- Makefile.pre.in.orig	2015-05-23 18:09:16.000000000 +0200
 +++ Makefile.pre.in	2015-10-10 12:29:21.988926069 +0200
-@@ -234,6 +234,7 @@
+@@ -238,6 +238,7 @@
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -8,7 +8,7 @@
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -472,9 +473,9 @@
+@@ -497,9 +498,9 @@
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
  	esac; \
@@ -20,7 +20,7 @@
  
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
-@@ -611,7 +612,7 @@
+@@ -636,7 +637,7 @@
  $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)
  		@$(MKDIR_P) Include
  		$(MAKE) $(PGEN)
@@ -29,7 +29,7 @@
  $(GRAMMAR_C): $(GRAMMAR_H) $(GRAMMAR_INPUT) $(PGENSRCS)
  		$(MAKE) $(GRAMMAR_H)
  		touch $(GRAMMAR_C)
-@@ -1042,12 +1043,12 @@
+@@ -1072,12 +1073,12 @@
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi
@@ -44,7 +44,7 @@
  		$(PYTHON_FOR_BUILD) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
  		-d $(LIBDEST) -f \
  		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
-@@ -1175,11 +1176,13 @@
+@@ -1205,11 +1206,13 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods

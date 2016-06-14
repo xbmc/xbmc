@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile Python-2.7.10-crosscompile.patch Python-2.
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.10
+VERSION=2.7.11
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -39,7 +39,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../Python-2.7.10-android.patch
 	cd $(PLATFORM); patch -p0 < ../Python-no-export-path.patch
 	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
-	#cd $(PLATFORM); patch -p1 < ../urllib-ssl-no-cert_check.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
 	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff

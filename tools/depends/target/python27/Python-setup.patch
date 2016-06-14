@@ -1,6 +1,6 @@
 --- setup.py.orig	2015-10-07 16:32:16.219083585 +0200
 +++ setup.py	2015-10-07 16:41:48.563085871 +0200
-@@ -320,6 +320,9 @@
+@@ -321,6 +321,9 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -10,7 +10,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -331,27 +334,30 @@
+@@ -335,27 +338,30 @@
          try:
              imp.load_dynamic(ext.name, ext_filename)
          except ImportError, why:
