@@ -133,6 +133,12 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
     APP_VERSION=${APP_VERSION}-${APP_VERSION_TAG}
   fi
 
+  if test "${DEPENDS_BUILD}" = "Yes"; then
+    AC_DEFINE([DEPENDS_BUILD], [1], [using unified depends])
+  else
+    DEPENDS_BUILD="No"
+  fi
+
   AC_SUBST(APP_NAME)
   AC_SUBST(APP_NAME_LC)
   AC_SUBST(APP_NAME_UC)
@@ -143,11 +149,13 @@ if test "$APP_NAME" != "" && test "$APP_VERSION_MAJOR" != "" && test "$APP_VERSI
   AC_SUBST(APP_VERSION_TAG_LC)
   AC_SUBST(APP_VERSION_CODE)
   AC_SUBST(APP_ADDON_API)
+  AC_SUBST(DEPENDS_BUILD)
 
   dashes="------------------------"
   final_message="\n  ${APP_NAME} Configuration:"
   final_message="\n$dashes$final_message\n$dashes"
   final_message="$final_message\n  ${APP_NAME} Version:\t${APP_VERSION}"
+  final_message="$final_message\n  Building with unified depends:\t${DEPENDS_BUILD}"
 else
   AC_MSG_ERROR(could not detect application Version, make sure version.txt is complete)
 fi

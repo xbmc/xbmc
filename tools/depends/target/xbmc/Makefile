@@ -32,7 +32,7 @@ debug: $(SOURCE)/lib$(APP_NAME).so
 
 $(SOURCE)/lib$(APP_NAME).so:
 	cd $(SOURCE); BOOTSTRAP_FROM_DEPENDS=yes ./bootstrap
-	cd $(SOURCE); $(CONFIGURE)
+	cd $(SOURCE); DEPENDS_BUILD=Yes $(CONFIGURE)
 
 ../../Makefile.include:
 	$(error Please run configure)
