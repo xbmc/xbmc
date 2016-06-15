@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Etsi..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Naytä "
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Elokuvatila"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Vaihda tilaa"
@@ -40,6 +48,42 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Katsomattomat elokuvat"
 
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "Ei huomautusta"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Lataa ikonit"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Osittain katsotut elokuvat"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Eniten toistetut albumit"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Satunnaiset albumit"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Satunnaiset artistit"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Toistamattomat albumit"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Viimeaikaiset tallennukset"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Eniten katsotut kanavat"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Ennuste"
@@ -52,9 +96,57 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Muut asetukset"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Järjestä"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Näyttötyyppi"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Seuraavat raidat"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Siirry albumeihin"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Siirry kappaleisiin"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Näytä fanitaide"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Viimeksi kirjauduttu"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Käytetty muisti"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Versiotieto"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Järjestys"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Sinun arviosi"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Sivut"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "kohdetta"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -63,6 +155,14 @@ msgstr "Kelaa taaksepäin"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Kelaa eteenpäin"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Peruuta päivitys"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Kameran valmistaja"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -80,9 +180,57 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Poista ryhmä"
 
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Lue lisää..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Saatavilla"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Paina [B]OK[/B] pysäyttääksesi"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Vaihda kieli"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "suodatetut"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial pohjainen"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Tekstityksen lataus"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Mene soittolistaan"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Näytä kirjautumisruutu käynnistyksessä"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automaattinen kirjautuminen käynnistyksessä"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Päivityksiä saatavilla"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minuuttia"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Päävalikon kohteet"
 
 msgctxt "#31064"
 msgid "unwatched"
@@ -100,13 +248,41 @@ msgctxt "#31067"
 msgid "Event log"
 msgstr "Tapahtumaloki"
 
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Valitse esiasetukset"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Viimeksi päivitetty"
 
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Lisää medialähteitä"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Virta-asetukset"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Kappaleet"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Kirjasto päävalikko"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Edellinen sijainti"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Seuraava sijainti"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "loppuu"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -116,9 +292,21 @@ msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Sanoitukset-lisäosa"
 
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Sanoitukset-lisäosan asetukset"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Visualisoinnin asetukset"
+
 msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Kanavaryhmä"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Tarjoaja asetukset"
 
 msgctxt "#31088"
 msgid "Content scanning options"
@@ -128,9 +316,17 @@ msgctxt "#31089"
 msgid "Available groups"
 msgstr "Saatavilla olevat ryhmät"
 
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Etsi esittely"
+
 msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "Lataa tekstitykset"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Elokuvavalikko"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -144,6 +340,66 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
 
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Kuvake seinä"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Vaihto"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Infoseinä"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Seinä"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "lisää teksti tähän.."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teksti-tv"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Valitse kuvan polku"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Etsi paikallinen kirjasto"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Etsi YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Etsi TheMovieDB"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Aseta sään tarjoaja"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Katsomattomat TV sarjat"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Sama ohjaaja"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Näytä kuvat kartalla"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Näytä kuvakkeet"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"

@@ -490,7 +490,7 @@ msgstr "Redaguoti mazgus"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Atidaryti priedį naršyklę"
+msgstr "Atidaryti priedų naršyklę"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."

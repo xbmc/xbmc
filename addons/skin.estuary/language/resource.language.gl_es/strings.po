@@ -108,6 +108,10 @@ msgctxt "#31024"
 msgid "Next tracks"
 msgstr "Pistas seguintes"
 
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Sen favoritos. Podes engadir calquera elemento dende as vistas de medios a esta listaxe empregando o menú contextual."
+
 msgctxt "#31026"
 msgid "Go to albums"
 msgstr "Ir a álbums"
@@ -368,6 +372,10 @@ msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Amosar información metorolóxica na barra superior"
 
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Amosar etiqueta de medios nos filmes / episodios / vídeos musicais"
+
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "Empregar animacións de diapositivas"
@@ -424,6 +432,10 @@ msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Introducir sección de arquivos"
 
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Mira as túas imaxes persoais ou descarga un dos moitos complementos de imaxes dende o repositorio oficial."
+
 msgctxt "#31112"
 msgid "Toggle audio stream"
 msgstr "Escoller fluxo de audio"
@@ -452,9 +464,17 @@ msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "Introducir buscador de engadidos"
 
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Non tes aínda ningún complemento instalado. Visita o noso repositorio e busca a través da nosa colección e mellora a túa experiencia en Kodi."
+
 msgctxt "#31121"
 msgid "Set weather provider"
 msgstr "Escoller provedor meteorolóxico"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Series non vistas"
 
 msgctxt "#31123"
 msgid "Same director"

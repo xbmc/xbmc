@@ -96,6 +96,10 @@ msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Grupo de canales"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadatos"
+
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Opciones de escaneo de contenido"
