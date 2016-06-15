@@ -30,10 +30,6 @@
 #include "system.h"
 #if defined(HAS_LINUX_EVENTS)
 
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
-
 #include <linux/version.h>
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
