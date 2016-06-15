@@ -6,19 +6,20 @@
 # D3DCOMPILER_DLL - Path to the Direct3D Compiler
 
 include(ExternalProject)
+set(D3DX11EFFECTS_LIBRARY_RELEASE ${CORE_SOURCE_DIR}/lib/win32/Effects11/libs/Effects11/Release/Effects11.lib)
+set(D3DX11EFFECTS_LIBRARY_DEBUG ${CORE_SOURCE_DIR}/lib/win32/Effects11/libs/Effects11/Debug/Effects11.lib)
 ExternalProject_Add(d3dx11effects
             SOURCE_DIR ${CORE_SOURCE_DIR}/lib/win32/Effects11
             PREFIX ${CORE_BUILD_DIR}/Effects11
             CONFIGURE_COMMAND ""
             BUILD_COMMAND msbuild ${CORE_SOURCE_DIR}/lib/win32/Effects11/Effects11_2013.sln
                                   /t:Effects11 /p:Configuration=${CORE_BUILD_CONFIG}
-            INSTALL_COMMAND "")
+            INSTALL_COMMAND ""
+            BUILD_BYPRODUCTS ${D3DX11EFFECTS_LIBRARY_RELEASE} ${D3DX11EFFECTS_LIBRARY_DEBUG})
 
 set(D3DX11EFFECTS_FOUND 1)
 set(D3DX11EFFECTS_INCLUDE_DIRS ${CORE_SOURCE_DIR}/lib/win32/Effects11/inc)
 
-set(D3DX11EFFECTS_LIBRARY_RELEASE ${CORE_SOURCE_DIR}/lib/win32/Effects11/libs/Effects11/Release/Effects11.lib)
-set(D3DX11EFFECTS_LIBRARY_DEBUG ${CORE_SOURCE_DIR}/lib/win32/Effects11/libs/Effects11/Debug/Effects11.lib)
 include(SelectLibraryConfigurations)
 select_library_configurations(D3DX11EFFECTS)
 
