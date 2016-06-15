@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Ubah kulit · Tetapkan bahasa dan wilayah · Ubah pilihan penyenaraian fail · Pasang penyelamat skrin"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Konfigur & urus perkhidmatan perkongsian media · Konfigur & urus perkhidmatan cuaca"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Konfigur paparan · Konfigur audio · Konfigur capaian internet · Konfigur penjimatan kuasa· Konfigur pengelogan"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Urus tambahan terpasang anda · Layar dan pasang tambahan dari kodi.tv · Ubahsuai tetapan tambahan"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Konfigur tindakan yang digunakan semasa main balik · Konfigur bagaimana kandungan media dimainkan"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Konfigur bagaimana paparan pustaka/fail memaparkan kandungan ·  Konfigur bagaimana paparan/senarai pustaka dinavigasi · Konfigur pilihan pangkalan data media"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Konfigur kulit · Konfigur wilayah · Konfigur kawalan · Konfigur penyelamat skrin · Konfigur kunci induk"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Konfigur profil anda · Tetapkan pilihan penguncian · Benarkan skrin daftar masuk"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Papar maklumat sistem · Statistik perkakasan · Periksa kesediaan storan · Lihat konfigurasi rangkaian"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

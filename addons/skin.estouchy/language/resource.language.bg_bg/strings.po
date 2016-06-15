@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Работи..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Последни"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Филми"
@@ -216,6 +220,10 @@ msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Изтрий групата"
 
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Първо стартиране"
+
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
 msgstr "За навигирането в Estouchy трябва да знаете 2 неща"
@@ -223,6 +231,10 @@ msgstr "За навигирането в Estouchy трябва да знаете
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
 msgstr "Логото на Kodi функционира като бутон водещ към началния екран."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "При възпроизвеждане на видео или аудио заглавието на дадения елемент се визуализира в горната част на екрана. При докосване отваря на целия екран видеото или визуализацията."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

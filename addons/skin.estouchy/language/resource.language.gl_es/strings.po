@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Traballando..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Recente"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmes"
@@ -67,6 +71,10 @@ msgstr "Información en lista"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Usuario"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Actualizado:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -192,6 +200,14 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Atallo a Engadido"
 
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Usar fondo personalizado"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Fondo:"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "TV en Directo"
@@ -199,6 +215,10 @@ msgstr "TV en Directo"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Agochar os fondos de vídeo"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Axustes da canle"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -215,3 +235,19 @@ msgstr "Renomear Grupo"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Eliminar Grupo"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Amosar ocultos"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Amosar eliminados"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Primeira execución"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Hai dúas cousas que tes que saber canto a navegación en Estouchy"

@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Suoritetaan..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Viimeisin"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Elokuvat"
@@ -67,6 +71,10 @@ msgstr "Lista ja tiedot"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Kirjaudu"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Päivitetty:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Lataa tekstitykset"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teksti-tv"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Ulkoasun oletus"
@@ -163,6 +175,10 @@ msgstr "Arial pohjainen"
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Vaihda ulkoasua · Vaihda kieliasetuksia · Aseta tiedostolistauksen asetukset[CR]Aseta ruudunsäästäjä"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Määritä näyttö · Määritä ääni · Määritä internetyhteys · Määritä tehonsäästö · Määritä kirjaaminen"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -188,6 +204,18 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Lisäosan pikavalinta"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNKRONOI"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Käytä omaa taustakuvaa"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Taustakuva:"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "TV-lähetys"
@@ -195,6 +223,10 @@ msgstr "TV-lähetys"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Piilota taustavideo"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanava asetukset"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -211,3 +243,19 @@ msgstr "Muuta ryhmän nimeä"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Poista ryhmä"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Näytä piilotetut"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Näyty poistetut"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Ensimmäinen käynnistys"
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Nyt toistetaan..."

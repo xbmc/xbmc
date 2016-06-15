@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Arbeider..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Nylig"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filmer"
@@ -67,6 +71,10 @@ msgstr "Infoliste"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Innlogging"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Oppdatert:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -152,6 +160,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Hent undertekster"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Tekst-TV"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Standard for skallet"
@@ -163,6 +175,38 @@ msgstr "Arial-basert"
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Bytt skall · Velg språl og region · Endre innstillinger for filvisning· Innstillinger for skjermsparer"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Konfigurer og administrer media delings tjenester · Konfigurer og administrer vær tjenester"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Konfigurer skjerm · Konfigurer lyd · Konfigurer internett tilgang · Konfigurer strømsparing · Konfigurer logging"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Administrer dine installerte tillegg · Se etter og administre tillegg fra kodi.tv · Endre tilleggsinnstillinger"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Konfigurer handlinger som kan brukes under avspilling · Konfigurer hvordan mediainnhold avspilles"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Konfigurer hvordan medialister vises · Konfigurer hvordan biblioteklister er navigert · Konfigurer databaseinnstillinger"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Konfigurer skin · Konfigurer region · Konfigurer kontroll · Konfigurer skjermsparer · Konfigurer systemlås"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Konfigurer profiler · Sett låseinnstillinger · Slå på innloggingskjerm"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Vis systeminformasjon · Maskinvarestatistikk · Sjekk lagring · Vis nettverkskonfigurasjon"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -188,6 +232,22 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Snarvei"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNK"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Bruk egendefinert bakgrunn"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Bakgrunn:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Konfigurer TV innstillinger · Endre fullskjermsinformasjon · Administrer EPG innstillinger"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Live TV"
@@ -195,6 +255,18 @@ msgstr "Live TV"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Skjul videobakgrunn"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Skjul visualiseringsbakgrunn"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanalinnstillinger"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Tilgjengelige grupper"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -207,3 +279,31 @@ msgstr "Gi nytt navn på gruppe"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Slett gruppe"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Vis skjulte"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Vis slettede"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Første gang"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Det er to ting du må vite om å navigere i Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi logoen fungerer som 'HJEM' knapp. Når du trykker på den vil du bli sendt til hjem skjermen."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Når du spiller av lyd eller video vil tittelen vises i toppen av skjermen. Dersom du trykker på den vil du få fullskjermsvisning eller video vindu."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Nå spilles Tittel..."
