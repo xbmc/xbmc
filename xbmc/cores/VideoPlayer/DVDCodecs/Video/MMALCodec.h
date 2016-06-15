@@ -134,6 +134,9 @@ protected:
   int               m_codecControlFlags;
   bool              m_dropState;
   bool              m_preroll;
+  bool              m_got_eos;
+  uint32_t          m_packet_num;
+  uint32_t          m_packet_num_eos;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_dec;
