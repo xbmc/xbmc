@@ -42,7 +42,9 @@ namespace XBMCAddon
                        const String& label2,
                        const String& iconImage,
                        const String& thumbnailImage,
-                       const String& path)
+                       const String& path,
+                       bool offscreen) :
+      m_offscreen(offscreen)
     {
       item.reset();
 
@@ -74,7 +76,7 @@ namespace XBMCAddon
 
       String ret;
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         ret = item->GetLabel();
       }
 
@@ -87,7 +89,7 @@ namespace XBMCAddon
 
       String ret;
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         ret = item->GetLabel2();
       }
 
@@ -99,7 +101,7 @@ namespace XBMCAddon
       if (!item) return;
       // set label
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         item->SetLabel(label);
       }
     }
@@ -109,7 +111,7 @@ namespace XBMCAddon
       if (!item) return;
       // set label
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         item->SetLabel2(label);
       }
     }
@@ -118,7 +120,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         item->SetIconImage(iconImage);
       }
     }
@@ -127,7 +129,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         item->SetArt("thumb", thumbFilename);
       }
     }
@@ -136,7 +138,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         for (Properties::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
         {
           std::string artName = it->first;
@@ -171,7 +173,7 @@ namespace XBMCAddon
     {
       if (!item) return;
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         item->Select(selected);
       }
     }
@@ -183,7 +185,7 @@ namespace XBMCAddon
 
       bool ret;
       {
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         ret = item->IsSelected();
       }
 
@@ -192,7 +194,7 @@ namespace XBMCAddon
 
     void ListItem::setProperty(const char * key, const String& value)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
       if (lowerKey == "startoffset")
@@ -231,7 +233,7 @@ namespace XBMCAddon
 
     String ListItem::getProperty(const char* key)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       String lowerKey = key;
       StringUtils::ToLower(lowerKey);
       std::string value;
@@ -254,7 +256,7 @@ namespace XBMCAddon
 
     String ListItem::getArt(const char* key)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       return item->GetArt(key);
     }
 
@@ -278,19 +280,19 @@ namespace XBMCAddon
 
     void ListItem::setPath(const String& path)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       item->SetPath(path);
     }
 
     void ListItem::setMimeType(const String& mimetype)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       item->SetMimeType(mimetype);
     }
 
     void ListItem::setContentLookup(bool enable)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       item->SetContentLookup(enable);
     }
 
@@ -330,7 +332,7 @@ namespace XBMCAddon
 
     void ListItem::setInfo(const char* type, const InfoLabelDict& infoLabels)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
 
       if (strcmpi(type, "video") == 0)
       {
@@ -695,7 +697,7 @@ namespace XBMCAddon
 
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
 
       if (strcmpi(cType, "video") == 0)
       {
@@ -763,7 +765,7 @@ namespace XBMCAddon
         if (tuple.GetNumValuesSet() != 2)
           throw ListItemException("Must pass in a list of tuples of pairs of strings. One entry in the list only has %d elements.",tuple.GetNumValuesSet());
 
-        LOCKGUI;
+        LOCKGUIIF(m_offscreen);
         item->SetProperty(StringUtils::Format("contextmenulabel(%zu)", i), tuple.first());
         item->SetProperty(StringUtils::Format("contextmenuaction(%zu)", i), tuple.second());
       }
@@ -771,7 +773,7 @@ namespace XBMCAddon
 
     void ListItem::setSubtitles(const std::vector<String>& paths)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       unsigned int i = 1;
       for (std::vector<String>::const_iterator it = paths.begin(); it != paths.end(); ++it, i++)
       {
@@ -782,7 +784,7 @@ namespace XBMCAddon
 
     xbmc::InfoTagVideo* ListItem::getVideoInfoTag()
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       if (item->HasVideoInfoTag())
         return new xbmc::InfoTagVideo(*item->GetVideoInfoTag());
       return new xbmc::InfoTagVideo();
@@ -790,7 +792,7 @@ namespace XBMCAddon
 
     xbmc::InfoTagMusic* ListItem::getMusicInfoTag()
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       if (item->HasMusicInfoTag())
         return new xbmc::InfoTagMusic(*item->GetMusicInfoTag());
       return new xbmc::InfoTagMusic();

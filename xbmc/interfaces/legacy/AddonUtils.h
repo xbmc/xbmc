@@ -31,6 +31,7 @@
 
 #include "threads/SingleLock.h"
 
+#include <memory>
 #include <vector>
 
 #ifdef TARGET_WINDOWS
@@ -68,6 +69,9 @@ namespace XBMCAddonUtils
   };
 
 #define LOCKGUI XBMCAddonUtils::GuiLock __gl
+#define LOCKGUIIF(cond) std::unique_ptr<XBMCAddonUtils::GuiLock> __gl; \
+                        if (!(cond)) \
+                          __gl.reset(new XBMCAddonUtils::GuiLock)
 
   /*
    * Looks in references.xml for image name
