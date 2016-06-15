@@ -177,6 +177,7 @@ private:
                          const std::vector<std::string>* extras);
 
   bool m_fLoaded;
+  bool m_isPython = false;
   bool m_requiressettings;
   CDateTimeSpan m_persistence;
   CONTENT_TYPE m_pathContent;
