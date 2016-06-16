@@ -53,6 +53,7 @@ if(NOT WIN32)
 endif()
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   option(ENABLE_LIRC            "Enable LIRC support?" ON)
+  option(ENABLE_EVENTCLIENTS    "Enable event clients support?" OFF)
 endif()
 
 get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../.. ABSOLUTE)
@@ -251,16 +252,6 @@ mark_as_advanced(core_DEPENDS)
 mark_as_advanced(test_archives)
 mark_as_advanced(test_sources)
 
-file(STRINGS ${PROJECT_SOURCE_DIR}/installdata/addon-bindings.txt bindings)
-foreach(binding ${bindings})
-  list(APPEND addon_bindings ${CORE_SOURCE_DIR}/${binding})
-endforeach()
-
-file(STRINGS ${PROJECT_SOURCE_DIR}/installdata/cmake-files.txt cmakefiles)
-foreach(cmakefile ${cmakefiles})
-  list(APPEND cmake_files ${CORE_SOURCE_DIR}/${cmakefile})
-endforeach()
-
 add_subdirectory(${CORE_SOURCE_DIR}/lib/gtest ${CORE_BUILD_DIR}/gtest EXCLUDE_FROM_ALL)
 
 # Subdirs
@@ -378,8 +369,10 @@ if(CORE_SYSTEM_NAME STREQUAL osx)
 endif()
 
 # WiiRemote
-if(CORE_SYSTEM_NAME STREQUAL linux)
-  add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+if(ENABLE_EVENTCLIENTS)
+  if(CORE_SYSTEM_NAME STREQUAL linux)
+    add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+  endif()
 endif()
 
 include(scripts/${CORE_SYSTEM_NAME}/Install.cmake)
@@ -424,6 +417,8 @@ if(VERBOSE)
   message(STATUS "datarootdir: ${datarootdir}")
   message(STATUS "#---------------------------------------------#")
   message(STATUS "GIT_REV: ${APP_SCMID}")
+  message(STATUS "#---------------------------------------------#")
+  message(STATUS "CPACK_GENERATOR       : ${CPACK_GENERATOR}")
+  message(STATUS "CPACK_SOURCE_GENERATOR: ${CPACK_SOURCE_GENERATOR}")
+  message(STATUS "#---------------------------------------------#")
 endif()
-message(STATUS "#---------------------------------------------#")
-
