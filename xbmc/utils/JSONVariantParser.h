@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "utils/Variant.h"
 
 #include <yajl/yajl_parse.h>

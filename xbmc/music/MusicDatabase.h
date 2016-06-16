@@ -23,6 +23,7 @@
 */
 #pragma once
 #include <utility>
+#include <vector>
 
 #include "addons/Scraper.h"
 #include "Album.h"

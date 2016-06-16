@@ -20,6 +20,7 @@
  */
 #include <math.h>
 #include <string>
+#include <vector>
 
 #include "Addon.h"
 #include "DllAddon.h"

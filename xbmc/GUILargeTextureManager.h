@@ -21,6 +21,7 @@
  */
 
 #include <utility>
+#include <vector>
 
 #include "guilib/TextureManager.h"
 #include "threads/CriticalSection.h"

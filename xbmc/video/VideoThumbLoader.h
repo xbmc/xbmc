@@ -20,6 +20,7 @@
  */
 
 #include <map>
+#include <vector>
 #include "ThumbLoader.h"
 #include "utils/JobManager.h"
 #include "FileItem.h"

@@ -20,6 +20,10 @@
  *
  */
 
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "DVDClock.h"
 
 #define VideoPlayer_AUDIO    1

@@ -23,6 +23,7 @@
 
 #include <string>
 #include <queue>
+#include <vector>
 
 //! @todo should this be in configure
 #ifndef OMX_SKIP64BIT

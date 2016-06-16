@@ -24,6 +24,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include <string>
+#include <vector>
 
 class CWakeOnAccess : private IJobCallback, public ISettingCallback, public ISettingsHandler
 {

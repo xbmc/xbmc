@@ -20,6 +20,8 @@
  */
 
 #include <set>
+#include <string>
+#include <vector>
 
 #include "JSONRPC.h"
 #include "FileItemHandler.h"

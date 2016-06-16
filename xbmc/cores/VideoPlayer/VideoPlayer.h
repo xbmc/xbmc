@@ -22,6 +22,7 @@
 
 #include <atomic>
 #include <utility>
+#include <vector>
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "threads/Thread.h"

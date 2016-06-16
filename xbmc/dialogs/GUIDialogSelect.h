@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "GUIDialogBoxBase.h"
 #include "view/GUIViewControl.h"
 

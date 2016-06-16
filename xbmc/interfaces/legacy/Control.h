@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "guilib/GUIControl.h"
 #include "guilib/GUIFont.h"
 #include "input/Key.h"

@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 typedef uint32_t character_t;
 typedef std::vector<character_t> vecText;
 

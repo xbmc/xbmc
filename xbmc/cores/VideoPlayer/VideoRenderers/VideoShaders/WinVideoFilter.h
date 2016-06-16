@@ -21,6 +21,8 @@
  */
 
 #ifdef HAS_DX
+#include <string>
+#include <vector>
 
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"

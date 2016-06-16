@@ -25,6 +25,8 @@
  *
  */
 
+#include <vector>
+
 #include "GUIControl.h"
 
 /*!

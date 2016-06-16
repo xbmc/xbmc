@@ -26,6 +26,8 @@
 #include "threads/Event.h"
 
 #include <queue>
+#include <string>
+#include <vector>
 #include <semaphore.h>
 #include <OMX_Core.h>
 

@@ -21,6 +21,7 @@
  */
 
 #include <list>
+#include <vector>
 
 #include "cores/IPlayer.h"
 #include "threads/Thread.h"

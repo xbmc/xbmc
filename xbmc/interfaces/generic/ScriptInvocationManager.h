@@ -20,8 +20,9 @@
  */
 
 #include <map>
-#include <set>
 #include <memory>
+#include <set>
+#include <vector>
 
 #include "addons/IAddon.h"
 #include "interfaces/generic/ILanguageInvoker.h"

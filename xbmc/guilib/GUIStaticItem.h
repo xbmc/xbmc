@@ -26,6 +26,7 @@
  */
 
 #include <utility>
+#include <vector>
 
 #include "GUIAction.h"
 #include "GUIInfoTypes.h"

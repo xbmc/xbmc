@@ -26,6 +26,7 @@
 #include "Episode.h"
 #include "filesystem/CurlFile.h"
 #include <string>
+#include <vector>
 
 // forward declarations
 class CXBMCTinyXML;

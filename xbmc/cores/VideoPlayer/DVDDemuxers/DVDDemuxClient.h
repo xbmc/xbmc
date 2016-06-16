@@ -21,6 +21,7 @@
 
 #include "DVDDemux.h"
 #include <map>
+#include <vector>
 
 extern "C" {
 #include "libavcodec/avcodec.h"

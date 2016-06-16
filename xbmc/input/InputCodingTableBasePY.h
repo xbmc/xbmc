@@ -23,6 +23,7 @@
 #include "InputCodingTable.h"
 #include <map>
 #include <string>
+#include <vector>
 
 class CInputCodingTableBasePY : public IInputCodingTable
 {

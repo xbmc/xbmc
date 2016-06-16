@@ -26,6 +26,7 @@
  */
 
 #include <utility>
+#include <vector>
 
 #include "GUIListItemLayout.h"
 #include "IGUIContainer.h"

@@ -19,6 +19,10 @@
  *
  */
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include "dialogs/GUIDialogBoxBase.h"
 #include "IAddon.h"
 

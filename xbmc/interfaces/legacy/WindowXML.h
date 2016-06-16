@@ -21,6 +21,7 @@
 #pragma once
 
 #include <limits.h>
+#include <vector>
 
 #include "Window.h"
 #include "windows/GUIMediaWindow.h"

@@ -21,6 +21,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/CriticalSection.h"

@@ -20,8 +20,9 @@
  */
 
 #include <map>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "DatabaseUtils.h"
 #include "SortFileItem.h"

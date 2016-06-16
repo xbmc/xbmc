@@ -20,6 +20,8 @@
  */
 
 #if defined(HAVE_LIBOPENMAX)
+#include <queue>
+#include <vector>
 
 #include "OpenMax.h"
 #include <EGL/egl.h>

@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
 #include "threads/CriticalSection.h"

@@ -21,6 +21,9 @@
 
 #include <list>
 #include <memory>
+#include <string>
+#include <vector>
+
 #include "Addon.h"
 #include "ContextMenuItem.h"
 

@@ -22,6 +22,8 @@
 #define GUILIB_GUICONTROLPROFILER_H__
 #pragma once
 
+#include <vector>
+
 #include "GUIControl.h"
 
 class CGUIControlProfiler;

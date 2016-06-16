@@ -22,6 +22,7 @@
 
 #include "DVDInputStream.h"
 #include <memory>
+#include <vector>
 
 class CDVDInputStreamStack : public CDVDInputStream
 {

@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "dbwrappers/Database.h"
 #include "TextureCacheJob.h"
 #include "dbwrappers/DatabaseQuery.h"

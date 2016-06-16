@@ -18,6 +18,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include <set>
+#include <string>
+#include <vector>
+
 #include "InfoScanner.h"
 #include "NfoFile.h"
 #include "VideoDatabase.h"

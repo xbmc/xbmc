@@ -20,6 +20,8 @@
  *
  */
 
+#include <vector>
+
 #include "MusicAlbumInfo.h"
 #include "MusicArtistInfo.h"
 #include "addons/Scraper.h"

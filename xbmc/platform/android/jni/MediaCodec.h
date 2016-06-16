@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "JNIBase.h"
 #include "ByteBuffer.h"
 #include "MediaCodecBufferInfo.h"

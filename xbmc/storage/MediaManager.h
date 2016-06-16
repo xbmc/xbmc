@@ -19,8 +19,10 @@
  *
  */
 
-#include "MediaSource.h" // for VECSOURCES
 #include <map>
+#include <vector>
+
+#include "MediaSource.h" // for VECSOURCES
 #include "utils/Job.h"
 #include "IStorageProvider.h"
 #include "threads/CriticalSection.h"

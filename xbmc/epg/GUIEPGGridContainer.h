@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "XBDateTime.h"
 #include "FileItem.h"
 #include "guilib/GUIControl.h"

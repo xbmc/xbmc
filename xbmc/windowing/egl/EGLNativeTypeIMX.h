@@ -19,6 +19,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include <string>
+#include <vector>
+
 #include <linux/fb.h>
 
 #include <EGL/egl.h>

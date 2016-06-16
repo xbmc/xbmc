@@ -21,6 +21,7 @@
  */
 
 #if !defined(TARGET_POSIX) && !defined(HAS_GL)
+#include <vector>
 
 #include "BaseRenderer.h"
 #include "HwDecRender/DXVAHD.h"

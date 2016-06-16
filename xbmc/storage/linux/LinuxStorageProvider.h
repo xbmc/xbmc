@@ -18,6 +18,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include <vector>
+
 #include "storage/IStorageProvider.h"
 #include "DeviceKitDisksProvider.h"
 #include "UDevProvider.h"

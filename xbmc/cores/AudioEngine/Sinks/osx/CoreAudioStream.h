@@ -28,6 +28,7 @@
 #include <IOKit/audio/IOAudioTypes.h>
 
 #include <list>
+#include <vector>
 
 // not defined in 10.6 sdk
 #ifndef kIOAudioDeviceTransportTypeThunderbolt

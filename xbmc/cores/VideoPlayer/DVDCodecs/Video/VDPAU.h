@@ -57,8 +57,10 @@
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
 #include "guilib/Geometry.h"
+#include <deque>
 #include <list>
 #include <map>
+#include <vector>
 
 extern "C" {
 #include "libavutil/avutil.h"

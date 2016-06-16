@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIDialog.h"
 #include "view/GUIViewControl.h"

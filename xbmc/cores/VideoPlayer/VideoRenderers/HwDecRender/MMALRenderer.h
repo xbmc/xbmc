@@ -20,6 +20,8 @@
  *
  */
 
+#include <vector>
+
 #include "guilib/GraphicContext.h"
 #include "../RenderFlags.h"
 #include "../RenderFormats.h"

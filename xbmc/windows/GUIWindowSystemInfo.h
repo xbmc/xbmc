@@ -20,6 +20,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "guilib/GUIWindow.h"
 
 class CGUIWindowSystemInfo : public CGUIWindow

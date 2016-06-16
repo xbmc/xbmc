@@ -23,6 +23,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
 #include <EGL/egl.h>

@@ -29,10 +29,11 @@
 #include "messaging/IMessageTarget.h"
 #include "ServiceManager.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
-#include <atomic>
+#include <vector>
 
 class CAction;
 class CFileItem;

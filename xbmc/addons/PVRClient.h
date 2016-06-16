@@ -19,6 +19,10 @@
  *
  */
 
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
 #include "addons/DllPVRClient.h"

@@ -22,6 +22,9 @@
 
 #include <deque>
 #include <map>
+#include <string>
+#include <vector>
+
 #include "InputCodingTable.h"
 #include "threads/Thread.h"
 

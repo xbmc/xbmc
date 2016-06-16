@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "DVDInputStream.h"
 #include "addons/InputStream.h"
 

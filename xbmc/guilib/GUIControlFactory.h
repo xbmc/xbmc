@@ -28,6 +28,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "GUIControl.h"
 
 class CTextureInfo; // forward

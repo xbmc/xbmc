@@ -22,6 +22,9 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
+#include <string>
+#include <vector>
+
 #include "windowing/WinSystem.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"

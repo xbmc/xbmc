@@ -22,6 +22,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 #include "peripherals/PeripheralTypes.h"
 
 class TiXmlDocument;

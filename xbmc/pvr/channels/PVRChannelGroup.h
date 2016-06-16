@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 
 class CDateTime;
 class CFileItem;

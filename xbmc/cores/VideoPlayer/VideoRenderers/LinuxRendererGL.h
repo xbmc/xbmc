@@ -23,6 +23,8 @@
 #include "system.h"
 
 #ifdef HAS_GL
+#include <vector>
+
 #include "system_gl.h"
 
 #include "FrameBufferObject.h"

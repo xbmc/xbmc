@@ -32,6 +32,7 @@
 
 #include <map>
 #include <memory>
+#include <vector>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;

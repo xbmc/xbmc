@@ -19,6 +19,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/Thread.h"
 

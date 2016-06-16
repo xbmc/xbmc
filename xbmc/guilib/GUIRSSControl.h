@@ -28,6 +28,8 @@
  *
  */
 
+#include <vector>
+
 #include "GUIControl.h"
 #include "GUILabel.h"
 #include "utils/IRssObserver.h"

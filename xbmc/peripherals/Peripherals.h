@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "EventScanner.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"

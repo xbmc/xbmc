@@ -19,6 +19,8 @@
  *
  */
 
+#include <vector>
+
 #include "interfaces/legacy/AddonClass.h"
 #include "interfaces/legacy/Tuple.h"
 #include "interfaces/legacy/wsgi/WsgiResponseBody.h"
