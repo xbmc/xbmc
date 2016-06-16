@@ -331,11 +331,51 @@ macro(today RESULT)
     string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${RESULT} ${${RESULT}})
   else()
     message(SEND_ERROR "date not implemented")
-    set(${RESULT} 000000)
+    set(${RESULT} 00000000)
   endif()
   string(REGEX REPLACE "(\r?\n)+$" "" ${RESULT} "${${RESULT}}")
 endmacro()
 
+# Generates an RFC2822 timestamp
+#
+# The following variable is set:
+#   RFC2822_TIMESTAMP
+function(rfc2822stamp)
+  execute_process(COMMAND date -R
+                  OUTPUT_VARIABLE RESULT)
+  set(RFC2822_TIMESTAMP ${RESULT} PARENT_SCOPE)
+endfunction()
+
+# Generates an user stamp from git config info
+#
+# The following variable is set:
+#   PACKAGE_MAINTAINER - user stamp in the form of "username <username@example.com>"
+#                        if no git tree is found, value is set to "nobody <nobody@example.com>"
+function(userstamp)
+  find_package(Git)
+  if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
+    execute_process(COMMAND ${GIT_EXECUTABLE} config user.name
+                    OUTPUT_VARIABLE username
+                    WORKING_DIRECTORY ${CORE_SOURCE_DIR}
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND ${GIT_EXECUTABLE} config user.email
+                    OUTPUT_VARIABLE useremail
+                    WORKING_DIRECTORY ${CORE_SOURCE_DIR}
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(PACKAGE_MAINTAINER "${username} <${useremail}>" PARENT_SCOPE)
+  else()
+    set(PACKAGE_MAINTAINER "nobody <nobody@example.com>" PARENT_SCOPE)
+  endif()
+endfunction()
+
+# Parses git info and sets variables used to identify the build
+#
+# The following variables are set:
+#   APP_SCMID - git HEAD commit in the form of 'YYYYMMDD-hash'
+#               if git tree is dirty, value is set in the form of 'YYYYMMDD-hash-dirty'
+#               if no git tree is found, value is set in the form of 'YYYYMMDD-nogitfound'
+#   GIT_HASH  - git HEAD commit in the form of 'hash'. if git tree is dirty,
+#               value is set in the form of 'hash-dirty'
 function(core_find_git_rev)
   find_package(Git)
   if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
@@ -370,6 +410,7 @@ function(core_find_git_rev)
   set(GIT_REV "${DATE}-${HASH}")
   if(GIT_REV)
     set(APP_SCMID ${GIT_REV} PARENT_SCOPE)
+    set(GIT_HASH ${HASH} PARENT_SCOPE)
   endif()
 endfunction()
 
@@ -426,3 +467,4 @@ macro(core_find_versions)
     message(FATAL_ERROR "Could not determine add-on API version! Make sure that ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h exists")
   endif()
 endmacro()
+
