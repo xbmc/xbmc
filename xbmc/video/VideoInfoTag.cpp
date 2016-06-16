@@ -58,6 +58,7 @@ void CVideoInfoTag::Reset()
   m_strMPAARating.clear();
   m_strFileNameAndPath.clear();
   m_premiered.Reset();
+  m_bHasPremiered = false;
   m_strStatus.clear();
   m_strProductionCode.clear();
   m_firstAired.Reset();
@@ -834,7 +835,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "filenameandpath", value))
     SetFileNameAndPath(value);
 
-  if (!XMLUtils::GetDate(movie, "premiered", m_premiered))
+  if (XMLUtils::GetDate(movie, "premiered", m_premiered))
+  {
+    m_bHasPremiered = true;
+  }
+  else
   {
     int year;
     if (XMLUtils::GetInt(movie, "year", year))
