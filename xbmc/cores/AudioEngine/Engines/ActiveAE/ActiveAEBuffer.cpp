@@ -233,7 +233,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
       if (m_processor->GetChannelLayout().Count() > 2)                    /* Disable upmix for CActiveAEResample if DSP layout > 2.0, becomes perfomed by DSP */
         upmix = false;
 
-      m_dspBuffer = new CActiveAEBufferPool(m_inputFormat);               /* Get dsp processing buffer class, based on dsp output format */
+      m_dspBuffer = new CActiveAEBufferPool(m_format);               /* Get dsp processing buffer class, based on dsp output format */
       m_dspBuffer->Create(totaltime);
     }
   }
@@ -436,9 +436,10 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
         if (!m_dspSample)
           m_dspSample = m_dspBuffer->GetFreeBuffer();
 
+        m_dspSample->timestamp = in->timestamp;
+        m_dspSample->pkt_start_offset = in->pkt_start_offset;
         if (m_dspSample && m_processor->Process(in, m_dspSample))
         {
-          m_dspSample->timestamp = in->timestamp;
           in->Return();
           in = m_dspSample;
           m_dspSample = NULL;
