@@ -316,7 +316,7 @@ void CEpgContainer::Process(void)
       m_bIsInitialising = false;
 
     /* clean up old entries */
-    if (!m_bStop && iNow >= m_iLastEpgCleanup)
+    if (!m_bStop && iNow >= m_iLastEpgCleanup + g_advancedSettings.m_iEpgCleanupInterval)
       RemoveOldEntries();
 
     /* check for pending manual EPG updates */
@@ -494,7 +494,6 @@ bool CEpgContainer::RemoveOldEntries(void)
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
-  m_iLastEpgCleanup += g_advancedSettings.m_iEpgCleanupInterval;
 
   return true;
 }
