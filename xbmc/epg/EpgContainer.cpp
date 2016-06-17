@@ -481,12 +481,12 @@ bool CEpgContainer::LoadSettings(void)
 
 bool CEpgContainer::RemoveOldEntries(void)
 {
-  CDateTime now = CDateTime::GetUTCDateTime() -
-      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+  const CDateTime cleanupTime(CDateTime::GetUTCDateTime() -
+    CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
 
   /* call Cleanup() on all known EPG tables */
   for (const auto &epgEntry : m_epgs)
-    epgEntry.second->Cleanup(now);
+    epgEntry.second->Cleanup(cleanupTime);
 
   /* remove the old entries from the database */
   if (!m_bIgnoreDbForClient && m_database.IsOpen())
