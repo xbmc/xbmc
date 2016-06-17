@@ -209,8 +209,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     {
       if (movie->m_firstAired.IsValid())
         value = movie->m_firstAired.GetAsLocalizedDate();
-      else if (movie->HasPremiered())
-        value = movie->GetPremiered().GetAsLocalizedDate();
+      else if (movie->HasYear())
+        value = StringUtils::Format("%i", movie->GetYear());
     }
     break;
   case 'F': // filename
