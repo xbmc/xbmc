@@ -251,7 +251,9 @@ void CEpgContainer::LoadFromDB(void)
       ShowProgressDialog(false);
     }
 
-    m_database.DeleteOldEpgEntries();
+    const CDateTime cleanupTime(CDateTime::GetUTCDateTime() -
+      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
+    m_database.DeleteEpgEntries(cleanupTime);
     m_database.Get(*this);
 
     for (const auto &epgEntry : m_epgs)
@@ -490,7 +492,7 @@ bool CEpgContainer::RemoveOldEntries(void)
 
   /* remove the old entries from the database */
   if (!m_bIgnoreDbForClient && m_database.IsOpen())
-    m_database.DeleteOldEpgEntries();
+    m_database.DeleteEpgEntries(cleanupTime);
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);

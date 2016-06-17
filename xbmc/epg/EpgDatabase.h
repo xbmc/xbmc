@@ -84,10 +84,11 @@ namespace EPG
     virtual bool Delete(const CEpg &table);
 
     /*!
-     * @brief Erase all EPG entries older than 1 day.
+     * @brief Erase all EPG entries with an end time less than the given time.
+     * @param maxEndTime The maximum allowed end time.
      * @return True if the entries were removed successfully, false otherwise.
      */
-    virtual bool DeleteOldEpgEntries(void);
+    virtual bool DeleteEpgEntries(const CDateTime &maxEndTime);
 
     /*!
      * @brief Remove a single EPG entry.
