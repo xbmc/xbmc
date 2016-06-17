@@ -269,6 +269,8 @@ void CVideoDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
   m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
 
+  m_pDS->exec("CREATE INDEX ix_rating ON rating(media_id, media_type(20))");
+
   CreateLinkIndex("tag");
   CreateLinkIndex("actor");
   CreateForeignLinkIndex("director", "actor");
@@ -3675,9 +3677,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_TOTAL_TIME).get_asInt();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_MOVIE_USER_RATING).get_asInt();
-  details.AddRating(record->at(VIDEODB_DETAILS_MOVIE_RATING).get_asFloat(),
-    record->at(VIDEODB_DETAILS_MOVIE_VOTES).get_asInt(),
-    record->at(VIDEODB_DETAILS_MOVIE_RATING_TYPE).get_asString());
+  details.m_strDefaultRating = record->at(VIDEODB_DETAILS_MOVIE_RATING_TYPE).get_asString();
+  details.AddRating(record->at(VIDEODB_DETAILS_MOVIE_RATING).get_asFloat(), record->at(VIDEODB_DETAILS_MOVIE_VOTES).get_asInt());
   std::string premieredString = record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asString();
   if (premieredString.size() == 4)
     details.SetYear(record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asInt());
@@ -3754,9 +3755,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.m_playCount = record->at(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
   details.m_strShowTitle = details.m_strTitle;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_TVSHOW_USER_RATING).get_asInt();
-  details.AddRating(record->at(VIDEODB_DETAILS_TVSHOW_RATING).get_asFloat(),
-    record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt(),
-    record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString());
+  details.m_strDefaultRating = record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString();
+  details.AddRating(record->at(VIDEODB_DETAILS_TVSHOW_RATING).get_asFloat(), record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt());
   details.m_duration = record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt();
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
@@ -3831,10 +3831,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_EPISODE_USER_RATING).get_asInt();
-  details.AddRating(record->at(VIDEODB_DETAILS_EPISODE_RATING).get_asFloat(),
-    record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt(),
-    record->at(VIDEODB_DETAILS_EPISODE_RATING_TYPE).get_asString());
-
+  details.m_strDefaultRating = record->at(VIDEODB_DETAILS_EPISODE_RATING_TYPE).get_asString();
+  details.AddRating(record->at(VIDEODB_DETAILS_EPISODE_RATING).get_asFloat(), record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt());
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   if (getDetails)
@@ -4970,7 +4968,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 105;
+  return 106;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

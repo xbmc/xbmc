@@ -1116,16 +1116,29 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   }
   if (ParameterNotNull(parameterObject, "ratings"))
   {
-    CVariant ratings = parameterObject["ratings"];
-    for (CVariant::const_iterator_map rIt = ratings.begin_map(); rIt != ratings.end_map(); rIt++)
+    RatingMap ratings;
+    std::string def = "";
+    for (CVariant::const_iterator_array rIt = parameterObject["ratings"].begin_array(); rIt != parameterObject["ratings"].end_array(); rIt++)
     {
-      if (rIt->second.isArray() && ParameterNotNull(rIt->second, "name") && ParameterNotNull(rIt->second, "rating"))
+      auto& rating = *rIt;
+      if (ParameterNotNull(rating, "name") && ParameterNotNull(rating, "rating"))
       {
-        details.SetRating(rIt->second["rating"].asFloat(), rIt->second["name"].asString());
-        if (ParameterNotNull(rIt->second, "votes"))
-          details.SetVotes(StringUtils::ReturnDigits(parameterObject["votes"].asString()), rIt->second["name"].asString());
+        if (ParameterNotNull(rating, "votes"))
+          ratings[rating["name"].asString()] = CRating(rating["rating"].asFloat(), rating["votes"].asInteger());
+        else
+          ratings[rating["name"].asString()] = CRating(rating["rating"].asFloat());
+        if (ParameterNotNull(rating, "default") && rating["default"].asBoolean())
+          def = rating["name"].asString();
       }
     }
+    if (def.empty() && !ratings.empty())
+    {
+      if (ratings.find(details.m_strDefaultRating) == ratings.end())
+        details.m_strDefaultRating = ratings.begin()->first;
+    }
+    else
+      details.m_strDefaultRating = def;
+    details.SetRatings(ratings);
     updatedDetails.insert("ratings");
   }
   if (ParameterNotNull(parameterObject, "userrating"))

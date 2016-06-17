@@ -674,10 +674,11 @@ const CRating CVideoInfoTag::GetRating(std::string type) const
   if (type.empty())
     type = m_strDefaultRating;
 
-  if (m_ratings.find(type) == m_ratings.end())
+  const auto& rating = m_ratings.find(type);
+  if (rating == m_ratings.end())
     return CRating();
 
-  return m_ratings.find(type)->second;
+  return rating->second;
 }
 
 const bool CVideoInfoTag::HasYear() const
@@ -1213,6 +1214,11 @@ void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */)
     m_ratings[m_strDefaultRating].rating = rating;
   else
     m_ratings[type].rating = rating;
+}
+
+void CVideoInfoTag::SetRatings(RatingMap ratings)
+{
+  m_ratings = std::move(ratings);
 }
 
 void CVideoInfoTag::SetVotes(int votes, const std::string& type /* = "" */)
