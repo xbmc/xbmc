@@ -416,11 +416,11 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std:
       const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
       if (it->second->EndAsUTC() < cleanupTime)
       {
+        if (bUpdateDatabase)
+          m_deletedTags.insert(std::make_pair(it->second->UniqueBroadcastID(), it->second));
+
         it->second->ClearTimer();
         m_tags.erase(it);
-
-        if (bUpdateDatabase)
-          m_deletedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
       }
     }
     else
