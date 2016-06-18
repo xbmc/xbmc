@@ -34,7 +34,7 @@
 #include "addons/UISoundsResource.h"
 #include "addons/Visualisation.h"
 #include "addons/Webinterface.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSPAddon.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "games/controllers/Controller.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "addons/PVRClient.h"

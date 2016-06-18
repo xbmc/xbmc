@@ -1,11 +1,11 @@
 set(SOURCES AEFactory.cpp
             AEResampleFactory.cpp
             AESinkFactory.cpp
-            DSPAddons/ActiveAEDSP.cpp
-            DSPAddons/ActiveAEDSPAddon.cpp
-            DSPAddons/ActiveAEDSPDatabase.cpp
-            DSPAddons/ActiveAEDSPMode.cpp
-            DSPAddons/ActiveAEDSPProcess.cpp
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.cpp
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPAddon.cpp
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPDatabase.cpp
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPMode.cpp
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPProcess.cpp
             Encoders/AEEncoderFFmpeg.cpp
             Engines/ActiveAE/ActiveAE.cpp
             Engines/ActiveAE/ActiveAEBuffer.cpp
@@ -25,11 +25,11 @@ set(SOURCES AEFactory.cpp
 set(HEADERS AEFactory.h
             AEResampleFactory.h
             AESinkFactory.h
-            DSPAddons/ActiveAEDSP.h
-            DSPAddons/ActiveAEDSPAddon.h
-            DSPAddons/ActiveAEDSPDatabase.h
-            DSPAddons/ActiveAEDSPMode.h
-            DSPAddons/ActiveAEDSPProcess.h
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPAddon.h
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPDatabase.h
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPMode.h
+            Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPProcess.h
             Encoders/AEEncoderFFmpeg.h
             Engines/ActiveAE/ActiveAE.h
             Engines/ActiveAE/ActiveAEBuffer.h

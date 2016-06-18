@@ -21,7 +21,7 @@
 #include "GUIDialogAudioDSPManager.h"
 
 #include "FileItem.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogBusy.h"

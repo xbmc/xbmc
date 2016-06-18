@@ -22,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPProcess.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 namespace ActiveAE
