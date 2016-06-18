@@ -1039,6 +1039,11 @@
 		DFDE5D521AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */; };
 		DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFE4095917417FDF00473BD9 /* LegacyPathTranslation.cpp */; };
 		DFE4BE061C661C5F0048EB03 /* AnnounceReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFE4BE051C661C5F0048EB03 /* AnnounceReceiver.mm */; };
+		DFE704181D15803F004EAA9D /* ActiveAEDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19BC1D15514200D4AF19 /* ActiveAEDSP.cpp */; };
+		DFE704191D158043004EAA9D /* ActiveAEDSPAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19BE1D15514200D4AF19 /* ActiveAEDSPAddon.cpp */; };
+		DFE7041A1D158045004EAA9D /* ActiveAEDSPDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19C01D15514200D4AF19 /* ActiveAEDSPDatabase.cpp */; };
+		DFE7041B1D158048004EAA9D /* ActiveAEDSPMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19C21D15514200D4AF19 /* ActiveAEDSPMode.cpp */; };
+		DFE7041C1D15804C004EAA9D /* ActiveAEDSPProcess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19C41D15514200D4AF19 /* ActiveAEDSPProcess.cpp */; };
 		DFEA4B5A1B52721300562321 /* GUIDialogAudioDSPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CF61B5038580002A874 /* GUIDialogAudioDSPManager.cpp */; };
 		DFEA4B5C1B52721700562321 /* GUIDialogAudioDSPSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C973CF81B5038580002A874 /* GUIDialogAudioDSPSettings.cpp */; };
 		DFEB902819E9337200728978 /* AEResampleFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEB902619E9337200728978 /* AEResampleFactory.cpp */; };
@@ -10737,6 +10742,7 @@
 				E499115D174E5CC300741B6D /* find.cpp in Sources */,
 				E499115E174E5CC300741B6D /* getbits.cpp in Sources */,
 				E499115F174E5CC300741B6D /* global.cpp in Sources */,
+				DFE7041C1D15804C004EAA9D /* ActiveAEDSPProcess.cpp in Sources */,
 				E4991160174E5CC300741B6D /* int64.cpp in Sources */,
 				E4991161174E5CC300741B6D /* isnt.cpp in Sources */,
 				E4991162174E5CC300741B6D /* log.cpp in Sources */,
@@ -10929,6 +10935,7 @@
 				E499123F174E5D7E00741B6D /* GUIDialogMediaSource.cpp in Sources */,
 				76AEFB3C1C8F79D100EF2EC0 /* AddonGUIWindow.cpp in Sources */,
 				395C29E41A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */,
+				DFE704181D15803F004EAA9D /* ActiveAEDSP.cpp in Sources */,
 				E4991241174E5D7E00741B6D /* GUIDialogNumeric.cpp in Sources */,
 				E4991242174E5D7E00741B6D /* GUIDialogOK.cpp in Sources */,
 				E4991243174E5D7E00741B6D /* GUIDialogPlayEject.cpp in Sources */,
@@ -11058,6 +11065,7 @@
 				E49912C4174E5DA000741B6D /* DirectoryNodeMoviesOverview.cpp in Sources */,
 				E49912C5174E5DA000741B6D /* DirectoryNodeMusicVideosOverview.cpp in Sources */,
 				E49912C6174E5DA000741B6D /* DirectoryNodeOverview.cpp in Sources */,
+				DFE704191D158043004EAA9D /* ActiveAEDSPAddon.cpp in Sources */,
 				DFEA4B5A1B52721300562321 /* GUIDialogAudioDSPManager.cpp in Sources */,
 				DFED5AC71AB23388001F080D /* ReplayGain.cpp in Sources */,
 				E49912C7174E5DA000741B6D /* DirectoryNodeRecentlyAddedEpisodes.cpp in Sources */,
@@ -11199,6 +11207,7 @@
 				E4991359174E5EBE00741B6D /* PlaylistOperations.cpp in Sources */,
 				E499135A174E5EBE00741B6D /* PVROperations.cpp in Sources */,
 				395C29DF1A98A11C00EBC7AD /* WsgiResponseBody.cpp in Sources */,
+				DFE7041A1D158045004EAA9D /* ActiveAEDSPDatabase.cpp in Sources */,
 				E499135B174E5EBE00741B6D /* SystemOperations.cpp in Sources */,
 				E499135C174E5EBE00741B6D /* VideoLibrary.cpp in Sources */,
 				E499135D174E5EBE00741B6D /* XBMCOperations.cpp in Sources */,
@@ -11724,6 +11733,7 @@
 				7CCDA1D1192753E30074CF51 /* PltMediaRenderer.cpp in Sources */,
 				7CCDA1DC192753E30074CF51 /* RdrConnectionManagerSCPD.cpp in Sources */,
 				7CCDA1E7192753E30074CF51 /* RenderingControlSCPD.cpp in Sources */,
+				DFE7041B1D158048004EAA9D /* ActiveAEDSPMode.cpp in Sources */,
 				7C8E02381BA35D0B0072E8B2 /* PictureBuiltins.cpp in Sources */,
 				7CCDA1F4192753E30074CF51 /* ConnectionManagerSCPD.cpp in Sources */,
 				7CCDA1FF192753E30074CF51 /* ContentDirectorySCPD.cpp in Sources */,
