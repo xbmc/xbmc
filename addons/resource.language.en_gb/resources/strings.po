@@ -6544,7 +6544,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13414"
-msgid "Include artists who appear only on compilations"
+msgid "Show song and album artists"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17183,10 +17183,10 @@ msgctxt "#36254"
 msgid "Action to perform when pressing the record button. [Record current show] will record the current show from \"now\" to the end of the show. If no TV guide data is currently available a fixed length recording starting \"now\", with the value set for \"Instant recording duration\" will be scheduled. [Record for a fixed period of time] will schedule a fixed length recording starting \"now\", with the value set for \"Instant recording duration\". [Ask what to do] will open a dialogue containing different recording actions to choose from, like \"Record current show\", \"Record next show\" and some fixed duration recordings."
 msgstr ""
 
-#. Description of setting with label #13414 "Include artists who appear only on compilations"
+#. Description of setting with label #13414 "Show song and album artists"
 #: system/settings/settings.xml
 msgctxt "#36255"
-msgid "Determine if artists that appear only on compilations are shown in the library artist view."
+msgid "When enabled, both song and album artists are shown. When disabled, only album artists are shown and artists that appear only on individual songs from an album are excluded."
 msgstr ""
 
 #. Description of setting with label #20192 "Fetch additional information during updates"
