@@ -436,35 +436,37 @@ std::vector<CDemuxStream*> CInputStream::GetStreams() const
   return streams;
 }
 
-void CInputStream::EnableStream(int iStreamId, bool enable)
+INPUTSTREAM_ENABLESTREAM_RESULT CInputStream::EnableStream(int iStreamId, bool enable)
 {
   std::map<int, CDemuxStream*>::iterator it = m_streams.find(iStreamId);
   if (it == m_streams.end())
-    return;
+    return IPS_ES_FAILURE;
 
   try
   {
-    m_pStruct->EnableStream(it->second->uniqueId, enable);
+    return m_pStruct->EnableStream(it->second->uniqueId, enable);
   }
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "CInputStream::EnableStream - error. Reason: %s", e.what());
+    return IPS_ES_FAILURE;
   }
 }
 
-void CInputStream::EnableStreamAtPTS(int iStreamId, uint64_t pts)
+INPUTSTREAM_ENABLESTREAM_RESULT CInputStream::EnableStreamAtPTS(int iStreamId, uint64_t pts)
 {
   std::map<int, CDemuxStream*>::iterator it = m_streams.find(iStreamId);
   if (it == m_streams.end())
-    return;
+    return IPS_ES_FAILURE;
 
   try
   {
-    m_pStruct->EnableStreamAtPTS(it->second->uniqueId, pts);
+    return m_pStruct->EnableStreamAtPTS(it->second->uniqueId, pts);
   }
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "CInputStream::EnableStreamAtPTS - error. Reason: %s", e.what());
+    return IPS_ES_FAILURE;
   }
 }
 

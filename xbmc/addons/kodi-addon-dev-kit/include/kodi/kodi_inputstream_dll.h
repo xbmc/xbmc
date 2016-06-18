@@ -77,17 +77,19 @@ extern "C"
    * A disabled stream does not send demux packets
    * @param streamId unique id of stream
    * @param enable true for enable, false for disable
+   * @return INPUTSTREAM_ENABLESTREAM_RESULT
    * @remarks
    */
-  void EnableStream(int streamid, bool enable);
+  INPUTSTREAM_ENABLESTREAM_RESULT EnableStream(int streamid, bool enable);
 
   /*!
   * Enables a stream at the given PTS.
   * @param streamId unique id of stream
   * @param pts position in stream in microseconds 
+  * @return INPUTSTREAM_ENABLESTREAM_RESULT
   * @remarks will only be called if CAPABILITIES::m_supportsEnableAtPTS is set to true
   */
-  void EnableStreamAtPTS(int streamid, uint64_t pts);
+  INPUTSTREAM_ENABLESTREAM_RESULT EnableStreamAtPTS(int streamid, uint64_t pts);
 
   /*!
    * Reset the demultiplexer in the add-on.

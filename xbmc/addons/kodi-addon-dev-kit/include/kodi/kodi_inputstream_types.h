@@ -119,6 +119,13 @@ extern "C" {
     unsigned int m_BlockAlign;
   } INPUTSTREAM_INFO;
 
+  enum INPUTSTREAM_ENABLESTREAM_RESULT
+  {
+    IPS_ES_OK,
+    IPS_ES_FAILURE,
+    IPS_ES_STREAMCHANGE
+  };
+
   /*!
    * @brief Structure to transfer the methods from xbmc_inputstream_dll.h to XBMC
    */
@@ -132,8 +139,8 @@ extern "C" {
     // IDemux
     struct INPUTSTREAM_IDS (__cdecl* GetStreamIds)();
     struct INPUTSTREAM_INFO (__cdecl* GetStream)(int);
-    void (__cdecl* EnableStream)(int, bool);
-    void (__cdecl* EnableStreamAtPTS)(int, uint64_t);
+    INPUTSTREAM_ENABLESTREAM_RESULT (__cdecl* EnableStream)(int, bool);
+    INPUTSTREAM_ENABLESTREAM_RESULT (__cdecl* EnableStreamAtPTS)(int, uint64_t);
     void (__cdecl* DemuxReset)(void);
     void (__cdecl* DemuxAbort)(void);
     void (__cdecl* DemuxFlush)(void);

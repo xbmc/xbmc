@@ -79,8 +79,8 @@ namespace ADDON
     void AbortDemux();
     void FlushDemux();
     void SetSpeed(int iSpeed);
-    void EnableStream(int iStreamId, bool enable);
-    void EnableStreamAtPTS(int iStreamId, uint64_t pts);
+    INPUTSTREAM_ENABLESTREAM_RESULT EnableStream(int iStreamId, bool enable);
+    INPUTSTREAM_ENABLESTREAM_RESULT EnableStreamAtPTS(int iStreamId, uint64_t pts);
     void SetVideoResolution(int width, int height);
 
     // stream

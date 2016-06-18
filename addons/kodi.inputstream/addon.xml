@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="kodi.inputstream" version="1.0.4" provider-name="Team Kodi">
-  <backwards-compatibility abi="1.0.4"/>
+<addon id="kodi.inputstream" version="1.0.5" provider-name="Team Kodi">
+  <backwards-compatibility abi="1.0.5"/>
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>

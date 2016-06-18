@@ -202,7 +202,7 @@ void CInputStreamAddon::EnableStream(int iStreamId, bool enable)
   if (!m_addon)
     return;
 
-  return m_addon->EnableStream(iStreamId, enable);
+  m_addon->EnableStream(iStreamId, enable);
 }
 
 void CInputStreamAddon::EnableStreamAtPTS(int iStreamId, uint64_t pts)
@@ -210,7 +210,7 @@ void CInputStreamAddon::EnableStreamAtPTS(int iStreamId, uint64_t pts)
   if (!m_addon)
     return;
 
-  return m_addon->EnableStreamAtPTS(iStreamId, pts);
+  m_addon->EnableStreamAtPTS(iStreamId, pts);
 }
 
 int CInputStreamAddon::GetNrOfStreams() const
