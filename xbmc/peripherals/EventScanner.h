@@ -60,7 +60,7 @@ namespace PERIPHERALS
     EventRateHandle SetRate(float rateHz);
 
     // implementation of IEventRateCallback
-    virtual void Release(CEventRateHandle* handle);
+    virtual void Release(CEventRateHandle* handle) override;
 
   protected:
     // implementation of CThread

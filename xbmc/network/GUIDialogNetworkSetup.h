@@ -38,34 +38,34 @@ public:
                       NET_PROTOCOL_NFS};
   CGUIDialogNetworkSetup(void);
   virtual ~CGUIDialogNetworkSetup(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnBack(int actionID);
-  virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
+  virtual bool OnMessage(CGUIMessage& message) override;
+  virtual bool OnBack(int actionID) override;
+  virtual void OnInitWindow() override;
+  virtual void OnDeinitWindow(int nextWindowID) override;
 
   static bool ShowAndGetNetworkAddress(std::string &path);
 
   std::string ConstructPath() const;
   void SetPath(const std::string &path);
-  bool IsConfirmed() const { return m_confirmed; };
+  bool IsConfirmed() const override { return m_confirmed; };
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingAction(const CSetting *setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
-  virtual void Save() { }
-  virtual void SetupView();
+  virtual void Save() override { }
+  virtual void SetupView() override;
 
   // specialization of CGUIDialogSettingsManualBase
-  virtual void InitializeSettings();
+  virtual void InitializeSettings() override;
 
   void OnProtocolChange();
   void OnServerBrowse();
   void OnOK();
-  void OnCancel();
+  void OnCancel() override;
   void UpdateButtons();
 
   NET_PROTOCOL m_protocol;

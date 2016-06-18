@@ -37,15 +37,15 @@ namespace PVR
   public:
     CGUIDialogPVRGuideInfo(void);
     virtual ~CGUIDialogPVRGuideInfo(void);
-    virtual bool OnMessage(CGUIMessage& message);
+    virtual bool OnMessage(CGUIMessage& message) override;
     virtual bool OnInfo(int actionID) override;
-    virtual bool HasListItems() const { return true; };
-    virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+    virtual bool HasListItems() const override { return true; };
+    virtual CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
     void SetProgInfo(const EPG::CEpgInfoTagPtr &tag);
 
   protected:
-    virtual void OnInitWindow();
+    virtual void OnInitWindow() override;
 
     bool ActionStartTimer(const EPG::CEpgInfoTagPtr &tag);
     bool ActionCancelTimer(const CFileItemPtr &timer);

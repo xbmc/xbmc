@@ -28,7 +28,7 @@ public:
   virtual ~CGUIWindowEventLog();
 
   // specialization of CGUIControl
-  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnMessage(CGUIMessage& message) override;
 
 protected:
   // specialization of CGUIMediaWindow

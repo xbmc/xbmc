@@ -167,7 +167,7 @@ public:
    */
   std::map<std::string, std::string> GetArtistArtwork(const CArtist& artist);
 protected:
-  virtual void Process();
+  virtual void Process() override;
 
   /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
    Given a list of FileItems, scan in the tags for those FileItems
@@ -191,7 +191,7 @@ protected:
 
   bool DoScan(const std::string& strDirectory) override;
 
-  virtual void Run();
+  virtual void Run() override;
   int CountFiles(const CFileItemList& items, bool recursive);
   int CountFilesRecursively(const std::string& strPath);
 
