@@ -37,8 +37,6 @@
 
 #include "GUIWindowPVRGuide.h"
 
-#define MAX_UPDATE_FREQUENCY 3000 // limit to maximum one update/refresh in x milliseconds
-
 using namespace PVR;
 using namespace EPG;
 

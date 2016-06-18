@@ -402,7 +402,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std:
     auto it = (eit == m_tags.end()) ? m_tags.find(tag->StartAsUTC()) : eit;
     if (it == m_tags.end())
     {
-      // not guranteed that deleted tag contains valid start time. search sequential.
+      // It is not guaranteed that the deleted tag contains valid start time. search sequential.
       for (it = m_tags.begin(); it != m_tags.end(); ++it)
       {
         if (it->second->UniqueBroadcastID() == tag->UniqueBroadcastID())
@@ -412,11 +412,16 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std:
 
     if (it != m_tags.end())
     {
-      it->second->ClearTimer();
-      m_tags.erase(it);
+      // Respect epg linger time.
+      const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
+      if (it->second->EndAsUTC() < cleanupTime)
+      {
+        if (bUpdateDatabase)
+          m_deletedTags.insert(std::make_pair(it->second->UniqueBroadcastID(), it->second));
 
-      if (bUpdateDatabase)
-        m_deletedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
+        it->second->ClearTimer();
+        m_tags.erase(it);
+      }
     }
     else
     {

@@ -149,15 +149,13 @@ bool CEpgDatabase::Delete(const CEpg &table)
   return DeleteValues("epg", filter);
 }
 
-bool CEpgDatabase::DeleteOldEpgEntries(void)
+bool CEpgDatabase::DeleteEpgEntries(const CDateTime &maxEndTime)
 {
-  time_t iCleanupTime;
-  CDateTime cleanupTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() -
-      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
-  cleanupTime.GetAsTime(iCleanupTime);
+  time_t iMaxEndTime;
+  maxEndTime.GetAsTime(iMaxEndTime);
 
   Filter filter;
-  filter.AppendWhere(PrepareSQL("iEndTime < %u", iCleanupTime));
+  filter.AppendWhere(PrepareSQL("iEndTime < %u", iMaxEndTime));
 
   return DeleteValues("epgtags", filter);
 }
