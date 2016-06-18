@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile prefix.patch
 
 # lib name, version
 LIBNAME=rtmpdump
-VERSION=a107cef9b392616dff54fabfd37f985ee2190a6f
+VERSION=fa8646daeb19dfd12c181f7d19de708d623704c0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
