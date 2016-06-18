@@ -667,7 +667,20 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
     }
   }
 
-  LanguageResourcePtr languageAddon = GetLanguageAddon(language);
+  LanguageResourcePtr languageAddon;
+  {
+    std::string addonId = ADDON::CLanguageResource::GetAddonId(language);
+    if (addonId.empty())
+      addonId = CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
+
+    ADDON::AddonPtr addon;
+    if (ADDON::CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE, false))
+    {
+      languageAddon = std::static_pointer_cast<ADDON::CLanguageResource>(addon);
+      ADDON::CAddonMgr::GetInstance().EnableAddon(languageAddon->ID());
+    }
+  }
+
   if (languageAddon == NULL)
   {
     CLog::Log(LOGWARNING, "CLangInfo: unable to load language \"%s\". Trying to determine matching language addon...", language.c_str());
