@@ -70,5 +70,5 @@ FARPROC WINAPI delayHookFailureFunc (unsigned dliNotify, PDelayLoadInfo pdli)
 }
 
 // assign hook functions
-PfnDliHook __pfnDliNotifyHook2 = delayHookNotifyFunc;
-PfnDliHook __pfnDliFailureHook2 = delayHookFailureFunc;
+//PfnDliHook __pfnDliNotifyHook2 = delayHookNotifyFunc;
+//PfnDliHook __pfnDliFailureHook2 = delayHookFailureFunc;
