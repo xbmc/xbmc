@@ -39,7 +39,7 @@
   </section>
   <section id="library">
     <category id="video">
-      <group id="3">
+      <group id="1">
         <setting id="myvideos.extractchapterthumbs">
           <default>false</default>
         </setting>
