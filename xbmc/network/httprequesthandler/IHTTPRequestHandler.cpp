@@ -54,6 +54,9 @@ std::string GetHTTPMethod(HTTPMethod method)
 
   case POST:
     return HTTPMethodPost;
+
+  case UNKNOWN:
+    break;
   }
 
   return "";
