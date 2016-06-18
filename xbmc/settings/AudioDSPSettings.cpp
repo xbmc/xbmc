@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "AudioDSPSettings.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSPMode.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPMode.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

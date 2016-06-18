@@ -34,7 +34,7 @@
 #include "AudioEncoder.h"
 #include "ContextMenuAddon.h"
 #include "ContextMenuManager.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "DllAudioDSP.h"
 #include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"

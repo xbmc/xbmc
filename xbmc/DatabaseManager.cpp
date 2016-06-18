@@ -28,7 +28,7 @@
 #include "pvr/PVRDatabase.h"
 #include "epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 
 using namespace EPG;
 using namespace PVR;
