@@ -54,6 +54,8 @@ public:
 
   static CVariant Parse(const unsigned char *json, unsigned int length);
 
+  static CVariant Parse(const std::string& json);
+
 private:
   static int ParseNull(void * ctx);
   static int ParseBoolean(void * ctx, int boolean);

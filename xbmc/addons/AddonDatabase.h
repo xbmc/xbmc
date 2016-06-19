@@ -48,8 +48,9 @@ public:
   /*! Get the most recent version for an add-on and the repo id it belongs to*/
   std::pair<ADDON::AddonVersion, std::string> GetAddonVersion(const std::string &id);
 
-  bool UpdateRepositoryContent(const std::string& id, const ADDON::VECADDONS& addons,
-      const std::string& checksum, const ADDON::AddonVersion& version);
+  bool UpdateRepositoryContent(const std::string& repositoryId, const ADDON::AddonVersion& version,
+      const std::string& checksum, const std::vector<ADDON::AddonPtr>& addons);
+
   int GetRepoChecksum(const std::string& id, std::string& checksum);
 
   /*!
@@ -91,9 +92,8 @@ public:
 
   /*! \brief Check whether an addon has been marked as broken via BreakAddon.
    \param addonID id of the addon to check
-   \return reason if the addon is broken, blank otherwise
    \sa BreakAddon */
-  std::string IsAddonBroken(const std::string &addonID);
+  bool IsAddonBroken(const std::string &addonID);
 
   bool BlacklistAddon(const std::string& addonID);
   bool RemoveAddonFromBlacklist(const std::string& addonID);
@@ -149,33 +149,6 @@ protected:
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
-  int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   void DeleteRepository(const std::string& id);
-
-  /* keep in sync with the addon table */
-  enum AddonFields
-  {
-    addon_id=0,
-    addon_type,
-    addon_name,
-    addon_summary,
-    addon_description,
-    addon_stars,
-    addon_path,
-    addon_addonID,
-    addon_icon,
-    addon_version,
-    addon_changelog,
-    addon_fanart,
-    addon_author,
-    addon_disclaimer,
-    addon_minversion,
-    broken_reason,
-    addonextra_key,
-    addonextra_value,
-    dependencies_addon,
-    dependencies_version,
-    dependencies_optional
-  };
 };
 

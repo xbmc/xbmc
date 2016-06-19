@@ -244,6 +244,17 @@ public:
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
   static std::vector<std::string> Tokenize(const std::string& input, const char delimiter);
   static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter);
+  static uint64_t ToUint64(std::string str, uint64_t fallback) noexcept;
+
+  /*!
+   * Returns bytes in a human readable format using the smallest unit that will fit `bytes` in at
+   * most three digits. The number of decimals are adjusted with significance such that 'small'
+   * numbers will have more decimals than larger ones.
+   *
+   * For example: 1024 bytes will be formatted as "1.00kB", 10240 bytes as "10.0kB" and
+   * 102400 bytes as "100kB". See TestStringUtils for more examples.
+   */
+  static std::string FormatFileSize(uint64_t bytes);
 };
 
 struct sortstringbyname

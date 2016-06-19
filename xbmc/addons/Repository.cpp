@@ -258,7 +258,7 @@ bool CRepositoryUpdateJob::DoWork()
     textureDB.CommitMultipleExecute();
   }
 
-  database.UpdateRepositoryContent(m_repo->ID(), addons, newChecksum, m_repo->Version());
+  database.UpdateRepositoryContent(m_repo->ID(), m_repo->Version(), newChecksum, addons);
 
   //Update broken status
   database.BeginMultipleExecute();
@@ -282,7 +282,7 @@ bool CRepositoryUpdateJob::DoWork()
 
     if (localAddon)
     {
-      bool brokenInDb = !database.IsAddonBroken(addon->ID()).empty();
+      bool brokenInDb = database.IsAddonBroken(addon->ID());
       if (!broken.empty() && !brokenInDb)
       {
         //newly broken

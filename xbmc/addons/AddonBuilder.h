@@ -54,6 +54,7 @@ public:
   void SetLastUpdated(CDateTime lastUpdated) { m_props.lastUpdated = lastUpdated; }
   void SetLastUsed(CDateTime lastUsed) { m_props.lastUsed = lastUsed; }
   void SetOrigin(std::string origin) { m_props.origin = std::move(origin); }
+  void SetPackageSize(uint64_t size) { m_props.packageSize = size; }
 
   const std::string& GetId() const { return m_props.id; }
   const AddonVersion& GetVersion() const { return m_props.version; }

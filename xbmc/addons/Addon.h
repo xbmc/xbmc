@@ -56,8 +56,8 @@ void OnPostUnInstall(const AddonPtr& addon);
 class AddonProps
 {
 public:
-  AddonProps() : type(ADDON_UNKNOWN) {};
-  AddonProps(std::string id, TYPE type) : id(std::move(id)), type(type) {}
+  AddonProps() : type(ADDON_UNKNOWN), packageSize(0) {};
+  AddonProps(std::string id, TYPE type) : id(std::move(id)), type(type), packageSize(0) {}
 
   std::string id;
   TYPE type;
@@ -83,6 +83,7 @@ public:
   CDateTime lastUpdated;
   CDateTime lastUsed;
   std::string origin;
+  uint64_t packageSize;
 };
 
 
@@ -116,6 +117,7 @@ public:
   CDateTime LastUpdated() const override { return m_props.lastUpdated; }
   CDateTime LastUsed() const override { return m_props.lastUsed; }
   std::string Origin() const override { return m_props.origin; }
+  uint64_t PackageSize() const override { return m_props.packageSize; }
   const InfoMap& ExtraInfo() const override { return m_props.extrainfo; }
   const ADDONDEPS& GetDeps() const override { return m_props.dependencies; }
 

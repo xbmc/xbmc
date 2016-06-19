@@ -38,7 +38,7 @@
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include <functional>
-
+#include <array>
 #include <assert.h>
 #include <math.h>
 #include <time.h>
@@ -1283,4 +1283,30 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
     // Skip delimiters.  Note the "not_of"
     dataPos = input.find_first_not_of(delimiter, nextDelimPos);
   }
+}
+
+uint64_t StringUtils::ToUint64(std::string str, uint64_t fallback) noexcept
+{
+  std::istringstream iss(str);
+  uint64_t result(fallback);
+  iss >> result;
+  return result;
+}
+
+std::string StringUtils::FormatFileSize(uint64_t bytes)
+{
+  const std::array<std::string, 6> units{"B", "kB", "MB", "GB", "TB", "PB"};
+  if (bytes < 1000)
+    return Format("%lluB", bytes);
+
+  int i = 0;
+  double value = static_cast<double>(bytes);
+  while (i < units.size() - 1 && value >= 999.5)
+  {
+    ++i;
+    value /= 1024.0;
+  }
+  int decimals = value < 9.995 ? 2 : (value < 99.95 ? 1 : 0);
+  auto frmt = "%.0" + Format("%d", decimals) + "f%s";
+  return Format(frmt.c_str(), value, units[i].c_str());
 }
