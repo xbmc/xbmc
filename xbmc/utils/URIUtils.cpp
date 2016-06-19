@@ -1184,6 +1184,15 @@ std::string URIUtils::CanonicalizePath(const std::string& path, const char slash
   return result;
 }
 
+template <typename... T>
+std::string URIUtils::AddFileToFolder(const std::string& strFolder,
+                                      const std::string& strFile,
+                                      T... args)
+{
+  auto newPath = AddFileToFolder(strFolder, strFile);
+  return AddFileToFolder(newPath, args...);
+}
+
 std::string URIUtils::AddFileToFolder(const std::string& strFolder, 
                                 const std::string& strFile)
 {
