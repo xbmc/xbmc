@@ -896,13 +896,6 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   // open video stream
   valid   = false;
   
-  if (m_pDemuxer)
-  {
-    // TODO desired resolution needs to come from somewhere else
-    RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
-    m_pDemuxer->SetVideoResolution(res.iWidth, res.iHeight);
-  }
-
   for (const auto &stream : m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority))
   {
     if(OpenStream(m_CurrentVideo, stream.demuxerId, stream.id, stream.source, reset))
@@ -4140,6 +4133,13 @@ int CVideoPlayer::OnDVDNavResult(void* pData, int iMessage)
     }
   }
   return NAVRESULT_NOP;
+}
+
+void CVideoPlayer::GetVideoResolution(unsigned int &width, unsigned int &height)
+{
+  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  width = res.iWidth;
+  height = res.iHeight;
 }
 
 bool CVideoPlayer::ShowPVRChannelInfo(void)
