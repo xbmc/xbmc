@@ -350,7 +350,8 @@ public:
   virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
   virtual int GetCacheLevel() const ;
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);
+  virtual int OnDVDNavResult(void* pData, int iMessage) override;
+  void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
   virtual bool ControlsVolume() {return m_omxplayer_mode;}
 
