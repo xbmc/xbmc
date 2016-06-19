@@ -33,9 +33,6 @@ namespace EPG
 
   struct EpgSearchFilter
   {
-    static int FilterRecordings(CFileItemList &results);
-    static int FilterTimers(CFileItemList &results);
-
     /*!
      * @brief Clear this filter.
      */

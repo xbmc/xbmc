@@ -82,8 +82,6 @@ namespace EPG
     PVR::CPVRChannelPtr Channel(void) const;
 
     int ChannelID(void) const;
-    int ChannelNumber(void) const;
-    int SubChannelNumber(void) const;
 
     /*!
      * @brief Channel the channel tag linked to this EPG table.
@@ -96,12 +94,6 @@ namespace EPG
      * @return The name of the scraper to use for this table.
      */
     const std::string &ScraperName(void) const { return m_strScraperName; }
-
-    /*!
-     * @brief Change the name of the scraper to use.
-     * @param strScraperName The new scraper.
-     */
-    void SetScraperName(const std::string &strScraperName);
 
     /*!
      * @brief Specify if EPG should be manually updated on the next cycle
@@ -145,11 +137,6 @@ namespace EPG
     bool HasValidEntries(void) const;
 
     /*!
-     * @return True if this EPG has a PVR channel set, false otherwise.
-     */
-    bool HasPVRChannel(void) const;
-
-    /*!
      * @brief Remove all entries from this EPG that finished before the given time
      *        and that have no timers set.
      * @param Time Delete entries with an end time before this time in UTC.
@@ -180,30 +167,12 @@ namespace EPG
     CEpgInfoTagPtr GetTagNext() const;
 
     /*!
-     * @brief Get the event that occurs at the given time.
-     * @param time The time in UTC to find the event for.
-     * @return The found tag or NULL if it wasn't found.
-     */
-    CEpgInfoTagPtr GetTagAround(const CDateTime &time) const;
-
-    /*!
      * Get the event that occurs between the given begin and end time.
      * @param beginTime Minimum start time in UTC of the event.
      * @param endTime Maximum end time in UTC of the event.
      * @return The found tag or NULL if it wasn't found.
      */
     CEpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
-
-    /*!
-     * @brief Get the infotag with the given begin time.
-     *
-     * Get the infotag with the given ID.
-     * If it wasn't found, try finding the event with the given start time
-     *
-     * @param beginTime The start time in UTC of the event to find if it wasn't found by it's unique ID.
-     * @return The found tag or an empty tag if it wasn't found.
-     */
-    CEpgInfoTagPtr GetTag(const CDateTime &beginTime) const;
 
     /*!
      * @brief Get the event matching the given unique broadcast id
@@ -299,13 +268,7 @@ namespace EPG
      */
     bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
 
-    /*!
-     * @return True if this is an EPG table for a radio channel, false otherwise.
-     */
-    bool IsRadio(void) const;
-
     CEpgInfoTagPtr GetNextEvent(const CEpgInfoTag& tag) const;
-    CEpgInfoTagPtr GetPreviousEvent(const CEpgInfoTag& tag) const;
 
     size_t Size(void) const;
 
@@ -366,8 +329,6 @@ namespace EPG
      * @return True if the update was successful, false otherwise.
      */
     bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
-
-    bool IsRemovableTag(const EPG::CEpgInfoTag &tag) const;
 
     std::map<CDateTime, CEpgInfoTagPtr> m_tags;
     std::map<int, CEpgInfoTagPtr>       m_changedTags;

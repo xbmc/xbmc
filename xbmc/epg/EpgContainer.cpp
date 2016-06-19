@@ -272,14 +272,6 @@ void CEpgContainer::LoadFromDB(void)
   m_bLoaded = bLoaded;
 }
 
-bool CEpgContainer::PersistTables(void)
-{
-  m_critSection.lock();
-  auto copy = m_epgs;
-  m_critSection.unlock();
-  return m_database.Persist(copy);
-}
-
 bool CEpgContainer::PersistAll(void)
 {
   bool bReturn(true);
@@ -395,18 +387,6 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(const CPVRChannelPtr &channel, unsigned
     retval = epg->GetTagByBroadcastId(iBroadcastId);
 
   return retval;
-}
-
-CEpgPtr CEpgContainer::GetByChannel(const CPVRChannel &channel) const
-{
-  CSingleLock lock(m_critSection);
-  for (const auto &epgEntry : m_epgs)
-  {
-    if (channel.ChannelID() == epgEntry.second->ChannelID())
-      return epgEntry.second;
-  }
-
-  return CEpgPtr();
 }
 
 void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName)
@@ -698,17 +678,6 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   return !bInterrupted;
 }
 
-int CEpgContainer::GetEPGAll(CFileItemList &results)
-{
-  int iInitialSize = results.Size();
-
-  CSingleLock lock(m_critSection);
-  for (const auto &epgEntry : m_epgs)
-    epgEntry.second->Get(results);
-
-  return results.Size() - iInitialSize;
-}
-
 const CDateTime CEpgContainer::GetFirstEPGDate(void)
 {
   CDateTime returnValue;
@@ -792,12 +761,6 @@ bool CEpgContainer::CheckPlayingEvents(void)
     NotifyObservers(ObservableMessageEpgActiveItem);
   }
   return bReturn;
-}
-
-bool CEpgContainer::IsInitialising(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bIsInitialising;
 }
 
 void CEpgContainer::SetHasPendingUpdates(bool bHasPendingUpdates /* = true */)

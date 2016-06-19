@@ -134,13 +134,6 @@ namespace EPG
     virtual int GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter);
 
     /*!
-     * @brief Get all EPG tables.
-     * @param results The fileitem list to store the results in.
-     * @return The amount of entries that were added.
-     */
-    virtual int GetEPGAll(CFileItemList &results);
-
-    /*!
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
@@ -166,13 +159,6 @@ namespace EPG
      * @return The requested event, or an empty tag when not found
      */
     virtual CEpgInfoTagPtr GetTagById(const PVR::CPVRChannelPtr &channel, unsigned int iBroadcastId) const;
-
-    /*!
-     * @brief Get an EPG table given a PVR channel.
-     * @param channel The channel to get the EPG table for.
-     * @return The table or NULL if it wasn't found.
-     */
-    virtual CEpgPtr GetByChannel(const PVR::CPVRChannel &channel) const;
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -229,17 +215,10 @@ namespace EPG
     void SetHasPendingUpdates(bool bHasPendingUpdates = true);
 
     /*!
-     * @return True while being initialised.
-     */
-    bool IsInitialising(void) const;
-
-    /*!
      * @brief Call Persist() on each table
      * @return True when they all were persisted, false otherwise.
      */
     bool PersistAll(void);
-
-    bool PersistTables(void);
 
     /*!
      * @brief client can trigger an update request for a channel
