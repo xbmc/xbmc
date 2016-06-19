@@ -221,11 +221,6 @@ void CPVRRadioRDSInfoTag::SetSpeechActive(bool active)
   m_RDS_SpeechActive = active;
 }
 
-bool CPVRRadioRDSInfoTag::IsSpeechActive()
-{
-  return m_RDS_SpeechActive;
-}
-
 void CPVRRadioRDSInfoTag::SetLanguage(const std::string& strLanguage)
 {
   m_strLanguage = Trim(strLanguage);
@@ -352,16 +347,6 @@ void CPVRRadioRDSInfoTag::SetInfoNews(const std::string& strNews)
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CPVRRadioRDSInfoTag::ClearInfoNews()
-{
-  m_strInfoNews.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoNewsDeque() const
-{
-  return m_strInfoNews;
-}
-
 const std::string CPVRRadioRDSInfoTag::GetInfoNews() const
 {
   std::string retStr = "";
@@ -394,16 +379,6 @@ void CPVRRadioRDSInfoTag::SetInfoNewsLocal(const std::string& strNews)
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
-}
-
-void CPVRRadioRDSInfoTag::ClearInfoNewsLocal()
-{
-  m_strInfoNewsLocal.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoNewsLocalDeque() const
-{
-  return m_strInfoNewsLocal;
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoNewsLocal() const
@@ -440,16 +415,6 @@ void CPVRRadioRDSInfoTag::SetInfoSport(const std::string& strSport)
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CPVRRadioRDSInfoTag::ClearInfoSport()
-{
-  m_strInfoSport.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoSportDeque() const
-{
-  return m_strInfoSport;
-}
-
 const std::string CPVRRadioRDSInfoTag::GetInfoSport() const
 {
   std::string retStr = "";
@@ -482,16 +447,6 @@ void CPVRRadioRDSInfoTag::SetInfoStock(const std::string& strStock)
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
-}
-
-void CPVRRadioRDSInfoTag::ClearInfoStock()
-{
-  m_strInfoStock.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoStockDeque() const
-{
-  return m_strInfoStock;
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoStock() const
@@ -527,16 +482,6 @@ void CPVRRadioRDSInfoTag::SetInfoWeather(const std::string& strWeather)
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CPVRRadioRDSInfoTag::ClearInfoWeather()
-{
-  m_strInfoWeather.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoWeatherDeque() const
-{
-  return m_strInfoWeather;
-}
-
 const std::string CPVRRadioRDSInfoTag::GetInfoWeather() const
 {
   std::string retStr = "";
@@ -568,16 +513,6 @@ void CPVRRadioRDSInfoTag::SetInfoLottery(const std::string& strLottery)
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
-}
-
-void CPVRRadioRDSInfoTag::ClearInfoLottery()
-{
-  m_strInfoLottery.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoLotteryDeque() const
-{
-  return m_strInfoLottery;
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoLottery() const
@@ -613,16 +548,6 @@ void CPVRRadioRDSInfoTag::SetEditorialStaff(const std::string& strEditorialStaff
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CPVRRadioRDSInfoTag::ClearEditorialStaff()
-{
-  m_strEditorialStaff.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetEditorialStaffDeque() const
-{
-  return m_strEditorialStaff;
-}
-
 const std::string CPVRRadioRDSInfoTag::GetEditorialStaff() const
 {
   std::string retStr = "";
@@ -654,16 +579,6 @@ void CPVRRadioRDSInfoTag::SetInfoHoroscope(const std::string& strHoroscope)
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
-}
-
-void CPVRRadioRDSInfoTag::ClearInfoHoroscope()
-{
-  m_strInfoHoroscope.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoHoroscopeDeque() const
-{
-  return m_strInfoHoroscope;
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoHoroscope() const
@@ -699,16 +614,6 @@ void CPVRRadioRDSInfoTag::SetInfoCinema(const std::string& strCinema)
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CPVRRadioRDSInfoTag::ClearInfoCinema()
-{
-  m_strInfoCinema.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoCinemaDeque() const
-{
-  return m_strInfoCinema;
-}
-
 const std::string CPVRRadioRDSInfoTag::GetInfoCinema() const
 {
   std::string retStr = "";
@@ -740,16 +645,6 @@ void CPVRRadioRDSInfoTag::SetInfoOther(const std::string& strOther)
   // send a message to all windows to tell them to update the fileitem radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
   g_windowManager.SendThreadMessage(msg);
-}
-
-void CPVRRadioRDSInfoTag::ClearInfoOther()
-{
-  m_strInfoOther.clear();
-}
-
-const std::deque<std::string>& CPVRRadioRDSInfoTag::GetInfoOtherDeque() const
-{
-  return m_strInfoOther;
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoOther() const

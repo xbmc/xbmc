@@ -68,16 +68,6 @@ CPVRClients::~CPVRClients(void)
   Unload();
 }
 
-bool CPVRClients::IsInUse(const std::string& strAddonId) const
-{
-  CSingleLock lock(m_critSection);
-
-  for (const auto &client : m_clientMap)
-    if (!CAddonMgr::GetInstance().IsAddonDisabled(client.second->ID()) && client.second->ID() == strAddonId)
-      return true;
-  return false;
-}
-
 void CPVRClients::Start(void)
 {
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
@@ -888,23 +878,6 @@ bool CPVRClients::HasMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
       client->HaveMenuHooks(cat));
 }
 
-bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, PVR_MENUHOOKS *hooks)
-{
-  bool bReturn(false);
-
-  if (iClientID < 0)
-    iClientID = GetPlayingClientID();
-
-  PVR_CLIENT client;
-  if (GetCreatedClient(iClientID, client) && client->HaveMenuHooks(cat))
-  {
-    *hooks = *(client->GetMenuHooks());
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
 void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CFileItem *item)
 {
   // get client id
@@ -1402,14 +1375,6 @@ int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
   return -EINVAL;
 }
 
-int64_t CPVRClients::GetStreamPosition(void)
-{
-  PVR_CLIENT client;
-  if (GetPlayingClient(client))
-    return client->GetStreamPosition();
-  return -EINVAL;
-}
-
 void CPVRClients::PauseStream(bool bPaused)
 {
   PVR_CLIENT client;
@@ -1453,12 +1418,6 @@ bool CPVRClients::IsPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsPlayingRecording;
-}
-
-bool CPVRClients::IsReadingLiveStream(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bIsPlayingLiveTV;
 }
 
 bool CPVRClients::IsEncrypted(void) const

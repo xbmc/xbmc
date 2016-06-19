@@ -675,11 +675,6 @@ bool CPVRChannel::IsSubChannel(void) const
   return SubChannelNumber() > 0;
 }
 
-bool CPVRChannel::IsClientSubChannel(void) const
-{
-  return ClientSubChannelNumber() > 0;
-}
-
 std::string CPVRChannel::FormattedChannelNumber(void) const
 {
   return !IsSubChannel() ?

@@ -147,11 +147,6 @@ int CPVRRecordings::Load(void)
   return m_recordings.size();
 }
 
-void CPVRRecordings::Unload()
-{
-  Clear();
-}
-
 void CPVRRecordings::Update(void)
 {
   CSingleLock lock(m_critSection);

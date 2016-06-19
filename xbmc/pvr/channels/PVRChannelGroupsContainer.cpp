@@ -203,11 +203,6 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
   return false;
 }
 
-int CPVRChannelGroupsContainer::GetNumChannelsFromAll() const
-{
-  return GetGroupAllTV()->Size() + GetGroupAllRadio()->Size();
-}
-
 CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) const
 {
   return Get(bRadio)->GetSelectedGroup();

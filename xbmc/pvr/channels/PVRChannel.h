@@ -149,11 +149,6 @@ namespace PVR
      */
     std::string FormattedChannelNumber(void) const;
 
-    /**
-     * @return True when this channel is marked as sub channel by the add-on, false if it's marked as main channel
-     */
-    bool IsClientSubChannel(void) const;
-
     /*!
      * @brief Set to true to hide this channel. Set to false to unhide it.
      *
@@ -363,7 +358,6 @@ namespace PVR
      * @return Return true if this channel is encrypted.
      */
     bool IsEncrypted(void) const;
-
 
     /*!
      * @brief Return the encryption system ID for this channel. 0 for FTA.

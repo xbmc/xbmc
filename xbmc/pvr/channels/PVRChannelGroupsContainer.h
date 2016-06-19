@@ -141,12 +141,6 @@ namespace PVR
     bool GetDirectory(const std::string& strPath, CFileItemList &results) const;
 
     /*!
-     * @brief The total amount of unique channels in all containers.
-     * @return The total amount of unique channels in all containers.
-     */
-    int GetNumChannelsFromAll(void) const;
-
-    /*!
      * @brief Get the group that is currently selected in the UI.
      * @param bRadio True to get the selected radio group, false to get the selected TV group.
      * @return The selected group.

@@ -214,7 +214,6 @@ namespace PVR
     bool Update(bool bChannelsOnly = false);
 
   private:
-    bool UpdateGroupsEntries(const CPVRChannelGroups &groups);
     bool LoadUserDefinedChannelGroups(void);
     bool GetGroupsFromClients(void);
     void SortGroups(void);
