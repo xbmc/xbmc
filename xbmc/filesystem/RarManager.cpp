@@ -206,8 +206,7 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
 #endif
   //g_charsetConverter.unknownToUTF8(strPath);
   std::string strCachedPath = URIUtils::AddFileToFolder(
-                               URIUtils::AddFileToFolder(
-                                 CSpecialProtocol::TranslatePath(strDir), "rarfolder%04d"),
+                                 CSpecialProtocol::TranslatePath(strDir), "rarfolder%04d",
                                  URIUtils::GetFileName(strPathInRar));
   strCachedPath = CUtil::GetNextPathname(strCachedPath, 9999);
   if (strCachedPath.empty())

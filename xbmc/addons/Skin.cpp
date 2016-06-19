@@ -256,17 +256,14 @@ std::string CSkinInfo::GetSkinPath(const std::string& strFile, RESOLUTION_INFO *
   const RESOLUTION_INFO &target = g_graphicsContext.GetResInfo();
   *res = *std::min_element(m_resolutions.begin(), m_resolutions.end(), closestRes(target));
 
-  std::string strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode);
-  strPath = URIUtils::AddFileToFolder(strPath, strFile);
+  std::string strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode, strFile);
   if (CFile::Exists(strPath))
     return strPath;
 
   // use the default resolution
   *res = m_defaultRes;
 
-  strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode);
-  strPath = URIUtils::AddFileToFolder(strPath, strFile);
-  return strPath;
+  return URIUtils::AddFileToFolder(strPathToUse, res->strMode, strFile);
 }
 
 bool CSkinInfo::HasSkinFile(const std::string &strFile) const

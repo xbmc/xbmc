@@ -82,8 +82,7 @@ bool CTextureBundleXBT::OpenBundle()
     if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       std::string themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
-      m_path = URIUtils::AddFileToFolder(mediaDir, "media");
-      m_path = URIUtils::AddFileToFolder(m_path, themeXBT);
+      m_path = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media", themeXBT);
     }
     else
     {
@@ -92,7 +91,7 @@ bool CTextureBundleXBT::OpenBundle()
   }
   else
   {
-    m_path = URIUtils::AddFileToFolder(mediaDir, "media/Textures.xbt");
+    m_path = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media", "Textures.xbt");
   }
 
   m_path = CSpecialProtocol::TranslatePathConvertCase(m_path);

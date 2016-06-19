@@ -102,7 +102,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
   if(file.compare(g_mediaManager.TranslateDevicePath("")) == 0)
   {
 #ifdef HAVE_LIBBLURAY
-    if(XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV/index.bdmv")))
+    if(XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV", "index.bdmv")))
         return new CDVDInputStreamBluray(pPlayer, fileitem);
 #endif
 

@@ -109,8 +109,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
   std::string strPath;
   if (!CURL::IsFullPath(strFilename))
   {
-    strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "fonts");
-    strPath = URIUtils::AddFileToFolder(strPath, strFilename);
+    strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "fonts", strFilename);
   }
   else
     strPath = strFilename;

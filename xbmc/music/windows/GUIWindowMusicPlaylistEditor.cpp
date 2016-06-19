@@ -385,8 +385,11 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
   { // save playlist as an .m3u
     PLAYLIST::CPlayListM3U playlist;
     playlist.Add(*m_playlist);
-    std::string strBase = URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "music");
-    std::string path = URIUtils::AddFileToFolder(strBase, name + ".m3u");
+    std::string path = URIUtils::AddFileToFolder(
+      CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
+      "music",
+      name + ".m3u");
+
     playlist.Save(path);
     m_strLoadedPlaylist = name;
   }

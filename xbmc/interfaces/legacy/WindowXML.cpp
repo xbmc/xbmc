@@ -111,8 +111,7 @@ namespace XBMCAddon
         ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
 
         // Check for the matching folder for the skin in the fallback skins folder
-        std::string fallbackPath = URIUtils::AddFileToFolder(scriptPath, "resources");
-        fallbackPath = URIUtils::AddFileToFolder(fallbackPath, "skins");
+        std::string fallbackPath = URIUtils::AddFileToFolder(scriptPath, "resources", "skins");
         std::string basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
 
         strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
