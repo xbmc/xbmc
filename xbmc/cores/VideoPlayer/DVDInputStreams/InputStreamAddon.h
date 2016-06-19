@@ -79,8 +79,8 @@ public:
   virtual CDemuxStream* GetStream(int iStreamId) const override;
   virtual std::vector<CDemuxStream*> GetStreams() const override;
   virtual bool SupportsEnableAtPTS() const override { return m_canEnableAtPTS; };
-  virtual void EnableStream(int iStreamId, bool enable) override;
-  virtual void EnableStreamAtPTS(int iStreamId, uint64_t pts) override;
+  virtual DEMUX_ENABLESTREAM_RESULT EnableStream(int iStreamId, bool enable) override;
+  virtual DEMUX_ENABLESTREAM_RESULT EnableStreamAtPTS(int iStreamId, uint64_t pts) override;
   virtual int GetNrOfStreams() const override;
   virtual void SetSpeed(int iSpeed) override;
   virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;

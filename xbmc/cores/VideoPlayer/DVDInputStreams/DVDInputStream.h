@@ -45,6 +45,13 @@ enum DVDStreamType
   DVDSTREAM_TYPE_ADDON = 14
 };
 
+enum DEMUX_ENABLESTREAM_RESULT
+{
+  DMX_ES_OK,
+  DMX_ES_FAILURE,
+  DMX_ES_STREAMCHANGE
+};
+
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
@@ -123,8 +130,8 @@ public:
     virtual CDemuxStream* GetStream(int iStreamId) const = 0;
     virtual std::vector<CDemuxStream*> GetStreams() const = 0;
     virtual bool SupportsEnableAtPTS() const { return false; };
-    virtual void EnableStream(int iStreamId, bool enable) = 0;
-    virtual void EnableStreamAtPTS(int iStreamId, uint64_t pts) {};
+    virtual DEMUX_ENABLESTREAM_RESULT EnableStream(int iStreamId, bool enable) = 0;
+    virtual DEMUX_ENABLESTREAM_RESULT EnableStreamAtPTS(int iStreamId, uint64_t pts) { return DMX_ES_FAILURE; };
     virtual int GetNrOfStreams() const = 0;
     virtual void SetSpeed(int iSpeed) = 0;
     virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) = 0;

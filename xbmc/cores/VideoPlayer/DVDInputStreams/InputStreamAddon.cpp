@@ -197,20 +197,30 @@ CDemuxStream* CInputStreamAddon::GetStream(int iStreamId) const
   return m_addon->GetStream(iStreamId);
 }
 
-void CInputStreamAddon::EnableStream(int iStreamId, bool enable)
+DEMUX_ENABLESTREAM_RESULT CInputStreamAddon::EnableStream(int iStreamId, bool enable)
 {
   if (!m_addon)
-    return;
+    return DMX_ES_FAILURE;
 
-  m_addon->EnableStream(iStreamId, enable);
+  switch (m_addon->EnableStream(iStreamId, enable))
+  {
+    case IPS_ES_FAILURE:return DMX_ES_FAILURE;
+    case IPS_ES_STREAMCHANGE:return DMX_ES_STREAMCHANGE;
+    default:return DMX_ES_OK;
+  }
 }
 
-void CInputStreamAddon::EnableStreamAtPTS(int iStreamId, uint64_t pts)
+DEMUX_ENABLESTREAM_RESULT CInputStreamAddon::EnableStreamAtPTS(int iStreamId, uint64_t pts)
 {
   if (!m_addon)
-    return;
+    return DMX_ES_FAILURE;
 
-  m_addon->EnableStreamAtPTS(iStreamId, pts);
+  switch (m_addon->EnableStreamAtPTS(iStreamId, pts))
+  {
+    case IPS_ES_FAILURE:return DMX_ES_FAILURE;
+    case IPS_ES_STREAMCHANGE:return DMX_ES_STREAMCHANGE;
+    default:return DMX_ES_OK;
+  }
 }
 
 int CInputStreamAddon::GetNrOfStreams() const
