@@ -348,6 +348,7 @@ static bool Browse(const CURL& path, CFileItemList &items)
   const std::string repo = path.GetHostName();
 
   VECADDONS addons;
+  items.SetPath(path.Get());
   if (repo == "all")
   {
     CAddonDatabase database;
