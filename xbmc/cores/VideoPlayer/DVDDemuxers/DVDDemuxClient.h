@@ -55,6 +55,7 @@ public:
   virtual void SetVideoResolution(int width, int height) override;
 
 protected:
+  void UpdateStream(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream> > &map);
   void RequestStreams();
   void ParsePacket(DemuxPacket* pPacket);
   void DisposeStream(int iStreamId);
@@ -63,7 +64,7 @@ protected:
   
   CDVDInputStream* m_pInput;
   CDVDInputStream::IDemux *m_IDemux;
-  std::map<int, std::shared_ptr<CDemuxStream>> m_streams;
+  std::map<int, std::shared_ptr<CDemuxStream> > m_streams;
   int m_displayTime;
   double m_dtsAtDisplayTime;
 };

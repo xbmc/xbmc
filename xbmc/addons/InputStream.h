@@ -55,6 +55,9 @@ namespace ADDON
     bool Supports(const CFileItem &fileitem);
     bool Open(CFileItem &fileitem);
     void Close();
+    void InsertStream(const int uniqueId, const INPUTSTREAM_INFO &stream);
+    void UpdateStream(const int uniqueId);
+
 
     bool HasDemux() { return m_caps.m_supportsIDemux; };
     bool HasPosTime() { return m_caps.m_supportsIPosTime; };
@@ -79,8 +82,8 @@ namespace ADDON
     void AbortDemux();
     void FlushDemux();
     void SetSpeed(int iSpeed);
-    void EnableStream(int iStreamId, bool enable);
-    void EnableStreamAtPTS(int iStreamId, uint64_t pts);
+    INPUTSTREAM_ENABLESTREAM_RESULT EnableStream(int iStreamId, bool enable);
+    INPUTSTREAM_ENABLESTREAM_RESULT EnableStreamAtPTS(int iStreamId, uint64_t pts);
     void SetVideoResolution(int width, int height);
 
     // stream

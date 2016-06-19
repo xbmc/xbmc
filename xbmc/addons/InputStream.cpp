@@ -259,6 +259,90 @@ void CInputStream::Close()
   }
 }
 
+void CInputStream::InsertStream(const int uniqueId, const INPUTSTREAM_INFO &stream)
+{
+  if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
+    return;
+
+  std::string codecName(stream.m_codecName);
+  StringUtils::ToLower(codecName);
+  AVCodec *codec = avcodec_find_decoder_by_name(codecName.c_str());
+  if (!codec)
+    return;
+
+  CDemuxStream *demuxStream;
+
+  if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_AUDIO)
+  {
+    CDemuxStreamAudio *audioStream = new CDemuxStreamAudio();
+
+    audioStream->iChannels = stream.m_Channels;
+    audioStream->iSampleRate = stream.m_SampleRate;
+    audioStream->iBlockAlign = stream.m_BlockAlign;
+    audioStream->iBitRate = stream.m_BitRate;
+    audioStream->iBitsPerSample = stream.m_BitsPerSample;
+    demuxStream = audioStream;
+  }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_VIDEO)
+  {
+    CDemuxStreamVideo *videoStream = new CDemuxStreamVideo();
+
+    videoStream->iFpsScale = stream.m_FpsScale;
+    videoStream->iFpsRate = stream.m_FpsRate;
+    videoStream->iWidth = stream.m_Width;
+    videoStream->iHeight = stream.m_Height;
+    videoStream->fAspect = stream.m_Aspect;
+    videoStream->stereo_mode = "mono";
+    demuxStream = videoStream;
+  }
+  else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
+  {
+    //! @todo needs identifier in INPUTSTREAM_INFO
+    return;
+  }
+  else
+    return;
+
+  demuxStream->codec = codec->id;
+  demuxStream->bandwidth = stream.m_Bandwidth;
+  demuxStream->codecName = stream.m_codecInternalName;
+  demuxStream->uniqueId = uniqueId;
+  demuxStream->language[0] = stream.m_language[0];
+  demuxStream->language[1] = stream.m_language[1];
+  demuxStream->language[2] = stream.m_language[2];
+  demuxStream->language[3] = stream.m_language[3];
+
+  if (stream.m_ExtraData && stream.m_ExtraSize)
+  {
+    demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
+    demuxStream->ExtraSize = stream.m_ExtraSize;
+    for (unsigned int j = 0; j<stream.m_ExtraSize; j++)
+      demuxStream->ExtraData[j] = stream.m_ExtraData[j];
+  }
+
+  m_streams[demuxStream->uniqueId] = demuxStream;
+}
+
+void CInputStream::UpdateStream(const int uniqueId)
+{
+  INPUTSTREAM_INFO stream;
+  try
+  {
+    stream = m_pStruct->GetStream(uniqueId);
+  }
+  catch (std::exception &e)
+  {
+    DisposeStreams();
+    CLog::Log(LOGERROR, "CInputStream::GetTotalTime - error GetStream. Reason: %s", e.what());
+    return;
+  }
+
+  delete m_streams[uniqueId];
+  m_streams.erase(uniqueId);
+
+  InsertStream(uniqueId, stream);
+}
+
 // IDisplayTime
 int CInputStream::GetTotalTime()
 {
@@ -340,66 +424,7 @@ void CInputStream::UpdateStreams()
       return;
     }
 
-    if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
-      continue;
-
-    std::string codecName(stream.m_codecName);
-    StringUtils::ToLower(codecName);
-    AVCodec *codec = avcodec_find_decoder_by_name(codecName.c_str());
-    if (!codec)
-      continue;
-
-    CDemuxStream *demuxStream;
-
-    if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_AUDIO)
-    {
-      CDemuxStreamAudio *audioStream = new CDemuxStreamAudio();
-
-      audioStream->iChannels = stream.m_Channels;
-      audioStream->iSampleRate = stream.m_SampleRate;
-      audioStream->iBlockAlign = stream.m_BlockAlign;
-      audioStream->iBitRate = stream.m_BitRate;
-      audioStream->iBitsPerSample = stream.m_BitsPerSample;
-      demuxStream = audioStream;
-    }
-    else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_VIDEO)
-    {
-      CDemuxStreamVideo *videoStream = new CDemuxStreamVideo();
-
-      videoStream->iFpsScale = stream.m_FpsScale;
-      videoStream->iFpsRate = stream.m_FpsRate;
-      videoStream->iWidth = stream.m_Width;
-      videoStream->iHeight = stream.m_Height;
-      videoStream->fAspect = stream.m_Aspect;
-      videoStream->stereo_mode = "mono";
-      demuxStream = videoStream;
-    }
-    else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
-    {
-      //! @todo needs identifier in INPUTSTREAM_INFO
-      continue;
-    }
-    else
-      continue;
-
-    demuxStream->codec = codec->id;
-    demuxStream->bandwidth = stream.m_Bandwidth;
-    demuxStream->codecName = stream.m_codecInternalName;
-    demuxStream->uniqueId = streamIDs.m_streamIds[i];
-    demuxStream->language[0] = stream.m_language[0];
-    demuxStream->language[1] = stream.m_language[1];
-    demuxStream->language[2] = stream.m_language[2];
-    demuxStream->language[3] = stream.m_language[3];
-
-    if (stream.m_ExtraData && stream.m_ExtraSize)
-    {
-      demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
-      demuxStream->ExtraSize = stream.m_ExtraSize;
-      for (unsigned int j=0; j<stream.m_ExtraSize; j++)
-        demuxStream->ExtraData[j] = stream.m_ExtraData[j];
-    }
-
-    m_streams[demuxStream->uniqueId] = demuxStream;
+    InsertStream(streamIDs.m_streamIds[i], stream);
   }
 }
 
@@ -436,35 +461,43 @@ std::vector<CDemuxStream*> CInputStream::GetStreams() const
   return streams;
 }
 
-void CInputStream::EnableStream(int iStreamId, bool enable)
+INPUTSTREAM_ENABLESTREAM_RESULT CInputStream::EnableStream(int iStreamId, bool enable)
 {
   std::map<int, CDemuxStream*>::iterator it = m_streams.find(iStreamId);
   if (it == m_streams.end())
-    return;
+    return IPS_ES_FAILURE;
 
   try
   {
-    m_pStruct->EnableStream(it->second->uniqueId, enable);
+    INPUTSTREAM_ENABLESTREAM_RESULT ret(m_pStruct->EnableStream(it->second->uniqueId, enable));
+    if (ret == IPS_ES_STREAMCHANGE)
+      UpdateStream(it->second->uniqueId);
+    return ret;
   }
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "CInputStream::EnableStream - error. Reason: %s", e.what());
+    return IPS_ES_FAILURE;
   }
 }
 
-void CInputStream::EnableStreamAtPTS(int iStreamId, uint64_t pts)
+INPUTSTREAM_ENABLESTREAM_RESULT CInputStream::EnableStreamAtPTS(int iStreamId, uint64_t pts)
 {
   std::map<int, CDemuxStream*>::iterator it = m_streams.find(iStreamId);
   if (it == m_streams.end())
-    return;
+    return IPS_ES_FAILURE;
 
   try
   {
-    m_pStruct->EnableStreamAtPTS(it->second->uniqueId, pts);
+    INPUTSTREAM_ENABLESTREAM_RESULT ret(m_pStruct->EnableStreamAtPTS(it->second->uniqueId, pts));
+    if (ret == IPS_ES_STREAMCHANGE)
+      UpdateStream(it->second->uniqueId);
+    return ret;
   }
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "CInputStream::EnableStreamAtPTS - error. Reason: %s", e.what());
+    return IPS_ES_FAILURE;
   }
 }
 
