@@ -805,13 +805,14 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
      {
        // 500ms timeout
        {
-         CSingleExit unlock(m_sharedSection);
+         lock.Leave();
          buffer = mmal_queue_timedwait(m_dec_input_pool->queue, 500);
          if (!buffer)
          {
            CLog::Log(LOGERROR, "%s::%s - mmal_queue_get failed", CLASSNAME, __func__);
            return VC_ERROR;
          }
+         lock.Enter();
        }
        mmal_buffer_header_reset(buffer);
        buffer->cmd = 0;
