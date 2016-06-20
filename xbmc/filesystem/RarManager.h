@@ -41,7 +41,7 @@ class CFileItemList;
 class CFileInfo{
 public:
   CFileInfo();
-  ~CFileInfo();
+  ~CFileInfo() = default;
   std::string m_strCachedPath;
   std::string m_strPathInRar;
   bool  m_bAutoDel;
