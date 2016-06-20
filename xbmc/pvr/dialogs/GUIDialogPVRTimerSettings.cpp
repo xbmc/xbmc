@@ -114,36 +114,32 @@ void CGUIDialogPVRTimerSettings::SetTimer(const CPVRTimerInfoTagPtr &timer)
 
   m_timerInfoTag = timer;
 
-  if (!m_timerInfoTag)
-  {
-    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::SetTimer - No timer info tag");
-    return;
-  }
-
   // Copy data we need from tag. Do not modify the tag itself until Save()!
   m_timerType     = m_timerInfoTag->GetTimerType();
   m_bIsRadio      = m_timerInfoTag->m_bIsRadio;
   m_bIsNewTimer   = m_timerInfoTag->m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX;
-  m_bTimerActive  = m_bIsNewTimer || m_timerInfoTag->IsActive();
-  m_bStartAnyTime = m_bIsNewTimer || m_timerInfoTag->m_bStartAnyTime;
-  m_bEndAnyTime   = m_bIsNewTimer || m_timerInfoTag->m_bEndAnyTime;
+  m_bTimerActive  = m_bIsNewTimer || !m_timerType->SupportsEnableDisable() || m_timerInfoTag->IsActive();
+  m_bStartAnyTime = m_bIsNewTimer || !m_timerType->SupportsStartAnyTime() || m_timerInfoTag->m_bStartAnyTime;
+  m_bEndAnyTime   = m_bIsNewTimer || !m_timerType->SupportsEndAnyTime() || m_timerInfoTag->m_bEndAnyTime;
   m_strTitle      = m_timerInfoTag->m_strTitle;
 
-  m_startLocalTime    = m_timerInfoTag->StartAsLocalTime();
-  m_endLocalTime      = m_timerInfoTag->EndAsLocalTime();
+  m_startLocalTime = m_timerInfoTag->StartAsLocalTime();
+  m_endLocalTime   = m_timerInfoTag->EndAsLocalTime();
+  if (m_bIsNewTimer && (m_startLocalTime == m_endLocalTime))
+    m_endLocalTime += CDateTimeSpan(0, 2, 0, 0);
+
   m_timerStartTimeStr = m_startLocalTime.GetAsLocalizedTime("", false);
   m_timerEndTimeStr   = m_endLocalTime.GetAsLocalizedTime("", false);
   m_firstDayLocalTime = m_timerInfoTag->FirstDayAsLocalTime();
 
   m_strEpgSearchString = m_timerInfoTag->m_strEpgSearchString;
-
-  if (m_bIsNewTimer && m_strEpgSearchString.empty() && (m_strTitle != g_localizeStrings.Get(19056)))
+  if ((m_bIsNewTimer || !m_timerType->SupportsEpgTitleMatch()) && m_strEpgSearchString.empty())
     m_strEpgSearchString = m_strTitle;
 
-  m_bFullTextEpgSearch  = m_timerInfoTag->m_bFullTextEpgSearch;
-  m_iWeekdays           = m_timerInfoTag->m_iWeekdays;
+  m_bFullTextEpgSearch = m_timerInfoTag->m_bFullTextEpgSearch;
 
-  if (m_bIsNewTimer && (m_iWeekdays == PVR_WEEKDAY_NONE))
+  m_iWeekdays = m_timerInfoTag->m_iWeekdays;
+  if ((m_bIsNewTimer || !m_timerType->SupportsWeekdays()) && m_iWeekdays == PVR_WEEKDAY_NONE)
     m_iWeekdays = PVR_WEEKDAY_ALLDAYS;
 
   m_iPreventDupEpisodes = m_timerInfoTag->m_iPreventDupEpisodes;
@@ -164,7 +160,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(const CPVRTimerInfoTagPtr &timer)
   if (m_timerInfoTag->m_iClientChannelUid == PVR_CHANNEL_INVALID_UID)
   {
     bool bChannelSet(false);
-    if (m_timerType && m_timerType->IsEpgBasedTimerRule())
+    if (m_timerType->IsEpgBasedTimerRule())
     {
       // Select "Any channel"
       const auto it = m_channelEntries.find(ENTRY_ANY_CHANNEL);
@@ -209,10 +205,6 @@ void CGUIDialogPVRTimerSettings::SetTimer(const CPVRTimerInfoTagPtr &timer)
     if (!bChannelSet)
       CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::SetTimer - Unable to map channel uid to channel entry!");
   }
-
-
-  if (!m_timerType)
-    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::SetTimer - No timer type!");
 }
 
 void CGUIDialogPVRTimerSettings::SetupView()
@@ -734,38 +726,35 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
   const std::vector<CPVRTimerTypePtr> types(CPVRTimerType::GetAllTypes());
   for (const auto &type : types)
   {
-    if (m_bIsNewTimer)
+    // Type definition prohibits created of new instances.
+    // But the dialog can act as a viewer for these types.
+    if (type->ForbidsNewInstances())
+      continue;
+
+    // Read-only timers cannot be created using this dialog.
+    // But the dialog can act as a viewer for read-only types.
+    if (type->IsReadOnly())
+      continue;
+
+    // Drop TimerTypes that require EPGInfo, if none is populated
+    if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->GetEpgInfoTag())
+      continue;
+
+    // Drop TimerTypes without 'Series' EPG attributes if none are set
+    if (type->RequiresEpgSeriesOnCreate())
     {
-      // Type definition prohibits created of new instances.
-      // But the dialog can act as a viewer for these types. (m_bIsNewTimer is false in this case)
-      if (type->ForbidsNewInstances())
-        continue;
-
-      // Read-only timers cannot be created using this dialog.
-      // But the dialog can act as a viewer for read-only types (m_bIsNewTimer is false in this case)
-      if (type->IsReadOnly())
-        continue;
-
-      // Drop TimerTypes that require EPGInfo, if none is populated
-      if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->GetEpgInfoTag())
-        continue;
-
-      // Drop TimerTypes without 'Series' EPG attributes if none are set
-      if (type->RequiresEpgSeriesOnCreate())
-      {
-        const EPG::CEpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
-        if (epgTag && !epgTag->IsSeries())
-          continue;
-      }
-
-      // Drop TimerTypes that forbid EPGInfo, if it is populated
-      if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
-        continue;
-
-      // Drop TimerTypes that aren't rules if end time is in the past
-      if (!type->IsTimerRule() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
+      const EPG::CEpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
+      if (epgTag && !epgTag->IsSeries())
         continue;
     }
+
+    // Drop TimerTypes that forbid EPGInfo, if it is populated
+    if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
+      continue;
+
+    // Drop TimerTypes that aren't rules if end time is in the past
+    if (!type->IsTimerRule() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
+      continue;
 
     m_typeEntries.insert(std::make_pair(idx++, type));
   }
@@ -1108,13 +1097,6 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string &condit
 
   std::string cond(condition);
   cond.erase(cond.find(TYPE_DEP_ENABLE_COND_ID_POSTFIX));
-
-  // For existing timers, disable type selector (view/edit of existing timer).
-  if (!pThis->m_bIsNewTimer)
-  {
-    if (cond == SETTING_TMR_TYPE)
-      return false;
-  }
 
   // If only one type is available, disable type selector.
   if (pThis->m_typeEntries.size() == 1)
