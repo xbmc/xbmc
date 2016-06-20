@@ -18,8 +18,13 @@
  *
  */
 
-// FIXME: clean up includes
 #include "system.h"
+#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
+  #include "config.h"
+#endif
+
+#ifdef HAS_GL
+
 #include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 #include "FileItem.h"
 #include "GUIDialogCMSSettings.h"
@@ -239,3 +244,5 @@ void CGUIDialogCMSSettings::Cms3dLutsFiller(
     list.push_back(make_pair(items[i]->GetLabel(), items[i]->GetPath()));
   }
 }
+
+#endif //HAS_GL
