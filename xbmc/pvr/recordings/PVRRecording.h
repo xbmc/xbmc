@@ -63,8 +63,6 @@ namespace PVR
     int           m_iClientId;        /*!< ID of the backend */
     std::string   m_strRecordingId;   /*!< unique ID of the recording on the client */
 
-    CPVRRecordingUid();
-    CPVRRecordingUid(const CPVRRecordingUid& recordingId);
     CPVRRecordingUid(int iClientId, const std::string &strRecordingId);
 
     bool operator >(const CPVRRecordingUid& right) const;
@@ -185,8 +183,6 @@ namespace PVR
 
     const CDateTime &RecordingTimeAsUTC(void) const { return m_recordingTime; }
     const CDateTime &RecordingTimeAsLocalTime(void) const;
-    void SetRecordingTimeFromUTC(CDateTime &recordingTime) { m_recordingTime = recordingTime; }
-    void SetRecordingTimeFromLocalTime(CDateTime &recordingTime) { m_recordingTime = recordingTime.GetAsUTCDateTime(); }
 
     /*!
      * @brief Retrieve the recording title from the URL path
@@ -218,21 +214,10 @@ namespace PVR
     unsigned int BroadcastUid(void) const { return m_iEpgEventId; }
 
     /*!
-     * @return channel id associated with this recording or PVR_CHANNEL_INVALID_UID
-     */
-    int ChannelUid(void) const { return m_iChannelUid; }
-
-    /*!
      * @return Get the channel on which this recording is/was running
      * @note Only works if the recording has a channel uid provided by the add-on
      */
     CPVRChannelPtr Channel(void) const;
-
-    /*!
-     * @return True while the recording is running
-     * @note Only works if the recording has a channel uid and an EPG id provided by the add-on
-     */
-    bool IsBeingRecorded(void) const;
 
     /*!
      * @brief Retrieve the recording Episode Name

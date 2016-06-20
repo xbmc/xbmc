@@ -65,7 +65,6 @@ namespace PVR
     virtual ~CPVRRecordings(void);
 
     int Load();
-    void Unload();
     void Clear();
     void UpdateFromClient(const CPVRRecordingPtr &tag);
     void UpdateEpgTags(void);
@@ -98,6 +97,5 @@ namespace PVR
     CFileItemPtr GetById(unsigned int iId) const;
 
     void SetGroupItems(bool value) { m_bGroupItems = value; };
-    bool IsGroupItems() const { return m_bGroupItems; };
   };
 }

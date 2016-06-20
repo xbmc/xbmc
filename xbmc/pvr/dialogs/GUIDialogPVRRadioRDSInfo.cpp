@@ -415,11 +415,6 @@ void CGUIDialogPVRRadioRDSInfo::OnDeinitWindow(int nextWindowID)
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
-void CGUIDialogPVRRadioRDSInfo::SetRadioRDS(const CFileItem *item)
-{
-  *m_rdsItem = *item;
-}
-
 CFileItemPtr CGUIDialogPVRRadioRDSInfo::GetCurrentListItem(int offset)
 {
   return m_rdsItem;

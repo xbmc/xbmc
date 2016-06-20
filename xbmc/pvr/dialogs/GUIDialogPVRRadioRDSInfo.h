@@ -32,8 +32,6 @@ namespace PVR
     virtual bool HasListItems() const { return true; };
     virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
-    void SetRadioRDS(const CFileItem *item);
-
   protected:
     virtual void OnInitWindow();
     virtual void OnDeinitWindow(int nextWindowID);

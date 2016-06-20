@@ -290,11 +290,6 @@ CEpgInfoTagPtr CEpgInfoTag::GetNextEvent(void) const
   return GetTable()->GetNextEvent(*this);
 }
 
-CEpgInfoTagPtr CEpgInfoTag::GetPreviousEvent(void) const
-{
-  return GetTable()->GetPreviousEvent(*this);
-}
-
 void CEpgInfoTag::SetUniqueBroadcastID(unsigned int iUniqueBroadcastID)
 {
   m_iUniqueBroadcastID = iUniqueBroadcastID;

@@ -331,22 +331,6 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["epguid"]            = m_iEpgUid;
 }
 
-int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
-{
-  CSingleLock lock(m_critSection);
-  int iTimerDelta = 0;
-  if (StartAsUTC() != timer.StartAsUTC())
-  {
-    CDateTimeSpan timerDelta = StartAsUTC() - timer.StartAsUTC();
-    iTimerDelta = (timerDelta.GetSeconds() + timerDelta.GetMinutes() * 60 + timerDelta.GetHours() * 3600 + timerDelta.GetDays() * 86400);
-  }
-
-  /* if the start times are equal, compare the priority of the timers */
-  return iTimerDelta == 0 ?
-    timer.m_iPriority - m_iPriority :
-    iTimerDelta;
-}
-
 void CPVRTimerInfoTag::UpdateEpgInfoTag(void)
 {
   CSingleLock lock(m_critSection);
@@ -735,18 +719,6 @@ std::string CPVRTimerInfoTag::ChannelIcon() const
   if (channeltag)
     strReturn = channeltag->IconPath();
   return strReturn;
-}
-
-bool CPVRTimerInfoTag::SetDuration(int iDuration)
-{
-  CSingleLock lock(m_critSection);
-  if (m_StartTime.IsValid())
-  {
-    m_StopTime = m_StartTime + CDateTimeSpan(0, iDuration / 60, iDuration % 60, 0);
-    return true;
-  }
-
-  return false;
 }
 
 static const time_t INSTANT_TIMER_START = 0; // PVR addon API: special start time value to denote an instant timer

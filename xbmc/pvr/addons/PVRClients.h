@@ -70,13 +70,6 @@ namespace PVR
     virtual ~CPVRClients(void);
 
     /*!
-     * @brief Checks whether an add-on is loaded by the pvr manager
-     * @param strAddonId The add-on id to check
-     * @return True when in use, false otherwise
-     */
-    bool IsInUse(const std::string& strAddonId) const;
-
-    /*!
      * @brief Start the backend.
      */
     void Start(void);
@@ -230,12 +223,6 @@ namespace PVR
     int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
 
     /*!
-     * @brief Get the currently playing position in a stream.
-     * @return The current position.
-     */
-    int64_t GetStreamPosition(void);
-
-    /*!
      * @brief Close a PVR stream.
      */
     void CloseStream(void);
@@ -260,11 +247,6 @@ namespace PVR
      * @return A pointer to the properties or NULL if no stream is playing.
      */
     std::string GetCurrentInputFormat(void) const;
-
-    /*!
-     * @return True if a live stream is playing, false otherwise.
-     */
-    bool IsReadingLiveStream(void) const;
 
     /*!
      * @return True if a TV channel is playing, false otherwise.
@@ -693,14 +675,6 @@ namespace PVR
      * @brief Update add-ons from the AddonManager
      */
     void UpdateAddons(void);
-
-    /*!
-     * @brief Get the menu hooks for a client.
-     * @param iClientID The client to get the hooks for.
-     * @param hooks The container to add the hooks to.
-     * @return True if the hooks were added successfully (if any), false otherwise.
-     */
-    bool GetMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, PVR_MENUHOOKS *hooks);
 
     /*!
      * @brief Get the instance of the client.

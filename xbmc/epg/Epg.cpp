@@ -111,17 +111,6 @@ void CEpg::SetName(const std::string &strName)
   }
 }
 
-void CEpg::SetScraperName(const std::string &strScraperName)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_strScraperName != strScraperName)
-  {
-    m_bChanged = true;
-    m_strScraperName = strScraperName;
-  }
-}
-
 void CEpg::SetUpdatePending(bool bUpdatePending /* = true */)
 {
   {
@@ -253,18 +242,6 @@ bool CEpg::CheckPlayingEvent(void)
   return false;
 }
 
-CEpgInfoTagPtr CEpg::GetTag(const CDateTime &StartTime) const
-{
-  CSingleLock lock(m_critSection);
-  std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.find(StartTime);
-  if (it != m_tags.end())
-  {
-    return it->second;
-  }
-
-  return CEpgInfoTagPtr();
-}
-
 CEpgInfoTagPtr CEpg::GetTagByBroadcastId(unsigned int iUniqueBroadcastId) const
 {
   if (iUniqueBroadcastId != EPG_TAG_INVALID_UID)
@@ -285,18 +262,6 @@ CEpgInfoTagPtr CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
     if (it->second->StartAsUTC() >= beginTime && it->second->EndAsUTC() <= endTime)
-      return it->second;
-  }
-
-  return CEpgInfoTagPtr();
-}
-
-CEpgInfoTagPtr CEpg::GetTagAround(const CDateTime &time) const
-{
-  CSingleLock lock(m_critSection);
-  for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
-  {
-    if ((it->second->StartAsUTC() < time) && (it->second->EndAsUTC() > time))
       return it->second;
   }
 
@@ -830,17 +795,6 @@ const std::string &CEpg::ConvertGenreIdToString(int iID, int iSubID)
   return g_localizeStrings.Get(iLabelId);
 }
 
-bool CEpg::IsRadio(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_pvrChannel ? m_pvrChannel->IsRadio() : false;
-}
-
-bool CEpg::IsRemovableTag(const CEpgInfoTag &tag) const
-{
-  return !tag.HasTimer();
-}
-
 bool CEpg::LoadFromClients(time_t start, time_t end)
 {
   bool bReturn(false);
@@ -872,20 +826,6 @@ CEpgInfoTagPtr CEpg::GetNextEvent(const CEpgInfoTag& tag) const
   return retVal;
 }
 
-CEpgInfoTagPtr CEpg::GetPreviousEvent(const CEpgInfoTag& tag) const
-{
-  CSingleLock lock(m_critSection);
-  std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.find(tag.StartAsUTC());
-  if (it != m_tags.end() && it != m_tags.begin())
-  {
-    --it;
-    return it->second;
-  }
-
-  CEpgInfoTagPtr retVal;
-  return retVal;
-}
-
 CPVRChannelPtr CEpg::Channel(void) const
 {
   CSingleLock lock(m_critSection);
@@ -896,18 +836,6 @@ int CEpg::ChannelID(void) const
 {
   CSingleLock lock(m_critSection);
   return m_pvrChannel ? m_pvrChannel->ChannelID() : -1;
-}
-
-int CEpg::ChannelNumber(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
-}
-
-int CEpg::SubChannelNumber(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_pvrChannel ? m_pvrChannel->SubChannelNumber() : -1;
 }
 
 void CEpg::SetChannel(const PVR::CPVRChannelPtr &channel)
@@ -924,12 +852,6 @@ void CEpg::SetChannel(const PVR::CPVRChannelPtr &channel)
     for (std::map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); ++it)
       it->second->SetPVRChannel(m_pvrChannel);
   }
-}
-
-bool CEpg::HasPVRChannel(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_pvrChannel != NULL;
 }
 
 bool CEpg::UpdatePending(void) const

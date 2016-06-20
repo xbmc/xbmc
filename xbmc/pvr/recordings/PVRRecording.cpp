@@ -36,17 +36,6 @@
 using namespace PVR;
 using namespace EPG;
 
-CPVRRecordingUid::CPVRRecordingUid() :
-    m_iClientId(PVR_INVALID_CLIENT_ID)
-{
-}
-
-CPVRRecordingUid::CPVRRecordingUid(const CPVRRecordingUid &recordingId) :
-  m_iClientId(recordingId.m_iClientId),
-  m_strRecordingId(recordingId.m_strRecordingId)
-{
-}
-
 CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
   m_iClientId(iClientId),
   m_strRecordingId(strRecordingId)
@@ -480,18 +469,4 @@ CPVRChannelPtr CPVRRecording::Channel(void) const
     return g_PVRChannelGroups->GetByUniqueID(m_iChannelUid, m_iClientId);
 
   return CPVRChannelPtr();
-}
-
-bool CPVRRecording::IsBeingRecorded(void) const
-{
-  if (m_iEpgEventId != EPG_TAG_INVALID_UID)
-  {
-    const CPVRChannelPtr channel(Channel());
-    if (channel)
-    {
-      const EPG::CEpgInfoTagPtr epgTag(EPG::CEpgContainer::GetInstance().GetTagById(channel, m_iEpgEventId));
-      return epgTag ? epgTag->HasRecording() : false;
-    }
-  }
-  return false;
 }

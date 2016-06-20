@@ -173,16 +173,6 @@ private:
     void Cleanup(void);
 
     /*!
-     * @return True when a PVR window is active, false otherwise.
-     */
-    bool IsPVRWindowActive(void) const;
-
-    /*!
-     * @return True when the given window id is an PVR window, false otherwise.
-     */
-    static bool IsPVRWindow(int windowId);
-
-    /*!
      * @brief Get the TV database.
      * @return The TV database.
      */
@@ -354,22 +344,10 @@ private:
     bool SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff);
 
     /*!
-     * @brief Check whether there are active timers.
-     * @return True if there are active timers, false otherwise.
-     */
-    bool HasTimers(void) const;
-
-    /*!
      * @brief Check whether there are active recordings.
      * @return True if there are active recordings, false otherwise.
      */
     bool IsRecording(void) const;
-
-    /*!
-     * @brief Check whether the pvr backend is idle.
-     * @return True if there are no active timers/recordings/wake-ups within the configured time span.
-     */
-    bool IsIdle(void) const;
 
     /*!
      * @brief Check whether the system Kodi is running on can be powered down
@@ -563,12 +541,6 @@ private:
      * @brief Propagate event on system wake
      */
     void OnWake();
-
-    /*!
-     * @brief Wait until the pvr manager is loaded
-     * @return True when loaded, false otherwise
-     */
-    bool WaitUntilInitialised(void);
 
     /*!
      * @brief Create EPG tags for all channels in internal channel groups

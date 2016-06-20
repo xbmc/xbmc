@@ -154,23 +154,6 @@ bool CPVRDatabase::DeleteChannels(void)
   return DeleteValues("channels");
 }
 
-bool CPVRDatabase::DeleteClientChannels(const CPVRClient &client)
-{
-  /* invalid client Id */
-  if (client.GetID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid client id: %i", __FUNCTION__, client.GetID());
-    return false;
-  }
-
-  CLog::Log(LOGDEBUG, "PVR - %s - deleting all channels from client '%i' from the database", __FUNCTION__, client.GetID());
-
-  Filter filter;
-  filter.AppendWhere(PrepareSQL("iClientId = %u", client.GetID()));
-
-  return DeleteValues("channels", filter);
-}
-
 bool CPVRDatabase::Delete(const CPVRChannel &channel)
 {
   /* invalid channel */
@@ -293,21 +276,6 @@ bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, std::ve
   }
 
   return bReturn;
-}
-
-bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group)
-{
-  /* invalid group id */
-  if (group.GroupID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid group id: %d", __FUNCTION__, group.GroupID());
-    return false;
-  }
-
-  Filter filter;
-  filter.AppendWhere(PrepareSQL("idGroup = %u", group.GroupID()));
-
-  return DeleteValues("map_channelgroups_channels", filter);
 }
 
 bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete)

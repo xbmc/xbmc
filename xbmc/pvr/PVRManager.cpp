@@ -235,16 +235,6 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   }
 }
 
-bool CPVRManager::IsPVRWindowActive(void) const
-{
-  return (IsPVRWindow(g_windowManager.GetActiveWindow() & WINDOW_ID_MASK)) ? true : false;
-}
-
-bool CPVRManager::IsPVRWindow(int windowId)
-{
-  return (windowId >= WINDOW_PVR_ID_START && windowId <= WINDOW_PVR_ID_END) ? true : false;
-}
-
 void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
@@ -1506,27 +1496,9 @@ int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateIntInfo(dwInfo) : 0;
 }
 
-bool CPVRManager::HasTimers(void) const
-{
-  return IsStarted() && m_timers ? m_timers->HasActiveTimers() : false;
-}
-
 bool CPVRManager::IsRecording(void) const
 {
   return IsStarted() && m_timers ? m_timers->IsRecording() : false;
-}
-
-bool CPVRManager::IsIdle(void) const
-{
-  bool bReturn(true);
-  if (IsStarted())
-  {
-    if (IsRecording() || IsPlaying()) // pvr recording or playing?
-      bReturn = false;
-    else
-      bReturn = !IsNextEventWithinBackendIdleTime();
-  }
-  return bReturn;
 }
 
 bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const

@@ -86,16 +86,12 @@ namespace PVR
 
     virtual void Serialize(CVariant &value) const;
 
-    int Compare(const CPVRTimerInfoTag &timer) const;
-
     void UpdateSummary(void);
 
     void DisplayError(PVR_ERROR err) const;
 
     std::string GetStatus() const;
     std::string GetTypeAsString() const;
-
-    bool SetDuration(int iDuration);
 
     static const int DEFAULT_PVRRECORD_INSTANTRECORDTIME = -1;
 
@@ -143,8 +139,6 @@ namespace PVR
      * @brief reset the state of children related to this timer. Run UpdateChildState for all children afterwards.
      */
     void ResetChildState();
-
-    void UpdateEpgEvent(bool bClear = false);
 
     bool IsActive(void) const
     {
@@ -213,14 +207,9 @@ namespace PVR
 
     CDateTime FirstDayAsUTC(void) const;
     CDateTime FirstDayAsLocalTime(void) const;
-    void SetFirstDayFromUTC(CDateTime &firstDay) { m_FirstDay = firstDay; }
     void SetFirstDayFromLocalTime(CDateTime &firstDay) { m_FirstDay = firstDay.GetAsUTCDateTime(); }
 
     unsigned int MarginStart(void) const { return m_iMarginStart; }
-    void SetMarginStart(unsigned int iMinutes) { m_iMarginStart = iMinutes; }
-
-    unsigned int MarginEnd(void) const { return m_iMarginEnd; }
-    void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
 
     /*!
      * @brief Get the text for the notification.
