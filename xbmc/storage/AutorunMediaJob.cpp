@@ -67,9 +67,9 @@ const char *CAutorunMediaJob::GetWindowString(int selection)
   switch (selection)
   {
     case 0:
-      return "VideoFiles";
+      return "Videos";
     case 1:
-      return "MusicFiles";
+      return "Music";
     case 2:
       return "Pictures";
     case 3:

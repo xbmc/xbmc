@@ -15,13 +15,13 @@
       <swipe direction="down" pointers="3">ActivateWindow(PlayerControls)</swipe>
     </touch>
   </global>
-  <MyFiles>
+  <FileManager>
     <touch>
       <tap>Select</tap>
       <swipe direction="left">Highlight</swipe>
       <swipe direction="right">Highlight</swipe>
     </touch>
-  </MyFiles>
+  </FileManager>
   <FullScreenVideo>
     <touch>
       <swipe direction="left">StepBack</swipe>

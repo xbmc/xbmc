@@ -424,7 +424,7 @@ static int PlayMedia(const std::vector<std::string>& params)
         break;
     }
 
-    std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
+    std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC_NAV, items));
     if (state.get())
       items.Sort(state->GetSortMethod());
     else

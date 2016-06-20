@@ -416,12 +416,12 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
   SetViewAsControl(viewState->m_viewMode);
   SetSortOrder(viewState->m_sortDescription.sortOrder);
 
-  LoadViewState(items.GetPath(), WINDOW_MUSIC_FILES);
+  LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
 }
 
 void CGUIViewStateMusicPlaylist::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_FILES);
+  SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV);
 }
 
 CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -533,54 +533,6 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   AddOnlineShares();
 
   return CGUIViewStateWindowMusic::GetSources();
-}
-
-CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
-{
-  if (items.IsVirtualDirectoryRoot())
-  {
-    AddSortMethod(SortByLabel, 551, LABEL_MASKS()); // Preformated
-    AddSortMethod(SortByDriveType, 564, LABEL_MASKS()); // Preformated
-    SetSortMethod(SortByLabel);
-
-    SetViewAsControl(DEFAULT_VIEW_LIST);
-
-    SetSortOrder(SortOrderAscending);
-  }
-  else if (items.GetPath() == "special://musicplaylists/")
-  { // playlists list sorts by label only, ignoring folders
-    AddSortMethod(SortByLabel, SortAttributeIgnoreFolders, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
-    SetSortMethod(SortByLabel);
-  }
-  else
-  {
-    std::string strTrack=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
-    AddSortMethod(SortByLabel, 551, LABEL_MASKS(strTrack, "%D", "%L", ""),  // Userdefined, Duration | FolderName, empty
-      CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
-    AddSortMethod(SortBySize, 553, LABEL_MASKS(strTrack, "%I", "%L", "%I"));  // Userdefined, Size | FolderName, Size
-    AddSortMethod(SortByBitrate, 623, LABEL_MASKS(strTrack, "%X", "%L", "%X"));  // Userdefined, Bitrate | FolderName, Bitrate  
-    AddSortMethod(SortByDate, 552, LABEL_MASKS(strTrack, "%J", "%L", "%J"));  // Userdefined, Date | FolderName, Date
-    AddSortMethod(SortByFile, 561, LABEL_MASKS(strTrack, "%F", "%L", ""));  // Userdefined, FileName | FolderName, empty
-    AddSortMethod(SortByListeners, 20455,LABEL_MASKS(strTrack, "%W", "%L", "%W"));
-    
-    const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicfiles");
-    SetSortMethod(viewState->m_sortDescription);
-    SetViewAsControl(viewState->m_viewMode);
-    SetSortOrder(viewState->m_sortDescription.sortOrder);
-  }
-  LoadViewState(items.GetPath(), WINDOW_MUSIC_FILES);
-}
-
-void CGUIViewStateWindowMusicSongs::SaveViewState()
-{
-  SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_FILES, CViewStateSettings::GetInstance().Get("musicfiles"));
-}
-
-VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
-{
-  VECSOURCES *musicSources = CMediaSourceSettings::GetInstance().GetSources("music");
-  AddOrReplace(*musicSources, CGUIViewStateWindowMusic::GetSources());
-  return *musicSources;
 }
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

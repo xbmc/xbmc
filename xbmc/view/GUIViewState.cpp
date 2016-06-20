@@ -101,7 +101,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     return new CGUIViewStateMusicPlaylist(items);
 
   if (items.GetPath() == "special://musicplaylists/")
-    return new CGUIViewStateWindowMusicSongs(items);
+    return new CGUIViewStateWindowMusicNav(items);
 
   if (url.IsProtocol("androidapp"))
     return new CGUIViewStateWindowPrograms(items);
@@ -112,17 +112,11 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
 
-  if (windowId == WINDOW_MUSIC_FILES)
-    return new CGUIViewStateWindowMusicSongs(items);
-
   if (windowId == WINDOW_MUSIC_PLAYLIST)
     return new CGUIViewStateWindowMusicPlaylist(items);
 
   if (windowId == WINDOW_MUSIC_PLAYLIST_EDITOR)
-    return new CGUIViewStateWindowMusicSongs(items);
-
-  if (windowId == WINDOW_VIDEO_FILES)
-    return new CGUIViewStateWindowVideoFiles(items);
+    return new CGUIViewStateWindowMusicNav(items);
 
   if (windowId == WINDOW_VIDEO_NAV)
     return new CGUIViewStateWindowVideoNav(items);

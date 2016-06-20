@@ -17,9 +17,9 @@
       <stop>Stop</stop>
       <play_pause>PlayPause</play_pause>
       <launch_mail/>
-      <launch_media_select>ActivateWindow(MyMusic)</launch_media_select>
-      <launch_app1>ActivateWindow(MyPrograms)</launch_app1>
-      <launch_app2>ActivateWindow(MyPrograms)</launch_app2>
+      <launch_media_select>ActivateWindow(Music)</launch_media_select>
+      <launch_app1>ActivateWindow(Programs)</launch_app1>
+      <launch_app2>ActivateWindow(Programs)</launch_app2>
       <play>Play</play>
       <pause>Pause</pause>
       <fastforward>FastForward</fastforward>

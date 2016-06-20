@@ -497,7 +497,7 @@
 						<item id="1">
 							<label>$INFO[Window.Property(LatestAlbum.1.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.1.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.1.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.1.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.1.Title))</visible>
@@ -505,7 +505,7 @@
 						<item id="2">
 							<label>$INFO[Window.Property(LatestAlbum.2.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.2.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.2.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.2.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.2.Title))</visible>
@@ -513,7 +513,7 @@
 						<item id="3">
 							<label>$INFO[Window.Property(LatestAlbum.3.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.3.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.3.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.3.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.3.Title))</visible>
@@ -521,7 +521,7 @@
 						<item id="4">
 							<label>$INFO[Window.Property(LatestAlbum.4.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.4.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.4.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.4.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.4.Title))</visible>
@@ -529,7 +529,7 @@
 						<item id="5">
 							<label>$INFO[Window.Property(LatestAlbum.5.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.5.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.5.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.5.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.5.Title))</visible>
@@ -537,7 +537,7 @@
 						<item id="6">
 							<label>$INFO[Window.Property(LatestAlbum.6.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.6.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.6.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.6.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.6.Title))</visible>
@@ -545,7 +545,7 @@
 						<item id="7">
 							<label>$INFO[Window.Property(LatestAlbum.7.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.7.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.7.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.7.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.7.Title))</visible>
@@ -553,7 +553,7 @@
 						<item id="8">
 							<label>$INFO[Window.Property(LatestAlbum.8.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.8.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.8.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.8.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.8.Title))</visible>
@@ -561,7 +561,7 @@
 						<item id="9">
 							<label>$INFO[Window.Property(LatestAlbum.9.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.9.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.9.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.9.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.9.Title))</visible>
@@ -569,7 +569,7 @@
 						<item id="10">
 							<label>$INFO[Window.Property(LatestAlbum.10.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.10.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.10.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.10.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.10.Title))</visible>
@@ -577,7 +577,7 @@
 						<item id="11">
 							<label>$INFO[Window.Property(LatestAlbum.11.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.11.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.11.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.11.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.11.Title))</visible>
@@ -585,7 +585,7 @@
 						<item id="12">
 							<label>$INFO[Window.Property(LatestAlbum.12.Title)]</label>
 							<label2>-</label2>
-							<onclick>ActivateWindow(MusicLibrary,$INFO[Window.Property(LatestAlbum.12.Path)])</onclick>
+							<onclick>ActivateWindow(Music,$INFO[Window.Property(LatestAlbum.12.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestAlbum.12.Thumb)]</icon>
 							<thumb>-</thumb>
 							<visible>!String.IsEmpty(Window.Property(LatestAlbum.12.Title))</visible>

@@ -1039,7 +1039,7 @@
 			</control>
 			<control type="visualisation">
 				<include>FullScreenDimensions</include>
-				<visible>Player.HasAudio + String.IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
+				<visible>Player.HasAudio + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
 			</control>
 			<control type="group">
 				<animation effect="zoom" center="960,540" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
@@ -1047,7 +1047,7 @@
 					<depth>DepthBackground</depth>
 					<include>FullScreenDimensions</include>
 					<aspectratio>scale</aspectratio>
-					<animation effect="fade" start="100" end="bg_alpha" time="0" condition="Player.HasMedia + String.IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))">Conditional</animation>
+					<animation effect="fade" start="100" end="bg_alpha" time="0" condition="Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))">Conditional</animation>
 					<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(startup)">WindowOpen</animation>
 					<texture fallback="special://skin/extras/backgrounds/SKINDEFAULT.jpg">$VAR[GlobalFanartVar]</texture>
 				</control>
@@ -1060,7 +1060,7 @@
 					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 					<animation effect="fade" time="400">VisibleChange</animation>
 					<texture background="true" colordiffuse="35FFFFFF">$VAR[MediaFanartVar]</texture>
-					<visible>!Player.HasMedia | !String.IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
+					<visible>!Player.HasMedia | !String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
 				</control>
 			</control>
 		</definition>
@@ -1130,13 +1130,13 @@
 						<texture colordiffuse="button_focus">frame/menu-fo.png</texture>
 						<animation effect="fade" time="200">VisibleChange</animation>
 						<visible>$EXP[sidebar_focused]</visible>
-						<visible>!Player.HasMedia | !String.IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
+						<visible>!Player.HasMedia | !String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
 					</control>
 				</control>
 				<control type="group">
 					<left>450</left>
 					<top>1005</top>
-					<visible>Player.HasMedia + String.IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
+					<visible>Player.HasMedia + String.IsEmpty(Window(Videos).Property(PlayingBackgroundMedia))</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<control type="grouplist">
 						<orientation>horizontal</orientation>

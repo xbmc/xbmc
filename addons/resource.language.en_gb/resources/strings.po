@@ -6998,7 +6998,6 @@ msgid "Change area code 3"
 msgstr ""
 
 #: system/settings/settings.xml
-#: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
 #: xbmc/vide/windows/GUIWindowVideoBase.cpp
 msgctxt "#14022"
@@ -17404,12 +17403,7 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr ""
 
-#empty strings from id 36292 to 36300
-
-#: system/settings/settings.xml
-msgctxt "#36301"
-msgid "No info available yet."
-msgstr ""
+#empty strings from id 36292 to 36301
 
 #: system/settings/settings.xml
 msgctxt "#36302"
