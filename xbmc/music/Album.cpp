@@ -391,9 +391,9 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     float max_rating = 10;
     XMLUtils::GetFloat(album, "userrating", rating);
     if (userrating->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating >= 1)
-      rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 10 
-    if (rating > 5.f)
-      rating = 5.f;
+      rating *= (10.f / max_rating); // Normalise the Rating to between 0 and 10
+    if (rating > 10.f)
+      rating = 10.f;
     iUserrating = MathUtils::round_int(rating);
   }
   XMLUtils::GetInt(album, "votes", iVotes);
