@@ -210,6 +210,8 @@ namespace PVR
     CPVRTimerInfoTagPtr GetByClient(int iClientId, unsigned int iClientTimerId) const;
     bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
     bool GetSubDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
+    bool SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer);
+    bool ClearEpgTagTimer(const CPVRTimerInfoTagPtr &timer);
 
     CCriticalSection  m_critSection;
     bool              m_bIsUpdating;

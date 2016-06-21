@@ -283,7 +283,6 @@ namespace PVR
     void UpdateEpgInfoTag(void);
 
     CCriticalSection      m_critSection;
-    unsigned int          m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
     CDateTime             m_StartTime; /*!< start time */
     CDateTime             m_StopTime;  /*!< stop time */
     CDateTime             m_FirstDay;  /*!< if it is a manual repeating timer the first date it starts */
@@ -294,6 +293,7 @@ namespace PVR
     bool                  m_bHasChildRecording;   /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_RECORDING */
     bool                  m_bHasChildErrors;      /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_ERROR */
 
+    mutable unsigned int  m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
     mutable EPG::CEpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
   };
 }

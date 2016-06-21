@@ -89,6 +89,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   }
 
   m_iWeekdays = (m_timerType && m_timerType->IsRepeating()) ? PVR_WEEKDAY_ALLDAYS : PVR_WEEKDAY_NONE;
+
+  UpdateSummary();
+  UpdateEpgInfoTag();
 }
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId) :
@@ -219,7 +222,6 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
 
 CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
 {
-  ClearEpgTag();
 }
 
 /**
@@ -978,10 +980,9 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
           {
             // if no epg uid present, try to find a tag according to timer's start/end time
             m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
+            if (m_epgTag)
+              m_iEpgUid = m_epgTag->UniqueBroadcastID();
           }
-
-          if (m_epgTag)
-            m_epgTag->SetTimer(g_PVRTimers->GetById(m_iTimerId));
         }
       }
     }
