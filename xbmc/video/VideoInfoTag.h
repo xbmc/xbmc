@@ -84,6 +84,7 @@ public:
   virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable, Field field) const;
   const CRating GetRating(std::string type = "") const;
+  const std::string& GetDefaultRating() const;
   const bool HasYear() const;
   const int GetYear() const;
   const bool HasPremiered() const;
@@ -122,9 +123,9 @@ public:
   void SetTitle(std::string title);
   void SetSortTitle(std::string sortTitle);
   void SetPictureURL(CScraperUrl &pictureURL);
-  void AddRating(float rating, int votes, const std::string& type = "");
-  void AddRating(CRating rating, const std::string& type = "");
-  void SetRating(float rating, const std::string& type = "");
+  void AddRating(float rating, int votes, const std::string& type = "", bool def = false);
+  void AddRating(CRating rating, const std::string& type = "", bool def = false);
+  void SetRating(float rating, const std::string& type = "", bool def = false);
   void SetRatings(RatingMap ratings);
   void SetVotes(int votes, const std::string& type = "");
   void SetPremiered(CDateTime premiered);
@@ -201,7 +202,6 @@ public:
   int m_iTrack;
   RatingMap m_ratings;
   int m_iIdRating;
-  std::string m_strDefaultRating;
   int m_iUserRating;
   CBookmark m_EpBookmark;
   int m_iBookmarkId;
@@ -226,6 +226,7 @@ private:
    */
   void ParseNative(const TiXmlElement* element, bool prioritise);
 
+  std::string m_strDefaultRating;
   std::string Trim(std::string &&value);
   std::vector<std::string> Trim(std::vector<std::string> &&items);
 };
