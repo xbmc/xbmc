@@ -357,9 +357,9 @@
 			<animation effect="slide" start="0,0" end="40,0" time="400">Hidden</animation>
 			<animation effect="slide" start="0,0" end="-7,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 			<control type="scrollbar" id="60">
-				<posx>8</posx>
+				<posx>0</posx>
 				<posy>40</posy>
-				<width>10</width>
+				<width>26</width>
 				<height>640</height>
 				<texturesliderbackground colordiffuse="30FFFFFF">white.png</texturesliderbackground>
 				<texturesliderbar colordiffuse="grey">white.png</texturesliderbar>
@@ -860,7 +860,7 @@
 					</item>
 					<item>
 						<label>-</label>
-						<onclick>ActivateWindow(Video,Root,Return)</onclick>
+						<onclick>ActivateWindow(Videos,Root,Return)</onclick>
 						<icon>icon_menu_videos.png</icon>
 						<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>
 					</item>
@@ -1036,7 +1036,7 @@
 		</item>
 		<item id="3">
 			<label>20342</label>
-			<onclick>ActivateWindow(Video,MovieTitles,Return)</onclick>
+			<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
 			<icon>icon_menu_movies.png</icon>
 			<thumb>-</thumb>
 			<visible>Library.HasContent(Movies)</visible>
@@ -1044,7 +1044,7 @@
 		</item>
 		<item id="4">
 			<label>20343</label>
-			<onclick>ActivateWindow(Video,TVShowTitles,Return)</onclick>
+			<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
 			<icon>icon_menu_tvshows.png</icon>
 			<thumb>-</thumb>
 			<visible>Library.HasContent(TVShows)</visible>
@@ -1052,7 +1052,7 @@
 		</item>
 		<item id="5">
 			<label>3</label>
-			<onclick>ActivateWindow(Video,Root,Return)</onclick>
+			<onclick>ActivateWindow(Videos,Root,Return)</onclick>
 			<icon>icon_menu_videos.png</icon>
 			<thumb>-</thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>

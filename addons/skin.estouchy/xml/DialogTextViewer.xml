@@ -48,9 +48,9 @@
 			<pagecontrol>61</pagecontrol>
 		</control>
 		<control type="scrollbar" id="61">
-			<posx>960</posx>
+			<posx>952</posx>
 			<posy>90</posy>
-			<width>10</width>
+			<width>26</width>
 			<height>660</height>
 			<texturesliderbackground colordiffuse="30FFFFFF">white.png</texturesliderbackground>
 			<texturesliderbar colordiffuse="grey">white.png</texturesliderbar>

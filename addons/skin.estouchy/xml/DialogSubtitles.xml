@@ -209,9 +209,9 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>965</posx>
+				<posx>957</posx>
 				<posy>130</posy>
-				<width>10</width>
+				<width>26</width>
 				<height>500</height>
 				<texturesliderbackground colordiffuse="30FFFFFF">white.png</texturesliderbackground>
 				<texturesliderbar colordiffuse="grey">white.png</texturesliderbar>

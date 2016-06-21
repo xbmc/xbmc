@@ -270,12 +270,6 @@
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>24069</label>
 			</control>
-			<control type="button" id="10">
-				<description>Changelog button</description>
-				<width>250</width>
-				<include>ButtonInfoDialogsCommonValues</include>
-				<label>24036</label>
-			</control>
 			<control type="radiobutton" id="13">
 				<description>Auto-Update button</description>
 				<width>250</width>
