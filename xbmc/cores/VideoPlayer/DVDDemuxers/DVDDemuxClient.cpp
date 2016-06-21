@@ -383,6 +383,7 @@ void CDVDDemuxClient::RequestStreams()
       streamAudio->iBitsPerSample  = source->iBitsPerSample;
       if (source->ExtraSize > 0 && source->ExtraData)
       {
+        delete[] streamAudio->ExtraData;
         streamAudio->ExtraData = new uint8_t[source->ExtraSize];
         streamAudio->ExtraSize = source->ExtraSize;
         for (unsigned int j=0; j<source->ExtraSize; j++)
@@ -424,6 +425,7 @@ void CDVDDemuxClient::RequestStreams()
       streamVideo->stereo_mode     = "mono";
       if (source->ExtraSize > 0 && source->ExtraData)
       {
+        delete[] streamVideo->ExtraData;
         streamVideo->ExtraData = new uint8_t[source->ExtraSize];
         streamVideo->ExtraSize = source->ExtraSize;
         for (unsigned int j=0; j<source->ExtraSize; j++)
@@ -458,6 +460,7 @@ void CDVDDemuxClient::RequestStreams()
 
       if (source->ExtraSize == 4)
       {
+        delete[] streamSubtitle->ExtraData;
         streamSubtitle->ExtraData = new uint8_t[4];
         streamSubtitle->ExtraSize = 4;
         for (int j=0; j<4; j++)
