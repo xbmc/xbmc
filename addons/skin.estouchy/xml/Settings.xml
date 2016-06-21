@@ -190,6 +190,7 @@
 			<font>font22</font>
 			<textcolor>blue</textcolor>
 			<align>center</align>
+			<include>16x9_xPos_Relocation</include>
 		</control>
 	</controls>
 </window>
