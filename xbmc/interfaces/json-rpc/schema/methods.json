@@ -1491,7 +1491,7 @@
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "ratings", "$ref": "Video.Ratings" },
+      { "name": "ratings", "$ref": "Video.Ratings.Set" },
       { "name": "dateadded", "$ref": "Optional.String" },
       { "name": "premiered", "$ref": "Optional.String", "description": "linked with year. Overriedes year" }
     ],
@@ -1535,7 +1535,7 @@
       { "name": "tag", "type": [ "null", { "$ref": "Array.String", "required": true } ], "default": null },
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "ratings", "$ref": "Video.Ratings" },
+      { "name": "ratings", "$ref": "Video.Ratings.Set" },
       { "name": "dateadded", "$ref": "Optional.String" },
       { "name": "runtime", "$ref": "Optional.Integer", "description": "Runtime in seconds" },
       { "name": "status", "$ref": "Optional.String" }
@@ -1580,7 +1580,7 @@
       { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
-      { "name": "ratings", "$ref": "Video.Ratings" },
+      { "name": "ratings", "$ref": "Video.Ratings.Set" },
       { "name": "dateadded", "$ref": "Optional.String" }
     ],
     "returns": "string"

@@ -126,6 +126,7 @@ public:
   void AddRating(float rating, int votes, const std::string& type = "", bool def = false);
   void AddRating(CRating rating, const std::string& type = "", bool def = false);
   void SetRating(float rating, const std::string& type = "", bool def = false);
+  void RemoveRating(const std::string& type);
   void SetRatings(RatingMap ratings);
   void SetVotes(int votes, const std::string& type = "");
   void SetPremiered(CDateTime premiered);

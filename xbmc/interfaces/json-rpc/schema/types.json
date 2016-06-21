@@ -392,6 +392,22 @@
     },
     "additionalProperties": { "type": [ "null", { "$ref": "Global.String.NotEmpty", "required": true } ] }
   },
+  "Video.Rating": {
+    "type": "object",
+    "properties": {
+      "rating": { "type": "number", "required": true },
+      "votes": { "type": "integer" },
+      "default": { "type": "boolean" }
+    }
+  },
+  "Video.Ratings": {
+    "type": "object",
+    "additionalProperties": { "$ref": "Video.Rating" }
+  },
+  "Video.Ratings.Set": {
+    "type": "object",
+    "additionalProperties": { "type": [ "null", { "$ref": "Video.Rating", "required": true } ] }
+  },
   "Library.Fields.Genre": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string", "enum": [ "title", "thumbnail" ] }
@@ -668,18 +684,6 @@
         "role": { "type": "string", "required": true },
         "order": { "type": "integer", "required": true },
         "thumbnail": { "type": "string" }
-      },
-      "additionalProperties": false
-    }
-  },
-  "Video.Ratings": {
-    "type": "array",
-    "items": { "type": "object",
-      "properties": {
-        "name": { "type": "string", "required": true },
-        "rating": { "type": "number", "required": true },
-        "votes": { "type": "integer" },
-        "default": { "type": "boolean" }
       },
       "additionalProperties": false
     }
