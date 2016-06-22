@@ -577,9 +577,13 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
-  // Pulse can resample everything between 1 hz and 192000 hz
+  // Pulse can resample everything between 1 hz and 192000 hz / 384000 hz (starting with 9.0)
   // Make sure we are in the range that we originally added
-  format.m_sampleRate = std::max(5512U, std::min(format.m_sampleRate, 192000U));
+  unsigned int max_pulse_sample_rate = 192000U;
+#if PA_CHECK_VERSION(9,0,0)
+  max_pulse_sample_rate = 384000U;
+#endif
+  format.m_sampleRate = std::max(5512U, std::min(format.m_sampleRate, max_pulse_sample_rate));
 
   pa_format_info *info[1];
   info[0] = pa_format_info_new();
