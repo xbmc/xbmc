@@ -42,6 +42,7 @@ class CPVRManager;
 }
 
 class XBPython;
+class CDataCacheCore;
 
 class CServiceManager
 {
@@ -56,6 +57,7 @@ public:
   XBPython& GetXBPython();
   PVR::CPVRManager& GetPVRManager();
   ActiveAE::CActiveAEDSP& GetADSPManager();
+  CDataCacheCore& GetDataCacheCore();
 
 protected:
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
@@ -64,4 +66,5 @@ protected:
   std::unique_ptr<XBPython> m_XBPython;
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
+  std::unique_ptr<CDataCacheCore> m_dataCacheCore;
 };

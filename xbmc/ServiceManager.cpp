@@ -21,6 +21,7 @@
 #include "ServiceManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
+#include "cores/DataCacheCore.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -49,6 +50,7 @@ bool CServiceManager::Init2()
 
   m_ADSPManager.reset(new ActiveAE::CActiveAEDSP());
   m_PVRManager.reset(new PVR::CPVRManager());
+  m_dataCacheCore.reset(new CDataCacheCore());
 
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
@@ -103,4 +105,9 @@ PVR::CPVRManager& CServiceManager::GetPVRManager()
 ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
 {
   return *m_ADSPManager;
+}
+
+CDataCacheCore& CServiceManager::GetDataCacheCore()
+{
+  return *m_dataCacheCore;
 }

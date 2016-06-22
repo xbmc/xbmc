@@ -37,6 +37,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/DataCacheCore.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"

@@ -50,3 +50,8 @@ ActiveAE::CActiveAEDSP &CServiceBroker::GetADSP()
 {
   return g_application.m_ServiceManager->GetADSPManager();
 }
+
+CDataCacheCore &CServiceBroker::GetDataCacheCore()
+{
+  return g_application.m_ServiceManager->GetDataCacheCore();
+}

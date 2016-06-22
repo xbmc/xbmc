@@ -20,10 +20,16 @@
 
 #include "cores/DataCacheCore.h"
 #include "threads/SingleLock.h"
+#include "ServiceBroker.h"
 
 CDataCacheCore::CDataCacheCore()
 {
   m_hasAVInfoChanges = false;
+}
+
+CDataCacheCore& GetInstance()
+{
+  return CServiceBroker::GetDataCacheCore();
 }
 
 bool CDataCacheCore::HasAVInfoChanges()

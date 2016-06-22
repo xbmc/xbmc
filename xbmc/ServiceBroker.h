@@ -40,6 +40,7 @@ namespace PVR
 }
 
 class XBPython;
+class CDataCacheCore;
 
 class CServiceBroker
 {
@@ -50,4 +51,5 @@ public:
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
   static ActiveAE::CActiveAEDSP& GetADSP();
+  static CDataCacheCore& GetDataCacheCore();
 };

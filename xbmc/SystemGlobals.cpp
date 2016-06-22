@@ -19,7 +19,6 @@
  */
 #include "system.h"
 #include "SectionLoader.h"
-#include "cores/DataCacheCore.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
 #include "utils/AlarmClock.h"
@@ -71,6 +70,3 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 #endif
 
   CZipManager g_ZipManager;
-
-  CDataCacheCore g_dataCacheCore;
-

@@ -6018,25 +6018,25 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case PLAYER_PROCESS_VIDEODECODER:
-      strLabel = g_dataCacheCore.GetVideoDecoderName();
+      strLabel = CServiceBroker::GetDataCacheCore().GetVideoDecoderName();
       break;
   case PLAYER_PROCESS_DEINTMETHOD:
-      strLabel = g_dataCacheCore.GetVideoDeintMethod();
+      strLabel = CServiceBroker::GetDataCacheCore().GetVideoDeintMethod();
       break;
   case PLAYER_PROCESS_PIXELFORMAT:
-      strLabel = g_dataCacheCore.GetVideoPixelFormat();
+      strLabel = CServiceBroker::GetDataCacheCore().GetVideoPixelFormat();
       break;
   case PLAYER_PROCESS_VIDEOFPS:
-      strLabel = StringUtils::FormatNumber(g_dataCacheCore.GetVideoFps());
+      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoFps());
       break;
   case PLAYER_PROCESS_VIDEODAR:
       strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoDAR());
       break;
   case PLAYER_PROCESS_AUDIODECODER:
-      strLabel = g_dataCacheCore.GetAudioDecoderName();
+      strLabel = CServiceBroker::GetDataCacheCore().GetAudioDecoderName();
       break;
   case PLAYER_PROCESS_AUDIOCHANNELS:
-      strLabel = g_dataCacheCore.GetAudioChannels();
+      strLabel = CServiceBroker::GetDataCacheCore().GetAudioChannels();
       break;
   case RDS_AUDIO_LANG:
   case RDS_CHANNEL_COUNTRY:
@@ -6601,16 +6601,16 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       value = g_powerManager.BatteryLevel();
       return true;
     case PLAYER_PROCESS_VIDEOWIDTH:
-      value = g_dataCacheCore.GetVideoWidth();
+      value = CServiceBroker::GetDataCacheCore().GetVideoWidth();
       return true;
     case PLAYER_PROCESS_VIDEOHEIGHT:
-      value = g_dataCacheCore.GetVideoHeight();
+      value = CServiceBroker::GetDataCacheCore().GetVideoHeight();
       return true;
     case PLAYER_PROCESS_AUDIOSAMPLERATE:
-      value = g_dataCacheCore.GetAudioSampleRate();
+      value = CServiceBroker::GetDataCacheCore().GetAudioSampleRate();
       return true;
     case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
-      value = g_dataCacheCore.GetAudioBitsPerSampe();
+      value = CServiceBroker::GetDataCacheCore().GetAudioBitsPerSampe();
       return true;
   }
   return false;
@@ -7148,7 +7148,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
                    !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneStudio().empty());
     break;
     case PLAYER_PROCESS_VIDEOHWDECODER:
-        bReturn = g_dataCacheCore.IsVideoHwDecoder();
+        bReturn = CServiceBroker::GetDataCacheCore().IsVideoHwDecoder();
         break;
     default: // default, use integer value different from 0 as true
       {
@@ -9150,7 +9150,7 @@ void CGUIInfoManager::UpdateAVInfo()
 {
   if(g_application.m_pPlayer->IsPlaying())
   {
-    if (g_dataCacheCore.HasAVInfoChanges())
+    if (CServiceBroker::GetDataCacheCore().HasAVInfoChanges())
     {
       SPlayerVideoStreamInfo video;
       SPlayerAudioStreamInfo audio;
