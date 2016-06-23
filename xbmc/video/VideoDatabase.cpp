@@ -2190,7 +2190,7 @@ int CVideoDatabase::SetDetailsForMovie(const std::string& strFilenameAndPath, CV
     AddActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
 
     // add ratings
-    details.m_iIdRating = AddRatings(idMovie, MediaTypeMovie, details.m_ratings, details.m_strDefaultRating);
+    details.m_iIdRating = AddRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
 
     // add set...
     int idSet = -1;
@@ -2285,7 +2285,7 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
     if (updatedDetails.find("art.altered") != updatedDetails.end())
       SetArtForItem(idMovie, MediaTypeMovie, artwork);
     if (updatedDetails.find("ratings") != updatedDetails.end())
-      details.m_iIdRating = UpdateRatings(idMovie, MediaTypeMovie, details.m_ratings, details.m_strDefaultRating);
+      details.m_iIdRating = UpdateRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
     if (updatedDetails.find("dateadded") != updatedDetails.end() && details.m_dateAdded.IsValid())
     {
       if (details.m_iFileId <= 0)
@@ -2461,7 +2461,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
   AddActorLinksToItem(idTvShow, MediaTypeTvShow, "director", details.m_director);
 
   // add ratings
-  details.m_iIdRating = AddRatings(idTvShow, MediaTypeTvShow, details.m_ratings, details.m_strDefaultRating);
+  details.m_iIdRating = AddRatings(idTvShow, MediaTypeTvShow, details.m_ratings, details.GetDefaultRating());
 
   // add "all seasons" - the rest are added in SetDetailsForEpisode
   AddSeason(idTvShow, -1);
@@ -2590,7 +2590,7 @@ int CVideoDatabase::SetDetailsForEpisode(const std::string& strFilenameAndPath, 
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "writer", details.m_writingCredits);
 
     // add ratings
-    details.m_iIdRating = AddRatings(idEpisode, MediaTypeEpisode, details.m_ratings, details.m_strDefaultRating);
+    details.m_iIdRating = AddRatings(idEpisode, MediaTypeEpisode, details.m_ratings, details.GetDefaultRating());
 
     if (details.HasStreamDetails())
     {
@@ -3677,8 +3677,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_MOVIE_TOTAL_TIME).get_asInt();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_MOVIE_USER_RATING).get_asInt();
-  details.m_strDefaultRating = record->at(VIDEODB_DETAILS_MOVIE_RATING_TYPE).get_asString();
-  details.AddRating(record->at(VIDEODB_DETAILS_MOVIE_RATING).get_asFloat(), record->at(VIDEODB_DETAILS_MOVIE_VOTES).get_asInt());
+  details.AddRating(record->at(VIDEODB_DETAILS_MOVIE_RATING).get_asFloat(), 
+                    record->at(VIDEODB_DETAILS_MOVIE_VOTES).get_asInt(),
+                    record->at(VIDEODB_DETAILS_MOVIE_RATING_TYPE).get_asString(), true);
   std::string premieredString = record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asString();
   if (premieredString.size() == 4)
     details.SetYear(record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asInt());
@@ -3755,8 +3756,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.m_playCount = record->at(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
   details.m_strShowTitle = details.m_strTitle;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_TVSHOW_USER_RATING).get_asInt();
-  details.m_strDefaultRating = record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString();
-  details.AddRating(record->at(VIDEODB_DETAILS_TVSHOW_RATING).get_asFloat(), record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt());
+  details.AddRating(record->at(VIDEODB_DETAILS_TVSHOW_RATING).get_asFloat(), 
+                    record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt(),
+                    record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString(), true);
   details.m_duration = record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt();
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
@@ -3831,8 +3833,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_resumePoint.totalTimeInSeconds = record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt();
   details.m_resumePoint.type = CBookmark::RESUME;
   details.m_iUserRating = record->at(VIDEODB_DETAILS_EPISODE_USER_RATING).get_asInt();
-  details.m_strDefaultRating = record->at(VIDEODB_DETAILS_EPISODE_RATING_TYPE).get_asString();
-  details.AddRating(record->at(VIDEODB_DETAILS_EPISODE_RATING).get_asFloat(), record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt());
+  details.AddRating(record->at(VIDEODB_DETAILS_EPISODE_RATING).get_asFloat(), 
+                    record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt(), 
+                    record->at(VIDEODB_DETAILS_EPISODE_RATING_TYPE).get_asString(), true);
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   if (getDetails)

@@ -556,17 +556,17 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["episode"] = m_iEpisode;
   value["uniqueid"]["unknown"] = m_strUniqueId;
   value["rating"] = GetRating().rating;
-  value["ratings"] = CVariant(CVariant::VariantTypeArray);
+  CVariant ratings = CVariant(CVariant::VariantTypeObject);
   for (const auto& i : m_ratings)
   {
     CVariant rating;
-    rating["name"] = i.first;
     rating["rating"] = i.second.rating;
     rating["votes"] = i.second.votes;
-    if (i.first == m_strDefaultRating)
-      rating["default"] = true;
-    value["ratings"].push_back(rating);
+    rating["default"] = i.first == m_strDefaultRating;
+
+    ratings[i.first] = rating;
   }
+  value["ratings"] = ratings;
   value["userrating"] = m_iUserRating;
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
@@ -679,6 +679,11 @@ const CRating CVideoInfoTag::GetRating(std::string type) const
     return CRating();
 
   return rating->second;
+}
+
+const std::string& CVideoInfoTag::GetDefaultRating() const
+{
+  return m_strDefaultRating;
 }
 
 const bool CVideoInfoTag::HasYear() const
@@ -1195,25 +1200,41 @@ void CVideoInfoTag::SetPictureURL(CScraperUrl &pictureURL)
   m_strPictureURL = pictureURL;
 }
 
-void CVideoInfoTag::AddRating(float rating, int votes, const std::string& type /* = "" */)
+void CVideoInfoTag::AddRating(float rating, int votes, const std::string& type /* = "" */, bool def /* = false */)
 {
   AddRating(CRating(rating, votes), type);
 }
 
-void CVideoInfoTag::AddRating(CRating rating, const std::string& type /* = "" */)
+void CVideoInfoTag::AddRating(CRating rating, const std::string& type /* = "" */, bool def /* = false */)
 {
   if (type.empty())
     m_ratings[m_strDefaultRating] = rating;
   else
     m_ratings[type] = rating;
+
+  if (def)
+    m_strDefaultRating = type;
 }
 
-void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */)
+void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */, bool def /* = false */)
 {
   if (type.empty())
     m_ratings[m_strDefaultRating].rating = rating;
   else
     m_ratings[type].rating = rating;
+
+  if (def)
+    m_strDefaultRating = type;
+}
+
+void CVideoInfoTag::RemoveRating(const std::string& type)
+{
+  if (m_ratings.find(type) != m_ratings.end())
+  {
+    m_ratings.erase(type);
+    if (m_strDefaultRating == type && !m_ratings.empty())
+      m_strDefaultRating = m_ratings.begin()->first;
+  }
 }
 
 void CVideoInfoTag::SetRatings(RatingMap ratings)
