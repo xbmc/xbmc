@@ -435,6 +435,7 @@
 
 #define SYSTEM_PROFILEAUTOLOGIN     1004
 #define SYSTEM_HAS_ADSP             1005
+#define SYSTEM_HAS_CMS              1006
 
 #define PVR_CONDITIONS_START        1100
 #define PVR_IS_RECORDING            (PVR_CONDITIONS_START)
