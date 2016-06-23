@@ -26,6 +26,11 @@
 
 class CSetting;
 
+namespace EPG
+{
+  class CGUIEPGGridContainer;
+}
+
 namespace PVR
 {
   class CPVRRefreshTimelineItemsThread;
@@ -56,6 +61,8 @@ namespace PVR
     virtual void UnregisterObservers(void) override;
 
   private:
+    EPG::CGUIEPGGridContainer* GetGridControl();
+
     bool SelectPlayingFile(void);
 
     bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
