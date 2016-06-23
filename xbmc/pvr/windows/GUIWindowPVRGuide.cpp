@@ -117,6 +117,16 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage m
   }
 }
 
+void CGUIWindowPVRGuide::SetInvalid()
+{
+  CGUIEPGGridContainer *epgGridContainer =
+    dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+  if (epgGridContainer)
+    epgGridContainer->SetInvalid();
+
+  CGUIWindowPVRBase::SetInvalid();
+}
+
 void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
@@ -411,7 +421,8 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonPlay(pItem.get(), button) ||
+  bool bReturn
+    = OnContextButtonPlay(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
@@ -423,6 +434,11 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
+
+  if (bReturn)
+    SetInvalid();
+
+  return bReturn;
 }
 
 void CGUIWindowPVRGuide::GetViewChannelItems(CFileItemList &items)

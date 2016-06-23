@@ -44,6 +44,7 @@ namespace PVR
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     virtual void UpdateButtons(void) override;
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
+    virtual void SetInvalid() override;
 
     bool RefreshTimelineItems();
 
