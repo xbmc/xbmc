@@ -18504,24 +18504,24 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36560"
-msgid "Color management"
+msgid "Colour management"
 msgstr ""
 
-#. Description of setting "System -> Video output -> Color management" with label #36560
+#. Description of setting "System -> Video output -> Colour management" with label #36560
 #: system/settings/settings.xml
 msgctxt "#36561"
-msgid "Reproduce video colors accurately using a display profile or a 3D lookup table."
+msgid "Reproduce video colours accurately using a display profile or a 3D lookup table."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36562"
-msgid "Color management mode"
+msgid "Colour management mode"
 msgstr ""
 
-#. Description of setting "System -> Video output -> Color management mode" with label #36562
+#. Description of setting "System -> Video output -> Colour management mode" with label #36562
 #: system/settings/settings.xml
 msgctxt "#36563"
-msgid "Use a precalculated 3D lookup table for video color correction, or calculate the transformation for each video from a profile of your display. A precalculated 3D lookup table is preferred as it allows you to take advantage of the advanced features and high precision in ArgyllCMS. Display profile based correction is useful for testing different parameters, or emulating display settings that you don't have a 3D LUT prepared for."
+msgid "Use a precalculated 3D lookup table for video colour correction, or calculate the transformation for each video from a profile of your display. A precalculated 3D lookup table is preferred as it allows you to take advantage of the advanced features and high precision in ArgyllCMS. Display profile based correction is useful for testing different parameters, or emulating display settings that you don't have a 3D LUT prepared for."
 msgstr ""
 
 #: system/settings/settings.xml
