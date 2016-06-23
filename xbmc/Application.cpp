@@ -600,6 +600,8 @@ bool CApplication::Create()
   av_register_all();
   // register avfilter
   avfilter_register_all();
+  // initialize network protocols
+  avformat_network_init();
   // set avutil callback
   av_log_set_callback(ff_avutil_log);
 
