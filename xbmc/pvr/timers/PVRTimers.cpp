@@ -103,6 +103,28 @@ bool CPVRTimers::IsRecording(void) const
   return false;
 }
 
+bool CPVRTimers::SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
+{
+  const CEpgInfoTagPtr epgTag(timer->GetEpgInfoTag());
+  if (epgTag)
+  {
+    epgTag->SetTimer(timer);
+    return true;
+  }
+  return false;
+}
+
+bool CPVRTimers::ClearEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
+{
+  const CEpgInfoTagPtr epgTag(timer->GetEpgInfoTag());
+  if (epgTag)
+  {
+    epgTag->ClearTimer();
+    return true;
+  }
+  return false;
+}
+
 bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> &failedClients)
 {
   bool bChanged(false);
@@ -124,6 +146,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
         bool bStateChanged(existingTimer->m_state != (*timerIt)->m_state);
         if (existingTimer->UpdateEntry(*timerIt))
         {
+          SetEpgTagTimer(existingTimer);
+
           bChanged = true;
           existingTimer->ResetChildState();
 
@@ -157,6 +181,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
         }
 
         newTimer->m_iTimerId = ++m_iLastId;
+        SetEpgTagTimer(newTimer);
+
         addEntry->push_back(newTimer);
         bChanged = true;
         bAddedOrDeleted = true;
@@ -208,8 +234,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
         if (g_PVRManager.IsStarted())
           timerNotifications.push_back(std::make_pair(timer->m_iClientId, timer->GetDeletedNotificationText()));
 
-        /** clear the EPG tag explicitly here, because it no longer happens automatically with shared pointers */
-        timer->ClearEpgTag();
+        ClearEpgTagTimer(timer);
+
         it2 = it->second->erase(it2);
 
         bChanged = true;
@@ -222,7 +248,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
         CLog::Log(LOGDEBUG,"PVRTimers - %s - changed start time timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
-        timer->ClearEpgTag();
+        ClearEpgTagTimer(timer);
 
         /* remember timer */
         timersToMove.push_back(timer);
@@ -258,6 +284,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
     {
       addEntry = itr->second;
     }
+
+    SetEpgTagTimer(*timerIt);
 
     addEntry->push_back(*timerIt);
   }

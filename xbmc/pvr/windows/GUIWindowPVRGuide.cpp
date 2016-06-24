@@ -53,13 +53,17 @@ CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
   StopRefreshTimelineItemsThread();
 }
 
+CGUIEPGGridContainer* CGUIWindowPVRGuide::GetGridControl()
+{
+  return dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+}
+
 void CGUIWindowPVRGuide::OnInitWindow()
 {
   if (m_guiState.get())
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl(), false);
 
-  CGUIEPGGridContainer *epgGridContainer =
-    dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
     epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
@@ -115,6 +119,15 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage m
   {
     CGUIWindowPVRBase::Notify(obs, msg);
   }
+}
+
+void CGUIWindowPVRGuide::SetInvalid()
+{
+  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+  if (epgGridContainer)
+    epgGridContainer->SetInvalid();
+
+  CGUIWindowPVRBase::SetInvalid();
 }
 
 void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -348,8 +361,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
             case ACTION_PLAY:
             {
               // EPG "gap" selected => switch to associated channel.
-              CGUIEPGGridContainer *epgGridContainer =
-                dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+              CGUIEPGGridContainer *epgGridContainer = GetGridControl();
               if (epgGridContainer)
               {
                 CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
@@ -411,7 +423,8 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonPlay(pItem.get(), button) ||
+  bool bReturn
+    = OnContextButtonPlay(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
@@ -423,6 +436,11 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
+
+  if (bReturn)
+    SetInvalid();
+
+  return bReturn;
 }
 
 void CGUIWindowPVRGuide::GetViewChannelItems(CFileItemList &items)
@@ -475,7 +493,7 @@ bool CGUIWindowPVRGuide::RefreshTimelineItems()
   {
     m_bRefreshTimelineItems = false;
 
-    CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (epgGridContainer)
     {
       const CPVRChannelGroupPtr group(GetGroup());
@@ -521,7 +539,7 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
   // group change detected reset grid coordinates and refresh grid items
   if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetGroup())
   {
-    CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (!epgGridContainer)
       return;
 
