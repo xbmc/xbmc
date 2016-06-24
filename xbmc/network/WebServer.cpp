@@ -110,9 +110,9 @@ static MHD_Response* create_response(size_t size, void* data, int free, int copy
     mode = MHD_RESPMEM_MUST_COPY;
   else if (free)
     mode = MHD_RESPMEM_MUST_FREE;
-  return MHD_create_response_from_buffer(0, nullptr, mode);
+  return MHD_create_response_from_buffer(size, data, mode);
 #else
-  return MHD_create_response_from_data(0, nullptr, free, copy);
+  return MHD_create_response_from_data(size, data, free, copy);
 #endif
 }
 
