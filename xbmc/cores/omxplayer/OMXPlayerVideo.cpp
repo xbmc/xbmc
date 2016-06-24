@@ -73,8 +73,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
 : CThread("OMXPlayerVideo")
 , IDVDStreamPlayerVideo(processInfo)
 , m_messageQueue("video")
-, m_omxVideo(renderManager)
-, m_codecname("")
+, m_omxVideo(renderManager, processInfo)
 , m_messageParent(parent)
 , m_renderManager(renderManager)
 {
@@ -471,7 +470,7 @@ void OMXPlayerVideo::Process()
 
         if (m_syncState == IDVDStreamPlayer::SYNC_STARTING && !bRequestDrop && settings_changed)
         {
-          m_codecname = m_omxVideo.GetDecoderName();
+          m_processInfo.SetVideoDecoderName(m_omxVideo.GetDecoderName(), true);
           m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
           SStartMsg msg;
           msg.player = VideoPlayer_VIDEO;
@@ -548,7 +547,7 @@ bool OMXPlayerVideo::OpenDecoder()
     CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder : Video codec %s width %d height %d profile %d fps %f\n",
         m_omxVideo.GetDecoderName().c_str() , m_hints.width, m_hints.height, m_hints.profile, m_fFrameRate);
 
-    m_codecname = m_omxVideo.GetDecoderName();
+    m_processInfo.SetVideoDecoderName(m_omxVideo.GetDecoderName(), true);
   }
 
   return bVideoDecoderOpen;
@@ -710,7 +709,7 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   }
 
   m_processInfo.SetVideoDimensions(width, height);
-  m_processInfo.SetVideoAspectRatio(display_aspect);
+  m_processInfo.SetVideoDAR(display_aspect);
 
   unsigned int iDisplayWidth  = width;
   unsigned int iDisplayHeight = height;
@@ -722,6 +721,7 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
     iDisplayWidth = (int) (iDisplayHeight * display_aspect);
 
   m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE / framerate);
+  m_processInfo.SetVideoFps(m_fFrameRate);
 
   CLog::Log(LOGDEBUG,"%s - change configuration. video:%dx%d. framerate: %4.2f. %dx%d format: BYPASS",
       __FUNCTION__, video_width, video_height, m_fFrameRate, iDisplayWidth, iDisplayHeight);

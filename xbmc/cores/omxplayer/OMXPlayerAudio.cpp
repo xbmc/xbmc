@@ -43,6 +43,7 @@
 #include "linux/RBP.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/DataCacheCore.h"
+#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -101,7 +102,7 @@ bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints)
   m_bad_state = false;
 
   m_processInfo.ResetAudioCodecInfo();
-  COMXAudioCodecOMX *codec = new COMXAudioCodecOMX();
+  COMXAudioCodecOMX *codec = new COMXAudioCodecOMX(m_processInfo);
 
   if(!codec || !codec->Open(hints))
   {
@@ -143,7 +144,7 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_format.m_sampleRate    = 0;
   m_format.m_channelLayout = 0;
 
-  g_dataCacheCore.SignalAudioInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
 }
 
 void OMXPlayerAudio::CloseStream(bool bWaitForBuffers)
@@ -188,6 +189,7 @@ bool OMXPlayerAudio::CodecChange()
   {
     m_hints.channels = m_pAudioCodec->GetChannels();
     m_hints.samplerate = m_pAudioCodec->GetSampleRate();
+    m_hints.bitspersample = m_pAudioCodec->GetBitsPerSample();
   }
 
   /* only check bitrate changes on AV_CODEC_ID_DTS, AV_CODEC_ID_AC3, AV_CODEC_ID_EAC3 */
@@ -204,7 +206,11 @@ bool OMXPlayerAudio::CodecChange()
      (!m_passthrough && minor_change) || !m_DecoderOpen)
   {
     m_hints_current = m_hints;
-    g_dataCacheCore.SignalAudioInfoChange();
+
+    m_processInfo.SetAudioSampleRate(m_hints.samplerate);
+    m_processInfo.SetAudioBitsPerSample(m_hints.bitspersample);
+
+    CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
     return true;
   }
 
@@ -562,11 +568,23 @@ bool OMXPlayerAudio::OpenDecoder()
 
   CAEChannelInfo channelMap;
   if (m_pAudioCodec && !m_passthrough)
+  {
     channelMap = m_pAudioCodec->GetChannelMap();
+  }
   else if (m_passthrough)
+  {
     // we just want to get the channel count right to stop OMXAudio.cpp rejecting stream
     // the actual layout is not used
     channelMap = AE_CH_LAYOUT_5_1;
+
+    if (m_hints.codec == AV_CODEC_ID_AC3)
+      m_processInfo.SetAudioDecoderName("PT_AC3");
+    else if (m_hints.codec == AV_CODEC_ID_EAC3)
+      m_processInfo.SetAudioDecoderName("PT_EAC3");
+    else
+      m_processInfo.SetAudioDecoderName("PT_DTS");
+  }
+  m_processInfo.SetAudioChannels(channelMap);
   bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, m_av_clock, m_hints, channelMap, m_passthrough);
 
   m_codec_name = "";
