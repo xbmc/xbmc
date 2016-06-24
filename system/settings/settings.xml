@@ -1107,6 +1107,10 @@
     </category>
     <category id="mymusic" label="0" help="0">
       <group id="1">
+        <setting id="mymusic.startwindow" type="integer" label="0" help="36301">
+          <level>4</level>
+          <default>10501</default> <!-- WINDOW_MUSIC_FILES -->
+        </setting>
         <setting id="mymusic.songthumbinvis" type="boolean" label="0" help="36302">
           <level>4</level>
           <default>false</default>

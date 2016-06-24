@@ -12,7 +12,7 @@
 <!-- not used in the current window's section.                                            -->
 <!--                                                                                      -->
 <!-- Actions can be built-in functions.                                                   -->
-<!--  eg <B>ActivateWindow(Music)</B>                                                   -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                                                   -->
 <!-- would automatically go to Music on the press of the B button.                        -->
 <!--                                                                                      -->
 <!--  Long presses                                                                        -->
@@ -102,9 +102,9 @@
       <b>ActivateWindow(TVTimers)</b>
       <!-- PVR -->
       <red>ActivateWindow(TVChannels)</red>
-      <green>ActivateWindow(Videos)</green>
-      <yellow>ActivateWindow(Music)</yellow>
-      <blue>ActivateWindow(Pictures)</blue>
+      <green>ActivateWindow(MyVideos)</green>
+      <yellow>ActivateWindow(MyMusic)</yellow>
+      <blue>ActivateWindow(MyPictures)</blue>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -127,9 +127,9 @@
       <rewind>Rewind</rewind>
       <record/>
       <launch_mail></launch_mail>
-      <launch_media_select>ActivateWindow(Music)</launch_media_select>
-      <launch_app1_pc_icon>ActivateWindow(Programs)</launch_app1_pc_icon>
-      <launch_app2_pc_icon>ActivateWindow(Programs)</launch_app2_pc_icon>
+      <launch_media_select>ActivateWindow(MyMusic)</launch_media_select>
+      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
+      <launch_app2_pc_icon>ActivateWindow(MyPrograms)</launch_app2_pc_icon>
       <launch_file_browser/>
       <launch_media_center/>
       <!-- ****************************************************** -->
@@ -257,7 +257,7 @@
       <t>ShowTimerRule</t>
     </keyboard>
   </RadioGuide>
-  <FileManager>
+  <MyFiles>
     <keyboard>
       <space>Highlight</space>
       <delete>Delete</delete>
@@ -266,7 +266,7 @@
       <play_pause mod="longpress">Highlight</play_pause>
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
-  </FileManager>
+  </MyFiles>
   <MyMusicPlaylist>
     <keyboard>
       <n>Back</n>
@@ -284,13 +284,21 @@
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </MyMusicPlaylistEditor>
-  <Music>
+  <MyMusicFiles>
+    <keyboard>
+      <n>Playlist</n>
+      <q>Queue</q>
+      <delete>Delete</delete>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </MyMusicFiles>
+  <MyMusicLibrary>
     <keyboard>
       <n>Playlist</n>
       <q>Queue</q>
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
-  </Music>
+  </MyMusicLibrary>
   <FullscreenVideo>
     <keyboard>
       <f>FastForward</f>
@@ -403,6 +411,21 @@
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </MusicOSD>
+  <VisualisationSettings>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Back</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>Back</v>
+      <text>Back</text>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
+  </VisualisationSettings>
   <VisualisationPresetList>
     <keyboard>
       <f>FastForward</f>
@@ -450,13 +473,13 @@
       <r>NextResolution</r>
     </keyboard>
   </ScreenCalibration>
-  <ScreenCalibration>
+  <GUICalibration>
     <keyboard>
       <return>NextCalibration</return>
       <enter>NextCalibration</enter>
       <d>ResetCalibration</d>
     </keyboard>
-  </ScreenCalibration>
+  </GUICalibration>
   <VideoOSD>
     <keyboard>
       <m>Back</m>
@@ -503,14 +526,22 @@
       <delete>Delete</delete>
     </keyboard>
   </VideoBookmarks>
-  <Videos>
+  <MyVideoLibrary>
     <keyboard>
       <delete>Delete</delete>
       <n>Playlist</n>
       <w>ToggleWatched</w>
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
-  </Videos>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <keyboard>
+      <n>Playlist</n>
+      <q>Queue</q>
+      <w>ToggleWatched</w>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </MyVideoFiles>
   <MyVideoPlaylist>
     <keyboard>
       <n>Back</n>
@@ -624,12 +655,12 @@
       <browser_back>Close</browser_back>
     </keyboard>
   </PVROSDGuide>
-  <PVRSettings>
+  <MyTVSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>
       <browser_back>PreviousMenu</browser_back>
     </keyboard>
-  </PVRSettings>
+  </MyTVSettings>
   <FileBrowser>
     <keyboard>
       <space>Highlight</space>

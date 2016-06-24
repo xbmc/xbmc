@@ -34,6 +34,16 @@ protected:
   virtual std::string GetExtensions();
 };
 
+class CGUIViewStateWindowVideoFiles : public CGUIViewStateWindowVideo
+{
+public:
+  CGUIViewStateWindowVideoFiles(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+  virtual VECSOURCES& GetSources();
+};
+
 class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
 {
 public:

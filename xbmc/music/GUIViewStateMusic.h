@@ -83,6 +83,16 @@ private:
   void AddOnlineShares();
 };
 
+class CGUIViewStateWindowMusicSongs : public CGUIViewStateWindowMusic
+{
+public:
+  CGUIViewStateWindowMusicSongs(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+  virtual VECSOURCES& GetSources();
+};
+
 class CGUIViewStateWindowMusicPlaylist : public CGUIViewStateWindowMusic
 {
 public:

@@ -301,9 +301,11 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_SPLASH);
     Delete(WINDOW_MUSIC_PLAYLIST);
     Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
+    Delete(WINDOW_MUSIC_FILES);
     Delete(WINDOW_MUSIC_NAV);
     Delete(WINDOW_DIALOG_MUSIC_INFO);
     Delete(WINDOW_DIALOG_VIDEO_INFO);
+    Delete(WINDOW_VIDEO_FILES);
     Delete(WINDOW_VIDEO_PLAYLIST);
     Delete(WINDOW_VIDEO_NAV);
     Delete(WINDOW_FILES);
@@ -727,6 +729,20 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const std::vector<std::str
 void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector<std::string>& params, bool swappingWindows, bool force /* = false */)
 {
   // translate virtual windows
+  // virtual music window which returns the last open music window (aka the music start window)
+  if (iWindowID == WINDOW_MUSIC || iWindowID == WINDOW_MUSIC_FILES)
+  { // backward compatibility for pre-something
+    iWindowID = WINDOW_MUSIC_NAV;
+  }
+  // virtual video window which returns the last open video window (aka the video start window)
+  if (iWindowID == WINDOW_VIDEOS || iWindowID == WINDOW_VIDEO_FILES)
+  { // backward compatibility for pre-Eden
+    iWindowID = WINDOW_VIDEO_NAV;
+  }
+  if (iWindowID == WINDOW_SCRIPTS)
+  { // backward compatibility for pre-Dharma
+    iWindowID = WINDOW_PROGRAMS;
+  }
   if (iWindowID == WINDOW_START)
   { // virtual start window
     iWindowID = g_SkinInfo->GetStartWindow();

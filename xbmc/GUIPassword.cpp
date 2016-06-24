@@ -373,13 +373,21 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       iSwitch = WINDOW_SETTINGS_MENU;
   }
 
+  if (iWindowID == WINDOW_MUSIC_FILES)
+    if (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV)
+      iSwitch = WINDOW_HOME;
+
   if (iWindowID == WINDOW_MUSIC_NAV)
     if (g_windowManager.GetActiveWindow() == WINDOW_HOME)
-      iSwitch = WINDOW_MUSIC_NAV;
+      iSwitch = WINDOW_MUSIC_FILES;
 
   if (iWindowID == WINDOW_VIDEO_NAV)
     if (g_windowManager.GetActiveWindow() == WINDOW_HOME)
-      iSwitch = WINDOW_VIDEO_NAV;
+      iSwitch = WINDOW_VIDEO_FILES;
+
+  if (iWindowID == WINDOW_VIDEO_FILES)
+    if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)
+      iSwitch = WINDOW_HOME;
 
   switch (iSwitch)
   {
@@ -395,10 +403,10 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     case WINDOW_PROGRAMS:       // Programs
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().programsLocked();
       break;
-    case WINDOW_MUSIC_NAV:      // Music
+    case WINDOW_MUSIC_FILES:    // Music
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().musicLocked();
       break;
-    case WINDOW_VIDEO_NAV:      // Video
+    case WINDOW_VIDEO_FILES:    // Video
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().videoLocked();
       break;
     case WINDOW_PICTURES:       // Pictures

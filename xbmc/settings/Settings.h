@@ -252,6 +252,7 @@ public:
   static const std::string SETTING_AUDIOCDS_ENCODER;
   static const std::string SETTING_AUDIOCDS_SETTINGS;
   static const std::string SETTING_AUDIOCDS_EJECTONRIP;
+  static const std::string SETTING_MYMUSIC_STARTWINDOW;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;
   static const std::string SETTING_PICTURES_GENERATETHUMBS;
