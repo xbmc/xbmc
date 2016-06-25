@@ -39,6 +39,7 @@
 #include "guilib/Texture.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
+#include "TextureDatabase.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -1277,3 +1278,23 @@ std::string CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
   return picturePath;
 }
 
+
+void CGUIWindowSlideShow::RunSlideShow(std::vector<std::string> paths, int start /* = 0*/)
+{
+  auto dialog = static_cast<CGUIWindowSlideShow*>(g_windowManager.GetWindow(WINDOW_SLIDESHOW));
+  if (dialog)
+  {
+    std::vector<CFileItemPtr> items;
+    for (const auto& path : paths)
+      items.push_back(std::make_shared<CFileItem>(CTextureUtils::GetWrappedImageURL(path), false));
+
+    dialog->Reset();
+    dialog->m_bPause = true;
+    dialog->m_bSlideShow = false;
+    dialog->m_iDirection = 1;
+    dialog->m_iCurrentSlide = start;
+    dialog->m_iNextSlide = (start + 1) % items.size();
+    dialog->m_slides = std::move(items);
+    dialog->Open();
+  }
+}
