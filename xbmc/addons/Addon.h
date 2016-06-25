@@ -74,6 +74,7 @@ public:
   std::string icon;
   std::string changelog;
   std::string fanart;
+  std::vector<std::string> screenshots;
   std::string disclaimer;
   ADDONDEPS dependencies;
   std::string broken;
@@ -109,6 +110,7 @@ public:
   std::string ChangeLog() const override { return m_props.changelog; }
   std::string FanArt() const override { return m_props.fanart; }
   std::string Icon() const override { return m_props.icon; };
+  std::vector<std::string> Screenshots() const override { return m_props.screenshots; };
   std::string Disclaimer() const override { return m_props.disclaimer; }
   std::string Broken() const override { return m_props.broken; }
   CDateTime InstallDate() const override { return m_props.installDate; }

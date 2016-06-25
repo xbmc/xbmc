@@ -192,6 +192,18 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
           builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, icon));
         if (!fanart.empty())
           builder.SetFanart(URIUtils::AddFileToFolder(plugin->plugin_path, fanart));
+
+        std::vector<std::string> screenshots;
+        ELEMENTS elements;
+        if (CAddonMgr::GetInstance().GetExtElements(assets, "screenshot", elements))
+        {
+          for (const auto& elem : elements)
+          {
+            if (elem->value && strcmp(elem->value, "") != 0)
+              screenshots.emplace_back(URIUtils::AddFileToFolder(plugin->plugin_path, elem->value));
+          }
+        }
+        builder.SetScreenshots(std::move(screenshots));
       }
       else
       {

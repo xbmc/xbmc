@@ -36,6 +36,7 @@
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "pictures/GUIWindowSlideShow.h"
 #include "settings/Settings.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
@@ -55,6 +56,7 @@
 #define CONTROL_BTN_SETTINGS         9
 #define CONTROL_BTN_SELECT          12
 #define CONTROL_BTN_AUTOUPDATE      13
+#define CONTROL_LIST_SCREENSHOTS    50
 
 using namespace ADDON;
 using namespace XFILE;
@@ -135,6 +137,17 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
         OnToggleAutoUpdates();
         return true;
       }
+      else if (iControl == CONTROL_LIST_SCREENSHOTS)
+      {
+        if (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)
+        {
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
+          OnMessage(msg);
+          int start = msg.GetParam1();
+          if (start >= 0 && start < m_item->GetAddonInfo()->Screenshots().size())
+            CGUIWindowSlideShow::RunSlideShow(m_item->GetAddonInfo()->Screenshots(), start);
+        }
+      }
     }
     break;
 default:
@@ -198,6 +211,16 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
+
+  CFileItemList items;
+  for (const auto& screenshot : m_item->GetAddonInfo()->Screenshots())
+  {
+    auto item = std::make_shared<CFileItem>("");
+    item->SetArt("thumb", screenshot);
+    items.Add(std::move(item));
+  }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_SCREENSHOTS, 0, 0, &items);
+  OnMessage(msg);
 }
 
 static const std::string LOCAL_CACHE = "\\0_local_cache"; // \0 to give it the lowest priority when sorting

@@ -26,6 +26,7 @@
 #include <set>
 #include <string>
 #include <utility>
+#include <vector>
 #include "XBDateTime.h"
 
 class TiXmlElement;
@@ -106,6 +107,7 @@ namespace ADDON
     virtual std::string LibPath() const =0;
     virtual std::string ChangeLog() const =0;
     virtual std::string FanArt() const =0;
+    virtual std::vector<std::string> Screenshots() const =0;
     virtual std::string Author() const =0;
     virtual std::string Icon() const =0;
     virtual std::string Disclaimer() const =0;
