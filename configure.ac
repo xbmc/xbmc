@@ -371,7 +371,7 @@ AC_ARG_ENABLE([avahi],
 
 AC_ARG_ENABLE([non-free],
   [AS_HELP_STRING([--disable-non-free],
-  [disable componentents with non-compliant licenses])],
+  [disable components with non-compliant licenses])],
   [use_nonfree=$enableval],
   [use_nonfree=yes])
 
