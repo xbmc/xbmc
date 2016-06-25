@@ -821,7 +821,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
        if (m_hints.ptsinvalid) buffer->pts = MMAL_TIME_UNKNOWN;
        buffer->length = (uint32_t)iSize > buffer->alloc_size ? buffer->alloc_size : (uint32_t)iSize;
        // set a flag so we can identify primary frames from generated frames (deinterlace)
-       buffer->flags = MMAL_BUFFER_HEADER_FLAG_USER0;
+       buffer->flags = 0;
        if (m_dropState)
          buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER3;
 
@@ -1078,6 +1078,7 @@ bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           pDvdVideoPicture->dts == DVD_NOPTS_VALUE ? 0.0 : pDvdVideoPicture->dts*1e-6, pDvdVideoPicture->pts == DVD_NOPTS_VALUE ? 0.0 : pDvdVideoPicture->pts*1e-6,
           pDvdVideoPicture->iFlags, buffer->mmal_buffer->flags, pDvdVideoPicture->MMALBuffer, pDvdVideoPicture->MMALBuffer->mmal_buffer);
     assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
+    buffer->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER3;
   }
   else
   {
