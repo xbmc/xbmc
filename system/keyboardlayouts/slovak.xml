@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Slovak" layout="QWERTZ">
+    <keyboard>
+      <row>ĺľščťžýáíéó_</row>
+      <row>qwertzuiopúä</row>
+      <row>asdfghjklôďň</row>
+      <row>/yxcvbnmŕ:.-</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>ĹĽŠČŤŽÝÁÍÉÓ_</row>
+      <row>QWERTZUIOPÚÄ</row>
+      <row>ASDFGHJKLÔĎŇ</row>
+      <row>\YXCVBNMŔ:.-</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>1234567890%</row>
+      <row>+@#$~^&amp;*{}=</row>
+      <row>[]()/"'`;!</row>
+      <row>\|&lt;&gt;,.?:-_</row>
+    </keyboard>
+  </layout>
+  <layout language="Slovak" layout="QWERTY">
+    <keyboard>
+      <row>ĺľščťžýáíéó_</row>
+      <row>qwertyuiopúä</row>
+      <row>asdfghjklôďň</row>
+      <row>/zxcvbnmŕ:.-</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>ĹĽŠČŤŽÝÁÍÉÓ_</row>
+      <row>QWERTYUIOPÚÄ</row>
+      <row>ASDFGHJKLÔĎŇ</row>
+      <row>\ZXCVBNMŔ:.-</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>1234567890%</row>
+      <row>+@#$~^&amp;*{}=</row>
+      <row>[]()/"'`;!</row>
+      <row>\|&lt;&gt;,.?:-_</row>
+    </keyboard>
+  </layout>
+  <layout language="Slovak" layout="ABC">
+    <keyboard>
+      <row>aáäbcčdďeéfg</row>
+      <row>hiíjklĺľmnňo</row>
+      <row>óôpqrŕsštťuú</row>
+      <row>vwxyýzž:./\@</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>AÁÄBCČDĎEÉFG</row>
+      <row>HIÍJKLĹĽMNŇO</row>
+      <row>ÓÔPQRŔSŠTŤUÚ</row>
+      <row>VWXYÝZŽ:./\@</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>1234567890%</row>
+      <row>+@#$~^&amp;*{}=</row>
+      <row>[]()/"'`;!</row>
+      <row>\|&lt;&gt;,.?:-_</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>
