@@ -39,8 +39,7 @@ ${SYNC} "$SRCROOT/addons/skin.estuary/icon.png" 	"$TARGET_BUILD_DIR/$TARGET_NAME
 ${SYNC} "$SRCROOT/addons/skin.estuary/fanart.jpg"   "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons/skin.estuary"
 ${SYNCSKIN} "$SRCROOT/addons/skin.estouchy" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons"
 ${SYNC} "$SRCROOT/addons/skin.estouchy/background" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons/skin.estouchy"
-${SYNC} "$SRCROOT/addons/skin.estouchy/icon.png" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons/skin.estouchy"
-${SYNC} "$SRCROOT/addons/skin.estouchy/fanart.jpg" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons/skin.estouchy"
+${SYNC} "$SRCROOT/addons/skin.estouchy/resources" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons/skin.estouchy"
 ${SYNC} "$SRCROOT/system" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME"
 ${SYNC} "$SRCROOT/userdata" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME"
 

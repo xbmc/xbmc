@@ -44,8 +44,7 @@ SYNCSKIN_A="${SKINSYNC} --exclude *.png --exclude *.jpg"
 fi
 ${SYNCSKIN_A} "$SRCROOT/addons/skin.estouchy"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
 ${SYNC} "$SRCROOT/addons/skin.estouchy/background"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estouchy"
-${SYNC} "$SRCROOT/addons/skin.estouchy/icon.png"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estouchy"
-${SYNC} "$SRCROOT/addons/skin.estouchy/fanart.jpg"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estouchy"
+${SYNC} "$SRCROOT/addons/skin.estouchy/resources"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estouchy"
 
 # sync skin.estuary
 SYNCSKIN_B=${SKINSYNC}
