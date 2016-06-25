@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                                         -->
-<!--  eg <B>ActivateWindow(Music)</B>                                                       -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                                                       -->
 <!-- would automatically go to My Music on the press of the B button.                         -->
 <!-- An empty action removes the corresponding mapping from the default keymap                -->
 
@@ -73,9 +73,9 @@
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>
       <power>ShutDown()</power>
-      <myvideo>ActivateWindow(Videos)</myvideo>
-      <mymusic>ActivateWindow(Music)</mymusic>
-      <mypictures>ActivateWindow(Pictures)</mypictures>
+      <myvideo>ActivateWindow(MyVideos)</myvideo>
+      <mymusic>ActivateWindow(MyMusic)</mymusic>
+      <mypictures>ActivateWindow(MyPictures)</mypictures>
       <mytv>ActivateWindow(Videos,TvShows)</mytv>
       <guide>ActivateWindow(TVGuide)</guide>
       <livetv>ActivateWindow(TVChannels)</livetv>
@@ -83,9 +83,9 @@
       <recordedtv>ActivateWindow(TVRecordings)</recordedtv>
       <epgsearch>ActivateWindow(TVSearch)</epgsearch>
       <red>ActivateWindow(TVChannels)</red>
-      <green>ActivateWindow(Videos)</green>
-      <yellow>ActivateWindow(Music)</yellow>
-      <blue>ActivateWindow(Pictures)</blue>
+      <green>ActivateWindow(MyVideos)</green>
+      <yellow>ActivateWindow(MyMusic)</yellow>
+      <blue>ActivateWindow(MyPictures)</blue>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>JumpSMS2</two>
@@ -142,14 +142,14 @@
       <blue>Blue</blue>
     </remote>
   </MyRadioTimers>
-  <FileManager>
+  <MyFiles>
     <remote>
       <clear>Delete</clear>
       <zero>Highlight</zero>
       <star>Move</star>
       <hash>Rename</hash>
     </remote>
-  </FileManager>
+  </MyFiles>
   <MyMusicPlaylist>
     <remote>
       <clear>Delete</clear>
@@ -161,12 +161,18 @@
       <zero>Queue</zero>
     </remote>
   </MyMusicPlaylistEditor>
-  <Music>
+  <MyMusicFiles>
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
     </remote>
-  </Music>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <remote>
+      <zero>Queue</zero>
+      <star>Queue</star>
+    </remote>
+  </MyMusicLibrary>
   <MyPictures>
     <remote>
       <clear>Delete</clear>
@@ -258,6 +264,13 @@
       <info>CodecInfo</info>
     </remote>
   </MusicOSD>
+  <VisualisationSettings>
+    <remote>
+      <menu>Back</menu>
+      <contentsmenu>Back</contentsmenu>
+      <rootmenu>Back</rootmenu>
+    </remote>
+  </VisualisationSettings>
   <VisualisationPresetList>
     <remote>
       <menu>Back</menu>
@@ -292,12 +305,12 @@
       <xbox>NextResolution</xbox>
     </remote>
   </ScreenCalibration>
-  <ScreenCalibration>
+  <GUICalibration>
     <remote>
       <select>NextCalibration</select>
       <zero>ResetCalibration</zero>
     </remote>
-  </ScreenCalibration>
+  </GUICalibration>
   <VideoOSD>
     <remote>
       <menu>Back</menu>
@@ -353,12 +366,18 @@
       <zero>Delete</zero>
     </remote>
   </VideoBookmarks>
-  <Videos>
+  <MyVideoLibrary>
     <remote>
       <zero>Queue</zero>
       <clear>Delete</clear>
     </remote>
-  </Videos>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <remote>
+      <zero>Queue</zero>
+      <star>Queue</star>
+    </remote>
+  </MyVideoFiles>
   <MyVideoPlaylist>
     <remote>
       <clear>Delete</clear>
@@ -390,11 +409,11 @@
       <title>Back</title>
     </remote>
   </ContextMenu>
-  <Programs>
+  <Scripts>
     <remote>
       <info>info</info>
     </remote>
-  </Programs>
+  </Scripts>
   <NumericInput>
     <remote>
       <zero>Number0</zero>
@@ -455,11 +474,11 @@
       <back>PreviousMenu</back>
     </remote>
   </SystemSettings>
-  <ServiceSettings>
+  <NetworkSettings>
     <remote>
       <back>PreviousMenu</back>
     </remote>
-  </ServiceSettings>
+  </NetworkSettings>
   <InterfaceSettings>
     <remote>
       <back>PreviousMenu</back>
@@ -661,11 +680,16 @@
       <nine>number9</nine>
     </remote>
   </RadioGuide>
-  <PVRSettings>
+  <MyTVSettings>
     <remote>
       <back>PreviousMenu</back>
     </remote>
-  </PVRSettings>
+  </MyTVSettings>
+  <AddonSettings>
+    <remote>
+      <clear>Delete</clear>
+    </remote>
+  </AddonSettings>
   <Addon>
     <remote>
       <red>Red</red>

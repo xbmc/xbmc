@@ -400,8 +400,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         if (!bypassSettings)
           return false;
 
-        if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
+        if (g_windowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
       }
       g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
       g_playlistPlayer.Add(PLAYLIST_VIDEO, itemlist);

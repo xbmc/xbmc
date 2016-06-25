@@ -19,7 +19,7 @@
 <!--    </universalremote>            -->
 
 <!-- Note that the action can be a built-in function.                                         -->
-<!--  eg <B>ActivateWindow(Music)</B>                                                       -->
+<!--  eg <B>ActivateWindow(MyMusic)</B>                                                       -->
 <!-- would automatically go to My Music on the press of the B button.                         -->
 <!-- An empty action removes the corresponding mapping from the default keymap                -->
 
@@ -61,11 +61,16 @@
       <rightthumbstickdown>VolumeDown</rightthumbstickdown>
     </gamepad>
   </global>
-  <FileManager>
+  <Home>
+    <gamepad>
+      <black>Skin.ToggleSetting(HomeViewToggle)</black>
+    </gamepad>
+  </Home>
+  <MyFiles>
     <gamepad>
       <Y>Highlight</Y>
     </gamepad>
-  </FileManager>
+  </MyFiles>
   <MyMusicPlaylist>
     <gamepad>
       <Y>Delete</Y>
@@ -77,12 +82,18 @@
       <Y>Queue</Y>
     </gamepad>
   </MyMusicPlaylistEditor>
-  <Music>
+  <MyMusicFiles>
     <gamepad>
       <Y>Queue</Y>
       <black>Playlist</black>
     </gamepad>
-  </Music>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <gamepad>
+      <Y>Queue</Y>
+      <black>Playlist</black>
+    </gamepad>
+  </MyMusicLibrary>
   <FullscreenVideo>
     <gamepad>
       <A>Pause</A>
@@ -156,13 +167,13 @@
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
   </MusicOSD>
-  <AddonSettings>
+  <VisualisationSettings>
     <gamepad>
       <start>Back</start>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
-  </AddonSettings>
+  </VisualisationSettings>
   <VisualisationPresetList>
     <gamepad>
       <start>Back</start>
@@ -197,13 +208,13 @@
       <white>NextResolution</white>
     </gamepad>
   </ScreenCalibration>
-  <ScreenCalibration>
+  <GUICalibration>
     <gamepad>
       <leftthumbstick>AnalogMove</leftthumbstick>
       <A>NextCalibration</A>
       <black>ResetCalibration</black>
     </gamepad>
-  </ScreenCalibration>
+  </GUICalibration>
   <VideoOSD>
     <gamepad>
       <start>Back</start>
@@ -255,11 +266,17 @@
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
   </VideoBookmarks>
-  <Videos>
+  <MyVideoLibrary>
     <gamepad>
       <black>Delete</black>
     </gamepad>
-  </Videos>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <gamepad>
+      <Y>Queue</Y>
+      <black>Playlist</black>
+    </gamepad>
+  </MyVideoFiles>
   <MyVideoPlaylist>
     <gamepad>
       <Y>Delete</Y>
@@ -281,11 +298,11 @@
       <white>Back</white>
     </gamepad>
   </ContextMenu>
-  <Programs>
+  <Scripts>
     <gamepad>
       <black>info</black>
     </gamepad>
-  </Programs>
+  </Scripts>
   <NumericInput>
     <gamepad>
       <B>BackSpace</B>

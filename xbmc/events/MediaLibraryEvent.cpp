@@ -88,7 +88,10 @@ bool CMediaLibraryEvent::Execute() const
         path = URIUtils::GetDirectory(path);
     }
 
-    windowId = WINDOW_VIDEO_NAV;
+    if (URIUtils::IsVideoDb(path))
+      windowId = WINDOW_VIDEO_NAV;
+    else
+      windowId = WINDOW_VIDEO_FILES;
   }
   else if (m_mediaType == MediaTypeMusic || m_mediaType == MediaTypeArtist ||
            m_mediaType == MediaTypeAlbum || m_mediaType == MediaTypeSong)
@@ -111,7 +114,10 @@ bool CMediaLibraryEvent::Execute() const
         path = URIUtils::GetDirectory(path);
     }
 
-    windowId = WINDOW_MUSIC_NAV;
+    if (URIUtils::IsMusicDb(path))
+      windowId = WINDOW_MUSIC_NAV;
+    else
+      windowId = WINDOW_MUSIC_FILES;
   }
 
   if (windowId < 0)

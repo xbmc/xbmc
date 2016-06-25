@@ -297,9 +297,12 @@ static const ActionMapping windows[] =
     { "programs"                 , WINDOW_PROGRAMS },
     { "pictures"                 , WINDOW_PICTURES },
     { "filemanager"              , WINDOW_FILES },
+    { "files"                    , WINDOW_FILES },                      // backward compat
     { "settings"                 , WINDOW_SETTINGS_MENU },
-    { "music"                    , WINDOW_MUSIC_NAV },
+    { "music"                    , WINDOW_MUSIC },
+    { "video"                    , WINDOW_VIDEOS },
     { "videos"                   , WINDOW_VIDEO_NAV },
+    { "pvr"                      , WINDOW_TV_CHANNELS },                // backward compat
     { "tvchannels"               , WINDOW_TV_CHANNELS },
     { "tvrecordings"             , WINDOW_TV_RECORDINGS },
     { "tvguide"                  , WINDOW_TV_GUIDE },
@@ -326,12 +329,18 @@ static const ActionMapping windows[] =
     { "systeminfo"               , WINDOW_SYSTEM_INFORMATION },
     { "testpattern"              , WINDOW_TEST_PATTERN },
     { "screencalibration"        , WINDOW_SCREEN_CALIBRATION },
+    { "guicalibration"           , WINDOW_SCREEN_CALIBRATION },        // backward compat
     { "systemsettings"           , WINDOW_SETTINGS_SYSTEM },
     { "servicesettings"          , WINDOW_SETTINGS_SERVICE },
+    { "networksettings"          , WINDOW_SETTINGS_SERVICE },          // backward compat
     { "pvrsettings"              , WINDOW_SETTINGS_MYPVR },
+    { "tvsettings"               , WINDOW_SETTINGS_MYPVR },            // backward compat
     { "playersettings"           , WINDOW_SETTINGS_PLAYER },
     { "librarysettings"          , WINDOW_SETTINGS_LIBRARY },
     { "interfacesettings"        , WINDOW_SETTINGS_INTERFACE },	
+    { "scripts"                  , WINDOW_PROGRAMS },                  // backward compat
+    { "videofiles"               , WINDOW_VIDEO_FILES },
+    { "videolibrary"             , WINDOW_VIDEO_NAV },
     { "videoplaylist"            , WINDOW_VIDEO_PLAYLIST },
     { "loginscreen"              , WINDOW_LOGIN_SCREEN },
     { "profiles"                 , WINDOW_SETTINGS_PROFILES },
@@ -345,6 +354,7 @@ static const ActionMapping windows[] =
     { "favourites"               , WINDOW_DIALOG_FAVOURITES },
     { "contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU },
     { "notification"             , WINDOW_DIALOG_KAI_TOAST },
+    { "infodialog"               , WINDOW_DIALOG_KAI_TOAST },          // backward compat
     { "numericinput"             , WINDOW_DIALOG_NUMERIC },
     { "gamepadinput"             , WINDOW_DIALOG_GAMEPAD },
     { "shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU },
@@ -352,6 +362,7 @@ static const ActionMapping windows[] =
     { "seekbar"                  , WINDOW_DIALOG_SEEK_BAR },
     { "musicosd"                 , WINDOW_DIALOG_MUSIC_OSD },
     { "addonsettings"            , WINDOW_DIALOG_ADDON_SETTINGS },
+    { "visualisationsettings"    , WINDOW_DIALOG_ADDON_SETTINGS },     // backward compat
     { "visualisationpresetlist"  , WINDOW_DIALOG_VIS_PRESET_LIST },
     { "osdvideosettings"         , WINDOW_DIALOG_VIDEO_OSD_SETTINGS },
     { "osdaudiosettings"         , WINDOW_DIALOG_AUDIO_OSD_SETTINGS },
@@ -375,6 +386,8 @@ static const ActionMapping windows[] =
     { "addoninformation"         , WINDOW_DIALOG_ADDON_INFO },
     { "subtitlesearch"           , WINDOW_DIALOG_SUBTITLES },
     { "musicplaylist"            , WINDOW_MUSIC_PLAYLIST },
+    { "musicfiles"               , WINDOW_MUSIC_FILES },
+    { "musiclibrary"             , WINDOW_MUSIC_NAV },
     { "musicplaylisteditor"      , WINDOW_MUSIC_PLAYLIST_EDITOR },
     { "teletext"                 , WINDOW_DIALOG_OSD_TELETEXT },
     { "selectdialog"             , WINDOW_DIALOG_SELECT },

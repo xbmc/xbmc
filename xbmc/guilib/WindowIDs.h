@@ -27,16 +27,20 @@
 #define WINDOW_PICTURES                   10002
 #define WINDOW_FILES                      10003
 #define WINDOW_SETTINGS_MENU              10004
+#define WINDOW_MUSIC                      10005 // virtual window to return the music start window.
+#define WINDOW_VIDEOS                     10006
 #define WINDOW_SYSTEM_INFORMATION         10007
 #define WINDOW_TEST_PATTERN               10008
 #define WINDOW_SCREEN_CALIBRATION         10011
 
 #define WINDOW_SETTINGS_START             10016
 #define WINDOW_SETTINGS_SYSTEM            10016
-#define WINDOW_SETTINGS_SERVICE           10018
+#define WINDOW_SETTINGS_SERVICE           10018 // former (Eden) WINDOW_SETTINGS_NETWORK
 
+#define WINDOW_SCRIPTS                    10020 // virtual window for backward compatibility
 #define WINDOW_SETTINGS_MYPVR             10021
 
+#define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_NAV                  10025
 #define WINDOW_VIDEO_PLAYLIST             10028
 
@@ -102,6 +106,7 @@
 #define WINDOW_DIALOG_KEYBOARD_TOUCH      10156
 
 #define WINDOW_MUSIC_PLAYLIST             10500
+#define WINDOW_MUSIC_FILES                10501
 #define WINDOW_MUSIC_NAV                  10502
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
 
