@@ -206,7 +206,32 @@
 							<top>15</top>
 							<width>35</width>
 							<height>35</height>
-							<texture>$VAR[PVRStatusImageVar]</texture>
+							<texture>windows/pvr/record.png</texture>
+							<visible>ListItem.IsRecording</visible>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>windows/pvr/timer.png</texture>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule</visible>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>windows/pvr/timer.png</texture>
+							<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording</visible>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>windows/pvr/timer.png</texture>
+							<visible>ListItem.HasRecording + !ListItem.IsRecording + !ListItem.HasTimer</visible>
 						</control>
 					</itemlayout>
 					<focusedlayout height="58">
@@ -271,7 +296,32 @@
 							<top>15</top>
 							<width>35</width>
 							<height>35</height>
-							<texture>$VAR[PVRStatusImageVar]</texture>
+							<texture>windows/pvr/record.png</texture>
+							<visible>ListItem.IsRecording</visible>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>windows/pvr/timer.png</texture>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule</visible>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>windows/pvr/timer.png</texture>
+							<visible>ListItem.HasTimerSchedule + !ListItem.IsRecording</visible>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>windows/pvr/timer.png</texture>
+							<visible>ListItem.HasRecording + !ListItem.IsRecording + !ListItem.HasTimer</visible>
 						</control>
 					</focusedlayout>
 				</control>
