@@ -19,6 +19,7 @@
  */
 
 #include "ZeroconfMDNS.h"
+#include <arpa/inet.h>
 
 #include <string>
 #include <sstream>
