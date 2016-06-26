@@ -98,10 +98,12 @@ void CGUIWindowPVRGuide::StopRefreshTimelineItemsThread()
 void CGUIWindowPVRGuide::RegisterObservers(void)
 {
   g_EpgContainer.RegisterObserver(this);
+  g_PVRTimers->RegisterObserver(this);
 }
 
 void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
+  g_PVRTimers->UnregisterObserver(this);
   g_EpgContainer.UnregisterObserver(this);
 }
 
@@ -403,6 +405,12 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
           Refresh(true);
           break;
         }
+        case ObservableMessageTimersReset:
+        case ObservableMessageTimers:
+        {
+          SetInvalid();
+          break;
+        }
         case ObservableMessageEpgActiveItem:
         {
           if (m_viewControl.GetCurrentControl() != GUIDE_VIEW_TIMELINE)
@@ -423,8 +431,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  bool bReturn
-    = OnContextButtonPlay(pItem.get(), button) ||
+  return OnContextButtonPlay(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
@@ -436,11 +443,6 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
-
-  if (bReturn)
-    SetInvalid();
-
-  return bReturn;
 }
 
 void CGUIWindowPVRGuide::GetViewChannelItems(CFileItemList &items)
