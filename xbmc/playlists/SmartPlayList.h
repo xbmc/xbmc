@@ -93,6 +93,12 @@ public:
                          std::vector<std::string> &virtualFolders) const;
 
   void AddRule(const CSmartPlaylistRule &rule);
+
+  bool HasRuleFields(const std::vector<int> &rulefields, std::set<std::string> &referencedPlaylists) const;
+  std::string GetArtistSongClause(const CDatabase &db, 
+                                  const std::string& strType, 
+                                  std::set<std::string> &referencedPlaylists) const;
+  bool IsArtistSongRule(const int field) const;
 };
 
 class CSmartPlaylist : public IDatabaseQueryRuleFactory
@@ -165,6 +171,12 @@ public:
   // rule creation
   virtual CDatabaseQueryRule *CreateRule() const;
   virtual CDatabaseQueryRuleCombination *CreateCombination() const;
+
+  bool HasArtistSongRules() const;
+  std::string GetSongRulesClause(const CDatabase &db, const std::string &type) const;
+  bool HasRuleFields(const std::vector<int> &rulefields, std::set<std::string> &referencedPlaylists) const;
+  std::string GetArtistSongClause(const CDatabase &db, std::set<std::string> &referencedPlaylists) const;
+
 private:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;
