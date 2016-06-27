@@ -3021,12 +3021,19 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
 
     // decode until eof
     av_init_packet(&avpkt);
-    int len;
+    int ret = 0;
     while (av_read_frame(fmt_ctx, &avpkt) >= 0)
     {
       int got_frame = 0;
-      len = avcodec_decode_audio4(dec_ctx, decoded_frame, &got_frame, &avpkt);
-      if (len < 0)
+      ret = avcodec_send_packet(dec_ctx, &avpkt);
+
+      if (ret >= 0)
+        ret = avcodec_receive_frame(dec_ctx, decoded_frame);
+
+      if (ret >= 0)
+        got_frame = 1;
+
+      if (ret < 0)
       {
         av_frame_free(&decoded_frame);
         avcodec_free_context(&dec_ctx);
