@@ -94,6 +94,20 @@ void CGUIWindowPVRBase::ResetObservers(void)
     RegisterObservers();
 }
 
+void CGUIWindowPVRBase::RegisterObservers(void)
+{
+  CSingleLock lock(m_critSection);
+  if (m_group)
+    m_group->RegisterObserver(this);
+};
+
+void CGUIWindowPVRBase::UnregisterObservers(void)
+{
+  CSingleLock lock(m_critSection);
+  if (m_group)
+    m_group->UnregisterObserver(this);
+};
+
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);

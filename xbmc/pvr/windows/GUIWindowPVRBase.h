@@ -119,8 +119,8 @@ namespace PVR
     bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonDeleteTimerRule(CFileItem *item, CONTEXT_BUTTON button);
 
-    virtual void RegisterObservers(void) {};
-    virtual void UnregisterObservers(void) {};
+    virtual void RegisterObservers(void);
+    virtual void UnregisterObservers(void);
 
     static CCriticalSection m_selectedItemPathsLock;
     static std::string m_selectedItemPaths[2];

@@ -52,19 +52,23 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(bool bRadio) :
 void CGUIWindowPVRRecordings::RegisterObservers(void)
 {
   CSingleLock lock(m_critSection);
-  g_PVRRecordings->RegisterObserver(this);
-  g_PVRTimers->RegisterObserver(this);
+  if (g_PVRRecordings)
+    g_PVRRecordings->RegisterObserver(this);
+  if (g_PVRTimers)
+    g_PVRTimers->RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
+  CGUIWindowPVRBase::RegisterObservers();
 }
 
 void CGUIWindowPVRRecordings::UnregisterObservers(void)
 {
   CSingleLock lock(m_critSection);
-  if (g_PVRRecordings)
-    g_PVRRecordings->UnregisterObserver(this);
+  CGUIWindowPVRBase::UnregisterObservers();
+  g_infoManager.UnregisterObserver(this);
   if (g_PVRTimers)
     g_PVRTimers->UnregisterObserver(this);
-  g_infoManager.UnregisterObserver(this);
+  if (g_PVRRecordings)
+    g_PVRRecordings->UnregisterObserver(this);
 }
 
 void CGUIWindowPVRRecordings::OnWindowLoaded()

@@ -97,13 +97,19 @@ void CGUIWindowPVRGuide::StopRefreshTimelineItemsThread()
 
 void CGUIWindowPVRGuide::RegisterObservers(void)
 {
+  CSingleLock lock(m_critSection);
   g_EpgContainer.RegisterObserver(this);
-  g_PVRTimers->RegisterObserver(this);
+  if (g_PVRTimers)
+    g_PVRTimers->RegisterObserver(this);
+  CGUIWindowPVRBase::RegisterObservers();
 }
 
 void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
-  g_PVRTimers->UnregisterObserver(this);
+  CSingleLock lock(m_critSection);
+  CGUIWindowPVRBase::UnregisterObservers();
+  if (g_PVRTimers)
+    g_PVRTimers->UnregisterObserver(this);
   g_EpgContainer.UnregisterObserver(this);
 }
 
@@ -112,6 +118,7 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage m
   if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE &&
       (msg == ObservableMessageEpg ||
        msg == ObservableMessageEpgContainer ||
+       msg == ObservableMessageChannelGroupReset ||
        msg == ObservableMessageChannelGroup))
   {
     CSingleLock lock(m_critSection);
@@ -398,6 +405,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
     case GUI_MSG_REFRESH_LIST:
       switch(message.GetParam1())
       {
+        case ObservableMessageChannelGroupReset:
         case ObservableMessageChannelGroup:
         case ObservableMessageEpg:
         case ObservableMessageEpgContainer:
