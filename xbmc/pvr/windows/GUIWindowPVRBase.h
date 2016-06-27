@@ -97,7 +97,7 @@ namespace PVR
 
     virtual std::string GetDirectoryPath(void) = 0;
     virtual CPVRChannelGroupPtr GetGroup(void);
-    virtual void SetGroup(CPVRChannelGroupPtr group);
+    virtual void SetGroup(const CPVRChannelGroupPtr &group);
 
     virtual bool ActionShowTimerRule(CFileItem *item);
     virtual bool ActionToggleTimer(CFileItem *item);

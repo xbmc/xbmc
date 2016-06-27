@@ -388,7 +388,7 @@ CPVRChannelGroupPtr CGUIWindowPVRBase::GetGroup(void)
   return m_group;
 }
 
-void CGUIWindowPVRBase::SetGroup(CPVRChannelGroupPtr group)
+void CGUIWindowPVRBase::SetGroup(const CPVRChannelGroupPtr &group)
 {
   CSingleLock lock(m_critSection);
   if (!group)
