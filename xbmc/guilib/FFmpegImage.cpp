@@ -274,9 +274,15 @@ AVFrame* CFFmpegImage::ExtractFrame()
   int frame_decoded = 0;
   if (av_read_frame(m_fctx, &pkt) == 0)
   {
-    int ret = avcodec_decode_video2(m_fctx->streams[0]->codec, frame, &frame_decoded, &pkt);
+    int ret = avcodec_send_packet(m_fctx->streams[0]->codec, &pkt);
+
+    if (ret >= 0)
+      ret = avcodec_receive_frame(m_fctx->streams[0]->codec, frame);
+
     if (ret < 0)
       CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
+    else
+      frame_decoded = 1;
   }
   if (frame_decoded != 0)
   {
@@ -658,7 +664,14 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   avpkt.data = m_outputBuffer;
   avpkt.size = internalBufOutSize;
 
-  if ((avcodec_encode_video2(tdm.avOutctx, &avpkt, tdm.frame_input, &got_package) < 0) || (got_package == 0))
+  int ret = avcodec_send_frame(tdm.avOutctx, tdm.frame_input);
+  if (ret >= 0)
+    ret = avcodec_receive_packet(tdm.avOutctx, &avpkt);
+
+  if (ret >= 0)
+    got_package = 1;
+
+  if (ret < 0 || got_package == 0)
   {
     CLog::Log(LOGERROR, "Could not encode thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
