@@ -782,18 +782,15 @@ void CGUIDialogAddonSettings::CreateControls()
           int iAdd = i;
           if (entryVec.size() > i)
             iAdd = atoi(entryVec[i].c_str());
-          std::string replace;
-          if (std::all_of(valuesVec[i].begin(), valuesVec[i].end(), ::isdigit))
+          if (!lvalues.empty())
           {
-            replace = g_localizeStrings.GetAddonString(m_addon->ID(), atoi(valuesVec[i].c_str()));
+            std::string replace = g_localizeStrings.GetAddonString(m_addon->ID(),atoi(valuesVec[i].c_str()));
             if (replace.empty())
               replace = g_localizeStrings.Get(atoi(valuesVec[i].c_str()));
-            if (replace.empty())
-              replace = valuesVec[i];
+            ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
           }
           else
-            replace = valuesVec[i];
-          ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
+            ((CGUISpinControlEx *)pControl)->AddLabel(valuesVec[i], iAdd);
         }
         if (type == "labelenum")
         { // need to run through all our settings and find the one that matches
