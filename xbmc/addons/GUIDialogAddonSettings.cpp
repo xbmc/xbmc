@@ -676,6 +676,9 @@ void CGUIDialogAddonSettings::CreateControls()
 
   // set our dialog heading
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
+  
+  // set addon id as window property
+  SetProperty("Addon.ID", m_addon->ID());
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_SETTING;
