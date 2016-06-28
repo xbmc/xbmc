@@ -175,6 +175,14 @@ namespace EPG
     CEpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
 
     /*!
+     * Get all events occuring between the given begin and end time.
+     * @param beginTime Minimum start time in UTC of the event.
+     * @param endTime Maximum end time in UTC of the event.
+     * @return The tags found or an empty vector if none was found.
+     */
+    std::vector<CEpgInfoTagPtr> GetTagsBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
+
+    /*!
      * @brief Get the event matching the given unique broadcast id
      * @param iUniqueBroadcastId The uid to look up
      * @return The matching event or NULL if it wasn't found.

@@ -268,6 +268,25 @@ CEpgInfoTagPtr CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &
   return CEpgInfoTagPtr();
 }
 
+std::vector<CEpgInfoTagPtr> CEpg::GetTagsBetween(const CDateTime &beginTime, const CDateTime &endTime) const
+{
+  std::vector<CEpgInfoTagPtr> epgTags;
+
+  CSingleLock lock(m_critSection);
+  for (const auto &infoTag : m_tags)
+  {
+    if (infoTag.second->StartAsUTC() >= beginTime)
+    {
+      if (infoTag.second->EndAsUTC() <= endTime)
+        epgTags.emplace_back(infoTag.second);
+      else
+        break; // done.
+    }
+  }
+
+  return epgTags;
+}
+
 void CEpg::AddEntry(const CEpgInfoTag &tag)
 {
   CEpgInfoTagPtr newTag;

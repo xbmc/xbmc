@@ -988,17 +988,22 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
   return m_epgTag;
 }
 
-void CPVRTimerInfoTag::ClearEpgTag(void)
+void CPVRTimerInfoTag::SetEpgTag(const CEpgInfoTagPtr &tag)
 {
-  CEpgInfoTagPtr deletedTag;
+  CEpgInfoTagPtr previousTag;
   {
     CSingleLock lock(m_critSection);
-    deletedTag = m_epgTag;
-    m_epgTag.reset();
+    previousTag = m_epgTag;
+    m_epgTag = tag;
   }
 
-  if (deletedTag)
-    deletedTag->ClearTimer();
+  if (previousTag)
+    previousTag->ClearTimer();
+}
+
+void CPVRTimerInfoTag::ClearEpgTag(void)
+{
+  SetEpgTag(CEpgInfoTagPtr());
 }
 
 CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
@@ -1006,10 +1011,11 @@ CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
   return m_channel;
 }
 
-void CPVRTimerInfoTag::UpdateChannel(void)
+CPVRChannelPtr CPVRTimerInfoTag::UpdateChannel(void)
 {
   CSingleLock lock(m_critSection);
   m_channel = g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+  return m_channel;
 }
 
 const std::string& CPVRTimerInfoTag::Title(void) const

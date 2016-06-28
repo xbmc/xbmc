@@ -31,6 +31,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -387,6 +388,22 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(const CPVRChannelPtr &channel, unsigned
     retval = epg->GetTagByBroadcastId(iBroadcastId);
 
   return retval;
+}
+
+std::vector<CEpgInfoTagPtr> CEpgContainer::GetEpgTagsForTimer(const CPVRTimerInfoTagPtr &timer) const
+{
+  CPVRChannelPtr channel(timer->ChannelTag());
+
+  if (!channel)
+    channel = timer->UpdateChannel();
+
+  if (channel)
+  {
+    const CEpgPtr epg(channel->GetEPG());
+    if (epg)
+      return epg->GetTagsBetween(timer->StartAsUTC(), timer->EndAsUTC());
+  }
+  return std::vector<CEpgInfoTagPtr>();
 }
 
 void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName)

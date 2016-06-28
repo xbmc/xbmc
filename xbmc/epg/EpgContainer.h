@@ -161,6 +161,13 @@ namespace EPG
     virtual CEpgInfoTagPtr GetTagById(const PVR::CPVRChannelPtr &channel, unsigned int iBroadcastId) const;
 
     /*!
+     * @brief Get the EPG events matching the given timer
+     * @param timer The timer to get the matching events for.
+     * @return The matching events, or an empty vector when no matching tag was found
+     */
+    std::vector<CEpgInfoTagPtr> GetEpgTagsForTimer(const PVR::CPVRTimerInfoTagPtr &timer) const;
+
+    /*!
      * @brief Notify EPG table observers when the currently active tag changed.
      * @return True if the check was done, false if it was not the right time to check
      */
