@@ -97,7 +97,7 @@ namespace PVR
 
     virtual std::string GetDirectoryPath(void) = 0;
     virtual CPVRChannelGroupPtr GetGroup(void);
-    virtual void SetGroup(CPVRChannelGroupPtr group);
+    virtual void SetGroup(const CPVRChannelGroupPtr &group);
 
     virtual bool ActionShowTimerRule(CFileItem *item);
     virtual bool ActionToggleTimer(CFileItem *item);
@@ -119,8 +119,8 @@ namespace PVR
     bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonDeleteTimerRule(CFileItem *item, CONTEXT_BUTTON button);
 
-    virtual void RegisterObservers(void) {};
-    virtual void UnregisterObservers(void) {};
+    virtual void RegisterObservers(void);
+    virtual void UnregisterObservers(void);
 
     static CCriticalSection m_selectedItemPathsLock;
     static std::string m_selectedItemPaths[2];

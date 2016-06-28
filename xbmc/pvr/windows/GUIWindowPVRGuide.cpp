@@ -97,11 +97,19 @@ void CGUIWindowPVRGuide::StopRefreshTimelineItemsThread()
 
 void CGUIWindowPVRGuide::RegisterObservers(void)
 {
+  CSingleLock lock(m_critSection);
   g_EpgContainer.RegisterObserver(this);
+  if (g_PVRTimers)
+    g_PVRTimers->RegisterObserver(this);
+  CGUIWindowPVRBase::RegisterObservers();
 }
 
 void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
+  CSingleLock lock(m_critSection);
+  CGUIWindowPVRBase::UnregisterObservers();
+  if (g_PVRTimers)
+    g_PVRTimers->UnregisterObserver(this);
   g_EpgContainer.UnregisterObserver(this);
 }
 
@@ -110,6 +118,7 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage m
   if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE &&
       (msg == ObservableMessageEpg ||
        msg == ObservableMessageEpgContainer ||
+       msg == ObservableMessageChannelGroupReset ||
        msg == ObservableMessageChannelGroup))
   {
     CSingleLock lock(m_critSection);
@@ -396,11 +405,18 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
     case GUI_MSG_REFRESH_LIST:
       switch(message.GetParam1())
       {
+        case ObservableMessageChannelGroupReset:
         case ObservableMessageChannelGroup:
         case ObservableMessageEpg:
         case ObservableMessageEpgContainer:
         {
           Refresh(true);
+          break;
+        }
+        case ObservableMessageTimersReset:
+        case ObservableMessageTimers:
+        {
+          SetInvalid();
           break;
         }
         case ObservableMessageEpgActiveItem:
@@ -423,8 +439,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  bool bReturn
-    = OnContextButtonPlay(pItem.get(), button) ||
+  return OnContextButtonPlay(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
@@ -436,11 +451,6 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
-
-  if (bReturn)
-    SetInvalid();
-
-  return bReturn;
 }
 
 void CGUIWindowPVRGuide::GetViewChannelItems(CFileItemList &items)
