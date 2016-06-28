@@ -3020,19 +3020,33 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
 
     // decode until eof
     av_init_packet(&avpkt);
-    int ret = 0;
+    int send_packet_error = -1;
+    int receive_frame_error = -1;
+    int sent = 0;
+    int received = 0;
     while (av_read_frame(fmt_ctx, &avpkt) >= 0)
     {
       int got_frame = 0;
-      ret = avcodec_send_packet(dec_ctx, &avpkt);
+      send_packet_error = avcodec_send_packet(dec_ctx, &avpkt);
 
-      if (ret >= 0)
-        ret = avcodec_receive_frame(dec_ctx, decoded_frame);
+      if (send_packet_error >= 0)
+        sent = avpkt.size;
+      else if(send_packet_error == AVERROR(EAGAIN))
+        sent = 0;
+      else
+        sent = -1;
 
-      if (ret >= 0)
-        got_frame = 1;
+      if (sent != -1)
+      {
+        receive_frame_error = avcodec_receive_frame(dec_ctx, decoded_frame);
 
-      if (ret < 0)
+        if (receive_frame_error >= 0)
+          got_frame = 1;
+        else if (receive_frame_error != AVERROR(EAGAIN))
+          received = -1;
+      }
+
+      if (sent == -1 || received == -1)
       {
         av_frame_free(&decoded_frame);
         avcodec_free_context(&dec_ctx);
