@@ -1,10 +1,10 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile Python-2.7.10-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
+DEPS= ../../Makefile.include Makefile Python-2.7.12-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
        Python-setup.patch fix-datetime.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.11
+VERSION=2.7.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -33,7 +33,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	echo $(NATIVEPREFIX)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p0 < ../Python-2.7.10-crosscompile.patch
+	cd $(PLATFORM); patch -p1 < ../Python-2.7.12-crosscompile.patch
 	cd $(PLATFORM); patch -p0 < ../Python-setup.patch
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
 	cd $(PLATFORM); patch -p0 < ../Python-2.7.10-android.patch

@@ -1,6 +1,7 @@
---- Makefile.pre.in.orig	2015-05-23 18:09:16.000000000 +0200
-+++ Makefile.pre.in	2015-10-10 12:29:21.988926069 +0200
-@@ -238,6 +238,7 @@
+index dffc0b9..efc79ab 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -246,6 +246,7 @@ LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
  ##########################################################################
  # Parser
  PGEN=		Parser/pgen$(EXE)
@@ -8,7 +9,7 @@
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -497,9 +498,9 @@
+@@ -544,9 +545,9 @@ sharedmods: $(BUILDPYTHON) pybuilddir.txt Modules/_math.o
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
  	esac; \
@@ -20,16 +21,7 @@
  
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
-@@ -636,7 +637,7 @@
- $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)
- 		@$(MKDIR_P) Include
- 		$(MAKE) $(PGEN)
--		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
-+		$(PGEN_FOR_BUILD) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
- $(GRAMMAR_C): $(GRAMMAR_H) $(GRAMMAR_INPUT) $(PGENSRCS)
- 		$(MAKE) $(GRAMMAR_H)
- 		touch $(GRAMMAR_C)
-@@ -1072,12 +1073,12 @@
+@@ -1132,12 +1133,12 @@ libinstall:	build_all $(srcdir)/Lib/$(PLATDIR) $(srcdir)/Modules/xxmodule.c
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi
@@ -44,7 +36,7 @@
  		$(PYTHON_FOR_BUILD) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
  		-d $(LIBDEST) -f \
  		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
-@@ -1205,11 +1206,13 @@
+@@ -1265,11 +1266,13 @@ libainstall:	all python-config
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -61,9 +53,31 @@
  	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata.py*
  
  # Here are a couple of targets for MacOSX again, to install a full
---- setup.py.orig	2015-05-23 18:09:25.000000000 +0200
-+++ setup.py	2015-10-10 12:29:22.000925764 +0200
-@@ -17,7 +17,7 @@
+diff --git a/configure.ac b/configure.ac
+index 06c877b..de26012 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -326,7 +326,6 @@ then
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	ac_sys_release=
+     else
+@@ -372,7 +371,6 @@ if test "$cross_compiling" = yes; then
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+-		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+ 	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_cpu:+-$_host_cpu}"
+ fi
+diff --git a/setup.py b/Python-2.7.12/setup.py
+index aa08ada..f21e349 100644
+--- a/setup.py
++++ b/setup.py
+@@ -17,7 +17,7 @@ from distutils.command.install import install
  from distutils.command.install_lib import install_lib
  from distutils.spawn import find_executable
  
@@ -72,7 +86,7 @@
  
  def get_platform():
      # cross build
-@@ -162,6 +162,7 @@
+@@ -178,6 +178,7 @@ class PyBuildExt(build_ext):
  
      def build_extensions(self):
  
@@ -80,7 +94,7 @@
          # Detect which modules should be compiled
          missing = self.detect_modules()
  
-@@ -326,6 +327,9 @@
+@@ -342,6 +343,9 @@ class PyBuildExt(build_ext):
  
          # Don't try to load extensions for cross builds
          if cross_compiling:
@@ -90,7 +104,7 @@
              return
  
          try:
-@@ -480,7 +484,7 @@
+@@ -496,7 +500,7 @@ class PyBuildExt(build_ext):
                      for directory in reversed(options.dirs):
                          add_dir_to_list(dir_list, directory)
  
@@ -99,7 +113,7 @@
                  and not sysconfig.get_config_var('PYTHONFRAMEWORK'):
              # OSX note: Don't add LIBDIR and INCLUDEDIR to building a framework
              # (PYTHONFRAMEWORK is set) to avoid # linking problems when
-@@ -556,6 +560,11 @@
+@@ -572,6 +576,11 @@ class PyBuildExt(build_ext):
          if host_platform in ['darwin', 'beos']:
              math_libs = []
  
@@ -111,7 +125,7 @@
          # XXX Omitted modules: gl, pure, dl, SGI-specific modules
  
          #
-@@ -2028,8 +2037,13 @@
+@@ -2048,8 +2057,13 @@ class PyBuildExt(build_ext):
  
                  # Pass empty CFLAGS because we'll just append the resulting
                  # CFLAGS to Python's; -g or -O2 is to be avoided.
@@ -127,21 +141,3 @@
  
                  res = os.system(cmd)
                  if res or not os.path.exists(ffi_configfile):
---- configure.ac.orig	2015-10-10 13:10:34.139980182 +0200
-+++ configure.ac	2015-10-10 13:11:00.715341145 +0200
-@@ -325,7 +325,6 @@
- 	*)
- 		# for now, limit cross builds to known configurations
- 		MACHDEP="unknown"
--		AC_MSG_ERROR([cross build not supported for $host])
- 	esac
- 	ac_sys_release=
-     else
-@@ -371,7 +370,6 @@
- 	*)
- 		# for now, limit cross builds to known configurations
- 		MACHDEP="unknown"
--		AC_MSG_ERROR([cross build not supported for $host])
- 	esac
- 	_PYTHON_HOST_PLATFORM="$MACHDEP${_host_cpu:+-$_host_cpu}"
- fi
