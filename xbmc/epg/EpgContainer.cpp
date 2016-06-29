@@ -432,7 +432,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, c
   }
 }
 
-CEpgPtr CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
+CEpgPtr CEpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
 {
   if (!channel)
     return CEpgPtr();
