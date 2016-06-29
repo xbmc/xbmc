@@ -45,9 +45,6 @@ file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddonHelpers.cmake
           ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddOptions.cmake
      DESTINATION ${APP_LIB_DIR})
 
-# generate XBMCConfig.cmake for backwards compatibility to xbmc
-configure_file(${CORE_SOURCE_DIR}/project/cmake/XBMCConfig.cmake.in ${XBMC_LIB_DIR}/XBMCConfig.cmake @ONLY)
-
 ### copy all the addon binding header files to include/kodi
 # parse addon-bindings.mk to get the list of header files to copy
 file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk bindings)
