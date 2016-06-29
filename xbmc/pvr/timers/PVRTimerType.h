@@ -94,16 +94,16 @@ namespace PVR
     const std::string& GetDescription() const { return m_strDescription; }
 
     /*!
-     * @brief Check whether this type is for repeating ore one time timers.
-     * @return True if repeating, false otherwise.
+     * @brief Check whether this type is for timer rules or one time timers.
+     * @return True if type represents a timer rule, false otherwise.
      */
-    bool IsRepeating() const { return (m_iAttributes & PVR_TIMER_TYPE_IS_REPEATING) > 0; }
+    bool IsTimerRule() const { return (m_iAttributes & PVR_TIMER_TYPE_IS_REPEATING) > 0; }
 
     /*!
-     * @brief Check whether this type is for repeating ore one time timers.
-     * @return True if one time, false otherwise.
+     * @brief Check whether this type is for timer rules or one time timers.
+     * @return True if type represents a one time timer, false otherwise.
      */
-    bool IsOnetime() const { return !IsRepeating(); }
+    bool IsOnetime() const { return !IsTimerRule(); }
 
     /*!
      * @brief Check whether this type is for epg-based or manual timers.
@@ -118,28 +118,28 @@ namespace PVR
     bool IsEpgBased() const { return !IsManual(); }
 
     /*!
-     * @brief Check whether this type is for repeating epg-based timers.
-     * @return True if repeating epg-based, false otherwise.
+     * @brief Check whether this type is for epg-based timer rules.
+     * @return True if epg-based timer rule, false otherwise.
      */
-    bool IsRepeatingEpgBased() const { return IsRepeating() && IsEpgBased(); }
+    bool IsEpgBasedTimerRule() const { return IsEpgBased() && IsTimerRule(); }
 
     /*!
      * @brief Check whether this type is for one time epg-based timers.
      * @return True if one time epg-based, false otherwise.
      */
-    bool IsOnetimeEpgBased() const { return IsOnetime() && IsEpgBased(); }
+    bool IsEpgBasedOnetime() const { return IsEpgBased() && IsOnetime(); }
 
     /*!
-     * @brief Check whether this type is for repeating manual timers.
-     * @return True if repeating manual, false otherwise.
+     * @brief Check whether this type is for manual timer rules.
+     * @return True if manual timer rule, false otherwise.
      */
-    bool IsRepeatingManual() const { return IsRepeating() && IsManual(); }
+    bool IsManualTimerRule() const { return IsManual() && IsTimerRule(); }
 
     /*!
      * @brief Check whether this type is for one time manual timers.
      * @return True if one time manual, false otherwise.
      */
-    bool IsOnetimeManual() const { return IsOnetime() && IsManual(); }
+    bool IsManualOnetime() const { return IsManual() && IsOnetime(); }
 
     /*!
      * @brief Check whether this type is readonly (must not be modified after initial creation).

@@ -3602,13 +3602,13 @@ msgstr ""
 #. Representation of a timer rule
 #: xbmc/pvr/addons/PVRClient.cpp
 msgctxt "#822"
-msgid "Repeating"
+msgid "Timer rule"
 msgstr ""
 
 #. Representation of an epg-based timer rule.
 #: xbmc/pvr/addons/PVRClient.cpp
 msgctxt "#823"
-msgid "Repeating (guide-based)"
+msgid "Timer rule (guide-based)"
 msgstr ""
 
 #empty strings from id 824 to 827

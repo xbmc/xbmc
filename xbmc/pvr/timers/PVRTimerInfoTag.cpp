@@ -87,7 +87,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
       CLog::Log(LOGERROR, "%s: no timer type, although timers are supported by client %d!", __FUNCTION__, m_iClientId);
   }
 
-  m_iWeekdays = (m_timerType && m_timerType->IsRepeating()) ? PVR_WEEKDAY_ALLDAYS : PVR_WEEKDAY_NONE;
+  m_iWeekdays = (m_timerType && m_timerType->IsTimerRule()) ? PVR_WEEKDAY_ALLDAYS : PVR_WEEKDAY_NONE;
 
   ResetChildState();
   UpdateSummary();
@@ -166,7 +166,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
 
     if (!m_timerType)
       CLog::Log(LOGERROR, "%s: no timer type, although timers are supported by client %d!", __FUNCTION__, m_iClientId);
-    else if (m_iEpgUid == EPG_TAG_INVALID_UID && m_timerType->IsOnetimeEpgBased())
+    else if (m_iEpgUid == EPG_TAG_INVALID_UID && m_timerType->IsEpgBasedOnetime())
       CLog::Log(LOGERROR, "%s: no epg tag given for epg based timer type (%d)!", __FUNCTION__, m_timerType->GetTypeId());
   }
 
@@ -310,14 +310,14 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   {
     if (m_timerType->IsManual())
     {
-      if (m_timerType->IsRepeating())
+      if (m_timerType->IsTimerRule())
         value["type"] = "manual_repeating";
       else
         value["type"] = "manual_once";
     }
     else
     {
-      if (m_timerType->IsRepeating())
+      if (m_timerType->IsTimerRule())
         value["type"] = "epg_repeating";
       else
         value["type"] = "epg_once";
@@ -395,7 +395,7 @@ void CPVRTimerInfoTag::SetTimerType(const CPVRTimerTypePtr &type)
     m_iRecordingGroup     = m_timerType->GetRecordingGroupDefault();
   }
 
-  if (m_timerType && !m_timerType->IsRepeating())
+  if (m_timerType && !m_timerType->IsTimerRule())
     m_iWeekdays = PVR_WEEKDAY_NONE;
 }
 
@@ -706,7 +706,7 @@ std::string CPVRTimerInfoTag::ChannelName() const
   CPVRChannelPtr channeltag = ChannelTag();
   if (channeltag)
     strReturn = channeltag->ChannelName();
-  else if (m_timerType && m_timerType->IsRepeatingEpgBased())
+  else if (m_timerType && m_timerType->IsEpgBasedTimerRule())
     strReturn = StringUtils::Format("(%s)", g_localizeStrings.Get(809).c_str()); // "Any channel"
 
   return strReturn;
@@ -827,7 +827,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   CPVRTimerTypePtr timerType;
   if (bCreateRule)
   {
-    // create repeating epg-based timer
+    // create epg-based timer rule
     timerType = CPVRTimerType::CreateFromAttributes(
       PVR_TIMER_TYPE_IS_REPEATING,
       PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES, channel->ClientID());
@@ -907,7 +907,7 @@ void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
       stringID = 19224; // Recording aborted
     break;
   case PVR_TIMER_STATE_SCHEDULED:
-    if (IsRepeating())
+    if (IsTimerRule())
       stringID = 19058; // Timer enabled
     else
       stringID = 19225; // Recording scheduled
@@ -948,7 +948,7 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
     break;
   case PVR_TIMER_STATE_SCHEDULED:
   default:
-    if (IsRepeating())
+    if (IsTimerRule())
       stringID = 828; // Timer rule deleted
     else
       stringID = 19228; // Timer deleted
