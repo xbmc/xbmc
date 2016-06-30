@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include.in Makefile
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.11
+VERSION=2.7.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 CWD=$(shell pwd)
