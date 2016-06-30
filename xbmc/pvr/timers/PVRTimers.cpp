@@ -105,24 +105,38 @@ bool CPVRTimers::IsRecording(void) const
 
 bool CPVRTimers::SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
 {
-  const CEpgInfoTagPtr epgTag(timer->GetEpgInfoTag());
-  if (epgTag)
-  {
-    epgTag->SetTimer(timer);
-    return true;
-  }
-  return false;
+  if (timer->IsRepeating() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
+    return false;
+
+  std::vector<CEpgInfoTagPtr> tags(g_EpgContainer.GetEpgTagsForTimer(timer));
+
+  if (tags.empty())
+    return false;
+
+  // assign first matching epg tag to the timer.
+  timer->SetEpgTag(tags.front());
+
+  // assign timer to every matching epg tag.
+  for (const auto &tag : tags)
+    tag->SetTimer(timer);
+
+  return true;
 }
 
 bool CPVRTimers::ClearEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
 {
-  const CEpgInfoTagPtr epgTag(timer->GetEpgInfoTag());
-  if (epgTag)
-  {
-    epgTag->ClearTimer();
-    return true;
-  }
-  return false;
+  if (timer->IsRepeating() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
+    return false;
+
+  std::vector<CEpgInfoTagPtr> tags(g_EpgContainer.GetEpgTagsForTimer(timer));
+
+  if (tags.empty())
+    return false;
+
+  for (const auto &tag : tags)
+    tag->ClearTimer();
+
+  return true;
 }
 
 bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> &failedClients)
@@ -144,6 +158,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
       {
         /* if it's present, update the current tag */
         bool bStateChanged(existingTimer->m_state != (*timerIt)->m_state);
+        ClearEpgTagTimer(existingTimer);
         if (existingTimer->UpdateEntry(*timerIt))
         {
           SetEpgTagTimer(existingTimer);

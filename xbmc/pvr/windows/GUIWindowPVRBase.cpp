@@ -587,8 +587,12 @@ bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
     return false;
   }
 
-  if (ShowTimerSettings(timer) && !timer->GetTimerType()->IsReadOnly())
-    return g_PVRTimers->UpdateTimer(timer);
+  // clone the timer.
+  const CPVRTimerInfoTagPtr newTimer(new CPVRTimerInfoTag);
+  newTimer->UpdateEntry(timer);
+
+  if (ShowTimerSettings(newTimer) && !timer->GetTimerType()->IsReadOnly())
+    return g_PVRTimers->UpdateTimer(newTimer);
 
   return false;
 }

@@ -232,9 +232,22 @@ namespace PVR
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
+    /*!
+     * @brief Associate the given epg tag with this timer; before, clear old timer at associated epg tag, if any.
+     * @param tag The epg tag to assign.
+     */
+    void SetEpgTag(const EPG::CEpgInfoTagPtr &tag);
+
+    /*!
+     * @brief Clear the epg tag associated with this timer; before, clear this timer at associated epg tag, if any.
+     */
     void ClearEpgTag(void);
 
-    void UpdateChannel(void);
+    /*!
+     * @brief Update the channel associated with this timer.
+     * @return the channel for the timer. Can be empty for epg based repeating timers (e.g. "match any channel" rules)
+     */
+    CPVRChannelPtr UpdateChannel(void);
 
     /*!
      * @brief Return string representation for any possible combination of weekdays.
