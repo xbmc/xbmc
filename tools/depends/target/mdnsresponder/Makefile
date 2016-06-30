@@ -1,10 +1,10 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile makefile.internal 01-android-embedded.patch
 
 
 # lib name, version
 LIBNAME=mDNSResponder
-VERSION=379.37
+VERSION=625.41.2
 OUTPUTNAME=libmDNSEmbedded
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
