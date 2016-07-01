@@ -468,7 +468,7 @@ bool CPVRClient::GetAddonProperties(void)
         // This code can be removed once all addons actually support the respective PVR Addon API version.
 
         size = 0;
-        // One-shot manual
+        // manual one time
         memset(&types_array[size], 0, sizeof(types_array[size]));
         types_array[size].iId         = size + 1;
         types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
@@ -481,7 +481,7 @@ bool CPVRClient::GetAddonProperties(void)
                                         PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
         ++size;
 
-        // Repeating manual
+        // manual timer rule
         memset(&types_array[size], 0, sizeof(types_array[size]));
         types_array[size].iId         = size + 1;
         types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
@@ -534,14 +534,14 @@ bool CPVRClient::GetAddonProperties(void)
             if (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_REPEATING)
             {
               id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-                 ? 822  // "Repeating"
-                 : 823; // "Repeating (Guide-based)"
+                 ? 822  // "Timer rule"
+                 : 823; // "Timer rule (guide-based)"
             }
             else
             {
               id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-                 ? 820  // "One Time"
-                 : 821; // "One Time (Guide-based)
+                 ? 820  // "One time"
+                 : 821; // "One time (guide-based)
             }
             std::string descr(g_localizeStrings.Get(id));
             strncpy(types_array[i].strDescription, descr.c_str(), descr.size());

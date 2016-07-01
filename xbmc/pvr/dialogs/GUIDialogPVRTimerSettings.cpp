@@ -164,7 +164,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(const CPVRTimerInfoTagPtr &timer)
   if (m_timerInfoTag->m_iClientChannelUid == PVR_CHANNEL_INVALID_UID)
   {
     bool bChannelSet(false);
-    if (m_timerType && m_timerType->IsRepeatingEpgBased())
+    if (m_timerType && m_timerType->IsEpgBasedTimerRule())
     {
       // Select "Any channel"
       const auto it = m_channelEntries.find(ENTRY_ANY_CHANNEL);
@@ -258,12 +258,12 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   setting = AddEdit(group, SETTING_TMR_NAME, 19075, 0, m_strTitle, true, false, 19097);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_NAME);
 
-  // epg search string (only for epg-based repeating timers)
+  // epg search string (only for epg-based timer rules)
   setting = AddEdit(group, SETTING_TMR_EPGSEARCH, 804, 0, m_strEpgSearchString, true, false, 805);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_EPGSEARCH);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_EPGSEARCH);
 
-  // epg fulltext search (only for epg-based repeating timers)
+  // epg fulltext search (only for epg-based timer rules)
   setting = AddToggle(group, SETTING_TMR_FULLTEXT, 806, 0, m_bFullTextEpgSearch);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_FULLTEXT);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_FULLTEXT);
@@ -273,7 +273,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_CHANNEL);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_CHANNEL);
 
-  // Days of week (only for repeating timers)
+  // Days of week (only for timer rules)
   std::vector<int> weekdaysPreselect;
   if (m_iWeekdays & PVR_WEEKDAY_MONDAY)
     weekdaysPreselect.push_back(PVR_WEEKDAY_MONDAY);
@@ -294,7 +294,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_WEEKDAYS);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_WEEKDAYS);
 
-  // "Start any time" (only for repeating timers)
+  // "Start any time" (only for timer rules)
   setting = AddToggle(group, SETTING_TMR_START_ANYTIME, 810, 0, m_bStartAnyTime);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_START_ANYTIME);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_START_ANYTIME);
@@ -311,7 +311,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_BEGIN);
   AddStartAnytimeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN);
 
-  // "End any time" (only for repeating timers)
+  // "End any time" (only for timer rules)
   setting = AddToggle(group, SETTING_TMR_END_ANYTIME, 817, 0, m_bEndAnyTime);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_ANYTIME);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_ANYTIME);
@@ -328,12 +328,12 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END);
   AddEndAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END);
 
-  // First day (only for repeating timers)
+  // First day (only for timer rules)
   setting = AddSpinner(group, SETTING_TMR_FIRST_DAY, 19084, 0, GetDateAsIndex(m_firstDayLocalTime), DaysFiller);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_FIRST_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_FIRST_DAY);
 
-  // "Prevent duplicate episodes" (only for repeating timers)
+  // "Prevent duplicate episodes" (only for timer rules)
   setting = AddList(group, SETTING_TMR_NEW_EPISODES, 812, 0, m_iPreventDupEpisodes, DupEpisodesFiller, 812);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_NEW_EPISODES);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_NEW_EPISODES);
@@ -416,7 +416,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
     {
       m_timerType = it->second;
 
-      if (m_timerType->IsRepeating() && (m_iWeekdays == PVR_WEEKDAY_ALLDAYS))
+      if (m_timerType->IsTimerRule() && (m_iWeekdays == PVR_WEEKDAY_ALLDAYS))
         SetButtonLabels(); // update "Any day" vs. "Every day"
     }
     else
@@ -557,10 +557,10 @@ void CGUIDialogPVRTimerSettings::Save()
   // Name
   m_timerInfoTag->m_strTitle = m_strTitle;
 
-  // epg search string (only for epg-based repeating timers)
+  // epg search string (only for epg-based timer rules)
   m_timerInfoTag->m_strEpgSearchString = m_strEpgSearchString;
 
-  // epg fulltext search, instead of just title match. (only for epg-based repeating timers)
+  // epg fulltext search, instead of just title match. (only for epg-based timer rules)
   m_timerInfoTag->m_bFullTextEpgSearch = m_bFullTextEpgSearch;
 
   // Channel
@@ -597,7 +597,7 @@ void CGUIDialogPVRTimerSettings::Save()
   {
     if (m_timerType->SupportsStartTime() &&    // has start clock entry
         m_timerType->SupportsEndTime() &&      // and end clock entry
-        m_timerType->IsRepeating())            // but no associated start/end day spinners
+        m_timerType->IsTimerRule())            // but no associated start/end day spinners
     {
       if (m_endLocalTime < m_startLocalTime)   // And the end clock is earlier than the start clock
       {
@@ -632,16 +632,16 @@ void CGUIDialogPVRTimerSettings::Save()
   else if (!m_bEndAnyTime)
     m_timerInfoTag->SetEndFromLocalTime(m_endLocalTime);
 
-  // Days of week (only for repeating timers)
-  if (m_timerType->IsRepeating())
+  // Days of week (only for timer rules)
+  if (m_timerType->IsTimerRule())
     m_timerInfoTag->m_iWeekdays = m_iWeekdays;
   else
     m_timerInfoTag->m_iWeekdays = PVR_WEEKDAY_NONE;
 
-  // First day (only for repeating timers)
+  // First day (only for timer rules)
   m_timerInfoTag->SetFirstDayFromLocalTime(m_firstDayLocalTime);
 
-  // "New episodes only" (only for repeating timers)
+  // "New episodes only" (only for timer rules)
   m_timerInfoTag->m_iPreventDupEpisodes = m_iPreventDupEpisodes;
 
   // Pre and post record time
@@ -762,8 +762,8 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
       if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
         continue;
 
-      // Drop TimerTypes that aren't repeating if end time is in the past
-      if (!type->IsRepeating() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
+      // Drop TimerTypes that aren't rules if end time is in the past
+      if (!type->IsTimerRule() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
         continue;
     }
 
@@ -787,7 +787,7 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
       std::make_pair(i, ChannelDescriptor(channel->UniqueID(), channel->ClientID(), channelDescription)));
   }
 
-  // Add special "any channel" entry (used for epg-based repeating timers).
+  // Add special "any channel" entry (used for epg-based timer rules).
   m_channelEntries.insert(
     std::make_pair(
       ENTRY_ANY_CHANNEL, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, 0, g_localizeStrings.Get(809))));
@@ -832,8 +832,8 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(
     {
       if (channelEntry.first == ENTRY_ANY_CHANNEL)
       {
-        // For repeating epg-based timers only, add an "any channel" entry.
-        if (pThis->m_timerType->IsRepeatingEpgBased())
+        // For epg-based timer rules only, add an "any channel" entry.
+        if (pThis->m_timerType->IsEpgBasedTimerRule())
           list.push_back(std::make_pair(channelEntry.second.description, channelEntry.first));
         else
           continue;
@@ -1124,7 +1124,7 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string &condit
   }
 
   // For existing one time epg-based timers, disable editing of epg-filled data.
-  if (!pThis->m_bIsNewTimer && pThis->m_timerType->IsOnetimeEpgBased())
+  if (!pThis->m_bIsNewTimer && pThis->m_timerType->IsEpgBasedOnetime())
   {
     if ((cond == SETTING_TMR_NAME)      ||
         (cond == SETTING_TMR_CHANNEL)   ||

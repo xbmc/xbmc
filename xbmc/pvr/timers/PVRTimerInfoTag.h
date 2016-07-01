@@ -184,10 +184,10 @@ namespace PVR
     void SetTimerType(const CPVRTimerTypePtr &type);
 
     /*!
-      * @brief Checks whether this is a repeating (vs. one-shot) timer.
-      * @return True if this is a repeating timer, false otherwise.
+      * @brief Checks whether this is a timer rule (vs. one time timer).
+      * @return True if this is a timer rule, false otherwise.
       */
-    bool IsRepeating(void) const { return m_timerType && m_timerType->IsRepeating(); }
+    bool IsTimerRule(void) const { return m_timerType && m_timerType->IsTimerRule(); }
 
     /*!
       * @brief Checks whether this is a manual (vs. epg-based) timer.
@@ -265,7 +265,7 @@ namespace PVR
     unsigned int GetTimerRuleId() const { return m_iParentClientIndex; }
 
     std::string           m_strTitle;            /*!< @brief name of this timer */
-    std::string           m_strEpgSearchString;  /*!< @brief a epg data match string for repeating epg-based timers. Format is backend-dependent, for example regexp */
+    std::string           m_strEpgSearchString;  /*!< @brief a epg data match string for epg-based timer rules. Format is backend-dependent, for example regexp */
     bool                  m_bFullTextEpgSearch;  /*!< @brief indicates whether only epg episode title can be matched by the pvr backend or "more" (backend-dependent") data. */
     std::string           m_strDirectory;        /*!< @brief directory where the recording must be stored */
     std::string           m_strSummary;          /*!< @brief summary string with the time to show inside a GUI list */
@@ -279,8 +279,8 @@ namespace PVR
     int                   m_iPriority;           /*!< @brief priority of the timer */
     int                   m_iLifetime;           /*!< @brief lifetime of the timer in days */
     int                   m_iMaxRecordings;      /*!< @brief (optional) backend setting for maximum number of recordings to keep*/
-    unsigned int          m_iWeekdays;           /*!< @brief bit based store of weekdays for repeating timers */
-    unsigned int          m_iPreventDupEpisodes; /*!< @brief only record new episodes for repeating epg based timers */
+    unsigned int          m_iWeekdays;           /*!< @brief bit based store of weekdays for timer rules */
+    unsigned int          m_iPreventDupEpisodes; /*!< @brief only record new episodes for epg-based timer rules */
     unsigned int          m_iRecordingGroup;     /*!< @brief (optional) if set, the addon/backend stores the recording to a group (sub-folder) */
     std::string           m_strFileNameAndPath;  /*!< @brief file name is only for reference */
     int                   m_iChannelNumber;      /*!< @brief integer value of the channel number */
@@ -298,7 +298,7 @@ namespace PVR
     CCriticalSection      m_critSection;
     CDateTime             m_StartTime; /*!< start time */
     CDateTime             m_StopTime;  /*!< stop time */
-    CDateTime             m_FirstDay;  /*!< if it is a manual repeating timer the first date it starts */
+    CDateTime             m_FirstDay;  /*!< if it is a manual timer rule the first date it starts */
     CPVRTimerTypePtr      m_timerType; /*!< the type of this timer */
 
     unsigned int          m_iActiveChildTimers;   /*!< @brief Number of active timers which have this timer as their m_iParentClientIndex */

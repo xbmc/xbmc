@@ -649,7 +649,7 @@ bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording, bool bDe
     return false;
   }
 
-  if (bDeleteRule && !timer->IsRepeating())
+  if (bDeleteRule && !timer->IsTimerRule())
     timer = g_PVRTimers->GetTimerRule(timer);
 
   if (!timer)
@@ -983,7 +983,7 @@ bool CGUIWindowPVRBase::ConfirmDeleteTimer(const CPVRTimerInfoTagPtr &timer, boo
     // prompt user for confirmation for deleting the timer
     bConfirmed = CGUIDialogYesNo::ShowAndGetInput(
                         CVariant{122}, // "Confirm delete"
-                        timer->IsRepeating()
+                        timer->IsTimerRule()
                           ? CVariant{845}  // "Are you sure you want to delete this timer rule and all timers it has scheduled?"
                           : CVariant{846}, // "Are you sure you want to delete this timer?"
                         CVariant{""},

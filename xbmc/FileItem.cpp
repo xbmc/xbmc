@@ -202,7 +202,7 @@ CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
 
   Initialize();
 
-  m_bIsFolder = timer->IsRepeating();
+  m_bIsFolder = timer->IsTimerRule();
   m_pvrTimerInfoTag = timer;
   m_strPath = timer->Path();
   SetLabel(timer->Title());

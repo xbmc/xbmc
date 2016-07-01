@@ -3553,7 +3553,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.HasTimerSchedule`</b>,
 ///                  \anchor ListItem_HasTimerSchedule
 ///                  _boolean_,
-///     Whether the item is part of a repeating timer schedule (PVR). (v16 addition)
+///     Whether the item was scheduled by a timer rule (PVR). (v16 addition)
 ///   }
 ///   \table_row3{   <b>`ListItem.HasRecording`</b>,
 ///                  \anchor ListItem_HasRecording
