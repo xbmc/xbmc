@@ -29,7 +29,14 @@ namespace Shaders
   {
   public:
     // take the 1st available texture unit as a parameter
-    GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange);
+    GLSLOutput(
+      int texunit,
+      bool useDithering,
+      unsigned int ditherDepth,
+      bool fullrange,
+      GLuint clutTex,
+      int clutSize,
+      unsigned videoflags);
     std::string GetDefines();
     void OnCompiledAndLinked(GLuint programHandle);
     bool OnEnabled();
@@ -42,9 +49,13 @@ namespace Shaders
     bool m_dither;
     unsigned int m_ditherDepth;
     bool m_fullRange;
+    bool m_3DLUT;
+    unsigned m_flags;
     // first texture unit available to us
     int m_1stTexUnit;
     int m_uDither;
+    int m_uCLUT;
+    int m_uCLUTSize;
 
     // defines
 
@@ -52,8 +63,11 @@ namespace Shaders
     GLint m_hDither;
     GLint m_hDitherQuant;
     GLint m_hDitherSize;
+    GLint m_hCLUT;
+    GLint m_hCLUTSize;
 
     // textures
     GLuint m_tDitherTex;
+    GLuint m_tCLUTTex;
   };
 }

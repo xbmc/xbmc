@@ -768,6 +768,12 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     Returns true if ADSP is supported from Kodi
 ///     \note normally always true
 ///   }
+///   \table_row3{   <b>`System.HasCMS`</b>,
+///                  \anchor System_HasCMS
+///                  _boolean_,
+///     Returns true if colour management is supported from Kodi
+///     \note currently only supported for OpenGL
+///   }
 ///   \table_row3{   <b>`System.HasModalDialog`</b>,
 ///                  \anchor System_HasModalDialog
 ///                  _boolean_,
@@ -1182,7 +1188,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haspvr",           SYSTEM_HAS_PVR },
                                   { "startupwindow",    SYSTEM_STARTUP_WINDOW },
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
-                                  { "hasadsp",          SYSTEM_HAS_ADSP }};
+                                  { "hasadsp",          SYSTEM_HAS_ADSP },
+                                  { "hascms",           SYSTEM_HAS_CMS }};
 
 /// \page modules__General__List_of_gui_access
 /// @{
@@ -6786,6 +6793,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = true;
   else if (condition == SYSTEM_HAS_ADSP)
     bReturn = true;
+  else if (condition == SYSTEM_HAS_CMS)
+#ifdef HAS_GL
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
   else if (condition == SYSTEM_ISMASTER)
     bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_ISFULLSCREEN)

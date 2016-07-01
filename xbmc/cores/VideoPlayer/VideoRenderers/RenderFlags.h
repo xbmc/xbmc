@@ -52,11 +52,11 @@
 
 /* defines color primaries */
 #define CONF_FLAGS_COLPRI_MASK(a) ((a) & 0xe0)
-#define CONF_FLAGS_COLPRI_BT709   0x20
-#define CONF_FLAGS_COLPRI_BT470M  0x40
-#define CONF_FLAGS_COLPRI_BT470BG 0x60
-#define CONF_FLAGS_COLPRI_170M    0x80
-#define CONF_FLAGS_COLPRI_240M    0xa0
+#define CONF_FLAGS_COLPRI_BT709   0x20  // sRGB, HDTV (ITU-R BT.709)
+#define CONF_FLAGS_COLPRI_BT470M  0x40  // NTSC (1953) (FCC 1953, ITU-R BT.470 System M)
+#define CONF_FLAGS_COLPRI_BT470BG 0x60  // PAL/SECAM (1970) (EBU Tech. 3213, ITU-R BT.470 System B, G)
+#define CONF_FLAGS_COLPRI_170M    0x80  // NTSC (1987) (SMPTE RP 145 "SMPTE C", SMPTE 170M)
+#define CONF_FLAGS_COLPRI_240M    0xa0  // SMPTE-240M
 
 /* defines chroma subsampling sample location */
 #define CONF_FLAGS_CHROMA_MASK(a) ((a) & 0x0300)

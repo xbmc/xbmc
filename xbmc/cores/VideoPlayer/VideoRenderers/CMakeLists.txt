@@ -2,6 +2,7 @@ enable_language(CXX ASM)
 set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp" )
 
 set(SOURCES BaseRenderer.cpp
+            ColorManager.cpp
             OverlayRenderer.cpp
             OverlayRendererGUI.cpp
             OverlayRendererUtil.cpp
@@ -11,6 +12,7 @@ set(SOURCES BaseRenderer.cpp
             DebugRenderer.cpp)
 
 set(HEADERS BaseRenderer.h
+            ColorManager.h
             OverlayRenderer.h
             OverlayRendererGUI.h
             OverlayRendererUtil.h

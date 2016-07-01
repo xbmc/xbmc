@@ -157,6 +157,13 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_nonLinStretch = false;
   m_nonLinStretchGui = false;
   m_pixelRatio = 0.0f;
+
+  m_ColorManager.reset(new CColorManager());
+  m_tCLUTTex = 0;
+  m_CLUT = NULL;
+  m_CLUTsize = 0;
+  m_cmsToken = -1;
+  m_cmsOn = false;
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -299,6 +306,22 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
       m_pboSupported = false;
   }
 #endif
+
+  // load 3DLUT
+  if (m_ColorManager->IsEnabled())
+  {
+    if (!m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags))
+    {
+      CLog::Log(LOGDEBUG, "CMS configuration changed, reload LUT");
+      if (!LoadCLUT())
+        return false;
+    }
+    m_cmsOn = true;
+  }
+  else
+  {
+    m_cmsOn = false;
+  }
 
   return true;
 }
@@ -714,6 +737,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
   bool pixelRatioChanged    = (CDisplaySettings::GetInstance().GetPixelRatio() > 1.001f || CDisplaySettings::GetInstance().GetPixelRatio() < 0.999f) !=
                               (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
   bool nonLinStretchChanged = false;
+  bool cmsChanged           = (m_cmsOn != m_ColorManager->IsEnabled())
+                              || (m_cmsOn && !m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags));
   if (m_nonLinStretchGui != CDisplaySettings::GetInstance().IsNonLinearStretched() || pixelRatioChanged)
   {
     m_nonLinStretchGui   = CDisplaySettings::GetInstance().IsNonLinearStretched();
@@ -733,7 +758,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged)
+  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged && !cmsChanged)
     return;
   else
     m_reloadShaders = 1;
@@ -742,6 +767,23 @@ void CLinuxRendererGL::UpdateVideoFilter()
   //or when it's on and the scaling method changed
   if (m_nonLinStretch || nonLinStretchChanged)
     m_reloadShaders = 1;
+
+  if (cmsChanged)
+  {
+    if (m_ColorManager->IsEnabled())
+    {
+      if (!m_ColorManager->CheckConfiguration(m_cmsToken, m_iFlags))
+      {
+        CLog::Log(LOGDEBUG, "CMS configuration changed, reload LUT");
+        LoadCLUT();
+      }
+      m_cmsOn = true;
+    }
+    else
+    {
+      m_cmsOn = false;
+    }
+  }
 
   m_scalingMethodGui = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
@@ -822,7 +864,13 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
 
     GLSLOutput *out;
-    out = new GLSLOutput(3, m_useDithering, m_ditherDepth, false);
+    out = new GLSLOutput(3,
+        m_useDithering,
+        m_ditherDepth,
+        m_cmsOn ? m_fullRange : false,
+        m_cmsOn ? m_tCLUTTex : 0,
+        m_CLUTsize,
+        m_iFlags);
     m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch, out);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
@@ -891,11 +939,18 @@ void CLinuxRendererGL::LoadShaders(int field)
         // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
         GLSLOutput *out = nullptr;
         if (m_renderQuality == RQ_SINGLEPASS)
-          out = new GLSLOutput(3, m_useDithering, m_ditherDepth, false);
+          out = new GLSLOutput(3,
+              m_useDithering,
+              m_ditherDepth,
+              m_cmsOn ? m_fullRange : false,
+              m_cmsOn ? m_tCLUTTex : 0,
+              m_CLUTsize,
+              m_iFlags);
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
                                                     out);
-        m_pYUVShader->SetConvertFullColorRange(m_fullRange);
+        if (!m_cmsOn)
+          m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
@@ -1007,6 +1062,8 @@ void CLinuxRendererGL::UnInit()
   {
     DeleteTexture(i);
   }
+
+  DeleteCLUT();
 
   // cleanup framebuffer object if it was in use
   m_fbo.fbo.Cleanup();
@@ -2545,6 +2602,56 @@ CRenderInfo CLinuxRendererGL::GetRenderInfo()
   info.max_buffer_size = NUM_BUFFERS;
   info.optimal_buffer_size = 4;
   return info;
+}
+
+// Color management helpers
+
+bool CLinuxRendererGL::LoadCLUT()
+{
+  DeleteCLUT();
+
+  // load 3DLUT
+  if ( !m_ColorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, &m_CLUTsize, &m_CLUT) )
+  {
+    CLog::Log(LOGERROR, "Error loading the LUT");
+    return false;
+  }
+
+  // create 3DLUT texture
+  CLog::Log(LOGDEBUG, "LinuxRendererGL: creating 3DLUT");
+  glGenTextures(1, &m_tCLUTTex);
+  glActiveTexture(GL_TEXTURE4);
+  if ( m_tCLUTTex <= 0 )
+  {
+    CLog::Log(LOGERROR, "Error creating 3DLUT texture");
+    return false;
+  }
+
+  // bind and set 3DLUT texture parameters
+  glBindTexture(GL_TEXTURE_3D, m_tCLUTTex);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+  // load 3DLUT data
+  glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16, m_CLUTsize, m_CLUTsize, m_CLUTsize, 0, GL_RGB, GL_UNSIGNED_SHORT, m_CLUT);
+  free(m_CLUT);
+  glActiveTexture(GL_TEXTURE0);
+  return true;
+}
+
+void CLinuxRendererGL::DeleteCLUT()
+{
+  if (m_tCLUTTex)
+  {
+    CLog::Log(LOGDEBUG, "LinuxRendererGL: deleting 3DLUT");
+    glDeleteTextures(1, &m_tCLUTTex);
+    m_tCLUTTex = 0;
+  }
 }
 
 #endif

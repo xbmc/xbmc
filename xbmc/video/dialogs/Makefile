@@ -1,4 +1,5 @@
 SRCS=GUIDialogAudioSubtitleSettings.cpp \
+     GUIDialogCMSSettings.cpp \
      GUIDialogFullScreenInfo.cpp \
      GUIDialogSubtitles.cpp \
      GUIDialogTeletext.cpp \

@@ -208,6 +208,9 @@ libusb_disabled="== libusb disabled. Plug and play USB device support will not b
 libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
+lcms2_enabled="== lcms2 enabled. =="
+lcms2_not_found="== Could not find lcms2. ICC profile support will not be available. =="
+lcms2_disabled="== lcms2 disabled. ICC profile support will not be available. =="
 libbluetooth_not_found="== Could not find libbluetooth. Bluetooth support will not be available =="
 libbluetooth_enabled="== libbluetooth enabled. =="
 libbluetooth_disabled="== libbluetooth disabled. Bluetooth support will not be available. =="
@@ -441,6 +444,12 @@ AC_ARG_ENABLE([libcec],
   [enable libcec support (default is auto)])],
   [use_libcec=$enableval],
   [use_libcec=auto])
+
+AC_ARG_ENABLE([lcms2],
+  [AS_HELP_STRING([--enable-lcms2],
+  [enable lcms2 support (default is auto)])],
+  [use_lcms2=$enableval],
+  [use_lcms2=auto])
 
 AC_ARG_ENABLE([libbluetooth],
   [AS_HELP_STRING([--enable-libbluetooth],
@@ -1444,6 +1453,21 @@ else
   AC_MSG_NOTICE($libcec_disabled)
 fi
 
+# lcms2
+if test "$use_lcms2" = "auto"; then
+  PKG_CHECK_MODULES([LCMS2],[lcms2],,[use_lcms2="no";AC_MSG_RESULT($lcms2_not_found)])
+elif test "$use_lcms2" = "yes" ; then
+  PKG_CHECK_MODULES([LCMS2],[lcms2],,[use_lcms2="no";AC_MSG_ERROR($lcms2_not_found)])
+else
+  AC_MSG_NOTICE($lcms2_disabled)
+fi
+
+if test "x$use_lcms2" != "xno"; then
+  USE_LCMS2=1;INCLUDES="$INCLUDES $LCMS2_CFLAGS";LIBS="$LIBS $LCMS2_LIBS"
+  AC_DEFINE([HAVE_LCMS2],[1],["Define to 1 if lcms2 is installed"])
+  AC_MSG_NOTICE($lcms2_enabled)
+fi
+
 # libbluetooth
 USE_LIBBLUETOOTH=0
 if test "$use_libbluetooth" = "auto"; then
@@ -2072,6 +2096,12 @@ if test "x$use_libcec" != "xno"; then
   final_message="$final_message\n  libcec support:\tYes"
 else
   final_message="$final_message\n  libcec support:\tNo"
+fi
+
+if test "x$use_lcms2" != "xno"; then
+  final_message="$final_message\n  lcms2 support:\tYes"
+else
+  final_message="$final_message\n  lcms2 support:\tNo"
 fi
 
 if test "x$use_libbluetooth" != "xno"; then
