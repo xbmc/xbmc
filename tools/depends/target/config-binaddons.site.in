@@ -34,9 +34,6 @@ LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
 NATIVE_ROOT=@prefix@/@tool_dir@
 
-#libomxil-bellagio
-ac_cv_func_malloc_0_nonnull=yes
-
 #curl
 ac_cv_file__dev_urandom=yes
 ac_cv_lib_ssl_SSL_connect=yes
