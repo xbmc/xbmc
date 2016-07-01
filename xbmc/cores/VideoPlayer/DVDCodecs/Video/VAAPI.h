@@ -48,6 +48,7 @@ extern "C" {
 
 using namespace Actor;
 
+class CProcessInfo;
 
 #define FULLHD_WIDTH                       1920
 
@@ -125,6 +126,7 @@ struct CVaapiConfig
   VAProfile profile;
   VAConfigAttrib attrib;
   Display *x11dsp;
+  CProcessInfo *processInfo;
 };
 
 /**
@@ -411,7 +413,7 @@ class CDecoder
 
 public:
 
-  CDecoder();
+  CDecoder(CProcessInfo& processInfo);
   virtual ~CDecoder();
 
   virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
@@ -468,6 +470,7 @@ protected:
 
   int m_codecControl;
   std::vector<EINTERLACEMETHOD> m_diMethods;
+  CProcessInfo& m_processInfo;
 };
 
 //-----------------------------------------------------------------------------

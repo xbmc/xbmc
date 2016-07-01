@@ -65,8 +65,9 @@
 
 #define MAX_TEXT_LENGTH 1024
 
-COMXVideo::COMXVideo(CRenderManager& renderManager) : m_video_codec_name("")
+COMXVideo::COMXVideo(CRenderManager& renderManager, CProcessInfo &processInfo) : m_video_codec_name("")
 , m_renderManager(renderManager)
+, m_processInfo(processInfo)
 {
   m_is_open           = false;
   m_extradata         = NULL;
@@ -244,6 +245,19 @@ bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
     EINTERLACEMETHOD interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
     bool advanced_deinterlace = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
     bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
+
+    if (advanced_deinterlace && !half_framerate)
+       m_processInfo.SetVideoDeintMethod("adv(x2)");
+    else if (advanced_deinterlace && half_framerate)
+       m_processInfo.SetVideoDeintMethod("adv(x1)");
+    else if (!advanced_deinterlace && !half_framerate)
+       m_processInfo.SetVideoDeintMethod("bob(x2)");
+    else if (!advanced_deinterlace && half_framerate)
+       m_processInfo.SetVideoDeintMethod("bob(x1)");
+
+    if (!half_framerate)
+      resinfo.framerate *= 2.0f;
+
     if (!advanced_deinterlace)
     {
       // Image_fx assumed 3 frames of context. simple deinterlace doesn't require this
@@ -279,6 +293,10 @@ bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
       CLog::Log(LOGERROR, "%s::%s - OMX_IndexConfigCommonImageFilterParameters omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
       return false;
     }
+  }
+  else
+  {
+    m_processInfo.SetVideoDeintMethod("none");
   }
 
   if(m_deinterlace)

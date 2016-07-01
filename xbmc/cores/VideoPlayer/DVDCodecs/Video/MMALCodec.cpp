@@ -177,6 +177,10 @@ void CMMALVideo::PortSettingsChanged(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
     m_decoded_height = m_es_format->es->video.crop.height;
     m_decoded_aligned_width = m_es_format->es->video.width;
     m_decoded_aligned_height = m_es_format->es->video.height;
+
+    m_processInfo.SetVideoDimensions(m_decoded_width, m_decoded_height);
+    m_processInfo.SetVideoDAR(m_aspect_ratio);
+
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s format changed: %dx%d (%dx%d) %.2f", CLASSNAME, __func__, m_decoded_width, m_decoded_height, m_decoded_aligned_width, m_decoded_aligned_height, m_aspect_ratio);
   }
@@ -360,6 +364,15 @@ bool CMMALVideo::CreateDeinterlace(EINTERLACEMETHOD interlace_method)
   bool advanced_deinterlace = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
   bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
 
+  if (advanced_deinterlace && !half_framerate)
+     m_processInfo.SetVideoDeintMethod("adv(x2)");
+  else if (advanced_deinterlace && half_framerate)
+     m_processInfo.SetVideoDeintMethod("adv(x1)");
+  else if (!advanced_deinterlace && !half_framerate)
+     m_processInfo.SetVideoDeintMethod("bob(x2)");
+  else if (!advanced_deinterlace && half_framerate)
+     m_processInfo.SetVideoDeintMethod("bob(x1)");
+
   MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {{MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param)},
         advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {3, 0, half_framerate, 1 }};
 
@@ -436,6 +449,8 @@ bool CMMALVideo::DestroyDeinterlace()
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+
+  m_processInfo.SetVideoDeintMethod("none");
 
   assert(m_deint);
   assert(m_dec_output == m_deint->output[0]);
@@ -525,6 +540,8 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   // we always qualify even if DVDFactoryCodec does this too.
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || hints.software)
     return false;
+
+  m_processInfo.SetVideoDeintMethod("none");
 
   m_hints = hints;
   m_renderer = (CMMALRenderer *)options.m_opaque_pointer;
@@ -731,6 +748,8 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   Prime();
   m_preroll = !m_hints.stills;
   m_speed = DVD_PLAYSPEED_NORMAL;
+
+  m_processInfo.SetVideoDecoderName(m_pFormatName, true);
 
   return true;
 }

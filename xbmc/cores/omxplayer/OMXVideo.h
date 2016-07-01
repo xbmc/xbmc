@@ -34,6 +34,7 @@
 #include "threads/CriticalSection.h"
 #include "xbmc/rendering/RenderSystem.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include <string>
 
 #define VIDEO_BUFFERS 60
@@ -53,7 +54,7 @@ struct ResolutionUpdateInfo {
 class COMXVideo
 {
 public:
-  COMXVideo(CRenderManager& renderManager);
+  COMXVideo(CRenderManager& renderManager, CProcessInfo &processInfo);
   ~COMXVideo();
 
   // Required overrides
@@ -112,6 +113,7 @@ protected:
   OMX_DISPLAYTRANSFORMTYPE m_transform;
   bool              m_settings_changed;
   CRenderManager&   m_renderManager;
+  CProcessInfo&     m_processInfo;
   static bool NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize);
   CCriticalSection m_critSection;
 };

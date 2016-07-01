@@ -21,6 +21,7 @@
 #include "PAPlayer.h"
 #include "CodecFactory.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -1130,7 +1131,7 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
   total -= m_currentStream->m_startOffset;
   m_playerGUIData.m_totalTime = total;
 
-  g_dataCacheCore.SignalAudioInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
 }
 
 void PAPlayer::OnJobComplete(unsigned int jobID, bool success, CJob *job)

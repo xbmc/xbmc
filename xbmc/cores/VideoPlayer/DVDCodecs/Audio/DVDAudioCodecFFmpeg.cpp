@@ -35,7 +35,7 @@ extern "C" {
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #endif
 
-CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
+CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg(CProcessInfo &processInfo) : CDVDAudioCodec(processInfo)
 {
   m_pCodecContext = NULL;
 
@@ -126,6 +126,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
 
+  m_processInfo.SetAudioDecoderName(m_pCodecContext->codec->name);
   return true;
 }
 

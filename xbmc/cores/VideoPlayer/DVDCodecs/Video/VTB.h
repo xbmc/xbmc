@@ -23,6 +23,8 @@
 
 #include "DVDVideoCodecFFmpeg.h"
 
+class CProcessInfo;
+
 namespace VTB
 {
 
@@ -30,7 +32,7 @@ class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
 {
 public:
-  CDecoder();
+  CDecoder(CProcessInfo& processInfo);
  ~CDecoder();
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
   virtual int Decode(AVCodecContext* avctx, AVFrame* frame);
@@ -43,7 +45,7 @@ public:
 protected:
   unsigned m_renderbuffers_count;
   AVCodecContext *m_avctx;
-
+  CProcessInfo& m_processInfo;
 };
 
 }

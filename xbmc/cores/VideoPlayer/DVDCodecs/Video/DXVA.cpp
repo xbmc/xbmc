@@ -29,6 +29,7 @@
 #include <d3d11.h>
 #include <Initguid.h>
 #include <windows.h>
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "../DVDCodecUtils.h"
 #include "DXVA.h"
@@ -689,8 +690,9 @@ CRenderPicture::~CRenderPicture()
 // DXVA Decoder
 //-----------------------------------------------------------------------------
 
-CDecoder::CDecoder()
- : m_event(true)
+CDecoder::CDecoder(CProcessInfo& processInfo)
+ : m_event(true),
+   m_processInfo(processInfo)
 {
   m_event.Set();
   m_state     = DXVA_OPEN;

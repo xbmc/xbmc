@@ -119,6 +119,7 @@ protected:
   bool   m_requestSkipDeint;
   int    m_codecControlFlags;
   bool m_interlaced;
+  double m_DAR;
   CDVDStreamInfo m_hints;
   CDVDCodecOptions m_options;
 };

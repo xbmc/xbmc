@@ -29,10 +29,12 @@ extern "C" {
 #include "libswresample/swresample.h"
 }
 
+class CProcessInfo;
+
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
 public:
-  CDVDAudioCodecFFmpeg();
+  CDVDAudioCodecFFmpeg(CProcessInfo &processInfo);
   virtual ~CDVDAudioCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();

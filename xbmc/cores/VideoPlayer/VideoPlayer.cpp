@@ -45,6 +45,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 
 #include "DVDDemuxers/DVDDemuxCC.h"
@@ -81,6 +82,7 @@
 #include "cores/omxplayer/OMXHelper.h"
 #endif
 #include "VideoPlayerAudio.h"
+#include "cores/DataCacheCore.h"
 #include "windowing/WindowingFactory.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 
@@ -545,8 +547,8 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       Update(s);
     }
   }
-  g_dataCacheCore.SignalAudioInfoChange();
-  g_dataCacheCore.SignalVideoInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
 }
 
 int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
@@ -2872,8 +2874,8 @@ void CVideoPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_AVCHANGE))
       {
         UpdateStreamInfos();
-        g_dataCacheCore.SignalAudioInfoChange();
-        g_dataCacheCore.SignalVideoInfoChange();
+        CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
+        CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
       }
 
     pMsg->Release();
@@ -3596,8 +3598,8 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
     }
   }
 
-  g_dataCacheCore.SignalAudioInfoChange();
-  g_dataCacheCore.SignalVideoInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
 
   return res;
 }

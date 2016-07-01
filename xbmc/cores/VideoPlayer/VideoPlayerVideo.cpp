@@ -120,6 +120,8 @@ double CVideoPlayerVideo::GetOutputDelay()
 
 bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
+  m_processInfo.ResetVideoCodecInfo();
+
   CRenderInfo info;
   info = m_renderManager.GetRenderInfo();
 
@@ -156,11 +158,13 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   {
     m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
     m_bFpsInvalid = false;
+    m_processInfo.SetVideoFps(m_fFrameRate);
   }
   else
   {
     m_fFrameRate = 25;
     m_bFpsInvalid = true;
+    m_processInfo.SetVideoFps(0);
   }
 
   m_pullupCorrection.ResetVFRDetection();
@@ -1023,6 +1027,7 @@ void CVideoPlayerVideo::CalcFrameRate()
         CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
         m_bFpsInvalid = false;
+        m_processInfo.SetVideoFps(m_fFrameRate);
       }
 
       //reset the stored framerates
