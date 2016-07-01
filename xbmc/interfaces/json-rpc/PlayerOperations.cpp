@@ -1151,6 +1151,9 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
   if (!firstPicturePath.empty())
     params.push_back(firstPicturePath);
 
+  // Reset screensaver when started from JSON only to avoid potential conflict with slideshow screensavers
+  g_application.ResetScreenSaver();
+  g_application.WakeUpScreenSaverAndDPMS();
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
   msg.SetStringParams(params);
   CApplicationMessenger::GetInstance().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
