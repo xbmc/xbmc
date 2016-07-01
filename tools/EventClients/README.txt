@@ -88,14 +88,3 @@ The WiiRemote is mappable with keymap.xml where button id's are the following:
 10 = 1
 11 = 2
 The name is by standard WiiRemote but this can be changed with the --joystick-name
-
-J2ME (Java Phone Application)
------------------------------
-
-To use the J2ME client only CLDC 1.0 and MIDP 1.0 is needed.
-The client will also need bluetooth and must be able to initialize the connection.
-For compilation of the Java Application see Clients/J2ME Client/README but precompiled versions
-exists in our forum.
-
-The Client is mappable in the same manner as PS3 in keymap.xml but with the name J2ME (<joystick name="J2ME">).
-The KeyID's generated in terminal when running j2me_remote.py.
