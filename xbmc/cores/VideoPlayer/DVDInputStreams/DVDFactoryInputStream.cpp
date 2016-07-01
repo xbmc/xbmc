@@ -131,6 +131,12 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
   else if(file.substr(0, 8) == "stack://")
     return new CDVDInputStreamStack(fileitem);
 #endif
+  else if(file.substr(0, 7) == "rtmp://"
+       || file.substr(0, 8) == "rtmpt://"
+       || file.substr(0, 8) == "rtmpe://"
+       || file.substr(0, 9) == "rtmpte://"
+       || file.substr(0, 8) == "rtmps://")
+    return new CDVDInputStreamFFmpeg(fileitem);
   else if (fileitem.IsInternetStream())
   {
     if (fileitem.IsType(".m3u8"))

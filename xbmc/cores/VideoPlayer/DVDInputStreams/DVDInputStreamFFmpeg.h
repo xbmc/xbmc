@@ -39,6 +39,8 @@ public:
   virtual void  Abort() { m_aborted = true;  }
   bool Aborted() { return m_aborted;  }
 
+  const CFileItem& GetItem() const { return m_item; }
+
   bool CanSeek() { return m_can_seek; }
   bool CanPause() { return m_can_pause; }
 
