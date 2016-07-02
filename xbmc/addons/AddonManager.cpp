@@ -1055,18 +1055,37 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
   return libraryName;
 }
 
-// FIXME: This function may not be required
-bool CAddonMgr::LoadAddonDescription(const std::string &path, AddonPtr &addon)
+bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &addon)
 {
+  auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(directory, "addon.xml"));
+
+  XFILE::CFile file;
+  XFILE::auto_buffer buffer;
+  if (file.LoadFile(addonXmlPath, buffer) <= 0)
+  {
+    CLog::Log(LOGERROR, "Failed to read '%s'", addonXmlPath.c_str());
+    return false;
+  }
+
   cp_status_t status;
-  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, CSpecialProtocol::TranslatePath(path).c_str(), &status);
+  cp_context_t* context = m_cpluff->create_context(&status);
+  if (!context)
+    return false;
+
+  auto info = m_cpluff->load_plugin_descriptor_from_memory(context, buffer.get(), buffer.size(), &status);
   if (info)
   {
+    // Correct the path. load_plugin_descriptor_from_memory sets it to 'memory'
+    info->plugin_path = (char*)malloc(strlen(directory.c_str()) + 1);
+    strcpy(info->plugin_path, directory.c_str());
     addon = Factory(info, ADDON_UNKNOWN);
-    m_cpluff->release_info(m_cp_context, info);
-    return NULL != addon.get();
+    m_cpluff->release_info(context, info);
   }
-  return false;
+  else
+    CLog::Log(LOGERROR, "Failed to parse '%s'", addonXmlPath.c_str());
+
+  m_cpluff->destroy_context(context);
+  return addon != nullptr;
 }
 
 bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons)
@@ -1124,27 +1143,6 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
   return true;
 }
 
-bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPtr &addon)
-{
-  // create a context for these addons
-  cp_status_t status;
-  cp_context_t *context = m_cpluff->create_context(&status);
-  if (!root || !context)
-    return false;
-
-  // dump the XML back to text
-  std::string xml;
-  xml << TiXmlDeclaration("1.0", "UTF-8", "");
-  xml << *root;
-  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
-  if (info)
-  {
-    addon = Factory(info, ADDON_UNKNOWN);
-    m_cpluff->release_info(context, info);
-  }
-  m_cpluff->destroy_context(context);
-  return addon != NULL;
-}
 
 bool CAddonMgr::StartServices(const bool beforelogin)
 {
