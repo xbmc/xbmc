@@ -387,7 +387,7 @@ bool CMMALVideo::CreateDeinterlace(EINTERLACEMETHOD interlace_method)
   m_deint_input->userdata = (struct MMAL_PORT_USERDATA_T *)this;
 
   // Image_fx assumed 3 frames of context. simple deinterlace doesn't require this
-  status = mmal_port_parameter_set_uint32(m_deint_input, MMAL_PARAMETER_EXTRA_BUFFERS, GetAllowedReferences() - 5 + advanced_deinterlace ? 2:0);
+  status = mmal_port_parameter_set_uint32(m_deint_input, MMAL_PARAMETER_EXTRA_BUFFERS, GetAllowedReferences() - 4 + advanced_deinterlace ? 2:0);
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to enable extra buffers on %s (status=%x %s)", CLASSNAME, __func__, m_deint_input->name, status, mmal_status_to_string(status));
 
