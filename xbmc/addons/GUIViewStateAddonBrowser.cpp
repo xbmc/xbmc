@@ -60,7 +60,6 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
   }
   SetViewAsControl(DEFAULT_VIEW_AUTO);
 
-  SetSortOrder(SortOrderAscending);
   LoadViewState(items.GetPath(), WINDOW_ADDON_BROWSER);
 }
 
