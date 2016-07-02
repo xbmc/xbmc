@@ -120,8 +120,7 @@ void CPVRGUIInfo::Start(void)
 void CPVRGUIInfo::Stop(void)
 {
   StopThread();
-  if (g_PVRTimers)
-    g_PVRTimers->UnregisterObserver(this);
+  g_PVRManager.UnregisterObserver(this);
 }
 
 void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
@@ -196,7 +195,7 @@ void CPVRGUIInfo::Process(void)
   int toggleInterval = g_advancedSettings.m_iPVRInfoToggleInterval / 1000;
 
   /* updated on request */
-  g_PVRTimers->RegisterObserver(this);
+  g_PVRManager.RegisterObserver(this);
   UpdateTimersCache();
 
   /* update the backend cache once initially */

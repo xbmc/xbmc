@@ -99,8 +99,7 @@ void CGUIWindowPVRGuide::RegisterObservers(void)
 {
   CSingleLock lock(m_critSection);
   g_EpgContainer.RegisterObserver(this);
-  if (g_PVRTimers)
-    g_PVRTimers->RegisterObserver(this);
+  g_PVRManager.RegisterObserver(this);
   CGUIWindowPVRBase::RegisterObservers();
 }
 
@@ -108,8 +107,7 @@ void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
   CSingleLock lock(m_critSection);
   CGUIWindowPVRBase::UnregisterObservers();
-  if (g_PVRTimers)
-    g_PVRTimers->UnregisterObserver(this);
+  g_PVRManager.UnregisterObserver(this);
   g_EpgContainer.UnregisterObserver(this);
 }
 
