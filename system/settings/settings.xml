@@ -858,7 +858,7 @@
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-        </setting>		
+        </setting>
       </group>
       <group id="2" label="744">
         <setting id="filelists.showextensions" type="boolean" label="497" help="36123">
@@ -900,7 +900,7 @@
       </group>
     </category>
     <category id="video" label="14215" help="38107">
-	  <group id="1" label="593">
+      <group id="1" label="593">
         <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
           <level>0</level>
           <default>1</default> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
@@ -929,8 +929,8 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-      </group>		
-	  <group id="2" label="744">
+      </group>
+      <group id="2" label="744">
         <setting id="myvideos.stackvideos" type="boolean" label="20435" help="36182">
           <level>1</level>
           <default>false</default>
@@ -941,7 +941,7 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-      </group>	
+      </group>
       <group id="3" label="14022">
         <setting id="videolibrary.showallitems" type="boolean" label="38011" help="38012">
           <level>2</level>
@@ -951,6 +951,16 @@
         <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
           <level>0</level>
           <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.groupsingleitemsets" type="boolean" parent="videolibrary.groupmoviesets" label="20470" help="36157">
+          <level>1</level>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
@@ -1003,23 +1013,13 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videolibrary.groupsingleitemsets" type="boolean" label="20470" help="36157">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
       </group>
-    </category>	
+    </category>
     <category id="music" label="14216" help="38108">
       <group id="1" label="593">
         <setting id="musicfiles.trackformat" type="string" label="13307" help="36275">
@@ -1054,13 +1054,13 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-      </group>  
+      </group>
       <group id="2" label="744">
         <setting id="musicfiles.usetags" type="boolean" label="258" help="36274">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
-        </setting>	  
+        </setting>
       </group>
       <group id="3" label="14022">
         <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
@@ -1688,7 +1688,7 @@
           <default>Kodi</default>
           <control type="edit" format="string" />
         </setting>
-      </group>		
+      </group>
       <group id="2" label="1259">
       <requirement>HAS_ZEROCONF</requirement>
         <setting id="services.zeroconf" type="boolean" label="1260" help="36342">
@@ -2300,6 +2300,8 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+      </group>
+      <group id="2" label="15108">
         <setting id="audiooutput.guisoundmode" type="integer" label="34120" help="36373">
           <level>0</level>
           <default>1</default> <!-- AE_SOUND_IDLE -->
@@ -2312,42 +2314,19 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-      </group>
-      <group id="2" label="14251">
-        <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
-          <level>3</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
-              </or>
-            </dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="audiooutput.dspsettings" type="action" label="36436" help="36437">
-          <level>3</level>
-          <control type="button" format="action" />
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.dspresetdb" type="action" label="14082" help="36439">
-          <level>3</level>
-          <control type="button" format="action" />
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspresetdb</condition>
-              </or>
-            </dependency>
-          </dependencies>
+        <setting id="lookandfeel.soundskin" type="addon" label="24006" help="36110">
+          <level>0</level>
+          <default>resource.uisounds.confluence</default>
+          <constraints>
+            <addontype>kodi.resource.uisounds</addontype>
+            <allowempty>true</allowempty>
+          </constraints>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
         </setting>
       </group>
       <group id="3" label="14252">
@@ -2459,6 +2438,43 @@
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
+        </setting>
+      </group>
+      <group id="4" label="14251">
+        <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
+          <level>3</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="audiooutput.dspsettings" type="action" label="36436" help="36437">
+          <level>3</level>
+          <control type="button" format="action" />
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.dspresetdb" type="action" label="14082" help="36439">
+          <level>3</level>
+          <control type="button" format="action" />
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspresetdb</condition>
+              </or>
+            </dependency>
+          </dependencies>
         </setting>
       </group>
     </category>
@@ -2916,32 +2932,6 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
-        <setting id="audiooutput.guisoundmode" type="integer" label="34120" help="36373">
-          <level>0</level>
-          <default>1</default> <!-- AE_SOUND_IDLE -->
-          <constraints>
-            <options>
-              <option label="34121">1</option> <!-- AE_SOUND_IDLE -->
-              <option label="34122">2</option> <!-- AE_SOUND_ALWAYS -->
-              <option label="34123">0</option> <!-- AE_SOUND_OFF -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
-          <level>0</level>
-          <default>resource.uisounds.confluence</default>
-          <constraints>
-            <addontype>kodi.resource.uisounds</addontype>
-            <allowempty>true</allowempty>
-          </constraints>
-          <updates>
-            <update type="change" />
-          </updates>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
         <setting id="lookandfeel.stereostrength" type="integer" label="36550" help="36551">
           <level>2</level>
           <default>5</default>
@@ -3118,12 +3108,12 @@
           <control type="button" format="action" />
         </setting>
       </group>
-      <group id="3" label="14275">		
+      <group id="3" label="14275">
       <requirement>
-          <or>
+        <or>
           <condition>HAS_EVENT_SERVER</condition>
           <condition>HAS_JSONRPC</condition>
-          </or>
+        </or>
       </requirement>
         <setting id="services.esenabled" type="boolean" label="14276" help="36334">
           <level>1</level>
@@ -3327,7 +3317,7 @@
         </setting>
         <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
           <level>0</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
