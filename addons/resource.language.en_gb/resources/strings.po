@@ -8179,7 +8179,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#15108"
-msgid "GUI sounds"
+msgid "GUI Sounds"
 msgstr ""
 
 msgctxt "#15109"
@@ -12473,7 +12473,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20458"
-msgid "Group movies in sets"
+msgid "Show movie sets"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -12528,7 +12528,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20470"
-msgid "Use movie sets for single movies"
+msgid "Include sets containing a single movie"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13798,6 +13798,7 @@ msgctxt "#24005"
 msgid "Media sources"
 msgstr ""
 
+#: system/settings/settings.xml
 #. Name of an add-on type
 #: xbmc/addons/Addon.cpp
 msgctxt "#24006"
