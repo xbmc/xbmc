@@ -323,10 +323,10 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
   if (bChanged)
   {
     UpdateChannels();
-    SetChanged();
+    g_PVRManager.SetChanged();
     lock.Leave();
 
-    NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
+    g_PVRManager.NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
     /* queue notifications / fill eventlog */
     for (const auto &entry : timerNotifications)
@@ -579,13 +579,13 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
         {
           CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
           bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
-          SetChanged();
+          g_PVRManager.SetChanged();
         }
       }
     }
   }
 
-  NotifyObservers(ObservableMessageTimersReset);
+  g_PVRManager.NotifyObservers(ObservableMessageTimersReset);
 
   return bReturn;
 }

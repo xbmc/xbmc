@@ -20,7 +20,6 @@
  */
 
 #include "FileItem.h"
-#include "utils/Observer.h"
 #include "video/VideoDatabase.h"
 
 #include "PVRRecording.h"
@@ -29,7 +28,7 @@ namespace PVR
 {
   class CPVRRecordingsPath;
 
-  class CPVRRecordings : public Observable
+  class CPVRRecordings
   {
   private:
     typedef std::map<CPVRRecordingUid, CPVRRecordingPtr> PVR_RECORDINGMAP;

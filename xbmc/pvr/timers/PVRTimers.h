@@ -41,8 +41,7 @@ namespace PVR
 {
   class CPVRTimersPath;
 
-  class CPVRTimers : public Observer,
-                     public Observable
+  class CPVRTimers : public Observer
   {
   public:
     CPVRTimers(void);

@@ -160,10 +160,10 @@ void CPVRRecordings::Update(void)
 
   lock.Enter();
   m_bIsUpdating = false;
-  SetChanged();
+  g_PVRManager.SetChanged();
   lock.Leave();
 
-  NotifyObservers(ObservableMessageRecordings);
+  g_PVRManager.NotifyObservers(ObservableMessageRecordings);
 }
 
 int CPVRRecordings::GetNumTVRecordings() const
