@@ -108,13 +108,6 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
   return true;
 }
 
-#define SET_IF_NOT_EMPTY(x,y) \
-  { \
-    if (!x.empty()) \
-       x = y; \
-  }
-
-
 CRepository::FetchStatus CRepository::FetchIfChanged(const CRepository::DirInfo& repo,
     const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) noexcept
 {
@@ -154,24 +147,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const CRepository::DirInfo&
     content = std::move(buffer);
   }
 
-  CXBMCTinyXML doc;
-  if (!doc.Parse(content) || !doc.RootElement()
-      || !CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), addons))
-  {
-    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml. Malformed.");
-    return STATUS_ERROR;
-  }
-
-  for (IVECADDONS i = addons.begin(); i != addons.end(); ++i)
-  {
-    AddonPtr addon = *i;
-    std::string file = StringUtils::Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().asString().c_str());
-    addon->Props().path = URIUtils::AddFileToFolder(repo.datadir,file);
-    SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(repo.datadir,addon->ID()+"/icon.png"))
-    SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(repo.datadir,addon->ID()+"/fanart.jpg"))
-  }
-
-  return STATUS_OK;
+  return CAddonMgr::GetInstance().AddonsFromRepoXML(repo, content, addons) ? STATUS_OK : STATUS_ERROR;
 }
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}
