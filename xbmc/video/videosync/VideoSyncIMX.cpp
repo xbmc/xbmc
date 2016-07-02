@@ -50,7 +50,7 @@ bool CVideoSyncIMX::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncIMX::Run(volatile bool& stop)
+void CVideoSyncIMX::Run(std::atomic<bool>& stop)
 {
   int counter;
 

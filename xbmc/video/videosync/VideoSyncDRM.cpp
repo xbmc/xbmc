@@ -78,7 +78,7 @@ bool CVideoSyncDRM::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncDRM::Run(volatile bool& stop)
+void CVideoSyncDRM::Run(std::atomic<bool>& stop)
 {
   drmVBlank vbl;
   VblInfo info;

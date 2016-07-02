@@ -47,7 +47,7 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncAndroid::Run(volatile bool& stop)
+void CVideoSyncAndroid::Run(std::atomic<bool>& stop)
 {
   while(!stop && !m_abort)
   {

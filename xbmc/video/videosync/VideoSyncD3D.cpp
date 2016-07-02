@@ -67,7 +67,7 @@ bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncD3D::Run(volatile bool& stop)
+void CVideoSyncD3D::Run(std::atomic<bool>& stop)
 {
   int64_t Now;
   int64_t LastVBlankTime;

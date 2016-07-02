@@ -183,7 +183,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncGLX::Run(volatile bool& stop)
+void CVideoSyncGLX::Run(std::atomic<bool>& stop)
 {
   unsigned int  PrevVblankCount;
   unsigned int  VblankCount;

@@ -49,7 +49,7 @@ bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
   return true;
 }
 
-void CVideoSyncOsx::Run(volatile bool& stop)
+void CVideoSyncOsx::Run(std::atomic<bool>& stop)
 {
   InitDisplayLink();
 
