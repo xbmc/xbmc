@@ -575,7 +575,8 @@ bool CAddonInstallJob::DoWork()
         {
           CFile::Delete(package);
 
-          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: MD5 mismatch after download %s", m_addon->ID().c_str(), package.c_str());
+          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: MD5 mismatch after download. Expected %s, was %s",
+              m_addon->ID().c_str(), m_hash.c_str(), md5.c_str());
           ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
           return false;
         }
