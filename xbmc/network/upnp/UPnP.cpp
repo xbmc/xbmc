@@ -421,7 +421,7 @@ CUPnP::CUPnP() :
     m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
     NPT_LogManager::GetDefault().Configure("plist:.level=FINE;.handlers=CustomHandler;");
-    NPT_LogHandler::Create("CustomHandler", "xbmc", m_LogHandler);
+    NPT_LogHandler::Create("xbmc", "CustomHandler", m_LogHandler);
     m_LogHandler->SetCustomHandlerFunction(&UPnPLogger);
 
     // initialize upnp context
