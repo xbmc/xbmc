@@ -220,7 +220,9 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   if (!CAddonMgr::GetInstance().GetAddon(repoId, repo, ADDON_REPOSITORY))
     return;
 
-  std::string hash = std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon);
+  std::string hash;
+  if (!std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon, hash))
+    return;
   DoInstall(addon, std::static_pointer_cast<CRepository>(repo), hash, true, false);
 }
 
@@ -497,8 +499,7 @@ bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, const std::s
   if (!CAddonMgr::GetInstance().GetAddon(repoID, repo, ADDON_REPOSITORY))
     return false;
 
-  hash = std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon);
-  return true;
+  return std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon, hash);
 }
 
 bool CAddonInstallJob::DoWork()
