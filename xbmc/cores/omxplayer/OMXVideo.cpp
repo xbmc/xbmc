@@ -242,7 +242,10 @@ bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
 
   if(m_deinterlace)
   {
-    EINTERLACEMETHOD interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+    EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+    if (interlace_method == VS_INTERLACEMETHOD_AUTO)
+      interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
+
     bool advanced_deinterlace = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
     bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
 
