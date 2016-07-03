@@ -149,12 +149,12 @@ CFFmpegImage::~CFFmpegImage()
   if (m_ioctx)
     FreeIOCtx(&m_ioctx);
   if (m_fctx)
-  {
-    for (unsigned int i = 0; i < m_fctx->nb_streams; i++) {
-      avcodec_close(m_fctx->streams[i]->codec);
-    }
-
     avformat_close_input(&m_fctx);
+
+  if (m_ctx)
+  {
+    avcodec_close(m_ctx);
+    avcodec_free_context(&m_ctx);
   }
 
   m_buf.data = nullptr;
@@ -249,9 +249,12 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
     return false;
   }
 
-  AVCodecContext* codec_ctx = m_fctx->streams[0]->codec;
-  AVCodec* codec = avcodec_find_decoder(codec_ctx->codec_id);
-  if (avcodec_open2(codec_ctx, codec, NULL) < 0)
+  AVCodec* codec = avcodec_find_decoder(m_fctx->streams[0]->codecpar->codec_id);
+  m_ctx = avcodec_alloc_context3(codec);
+  if (m_ctx)
+    avcodec_parameters_to_context(m_ctx, m_fctx->streams[0]->codecpar);
+
+  if (avcodec_open2(m_ctx, codec, NULL) < 0)
   {
     avformat_close_input(&m_fctx);
     FreeIOCtx(&m_ioctx);
@@ -274,9 +277,15 @@ AVFrame* CFFmpegImage::ExtractFrame()
   int frame_decoded = 0;
   if (av_read_frame(m_fctx, &pkt) == 0)
   {
-    int ret = avcodec_decode_video2(m_fctx->streams[0]->codec, frame, &frame_decoded, &pkt);
+    int ret = avcodec_send_packet(m_ctx, &pkt);
+
+    if (ret >= 0)
+      ret = avcodec_receive_frame(m_ctx, frame);
+
     if (ret < 0)
       CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
+    else
+      frame_decoded = 1;
   }
   if (frame_decoded != 0)
   {
@@ -658,7 +667,14 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   avpkt.data = m_outputBuffer;
   avpkt.size = internalBufOutSize;
 
-  if ((avcodec_encode_video2(tdm.avOutctx, &avpkt, tdm.frame_input, &got_package) < 0) || (got_package == 0))
+  int ret = avcodec_send_frame(tdm.avOutctx, tdm.frame_input);
+  if (ret >= 0)
+    ret = avcodec_receive_packet(tdm.avOutctx, &avpkt);
+
+  if (ret >= 0)
+    got_package = 1;
+
+  if (ret < 0 || got_package == 0)
   {
     CLog::Log(LOGERROR, "Could not encode thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
