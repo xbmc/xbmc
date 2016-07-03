@@ -594,6 +594,8 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
   else if (!strcmp(strLanguage, "srp"))
     strGuiLanguage = "sr_rs@latin";
   else if (!strcmp(strLanguage, "slo"))
+    strGuiLanguage = "sk_sk";
+  else if (!strcmp(strLanguage, "slv"))
     strGuiLanguage = "sl_si";
   else if (!strcmp(strLanguage, "spa"))
     strGuiLanguage = "es_es";
