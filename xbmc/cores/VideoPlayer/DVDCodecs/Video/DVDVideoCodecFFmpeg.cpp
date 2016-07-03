@@ -98,7 +98,10 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
   // if frame threading is enabled hw accel is not allowed
   if(ctx->m_decoderState != STATE_HW_SINGLE)
   {
-    return avcodec_default_get_format(avctx, fmt);
+    AVPixelFormat defaultFmt = avcodec_default_get_format(avctx, fmt);
+    pixFmtName = av_get_pix_fmt_name(defaultFmt);
+    ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
+    return defaultFmt;
   }
 
   // fix an ffmpeg issue here, it calls us with an invalid profile
