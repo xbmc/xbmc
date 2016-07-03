@@ -93,6 +93,48 @@ static CADeviceList GetDevices()
   return list;
 }
 
+//---------- DEVICE CHANGED EVENT HANDLING
+// when device list change callbacks are received
+// inform the ae engine this amount of time after
+// the last callback was received (bundle multiple callbacks)
+// into one final call
+#define DEVICE_LIST_CHANGED_TIMER_MS 1500
+
+CDeviceChangeListTimeout::CDeviceChangeListTimeout()
+{
+  m_pDeviceListChangedTimer = new CTimer(this);
+}
+
+CDeviceChangeListTimeout::~CDeviceChangeListTimeout()
+{
+  delete m_pDeviceListChangedTimer;
+}
+
+// ITimerCallback
+// inform AE that the device list changed
+void CDeviceChangeListTimeout::OnTimeout()
+{
+  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist delayed timer fired");
+  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
+  CAEFactory::DeviceChange();
+  CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+}
+
+// reset the timer to delay the timeout a bit more  
+void CDeviceChangeListTimeout::ResetDeviceListChangedTimer()
+{
+  if (m_pDeviceListChangedTimer->IsRunning())
+  {
+    m_pDeviceListChangedTimer->Restart();
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist delayed timer reset");
+  }
+  else
+  {
+    m_pDeviceListChangedTimer->Start(DEVICE_LIST_CHANGED_TIMER_MS);
+    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist delayed timer armed");
+  }
+}
+
 OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
                          UInt32                              inNumberAddresses,
                          const AudioObjectPropertyAddress    inAddresses[],
@@ -100,6 +142,7 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
 {
   bool deviceChanged = false;
   static AudioDeviceID oldDefaultDevice = 0;
+  static CDeviceChangeListTimeout DeviceListChangedTimeout;
   AudioDeviceID currentDefaultOutputDevice = 0;
 
   for (unsigned int i = 0; i < inNumberAddresses; i++)
@@ -126,12 +169,12 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
 
   if  (deviceChanged)
   {
-    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
-    CAEFactory::DeviceChange();
-    CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
+    // reset the timer which will do the real work once timed out
+    DeviceListChangedTimeout.ResetDeviceListChangedTimer();
   }
   return noErr;
 }
+//---------- DEVICE CHANGED EVENT HANDLING END
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkDARWINOSX::CAESinkDARWINOSX()
