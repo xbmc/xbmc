@@ -5348,7 +5348,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); i++)
       {
         if (prop.name == player_process[i].str)
-          return videoplayer[i].val;
+          return player_process[i].val;
       }
     }
     else if (cat.name == "slideshow")
