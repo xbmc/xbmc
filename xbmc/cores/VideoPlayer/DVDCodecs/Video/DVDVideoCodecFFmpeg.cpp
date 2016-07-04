@@ -398,7 +398,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   UpdateName();
 
-  m_processInfo.SetVideoDecoderName(m_name, m_pHardware ? true : false);
   m_processInfo.SetVideoDimensions(m_pCodecContext->coded_width, m_pCodecContext->coded_height);
   return true;
 }
@@ -512,6 +511,8 @@ void CDVDVideoCodecFFmpeg::UpdateName()
 
   if(m_pHardware)
     m_name += "-" + m_pHardware->Name();
+
+  m_processInfo.SetVideoDecoderName(m_name, m_pHardware ? true : false);
 
   CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: %s", m_name.c_str());
 }
