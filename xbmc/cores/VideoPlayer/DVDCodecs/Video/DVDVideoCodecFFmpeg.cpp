@@ -959,6 +959,11 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
 
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
+
+    if (filters.compare(0,5,"yadif") == 0)
+    {
+      m_processInfo.SetVideoDeintMethod(filters);
+    }
   }
   else
   {
@@ -967,6 +972,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_link");
       return result;
     }
+
+    m_processInfo.SetVideoDeintMethod("none");
   }
 
   if ((result = avfilter_graph_config(m_pFilterGraph,  nullptr)) < 0)
