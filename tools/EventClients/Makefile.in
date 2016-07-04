@@ -10,14 +10,9 @@ Clients/WiiRemote/WiiRemote:
 	cd Clients/WiiRemote && \
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) CWIID_WiiRemote.cpp -lcwiid -lbluetooth -DICON_PATH="\"$(datarootdir)/pixmaps/@APP_NAME_LC@/\"" $(WII_EXTRA_OPTS) -o WiiRemote
 
-j2me-remote:
-	cd Clients/J2ME\ Client
-	ant -f build.xml
-
 install: Clients/WiiRemote/WiiRemote
 	mkdir -p $(DESTDIR)$(bindir)
 	cp -a Clients/WiiRemote/WiiRemote $(DESTDIR)$(bindir)/@APP_NAME_LC@-wiiremote
-	cp -a Clients/J2ME\ Client/j2me_remote.py $(DESTDIR)$(bindir)/@APP_NAME_LC@-j2meremote
 	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(DESTDIR)$(bindir)/@APP_NAME_LC@-ps3remote
 	cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(DESTDIR)$(bindir)/@APP_NAME_LC@-ps3d
 	cp -a Clients/Kodi\ Send/kodi-send.py $(DESTDIR)$(bindir)/@APP_NAME_LC@-send

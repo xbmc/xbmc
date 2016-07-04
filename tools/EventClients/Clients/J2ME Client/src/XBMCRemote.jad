@@ -1,9 +1,0 @@
-MIDlet-1: MainScreen, , MainScreen
-MIDlet-Icon: icon.png
-MIDlet-Jar-Size: 12153
-MIDlet-Jar-URL: XBMC Remote.jar
-MIDlet-Name: XBMC Remote
-MIDlet-Vendor: team-xbmc
-MIDlet-Version: 0.1
-MicroEdition-Configuration: CLDC-1.0
-MicroEdition-Profile: MIDP-1.0

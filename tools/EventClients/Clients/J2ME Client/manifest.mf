@@ -1,7 +1,0 @@
-MIDlet-1: MainScreen, , MainScreen
-MIDlet-Vendor: team-xbmc
-MIDlet-Name: XBMC Remote
-MIDlet-Icon: icon.png
-MIDlet-Version: 0.1
-MicroEdition-Configuration: CLDC-1.0
-MicroEdition-Profile: MIDP-1.0
