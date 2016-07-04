@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="Kodi Add-on repository"
-		version="2.5.4"
+		version="2.5.5"
 		provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -26,7 +26,7 @@
 		<summary lang="cy_GB">Gosod Ychwanegion o Kodi.tv</summary>
 		<summary lang="da_DK">Installer Add-ons fra Kodi.tv</summary>
 		<summary lang="de_DE">Installiere Addons von Kodi.tv</summary>
-		<summary lang="el_GR">Εγκατάσταση Πρόσθετων από το Kodi.tv</summary>
+		<summary lang="el_GR">Εγκατάσταση Προσθέτων από το Kodi.tv</summary>
 		<summary lang="en_AU">Install Add-ons from Kodi.tv</summary>
 		<summary lang="en_GB">Install Add-ons from Kodi.tv</summary>
 		<summary lang="en_NZ">Install Add-ons from Kodi.tv</summary>
@@ -83,7 +83,7 @@
 		<description lang="cy_GB">Llwytho i lawr a gosod ychwanegion o storfa ychwanegion Swyddogol Kodi.tv.{CR}Drwy ddefnyddio'r Storfa swyddogol bydd modd i chi gymryd mantais o'n gwasanaeth drychau ffeiliau i'ch cynorthwyoi lwytho i lawr yn gyflym o ardal yn agos i chi.[CR] Mae pob ychwnaegyn yn y storfa hwn wedi eu profi'n fras, os ydych yn canfod ychwanegyn sydd wedi torri  neu ddim yn gweithio yna hysbyswch Team Kodi fel bod modd i ni weithredu.</description>
 		<description lang="da_DK">Hent og installer add-ons fra det officielle Kodi.tv add-on fjernlager.[CR] Ved at bruge det officielle fjernlager drager du fordel af vores omfattende spejltjeneste, som gør at du kan hente hurtigere fra et sted nær dig.[CR]  Alle add-ons i dette fjernlager har gennemgået grundlæggende tests. Hvis du finder en defekt add-on, så rapporter venligst dette til Team Kodi, så vi kan tage hånd i hanke med eventuelle problemer.</description>
 		<description lang="de_DE">Dies ist das offizielle Kodi.tv Addon-Verzeichnis.[CR]Dieses Addon-Verzeichnis ermöglicht aufgrund umfangreicher Spiegelserver in der Nähe schnelle Downloads.[CR]Alle Addons in diesem Verzeichnis wurden einfachen Tests unterzogen. Sollte dennoch ein Addon nicht richtig funktionieren benachrichtige bitte Team Kodi, damit wir reagieren können.</description>
-		<description lang="el_GR">Λήψη και εγκατάσταση πρόσθετων από το επίσημο αποθετήριο του Kodi.tv.[CR]  Χρησιμοποιώντας το Επίσημο Αποθετήριο μπορείτε να εκμεταλλευτείτε τους εκτεταμένους διακομιστές αρχείων μας για ταχύτερες λήψεις από μία κοντινή σας περιοχή.[CR]  Όλα τα πρόσθετα σε αυτό το αποθετήριο έχουν περάσει τις στοιχειώδεις δοκιμές, αν βρείτε ένα κατεστραμμένο ή ανενεργό πρόσθετο παρακαλούμε να το αναφέρετε στην Ομάδα Kodi ούτως ώστε να ληφθούν οι απαραίτητες ενέργειες.</description>
+		<description lang="el_GR">Πραγματοποιήστε λήψη και εγκατάσταση προσθέτων από το επίσημο αποθετήριο του Kodi.tv.[CR]  Χρησιμοποιώντας το Επίσημο Αποθετήριο μπορείτε να εκμεταλλευτείτε τους εκτεταμένους διακομιστές αρχείων μας για ταχύτερες λήψεις από μία κοντινή σας περιοχή.[CR]  Όλα τα πρόσθετα σε αυτό το αποθετήριο έχουν περάσει τις στοιχειώδεις δοκιμές, αν βρείτε ένα κατεστραμμένο ή ανενεργό πρόσθετο παρακαλούμε να το αναφέρετε στην Ομάδα Kodi ούτως ώστε να πραγματοποιηθούν οι απαραίτητες ενέργειες.</description>
 		<description lang="en_AU">Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have undergone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed.</description>
 		<description lang="en_GB">Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed.</description>
 		<description lang="en_NZ">Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed.</description>
@@ -140,7 +140,7 @@
 		<disclaimer lang="cy_GB">Nid Team Kodi wnaeth yr holl ychwanegion yn y storfa hon ac nid ydynt yn gyfrifol am eu cynnwys.</disclaimer>
 		<disclaimer lang="da_DK">Team Kodi har ikke lavet alle add-ons i dette fjernlager og er ikke ansvarlig for deres indhold</disclaimer>
 		<disclaimer lang="de_DE">Die Addons in diesem Verzeichnis wurden nicht alle vom Team Kodi erstellt. Verantwortlich für den Inhalt sind die jeweiligen Autoren.</disclaimer>
-		<disclaimer lang="el_GR">Η Ομάδα Kodi δεν δημιούργησε όλα τα πρόσθετα σε αυτό το αποθετήριο συνεπώς δεν είναι υπεύθυνοι για το περιεχόμενό τους</disclaimer>
+		<disclaimer lang="el_GR">Η Ομάδα Kodi δεν δημιούργησε όλα τα πρόσθετα σε αυτό το αποθετήριο συνεπώς δεν είναι υπεύθυνη για το περιεχόμενό τους</disclaimer>
 		<disclaimer lang="en_AU">Team Kodi did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="en_GB">Team Kodi did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="en_NZ">Team Kodi did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
