@@ -75,3 +75,7 @@ msgstr "Локален превод е достапен"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Сокриј"

@@ -24,6 +24,10 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Buscar..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Amosar os fanart como fondo"
+
 msgctxt "#31003"
 msgid "Cinema mode"
 msgstr "Modo cine"
@@ -155,6 +159,10 @@ msgstr "Páxinas"
 msgctxt "#31036"
 msgid "items"
 msgstr "Elementos"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Lista de pistas"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -503,3 +511,11 @@ msgstr "Colaboradores"
 msgctxt "#31132"
 msgid "min"
 msgstr "mín."
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Agochar"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Restante"

@@ -543,3 +543,7 @@ msgstr "Choose home fanart pack"
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Hide"

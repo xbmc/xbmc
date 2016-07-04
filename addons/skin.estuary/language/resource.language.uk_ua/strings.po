@@ -123,3 +123,7 @@ msgstr "Виберіть профіль користувача Kodi,[CR]щоб �
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Приховати"

@@ -547,3 +547,11 @@ msgstr "Choisir le paquet de FanArt pour l'accueil"
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Masquer"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Restant"

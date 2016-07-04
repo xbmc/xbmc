@@ -127,3 +127,7 @@ msgstr "Majúscules"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Amaga"

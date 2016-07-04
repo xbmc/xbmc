@@ -547,3 +547,11 @@ msgstr "Scegli pacchetto fanart home"
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Nascondi"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Rimanenti"

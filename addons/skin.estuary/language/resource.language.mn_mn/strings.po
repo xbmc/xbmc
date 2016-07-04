@@ -27,3 +27,7 @@ msgstr "Хайх..."
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "бусад тохиргоонууд"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Нуух"

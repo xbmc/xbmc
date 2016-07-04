@@ -547,3 +547,11 @@ msgstr "Vybrať domovský fanart balík"
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Skryť"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Zostáva"

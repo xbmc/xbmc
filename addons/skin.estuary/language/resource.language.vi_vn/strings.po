@@ -83,3 +83,7 @@ msgstr "Phụ đề sẵn có trong máy"
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Thiết lập kênh"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Ẩn"

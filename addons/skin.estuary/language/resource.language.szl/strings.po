@@ -107,3 +107,7 @@ msgstr "Ôbier swōj profil Kodi,[CR]coby sie zalogować i kōntynuować"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Skryj"

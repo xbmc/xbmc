@@ -63,3 +63,7 @@ msgstr "تتوفر ترجمات محليه"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "تغير"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "إخف"

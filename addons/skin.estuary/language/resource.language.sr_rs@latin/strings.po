@@ -547,3 +547,7 @@ msgstr "Izaberite paket umetnosti ljubitelja za glavni ekran"
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Sakrij"

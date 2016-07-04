@@ -47,3 +47,7 @@ msgstr "Rás bólkur"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Stórt"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Goym"

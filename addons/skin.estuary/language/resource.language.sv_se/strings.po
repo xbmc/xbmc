@@ -527,3 +527,7 @@ msgstr "Huvudmeny relaterade inställningar: Konfigurera startskärmen till ditt
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Dölj"

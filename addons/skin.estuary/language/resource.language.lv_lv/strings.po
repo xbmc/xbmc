@@ -67,3 +67,7 @@ msgstr "Pieejami lokālie subtitri"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Slēpt"

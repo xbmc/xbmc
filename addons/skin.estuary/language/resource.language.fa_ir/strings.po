@@ -95,3 +95,7 @@ msgstr "زیر نویس محلی موجود"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "مخفی کردن"

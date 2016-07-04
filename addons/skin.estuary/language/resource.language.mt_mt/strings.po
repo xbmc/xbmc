@@ -99,3 +99,7 @@ msgstr "Għażliet tal-istazzjon"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Kbar"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Aħbi"

@@ -547,3 +547,7 @@ msgstr "选择主界面同人画包"
 msgctxt "#31132"
 msgid "min"
 msgstr "分"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "隐藏"

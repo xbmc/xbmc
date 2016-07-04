@@ -119,3 +119,7 @@ msgstr "เลือกโปรไฟล์ผู้ใช้ Kodi ของค
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "ซ่อน"

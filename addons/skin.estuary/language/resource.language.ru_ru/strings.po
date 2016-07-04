@@ -287,3 +287,7 @@ msgstr "Телетекст"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Широкий список"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Скрыть"

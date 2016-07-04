@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="0.8.1" name="Estuary" provider-name="phil65, Piers">
+<addon id="skin.estuary" version="0.8.2" name="Estuary" provider-name="phil65, Piers">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -14,6 +14,7 @@
 		<summary lang="en_GB">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
 		<summary lang="en_NZ">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
 		<summary lang="en_US">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
+		<summary lang="es_ES">Skin Estuary, creado por phil65 and Piers (skin por defecto de Kodi).</summary>
 		<summary lang="fi_FI">Estuary ulkoasu phil65 ja Piersiltä. (Kodin oletus ulkoasu)</summary>
 		<summary lang="fr_CA">Habillage Estuaire par phil65 et Piers (habillage par défaut de Kodi).</summary>
 		<summary lang="fr_FR">Estuary, un habillage par phil65 et Piers (habillage d'origine de Kodi).</summary>
@@ -34,13 +35,15 @@
 		<summary lang="sv_SE">Estuary-skin av phil65 och Piers. (Kodi's standard-skin)</summary>
 		<summary lang="tr_TR">Estuary dış görünümü. phil65 ve Piers (Kodi'nin varsayılan dış görünümü)</summary>
 		<summary lang="zh_CN">phil65 和 Piers 开发的 Estuary 皮肤（Kodi 的默认皮肤）</summary>
+		<summary lang="zh_TW">phil65與Piers 製作的Estuary佈景主題（Kodi的預設佈景主題）</summary>
 		<description lang="bg_BG">Estuary е стандартният облик на Kodi 17 и по-новите версии. Целта е да се улеснят хората които се сблъскват за първи път с Kodi.</description>
 		<description lang="cs_CZ">Estuary je výchozí skin pro Kodi 17.0 a výše. Jeho snahou je zjednodušit používání Kodi pro nové uživatele.</description>
 		<description lang="de_DE">Estuary ist der Standardskin für Kodi 17.0 und höher. Ziel war es, einen einfach zu bedienenden Skin für neue Kodi-User zu entwickeln.</description>
-		<description lang="el_GR">Το Estuary είναι η προεπιλεγμένη αμφίεση για τις εκδόσεις Kodi 17.0 και άνω.Το οποίο προσπαθεί να είναι εύκολο για τους αρχάριους χρήστες του Kodi να το κατανοήσουν και να το χρησιμοποιήσουν.</description>
+		<description lang="el_GR">Το Estuary είναι η προεπιλεγμένη αμφίεση για τις εκδόσεις Kodi 17.0 και άνω. Επιχειρεί να είναι προσιτό στους αρχάριους χρήστες του Kodi για να το κατανοήσουν και να το χρησιμοποιήσουν.</description>
 		<description lang="en_GB">Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use.</description>
 		<description lang="en_NZ">Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use.</description>
 		<description lang="en_US">Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use.</description>
+		<description lang="es_ES">Estuary es el skin por defecto para Kodi 17.0 o superior. Su objetivo es la facilidad de comprensión y uso para usuarios primerizos de Kodi.</description>
 		<description lang="fi_FI">Estuary on oletusulkoasu Kodi:n versiosta 17.0 lähtien. Se pyrkii olemaan helppo ymmärtää ja käyttää Kodi:n ensikäyttäjille. </description>
 		<description lang="fr_CA">Estuaire est l'habillage par défaut pour Kodi 17.0 et ultérieure. Il s'efforce d'être facile à comprendre et à utiliser pour les utilisateurs débutants de Kodi.</description>
 		<description lang="fr_FR">Estuary est l'habillage d'origine pour Kodi 17.0 et supérieur. Il est facile à comprendre et à utiliser pour les utilisateurs novices de Kodi..</description>
@@ -61,13 +64,15 @@
 		<description lang="sv_SE">Estuary är standard-skin för Kodi 17.0 och uppåt. Det försöker att vara lättförståeligt för förstagångsanvändare av Kodi att förstå och använda.</description>
 		<description lang="tr_TR">Estuary Kodi 17.0 ve yukarısı için varsayılan dış görünümdür. İlk kez Kodi kullananlar için anlaşılması ve kullanımı kolaydır.</description>
 		<description lang="zh_CN">Estuary 是 Kodi 17.0 的默认皮肤。它力求使首次使用 Kodi 的用户易于上手。</description>
+		<description lang="zh_TW">Estuary是Kodi 17.0開始搭載的預設佈景主題。主要在讓第一次使用 Kodi 的使用者可以簡單地上手。</description>
 		<disclaimer lang="bg_BG">Estuary е стандартният облик на Kodi. Премахването му може да предизвика проблеми</disclaimer>
 		<disclaimer lang="cs_CZ">Estuary je výchozí skin pro Kodi, jeho odebráním může dojít k potížím.</disclaimer>
 		<disclaimer lang="de_DE">Estuary ist der Standardskin von Kodi. Ein Entfernen des Skins kann Probleme verursachen.</disclaimer>
-		<disclaimer lang="el_GR">Το Estuary είναι η προεπιλεγμένη αμφίεση για το Kodi, η αφαίρεσή του μπορεί να δημιουργήσει προβλήματα</disclaimer>
+		<disclaimer lang="el_GR">Το Estuary είναι η προεπιλεγμένη αμφίεση για το Kodi. Η αφαίρεσή του μπορεί να δημιουργήσει προβλήματα.</disclaimer>
 		<disclaimer lang="en_GB">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
 		<disclaimer lang="en_NZ">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
 		<disclaimer lang="en_US">Estuary is the default skin for Kodi, removing it may cause issues</disclaimer>
+		<disclaimer lang="es_ES">Estuary es el skin por defecto de Kodi. Desinstalarlo puede causar problemas.</disclaimer>
 		<disclaimer lang="fi_FI">Estuary on Kodin oletusteema, sen poisto voi aiheuttaa ongelmia</disclaimer>
 		<disclaimer lang="fr_CA">Estuaire est l'habillage par défaut de Kodi, le supprimer peut créer des problèmes</disclaimer>
 		<disclaimer lang="fr_FR">Estuary est l'habillage d'origine de Kodi, le retirer peut créer des problèmes</disclaimer>
@@ -88,6 +93,7 @@
 		<disclaimer lang="sv_SE">Estuary är standard skalet för Kodi, ta bort den kan orsaka problem</disclaimer>
 		<disclaimer lang="tr_TR">Estuary Kodi için varsayılan dış görünümdür, kaldırmak sorunlara yol açabilir</disclaimer>
 		<disclaimer lang="zh_CN">Estuary 是 Kodi 的默认皮肤，删除它可能导致故障。</disclaimer>
+		<disclaimer lang="zh_TW">Estuary 是 Kodi 預設的佈景主題，移除它可能會造成問題</disclaimer>
 		<platform>all</platform>
 		<license>CC BY-SA 4.0, GNU GENERAL PUBLIC LICENSE Version 2.0</license>
 		<forum>http://forum.kodi.tv/</forum>

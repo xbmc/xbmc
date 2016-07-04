@@ -483,3 +483,7 @@ msgstr "תורמים"
 msgctxt "#31131"
 msgid "Choose home fanart pack"
 msgstr "בחירת חבילת אומנות אוהדים כבית"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "הסתר"

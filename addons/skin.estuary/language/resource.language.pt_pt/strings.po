@@ -359,3 +359,7 @@ msgstr "Shift"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletexto"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Ocultar"

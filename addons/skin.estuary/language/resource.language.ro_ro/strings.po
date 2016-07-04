@@ -24,6 +24,10 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Caută..."
 
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Modul cinema"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Schimbare mod"
@@ -31,6 +35,38 @@ msgstr "Schimbare mod"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Afișează în 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Film aleator"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Filme nevăzute"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Descarcă pictogramele"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filme în curs de vizionare"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Albume aleatoare"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Artist aleator"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Albume neredate"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Înregistrări recente"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -44,9 +80,45 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Opțiuni diverse"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sortează după"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Mergi la albume"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Mergi la muzică"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Ultimul autentificat"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Memorie folosită"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Ordine"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Nota dumneavoastră"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Mai multe informații"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Pagini"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Elemente"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -55,6 +127,10 @@ msgstr "Derulează înapoi"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Derulează înainte"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Anulează actualizarea"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -72,17 +148,57 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Ștergere grup"
 
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Citește mai mult"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Disponibil"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrat"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Cu Arial la bază"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minute"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Secțiuni"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "nevuzute"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Jurnal de evenimente"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Ultima actualizare"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "de"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opțiuni de alimentare"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Titluri"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Locația următoare"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -96,6 +212,10 @@ msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Grup canal"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadata"
+
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Opțiuni scanare conținut"
@@ -104,9 +224,21 @@ msgctxt "#31089"
 msgid "Available groups"
 msgstr "Grupuri disponibile"
 
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Caută trailer"
+
 msgctxt "#31091"
 msgid "Download subtitles"
 msgstr "Descarcă subtitluri"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Meniu video"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Arată vremea in bara de sus"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -123,3 +255,55 @@ msgstr "Selectați profilul dumneavoastră de utilizator Kodi[CR]pentru a vă au
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Schimbare"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Introduceți text"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Alege calea către imagine"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Caută pe YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Caută pe TheMovieDB"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Același regizor"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Arată imaginile pe hartă"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Apasă OK pentru a citi rezumatul"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Arată pictogramele"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Contribuitori"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Ascunde"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Rămas"

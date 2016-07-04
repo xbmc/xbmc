@@ -547,3 +547,11 @@ msgstr "Wähle Fanart für den Hauptbildschirm"
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Verstecken"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Verbleibend"

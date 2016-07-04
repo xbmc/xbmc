@@ -19,3 +19,7 @@ msgstr ""
 msgctxt "#31001"
 msgid "Search..."
 msgstr "جستجو..."
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "مخفی"

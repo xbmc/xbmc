@@ -547,3 +547,11 @@ msgstr "Изаберите пакет уметности љубитеља за �
 msgctxt "#31132"
 msgid "min"
 msgstr "мин"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Сакриј"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Преостало"

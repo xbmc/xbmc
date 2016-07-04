@@ -119,3 +119,7 @@ msgstr "Selekteer jou Kodi gebruikers profiel[CR]om in te teken en voort te gaan
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31133"
+msgid "Hide"
+msgstr "Versteek"
