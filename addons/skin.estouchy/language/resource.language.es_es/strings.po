@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Cambiar la skin - Seleccionar idioma y zona - Cambiar la visualización de los archivos - Elegir un salvapantallas"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configure y gestione los servicios para compartir medios · Configure y gestione el servicio de clima"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configure la pantalla · Configure el sonido · Configure el acceso a internet · Configure el ahorro de energia · Configure la depuración de errores"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Gestiona los add-ons instalados · Busca e instala add-ons desde kodi.tv · Modifica los ajustes de los add-ons"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configure acciones que se pueden usar durante la reproducción · Configure cómo se reproducen los contenidos"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Configure cómo se muestran los contenidos en las vistas de Archivos o Colecciones · Configure cómo se navega por las vistas de Archivos o Colecciones · Configure las opciones de las bases de datos de medios"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configure el skin · Configure la región · Configure el control · Configure el salvapantallas · Configure el bloqueo maestro"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Configure sus perfiles · Añada opciones de bloqueo · Habilite una pantalla de inicio de sesión"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Muestre información del sistema · Estadísticas de Hardware · Compruebe el espacio disponible · Vea la configuración de red"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -228,6 +256,10 @@ msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Ocultar vídeo de fondo"
 
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Ocultar visualización de fondo"
+
 msgctxt "#31559"
 msgid "Channel settings"
 msgstr "Ajustes del canal"
@@ -263,6 +295,14 @@ msgstr "Primer uso"
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
 msgstr "Aprende un par de cosas que debes conocer sobre la navegación en Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "El logo de Kodi funciona como un botón 'INICIO'. En cuanto lo toque, volverá a la pantalla de inicio."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Cuando esté reproduciendo vídeo o audio, el título del elemento aparecerá en la parte superior de la pantalla. Tocarlo le llevára a una visualización a pantalla completa o a una ventana de vídeo."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

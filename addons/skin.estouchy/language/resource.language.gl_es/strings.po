@@ -90,11 +90,11 @@ msgstr "Tempo final"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ordear: Ascendentemente"
+msgstr "Ordenar: Ascendentemente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ordear: Descendentemente"
+msgstr "Ordenar: Descendentemente"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -110,7 +110,7 @@ msgstr "Pechar lista de reprodución"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Arquivos de música do sistema"
+msgstr "Ficheiros de música do sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -138,7 +138,7 @@ msgstr "Última actualización"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Proveedor de datos"
+msgstr "Provedor de datos"
 
 msgctxt "#31309"
 msgid "Memory Used:"
@@ -154,7 +154,7 @@ msgstr "Emitido"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Menú de video"
+msgstr "Menú de vídeo"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -174,7 +174,35 @@ msgstr "Baseado en Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Trocar pel · Estabrecer lingua e rexión · Trocar opcións do listado de arquivos · Configurar un gardapantallas"
+msgstr "Trocar pel · Definir idioma e rexión · Trocar opcións do listado de ficheiros · Configurar un protector de pantalla"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configurar e xestionar os servizos de compartición de medios · Configurar e xestionar o servizo metereolóxico"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configurar a pantalla · Configurar o son · Configurar internet · Configurar o aforro de enerxía · Configurar o rexistro de eventos"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Xestiona os teus complementos instalados · Busca e instala complementos de kodi.tv · Modifica os axustes dos complementos"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configurar as accións permitidas durante a reprodución · Configurar como se reproduce o contido multimedia"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configurar o tema · Configurar a rexión · Configurar o control · Configurar  o protector de pantalla · Configurar o bloqueo maestro"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Configurar os teus perfís · Definir as opción de bloqueo · Activar a pantalla de inicio de sesión"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Amosar información do sistema · Estatísticas do Hardware · Verificar o almacenamento · Ver a configuración de rede"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -198,7 +226,7 @@ msgstr "Botón e información da pantalla meteorolóxica inicial"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Atallo a Engadido"
+msgstr "Atallo a complemento"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
@@ -207,6 +235,10 @@ msgstr "Usar fondo personalizado"
 msgctxt "#31554"
 msgid "Background:"
 msgstr "Fondo:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Configurar os axustes da TV · Mudar a configuración da pantalla completa · Xestionar os axustes dos datos da Guía"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -251,3 +283,7 @@ msgstr "Primeira execución"
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
 msgstr "Hai dúas cousas que tes que saber canto a navegación en Estouchy"
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Reproducindo"

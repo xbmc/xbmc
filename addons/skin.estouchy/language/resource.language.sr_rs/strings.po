@@ -176,9 +176,37 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Промените маску · Поставите језик и регију - Промените опције излиставања датотека - Поставите чувара екрана"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Подеси & управљај сервисима дељења медија · Подеси & управљај метео сервисом"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Подеси приказ ·  Подеси аудио · Подеси приступ интернету · Подеси уштеду енергије · Подеси пријављивање"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Управљајте вашим инсталираним додатним програмима · Потражите и инсталирајте додатне програме са kodi.tv - Подесите подешавања додатних програма"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Подесите акције које се могу користити током репродукције · Подесите како се медијски садржаји репродукују"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Подеси како листе медија приказују садржај · Подеси навигацију у листама библиотеке · Подеси опције базе података"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Подеси маску · Подеси регион · Подеси контролу · Подеси чувар екрана · Подеси главно закључавање"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Подесите ваше профиле · Подесите опције закључавања · Активирајте екран за пријаву"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Прикажи системске информације · Хардверску статистику · Провери доступност складишта · Погледај конфигурацију мреже"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

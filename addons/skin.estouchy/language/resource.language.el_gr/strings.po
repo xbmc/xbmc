@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Ρυθμίσεις Ήχου"
+msgstr "Ρυθμίσεις ήχου"
 
 msgctxt "#31003"
 msgid "IP"
-msgstr "Πρωτόκολλο Internet (IP)"
+msgstr "IP"
 
 msgctxt "#31004"
 msgid "Caps[CR]Lock"
@@ -30,15 +30,15 @@ msgstr "Caps[CR]Lock"
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "Ρυθμίσεις Οπτικοποίησης"
+msgstr "Ρυθμίσεις οπτικοποίησης"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Προρυθμίσεις Οπτικοποιητή"
+msgstr "Προρυθμίσεις οπτικοποιητή"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Μενού Επιλογών"
+msgstr "Μενού επιλογών"
 
 msgctxt "#31009"
 msgid "Working..."
@@ -50,11 +50,11 @@ msgstr "Πρόσφατο"
 
 msgctxt "#31013"
 msgid "Movies"
-msgstr "Ταινίες"
+msgstr "ΤΑΙΝΙΕΣ"
 
 msgctxt "#31014"
 msgid "Episodes"
-msgstr "Επεισόδια"
+msgstr "ΕΠΕΙΣΟΔΙΑ"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -78,11 +78,11 @@ msgstr "Ενημερωμένο:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "ΜΠΡΟΣΤΑ"
+msgstr "ΠΡΟΩΘΗΣΗ"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "ΠΙΣΩ"
+msgstr "ΕΠΑΝΑΦΟΡΑ"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -154,15 +154,15 @@ msgstr "Πρώτη προβολή"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Μενού Βίντεο"
+msgstr "Μενού βίντεο"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Λήψη Υποτίτλων"
+msgstr "Λήψη υποτίτλων"
 
 msgctxt "#31358"
 msgid "Teletext"
-msgstr "Τελετέξτ"
+msgstr "Teletext"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -170,11 +170,43 @@ msgstr "Προεπιλογή"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Βασισμένη σε Arial"
+msgstr "Βασισμένη στην Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Αλλαγή κελύφους ·  Αλλαγή χώρας και γλώσσας συστήματος ·  Επιλογές καταλόγου αρχείων · Προσαρμογή της προφύλαξης οθόνης"
+msgstr "Αλλαγή κελύφους · Ορισμός γλώσσας και περιοχής · Επιλογές καταλόγου αρχείων · Προσαρμογή προφύλαξης οθόνης"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Ρύθμιση & διαχείριση υπηρεσιών διαμοιρασμού μέσων · Ρύθμιση & διαχείριση της υπηρεσίας καιρού"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Ρύθμιση οθόνης · Ρύθμιση ήχου · Ρύθμιση πρόσβασης στο διαδίκτυο · Ρύθμιση ενέργειας · Ρύθμιση καταγραφών"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Διαχείριση εγκατεστημένων προσθέτων · Περιήγηση και εγκατάσταση προσθέτων από το kodi.tv · Τροποποίηση των ρυθμίσεων των προσθέτων"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Ρύθμιση ενεργειών κατά την αναπαραγωγή · Ρύθμσιη της αναπαραγωγή μέσων"
+
+msgctxt "#31409"
+msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgstr "Ρύθμιση της προβολής καταλόγων μέσων · Ρύθμιση της πλοήγησης στους καταλόγους βιβλιοθηκών · Ρύθμιση των βάσεων δεδομένων"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Ρύθμιση κελύφους · Ρύθμιση περιοχής · Ρύθμιση ελέγχου · Ρύθμιση προφύλαξης οθόνης · Ρύθμιση κεντρικού κλειδώματος"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Ρύθμιση των προφίλ · Ορισμός επιλογών κλειδώματος · Ενεργοποίηση οθόνης εισόδου"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Προβολή πληροφοριών συστήματος · Στατιστικά υλικού · Έλεγχος αποθηκευτικού χώρου · Προβολή διαμόρφωσης δικτύου"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -186,7 +218,7 @@ msgstr "Πλήκτρα Κατηγοριών Κεντρικού Μενού"
 
 msgctxt "#31501"
 msgid "Home Page Add-on Quick Links"
-msgstr "Ταχείς Σύνδεσμοι Πρόσθετων Αρχικής Οθόνης"
+msgstr "Σύνδεσμοι Προσθέτων Αρχικής Οθόνης"
 
 msgctxt "#31502"
 msgid "Miscellaneous Options"
@@ -200,6 +232,10 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Συντόμευση Πρόσθετου"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "Συγχρονισμός"
+
 msgctxt "#31553"
 msgid "Use Custom Background"
 msgstr "Χρήση Προσαρμοσμένου φόντου"
@@ -207,6 +243,10 @@ msgstr "Χρήση Προσαρμοσμένου φόντου"
 msgctxt "#31554"
 msgid "Background:"
 msgstr "Φόντο:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Ρύθμιση επιλογών TV · Αλλαγή πληροφοριών πλήρους οθόνης · Διαχείριση ρυθμίσεων δεδομένων EPG"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -216,25 +256,29 @@ msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Απόκρυψη υποβάθρου βίντεο"
 
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Απόκρυψη υποβάθρου οπτικοποίησης"
+
 msgctxt "#31559"
 msgid "Channel settings"
 msgstr "Ρυθμίσεις καναλιών"
 
 msgctxt "#31560"
 msgid "Available groups"
-msgstr "Διαθέσιμα γκρουπ"
+msgstr "Διαθέσιμες ομάδες"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Προσθήκη Γκρουπ"
+msgstr "Προσθήκη Ομάδας"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Ονομασία Γκρουπ"
+msgstr "Ονομασία Ομάδας"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Διαγραφή Γκρουπ"
+msgstr "Διαγραφή Ομάδας"
 
 msgctxt "#31564"
 msgid "Show hidden"
@@ -250,7 +294,15 @@ msgstr "Πρώτη εκκίνηση"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Υπάρχου δύο πράγματα που πρέπει να γνωρίζετε για την πλοήγηση Estouchy"
+msgstr "Υπάρχουν δύο πράγματα που πρέπει να γνωρίζετε για την πλοήγηση στο Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Το λογότυπο του Kodi λειτουργεί σαν πλήκτρο \"Αρχικής οθόνης\". Όποτε το πατήσετε, θα μεταφερθείτε στην αρχική οθόνη."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Όταν αναπαράγεται ήχος ή βίντεο, ο τίτλος του θα εμφανιστεί στην κορυφή της οθόνης. Με το πάτημα αυτού θα μεταφερθείτε στην οπτικοποίηση πλήρους οθόνης ή στο παράθυρο του βίντεο."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
