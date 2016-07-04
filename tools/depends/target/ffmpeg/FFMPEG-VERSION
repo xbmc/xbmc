@@ -1,5 +1,5 @@
 LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg/archive
-VERSION=release/3.0-xbmc
+VERSION=3.1.1-Krypton-Alpha3
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 GNUTLS_VER=3.4.9
