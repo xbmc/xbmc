@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libbluray
-VERSION=0.8.1
+VERSION=0.9.3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
@@ -24,9 +24,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	# libbluray has borked Makefile.am with respect to CFLAGS, remove the offending line
 	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(PLATFORM)/Makefile.am
-ifeq ($(OS),android)
-	cd $(PLATFORM); patch -p1 < ../android.patch
-endif
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); $(CONFIGURE)
 
