@@ -592,8 +592,27 @@ bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
   newTimer->UpdateEntry(timer);
 
   if (ShowTimerSettings(newTimer) && !timer->GetTimerType()->IsReadOnly())
-    return g_PVRTimers->UpdateTimer(newTimer);
+  {
+    if (newTimer->GetTimerType() == timer->GetTimerType())
+    {
+      return g_PVRTimers->UpdateTimer(newTimer);
+    }
+    else
+    {
+      // timer type changed. delete the original timer, then create the new timer. this order is
+      // important. for instance, the new timer might be a rule which schedules the original timer.
+      // deleting the original timer after creating the rule would do literally this and we would
+      // end up with one timer missing wrt to the rule defined by the new timer.
+      if (g_PVRTimers->DeleteTimer(timer, timer->IsRecording(), false))
+      {
+        if (g_PVRTimers->AddTimer(newTimer))
+          return true;
 
+        // rollback.
+        return g_PVRTimers->AddTimer(timer);
+      }
+    }
+  }
   return false;
 }
 
