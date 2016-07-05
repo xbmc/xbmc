@@ -5166,6 +5166,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (prop.name == player_times[i].str)
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
       }
+      if (prop.name == "process" && prop.num_params())
+      {
+        for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); i++)
+        {
+          if (prop.param() == player_process[i].str)
+            return player_process[i].val;
+        }
+      }
       if (prop.num_params() == 1)
       {
         for (size_t i = 0; i < sizeof(player_param) / sizeof(infomap); i++)
@@ -5336,19 +5344,13 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
       }
       if (prop.name == "content" && prop.num_params())
+      {
         return AddMultiInfo(GUIInfo(VIDEOPLAYER_CONTENT, ConditionalStringParameter(prop.param()), 0));
+      }
       for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); i++)
       {
         if (prop.name == videoplayer[i].str)
           return videoplayer[i].val;
-      }
-    }
-    else if (cat.name == "player_process")
-    {
-      for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); i++)
-      {
-        if (prop.name == player_process[i].str)
-          return player_process[i].val;
       }
     }
     else if (cat.name == "slideshow")
@@ -6039,11 +6041,23 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PLAYER_PROCESS_VIDEODAR:
       strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoDAR());
       break;
+  case PLAYER_PROCESS_VIDEOWIDTH:
+      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoWidth());
+      break;
+  case PLAYER_PROCESS_VIDEOHEIGHT:
+      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoHeight());
+      break;
   case PLAYER_PROCESS_AUDIODECODER:
       strLabel = CServiceBroker::GetDataCacheCore().GetAudioDecoderName();
       break;
   case PLAYER_PROCESS_AUDIOCHANNELS:
       strLabel = CServiceBroker::GetDataCacheCore().GetAudioChannels();
+      break;
+  case PLAYER_PROCESS_AUDIOSAMPLERATE:
+      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioSampleRate());
+      break;
+  case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
+      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSampe());
       break;
   case RDS_AUDIO_LANG:
   case RDS_CHANNEL_COUNTRY:
@@ -6606,18 +6620,6 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       return true;
     case SYSTEM_BATTERY_LEVEL:
       value = g_powerManager.BatteryLevel();
-      return true;
-    case PLAYER_PROCESS_VIDEOWIDTH:
-      value = CServiceBroker::GetDataCacheCore().GetVideoWidth();
-      return true;
-    case PLAYER_PROCESS_VIDEOHEIGHT:
-      value = CServiceBroker::GetDataCacheCore().GetVideoHeight();
-      return true;
-    case PLAYER_PROCESS_AUDIOSAMPLERATE:
-      value = CServiceBroker::GetDataCacheCore().GetAudioSampleRate();
-      return true;
-    case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
-      value = CServiceBroker::GetDataCacheCore().GetAudioBitsPerSampe();
       return true;
   }
   return false;

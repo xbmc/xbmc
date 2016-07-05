@@ -98,7 +98,10 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
   // if frame threading is enabled hw accel is not allowed
   if(ctx->m_decoderState != STATE_HW_SINGLE)
   {
-    return avcodec_default_get_format(avctx, fmt);
+    AVPixelFormat defaultFmt = avcodec_default_get_format(avctx, fmt);
+    pixFmtName = av_get_pix_fmt_name(defaultFmt);
+    ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
+    return defaultFmt;
   }
 
   // fix an ffmpeg issue here, it calls us with an invalid profile
@@ -395,7 +398,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   UpdateName();
 
-  m_processInfo.SetVideoDecoderName(m_name, m_pHardware ? true : false);
   m_processInfo.SetVideoDimensions(m_pCodecContext->coded_width, m_pCodecContext->coded_height);
   return true;
 }
@@ -509,6 +511,8 @@ void CDVDVideoCodecFFmpeg::UpdateName()
 
   if(m_pHardware)
     m_name += "-" + m_pHardware->Name();
+
+  m_processInfo.SetVideoDecoderName(m_name, m_pHardware ? true : false);
 
   CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: %s", m_name.c_str());
 }
@@ -955,6 +959,11 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
 
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
+
+    if (filters.compare(0,5,"yadif") == 0)
+    {
+      m_processInfo.SetVideoDeintMethod(filters);
+    }
   }
   else
   {
@@ -963,6 +972,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_link");
       return result;
     }
+
+    m_processInfo.SetVideoDeintMethod("none");
   }
 
   if ((result = avfilter_graph_config(m_pFilterGraph,  nullptr)) < 0)
