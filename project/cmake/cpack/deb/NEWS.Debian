@@ -1,0 +1,24 @@
+@CPACK_PACKAGE_NAME@ (@CPACK_DEBIAN_PACKAGE_VERSION@) @DISTRO_CODENAME@; urgency=high
+  * Kodi Krypton (v17.0) will have an awesome new default skin, Estuary.
+    However the vast improvements are deep in the bowels of Kodi core code.
+    .
+    Since the beginning of XBMC back in the days while it was running on
+    the XBOX there was something like DVDPlayer. As the name probably
+    implies it was used to playback DVD discs/files. During the years this
+    DVDPlayer was improved and patched up to stay within modern day
+    standards of video playback expectancy. However it became clear that
+    for the future a major overhaul and rewrite was needed to keep up and
+    be future proof. As such the developers who did the AudioEngine in v12
+    picked up this job and have now transformed it into VideoPlayer.
+    .
+    Together with some platform developers they ripped out the old
+    DVDPlayer code, chopped it into pieces, put it in the blender, picked
+    the needed pieces and put it back in without breaking the rest of Kodi.
+    This certainly wasn’t an easy job as DVDPlayer was like the bottom
+    block of a Jenga tower that needed to be replaced while still being
+    entangled throughout the whole tower. It had it’s tentacles in parts
+    of the code where it shouldn’t have been in the first place. Over a
+    year ago work started on getting this untangled and made ready to
+    be replaced by the new implementation, VideoPlayer.
+
+ -- h.udo <hudokkow@gmail.com>  Tue, 05 Jul 2016 13:34:11 +0000

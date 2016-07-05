@@ -1,0 +1,25 @@
+# kodi-inputstream-dev debian package metadata
+#
+# Setting PACKAGE_SHLIBDEPS to 'ON' will cause CPack to ignore PACKAGE_DEPENDS
+# content and use dpkg-shlibdeps to automatically generate the package dependency
+# list. Only useful for packages that contain binaries.
+#
+# PACKAGE_ARCHITECTURE should be set to 'all' only if package contains
+# architecture agnostic data. CPack will set proper architecture (amd64/i386/etc)
+# based on build options.
+#
+# Remaining settings are (hopefully) self-explanatory.
+
+PACKAGE_NAME @APP_NAME_LC@-inputstream-dev
+PACKAGE_ARCHITECTURE all
+PACKAGE_SECTION libdevel
+PACKAGE_PRIORITY optional
+PACKAGE_SHLIBDEPS
+PACKAGE_DEPENDS @APP_NAME_LC@-addon-dev
+PACKAGE_RECOMMENDS
+PACKAGE_SUGGESTS
+PACKAGE_BREAKS
+PACKAGE_REPLACES
+PACKAGE_PROVIDES xbmc-inputstream-dev
+PACKAGE_DESCRIPTION_HEADER @APP_NAME@ Media Center (inputstream add-ons dev package)
+PACKAGE_DESCRIPTION_FOOTER This is the development package for @APP_NAME@'s inputstream add-ons.
