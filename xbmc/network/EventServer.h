@@ -26,6 +26,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 
+#include <atomic>
 #include <map>
 #include <queue>
 #include <vector>
@@ -82,7 +83,7 @@ namespace EVENTSERVER
     int              m_iListenTimeout;
     int              m_iMaxClients;
     unsigned char*   m_pPacketBuffer;
-    bool             m_bRunning;
+    std::atomic<bool>  m_bRunning;
     CCriticalSection m_critSection;
     bool             m_bRefreshSettings;
   };
