@@ -978,15 +978,17 @@
     "type": "string",
     "enum": [ "unknown", "new", "scheduled", "recording", "completed",
               "aborted", "cancelled", "conflict_ok", "conflict_notok",
-              "error" ]
+              "error", "disabled" ]
   },
   "PVR.Fields.Timer": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "title", "summary", "channelid", "isradio", "repeating",
+      "enum": [ "title", "summary", "channelid", "isradio", "istimerrule", "ismanual",
                 "starttime", "endtime", "runtime", "lifetime", "firstday",
                 "weekdays", "priority", "startmargin", "endmargin", "state",
-                "file", "directory" ]
+                "file", "directory", "preventduplicateepisodes", "startanytime",
+                "endanytime", "epgsearchstring", "fulltextepgsearch", "recordinggroup",
+                "maxrecordings", "epguid"]
     }
   },
   "PVR.Details.Timer": {
@@ -997,7 +999,8 @@
       "summary": { "type": "string" },
       "channelid": { "$ref": "Library.Id" },
       "isradio": { "type": "boolean" },
-      "repeating": { "type": "boolean" },
+      "istimerrule": { "type": "boolean" },
+      "ismanual": { "type": "boolean" },
       "starttime": { "type": "string" },
       "endtime": { "type": "string" },
       "runtime": { "type": "integer" },
@@ -1012,7 +1015,15 @@
       "endmargin": { "type": "integer" },
       "state": { "$ref": "PVR.TimerState" },
       "file": { "type": "string" },
-      "directory": { "type": "string" }
+      "directory": { "type": "string" },
+      "preventduplicateepisodes": { "type": "integer" },
+      "startanytime": { "type": "boolean" },
+      "endanytime": { "type": "boolean" },
+      "epgsearchstring": { "type": "string" },
+      "fulltextepgsearch": { "type": "boolean" },
+      "recordinggroup": { "type": "integer" },
+      "maxrecordings": { "type": "integer" },
+      "epguid": { "type": "integer" }
     }
   },
   "PVR.Fields.Recording": {
