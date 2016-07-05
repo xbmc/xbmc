@@ -120,6 +120,7 @@ namespace XbmcThreads
          signaled == NULL && iter != events.end(); ++iter)
     {
       CEvent* cur = *iter;
+      CSingleLock lock2(cur->mutex);
       if (cur->signaled) 
         signaled = cur;
     }
