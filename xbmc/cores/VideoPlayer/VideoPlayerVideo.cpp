@@ -1051,7 +1051,6 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
   int result = 0;
   int lateframes;
   double iDecoderPts, iRenderPts;
-  double interval;
   int iSkippedPicture = -1;
   int iDroppedFrames = -1;
   int    iBufferLevel;
@@ -1077,8 +1076,6 @@ int CVideoPlayerVideo::CalcDropRequirement(double pts)
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG,"CVideoPlayerVideo::CalcDropRequirement - hurry: %d", iBufferLevel);
   }
-
-  interval = 1/m_fFrameRate*(double)DVD_TIME_BASE;
 
   if (m_bAllowDrop)
   {

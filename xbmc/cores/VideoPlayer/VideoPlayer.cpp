@@ -4360,7 +4360,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
         if (m_Edl.HasCut()) 
         {
           // If the clip has an EDL, we'll search through that instead of sending a CHANNEL message
-          int nNext = 0;
           const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
           CEdl::Cut cut;
           if (m_Edl.GetNearestCut(true, clock, &cut)) 
@@ -4393,7 +4392,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
         if (m_Edl.HasCut())
         {
           // If the clip has an EDL, we'll search through that instead of sending a CHANNEL message
-          int nNext = 0;
           const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
           CEdl::Cut cut;
           if (m_Edl.GetNearestCut(false, clock, &cut)) 
