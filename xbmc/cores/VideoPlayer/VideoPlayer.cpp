@@ -4357,6 +4357,18 @@ bool CVideoPlayer::OnAction(const CAction &action)
       case ACTION_NEXT_ITEM:
       case ACTION_CHANNEL_UP:
       {
+        if (m_Edl.HasCut()) 
+        {
+          // If the clip has an EDL, we'll search through that instead of sending a CHANNEL message
+          int nNext = 0;
+          const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
+          CEdl::Cut cut;
+          if (m_Edl.GetNearestCut(true, clock, &cut)) 
+          {
+            m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, true, false, true, false, true));
+            return true;
+          }
+        }
         bool bPreview(action.GetID() == ACTION_MOVE_UP && // only up/down shows a preview, all others do switch
                       CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH));
 
@@ -4378,6 +4390,24 @@ bool CVideoPlayer::OnAction(const CAction &action)
       case ACTION_PREV_ITEM:
       case ACTION_CHANNEL_DOWN:
       {
+        if (m_Edl.HasCut())
+        {
+          // If the clip has an EDL, we'll search through that instead of sending a CHANNEL message
+          int nNext = 0;
+          const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
+          CEdl::Cut cut;
+          if (m_Edl.GetNearestCut(false, clock, &cut)) 
+          {
+            m_messenger.Put(new CDVDMsgPlayerSeek(cut.start - 1, true, true, false, true, false, true));
+            return true;
+          }
+          else
+          {
+            // Go back to beginning
+            m_messenger.Put(new CDVDMsgPlayerSeek(0, true, true, false, true, false, true));
+            return true;
+          }
+        }
         bool bPreview(action.GetID() == ACTION_MOVE_DOWN && // only up/down shows a preview, all others do switch
                       CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH));
 
