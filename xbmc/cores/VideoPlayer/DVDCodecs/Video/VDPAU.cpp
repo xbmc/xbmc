@@ -112,7 +112,7 @@ void CVDPAUContext::Close()
   DestroyContext();
 }
 
-bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
+bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx, CDecoder *decoder)
 {
   CSingleLock lock(m_section);
 
@@ -138,6 +138,8 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
 
   m_context->m_refCount++;
 
+  if (!m_context->IsValidDecoder(decoder))
+    m_context->m_decoders.push_back(decoder);
   *ctx = m_context;
   return true;
 }
@@ -330,6 +332,24 @@ bool CVDPAUContext::Supports(VdpVideoMixerFeature feature)
   return false;
 }
 
+bool CVDPAUContext::IsValidDecoder(CDecoder *decoder)
+{
+  auto it = find(m_decoders.begin(), m_decoders.end(), decoder);
+  if (it != m_decoders.end())
+    return true;
+
+  return false;
+}
+
+void CVDPAUContext::FFReleaseBuffer(void *opaque, uint8_t *data)
+{
+  CDecoder *vdp = (CDecoder*)opaque;
+  if (m_context && m_context->IsValidDecoder(vdp))
+  {
+    vdp->FFReleaseBuffer(data);
+  }
+}
+
 //-----------------------------------------------------------------------------
 // VDPAU Video Surface states
 //-----------------------------------------------------------------------------
@@ -516,7 +536,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   m_vdpauConfig.numRenderBuffers = surfaces;
   m_decoderThread = CThread::GetCurrentThreadId();
 
-  if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
+  if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context, this))
     return false;
 
   m_DisplayState = VDPAU_OPEN;
@@ -745,7 +765,7 @@ int CDecoder::Check(AVCodecContext* avctx)
       m_vdpauConfig.context->Release();
     m_vdpauConfig.context = 0;
 
-    if (CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
+    if (CVDPAUContext::EnsureContext(&m_vdpauConfig.context, this))
     {
       m_DisplayState = VDPAU_OPEN;
       m_vdpauConfigured = false;
@@ -992,7 +1012,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   pic->data[0] = (uint8_t*)(uintptr_t)surf;
   pic->data[3] = (uint8_t*)(uintptr_t)surf;
   pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, ctx, 0);
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, CVDPAUContext::FFReleaseBuffer, ctx, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "CVDPAU::%s - error creating buffer", __FUNCTION__);
@@ -1001,20 +1021,22 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   pic->buf[0] = buffer;
 
   pic->reordered_opaque= avctx->reordered_opaque;
+  vdp->Acquire();
   return 0;
 }
 
-void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
+void CDecoder::FFReleaseBuffer(uint8_t *data)
 {
-  CDecoder *vdp = (CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware();
+  {
+    VdpVideoSurface surf;
 
-  VdpVideoSurface surf;
+    CSingleLock lock(m_DecoderSection);
 
-  CSingleLock lock(vdp->m_DecoderSection);
+    surf = (VdpVideoSurface)(uintptr_t)data;
+    m_videoSurfaces.ClearReference(surf);
+  }
 
-  surf = (VdpVideoSurface)(uintptr_t)data;
-
-  vdp->m_videoSurfaces.ClearReference(surf);
+  IHardwareDecoder::Release();
 }
 
 int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
