@@ -28,6 +28,7 @@ class CTextureBundle
 {
 public:
   CTextureBundle();
+  explicit CTextureBundle(bool useXBT);
   ~CTextureBundle() = default;
 
   void SetThemeBundle(bool themeBundle);

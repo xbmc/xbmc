@@ -33,6 +33,7 @@ class CTextureBundleXBT
 {
 public:
   CTextureBundleXBT();
+  explicit CTextureBundleXBT(bool themeBundle);
   ~CTextureBundleXBT();
 
   void SetThemeBundle(bool themeBundle);

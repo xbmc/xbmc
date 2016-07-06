@@ -21,7 +21,14 @@
 #include "TextureBundle.h"
 
 CTextureBundle::CTextureBundle()
-  : m_useXBT{false}
+  : m_tbXBT{false}
+	, m_useXBT{false}
+{
+}
+
+CTextureBundle::CTextureBundle(bool useXBT)
+  : m_tbXBT{useXBT}
+	, m_useXBT{useXBT}
 {
 }
 
