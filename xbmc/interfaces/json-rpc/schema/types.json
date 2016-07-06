@@ -983,7 +983,7 @@
   "PVR.Fields.Timer": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "title", "summary", "channelid", "isradio", "repeating",
+      "enum": [ "title", "summary", "channelid", "isradio", "timerrule",
                 "starttime", "endtime", "runtime", "lifetime", "firstday",
                 "weekdays", "priority", "startmargin", "endmargin", "state",
                 "file", "directory" ]
@@ -997,7 +997,7 @@
       "summary": { "type": "string" },
       "channelid": { "$ref": "Library.Id" },
       "isradio": { "type": "boolean" },
-      "repeating": { "type": "boolean" },
+      "timerrule": { "type": "boolean" },
       "starttime": { "type": "string" },
       "endtime": { "type": "string" },
       "runtime": { "type": "integer" },

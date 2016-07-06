@@ -2047,7 +2047,7 @@
     "permission": "ControlPVR",
     "params": [
       { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the broadcast id of item to record" },
-      { "name": "repeating", "type": "boolean", "default": false, "description": "the add should be done for all occurances" }
+      { "name": "timerrule", "type": "boolean", "default": false, "description": "the add should be done for all occurences" }
     ],
     "returns":  "string"
   },
@@ -2058,7 +2058,7 @@
     "permission": "ControlPVR",
     "params": [
       { "name": "timerid", "$ref": "Library.Id", "required": true, "description": "the id of the timer to delete" },
-      { "name": "repeating", "type": "boolean", "default": false, "description": "the delete should be done for all occurances" }
+      { "name": "timerrule", "type": "boolean", "default": false, "description": "the delete should be done for all occurences" }
     ],
     "returns":  "string"
   },
@@ -2069,7 +2069,7 @@
     "permission": "ControlPVR",
     "params": [
       { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the id of the broadcast to toggle a timer for" },
-      { "name": "repeating", "type": "boolean", "default": false, "description": "the toggle should be done for all occurances" }
+      { "name": "timerrule", "type": "boolean", "default": false, "description": "the toggle should be done for all occurences" }
     ],
     "returns":  "string"
   },
