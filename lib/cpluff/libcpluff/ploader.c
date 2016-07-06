@@ -159,17 +159,17 @@ static void descriptor_errorf(ploader_context_t *plcontext, int warn,
 	message[127] = '\0';
 	if (warn) {
 		cpi_warnf(plcontext->context,
-			N_("Suspicious plug-in descriptor content in %s, line %d, column %d (%s)."),
+			N_("Suspicious plug-in descriptor content in %s, line %llu, column %llu (%s)."),
 		plcontext->file,
-		XML_GetCurrentLineNumber(plcontext->parser),
-		XML_GetCurrentColumnNumber(plcontext->parser) + 1,
+		(long long unsigned int)XML_GetCurrentLineNumber(plcontext->parser),
+		(long long unsigned int)XML_GetCurrentColumnNumber(plcontext->parser) + 1,
 		message);
 	} else {				
 		cpi_errorf(plcontext->context,
-			N_("Invalid plug-in descriptor content in %s, line %d, column %d (%s)."),
+			N_("Invalid plug-in descriptor content in %s, line %llu, column %llu (%s)."),
 			plcontext->file,
-			XML_GetCurrentLineNumber(plcontext->parser),
-			XML_GetCurrentColumnNumber(plcontext->parser) + 1,
+			(long long unsigned int)XML_GetCurrentLineNumber(plcontext->parser),
+			(long long unsigned int)XML_GetCurrentColumnNumber(plcontext->parser) + 1,
 			message);
 	}
 	if (!warn) {
@@ -186,10 +186,10 @@ static void descriptor_errorf(ploader_context_t *plcontext, int warn,
 static void resource_error(ploader_context_t *plcontext) {
 	if (plcontext->resource_error_count == 0) {
 		cpi_errorf(plcontext->context,
-			N_("Insufficient system resources to parse plug-in descriptor content in %s, line %d, column %d."),
+			N_("Insufficient system resources to parse plug-in descriptor content in %s, line %llu, column %llu."),
 			plcontext->file,
-			XML_GetCurrentLineNumber(plcontext->parser),
-			XML_GetCurrentColumnNumber(plcontext->parser) + 1);
+			(long long unsigned int)XML_GetCurrentLineNumber(plcontext->parser),
+			(long long unsigned int)XML_GetCurrentColumnNumber(plcontext->parser) + 1);
 	}
 	plcontext->resource_error_count++;
 }
@@ -1082,10 +1082,10 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 				&& context != NULL) {
 				cpi_lock_context(context);
 				cpi_errorf(context,
-					N_("XML parsing error in %s, line %d, column %d (%s)."),
+					N_("XML parsing error in %s, line %llu, column %llu (%s)."),
 					file,
-					XML_GetErrorLineNumber(parser),
-					XML_GetErrorColumnNumber(parser) + 1,
+					(long long unsigned int)XML_GetErrorLineNumber(parser),
+					(long long unsigned int)XML_GetErrorColumnNumber(parser) + 1,
 					XML_ErrorString(XML_GetErrorCode(parser)));
 				cpi_unlock_context(context);
 			}
@@ -1268,10 +1268,10 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor_from_memory(cp_context_t *
 			  && context != NULL) {
 			  cpi_lock_context(context);
 			  cpi_errorf(context,
-				  N_("XML parsing error in %s, line %d, column %d (%s)."),
+				  N_("XML parsing error in %s, line %llu, column %llu (%s)."),
 				  file,
-				  XML_GetErrorLineNumber(parser),
-				  XML_GetErrorColumnNumber(parser) + 1,
+				  (long long unsigned int)XML_GetErrorLineNumber(parser),
+				  (long long unsigned int)XML_GetErrorColumnNumber(parser) + 1,
 				  XML_ErrorString(XML_GetErrorCode(parser)));
 			  cpi_unlock_context(context);
 		  }
