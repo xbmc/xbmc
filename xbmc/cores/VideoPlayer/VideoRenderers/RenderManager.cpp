@@ -324,6 +324,7 @@ bool CRenderManager::Configure()
     m_renderState = STATE_UNCONFIGURED;
 
   m_stateEvent.Set();
+  m_playerPort->VideoParamsChange();
   return result;
 }
 
