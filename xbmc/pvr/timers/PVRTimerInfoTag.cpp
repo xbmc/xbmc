@@ -308,6 +308,7 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
 
   value["istimerrule"] = m_timerType && m_timerType->IsTimerRule();
   value["ismanual"] = m_timerType && m_timerType->IsManual();
+  value["isreadonly"] = m_timerType && m_timerType->IsReadOnly();
 
   value["epgsearchstring"]   = m_strEpgSearchString;
   value["fulltextepgsearch"] = m_bFullTextEpgSearch;

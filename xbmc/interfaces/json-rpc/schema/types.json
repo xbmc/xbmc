@@ -1005,7 +1005,7 @@
                 "weekdays", "priority", "startmargin", "endmargin", "state",
                 "file", "directory", "preventduplicateepisodes", "startanytime",
                 "endanytime", "epgsearchstring", "fulltextepgsearch", "recordinggroup",
-                "maxrecordings", "epguid"]
+                "maxrecordings", "epguid", "isreadonly" ]
     }
   },
   "PVR.Details.Timer": {
@@ -1040,7 +1040,8 @@
       "fulltextepgsearch": { "type": "boolean" },
       "recordinggroup": { "type": "integer" },
       "maxrecordings": { "type": "integer" },
-      "epguid": { "type": "integer" }
+      "epguid": { "type": "integer" },
+      "isreadonly": { "type": "boolean" }
     }
   },
   "PVR.Fields.Recording": {
@@ -1049,7 +1050,7 @@
       "enum": [ "title", "plot", "plotoutline", "genre", "playcount",
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
-                "directory", "radio", "isdeleted", "epgeventid", "channeluid"]
+                "directory", "radio", "isdeleted", "epgeventid", "channeluid" ]
     }
   },
   "PVR.Details.Recording": {
