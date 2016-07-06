@@ -909,7 +909,9 @@
                 "endtime", "runtime", "progress", "progresspercentage",
                 "genre", "episodename", "episodenum", "episodepart",
                 "firstaired", "hastimer", "isactive", "parentalrating",
-                "wasactive", "thumbnail", "rating" ]
+                "wasactive", "thumbnail", "rating", "originaltitle", "cast",
+                "director", "writer", "year", "imdbnumber", "hastimerrule",
+                "hasrecording", "recording", "isseries" ]
     }
   },
   "PVR.Details.Broadcast": {
@@ -934,7 +936,17 @@
       "parentalrating": { "type": "integer" },
       "wasactive": { "type": "boolean" },
       "thumbnail": { "type": "string" },
-      "rating": { "type": "integer" }
+      "rating": { "type": "integer" },
+      "originaltitle": { "type": "string" },
+      "cast": { "type": "string" },
+      "director": { "type": "string" },
+      "writer": { "type": "string" },
+      "year": { "type": "integer" },
+      "imdbnumber": { "type": "integer" },
+      "hastimerrule": { "type": "boolean" },
+      "hasrecording": { "type": "boolean" },
+      "recording": { "type": "string" },
+      "isseries": { "type": "boolean" }
     }
   },
   "PVR.Fields.Channel": {
