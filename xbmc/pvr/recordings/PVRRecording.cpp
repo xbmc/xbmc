@@ -181,8 +181,8 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
   value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + m_duration).GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
-  value["deleted"] = m_bIsDeleted;
-  value["epgevent"] = m_iEpgEventId;
+  value["isdeleted"] = m_bIsDeleted;
+  value["epgeventid"] = m_iEpgEventId;
   value["channeluid"] = m_iChannelUid;
   value["radio"] = m_bRadio;
 
