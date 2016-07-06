@@ -6036,10 +6036,10 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       strLabel = CServiceBroker::GetDataCacheCore().GetVideoPixelFormat();
       break;
   case PLAYER_PROCESS_VIDEOFPS:
-      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoFps());
+      strLabel = StringUtils::Format("%.3f", CServiceBroker::GetDataCacheCore().GetVideoFps());
       break;
   case PLAYER_PROCESS_VIDEODAR:
-      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoDAR());
+      strLabel = StringUtils::Format("%.2f", CServiceBroker::GetDataCacheCore().GetVideoDAR());
       break;
   case PLAYER_PROCESS_VIDEOWIDTH:
       strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoWidth());
