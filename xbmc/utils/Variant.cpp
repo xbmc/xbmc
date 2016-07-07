@@ -18,12 +18,12 @@
  *
  */
 
+#include "Variant.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <sstream>
 #include <utility>
-
-#include "Variant.h"
 
 #ifndef strtoll
 #ifdef TARGET_WINDOWS
