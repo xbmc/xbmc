@@ -103,8 +103,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   unsigned int nTime = XbmcThreads::SystemClockMillis();
   CFileItem item(strPath, false);
 
-  if (item.IsDiscImage() ||
-      item.IsPVR())
+  if (item.IsDiscImage() || URIUtils::IsLiveTV(strPath))
     return false;
 
   item.SetMimeTypeForInternetFile();
