@@ -4564,7 +4564,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     for (const auto &i : paths)
     {
       std::string parent = URIUtils::GetParentPath(i.first);
-      std::map<std::string, int>::const_iterator j = paths.find(parent);
+      auto j = paths.find(parent);
       if (j != paths.end())
         m_pDS->exec(PrepareSQL("UPDATE path SET idParentPath=%i WHERE idPath=%i", j->second, i.second));
     }
@@ -4594,10 +4594,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->close();
     if (!shows.empty())
     {
-      for (std::vector<CShowItem>::iterator i = shows.begin() + 1; i != shows.end(); ++i)
+      for (auto i = shows.begin() + 1; i != shows.end(); ++i)
       {
         // has this show been found before?
-        std::vector<CShowItem>::const_iterator j = find(shows.begin(), i, *i);
+        auto j = find(shows.begin(), i, *i);
         if (j != i)
         { // this is a duplicate
           // update the tvshowlinkpath table
@@ -4633,11 +4633,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
     // update these
-    for (std::vector<CShowLink>::const_iterator i = shows.begin(); i != shows.end(); ++i)
+    for (auto i = shows.begin(); i != shows.end(); ++i)
     {
       std::vector<std::string> paths;
       CMultiPathDirectory::GetPaths(i->path, paths);
-      for (std::vector<std::string>::const_iterator j = paths.begin(); j != paths.end(); ++j)
+      for (auto j = paths.begin(); j != paths.end(); ++j)
       {
         int idPath = AddPath(*j, URIUtils::GetParentPath(*j));
         /* we can't rely on REPLACE INTO here as analytics (indices) aren't online yet */
@@ -5415,14 +5415,13 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       std::map<int, std::pair<std::string,int> > mapItems;
-      std::map<int, std::pair<std::string,int> >::iterator it;
       while (!m_pDS->eof())
       {
         int id = m_pDS->fv(0).get_asInt();
         std::string str = m_pDS->fv(1).get_asString();
 
         // was this already found?
-        it = mapItems.find(id);
+        auto it = mapItems.find(id);
         if (it == mapItems.end())
         {
           // check path
@@ -5598,12 +5597,11 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const std::string& strBaseDir, CFile
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       std::map<int, std::pair<std::string,std::string> > mapAlbums;
-      std::map<int, std::pair<std::string,std::string> >::iterator it;
       while (!m_pDS->eof())
       {
         int lidMVideo = m_pDS->fv(1).get_asInt();
         std::string strAlbum = m_pDS->fv(0).get_asString();
-        it = mapAlbums.find(lidMVideo);
+        auto it = mapAlbums.find(lidMVideo);
         // was this genre already found?
         if (it == mapAlbums.end())
         {
@@ -5845,7 +5843,6 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       std::map<int, CActor> mapActors;
-      std::map<int, CActor>::iterator it;
 
       while (!m_pDS->eof())
       {
@@ -5859,7 +5856,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
           actor.appearances = 1;
         }
         else actor.appearances = m_pDS->fv(4).get_asInt();
-        it = mapActors.find(idActor);
+        auto it = mapActors.find(idActor);
         // is this actor already known?
         if (it == mapActors.end())
         {
@@ -6006,7 +6003,6 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       std::map<int, std::pair<std::string,int> > mapYears;
-      std::map<int, std::pair<std::string,int> >::iterator it;
       while (!m_pDS->eof())
       {
         int lYear = 0;
@@ -6019,7 +6015,7 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
           time.SetFromDateString(dateString);
           lYear = time.GetYear();
         }
-        it = mapYears.find(lYear);
+        auto it = mapYears.find(lYear);
         if (it == mapYears.end())
         {
           // check path
@@ -8260,9 +8256,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     std::string strIds;
     while (!m_pDS->eof())
     {
-      std::map<int, bool>::const_iterator pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
+      auto pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
       // Check if we have a decision for the parent path
-      std::map<int, bool>::const_iterator pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS->fv(2).get_asInt());
+      auto pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS->fv(2).get_asInt());
       if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
            (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false))) &&
           ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() && pathsDeleteDecisionByParent->second) ||
@@ -8456,7 +8452,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
         sourcePath = parentPath;
 
       int sourcePathID = GetPathId(sourcePath);
-      std::map<int, std::pair<bool, bool> >::const_iterator sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
+      auto sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
       if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
       {
         bool sourcePathNotExists = (sourceNotFound || !CDirectory::Exists(sourcePath, false));
@@ -9478,7 +9474,7 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
 
 void CVideoDatabase::AppendIdLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter)
 {
-  CUrlOptions::UrlOptions::const_iterator option = options.find((std::string)field + "id");
+  auto option = options.find((std::string)field + "id");
   if (option == options.end())
     return;
 
@@ -9488,7 +9484,7 @@ void CVideoDatabase::AppendIdLinkFilter(const char* field, const char *table, co
 
 void CVideoDatabase::AppendLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter)
 {
-  CUrlOptions::UrlOptions::const_iterator option = options.find(field);
+  auto option = options.find(field);
   if (option == options.end())
     return;
 
@@ -9505,7 +9501,6 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
   std::string type = videoUrl.GetType();
   std::string itemType = ((const CVideoDbUrl &)videoUrl).GetItemType();
   const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
-  CUrlOptions::UrlOptions::const_iterator option;
 
   if (type == "movies")
   {
@@ -9521,7 +9516,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     AppendIdLinkFilter("director", "actor", "movie", "movie", "idMovie", options, filter);
     AppendLinkFilter("director", "actor", "movie", "movie", "idMovie", options, filter);
 
-    option = options.find("year");
+    auto option = options.find("year");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("movie_view.premiered like '%i%%'", (int)option->second.asInteger()));
 
@@ -9551,7 +9546,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
 
       AppendIdLinkFilter("director", "actor", "tvshow", "tvshow", "idShow", options, filter);
 
-      option = options.find("year");
+      auto option = options.find("year");
       if (option != options.end())
         filter.AppendWhere(PrepareSQL("tvshow_view.c%02d like '%%%i%%'", VIDEODB_ID_TV_PREMIERED, (int)option->second.asInteger()));
 
@@ -9563,7 +9558,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     }
     else if (itemType == "seasons")
     {
-      option = options.find("tvshowid");
+      auto option = options.find("tvshowid");
       if (option != options.end())
         filter.AppendWhere(PrepareSQL("season_view.idShow = %i", (int)option->second.asInteger()));
 
@@ -9580,7 +9575,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     else if (itemType == "episodes")
     {
       int idShow = -1;
-      option = options.find("tvshowid");
+      auto option = options.find("tvshowid");
       if (option != options.end())
         idShow = (int)option->second.asInteger();
 
@@ -9643,7 +9638,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     AppendIdLinkFilter("director", "actor", "musicvideo", "musicvideo", "idMVideo", options, filter);
     AppendLinkFilter("director", "actor", "musicvideo", "musicvideo", "idMVideo", options, filter);
 
-    option = options.find("year");
+    auto option = options.find("year");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("musicvideo_view.premiered like '%i%%'", (int)option->second.asInteger()));
 
@@ -9676,7 +9671,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
   else
     return false;
 
-  option = options.find("xsp");
+  auto option = options.find("xsp");
   if (option != options.end())
   {
     CSmartPlaylist xsp;
