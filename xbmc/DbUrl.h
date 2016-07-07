@@ -42,14 +42,14 @@ public:
   const std::string& GetType() const { return m_type; }
   void AppendPath(const std::string &subPath);
 
-  virtual void AddOption(const std::string &key, const char *value);
-  virtual void AddOption(const std::string &key, const std::string &value);
-  virtual void AddOption(const std::string &key, int value);
-  virtual void AddOption(const std::string &key, float value);
-  virtual void AddOption(const std::string &key, double value);
-  virtual void AddOption(const std::string &key, bool value);
-  virtual void AddOptions(const std::string &options);
-  virtual void RemoveOption(const std::string &key);
+  void AddOption(const std::string &key, const char *value) override;
+  void AddOption(const std::string &key, const std::string &value) override;
+  void AddOption(const std::string &key, int value) override;
+  void AddOption(const std::string &key, float value) override;
+  void AddOption(const std::string &key, double value) override;
+  void AddOption(const std::string &key, bool value) override;
+  void AddOptions(const std::string &options) override;
+  void RemoveOption(const std::string &key) override;
 
 protected:
   virtual bool parse() = 0;
