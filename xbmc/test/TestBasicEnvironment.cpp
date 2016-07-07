@@ -20,6 +20,7 @@
 
 #include "TestBasicEnvironment.h"
 #include "TestUtils.h"
+#include "cores/DataCacheCore.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
