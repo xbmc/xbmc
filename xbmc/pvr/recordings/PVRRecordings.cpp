@@ -352,9 +352,6 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       if (!current->m_strFanartPath.empty())
         pFileItem->SetArt("fanart", current->m_strFanartPath);
 
-      // Use the channel icon as a fallback when a thumbnail is not available
-      pFileItem->SetArtFallback("thumb", "icon");
-
       pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
 
       items.Add(pFileItem);
