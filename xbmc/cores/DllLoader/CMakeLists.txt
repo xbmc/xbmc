@@ -21,11 +21,13 @@ set(HEADERS coff.h
 
 if(NOT CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES mmap_anon.c
-                      ldt_keeper.c
                       SoLoader.cpp)
   list(APPEND HEADERS mmap_anon.h
-                      ldt_keeper.h
                       SoLoader.h)
+  if(NOT CORE_SYSTEM_NAME STREQUAL freebsd)
+    list(APPEND SOURCES ldt_keeper.c) 
+    list(APPEND HEADERS ldt_keeper.h)
+  endif()
 else()
   list(APPEND SOURCES Win32DllLoader.cpp)
   list(APPEND HEADERS Win32DllLoader.h)
