@@ -514,13 +514,14 @@ protected:
 class CVDPAUContext
 {
 public:
-  static bool EnsureContext(CVDPAUContext **ctx);
+  static bool EnsureContext(CVDPAUContext **ctx, CDecoder *decoder);
   void Release();
   VDPAU_procs& GetProcs();
   VdpDevice GetDevice();
   bool Supports(VdpVideoMixerFeature feature);
   VdpVideoMixerFeature* GetFeatures();
   int GetFeatureCount();
+  static void FFReleaseBuffer(void *opaque, uint8_t *data);
 private:
   CVDPAUContext();
   void Close();
@@ -529,6 +530,7 @@ private:
   void DestroyContext();
   void QueryProcs();
   void SpewHardwareAvailable();
+  bool IsValidDecoder(CDecoder *decoder);
   static CVDPAUContext *m_context;
   static CCriticalSection m_section;
   static Display *m_display;
@@ -539,6 +541,7 @@ private:
   VdpDevice m_vdpDevice;
   VDPAU_procs m_vdpProcs;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
+  std::vector<CDecoder*> m_decoders;
 };
 
 /**
@@ -580,7 +583,7 @@ public:
   EINTERLACEMETHOD AutoInterlaceMethod();
   static bool IsVDPAUFormat(AVPixelFormat fmt);
 
-  static void FFReleaseBuffer(void *opaque, uint8_t *data);
+  void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
   static int Render(struct AVCodecContext *s, struct AVFrame *src,
                     const VdpPictureInfo *info, uint32_t buffers_used,
