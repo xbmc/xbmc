@@ -263,7 +263,7 @@ CVariant::CVariant(const std::vector<std::string> &strArray)
   m_data.array = new VariantArray;
   m_data.array->reserve(strArray.size());
   for (const auto& item : strArray)
-    m_data.array->push_back(CVariant(item));
+    m_data.array->emplace_back(item);
 }
 
 CVariant::CVariant(const std::map<std::string, std::string> &strMap)
@@ -678,7 +678,7 @@ void CVariant::push_back(const CVariant &variant)
   }
 
   if (m_type == VariantTypeArray)
-    m_data.array->push_back(variant);
+    m_data.array->emplace_back(variant);
 }
 
 void CVariant::push_back(CVariant &&variant)
@@ -690,7 +690,7 @@ void CVariant::push_back(CVariant &&variant)
   }
 
   if (m_type == VariantTypeArray)
-    m_data.array->push_back(std::move(variant));
+    m_data.array->emplace_back(std::move(variant));
 }
 
 void CVariant::append(const CVariant &variant)
