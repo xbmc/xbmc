@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include <string>
+#include <vector>
 
 #include "system.h"
 #include "ColorManager.h"
@@ -305,8 +306,8 @@ bool CColorManager::Load3dLut(const std::string filename, uint16_t **CLUT, int *
 
   for (int rIndex=0; rIndex<rSize; rIndex++) {
     for (int gIndex=0; gIndex<gSize; gIndex++) {
-      uint16_t input[bSize*3];
-      lutFile.Read(input, 3*bSize*sizeof(uint16_t));
+      std::vector<uint16_t> input(bSize*3);
+      lutFile.Read(input.data(), input.size()*sizeof(input[0]));
       int index = (rIndex + gIndex*rSize)*3;
       for (int bIndex=0; bIndex<bSize; bIndex++) {
         (*CLUT)[index+bIndex*rSize*gSize*3+0] = input[bIndex*3+2];

@@ -60,6 +60,9 @@ set(CORE_BUILD_DIR build)
 
 message(STATUS "Source directory: ${CORE_SOURCE_DIR}")
 message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
+if(CMAKE_BINARY_DIR STREQUAL CORE_SOURCE_DIR)
+  message(WARNING "In-source build detected. It is recommended to build out-of-source.")
+endif()
 
 include(modules/extra/ECMEnableSanitizers.cmake)
 include(scripts/common/GeneratorSetup.cmake)

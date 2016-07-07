@@ -75,6 +75,13 @@ endif()
 set(CORE_MAIN_SOURCE ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
 
 # system specific arch setup
+if(NOT EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ArchSetup.cmake)
+  message(FATAL_ERROR "Couldn't find configuration for '${CORE_SYSTEM_NAME}' "
+                      "Either the platform is not (yet) supported "
+                      "or a toolchain file has to be specified. "
+                      "Consult ${CMAKE_SOURCE_DIR}/README.md for instructions. "
+                      "Note: Specifying a toolchain requires a clean build directory!")
+endif()
 include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ArchSetup.cmake)
 
 message(STATUS "Core system type: ${CORE_SYSTEM_NAME}")
