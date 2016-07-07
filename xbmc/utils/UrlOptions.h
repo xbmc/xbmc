@@ -33,7 +33,7 @@ public:
   CUrlOptions(const std::string &options, const char *strLead = "");
   virtual ~CUrlOptions();
 
-  void Clear() { m_options.clear(); m_strLead = ""; }
+  void Clear() { m_options.clear(); m_strLead.clear(); }
 
   const UrlOptions& GetOptions() const { return m_options; }
   std::string GetOptionsString(bool withLeadingSeperator = false) const;
