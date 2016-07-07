@@ -1770,6 +1770,11 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
       continue;
 
     std::string strCandidate = URIUtils::GetFileName(pItem->GetPath());
+
+    // skip duplicates
+    if (std::find(associatedFiles.begin(), associatedFiles.end(), pItem->GetPath()) != associatedFiles.end())
+      continue;
+
     URIUtils::RemoveExtension(strCandidate);
     if (StringUtils::StartsWithNoCase(strCandidate, videoName))
     {
