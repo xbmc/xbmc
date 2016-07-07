@@ -22,22 +22,22 @@
 #if defined(TARGET_WINDOWS)
 
 #include "video/videosync/VideoSync.h"
-#include "guilib/D3DResource.h"
+#include "guilib/DispResource.h"
 #include "threads/Event.h"
 
-class CVideoSyncD3D : public CVideoSync, ID3DResource
+class CVideoSyncD3D : public CVideoSync, IDispResource
 {
 public:
   CVideoSyncD3D(CVideoReferenceClock *clock) : CVideoSync(clock) {};
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(volatile bool& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void RefreshChanged();
+  bool Setup(PUPDATECLOCK func) override;
+  void Run(volatile bool& stop) override;
+  void Cleanup() override;
+  float GetFps() override;
+  void RefreshChanged() override;
+  // IDispResource overrides
+  void OnLostDisplay() override;
+  void OnResetDisplay() override;
 
-  virtual void OnCreateDevice() {}
-  virtual void OnDestroyDevice();
-  virtual void OnResetDevice();
 private:
   static std::string GetErrorDescription(HRESULT hr);
 

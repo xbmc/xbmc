@@ -31,7 +31,7 @@
 #include "win32/dxerr.h"
 #include "utils/StringUtils.h"
 
-void CVideoSyncD3D::OnDestroyDevice()
+void CVideoSyncD3D::OnLostDisplay()
 {
   if (!m_displayLost)
   {
@@ -40,7 +40,7 @@ void CVideoSyncD3D::OnDestroyDevice()
   }
 }
 
-void CVideoSyncD3D::OnResetDevice()
+void CVideoSyncD3D::OnResetDisplay()
 {
   m_displayReset = true;
 }
@@ -97,15 +97,16 @@ void CVideoSyncD3D::Run(volatile bool& stop)
 
     if ((Now - m_lastUpdateTime) >= systemFrequency)
     {
-      if (m_fps != GetFps())
+      float fps = m_fps;
+      if (fps != GetFps())
         break;
     }
 
     // because we had a vblank, sleep until half the refreshrate period because i think WaitForVBlank block any rendering stuf
     // without sleeping we have freeze rendering
     int SleepTime = (int)((LastVBlankTime + (systemFrequency / MathUtils::round_int(m_fps) / 2) - Now) * 1000 / systemFrequency);
-    if (SleepTime > 100)
-      SleepTime = 100; //failsafe
+    if (SleepTime > 50)
+      SleepTime = 50; //failsafe
     if (SleepTime > 0)
       ::Sleep(SleepTime);
   }
