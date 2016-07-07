@@ -15,7 +15,7 @@ if(CROSSCOMPILING)
   message(STATUS "CROSS: ${ffmpeg_conf}")
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL linux)
+if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
   list(APPEND ffmpeg_conf --enable-vdpau --enable-vaapi --enable-pic)
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   if(CPU MATCHES arm)
