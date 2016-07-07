@@ -19,10 +19,10 @@
  *
  */
 
+#include "utils/Variant.h"
+
 #include <map>
 #include <string>
-
-#include "utils/Variant.h"
 
 class CUrlOptions
 {

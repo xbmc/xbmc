@@ -18,8 +18,6 @@
  *
  */
 
-#include <sstream>
-
 #include "UrlOptions.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
