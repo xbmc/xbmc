@@ -82,7 +82,7 @@ externalproject_add(ffmpeg
                       --enable-encoder=png
                       --enable-encoder=mjpeg
                       ${ffmpeg_conf}
-                    BUILD_COMMAND make ${PARALLEL_FLAGS})
+                    BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} ${PARALLEL_FLAGS})
 
 install(CODE "Message(Done)")
 

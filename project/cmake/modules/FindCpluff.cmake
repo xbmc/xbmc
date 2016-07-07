@@ -22,7 +22,7 @@ if(NOT WIN32)
                                         --host=${ARCH}
                                         CFLAGS=${defines}
                                         LDFLAGS=${ldflags}
-                      BUILD_COMMAND make V=1)
+                      BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} V=1)
   ExternalProject_Add_Step(libcpluff autoreconf
                                      DEPENDEES download update patch
                                      DEPENDERS configure
