@@ -26,7 +26,6 @@
 #include "utils/log.h"
 
 CUrlOptions::CUrlOptions()
-  : m_strLead("")
 { }
 
 CUrlOptions::CUrlOptions(const std::string &options, const char *strLead /* = "" */)
