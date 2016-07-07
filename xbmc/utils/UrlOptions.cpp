@@ -158,7 +158,7 @@ void CUrlOptions::RemoveOption(const std::string &key)
   if (key.empty())
     return;
 
-  UrlOptions::iterator option = m_options.find(key);
+  auto option = m_options.find(key);
   if (option != m_options.end())
     m_options.erase(option);
 }
@@ -176,7 +176,7 @@ bool CUrlOptions::GetOption(const std::string &key, CVariant &value) const
   if (key.empty())
     return false;
 
-  UrlOptions::const_iterator option = m_options.find(key);
+  auto option = m_options.find(key);
   if (option == m_options.end())
     return false;
 
