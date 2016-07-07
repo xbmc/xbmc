@@ -124,6 +124,11 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND HEADERS Sinks/AESinkAUDIOTRACK.h)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL freebsd)
+  list(APPEND SOURCES Sinks/AESinkOSS.cpp)
+  list(APPEND HEADERS Sinks/AESinkOSS.h)
+endif()
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 core_add_library(audioengine)
