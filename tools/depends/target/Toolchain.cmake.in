@@ -79,7 +79,7 @@ endif()
 
 # add Android directories and tools
 if(CORE_SYSTEM_NAME STREQUAL android)
-  set(NDKROOT @use_ndk@)
+  set(NDKROOT @use_ndk_path@)
   set(SDKROOT @use_sdk_path@)
   set(SDK_PLATFORM @use_sdk@)
   string(REPLACE ":" ";" SDK_BUILDTOOLS_PATH "@build_tools_path@")
