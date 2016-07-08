@@ -7,10 +7,11 @@ The current version of the buildsystem is capable of building the main Kodi
 executable (but no packaging or dependency management yet) for the following
 platforms:
 
-- Linux (GNU Makefiles)
-- Windows (NMake Makefiles, Visual Studio 14 (2015))
-- OSX (GNU Makefiles, Xcode)
+- Linux (GNU Makefiles, Ninja)
+- Windows (NMake Makefiles, Visual Studio 14 (2015), Ninja)
+- OSX and IOS (GNU Makefiles, Xcode, Ninja)
 - Android (GNU Makefiles)
+- FreeBSD (GNU Makefiles)
 
 Before building Kodi with CMake, please ensure that you have the platform
 specific dependencies installed.
