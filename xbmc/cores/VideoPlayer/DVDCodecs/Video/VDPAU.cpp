@@ -93,9 +93,13 @@ CVDPAUContext::CVDPAUContext()
   m_refCount = 0;
 }
 
-void CVDPAUContext::Release()
+void CVDPAUContext::Release(CDecoder *decoder)
 {
   CSingleLock lock(m_section);
+
+  auto it = find(m_decoders.begin(), m_decoders.end(), decoder);
+  if (it != m_decoders.end())
+    m_decoders.erase(it);
 
   m_refCount--;
   if (m_refCount <= 0)
@@ -120,6 +124,8 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx, CDecoder *decoder)
   {
     m_context->m_refCount++;
     *ctx = m_context;
+    if (!m_context->IsValidDecoder(decoder))
+      m_context->m_decoders.push_back(decoder);
     return true;
   }
 
@@ -423,6 +429,7 @@ bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
 VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
 {
   CSingleLock lock(m_section);
+
   if (m_state.find(surf) != m_state.end())
   {
     std::list<VdpVideoSurface>::iterator it;
@@ -623,7 +630,7 @@ void CDecoder::Close()
   m_vdpauOutput.Dispose();
 
   if (m_vdpauConfig.context)
-    m_vdpauConfig.context->Release();
+    m_vdpauConfig.context->Release(this);
   m_vdpauConfig.context = 0;
 }
 
@@ -707,7 +714,7 @@ void CDecoder::OnLostDisplay()
   CSingleLock lock(m_DecoderSection);
   FiniVDPAUOutput();
   if (m_vdpauConfig.context)
-    m_vdpauConfig.context->Release();
+    m_vdpauConfig.context->Release(this);
   m_vdpauConfig.context = 0;
 
   m_DisplayState = VDPAU_LOST;
@@ -762,7 +769,7 @@ int CDecoder::Check(AVCodecContext* avctx)
 
     FiniVDPAUOutput();
     if (m_vdpauConfig.context)
-      m_vdpauConfig.context->Release();
+      m_vdpauConfig.context->Release(this);
     m_vdpauConfig.context = 0;
 
     if (CVDPAUContext::EnsureContext(&m_vdpauConfig.context, this))
@@ -1012,7 +1019,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   pic->data[0] = (uint8_t*)(uintptr_t)surf;
   pic->data[3] = (uint8_t*)(uintptr_t)surf;
   pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, CVDPAUContext::FFReleaseBuffer, ctx, 0);
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, CVDPAUContext::FFReleaseBuffer, vdp, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "CVDPAU::%s - error creating buffer", __FUNCTION__);
