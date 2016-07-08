@@ -24,6 +24,7 @@
 #include "utils/Temperature.h"
 #include <string>
 #include <string.h>
+#include <sys/stat.h>
 
 #if defined(TARGET_DARWIN)
 #include <sys/types.h>
@@ -254,8 +255,17 @@ CCPUInfo::CCPUInfo(void)
     m_cores[core.m_id] = core;
   }
 #else
+  struct stat stBuf;
+  m_isAmlThermal = stat("/sys/bus/platform/devices/aml_thermal", &stBuf) == 0 && S_ISDIR(stBuf.st_mode);  
   m_fProcStat = fopen("/proc/stat", "r");
-  m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
+  if(m_isAmlThermal)
+  {
+    m_fProcTemperature = fopen("/sys/class/thermal/thermal_zone1/temp", "r");
+    if (m_fProcTemperature == NULL)   
+      m_fProcTemperature = fopen("/sys/class/thermal/thermal_zone0/temp", "r");  
+  }
+  if (m_fProcTemperature == NULL)
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
   if (m_fProcTemperature == NULL)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
   if (m_fProcTemperature == NULL)
@@ -625,7 +635,9 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
     if (!ret)
     {
       ret = fscanf(m_fProcTemperature, "%d", &value);
-      value = value / 1000;
+      if(!m_isAmlThermal)
+        value = value / 1000;
+
       scale = 'c';
       ret++;
     }
