@@ -16,6 +16,7 @@ else()
 endif()
 
 find_package(CXX11 REQUIRED)
+include(LDGOLD)
 
 if(ENABLE_LIRC)
   set(LIRC_DEVICE "\"/dev/lircd\"" CACHE STRING "LIRC device to use")
