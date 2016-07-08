@@ -14,8 +14,14 @@ function(core_link_library lib wraplib)
     set(check_arg ${ARGV3})
     set(data_arg ${ARGV4})
   endif()
+
+  # wrapper has to be adapted in order to support coverage.
+  if(CMAKE_BUILD_TYPE STREQUAL Coverage)
+    set(export "")
+  endif()
+
   if(check_arg STREQUAL export)
-    set(export ${export} 
+    set(export ${export}
         -Wl,--version-script=${ARGV3})
   elseif(check_arg STREQUAL nowrap)
     set(export ${data_arg})
