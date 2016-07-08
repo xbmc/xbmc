@@ -515,7 +515,7 @@ class CVDPAUContext
 {
 public:
   static bool EnsureContext(CVDPAUContext **ctx, CDecoder *decoder);
-  void Release();
+  void Release(CDecoder *decoder);
   VDPAU_procs& GetProcs();
   VdpDevice GetDevice();
   bool Supports(VdpVideoMixerFeature feature);
