@@ -111,3 +111,9 @@ CDataCacheCore& CServiceManager::GetDataCacheCore()
 {
   return *m_dataCacheCore;
 }
+
+// deleters for unique_ptr
+void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
+{
+  delete p;
+}
