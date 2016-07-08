@@ -26,6 +26,7 @@
 #include <map>
 #include <deque>
 #include "AddonDatabase.h"
+#include "Repository.h"
 
 class DllLibCPluff;
 extern "C"
@@ -223,21 +224,14 @@ namespace ADDON
      */
     bool LoadAddonDescription(const std::string &path, AddonPtr &addon);
 
-    /*! \brief Load the addon in the given in-memory xml
-     This loads the addon using c-pluff which parses the addon descriptor file.
-     \param root Root element of an XML document.
-     \param addon [out] returned addon.
-     \return true if addon is set, false otherwise.
-     */
-    bool LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPtr &addon);
-
     /*! \brief Parse a repository XML file for addons and load their descriptors
      A repository XML is essentially a concatenated list of addon descriptors.
-     \param root Root element of an XML document.
+     \param repo The repository info.
+     \param xml The XML document from repository.
      \param addons [out] returned list of addons.
      \return true if the repository XML file is parsed, false otherwise.
      */
-    bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
+    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons);
 
     /*! \brief Start all services addons.
         \return True is all addons are started, false otherwise
@@ -246,8 +240,9 @@ namespace ADDON
     /*! \brief Stop all services addons.
     */
     void StopServices(const bool onlylogin);
+
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
-    static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
+    static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
   private:

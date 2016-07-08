@@ -220,7 +220,9 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   if (!CAddonMgr::GetInstance().GetAddon(repoId, repo, ADDON_REPOSITORY))
     return;
 
-  std::string hash = std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon);
+  std::string hash;
+  if (!std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon, hash))
+    return;
   DoInstall(addon, std::static_pointer_cast<CRepository>(repo), hash, true, false);
 }
 
@@ -277,20 +279,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     return false;
   }
 
-  //! @todo possibly add support for github generated zips here?
-  std::string archive = URIUtils::AddFileToFolder(items[0]->GetPath(), "addon.xml");
-
-  CXBMCTinyXML xml;
   AddonPtr addon;
-  if (xml.LoadFile(archive) && CAddonMgr::GetInstance().LoadAddonDescriptionFromMemory(xml.RootElement(), addon))
-  {
-    // set the correct path
-    addon->Props().path = items[0]->GetPath();
-    addon->Props().icon = URIUtils::AddFileToFolder(items[0]->GetPath(), "icon.png");
-
-    // install the addon
+  if (CAddonMgr::GetInstance().LoadAddonDescription(items[0]->GetPath(), addon))
     return DoInstall(addon, RepositoryPtr());
-  }
 
   CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(24045,
       StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
@@ -497,8 +488,7 @@ bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, const std::s
   if (!CAddonMgr::GetInstance().GetAddon(repoID, repo, ADDON_REPOSITORY))
     return false;
 
-  hash = std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon);
-  return true;
+  return std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon, hash);
 }
 
 bool CAddonInstallJob::DoWork()
@@ -574,7 +564,8 @@ bool CAddonInstallJob::DoWork()
         {
           CFile::Delete(package);
 
-          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: MD5 mismatch after download %s", m_addon->ID().c_str(), package.c_str());
+          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: MD5 mismatch after download. Expected %s, was %s",
+              m_addon->ID().c_str(), m_hash.c_str(), md5.c_str());
           ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
           return false;
         }

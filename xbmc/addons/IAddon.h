@@ -94,7 +94,6 @@ namespace ADDON
     virtual TYPE Type() const =0;
     virtual TYPE FullType() const =0;
     virtual bool IsType(TYPE type) const =0;
-    virtual const AddonProps& Props() =0;
     virtual std::string ID() const =0;
     virtual std::string Name() const =0;
     virtual bool IsInUse() const =0;

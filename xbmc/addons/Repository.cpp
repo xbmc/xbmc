@@ -56,157 +56,101 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  DirList dirs;
-  AddonVersion version("0.0.0");
-  AddonPtr addonver;
-  if (CAddonMgr::GetInstance().GetAddon("xbmc.addon", addonver))
-    version = addonver->Version();
-  for (size_t i = 0; i < ext->configuration->num_children; ++i)
-  {
-    if(ext->configuration->children[i].name &&
-       strcmp(ext->configuration->children[i].name, "dir") == 0)
-    {
-      AddonVersion min_version(CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "@minversion"));
-      if (min_version <= version)
-      {
-        DirInfo dir;
-        dir.version    = min_version;
-        dir.checksum   = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "checksum");
-        dir.compressed = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info@compressed") == "true";
-        dir.info       = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info");
-        dir.datadir    = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir");
-        dir.zipped     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir@zip") == "true";
-        dir.hashes     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
-        dirs.push_back(dir);
-      }
-    }
-  }
-  // backward compatibility
-  if (!CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info").empty())
-  {
-    DirInfo info;
-    info.checksum   = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
-    info.compressed = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info@compressed") == "true";
-    info.info       = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
-    info.datadir    = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
-    info.zipped     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir@zip") == "true";
-    info.hashes     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
-    dirs.push_back(info);
-  }
-
-  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(dirs)));
+  DirInfo info;
+  info.checksum = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
+  info.info = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
+  info.datadir = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
+  info.hashes = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
+  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(info)));
 }
 
-CRepository::CRepository(AddonProps props, DirList dirs)
-    : CAddon(std::move(props)), m_dirs(std::move(dirs))
+CRepository::CRepository(AddonProps props, DirInfo dir)
+    : CAddon(std::move(props)), m_dir(std::move(dir))
 {
 }
 
-std::string CRepository::FetchChecksum(const std::string& url)
-{
-  CFile file;
-  try
-  {
-    if (file.Open(url))
-    {    
-      // we intentionally avoid using file.GetLength() for 
-      // Transfer-Encoding: chunked servers.
-      std::stringstream str;
-      char temp[1024];
-      int read;
-      while ((read=file.Read(temp, sizeof(temp))) > 0)
-        str.write(temp, read);
-      return str.str();
-    }
-    return "";
-  }
-  catch (...)
-  {
-    return "";
-  }
-}
 
-std::string CRepository::GetAddonHash(const AddonPtr& addon) const
+bool CRepository::GetAddonHash(const AddonPtr& addon, std::string& checksum) const
 {
-  std::string checksum;
-  DirList::const_iterator it;
-  for (it = m_dirs.begin();it != m_dirs.end(); ++it)
-    if (URIUtils::PathHasParent(addon->Path(), it->datadir, true))
-      break;
-  if (it != m_dirs.end() && it->hashes)
+  if (!m_dir.hashes)
   {
-    checksum = FetchChecksum(addon->Path()+".md5");
+    checksum = "";
+    return true;
+  }
+  if (FetchChecksum(addon->Path() + ".md5", checksum))
+  {
     size_t pos = checksum.find_first_of(" \n");
     if (pos != std::string::npos)
-      return checksum.substr(0, pos);
+    {
+      checksum = checksum.substr(0, pos);
+      return true;
+    }
   }
-  return checksum;
+  return false;
 }
 
-#define SET_IF_NOT_EMPTY(x,y) \
-  { \
-    if (!x.empty()) \
-       x = y; \
+bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) noexcept
+{
+  CFile file;
+  if (!file.Open(url))
+    return false;
+
+  // we intentionally avoid using file.GetLength() for
+  // Transfer-Encoding: chunked servers.
+  std::stringstream ss;
+  char temp[1024];
+  int read;
+  while ((read = file.Read(temp, sizeof(temp))) > 0)
+    ss.write(temp, read);
+  if (read <= -1)
+    return false;
+  checksum = ss.str();
+  return true;
+}
+
+CRepository::FetchStatus CRepository::FetchIfChanged(const CRepository::DirInfo& repo,
+    const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) noexcept
+{
+  checksum = "";
+  if (!repo.checksum.empty())
+  {
+    if (!FetchChecksum(repo.checksum, checksum))
+    {
+      CLog::Log(LOGERROR, "CRepository: failed read '%s'", repo.checksum.c_str());
+      return STATUS_ERROR;
+    }
   }
 
+  if (oldChecksum == checksum && !oldChecksum.empty())
+    return STATUS_NOT_MODIFIED;
 
-bool CRepository::FetchIndex(const std::string& url, VECADDONS& addons)
-{
   XFILE::CCurlFile http;
   http.SetAcceptEncoding("gzip");
 
   std::string content;
-  if (!http.Get(url, content))
-    return false;
+  if (!http.Get(repo.info, content))
+  {
+    CLog::Log(LOGERROR, "CRepository: failed to read %s", repo.info.c_str());
+    return STATUS_ERROR;
+  }
 
-  if (URIUtils::HasExtension(url, ".gz")
+  if (URIUtils::HasExtension(repo.info, ".gz")
       || CMime::GetFileTypeFromMime(http.GetMimeType()) == CMime::EFileType::FileTypeGZip)
   {
-    CLog::Log(LOGDEBUG, "CRepository '%s' is gzip. decompressing", url.c_str());
+    CLog::Log(LOGDEBUG, "CRepository '%s' is gzip. decompressing", repo.info.c_str());
     std::string buffer;
     if (!CZipFile::DecompressGzip(content, buffer))
-      return false;
+    {
+      CLog::Log(LOGERROR, "CRepository: failed to decompress gzip from '%s'", repo.info.c_str());
+      return STATUS_ERROR;
+    }
     content = std::move(buffer);
   }
 
-  CXBMCTinyXML doc;
-  if (!doc.Parse(content) || !doc.RootElement()
-      || !CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), addons))
-  {
-    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml. Malformated.");
-    return false;
-  }
-  return true;
+  return CAddonMgr::GetInstance().AddonsFromRepoXML(repo, content, addons) ? STATUS_OK : STATUS_ERROR;
 }
-
-bool CRepository::Parse(const DirInfo& dir, VECADDONS& addons)
-{
-  if (!FetchIndex(dir.info, addons))
-    return false;
-
-    for (IVECADDONS i = addons.begin(); i != addons.end(); ++i)
-    {
-      AddonPtr addon = *i;
-      if (dir.zipped)
-      {
-        std::string file = StringUtils::Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().asString().c_str());
-        addon->Props().path = URIUtils::AddFileToFolder(dir.datadir,file);
-        SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/icon.png"))
-        SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/fanart.jpg"))
-      }
-      else
-      {
-        addon->Props().path = URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/");
-        SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/icon.png"))
-        SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/fanart.jpg"))
-      }
-    }
-  return true;
-}
-
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}
-
 
 bool CRepositoryUpdateJob::DoWork()
 {
@@ -220,17 +164,17 @@ bool CRepositoryUpdateJob::DoWork()
 
   std::string newChecksum;
   VECADDONS addons;
-  auto status = FetchIfChanged(oldChecksum, newChecksum, addons);
+  auto status = CRepository::FetchIfChanged(m_repo->m_dir, oldChecksum, newChecksum, addons);
 
   database.SetLastChecked(m_repo->ID(), m_repo->Version(),
       CDateTime::GetCurrentDateTime().GetAsDBDateTime());
 
   MarkFinished();
 
-  if (status == STATUS_ERROR)
+  if (status == CRepository::STATUS_ERROR)
     return false;
 
-  if (status == STATUS_NOT_MODIFIED)
+  if (status == CRepository::STATUS_NOT_MODIFIED)
   {
     CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] checksum not changed.", m_repo->ID().c_str());
     return true;
@@ -314,51 +258,3 @@ bool CRepositoryUpdateJob::DoWork()
   database.CommitMultipleExecute();
   return true;
 }
-
-CRepositoryUpdateJob::FetchStatus CRepositoryUpdateJob::FetchIfChanged(const std::string& oldChecksum,
-    std::string& checksum, VECADDONS& addons)
-{
-  SetText(StringUtils::Format(g_localizeStrings.Get(24093).c_str(), m_repo->Name().c_str()));
-  const unsigned int total = m_repo->m_dirs.size() * 2;
-
-  checksum = "";
-  for (auto it = m_repo->m_dirs.cbegin(); it != m_repo->m_dirs.cend(); ++it)
-  {
-    if (!it->checksum.empty())
-    {
-      if (ShouldCancel(std::distance(m_repo->m_dirs.cbegin(), it), total))
-        return STATUS_ERROR;
-
-      auto dirsum = CRepository::FetchChecksum(it->checksum);
-      if (dirsum.empty())
-      {
-        CLog::Log(LOGERROR, "CRepositoryUpdateJob[%s] failed read checksum for "
-            "directory '%s'", m_repo->ID().c_str(), it->info.c_str());
-        return STATUS_ERROR;
-      }
-      checksum += dirsum;
-    }
-  }
-
-  if (oldChecksum == checksum && !oldChecksum.empty())
-    return STATUS_NOT_MODIFIED;
-
-  for (auto it = m_repo->m_dirs.cbegin(); it != m_repo->m_dirs.cend(); ++it)
-  {
-    if (ShouldCancel(m_repo->m_dirs.size() + std::distance(m_repo->m_dirs.cbegin(), it), total))
-      return STATUS_ERROR;
-
-    VECADDONS tmp;
-    if (!CRepository::Parse(*it, tmp))
-    {
-      CLog::Log(LOGERROR, "CRepositoryUpdateJob[%s] failed to read or parse "
-          "directory '%s'", m_repo->ID().c_str(), it->info.c_str());
-      return STATUS_ERROR;
-    }
-    addons.insert(addons.end(), tmp.begin(), tmp.end());
-  }
-
-  SetProgress(total, total);
-  return STATUS_OK;
-}
-

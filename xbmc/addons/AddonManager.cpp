@@ -93,21 +93,23 @@ static cp_extension_t* GetFirstExtPoint(const cp_plugin_info_t* addon, TYPE type
 AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type)
 {
   CAddonBuilder builder;
-  return Factory(plugin, type, builder);
+  if (Factory(plugin, type, builder))
+    return builder.Build();
+  return nullptr;
 }
 
-AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder)
+bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder)
 {
   if (!plugin || !plugin->identifier)
-    return nullptr;
+    return false;
 
   if (!PlatformSupportsAddon(plugin))
-    return nullptr;
+    return false;
 
   cp_extension_t* ext = GetFirstExtPoint(plugin, type);
 
   if (ext == nullptr && type != ADDON_UNKNOWN)
-    return nullptr; // no extension point satisfies the type requirement
+    return false; // no extension point satisfies the type requirement
 
   if (ext)
   {
@@ -121,7 +123,7 @@ AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBui
   }
 
   FillCpluffMetadata(plugin, builder);
-  return builder.Build();
+  return true;
 }
 
 void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder)
@@ -529,7 +531,9 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
         continue;
       }
 
-      AddonPtr addon = Factory(cp_addon, type, builder);
+      AddonPtr addon;
+      if (Factory(cp_addon, type, builder))
+        addon = builder.Build();
       m_cpluff->release_info(m_cp_context, cp_addon);
 
       if (addon)
@@ -1051,31 +1055,63 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
   return libraryName;
 }
 
-// FIXME: This function may not be required
-bool CAddonMgr::LoadAddonDescription(const std::string &path, AddonPtr &addon)
+bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &addon)
 {
+  auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(directory, "addon.xml"));
+
+  XFILE::CFile file;
+  XFILE::auto_buffer buffer;
+  if (file.LoadFile(addonXmlPath, buffer) <= 0)
+  {
+    CLog::Log(LOGERROR, "Failed to read '%s'", addonXmlPath.c_str());
+    return false;
+  }
+
   cp_status_t status;
-  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, CSpecialProtocol::TranslatePath(path).c_str(), &status);
+  cp_context_t* context = m_cpluff->create_context(&status);
+  if (!context)
+    return false;
+
+  auto info = m_cpluff->load_plugin_descriptor_from_memory(context, buffer.get(), buffer.size(), &status);
   if (info)
   {
+    // Correct the path. load_plugin_descriptor_from_memory sets it to 'memory'
+    info->plugin_path = (char*)malloc(strlen(directory.c_str()) + 1);
+    strcpy(info->plugin_path, directory.c_str());
     addon = Factory(info, ADDON_UNKNOWN);
-    m_cpluff->release_info(m_cp_context, info);
-    return NULL != addon.get();
+    m_cpluff->release_info(context, info);
   }
-  return false;
+  else
+    CLog::Log(LOGERROR, "Failed to parse '%s'", addonXmlPath.c_str());
+
+  m_cpluff->destroy_context(context);
+  return addon != nullptr;
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
+bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons)
 {
+  CXBMCTinyXML doc;
+  if (!doc.Parse(xml))
+  {
+    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml.");
+    return false;
+  }
+
+  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml. Malformed.");
+    return false;
+  }
+
   // create a context for these addons
   cp_status_t status;
   cp_context_t *context = m_cpluff->create_context(&status);
-  if (!root || !context)
+  if (!context)
     return false;
 
   // each addon XML should have a UTF-8 declaration
   TiXmlDeclaration decl("1.0", "UTF-8", "");
-  const TiXmlElement *element = root->FirstChildElement("addon");
+  auto element = doc.RootElement()->FirstChildElement("addon");
   while (element)
   {
     // dump the XML back to text
@@ -1086,9 +1122,19 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
     cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
     if (info)
     {
-      AddonPtr addon = Factory(info, ADDON_UNKNOWN);
-      if (addon.get())
-        addons.push_back(std::move(addon));
+      CAddonBuilder builder;
+      auto basePath = URIUtils::AddFileToFolder(repo.datadir, std::string(info->identifier));
+      info->plugin_path = (char*)malloc(strlen(basePath.c_str()) + 1);
+      strcpy(info->plugin_path, basePath .c_str());
+
+      if (Factory(info, ADDON_UNKNOWN, builder))
+      {
+        builder.SetPath(URIUtils::AddFileToFolder(repo.datadir, StringUtils::Format("%s/%s-%s.zip",
+            info->identifier, info->identifier, builder.GetVersion().asString().c_str())));
+        auto addon = builder.Build();
+        if (addon)
+          addons.push_back(std::move(addon));
+      }
       m_cpluff->release_info(context, info);
     }
     element = element->NextSiblingElement("addon");
@@ -1097,27 +1143,6 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
   return true;
 }
 
-bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPtr &addon)
-{
-  // create a context for these addons
-  cp_status_t status;
-  cp_context_t *context = m_cpluff->create_context(&status);
-  if (!root || !context)
-    return false;
-
-  // dump the XML back to text
-  std::string xml;
-  xml << TiXmlDeclaration("1.0", "UTF-8", "");
-  xml << *root;
-  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
-  if (info)
-  {
-    addon = Factory(info, ADDON_UNKNOWN);
-    m_cpluff->release_info(context, info);
-  }
-  m_cpluff->destroy_context(context);
-  return addon != NULL;
-}
 
 bool CAddonMgr::StartServices(const bool beforelogin)
 {

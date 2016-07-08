@@ -34,36 +34,37 @@ namespace ADDON
   public:
     struct DirInfo
     {
-      DirInfo() : version("0.0.0"), compressed(false), zipped(false), hashes(false) {}
+      DirInfo() : version("0.0.0"), hashes(false) {}
       AddonVersion version;
       std::string info;
       std::string checksum;
       std::string datadir;
-      bool compressed;
-      bool zipped;
       bool hashes;
     };
 
-    typedef std::vector<DirInfo> DirList;
-
-    DirList m_dirs;
+    DirInfo m_dir;
 
     static std::unique_ptr<CRepository> FromExtension(AddonProps props, const cp_extension_t* ext);
 
     explicit CRepository(AddonProps props) : CAddon(std::move(props)) {};
-    CRepository(AddonProps props, DirList dirs);
+    CRepository(AddonProps props, DirInfo dir);
 
     /*! \brief Get the md5 hash for an addon.
      \param the addon in question.
-     \return the md5 hash for the given addon, empty if non exists.
      */
-    std::string GetAddonHash(const AddonPtr& addon) const;
+    bool GetAddonHash(const AddonPtr& addon, std::string& checksum) const;
 
-    static bool Parse(const DirInfo& dir, VECADDONS& addons);
-    static std::string FetchChecksum(const std::string& url);
+    enum FetchStatus
+    {
+      STATUS_OK,
+      STATUS_NOT_MODIFIED,
+      STATUS_ERROR
+    };
 
-  private:
-    static bool FetchIndex(const std::string& url, VECADDONS& addons);
+    static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
+    static bool FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept;
+    static FetchStatus FetchIfChanged(const DirInfo& repo, const std::string& oldChecksum,
+        std::string& checksum, VECADDONS& addons) noexcept;
   };
 
   typedef std::shared_ptr<CRepository> RepositoryPtr;
@@ -78,16 +79,6 @@ namespace ADDON
     const RepositoryPtr& GetAddon() const { return m_repo; };
 
   private:
-    enum FetchStatus
-    {
-      STATUS_OK,
-      STATUS_NOT_MODIFIED,
-      STATUS_ERROR
-    };
-
-    FetchStatus FetchIfChanged(const std::string& oldChecksum,
-        std::string& checksum, VECADDONS& addons);
-
     const RepositoryPtr m_repo;
   };
 }
