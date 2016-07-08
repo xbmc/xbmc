@@ -41,9 +41,15 @@
 #endif
 #endif
 
-CTextureBundleXBT::CTextureBundleXBT(void)
+CTextureBundleXBT::CTextureBundleXBT()
   : m_TimeStamp{0}
   , m_themeBundle{false}
+{
+}
+
+CTextureBundleXBT::CTextureBundleXBT(bool themeBundle)
+  : m_TimeStamp{0}
+  , m_themeBundle{themeBundle}
 {
 }
 
@@ -59,6 +65,15 @@ CTextureBundleXBT::~CTextureBundleXBT(void)
 bool CTextureBundleXBT::OpenBundle()
 {
   // Find the correct texture file (skin or theme)
+
+  auto mediaDir = g_graphicsContext.GetMediaDir();
+  if (mediaDir.empty())
+  {
+    mediaDir = CSpecialProtocol::TranslatePath(
+      URIUtils::AddFileToFolder("special://home/addons",
+        CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)));
+  }
+
   if (m_themeBundle)
   {
     // if we are the theme bundle, we only load if the user has chosen
@@ -67,7 +82,7 @@ bool CTextureBundleXBT::OpenBundle()
     if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       std::string themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
-      m_path = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
+      m_path = URIUtils::AddFileToFolder(mediaDir, "media");
       m_path = URIUtils::AddFileToFolder(m_path, themeXBT);
     }
     else
@@ -77,7 +92,7 @@ bool CTextureBundleXBT::OpenBundle()
   }
   else
   {
-    m_path = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xbt");
+    m_path = URIUtils::AddFileToFolder(mediaDir, "media/Textures.xbt");
   }
 
   m_path = CSpecialProtocol::TranslatePathConvertCase(m_path);
