@@ -22,7 +22,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="XBMCHelper";
-const char* PROGVERS="0.7";
+const char* PROGVERS="0.8";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -121,6 +121,7 @@ void ParseOptions(int argc, char** argv)
   g_app_home = "";
   g_universal_timeout = 0.5;
   g_verbose_mode = false;
+  NSLog(@"ParseOptions - force VerboseMode on");
   
   while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
 	{
