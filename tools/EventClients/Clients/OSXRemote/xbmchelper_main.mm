@@ -6,6 +6,7 @@
 #include <sstream>
 #include <fstream>
 #include <iterator>
+#include <sys/file.h>
 
 using namespace std;
 
@@ -214,6 +215,13 @@ void Reconfigure(int nSignal)
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   
+  int instanceLockFile = open("/tmp/xbmchelper.lock", O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+  if (flock(instanceLockFile, LOCK_EX | LOCK_NB) != 0)
+  {
+      NSLog(@"Already running - exiting ...");
+      return 0;
+  }
+    
   ParseOptions(argc,argv);
 
   NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
