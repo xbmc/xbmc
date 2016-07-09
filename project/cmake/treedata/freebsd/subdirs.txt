@@ -1,4 +1,13 @@
-xbmc/linux   linuxsupport
-xbmc/input/linux input/linux
-xbmc/network/linux network/linux
-xbmc/freebsd freebsdsupport
+xbmc/linux                 linuxsupport
+xbmc/linux/sse4            sse4
+xbmc/input/linux           input/linux
+xbmc/input/touch           input/touch
+xbmc/input/touch/generic   input/touch/generic
+xbmc/network/linux         network/linux
+xbmc/peripherals/bus/linux peripherals/bus/linux
+xbmc/powermanagement/linux powermanagement/linux
+xbmc/storage/linux         storage/linux
+xbmc/filesystem/posix      filesystem/posix
+xbmc/utils/posix           utils_posix
+xbmc/platform/posix        posix
+xbmc/freebsd               freebsdsupport

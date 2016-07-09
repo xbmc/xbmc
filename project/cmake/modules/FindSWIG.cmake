@@ -1,5 +1,5 @@
 if(NOT SWIG_EXECUTABLE)
-  find_program(SWIG_EXECUTABLE NAMES swig2.0 swig PATH_SUFFIXES swig)
+  find_program(SWIG_EXECUTABLE NAMES swig3.0 swig2.0 swig PATH_SUFFIXES swig)
 endif()
 if(SWIG_EXECUTABLE)
   execute_process(COMMAND ${SWIG_EXECUTABLE} -swiglib
