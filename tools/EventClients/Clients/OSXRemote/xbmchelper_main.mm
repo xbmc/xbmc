@@ -109,6 +109,7 @@ void ReadConfig()
 //----------------------------------------------------------------------------
 void ParseOptions(int argc, char** argv)
 {
+  NSString *tmpStr = nil;
   int c, option_index = 0;
   //set the defaults
 	bool readExternal = false;
@@ -129,30 +130,42 @@ void ParseOptions(int argc, char** argv)
         break;
       case 'v':
         g_verbose_mode = true;
+        NSLog(@"ParseOptions - VerboseMode on");
         break;
       case 's':
         g_server_address = optarg;
+        tmpStr = [NSString stringWithCString:g_server_address.c_str() encoding:NSASCIIStringEncoding];
+        NSLog(@"ParseOptions - server address %@", tmpStr);
         break;
       case 'p':
         g_server_port = atoi(optarg);
+        NSLog(@"ParseOptions - server port %i", g_server_port);
         break;
       case 'u':
         g_mode = UNIVERSAL_MODE;
+        NSLog(@"ParseOptions - UniversalMode on");
         break;
       case 'm':
         g_mode = MULTIREMOTE_MODE;
+        NSLog(@"ParseOptions - MultiRemoteMode on");
         break;        
       case 't':
         g_universal_timeout = atof(optarg) * 0.001;
+        NSLog(@"ParseOptions - Universal Timeout %lf", g_universal_timeout);
         break;
       case 'x':
         readExternal = true;
+        NSLog(@"ParseOptions - ReadExternal on");
         break;
       case 'a':
         g_app_path = optarg;
+        tmpStr = [NSString stringWithCString:g_app_path.c_str() encoding:NSASCIIStringEncoding];
+        NSLog(@"ParseOptions - AppPath %@", tmpStr);
         break;
       case 'z':
         g_app_home = optarg;
+        tmpStr = [NSString stringWithCString:g_app_home.c_str() encoding:NSASCIIStringEncoding];
+        NSLog(@"ParseOptions - AppHome %@", tmpStr);
         break;
       default:
         usage();
