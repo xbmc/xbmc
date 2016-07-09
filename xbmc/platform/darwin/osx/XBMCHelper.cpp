@@ -36,6 +36,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "url.h"
@@ -147,12 +148,16 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
 void XBMCHelper::Start()
 {
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
-  if (pid == -1)
+  // try multiple times in case startup failed for some reason
+  int retries = 5;
+  while(pid == -1 && retries-- > 0)
   {
     //printf("Asking helper to start.\n");
     // use -x to have XBMCHelper read its configure file
     std::string cmd = "\"" + m_helperFile + "\" -x &";
     system(cmd.c_str());
+    usleep(500);
+    pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   }
 }
 
