@@ -35,6 +35,9 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set(CMAKE_CXX_FLAGS "/MP /FS ${CMAKE_CXX_FLAGS}")
 endif()
 
+# Google Test needs to use shared version of runtime libraries
+set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
+
 
 # -------- Linker options ---------
 
