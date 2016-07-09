@@ -184,13 +184,17 @@ void ConfigureHelper(){
 //----------------------------------------------------------------------------
 void Reconfigure(int nSignal)
 {
-	if (nSignal == SIGHUP){
+    NSLog(@"received signal %i", nSignal);
+
+	if (nSignal == SIGHUP)
+    {
 		ReadConfig();
-    ConfigureHelper();
-  }
-	else {
-    QuitEventLoop(GetMainEventLoop());
-  }
+        ConfigureHelper();
+    }
+    else
+    {
+        QuitEventLoop(GetMainEventLoop());
+    }
 }
 
 //----------------------------------------------------------------------------
