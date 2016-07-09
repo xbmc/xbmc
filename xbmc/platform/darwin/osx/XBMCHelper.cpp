@@ -169,7 +169,7 @@ void XBMCHelper::Stop()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid != -1)
   {
-    printf("Asked to stop\n");
+    CLog::Log(LOGDEBUG,"XBMCHelper: Sending SIGKILL to %s\n", XBMC_HELPER_PROGRAM);
     kill(pid, SIGKILL);
   }
 }
