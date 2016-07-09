@@ -19,4 +19,3 @@ set(HEADERS GUIDialogPVRChannelManager.h
             GUIDialogPVRTimerSettings.h)
 
 core_add_library(pvr_dialogs)
-add_dependencies(pvr_dialogs libcpluff)

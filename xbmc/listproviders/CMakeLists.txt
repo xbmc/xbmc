@@ -7,4 +7,3 @@ set(HEADERS DirectoryProvider.h
             StaticProvider.h)
 
 core_add_library(listproviders)
-add_dependencies(listproviders libcpluff)

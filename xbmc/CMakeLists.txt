@@ -83,8 +83,3 @@ set(HEADERS AppParamParser.h
             system_gl.h)
 
 core_add_library(xbmc)
-add_dependencies(xbmc libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(xbmc ffmpeg)
-endif()

@@ -43,4 +43,4 @@ foreach(INPUT ${INPUTS})
 endforeach()
 
 core_add_library(python_binding)
-add_dependencies(python_binding python_interface libcpluff)
+add_dependencies(python_binding python_interface)

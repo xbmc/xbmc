@@ -33,8 +33,3 @@ set(HEADERS ButtonTranslator.h
             XBMC_vkeys.h)
 
 core_add_library(input)
-add_dependencies(input libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(input ffmpeg)
-endif()

@@ -202,11 +202,6 @@ if(CORE_SYSTEM_NAME STREQUAL windows)
 endif()
 
 core_add_library(guilib)
-add_dependencies(guilib libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(guilib ffmpeg)
-endif()
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
   set(SHADERS_VERTEX guishader_vert.hlsl)

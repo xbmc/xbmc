@@ -7,7 +7,3 @@ set(HEADERS DataCacheCore.h
             IPlayerCallback.h)
 
 core_add_library(cores)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(cores ffmpeg)
-endif()

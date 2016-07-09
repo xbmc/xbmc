@@ -11,4 +11,3 @@ set(HEADERS GUIConfigurationWizard.h
             IConfigurationWindow.h)
 
 core_add_library(games_controller_windows)
-add_dependencies(games_controller_windows libcpluff)

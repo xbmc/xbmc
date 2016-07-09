@@ -10,4 +10,3 @@ set(HEADERS GUIViewControl.h
             ViewStateSettings.h)
 
 core_add_library(view)
-add_dependencies(view libcpluff)

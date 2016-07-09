@@ -26,6 +26,7 @@ function(core_add_library name)
   set_target_properties(${name} PROPERTIES PREFIX "")
   if(NOT arg_NO_MAIN_DEPENDS)
     set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
+    add_dependencies(${name} libcpluff ffmpeg)
   endif()
 
   # Add precompiled headers to Kodi main libraries
@@ -51,6 +52,7 @@ function(core_add_test_library name)
   set(TEST_ONLY_SOURCES ${SOURCES})
   set(SOURCES ${SOURCES} ${SUPPORT_SOURCES})
   core_add_library(${name} NO_MAIN_DEPENDS)
+  add_dependencies(${name} libcpluff ffmpeg)
   set_target_properties(${name} PROPERTIES EXCLUDE_FROM_ALL 1)
   foreach(src ${TEST_ONLY_SOURCES})
     # This will prepend CMAKE_CURRENT_SOURCE_DIR if the path is relative,

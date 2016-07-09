@@ -13,8 +13,3 @@ set(HEADERS GUIDialogAudioDSPManager.h
             GUIDialogSettingsManualBase.h)
 
 core_add_library(settings_dialogs)
-add_dependencies(settings_dialogs libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(settings_dialogs ffmpeg)
-endif()

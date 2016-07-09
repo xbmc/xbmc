@@ -24,7 +24,3 @@ if(CORE_SYSTEM_NAME STREQUAL "windows")
 endif()
 
 core_add_library(dvdoverlaycodecs)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(dvdoverlaycodecs ffmpeg)
-endif()

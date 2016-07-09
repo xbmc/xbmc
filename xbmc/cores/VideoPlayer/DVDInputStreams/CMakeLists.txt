@@ -30,11 +30,6 @@ if(BLURAY_FOUND)
 endif()
 
 core_add_library(dvdinputstreams)
-add_dependencies(dvdinputstreams libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(dvdinputstreams ffmpeg)
-endif()
 
 if(NOT CORE_SYSTEM_NAME STREQUAL windows)
   add_dependencies(dvdinputstreams dvdnav)

@@ -24,4 +24,3 @@ if(CEC_FOUND)
 endif()
 
 core_add_library(peripherals_devices)
-add_dependencies(peripherals_devices libcpluff)

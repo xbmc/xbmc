@@ -44,8 +44,4 @@ set(HEADERS AddonsOperations.h
             XBMCOperations.h)
 
 core_add_library(jsonrpc_interface)
-add_dependencies(jsonrpc_interface libcpluff generate_json_header)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(jsonrpc_interface ffmpeg)
-endif()
+add_dependencies(jsonrpc_interface generate_json_header)

@@ -25,8 +25,3 @@ set(HEADERS GUIMediaWindow.h
             GUIWindowWeather.h)
 
 core_add_library(windows)
-add_dependencies(windows libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(windows ffmpeg)
-endif()

@@ -21,4 +21,3 @@ set(HEADERS HTTPFileHandler.h
             IHTTPRequestHandler.h)
 
 core_add_library(network_httprequesthandlers)
-add_dependencies(network_httprequesthandlers libcpluff)

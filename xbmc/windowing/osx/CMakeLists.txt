@@ -15,4 +15,3 @@ if(CORE_SYSTEM_NAME STREQUAL ios)
 endif()
 
 core_add_library(windowing_osx)
-add_dependencies(windowing_osx libcpluff)

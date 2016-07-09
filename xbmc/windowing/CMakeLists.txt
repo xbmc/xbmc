@@ -22,4 +22,3 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 endif()
 
 core_add_library(windowing)
-add_dependencies(windowing libcpluff)

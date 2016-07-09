@@ -20,9 +20,3 @@ set(HEADERS ImusicInfoTagLoader.h
             TagLoaderTagLib.h)
 
 core_add_library(music_tags)
-
-add_dependencies(music_tags libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(music_tags ffmpeg)
-endif()

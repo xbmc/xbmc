@@ -9,4 +9,3 @@ set(HEADERS GUIDialogMusicInfo.h
             GUIDialogVisualisationPresetList.h)
 
 core_add_library(music_dialogs)
-add_dependencies(music_dialogs libcpluff)

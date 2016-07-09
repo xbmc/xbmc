@@ -15,4 +15,3 @@ set(HEADERS Epg.h
             GUIEPGGridContainerModel.h)
 
 core_add_library(epg)
-add_dependencies(epg libcpluff)

@@ -64,7 +64,3 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 core_add_library(dvdvideocodecs)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(dvdvideocodecs ffmpeg)
-endif()

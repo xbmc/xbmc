@@ -11,4 +11,3 @@ set(HEADERS GUIControlSettings.h
             GUIWindowTestPattern.h)
 
 core_add_library(settings_windows)
-add_dependencies(settings_windows libcpluff)

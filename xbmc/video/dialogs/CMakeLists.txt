@@ -19,9 +19,3 @@ set(HEADERS GUIDialogAudioSubtitleSettings.h
             GUIDialogVideoSettings.h)
 
 core_add_library(video_dialogs)
-
-add_dependencies(video_dialogs libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(video_dialogs ffmpeg)
-endif()
