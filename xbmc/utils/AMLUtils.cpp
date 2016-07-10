@@ -25,7 +25,6 @@
 #include <fcntl.h>
 #include <string>
 
-#include "AMLUtils.h"
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
