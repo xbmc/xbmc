@@ -222,23 +222,26 @@ void CDVDSubtitleTagSami::CloseTag(CDVDOverlayText* pOverlay)
 
 void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
 {
-  char line[1024];
+  char cLine[1024];
   bool inSTYLE = false;
   CRegExp reg(true);
   if (!reg.RegComp("\\.([a-z]+)[ \t]*\\{[ \t]*name:([^;]*?);[ \t]*lang:([^;]*?);[ \t]*SAMIType:([^;]*?);[ \t]*\\}"))
     return;
 
-  while (samiStream->ReadLine(line, sizeof(line)))
+  while (samiStream->ReadLine(cLine, sizeof(cLine)))
   {
-    if (!strnicmp(line, "<BODY>", 6))
+    std::string line = cLine;
+    StringUtils::Trim(line);
+
+   if (!StringUtils::CompareNoCase(line, "<BODY>"))
       break;
     if (inSTYLE)
     {
-      if (!strnicmp(line, "</STYLE>", 8))
+      if (!StringUtils::CompareNoCase(line, "</STYLE>"))
         break;
       else
       {
-        if (reg.RegFind(line) > -1)
+        if (reg.RegFind(line.c_str()) > -1)
         {
           SLangclass lc;
           lc.ID = reg.GetMatch(1);
@@ -254,9 +257,8 @@ void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
     }
     else
     {
-      if (!strnicmp(line, "<STYLE TYPE=\"text/css\">", 23))
+      if (!StringUtils::CompareNoCase(line, "<STYLE TYPE=\"text/css\">"))
         inSTYLE = true;
     }
   }
 }
-
