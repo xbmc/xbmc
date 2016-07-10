@@ -2732,23 +2732,25 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
   std::string strPath(GetPath());
   URIUtils::RemoveSlashAtEnd(strPath);
 
-  Crc32 crc;
-  crc.ComputeFromLowerCase(strPath);
+  uint32_t crc = Crc32::ComputeFromLowerCase(strPath);
 
   std::string cacheFile;
   if (IsCDDA() || IsOnDVD())
-    cacheFile = StringUtils::Format("special://temp/r-%08x.fi", (unsigned __int32)crc);
-  else if (IsMusicDb())
-    cacheFile = StringUtils::Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
-  else if (IsVideoDb())
-    cacheFile = StringUtils::Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
-  else if (IsSmartPlayList())
-    cacheFile = StringUtils::Format("special://temp/sp-%08x.fi", (unsigned __int32)crc);
-  else if (windowID)
-    cacheFile = StringUtils::Format("special://temp/%i-%08x.fi", windowID, (unsigned __int32)crc);
-  else
-    cacheFile = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32)crc);
-  return cacheFile;
+    return StringUtils::Format("special://temp/archive_cache/r-%08x.fi", crc);
+
+  if (IsMusicDb())
+    return StringUtils::Format("special://temp/archive_cache/mdb-%08x.fi", crc);
+
+  if (IsVideoDb())
+    return StringUtils::Format("special://temp/archive_cache/vdb-%08x.fi", crc);
+
+  if (IsSmartPlayList())
+    return StringUtils::Format("special://temp/archive_cache/sp-%08x.fi", crc);
+
+  if (windowID)
+    return StringUtils::Format("special://temp/archive_cache/%i-%08x.fi", windowID, crc);
+
+  return StringUtils::Format("special://temp/archive_cache/%08x.fi", crc);
 }
 
 bool CFileItemList::AlwaysCache() const

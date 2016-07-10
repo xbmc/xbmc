@@ -1048,7 +1048,7 @@ bool CApplication::InitDirectoriesWin32()
 #endif
 }
 
-void CApplication::CreateUserDirs()
+void CApplication::CreateUserDirs() const
 {
   CDirectory::Create("special://home/");
   CDirectory::Create("special://home/addons");
@@ -1059,6 +1059,12 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://temp/");
   CDirectory::Create("special://logpath");
   CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
+
+  //Let's clear our archive cache before starting up anything more
+  auto archiveCachePath = CSpecialProtocol::TranslatePath("special://temp/archive_cache/");
+  CDirectory::Remove(archiveCachePath);
+  CDirectory::Create(archiveCachePath);
+
 }
 
 bool CApplication::Initialize()

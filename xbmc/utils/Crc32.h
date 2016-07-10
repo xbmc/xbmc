@@ -29,8 +29,8 @@ public:
   Crc32();
   void Reset();
   void Compute(const char* buffer, size_t count);
-  void Compute(const std::string& strValue);
-  void ComputeFromLowerCase(const std::string& strValue);
+  static uint32_t Compute(const std::string& strValue);
+  static uint32_t ComputeFromLowerCase(const std::string& strValue);
 
   operator uint32_t () const
   {
