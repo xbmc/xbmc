@@ -34,7 +34,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "powermanagement\PowerManager.h"
+#include "powermanagement/PowerManager.h"
 #include "utils/SystemInfo.h"
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
@@ -42,16 +42,6 @@
 
 #include <cassert>
 
-// special://xbmc/system/players/dvdplayer/ is temporal solution needs to be deleted
-// after dependencies will be changed to extract to a videoplayer folder
-#define DLL_ENV_PATH "special://xbmc/;" \
-                     "special://xbmc/system/;" \
-                     "special://xbmc/system/players/VideoPlayer/;" \
-                     "special://xbmc/system/players/dvdplayer/;" \
-                     "special://xbmc/system/players/paplayer/;" \
-                     "special://xbmc/system/cdrip/;" \
-                     "special://xbmc/system/python/;" \
-                     "special://xbmc/system/webserver/"
 
 #include <locale.h>
 
@@ -563,33 +553,6 @@ __time64_t CWIN32Util::fileTimeToTimeT(const LARGE_INTEGER& ftimeli)
   return fileTimeToTimeT(__int64(ftimeli.QuadPart));
 }
 
-
-void CWIN32Util::ExtendDllPath()
-{
-  std::string strEnv;
-  std::vector<std::string> vecEnv;
-  strEnv = CEnvironment::getenv("PATH");
-  if (strEnv.empty())
-    CLog::Log(LOGWARNING, "Can get system env PATH or PATH is empty");
-
-  vecEnv = StringUtils::Split(DLL_ENV_PATH, ";");
-  for (int i=0; i<(int)vecEnv.size(); ++i)
-  {
-    std::string strPath; std::wstring strPathW;
-
-    strPath = CSpecialProtocol::TranslatePath(vecEnv[i]);
-    g_charsetConverter.utf8ToW(strPath, strPathW);
-
-    strEnv.append(";" + strPath);
-    AddDllDirectory(strPathW.c_str());
-  }
-
-  if (CEnvironment::setenv("PATH", strEnv) == 0)
-    CLog::Log(LOGDEBUG,"Setting system env PATH to %s",strEnv.c_str());
-  else
-    CLog::Log(LOGDEBUG,"Can't set system env PATH to %s",strEnv.c_str());
-
-}
 
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {

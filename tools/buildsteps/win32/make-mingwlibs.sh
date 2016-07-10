@@ -80,7 +80,7 @@ echo "-------------------------------------------------"
 echo " building FFmpeg $BITS"
 echo "-------------------------------------------------"
 runBackgroundProcess "./buildffmpeg.sh $MAKECLEAN"
-setfilepath /xbmc/system/players/VideoPlayer
+setfilepath /xbmc/system
 checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
 echo "-------------------------------------------------"
 echo " building of FFmpeg $BITS done..."
@@ -91,7 +91,7 @@ echo "-------------------------------------------------"
 echo " building libdvd $BITS"
 echo "-------------------------------------------------"
 runBackgroundProcess "./buildlibdvd.sh $MAKECLEAN"
-setfilepath /xbmc/system/players/VideoPlayer
+setfilepath /xbmc/system
 checkfiles libdvdcss-2.dll libdvdnav.dll
 echo "-------------------------------------------------"
 echo " building of libdvd $BITS done..."

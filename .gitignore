@@ -246,7 +246,7 @@ lib/cpluff/stamp-h1
 /project/Win32BuildSetup/makeclean
 /project/Win32BuildSetup/noprompt
 /project/Win32BuildSetup/BUILD_WIN32/
-/project/Win32BuildSetup/dependencies
+/project/Win32BuildSetup/dependencies/
 
 # /project/BuildDependencies
 /project/BuildDependencies/downloads
@@ -289,18 +289,33 @@ lib/cpluff/stamp-h1
 /system/libeay32.dll
 /system/librtmp.dll
 /system/libexif.dll
-/system/libexpat.dll
-/system/libidn-11.dll
-/system/libssh2.dll
-/system/libssl32.dll
 /system/ssh.dll
 /system/sqlite3.dll
 /system/libnfs.dll
 /system/dnssd.dll
-/system/libcec.dll
-/system/pthreadVC2.dll
+/system/cec.dll
 /system/libxslt.dll
 /system/ssleay32.dll
+/system/avcodec-57.dll
+/system/avfilter-6.dll
+/system/avformat-57.dll
+/system/avutil-55.dll
+/system/postproc-54.dll
+/system/swscale-4.dll
+/system/swresample-2.dll
+/system/libxml2.dll
+/system/libdvdcss-2.dll
+/system/libdvdnav.dll
+/system/libass.dll
+/system/libbluray*
+/system/libcdio.dll
+/system/libplist.dll
+/system/shairplay.dll
+/system/libmysql.dll
+/system/python27.dll
+/system/zlib.dll
+
+
 
 # /system/players/VideoPlayer
 /system/players/VideoPlayer/*
@@ -554,9 +569,6 @@ lib/cpluff/stamp-h1
 
 # Doxygen generated files
 /docs/html
-system/libmysql.dll
-system/python27.dll
-system/zlib.dll
 lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
 lib/addons/library.kodi.inputstream/project/VS2010Express/Release
 /project/VS2010Express/XBMC for Windows.VC.db

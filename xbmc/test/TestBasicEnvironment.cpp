@@ -93,7 +93,6 @@ void TestBasicEnvironment::SetUp()
   if (!CreateDirectory(lpTempPathBuffer, NULL))
     SetUpError();
   CSpecialProtocol::SetTempPath(lpTempPathBuffer);
-  CWIN32Util::ExtendDllPath(); //Needed for delay loading on windows
 #else
   char buf[MAX_PATH];
   char *tmp;

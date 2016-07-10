@@ -233,6 +233,7 @@ Section "${APP_NAME}" SecAPP
   ;Start copying files
   SetOutPath "$INSTDIR"
   File "${app_root}\application\*.*"
+  File "${app_root}\application\system\*.dll"
   SetOutPath "$INSTDIR\addons"
   File /r "${app_root}\application\addons\*.*"
   File /nonfatal /r "${app_root}\addons\peripheral.*"
@@ -378,28 +379,7 @@ SectionEnd
 ;vs redist installer Section
 SectionGroup "Microsoft Visual C++ packages" SEC_VCREDIST
 
-Section "VS2010 C++ re-distributable Package (x86)" SEC_VCREDIST2
-  DetailPrint "Running VS2010 re-distributable setup..."
-  SectionIn 1 2 #section is in install type Full 
-  SetOutPath "$TEMP\vc2010"
-  File "${app_root}\..\dependencies\vcredist\2010\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q /norestart' $VSRedistSetupError
-  RMDir /r "$TEMP\vc2010"
-  DetailPrint "Finished VS2010 re-distributable setup"
-SectionEnd
-
-Section "VS2013 C++ re-distributable Package (x86)" SEC_VCREDIST3
-DetailPrint "Running VS2013 re-distributable setup..."
-  SectionIn 1 2 #section is in install type Full
-  SetOutPath "$TEMP\vc2013"
-  File "${app_root}\..\dependencies\vcredist\2013\vcredist_x86.exe"
-  ExecWait '"$TEMP\vc2013\vcredist_x86.exe" /install /quiet /norestart' $VSRedistSetupError
-  RMDir /r "$TEMP\vc2013"
-  DetailPrint "Finished VS2013 re-distributable setup"
-  SetOutPath "$INSTDIR"
-SectionEnd
-
-Section "VS2015 C++ re-distributable Package (x86)" SEC_VCREDIST4
+Section "VS2015 C++ re-distributable Package (x86)" SEC_VCREDIST1
 DetailPrint "Running VS2015 re-distributable setup..."
   SectionIn 1 2 #section is in install type Full
   SetOutPath "$TEMP\vc2015"

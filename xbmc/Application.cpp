@@ -1039,9 +1039,6 @@ bool CApplication::InitDirectoriesWin32()
 
   CreateUserDirs();
 
-  // Expand the DLL search path with our directories
-  CWIN32Util::ExtendDllPath();
-
   return true;
 #else
   return false;
