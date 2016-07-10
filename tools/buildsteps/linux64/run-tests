@@ -4,7 +4,11 @@ XBMC_PLATFORM_DIR=linux64
 
 if [ "$CMAKE_BUILD" = true ]; then
   cd $WORKSPACE/build;make -j$BUILDTHREADS kodi-test
-  cd $WORKSPACE;build/kodi-test --gtest_output=xml:gtestresults.xml
+  if [ "$Configuration" != "Coverage" ]; then
+    cd $WORKSPACE;build/kodi-test --gtest_output=xml:gtestresults.xml
+  else
+    cd $WORKSPACE/build;GTEST_OUTPUT="xml:$WORKSPACE/gtestresults.xml" make coverage
+  fi
 else
   cd $WORKSPACE;make -j$BUILDTHREADS testsuite
   cd $WORKSPACE;./kodi-test --gtest_output=xml:gtestresults.xml
