@@ -30,7 +30,6 @@
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/AMLUtils.h"
 #include "guilib/gui3d.h"
 #include "utils/RegExp.h"
 
