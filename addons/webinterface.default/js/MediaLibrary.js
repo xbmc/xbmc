@@ -149,15 +149,19 @@ MediaLibrary.prototype = {
     if (!key) {
       event.data.key = 'text';
 
-      // Letters
-      if (which >= 65 && which <= 90) {
-        var offset = event.shiftKey ? 0 : 32;
-        event.data.text = String.fromCharCode(which + offset);
-      }
-
-      // Digits
-      if (which >= 96 && which <= 105) {
-        event.data.text = (which-96)+"";
+      if (event.key && event.key.length === 1){
+        event.data.text = event.key;
+      } else {
+        // Letters
+        if (which >= 65 && which <= 90) {
+          var offset = event.shiftKey ? 0 : 32;
+          event.data.text = String.fromCharCode(which + offset);
+        }
+  
+        // Digits
+        if (which >= 96 && which <= 105) {
+          event.data.text = (which-96)+"";
+        }
       }
     }
 
