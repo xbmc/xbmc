@@ -27,6 +27,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/PVRManager.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -38,7 +39,6 @@ using namespace PVR;
 CPVRRecordings::CPVRRecordings(void) :
     m_bIsUpdating(false),
     m_iLastId(0),
-    m_bGroupItems(true),
     m_bDeletedTVRecordings(false),
     m_bDeletedRadioRecordings(false),
     m_iTVRecordings(0),
@@ -79,7 +79,7 @@ bool CPVRRecordings::IsDirectoryMember(const std::string &strDirectory, const st
   std::string strUseEntryDirectory = TrimSlashes(strEntryDirectory);
 
   /* Case-insensitive comparison since sub folders are created with case-insensitive matching (GetSubDirectories) */
-  return m_bGroupItems ?
+  return CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS) ?
       StringUtils::EqualsNoCase(strUseDirectory, strUseEntryDirectory) :
         StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
 }
@@ -318,7 +318,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
     // Get the directory structure if in non-flatten mode
     // Deleted view is always flatten. So only for an active view
     std::string strDirectory(recPath.GetDirectoryPath());
-    if (!recPath.IsDeleted() && m_bGroupItems)
+    if (!recPath.IsDeleted() && CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS))
       GetSubDirectories(recPath, &items);
 
     // get all files of the currrent directory or recursively all files starting at the current directory if in flatten mode

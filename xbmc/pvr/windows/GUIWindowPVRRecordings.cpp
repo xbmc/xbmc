@@ -27,6 +27,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -221,6 +222,8 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
 
 void CGUIWindowPVRRecordings::UpdateButtons(void)
 {
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNGROUPITEMS, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS));
+
   CGUIRadioButtonControl *btnShowDeleted = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWDELETED);
   if (btnShowDeleted)
   {
@@ -276,8 +279,8 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNGROUPITEMS)
       {
-        CGUIRadioButtonControl *radioButton = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNGROUPITEMS);
-        g_PVRRecordings->SetGroupItems(radioButton->IsSelected());
+        CSettings::GetInstance().ToggleBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
+        CSettings::GetInstance().Save();
         Refresh(true);
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWDELETED)

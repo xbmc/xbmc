@@ -1556,6 +1556,10 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrrecord.grouprecordings" type="boolean" label="" help="">
+          <default>true</default>
+          <level>4</level>
+        </setting>
       </group>
     </category>
     <category id="pvrpowermanagement" label="14095" help="36240">
