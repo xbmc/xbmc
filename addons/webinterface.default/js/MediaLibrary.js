@@ -70,6 +70,7 @@ MediaLibrary.prototype = {
   },
   remoteControlOpen: function (event) {
     this.resetPage();
+    this.textBuffer = '';
     $('#remoteControl').addClass('selected');
     $('.contentContainer').hide();
     var libraryContainer = $('#remoteContainer');
@@ -183,10 +184,26 @@ MediaLibrary.prototype = {
     if (params) { callObj.params = params; }
     return xbmc.rpc.request(callObj);
   },
+  typeRemoteText: function (event){
+    if (event.data.key === 'text' || ((event.data.key === 'playpause' || event.data.key === 'back') && this.textBuffer.length)) {
+      if (event.data.key === 'back') {
+        this.textBuffer = this.textBuffer.substring(0, this.textBuffer.length - 1);
+      } else if (event.data.key === 'playpause') {
+        this.textBuffer += ' ';
+      } else if (event.data.text && event.data.text.length) {
+        this.textBuffer += event.data.text;
+      }
+      console.log(this.textBuffer);
+      return this.rpcCall('Input.SendText', {'text': this.textBuffer, 'done': false});      
+    } else {
+      this.textBuffer = '';
+    }
+  },
   pressRemoteKey: function (event) {
     var player = -1,
       keyPressed = event.data.key;
     $('#spinner').show();
+    if (this.typeRemoteText(event)) { return true; }
 
     switch(keyPressed) {
       case 'up': return this.rpcCall('Input.Up');
@@ -208,8 +225,6 @@ MediaLibrary.prototype = {
         return this.rpcCall('Application.SetVolume', {'volume': 'increment'});
       case 'volumedown':
         return this.rpcCall('Application.SetVolume', {'volume': 'decrement'});
-      case 'text':
-        return this.rpcCall('Input.SendText', {'text': event.data.text});
     }
 
     // TODO: Get active player
