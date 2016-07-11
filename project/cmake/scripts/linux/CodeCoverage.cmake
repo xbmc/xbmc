@@ -54,16 +54,16 @@ if(LCOV_EXECUTABLE AND GENINFO_EXECUTABLE AND GENHTML_EXECUTABLE)
   add_custom_target(coverage
     COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERAGE_BINARY_DIR}
     COMMAND ${LCOV_EXECUTABLE} -z -q -d ${CMAKE_BINARY_DIR}
-    COMMAND ${LCOV_EXECUTABLE} -c -q -i --no-external -d ${CMAKE_BINARY_DIR} -b ${COVERAGE_SOURCE_DIR}
+    COMMAND ${LCOV_EXECUTABLE} -c -q -i -d ${CMAKE_BINARY_DIR} -b ${COVERAGE_SOURCE_DIR}
                                -o ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage_base.info
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test || true
-    COMMAND ${LCOV_EXECUTABLE} -c -q --no-external -d ${CMAKE_BINARY_DIR} -b ${COVERAGE_SOURCE_DIR}
+    COMMAND ${LCOV_EXECUTABLE} -c -q -d ${CMAKE_BINARY_DIR} -b ${COVERAGE_SOURCE_DIR}
                                -o ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage_test.info
     COMMAND ${LCOV_EXECUTABLE} -a ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage_base.info
                                -a ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage_test.info
                                -o ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage.info -q
     COMMAND ${LCOV_EXECUTABLE} -q -r ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage.info
-                               ${CMAKE_BINARY_DIR}/* ${COVERAGE_EXCLUDES}
+                               /usr/include/* ${CMAKE_BINARY_DIR}/* ${COVERAGE_EXCLUDES}
                                -o ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage.info
     COMMAND ${GENHTML_EXECUTABLE} ${COVERAGE_BINARY_DIR}/${PROJECT_NAME}.coverage.info
                                -o ${COVERAGE_BINARY_DIR}/html -s --legend --highlight --demangle-cpp
