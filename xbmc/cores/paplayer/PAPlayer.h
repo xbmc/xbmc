@@ -20,6 +20,7 @@
  *
  */
 
+#include <atomic>
 #include <list>
 #include <vector>
 
@@ -61,7 +62,8 @@ public:
   virtual void SetDynamicRangeCompression(long drc);
   virtual void GetAudioInfo( std::string& strAudioInfo) {}
   virtual void GetVideoInfo( std::string& strVideoInfo) {}
-  virtual void ToFFRW(int iSpeed = 0);
+  virtual void SetSpeed(int iSpeed = 0) override;
+  virtual int GetSpeed() override;
   virtual int GetCacheLevel() const;
   virtual int64_t GetTotalTime();
   virtual void SetTotalTime(int64_t time);
@@ -125,7 +127,7 @@ private:
   typedef std::list<StreamInfo*> StreamList;
 
   bool                m_signalSpeedChange;   /* true if OnPlaybackSpeedChange needs to be called */
-  int                 m_playbackSpeed;       /* the playback speed (1 = normal) */
+  std::atomic_int m_playbackSpeed;           /* the playback speed (1 = normal) */
   bool                m_isPlaying;
   bool                m_isPaused;
   bool                m_isFinished;          /* if there are no more songs in the queue */

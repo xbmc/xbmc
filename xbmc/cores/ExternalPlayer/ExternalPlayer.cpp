@@ -589,9 +589,14 @@ int64_t CExternalPlayer::GetTotalTime() // in milliseconds
   return (int64_t)m_totalTime * 1000;
 }
 
-void CExternalPlayer::ToFFRW(int iSpeed)
+void CExternalPlayer::SetSpeed(int iSpeed)
 {
   m_speed = iSpeed;
+}
+
+int CExternalPlayer::GetSpeed()
+{
+  return m_speed;
 }
 
 void CExternalPlayer::ShowOSD(bool bOnoff)

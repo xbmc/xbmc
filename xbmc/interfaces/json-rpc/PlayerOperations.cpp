@@ -278,7 +278,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITranspor
           if (g_application.m_pPlayer->IsPausedPlayback())
             CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
           else if (g_application.m_pPlayer->GetPlaySpeed() != 1)
-            g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
+            g_application.m_pPlayer->SetPlaySpeed(1);
         }
         else if (!g_application.m_pPlayer->IsPausedPlayback())
           CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
@@ -338,7 +338,7 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const std::string &method, ITransport
           // If the player is paused we first need to unpause
           if (g_application.m_pPlayer->IsPausedPlayback())
             g_application.m_pPlayer->Pause();
-          g_application.m_pPlayer->SetPlaySpeed(speed, g_application.IsMutedInternal());
+          g_application.m_pPlayer->SetPlaySpeed(speed);
         }
         else
           g_application.m_pPlayer->Pause();

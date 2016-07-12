@@ -760,7 +760,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
       time = si->m_startOffset;
       si->m_framesSent      = 0;
       si->m_seekNextAtFrame = 0;
-      ToFFRW(1);
+      SetSpeed(1);
     }
 
     si->m_decoder.Seek(time);
@@ -946,10 +946,15 @@ void PAPlayer::SetDynamicRangeCompression(long drc)
 
 }
 
-void PAPlayer::ToFFRW(int iSpeed)
+void PAPlayer::SetSpeed(int iSpeed)
 {
-  m_playbackSpeed     = iSpeed;
+  m_playbackSpeed  = iSpeed;
   m_signalSpeedChange = true;
+}
+
+int PAPlayer::GetSpeed()
+{
+  return m_playbackSpeed;
 }
 
 int64_t PAPlayer::GetTimeInternal()
@@ -1080,7 +1085,7 @@ void PAPlayer::SeekTime(int64_t iTime /*=0*/)
   int seekOffset = (int)(iTime - GetTimeInternal());
 
   if (m_playbackSpeed != 1)
-    ToFFRW(1);
+    SetSpeed(1);
 
   m_currentStream->m_seekFrame = (int)((float)m_currentStream->m_audioFormat.m_sampleRate * ((float)iTime + (float)m_currentStream->m_startOffset) / 1000.0f);
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);

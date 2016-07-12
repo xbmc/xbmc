@@ -66,7 +66,8 @@ public:
   virtual void SeekTime(__int64 iTime = 0);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
-  virtual void ToFFRW(int iSpeed = 0){};
+  virtual void SetSpeed(int iSpeed = 0) override;
+  virtual int GetSpeed() override;
 
   virtual bool SkipNext(){return false;}
   virtual bool IsCaching() const {return false;};
@@ -85,6 +86,7 @@ private:
   std::string            m_current_meta;
   bool                   m_started;
   bool                   m_stopremote;
+  int m_playspeed;
 };
 
 } /* namespace UPNP */

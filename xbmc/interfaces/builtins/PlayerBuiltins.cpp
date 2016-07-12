@@ -125,7 +125,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (g_application.m_pPlayer->IsPlaying())
     {
       if (g_application.m_pPlayer->GetPlaySpeed() != 1)
-        g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
+        g_application.m_pPlayer->SetPlaySpeed(1);
       else
         g_application.m_pPlayer->Pause();
     }
@@ -154,7 +154,7 @@ static int PlayerControl(const std::vector<std::string>& params)
       if (iPlaySpeed > 32 || iPlaySpeed < -32)
         iPlaySpeed = 1;
 
-      g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed, g_application.IsMutedInternal());
+      g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed);
     }
   }
   else if (paramlow == "next")
