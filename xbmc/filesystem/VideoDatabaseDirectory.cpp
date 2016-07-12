@@ -123,10 +123,9 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const std::string& strDirector
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(strDirectory);
   URIUtils::RemoveSlashAtEnd(path);
 
-  Crc32 crc;
-  crc.ComputeFromLowerCase(path);
+  uint32_t crc = Crc32::ComputeFromLowerCase(path);
 
-  std::string strFileName = StringUtils::Format("special://temp/%08x.fi", (unsigned __int32) crc);
+  std::string strFileName = StringUtils::Format("special://temp/archive_cache/%08x.fi", crc);
   CFile::Delete(strFileName);
 }
 

@@ -18,11 +18,16 @@
  *
  */
 
-#include <algorithm>
-#include <cstring>
 #include "Archive.h"
-#include "IArchivable.h"
+
+#include <cstdint>
+#include <cstring>
+
+#include <algorithm>
+#include <stdexcept>
+
 #include "filesystem/File.h"
+#include "IArchivable.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -32,21 +37,26 @@
 
 using namespace XFILE;
 
+//arbitrarily chosen, should be plenty big enough for our strings
+//without causing random bad things happening
+//not very bad, just tiny bad
+#define MAX_STRING_SIZE 100*1024*1024
+
 CArchive::CArchive(CFile* pFile, int mode)
 {
   m_pFile = pFile;
   m_iMode = mode;
 
-  m_pBuffer = new uint8_t[CARCHIVE_BUFFER_MAX];
-  memset(m_pBuffer, 0, CARCHIVE_BUFFER_MAX);
+  m_pBuffer = std::unique_ptr<uint8_t[]>(new uint8_t[CARCHIVE_BUFFER_MAX]);
+  memset(m_pBuffer.get(), 0, CARCHIVE_BUFFER_MAX);
   if (mode == load)
   {
-    m_BufferPos = m_pBuffer + CARCHIVE_BUFFER_MAX;
+    m_BufferPos = m_pBuffer.get() + CARCHIVE_BUFFER_MAX;
     m_BufferRemain = 0;
   }
   else
   {
-    m_BufferPos = m_pBuffer;
+    m_BufferPos = m_pBuffer.get();
     m_BufferRemain = CARCHIVE_BUFFER_MAX;
   }
 }
@@ -54,7 +64,6 @@ CArchive::CArchive(CFile* pFile, int mode)
 CArchive::~CArchive()
 {
   FlushBuffer();
-  delete[] m_pBuffer;
 }
 
 void CArchive::Close()
@@ -134,16 +143,25 @@ CArchive& CArchive::operator<<(char c)
 
 CArchive& CArchive::operator<<(const std::string& str)
 {
-  *this << str.size();
+  auto size = static_cast<uint32_t>(str.size());
+  if (size > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
 
-  return streamout(str.data(), str.size() * sizeof(char));
+  *this << size;
+
+  return streamout(str.data(), size * sizeof(char));
 }
 
 CArchive& CArchive::operator<<(const std::wstring& wstr)
 {
-  *this << wstr.size();
+  if (wstr.size() > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
 
-  return streamout(wstr.data(), wstr.size() * sizeof(wchar_t));
+  auto size = static_cast<uint32_t>(wstr.size());
+
+  *this << size;
+
+  return streamout(wstr.data(), size * sizeof(wchar_t));
 }
 
 CArchive& CArchive::operator<<(const SYSTEMTIME& time)
@@ -160,7 +178,7 @@ CArchive& CArchive::operator<<(IArchivable& obj)
 
 CArchive& CArchive::operator<<(const CVariant& variant)
 {
-  *this << (int)variant.type();
+  *this << static_cast<int>(variant.type());
   switch (variant.type())
   {
   case CVariant::VariantTypeInteger:
@@ -183,12 +201,12 @@ CArchive& CArchive::operator<<(const CVariant& variant)
     break;
   case CVariant::VariantTypeArray:
     *this << variant.size();
-    for (unsigned int index = 0; index < variant.size(); index++)
-      *this << variant[index];
+    for (auto i = variant.begin_array(); i != variant.end_array(); ++i)
+      *this << *i;
     break;
   case CVariant::VariantTypeObject:
     *this << variant.size();
-    for (CVariant::const_iterator_map itr = variant.begin_map(); itr != variant.end_map(); ++itr)
+    for (auto itr = variant.begin_map(); itr != variant.end_map(); ++itr)
     {
       *this << itr->first;
       *this << itr->second;
@@ -205,44 +223,56 @@ CArchive& CArchive::operator<<(const CVariant& variant)
 
 CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
 {
-  *this << strArray.size();
-  for (size_t index = 0; index < strArray.size(); index++)
-    *this << strArray.at(index);
+  if (std::numeric_limits<uint32_t>::max() < strArray.size())
+    throw std::out_of_range("Array too large, over 2^32 in size");
+
+  *this << static_cast<uint32_t>(strArray.size());
+
+  for (auto&& item : strArray)
+    *this << item;
 
   return *this;
 }
 
 CArchive& CArchive::operator<<(const std::vector<int>& iArray)
 {
-  *this << iArray.size();
-  for (size_t index = 0; index < iArray.size(); index++)
-    *this << iArray.at(index);
+  if (std::numeric_limits<uint32_t>::max() < iArray.size())
+    throw std::out_of_range("Array too large, over 2^32 in size");
+
+  *this << static_cast<uint32_t>(iArray.size());
+
+  for (auto&& item : iArray)
+    *this << item;
 
   return *this;
 }
 
 CArchive& CArchive::operator>>(std::string& str)
 {
-  size_t iLength = 0;
+  uint32_t iLength = 0;
   *this >> iLength;
 
-  char *s = new char[iLength];
-  streamin(s, iLength * sizeof(char));
-  str.assign(s, iLength);
-  delete[] s;
+  if (iLength > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
+
+  auto s = std::unique_ptr<char[]>(new char[iLength]);
+  streamin(s.get(), iLength * sizeof(char));
+  str.assign(s.get(), iLength);
 
   return *this;
 }
 
 CArchive& CArchive::operator>>(std::wstring& wstr)
 {
-  size_t iLength = 0;
+  uint32_t iLength = 0;
   *this >> iLength;
 
-  wchar_t * const p = new wchar_t[iLength];
-  streamin(p, iLength * sizeof(wchar_t));
-  wstr.assign(p, iLength);
-  delete[] p;
+  if (iLength > MAX_STRING_SIZE)
+    throw std::out_of_range("String too large, over 100MB");
+
+  auto p = std::unique_ptr<wchar_t[]>(new wchar_t[iLength]);
+  streamin(p.get(), iLength * sizeof(wchar_t));
+  wstr.assign(p.get(), iLength);
 
   return *this;
 }
@@ -263,7 +293,7 @@ CArchive& CArchive::operator>>(CVariant& variant)
 {
   int type;
   *this >> type;
-  variant = CVariant((CVariant::VariantType)type);
+  variant = CVariant(static_cast<CVariant::VariantType>(type));
 
   switch (variant.type())
   {
@@ -346,14 +376,14 @@ CArchive& CArchive::operator>>(CVariant& variant)
 
 CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
 {
-  size_t size;
+  uint32_t size;
   *this >> size;
   strArray.clear();
-  for (size_t index = 0; index < size; index++)
+  for (uint32_t index = 0; index < size; index++)
   {
     std::string str;
     *this >> str;
-    strArray.push_back(str);
+    strArray.push_back(std::move(str));
   }
 
   return *this;
@@ -361,10 +391,10 @@ CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
 
 CArchive& CArchive::operator>>(std::vector<int>& iArray)
 {
-  size_t size;
+  uint32_t size;
   *this >> size;
   iArray.clear();
-  for (size_t index = 0; index < size; index++)
+  for (uint32_t index = 0; index < size; index++)
   {
     int i;
     *this >> i;
@@ -376,13 +406,13 @@ CArchive& CArchive::operator>>(std::vector<int>& iArray)
 
 void CArchive::FlushBuffer()
 {
-  if (m_iMode == store && m_BufferPos != m_pBuffer)
+  if (m_iMode == store && m_BufferPos != m_pBuffer.get())
   {
-    if (m_pFile->Write(m_pBuffer, m_BufferPos - m_pBuffer) != m_BufferPos - m_pBuffer)
+    if (m_pFile->Write(m_pBuffer.get(), m_BufferPos - m_pBuffer.get()) != m_BufferPos - m_pBuffer.get())
       CLog::Log(LOGERROR, "%s: Error flushing buffer", __FUNCTION__);
     else
     {
-      m_BufferPos = m_pBuffer;
+      m_BufferPos = m_pBuffer.get();
       m_BufferRemain = CARCHIVE_BUFFER_MAX;
     }
   }
@@ -392,7 +422,7 @@ CArchive &CArchive::streamout_bufferwrap(const uint8_t *ptr, size_t size)
 {
   do
   {
-    size_t chunkSize = std::min(size, m_BufferRemain);
+    auto chunkSize = std::min(size, m_BufferRemain);
     m_BufferPos = std::copy(ptr, ptr + chunkSize, m_BufferPos);
     ptr += chunkSize;
     size -= chunkSize;
@@ -407,19 +437,19 @@ void CArchive::FillBuffer()
 {
   if (m_iMode == load && m_BufferRemain == 0)
   {
-    ssize_t read = m_pFile->Read(m_pBuffer, CARCHIVE_BUFFER_MAX);
+    auto read = m_pFile->Read(m_pBuffer.get(), CARCHIVE_BUFFER_MAX);
     if (read > 0)
     {
       m_BufferRemain = read;
-      m_BufferPos = m_pBuffer;
+      m_BufferPos = m_pBuffer.get();
     }
   }
 }
 
 CArchive &CArchive::streamin_bufferwrap(uint8_t *ptr, size_t size)
 {
-  uint8_t *orig_ptr = ptr;
-  size_t orig_size = size;
+  auto orig_ptr = ptr;
+  auto orig_size = size;
   do
   {
     if (m_BufferRemain == 0)
@@ -427,12 +457,14 @@ CArchive &CArchive::streamin_bufferwrap(uint8_t *ptr, size_t size)
       FillBuffer();
       if (m_BufferRemain < CARCHIVE_BUFFER_MAX && m_BufferRemain < size)
       {
-        CLog::Log(LOGERROR, "%s: can't stream in: requested %lu bytes, was read %lu bytes", __FUNCTION__, (unsigned long) orig_size, (unsigned long) (ptr - orig_ptr + m_BufferRemain));
+        CLog::Log(LOGERROR, "%s: can't stream in: requested %lu bytes, was read %lu bytes", __FUNCTION__,
+            static_cast<unsigned long>(orig_size), static_cast<unsigned long>(ptr - orig_ptr + m_BufferRemain));
+
         memset(orig_ptr, 0, orig_size);
         return *this;
       }
     }
-    size_t chunkSize = std::min(size, m_BufferRemain);
+    auto chunkSize = std::min(size, m_BufferRemain);
     ptr = std::copy(m_BufferPos, m_BufferPos + chunkSize, ptr);
     m_BufferPos += chunkSize;
     m_BufferRemain -= chunkSize;

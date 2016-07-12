@@ -21,6 +21,7 @@
  */
 
 #include <string>
+#include <memory>
 #include <vector>
 #include "PlatformDefs.h" // for SYSTEMTIME
 
@@ -41,9 +42,9 @@ public:
 
   /* CArchive support storing and loading of all C basic integer types
    * C basic types was chosen instead of fixed size ints (int16_t - int64_t) to support all integer typedefs
-   * For example size_t can be typedef of unsigned int, long or long long depending on platform 
-   * while int32_t and int64_t are usually unsigned short, int or long long, but not long 
-   * and even if int and long can have same binary representation they are different types for compiler 
+   * For example size_t can be typedef of unsigned int, long or long long depending on platform
+   * while int32_t and int64_t are usually unsigned short, int or long long, but not long
+   * and even if int and long can have same binary representation they are different types for compiler
    * According to section 5.2.4.2.1 of C99 http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
    * minimal size of short int is 16 bits
    * minimal size of int is 16 bits (usually 32 or 64 bits, larger or equal to short int)
@@ -149,7 +150,7 @@ public:
 protected:
   inline CArchive &streamout(const void *dataPtr, size_t size)
   {
-    const uint8_t *ptr = (const uint8_t *) dataPtr;
+    auto ptr = static_cast<const uint8_t *>(dataPtr);
     /* Note, the buffer is flushed as soon as it is full (m_BufferRemain == size) rather
      * than waiting until we attempt to put more data into an already full buffer */
     if (m_BufferRemain > size)
@@ -159,15 +160,13 @@ protected:
       m_BufferRemain -= size;
       return *this;
     }
-    else
-    {
-      return streamout_bufferwrap(ptr, size);
-    }
+
+    return streamout_bufferwrap(ptr, size);
   }
 
   inline CArchive &streamin(void *dataPtr, size_t size)
   {
-    uint8_t *ptr = (uint8_t *) dataPtr;
+    auto ptr = static_cast<uint8_t *>(dataPtr);
     /* Note, refilling the buffer is deferred until we know we need to read more from it */
     if (m_BufferRemain >= size)
     {
@@ -176,15 +175,13 @@ protected:
       m_BufferRemain -= size;
       return *this;
     }
-    else
-    {
-      return streamin_bufferwrap(ptr, size);
-    }
+
+    return streamin_bufferwrap(ptr, size);
   }
 
-  XFILE::CFile* m_pFile;
+  XFILE::CFile* m_pFile; //non-owning
   int m_iMode;
-  uint8_t *m_pBuffer;
+  std::unique_ptr<uint8_t[]> m_pBuffer;
   uint8_t *m_BufferPos;
   size_t m_BufferRemain;
 
