@@ -255,9 +255,9 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
-  virtual void SetVolume(float nVolume)                         { m_VideoPlayerAudio->SetVolume(nVolume); }
-  virtual void SetMute(bool bOnOff)                             { m_VideoPlayerAudio->SetMute(bOnOff); }
-  virtual void SetDynamicRangeCompression(long drc)             { m_VideoPlayerAudio->SetDynamicRangeCompression(drc); }
+  virtual void SetVolume(float nVolume) override;
+  virtual void SetMute(bool bOnOff) override;
+  virtual void SetDynamicRangeCompression(long drc) override;
   virtual bool CanRecord();
   virtual bool IsRecording();
   virtual bool CanPause();
@@ -353,8 +353,6 @@ public:
 
   virtual int OnDVDNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
-
-  virtual bool ControlsVolume() {return m_omxplayer_mode;}
 
 protected:
   friend class CSelectionStreams;

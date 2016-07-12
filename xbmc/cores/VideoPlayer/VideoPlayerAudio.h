@@ -55,8 +55,6 @@ public:
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
   void FlushMessages()                                  { m_messageQueue.Flush(); }
 
-  void SetVolume(float fVolume)                         { m_dvdAudio.SetVolume(fVolume); }
-  void SetMute(bool bOnOff)                             { }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
   float GetDynamicRangeAmplification() const            { return 0.0f; }
 

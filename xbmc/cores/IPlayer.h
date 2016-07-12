@@ -257,7 +257,6 @@ public:
   virtual float GetCachePercentage(){ return 0;}
   virtual void SetMute(bool bOnOff){}
   virtual void SetVolume(float volume){}
-  virtual bool ControlsVolume(){ return false;}
   virtual void SetDynamicRangeCompression(long drc){}
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};

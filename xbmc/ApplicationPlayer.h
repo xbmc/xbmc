@@ -107,7 +107,6 @@ public:
   bool  CanPause();
   bool  CanRecord();
   bool  CanSeek();
-  bool  ControlsVolume() const;
   void  DoAudioWork();
   void  GetAudioCapabilities(std::vector<int> &audioCaps);
   int   GetAudioStream();

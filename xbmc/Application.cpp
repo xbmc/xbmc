@@ -3406,12 +3406,8 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   if (iResult == PLAYBACK_OK)
   {
-    // if player has volume control, set it.
-    if (m_pPlayer->ControlsVolume())
-    {
-      m_pPlayer->SetVolume(m_volumeLevel);
-      m_pPlayer->SetMute(m_muted);
-    }
+    m_pPlayer->SetVolume(m_volumeLevel);
+    m_pPlayer->SetMute(m_muted);
 
     if(m_pPlayer->IsPlayingAudio())
     {
@@ -4700,11 +4696,8 @@ void CApplication::VolumeChanged() const
   CAnnouncementManager::GetInstance().Announce(Application, "xbmc", "OnVolumeChanged", data);
 
   // if player has volume control, set it.
-  if (m_pPlayer->ControlsVolume())
-  {
-     m_pPlayer->SetVolume(m_volumeLevel);
-     m_pPlayer->SetMute(m_muted);
-  }
+  m_pPlayer->SetVolume(m_volumeLevel);
+  m_pPlayer->SetMute(m_muted);
 }
 
 int CApplication::GetSubtitleDelay() const

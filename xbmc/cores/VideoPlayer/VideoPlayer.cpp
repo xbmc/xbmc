@@ -4890,6 +4890,23 @@ void CVideoPlayer::UpdateApplication(double timeout)
   m_UpdateApplication = m_clock.GetAbsoluteClock();
 }
 
+void CVideoPlayer::SetVolume(float nVolume)
+{
+  if (m_omxplayer_mode)
+    m_VideoPlayerAudio->SetVolume(nVolume);
+}
+
+void CVideoPlayer::SetMute(bool bOnOff)
+{
+  if (m_omxplayer_mode)
+    m_VideoPlayerAudio->SetMute(bOnOff);
+}
+
+void CVideoPlayer::SetDynamicRangeCompression(long drc)
+{
+  m_VideoPlayerAudio->SetDynamicRangeCompression(drc);
+}
+
 bool CVideoPlayer::CanRecord()
 {
   CSingleLock lock(m_StateSection);

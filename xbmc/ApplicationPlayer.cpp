@@ -226,12 +226,6 @@ void CApplicationPlayer::Pause()
     player->Pause();
 }
 
-bool CApplicationPlayer::ControlsVolume() const
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->ControlsVolume());
-}
-
 void CApplicationPlayer::SetMute(bool bOnOff)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
