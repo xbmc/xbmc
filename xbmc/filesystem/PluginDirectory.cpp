@@ -71,7 +71,8 @@ void CPluginDirectory::CScriptObserver::Abort()
 }
 
 CPluginDirectory::CPluginDirectory()
-  : m_cancelled(false)
+  : m_fetchComplete(true)
+  , m_cancelled(false)
   , m_success(false)
   , m_totalItems(0)
 {
@@ -474,8 +475,6 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
 
 bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scriptId, const std::string &scriptName, bool retrievingDir)
 {
-  bool cancelled = false;
-
   // CPluginDirectory::GetDirectory can be called from the main and other threads.
   // If called form the main thread, we need to bring up the BusyDialog in order to
   // keep the render loop alive
@@ -486,35 +485,26 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
       CScriptObserver scriptObs(scriptId, m_fetchComplete);
       if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
       {
-        cancelled = true;
+        m_cancelled = true;
       }
       scriptObs.Abort();
     }
   }
   else
   {
-    // kill the script if it does not return within 30 seconds
-    // and we are not waiting for user input
+    // Wait for directory fetch to complete, end, or be cancelled
+    while (!m_cancelled
+        && CScriptInvocationManager::GetInstance().IsRunning(scriptId)
+        && !m_fetchComplete.WaitMSec(20));
+
+    // Give the script 30 seconds to exit before we attempt to stop it
     XbmcThreads::EndTime timer(30000);
-    while (CScriptInvocationManager::GetInstance().IsRunning(scriptId))
-    {
-      if (m_fetchComplete.WaitMSec(1000))
-      {
-        break;
-      }
-      if (g_windowManager.HasModalDialog( {DialogModalityType::MODAL }))
-      {
-        timer.Set(30000);
-      }
-      if (timer.IsTimePast())
-      {
-        cancelled = true;
-        break;
-      }
-    }
+    while (!timer.IsTimePast()
+          && CScriptInvocationManager::GetInstance().IsRunning(scriptId)
+          && !m_fetchComplete.WaitMSec(20));
   }
 
-  if (cancelled)
+  if (m_cancelled)
   { // cancel our script
     if (scriptId != -1 && CScriptInvocationManager::GetInstance().IsRunning(scriptId))
     {
@@ -523,7 +513,7 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
     }
   }
 
-  return !cancelled && m_success;
+  return !m_cancelled && m_success;
 }
 
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)

@@ -22,6 +22,7 @@
 #include "IDirectory.h"
 #include "SortFileItem.h"
 
+#include <atomic>
 #include <string>
 #include <map>
 #include "threads/CriticalSection.h"
@@ -79,7 +80,7 @@ private:
   CFileItem*     m_fileResult;
   CEvent         m_fetchComplete;
 
-  bool          m_cancelled;    // set to true when we are cancelled
+  std::atomic<bool> m_cancelled;
   bool          m_success;      // set by script in EndOfDirectory
   int    m_totalItems;   // set by script in AddDirectoryItem
 
