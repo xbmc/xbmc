@@ -113,6 +113,12 @@ PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOpt
     // check whether the OpenFile was canceled by either CloseFile or another OpenFile.
     if (m_iPlayerOPSeq != startingSeq)
       iResult = PLAYBACK_CANCELED;
+
+    // reset caching timers
+    m_audioStreamUpdate.SetExpired();
+    m_videoStreamUpdate.SetExpired();
+    m_subtitleStreamUpdate.SetExpired();
+    m_speedUpdate.SetExpired();
   }
   return iResult;
 }
