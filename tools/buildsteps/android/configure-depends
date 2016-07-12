@@ -5,7 +5,7 @@ XBMC_PLATFORM_DIR=android
 NDK_ARCH="arm"
 #the following pathes must exist on the slave and use the defined scheme here!
 NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
-TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$SDK_VERSION-r$NDK_VERSION
+TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$NDK_LEVEL-r$NDK_VERSION
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
@@ -14,6 +14,7 @@ then
     --host=arm-linux-androideabi \
     --with-sdk-path=$SDK_PATH \
     --with-ndk-path=$NDK_PATH \
+    $(if [ "$NDK_LEVEL" != "Default" ]; then echo --with-ndk=android-$NDK_LEVEL;fi) \
     $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
     --with-toolchain=$TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT \
