@@ -29,6 +29,7 @@
 #include "rendering/RenderSystem.h"
 #include "guilib/GUIShaderDX.h"
 #include "threads/CriticalSection.h"
+#include "easyhook/easyhook.h"
 
 enum PCI_Vendors
 {
@@ -38,6 +39,7 @@ enum PCI_Vendors
 };
 
 class ID3DResource;
+struct D3D10DDIARG_CREATERESOURCE;
 
 class CRenderSystemDX : public CRenderSystemBase
 {
@@ -90,6 +92,7 @@ public:
   void                    SetAlphaBlendEnable(bool enable);
 
   static std::string GetErrorDescription(HRESULT hr);
+  void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource);
 
 protected:
   bool CreateDevice();
@@ -116,6 +119,8 @@ protected:
   bool GetDisplayStereoEnabled() const;
   void SetDisplayStereoEnabled(bool enable) const;
   void UpdateDisplayStereoStatus(bool isfirst = false);
+  void InitHooks();
+  void UninitHooks();
 
   virtual void Register(ID3DResource *resource);
   virtual void Unregister(ID3DResource *resource);
@@ -123,6 +128,8 @@ protected:
   virtual void OnDisplayLost() {};
   virtual void OnDisplayReset() {};
   virtual void OnDisplayBack() {};
+
+  static void GetRefreshRatio(uint32_t refresh, uint32_t* num, uint32_t* den);
 
   // our adapter could change as we go
   bool                        m_needNewDevice{false};
@@ -178,6 +185,8 @@ protected:
 #endif
   bool                        m_bDefaultStereoEnabled{false};
   bool                        m_bStereoEnabled{false};
+  TRACED_HOOK_HANDLE          m_hHook{nullptr};
+  HMODULE                     m_hDriverModule{nullptr};
 };
 
 #endif
