@@ -370,9 +370,8 @@ namespace XBMCAddon
     String getCacheThumbName(const String& path)
     {
       XBMC_TRACE;
-      Crc32 crc;
-      crc.ComputeFromLowerCase(path);
-      return StringUtils::Format("%08x.tbn", (unsigned __int32)crc);
+      auto crc = Crc32::ComputeFromLowerCase(path);
+      return StringUtils::Format("%08x.tbn", crc);
     }
 
     String makeLegalFilename(const String& filename, bool fatX)

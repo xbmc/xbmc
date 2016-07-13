@@ -47,11 +47,8 @@ TEST(TestCrc32, Compute_2)
 
 TEST(TestCrc32, ComputeFromLowerCase)
 {
-  Crc32 a;
-  uint32_t varcrc;
   std::string s = refdata;
-  a.ComputeFromLowerCase(s);
-  varcrc = a;
+  uint32_t varcrc = Crc32::ComputeFromLowerCase(s);
   EXPECT_EQ((uint32_t)0x7f045b3e, varcrc);
 }
 
@@ -60,7 +57,7 @@ TEST(TestCrc32, Reset)
   Crc32 a;
   uint32_t varcrc;
   std::string s = refdata;
-  a.ComputeFromLowerCase(s);
+  a.Compute(s.c_str(), s.length());
   a.Reset();
   varcrc = a;
   EXPECT_EQ(0xffffffff, varcrc);
