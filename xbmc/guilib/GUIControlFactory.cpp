@@ -888,8 +888,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   XMLUtils::GetFloat(pControlNode, "markwidth", checkWidth);
   XMLUtils::GetFloat(pControlNode, "markheight", checkHeight);
-  XMLUtils::GetFloat(pControlNode, "sliderwidth", sliderWidth);
-  XMLUtils::GetFloat(pControlNode, "sliderheight", sliderHeight);
   if (!GetTexture(pControlNode, "textureradioonfocus", textureRadioOnFocus) || !GetTexture(pControlNode, "textureradioonnofocus", textureRadioOnNoFocus))
   {
     GetTexture(pControlNode, "textureradiofocus", textureRadioOnFocus);    // backward compatibility
@@ -963,8 +961,18 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   {
     StringUtils::ToLower(strTmp);
     if (strTmp == "horizontal")
+    {
       orientation = HORIZONTAL;
+      // default orientation for a settings slider is vertical
+      // consequently it has to changed here
+      float tmpVal = sliderWidth;
+      sliderWidth = sliderHeight;
+      sliderHeight = tmpVal;
+    }
   }
+
+  XMLUtils::GetFloat(pControlNode, "sliderwidth", sliderWidth);
+  XMLUtils::GetFloat(pControlNode, "sliderheight", sliderHeight);
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
   XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
   GetAspectRatio(pControlNode, "aspectratio", aspect);
@@ -1257,7 +1265,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     {
       control = new CGUISettingsSliderControl(
         parentID, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus, textureNoFocus,
-        textureBar, textureNib, textureNibFocus, labelInfo, SLIDER_CONTROL_TYPE_PERCENTAGE);
+        textureBar, textureNib, textureNibFocus, labelInfo, SLIDER_CONTROL_TYPE_PERCENTAGE, orientation);
 
       ((CGUISettingsSliderControl *)control)->SetText(strLabel);
       ((CGUISettingsSliderControl *)control)->SetInfo(singleInfo);

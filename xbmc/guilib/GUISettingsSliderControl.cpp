@@ -20,12 +20,20 @@
 
 #include "GUISettingsSliderControl.h"
 
-CGUISettingsSliderControl::CGUISettingsSliderControl(int parentID, int controlID, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType)
-    : CGUISliderControl(parentID, controlID, posX, posY, sliderWidth, sliderHeight, backGroundTexture, nibTexture,nibTextureFocus, iType, HORIZONTAL)
+CGUISettingsSliderControl::CGUISettingsSliderControl(int parentID, int controlID, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType, ORIENTATION orientation)
+    : CGUISliderControl(parentID, controlID, posX, posY, sliderWidth, sliderHeight, backGroundTexture, nibTexture,nibTextureFocus, iType, orientation)
     , m_buttonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
     , m_label(posX, posY, width, height, labelInfo)
 {
-  m_label.SetAlign((labelInfo.align & XBFONT_CENTER_Y) | XBFONT_RIGHT);  
+  if (CGUISliderControl::m_orientation == HORIZONTAL)
+  {
+    m_label.SetAlign((labelInfo.align & XBFONT_CENTER_Y) | XBFONT_RIGHT);  
+  }
+  else
+  {
+    m_label.SetAlign((labelInfo.align & XBFONT_CENTER_Y) | XBFONT_CENTER_X);
+    m_buttonControl.m_label.SetAlign((labelInfo.align & XBFONT_CENTER_Y) | XBFONT_CENTER_X);
+  }
   ControlType = GUICONTROL_SETTINGS_SLIDER;
 }
 
@@ -37,8 +45,18 @@ void CGUISettingsSliderControl::Process(unsigned int currentTime, CDirtyRegionLi
 {
   if (m_bInvalidated)
   {
-    float sliderPosX = m_buttonControl.GetXPosition() + m_buttonControl.GetWidth() - m_width - m_buttonControl.GetLabelInfo().offsetX;
-    float sliderPosY = m_buttonControl.GetYPosition() + (m_buttonControl.GetHeight() - m_height) * 0.5f;
+    float sliderPosX = 0.0f;
+    float sliderPosY = 0.0f;
+    if (CGUISliderControl::m_orientation == HORIZONTAL)
+    {
+      sliderPosX = m_buttonControl.GetXPosition() + m_buttonControl.GetWidth() - CGUISliderControl::m_width - m_buttonControl.GetLabelInfo().offsetX;
+      sliderPosY = m_buttonControl.GetYPosition() + (m_buttonControl.GetHeight() - CGUISliderControl::m_height)*0.5f;
+    }
+    else
+    {
+      sliderPosX = m_buttonControl.GetXPosition() + m_buttonControl.GetWidth()*0.5f - CGUISliderControl::m_width*0.5f;
+      sliderPosY = m_buttonControl.GetYPosition() + m_buttonControl.GetHeight()*0.5f - CGUISliderControl::m_height*0.5f;
+    }
     CGUISliderControl::SetPosition(sliderPosX, sliderPosY);
   }
   m_buttonControl.SetFocus(HasFocus());
@@ -60,7 +78,15 @@ void CGUISettingsSliderControl::ProcessText()
 {
   bool changed = false;
 
-  changed |= m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition(), m_posX - m_buttonControl.GetXPosition(), m_buttonControl.GetHeight());
+  if (CGUISliderControl::m_orientation == HORIZONTAL)
+  {
+    changed |= m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition(), m_posX - m_buttonControl.GetXPosition(), m_buttonControl.GetHeight());
+  }
+  else
+  {
+    changed |= m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition(), m_buttonControl.GetWidth(), (m_buttonControl.GetHeight() - CGUISettingsSliderControl::m_height)*0.5f);
+    changed |= m_buttonControl.m_label.SetMaxRect(m_buttonControl.GetXPosition(), CGUISliderControl::m_posY + CGUISettingsSliderControl::m_height, m_buttonControl.GetWidth(), (m_buttonControl.GetHeight() - CGUISettingsSliderControl::m_height)*0.5f);
+  }
   changed |= m_label.SetText(CGUISliderControl::GetDescription());
   if (IsDisabled())
     changed |= m_label.SetColor(CGUILabel::COLOR_DISABLED);
