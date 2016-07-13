@@ -602,4 +602,14 @@ bool CUPnPPlayer::OnAction(const CAction &action)
   }
 }
 
+void CUPnPPlayer::SetSpeed(int iSpeed)
+{
+  m_playspeed = 1;
+}
+
+int CUPnPPlayer::GetSpeed()
+{
+  return m_playspeed;
+}
+
 } /* namespace UPNP */

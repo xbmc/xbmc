@@ -113,6 +113,12 @@ PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOpt
     // check whether the OpenFile was canceled by either CloseFile or another OpenFile.
     if (m_iPlayerOPSeq != startingSeq)
       iResult = PLAYBACK_CANCELED;
+
+    // reset caching timers
+    m_audioStreamUpdate.SetExpired();
+    m_videoStreamUpdate.SetExpired();
+    m_subtitleStreamUpdate.SetExpired();
+    m_speedUpdate.SetExpired();
   }
   return iResult;
 }
@@ -224,12 +230,6 @@ void CApplicationPlayer::Pause()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->Pause();
-}
-
-bool CApplicationPlayer::ControlsVolume() const
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->ControlsVolume());
 }
 
 void CApplicationPlayer::SetMute(bool bOnOff)
@@ -454,11 +454,11 @@ float CApplicationPlayer::GetCachePercentage() const
     return 0.0;
 }
 
-void CApplicationPlayer::ToFFRW(int iSpeed)
+void CApplicationPlayer::SetSpeed(int iSpeed)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->ToFFRW(iSpeed);
+    player->SetSpeed(iSpeed);
 }
 
 void CApplicationPlayer::DoAudioWork()
@@ -722,7 +722,7 @@ void CApplicationPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
     player->OMXGetScalingMethods(scalingMethods);
 }
 
-void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
+void CApplicationPlayer::SetPlaySpeed(int iSpeed)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (!player)
@@ -730,43 +730,26 @@ void CApplicationPlayer::SetPlaySpeed(int iSpeed, bool bApplicationMuted)
 
   if (!IsPlayingAudio() && !IsPlayingVideo())
     return ;
-  if (m_iPlaySpeed == iSpeed)
-    return ;
-  if (!CanSeek())
-    return;
-  if (IsPaused())
-  {
-    if (
-      ((m_iPlaySpeed > 1) && (iSpeed > m_iPlaySpeed)) ||
-      ((m_iPlaySpeed < -1) && (iSpeed < m_iPlaySpeed))
-    )
-    {
-      iSpeed = m_iPlaySpeed; // from pause to ff/rw, do previous ff/rw speed
-    }
-    Pause();
-  }
-  m_iPlaySpeed = iSpeed;
 
-  ToFFRW(m_iPlaySpeed);
-
-  // if player has volume control, set it.
-  if (ControlsVolume())
-  {
-    if (m_iPlaySpeed == 1)
-    { // restore volume
-      player->SetVolume(g_application.GetVolume(false));
-    }
-    else
-    { // mute volume
-      player->SetVolume(VOLUME_MINIMUM);
-    }
-    player->SetMute(bApplicationMuted);
-  }
+  SetSpeed(iSpeed);
+  m_speedUpdate.SetExpired();
 }
 
-int CApplicationPlayer::GetPlaySpeed() const
+int CApplicationPlayer::GetPlaySpeed()
 {
-  return m_iPlaySpeed;
+  if (!m_speedUpdate.IsTimePast())
+    return m_iPlaySpeed;
+
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    m_iPlaySpeed = player->GetSpeed();
+    m_speedUpdate.Set(1000);
+    return m_iPlaySpeed;
+  }
+  else
+    return 0;
+
 }
 
 void CApplicationPlayer::FrameMove()

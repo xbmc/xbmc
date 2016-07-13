@@ -68,9 +68,10 @@ public:
   virtual void SeekTime(int64_t iTime);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
-  virtual void ToFFRW(int iSpeed);
+  virtual void SetSpeed(int iSpeed) override;
+  virtual int GetSpeed() override;
   virtual void ShowOSD(bool bOnoff);
-  virtual void DoAudioWork()                                    {}
+  virtual void DoAudioWork() {};
   
   virtual std::string GetPlayerState();
   virtual bool SetPlayerState(const std::string& state);

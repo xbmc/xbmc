@@ -203,7 +203,6 @@ public:
   bool IsIdleShutdownInhibited() const;
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
-  void CheckPlayingProgress();
   void ActivateScreenSaver(bool forceType = false);
   bool SetupNetwork();
   void CloseNetworkShares();
