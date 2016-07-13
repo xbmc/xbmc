@@ -355,6 +355,14 @@ endif
 else
 	$(MAKE) -C tools/EventClients
 endif
+
+certs:
+ifeq ($(findstring osx,@ARCH@), osx)
+	mkdir -p system/certs
+	cp tools/depends/target/openssl/cacert.pem system/certs
+endif
+
+
 libexif: dllloader
 	$(MAKE) -C lib/libexif
 
@@ -365,7 +373,7 @@ libs: $(LIBSSE4) libexif system/libcpluff-@ARCH@.so
 externals: codecs libs libaddon
 
 xcode_depends: \
-	codecs libs eventclients skins libaddon
+	codecs libs eventclients skins libaddon certs
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \
