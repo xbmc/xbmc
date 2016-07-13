@@ -377,6 +377,11 @@ if(CORE_SYSTEM_NAME STREQUAL osx)
   add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/OSXRemote build/XBMCHelper)
 endif()
 
+# WiiRemote
+if(CORE_SYSTEM_NAME STREQUAL linux)
+  add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+endif()
+
 include(scripts/${CORE_SYSTEM_NAME}/Install.cmake)
 
 # Prepare add-on build env
