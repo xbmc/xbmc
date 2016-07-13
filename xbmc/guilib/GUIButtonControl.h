@@ -32,12 +32,15 @@
 #include "GUILabel.h"
 #include "GUIControl.h"
 
+class CGUISettingsSliderControl;
+
 /*!
  \ingroup controls
  \brief
  */
 class CGUIButtonControl : public CGUIControl
 {
+  friend class CGUISettingsSliderControl;
 public:
   CGUIButtonControl(int parentID, int controlID,
                     float posX, float posY, float width, float height,
