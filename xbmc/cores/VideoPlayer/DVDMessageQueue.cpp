@@ -23,7 +23,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "DVDClock.h"
-#include "utils/MathUtils.h"
+#include "math.h"
 
 CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m_owner(owner)
 {
@@ -262,12 +262,12 @@ int CDVDMessageQueue::GetLevel() const
   if (IsDataBased())
     return std::min(100, 100 * m_iDataSize / m_iMaxDataSize);
 
-  int level = std::min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
+  int level = std::min(100.0, ceil(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
 
   // if we added lots of packets with NOPTS, make sure that the queue is not signalled empty
   if (level == 0 && m_iDataSize != 0)
   {
-    CLog::Log(LOGNOTICE, "CDVDMessageQueue::GetLevel() - can't determine level");
+    CLog::Log(LOGDEBUG, "CDVDMessageQueue::GetLevel() - can't determine level");
     return 1;
   }
 
