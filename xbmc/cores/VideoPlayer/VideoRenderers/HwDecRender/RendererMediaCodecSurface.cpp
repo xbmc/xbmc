@@ -25,6 +25,7 @@
 
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "utils/log.h"
+#include "threads/SystemClock.h"
 
 CRendererMediaCodecSurface::CRendererMediaCodecSurface()
 {
@@ -156,6 +157,32 @@ bool CRendererMediaCodecSurface::RenderUpdateVideoHook(bool clear, DWORD flags, 
     mci->RenderUpdate(srcRect, dstRect);
   }
 
+  /** @todo This is a really bad hack and not meant to be
+  * a solution. This needs proper fixing when android maintainer
+  * is back. Real solution: Block depending on next vblank,
+  * which is estimated here by assuming 2 buffers and frametime.
+  */
+  uint64_t sleep_time = 10; // 10 ms by default
+  double fps = g_graphicsContext.GetFPS();
+
+  if (fps > 0.0)
+  {
+    uint64_t now = XbmcThreads::SystemClockMillis();
+    uint64_t frame_time = static_cast<uint64_t>((1000.0 / fps + 0.5));
+    if (next_render <= now) // we are late don't sleep
+      sleep_time = 0;
+    else
+    {
+       double diff = next_render - now;
+       // leave 10% room
+       sleep_time = std::min(frame_time, static_cast<uint64_t>(diff * 0.9 + 0.5));
+    }
+
+    next_render = now + frame_time + sleep_time;
+    CLog::Log(LOGINFO, "Fps: %lf Now: %lf next_render: %lf sleep_time: %lf", (double) fps, (double) now, (double) next_render, (double) sleep_time);
+  }
+
+  usleep(sleep_time * 1000);
   return true;
 }
 
