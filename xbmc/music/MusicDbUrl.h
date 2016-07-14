@@ -32,6 +32,6 @@ public:
   virtual ~CMusicDbUrl();
 
 protected:
-  virtual bool parse();
-  virtual bool validateOption(const std::string &key, const CVariant &value);
+  bool parse() override;
+  bool validateOption(const std::string &key, const CVariant &value) override;
 };

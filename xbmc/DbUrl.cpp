@@ -18,11 +18,8 @@
  *
  */
 
-#include <sstream>
-
 #include "DbUrl.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 
 CDbUrl::CDbUrl()
 {

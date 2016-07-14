@@ -30,8 +30,12 @@
 class CURL
 {
 public:
-  explicit CURL(const std::string& strURL);
-  CURL();
+  explicit CURL(const std::string& strURL)
+  {
+    Parse(strURL);
+  }
+
+  CURL():m_iPort(0) {}
   virtual ~CURL(void);
 
   // explicit equals operator for std::string comparison
@@ -40,28 +44,91 @@ public:
   void Reset();
   void Parse(const std::string& strURL);
   void SetFileName(const std::string& strFileName);
-  void SetHostName(const std::string& strHostName);
-  void SetUserName(const std::string& strUserName);
-  void SetPassword(const std::string& strPassword);
+  void SetHostName(const std::string& strHostName)
+  {
+    m_strHostName = strHostName;
+  }
+
+  void SetUserName(const std::string& strUserName)
+  {
+    m_strUserName = strUserName;
+  }
+
+  void SetPassword(const std::string& strPassword)
+  {
+    m_strPassword = strPassword;
+  }
+
   void SetProtocol(const std::string& strProtocol);
   void SetOptions(const std::string& strOptions);
   void SetProtocolOptions(const std::string& strOptions);
-  void SetPort(int port);
+  void SetPort(int port)
+  {
+    m_iPort = port;
+  }
 
-  bool HasPort() const;
+  bool HasPort() const
+  {
+    return (m_iPort != 0);
+  }
 
-  int GetPort() const;
-  const std::string& GetHostName() const;
-  const std::string& GetDomain() const;
-  const std::string& GetUserName() const;
-  const std::string& GetPassWord() const;
-  const std::string& GetFileName() const;
-  const std::string& GetProtocol() const;
+  int GetPort() const
+  {
+    return m_iPort;
+  }
+
+  const std::string& GetHostName() const
+  {
+    return m_strHostName;
+  }
+
+  const std::string& GetDomain() const
+  {
+    return m_strDomain;
+  }
+
+  const std::string& GetUserName() const
+  {
+    return m_strUserName;
+  }
+
+  const std::string& GetPassWord() const
+  {
+    return m_strPassword;
+  }
+
+  const std::string& GetFileName() const
+  {
+    return m_strFileName;
+  }
+
+  const std::string& GetProtocol() const
+  {
+    return m_strProtocol;
+  }
+
   const std::string GetTranslatedProtocol() const;
-  const std::string& GetFileType() const;
-  const std::string& GetShareName() const;
-  const std::string& GetOptions() const;
-  const std::string& GetProtocolOptions() const;
+
+  const std::string& GetFileType() const
+  {
+    return m_strFileType;
+  }
+
+  const std::string& GetShareName() const
+  {
+      return m_strShareName;
+  }
+
+  const std::string& GetOptions() const
+  {
+    return m_strOptions;
+  }
+
+  const std::string& GetProtocolOptions() const
+  {
+    return m_strProtocolOptions;
+  }
+
   const std::string GetFileNameWithoutPath() const; /* return the filename excluding path */
 
   char GetDirectorySeparator() const;

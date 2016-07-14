@@ -19,10 +19,10 @@
  *
  */
 
+#include "utils/Variant.h"
+
 #include <map>
 #include <string>
-
-#include "utils/Variant.h"
 
 class CUrlOptions
 {
@@ -33,10 +33,10 @@ public:
   CUrlOptions(const std::string &options, const char *strLead = "");
   virtual ~CUrlOptions();
 
-  virtual void Clear() { m_options.clear(); m_strLead = ""; }
+  void Clear() { m_options.clear(); m_strLead.clear(); }
 
-  virtual const UrlOptions& GetOptions() const { return m_options; }
-  virtual std::string GetOptionsString(bool withLeadingSeperator = false) const;
+  const UrlOptions& GetOptions() const { return m_options; }
+  std::string GetOptionsString(bool withLeadingSeperator = false) const;
 
   virtual void AddOption(const std::string &key, const char *value);
   virtual void AddOption(const std::string &key, const std::string &value);
@@ -48,8 +48,8 @@ public:
   virtual void AddOptions(const CUrlOptions &options);
   virtual void RemoveOption(const std::string &key);
 
-  virtual bool HasOption(const std::string &key) const;
-  virtual bool GetOption(const std::string &key, CVariant &value) const;
+  bool HasOption(const std::string &key) const;
+  bool GetOption(const std::string &key, CVariant &value) const;
 
 protected:
   UrlOptions m_options;
