@@ -411,6 +411,7 @@ const std::string CSettings::SETTING_ADDONS_NOTIFICATIONS = "general.addonnotifi
 const std::string CSettings::SETTING_ADDONS_SHOW_RUNNING = "addons.showrunning";
 const std::string CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES = "addons.unknownsources";
 const std::string CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES = "addons.managedependencies";
+const std::string CSettings::SETTING_ADDON_BROWSER = "addon.browser";
 const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
 
@@ -1188,6 +1189,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_ADDONS_SHOW_RUNNING);
   settingSet.insert(CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES);
   settingSet.insert(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
+  settingSet.insert(CSettings::SETTING_ADDON_BROWSER);
   m_settingsManager->RegisterCallback(&ADDON::CAddonSystemSettings::GetInstance(), settingSet);
 
   settingSet.clear();

@@ -368,6 +368,7 @@ public:
   static const std::string SETTING_ADDONS_SHOW_RUNNING;
   static const std::string SETTING_ADDONS_MANAGE_DEPENDENCIES;
   static const std::string SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES;
+  static const std::string SETTING_ADDON_BROWSER;
   static const std::string SETTING_GENERAL_ADDONFOREIGNFILTER;
   static const std::string SETTING_GENERAL_ADDONBROKENFILTER;
 
