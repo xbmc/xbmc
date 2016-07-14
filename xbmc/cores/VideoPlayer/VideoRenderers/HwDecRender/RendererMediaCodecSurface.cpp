@@ -23,6 +23,7 @@
 #if defined(TARGET_ANDROID)
 #include "../RenderCapture.h"
 
+#include "platform/android/activity/XBMCApp.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "utils/log.h"
 
@@ -156,6 +157,7 @@ bool CRendererMediaCodecSurface::RenderUpdateVideoHook(bool clear, DWORD flags, 
     mci->RenderUpdate(srcRect, dstRect);
   }
 
+  CXBMCApp::WaitVSync(1000.0 / g_graphicsContext.GetFPS());
   return true;
 }
 
