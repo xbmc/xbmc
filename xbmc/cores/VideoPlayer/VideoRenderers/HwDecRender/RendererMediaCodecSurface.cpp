@@ -179,6 +179,7 @@ bool CRendererMediaCodecSurface::RenderUpdateVideoHook(bool clear, DWORD flags, 
     }
 
     next_render = now + frame_time + sleep_time;
+    CLog::Log(LOGINFO, "Fps: %lf Now: %lf next_render: %lf sleep_time: %lf", (double) fps, (double) now, (double) next_render, (double) sleep_time);
   }
 
   usleep(sleep_time * 1000);
