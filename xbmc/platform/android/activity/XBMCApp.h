@@ -145,6 +145,8 @@ public:
   static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
   static void DeinitFrameCallback();
 
+  static bool WaitVSync(unsigned int milliSeconds);
+
   static CXBMCApp* get() { return m_xbmcappinstance; }
 
 protected:
@@ -180,6 +182,7 @@ private:
   static CEvent m_windowCreated;
 
   static CVideoSyncAndroid* m_syncImpl;
+  static CEvent m_vsyncEvent;
 
   void XBMC_Pause(bool pause);
   void XBMC_Stop();

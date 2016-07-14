@@ -108,6 +108,7 @@ IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
+CEvent CXBMCApp::m_vsyncEvent;
 
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
@@ -845,6 +846,13 @@ void CXBMCApp::doFrame(int64_t frameTimeNanos)
 {
   if (m_syncImpl)
     m_syncImpl->FrameCallback(frameTimeNanos);
+
+  m_vsyncEvent.Set();
+}
+
+bool CXBMCApp::WaitVSync(unsigned int milliSeconds)
+{
+  return m_vsyncEvent.WaitMSec(milliSeconds);
 }
 
 void CXBMCApp::SetupEnv()
