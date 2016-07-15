@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+  <Identity Name="@APP_NAME@" ProcessorArchitecture="x86" Publisher="CN=@COMPANY_NAME@" Version="@VERSION_NUMBER@" />
+  <Properties>
+    <DisplayName>@APP_NAME@</DisplayName>
+    <PublisherDisplayName>@COMPANY_NAME@</PublisherDisplayName>
+    <Description>@APP_NAME@ @APP_VERSION@</Description>
+    <Logo>media\icon120x120.png</Logo>
+  </Properties>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14342.0" MaxVersionTested="10.0.14379.0" />
+    <PackageDependency Name="Microsoft.VCLibs.120.00.UWPDesktop" MinVersion="12.0.40653.0" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+    <PackageDependency Name="Microsoft.VCLibs.140.00.UWPDesktop" MinVersion="14.0.24217.0" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+  </Dependencies>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+  <Applications>
+    <Application Id="@APP_NAME@" Executable="@APP_NAME@.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="@APP_NAME@" Description="@APP_NAME@" BackgroundColor="transparent" Square150x150Logo="media\icon256x256.png" Square44x44Logo="media\icon48x48.png" />
+    </Application>
+  </Applications>
+</Package>
