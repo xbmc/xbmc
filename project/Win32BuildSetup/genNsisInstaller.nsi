@@ -14,11 +14,9 @@
 ;General
 
   ;Name and file
-  Name "${APP_NAME}"
+  Name "${APP_NAME} ${VERSION_NUMBER}"
   OutFile "${APP_NAME}Setup-${app_revision}-${app_branch}.exe"
 
-  XPStyle on
-  
   ;Default installation folder
   InstallDir "$PROGRAMFILES\${APP_NAME}"
 
@@ -27,6 +25,20 @@
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
+
+  InstProgressFlags smooth
+  
+  ; Installer file properties
+  VIProductVersion                   ${VERSION_NUMBER}
+  VIAddVersionKey "ProductName"      "${APP_NAME}"
+  VIAddVersionKey "Comments"         "This application and its source code are freely distributable."
+  VIAddVersionKey "LegalCopyright"   "The trademark is owned by ${COMPANY_NAME}"
+  VIAddVersionKey "CompanyName"      "${COMPANY_NAME}"
+  VIAddVersionKey "FileDescription"  "${APP_NAME} ${VERSION_NUMBER} Setup"
+  VIAddVersionKey "FileVersion"      "${VERSION_NUMBER}"
+  VIAddVersionKey "ProductVersion"   "${VERSION_NUMBER}"
+  VIAddVersionKey "LegalTrademarks"  "${APP_NAME}"
+  ;VIAddVersionKey "OriginalFilename" "${APP_NAME}Setup-${app_revision}-${app_branch}.exe"
 
 ;--------------------------------
 ;Variables
@@ -228,10 +240,6 @@ Section "${APP_NAME}" SecAPP
   SetOutPath "$INSTDIR\media"
   File /r "${app_root}\application\media\*.*"
   SetOutPath "$INSTDIR\system"
-  ; remove leftover from old Kodi installation
-  ${If} ${FileExists} "$INSTDIR\system\webserver"
-    RMDir /r "$INSTDIR\system\webserver"
-  ${EndIf}
   File /r "${app_root}\application\system\*.*"
   SetOutPath "$INSTDIR\userdata"
   File /r "${app_root}\application\userdata\*.*"
@@ -271,7 +279,7 @@ Section "${APP_NAME}" SecAPP
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "DisplayIcon" "$INSTDIR\${APP_NAME}.exe,0"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
-                 "Publisher" "${COMPANY}"
+                 "Publisher" "${COMPANY_NAME}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
                  "HelpLink" "${WEBSITE}"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" \
