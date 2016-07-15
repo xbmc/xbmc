@@ -44,8 +44,7 @@ public:
   virtual bool QueueNextFile(const CFileItem &file);
   virtual bool CloseFile(bool reopen = false);
   virtual bool IsPlaying() const;
-  virtual void Pause();
-  virtual bool IsPaused() const;
+  virtual void Pause() override;
   virtual bool HasVideo() const { return false; }
   virtual bool HasAudio() const { return false; }
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
@@ -80,13 +79,14 @@ public:
   int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);
 
 private:
+  bool IsPaused() const;
+
   PLT_MediaController*   m_control;
   CUPnPPlayerController* m_delegate;
   std::string            m_current_uri;
   std::string            m_current_meta;
   bool                   m_started;
   bool                   m_stopremote;
-  int m_playspeed;
 };
 
 } /* namespace UPNP */
