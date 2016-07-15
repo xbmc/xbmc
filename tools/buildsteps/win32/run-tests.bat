@@ -5,12 +5,13 @@ SET cur_dir=%WORKSPACE%\project\Win32BuildSetup
 cd %cur_dir%
 SET base_dir=%cur_dir%\..\..
 SET builddeps_dir=%cur_dir%\..\..\project\BuildDependencies
-SET bin_dir=%builddeps_dir%\bin
-SET msys_bin_dir=%builddeps_dir%\msys\bin
+SET msys_dir=%builddeps_dir%\msys64
+IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
+SET awk_exe=%msys_dir%\usr\bin\awk.exe
+SET sed_exe=%msys_dir%\usr\bin\sed.exe
+
 REM read the version values from version.txt
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/COMPANY_NAME/ {print $2}" %base_dir%\version.txt') DO SET COMPANY=%%i
-FOR /f %%i IN ('%msys_bin_dir%\awk.exe "/WEBSITE/ {print $2}" %base_dir%\version.txt') DO SET WEBSITE=%%i
+FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
 
 CLS
 COLOR 1B
@@ -56,7 +57,7 @@ ECHO Compiling testsuite...
 %NET% %OPTS_EXE%
 
 IF %errorlevel%==1 (
-  set DIETEXT="%APP_NAME%-test.EXE failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+  set DIETEXT="%APP_NAME%-test.exe failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
   type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
   goto DIE
 )
@@ -77,7 +78,7 @@ ECHO Running testsuite...
   rem <testcase name="IsStarted" status="notrun" time="0" classname="TestWebServer"/>
   rem becomes
   rem <testcase name="IsStarted" status="notrun" time="0" classname="TestWebServer"><skipped/></testcase>
-  %msys_bin_dir%\sed.exe "s/<testcase\(.*\)\"notrun\"\(.*\)\/>$/<testcase\1\"notrun\"\2><skipped\/><\/testcase>/" %WORKSPACE%\gtestresults.xml > %WORKSPACE%\gtestresults-skipped.xml
+  %sed_exe% "s/<testcase\(.*\)\"notrun\"\(.*\)\/>$/<testcase\1\"notrun\"\2><skipped\/><\/testcase>/" %WORKSPACE%\gtestresults.xml > %WORKSPACE%\gtestresults-skipped.xml
   del %WORKSPACE%\gtestresults.xml
   move %WORKSPACE%\gtestresults-skipped.xml %WORKSPACE%\gtestresults.xml
 ECHO Done running testsuite!
