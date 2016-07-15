@@ -111,12 +111,15 @@ public:
   void SetDSPConfig(bool usedsp, bool bypassdsp);
   bool HasWork();
   CActiveAEBufferPool *GetResampleBuffers();
+  CActiveAEBufferPool *GetAtempoBuffers();
+  
   AEAudioFormat m_inputFormat;
   std::deque<CSampleBuffer*> m_outputSamples;
   std::deque<CSampleBuffer*> m_inputSamples;
 
 protected:
   CActiveAEBufferPoolResample *m_resampleBuffers;
+  CActiveAEBufferPoolAtempo *m_atempoBuffers;
 };
 
 class CActiveAEStream : public IAEStream

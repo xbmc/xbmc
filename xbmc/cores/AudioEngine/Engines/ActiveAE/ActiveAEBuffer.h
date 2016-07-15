@@ -23,6 +23,7 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include <deque>
+#include <memory>
 
 extern "C" {
 #include "libavutil/avutil.h"
@@ -148,4 +149,35 @@ protected:
   bool m_bypassDSP;
 };
 
+class CActiveAEFilter;
+
+class CActiveAEBufferPoolAtempo : public CActiveAEBufferPool
+{
+public:
+  CActiveAEBufferPoolAtempo(AEAudioFormat format);
+  virtual ~CActiveAEBufferPoolAtempo();
+  bool Create(unsigned int totaltime) override;
+  bool ProcessBuffers();
+  float GetDelay();
+  void Flush();
+  void SetTempo(float tempo);
+  float GetTempo();
+  void FillBuffer();
+  void SetDrain(bool drain);
+  std::deque<CSampleBuffer*> m_inputSamples;
+  std::deque<CSampleBuffer*> m_outputSamples;
+
+protected:
+  void ChangeFilter();
+  std::unique_ptr<CActiveAEFilter> m_pTempoFilter;
+  uint8_t *m_planes[16];
+  CSampleBuffer *m_procSample;
+  bool m_empty;
+  bool m_drain;
+  bool m_changeFilter;
+  float m_tempo;
+  int64_t m_lastSamplePts;
+  bool m_fillPackets;
+};
+  
 }

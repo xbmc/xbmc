@@ -1274,7 +1274,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       }
       if (initSink && (*it)->m_processingBuffers)
       {
+        (*it)->m_processingBuffers->Flush();
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetResampleBuffers());
+        m_discardBufferPools.push_back((*it)->m_processingBuffers->GetAtempoBuffers());
         delete (*it)->m_processingBuffers;
         (*it)->m_processingBuffers = nullptr;
       }
@@ -1440,7 +1442,11 @@ void CActiveAE::DiscardStream(CActiveAEStream *stream)
       if ((*it)->m_inputBuffers)
         m_discardBufferPools.push_back((*it)->m_inputBuffers);
       if ((*it)->m_processingBuffers)
+      {
+        (*it)->m_processingBuffers->Flush();
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetResampleBuffers());
+        m_discardBufferPools.push_back((*it)->m_processingBuffers->GetAtempoBuffers());
+      }
       delete (*it)->m_processingBuffers;
       CLog::Log(LOGDEBUG, "CActiveAE::DiscardStream - audio stream deleted");
       m_stats.RemoveStream((*it)->m_id);

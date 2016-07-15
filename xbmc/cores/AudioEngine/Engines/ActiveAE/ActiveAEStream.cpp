@@ -577,16 +577,19 @@ CActiveAEStreamBuffers::CActiveAEStreamBuffers(AEAudioFormat inputFormat, AEAudi
 {
   m_inputFormat = inputFormat;
   m_resampleBuffers = new CActiveAEBufferPoolResample(inputFormat, outputFormat, quality);
+  m_atempoBuffers = new CActiveAEBufferPoolAtempo(outputFormat);
 }
 
 CActiveAEStreamBuffers::~CActiveAEStreamBuffers()
 {
   delete m_resampleBuffers;
+  delete m_atempoBuffers;
 }
 
 bool CActiveAEStreamBuffers::HasInputLevel(int level)
 {
-  if (m_inputSamples.size() > m_resampleBuffers->m_allSamples.size() * 100 / level)
+  if ((m_inputSamples.size() + m_resampleBuffers->m_inputSamples.size()) >
+      (m_resampleBuffers->m_allSamples.size() * level / 100))
     return true;
   else
     return false;
@@ -594,7 +597,13 @@ bool CActiveAEStreamBuffers::HasInputLevel(int level)
 
 bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize, bool useDSP)
 {
-  return m_resampleBuffers->Create(totaltime, remap, upmix, normalize, useDSP);
+  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize, useDSP))
+    return false;
+
+  if (!m_atempoBuffers->Create(totaltime))
+    return false;
+
+  return true;
 }
 
 void CActiveAEStreamBuffers::SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
@@ -621,6 +630,16 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   {
     buf = m_resampleBuffers->m_outputSamples.front();
     m_resampleBuffers->m_outputSamples.pop_front();
+    m_atempoBuffers->m_inputSamples.push_back(buf);
+    busy = true;
+  }
+
+  busy |= m_atempoBuffers->ProcessBuffers();
+
+  while (!m_atempoBuffers->m_outputSamples.empty())
+  {
+    buf = m_atempoBuffers->m_outputSamples.front();
+    m_atempoBuffers->m_outputSamples.pop_front();
     m_outputSamples.push_back(buf);
     busy = true;
   }
@@ -635,12 +654,29 @@ void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool dspen
 
 float CActiveAEStreamBuffers::GetDelay()
 {
-  return m_resampleBuffers->GetDelay();
+  float delay = 0;
+
+  for (auto &buf : m_inputSamples)
+  {
+    delay += (float)buf->pkt->nb_samples / buf->pkt->config.sample_rate;
+  }
+
+  delay += m_resampleBuffers->GetDelay();
+  delay += m_atempoBuffers->GetDelay();
+
+  for (auto &buf : m_outputSamples)
+  {
+    delay += (float)buf->pkt->nb_samples / buf->pkt->config.sample_rate;
+  }
+
+  return delay;
 }
 
 void CActiveAEStreamBuffers::Flush()
 {
   m_resampleBuffers->Flush();
+  m_atempoBuffers->Flush();
+
   while (!m_inputSamples.empty())
   {
     m_inputSamples.front()->Return();
@@ -656,12 +692,15 @@ void CActiveAEStreamBuffers::Flush()
 void CActiveAEStreamBuffers::SetDrain(bool drain)
 {
   m_resampleBuffers->SetDrain(drain);
+  m_atempoBuffers->SetDrain(drain);
 }
 
 bool CActiveAEStreamBuffers::IsDrained()
 {
   if (m_resampleBuffers->m_inputSamples.empty() &&
       m_resampleBuffers->m_outputSamples.empty() &&
+      m_atempoBuffers->m_inputSamples.empty() &&
+      m_atempoBuffers->m_outputSamples.empty() &&
       m_inputSamples.empty() &&
       m_outputSamples.empty())
     return true;
@@ -671,17 +710,29 @@ bool CActiveAEStreamBuffers::IsDrained()
 
 void CActiveAEStreamBuffers::SetRR(double rr)
 {
-  m_resampleBuffers->SetRR(rr);
+  if (rr < 1.02 && rr > 0.98)
+  {
+    m_resampleBuffers->SetRR(rr);
+    m_atempoBuffers->SetTempo(1.0);
+  }
+  else
+  {
+    m_resampleBuffers->SetRR(1.0);
+    m_atempoBuffers->SetTempo(1.0/rr);
+  }
 }
 
 double CActiveAEStreamBuffers::GetRR()
 {
-  return m_resampleBuffers->GetRR();
+  double tempo = m_resampleBuffers->GetRR();
+  tempo /= m_atempoBuffers->GetTempo();
+  return tempo;
 }
 
 void CActiveAEStreamBuffers::FillBuffer()
 {
   m_resampleBuffers->FillBuffer();
+  m_atempoBuffers->FillBuffer();
 }
 
 bool CActiveAEStreamBuffers::DoesNormalize()
@@ -706,6 +757,13 @@ CActiveAEBufferPool* CActiveAEStreamBuffers::GetResampleBuffers()
   return ret;
 }
 
+CActiveAEBufferPool* CActiveAEStreamBuffers::GetAtempoBuffers()
+{
+  CActiveAEBufferPool *ret = m_atempoBuffers;
+  m_atempoBuffers = nullptr;
+  return ret;
+}
+
 bool CActiveAEStreamBuffers::HasWork()
 {
   if (!m_inputSamples.empty())
@@ -715,6 +773,10 @@ bool CActiveAEStreamBuffers::HasWork()
   if (!m_resampleBuffers->m_inputSamples.empty())
     return true;
   if (!m_resampleBuffers->m_outputSamples.empty())
+    return true;
+  if (!m_atempoBuffers->m_inputSamples.empty())
+    return true;
+  if (!m_atempoBuffers->m_outputSamples.empty())
     return true;
 
   return false;
