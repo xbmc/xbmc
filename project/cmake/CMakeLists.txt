@@ -366,15 +366,9 @@ if(FFMPEG_CREATE_SHARED_LIBRARY)
   set(CMAKE_CXX_CREATE_SHARED_LIBRARY "${FFMPEG_CREATE_SHARED_LIBRARY}")
 endif()
 
-# randr
-if(ENABLE_X11 AND XRANDR_FOUND)
-  add_executable(kodi-xrandr ${CORE_SOURCE_DIR}/xbmc-xrandr.c)
-  target_link_libraries(kodi-xrandr ${SYSTEM_LDFLAGS} ${X_LIBRARIES} m ${XRANDR_LIBRARIES})
-endif()
-
-# XBMCHelper
-if(CORE_SYSTEM_NAME STREQUAL osx)
-  add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/OSXRemote build/XBMCHelper)
+# Platform specific additional extra targets
+if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
+  include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
 endif()
 
 # WiiRemote
