@@ -37,11 +37,9 @@ TEST(TestCrc32, Compute_1)
 
 TEST(TestCrc32, Compute_2)
 {
-  Crc32 a;
   uint32_t varcrc;
   std::string s = refdata;
-  a.Compute(s);
-  varcrc = a;
+  varcrc = Crc32::Compute(s);
   EXPECT_EQ(0xa4eb60e3, varcrc);
 }
 
