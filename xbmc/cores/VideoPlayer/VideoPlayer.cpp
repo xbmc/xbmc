@@ -2969,7 +2969,7 @@ void CVideoPlayer::SetPlaySpeed(int speed)
   }
 }
 
-bool CVideoPlayer::CanPause()
+bool CVideoPlayer::CanPause() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.canpause;
@@ -3010,7 +3010,7 @@ bool CVideoPlayer::IsPassthrough() const
   return m_VideoPlayerAudio->IsPassthrough();
 }
 
-bool CVideoPlayer::CanSeek()
+bool CVideoPlayer::CanSeek() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.canseek;
@@ -3215,7 +3215,7 @@ void CVideoPlayer::SeekPercentage(float iPercent)
   SeekTime((int64_t)(iTotalTime * iPercent / 100));
 }
 
-float CVideoPlayer::GetPercentage()
+float CVideoPlayer::GetPercentage() const
 {
   int64_t iTotalTime = GetTotalTimeInMsec();
 
@@ -3225,7 +3225,7 @@ float CVideoPlayer::GetPercentage()
   return GetTime() * 100 / (float)iTotalTime;
 }
 
-float CVideoPlayer::GetCachePercentage()
+float CVideoPlayer::GetCachePercentage() const
 {
   CSingleLock lock(m_StateSection);
   return (float) (m_State.cache_offset * 100); // NOTE: Percentage returned is relative
@@ -3236,7 +3236,7 @@ void CVideoPlayer::SetAVDelay(float fValue)
   m_renderManager.SetDelay( (fValue * 1000) ) ;
 }
 
-float CVideoPlayer::GetAVDelay()
+float CVideoPlayer::GetAVDelay() const
 {
   return static_cast<float>(m_renderManager.GetDelay()) / 1000;
 }
@@ -3246,18 +3246,18 @@ void CVideoPlayer::SetSubTitleDelay(float fValue)
   m_VideoPlayerVideo->SetSubtitleDelay(-fValue * DVD_TIME_BASE);
 }
 
-float CVideoPlayer::GetSubTitleDelay()
+float CVideoPlayer::GetSubTitleDelay() const
 {
   return (float) -m_VideoPlayerVideo->GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
-int CVideoPlayer::GetSubtitleCount()
+int CVideoPlayer::GetSubtitleCount() const
 {
   return m_SelectionStreams.Count(STREAM_SUBTITLE);
 }
 
-int CVideoPlayer::GetSubtitle()
+int CVideoPlayer::GetSubtitle() const
 {
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this);
 }
@@ -3322,7 +3322,7 @@ void CVideoPlayer::UpdateStreamInfos()
   }
 }
 
-void CVideoPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)
+void CVideoPlayer::GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info) const
 {
   CSingleLock lock(m_SelectionStreams.m_section);
   if (index < 0 || index > (int) GetSubtitleCount() - 1)
@@ -3343,7 +3343,7 @@ void CVideoPlayer::SetSubtitle(int iStream)
   m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
 }
 
-bool CVideoPlayer::GetSubtitleVisible()
+bool CVideoPlayer::GetSubtitleVisible() const
 {
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -3367,12 +3367,12 @@ void CVideoPlayer::SetSubtitleVisibleInternal(bool bVisible)
     static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->EnableSubtitleStream(bVisible);
 }
 
-int CVideoPlayer::GetAudioStreamCount()
+int CVideoPlayer::GetAudioStreamCount() const
 {
   return m_SelectionStreams.Count(STREAM_AUDIO);
 }
 
-int CVideoPlayer::GetAudioStream()
+int CVideoPlayer::GetAudioStream() const
 {
   return m_SelectionStreams.IndexOf(STREAM_AUDIO, *this);
 }
@@ -3441,7 +3441,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 }
 
 // return the time in milliseconds
-int64_t CVideoPlayer::GetTime()
+int64_t CVideoPlayer::GetTime() const
 {
   CSingleLock lock(m_StateSection);
   double offset = 0;
@@ -3459,14 +3459,14 @@ int64_t CVideoPlayer::GetTime()
 }
 
 // return length in msec
-int64_t CVideoPlayer::GetTotalTimeInMsec()
+int64_t CVideoPlayer::GetTotalTimeInMsec() const
 {
   CSingleLock lock(m_StateSection);
   return llrint(m_State.time_total);
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc
-int64_t CVideoPlayer::GetTotalTime()
+int64_t CVideoPlayer::GetTotalTime() const
 {
   return GetTotalTimeInMsec();
 }
@@ -3485,7 +3485,7 @@ void CVideoPlayer::SetSpeed(int iSpeed)
   SetPlaySpeed(iSpeed * DVD_PLAYSPEED_NORMAL);
 }
 
-int CVideoPlayer::GetSpeed()
+int CVideoPlayer::GetSpeed() const
 {
   if (m_playSpeed != m_newPlaySpeed)
     return m_newPlaySpeed / DVD_PLAYSPEED_NORMAL;
@@ -4521,7 +4521,7 @@ bool CVideoPlayer::HasMenu() const
   return m_State.hasMenu;
 }
 
-std::string CVideoPlayer::GetPlayerState()
+std::string CVideoPlayer::GetPlayerState() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.player_state;
@@ -4533,19 +4533,19 @@ bool CVideoPlayer::SetPlayerState(const std::string& state)
   return true;
 }
 
-int CVideoPlayer::GetChapterCount()
+int CVideoPlayer::GetChapterCount() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.chapters.size();
 }
 
-int CVideoPlayer::GetChapter()
+int CVideoPlayer::GetChapter() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.chapter;
 }
 
-void CVideoPlayer::GetChapterName(std::string& strChapterName, int chapterIdx)
+void CVideoPlayer::GetChapterName(std::string& strChapterName, int chapterIdx) const
 {
   CSingleLock lock(m_StateSection);
   if (chapterIdx == -1 && m_State.chapter > 0 && m_State.chapter <= (int) m_State.chapters.size())
@@ -4571,7 +4571,7 @@ int CVideoPlayer::SeekChapter(int iChapter)
   return 0;
 }
 
-int64_t CVideoPlayer::GetChapterPos(int chapterIdx)
+int64_t CVideoPlayer::GetChapterPos(int chapterIdx) const
 {
   CSingleLock lock(m_StateSection);
   if (chapterIdx > 0 && chapterIdx <= (int) m_State.chapters.size())
@@ -4598,7 +4598,7 @@ double CVideoPlayer::GetQueueTime()
   return std::max(a, v) * 8000.0 / 100;
 }
 
-void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info)
+void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) const
 {
   CSingleLock lock(m_SelectionStreams.m_section);
   if (streamId == CURRENT_STREAM)
@@ -4624,7 +4624,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info
   info.stereoMode = s.stereo_mode;
 }
 
-int CVideoPlayer::GetSourceBitrate()
+int CVideoPlayer::GetSourceBitrate() const
 {
   if (m_pInputStream)
     return (int)m_pInputStream->GetBitstreamStats().GetBitrate();
@@ -4632,7 +4632,7 @@ int CVideoPlayer::GetSourceBitrate()
   return 0;
 }
 
-void CVideoPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
+void CVideoPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) const
 {
   CSingleLock lock(m_SelectionStreams.m_section);
   if (index == CURRENT_STREAM)
@@ -4898,13 +4898,13 @@ void CVideoPlayer::SetDynamicRangeCompression(long drc)
   m_VideoPlayerAudio->SetDynamicRangeCompression(drc);
 }
 
-bool CVideoPlayer::CanRecord()
+bool CVideoPlayer::CanRecord() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.canrecord;
 }
 
-bool CVideoPlayer::IsRecording()
+bool CVideoPlayer::IsRecording() const
 {
   CSingleLock lock(m_StateSection);
   return m_State.recording;
@@ -4921,7 +4921,7 @@ bool CVideoPlayer::Record(bool bOnOff)
   return false;
 }
 
-bool CVideoPlayer::GetStreamDetails(CStreamDetails &details)
+bool CVideoPlayer::GetStreamDetails(CStreamDetails &details) const
 {
   if (m_pDemuxer)
   {
@@ -4959,7 +4959,7 @@ bool CVideoPlayer::GetStreamDetails(CStreamDetails &details)
     return false;
 }
 
-std::string CVideoPlayer::GetPlayingTitle()
+std::string CVideoPlayer::GetPlayingTitle() const
 {
   /* Currently we support only Title Name from Teletext line 30 */
   TextCacheStruct_t* ttcache = m_VideoPlayerTeletext->GetTeletextCache();
@@ -4995,7 +4995,7 @@ void CVideoPlayer::FrameMove()
   m_renderManager.FrameMove();
 }
 
-bool CVideoPlayer::HasFrame()
+bool CVideoPlayer::HasFrame() const
 {
   return m_renderManager.HasFrame();
 }
@@ -5015,7 +5015,7 @@ void CVideoPlayer::SetRenderViewMode(int mode)
   m_renderManager.SetViewMode(mode);
 }
 
-float CVideoPlayer::GetRenderAspectRatio()
+float CVideoPlayer::GetRenderAspectRatio() const
 {
   return m_renderManager.GetAspectRatio();
 }
@@ -5025,37 +5025,37 @@ void CVideoPlayer::TriggerUpdateResolution()
   m_renderManager.TriggerUpdateResolution(0, 0, 0);
 }
 
-bool CVideoPlayer::IsRenderingVideo()
+bool CVideoPlayer::IsRenderingVideo() const
 {
   return m_renderManager.IsConfigured();
 }
 
-bool CVideoPlayer::IsRenderingGuiLayer()
+bool CVideoPlayer::IsRenderingGuiLayer() const
 {
   return m_renderManager.IsGuiLayer();
 }
 
-bool CVideoPlayer::IsRenderingVideoLayer()
+bool CVideoPlayer::IsRenderingVideoLayer() const
 {
   return m_renderManager.IsVideoLayer();
 }
 
-bool CVideoPlayer::Supports(EDEINTERLACEMODE mode)
+bool CVideoPlayer::Supports(EDEINTERLACEMODE mode) const
 {
   return m_renderManager.Supports(mode);
 }
 
-bool CVideoPlayer::Supports(EINTERLACEMETHOD method)
+bool CVideoPlayer::Supports(EINTERLACEMETHOD method) const
 {
   return m_renderManager.Supports(method);
 }
 
-bool CVideoPlayer::Supports(ESCALINGMETHOD method)
+bool CVideoPlayer::Supports(ESCALINGMETHOD method) const
 {
   return m_renderManager.Supports(method);
 }
 
-bool CVideoPlayer::Supports(ERENDERFEATURE feature)
+bool CVideoPlayer::Supports(ERENDERFEATURE feature) const
 {
   return m_renderManager.Supports(feature);
 }
@@ -5075,7 +5075,7 @@ void CVideoPlayer::RenderCaptureRelease(unsigned int captureId)
   m_renderManager.ReleaseRenderCapture(captureId);
 }
 
-bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
+bool CVideoPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) const
 {
   return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size);
 }

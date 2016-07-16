@@ -57,9 +57,9 @@ public:
   void Reset() { m_bReset = true; }
   void SetSpeed(int iSpeed);
   void SetSpeedAdjust(double adjust);
-  double GetSpeedAdjust();
+  double GetSpeedAdjust() const;
 
-  double GetClockSpeed(); /**< get the current speed of the clock relative normal system time */
+  double GetClockSpeed() const; /**< get the current speed of the clock relative normal system time */
 
   /* tells clock at what framerate video is, to  *
    * allow it to adjust speed for a better match */
@@ -67,18 +67,18 @@ public:
 
   void SetMaxSpeedAdjust(double speed);
 
-  double GetAbsoluteClock(bool interpolated = true);
-  double GetFrequency() { return (double)m_systemFrequency ; }
+  double GetAbsoluteClock(bool interpolated = true) const;
+  double GetFrequency() const { return (double)m_systemFrequency ; }
 
   bool GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const;
   void SetVsyncAdjust(double adjustment);
-  double GetVsyncAdjust();
+  double GetVsyncAdjust() const;
 
   void Pause(bool pause);
 
 protected:
-  double SystemToAbsolute(int64_t system);
-  int64_t AbsoluteToSystem(double absolute);
+  double SystemToAbsolute(int64_t system) const;
+  int64_t AbsoluteToSystem(double absolute) const;
   double SystemToPlaying(int64_t system);
 
   CCriticalSection m_critSection;

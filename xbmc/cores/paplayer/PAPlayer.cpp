@@ -947,7 +947,7 @@ void PAPlayer::SetSpeed(int iSpeed)
   m_signalSpeedChange = true;
 }
 
-int PAPlayer::GetSpeed()
+int PAPlayer::GetSpeed() const
 {
   return m_playbackSpeed;
 }
@@ -995,7 +995,7 @@ void PAPlayer::SetTime(int64_t time)
   m_newForcedPlayerTime = time;
 }
 
-int64_t PAPlayer::GetTime()
+int64_t PAPlayer::GetTime() const
 {
   return m_playerGUIData.m_time;
 }
@@ -1018,7 +1018,7 @@ void PAPlayer::SetTotalTime(int64_t time)
   m_newForcedTotalTime = time;
 }
 
-int64_t PAPlayer::GetTotalTime()
+int64_t PAPlayer::GetTotalTime() const
 {
   return m_playerGUIData.m_totalTime;
 }
@@ -1037,7 +1037,7 @@ void PAPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   info.bitspersample = m_playerGUIData.m_bitsPerSample;
 }
 
-bool PAPlayer::CanSeek()
+bool PAPlayer::CanSeek() const
 {
   return m_playerGUIData.m_canSeek;
 }
@@ -1093,7 +1093,7 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
   SeekTime((int64_t)(fPercent * 0.01f * (float)GetTotalTime64()));
 }
 
-float PAPlayer::GetPercentage()
+float PAPlayer::GetPercentage() const
 {
   if (m_playerGUIData.m_totalTime > 0)
     return m_playerGUIData.m_time * 100.0f / m_playerGUIData.m_totalTime;
