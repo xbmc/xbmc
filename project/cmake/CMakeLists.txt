@@ -380,6 +380,26 @@ endif()
 
 include(scripts/${CORE_SYSTEM_NAME}/Install.cmake)
 
+# Create target that allows to build binary-addons.
+# Use make binary-addons ADDONS="visualization.spectrum" to select the addons to build.
+if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+  if(CMAKE_CROSSCOMPILING)
+    set(_cross_args CROSS_COMPILING=yes TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
+  endif()
+  if(NOT CORE_SYSTEM_NAME STREQUAL android)
+    set(_prefix ${CMAKE_BINARY_DIR}/addons)
+    set(_extra "CMAKE_EXTRA=-DPACKAGE_ZIP=ON")
+  else()
+    set(_prefix ${CMAKE_INSTALL_PREFIX})
+  endif()
+  add_custom_target(binary-addons
+    COMMAND $(MAKE) -C ${CORE_SOURCE_DIR}/tools/depends/target/binary-addons clean
+    COMMAND $(MAKE) -C ${CORE_SOURCE_DIR}/tools/depends/target/binary-addons VERBOSE=1 V=99
+                    PREFIX=${_prefix} INSTALL_PREFIX=${_prefix} ${_cross_args} ${_extra})
+  unset(_cross_args)
+  unset(_prefix)
+endif()
+
 # Prepare add-on build env
 foreach(binding ${addon_bindings})
   get_filename_component(file ${binding} NAME)

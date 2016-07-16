@@ -367,6 +367,7 @@ lib/cpluff/stamp-h1
 /tools/depends/target/libdvdread/native/
 /tools/depends/target/Toolchain_binaddons.cmake
 /tools/depends/target/config-binaddons.site
+/tools/depends/target/binary-addons/native
 
 # /tools/EventClients/
 /tools/EventClients/*.pyc
