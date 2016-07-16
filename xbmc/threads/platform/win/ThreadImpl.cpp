@@ -21,7 +21,7 @@
 #include <windows.h>
 #include <process.h>
 #include "threads/platform/win/Win32Exception.h"
-#include "../../win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 
 void CThread::SpawnThread(unsigned stacksize)
 {

@@ -32,7 +32,7 @@
 #include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
 
 #pragma comment(lib, "dnssd.lib")

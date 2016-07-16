@@ -27,7 +27,7 @@
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003

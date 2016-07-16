@@ -22,7 +22,7 @@
 #include "Win32SMBFile.h"
 #include "Win32SMBDirectory.h"
 #include "URL.h"
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1

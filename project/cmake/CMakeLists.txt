@@ -240,9 +240,9 @@ target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")
 
 # RC File
 if(WIN32)
-  configure_file(${CORE_SOURCE_DIR}/xbmc/win32/XBMC_PC.rc.in
-                 ${CORE_BUILD_DIR}/xbmc/win32/XBMC_PC.rc @ONLY)
-  add_library(resources OBJECT ${CORE_BUILD_DIR}/xbmc/win32/XBMC_PC.rc)
+  configure_file(${CORE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
+                 ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc @ONLY)
+  add_library(resources OBJECT ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc)
   target_include_directories(resources PRIVATE ${CORE_SOURCE_DIR}/tools/windows/packaging/media)
   set(RESOURCES $<TARGET_OBJECTS:resources>)
 endif()

@@ -30,7 +30,7 @@
 #ifdef TARGET_WINDOWS
 #include "filesystem/SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
-#include "win32/PlatformDefs.h"
+#include "platform/win32/PlatformDefs.h"
 #endif
 
 static bool ReadString(FILE* file, char* str, size_t max_length)

@@ -36,7 +36,7 @@
 #include "pvr/PVRManager.h"
 
 #if defined(TARGET_WINDOWS)
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 #endif
 
 #include <cstdio>

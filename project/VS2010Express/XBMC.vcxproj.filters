@@ -450,16 +450,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\xbmc\win32\pch.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\pch.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\strverscmp.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\WIN32Util.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\WindowHelper.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDAudio.cpp">
@@ -1644,10 +1644,10 @@
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\stdio_utf8.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\stat_utf8.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRBase.cpp">
@@ -2917,7 +2917,7 @@
     <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\crts_caller.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\crts_caller.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.cpp">
@@ -3053,7 +3053,7 @@
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerType.cpp">
       <Filter>pvr\timers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\dxerr.cpp">
+    <ClCompile Include="..\..\xbmc\platform\win32\dxerr.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\dacp\dacp.cpp">
@@ -3451,16 +3451,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\xbmc\win32\pch.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\pch.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\PlatformDefs.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WIN32Util.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\WIN32Util.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WindowHelper.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\WindowHelper.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h">
@@ -4818,10 +4818,10 @@
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\stdio_utf8.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\stat_utf8.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRBase.h">
@@ -5838,7 +5838,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ProfilesOperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
+    <ClInclude Include="..\..\xbmc\platform\win32\PlatformInclude.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAE.h">
       <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClInclude>
@@ -5947,7 +5947,7 @@
     <ClInclude Include="..\..\xbmc\utils\XSLTUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\IMMNotificationClient.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\IMMNotificationClient.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\FFmpeg.h">
@@ -6017,7 +6017,7 @@
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h">
       <Filter>cores</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\crts_caller.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\crts_caller.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h">
@@ -6161,7 +6161,7 @@
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerType.h">
       <Filter>pvr\timers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\dxerr.h">
+    <ClInclude Include="..\..\xbmc\platform\win32\dxerr.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guiinfo\GUIInfoLabels.h">
@@ -6703,7 +6703,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
+    <ResourceCompile Include="..\..\xbmc\platform\win32\XBMC_PC.rc">
       <Filter>win32</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -6739,7 +6739,7 @@
       <Filter>interfaces\json-rpc\schema</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\version.txt" />
-    <CustomBuild Include="..\..\xbmc\win32\git_revision.t">
+    <CustomBuild Include="..\..\xbmc\platform\win32\git_revision.t">
       <Filter>win32</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcwsgi.i">

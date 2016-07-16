@@ -26,7 +26,7 @@
 #include <sys/times.h>
 #include <sys/resource.h>
 #elif TARGET_WINDOWS
-#include "win32/PlatformDefs.h"
+#include "platform/win32/PlatformDefs.h"
 #endif
 
 #include <string>

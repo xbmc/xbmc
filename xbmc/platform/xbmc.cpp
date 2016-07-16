@@ -32,7 +32,7 @@
 
 #ifdef TARGET_WINDOWS
 #include <mmdeviceapi.h>
-#include "win32/IMMNotificationClient.h"
+#include "platform/win32/IMMNotificationClient.h"
 #endif
 
 #include "platform/MessagePrinter.h"
