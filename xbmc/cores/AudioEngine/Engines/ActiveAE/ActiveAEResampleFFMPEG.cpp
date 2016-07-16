@@ -180,15 +180,18 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
 
 int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio)
 {
+  int delta = 0;
+  int distance = 0;
   if (ratio != 1.0)
   {
-    if (swr_set_compensation(m_pContext,
-                             (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate,
-                             dst_samples*m_dst_rate/m_src_rate) < 0)
-    {
-      CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - set compensation failed");
-      return -1;
-    }
+    delta = (dst_samples*ratio-dst_samples)*m_dst_rate/m_src_rate;
+    distance = dst_samples*m_dst_rate/m_src_rate;
+  }
+
+  if (swr_set_compensation(m_pContext, delta, distance) < 0)
+  {
+    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - set compensation failed");
+    return -1;
   }
 
   int ret = swr_convert(m_pContext, dst_buffer, dst_samples, (const uint8_t**)src_buffer, src_samples);
