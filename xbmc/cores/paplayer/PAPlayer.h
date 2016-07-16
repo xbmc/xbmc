@@ -45,6 +45,14 @@ public:
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
+  virtual void GetAudioInfo( std::string& strAudioInfo) const {}
+  virtual void GetVideoInfo( std::string& strVideoInfo) const {}
+  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
+  static bool HandlesType(const std::string &type);
+  virtual bool SkipNext() override;
+  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) {}
+
+  // IPlayer interface
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
   virtual bool QueueNextFile(const CFileItem &file) override;
   virtual void OnNothingToQueueNotify() override;
@@ -59,22 +67,16 @@ public:
   virtual float GetPercentage() const override;
   virtual void SetVolume(float volume) override;
   virtual void SetDynamicRangeCompression(long drc) override;
-  virtual void GetAudioInfo( std::string& strAudioInfo) const {}
-  virtual void GetVideoInfo( std::string& strVideoInfo) const {}
   virtual void SetSpeed(int iSpeed = 0) override;
   virtual int GetSpeed() const override;
   virtual int GetCacheLevel() const override;
   virtual int64_t GetTotalTime() const override;
   virtual void SetTotalTime(int64_t time) override;
-  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   virtual int64_t GetTime() const override;
   virtual void SetTime(int64_t time) override;
   virtual void SeekTime(int64_t iTime = 0) override;
-  virtual bool SkipNext() override;
-  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) {}
 
-  static bool HandlesType(const std::string &type);
-
+  // IJobCallback interface
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   struct
@@ -91,6 +93,7 @@ public:
   } m_playerGUIData;
 
 protected:
+  // Implementation of CThread
   virtual void OnStartup() override {}
   virtual void Process() override;
   virtual void OnExit() override;

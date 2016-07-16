@@ -239,6 +239,11 @@ class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public
 public:
   CVideoPlayer(IPlayerCallback& callback);
   virtual ~CVideoPlayer();
+
+  virtual TextCacheStruct_t* GetTeletextCache();
+  virtual std::string GetRadioText(unsigned int line);
+
+  // IPlayer Interface
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
   virtual bool CloseFile(bool reopen = false) override;
   virtual bool IsPlaying() const override;
@@ -253,7 +258,6 @@ public:
   virtual void SeekPercentage(float iPercent) override;
   virtual float GetPercentage() const override;
   virtual float GetCachePercentage() const override;
-
   virtual void SetVolume(float nVolume) override;
   virtual void SetMute(bool bOnOff) override;
   virtual void SetDynamicRangeCompression(long drc) override;
@@ -265,7 +269,6 @@ public:
   virtual float GetAVDelay() const override;
   virtual bool IsInMenu() const override;
   virtual bool HasMenu() const override;
-
   virtual void SetSubTitleDelay(float fValue = 0.0f) override;
   virtual float GetSubTitleDelay() const override;
   virtual int GetSubtitleCount() const override;
@@ -275,27 +278,19 @@ public:
   virtual bool GetSubtitleVisible() const override;
   virtual void SetSubtitleVisible(bool bVisible) override;
   virtual void AddSubtitle(const std::string& strSubPath) override;
-
   virtual int GetAudioStreamCount() const override;
   virtual int GetAudioStream() const override;
   virtual void SetAudioStream(int iStream) override;
-
   virtual int GetVideoStream() const override;
   virtual int GetVideoStreamCount() const override;
   virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) const override;
   virtual void SetVideoStream(int iStream) override;
-
-  virtual TextCacheStruct_t* GetTeletextCache();
   virtual void LoadPage(int p, int sp, unsigned char* buffer) override;
-
-  virtual std::string GetRadioText(unsigned int line);
-
   virtual int  GetChapterCount() const override;
   virtual int  GetChapter() const override;
   virtual void GetChapterName(std::string& strChapterName, int chapterIdx=-1) const override;
   virtual int64_t GetChapterPos(int chapterIdx=-1) const override;
   virtual int  SeekChapter(int iChapter) override;
-
   virtual void SeekTime(int64_t iTime) override;
   virtual bool SeekTimeRelative(int64_t iTime) override;
   virtual int64_t GetTime() const override;
@@ -303,23 +298,19 @@ public:
   virtual void SetSpeed(int iSpeed) override;
   virtual int GetSpeed() const override;
   virtual bool OnAction(const CAction &action) override;
-
   virtual int GetSourceBitrate() const override;
   virtual bool GetStreamDetails(CStreamDetails &details) const override;
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) const override;
-
-  virtual std::string GetPlayerState() const  override;
+  virtual std::string GetPlayerState() const override;
   virtual bool SetPlayerState(const std::string& state) override;
-
   virtual std::string GetPlayingTitle() const  override;
-
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) override;
   virtual void FrameMove() override;
   virtual bool HasFrame() const  override;
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   virtual void FlushRenderer() override;
   virtual void SetRenderViewMode(int mode) override;
-  float GetRenderAspectRatio() const  override;
+  virtual float GetRenderAspectRatio() const  override;
   virtual void TriggerUpdateResolution() override;
   virtual bool IsRenderingVideo() const override;
   virtual bool IsRenderingGuiLayer() const override;
@@ -328,11 +319,12 @@ public:
   virtual bool Supports(EINTERLACEMETHOD method) const  override;
   virtual bool Supports(ESCALINGMETHOD method) const  override;
   virtual bool Supports(ERENDERFEATURE feature) const override;
-
   virtual unsigned int RenderCaptureAlloc() override;
   virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override;
   virtual void RenderCaptureRelease(unsigned int captureId) override;
   virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) const  override;
+  virtual bool IsCaching() const override { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
+  virtual int GetCacheLevel() const override;
 
   // IDispResource interface
   virtual void OnLostDisplay() override;
@@ -346,18 +338,19 @@ public:
   , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
   };
 
-  virtual bool IsCaching() const override { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
-  virtual int GetCacheLevel() const override;
-
+  // IVideoPlayer interface
   virtual int OnDVDNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
 protected:
   friend class CSelectionStreams;
 
+  // CThread interface
   virtual void OnStartup() override;
   virtual void OnExit() override;
   virtual void Process() override;
+
+  // IRenderMsg interface
   virtual void VideoParamsChange() override;
   virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
 

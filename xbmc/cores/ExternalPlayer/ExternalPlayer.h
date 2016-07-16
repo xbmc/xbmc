@@ -34,6 +34,18 @@ public:
 
   CExternalPlayer(IPlayerCallback& callback);
   virtual ~CExternalPlayer();
+
+  virtual void ToggleOSD() { }; // empty
+  virtual void ShowOSD(bool bOnoff);
+  virtual void SwitchToNextLanguage();
+  virtual void ToggleSubtitles();
+  virtual void SetContrast(bool bPlus) {}
+  virtual void SetBrightness(bool bPlus) {}
+  virtual void SetHue(bool bPlus) {}
+  virtual void SetSaturation(bool bPlus) {}
+  virtual void SwitchToNextAudioLanguage();
+
+  // IPlayer interface
   virtual bool Initialize(TiXmlElement* pConfig) override;
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
   virtual bool CloseFile(bool reopen = false) override;
@@ -41,37 +53,25 @@ public:
   virtual void Pause() override;
   virtual bool HasVideo() const override;
   virtual bool HasAudio() const override;
-  virtual void ToggleOSD() { }; // empty
-  virtual void SwitchToNextLanguage();
-  virtual void ToggleSubtitles();
   virtual bool CanSeek() const override;
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   virtual void SeekPercentage(float iPercent) override;
   virtual float GetPercentage()const override;
   virtual void SetVolume(float volume) override {}
   virtual void SetDynamicRangeCompression(long drc) override {}
-  virtual void SetContrast(bool bPlus) {}
-  virtual void SetBrightness(bool bPlus) {}
-  virtual void SetHue(bool bPlus) {}
-  virtual void SetSaturation(bool bPlus) {}
-  virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() const override{ return false; }
   virtual bool IsRecording() const override{ return false; }
   virtual bool Record(bool bOnOff) override { return false; }
   virtual void SetAVDelay(float fValue = 0.0f) override;
   virtual float GetAVDelay() const override;
-
   virtual void SetSubTitleDelay(float fValue = 0.0f) override;
   virtual float GetSubTitleDelay() const override;
-
   virtual void SeekTime(int64_t iTime) override;
   virtual int64_t GetTime() const override;
   virtual int64_t GetTotalTime()const override;
   virtual void SetSpeed(int iSpeed) override;
   virtual int GetSpeed() const override;
-  virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork() override {};
-  
   virtual std::string GetPlayerState() const override;
   virtual bool SetPlayerState(const std::string& state) override;
   
@@ -86,6 +86,8 @@ public:
 
 private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, std::vector<std::string>& settings);
+
+  // CThread interface
   virtual void Process() override;
 
   bool m_bAbortRequest;
