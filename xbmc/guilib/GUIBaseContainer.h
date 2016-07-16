@@ -215,6 +215,8 @@ protected:
   unsigned int m_lastRenderTime;
 
 private:
+  bool OnContextMenu();
+
   int m_cursor;
   int m_offset;
   int m_cacheItems;
