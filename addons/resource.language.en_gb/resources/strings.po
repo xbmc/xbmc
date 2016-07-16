@@ -7552,7 +7552,12 @@ msgctxt "#14210"
 msgid "Profile settings"
 msgstr ""
 
-#empty strings from id 14211 to 14214
+#: system/settings/settings.xml
+msgctxt "#14211"
+msgid "Addon settings"
+msgstr ""
+
+#empty strings from id 14212 to 14214
 
 #: system/settings/settings.xml
 msgctxt "#14215"
@@ -7604,12 +7609,7 @@ msgctxt "#14224"
 msgid "Other"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14225"
-msgid "Network Control"
-msgstr ""
-
-#empty strings from id 14226 to 14229
+#empty strings from id 14225 to 14229
 
 #: system/settings/settings.xml
 msgctxt "#14230"
@@ -7743,7 +7743,42 @@ msgctxt "#14277"
 msgid "Allow remote control from applications on other systems"
 msgstr ""
 
-#empty strings from id 14278 to 14299
+#: system/settings/settings.xml
+msgctxt "#14280"
+msgid "Manager"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14281"
+msgid "Add-on Browser"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14282"
+msgid "Add-on Dependencies"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14283"
+msgid "Running Add-ons"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14284"
+msgid "Browse..."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14285"
+msgid "Manage..."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14286"
+msgid "Show..."
+msgstr ""
+
+#empty strings from id 14286 to 14299
 
 #: system/settings/settings.xml
 msgctxt "#14300"
@@ -17480,10 +17515,10 @@ msgctxt "#36315"
 msgid "Section that contains weather related settings."
 msgstr ""
 
-#. Description of settings category with label #16000 "General"
+#. Description of settings category with label #8 "Weather"
 #: system/settings/settings.xml
 msgctxt "#36316"
-msgid "This category contains the settings for how the weather service is handled."
+msgid "This category contains the settings for how the weather service add-ons are handled."
 msgstr ""
 
 #. Description of settings category with label #0 "Locations"
@@ -18225,7 +18260,13 @@ msgctxt "#36442"
 msgid "Set the number of volume control steps."
 msgstr ""
 
-#empty strings from id 36443 to 36459
+#. Description of settings category with label #14251 "Audio DSP"
+#: system/settings/settings.xml
+msgctxt "#36443"
+msgid "This category contains the settings for how the Audio DSP add-ons are handled."
+msgstr ""
+
+#empty strings from id 36444 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml
@@ -18728,11 +18769,15 @@ msgctxt "#36603"
 msgid "This category contains the settings for displays."
 msgstr ""
 
-#empty string with id 36604
+#. Description of setting with label #14284 "Browse..."
+#: system/settings/settings.xml
+msgctxt "#36604"
+msgid "Browse all add-ons"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36605"
-msgid "Updates"
+msgid "Update policy"
 msgstr ""
 
 #. Option for setting "System -> Add-ons -> Updates"
@@ -18776,12 +18821,12 @@ msgctxt "#36612"
 msgid "Show notification when an add-on have been updated."
 msgstr ""
 
-#. Description of setting with label #24996 "Manage dependencies"
+#. Description of setting with label #14285 "Manage..."
 msgctxt "#36613"
 msgid "Manage modules and support libraries that have been automatically installed as a dependency to other add-ons. Items listed as \"Orphaned\" are no longer required by any add-ons and are safe to uninstall."
 msgstr ""
 
-#. Description of setting with label #24994 "Running"
+#. Description of setting with label #14286 "Show..."
 #: system/settings/settings.xml
 msgctxt "#36614"
 msgid "Show add-ons that are currently running in the background."
@@ -18811,7 +18856,13 @@ msgctxt "#36618"
 msgid "Add-ons will be given access to personal data stored on this device. By allowing, you agree that you are solely responsible for any loss of data, unwanted behaviour, or damage to your device. Proceed?"
 msgstr ""
 
-#empty strings from id 36619 to 36899
+#. Description of settings category label #14280 "Add-on Browser"
+#: system/settings/settings.xml
+msgctxt "#36619"
+msgid "This category contains links to browse all add-ons, manage add-on dependencies, and show running add-ons"
+msgstr ""
+
+#empty strings from id 36618 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"

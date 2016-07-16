@@ -1684,6 +1684,121 @@
       </group>
     </category>
   </section>
+  <section id="addons" label="24001" help="">
+    <category id="addonmanager" label="14280" help="36619">
+      <group id="1" label="14281">
+        <setting id="addon.browser" type="action" label="14284" help="36604">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="2" label="14282">
+        <setting id="addons.managedependencies" type="action" label="14285" help="36613">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="3" label="14283">
+        <setting id="addons.showrunning" type="action" label="14286" help="36614">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="general" label="16000" help="36610">
+      <group id="1" label="14303">
+        <setting id="general.addonupdates" type="integer" label="36605" help="36611">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="36606">0</option> <!-- AUTO_UPDATES_ON -->
+              <option label="36607">1</option> <!-- AUTO_UPDATES_NOTIFY -->
+              <option label="36608">2</option> <!-- AUTO_UPDATES_NEVER -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="general.addonnotifications" type="boolean" label="36609" help="36612">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="general.addonupdates">0</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group id="2" label="14093">
+        <setting id="addons.unknownsources" type="boolean" label="36615" help="36616">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="audiodsp" label="14251" help="36443">
+      <group id="1" label="16000">
+        <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="audiooutput.dspsettings" type="action" label="36436" help="36437">
+          <level>1</level>
+          <control type="button" format="action" />
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.dspresetdb" type="action" label="14082" help="36439">
+          <level>1</level>
+          <control type="button" format="action" />
+          <dependencies>
+          <dependency type="enable" setting="audiooutput.dspaddonsenabled">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+    </category>
+    <category id="weather" label="8" help="36316">
+      <group id="1" label="16000">
+        <setting id="weather.currentlocation" type="integer" label="0" help="36317">
+          <level>4</level>
+          <default>1</default>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="weather.addon" type="addon" label="24029" help="36318">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <addontype>xbmc.python.weather</addontype>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
+        </setting>
+        <setting id="weather.addonsettings" type="action" parent="weather.addon" label="21417" help="36419">
+          <level>0</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="AddonHasSettings" setting="weather.addon" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+  </section>
   <section id="services" label="14036" help="36319">
     <category id="general" label="16000" help="36320">
       <group id="1" label="13000">
@@ -1860,33 +1975,6 @@
           <level>2</level>
           <default>WORKGROUP</default>
           <control type="edit" format="string" />
-        </setting>
-      </group>
-    </category>
-    <category id="weather" label="8" help="36316">
-      <group id="1" label="16000">
-        <setting id="weather.currentlocation" type="integer" label="0" help="36317">
-          <level>4</level>
-          <default>1</default>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="weather.addon" type="addon" label="24029" help="36318">
-          <level>0</level>
-          <default></default>
-          <constraints>
-            <addontype>xbmc.python.weather</addontype>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
-        <setting id="weather.addonsettings" type="action" parent="weather.addon" label="21417" help="36419">
-          <level>0</level>
-          <dependencies>
-            <dependency type="enable" on="property" name="AddonHasSettings" setting="weather.addon" />
-          </dependencies>
-          <control type="button" format="action" />
         </setting>
       </group>
     </category>
@@ -2606,43 +2694,6 @@
       <group id="2" label="14256">
         <setting id="powermanagement.wakeonaccess" type="boolean" label="13026" help="36350">
           <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-    <category id="addons" label="24001" help="36610">
-      <group id="1" label="16000">
-        <setting id="general.addonupdates" type="integer" label="36605" help="36611">
-          <level>0</level>
-          <default>0</default>
-          <constraints>
-            <options>
-              <option label="36606">0</option> <!-- AUTO_UPDATES_ON -->
-              <option label="36607">1</option> <!-- AUTO_UPDATES_NOTIFY -->
-              <option label="36608">2</option> <!-- AUTO_UPDATES_NEVER -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="general.addonnotifications" type="boolean" label="36609" help="36612">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-          <dependencies>
-            <dependency type="enable" setting="general.addonupdates">0</dependency>
-          </dependencies>
-        </setting>
-        <setting id="addons.managedependencies" type="action" label="24996" help="36613">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="addons.showrunning" type="action" label="24994" help="36614">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="addons.unknownsources" type="boolean" label="36615" help="36616">
-          <level>0</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
