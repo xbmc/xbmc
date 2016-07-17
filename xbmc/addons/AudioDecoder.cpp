@@ -132,7 +132,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
   return result;
 }
 
-CAEChannelInfo CAudioDecoder::GetChannelInfo()
+CAEChannelInfo CAudioDecoder::GetChannelInfo() const
 {
   return m_format.m_channelLayout;
 }

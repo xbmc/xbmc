@@ -138,7 +138,7 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   return true;
 }
 
-AEAudioFormat CAudioDecoder::GetFormat()
+AEAudioFormat CAudioDecoder::GetFormat() const
 {
   AEAudioFormat format;
   if (!m_codec)
@@ -163,14 +163,14 @@ void CAudioDecoder::SetTotalTime(int64_t time)
     m_codec->m_TotalTime = time;
 }
 
-int64_t CAudioDecoder::TotalTime()
+int64_t CAudioDecoder::TotalTime() const
 {
   if (m_codec)
     return m_codec->m_TotalTime;
   return 0;
 }
 
-unsigned int CAudioDecoder::GetDataSize()
+unsigned int CAudioDecoder::GetDataSize() const
 {
   if (m_status == STATUS_QUEUING || m_status == STATUS_NO_FILE)
     return 0;
@@ -323,7 +323,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
   return RET_SLEEP; // nothing to do
 }
 
-float CAudioDecoder::GetReplayGain()
+float CAudioDecoder::GetReplayGain() const
 {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
   const ReplayGainSettings &replayGainSettings = g_application.GetReplayGainSettings();

@@ -61,7 +61,7 @@ public:
   // are allocated and destroyed in the destructor.
   virtual void DeInit()=0;
 
-  virtual bool CanSeek() {return true;}
+  virtual bool CanSeek() const {return true;}
 
   // Seek()
   // Should seek to the appropriate time (in ms) in the file, and return the
@@ -80,7 +80,7 @@ public:
   // CanInit()
   // Should return true if the codec can be initialized
   // eg. check if a dll needed for the codec exists
-  virtual bool CanInit()=0;
+  virtual bool CanInit() const = 0;
 
   // SkipNext()
   // Skip to next track/item inside the current media (if supported).

@@ -55,7 +55,7 @@ VideoPlayerCodec::~VideoPlayerCodec()
   DeInit();
 }
 
-AEAudioFormat VideoPlayerCodec::GetFormat()
+AEAudioFormat VideoPlayerCodec::GetFormat() const
 {
   AEAudioFormat format;
   if (m_pAudioCodec)
@@ -507,17 +507,17 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
   return READ_SUCCESS;
 }
 
-bool VideoPlayerCodec::CanInit()
+bool VideoPlayerCodec::CanInit() const
 {
   return true;
 }
 
-bool VideoPlayerCodec::CanSeek()
+bool VideoPlayerCodec::CanSeek() const
 {
   return m_bCanSeek;
 }
 
-bool VideoPlayerCodec::NeedConvert(AEDataFormat fmt)
+bool VideoPlayerCodec::NeedConvert(AEDataFormat fmt) const
 {
   if (fmt == AE_FMT_RAW)
     return false;
