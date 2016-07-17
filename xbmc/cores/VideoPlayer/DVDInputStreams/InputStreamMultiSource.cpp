@@ -57,17 +57,17 @@ BitstreamStats CInputStreamMultiSource::GetBitstreamStats() const
   return m_stats;
 }
 
-int CInputStreamMultiSource::GetBlockSize()
+int CInputStreamMultiSource::GetBlockSize() const
 {
   return 0;
 }
 
-bool CInputStreamMultiSource::GetCacheStatus(XFILE::SCacheStatus *status)
+bool CInputStreamMultiSource::GetCacheStatus(XFILE::SCacheStatus *status) const
 {
   return false;
 }
 
-int64_t CInputStreamMultiSource::GetLength()
+int64_t CInputStreamMultiSource::GetLength() const
 {
   int64_t length = 0;
   for (auto iter : m_InputStreams)
@@ -78,7 +78,7 @@ int64_t CInputStreamMultiSource::GetLength()
   return length;
 }
 
-bool CInputStreamMultiSource::IsEOF()
+bool CInputStreamMultiSource::IsEOF() const
 {
   if (m_InputStreams.empty())
     return true;

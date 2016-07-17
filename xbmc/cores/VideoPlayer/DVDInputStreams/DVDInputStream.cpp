@@ -47,7 +47,7 @@ void CDVDInputStream::Close()
 
 }
 
-std::string CDVDInputStream::GetFileName()
+std::string CDVDInputStream::GetFileName() const
 {
   CURL url(m_item.GetPath());
 
@@ -55,7 +55,7 @@ std::string CDVDInputStream::GetFileName()
   return url.Get();
 }
 
-CURL CDVDInputStream::GetURL()
+CURL CDVDInputStream::GetURL() const
 {
   return m_item.GetURL();
 }

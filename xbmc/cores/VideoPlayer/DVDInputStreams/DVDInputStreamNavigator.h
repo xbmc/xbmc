@@ -110,46 +110,46 @@ public:
   CDVDInputStreamNavigator(IVideoPlayer* player, const CFileItem& fileitem);
   virtual ~CDVDInputStreamNavigator();
 
-  virtual bool Open();
-  virtual void Close();
-  virtual int Read(uint8_t* buf, int buf_size);
-  virtual int64_t Seek(int64_t offset, int whence);
-  virtual bool Pause(double dTime) { return false; };
-  virtual int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_DVD; }
-  virtual bool IsEOF() { return m_bEOF; }
-  virtual int64_t GetLength()             { return 0; }
-  virtual ENextStream NextStream() ;
+  virtual bool Open() override;
+  virtual void Close() override;
+  virtual int Read(uint8_t* buf, int buf_size) override;
+  virtual int64_t Seek(int64_t offset, int whence) override;
+  virtual bool Pause(double dTime) override { return false; };
+  virtual int GetBlockSize() const override { return DVDSTREAM_BLOCK_SIZE_DVD; }
+  virtual bool IsEOF() const override { return m_bEOF; }
+  virtual int64_t GetLength() const override { return 0; }
+  virtual ENextStream NextStream() override;
 
-  void ActivateButton();
-  void SelectButton(int iButton);
-  void SkipStill();
+  void ActivateButton() override;
+  void SelectButton(int iButton) override;
+  void SkipStill() override;
   void SkipWait();
-  void OnUp();
-  void OnDown();
-  void OnLeft();
-  void OnRight();
-  void OnMenu();
-  void OnBack();
-  void OnNext();
-  void OnPrevious();
-  bool OnMouseMove(const CPoint &point);
-  bool OnMouseClick(const CPoint &point);
+  void OnUp() override;
+  void OnDown() override;
+  void OnLeft() override;
+  void OnRight() override;
+  void OnMenu() override;
+  void OnBack() override;
+  void OnNext() override;
+  void OnPrevious() override;
+  bool OnMouseMove(const CPoint &point) override;
+  bool OnMouseClick(const CPoint &point) override;
 
-  int GetCurrentButton();
-  int GetTotalButtons();
+  int GetCurrentButton() const override;
+  int GetTotalButtons() const override;
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
-  bool HasMenu() { return true; }
-  bool IsInMenu() { return m_bInMenu; }
-  double GetTimeStampCorrection() { return (double)(m_iVobUnitCorrection * 1000) / 90; }
+  bool HasMenu() const override { return true; }
+  bool IsInMenu() const override { return m_bInMenu; }
+  double GetTimeStampCorrection() const override { return (double)(m_iVobUnitCorrection * 1000) / 90; }
 
-  int GetActiveSubtitleStream();
-  int GetSubTitleStreamCount();
-  DVDNavSubtitleStreamInfo GetSubtitleStreamInfo(const int iId);
+  int GetActiveSubtitleStream() const;
+  int GetSubTitleStreamCount() const;
+  DVDNavSubtitleStreamInfo GetSubtitleStreamInfo(const int iId) const;
 
   bool SetActiveSubtitleStream(int iId);
   void EnableSubtitleStream(bool bEnable);
-  bool IsSubtitleStreamEnabled();
+  bool IsSubtitleStreamEnabled() const;
 
   int GetActiveAudioStream();
   int GetAudioStreamCount();
@@ -158,26 +158,26 @@ public:
   bool SetActiveAudioStream(int iId);
   DVDNavAudioStreamInfo GetAudioStreamInfo(const int iId);
 
-  bool GetState(std::string &xmlstate);
-  bool SetState(const std::string &xmlstate);
+  bool GetState(std::string &xmlstate) const override;
+  bool SetState(const std::string &xmlstate) override;
 
-  int GetChapter()      { return m_iPart; }      // the current part in the current title
-  int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
-  void GetChapterName(std::string& name, int idx=-1) {};
-  int64_t GetChapterPos(int ch=-1);
-  bool SeekChapter(int iChapter);
+  int GetChapter() const override      { return m_iPart; }      // the current part in the current title
+  int GetChapterCount() const override { return m_iPartCount; } // the number of parts in the current title
+  void GetChapterName(std::string& name, int idx=-1) const override {};
+  int64_t GetChapterPos(int ch=-1) const override;
+  bool SeekChapter(int iChapter) override;
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
-  int GetTotalTime(); // the total time in milli seconds
-  int GetTime(); // the current position in milli seconds
+  int GetTotalTime() const override; // the total time in milli seconds
+  int GetTime() const override; // the current position in milli seconds
 
-  float GetVideoAspectRatio();
+  float GetVideoAspectRatio() const;
 
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
-  bool PosTime(int iTimeInMsec); //seek within current pg(c)
+  bool PosTime(int iTimeInMsec) override; //seek within current pg(c)
 
-  std::string GetDVDTitleString();
-  std::string GetDVDSerialString();
+  std::string GetDVDTitleString() const;
+  std::string GetDVDSerialString() const;
 
   void CheckButtons();
 
@@ -198,8 +198,8 @@ protected:
    * XBMC     : the subtitle stream id we use in xbmc
    * external : the subtitle stream id that is used in libdvdnav
    */
-  int ConvertSubtitleStreamId_XBMCToExternal(int id);
-  int ConvertSubtitleStreamId_ExternalToXBMC(int id);
+  int ConvertSubtitleStreamId_XBMCToExternal(int id) const;
+  int ConvertSubtitleStreamId_ExternalToXBMC(int id) const;
 
   static void SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t &audio_attributes);
   static void SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t &subp_attributes);
@@ -207,7 +207,7 @@ protected:
   int GetAngleCount();
   void GetVideoResolution(uint32_t * width, uint32_t * height);
 
-  DllDvdNav m_dll;
+  mutable DllDvdNav m_dll;
   bool m_bCheckButtons;
   bool m_bEOF;
 

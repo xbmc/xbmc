@@ -672,7 +672,7 @@ void CDVDInputStreamNavigator::SelectButton(int iButton)
   m_dll.dvdnav_button_select(m_dvdnav, m_dll.dvdnav_get_current_nav_pci(m_dvdnav), iButton);
 }
 
-int CDVDInputStreamNavigator::GetCurrentButton()
+int CDVDInputStreamNavigator::GetCurrentButton() const
 {
   int button;
   if (m_dvdnav)
@@ -721,7 +721,7 @@ void CDVDInputStreamNavigator::CheckButtons()
   }
 }
 
-int CDVDInputStreamNavigator::GetTotalButtons()
+int CDVDInputStreamNavigator::GetTotalButtons() const
 {
   if (!m_dvdnav) return 0;
 
@@ -835,7 +835,7 @@ CDVDInputStream::ENextStream CDVDInputStreamNavigator::NextStream()
     return NEXTSTREAM_RETRY;
 }
 
-int CDVDInputStreamNavigator::GetActiveSubtitleStream()
+int CDVDInputStreamNavigator::GetActiveSubtitleStream() const
 {
   int activeStream = 0;
 
@@ -864,7 +864,7 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   return activeStream;
 }
 
-DVDNavSubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId)
+DVDNavSubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId) const
 {
   DVDNavSubtitleStreamInfo info;
   if (!m_dvdnav)
@@ -920,7 +920,7 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, con
   }
 }
 
-int CDVDInputStreamNavigator::GetSubTitleStreamCount()
+int CDVDInputStreamNavigator::GetSubTitleStreamCount() const
 {
   if (!m_dvdnav) return 0;
 
@@ -1177,13 +1177,13 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
   return true;
 }
 
-int CDVDInputStreamNavigator::GetTotalTime()
+int CDVDInputStreamNavigator::GetTotalTime() const
 {
   //We use buffers of this as they can get called from multiple threads, and could block if we are currently reading data
   return m_iTotalTime;
 }
 
-int CDVDInputStreamNavigator::GetTime()
+int CDVDInputStreamNavigator::GetTime() const
 {
   //We use buffers of this as they can get called from multiple threads, and could block if we are currently reading data
   return m_iTime;
@@ -1245,7 +1245,7 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
   return true;
 }
 
-float CDVDInputStreamNavigator::GetVideoAspectRatio()
+float CDVDInputStreamNavigator::GetVideoAspectRatio() const
 {
   int iAspect = m_dll.dvdnav_get_video_aspect(m_dvdnav);
   int iPerm = m_dll.dvdnav_get_video_scale_permission(m_dvdnav);
@@ -1281,7 +1281,7 @@ void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
     vm->state.SPST_REG &= ~0x40;
 }
 
-bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled()
+bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled() const
 {
   if (!m_dvdnav)
     return false;
@@ -1297,7 +1297,7 @@ bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled()
     return false;
 }
 
-bool CDVDInputStreamNavigator::GetState(std::string &xmlstate)
+bool CDVDInputStreamNavigator::GetState(std::string &xmlstate) const
 {
   if( !m_dvdnav )
     return false;
@@ -1420,7 +1420,7 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
   }
 }
 
-int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
+int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id) const
 {
   if (!m_dvdnav)
     return -1;
@@ -1447,7 +1447,7 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
   return -1;
 }
 
-int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
+int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id) const
 {
   if  (!m_dvdnav) return -1;
   vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
@@ -1491,7 +1491,7 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
   }
 }
 
-std::string CDVDInputStreamNavigator::GetDVDTitleString()
+std::string CDVDInputStreamNavigator::GetDVDTitleString() const
 {
   if (!m_dvdnav)
     return "";
@@ -1503,7 +1503,7 @@ std::string CDVDInputStreamNavigator::GetDVDTitleString()
     return "";
 }
 
-std::string CDVDInputStreamNavigator::GetDVDSerialString()
+std::string CDVDInputStreamNavigator::GetDVDSerialString() const
 {
   if (!m_dvdnav)
     return "";
@@ -1515,15 +1515,15 @@ std::string CDVDInputStreamNavigator::GetDVDSerialString()
     return "";
 }
 
-int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
+int64_t CDVDInputStreamNavigator::GetChapterPos(int ch) const
 {
   if (ch == -1 || ch > GetChapterCount()) 
     ch = GetChapter();
 
-  std::map<int, std::map<int, int64_t>>::iterator title = m_mapTitleChapters.find(m_iTitle);
+  std::map<int, std::map<int, int64_t>>::const_iterator title = m_mapTitleChapters.find(m_iTitle);
   if (title != m_mapTitleChapters.end())
   {
-    std::map<int, int64_t>::iterator chapter = title->second.find(ch);
+    std::map<int, int64_t>::const_iterator chapter = title->second.find(ch);
     if (chapter != title->second.end())
       return chapter->second;
   }

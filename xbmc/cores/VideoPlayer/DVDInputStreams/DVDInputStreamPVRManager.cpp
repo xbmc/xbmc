@@ -71,7 +71,7 @@ void CDVDInputStreamPVRManager::ResetScanTimeout(unsigned int iTimeoutMs)
   m_ScanTimeout.Set(iTimeoutMs);
 }
 
-bool CDVDInputStreamPVRManager::IsEOF()
+bool CDVDInputStreamPVRManager::IsEOF() const
 {
   // don't mark as eof while within the scan timeout
   if (!m_ScanTimeout.IsTimePast())
@@ -287,7 +287,7 @@ int64_t CDVDInputStreamPVRManager::Seek(int64_t offset, int whence)
   }
 }
 
-int64_t CDVDInputStreamPVRManager::GetLength()
+int64_t CDVDInputStreamPVRManager::GetLength() const
 {
   if (m_pOtherStream)
     return m_pOtherStream->GetLength();
@@ -295,14 +295,14 @@ int64_t CDVDInputStreamPVRManager::GetLength()
     return g_PVRClients->GetStreamLength();
 }
 
-int CDVDInputStreamPVRManager::GetTotalTime()
+int CDVDInputStreamPVRManager::GetTotalTime() const
 {
   if (!m_isRecording)
     return g_PVRManager.GetTotalTime();
   return 0;
 }
 
-int CDVDInputStreamPVRManager::GetTime()
+int CDVDInputStreamPVRManager::GetTime() const
 {
   if (!m_isRecording)
     return g_PVRManager.GetStartTime();
@@ -407,14 +407,14 @@ CDVDInputStream::ENextStream CDVDInputStreamPVRManager::NextStream()
   return NEXTSTREAM_NONE;
 }
 
-bool CDVDInputStreamPVRManager::CanRecord()
+bool CDVDInputStreamPVRManager::CanRecord() const
 {
   if (!m_isRecording)
     return g_PVRClients->CanRecordInstantly();
   return false;
 }
 
-bool CDVDInputStreamPVRManager::IsRecording()
+bool CDVDInputStreamPVRManager::IsRecording() const
 {
   return g_PVRClients->IsRecordingOnPlayingChannel();
 }
@@ -424,12 +424,12 @@ void CDVDInputStreamPVRManager::Record(bool bOnOff)
   g_PVRManager.StartRecordingOnPlayingChannel(bOnOff);
 }
 
-bool CDVDInputStreamPVRManager::CanPause()
+bool CDVDInputStreamPVRManager::CanPause() const
 {
   return g_PVRClients->CanPauseStream();
 }
 
-bool CDVDInputStreamPVRManager::CanSeek()
+bool CDVDInputStreamPVRManager::CanSeek() const
 {
   return g_PVRClients->CanSeekStream();
 }
@@ -439,7 +439,7 @@ void CDVDInputStreamPVRManager::Pause(bool bPaused)
   g_PVRClients->PauseStream(bPaused);
 }
 
-std::string CDVDInputStreamPVRManager::GetInputFormat()
+std::string CDVDInputStreamPVRManager::GetInputFormat() const
 {
   if (!m_pOtherStream)
     return g_PVRClients->GetCurrentInputFormat();
@@ -459,12 +459,12 @@ bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::IsOtherStreamHack(void)
+bool CDVDInputStreamPVRManager::IsOtherStreamHack(void) const
 {
   return m_isOtherStreamHack;
 }
 
-bool CDVDInputStreamPVRManager::IsRealtime()
+bool CDVDInputStreamPVRManager::IsRealtime() const
 {
   return g_PVRClients->IsRealTimeStream();
 }

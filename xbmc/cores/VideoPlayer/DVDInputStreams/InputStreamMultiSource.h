@@ -37,14 +37,14 @@ public:
 
   virtual void Abort() override;
   virtual void Close() override;
-  virtual BitstreamStats GetBitstreamStats() const ;
-  virtual int GetBlockSize();
-  virtual bool GetCacheStatus(XFILE::SCacheStatus *status);
-  int64_t GetLength() override;
-  virtual bool IsEOF() override;
+  virtual BitstreamStats GetBitstreamStats() const override;
+  virtual int GetBlockSize() const  override;
+  virtual bool GetCacheStatus(XFILE::SCacheStatus *status) const override;
+  int64_t GetLength()const override;
+  virtual bool IsEOF() const override;
   virtual CDVDInputStream::ENextStream NextStream() override;
   virtual bool Open() override;
-  virtual bool Pause(double dTime)override { return false; };
+  virtual bool Pause(double dTime) override { return false; };
   virtual int Read(uint8_t* buf, int buf_size) override;
   virtual int64_t Seek(int64_t offset, int whence) override;
   virtual void SetReadRate(unsigned rate) override;
