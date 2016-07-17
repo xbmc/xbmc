@@ -21,6 +21,7 @@
 */
 
 #include <string>
+#include <memory>
 #include <vector>
 
 class IInputCodingTable
@@ -58,3 +59,5 @@ public:
 protected:
   std::string m_codechars;
 };
+
+typedef std::shared_ptr<IInputCodingTable> IInputCodingTablePtr;

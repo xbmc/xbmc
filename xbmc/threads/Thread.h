@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <string>
 #include <stdint.h>
 #include "Event.h"
@@ -91,7 +92,7 @@ protected:
   virtual void OnExit(){};
   virtual void Process();
 
-  volatile bool m_bStop;
+  std::atomic<bool> m_bStop;
 
   enum WaitResponse { WAIT_INTERRUPTED = -1, WAIT_SIGNALED = 0, WAIT_TIMEDOUT = 1 };
 

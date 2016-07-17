@@ -88,13 +88,9 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
   return true;
 }
 
-void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, unsigned int source)
+void CDVDMsgGeneralSynchronize::Wait(std::atomic<bool>& abort, unsigned int source)
 {
-  while(!Wait(100, source))
-  {
-    if(abort && *abort)
-      return;
-  }
+  while(!Wait(100, source) && !abort);
 }
 
 long CDVDMsgGeneralSynchronize::Release()

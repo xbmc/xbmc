@@ -29,7 +29,7 @@ class CVideoSyncPi : public CVideoSync, IDispResource
 public:
   CVideoSyncPi(CVideoReferenceClock *clock) : CVideoSync(clock) {};
   virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(volatile bool& stop);
+  virtual void Run(std::atomic<bool>& stop);
   virtual void Cleanup();
   virtual float GetFps();
   virtual void OnResetDisplay();

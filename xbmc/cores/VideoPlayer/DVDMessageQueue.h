@@ -21,6 +21,7 @@
  */
 
 #include "DVDMessage.h"
+#include <atomic>
 #include <string>
 #include <list>
 #include <algorithm>
@@ -111,7 +112,7 @@ private:
   CEvent m_hEvent;
   mutable CCriticalSection m_section;
 
-  bool m_bAbortRequest;
+  std::atomic<bool> m_bAbortRequest;
   bool m_bInitialized;
 
   int m_iDataSize;

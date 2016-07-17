@@ -32,6 +32,10 @@ class CGUIFontCacheImpl
     using HashIter = typename HashMap::iterator;
     using AgeMap = std::multimap<size_t, HashIter>;
 
+    ~EntryList()
+    {
+      Flush();
+    }
     HashIter Insert(size_t hash, CGUIFontCacheEntry<Position, Value> *v)
     {
       auto r (hashMap.insert(typename HashMap::value_type(hash, v)));

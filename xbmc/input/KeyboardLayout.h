@@ -23,15 +23,16 @@
 #include <string>
 #include <vector>
 
+#include "InputCodingTable.h"
+
 class TiXmlElement;
-class IInputCodingTable;
 
 class CKeyboardLayout
 {
 public:
   CKeyboardLayout();
   virtual ~CKeyboardLayout();
-  IInputCodingTable* GetCodingTable() { return m_codingtable; }
+  IInputCodingTablePtr GetCodingTable() { return m_codingtable; }
 
   bool Load(const TiXmlElement* element);
 
@@ -58,5 +59,5 @@ private:
   std::string m_language;
   std::string m_layout;
   Keyboards m_keyboards;
-  IInputCodingTable* m_codingtable;
+  IInputCodingTablePtr m_codingtable;
 };

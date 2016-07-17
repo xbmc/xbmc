@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <atomic>
 
 class CVideoReferenceClock;
 typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time, CVideoReferenceClock *clock);
@@ -28,7 +29,7 @@ public:
   CVideoSync(CVideoReferenceClock *clock) { m_refClock = clock; };
   virtual ~CVideoSync() {};
   virtual bool Setup(PUPDATECLOCK func) = 0;
-  virtual void Run(volatile bool& stop) = 0;
+  virtual void Run(std::atomic<bool>& stop) = 0;
   virtual void Cleanup() = 0;
   virtual float GetFps() = 0;
   virtual void RefreshChanged() {};

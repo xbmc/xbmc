@@ -2368,7 +2368,7 @@ void CVideoPlayer::SynchronizeDemuxer(unsigned int timeout)
 
   CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, 0);
   m_messenger.Put(message->Acquire());
-  message->Wait(&m_bStop, 0);
+  message->Wait(m_bStop, 0);
   message->Release();
 }
 
@@ -3922,7 +3922,7 @@ void CVideoPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool syn
       CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
       m_VideoPlayerAudio->SendMessage(msg->Acquire(), 1);
       m_VideoPlayerVideo->SendMessage(msg->Acquire(), 1);
-      msg->Wait(&m_bStop, 0);
+      msg->Wait(m_bStop, 0);
       msg->Release();
 
       // purge any pending PLAYER_STARTED messages

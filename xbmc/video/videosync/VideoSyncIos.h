@@ -30,7 +30,7 @@ public:
   
   // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(volatile bool& stop);
+  virtual void Run(std::atomic<bool>& stop);
   virtual void Cleanup();
   virtual float GetFps();
   

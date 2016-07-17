@@ -238,5 +238,5 @@ float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
     if(item->IsParentFolder())
       total--;
   }
-  return (float)count / total;
+  return (total != 0) ? ((float)count / total) : 0.0f;
 }

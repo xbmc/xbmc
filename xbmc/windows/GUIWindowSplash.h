@@ -20,6 +20,8 @@
  *
  */
 
+#include <memory>
+
 #include "guilib/GUIWindow.h"
 
 class CGUITextLayout;
@@ -35,5 +37,5 @@ public:
 protected:
   virtual void OnInitWindow();
 private:
-  CGUIImage* m_image;
+  std::unique_ptr<CGUIImage> m_image;
 };

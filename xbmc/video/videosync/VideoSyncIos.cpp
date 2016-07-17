@@ -47,7 +47,7 @@ bool CVideoSyncIos::Setup(PUPDATECLOCK func)
   return setupOk;
 }
 
-void CVideoSyncIos::Run(volatile bool& stop)
+void CVideoSyncIos::Run(std::atomic<bool>& stop)
 {
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!stop && !m_abort)
