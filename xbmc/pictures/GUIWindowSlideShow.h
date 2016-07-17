@@ -21,7 +21,7 @@
  */
 
 #include <set>
-#include "guilib/GUIWindow.h"
+#include "guilib/GUIDialog.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -59,21 +59,25 @@ private:
   CGUIWindowSlideShow *m_pCallback;
 };
 
-class CGUIWindowSlideShow : public CGUIWindow
+class CGUIWindowSlideShow : public CGUIDialog
 {
 public:
   CGUIWindowSlideShow(void);
-  virtual ~CGUIWindowSlideShow(void);
+  virtual ~CGUIWindowSlideShow() {};
+
+  bool OnMessage(CGUIMessage& message) override;
+  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  bool OnAction(const CAction &action) override;
+  void Render() override;
+  void Process(unsigned int currentTime, CDirtyRegionList &regions) override;
+  void OnDeinitWindow(int nextWindowID) override;
 
   void Reset();
   void Add(const CFileItem *picture);
   bool IsPlaying() const;
-  void ShowNext();
-  void ShowPrevious();
   void Select(const std::string& strPicture);
-  const CFileItemList &GetSlideShowContents();
   void GetSlideShowContents(CFileItemList &list);
-  const CFileItemPtr GetCurrentSlide();
+  std::shared_ptr<const CFileItem> GetCurrentSlide();
   void RunSlideShow(const std::string &strPath, bool bRecursive = false,
                     bool bRandom = false, bool bNotRandom = false,
                     const std::string &beginSlidePath="", bool startSlideShow = true,
@@ -88,12 +92,6 @@ public:
                    const std::string &strExtensions="");
   void StartSlideShow();
   bool InSlideShow() const;
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);  
-  virtual bool OnAction(const CAction &action);
-  virtual void Render();
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
-  virtual void OnDeinitWindow(int nextWindowID);
   void OnLoadPic(int iPic, int iSlideNumber, const std::string &strFileName, CBaseTexture* pTexture, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
@@ -101,8 +99,14 @@ public:
   bool IsPaused() const { return m_bPause; }
   bool IsShuffled() const { return m_bShuffled; }
   int GetDirection() const { return m_iDirection; }
-  void SetDirection(int direction); // -1: rewind, 1: forward
+
+  static void RunSlideShow(std::vector<std::string> paths, int start=0);
+
 private:
+  void ShowNext();
+  void ShowPrevious();
+  void SetDirection(int direction); // -1: rewind, 1: forward
+
   typedef std::set<std::string> path_set;  // set to track which paths we're adding
   void AddItems(const std::string &strPath, path_set *recursivePaths,
                 SortBy method = SortByLabel,
@@ -123,7 +127,6 @@ private:
   void AnnouncePlayerPlay(const CFileItemPtr& item);
   void AnnouncePlayerPause(const CFileItemPtr& item);
   void AnnouncePlayerStop(const CFileItemPtr& item);
-  void AnnouncePlaylistRemove(int pos);
   void AnnouncePlaylistClear();
   void AnnouncePlaylistAdd(const CFileItemPtr& item, int pos);
   void AnnouncePropertyChanged(const std::string &strProperty, const CVariant &value);
@@ -143,7 +146,7 @@ private:
   bool m_bPlayingVideo;
   bool m_bErrorMessage;
 
-  CFileItemList* m_slides;
+  std::vector<CFileItemPtr> m_slides;
 
   CSlideShowPic m_Image[2];
 
@@ -153,7 +156,5 @@ private:
   int m_iLastFailedNextSlide;
   bool m_bLoadNextPic;
   RESOLUTION m_Resolution;
-  CCriticalSection m_slideSection;
-  std::string m_strExtensions;
   CPoint m_firstGesturePoint;
 };

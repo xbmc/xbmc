@@ -191,12 +191,14 @@ bool CRepositoryUpdateJob::DoWork()
       AddonPtr oldAddon;
       if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
       {
-        if (!addon->Icon().empty() || !addon->FanArt().empty())
+        if (!oldAddon->Icon().empty() || !oldAddon->FanArt().empty() || !oldAddon->Screenshots().empty())
           CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '%s'", addon->ID().c_str());
-        if (!addon->Icon().empty())
-          textureDB.InvalidateCachedTexture(addon->Icon());
-        if (!addon->FanArt().empty())
-          textureDB.InvalidateCachedTexture(addon->Icon());
+        if (!oldAddon->Icon().empty())
+          textureDB.InvalidateCachedTexture(oldAddon->Icon());
+        if (!oldAddon->FanArt().empty())
+          textureDB.InvalidateCachedTexture(oldAddon->Icon());
+        for (const auto& path : oldAddon->Screenshots())
+          textureDB.InvalidateCachedTexture(path);
       }
     }
     textureDB.CommitMultipleExecute();

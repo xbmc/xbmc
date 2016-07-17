@@ -55,7 +55,6 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   SetID(id);
   SetProperty("xmlfile", xmlFile);
   m_lastControlID = 0;
-  m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
   m_loadType = LOAD_EVERY_TIME;
@@ -187,14 +186,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   while (pChild)
   {
     std::string strValue = pChild->Value();
-    if (strValue == "type" && pChild->FirstChild())
-    {
-      // if we have are a window type (ie not a dialog), and we have <type>dialog</type>
-      // then make this window act like a dialog
-      if (!IsDialog() && strcmpi(pChild->FirstChild()->Value(), "dialog") == 0)
-        m_isDialog = true;
-    }
-    else if (strValue == "previouswindow" && pChild->FirstChild())
+    if (strValue == "previouswindow" && pChild->FirstChild())
     {
       m_previousWindow = CButtonTranslator::TranslateWindow(pChild->FirstChild()->Value());
     }

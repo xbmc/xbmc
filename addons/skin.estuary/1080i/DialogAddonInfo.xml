@@ -8,37 +8,93 @@
 		<control type="group">
 			<include>OpenClose_Right</include>
 			<control type="button">
-				<left>770</left>
-				<top>162</top>
-				<width>1040</width>
-				<height>559</height>
+				<left>605</left>
+				<top>400</top>
+				<width>1235</width>
+				<height>375</height>
 				<label>-</label>
 			</control>
 			<control type="textbox">
-				<left>840</left>
-				<top>200</top>
-				<width>900</width>
-				<height>380</height>
+				<left>670</left>
+				<top>435</top>
+				<width>1050</width>
+				<height>300</height>
 				<font>font_textbox</font>
 				<label>$INFO[ListItem.AddonSummary,[B],[/B][CR]][COLOR=white]$INFO[ListItem.AddonDescription][/COLOR][COLOR=white][CR][/COLOR]</label>
 				<textcolor>button_focus</textcolor>
 			</control>
-			<control type="textbox">
-				<left>840</left>
-				<top>610</top>
-				<width>900</width>
-				<height>70</height>
-				<font>font_textbox</font>
-				<label fallback="31008">$INFO[ListItem.AddonDisclaimer,$LOCALIZE[24052]: ]</label>
-				<textcolor>button_focus</textcolor>
+			<control type="group">
+				<left>625</left>
+				<top>176</top>
+				<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
+				<control type="image">
+					<width>385</width>
+					<height>220</height>
+					<texture border="2" background="true">DefaultNoPreview.png</texture>
+					<aspectratio>scale</aspectratio>
+					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordersize>4</bordersize>
+				</control>
+				<control type="image">
+					<left>405</left>
+					<width>385</width>
+					<height>220</height>
+					<texture border="2" background="true">DefaultNoPreview.png</texture>
+					<aspectratio>scale</aspectratio>
+					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordersize>4</bordersize>
+				</control>
+				<control type="image">
+					<left>810</left>
+					<width>385</width>
+					<height>220</height>
+					<texture border="2" background="true">DefaultNoPreview.png</texture>
+					<aspectratio>scale</aspectratio>
+					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordersize>4</bordersize>
+				</control>
 			</control>
-			<control type="image">
-				<left>790</left>
-				<top>600</top>
-				<width>1000</width>
-				<height>3</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+			<control type="panel" id="50">
+				<left>625</left>
+				<top>176</top>
+				<width>1215</width>
+				<height>233</height>
+				<ondown>9000</ondown>
+				<onup>9000</onup>
+				<orientation>horizontal</orientation>
+				<itemlayout height="225" width="405">
+					<control type="image">
+						<width>385</width>
+						<height>220</height>
+						<texture border="2" fallback="DefaultAddonNone.png" background="true">$INFO[ListItem.Icon]</texture>
+						<aspectratio>scale</aspectratio>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+				</itemlayout>
+				<focusedlayout height="225" width="405">
+					<control type="image">
+						<width>385</width>
+						<height>220</height>
+						<texture border="2" fallback="DefaultAddonNone.png" background="true">$INFO[ListItem.Icon]</texture>
+						<aspectratio>scale</aspectratio>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<control type="image">
+						<width>385</width>
+						<height>220</height>
+						<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+					</control>
+				</focusedlayout>
 			</control>
+			<include content="LeftRightArrows">
+				<param name="list_id" value="50" />
+				<param name="left_posx" value="580" />
+				<param name="right_posx" value="1840" />
+				<param name="posy" value="280" />
+				<param name="visible" value="true" />
+			</include>
 			<control type="grouplist" id="9000">
 				<left>90</left>
 				<top>820</top>
@@ -46,7 +102,7 @@
 				<height>300</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
-				<onup>9000</onup>
+				<onup>50</onup>
 				<ondown>9000</ondown>
 				<align>center</align>
 				<itemgap>-18</itemgap>
@@ -97,11 +153,11 @@
 		</control>
 		<control type="group">
 			<include>OpenClose_Left</include>
-			<left>120</left>
+			<top>158</top>
+			<left>80</left>
 			<control type="image">
-				<top>162</top>
-				<width>559</width>
-				<height>559</height>
+				<width>505</width>
+				<height>505</height>
 				<aspectratio>scale</aspectratio>
 				<texture colordiffuse="border_alpha">colors/black.png</texture>
 				<bordertexture border="20">overlays/shadow.png</bordertexture>
@@ -109,12 +165,29 @@
 			</control>
 			<control type="image">
 				<left>24</left>
-				<top>186</top>
-				<width>511</width>
-				<height>511</height>
+				<top>24</top>
+				<width>457</width>
+				<height>457</height>
 				<aspectratio aligny="top">scale</aspectratio>
 				<fadetime>300</fadetime>
 				<texture background="true" fallback="DefaultFolderSquare.png">$INFO[ListItem.Art(thumb)]</texture>
+			</control>
+			<control type="button">
+				<left>-3</left>
+				<top>490</top>
+				<width>511</width>
+				<height>128</height>
+				<label>-</label>
+			</control>
+			<control type="textbox">
+				<left>42</left>
+				<top>515</top>
+				<width>446</width>
+				<height>80</height>
+				<font>font_textbox</font>
+				<label fallback="31008">$INFO[ListItem.AddonDisclaimer,$LOCALIZE[24052]: ]</label>
+				<textcolor>button_focus</textcolor>
+				<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 			</control>
 			<control type="group">
 				<visible>!String.IsEmpty(ListItem.AddonBroken)</visible>

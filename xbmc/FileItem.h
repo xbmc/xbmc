@@ -605,7 +605,8 @@ public:
   const CFileItemPtr operator[] (const std::string& strPath) const;
   void Clear();
   void ClearItems();
-  void Add(const CFileItemPtr &pItem);
+  void Add(CFileItemPtr item);
+  void Add(CFileItem&& item);
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);

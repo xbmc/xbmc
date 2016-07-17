@@ -40,6 +40,7 @@ public:
   void SetSource(std::string source) { m_props.source = std::move(source); }
   void SetIcon(std::string icon) { m_props.icon = std::move(icon); }
   void SetFanart(std::string fanart) { m_props.fanart = std::move(fanart); }
+  void SetScreenshots(std::vector<std::string> screenshots) { m_props.screenshots = std::move(screenshots); }
   void SetChangelog(std::string changelog) { m_props.changelog = std::move(changelog); }
   void SetBroken(std::string broken) { m_props.broken = std::move(broken); }
   void SetPath(std::string path) { m_props.path = std::move(path); }

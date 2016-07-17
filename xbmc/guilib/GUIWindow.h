@@ -244,7 +244,6 @@ protected:
   bool m_needsScaling;
   bool m_windowLoaded;  // true if the window's xml file has been loaded
   LOAD_TYPE m_loadType;
-  bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
   bool m_closing;
   bool m_active;        // true if window is active or dialog is running
