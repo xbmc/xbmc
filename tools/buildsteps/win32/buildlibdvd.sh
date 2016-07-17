@@ -26,7 +26,7 @@ CC="gcc -static-libgcc" \
 do_makelib $MAKEFLAGS
 
 strip -S $LIBDVDPREFIX/bin/libdvdcss-2.dll &&
-cp "$LIBDVDPREFIX/bin/libdvdcss-2.dll" /xbmc/system/players/VideoPlayer/
+cp "$LIBDVDPREFIX/bin/libdvdcss-2.dll" /xbmc/system/
 
 #libdvdread
 do_load_autoconf /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION 
@@ -62,7 +62,7 @@ gcc \
    -static-libgcc
 
 strip -S $LIBDVDPREFIX/bin/libdvdnav.dll &&
-cp $LIBDVDPREFIX/bin/libdvdnav.dll /xbmc/system/players/VideoPlayer/
+cp $LIBDVDPREFIX/bin/libdvdnav.dll /xbmc/system/
 do_print_status "libdvd (${BITS})" "$green_color" "Done"
 
 #remove the bgprocessfile for signaling the process end

@@ -347,7 +347,7 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
   if(!m_bhasoptical)
     return false;
 
-  std::string strDevice = TranslateDevicePath(devicePath, true);
+  std::string strDevice = TranslateDevicePath(devicePath, false);
   std::map<std::string,CCdInfo*>::iterator it;
   CSingleLock waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
@@ -439,7 +439,7 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
   if(!m_bhasoptical)
     return NULL;
   
-  std::string strDevice = TranslateDevicePath(devicePath, true);
+  std::string strDevice = TranslateDevicePath(devicePath, false);
   std::map<std::string,CCdInfo*>::iterator it;
   {
     CSingleLock waitLock(m_muAutoSource);
@@ -468,7 +468,7 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
   if(!m_bhasoptical)
     return false;
 
-  std::string strDevice = TranslateDevicePath(devicePath, true);
+  std::string strDevice = TranslateDevicePath(devicePath, false);
 
   std::map<std::string,CCdInfo*>::iterator it;
   CSingleLock waitLock(m_muAutoSource);

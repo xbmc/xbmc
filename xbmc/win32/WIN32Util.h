@@ -73,7 +73,6 @@ public:
   }
   static __time64_t fileTimeToTimeT(const FILETIME& ftimeft);
   static __time64_t fileTimeToTimeT(const LARGE_INTEGER& ftimeli);
-  static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');

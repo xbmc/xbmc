@@ -1752,9 +1752,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\InputOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>

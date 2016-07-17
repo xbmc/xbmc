@@ -45,7 +45,11 @@
 #define USE_RELEASE_LIBS
 
 #ifdef TARGET_WINDOWS
-#pragma comment(lib, "freetype246MT.lib")
+#ifdef NDEBUG
+#pragma comment(lib, "freetype.lib")
+#else
+#pragma comment(lib, "freetyped.lib")
+#endif
 #endif
 
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
