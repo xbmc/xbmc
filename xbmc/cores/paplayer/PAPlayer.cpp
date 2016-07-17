@@ -915,11 +915,6 @@ bool PAPlayer::IsPlaying() const
   return m_isPlaying;
 }
 
-bool PAPlayer::IsPaused() const
-{
-  return m_isPaused;
-}
-
 void PAPlayer::Pause()
 {
   if (m_isPaused)

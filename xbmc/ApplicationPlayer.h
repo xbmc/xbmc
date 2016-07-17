@@ -145,8 +145,8 @@ public:
   bool  HasRDS() const;
   bool  IsCaching() const;
   bool  IsInMenu() const;
-  bool  IsPaused() const;
-  bool  IsPausedPlayback() const;
+  bool  IsPaused();
+  bool  IsPausedPlayback();
   bool  IsPassthrough() const;
   bool  IsPlaying() const;
   bool  IsPlayingAudio() const;

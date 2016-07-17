@@ -50,8 +50,7 @@ public:
   virtual void OnNothingToQueueNotify();
   virtual bool CloseFile(bool reopen = false);
   virtual bool IsPlaying() const;
-  virtual void Pause();
-  virtual bool IsPaused() const;
+  virtual void Pause() override;
   virtual bool HasVideo() const { return false; }
   virtual bool HasAudio() const { return true; }
   virtual bool CanSeek();

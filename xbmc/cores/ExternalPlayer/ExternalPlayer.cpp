@@ -498,11 +498,6 @@ void CExternalPlayer::Pause()
 {
 }
 
-bool CExternalPlayer::IsPaused() const
-{
-  return false;
-}
-
 bool CExternalPlayer::HasVideo() const
 {
   return true;
