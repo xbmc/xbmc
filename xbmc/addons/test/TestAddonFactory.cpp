@@ -116,9 +116,42 @@ TEST_F(TestAddonFactory, ShouldAcceptUnversionedDependencies)
 
 TEST_F(TestAddonFactory, IconPathShouldBeBuiltFromPluginPath)
 {
-  plugin.plugin_path = strdup("a/b");;
+  plugin.plugin_path = strdup("a/b");
   auto addon = CAddonMgr::Factory(&plugin, ADDON_UNKNOWN);
   EXPECT_EQ("a/b", addon->Path());
   EXPECT_EQ("a/b/icon.png", addon->Icon());
+  free(plugin.plugin_path);
+}
+
+
+TEST_F(TestAddonFactory, AssetsElementShouldOverrideImplicitArt)
+{
+  cp_cfg_element_t icon{0};
+  icon.name = (char*)"icon";
+  icon.value = (char*)"foo/bar.jpg";
+
+  cp_cfg_element_t assets{0};
+  assets.name = (char*)"assets";
+  assets.num_children = 1;
+  assets.children = &icon;
+
+  cp_cfg_element_t root{0};
+  root.name = (char*)"kodi.addon.metadata";
+  root.num_children = 1;
+  root.children = &assets;
+  assets.parent = &root;
+  icon.parent = &assets;
+
+  cp_extension_t metadata = {&plugin, (char*)"kodi.addon.metadata", nullptr, nullptr, nullptr, &root};
+
+  cp_extension_t extensions[1] = {metadata};
+  plugin.extensions = extensions;
+  plugin.num_extensions = 1;
+  plugin.plugin_path = strdup("a/b");
+
+  auto addon = CAddonMgr::Factory(&plugin, ADDON_UNKNOWN);
+  EXPECT_EQ("a/b", addon->Path());
+  EXPECT_EQ("a/b/foo/bar.jpg", addon->Icon());
+  EXPECT_EQ("", addon->FanArt());
   free(plugin.plugin_path);
 }

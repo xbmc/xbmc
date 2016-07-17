@@ -142,6 +142,9 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
   if (plugin->provider_name)
     builder.SetAuthor(plugin->provider_name);
 
+  if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
+    builder.SetPath(plugin->plugin_path);
+
   {
     ADDONDEPS dependencies;
     for (unsigned int i = 0; i < plugin->num_imports; ++i)
@@ -159,6 +162,18 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
   auto metadata = CAddonMgr::GetInstance().GetExtension(plugin, "xbmc.addon.metadata");
   if (!metadata)
     metadata = CAddonMgr::GetInstance().GetExtension(plugin, "kodi.addon.metadata");
+
+  if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
+  {
+    //backwards compatibility
+    std::string icon = metadata && CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "noicon") == "true" ? "" : "icon.png";
+    std::string fanart = metadata && CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "nofanart") == "true" ? "" : "fanart.jpg";
+    if (!icon.empty())
+      builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, icon));
+    if (!fanart.empty())
+      builder.SetFanart(URIUtils::AddFileToFolder(plugin->plugin_path, fanart));
+  }
+
   if (metadata)
   {
     builder.SetSummary(CAddonMgr::GetInstance().GetTranslatedString(metadata->configuration, "summary"));
@@ -180,11 +195,11 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
 
     if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
     {
-      builder.SetPath(plugin->plugin_path);
-
       auto assets = CAddonMgr::GetInstance().GetExtElement(metadata->configuration, "assets");
       if (assets)
       {
+        builder.SetIcon("");
+        builder.SetFanart("");
         std::string icon = CAddonMgr::GetInstance().GetExtValue(assets, "icon");
         std::string fanart = CAddonMgr::GetInstance().GetExtValue(assets, "fanart");
 
@@ -204,16 +219,6 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
           }
         }
         builder.SetScreenshots(std::move(screenshots));
-      }
-      else
-      {
-        //backwards compatibility
-        std::string icon = CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "noicon") == "true" ? "" : "icon.png";
-        std::string fanart = CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "nofanart") == "true" ? "" : "fanart.jpg";
-        if (!icon.empty())
-          builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, icon));
-        if (!fanart.empty())
-          builder.SetFanart(URIUtils::AddFileToFolder(plugin->plugin_path, fanart));
       }
     }
   }
