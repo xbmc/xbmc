@@ -47,7 +47,7 @@ CWinSystemX11GLContext::~CWinSystemX11GLContext()
 void CWinSystemX11GLContext::PresentRenderImpl(bool rendered)
 {
   if (rendered)
-    m_pGLContext->SwapBuffers(m_iVSyncMode);
+    m_pGLContext->SwapBuffers();
   
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
@@ -61,7 +61,7 @@ void CWinSystemX11GLContext::PresentRenderImpl(bool rendered)
 
 void CWinSystemX11GLContext::SetVSyncImpl(bool enable)
 {
-  m_pGLContext->SetVSync(enable, m_iVSyncMode);
+  m_pGLContext->SetVSync(enable);
 }
 
 bool CWinSystemX11GLContext::IsExtSupported(const char* extension)

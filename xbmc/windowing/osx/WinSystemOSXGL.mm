@@ -47,10 +47,9 @@ void CWinSystemOSXGL::SetVSyncImpl(bool enable)
 {
   EnableVSync(false);
   
-  if (enable && m_iVSyncMode == 0)
+  if (enable)
   {
     EnableVSync(true);
-    m_iVSyncMode = 10;
   }
 }
 

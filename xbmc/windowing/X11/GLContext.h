@@ -35,8 +35,8 @@ public:
   virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext) = 0;
   virtual void Destroy() = 0;
   virtual void Detach() = 0;
-  virtual void SetVSync(bool enable, int &mode) = 0;
-  virtual void SwapBuffers(int &mode) = 0;
+  virtual void SetVSync(bool enable) = 0;
+  virtual void SwapBuffers() = 0;
   virtual void QueryExtensions() = 0;
   bool IsExtSupported(const char* extension) const;
 
