@@ -351,12 +351,12 @@ Exit:
   return eglConfig;
 }
 
-void CGLContextEGL::SetVSync(bool enable, int &mode)
+void CGLContextEGL::SetVSync(bool enable)
 {
   eglSwapInterval(m_eglDisplay, enable ? 1 : 0);
 }
 
-void CGLContextEGL::SwapBuffers(int &mode)
+void CGLContextEGL::SwapBuffers()
 {
   if ((m_eglDisplay == EGL_NO_DISPLAY) || (m_eglSurface == EGL_NO_SURFACE))
     return;

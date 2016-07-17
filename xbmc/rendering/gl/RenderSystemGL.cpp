@@ -105,7 +105,6 @@ void CRenderSystemGL::CheckOpenGLQuirks()
 bool CRenderSystemGL::InitRenderSystem()
 {
   m_bVSync = false;
-  m_iVSyncMode = 0;
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
@@ -306,7 +305,7 @@ void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)
 
 void CRenderSystemGL::SetVSync(bool enable)
 {
-  if (m_bVSync==enable && m_bVsyncInit == true)
+  if (m_bVSync == enable && m_bVsyncInit == true)
     return;
 
   if (!m_bRenderCreated)
@@ -317,20 +316,10 @@ void CRenderSystemGL::SetVSync(bool enable)
   else
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
 
-  m_iVSyncMode   = 0;
-  m_iVSyncErrors = 0;
-  m_bVSync       = enable;
-  m_bVsyncInit   = true;
+  m_bVSync = enable;
+  m_bVsyncInit = true;
 
   SetVSyncImpl(enable);
-
-  if (!enable)
-    return;
-
-  if (!m_iVSyncMode)
-    CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
-  else
-    CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
 }
 
 void CRenderSystemGL::FinishPipeline()

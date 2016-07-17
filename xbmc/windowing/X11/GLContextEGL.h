@@ -32,8 +32,8 @@ public:
   bool Refresh(bool force, int screen, Window glWindow, bool &newContext) override;
   void Destroy() override;
   void Detach() override;
-  void SetVSync(bool enable, int &mode) override;
-  void SwapBuffers(int &mode) override;
+  void SetVSync(bool enable) override;
+  void SwapBuffers() override;
   void QueryExtensions() override;
   XVisualInfo* GetVisual();
   EGLDisplay m_eglDisplay;

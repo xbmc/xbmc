@@ -162,7 +162,7 @@ bool CGLContextGLX::IsSuitableVisual(XVisualInfo *vInfo)
   return true;
 }
 
-void CGLContextGLX::SetVSync(bool enable, int &mode)
+void CGLContextGLX::SetVSync(bool enable)
 {
   // turn of current setting first
   if(m_glXSwapIntervalEXT)
@@ -175,31 +175,31 @@ void CGLContextGLX::SetVSync(bool enable, int &mode)
   if(!enable)
     return;
 
-  if (m_glXSwapIntervalEXT && !mode)
+  if (m_glXSwapIntervalEXT)
   {
     m_glXSwapIntervalEXT(m_dpy, m_glxWindow, 1);
-    mode = 6;
+    m_vsyncMode = 6;
   }
-  if (m_glXSwapIntervalMESA && !mode)
+  if (m_glXSwapIntervalMESA)
   {
     if(m_glXSwapIntervalMESA(1) == 0)
-      mode = 2;
+      m_vsyncMode = 2;
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !mode)
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
-      mode = 3;
+      m_vsyncMode = 3;
     else
       CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
   }
 }
 
-void CGLContextGLX::SwapBuffers(int &mode)
+void CGLContextGLX::SwapBuffers()
 {
-  if(mode == 3)
+  if (m_vsyncMode == 3)
   {
     glFinish();
     unsigned int before = 0, after = 0;
@@ -221,17 +221,17 @@ void CGLContextGLX::SwapBuffers(int &mode)
     {
       CLog::Log(LOGINFO, "GL: retrace count didn't change after buffer swap, switching to vsync mode 4");
       m_iVSyncErrors = 0;
-      mode = 4;
+      m_vsyncMode = 4;
     }
 
     if (m_iVSyncErrors < -200)
     {
       CLog::Log(LOGINFO, "GL: retrace count change for %d consecutive buffer swap, switching to vsync mode 2", -m_iVSyncErrors);
       m_iVSyncErrors = 0;
-      mode = 2;
+      m_vsyncMode = 2;
     }
   }
-  else if (mode == 4)
+  else if (m_vsyncMode == 4)
   {
     glFinish();
     unsigned int before = 0, swap = 0, after = 0;
@@ -258,7 +258,7 @@ void CGLContextGLX::SwapBuffers(int &mode)
     if (m_iVSyncErrors > 30)
     {
       CLog::Log(LOGINFO, "GL: retrace count seems to be changing due to the swapbuffers call, switching to vsync mode 3");
-      mode = 3;
+      m_vsyncMode = 3;
       m_iVSyncErrors = 0;
     }
   }
