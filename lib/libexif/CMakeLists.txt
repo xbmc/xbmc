@@ -3,7 +3,11 @@ set(SOURCES ExifParse.cpp
             JpegParse.cpp
             libexif.cpp)
 
-set(CMAKE_POSITION_INDEPENDENT_CODE 1)
+set(HEADERS ExifParse.h
+            IptcParse.h
+            JpegParse.h
+            libexif.h)
 
-core_add_library(exif NO_MAIN_DEPENDS)
+core_add_shared_library(exif WRAPPED)
 target_compile_definitions(exif PRIVATE _LINUX _DLL)
+set_target_properties(exif PROPERTIES FOLDER lib)

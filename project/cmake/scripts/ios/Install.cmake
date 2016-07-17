@@ -52,7 +52,7 @@ add_custom_target(bundle
             "WRAPPER_EXTENSION=app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
             ${CORE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-ios.command)
-add_dependencies(bundle ${APP_NAME_LC} export-files pack-skins wrap-libraries generate_json_header)
+add_dependencies(bundle ${APP_NAME_LC})
 
 set(DEPENDS_ROOT_FOR_XCODE ${NATIVEPREFIX}/..)
 configure_file(${CORE_SOURCE_DIR}/tools/darwin/packaging/ios/mkdeb-ios.sh.in

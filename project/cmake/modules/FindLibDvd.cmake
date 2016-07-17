@@ -117,8 +117,6 @@ if(NOT WIN32)
   add_dependencies(dvdnav dvdread)
   core_link_library(${DVDNAV_LIBRARY} system/players/VideoPlayer/libdvdnav dvdnav)
 
-  set(WRAP_FILES ${WRAP_FILES} PARENT_SCOPE)
-
   set(LIBDVD_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include)
   set(LIBDVD_LIBRARIES ${DVDNAV_LIBRARY} ${DVDREAD_LIBRARY})
   if(ENABLE_DVDCSS)

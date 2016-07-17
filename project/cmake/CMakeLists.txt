@@ -77,6 +77,11 @@ include(ExternalProject)
 core_find_git_rev()
 core_find_versions()
 
+# Dynamically loaded libraries built with the project
+add_custom_target(${APP_NAME_LC}-libraries)
+set(LIBRARY_FILES "" CACHE STRING "" FORCE)
+mark_as_advanced(LIBRARY_FILES)
+
 set(INCLUDES ${CORE_SOURCE_DIR}
              ${CORE_SOURCE_DIR}/addons/library.xbmc.addon
              ${CORE_SOURCE_DIR}/lib
@@ -277,22 +282,7 @@ endforeach()
 add_custom_target(pack-skins ALL
                   DEPENDS TexturePacker::TexturePacker export-files ${XBT_FILES})
 
-core_link_library(exif system/libexif)
-if(CORE_SYSTEM_NAME STREQUAL linux)
-  core_link_library(sse4 system/libsse4)
-endif()
-
-core_link_library(XBMC_addon addons/library.xbmc.addon/libXBMC_addon nowrap)
-core_link_library(XBMC_codec addons/library.xbmc.codec/libXBMC_codec nowrap)
-core_link_library(XBMC_pvr addons/library.xbmc.pvr/libXBMC_pvr nowrap)
-core_link_library(KODI_adsp addons/library.kodi.adsp/libKODI_adsp nowrap)
-core_link_library(KODI_audioengine addons/library.kodi.audioengine/libKODI_audioengine nowrap)
-core_link_library(KODI_guilib addons/library.kodi.guilib/libKODI_guilib nowrap)
-core_link_library(KODI_inputstream addons/library.kodi.inputstream/libKODI_inputstream nowrap)
-core_link_library(KODI_peripheral addons/library.kodi.peripheral/libKODI_peripheral nowrap)
-
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
-add_custom_target(wrap-libraries ALL DEPENDS ${WRAP_FILES})
 
 set(LIBCEC_SONAME "${CEC_SONAME}")
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android)
@@ -312,13 +302,16 @@ set(OTHER_FILES README.md)
 # main binary
 if(NOT CORE_SYSTEM_NAME STREQUAL android)
   add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+  add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries export-files pack-skins)
 else()
   add_library(${APP_NAME_LC} SHARED ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+  # The libraries depend on the main shared library for wrapping. Because of this we cannot build
+  # the libraries as a dependency. This requires to build the all target on android (and not only kodi).
+  add_dependencies(${APP_NAME_LC} export-files pack-skins)
 endif()
 whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
 target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${_MAIN_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_MAIN_LIBRARIES)
-add_dependencies(${APP_NAME_LC} export-files)
 
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
@@ -335,7 +328,7 @@ add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test
 whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest ${test_archives})
 target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_TEST_LIBRARIES)
-add_dependencies(${APP_NAME_LC}-test export-files)
+add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files)
 
 # make test and make check (cannot be executed when cross compiling)
 if(NOT CMAKE_CROSSCOMPILING)

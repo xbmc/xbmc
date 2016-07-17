@@ -32,7 +32,6 @@ if(NOT WIN32)
   set(ldflags "${ldflags};-lexpat")
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a
                     system/libcpluff libcpluff extras "${ldflags}")
-  set(WRAP_FILES ${WRAP_FILES} PARENT_SCOPE)
 else()
   ExternalProject_Add(libcpluff SOURCE_DIR ${CORE_SOURCE_DIR}/lib/cpluff
                       PREFIX ${CORE_BUILD_DIR}/cpluff

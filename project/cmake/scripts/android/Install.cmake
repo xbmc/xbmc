@@ -60,7 +60,6 @@ function(add_bundle_file file destination relative)
     file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake)
     add_custom_target(bundle_files COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake)
     add_dependencies(bundle bundle_files)
-    add_dependencies(bundle_files export-files pack-skins wrap-libraries generate_json_header)
   endif()
 
   string(REPLACE "${relative}/" "" outfile ${file})
@@ -75,8 +74,8 @@ foreach(file IN LISTS XBT_FILES install_data)
   add_bundle_file(${CMAKE_BINARY_DIR}/${file} ${datarootdir}/${APP_NAME_LC} ${CMAKE_BINARY_DIR})
 endforeach()
 
-foreach(file IN LISTS WRAP_FILES)
-  add_bundle_file(${CMAKE_BINARY_DIR}/${file} ${libdir}/${APP_NAME_LC} ${CMAKE_BINARY_DIR})
+foreach(library IN LISTS LIBRARY_FILES)
+  add_bundle_file(${library} ${libdir}/${APP_NAME_LC} ${CMAKE_BINARY_DIR})
 endforeach()
 
 foreach(lib IN LISTS required_dyload dyload_optional ITEMS Shairplay)
