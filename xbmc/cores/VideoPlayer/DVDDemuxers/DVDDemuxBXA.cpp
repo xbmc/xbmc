@@ -183,7 +183,7 @@ int CDVDDemuxBXA::GetNrOfStreams() const
   return (m_stream == NULL ? 0 : 1);
 }
 
-std::string CDVDDemuxBXA::GetFileName()
+std::string CDVDDemuxBXA::GetFileName() const
 {
   if(m_pInput)
     return m_pInput->GetFileName();
@@ -191,7 +191,7 @@ std::string CDVDDemuxBXA::GetFileName()
     return "";
 }
 
-std::string CDVDDemuxBXA::GetStreamCodecName(int iStreamId)
+std::string CDVDDemuxBXA::GetStreamCodecName(int iStreamId) const
 {
   if (m_stream && iStreamId == 0)
     return "BXA";

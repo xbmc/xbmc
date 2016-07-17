@@ -35,17 +35,17 @@ public:
   CDVDDemuxVobsub();
   virtual ~CDVDDemuxVobsub();
 
-  virtual void          Reset();
-  virtual void          Abort() {};
-  virtual void          Flush();
-  virtual DemuxPacket*  Read();
-  virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL);
-  virtual void          SetSpeed(int speed) {}
+  virtual void          Reset() override;
+  virtual void          Abort() override {};
+  virtual void          Flush() override;
+  virtual DemuxPacket*  Read() override;
+  virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL) override;
+  virtual void          SetSpeed(int speed) override {}
   virtual CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
   virtual std::vector<CDemuxStream*> GetStreams() const override;
   virtual int           GetNrOfStreams() const override { return m_Streams.size(); }
-  virtual int           GetStreamLength()    { return 0; }
-  virtual std::string   GetFileName()        { return m_Filename; }
+  virtual int           GetStreamLength() const override { return 0; }
+  virtual std::string   GetFileName() const override { return m_Filename; }
 
   bool                  Open(const std::string& filename, int source, const std::string& subfilename);
   virtual void EnableStream(int id, bool enable) override;

@@ -43,13 +43,13 @@ public:
   DemuxPacket* Read() override;
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override;
   void SetSpeed(int iSpeed) override;
-  int GetStreamLength() override { return 0; }
+  int GetStreamLength() const override { return 0; }
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
-  std::string GetFileName() override;
-  virtual std::string GetStreamCodecName(int iStreamId) override;
-  virtual bool SupportsEnableAtPTS() override { return m_IDemux ? m_IDemux->SupportsEnableAtPTS():false; };
+  std::string GetFileName() const override;
+  virtual std::string GetStreamCodecName(int iStreamId) const override;
+  virtual bool SupportsEnableAtPTS() const override { return m_IDemux ? m_IDemux->SupportsEnableAtPTS():false; };
   virtual void EnableStream(int id, bool enable) override;
   virtual void EnableStreamAtPTS(int id, uint64_t pts) override;
   virtual void SetVideoResolution(int width, int height) override;

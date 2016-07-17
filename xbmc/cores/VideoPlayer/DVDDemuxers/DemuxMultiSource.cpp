@@ -123,7 +123,7 @@ std::vector<CDemuxStream*> CDemuxMultiSource::GetStreams() const
   return streams;
 }
 
-std::string CDemuxMultiSource::GetStreamCodecName(int64_t demuxerId, int iStreamId)
+std::string CDemuxMultiSource::GetStreamCodecName(int64_t demuxerId, int iStreamId) const
 {
   auto iter = m_demuxerMap.find(demuxerId);
   if (iter != m_demuxerMap.end())
@@ -134,7 +134,7 @@ std::string CDemuxMultiSource::GetStreamCodecName(int64_t demuxerId, int iStream
     return "";
 };
 
-int CDemuxMultiSource::GetStreamLength()
+int CDemuxMultiSource::GetStreamLength() const
 {
   int length = 0;
   for (auto& iter : m_demuxerMap)
@@ -269,7 +269,7 @@ void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
   }
 }
 
-bool CDemuxMultiSource::SupportsEnableAtPTS(int64_t demuxerId)
+bool CDemuxMultiSource::SupportsEnableAtPTS(int64_t demuxerId) const
 {
   auto iter = m_demuxerMap.find(demuxerId);
   if (iter != m_demuxerMap.end())

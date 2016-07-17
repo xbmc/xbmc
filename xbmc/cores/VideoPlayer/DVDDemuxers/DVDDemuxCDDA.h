@@ -41,18 +41,18 @@ public:
 
   bool Open(CDVDInputStream* pInput);
   void Dispose();
-  void Reset();
-  void Abort();
-  void Flush();
-  DemuxPacket* Read();
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
-  void SetSpeed(int iSpeed) {};
-  int GetStreamLength() ;
+  void Reset() override;
+  void Abort() override;
+  void Flush() override;
+  DemuxPacket* Read() override;
+  bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override;
+  void SetSpeed(int iSpeed) override {};
+  int GetStreamLength() const override;
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
-  std::string GetFileName();
-  virtual std::string GetStreamCodecName(int iStreamId) override;
+  std::string GetFileName() const override;
+  virtual std::string GetStreamCodecName(int iStreamId) const override;
 
 protected:
   friend class CDemuxStreamAudioCDDA;
