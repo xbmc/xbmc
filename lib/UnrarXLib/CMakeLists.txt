@@ -41,12 +41,13 @@ set(SOURCES archive.cpp
             unpack.cpp
             volume.cpp)
 
-core_add_library(unrarxlib)
-
-if(CORE_SYSTEM_NAME STREQUAL windows)
+add_library(unrarxlib STATIC ${SOURCES} ${HEADERS})
+if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+  target_compile_definitions(unrarxlib PRIVATE -DSILENT)
+else()
   target_compile_definitions(unrarxlib PRIVATE -D_XBMC)
   add_precompiled_header(unrarxlib rar.hpp rar.cpp
                          EXCLUDE_SOURCES consio.cpp global.cpp)
-else()
-  target_compile_definitions(unrarxlib PRIVATE -DSILENT)
 endif()
+set_target_properties(unrarxlib PROPERTIES FOLDER lib)
+set(core_DEPENDS unrarxlib ${core_DEPENDS} CACHE STRING "" FORCE)
