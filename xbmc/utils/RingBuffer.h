@@ -42,10 +42,10 @@ public:
   bool SkipBytes(int skipSize);
   bool Append(CRingBuffer &rBuf);
   bool Copy(CRingBuffer &rBuf);
-  char *getBuffer();
-  unsigned int getSize();
+  char *getBuffer() const;
+  unsigned int getSize() const;
   unsigned int getReadPtr() const;
-  unsigned int getWritePtr();
-  unsigned int getMaxReadSize();
-  unsigned int getMaxWriteSize();
+  unsigned int getWritePtr() const;
+  unsigned int getMaxReadSize() const;
+  unsigned int getMaxWriteSize() const;
 };

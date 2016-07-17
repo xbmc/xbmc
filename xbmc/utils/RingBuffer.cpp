@@ -222,12 +222,12 @@ bool CRingBuffer::Copy(CRingBuffer &rBuf)
 }
 
 /* Our various 'get' methods */
-char *CRingBuffer::getBuffer()
+char *CRingBuffer::getBuffer() const
 {
   return m_buffer;
 }
 
-unsigned int CRingBuffer::getSize()
+unsigned int CRingBuffer::getSize() const
 {
   CSingleLock lock(m_critSection);
   return m_size;
@@ -238,19 +238,19 @@ unsigned int CRingBuffer::getReadPtr() const
   return m_readPtr;
 }
 
-unsigned int CRingBuffer::getWritePtr()
+unsigned int CRingBuffer::getWritePtr() const
 {
   CSingleLock lock(m_critSection);
   return m_writePtr;
 }
 
-unsigned int CRingBuffer::getMaxReadSize()
+unsigned int CRingBuffer::getMaxReadSize() const
 {
   CSingleLock lock(m_critSection);
   return m_fillCount;
 }
 
-unsigned int CRingBuffer::getMaxWriteSize()
+unsigned int CRingBuffer::getMaxWriteSize() const
 {
   CSingleLock lock(m_critSection);
   return m_size - m_fillCount;
