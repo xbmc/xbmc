@@ -83,7 +83,7 @@ CAEStreamInfo::CAEStreamInfo() :
 {
 }
 
-double CAEStreamInfo::GetDuration()
+double CAEStreamInfo::GetDuration() const
 {
   double duration = 0;
   switch (m_type)

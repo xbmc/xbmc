@@ -180,23 +180,23 @@ public:
   void Reset(unsigned int sampleRate, bool pcm);
   void UpdateSinkDelay(const AEDelayStatus& status, int samples);
   void AddSamples(int samples, std::list<CActiveAEStream*> &streams);
-  void GetDelay(AEDelayStatus& status);
+  void GetDelay(AEDelayStatus& status) const;
   void AddStream(unsigned int streamid);
   void RemoveStream(unsigned int streamid);
   void UpdateStream(CActiveAEStream *stream);
-  void GetDelay(AEDelayStatus& status, CActiveAEStream *stream);
-  void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream);
-  float GetCacheTime(CActiveAEStream *stream);
-  float GetCacheTotal(CActiveAEStream *stream);
-  float GetWaterLevel();
+  void GetDelay(AEDelayStatus& status, CActiveAEStream *stream) const;
+  void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream) const;
+  float GetCacheTime(CActiveAEStream *stream) const;
+  float GetCacheTotal(CActiveAEStream *stream) const;
+  float GetWaterLevel()const;
   void SetSuspended(bool state);
   void SetDSP(bool state);
   void SetCurrentSinkFormat(AEAudioFormat SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
-  bool IsSuspended();
-  bool HasDSP();
-  AEAudioFormat GetCurrentSinkFormat();
+  bool IsSuspended() const;
+  bool HasDSP()const;
+  bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) const;
 protected:
   float m_sinkCacheTotal;
   float m_sinkLatency;
@@ -230,50 +230,50 @@ protected:
   friend class CActiveAEBufferPoolResample;
   CActiveAE();
   virtual ~CActiveAE();
-  virtual bool  Initialize();
+  virtual bool  Initialize() override;
 
 public:
-  virtual void   Shutdown();
-  virtual bool   Suspend();
-  virtual bool   Resume();
-  virtual bool   IsSuspended();
-  virtual void   OnSettingsChange(const std::string& setting);
+  virtual void   Shutdown() override;
+  virtual bool   Suspend() override;
+  virtual bool   Resume() override;
+  virtual bool   IsSuspended() const override;
+  virtual void   OnSettingsChange(const std::string& setting) override;
 
-  virtual float GetVolume();
-  virtual void  SetVolume(const float volume);
-  virtual void  SetMute(const bool enabled);
-  virtual bool  IsMuted();
-  virtual void  SetSoundMode(const int mode);
+  virtual float GetVolume() const  override;
+  virtual void  SetVolume(const float volume) override;
+  virtual void  SetMute(const bool enabled) override;
+  virtual bool  IsMuted() const override;
+  virtual void  SetSoundMode(const int mode) override;
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL);
-  virtual bool FreeStream(IAEStream *stream);
+  virtual IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) override;
+  virtual bool FreeStream(IAEStream *stream) override;
 
   /* returns a new sound object */
-  virtual IAESound *MakeSound(const std::string& file);
-  virtual void      FreeSound(IAESound *sound);
+  virtual IAESound *MakeSound(const std::string& file) override;
+  virtual void      FreeSound(IAESound *sound) override;
 
-  virtual void GarbageCollect() {};
+  virtual void GarbageCollect() override {};
 
-  virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
-  virtual std::string GetDefaultDevice(bool passthrough);
-  virtual bool SupportsRaw(AEAudioFormat &format);
-  virtual bool SupportsSilenceTimeout();
-  virtual bool HasStereoAudioChannelCount();
-  virtual bool HasHDAudioChannelCount();
-  virtual bool SupportsQualityLevel(enum AEQuality level);
-  virtual bool IsSettingVisible(const std::string &settingId);
-  virtual void KeepConfiguration(unsigned int millis);
-  virtual void DeviceChange();
-  virtual bool HasDSP();
-  virtual AEAudioFormat GetCurrentSinkFormat();
+  virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) const override;
+  virtual std::string GetDefaultDevice(bool passthrough) const override;
+  virtual bool SupportsRaw(AEAudioFormat &format) const override;
+  virtual bool SupportsSilenceTimeout() const override;
+  virtual bool HasStereoAudioChannelCount() const override;
+  virtual bool HasHDAudioChannelCount() const override;
+  virtual bool SupportsQualityLevel(enum AEQuality level) const override;
+  virtual bool IsSettingVisible(const std::string &settingId) const override;
+  virtual void KeepConfiguration(unsigned int millis) override;
+  virtual void DeviceChange() override;
+  virtual bool HasDSP()const override;
+  virtual bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) const override;
 
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnregisterAudioCallback(IAudioCallback* pCallback);
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) override;
+  virtual void UnregisterAudioCallback(IAudioCallback* pCallback) override;
 
-  virtual void OnLostDisplay();
-  virtual void OnResetDisplay();
-  virtual void OnAppFocusChange(bool focus);
+  virtual void OnLostDisplay() override;
+  virtual void OnResetDisplay() override;
+  virtual void OnAppFocusChange(bool focus) override;
 
 protected:
   void PlaySound(CActiveAESound *sound);
@@ -295,7 +295,7 @@ protected:
   void SetStreamFade(CActiveAEStream *stream, float from, float target, unsigned int millis);
 
 protected:
-  void Process();
+  void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
   bool InitSink();
   void DrainSink();
@@ -349,7 +349,7 @@ protected:
     MODE_PCM
   }m_mode;
 
-  CActiveAESink m_sink;
+  mutable CActiveAESink m_sink;
   AEAudioFormat m_sinkFormat;
   AEAudioFormat m_sinkRequestFormat;
   AEAudioFormat m_encoderFormat;

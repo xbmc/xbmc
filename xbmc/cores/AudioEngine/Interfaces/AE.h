@@ -113,7 +113,7 @@ public:
    * Default is true so players drop audio or pause if engine unloaded
    * @return True if processing suspended
    */
-  virtual bool IsSuspended() {return true;}
+  virtual bool IsSuspended() const {return true;}
   
   /**
    * Callback to alert the AudioEngine of setting changes
@@ -125,7 +125,7 @@ public:
    * Returns the current master volume level of the AudioEngine
    * @return The volume level between 0.0 and 1.0
    */
-  virtual float GetVolume() = 0;
+  virtual float GetVolume() const = 0;
 
   /**
    * Sets the master volume level of the AudioEngine
@@ -143,7 +143,7 @@ public:
    * Get the current mute state
    * @return The current mute state
    */
-  virtual bool IsMuted() = 0;
+  virtual bool IsMuted() const = 0;
 
   /**
    * Sets the sound mode
@@ -190,39 +190,39 @@ public:
    * @param devices The device list to append supported devices to
    * @param passthrough True if only passthrough devices are wanted
    */
-  virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
+  virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) const = 0;
 
   /**
    * Returns the default audio device
    * @param passthrough True if the default passthrough device is wanted
    * @return the default audio device
    */
-  virtual std::string GetDefaultDevice(bool passthrough) { return "default"; }
+  virtual std::string GetDefaultDevice(bool passthrough) const { return "default"; }
 
   /**
    * Returns true if the AudioEngine supports AE_FMT_RAW streams for use with formats such as IEC61937
    * @see CAEPackIEC61937::CAEPackIEC61937()
    * @returns true if the AudioEngine is capable of RAW output
    */
-  virtual bool SupportsRaw(AEAudioFormat &format) { return false; }
+  virtual bool SupportsRaw(AEAudioFormat &format) const { return false; }
 
    /**
    * Returns true if the AudioEngine supports drain mode which is not streaming silence when idle
    * @returns true if the AudioEngine is capable of drain mode
    */
-  virtual bool SupportsSilenceTimeout() { return false; }
+  virtual bool SupportsSilenceTimeout() const { return false; }
 
   /**
    * Returns true if the AudioEngine is currently configured for stereo audio
    * @returns true if the AudioEngine is currently configured for stereo audio
    */
-  virtual bool HasStereoAudioChannelCount() { return false; }
+  virtual bool HasStereoAudioChannelCount() const { return false; }
 
   /**
    * Returns true if the AudioEngine is currently configured for HD audio (more than 5.1)
    * @returns true if the AudioEngine is currently configured for HD audio (more than 5.1)
    */
-  virtual bool HasHDAudioChannelCount() { return true; }
+  virtual bool HasHDAudioChannelCount() const { return true; }
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
 
@@ -232,13 +232,13 @@ public:
    * Returns true if AudioEngine supports specified quality level
    * @return true if specified quality level is supported, otherwise false
    */
-  virtual bool SupportsQualityLevel(enum AEQuality level) { return false; }
+  virtual bool SupportsQualityLevel(enum AEQuality level) const { return false; }
 
   /**
    * AE decides whether this settings should be displayed
    * @return true if AudioEngine wants to display this setting
    */
-  virtual bool IsSettingVisible(const std::string &settingId) {return false; }
+  virtual bool IsSettingVisible(const std::string &settingId) const {return false; }
 
   /**
    * Instruct AE to keep configuration for a specified time
@@ -254,7 +254,7 @@ public:
   /**
    * Indicates if dsp addon system is active.
    */
-  virtual bool HasDSP() { return false; };
+  virtual bool HasDSP() const { return false; };
 
   /**
    * Get the current sink data format
@@ -262,6 +262,6 @@ public:
    * @param Current sink data format. For more details see AEAudioFormat.
    * @return Returns true on success, else false.
    */
-  virtual bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) { return false; }
+  virtual bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) const { return false; }
 };
 

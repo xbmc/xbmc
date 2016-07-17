@@ -34,7 +34,7 @@ class CAEStreamInfo
 {
 public:
   CAEStreamInfo();
-  double GetDuration();
+  double GetDuration() const;
   bool operator==(const CAEStreamInfo& info) const;
 
   enum DataType
