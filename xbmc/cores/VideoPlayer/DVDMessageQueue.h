@@ -92,8 +92,8 @@ public:
 
   int GetDataSize() const { return m_iDataSize; }
   int GetTimeSize() const;
-  unsigned GetPacketCount(CDVDMsg::Message type);
-  bool ReceivedAbortRequest() { return m_bAbortRequest; }
+  unsigned GetPacketCount(CDVDMsg::Message type) const;
+  bool ReceivedAbortRequest() const { return m_bAbortRequest; }
   void WaitUntilEmpty();
 
   // non messagequeue related functions
