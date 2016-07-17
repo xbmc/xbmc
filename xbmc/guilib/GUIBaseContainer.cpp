@@ -349,15 +349,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
       }
     }
   case ACTION_CONTEXT_MENU:
-    if (m_listProvider)
-    {
-      int selected = GetSelectedItem();
-      if (selected >= 0 && selected < static_cast<int>(m_items.size()))
-      {
-        m_listProvider->OnContextMenu(m_items[selected]);
-        return true;
-      }
-    }
+    if (OnContextMenu())
+      return true;
     break;
   case ACTION_SHOW_INFO:
     if (m_listProvider)
@@ -699,7 +692,9 @@ bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 
 EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (event.m_id >= ACTION_MOUSE_LEFT_CLICK && event.m_id <= ACTION_MOUSE_DOUBLE_CLICK)
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK ||
+      event.m_id == ACTION_MOUSE_DOUBLE_CLICK ||
+      event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   {
     if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
     {
@@ -779,9 +774,28 @@ bool CGUIBaseContainer::OnClick(int actionID)
     if (focusedLayout)
       subItem = focusedLayout->GetFocusedItem();
   }
+  else if (actionID == ACTION_MOUSE_RIGHT_CLICK)
+  {
+    if (OnContextMenu())
+      return true;
+  }
   // Don't know what to do, so send to our parent window.
   CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
   return SendWindowMessage(msg);
+}
+
+bool CGUIBaseContainer::OnContextMenu()
+{
+  if (m_listProvider)
+  {
+    int selected = GetSelectedItem();
+    if (selected >= 0 && selected < static_cast<int>(m_items.size()))
+    {
+      m_listProvider->OnContextMenu(m_items[selected]);
+      return true;
+    }
+  }
+  return false;
 }
 
 std::string CGUIBaseContainer::GetDescription() const
