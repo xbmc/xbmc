@@ -68,7 +68,7 @@ ECHO ------------------------------------------------------------
 ECHO Running testsuite...
   cd %WORKSPACE%\project\vs2010express\
   set KODI_HOME=%WORKSPACE%
-  set PATH=%WORKSPACE%\project\Win32BuildSetup\dependencies;%PATH%
+  set PATH=%WORKSPACE%\system;%PATH%
 
   %EXE% --gtest_output=xml:%WORKSPACE%\gtestresults.xml
 
