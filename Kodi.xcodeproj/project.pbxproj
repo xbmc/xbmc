@@ -2567,6 +2567,8 @@
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
 		228FA65B1C53F9D50023BBF0 /* InfoScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoScanner.h; sourceTree = "<group>"; };
 		228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoScanner.cpp; sourceTree = "<group>"; };
+		2A45E7A71D2D042B000E49FA /* types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = types.json; path = schema/types.json; sourceTree = "<group>"; };
+		2A45E7A81D2D042B000E49FA /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = schema/version.txt; sourceTree = "<group>"; };
 		2A4AAD251CEBC2060057AD44 /* DVDDemuxVobsub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxVobsub.h; sourceTree = "<group>"; };
 		2A4AAD261CEBC2130057AD44 /* DVDFactoryDemuxer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDFactoryDemuxer.h; sourceTree = "<group>"; };
 		2A4AAD281CEBC64A0057AD44 /* GUIInfoLabels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoLabels.h; sourceTree = "<group>"; };
@@ -6306,6 +6308,8 @@
 			isa = PBXGroup;
 			children = (
 				7C7A40361C240D60006D95A0 /* methods.json */,
+				2A45E7A71D2D042B000E49FA /* types.json */,
+				2A45E7A81D2D042B000E49FA /* version.txt */,
 			);
 			name = schema;
 			sourceTree = "<group>";

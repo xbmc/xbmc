@@ -306,23 +306,9 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
     break;
   }
 
-  if (m_timerType)
-  {
-    if (m_timerType->IsManual())
-    {
-      if (m_timerType->IsTimerRule())
-        value["type"] = "manual_repeating";
-      else
-        value["type"] = "manual_once";
-    }
-    else
-    {
-      if (m_timerType->IsTimerRule())
-        value["type"] = "epg_repeating";
-      else
-        value["type"] = "epg_once";
-    }
-  }
+  value["istimerrule"] = m_timerType && m_timerType->IsTimerRule();
+  value["ismanual"] = m_timerType && m_timerType->IsManual();
+  value["isreadonly"] = m_timerType && m_timerType->IsReadOnly();
 
   value["epgsearchstring"]   = m_strEpgSearchString;
   value["fulltextepgsearch"] = m_bFullTextEpgSearch;

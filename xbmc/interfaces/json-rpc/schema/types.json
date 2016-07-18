@@ -909,7 +909,9 @@
                 "endtime", "runtime", "progress", "progresspercentage",
                 "genre", "episodename", "episodenum", "episodepart",
                 "firstaired", "hastimer", "isactive", "parentalrating",
-                "wasactive", "thumbnail", "rating" ]
+                "wasactive", "thumbnail", "rating", "originaltitle", "cast",
+                "director", "writer", "year", "imdbnumber", "hastimerrule",
+                "hasrecording", "recording", "isseries" ]
     }
   },
   "PVR.Details.Broadcast": {
@@ -934,13 +936,25 @@
       "parentalrating": { "type": "integer" },
       "wasactive": { "type": "boolean" },
       "thumbnail": { "type": "string" },
-      "rating": { "type": "integer" }
+      "rating": { "type": "integer" },
+      "originaltitle": { "type": "string" },
+      "cast": { "type": "string" },
+      "director": { "type": "string" },
+      "writer": { "type": "string" },
+      "year": { "type": "integer" },
+      "imdbnumber": { "type": "integer" },
+      "hastimerrule": { "type": "boolean" },
+      "hasrecording": { "type": "boolean" },
+      "recording": { "type": "string" },
+      "isseries": { "type": "boolean" }
     }
   },
   "PVR.Fields.Channel": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed", "broadcastnow", "broadcastnext", "uniqueid"]
+      "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed",
+                "broadcastnow", "broadcastnext", "uniqueid", "icon", "channelnumber",
+                "subchannelnumber" ]
     }
   },
   "PVR.Details.Channel": {
@@ -955,7 +969,10 @@
       "lastplayed": { "type": "string" },
       "broadcastnow": { "$ref": "PVR.Details.Broadcast" },
       "broadcastnext": { "$ref": "PVR.Details.Broadcast" },
-      "uniqueid": { "type": "integer", "required": true }
+      "uniqueid": { "type": "integer", "required": true },
+      "icon": { "type": "string" },
+      "channelnumber": { "type": "integer" },
+      "subchannelnumber": { "type": "integer" }
     }
   },
   "PVR.Details.ChannelGroup": {
@@ -978,15 +995,17 @@
     "type": "string",
     "enum": [ "unknown", "new", "scheduled", "recording", "completed",
               "aborted", "cancelled", "conflict_ok", "conflict_notok",
-              "error" ]
+              "error", "disabled" ]
   },
   "PVR.Fields.Timer": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "title", "summary", "channelid", "isradio", "repeating",
+      "enum": [ "title", "summary", "channelid", "isradio", "istimerrule", "ismanual",
                 "starttime", "endtime", "runtime", "lifetime", "firstday",
                 "weekdays", "priority", "startmargin", "endmargin", "state",
-                "file", "directory" ]
+                "file", "directory", "preventduplicateepisodes", "startanytime",
+                "endanytime", "epgsearchstring", "fulltextepgsearch", "recordinggroup",
+                "maxrecordings", "epguid", "isreadonly" ]
     }
   },
   "PVR.Details.Timer": {
@@ -997,7 +1016,8 @@
       "summary": { "type": "string" },
       "channelid": { "$ref": "Library.Id" },
       "isradio": { "type": "boolean" },
-      "repeating": { "type": "boolean" },
+      "istimerrule": { "type": "boolean" },
+      "ismanual": { "type": "boolean" },
       "starttime": { "type": "string" },
       "endtime": { "type": "string" },
       "runtime": { "type": "integer" },
@@ -1012,7 +1032,16 @@
       "endmargin": { "type": "integer" },
       "state": { "$ref": "PVR.TimerState" },
       "file": { "type": "string" },
-      "directory": { "type": "string" }
+      "directory": { "type": "string" },
+      "preventduplicateepisodes": { "type": "integer" },
+      "startanytime": { "type": "boolean" },
+      "endanytime": { "type": "boolean" },
+      "epgsearchstring": { "type": "string" },
+      "fulltextepgsearch": { "type": "boolean" },
+      "recordinggroup": { "type": "integer" },
+      "maxrecordings": { "type": "integer" },
+      "epguid": { "type": "integer" },
+      "isreadonly": { "type": "boolean" }
     }
   },
   "PVR.Fields.Recording": {
@@ -1021,7 +1050,7 @@
       "enum": [ "title", "plot", "plotoutline", "genre", "playcount",
                 "resume", "channel", "starttime","endtime", "runtime",
                 "lifetime", "icon", "art", "streamurl", "file",
-                "directory", "radio" ]
+                "directory", "radio", "isdeleted", "epgeventid", "channeluid" ]
     }
   },
   "PVR.Details.Recording": {
@@ -1044,7 +1073,10 @@
       "streamurl": { "type": "string" },
       "file": { "type": "string" },
       "directory": { "type": "string" },
-      "radio": { "type": "boolean" }
+      "radio": { "type": "boolean" },
+      "isdeleted": { "type": "boolean" },
+      "epgeventid": { "type": "integer" },
+      "channeluid": { "type": "integer" }
     }
   },
   "Textures.Details.Size": {
