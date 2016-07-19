@@ -34,6 +34,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 #include "xbmc/Application.h"
 #include "linux/RBP.h"
+#include "cores/VideoPlayer/DVDClock.h"
 
 extern "C" {
 #include "libavutil/imgutils.h"
@@ -403,6 +404,10 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_queue_render = nullptr;
   m_queue_process = nullptr;
   m_error = 0.0;
+  m_fps = 0.0;
+  m_lastPts = DVD_NOPTS_VALUE;
+  m_frameInterval = 0.0;
+  m_frameIntervalDiff = 1e5;
   m_vsync_count = ~0U;
   m_vout_width = 0;
   m_vout_height = 0;
@@ -449,14 +454,32 @@ void CMMALRenderer::Process()
   CLog::Log(LOGDEBUG, "%s::%s - starting", CLASSNAME, __func__);
   while (!bStop)
   {
-    g_RBP.WaitVsync();
     double dfps = g_graphicsContext.GetFPS();
-    if (dfps <= 0.0)
-      dfps = m_fps;
+    double fps = 0.0;
+    double inc = 1.0;
+    g_RBP.WaitVsync();
+
+    CSingleLock lock(m_sharedSection);
+    // if good enough framerate measure then use it
+    if (dfps > 0.0 && m_frameInterval > 0.0 && m_frameIntervalDiff * 1e-6 < 1e-3)
+    {
+      fps = 1e6 / m_frameInterval;
+      inc = fps / dfps;
+      if (fabs(inc - 1.0) < 1e-2)
+        inc = 1.0;
+      else if (fabs(inc - 0.5) < 1e-2)
+        inc = 0.5;
+      else if (fabs(inc - 24.0/60.0) < 1e-2)
+        inc = 24.0/60.0;
+      if (m_deint)
+        inc *= 2.0;
+    }
     // This algorithm is basically making the decision according to Bresenham's line algorithm.  Imagine drawing a line where x-axis is display frames, and y-axis is video frames
-    m_error += m_fps / dfps;
+    m_error += inc;
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - debug vsync:%d queue:%d fps:%.2f/%.2f/%.2f inc:%f diff:%f", CLASSNAME, __func__, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), fps, m_fps, dfps, inc, m_error);
     // we may need to discard frames if queue length gets too high or video frame rate is above display frame rate
-    while (mmal_queue_length(m_queue_render) > 2 || m_error > 1.0)
+    while (mmal_queue_length(m_queue_render) > 2 || (mmal_queue_length(m_queue_render) > 1 && m_error > 1.0))
     {
       if (m_error > 1.0)
         m_error -= 1.0;
@@ -635,6 +658,26 @@ void CMMALRenderer::Run()
   CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
 }
 
+void CMMALRenderer::UpdateFramerateStats(double pts)
+{
+  double diff = 0.0;
+  if (m_lastPts != DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE && pts - m_lastPts > 0.0 && pts - m_lastPts < DVD_SEC_TO_TIME(1./20.0))
+  {
+    diff = pts - m_lastPts;
+    if (m_frameInterval == 0.0)
+      m_frameInterval = diff;
+    else if (diff > 0.0)
+    {
+      m_frameIntervalDiff = m_frameIntervalDiff * 0.9 + 0.1 * fabs(m_frameInterval - diff);
+      m_frameInterval = m_frameInterval * 0.9 + diff * 0.1;
+    }
+  }
+  if (pts != DVD_NOPTS_VALUE)
+    m_lastPts = pts;
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s pts:%.3f diff:%.3f m_frameInterval:%.6f m_frameIntervalDiff:%.6f", CLASSNAME, __func__, pts*1e-6, diff * 1e-6 , m_frameInterval * 1e-6, m_frameIntervalDiff *1e-6);
+}
+
 void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
 {
   if (m_format != RENDER_FMT_MMAL)
@@ -649,6 +692,7 @@ void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
     CLog::Log(LOGDEBUG, "%s::%s MMAL - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
 
   m_buffers[index] = buffer->Acquire();
+  UpdateFramerateStats(pic.pts);
 }
 
 bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
@@ -662,6 +706,10 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
 
   m_fps = fps;
   m_iFlags = flags;
+  m_error = 0.0;
+  m_lastPts = DVD_NOPTS_VALUE;
+  m_frameInterval = 0.0;
+  m_frameIntervalDiff = 1e5;
 
   // cause SetVideoRect to trigger - needed after a hdmi mode change
   m_src_rect.SetRect(0, 0, 0, 0);
