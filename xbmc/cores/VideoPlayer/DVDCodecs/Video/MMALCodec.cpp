@@ -92,7 +92,6 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
   m_pFormatName = "mmal-xxxx";
 
   m_interlace_mode = MMAL_InterlaceProgressive;
-  m_interlace_method = VS_INTERLACEMETHOD_NONE;
   m_decoderPts = DVD_NOPTS_VALUE;
   m_demuxerPts = DVD_NOPTS_VALUE;
 
@@ -102,8 +101,6 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
   m_dec_input_pool = NULL;
   m_renderer = NULL;
 
-  m_deint = NULL;
-  m_deint_connection = NULL;
 
   m_codingType = 0;
 
@@ -127,9 +124,6 @@ CMMALVideo::~CMMALVideo()
 
   CSingleLock lock(m_sharedSection);
 
-  if (m_deint && m_deint->control && m_deint->control->is_enabled)
-    mmal_port_disable(m_deint->control);
-
   if (m_dec && m_dec->control && m_dec->control->is_enabled)
     mmal_port_disable(m_dec->control);
 
@@ -140,13 +134,6 @@ CMMALVideo::~CMMALVideo()
     mmal_port_disable(m_dec_output);
   m_dec_output = NULL;
 
-  if (m_deint_connection)
-    mmal_connection_destroy(m_deint_connection);
-  m_deint_connection = NULL;
-
-  if (m_deint && m_deint->is_enabled)
-    mmal_component_disable(m_deint);
-
   if (m_dec && m_dec->is_enabled)
       mmal_component_disable(m_dec);
 
@@ -154,10 +141,6 @@ CMMALVideo::~CMMALVideo()
     mmal_port_pool_destroy(m_dec_input, m_dec_input_pool);
   m_dec_input_pool = NULL;
   m_dec_input = NULL;
-
-  if (m_deint)
-    mmal_component_destroy(m_deint);
-  m_deint = NULL;
 
   if (m_dec)
     mmal_component_destroy(m_dec);
@@ -342,171 +325,6 @@ bool CMMALVideo::change_dec_output_format()
     CLog::Log(LOGERROR, "%s::%s Failed to commit decoder output port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
     return false;
   }
-  return true;
-}
-
-bool CMMALVideo::CreateDeinterlace(EINTERLACEMETHOD interlace_method)
-{
-  CSingleLock lock(m_sharedSection);
-  MMAL_STATUS_T status;
-
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s method:%d", CLASSNAME, __func__, interlace_method);
-
-  assert(!m_deint);
-  assert(m_dec_output == m_dec->output[0]);
-
-  status = mmal_port_disable(m_dec_output);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to disable decoder output port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  /* Create deinterlace filter */
-  status = mmal_component_create("vc.ril.image_fx", &m_deint);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to create deinterlace component (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-  bool advanced_deinterlace = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
-  bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
-
-  if (advanced_deinterlace && !half_framerate)
-     m_processInfo.SetVideoDeintMethod("adv(x2)");
-  else if (advanced_deinterlace && half_framerate)
-     m_processInfo.SetVideoDeintMethod("adv(x1)");
-  else if (!advanced_deinterlace && !half_framerate)
-     m_processInfo.SetVideoDeintMethod("bob(x2)");
-  else if (!advanced_deinterlace && half_framerate)
-     m_processInfo.SetVideoDeintMethod("bob(x1)");
-
-  MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {{MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param)},
-        advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {3, 0, half_framerate, 1 }};
-
-  status = mmal_port_parameter_set(m_deint->output[0], &imfx_param.hdr);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to set deinterlace parameters (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  MMAL_PORT_T *m_deint_input = m_deint->input[0];
-  m_deint_input->userdata = (struct MMAL_PORT_USERDATA_T *)this;
-
-  // Image_fx assumed 3 frames of context. simple deinterlace doesn't require this
-  status = mmal_port_parameter_set_uint32(m_deint_input, MMAL_PARAMETER_EXTRA_BUFFERS, GetAllowedReferences() - 4 + advanced_deinterlace ? 2:0);
-  if (status != MMAL_SUCCESS)
-    CLog::Log(LOGERROR, "%s::%s Failed to enable extra buffers on %s (status=%x %s)", CLASSNAME, __func__, m_deint_input->name, status, mmal_status_to_string(status));
-
-  // Now connect the decoder output port to deinterlace input port
-  status =  mmal_connection_create(&m_deint_connection, m_dec->output[0], m_deint->input[0], MMAL_CONNECTION_FLAG_TUNNELLING | MMAL_CONNECTION_FLAG_ALLOCATION_ON_INPUT);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to connect deinterlacer component %s (status=%x %s)", CLASSNAME, __func__, m_deint->name, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  status =  mmal_connection_enable(m_deint_connection);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to enable connection %s (status=%x %s)", CLASSNAME, __func__, m_deint->name, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  mmal_format_copy(m_deint->output[0]->format, m_es_format);
-
-  status = mmal_port_parameter_set_boolean(m_deint->output[0], MMAL_PARAMETER_ZERO_COPY, MMAL_TRUE);
-  if (status != MMAL_SUCCESS)
-    CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_deint->output[0]->name, status, mmal_status_to_string(status));
-
-  status = mmal_port_format_commit(m_deint->output[0]);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to commit deint output format (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  status = mmal_component_enable(m_deint);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to enable deinterlacer component %s (status=%x %s)", CLASSNAME, __func__, m_deint->name, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  m_deint->output[0]->buffer_size = m_deint->output[0]->buffer_size_min;
-  m_deint->output[0]->buffer_num = m_deint->output[0]->buffer_num_recommended;
-  m_deint->output[0]->userdata = (struct MMAL_PORT_USERDATA_T *)this;
-  status = mmal_port_enable(m_deint->output[0], dec_output_port_cb_static);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to enable decoder output port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  m_dec_output = m_deint->output[0];
-  m_interlace_method = interlace_method;
-  Prime();
-  return true;
-}
-
-bool CMMALVideo::DestroyDeinterlace()
-{
-  CSingleLock lock(m_sharedSection);
-  MMAL_STATUS_T status;
-
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
-
-  m_processInfo.SetVideoDeintMethod("none");
-
-  assert(m_deint);
-  assert(m_dec_output == m_deint->output[0]);
-
-  status = mmal_port_disable(m_dec_output);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to disable decoder output port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  status = mmal_connection_destroy(m_deint_connection);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to destroy deinterlace connection (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-  m_deint_connection = NULL;
-
-  status = mmal_component_disable(m_deint);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to disable deinterlace component (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  status = mmal_component_destroy(m_deint);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to destroy deinterlace component (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-  m_deint = NULL;
-
-  m_dec->output[0]->buffer_size = m_dec->output[0]->buffer_size_min;
-  m_dec->output[0]->buffer_num = m_dec->output[0]->buffer_num_recommended;
-  m_dec->output[0]->userdata = (struct MMAL_PORT_USERDATA_T *)this;
-  status = mmal_port_enable(m_dec->output[0], dec_output_port_cb_static);
-  if (status != MMAL_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to enable decoder output port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
-  m_dec_output = m_dec->output[0];
-  m_interlace_method = VS_INTERLACEMETHOD_NONE;
-  Prime();
   return true;
 }
 
@@ -850,34 +668,6 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
          CLog::Log(LOGERROR, "%s::%s Failed send buffer to decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
          return VC_ERROR;
        }
-
-       if (iSize == 0)
-       {
-         EDEINTERLACEMODE deinterlace_request = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-         EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
-         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
-           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
-         bool deinterlace = m_interlace_mode != MMAL_InterlaceProgressive;
-
-         // we don't keep up when running at 60fps in the background so switch to half rate
-         if (!g_graphicsContext.IsFullScreenVideo())
-         {
-           if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
-             interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
-           if (interlace_method == VS_INTERLACEMETHOD_MMAL_BOB)
-             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB_HALF;
-         }
-
-         if (m_hints.stills || deinterlace_request == VS_DEINTERLACEMODE_OFF || interlace_method == VS_INTERLACEMETHOD_NONE)
-           deinterlace = false;
-         else if (deinterlace_request == VS_DEINTERLACEMODE_FORCE)
-           deinterlace = true;
-
-         if (((deinterlace && interlace_method != m_interlace_method) || !deinterlace) && m_deint)
-           DestroyDeinterlace();
-         if (deinterlace && !m_deint)
-           CreateDeinterlace(interlace_method);
-       }
     }
     if (!iSize)
       break;
@@ -944,16 +734,12 @@ void CMMALVideo::Reset(void)
 
   if (m_dec_input && m_dec_input->is_enabled)
     mmal_port_disable(m_dec_input);
-  if (m_deint_connection && m_deint_connection->is_enabled)
-    mmal_connection_disable(m_deint_connection);
   if (m_dec_output && m_dec_output->is_enabled)
     mmal_port_disable(m_dec_output);
   if (!m_finished)
   {
     if (m_dec_input)
       mmal_port_enable(m_dec_input, dec_input_port_cb_static);
-    if (m_deint_connection)
-      mmal_connection_enable(m_deint_connection);
     if (m_dec_output)
       mmal_port_enable(m_dec_output, dec_output_port_cb_static);
   }

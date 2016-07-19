@@ -97,8 +97,6 @@ public:
 
 protected:
   void QueryCodec(void);
-  bool CreateDeinterlace(EINTERLACEMETHOD interlace_method);
-  bool DestroyDeinterlace();
   void Prime();
   void Dispose(void);
 
@@ -127,7 +125,6 @@ protected:
   unsigned          m_num_decoded;
   // Components
   MMAL_INTERLACETYPE_T m_interlace_mode;
-  EINTERLACEMETHOD  m_interlace_method;
   double            m_demuxerPts;
   double            m_decoderPts;
   int               m_speed;
@@ -147,8 +144,6 @@ protected:
   std::shared_ptr<CMMALPool> m_pool;
 
   MMAL_ES_FORMAT_T *m_es_format;
-  MMAL_COMPONENT_T *m_deint;
-  MMAL_CONNECTION_T *m_deint_connection;
 
   MMAL_FOURCC_T m_codingType;
   bool change_dec_output_format();
