@@ -226,7 +226,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldDirector) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_DIRECTOR);
     else if (field == FieldSeason) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_SEASON);
     else if (field == FieldEpisodeNumber) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_EPISODE);
-    else if (field == FieldUniqueId) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_UNIQUEID);
+    else if (field == FieldUniqueId) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_IDENT_ID);
     else if (field == FieldEpisodeNumberSpecialSort) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_SORTEPISODE);
     else if (field == FieldSeasonSpecialSort) result = StringUtils::Format("episode_view.c%02d", VIDEODB_ID_EPISODE_SORTSEASON);
     else if (field == FieldFilename) return "episode_view.strFilename";
@@ -645,7 +645,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldDirector) index = VIDEODB_ID_EPISODE_DIRECTOR;
     else if (field == FieldSeason) index = VIDEODB_ID_EPISODE_SEASON;
     else if (field == FieldEpisodeNumber) index = VIDEODB_ID_EPISODE_EPISODE;
-    else if (field == FieldUniqueId) index = VIDEODB_ID_EPISODE_UNIQUEID;
+    else if (field == FieldUniqueId) index = VIDEODB_ID_EPISODE_IDENT_ID;
     else if (field == FieldEpisodeNumberSpecialSort) index = VIDEODB_ID_EPISODE_SORTEPISODE;
     else if (field == FieldSeasonSpecialSort) index = VIDEODB_ID_EPISODE_SORTSEASON;
     else if (field == FieldFilename) return VIDEODB_DETAILS_EPISODE_FILE;

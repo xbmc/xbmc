@@ -1493,7 +1493,8 @@
       { "name": "userrating", "$ref": "Optional.Integer" },
       { "name": "ratings", "$ref": "Video.Ratings.Set" },
       { "name": "dateadded", "$ref": "Optional.String" },
-      { "name": "premiered", "$ref": "Optional.String", "description": "linked with year. Overriedes year" }
+      { "name": "premiered", "$ref": "Optional.String", "description": "linked with year. Overriedes year" },
+      { "name": "uniqueid", "type": [ "null", { "$ref": "Media.UniqueID.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1538,7 +1539,8 @@
       { "name": "ratings", "$ref": "Video.Ratings.Set" },
       { "name": "dateadded", "$ref": "Optional.String" },
       { "name": "runtime", "$ref": "Optional.Integer", "description": "Runtime in seconds" },
-      { "name": "status", "$ref": "Optional.String" }
+      { "name": "status", "$ref": "Optional.String" },
+      { "name": "uniqueid", "type": [ "null", { "$ref": "Media.UniqueID.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },
@@ -1581,7 +1583,8 @@
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null },
       { "name": "userrating", "$ref": "Optional.Integer" },
       { "name": "ratings", "$ref": "Video.Ratings.Set" },
-      { "name": "dateadded", "$ref": "Optional.String" }
+      { "name": "dateadded", "$ref": "Optional.String" },
+      { "name": "uniqueid", "type": [ "null", { "$ref": "Media.UniqueID.Set", "required": true } ], "default": null }
     ],
     "returns": "string"
   },

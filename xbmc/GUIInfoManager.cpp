@@ -8694,7 +8694,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
       break;
     case VIDEOPLAYER_IMDBNUMBER:
-      return m_currentFile->GetVideoInfoTag()->m_strIMDBNumber;
+      return m_currentFile->GetVideoInfoTag()->GetUniqueID();
     case VIDEOPLAYER_RATING:
       {
         std::string strRating;
@@ -10229,7 +10229,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasEPGInfoTag())
         return item->GetEPGInfoTag()->IMDBNumber();
       if (item->HasVideoInfoTag())
-        return item->GetVideoInfoTag()->m_strIMDBNumber;
+        return item->GetVideoInfoTag()->GetUniqueID();
       break;
     }
   case LISTITEM_EPISODENAME:

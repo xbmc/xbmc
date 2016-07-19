@@ -147,6 +147,17 @@ namespace XBMCAddon
       }
     }
 
+    void ListItem::setUniqueIDs(const Properties& dictionary)
+    {
+      if (!item) return;
+      if (!item->HasVideoInfoTag()) return;
+
+      LOCKGUI;
+      CVideoInfoTag& vtag = *item->GetVideoInfoTag();
+      for (Properties::const_iterator it = dictionary.begin(); it != dictionary.end(); ++it)
+        vtag.SetUniqueID(it->second, it->first);
+    }
+
     void ListItem::select(bool selected)
     {
       if (!item) return;
@@ -228,6 +239,12 @@ namespace XBMCAddon
     {
       LOCKGUI;
       return item->GetArt(key);
+    }
+
+    String ListItem::getUniqueID(const char* key)
+    {
+      LOCKGUI;
+      return item->GetVideoInfoTag()->GetUniqueID(key);
     }
 
 
@@ -398,7 +415,7 @@ namespace XBMCAddon
           else if (key == "set")
             item->GetVideoInfoTag()->m_strSet = value;
           else if (key == "imdbnumber")
-            item->GetVideoInfoTag()->m_strIMDBNumber = value;
+            item->GetVideoInfoTag()->SetUniqueID(value);
           else if (key == "code")
             item->GetVideoInfoTag()->m_strProductionCode = value;
           else if (key == "aired")
