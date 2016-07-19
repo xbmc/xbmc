@@ -358,6 +358,15 @@ if(NOT CMAKE_CROSSCOMPILING)
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
 endif()
 
+# code coverage
+if(CMAKE_BUILD_TYPE STREQUAL Coverage)
+  if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+    include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+  else()
+    message(FATAL_ERROR "Code coverage not (yet) implemented for platform ${CORE_SYSTEM_NAME}")
+  endif()
+endif()
+
 # link wrapper
 if(FFMPEG_LINK_EXECUTABLE)
   set(CMAKE_CXX_LINK_EXECUTABLE "${FFMPEG_LINK_EXECUTABLE}")

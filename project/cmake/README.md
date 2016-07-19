@@ -152,6 +152,12 @@ When using the makefile builds a few extra targets are defined:
 
 - `make check` builds and executes the test suite.
 
+Code coverage (with Gcov, LCOV and Gcovr) can be built on Linux:
+
+- CMake has to be executed with `-DCMAKE_BUILD_TYPE=Coverage`
+- `make coverage` generates an HTML code coverage report.
+- `make coverage_xml` generates an XML code coverage report.
+
 ## Sanitizers
 
 Clang and GCC support different kinds of Sanitizers. To enable a Sanitizer call CMake with the

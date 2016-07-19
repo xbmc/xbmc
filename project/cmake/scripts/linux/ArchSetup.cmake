@@ -22,3 +22,11 @@ if(ENABLE_LIRC)
   set(LIRC_DEVICE "\"/dev/lircd\"" CACHE STRING "LIRC device to use")
   set(DEP_DEFINES -DLIRC_DEVICE=${LIRC_DEVICE} -DHAVE_LIRC=1)
 endif()
+
+# Code Coverage
+if(CMAKE_BUILD_TYPE STREQUAL Coverage)
+  set(COVERAGE_TEST_BINARY ${APP_NAME_LC}-test)
+  set(COVERAGE_SOURCE_DIR ${CORE_SOURCE_DIR})
+  set(COVERAGE_DEPENDS "\${APP_NAME_LC}" "\${APP_NAME_LC}-test")
+  set(COVERAGE_EXCLUDES */test/* lib/* */lib/*)
+endif()
