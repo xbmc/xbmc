@@ -102,7 +102,6 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
   m_dec_input = NULL;
   m_dec_output = NULL;
   m_dec_input_pool = NULL;
-  m_renderer = NULL;
   m_pool = nullptr;
 
   m_codingType = 0;
@@ -366,7 +365,6 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_processInfo.SetVideoDeintMethod("none");
 
   m_hints = hints;
-  m_renderer = (CMMALRenderer *)options.m_opaque_pointer;
   MMAL_STATUS_T status;
 
   m_decoded_width = hints.width;

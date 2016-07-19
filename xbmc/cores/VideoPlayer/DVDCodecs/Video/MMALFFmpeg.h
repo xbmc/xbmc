@@ -70,7 +70,6 @@ protected:
   AVCodecContext *m_avctx;
   unsigned int m_shared;
   CCriticalSection m_section;
-  CMMALRenderer *m_renderer;
   std::shared_ptr<CMMALPool> m_pool;
   enum AVPixelFormat m_fmt;
 };

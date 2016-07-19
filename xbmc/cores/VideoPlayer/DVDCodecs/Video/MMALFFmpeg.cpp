@@ -223,11 +223,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
 {
   CSingleLock lock(m_section);
 
-  m_renderer = (CMMALRenderer *)mainctx->hwaccel_context;
-
-  CLog::Log(LOGNOTICE, "%s::%s - m_renderer:%p", CLASSNAME, __FUNCTION__, m_renderer);
-  assert(m_renderer);
-  mainctx->hwaccel_context = nullptr;
+  CLog::Log(LOGNOTICE, "%s::%s - fmt:%d", CLASSNAME, __FUNCTION__, fmt);
 
   if (surfaces > m_shared)
     m_shared = surfaces;
