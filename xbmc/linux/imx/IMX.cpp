@@ -35,12 +35,16 @@
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
+#include "guilib/GraphicContext.h"
 
 #define  DCIC_DEVICE    "/dev/mxc_dcic0"
 #define  FB_DEVICE      "/dev/fb0"
 
-CIMX::CIMX(void) : CThread("CIMX"), m_change(true), m_frameTime(1000)
+CIMX::CIMX(void) : CThread("CIMX")
+  , m_change(true)
+  , m_lastSyncFlag(0)
 {
+  m_frameTime = (double)1300 / g_graphicsContext.GetFPS();
   g_Windowing.Register(this);
 }
 
@@ -138,7 +142,8 @@ int CIMX::WaitVsync()
   if (!IsRunning())
     Initialize();
 
-  m_VblankEvent.WaitMSec(m_frameTime);
+  if (!m_VblankEvent.WaitMSec(m_frameTime))
+    m_counter++;
 
   diff = m_counter - m_counterLast;
   m_counterLast = m_counter;
@@ -148,5 +153,6 @@ int CIMX::WaitVsync()
 
 void CIMX::OnResetDisplay()
 {
+  m_frameTime = (double)1300 / g_graphicsContext.GetFPS();
   m_change = true;
 }
