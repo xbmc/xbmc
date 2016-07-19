@@ -466,7 +466,7 @@ failed:
   return;
 }
 
-void CUPnPPlayer::SeekTime(__int64 ms)
+void CUPnPPlayer::SeekTime(int64_t ms)
 {
   NPT_CHECK_LABEL(m_control->Seek(m_delegate->m_device
                                 , m_delegate->m_instance
@@ -479,7 +479,7 @@ failed:
   CLog::Log(LOGERROR, "UPNP: CUPnPPlayer::SeekTime - unable to seek playback");
 }
 
-float CUPnPPlayer::GetPercentage()
+float CUPnPPlayer::GetPercentage() const
 {
   int64_t tot = GetTotalTime();
   if(tot)
@@ -564,7 +564,7 @@ failed:
   return;
 }
 
-int64_t CUPnPPlayer::GetTime()
+int64_t CUPnPPlayer::GetTime() const
 {
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
   return m_delegate->m_posinfo.rel_time.ToMillis();
@@ -572,7 +572,7 @@ failed:
   return 0;
 }
 
-int64_t CUPnPPlayer::GetTotalTime()
+int64_t CUPnPPlayer::GetTotalTime() const
 {
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
   return m_delegate->m_posinfo.track_duration.ToMillis();
@@ -580,7 +580,7 @@ failed:
   return 0;
 };
 
-std::string CUPnPPlayer::GetPlayingTitle()
+std::string CUPnPPlayer::GetPlayingTitle() const
 {
   return "";
 };
@@ -607,7 +607,7 @@ void CUPnPPlayer::SetSpeed(int iSpeed)
 
 }
 
-int CUPnPPlayer::GetSpeed()
+int CUPnPPlayer::GetSpeed() const
 {
   if (IsPaused())
     return 0;

@@ -242,35 +242,35 @@ public:
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
-  virtual bool CanPause() { return true; };
+  virtual bool CanPause() const { return true; };
   virtual void Pause() = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
   virtual bool HasRDS() const { return false; }
   virtual bool IsPassthrough() const { return false;}
-  virtual bool CanSeek() {return true;}
+  virtual bool CanSeek() const {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
   virtual bool SeekScene(bool bPlus = true) {return false;}
   virtual void SeekPercentage(float fPercent = 0){}
-  virtual float GetPercentage(){ return 0;}
-  virtual float GetCachePercentage(){ return 0;}
+  virtual float GetPercentage() const { return 0;}
+  virtual float GetCachePercentage() const { return 0;}
   virtual void SetMute(bool bOnOff){}
   virtual void SetVolume(float volume){}
   virtual void SetDynamicRangeCompression(long drc){}
-  virtual bool CanRecord() { return false;};
-  virtual bool IsRecording() { return false;};
+  virtual bool CanRecord() const { return false;};
+  virtual bool IsRecording() const { return false;};
   virtual bool Record(bool bOnOff) { return false;};
 
   virtual void  SetAVDelay(float fValue = 0.0f) { return; }
-  virtual float GetAVDelay()                    { return 0.0f;};
+  virtual float GetAVDelay() const { return 0.0f;};
 
   virtual void SetSubTitleDelay(float fValue = 0.0f){};
-  virtual float GetSubTitleDelay()    { return 0.0f; }
-  virtual int  GetSubtitleCount()     { return 0; }
-  virtual int  GetSubtitle()          { return -1; }
-  virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info){};
-  virtual void SetSubtitle(int iStream){};
-  virtual bool GetSubtitleVisible(){ return false;};
+  virtual float GetSubTitleDelay() const { return 0.0f; }
+  virtual int  GetSubtitleCount() const { return 0; }
+  virtual int  GetSubtitle() const { return -1; }
+  virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info)const {};
+  virtual void SetSubtitle(int iStream) {};
+  virtual bool GetSubtitleVisible() const { return false;};
   virtual void SetSubtitleVisible(bool bVisible){};
 
   /** \brief Adds the subtitle(s) provided by the given file to the available player streams
@@ -279,25 +279,25 @@ public:
   */
   virtual void  AddSubtitle(const std::string& strSubPath) {};
 
-  virtual int  GetAudioStreamCount()  { return 0; }
-  virtual int  GetAudioStream()       { return -1; }
+  virtual int  GetAudioStreamCount() const { return 0; }
+  virtual int  GetAudioStream() const { return -1; }
   virtual void SetAudioStream(int iStream){};
-  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info){};
+  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) const {};
 
   virtual int GetVideoStream() const { return -1; }
   virtual int GetVideoStreamCount() const { return 0; }
-  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) {}
+  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) const {}
   virtual void SetVideoStream(int iStream) {}
 
-  virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
+  virtual TextCacheStruct_t* GetTeletextCache() const { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
 
-  virtual std::string GetRadioText(unsigned int line) { return ""; };
+  virtual std::string GetRadioText(unsigned int line) const { return ""; };
 
-  virtual int  GetChapterCount()                               { return 0; }
-  virtual int  GetChapter()                                    { return -1; }
-  virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) { return; }
-  virtual int64_t GetChapterPos(int chapterIdx=-1)             { return 0; }
+  virtual int  GetChapterCount() const { return 0; }
+  virtual int  GetChapter() const { return -1; }
+  virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) const { return; }
+  virtual int64_t GetChapterPos(int chapterIdx=-1) const { return 0; }
   virtual int  SeekChapter(int iChapter)                       { return -1; }
 //  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
 
@@ -311,7 +311,7 @@ public:
   /*!
    \brief current time in milliseconds
    */
-  virtual int64_t GetTime() { return 0; }
+  virtual int64_t GetTime() const { return 0; }
   /*!
    \brief Sets the current time. This 
    can be used for injecting the current time. 
@@ -323,17 +323,17 @@ public:
   /*!
    \brief total time in milliseconds
    */
-  virtual int64_t GetTotalTime() { return 0; }
+  virtual int64_t GetTotalTime() const { return 0; }
   /*!
    \brief Set the total time  in milliseconds
    this can be used for injecting the duration in case
    its not available in the underlaying decoder (airtunes for example)
    */
   virtual void SetTotalTime(int64_t time) { }
-  virtual int GetSourceBitrate(){ return 0;}
-  virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
+  virtual int GetSourceBitrate() const { return 0;}
+  virtual bool GetStreamDetails(CStreamDetails &details) const { return false;}
   virtual void SetSpeed(int iSpeed) = 0;
-  virtual int GetSpeed() = 0;
+  virtual int GetSpeed() const = 0;
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
@@ -349,10 +349,10 @@ public:
   virtual bool OnAction(const CAction &action) { return false; };
 
   //returns a state that is needed for resuming from a specific time
-  virtual std::string GetPlayerState() { return ""; };
+  virtual std::string GetPlayerState() const { return ""; };
   virtual bool SetPlayerState(const std::string& state) { return false;};
   
-  virtual std::string GetPlayingTitle() { return ""; };
+  virtual std::string GetPlayingTitle() const { return ""; };
 
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) { return false; }
 
@@ -378,18 +378,18 @@ public:
    \brief define the audio capabilities of the player (default=all)
    */
 
-  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
+  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) const { audioCaps.assign(1,IPC_AUD_ALL); };
   /*!
    \brief define the subtitle capabilities of the player
    */
-  virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
+  virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) const { subCaps.assign(1,IPC_SUBS_ALL); };
 
   /*!
    \breif hook into render loop of render thread
    */
   virtual void FrameMove() {};
 
-  virtual bool HasFrame() { return false; };
+  virtual bool HasFrame() const { return false; };
 
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
 
@@ -397,25 +397,25 @@ public:
 
   virtual void SetRenderViewMode(int mode) {};
 
-  virtual float GetRenderAspectRatio() { return 1.0; };
+  virtual float GetRenderAspectRatio() const { return 1.0; };
 
   virtual void TriggerUpdateResolution() {};
 
-  virtual bool IsRenderingVideo() { return false; };
+  virtual bool IsRenderingVideo() const { return false; };
 
-  virtual bool IsRenderingGuiLayer() { return false; };
+  virtual bool IsRenderingGuiLayer() const { return false; };
 
-  virtual bool IsRenderingVideoLayer() { return false; };
+  virtual bool IsRenderingVideoLayer() const { return false; };
 
-  virtual bool Supports(EDEINTERLACEMODE mode) { return false; };
-  virtual bool Supports(EINTERLACEMETHOD method) { return false; };
-  virtual bool Supports(ESCALINGMETHOD method) { return false; };
-  virtual bool Supports(ERENDERFEATURE feature) { return false; };
+  virtual bool Supports(EDEINTERLACEMODE mode) const { return false; };
+  virtual bool Supports(EINTERLACEMETHOD method) const { return false; };
+  virtual bool Supports(ESCALINGMETHOD method) const { return false; };
+  virtual bool Supports(ERENDERFEATURE feature) const { return false; };
 
   virtual unsigned int RenderCaptureAlloc() { return 0; };
   virtual void RenderCaptureRelease(unsigned int captureId) {};
   virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
-  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
+  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) const { return false; };
 
   std::string m_name;
   std::string m_type;

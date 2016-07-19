@@ -104,7 +104,7 @@ CVideoPlayerVideo::~CVideoPlayerVideo()
   StopThread();
 }
 
-double CVideoPlayerVideo::GetOutputDelay()
+double CVideoPlayerVideo::GetOutputDelay() const
 {
     double time = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET);
     if( m_fFrameRate )
@@ -728,7 +728,7 @@ void CVideoPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 }
 #endif
 
-std::string CVideoPlayerVideo::GetStereoMode()
+std::string CVideoPlayerVideo::GetStereoMode() const
 {
   std::string  stereo_mode;
 
@@ -907,7 +907,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   return result;
 }
 
-std::string CVideoPlayerVideo::GetPlayerInfo()
+std::string CVideoPlayerVideo::GetPlayerInfo() const
 {
   std::ostringstream s;
   s << "vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
@@ -925,7 +925,7 @@ std::string CVideoPlayerVideo::GetPlayerInfo()
   return s.str();
 }
 
-int CVideoPlayerVideo::GetVideoBitrate()
+int CVideoPlayerVideo::GetVideoBitrate() const
 {
   return (int)m_videoStats.GetBitrate();
 }
@@ -941,7 +941,7 @@ void CVideoPlayerVideo::ResetFrameRateCalc()
                         g_advancedSettings.m_videoFpsDetect == 0;
 }
 
-double CVideoPlayerVideo::GetCurrentPts()
+double CVideoPlayerVideo::GetCurrentPts() const
 {
   double renderPts;
   int sleepTime;

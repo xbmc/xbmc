@@ -58,7 +58,7 @@ void CInputStreamAddon::Close()
     return m_addon->Close();
 }
 
-bool CInputStreamAddon::IsEOF()
+bool CInputStreamAddon::IsEOF() const
 {
   return false;
 }
@@ -79,7 +79,7 @@ int64_t CInputStreamAddon::Seek(int64_t offset, int whence)
   return m_addon->SeekStream(offset, whence);
 }
 
-int64_t CInputStreamAddon::GetLength()
+int64_t CInputStreamAddon::GetLength() const
 {
   if (!m_addon)
     return -1;
@@ -96,12 +96,12 @@ bool CInputStreamAddon::Pause(double dTime)
   return true;
 }
 
-bool CInputStreamAddon::CanSeek()
+bool CInputStreamAddon::CanSeek() const
 {
   return m_canSeek;
 }
 
-bool CInputStreamAddon::CanPause()
+bool CInputStreamAddon::CanPause() const
 {
   return m_canPause;
 }
@@ -117,7 +117,7 @@ CDVDInputStream::IDisplayTime* CInputStreamAddon::GetIDisplayTime()
   return this;
 }
 
-int CInputStreamAddon::GetTotalTime()
+int CInputStreamAddon::GetTotalTime() const
 {
   if (!m_addon)
     return 0;
@@ -125,7 +125,7 @@ int CInputStreamAddon::GetTotalTime()
   return m_addon->GetTotalTime();
 }
 
-int CInputStreamAddon::GetTime()
+int CInputStreamAddon::GetTime() const
 {
   if (!m_addon)
     return 0;

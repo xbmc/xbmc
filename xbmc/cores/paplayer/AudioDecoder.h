@@ -60,22 +60,22 @@ public:
 
   int ReadSamples(int numsamples);
 
-  bool CanSeek() { if (m_codec) return m_codec->CanSeek(); else return false; };
+  bool CanSeek() const { if (m_codec) return m_codec->CanSeek(); else return false; };
   int64_t Seek(int64_t time);
-  int64_t TotalTime();
+  int64_t TotalTime() const;
   void SetTotalTime(int64_t time);
   void Start() { m_canPlay = true;}; // cause a pre-buffered stream to start.
-  int GetStatus() { return m_status; };
+  int GetStatus() const { return m_status; };
   void SetStatus(int status) { m_status = status; }
 
-  AEAudioFormat GetFormat();
-  unsigned int GetChannels() { return GetFormat().m_channelLayout.Count(); }
+  AEAudioFormat GetFormat() const;
+  unsigned int GetChannels() const { return GetFormat().m_channelLayout.Count(); }
   // Data management
-  unsigned int GetDataSize();
+  unsigned int GetDataSize() const;
   void *GetData(unsigned int samples);
   uint8_t* GetRawData(int &size);
   ICodec *GetCodec() const { return m_codec; }
-  float GetReplayGain();
+  float GetReplayGain() const;
 
 private:
   // pcm buffer
@@ -93,7 +93,7 @@ private:
 
   // status
   bool m_eof;
-  int m_status;
+  mutable int m_status;
   bool m_canPlay;
 
   // the codec we're using

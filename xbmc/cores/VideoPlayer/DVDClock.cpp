@@ -55,7 +55,7 @@ CDVDClock::~CDVDClock()
 }
 
 // Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
-double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
+double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/) const
 {
   CSingleLock lock(m_systemsection);
 
@@ -95,7 +95,7 @@ void CDVDClock::SetVsyncAdjust(double adjustment)
   m_vSyncAdjust = adjustment;
 }
 
-double CDVDClock::GetVsyncAdjust()
+double CDVDClock::GetVsyncAdjust() const
 {
   CSingleLock lock(m_critSection);
   return m_vSyncAdjust;
@@ -160,7 +160,7 @@ void CDVDClock::SetSpeedAdjust(double adjust)
   m_speedAdjust = adjust;
 }
 
-double CDVDClock::GetSpeedAdjust()
+double CDVDClock::GetSpeedAdjust() const
 {
   CSingleLock lock(m_critSection);
   return m_speedAdjust;
@@ -260,12 +260,12 @@ bool CDVDClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& Ref
   return m_videoRefClock->GetClockInfo(MissedVblanks, ClockSpeed, RefreshRate);
 }
 
-double CDVDClock::SystemToAbsolute(int64_t system)
+double CDVDClock::SystemToAbsolute(int64_t system) const
 {
   return DVD_TIME_BASE * (double)(system - m_systemOffset) / m_systemFrequency;
 }
 
-int64_t CDVDClock::AbsoluteToSystem(double absolute)
+int64_t CDVDClock::AbsoluteToSystem(double absolute) const
 {
   return (int64_t)(absolute / DVD_TIME_BASE * m_systemFrequency) + m_systemOffset;
 }
@@ -295,7 +295,7 @@ double CDVDClock::SystemToPlaying(int64_t system)
   return DVD_TIME_BASE * (double)(current - m_startClock + m_systemAdjust) / m_systemUsed + m_iDisc;
 }
 
-double CDVDClock::GetClockSpeed()
+double CDVDClock::GetClockSpeed() const
 {
   double speed = (double)m_systemFrequency / m_systemUsed;
   return m_videoRefClock->GetSpeed() * speed;

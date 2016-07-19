@@ -78,7 +78,7 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
-std::string CDemuxStreamAudioFFmpeg::GetStreamName()
+std::string CDemuxStreamAudioFFmpeg::GetStreamName() const
 {
   if(!m_stream)
     return "";
@@ -88,7 +88,7 @@ std::string CDemuxStreamAudioFFmpeg::GetStreamName()
     return CDemuxStream::GetStreamName();
 }
 
-std::string CDemuxStreamSubtitleFFmpeg::GetStreamName()
+std::string CDemuxStreamSubtitleFFmpeg::GetStreamName() const
 {
   if(!m_stream)
     return "";
@@ -98,7 +98,7 @@ std::string CDemuxStreamSubtitleFFmpeg::GetStreamName()
     return CDemuxStream::GetStreamName();
 }
 
-std::string CDemuxStreamVideoFFmpeg::GetStreamName()
+std::string CDemuxStreamVideoFFmpeg::GetStreamName() const
 {
   if (!m_stream)
     return "";
@@ -177,7 +177,7 @@ CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
   ff_flush_avutil_log_buffers();
 }
 
-bool CDVDDemuxFFmpeg::Aborted()
+bool CDVDDemuxFFmpeg::Aborted() const
 {
   if(m_timeout.IsTimePast())
     return true;
@@ -749,7 +749,7 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(CURL &url)
   return options;
 }
 
-double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
+double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num) const
 {
   if (pts == (int64_t)AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
@@ -1109,7 +1109,7 @@ void CDVDDemuxFFmpeg::UpdateCurrentPTS()
   }
 }
 
-int CDVDDemuxFFmpeg::GetStreamLength()
+int CDVDDemuxFFmpeg::GetStreamLength() const
 {
   if (!m_pFormatContext)
     return 0;
@@ -1495,7 +1495,7 @@ void CDVDDemuxFFmpeg::AddStream(int streamIdx, CDemuxStream* stream)
 }
 
 
-std::string CDVDDemuxFFmpeg::GetFileName()
+std::string CDVDDemuxFFmpeg::GetFileName() const
 {
   if(m_pInput)
     return m_pInput->GetFileName();
@@ -1503,7 +1503,7 @@ std::string CDVDDemuxFFmpeg::GetFileName()
     return "";
 }
 
-int CDVDDemuxFFmpeg::GetChapterCount()
+int CDVDDemuxFFmpeg::GetChapterCount() const
 {
   CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
   if(ich)
@@ -1515,7 +1515,7 @@ int CDVDDemuxFFmpeg::GetChapterCount()
   return m_pFormatContext->nb_chapters;
 }
 
-int CDVDDemuxFFmpeg::GetChapter()
+int CDVDDemuxFFmpeg::GetChapter() const
 {
   CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
   if(ich)
@@ -1536,7 +1536,7 @@ int CDVDDemuxFFmpeg::GetChapter()
   return 0;
 }
 
-void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx)
+void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx) const
 {
   if (chapterIdx <= 0 || chapterIdx > GetChapterCount())
     chapterIdx = GetChapter();
@@ -1555,7 +1555,7 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName, int chapterIdx
   }
 }
 
-int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
+int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx) const
 {
   if (chapterIdx <= 0 || chapterIdx > GetChapterCount())
     chapterIdx = GetChapter();
@@ -1601,7 +1601,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
 }
 
-std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
+std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId) const
 {
   CDemuxStream *stream = GetStream(iStreamId);
   std::string strName;
@@ -1654,7 +1654,7 @@ std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
   return strName;
 }
 
-bool CDVDDemuxFFmpeg::IsProgramChange()
+bool CDVDDemuxFFmpeg::IsProgramChange() const
 {
   if (m_program == UINT_MAX)
     return false;
@@ -1791,7 +1791,7 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
   }
 }
 
-bool CDVDDemuxFFmpeg::IsVideoReady()
+bool CDVDDemuxFFmpeg::IsVideoReady() const
 {
   AVStream *st;
   bool hasVideo = false;

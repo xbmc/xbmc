@@ -224,7 +224,7 @@ void CDVDInputStreamBluray::Abort()
   m_hold = HOLD_EXIT;
 }
 
-bool CDVDInputStreamBluray::IsEOF()
+bool CDVDInputStreamBluray::IsEOF() const
 {
   return false;
 }
@@ -892,7 +892,7 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
 #endif
 
 
-int CDVDInputStreamBluray::GetTotalTime()
+int CDVDInputStreamBluray::GetTotalTime() const
 {
   if(m_title)
     return (int)(m_title->duration / 90);
@@ -900,7 +900,7 @@ int CDVDInputStreamBluray::GetTotalTime()
     return 0;
 }
 
-int CDVDInputStreamBluray::GetTime()
+int CDVDInputStreamBluray::GetTime() const
 {
   return m_dispTimeBeforeRead;
 }
@@ -913,7 +913,7 @@ bool CDVDInputStreamBluray::PosTime(int ms)
     return true;
 }
 
-int CDVDInputStreamBluray::GetChapterCount()
+int CDVDInputStreamBluray::GetChapterCount() const
 {
   if(m_title)
     return m_title->chapter_count;
@@ -921,7 +921,7 @@ int CDVDInputStreamBluray::GetChapterCount()
     return 0;
 }
 
-int CDVDInputStreamBluray::GetChapter()
+int CDVDInputStreamBluray::GetChapter() const
 {
   if(m_title)
     return m_dll->bd_get_current_chapter(m_bd) + 1;
@@ -937,7 +937,7 @@ bool CDVDInputStreamBluray::SeekChapter(int ch)
     return true;
 }
 
-int64_t CDVDInputStreamBluray::GetChapterPos(int ch)
+int64_t CDVDInputStreamBluray::GetChapterPos(int ch) const
 {
   if (ch == -1 || ch > GetChapterCount())
     ch = GetChapter();
@@ -983,7 +983,7 @@ int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)
 #endif
 }
 
-int64_t CDVDInputStreamBluray::GetLength()
+int64_t CDVDInputStreamBluray::GetLength() const
 {
   return m_dll->bd_get_title_size(m_bd);
 }
@@ -1002,7 +1002,7 @@ static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, char* lang
   return true;
 }
 
-void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
+void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language) const
 {
   if(!m_title || m_clip >= m_title->clip_count)
     return;
@@ -1106,7 +1106,7 @@ void CDVDInputStreamBluray::OnMenu()
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed");
 }
 
-bool CDVDInputStreamBluray::IsInMenu()
+bool CDVDInputStreamBluray::IsInMenu() const
 {
   if(m_bd == NULL || !m_navmode)
     return false;
@@ -1127,7 +1127,7 @@ void CDVDInputStreamBluray::SkipStill()
   }
 }
 
-bool CDVDInputStreamBluray::HasMenu()
+bool CDVDInputStreamBluray::HasMenu() const
 {
   return m_navmode;
 }

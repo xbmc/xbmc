@@ -615,18 +615,18 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   return true;
 }
 
-std::string CVideoPlayerAudio::GetPlayerInfo()
+std::string CVideoPlayerAudio::GetPlayerInfo() const
 {
   CSingleLock lock(m_info_section);
   return m_info.info;
 }
 
-int CVideoPlayerAudio::GetAudioBitrate()
+int CVideoPlayerAudio::GetAudioBitrate() const
 {
   return (int)m_audioStats.GetBitrate();
 }
 
-int CVideoPlayerAudio::GetAudioChannels()
+int CVideoPlayerAudio::GetAudioChannels() const
 {
   return m_streaminfo.channels;
 }

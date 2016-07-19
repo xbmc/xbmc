@@ -55,18 +55,18 @@ public:
   //! \brief Pause stream
   virtual bool Pause(double dTime) override;
   //! \brief Return true if we have reached EOF
-  virtual bool IsEOF() override;
+  virtual bool IsEOF() const override;
 
-  virtual bool CanSeek() override;
-  virtual bool CanPause() override;
+  virtual bool CanSeek() const override;
+  virtual bool CanPause() const override;
 
   //! \brief Get length of input data
-  virtual int64_t GetLength() override;
+  virtual int64_t GetLength() const override;
 
   // IDisplayTime
   virtual CDVDInputStream::IDisplayTime* GetIDisplayTime() override;
-  virtual int GetTotalTime() override;
-  virtual int GetTime() override;
+  virtual int GetTotalTime() const override;
+  virtual int GetTime() const override;
 
   // IPosTime
   virtual CDVDInputStream::IPosTime* GetIPosTime() override;

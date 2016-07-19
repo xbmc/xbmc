@@ -101,7 +101,7 @@ public:
     delete [] ExtraData;
   }
 
-  virtual std::string GetStreamName();
+  virtual std::string GetStreamName() const;
 
   int uniqueId;          // unique stream id
   int dvdNavId;
@@ -189,7 +189,7 @@ public:
 
   virtual ~CDemuxStreamAudio() {}
 
-  std::string GetStreamType();
+  std::string GetStreamType() const;
 
   int iChannels;
   int iSampleRate;
@@ -270,25 +270,25 @@ public:
   /*
    * Get the number of chapters available
    */
-  virtual int GetChapterCount() { return 0; }
+  virtual int GetChapterCount() const { return 0; }
 
   /*
    * Get current chapter
    */
-  virtual int GetChapter() { return 0; }
+  virtual int GetChapter() const { return 0; }
 
   /*
    * Get the name of a chapter
    * \param strChapterName[out] Name of chapter
    * \param chapterIdx -1 for current chapter, else a chapter index
    */
-  virtual void GetChapterName(std::string& strChapterName, int chapterIdx=-1) {}
+  virtual void GetChapterName(std::string& strChapterName, int chapterIdx=-1) const {}
 
   /*
    * Get the position of a chapter
    * \param chapterIdx -1 for current chapter, else a chapter index
    */
-  virtual int64_t GetChapterPos(int chapterIdx=-1) { return 0; }
+  virtual int64_t GetChapterPos(int chapterIdx=-1) const { return 0; }
 
   /*
    * Set the playspeed, if demuxer can handle different
@@ -299,7 +299,7 @@ public:
   /*
    * returns the total time in msec
    */
-  virtual int GetStreamLength() = 0;
+  virtual int GetStreamLength() const = 0;
 
   /*
    * returns the stream or NULL on error
@@ -316,22 +316,22 @@ public:
   /*
    * returns opened filename
    */
-  virtual std::string GetFileName() = 0;
+  virtual std::string GetFileName() const = 0;
 
   /*
    * return nr of subtitle streams, 0 if none
    */
-  int GetNrOfSubtitleStreams();
+  int GetNrOfSubtitleStreams() const;
 
   /*
    * return a user-presentable codec name of the given stream
    */
-  virtual std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) { return GetStreamCodecName(iStreamId); };
+  virtual std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) const { return GetStreamCodecName(iStreamId); };
 
   /*
   * return true if demuxer supports enabling at a specific PTS
   */
-  virtual bool SupportsEnableAtPTS(int64_t demuxerId) { return SupportsEnableAtPTS(); };
+  virtual bool SupportsEnableAtPTS(int64_t demuxerId) const { return SupportsEnableAtPTS(); };
 
   /*
    * enable / disable demux stream
@@ -352,16 +352,16 @@ public:
   /*
   * return the id of the demuxer
   */
-  int64_t GetDemuxerId() { return m_demuxerId; };
+  int64_t GetDemuxerId() const { return m_demuxerId; };
 
 protected:
   virtual void EnableStream(int id, bool enable) {};
   virtual void EnableStreamAtPTS(int id, uint64_t pts) {};
-  virtual bool SupportsEnableAtPTS() { return false; };
+  virtual bool SupportsEnableAtPTS() const { return false; };
   virtual CDemuxStream* GetStream(int iStreamId) const = 0;
-  virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
+  virtual std::string GetStreamCodecName(int iStreamId) const { return ""; };
 
-  int GetNrOfStreams(StreamType streamType);
+  int GetNrOfStreams(StreamType streamType) const;
 
   int64_t m_demuxerId;
 

@@ -150,20 +150,20 @@ public:
   virtual bool IsInited() const = 0;
   virtual void SendMessage(CDVDMsg* pMsg, int priority = 0) = 0;
   virtual void EnableSubtitle(bool bEnable) = 0;
-  virtual bool IsSubtitleEnabled() = 0;
+  virtual bool IsSubtitleEnabled() const = 0;
   virtual void EnableFullscreen(bool bEnable) = 0;
-  virtual double GetSubtitleDelay() = 0;
+  virtual double GetSubtitleDelay() const = 0;
   virtual void SetSubtitleDelay(double delay) = 0;
   virtual bool IsStalled() const = 0;
-  virtual double GetCurrentPts() = 0;
-  virtual double GetOutputDelay() = 0;
-  virtual std::string GetPlayerInfo() = 0;
-  virtual int GetVideoBitrate() = 0;
-  virtual std::string GetStereoMode() = 0;
+  virtual double GetCurrentPts() const = 0;
+  virtual double GetOutputDelay() const = 0;
+  virtual std::string GetPlayerInfo() const = 0;
+  virtual int GetVideoBitrate() const = 0;
+  virtual std::string GetStereoMode() const = 0;
   virtual void SetSpeed(int iSpeed) = 0;
-  virtual int  GetDecoderBufferSize() { return 0; }
-  virtual int  GetDecoderFreeSpace() = 0;
-  virtual bool IsEOS() { return false; };
+  virtual int  GetDecoderBufferSize() const { return 0; }
+  virtual int  GetDecoderFreeSpace() const = 0;
+  virtual bool IsEOS() const { return false; };
 };
 
 class CDVDAudioCodec;
@@ -184,12 +184,12 @@ public:
   virtual void SetVolume(float fVolume) {};
   virtual void SetMute(bool bOnOff) {};
   virtual void SetDynamicRangeCompression(long drc) = 0;
-  virtual std::string GetPlayerInfo() = 0;
-  virtual int GetAudioBitrate() = 0;
-  virtual int GetAudioChannels() = 0;
-  virtual double GetCurrentPts() = 0;
+  virtual std::string GetPlayerInfo() const = 0;
+  virtual int GetAudioBitrate() const = 0;
+  virtual int GetAudioChannels() const = 0;
+  virtual double GetCurrentPts() const = 0;
   virtual bool IsStalled() const = 0;
   virtual bool IsPassthrough() const = 0;
   virtual float GetDynamicRangeAmplification() const = 0;
-  virtual bool IsEOS() { return false; };
+  virtual bool IsEOS() const { return false; };
 };

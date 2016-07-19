@@ -45,7 +45,7 @@ public:
   {}
   std::string      m_description;
 
-  virtual std::string GetStreamName() override;
+  virtual std::string GetStreamName() const override;
 };
 
 
@@ -61,7 +61,7 @@ public:
   {}
   std::string m_description;
 
-  virtual std::string GetStreamName() override;
+  virtual std::string GetStreamName() const override;
 };
 
 class CDemuxStreamSubtitleFFmpeg
@@ -76,7 +76,7 @@ public:
   {}
   std::string m_description;
 
-  virtual std::string GetStreamName() override;
+  virtual std::string GetStreamName() const override;
 
 };
 
@@ -92,29 +92,29 @@ public:
 
   bool Open(CDVDInputStream* pInput, bool streaminfo = true, bool fileinfo = false);
   void Dispose();
-  void Reset();
-  void Flush();
-  void Abort();
-  void SetSpeed(int iSpeed);
-  virtual std::string GetFileName();
+  void Reset() override;
+  void Flush() override;
+  void Abort() override;
+  void SetSpeed(int iSpeed) override;
+  virtual std::string GetFileName() const override;
 
-  DemuxPacket* Read();
+  DemuxPacket* Read() override;
 
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
+  bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override;
   bool SeekByte(int64_t pos);
-  int GetStreamLength();
+  int GetStreamLength() const override;
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
 
-  bool SeekChapter(int chapter, double* startpts = NULL);
-  int GetChapterCount();
-  int GetChapter();
-  void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
-  int64_t GetChapterPos(int chapterIdx=-1);
-  virtual std::string GetStreamCodecName(int iStreamId) override;
+  bool SeekChapter(int chapter, double* startpts = NULL) override;
+  int GetChapterCount() const override;
+  int GetChapter() const override;
+  void GetChapterName(std::string& strChapterName, int chapterIdx=-1) const override;
+  int64_t GetChapterPos(int chapterIdx=-1) const override;
+  virtual std::string GetStreamCodecName(int iStreamId) const override;
 
-  bool Aborted();
+  bool Aborted() const;
 
   AVFormatContext* m_pFormatContext;
   CDVDInputStream* m_pInput;
@@ -130,13 +130,13 @@ protected:
   void CreateStreams(unsigned int program = UINT_MAX);
   void DisposeStreams();
   void ParsePacket(AVPacket *pkt);
-  bool IsVideoReady();
+  bool IsVideoReady() const;
   void ResetVideoStreams();
 
   AVDictionary *GetFFMpegOptionsFromURL(CURL &url);
-  double ConvertTimestamp(int64_t pts, int den, int num);
+  double ConvertTimestamp(int64_t pts, int den, int num) const;
   void UpdateCurrentPTS();
-  bool IsProgramChange();
+  bool IsProgramChange() const;
 
   std::string GetStereoModeFromMetadata(AVDictionary *pMetadata);
   std::string ConvertCodecToInternalStereoMode(const std::string &mode, const StereoModeConversionMap *conversionMap);

@@ -239,105 +239,96 @@ class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer, public
 public:
   CVideoPlayer(IPlayerCallback& callback);
   virtual ~CVideoPlayer();
-  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
-  virtual bool CloseFile(bool reopen = false);
-  virtual bool IsPlaying() const;
-  virtual void Pause() override;
-  virtual bool HasVideo() const;
-  virtual bool HasAudio() const;
-  virtual bool HasRDS() const;
-  virtual bool IsPassthrough() const;
-  virtual bool CanSeek();
-  virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
-  virtual bool SeekScene(bool bPlus = true);
-  virtual void SeekPercentage(float iPercent);
-  virtual float GetPercentage();
-  virtual float GetCachePercentage();
 
+  virtual TextCacheStruct_t* GetTeletextCache();
+  virtual std::string GetRadioText(unsigned int line);
+
+  // IPlayer Interface
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
+  virtual bool CloseFile(bool reopen = false) override;
+  virtual bool IsPlaying() const override;
+  virtual void Pause() override;
+  virtual bool HasVideo() const override;
+  virtual bool HasAudio() const override;
+  virtual bool HasRDS() const override;
+  virtual bool IsPassthrough() const override;
+  virtual bool CanSeek() const override;
+  virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
+  virtual bool SeekScene(bool bPlus = true) override;
+  virtual void SeekPercentage(float iPercent) override;
+  virtual float GetPercentage() const override;
+  virtual float GetCachePercentage() const override;
   virtual void SetVolume(float nVolume) override;
   virtual void SetMute(bool bOnOff) override;
   virtual void SetDynamicRangeCompression(long drc) override;
-  virtual bool CanRecord();
-  virtual bool IsRecording();
-  virtual bool CanPause();
-  virtual bool Record(bool bOnOff);
-  virtual void SetAVDelay(float fValue = 0.0f);
-  virtual float GetAVDelay();
+  virtual bool CanRecord() const  override;
+  virtual bool IsRecording() const override;
+  virtual bool CanPause() const override;
+  virtual bool Record(bool bOnOff) override;
+  virtual void SetAVDelay(float fValue = 0.0f) override;
+  virtual float GetAVDelay() const override;
   virtual bool IsInMenu() const override;
   virtual bool HasMenu() const override;
-
-  virtual void SetSubTitleDelay(float fValue = 0.0f);
-  virtual float GetSubTitleDelay();
-  virtual int GetSubtitleCount();
-  virtual int GetSubtitle();
-  virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
-  virtual void SetSubtitle(int iStream);
-  virtual bool GetSubtitleVisible();
-  virtual void SetSubtitleVisible(bool bVisible);
-  virtual void AddSubtitle(const std::string& strSubPath);
-
-  virtual int GetAudioStreamCount();
-  virtual int GetAudioStream();
-  virtual void SetAudioStream(int iStream);
-
+  virtual void SetSubTitleDelay(float fValue = 0.0f) override;
+  virtual float GetSubTitleDelay() const override;
+  virtual int GetSubtitleCount() const override;
+  virtual int GetSubtitle() const override;
+  virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info) const override;
+  virtual void SetSubtitle(int iStream) override;
+  virtual bool GetSubtitleVisible() const override;
+  virtual void SetSubtitleVisible(bool bVisible) override;
+  virtual void AddSubtitle(const std::string& strSubPath) override;
+  virtual int GetAudioStreamCount() const override;
+  virtual int GetAudioStream() const override;
+  virtual void SetAudioStream(int iStream) override;
   virtual int GetVideoStream() const override;
   virtual int GetVideoStreamCount() const override;
-  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) override;
-  virtual void SetVideoStream(int iStream);
-
-  virtual TextCacheStruct_t* GetTeletextCache();
-  virtual void LoadPage(int p, int sp, unsigned char* buffer);
-
-  virtual std::string GetRadioText(unsigned int line);
-
-  virtual int  GetChapterCount();
-  virtual int  GetChapter();
-  virtual void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
-  virtual int64_t GetChapterPos(int chapterIdx=-1);
-  virtual int  SeekChapter(int iChapter);
-
-  virtual void SeekTime(int64_t iTime);
-  virtual bool SeekTimeRelative(int64_t iTime);
-  virtual int64_t GetTime();
-  virtual int64_t GetTotalTime();
+  virtual void GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info) const override;
+  virtual void SetVideoStream(int iStream) override;
+  virtual void LoadPage(int p, int sp, unsigned char* buffer) override;
+  virtual int  GetChapterCount() const override;
+  virtual int  GetChapter() const override;
+  virtual void GetChapterName(std::string& strChapterName, int chapterIdx=-1) const override;
+  virtual int64_t GetChapterPos(int chapterIdx=-1) const override;
+  virtual int  SeekChapter(int iChapter) override;
+  virtual void SeekTime(int64_t iTime) override;
+  virtual bool SeekTimeRelative(int64_t iTime) override;
+  virtual int64_t GetTime() const override;
+  virtual int64_t GetTotalTime() const override;
   virtual void SetSpeed(int iSpeed) override;
-  virtual int GetSpeed() override;
-  virtual bool OnAction(const CAction &action);
-
-  virtual int GetSourceBitrate();
-  virtual bool GetStreamDetails(CStreamDetails &details);
-  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
-
-  virtual std::string GetPlayerState();
-  virtual bool SetPlayerState(const std::string& state);
-
-  virtual std::string GetPlayingTitle();
-
-  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
-
-  virtual void FrameMove();
-  virtual bool HasFrame();
-  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true);
-  virtual void FlushRenderer();
-  virtual void SetRenderViewMode(int mode);
-  float GetRenderAspectRatio();
-  virtual void TriggerUpdateResolution();
-  virtual bool IsRenderingVideo();
-  virtual bool IsRenderingGuiLayer();
-  virtual bool IsRenderingVideoLayer();
-  virtual bool Supports(EDEINTERLACEMODE mode);
-  virtual bool Supports(EINTERLACEMETHOD method);
-  virtual bool Supports(ESCALINGMETHOD method);
-  virtual bool Supports(ERENDERFEATURE feature);
-
-  virtual unsigned int RenderCaptureAlloc();
-  virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags);
-  virtual void RenderCaptureRelease(unsigned int captureId);
-  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
+  virtual int GetSpeed() const override;
+  virtual bool OnAction(const CAction &action) override;
+  virtual int GetSourceBitrate() const override;
+  virtual bool GetStreamDetails(CStreamDetails &details) const override;
+  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) const override;
+  virtual std::string GetPlayerState() const override;
+  virtual bool SetPlayerState(const std::string& state) override;
+  virtual std::string GetPlayingTitle() const  override;
+  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) override;
+  virtual void FrameMove() override;
+  virtual bool HasFrame() const  override;
+  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
+  virtual void FlushRenderer() override;
+  virtual void SetRenderViewMode(int mode) override;
+  virtual float GetRenderAspectRatio() const  override;
+  virtual void TriggerUpdateResolution() override;
+  virtual bool IsRenderingVideo() const override;
+  virtual bool IsRenderingGuiLayer() const override;
+  virtual bool IsRenderingVideoLayer() const override;
+  virtual bool Supports(EDEINTERLACEMODE mode) const  override;
+  virtual bool Supports(EINTERLACEMETHOD method) const  override;
+  virtual bool Supports(ESCALINGMETHOD method) const  override;
+  virtual bool Supports(ERENDERFEATURE feature) const override;
+  virtual unsigned int RenderCaptureAlloc() override;
+  virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override;
+  virtual void RenderCaptureRelease(unsigned int captureId) override;
+  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) const  override;
+  virtual bool IsCaching() const override { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
+  virtual int GetCacheLevel() const override;
 
   // IDispResource interface
-  virtual void OnLostDisplay();
-  virtual void OnResetDisplay();
+  virtual void OnLostDisplay() override;
+  virtual void OnResetDisplay() override;
 
   enum ECacheState
   { CACHESTATE_DONE = 0
@@ -347,18 +338,19 @@ public:
   , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
   };
 
-  virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
-  virtual int GetCacheLevel() const ;
-
+  // IVideoPlayer interface
   virtual int OnDVDNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
 protected:
   friend class CSelectionStreams;
 
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
+  // CThread interface
+  virtual void OnStartup() override;
+  virtual void OnExit() override;
+  virtual void Process() override;
+
+  // IRenderMsg interface
   virtual void VideoParamsChange() override;
   virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
 
@@ -399,7 +391,7 @@ protected:
   int GetPlaySpeed() { return m_playSpeed; }
   void SetCaching(ECacheState state);
 
-  int64_t GetTotalTimeInMsec();
+  int64_t GetTotalTimeInMsec() const;
 
   double GetQueueTime();
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
@@ -455,7 +447,7 @@ protected:
   CCurrentStream m_CurrentTeletext;
   CCurrentStream m_CurrentRadioRDS;
 
-  CSelectionStreams m_SelectionStreams;
+  mutable CSelectionStreams m_SelectionStreams;
 
   std::atomic_int m_playSpeed;
   std::atomic_int m_newPlaySpeed;
@@ -487,7 +479,7 @@ protected:
   CDVDDemux* m_pSubtitleDemuxer;
   CDVDDemuxCC* m_pCCDemuxer;
 
-  CRenderManager m_renderManager;
+  mutable CRenderManager m_renderManager;
 
   struct SDVDInfo
   {

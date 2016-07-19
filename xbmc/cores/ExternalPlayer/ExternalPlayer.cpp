@@ -516,7 +516,7 @@ void CExternalPlayer::ToggleSubtitles()
 {
 }
 
-bool CExternalPlayer::CanSeek()
+bool CExternalPlayer::CanSeek() const
 {
   return false;
 }
@@ -533,7 +533,7 @@ void CExternalPlayer::SeekPercentage(float iPercent)
 {
 }
 
-float CExternalPlayer::GetPercentage()
+float CExternalPlayer::GetPercentage() const
 {
   int64_t iTime = GetTime();
   int64_t iTotalTime = GetTotalTime();
@@ -551,7 +551,7 @@ void CExternalPlayer::SetAVDelay(float fValue)
 {
 }
 
-float CExternalPlayer::GetAVDelay()
+float CExternalPlayer::GetAVDelay() const
 {
   return 0.0f;
 }
@@ -560,7 +560,7 @@ void CExternalPlayer::SetSubTitleDelay(float fValue)
 {
 }
 
-float CExternalPlayer::GetSubTitleDelay()
+float CExternalPlayer::GetSubTitleDelay() const
 {
   return 0.0;
 }
@@ -569,7 +569,7 @@ void CExternalPlayer::SeekTime(int64_t iTime)
 {
 }
 
-int64_t CExternalPlayer::GetTime() // in millis
+int64_t CExternalPlayer::GetTime() const // in millis
 {
   if ((XbmcThreads::SystemClockMillis() - m_playbackStartTime) / 1000 > m_playCountMinTime)
   {
@@ -579,7 +579,7 @@ int64_t CExternalPlayer::GetTime() // in millis
   return m_time;
 }
 
-int64_t CExternalPlayer::GetTotalTime() // in milliseconds
+int64_t CExternalPlayer::GetTotalTime() const // in milliseconds
 {
   return (int64_t)m_totalTime * 1000;
 }
@@ -589,7 +589,7 @@ void CExternalPlayer::SetSpeed(int iSpeed)
   m_speed = iSpeed;
 }
 
-int CExternalPlayer::GetSpeed()
+int CExternalPlayer::GetSpeed() const
 {
   return m_speed;
 }
@@ -598,7 +598,7 @@ void CExternalPlayer::ShowOSD(bool bOnoff)
 {
 }
 
-std::string CExternalPlayer::GetPlayerState()
+std::string CExternalPlayer::GetPlayerState() const
 {
   return "";
 }

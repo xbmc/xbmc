@@ -72,7 +72,7 @@ void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
   }
 }
 
-void CEngineStats::GetDelay(AEDelayStatus& status)
+void CEngineStats::GetDelay(AEDelayStatus& status) const
 {
   CSingleLock lock(m_lock);
   status = m_sinkDelay;
@@ -142,7 +142,7 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
 }
 
 // this is used to sync a/v so we need to add sink latency here
-void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
+void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream) const
 {
   CSingleLock lock(m_lock);
   status = m_sinkDelay;
@@ -165,7 +165,7 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 }
 
 // this is used to sync a/v so we need to add sink latency here
-void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
+void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream) const
 {
   CSingleLock lock(m_lock);
   AEDelayStatus status;
@@ -194,7 +194,7 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
   }
 }
 
-float CEngineStats::GetCacheTime(CActiveAEStream *stream)
+float CEngineStats::GetCacheTime(CActiveAEStream *stream) const
 {
   CSingleLock lock(m_lock);
   float delay = (float)m_bufferedSamples / m_sinkSampleRate;
@@ -214,12 +214,12 @@ float CEngineStats::GetCacheTime(CActiveAEStream *stream)
   return delay;
 }
 
-float CEngineStats::GetCacheTotal(CActiveAEStream *stream)
+float CEngineStats::GetCacheTotal(CActiveAEStream *stream) const
 {
   return MAX_CACHE_LEVEL + m_sinkCacheTotal;
 }
 
-float CEngineStats::GetWaterLevel()
+float CEngineStats::GetWaterLevel() const
 {
   CSingleLock lock(m_lock);
   if (m_pcmOutput)
@@ -234,7 +234,7 @@ void CEngineStats::SetSuspended(bool state)
   m_suspended = state;
 }
 
-bool CEngineStats::IsSuspended()
+bool CEngineStats::IsSuspended() const
 {
   CSingleLock lock(m_lock);
   return m_suspended;
@@ -252,16 +252,17 @@ void CEngineStats::SetCurrentSinkFormat(AEAudioFormat SinkFormat)
   m_sinkFormat = SinkFormat;
 }
 
-bool CEngineStats::HasDSP()
+bool CEngineStats::HasDSP() const
 {
   CSingleLock lock(m_lock);
   return m_hasDSP;
 }
 
-AEAudioFormat CEngineStats::GetCurrentSinkFormat()
+bool CEngineStats::GetCurrentSinkFormat(AEAudioFormat& SinkFormat) const
 {
   CSingleLock lock(m_lock);
-  return m_sinkFormat;
+  SinkFormat = m_sinkFormat;
+  return true;
 }
 
 CActiveAE::CActiveAE() :
@@ -2613,12 +2614,12 @@ bool CActiveAE::Initialize()
   return true;
 }
 
-void CActiveAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
+void CActiveAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) const
 {
   m_sink.EnumerateOutputDevices(devices, passthrough);
 }
 
-std::string CActiveAE::GetDefaultDevice(bool passthrough)
+std::string CActiveAE::GetDefaultDevice(bool passthrough) const
 {
   return m_sink.GetDefaultDevice(passthrough);
 }
@@ -2647,7 +2648,7 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
   }
 }
 
-bool CActiveAE::SupportsRaw(AEAudioFormat &format)
+bool CActiveAE::SupportsRaw(AEAudioFormat &format) const
 {
   if (!m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format))
     return false;
@@ -2655,12 +2656,12 @@ bool CActiveAE::SupportsRaw(AEAudioFormat &format)
   return true;
 }
 
-bool CActiveAE::SupportsSilenceTimeout()
+bool CActiveAE::SupportsSilenceTimeout() const
 {
   return true;
 }
 
-bool CActiveAE::HasStereoAudioChannelCount()
+bool CActiveAE::HasStereoAudioChannelCount() const
 {
   std::string device = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
   int numChannels = (m_sink.GetDeviceType(device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
@@ -2670,14 +2671,14 @@ bool CActiveAE::HasStereoAudioChannelCount()
     CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE));
 }
 
-bool CActiveAE::HasHDAudioChannelCount()
+bool CActiveAE::HasHDAudioChannelCount() const
 {
   std::string device = CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
   int numChannels = (m_sink.GetDeviceType(device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
   return numChannels > AE_CH_LAYOUT_5_1;
 }
 
-bool CActiveAE::SupportsQualityLevel(enum AEQuality level)
+bool CActiveAE::SupportsQualityLevel(enum AEQuality level) const
 {
   if (level == AE_QUALITY_LOW || level == AE_QUALITY_MID || level == AE_QUALITY_HIGH)
     return true;
@@ -2689,7 +2690,7 @@ bool CActiveAE::SupportsQualityLevel(enum AEQuality level)
   return false;
 }
 
-bool CActiveAE::IsSettingVisible(const std::string &settingId)
+bool CActiveAE::IsSettingVisible(const std::string &settingId) const
 {
   if (settingId == CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE)
   {
@@ -2807,12 +2808,12 @@ bool CActiveAE::Resume()
   return true;
 }
 
-bool CActiveAE::IsSuspended()
+bool CActiveAE::IsSuspended() const
 {
   return m_stats.IsSuspended();
 }
 
-float CActiveAE::GetVolume()
+float CActiveAE::GetVolume() const
 {
   return m_aeVolume;
 }
@@ -2829,7 +2830,7 @@ void CActiveAE::SetMute(const bool enabled)
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::MUTE, &m_aeMuted, sizeof(bool));
 }
 
-bool CActiveAE::IsMuted()
+bool CActiveAE::IsMuted() const
 {
   return m_aeMuted;
 }
@@ -2850,14 +2851,14 @@ void CActiveAE::DeviceChange()
   m_controlPort.SendOutMessage(CActiveAEControlProtocol::DEVICECHANGE);
 }
 
-bool CActiveAE::HasDSP()
+bool CActiveAE::HasDSP() const
 {
   return m_stats.HasDSP();
 };
 
-AEAudioFormat CActiveAE::GetCurrentSinkFormat()
+bool CActiveAE::GetCurrentSinkFormat(AEAudioFormat& SinkFormat) const
 {
-  return m_stats.GetCurrentSinkFormat();
+  return m_stats.GetCurrentSinkFormat(SinkFormat);
 }
 
 void CActiveAE::OnLostDisplay()

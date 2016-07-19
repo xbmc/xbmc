@@ -66,8 +66,8 @@ public:
   {
     public:
     virtual ~IDisplayTime() {};
-    virtual int GetTotalTime() = 0;
-    virtual int GetTime() = 0;
+    virtual int GetTotalTime() const = 0;
+    virtual int GetTime() const = 0;
   };
 
   class IPosTime
@@ -81,10 +81,10 @@ public:
   {
     public:
     virtual ~IChapter() {};
-    virtual int  GetChapter() = 0;
-    virtual int  GetChapterCount() = 0;
-    virtual void GetChapterName(std::string& name, int ch=-1) = 0;
-    virtual int64_t GetChapterPos(int ch=-1) = 0;
+    virtual int  GetChapter() const = 0;
+    virtual int  GetChapterCount() const = 0;
+    virtual void GetChapterName(std::string& name, int ch=-1) const = 0;
+    virtual int64_t GetChapterPos(int ch=-1) const = 0;
     virtual bool SeekChapter(int ch) = 0;
   };
 
@@ -94,8 +94,8 @@ public:
     virtual ~IMenus() {};
     virtual void ActivateButton() = 0;
     virtual void SelectButton(int iButton) = 0;
-    virtual int  GetCurrentButton() = 0;
-    virtual int  GetTotalButtons() = 0;
+    virtual int  GetCurrentButton() const = 0;
+    virtual int  GetTotalButtons() const = 0;
     virtual void OnUp() = 0;
     virtual void OnDown() = 0;
     virtual void OnLeft() = 0;
@@ -106,11 +106,11 @@ public:
     virtual void OnPrevious() = 0;
     virtual bool OnMouseMove(const CPoint &point) = 0;
     virtual bool OnMouseClick(const CPoint &point) = 0;
-    virtual bool HasMenu() = 0;
-    virtual bool IsInMenu() = 0;
+    virtual bool HasMenu() const = 0;
+    virtual bool IsInMenu() const = 0;
     virtual void SkipStill() = 0;
-    virtual double GetTimeStampCorrection() { return 0.0; };
-    virtual bool GetState(std::string &xmlstate) = 0;
+    virtual double GetTimeStampCorrection() const { return 0.0; };
+    virtual bool GetState(std::string &xmlstate) const = 0;
     virtual bool SetState(const std::string &xmlstate) = 0;
   };
 
@@ -147,16 +147,16 @@ public:
   virtual int Read(uint8_t* buf, int buf_size) = 0;
   virtual int64_t Seek(int64_t offset, int whence) = 0;
   virtual bool Pause(double dTime) = 0;
-  virtual int64_t GetLength() = 0;
+  virtual int64_t GetLength() const = 0;
   virtual std::string& GetContent() { return m_content; };
-  virtual std::string GetFileName();
-  virtual CURL GetURL();
+  virtual std::string GetFileName() const;
+  virtual CURL GetURL() const;
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
-  virtual int GetBlockSize() { return 0; }
+  virtual int GetBlockSize() const { return 0; }
   virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
-  virtual bool CanSeek() { return true; }
-  virtual bool CanPause() { return true; }
+  virtual bool CanSeek() const { return true; }
+  virtual bool CanPause() const { return true; }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should
@@ -167,15 +167,15 @@ public:
   /*! \brief Get the cache status
    \return true when cache status was succesfully obtained
    */
-  virtual bool GetCacheStatus(XFILE::SCacheStatus *status) { return false; }
+  virtual bool GetCacheStatus(XFILE::SCacheStatus *status) const { return false; }
 
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
-  virtual bool IsEOF() = 0;
+  virtual bool IsEOF() const = 0;
   virtual BitstreamStats GetBitstreamStats() const { return m_stats; }
 
-  bool ContentLookup() { return m_contentLookup; }
+  bool ContentLookup() const { return m_contentLookup; }
 
-  virtual bool IsRealtime() { return m_realtime; }
+  virtual bool IsRealtime() const { return m_realtime; }
 
   void SetRealtime(bool realtime) { m_realtime = realtime; }
 

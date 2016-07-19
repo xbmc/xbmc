@@ -38,7 +38,7 @@ CDVDInputStreamFile::~CDVDInputStreamFile()
   Close();
 }
 
-bool CDVDInputStreamFile::IsEOF()
+bool CDVDInputStreamFile::IsEOF() const
 {
   return !m_pFile || m_eof;
 }
@@ -149,14 +149,14 @@ int64_t CDVDInputStreamFile::Seek(int64_t offset, int whence)
   return ret;
 }
 
-int64_t CDVDInputStreamFile::GetLength()
+int64_t CDVDInputStreamFile::GetLength() const
 {
   if (m_pFile)
     return m_pFile->GetLength();
   return 0;
 }
 
-bool CDVDInputStreamFile::GetCacheStatus(XFILE::SCacheStatus *status)
+bool CDVDInputStreamFile::GetCacheStatus(XFILE::SCacheStatus *status) const
 {
   if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, status) >= 0)
     return true;
@@ -175,7 +175,7 @@ BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
     return m_stats;
 }
 
-int CDVDInputStreamFile::GetBlockSize()
+int CDVDInputStreamFile::GetBlockSize() const
 {
   if(m_pFile)
     return m_pFile->GetChunkSize();

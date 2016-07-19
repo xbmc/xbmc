@@ -46,7 +46,7 @@ CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()
   Close();
 }
 
-bool CDVDInputStreamFFmpeg::IsEOF()
+bool CDVDInputStreamFFmpeg::IsEOF() const
 {
   if(m_aborted)
     return true;
@@ -106,7 +106,7 @@ int CDVDInputStreamFFmpeg::Read(uint8_t* buf, int buf_size)
   return -1;
 }
 
-int64_t CDVDInputStreamFFmpeg::GetLength()
+int64_t CDVDInputStreamFFmpeg::GetLength() const
 {
   return 0;
 }

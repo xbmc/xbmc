@@ -153,7 +153,7 @@ bool CDVDDemuxCDDA::SeekTime(int time, bool backwords, double* startpts)
   return seekPos > 0;
 };
 
-int CDVDDemuxCDDA::GetStreamLength()
+int CDVDDemuxCDDA::GetStreamLength() const
 {
   int64_t num_track_bytes = m_pInput->GetLength();
   int bytes_per_second = (m_stream->iBitRate>>3);
@@ -186,7 +186,7 @@ int CDVDDemuxCDDA::GetNrOfStreams() const
   return (m_stream == NULL ? 0 : 1);
 }
 
-std::string CDVDDemuxCDDA::GetFileName()
+std::string CDVDDemuxCDDA::GetFileName() const
 {
   if(m_pInput)
     return m_pInput->GetFileName();
@@ -194,7 +194,7 @@ std::string CDVDDemuxCDDA::GetFileName()
     return "";
 }
 
-std::string CDVDDemuxCDDA::GetStreamCodecName(int iStreamId)
+std::string CDVDDemuxCDDA::GetStreamCodecName(int iStreamId) const
 {
   if (m_stream && iStreamId == 0)
     return "pcm";

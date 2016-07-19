@@ -51,13 +51,13 @@ public:
   virtual int Read(uint8_t* buf, int buf_size) override;
   virtual int64_t Seek(int64_t offset, int whence) override;
   virtual bool Pause(double dTime) override { return false; }
-  virtual bool IsEOF() override;
-  virtual int64_t GetLength() override;
+  virtual bool IsEOF() const override;
+  virtual int64_t GetLength() const override;
 
   virtual ENextStream NextStream() override;
-  virtual bool IsRealtime() override;
+  virtual bool IsRealtime() const override;
 
-  bool IsOtherStreamHack(void);
+  bool IsOtherStreamHack(void) const;
   bool SelectChannelByNumber(unsigned int iChannel);
   bool SelectChannel(const PVR::CPVRChannelPtr &channel);
   bool NextChannel(bool preview = false);
@@ -65,14 +65,14 @@ public:
   PVR::CPVRChannelPtr GetSelectedChannel();
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
-  int GetTotalTime() override;
-  int GetTime() override;
+  int GetTotalTime() const override;
+  int GetTime() const override;
 
-  bool CanRecord();
-  bool IsRecording();
+  bool CanRecord() const;
+  bool IsRecording() const;
   void Record(bool bOnOff);
-  bool CanSeek() override;
-  bool CanPause() override;
+  bool CanSeek() const override;
+  bool CanPause() const override;
   void Pause(bool bPaused);
 
   bool UpdateItem(CFileItem& item);
@@ -86,7 +86,7 @@ public:
    list of the input formats.
    \return The name of the input format
    */
-  std::string GetInputFormat();
+  std::string GetInputFormat() const;
 
   /* returns m_pOtherStream */
   CDVDInputStream* GetOtherStream();

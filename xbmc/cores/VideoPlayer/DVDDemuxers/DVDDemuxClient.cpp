@@ -554,7 +554,7 @@ int CDVDDemuxClient::GetNrOfStreams() const
   return m_streams.size();
 }
 
-std::string CDVDDemuxClient::GetFileName()
+std::string CDVDDemuxClient::GetFileName() const
 {
   if (m_pInput)
     return m_pInput->GetFileName();
@@ -562,7 +562,7 @@ std::string CDVDDemuxClient::GetFileName()
     return "";
 }
 
-std::string CDVDDemuxClient::GetStreamCodecName(int iStreamId)
+std::string CDVDDemuxClient::GetStreamCodecName(int iStreamId) const
 {
   CDemuxStream *stream = GetStream(iStreamId);
   std::string strName;
