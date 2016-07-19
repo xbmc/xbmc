@@ -184,17 +184,21 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     //CLog::Log(LOGDEBUG, "BLIT RECTS: source x1 %f x2 %f y1 %f y2 %f dest x1 %f x2 %f y1 %f y2 %f", srcRect.x1, srcRect.x2, srcRect.y1, srcRect.y2, dstRect.x1, dstRect.x2, dstRect.y1, dstRect.y2);
     g_IMXContext.SetBlitRects(srcRect, dstRect);
 
-    uint8_t fieldFmt = flags & RENDER_FLAG_FIELDMASK;
-    if (flags & RENDER_FLAG_FIELDS && g_graphicsContext.IsFullScreenVideo())
+    uint8_t fieldFmt = 0;
+    if (g_graphicsContext.IsFullScreenVideo())
     {
-      fieldFmt |= IPU_DEINTERLACE_RATE_EN;
-      if (flags & RENDER_FLAG_FIELD1)
+      fieldFmt |= flags & RENDER_FLAG_FIELDMASK;
+      if (flags & RENDER_FLAG_FIELDS)
       {
-        fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
-        // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
-        // this makes IPU render same picture as before, just shifted one line.
-        // let's correct this
-        fieldFmt ^= RENDER_FLAG_FIELDMASK;
+        fieldFmt |= IPU_DEINTERLACE_RATE_EN;
+        if (flags & RENDER_FLAG_FIELD1)
+        {
+          fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
+          // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
+          // this makes IPU render same picture as before, just shifted one line.
+          // let's correct this
+          fieldFmt ^= RENDER_FLAG_FIELDMASK;
+        }
       }
     }
 
