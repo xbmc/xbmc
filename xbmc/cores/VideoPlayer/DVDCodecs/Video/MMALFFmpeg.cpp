@@ -42,105 +42,48 @@ using namespace MMAL;
 
 #define CLASSNAME "CMMALYUVBuffer"
 
-CMMALYUVBuffer::CMMALYUVBuffer(CDecoder *dec, unsigned int width, unsigned int height, unsigned int aligned_width, unsigned int aligned_height)
-  : m_dec(dec)
+CMMALYUVBuffer::CMMALYUVBuffer(std::shared_ptr<CMMALPool> pool, uint32_t mmal_encoding, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size)
+  : m_pool(pool)
 {
-  unsigned int size_pic = 0;
-  dec->Acquire();
+  uint32_t size_pic = 0;
   m_width = width;
   m_height = height;
   m_aligned_width = aligned_width;
   m_aligned_height = aligned_height;
+  m_encoding = mmal_encoding;
   m_aspect_ratio = 0.0f;
   mmal_buffer = nullptr;
-  if (dec->m_fmt == AV_PIX_FMT_YUV420P)
+  m_rendered = false;
+  if (m_encoding == MMAL_ENCODING_I420)
     size_pic = (m_aligned_width * m_aligned_height * 3) >> 1;
-  else if (dec->m_fmt == AV_PIX_FMT_BGR0)
+  else if (m_encoding == MMAL_ENCODING_YUVUV128)
+    size_pic = (m_aligned_width * m_aligned_height * 3) >> 1;
+  else if (m_encoding == MMAL_ENCODING_ARGB || m_encoding == MMAL_ENCODING_RGBA || m_encoding == MMAL_ENCODING_ABGR || m_encoding == MMAL_ENCODING_BGRA)
     size_pic = (m_aligned_width << 2) * m_aligned_height;
-  else if (dec->m_fmt == AV_PIX_FMT_RGB565LE)
+  else if (m_encoding == MMAL_ENCODING_RGB16)
     size_pic = (m_aligned_width << 1) * m_aligned_height;
   else assert(0);
-  gmem = m_dec->AllocateBuffer(size_pic);
+  if (size)
+  {
+    assert(size_pic <= size);
+    size_pic = size;
+  }
+  gmem = m_pool->AllocateBuffer(size_pic);
   if (gmem)
     gmem->m_opaque = (void *)this;
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p mmal:%p", CLASSNAME, __FUNCTION__, this, gmem, mmal_buffer);
+    CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p mmal:%p %dx%d (%dx%d) size:%d %.4s", CLASSNAME, __FUNCTION__, this, gmem, mmal_buffer, m_width, m_height, m_aligned_width, m_aligned_height, gmem->m_numbytes, (char *)&m_encoding);
 }
 
 CMMALYUVBuffer::~CMMALYUVBuffer()
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p", CLASSNAME, __FUNCTION__, this, gmem);
+    CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p mmal:%p %dx%d (%dx%d) size:%d %.4s", CLASSNAME, __FUNCTION__, this, gmem, mmal_buffer, m_width, m_height, m_aligned_width, m_aligned_height, gmem->m_numbytes, (char *)&m_encoding);
   if (gmem)
-    m_dec->ReleaseBuffer(gmem);
+    m_pool->ReleaseBuffer(gmem);
   gmem = nullptr;
   if (mmal_buffer)
     mmal_buffer_header_release(mmal_buffer);
-  m_dec->Release();
-}
-
-CGPUMEM *CDecoder::AllocateBuffer(unsigned int size_pic)
-{
-  CSingleLock lock(m_section);
-  CGPUMEM *gmem = nullptr;
-  while (!m_freeBuffers.empty())
-  {
-    gmem = m_freeBuffers.front();
-    m_freeBuffers.pop_front();
-    if (gmem->m_numbytes == size_pic)
-      return gmem;
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s discarding gmem:%p size %d/%d", CLASSNAME, __FUNCTION__, gmem, gmem->m_numbytes, size_pic);
-    delete gmem;
-  }
-
-  gmem = new CGPUMEM(size_pic, true);
-  if (!gmem)
-    CLog::Log(LOGERROR, "%s::%s GCPUMEM(%d) failed", CLASSNAME, __FUNCTION__, size_pic);
-  return gmem;
-}
-
-void CDecoder::ReleaseBuffer(CGPUMEM *gmem)
-{
-  CSingleLock lock(m_section);
-  if (m_closing)
-    delete gmem;
-  else
-    m_freeBuffers.push_back(gmem);
-}
-
-void CDecoder::AlignedSize(AVCodecContext *avctx, int &w, int &h)
-{
-  AVFrame picture;
-  int unaligned;
-  int stride_align[AV_NUM_DATA_POINTERS];
-
-  avcodec_align_dimensions2(avctx, &w, &h, stride_align);
-  // gpu requirements
-  w = (w + 31) & ~31;
-  h = (h + 15) & ~15;
-
-  do {
-    // NOTE: do not align linesizes individually, this breaks e.g. assumptions
-    // that linesize[0] == 2*linesize[1] in the MPEG-encoder for 4:2:2
-    av_image_fill_linesizes(picture.linesize, avctx->pix_fmt, w);
-    // increase alignment of w for next try (rhs gives the lowest bit set in w)
-    w += w & ~(w - 1);
-
-    unaligned = 0;
-    for (int i = 0; i < 4; i++)
-      unaligned |= picture.linesize[i] % stride_align[i];
-  } while (unaligned);
-}
-
-CMMALYUVBuffer *CDecoder::GetBuffer(unsigned int width, unsigned int height, AVCodecContext *avctx)
-{
-  CSingleLock lock(m_section);
-  // ffmpeg requirements
-  int aligned_width = width;
-  int aligned_height = height;
-  AlignedSize(avctx, aligned_width, aligned_height);
-  return new CMMALYUVBuffer(this, width, height, aligned_width, aligned_height);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,8 +99,7 @@ CDecoder::CDecoder()
     CLog::Log(LOGDEBUG, "%s::%s - create %p", CLASSNAME, __FUNCTION__, this);
   m_shared = 0;
   m_avctx = nullptr;
-  m_renderer = nullptr;
-  m_closing = false;
+  m_pool = nullptr;
 }
 
 CDecoder::~CDecoder()
@@ -177,21 +119,7 @@ long CDecoder::Release()
 void CDecoder::Close()
 {
   CSingleLock lock(m_section);
-
-  m_closing = true;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - close %p", CLASSNAME, __FUNCTION__, this);
-
-  while (!m_freeBuffers.empty())
-  {
-    CGPUMEM *gmem = m_freeBuffers.front();
-    m_freeBuffers.pop_front();
-    delete gmem;
-  }
-  assert(m_freeBuffers.empty());
-
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG,"%s::%s", CLASSNAME, __FUNCTION__);
+  m_pool->Close();
 }
 
 void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
@@ -217,10 +145,31 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
     return avcodec_default_get_buffer2(avctx, frame, flags);
   }
 
+  uint32_t mmal_format = 0;
+  if (dec->m_fmt == AV_PIX_FMT_YUV420P)
+    mmal_format = MMAL_ENCODING_I420;
+  else if (dec->m_fmt == AV_PIX_FMT_ARGB)
+    mmal_format = MMAL_ENCODING_ARGB;
+  else if (dec->m_fmt == AV_PIX_FMT_RGBA)
+    mmal_format = MMAL_ENCODING_RGBA;
+  else if (dec->m_fmt == AV_PIX_FMT_ABGR)
+    mmal_format = MMAL_ENCODING_ABGR;
+  else if (dec->m_fmt == AV_PIX_FMT_BGRA)
+    mmal_format = MMAL_ENCODING_BGRA;
+  else if (dec->m_fmt == AV_PIX_FMT_RGB565LE)
+    mmal_format = MMAL_ENCODING_RGB16;
+  if (mmal_format ==  0)
+    return -1;
+
+  dec->m_pool->SetFormat(mmal_format, frame->width, frame->height, frame->width, frame->height, 0, dec->m_avctx);
+  CMMALYUVBuffer *YUVBuffer = dynamic_cast<CMMALYUVBuffer *>(dec->m_pool->GetBuffer(500));
+  if (!YUVBuffer || !YUVBuffer->mmal_buffer || !YUVBuffer->gmem)
+  {
+    CLog::Log(LOGERROR,"%s::%s Failed to allocated buffer in time", CLASSNAME, __FUNCTION__);
+    return -1;
+  }
+
   CSingleLock lock(dec->m_section);
-
-  CMMALYUVBuffer *YUVBuffer = dec->GetBuffer(frame->width, frame->height, dec->m_avctx);
-
   CGPUMEM *gmem = YUVBuffer->gmem;
   AVBufferRef *buf = av_buffer_create((uint8_t *)gmem->m_arm, (YUVBuffer->m_aligned_width * YUVBuffer->m_aligned_height * 3)>>1, CDecoder::FFReleaseBuffer, gmem, AV_BUFFER_FLAG_READONLY);
   if (!buf)
@@ -264,7 +213,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
   // Leave extended buf alone
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG,"%s::%s buf:%p gmem:%p avbuf:%p:%p:%p", CLASSNAME, __FUNCTION__, YUVBuffer, gmem, frame->data[0], frame->data[1], frame->data[2]);
+    CLog::Log(LOGDEBUG,"%s::%s buf:%p mmal:%p gmem:%p avbuf:%p:%p:%p", CLASSNAME, __FUNCTION__, YUVBuffer, YUVBuffer->mmal_buffer, gmem, frame->data[0], frame->data[1], frame->data[2]);
 
   return 0;
 }
@@ -290,6 +239,14 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
 
   m_avctx = mainctx;
   m_fmt = fmt;
+
+  /* Create dummy component with attached pool */
+  m_pool = std::make_shared<CMMALPool>(MMAL_COMPONENT_DEFAULT_VIDEO_DECODER, false, MMAL_NUM_OUTPUT_BUFFERS, 0, MMAL_ENCODING_I420, MMALStateFFDec);
+  if (!m_pool)
+  {
+    CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder output", CLASSNAME, __func__);
+    return false;
+  }
   return true;
 }
 
@@ -305,28 +262,6 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     return VC_BUFFER;
 }
 
-MMAL_BUFFER_HEADER_T *CDecoder::GetMmal()
-{
-  if (!m_pool)
-    m_pool = m_renderer->GetPool(RENDER_FMT_MMAL, m_fmt, false);
-
-  assert(m_pool);
-  MMAL_POOL_T *render_pool = m_pool->Get();
-  assert(render_pool);
-  MMAL_BUFFER_HEADER_T *mmal_buffer = mmal_queue_timedwait(render_pool->queue, 500);
-  if (!mmal_buffer)
-  {
-    CLog::Log(LOGERROR, "%s::%s - mmal_queue_get failed", CLASSNAME, __FUNCTION__);
-    return nullptr;
-  }
-  mmal_buffer_header_reset(mmal_buffer);
-  mmal_buffer->cmd = 0;
-  mmal_buffer->offset = 0;
-  mmal_buffer->flags = 0;
-  mmal_buffer->user_data = NULL;
-  return mmal_buffer;
-}
-
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
   CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
@@ -338,22 +273,17 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
       frame->buf[1] != nullptr || frame->buf[0] == nullptr)
     return false;
 
-  MMAL_BUFFER_HEADER_T *mmal_buffer = GetMmal();
-  if (!mmal_buffer)
-    return false;
-
   CSingleLock lock(m_section);
 
   AVBufferRef *buf = frame->buf[0];
   CGPUMEM *gmem = (CGPUMEM *)av_buffer_get_opaque(buf);
-  mmal_buffer->data = (uint8_t *)gmem->m_vc_handle;
-  mmal_buffer->alloc_size = mmal_buffer->length = gmem->m_numbytes;
 
   picture->MMALBuffer = (CMMALYUVBuffer *)gmem->m_opaque;
   assert(picture->MMALBuffer);
   picture->format = RENDER_FMT_MMAL;
-  assert(!picture->MMALBuffer->mmal_buffer);
-  picture->MMALBuffer->mmal_buffer = mmal_buffer;
+  assert(picture->MMALBuffer->mmal_buffer);
+  picture->MMALBuffer->mmal_buffer->data = (uint8_t *)gmem->m_vc_handle;
+  picture->MMALBuffer->mmal_buffer->alloc_size = picture->MMALBuffer->mmal_buffer->length = gmem->m_numbytes;
 
   // need to flush ARM cache so GPU can see it
   gmem->Flush();

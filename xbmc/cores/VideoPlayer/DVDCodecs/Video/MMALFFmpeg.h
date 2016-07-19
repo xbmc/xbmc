@@ -34,17 +34,18 @@ class CGPUMEM;
 namespace MMAL {
 
 class CDecoder;
+class CGPUPool;
 
 // a mmal video frame
 class CMMALYUVBuffer : public CMMALBuffer
 {
 public:
-  CMMALYUVBuffer(CDecoder *dec, unsigned int width, unsigned int height, unsigned int aligned_width, unsigned int aligned_height);
+  CMMALYUVBuffer(std::shared_ptr<CMMALPool> pool, uint32_t mmal_encoding, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size);
   virtual ~CMMALYUVBuffer();
 
   CGPUMEM *gmem;
 private:
-  CDecoder *m_dec;
+  std::shared_ptr<CMMALPool> m_pool;
 };
 
 class CDecoder
@@ -65,21 +66,13 @@ public:
   static void FFReleaseBuffer(void *opaque, uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
-  static void AlignedSize(AVCodecContext *avctx, int &w, int &h);
-  CMMALYUVBuffer *GetBuffer(unsigned int width, unsigned int height, AVCodecContext *avctx);
-  CGPUMEM *AllocateBuffer(unsigned int numbytes);
-  void ReleaseBuffer(CGPUMEM *gmem);
-  unsigned sizeFree() { return m_freeBuffers.size(); }
-  enum AVPixelFormat m_fmt;
 protected:
-  MMAL_BUFFER_HEADER_T *GetMmal();
   AVCodecContext *m_avctx;
   unsigned int m_shared;
   CCriticalSection m_section;
   CMMALRenderer *m_renderer;
   std::shared_ptr<CMMALPool> m_pool;
-  std::deque<CGPUMEM *> m_freeBuffers;
-  bool m_closing;
+  enum AVPixelFormat m_fmt;
 };
 
 };

@@ -29,6 +29,7 @@
 #include "../RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "guilib/Geometry.h"
 #include "threads/Thread.h"
 
@@ -40,20 +41,41 @@
 #define NOSOURCE   -2
 #define AUTOSOURCE -1
 
+// worst case number of buffers. 12 for decoder. 8 for multi-threading in ffmpeg. NUM_BUFFERS for renderer.
+// Note, generally these won't necessarily result in allocated pictures
+#define MMAL_NUM_OUTPUT_BUFFERS (12 + 8 + NUM_BUFFERS)
+
 class CBaseTexture;
 class CMMALBuffer;
 
 struct DVDVideoPicture;
 
-class CMMALPool
+class CMMALPool : public std::enable_shared_from_this<CMMALPool>
 {
 public:
-  CMMALPool(MMAL_PORT_T *input, uint32_t num_buffers, uint32_t buffer_size);
+  CMMALPool(const char *component_name, bool input, uint32_t num_buffers, uint32_t buffer_size, uint32_t encoding, MMALState state);
   ~CMMALPool();
-  MMAL_POOL_T *Get() { return m_pool; }
+  MMAL_COMPONENT_T *GetComponent() { return m_component; }
+  static void AlignedSize(AVCodecContext *avctx, uint32_t &w, uint32_t &h);
+  CMMALBuffer *GetBuffer(uint32_t timeout);
+  CGPUMEM *AllocateBuffer(uint32_t numbytes);
+  void ReleaseBuffer(CGPUMEM *gmem);
+  void Close();
+  void Prime();
+  void SetDecoder(CMMALVideo *dec) { m_dec = dec; }
+  void SetFormat(uint32_t mmal_format, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size, AVCodecContext *avctx)
+    { m_mmal_format = mmal_format; m_width = width; m_height = height; m_aligned_width = aligned_width; m_aligned_height = aligned_height; m_size = size, m_avctx = avctx; }
 protected:
-  MMAL_POOL_T *m_pool;
-  MMAL_PORT_T *m_input;
+  uint32_t m_mmal_format, m_width, m_height, m_aligned_width, m_aligned_height, m_size;
+  AVCodecContext *m_avctx;
+  CMMALVideo *m_dec;
+  MMALState m_state;
+  bool m_input;
+  MMAL_POOL_T *m_mmal_pool;
+  MMAL_COMPONENT_T *m_component;
+  CCriticalSection m_section;
+  std::deque<CGPUMEM *> m_freeBuffers;
+  bool m_closing;
 };
 
 class CMMALRenderer : public CBaseRenderer, public CThread
@@ -96,7 +118,6 @@ public:
   virtual bool         IsGuiLayer() { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
-  std::shared_ptr<CMMALPool> GetPool(ERenderFormat format, AVPixelFormat pixfmt, bool opaque);
 protected:
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -105,7 +126,6 @@ protected:
 
   CMMALBuffer         *m_buffers[NUM_BUFFERS];
   bool                 m_bConfigured;
-  bool                 m_bMMALConfigured;
   unsigned int         m_extended_format;
   int                  m_neededBuffers;
 
@@ -114,18 +134,16 @@ protected:
   RENDER_STEREO_MODE        m_video_stereo_mode;
   RENDER_STEREO_MODE        m_display_stereo_mode;
   bool                      m_StereoInvert;
-  int                       m_inflight;
-  bool                      m_opaque;
-  AVPixelFormat m_pixfmt;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_vout;
   MMAL_PORT_T *m_vout_input;
-  std::shared_ptr<CMMALPool> m_vout_input_pool;
   MMAL_QUEUE_T *m_queue;
+  MMAL_BUFFER_HEADER_T m_quitpacket;
   double m_error;
 
-  bool init_vout(ERenderFormat format, AVPixelFormat pixfmt, bool opaque);
+  uint32_t m_vout_width, m_vout_height, m_vout_aligned_width, m_vout_aligned_height;
+  bool CheckConfigurationVout(uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t encoding);
   uint32_t m_vsync_count;
   void ReleaseBuffers();
   void UnInitMMAL();
