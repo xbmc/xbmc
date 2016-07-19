@@ -84,7 +84,6 @@ namespace JSONRPC
 
   private:
     static int RequiresAdditionalDetails(const MediaType& mediaType, const CVariant &parameterObject);
-    static int RequiresInitialDetails(const CVariant &parameterObject);
     static JSONRPC_STATUS HandleItems(const char *idProperty, const char *resultName, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool limit = true);
     static JSONRPC_STATUS RemoveVideo(const CVariant &parameterObject);
     static void UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag &details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork, std::set<std::string>& updatedDetails);
