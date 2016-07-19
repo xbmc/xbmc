@@ -66,7 +66,6 @@ CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> p
   m_aligned_height = 0;
   m_encoding = MMAL_ENCODING_UNKNOWN;
   m_aspect_ratio = 0.0f;
-  m_refs = 0;
   m_rendered = false;
 }
 
@@ -276,7 +275,12 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
     PortSettingsChanged(port, buffer);
   }
   if (!kept)
-    mmal_buffer_header_release(buffer);
+  {
+    if (omvb)
+      omvb->Release();
+    else
+      mmal_buffer_header_release(buffer);
+  }
 }
 
 static void dec_output_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -734,10 +738,7 @@ void CMMALVideo::Reset(void)
       m_output_cond.notifyAll();
     }
     if (buffer)
-    {
-      buffer->Acquire();
       buffer->Release();
-    }
     else
       break;
   }
@@ -806,7 +807,6 @@ bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->dts = buffer->mmal_buffer->dts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->dts;
     pDvdVideoPicture->pts = buffer->mmal_buffer->pts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->pts;
 
-    pDvdVideoPicture->MMALBuffer->Acquire();
     pDvdVideoPicture->iFlags  = DVP_FLAG_ALLOCATED;
     if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER3)
       pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
