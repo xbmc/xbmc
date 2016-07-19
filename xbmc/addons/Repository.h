@@ -42,12 +42,12 @@ namespace ADDON
       bool hashes;
     };
 
-    DirInfo m_dir;
+    typedef std::vector<DirInfo> DirList;
 
     static std::unique_ptr<CRepository> FromExtension(AddonProps props, const cp_extension_t* ext);
 
     explicit CRepository(AddonProps props) : CAddon(std::move(props)) {};
-    CRepository(AddonProps props, DirInfo dir);
+    CRepository(AddonProps props, DirList dirs);
 
     /*! \brief Get the md5 hash for an addon.
      \param the addon in question.
@@ -61,10 +61,13 @@ namespace ADDON
       STATUS_ERROR
     };
 
+    FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) const;
+
+  private:
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
     static bool FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept;
-    static FetchStatus FetchIfChanged(const DirInfo& repo, const std::string& oldChecksum,
-        std::string& checksum, VECADDONS& addons) noexcept;
+
+    DirList m_dirs;
   };
 
   typedef std::shared_ptr<CRepository> RepositoryPtr;

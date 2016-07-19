@@ -56,34 +56,69 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  DirInfo info;
-  info.checksum = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
-  info.info = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
-  info.datadir = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
-  info.hashes = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
-  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(info)));
+  DirList dirs;
+  AddonVersion version("0.0.0");
+  AddonPtr addonver;
+  if (CAddonMgr::GetInstance().GetAddon("xbmc.addon", addonver))
+    version = addonver->Version();
+  for (size_t i = 0; i < ext->configuration->num_children; ++i)
+  {
+    if(ext->configuration->children[i].name &&
+       strcmp(ext->configuration->children[i].name, "dir") == 0)
+    {
+      AddonVersion min_version(CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "@minversion"));
+      if (min_version <= version)
+      {
+        DirInfo dir;
+        dir.version = min_version;
+        dir.checksum = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "checksum");
+        dir.info = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info");
+        dir.datadir = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir");
+        dir.hashes = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
+        dirs.push_back(std::move(dir));
+      }
+    }
+  }
+  if (!CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info").empty())
+  {
+    DirInfo info;
+    info.checksum = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
+    info.info = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
+    info.datadir = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
+    info.hashes = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
+    dirs.push_back(std::move(info));
+  }
+  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(dirs)));
 }
 
-CRepository::CRepository(AddonProps props, DirInfo dir)
-    : CAddon(std::move(props)), m_dir(std::move(dir))
+CRepository::CRepository(AddonProps props, DirList dirs)
+    : CAddon(std::move(props)), m_dirs(std::move(dirs))
 {
 }
 
 
 bool CRepository::GetAddonHash(const AddonPtr& addon, std::string& checksum) const
 {
-  if (!m_dir.hashes)
+  DirList::const_iterator it;
+  for (it = m_dirs.begin();it != m_dirs.end(); ++it)
+    if (URIUtils::PathHasParent(addon->Path(), it->datadir, true))
+      break;
+
+  if (it != m_dirs.end())
   {
-    checksum = "";
-    return true;
-  }
-  if (FetchChecksum(addon->Path() + ".md5", checksum))
-  {
-    size_t pos = checksum.find_first_of(" \n");
-    if (pos != std::string::npos)
+    if (!it->hashes)
     {
-      checksum = checksum.substr(0, pos);
+      checksum = "";
       return true;
+    }
+    if (FetchChecksum(addon->Path() + ".md5", checksum))
+    {
+      size_t pos = checksum.find_first_of(" \n");
+      if (pos != std::string::npos)
+      {
+        checksum = checksum.substr(0, pos);
+        return true;
+      }
     }
   }
   return false;
@@ -108,30 +143,16 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
   return true;
 }
 
-CRepository::FetchStatus CRepository::FetchIfChanged(const CRepository::DirInfo& repo,
-    const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) noexcept
+bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
 {
-  checksum = "";
-  if (!repo.checksum.empty())
-  {
-    if (!FetchChecksum(repo.checksum, checksum))
-    {
-      CLog::Log(LOGERROR, "CRepository: failed read '%s'", repo.checksum.c_str());
-      return STATUS_ERROR;
-    }
-  }
-
-  if (oldChecksum == checksum && !oldChecksum.empty())
-    return STATUS_NOT_MODIFIED;
-
   XFILE::CCurlFile http;
   http.SetAcceptEncoding("gzip");
 
-  std::string content;
-  if (!http.Get(repo.info, content))
+  std::string response;
+  if (!http.Get(repo.info, response))
   {
     CLog::Log(LOGERROR, "CRepository: failed to read %s", repo.info.c_str());
-    return STATUS_ERROR;
+    return false;
   }
 
   if (URIUtils::HasExtension(repo.info, ".gz")
@@ -139,15 +160,46 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const CRepository::DirInfo&
   {
     CLog::Log(LOGDEBUG, "CRepository '%s' is gzip. decompressing", repo.info.c_str());
     std::string buffer;
-    if (!CZipFile::DecompressGzip(content, buffer))
+    if (!CZipFile::DecompressGzip(response, buffer))
     {
       CLog::Log(LOGERROR, "CRepository: failed to decompress gzip from '%s'", repo.info.c_str());
-      return STATUS_ERROR;
+      return false;
     }
-    content = std::move(buffer);
+    response = std::move(buffer);
   }
 
-  return CAddonMgr::GetInstance().AddonsFromRepoXML(repo, content, addons) ? STATUS_OK : STATUS_ERROR;
+  return CAddonMgr::GetInstance().AddonsFromRepoXML(repo, response, addons);
+}
+
+CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,
+    std::string& checksum, VECADDONS& addons) const
+{
+  checksum = "";
+  for (const auto& dir : m_dirs)
+  {
+    if (!dir.checksum.empty())
+    {
+      std::string part;
+      if (!FetchChecksum(dir.checksum, part))
+      {
+        CLog::Log(LOGERROR, "CRepository: failed read '%s'", dir.checksum.c_str());
+        return STATUS_ERROR;
+      }
+      checksum += part;
+    }
+  }
+
+  if (oldChecksum == checksum && !oldChecksum.empty())
+    return STATUS_NOT_MODIFIED;
+
+  for (const auto& dir : m_dirs)
+  {
+    VECADDONS tmp;
+    if (!FetchIndex(dir, tmp))
+      return STATUS_ERROR;
+    addons.insert(addons.end(), tmp.begin(), tmp.end());
+  }
+  return STATUS_OK;
 }
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}
@@ -164,7 +216,7 @@ bool CRepositoryUpdateJob::DoWork()
 
   std::string newChecksum;
   VECADDONS addons;
-  auto status = CRepository::FetchIfChanged(m_repo->m_dir, oldChecksum, newChecksum, addons);
+  auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons);
 
   database.SetLastChecked(m_repo->ID(), m_repo->Version(),
       CDateTime::GetCurrentDateTime().GetAsDBDateTime());
