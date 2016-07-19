@@ -118,7 +118,7 @@ public:
     CNetworkUpdater(void (*watcher)(void *caller));
     virtual ~CNetworkUpdater(void);
 
-    volatile bool *Stopping() { return &m_bStop; }
+    std::atomic<bool> *Stopping() { return &m_bStop; }
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
   protected:

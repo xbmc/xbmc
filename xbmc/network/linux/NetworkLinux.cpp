@@ -1146,7 +1146,7 @@ void WatcherProcess(void *caller)
   int fds = socket(PF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
   struct pollfd m_fds = { fds, POLLIN, 0 };
   char msg[4096];
-  volatile bool *stopping = ((CNetwork::CNetworkUpdater*)caller)->Stopping();
+  std::atomic<bool> *stopping = ((CNetwork::CNetworkUpdater*)caller)->Stopping();
 
   memset (&addr, 0, sizeof(struct sockaddr_nl));
   addr.nl_family = AF_NETLINK;
