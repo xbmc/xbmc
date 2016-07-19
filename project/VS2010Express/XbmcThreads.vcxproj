@@ -54,6 +54,7 @@
     <ProjectGuid>{034B1D02-CA92-455D-8866-DB95BEE49C10}</ProjectGuid>
     <RootNamespace>XbmcCommons</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

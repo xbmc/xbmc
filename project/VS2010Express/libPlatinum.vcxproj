@@ -14,6 +14,7 @@
     <ProjectGuid>{B2975495-FBE4-4F94-AAC5-B21A9842BF50}</ProjectGuid>
     <RootNamespace>libPlatinum</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
