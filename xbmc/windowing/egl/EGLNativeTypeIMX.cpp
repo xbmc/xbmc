@@ -96,6 +96,8 @@ void CEGLNativeTypeIMX::Initialize()
     }
   }
 
+  ShowWindow(false);
+
   fd = open("/dev/fb0",O_RDWR);
   if (fd < 0)
   {
@@ -123,16 +125,13 @@ void CEGLNativeTypeIMX::Initialize()
   colorKey.color_key = (16 << 16)|(8 << 8)|16;
   if (ioctl(fd, MXCFB_SET_CLR_KEY, &colorKey) < 0)
     CLog::Log(LOGERROR, "%s - Failed to setup color keying\n", __FUNCTION__);
-#endif
-  // Unblank the fb
-  if (ioctl(fd, FBIOBLANK, 0) < 0)
-  {
-    CLog::Log(LOGERROR, "%s - Error while unblanking fb0.\n", __FUNCTION__);
-  }
 
   close(fd);
 
   m_sar = GetMonitorSAR();
+  g_IMXContext.create();
+  ShowWindow(true);
+#endif
   return;
 }
 
