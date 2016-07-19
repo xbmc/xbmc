@@ -315,6 +315,7 @@ unset(_MAIN_LIBRARIES)
 
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
+  set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME_LC})
   copy_main_dlls_to_buildtree()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
