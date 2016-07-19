@@ -274,12 +274,10 @@ CRenderInfo CMMALRenderer::GetRenderInfo()
 
 void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
-  assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_TRANSMISSION_FAILED));
-  CMMALBuffer *omvb = (CMMALBuffer *)buffer->user_data;
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s port:%p omvb:%p mmal:%p:%p len:%d cmd:%x flags:%x", CLASSNAME, __func__, port, omvb, buffer, omvb->mmal_buffer, buffer->length, buffer->cmd, buffer->flags);
-  assert(buffer == omvb->mmal_buffer);
-  omvb->Release();
+    CLog::Log(LOGDEBUG, "%s::%s omvb:%p mmal:%p dts:%.3f pts:%.3f len:%d cmd:%x flags:%x", CLASSNAME, __func__,
+        buffer->user_data, buffer, buffer->dts*1e-6, buffer->pts*1e-6, buffer->length, buffer->cmd, buffer->flags);
+  mmal_queue_put(m_queue_process, buffer);
 }
 
 static void vout_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -382,16 +380,16 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
       return false;
     }
 
-    if (!m_queue && !CSettings::GetInstance().GetBool("videoplayer.usedisplayasclock"))
+    if (!m_queue_render && !CSettings::GetInstance().GetBool("videoplayer.usedisplayasclock"))
     {
-      m_queue = mmal_queue_create();
+      m_queue_render = mmal_queue_create();
       Create();
     }
   }
   return true;
 }
 
-CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer")
+CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, "MMALProcess")
 {
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   m_vout = NULL;
@@ -401,13 +399,17 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer")
   m_format = RENDER_FMT_NONE;
   m_bConfigured = false;
   m_iYV12RenderBuffer = 0;
-  m_queue = nullptr;
+  m_queue_render = nullptr;
+  m_queue_process = nullptr;
   m_error = 0.0;
   m_vsync_count = ~0U;
   m_vout_width = 0;
   m_vout_height = 0;
   m_vout_aligned_width = 0;
   m_vout_aligned_height = 0;
+
+  m_queue_process = mmal_queue_create();
+  m_processThread.Create();
 }
 
 CMMALRenderer::~CMMALRenderer()
@@ -415,6 +417,18 @@ CMMALRenderer::~CMMALRenderer()
   CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   UnInit();
+
+  if (m_queue_process)
+    mmal_queue_put(m_queue_process, &m_quitpacket);
+
+  {
+    // leave the lock to allow other threads to exit
+    CSingleExit unlock(m_sharedSection);
+    m_processThread.StopThread();
+  }
+
+  mmal_queue_destroy(m_queue_process);
+  m_queue_process = nullptr;
 }
 
 
@@ -432,12 +446,11 @@ void CMMALRenderer::Process()
     // This algorithm is basically making the decision according to Bresenham's line algorithm.  Imagine drawing a line where x-axis is display frames, and y-axis is video frames
     m_error += m_fps / dfps;
     // we may need to discard frames if queue length gets too high or video frame rate is above display frame rate
-    assert(m_queue);
-    while (mmal_queue_length(m_queue) > 2 || m_error > 1.0)
+    while (mmal_queue_length(m_queue_render) > 2 || m_error > 1.0)
     {
       if (m_error > 1.0)
         m_error -= 1.0;
-      MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(m_queue);
+      MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(m_queue_render);
       if (buffer == &m_quitpacket)
         bStop = true;
       else if (buffer)
@@ -446,20 +459,92 @@ void CMMALRenderer::Process()
         assert(buffer == omvb->mmal_buffer);
         omvb->Release();
         if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-          CLog::Log(LOGDEBUG, "%s::%s - discard buffer:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue), m_error);
+          CLog::Log(LOGDEBUG, "%s::%s - discard buffer:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), m_error);
       }
     }
     // this is case where we would like to display a new frame
     if (m_error > 0.0)
     {
       m_error -= 1.0;
-      MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(m_queue);
+      MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(m_queue_render);
       if (buffer == &m_quitpacket)
         bStop = true;
       else if (buffer)
-        mmal_port_send_buffer(m_vout_input, buffer);
+      {
+        CMMALBuffer *omvb = (CMMALBuffer *)buffer->user_data;
+        assert(buffer == omvb->mmal_buffer);
+        CheckConfigurationVout(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding);
+        MMAL_STATUS_T status = mmal_port_send_buffer(m_vout_input, buffer);
+        if (status != MMAL_SUCCESS)
+          CLog::Log(LOGERROR, "%s::%s - Failed to send buffer %p to %s (status=0%x %s)", CLASSNAME, __func__, buffer, m_vout_input->name, status, mmal_status_to_string(status));
+      }
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "%s::%s - buffer:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue), m_error);
+        CLog::Log(LOGDEBUG, "%s::%s - buffer:%p vsync:%d queue:%d diff:%f", CLASSNAME, __func__, buffer, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), m_error);
+    }
+  }
+  CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
+}
+
+void CMMALRenderer::Run()
+{
+  CLog::Log(LOGDEBUG, "%s::%s - starting", CLASSNAME, __func__);
+  while (1)
+  {
+    MMAL_BUFFER_HEADER_T *buffer = mmal_queue_wait(m_queue_process);
+    assert(buffer);
+    if (buffer == &m_quitpacket)
+      break;
+    CSingleLock lock(m_sharedSection);
+    bool kept = false;
+
+    CMMALBuffer *omvb = (CMMALBuffer *)buffer->user_data;
+    if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s %s omvb:%p mmal:%p dts:%.3f pts:%.3f len:%d cmd:%x flags:%x encoding:%.4s", CLASSNAME, __func__,
+         omvb ? omvb->GetStateName():"", omvb, buffer, buffer->dts*1e-6, buffer->pts*1e-6, buffer->length, buffer->cmd, buffer->flags, omvb ? (char *)&omvb->m_encoding:"");
+
+    assert(omvb && buffer == omvb->mmal_buffer);
+    assert(buffer->cmd == 0);
+    assert(!(buffer->flags & (MMAL_BUFFER_HEADER_FLAG_EOS | MMAL_BUFFER_HEADER_FLAG_TRANSMISSION_FAILED)));
+    if (m_bConfigured)
+    switch (omvb->m_state)
+    {
+    case MMALStateHWDec:
+    case MMALStateFFDec:
+    {
+      if (buffer->length > 0)
+      {
+        if (m_queue_render)
+        {
+          mmal_queue_put(m_queue_render, omvb->mmal_buffer);
+          kept = true;
+        }
+        else
+        {
+          CheckConfigurationVout(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding);
+          MMAL_STATUS_T status = mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
+          if (status != MMAL_SUCCESS)
+            CLog::Log(LOGERROR, "%s::%s - Failed to send buffer %p to %s (status=0%x %s)", CLASSNAME, __func__, omvb->mmal_buffer, m_vout_input->name, status, mmal_status_to_string(status));
+          else
+            kept = true;
+        }
+      }
+      break;
+    }
+    default: assert(0); break;
+    }
+    if (!kept)
+    {
+      if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "%s::%s %s Not kept: omvb:%p mmal:%p dts:%.3f pts:%.3f len:%d cmd:%x flags:%x encoding:%.4s", CLASSNAME, __func__,
+          omvb ? omvb->GetStateName():"", omvb, buffer, buffer->dts*1e-6, buffer->pts*1e-6, buffer->length, buffer->cmd, buffer->flags, omvb ? (char *)&omvb->m_encoding:"");
+      if (omvb)
+        omvb->Release();
+      else
+      {
+        mmal_buffer_header_reset(buffer);
+        buffer->cmd = 0;
+        mmal_buffer_header_release(buffer);
+      }
     }
   }
   CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
@@ -605,15 +690,11 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x encoding:%.4s", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags, (char *)&omvb->m_encoding);
-    CheckConfigurationVout(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding);
     assert(omvb->mmal_buffer && omvb->mmal_buffer->data && omvb->mmal_buffer->length);
     omvb->Acquire();
     omvb->m_rendered = true;
     assert(omvb->mmal_buffer->user_data == omvb);
-    if (m_queue && m_fps > 0.0f)
-      mmal_queue_put(m_queue, omvb->mmal_buffer);
-    else
-      mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
+    mmal_queue_put(m_queue_process, omvb->mmal_buffer);
   }
   else
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: No buffer to update clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb ? omvb->mmal_buffer : nullptr);
@@ -677,6 +758,19 @@ void CMMALRenderer::ReleaseBuffers()
 void CMMALRenderer::UnInitMMAL()
 {
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+
+  if (m_queue_render)
+  {
+    mmal_queue_put(m_queue_render, &m_quitpacket);
+    {
+      // leave the lock to allow other threads to exit
+      CSingleExit unlock(m_sharedSection);
+      StopThread(true);
+    }
+    mmal_queue_destroy(m_queue_render);
+    m_queue_render = nullptr;
+  }
+
   if (m_vout)
   {
     mmal_component_disable(m_vout);
@@ -689,20 +783,6 @@ void CMMALRenderer::UnInitMMAL()
   }
 
   ReleaseBuffers();
-
-  if (m_queue)
-    mmal_queue_put(m_queue, &m_quitpacket);
-
-  {
-    // leave the lock to allow other threads to exit
-    CSingleExit unlock(m_sharedSection);
-    if (m_queue)
-      StopThread(true);
-  }
-
-  if (m_queue)
-    mmal_queue_destroy(m_queue);
-  m_queue = nullptr;
 
   m_vout_input = NULL;
 

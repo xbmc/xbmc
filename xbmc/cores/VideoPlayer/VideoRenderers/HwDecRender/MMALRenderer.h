@@ -78,7 +78,7 @@ protected:
   bool m_closing;
 };
 
-class CMMALRenderer : public CBaseRenderer, public CThread
+class CMMALRenderer : public CBaseRenderer, public CThread, public IRunnable
 {
 public:
   CMMALRenderer();
@@ -138,7 +138,9 @@ protected:
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_vout;
   MMAL_PORT_T *m_vout_input;
-  MMAL_QUEUE_T *m_queue;
+  MMAL_QUEUE_T *m_queue_render;
+  MMAL_QUEUE_T *m_queue_process;
+  CThread m_processThread;
   MMAL_BUFFER_HEADER_T m_quitpacket;
   double m_error;
 
@@ -147,4 +149,5 @@ protected:
   uint32_t m_vsync_count;
   void ReleaseBuffers();
   void UnInitMMAL();
+  virtual void Run() override;
 };
