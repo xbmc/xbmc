@@ -22,7 +22,6 @@
 
 #include <memory>
 #include <utility>
-
 #include "addons/GUIDialogAddonInfo.h"
 #include "ContextMenuManager.h"
 #include "FileItem.h"
@@ -43,8 +42,7 @@
 #include "utils/XMLUtils.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-
-
+#include "video/windows/GUIWindowVideoBase.h"
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
@@ -293,13 +291,22 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
+
+  if (fileItem.HasVideoInfoTag()
+      && CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
+      && OnInfo(item))
+    return true;
+
   std::string target = fileItem.GetProperty("node.target").asString();
-  if (target.empty())
-    target = m_currentTarget;
-  if (target.empty())
-    target = m_target.GetLabel(m_parentID, false);
-  if (fileItem.HasProperty("node.target_url"))
-    fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
+  {
+    CSingleLock lock(m_section);
+    if (target.empty())
+      target = m_currentTarget;
+    if (target.empty())
+      target = m_target.GetLabel(m_parentID, false);
+    if (fileItem.HasProperty("node.target_url"))
+      fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
+  }
   // grab the execute string
   std::string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
   if (!execute.empty())
