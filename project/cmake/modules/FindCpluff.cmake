@@ -21,8 +21,7 @@ if(NOT WIN32)
                                         --prefix=<INSTALL_DIR>
                                         --host=${ARCH}
                                         CFLAGS=${defines}
-                                        LDFLAGS=${ldflags}
-                      BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} V=1)
+                                        LDFLAGS=${ldflags})
   ExternalProject_Add_Step(libcpluff autoreconf
                                      DEPENDEES download update patch
                                      DEPENDERS configure
