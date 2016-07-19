@@ -1835,7 +1835,8 @@
       { "name": "content", "$ref": "Addon.Content", "description": "Content provided by the addon. Only considered for plugins and scripts." },
       { "name": "enabled", "type": [ { "type": "boolean" }, { "type": "string", "enum": [ "all" ] } ], "default": "all" },
       { "name": "properties", "$ref": "Addon.Fields" },
-      { "name": "limits", "$ref": "List.Limits" }
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "installed", "type": [ { "type": "boolean" }, { "type": "string", "enum": [ "all" ] } ], "default": true }
     ],
     "returns": { "type": "object",
       "properties": {
