@@ -118,6 +118,8 @@ public:
   virtual bool         IsGuiLayer() { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
+  void deint_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
+  void deint_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 protected:
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -145,6 +147,18 @@ protected:
   double m_error;
 
   uint32_t m_vout_width, m_vout_height, m_vout_aligned_width, m_vout_aligned_height;
+  // deinterlace
+  MMAL_COMPONENT_T *m_deint;
+  MMAL_PORT_T *m_deint_input;
+  MMAL_PORT_T *m_deint_output;
+  std::shared_ptr<CMMALPool> m_deint_output_pool;
+  MMAL_INTERLACETYPE_T m_interlace_mode;
+  EINTERLACEMETHOD  m_interlace_method;
+  uint32_t m_deint_width, m_deint_height, m_deint_aligned_width, m_deint_aligned_height;
+  MMAL_FOURCC_T m_deinterlace_out_encoding;
+  void DestroyDeinterlace();
+  bool CheckConfigurationDeint(uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t encoding, EINTERLACEMETHOD interlace_method);
+
   bool CheckConfigurationVout(uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t encoding);
   uint32_t m_vsync_count;
   void ReleaseBuffers();
