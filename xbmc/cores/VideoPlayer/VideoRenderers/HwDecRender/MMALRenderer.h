@@ -126,6 +126,7 @@ protected:
   double m_error;
 
   bool init_vout(ERenderFormat format, AVPixelFormat pixfmt, bool opaque);
+  uint32_t m_vsync_count;
   void ReleaseBuffers();
   void UnInitMMAL();
 };
