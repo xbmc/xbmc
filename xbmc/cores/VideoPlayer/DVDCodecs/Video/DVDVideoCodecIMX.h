@@ -55,9 +55,9 @@
 // priorities to those subsystems can result in a very different user
 // experience. With that setting enabled we can build some statistics,
 // as numbers are always better than "feelings"
-//#define IMX_PROFILE_BUFFERS
+#define IMX_PROFILE_BUFFERS
 
-//#define IMX_PROFILE
+#define IMX_PROFILE
 //#define TRACE_FRAMES
 
 #define RENDER_USE_G2D 0
@@ -124,7 +124,8 @@ public:
             CRect *dest = NULL);
 
   // Shows a page vsynced
-  bool ShowPage(int page, bool shift = false);
+  bool ShowPage();
+  void WaitVSync();
 
   // Clears the pages or a single page with 'black'
   void Clear(int page = RENDER_TASK_AUTOPAGE);
@@ -137,15 +138,21 @@ public:
   void WaitCapture();
 
   void OnResetDisplay();
+  void OnLostDisplay();
 
   void create() { Create(); m_onStartup.Wait(); }
-  CEvent m_onStartup;
 
   static const int  m_fbPages;
 
 private:
   struct IPUTask
   {
+    void Assign(CIMXBuffer *buffer_p, CIMXBuffer *buffer)
+    {
+      previous = buffer_p;
+      current = buffer;
+    }
+
     void Zero()
     {
       current = previous = NULL;
@@ -159,9 +166,9 @@ private:
     // The actual task
     struct ipu_task task;
 
-    int page;
-    int shift;
-  } IPUTask_t;
+    unsigned int page;
+    int shift = true;
+  };
 
   bool GetFBInfo(const std::string &fbdev, struct fb_var_screeninfo *fbVar);
 
@@ -181,10 +188,12 @@ private:
   virtual void Process();
 
 private:
-  lkFIFO<IPUTask*>               m_input;
+  lkFIFO<IPUTaskPtr>             m_input;
+  std::vector<bool>              m_flip;
 
   int                            m_fbHandle;
-  int                            m_fbCurrentPage;
+  std::atomic<int>               m_fbCurrentPage;
+  int                            m_pg;
   int                            m_fbWidth;
   int                            m_fbHeight;
   int                            m_fbLineLength;
@@ -200,6 +209,10 @@ private:
   CRect                          m_dstRect;
   CRectInt                      *m_pageCrops;
   bool                           m_bFbIsConfigured;
+  CEvent                         m_waitVSync;
+  CEvent                         m_onStartup;
+  CEvent                         m_waitFlip;
+  CProcessInfo                  *m_processInfo;
 
   CCriticalSection               m_pageSwapLock;
 public:
@@ -262,7 +275,7 @@ public:
   void                  SetFlags(int flags)     { m_iFlags = flags; }
   int                   GetFlags() const        { return m_iFlags; }
 
-#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS) || defined(TRACE_FRAMES)
   int                   GetIdx()                { return m_idx; }
 #endif
   VpuFieldType          GetFieldType() const    { return m_fieldType; }
@@ -277,7 +290,7 @@ private:
   VpuFieldType             m_fieldType;
   VpuFrameBuffer          *m_frameBuffer;
   int                      m_iFlags;
-#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS)
+#if defined(IMX_PROFILE) || defined(IMX_PROFILE_BUFFERS) || defined(TRACE_FRAMES)
   unsigned char            m_idx;
   static unsigned char     i;
 #endif
@@ -371,6 +384,7 @@ protected:
   VpuDecSkipMode               m_skipMode;          // Current drop state
   VpuDecInputType              m_drainMode;
   int                          m_dropped;
+  bool                         m_dropRequest;
 
   std::vector<VpuFrameBuffer>  m_vpuFrameBuffers;   // Table of VPU frame buffers description
   std::unordered_map<VpuFrameBuffer*,double>
@@ -408,6 +422,8 @@ private:
   CEvent                       m_loaded;
   int                          m_decRet;
   double                       m_fps;
+  unsigned int                 m_burst;
+  bool                         m_requestDrop;
 
 private:
   void                         ExitError(const char *msg, ...);
