@@ -26,6 +26,7 @@
 #include "JobManager.h"
 #include "FileOperationJob.h"
 #include "URIUtils.h"
+#include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include <vector>
@@ -35,9 +36,6 @@
 #include "URL.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
-#if defined(TARGET_DARWIN)
-  #include "platform/darwin/DarwinUtils.h"
-#endif
 
 using namespace XFILE;
 
@@ -153,7 +151,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   {
     std::string strPlaylistsPath = CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
     URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
-    if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath)) 
+    if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
       return true;
   }
   bool isSource;
@@ -253,27 +251,37 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
     }
   }
 
-#if defined(TARGET_DARWIN)
-  char *fullpath = realpath(filePath.c_str(), nullptr);
+
+  char *fullpath;
+#if defined(TARGET_POSIX)
+  fullpath = realpath(filePath.c_str(), nullptr);
+#endif
+
+#if !defined(TARGET_POSIX)
+  char *namePtr;
+  GetFullPathName(filePath.c_str(), sizeof(fullpath), fullpath, &namePtr);
+#endif
+
   if (fullpath)
   {
     const std::string testpath = fullpath;
     free(fullpath);
 
     // if this is a real path and accesses into user home, allow.
-    std::string userHome = CDarwinUtils::GetUserHomeDirectory();
+    std::string userHome = CSpecialProtocol::TranslatePath("special://home");
     if (testpath.find(userHome) != std::string::npos)
       return true;
 
     // if this is a real path and accesses outside app, deny.
-    std::string appRoot = CDarwinUtils::GetOSAppRootFolder();
+    std::string appRoot;
+    CUtil::GetHomePath(appRoot);
     if (testpath.find(appRoot) == std::string::npos)
     {
       CLog::Log(LOGDEBUG,"http access denied");
       return false;
     }
   }
-#endif
+
 
   return true;
 }
