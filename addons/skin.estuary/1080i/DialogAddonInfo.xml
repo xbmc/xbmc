@@ -66,7 +66,15 @@
 					<control type="image">
 						<width>385</width>
 						<height>220</height>
-						<texture border="2" fallback="DefaultAddonNone.png" background="true">$INFO[ListItem.Icon]</texture>
+						<texture border="2" background="true">DefaultNoPreview.png</texture>
+						<aspectratio>scale</aspectratio>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<control type="image">
+						<width>385</width>
+						<height>220</height>
+						<texture border="2" background="true">$INFO[ListItem.Icon]</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 						<bordersize>4</bordersize>
@@ -76,7 +84,15 @@
 					<control type="image">
 						<width>385</width>
 						<height>220</height>
-						<texture border="2" fallback="DefaultAddonNone.png" background="true">$INFO[ListItem.Icon]</texture>
+						<texture border="2" background="true">DefaultNoPreview.png</texture>
+						<aspectratio>scale</aspectratio>
+						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<control type="image">
+						<width>385</width>
+						<height>220</height>
+						<texture border="2" background="true">$INFO[ListItem.Icon]</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 						<bordersize>4</bordersize>
