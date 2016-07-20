@@ -42,6 +42,9 @@
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/DVDResource.h"
 
+
+enum MMALState { MMALStateNone, MMALStateHWDec, MMALStateFFDec, MMALStateDeint, };
+
 // a mmal video frame
 class CMMALBuffer : public IDVDResourceCounted<CMMALBuffer>
 {
@@ -52,7 +55,17 @@ public:
   unsigned int m_height;
   unsigned int m_aligned_width;
   unsigned int m_aligned_height;
+  uint32_t m_encoding;
   float m_aspect_ratio;
+  MMALState m_state;
+  bool m_rendered;
+  const char *GetStateName() {
+    static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
+    if ((size_t)m_state < vcos_countof(names))
+      return names[(size_t)m_state];
+    else
+      return "invalid";
+  }
 };
 
 class CMMALVideo;
@@ -63,9 +76,11 @@ class CMMALPool;
 class CMMALVideoBuffer : public CMMALBuffer
 {
 public:
-  CMMALVideoBuffer(CMMALVideo *omv);
+  CMMALVideoBuffer(CMMALVideo *dec, std::shared_ptr<CMMALPool> pool);
   virtual ~CMMALVideoBuffer();
   CMMALVideo *m_omv;
+protected:
+  std::shared_ptr<CMMALPool> m_pool;
 };
 
 class CMMALVideo : public CDVDVideoCodec
@@ -88,18 +103,12 @@ public:
   virtual void SetSpeed(int iSpeed);
 
   // MMAL decoder callback routines.
-  void Recycle(MMAL_BUFFER_HEADER_T *buffer);
-
-  // MMAL decoder callback routines.
   void dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void dec_control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 
 protected:
   void QueryCodec(void);
-  bool CreateDeinterlace(EINTERLACEMETHOD interlace_method);
-  bool DestroyDeinterlace();
-  void Prime();
   void Dispose(void);
 
   // Video format
@@ -127,7 +136,6 @@ protected:
   unsigned          m_num_decoded;
   // Components
   MMAL_INTERLACETYPE_T m_interlace_mode;
-  EINTERLACEMETHOD  m_interlace_method;
   double            m_demuxerPts;
   double            m_decoderPts;
   int               m_speed;
@@ -143,12 +151,9 @@ protected:
   MMAL_PORT_T *m_dec_input;
   MMAL_PORT_T *m_dec_output;
   MMAL_POOL_T *m_dec_input_pool;
-  CMMALRenderer *m_renderer;
   std::shared_ptr<CMMALPool> m_pool;
 
   MMAL_ES_FORMAT_T *m_es_format;
-  MMAL_COMPONENT_T *m_deint;
-  MMAL_CONNECTION_T *m_deint_connection;
 
   MMAL_FOURCC_T m_codingType;
   bool change_dec_output_format();
