@@ -15,6 +15,7 @@
     <ProjectGuid>{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}</ProjectGuid>
     <RootNamespace>libexif_dll</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\XBMC.core-defaults.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

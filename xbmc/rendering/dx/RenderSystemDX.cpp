@@ -36,7 +36,7 @@
 #include "win32/dxerr.h"
 #include "utils/SystemInfo.h"
 #pragma warning(disable: 4091)
-#include "d3d10umddi.h"
+#include <d3d10umddi.h>
 #pragma warning(default: 4091)
 #include <algorithm>
 
