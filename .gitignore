@@ -227,7 +227,6 @@ lib/cpluff/stamp-h1
 
 # /project/cmake
 /project/cmake/KodiConfig.cmake
-/project/cmake/XBMCConfig.cmake
 /project/cmake/addons/*.error
 /project/cmake/addons/.failure
 /project/cmake/addons/.success

@@ -1,0 +1,25 @@
+# kodi-eventclients-wiiremote debian package metadata
+#
+# Setting PACKAGE_SHLIBDEPS to 'ON' will cause CPack to ignore PACKAGE_DEPENDS
+# content and use dpkg-shlibdeps to automatically generate the package dependency
+# list. Only useful for packages that contain binaries.
+#
+# PACKAGE_ARCHITECTURE should be set to 'all' only if package contains
+# architecture agnostic data. CPack will set proper architecture (amd64/i386/etc)
+# based on build options.
+#
+# Remaining settings are (hopefully) self-explanatory.
+
+PACKAGE_NAME @APP_NAME_LC@-eventclients-wiiremote
+PACKAGE_ARCHITECTURE
+PACKAGE_SECTION video
+PACKAGE_PRIORITY optional
+PACKAGE_SHLIBDEPS
+PACKAGE_DEPENDS @APP_NAME_LC@-eventclients-common (= @CPACK_DEBIAN_PACKAGE_VERSION@), libbluetooth3 (>= 4.91), libc6 (>= 2.14), libcwiid1 (>= 0.6.00+svn184), libgcc1 (>= 1:3.0), libstdc++6 (>= 5.2)
+PACKAGE_RECOMMENDS
+PACKAGE_SUGGESTS
+PACKAGE_BREAKS
+PACKAGE_REPLACES
+PACKAGE_PROVIDES xbmc-eventclients-wiiremote
+PACKAGE_DESCRIPTION_HEADER @APP_NAME@ Media Center (Wii Remote event client package)
+PACKAGE_DESCRIPTION_FOOTER This is the Wii Remote package for @APP_NAME@'s event client.

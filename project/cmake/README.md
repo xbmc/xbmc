@@ -89,6 +89,22 @@ cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 
 `CMAKE_BUILD_TYPE` defaults to `Release`.
 
+#### Debian package generation
+The buildsystem is capable of generating Debian packages using CPack. To generate them, `CPACK_GENERATOR` has to be set to *DEB*, i.e. executing CMake's configure step with `-DCPACK_GENERATOR=DEB`.
+You should use CMake/CPack 3.6.0 or higher. Lower versions can generate the packages but package names will be mangled.
+
+The following optional variables (which can be passed to buildsystem when executing cmake with the -D`<variable-name>=<value>` format) can be used to manipulate package type, name and version:
+
+- `DEBIAN_PACKAGE_TYPE` controls the name and version of generated packages. Accepted values are `stable`, `unstable` and `nightly` (default is `nightly`).
+- `DEBIAN_PACKAGE_EPOCH` controls package epoch (default is `2`)
+- `DEBIAN_PACKAGE_VERSION` controls package version (default is `0`)
+- `DEBIAN_PACKAGE_REVISION` controls package revision (no default is set)
+
+Packages metadata can be changed simply by editing files present in the `cpack/deb` folder
+A lot more variables are available (see cpack/CPackDebian.cmake file) but you shouldn't mess with them unless you know what you're doing.
+
+Generated packages can be found in <BUILD_DIR>/packages.
+
 ### Raspberry Pi with GNU Makefiles
 
 ```

@@ -2216,7 +2216,6 @@ OUTPUT_FILES="Makefile \
     xbmc/platform/darwin/osx/Info.plist \
     xbmc/platform/darwin/ios/Info.plist \
     project/cmake/KodiConfig.cmake \
-    project/cmake/XBMCConfig.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \
     tools/android/packaging/Makefile \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/Splash.java \
