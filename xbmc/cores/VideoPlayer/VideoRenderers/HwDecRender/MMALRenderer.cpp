@@ -237,6 +237,7 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer")
   m_inflight = 0;
   m_queue = nullptr;
   m_error = 0.0;
+  m_vsync_count = ~0U;
 }
 
 CMMALRenderer::~CMMALRenderer()
@@ -464,7 +465,15 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 exit:
    lock.Leave();
-   g_RBP.WaitVsync();
+   uint32_t v = g_RBP.WaitVsync(m_vsync_count);
+   // allow a frame of slop
+   if (m_vsync_count == ~0U || !(v == m_vsync_count))
+   {
+     CLog::Log(LOGDEBUG, "%s::%s - vsync %d (+%d)", CLASSNAME, __func__, m_vsync_count, v - m_vsync_count);
+     m_vsync_count = v + 1;
+   }
+   else
+     m_vsync_count++;
 }
 
 void CMMALRenderer::FlipPage(int source)

@@ -218,7 +218,7 @@ uint32_t CRBP::WaitVsync(uint32_t target)
     if (!m_vsync_cond.wait(vlock, delay.MillisLeft()))
       break;
   }
-  if (m_vsync_count < target)
+  if ((signed)(m_vsync_count - target) < 0)
     CLog::Log(LOGDEBUG, "CRBP::%s no  vsync %d/%d display:%x(%x) delay:%d", __FUNCTION__, m_vsync_count, target, m_display, display, delay.MillisLeft());
 
   return m_vsync_count;
