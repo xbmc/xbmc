@@ -16,14 +16,21 @@ else
   ifeq ($(PLATFORM),)
     PLATFORM = native
     TARBALLS_LOCATION = $(ROOT_DIR)
-    PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
-    EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
+    ifneq ($(BUILD_DVDCSS),0)
+      PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
+      EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
+    endif
   endif
 endif
 
-ifneq ($(OS),ios)
+ifeq ($(OS),ios)
+  BUILD_DVDCSS = 0
+endif
+ifneq ($(BUILD_DVDCSS),0)
   config += --with-libdvdcss
   EXTRA_CFLAGS += -DHAVE_DVDCSS_DVDCSS_H
+else
+  EXTRA_CFLAGS += -UHAVE_DVDCSS_DVDCSS_H
 endif
 ifeq ($(OS),android)
   EXTRA_CFLAGS +=  -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64
@@ -32,7 +39,7 @@ ifeq ($(OS),osx)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
 ifeq ($(OS),ios)
-  EXTRA_CFLAGS +=  -D__DARWIN__ -UHAVE_DVDCSS_DVDCSS_H
+  EXTRA_CFLAGS +=  -D__DARWIN__
 endif
 
 RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3

@@ -32,15 +32,14 @@ ifeq ($(ARCH), powerpc-osx)
   BUNDLE1_O = -lbundle1.o
 endif
 
-ifeq ($(ARCH),arm-osx)
-  BUILD_DVDCSS = 0
-else
-  BUILD_DVDCSS = 1
-endif
+# Allows us to optionally build xbmc with DVDCSS support
+export BUILD_DVDCSS = @BUILD_DVDCSS@
 ifeq ($(BUILD_DVDCSS),1)
   SOS += libdvdcss-$(ARCH).so
   DVDREAD_DEPS = $(DVDCSS_A)
   DVDCSS_OBJS = libdvdcss/*.o
+else
+  DVDCSS_A =
 endif
 
 
