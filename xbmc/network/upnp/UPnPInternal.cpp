@@ -819,7 +819,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_studio.push_back(object.m_People.publisher.GetItem(index)->GetChars());
 
     tag.m_dateAdded.SetFromW3CDate((const char*)object.m_XbmcInfo.date_added);
-    tag.AddRating(object.m_XbmcInfo.rating, object.m_XbmcInfo.votes);
+    tag.SetRating(object.m_XbmcInfo.rating, object.m_XbmcInfo.votes);
     tag.SetUniqueID(object.m_XbmcInfo.unique_identifier.GetChars());
     for (unsigned int index = 0; index < object.m_XbmcInfo.countries.GetItemCount(); index++)
       tag.m_country.push_back(object.m_XbmcInfo.countries.GetItem(index)->GetChars());

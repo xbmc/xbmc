@@ -491,7 +491,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> defaultRating;
       ar >> rating.rating;
       ar >> rating.votes;
-      AddRating(rating, name);
+      SetRating(rating, name);
       if (defaultRating)
         m_strDefaultRating = name;
     }
@@ -810,7 +810,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       int max_value = 10;
       if ((child->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
         r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
-      AddRating(r, name);
+      SetRating(r, name);
       bool isDefault = false;
       if ((child->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
         m_strDefaultRating = name;
@@ -825,7 +825,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     const TiXmlElement* rElement = movie->FirstChildElement("rating");
     if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
       r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
-    AddRating(r, "default");
+    SetRating(r, "default");
     m_strDefaultRating = "default";
   }
   XMLUtils::GetInt(movie, "userrating", m_iUserRating);
@@ -1268,31 +1268,39 @@ void CVideoInfoTag::SetPictureURL(CScraperUrl &pictureURL)
   m_strPictureURL = pictureURL;
 }
 
-void CVideoInfoTag::AddRating(float rating, int votes, const std::string& type /* = "" */, bool def /* = false */)
+void CVideoInfoTag::SetRating(float rating, int votes, const std::string& type /* = "" */, bool def /* = false */)
 {
-  AddRating(CRating(rating, votes), type);
+  SetRating(CRating(rating, votes), type, def);
 }
 
-void CVideoInfoTag::AddRating(CRating rating, const std::string& type /* = "" */, bool def /* = false */)
+void CVideoInfoTag::SetRating(CRating rating, const std::string& type /* = "" */, bool def /* = false */)
 {
+  if (rating.rating <= 0 || rating.rating > 10)
+    return;
+
   if (type.empty())
     m_ratings[m_strDefaultRating] = rating;
   else
+  {
+    if (def || m_ratings.empty())
+      m_strDefaultRating = type;
     m_ratings[type] = rating;
-
-  if (def)
-    m_strDefaultRating = type;
+  }
 }
 
 void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */, bool def /* = false */)
 {
+  if (rating <= 0 || rating > 10)
+    return;
+
   if (type.empty())
     m_ratings[m_strDefaultRating].rating = rating;
   else
+  {
+    if (def || m_ratings.empty())
+      m_strDefaultRating = type;
     m_ratings[type].rating = rating;
-
-  if (def)
-    m_strDefaultRating = type;
+  }
 }
 
 void CVideoInfoTag::RemoveRating(const std::string& type)

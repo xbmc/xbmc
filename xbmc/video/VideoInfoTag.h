@@ -127,8 +127,8 @@ public:
   void SetTitle(std::string title);
   void SetSortTitle(std::string sortTitle);
   void SetPictureURL(CScraperUrl &pictureURL);
-  void AddRating(float rating, int votes, const std::string& type = "", bool def = false);
-  void AddRating(CRating rating, const std::string& type = "", bool def = false);
+  void SetRating(float rating, int votes, const std::string& type = "", bool def = false);
+  void SetRating(CRating rating, const std::string& type = "", bool def = false);
   void SetRating(float rating, const std::string& type = "", bool def = false);
   void RemoveRating(const std::string& type);
   void SetRatings(RatingMap ratings);
