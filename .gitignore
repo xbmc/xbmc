@@ -284,6 +284,7 @@ lib/cpluff/stamp-h1
 
 # /system
 /system/cpluff.dll
+/system/EasyHook32.dll
 /system/libcurl.dll
 /system/libeay32.dll
 /system/librtmp.dll
