@@ -180,6 +180,10 @@ msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
 msgstr "Määritä näyttö · Määritä ääni · Määritä internetyhteys · Määritä tehonsäästö · Määritä kirjaaminen"
 
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia kodi.tv:stä · Muokkaa lisäosien asetuksia"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
