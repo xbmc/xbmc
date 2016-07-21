@@ -11,8 +11,3 @@ set(HEADERS AudioDecoder.h
             VideoPlayerCodec.h)
 
 core_add_library(paplayer)
-add_dependencies(paplayer libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(paplayer ffmpeg)
-endif()

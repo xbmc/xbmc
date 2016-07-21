@@ -7,4 +7,3 @@ set(HEADERS PVRTimerInfoTag.h
             PVRTimerType.h)
 
 core_add_library(pvr_timers)
-add_dependencies(pvr_timers libcpluff)

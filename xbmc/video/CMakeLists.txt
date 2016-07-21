@@ -29,11 +29,6 @@ set(HEADERS Bookmark.h
             VideoThumbLoader.h)
 
 core_add_library(video)
-add_dependencies(video libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(video ffmpeg)
-endif()
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
   add_dependencies(video d3dx11effects)

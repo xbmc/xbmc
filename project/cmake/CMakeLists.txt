@@ -77,6 +77,11 @@ include(ExternalProject)
 core_find_git_rev()
 core_find_versions()
 
+# Dynamically loaded libraries built with the project
+add_custom_target(${APP_NAME_LC}-libraries)
+set(LIBRARY_FILES "" CACHE STRING "" FORCE)
+mark_as_advanced(LIBRARY_FILES)
+
 set(INCLUDES ${CORE_SOURCE_DIR}
              ${CORE_SOURCE_DIR}/addons/library.xbmc.addon
              ${CORE_SOURCE_DIR}/lib
@@ -277,22 +282,7 @@ endforeach()
 add_custom_target(pack-skins ALL
                   DEPENDS TexturePacker::TexturePacker export-files ${XBT_FILES})
 
-core_link_library(exif system/libexif)
-if(CORE_SYSTEM_NAME STREQUAL linux)
-  core_link_library(sse4 system/libsse4)
-endif()
-
-core_link_library(XBMC_addon addons/library.xbmc.addon/libXBMC_addon nowrap)
-core_link_library(XBMC_codec addons/library.xbmc.codec/libXBMC_codec nowrap)
-core_link_library(XBMC_pvr addons/library.xbmc.pvr/libXBMC_pvr nowrap)
-core_link_library(KODI_adsp addons/library.kodi.adsp/libKODI_adsp nowrap)
-core_link_library(KODI_audioengine addons/library.kodi.audioengine/libKODI_audioengine nowrap)
-core_link_library(KODI_guilib addons/library.kodi.guilib/libKODI_guilib nowrap)
-core_link_library(KODI_inputstream addons/library.kodi.inputstream/libKODI_inputstream nowrap)
-core_link_library(KODI_peripheral addons/library.kodi.peripheral/libKODI_peripheral nowrap)
-
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
-add_custom_target(wrap-libraries ALL DEPENDS ${WRAP_FILES})
 
 set(LIBCEC_SONAME "${CEC_SONAME}")
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android)
@@ -312,16 +302,20 @@ set(OTHER_FILES README.md)
 # main binary
 if(NOT CORE_SYSTEM_NAME STREQUAL android)
   add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+  add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries export-files pack-skins)
 else()
   add_library(${APP_NAME_LC} SHARED ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+  # The libraries depend on the main shared library for wrapping. Because of this we cannot build
+  # the libraries as a dependency. This requires to build the all target on android (and not only kodi).
+  add_dependencies(${APP_NAME_LC} export-files pack-skins)
 endif()
 whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
 target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${_MAIN_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_MAIN_LIBRARIES)
-add_dependencies(${APP_NAME_LC} export-files)
 
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
+  set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME_LC})
   copy_main_dlls_to_buildtree()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
@@ -335,7 +329,7 @@ add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test
 whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest ${test_archives})
 target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_TEST_LIBRARIES)
-add_dependencies(${APP_NAME_LC}-test export-files)
+add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files)
 
 # make test and make check (cannot be executed when cross compiling)
 if(NOT CMAKE_CROSSCOMPILING)
@@ -366,15 +360,9 @@ if(FFMPEG_CREATE_SHARED_LIBRARY)
   set(CMAKE_CXX_CREATE_SHARED_LIBRARY "${FFMPEG_CREATE_SHARED_LIBRARY}")
 endif()
 
-# randr
-if(ENABLE_X11 AND XRANDR_FOUND)
-  add_executable(kodi-xrandr ${CORE_SOURCE_DIR}/xbmc-xrandr.c)
-  target_link_libraries(kodi-xrandr ${SYSTEM_LDFLAGS} ${X_LIBRARIES} m ${XRANDR_LIBRARIES})
-endif()
-
-# XBMCHelper
-if(CORE_SYSTEM_NAME STREQUAL osx)
-  add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/OSXRemote build/XBMCHelper)
+# Platform specific additional extra targets
+if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
+  include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
 endif()
 
 # WiiRemote
@@ -385,6 +373,26 @@ if(ENABLE_EVENTCLIENTS)
 endif()
 
 include(scripts/${CORE_SYSTEM_NAME}/Install.cmake)
+
+# Create target that allows to build binary-addons.
+# Use make binary-addons ADDONS="visualization.spectrum" to select the addons to build.
+if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+  if(CMAKE_CROSSCOMPILING)
+    set(_cross_args CROSS_COMPILING=yes TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
+  endif()
+  if(NOT CORE_SYSTEM_NAME STREQUAL android)
+    set(_prefix ${CMAKE_BINARY_DIR}/addons)
+    set(_extra "CMAKE_EXTRA=-DPACKAGE_ZIP=ON")
+  else()
+    set(_prefix ${CMAKE_INSTALL_PREFIX})
+  endif()
+  add_custom_target(binary-addons
+    COMMAND $(MAKE) -C ${CORE_SOURCE_DIR}/tools/depends/target/binary-addons clean
+    COMMAND $(MAKE) -C ${CORE_SOURCE_DIR}/tools/depends/target/binary-addons VERBOSE=1 V=99
+                    PREFIX=${_prefix} INSTALL_PREFIX=${_prefix} ${_cross_args} ${_extra})
+  unset(_cross_args)
+  unset(_prefix)
+endif()
 
 # Prepare add-on build env
 foreach(binding ${addon_bindings})

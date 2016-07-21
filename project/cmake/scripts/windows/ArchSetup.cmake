@@ -35,6 +35,9 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set(CMAKE_CXX_FLAGS "/MP /FS ${CMAKE_CXX_FLAGS}")
 endif()
 
+# Google Test needs to use shared version of runtime libraries
+set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
+
 
 # -------- Linker options ---------
 
@@ -77,4 +80,11 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /DEBUG /OP
 
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+  # Generate a batch file that opens Visual Studio with the necessary env variables set.
+  file(WRITE ${CMAKE_BINARY_DIR}/kodi-sln.bat
+             "@echo off\n"
+             "set KODI_HOME=%~dp0\n"
+             "set PATH=%~dp0\\system\n"
+             "start %~dp0\\${PROJECT_NAME}.sln")
 endif()

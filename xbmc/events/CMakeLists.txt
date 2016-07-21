@@ -14,4 +14,3 @@ set(HEADERS AddonEvent.h
             UniqueEvent.h)
 
 core_add_library(events)
-add_dependencies(events libcpluff)

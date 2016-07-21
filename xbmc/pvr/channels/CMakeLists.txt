@@ -13,4 +13,3 @@ set(HEADERS PVRChannel.h
             PVRRadioRDSInfoTag.h)
 
 core_add_library(pvr_channels)
-add_dependencies(pvr_channels libcpluff)

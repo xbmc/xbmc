@@ -30,8 +30,3 @@ set(HEADERS AdvancedSettings.h
             VideoSettings.h)
 
 core_add_library(settings)
-add_dependencies(settings libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(settings ffmpeg)
-endif()

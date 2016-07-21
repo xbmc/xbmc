@@ -25,7 +25,6 @@ set(HEADERS AndroidExtra.h
             XBMCApp.h)
 
 core_add_library(platform_android_activity)
-add_dependencies(platform_android_activity libcpluff)
 target_include_directories(platform_android_activity
                            PRIVATE ${NDKROOT}/sources/android/native_app_glue
                                    ${NDKROOT}/sources/android/cpufeatures)

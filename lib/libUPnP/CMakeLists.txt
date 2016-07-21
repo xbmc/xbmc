@@ -70,15 +70,6 @@ set(SOURCES Platinum/Source/Core/PltAction.cpp
             Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp
             Neptune/Source/System/Posix/NptPosixEnvironment.cpp)
 
-include_directories(Neptune/Source/Core
-                    Platinum/Source/Core
-                    Platinum/Source/Platinum
-                    Platinum/Source/Devices/MediaConnect
-                    Platinum/Source/Devices/MediaRenderer
-                    Platinum/Source/Devices/MediaServer
-                    Neptune/Source/System/Posix
-                    Platinum/Source/Extras)
-
 if(NOT CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES Neptune/Source/System/Posix/NptPosixSystem.cpp
                       Neptune/Source/System/Posix/NptSelectableMessageQueue.cpp
@@ -98,7 +89,6 @@ else()
                       Neptune/Source/System/Win32/NptWin32System.cpp
                       Neptune/Source/System/Win32/NptWin32Threads.cpp
                       Neptune/Source/System/Win32/NptWin32Time.cpp)
-  include_directories(Neptune/Source/System/Win32)
 endif()
 
 if(APPLE)
@@ -106,6 +96,19 @@ if(APPLE)
                       Neptune/Source/System/Apple/NptAppleLogConfig.mm)
 endif()
 
-add_definitions(-DNPT_CONFIG_ENABLE_LOGGING)
-
-core_add_library(upnp)
+add_library(upnp STATIC ${SOURCES} ${HEADERS})
+target_compile_definitions(upnp PUBLIC -DNPT_CONFIG_ENABLE_LOGGING)
+target_include_directories(upnp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+                                       Platinum/Source/Core
+                                       Platinum/Source/Platinum
+                                       Platinum/Source/Devices/MediaConnect
+                                       Platinum/Source/Devices/MediaRenderer
+                                       Platinum/Source/Devices/MediaServer
+                                       Platinum/Source/Extras
+                                       Neptune/Source/Core
+                                       Neptune/Source/System/Posix)
+if(CORE_SYSTEM_NAME STREQUAL windows)
+  target_include_directories(upnp PRIVATE Neptune/Source/System/Win32)
+endif()
+set_target_properties(upnp PROPERTIES FOLDER lib)
+set(core_DEPENDS upnp ${core_DEPENDS} CACHE STRING "" FORCE)

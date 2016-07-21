@@ -1,29 +1,5 @@
 function(core_link_library lib wraplib)
-  # On Windows there is no need to wrap libraries.
-  # Since we cannot build a DLL from an existing LIB, we simply compile the DLL.
-  # TODO: core_add_library and core_link_library should be refactored so that we have
-  #       decoupled functions for generating the shared libraries. Libs that are not
-  #       wrapped should directly be compiled into shared libs.
-  if(TARGET ${lib})
-    get_property(SOURCES TARGET ${lib} PROPERTY SOURCES)
-    get_property(SOURCE_DIR TARGET ${lib} PROPERTY SOURCE_DIR)
-    get_property(INCLUDES TARGET ${lib} PROPERTY INCLUDE_DIRECTORIES)
-    get_property(DEFINITIONS TARGET ${lib} PROPERTY COMPILE_DEFINITIONS)
-    foreach(source IN LISTS SOURCES)
-      list(APPEND SOURCES_ABS ${SOURCE_DIR}/${source})
-    endforeach()
-
-    add_library(wrap_${lib} SHARED ${SOURCES_ABS})
-    set_target_properties(wrap_${lib} PROPERTIES OUTPUT_NAME lib${lib})
-    target_include_directories(wrap_${lib} PRIVATE ${INCLUDES})
-    target_compile_definitions(wrap_${lib} PRIVATE ${DEFINITIONS})
-    
-    if(MSVC)
-      string(REPLACE "/lib${lib}" "" libdir ${wraplib})
-      set_target_properties(wrap_${lib} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/${libdir}"
-                                                   RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/${libdir}")
-    endif()
-  endif()
+  message(AUTHOR_WARNING "core_link_library is not compatible with windows.")
 endfunction()
 
 function(find_soname lib)

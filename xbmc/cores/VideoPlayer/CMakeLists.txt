@@ -35,11 +35,6 @@ set(HEADERS DVDAudio.h
             VideoPlayerVideo.h)
 
 core_add_library(VideoPlayer)
-add_dependencies(VideoPlayer libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(VideoPlayer ffmpeg)
-endif()
 
 if(NOT CORE_SYSTEM_NAME STREQUAL windows)
   add_dependencies(VideoPlayer dvdnav)

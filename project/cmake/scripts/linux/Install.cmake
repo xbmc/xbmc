@@ -59,9 +59,10 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
         COMPONENT kodi)
 
 # Install libraries
-foreach(wraplib ${WRAP_FILES})
-  get_filename_component(dir ${wraplib} PATH)
-  install(PROGRAMS ${CMAKE_BINARY_DIR}/${wraplib}
+foreach(library ${LIBRARY_FILES})
+  get_filename_component(dir ${library} PATH)
+  string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${dir})
+  install(PROGRAMS ${library}
           DESTINATION lib/${APP_NAME_LC}/${dir}
           COMPONENT kodi-bin)
 endforeach()

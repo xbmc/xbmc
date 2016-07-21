@@ -9,4 +9,3 @@ set(HEADERS MusicAlbumInfo.h
             MusicInfoScraper.h)
 
 core_add_library(music_infoscanner)
-add_dependencies(music_infoscanner libcpluff)

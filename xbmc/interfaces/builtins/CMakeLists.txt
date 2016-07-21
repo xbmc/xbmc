@@ -39,8 +39,3 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 core_add_library(interfaces_builtins)
-add_dependencies(interfaces_builtins libcpluff)
-
-if(ENABLE_INTERNAL_FFMPEG)
-  add_dependencies(interfaces_builtins ffmpeg)
-endif()

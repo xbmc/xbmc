@@ -48,12 +48,6 @@ if(GNUTLS_FOUND)
   list(APPEND ffmpeg_conf --enable-gnutls)
 endif()
 
-include(ProcessorCount)
-ProcessorCount(N)
-if(NOT N EQUAL 0)
-  set(PARALLEL_FLAGS -j${N})
-endif()
-
 include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
@@ -81,8 +75,7 @@ externalproject_add(ffmpeg
                       --enable-protocol=http
                       --enable-encoder=png
                       --enable-encoder=mjpeg
-                      ${ffmpeg_conf}
-                    BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} ${PARALLEL_FLAGS})
+                      ${ffmpeg_conf})
 
 install(CODE "Message(Done)")
 

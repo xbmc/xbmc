@@ -11,4 +11,3 @@ set(HEADERS AddonButtonMap.h
             PeripheralAddonTranslator.h)
 
 core_add_library(peripherals_addons)
-add_dependencies(peripherals_addons libcpluff)

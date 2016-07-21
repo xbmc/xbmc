@@ -51,7 +51,3 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 core_add_library(videorenderers_hwdec)
-
-if(ENABLE_INTERNAL_FFMPEG AND SOURCES)
-  add_dependencies(videorenderers_hwdec ffmpeg)
-endif()
