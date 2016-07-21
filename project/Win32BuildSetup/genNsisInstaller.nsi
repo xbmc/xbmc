@@ -14,7 +14,7 @@
 ;General
 
   ;Name and file
-  Name "${APP_NAME} ${VERSION_NUMBER}"
+  Name "${APP_NAME}"
   OutFile "${APP_NAME}Setup-${app_revision}-${app_branch}.exe"
 
   ;Default installation folder
@@ -302,7 +302,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecAPP ${LANG_ENGLISH} "${APP_NAME}"
+  LangString DESC_SecAPP ${LANG_ENGLISH} "${APP_NAME} ${VERSION_NUMBER}"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
