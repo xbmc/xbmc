@@ -26,7 +26,7 @@ msgstr "Etsi..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Naytä "
+msgstr "Käytä fanitaidetta taustakuvana"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -54,7 +54,7 @@ msgstr "Ei huomautusta"
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr "Lataa ikonit"
+msgstr "Lataa kuvakkeet"
 
 msgctxt "#31010"
 msgid "In progress movies"
@@ -80,6 +80,14 @@ msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Viimeaikaiset tallennukset"
 
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Viimeksi katsotut kanavat"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Ikäraja"
+
 msgctxt "#31018"
 msgid "Most played channels"
 msgstr "Eniten katsotut kanavat"
@@ -102,11 +110,15 @@ msgstr "Järjestä"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "Näyttötyyppi"
+msgstr "Näkymä"
 
 msgctxt "#31024"
 msgid "Next tracks"
 msgstr "Seuraavat raidat"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Suosikkeja ei löytynyt. Avaa kontekstivalikko haluamasi mediatiedoston kohdalla ja valitse \"Lisää suosikkeihin\"."
 
 msgctxt "#31026"
 msgid "Go to albums"
@@ -130,7 +142,7 @@ msgstr "Käytetty muisti"
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr "Versiotieto"
+msgstr "Versiotiedot"
 
 msgctxt "#31032"
 msgid "Order"
@@ -138,7 +150,11 @@ msgstr "Järjestys"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "Sinun arviosi"
+msgstr "Oma arvosana"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Laajennettu info"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -147,6 +163,10 @@ msgstr "Sivut"
 msgctxt "#31036"
 msgid "items"
 msgstr "kohdetta"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Kappalelista"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -168,6 +188,10 @@ msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Toistolistan asetukset"
 
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Valitse älykkään toistolistan tyyppi ja hakuehdot. Tälle automaattisesti päivittyvälle listalle lisätään kaikki mediakirjastosi kohteet, jotka täyttävät asettamasi ehdot."
+
 msgctxt "#31044"
 msgid "Add group"
 msgstr "Lisää ryhmä"
@@ -188,13 +212,17 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Saatavilla"
 
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Kelaa painamalla [B]Ylös[/B]"
+
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "Paina [B]OK[/B] pysäyttääksesi"
+msgstr "Pysäytä painamalla [B]OK[/B]"
 
 msgctxt "#31051"
 msgid "Toggle language"
-msgstr "Vaihda kieli"
+msgstr "Tekstitysraita"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -202,7 +230,11 @@ msgstr "suodatetut"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "Arial pohjainen"
+msgstr "Arial-pohjainen"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Kelaa painamalla [B]Vasen[/B] tai [B]Oikea[/B]"
 
 msgctxt "#31055"
 msgid "Subtitle download"
@@ -210,7 +242,7 @@ msgstr "Tekstityksen lataus"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Mene soittolistaan"
+msgstr "Mene toistolistaan"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -230,7 +262,15 @@ msgstr "minuuttia"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Päävalikon kohteet"
+msgstr "Päävalikko"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Pikakuvakkeet eri mediatyyppien tiedostonäkymiin. Tiedostonäkymän kautta voit lisätä uusia lähteitä mediakirjastoosi."
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Osiot"
 
 msgctxt "#31064"
 msgid "unwatched"
@@ -238,7 +278,7 @@ msgstr "katsomaton"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Videosoittolista"
+msgstr "Videotoistolista"
 
 msgctxt "#31066"
 msgid "Music playlist"
@@ -260,17 +300,29 @@ msgctxt "#31070"
 msgid "Add media sources"
 msgstr "Lisää medialähteitä"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "Tekijä:"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Virta-asetukset"
 
 msgctxt "#31073"
 msgid "Titles"
-msgstr "Kappaleet"
+msgstr "Nimet"
 
 msgctxt "#31074"
 msgid "Library root"
-msgstr "Kirjasto päävalikko"
+msgstr "Kirjaston päävalikko"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Elokuvasetit"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Toista optinen levy"
 
 msgctxt "#31077"
 msgid "Previous location"
@@ -280,9 +332,13 @@ msgctxt "#31078"
 msgid "Next location"
 msgstr "Seuraava sijainti"
 
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Ei esiintyjätietoja"
+
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "loppuu"
+msgstr "Päättyy"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -304,9 +360,13 @@ msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Kanavaryhmä"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metatieto"
+
 msgctxt "#31087"
 msgid "Provider settings"
-msgstr "Tarjoaja asetukset"
+msgstr "Tarjoaja-asetukset"
 
 msgctxt "#31088"
 msgid "Content scanning options"
@@ -314,11 +374,11 @@ msgstr "Sisällön hakuasetukset"
 
 msgctxt "#31089"
 msgid "Available groups"
-msgstr "Saatavilla olevat ryhmät"
+msgstr "Kanavaryhmät"
 
 msgctxt "#31090"
 msgid "Search trailer"
-msgstr "Etsi esittely"
+msgstr "Etsi traileria"
 
 msgctxt "#31091"
 msgid "Download subtitles"
@@ -328,13 +388,25 @@ msgctxt "#31092"
 msgid "Video menu"
 msgstr "Elokuvavalikko"
 
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Näytä säätiedot yläpalkissa"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Näytä video- ja musiikkitiedostojen mediatiedot"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Käytä liukuanimaatioita"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Paikallinen tekstitys saatavilla"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Kanavan valinnat"
+msgstr "Kanava-asetukset"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -342,7 +414,7 @@ msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
 
 msgctxt "#31099"
 msgid "Icon Wall"
-msgstr "Kuvake seinä"
+msgstr "Kuvakeseinä"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -358,27 +430,75 @@ msgstr "Seinä"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "lisää teksti tähän.."
+msgstr "Kirjoita tähän..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Mediakirjastosi on tällä hetkellä tyhjä. Avaa tiedostonäkymä ja lisää käyttämäsi medialähde. Valitse medialähteellesi sopiva tietojen tarjoaja tietojen noutamista varten. Kun tiedot ovat latautuneet, voit selata mediakirjastoasi."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Lisää sisältöä videokirjastoosi valitsemalla käyttämäsi videolähde ja asettamalla sen sisältötyyppi."
 
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teksti-tv"
 
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Leveä lista"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Valinnainen taustakuva käytössä"
+
 msgctxt "#31109"
 msgid "Choose image path"
 msgstr "Valitse kuvan polku"
 
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Avaa tiedostonäkymä"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Katsele omia kuvatiedostojasi tai asenna kuvalisäosia virallisesta ohjelmavarastosta."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Ääniraita"
+
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Etsi paikallinen kirjasto"
+msgstr "Etsi mediakirjastosta"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "Etsi YouTube"
+msgstr "Etsi YouTubesta"
 
 msgctxt "#31115"
 msgid "Search TheMovieDB"
-msgstr "Etsi TheMovieDB"
+msgstr "Etsi TheMovieDB:stä"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Poista tämä kohde päävalikosta"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Muokkaa kansioita"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Avaa lisäosaselain"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Yhtään lisäosaa ei ole asennettuna. Lisäosaselaimen kautta voit tutkia Kodin virallista lisäosatarjontaa ja lisätä ohjelmaan uusia toimintoja."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Säätietojen tarjoajaa ei ole asennettu. Nähdäksesi säätiedot, asenna haluamasi sääpalvelu ja valitse sijaintisi."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -386,19 +506,43 @@ msgstr "Aseta sään tarjoaja"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Katsomattomat TV sarjat"
+msgstr "Katsomattomat tv-sarjat"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr "Sama ohjaaja"
+msgstr "Ohjaajahaku"
 
 msgctxt "#31124"
 msgid "Show images on map"
 msgstr "Näytä kuvat kartalla"
 
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Näyttelijätiedot (Paina YLÖS)"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Juoni (Paina OK)"
+
 msgctxt "#31127"
 msgid "Show icons"
-msgstr "Näytä kuvakkeet"
+msgstr "Näytä kanavalogot"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Tekijät"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Tämä kategoria sisältää ulkoasun yleisasetukset."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Tämä kategoria sisältää päävalikkoon liittyvät asetukset."
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "Valitse päävalikon taustakuvapaketti"
 
 msgctxt "#31132"
 msgid "min"
@@ -407,3 +551,7 @@ msgstr "min"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "Piilota"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Jäljellä"

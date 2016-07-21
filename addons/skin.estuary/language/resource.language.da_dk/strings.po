@@ -96,6 +96,10 @@ msgctxt "#31085"
 msgid "Channel Group"
 msgstr "Kanalgruppe"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadata"
+
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "Indstillinger for indholdsskanning"
@@ -119,6 +123,10 @@ msgstr "Vælg din Kodi brugerprofil[CR]for at logge ind og fortsætte"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Tekst-tv"
 
 msgctxt "#31133"
 msgid "Hide"

@@ -192,6 +192,10 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Натиснете клавиша [B]OK[/B] за спиране"
 
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Превключи езика"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Основан на Arial"

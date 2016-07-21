@@ -16,9 +16,21 @@ msgstr ""
 "Language: ja_JP\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "再生中"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "検索..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "背景にメディアのファンアートを表示"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "シネマモード"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -28,6 +40,58 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "2D で観る"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "ランダムの映画"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "未視聴の映画"
+
+msgctxt "#31008"
+msgid "No disclaimer"
+msgstr "注意書きなし"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "ダウンロードアイコン"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "進行中の映画"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "最も再生したアルバム"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "ランダムアルバム"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "ランダムアーティスト"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "未再生アルバム"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "最近の録画"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "最近再生したチャンネル"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "評価済"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "最も再生したチャンネル"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "予報"
@@ -36,38 +100,458 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "アクション"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "その他オプション"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "ソート"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "表示タイプ"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "次の曲"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "お気に入りは見つかりませんでした。メディアビューでコンテキストメニューを使用してこのリストにアイテムを追加できます。"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "アルバムへ"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "曲へ"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "ファンアートを見る"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "最終ログイン"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "メモリ使用量"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "バージョン情報"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "並べ替え"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "評価"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "メディア情報"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "ページ"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "アイテム"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "トラックリスト"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "巻き戻し"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "早送り"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "アップデートをキャンセル"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "カメラのメーカー"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "プレイリストオプション"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "タイプとルールを指定してスマートプレイリストを作成します。すべてのデータベースから指定したルールを使用し動的なプレイリストを作ることができます。"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "グループの追加"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "グループの名称変更"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "グループの削除"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "もっと読む..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "利用可能"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "[B]上[/B]を押して早戻しまたは早送り"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "[B]決定[/B]を押して停止"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "言語を切替"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "フィルタ済"
 
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial ベース"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "[B]左[/B]を押して早戻し、または[B]右[/B]で早送り"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "字幕ダウンロード"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "プレイリストに移動"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "起動時にログイン画面を表示"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "スタートアップ時に自動ログイン"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "アップデート利用可能"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "分"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "メインメニューアイテム"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "各メディアタイプの”ファイル”へのショートカットです。データベースへソースを追加するために移動します。"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "セクション"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "未視聴"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "ビデオプレイリスト"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "ミュージックプレイリスト"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "イベントログ"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "プリセットを選択"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "最終更新時刻"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "メディアソースを追加"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "by"
 
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "電源オプション"
 
+msgctxt "#31073"
+msgid "Titles"
+msgstr "タイトル"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "ライブラリルート"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "ムービーセット"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "光学ディスクの再生"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "以前のロケーション"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "次のロケーション"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "キャストは利用できません"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "終了場所"
+
 msgctxt "#31081"
 msgid "Album info"
 msgstr "アルバム情報"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "歌詞アドオン"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "歌詞アドオン設定"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "ビジュアライザー設定"
 
 msgctxt "#31085"
 msgid "Channel Group"
 msgstr "チャンネルグループ"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "メタデータ"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "プロバイダー設定"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "コンテントスキャンオプション"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "利用可能なグループ"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "予告編を検索"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "字幕をダウンロード"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "ビデオメニュー"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "トップバーに天気予報を表示"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "映画/エピソード/ミュージックのメディアフラグを表示"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "スライドアニメーションを使用"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "ローカルの字幕を利用できます"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "チャンネルオプション"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Kodi ユーザープロファイルを選択して[CR]ログインしてください"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "アイコンウォール"
 
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "インフォウォール"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "ウォール"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "テキストを入力..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "現在ライブラリには何もありません。手持ちのメディアを追加するにはファイルセクションから設定してください。ソースを追加後インデックス化されライブラリを利用できるようになります。"
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "ビデオライブラリに追加するために、適切なコンテンツタイプのビデオソースを追加し設定します。"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "文字多重放送"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "ワイドリスト"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "カスタムグローバル背景を使用"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "画像のパスを選択"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "ファイルセクションに入る"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "個人的な写真を表示またはオフィシャルリポジトリから画像アドオンをダウンロードする。"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "オーディオストリーム切替"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "ローカルライブラリ検索"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "YouTubeを検索"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "TheMovieDBを検索"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "メインメニューから消去"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "ノードを編集"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "アドオンブラウザー"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "アドオンはまだ何もインストールされていません。アドオンブラウザを利用してアドオンを追加しましょう。Kodiがより便利になります。"
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "あなたはまだ天気プロパイダーを設定していません。天気予報プロパイダーを選択し現在地を設定すれば天気予報を表示できます。"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "天気プロパイダーを設定"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "未視聴のTV番組"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "同じ監督"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "地図上の画像を表示"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "上を押して出演者情報"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "決定を押してあらすじを読む"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "アイコンを表示"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "協力者"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "このスキンのすべてのエリアに一般設定を適用する"
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "メインメニュー関連設定: 好きなようにホームスクリーンを設定できます。"
+
+msgctxt "#31131"
+msgid "Choose home fanart pack"
+msgstr "ホームファンアートパックを選択"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "分"
+
 msgctxt "#31133"
 msgid "Hide"
 msgstr "隠す"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "残り"

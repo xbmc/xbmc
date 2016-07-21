@@ -108,6 +108,10 @@ msgctxt "#31032"
 msgid "Order"
 msgstr "Порядок"
 
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Ваш рейтинг"
+
 msgctxt "#31034"
 msgid "Extended info"
 msgstr "Дополнительная информация"
@@ -184,6 +188,18 @@ msgctxt "#31060"
 msgid "minutes"
 msgstr "мин."
 
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Элементы главного меню"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Плейлист видео"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Музыкальный плейлист"
+
 msgctxt "#31067"
 msgid "Event log"
 msgstr "Журнал событий"
@@ -199,6 +215,10 @@ msgstr "Добавить источники медиаданных"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Настройки питания"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Киноциклы"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -291,3 +311,7 @@ msgstr "Широкий список"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "Скрыть"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Осталось"

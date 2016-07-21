@@ -106,7 +106,7 @@ msgstr "Ďalšie možnosti"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Usporiadať podľa"
+msgstr "Zoradiť podľa"
 
 msgctxt "#31023"
 msgid "Viewtype"

@@ -551,3 +551,7 @@ msgstr "min"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "Masquer"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Restant"
