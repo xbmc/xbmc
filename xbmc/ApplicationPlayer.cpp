@@ -710,13 +710,6 @@ void CApplicationPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMeth
     player->OMXGetDeinterlaceMethods(deinterlaceMethods);
 }
 
-void CApplicationPlayer::GetDeinterlaceModes(std::vector<int> &deinterlaceModes)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->OMXGetDeinterlaceModes(deinterlaceModes);
-}
-
 void CApplicationPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -829,15 +822,6 @@ bool CApplicationPlayer::IsRenderingVideoLayer()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->IsRenderingVideoLayer();
-  else
-    return false;
-}
-
-bool CApplicationPlayer::Supports(EDEINTERLACEMODE mode)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->Supports(mode);
   else
     return false;
 }

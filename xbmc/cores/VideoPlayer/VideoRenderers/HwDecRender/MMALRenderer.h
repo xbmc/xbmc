@@ -105,7 +105,6 @@ public:
 
   virtual bool         SupportsMultiPassRendering() { return false; };
   virtual bool         Supports(ERENDERFEATURE feature);
-  virtual bool         Supports(EDEINTERLACEMODE mode);
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 

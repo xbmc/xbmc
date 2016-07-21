@@ -8463,17 +8463,7 @@ msgctxt "#16039"
 msgid "Off"
 msgstr ""
 
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16040"
-msgid "Auto"
-msgstr ""
-
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#16041"
-msgid "On"
-msgstr ""
-
-#empty strings from id 16042 to 16099
+#empty strings from id 16040 to 16099
 
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#16100"

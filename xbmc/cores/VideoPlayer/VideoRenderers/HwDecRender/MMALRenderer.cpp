@@ -521,7 +521,6 @@ void CMMALRenderer::Run()
     {
       if (buffer->length > 0)
       {
-        EDEINTERLACEMODE deinterlace_request = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
         EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
           interlace_method = AutoInterlaceMethod();
@@ -535,12 +534,12 @@ void CMMALRenderer::Run()
             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB_HALF;
         }
 
-        if (deinterlace_request == VS_DEINTERLACEMODE_OFF || interlace_method == VS_INTERLACEMETHOD_NONE)
+        if (interlace_method == VS_INTERLACEMETHOD_NONE)
         {
           if (m_deint_input)
             DestroyDeinterlace();
         }
-        else if (m_deint_input || deinterlace_request == VS_DEINTERLACEMODE_FORCE || (deinterlace_request == VS_DEINTERLACEMODE_AUTO && interlace))
+        else if (m_deint_input || interlace)
           CheckConfigurationDeint(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding, interlace_method);
 
         if (m_deint_input)
@@ -905,16 +904,6 @@ bool CMMALRenderer::RenderCapture(CRenderCapture* capture)
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************
-
-bool CMMALRenderer::Supports(EDEINTERLACEMODE mode)
-{
-  if(mode == VS_DEINTERLACEMODE_OFF
-  || mode == VS_DEINTERLACEMODE_AUTO
-  || mode == VS_DEINTERLACEMODE_FORCE)
-    return true;
-
-  return false;
-}
 
 bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
 {

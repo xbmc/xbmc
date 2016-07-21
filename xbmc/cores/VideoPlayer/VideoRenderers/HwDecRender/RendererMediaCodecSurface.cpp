@@ -89,11 +89,6 @@ bool CRendererMediaCodecSurface::Supports(EINTERLACEMETHOD method)
   return false;
 }
 
-bool CRendererMediaCodecSurface::Supports(EDEINTERLACEMODE mode)
-{
-  return false;
-}
-
 EINTERLACEMETHOD CRendererMediaCodecSurface::AutoInterlaceMethod()
 {
   return VS_INTERLACEMETHOD_NONE;
@@ -176,4 +171,3 @@ bool CRendererMediaCodecSurface::UploadTexture(int index)
   return true; // nothing todo
 }
 #endif
-

@@ -39,7 +39,6 @@ public:
 
   // Feature support
   virtual bool Supports(EINTERLACEMETHOD method) override;
-  virtual bool Supports(EDEINTERLACEMODE mode) override;
   virtual EINTERLACEMETHOD AutoInterlaceMethod() override;
   virtual CRenderInfo GetRenderInfo() override;
 

@@ -333,7 +333,6 @@ protected:
   float m_Contrast;
   float m_NoiseReduction;
   float m_Sharpness;
-  int m_DeintMode;
   int m_Deint;
   int m_Upscale;
   bool m_SeenInterlaceFlag;

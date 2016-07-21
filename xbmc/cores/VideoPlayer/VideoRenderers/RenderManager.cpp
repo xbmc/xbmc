@@ -797,19 +797,15 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 
 
   EPRESENTMETHOD presentmethod;
 
-  EDEINTERLACEMODE deinterlacemode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
-  if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
+  if (interlacemethod == VS_INTERLACEMETHOD_NONE)
   {
     presentmethod = PRESENT_METHOD_SINGLE;
     sync = FS_NONE;
   }
   else
   {
-    if (deinterlacemode == VS_DEINTERLACEMODE_AUTO && sync == FS_NONE)
-      presentmethod = PRESENT_METHOD_SINGLE;
-    else
     {
       bool invert = false;
       if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)
@@ -835,10 +831,6 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 
 
       if (presentmethod != PRESENT_METHOD_SINGLE)
       {
-        /* default to odd field if we want to deinterlace and don't know better */
-        if (deinterlacemode == VS_DEINTERLACEMODE_FORCE && sync == FS_NONE)
-          sync = FS_TOP;
-
         /* invert present field */
         if (invert)
         {
@@ -1194,17 +1186,11 @@ bool CRenderManager::Supports(ERENDERFEATURE feature)
     return false;
 }
 
-bool CRenderManager::Supports(EDEINTERLACEMODE method)
-{
-  CSingleLock lock(m_statelock);
-  if (m_pRenderer)
-    return m_pRenderer->Supports(method);
-  else
-    return false;
-}
-
 bool CRenderManager::Supports(EINTERLACEMETHOD method)
 {
+  if (method == VS_INTERLACEMETHOD_NONE)
+    return true;
+  
   CSingleLock lock(m_statelock);
   if (m_pRenderer)
     return m_pRenderer->Supports(method);

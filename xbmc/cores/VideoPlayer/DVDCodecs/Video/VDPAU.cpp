@@ -1785,10 +1785,8 @@ void CMixer::CheckFeatures()
     m_Sharpness = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness;
     SetSharpness();
   }
-  if (m_DeintMode != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode ||
-      m_Deint     != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)
+  if (m_Deint != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)
   {
-    m_DeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
     m_Deint     = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
     SetDeinterlacing();
   }
@@ -2053,14 +2051,13 @@ void CMixer::SetDeinterlacing()
   if (m_videoMixer == VDP_INVALID_HANDLE)
     return;
 
-  EDEINTERLACEMODE   mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD method = GetDeinterlacingMethod(true);
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
                                      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
 
-  if (mode == VS_DEINTERLACEMODE_OFF)
+  if (method == VS_INTERLACEMETHOD_NONE)
   {
     VdpBool enabled[] = {0,0,0};
     vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
@@ -2285,7 +2282,6 @@ void CMixer::Init()
   m_Contrast = 0.0;
   m_NoiseReduction = 0.0;
   m_Sharpness = 0.0;
-  m_DeintMode = 0;
   m_Deint = 0;
   m_Upscale = 0;
   m_SeenInterlaceFlag = false;
@@ -2354,26 +2350,25 @@ void CMixer::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EDEINTERLACEMODE   mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD method = GetDeinterlacingMethod();
   bool interlaced = m_mixerInput[1].DVDPic.iFlags & DVP_FLAG_INTERLACED;
   m_SeenInterlaceFlag |= interlaced;
 
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
-      (mode == VS_DEINTERLACEMODE_FORCE ||
-      (mode == VS_DEINTERLACEMODE_AUTO && interlaced)))
+      interlaced &&
+      method != VS_INTERLACEMETHOD_NONE)
   {
-    if((method == VS_INTERLACEMETHOD_AUTO && interlaced)
-      ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
-      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
-      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
-      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
-      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
-      ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE )
+    if (method == VS_INTERLACEMETHOD_AUTO  ||
+        method == VS_INTERLACEMETHOD_VDPAU_BOB ||
+        method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL ||
+        method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF ||
+        method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL ||
+        method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF ||
+        method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE )
     {
-      if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
-        || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
-        || !g_graphicsContext.IsFullScreenVideo())
+      if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF ||
+         method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF ||
+         !g_graphicsContext.IsFullScreenVideo())
         m_mixersteps = 1;
       else
       {
