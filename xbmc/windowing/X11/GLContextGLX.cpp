@@ -31,6 +31,7 @@ CGLContextGLX::CGLContextGLX(Display *dpy) : CGLContext(dpy)
   m_extPrefix = "GLX_";
   m_glxWindow = 0;
   m_glxContext = 0;
+  m_vsyncMode = 0;
 }
 
 bool CGLContextGLX::Refresh(bool force, int screen, Window glWindow, bool &newContext)
@@ -187,7 +188,7 @@ void CGLContextGLX::SetVSync(bool enable)
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI)
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_vsyncMode)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
