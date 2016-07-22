@@ -1,6 +1,3 @@
-enable_language(CXX ASM)
-set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp" )
-
 set(SOURCES BaseRenderer.cpp
             ColorManager.cpp
             OverlayRenderer.cpp

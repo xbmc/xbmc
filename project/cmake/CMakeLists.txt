@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(kodi)
+project(kodi LANGUAGES CXX C ASM)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/modules)
 if(DEPENDS_DIR)
@@ -9,6 +9,7 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp")
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
