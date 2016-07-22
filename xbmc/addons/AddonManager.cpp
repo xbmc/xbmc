@@ -357,7 +357,7 @@ bool CAddonMgr::Init()
  if (!m_database.Open())
    CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
 
-  FindAddonsAndNotify();
+  FindAddons();
 
   //Ensure required add-ons are installed and enabled
   for (const auto& id : m_systemAddons)
@@ -723,34 +723,36 @@ bool CAddonMgr::FindAddons()
     m_database.GetBlacklisted(tmp);
     m_updateBlacklist = std::move(tmp);
 
-    SetChanged();
+    m_events.Publish(AddonEvents::InstalledChanged());
   }
 
   return result;
 }
 
-bool CAddonMgr::FindAddonsAndNotify()
-{
-  if (!FindAddons())
-    return false;
-
-  NotifyObservers(ObservableMessageAddons);
-
-  m_events.Publish(AddonEvents::InstalledChanged());
-
-  return true;
-}
-
-void CAddonMgr::UnregisterAddon(const std::string& ID)
+bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
 {
   CSingleLock lock(m_critSection);
   if (m_cpluff && m_cp_context)
   {
-    m_cpluff->uninstall_plugin(m_cp_context, ID.c_str());
-    SetChanged();
-    lock.Leave();
-    NotifyObservers(ObservableMessageAddons);
+    if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
+    {
+      m_events.Publish(AddonEvents::InstalledChanged());
+      return true;
+    }
   }
+  return false;
+}
+
+bool CAddonMgr::ReloadAddon(AddonPtr& addon)
+{
+  CSingleLock lock(m_critSection);
+  if (!addon ||!m_cpluff || !m_cp_context)
+    return false;
+
+  m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str());
+  return FindAddons()
+      && GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false)
+      && EnableAddon(addon->ID());
 }
 
 void CAddonMgr::OnPostUnInstall(const std::string& id)

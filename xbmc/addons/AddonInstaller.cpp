@@ -601,10 +601,7 @@ bool CAddonInstallJob::DoWork()
   if (!Install(installFrom, m_repo))
     return false;
 
-  CAddonMgr::GetInstance().UnregisterAddon(m_addon->ID());
-  CAddonMgr::GetInstance().FindAddons();
-
-  if (!CAddonMgr::GetInstance().GetAddon(m_addon->ID(), m_addon, ADDON_UNKNOWN, false))
+  if (!CAddonMgr::GetInstance().ReloadAddon(m_addon))
   {
     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
     return false;
@@ -615,9 +612,6 @@ bool CAddonInstallJob::DoWork()
 
   ADDON::OnPostInstall(m_addon, m_update, IsModal());
 
-  //Enable it if it was previously disabled
-  CAddonMgr::GetInstance().EnableAddon(m_addon->ID());
-
   {
     CAddonDatabase database;
     database.Open();
@@ -625,9 +619,6 @@ bool CAddonInstallJob::DoWork()
     if (m_update)
       database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
   }
-
-  // notify any observers that add-ons have changed
-  CAddonMgr::GetInstance().NotifyObservers(ObservableMessageAddons);
 
   CEventLog::GetInstance().Add(
     EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
@@ -854,7 +845,11 @@ bool CAddonUnInstallJob::DoWork()
 
   //Unregister addon with the manager to ensure nothing tries
   //to interact with it while we are uninstalling.
-  CAddonMgr::GetInstance().UnregisterAddon(m_addon->ID());
+  if (!CAddonMgr::GetInstance().UnloadAddon(m_addon))
+  {
+    CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: failed to unload addon.", m_addon->ID().c_str());
+    return false;
+  }
 
   if (!DeleteAddon(m_addon->Path()))
   {

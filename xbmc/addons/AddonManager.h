@@ -23,7 +23,6 @@
 #include "AddonEvents.h"
 #include "Repository.h"
 #include "threads/CriticalSection.h"
-#include "utils/Observer.h"
 #include "utils/EventStream.h"
 #include <string>
 #include <vector>
@@ -65,7 +64,7 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr : public Observable
+  class CAddonMgr
   {
   public:
     static CAddonMgr &GetInstance();
@@ -139,12 +138,11 @@ namespace ADDON
      */
     bool FindAddons();
 
-    /*! \brief Checks for new / updated add-ons and notifies all observers
-    \return True if everything went ok, false otherwise
-    */
-    bool FindAddonsAndNotify();
+    /*! Unload addon from the system. Returns true if it was unloaded, otherwise false. */
+    bool UnloadAddon(const AddonPtr& addon);
 
-    void UnregisterAddon(const std::string& ID);
+    /*! Returns true if the addon was successfully loaded and enabled; otherwise false. */
+    bool ReloadAddon(AddonPtr& addon);
 
     /*! Hook for clearing internal state after uninstall. */
     void OnPostUnInstall(const std::string& id);
