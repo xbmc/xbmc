@@ -476,7 +476,7 @@ cmsHPROFILE CColorManager::CreateSourceProfile(CMS_PRIMARIES primaries, cmsToneC
 }
 
 
-bool CColorManager::Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, int *clutSize)
+void CColorManager::Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, int *clutSize)
 {
   const int lutResolution = *clutSize;
   int lutsamples = lutResolution * lutResolution * lutResolution * 3;

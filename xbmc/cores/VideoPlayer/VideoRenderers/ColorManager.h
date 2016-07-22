@@ -138,7 +138,7 @@ private:
    \param resolution size of the 3D LUT to create
    \param clut pointer to LUT data
    */
-  bool Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, int *clutSize);
+  void Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, int *clutSize);
 
   // keep current display profile loaded here
   cmsHPROFILE m_hProfile;
