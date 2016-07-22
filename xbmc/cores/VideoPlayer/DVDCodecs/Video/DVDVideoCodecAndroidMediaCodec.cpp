@@ -490,9 +490,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       return false;
   }
 
-  if (m_render_surface)
-    m_formatname += "(S)";
-
   // CJNIMediaCodec::createDecoderByXXX doesn't handle errors nicely,
   // it crashes if the codec isn't found. This is fixed in latest AOSP,
   // but not in current 4.1 devices. So 1st search for a matching codec, then create it.
@@ -595,6 +592,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   m_opened = true;
   memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
+  
+  m_processInfo.SetVideoDecoderName(m_formatname, true );
+  m_processInfo.SetVideoPixelFormat(m_render_surface ? "Surface" : (m_render_sw ? "YUV" : "EGL"));
+  m_processInfo.SetVideoDimensions(m_hints.width, m_hints.height);
+  m_processInfo.SetVideoDeintMethod("hardware");
 
   return m_opened;
 }
