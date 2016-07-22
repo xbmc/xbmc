@@ -229,7 +229,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
   if (xbmc_jnienv()->ExceptionCheck())
   {
     CLog::Log(LOGERROR, "CDVDMediaCodecInfo::ReleaseOutputBuffer "
-      "ExceptionCheck render(%d)", render);
+      "ExceptionCheck index(%d), render(%d)", m_index, render);
     xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
   }
@@ -818,6 +818,7 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     if (!m_render_sw)
       m_videobuffer.mediacodec = NULL;
   }
+  m_drop = false;
   m_codecControlFlags = 0;
 }
 
@@ -847,6 +848,12 @@ bool CDVDVideoCodecAndroidMediaCodec::ClearPicture(DVDVideoPicture* pDvdVideoPic
 
 void CDVDVideoCodecAndroidMediaCodec::SetDropState(bool bDrop)
 {
+  if (bDrop == m_drop)
+    return;
+
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s %s->%s", "CDVDVideoCodecAndroidMediaCodec", __func__, m_drop ? "true" : "false", bDrop ? "true" : "false");
+
   m_drop = bDrop;
   if (m_drop)
     m_videobuffer.iFlags |=  DVP_FLAG_DROPPED;
@@ -1112,15 +1119,16 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     }
     ConfigureOutputFormat(&mediaformat);
   }
-  else if (index == CJNIMediaCodec::INFO_TRY_AGAIN_LATER)
+  else if (index == CJNIMediaCodec::INFO_TRY_AGAIN_LATER || index == CJNIMediaCodec::INFO_OUTPUT_BUFFERS_CHANGED)
   {
-    // normal dequeueOutputBuffer timeout, ignore it.
+    // ignore
     rtn = -1;
   }
   else
   {
     // we should never get here
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture unknown index(%d)", index);
+    rtn = -1;
   }
 
   return rtn;
