@@ -33,7 +33,17 @@
 #include "utils/log.h"
 #include "URL.h"
 
-#define ENV_PARTIAL_PATH "special://xbmcbin/system/;" \
+#if defined(TARGET_WINDOWS)
+#define ENV_PARTIAL_PATH \
+                 "special://xbmcbin/;" \
+                 "special://xbmcbin/system/;" \
+                 "special://xbmcbin/system/python/;" \
+                 "special://xbmc/;" \
+                 "special://xbmc/system/;" \
+                 "special://xbmc/system/python/"
+#else
+#define ENV_PARTIAL_PATH \
+                 "special://xbmcbin/system/;" \
                  "special://xbmcbin/system/players/mplayer/;" \
                  "special://xbmcbin/system/players/VideoPlayer/;" \
                  "special://xbmcbin/system/players/paplayer/;" \
@@ -43,7 +53,7 @@
                  "special://xbmc/system/players/VideoPlayer/;" \
                  "special://xbmc/system/players/paplayer/;" \
                  "special://xbmc/system/python/"
-
+#endif
 #if defined(TARGET_DARWIN)
 #define ENV_PATH ENV_PARTIAL_PATH \
                  ";special://frameworks/"
