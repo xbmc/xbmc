@@ -22,20 +22,20 @@
  */
 
 /* libraries */
-#define DLL_PATH_CPLUFF        "special://xbmcbin/system/cpluff.dll"
-#define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif.dll"
-#define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl.dll"
-#define DLL_PATH_LIBNFS        "special://xbmcbin/system/libnfs.dll"
-#define DLL_PATH_LIBPLIST      "special://xbmcbin/system/airplay/libplist.dll"
-#define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/system/airplay/libshairplay-1.dll"
-#define DLL_PATH_LIBCEC        "special://xbmcbin/system/libcec.dll"
+#define DLL_PATH_CPLUFF        "special://xbmcbin/cpluff.dll"
+#define DLL_PATH_LIBEXIF       "special://xbmcbin/libexif.dll"
+#define DLL_PATH_LIBCURL       "special://xbmcbin/libcurl.dll"
+#define DLL_PATH_LIBNFS        "special://xbmcbin/libnfs.dll"
+#define DLL_PATH_LIBPLIST      "special://xbmcbin/libplist.dll"
+#define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/shairplay.dll"
+#define DLL_PATH_LIBCEC        "special://xbmcbin/cec.dll"
 
 /* VideoPlayer */
-#define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass.dll"
-#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/VideoPlayer/libdvdnav.dll"
+#define DLL_PATH_LIBASS        "special://xbmcbin/libass.dll"
+#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/libdvdnav.dll"
 
 /* libbluray */
-#define DLL_PATH_LIBBLURAY     "special://xbmcbin/system/players/dvdplayer/libbluray.dll"
+#define DLL_PATH_LIBBLURAY     "special://xbmcbin/libbluray.dll"
 
 #endif
 

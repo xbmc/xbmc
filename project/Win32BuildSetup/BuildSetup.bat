@@ -237,6 +237,9 @@ set WORKSPACE=%CD%\..\..
   rem Exclude skins as they're copied by their own script
   Echo addons\skin.estuary\>>exclude.txt
   Echo addons\skin.estouchy\>>exclude.txt
+
+  rem Exclude dlls from system to avoid duplicates
+  Echo .dll>>exclude_dll.txt
   
   md BUILD_WIN32\application
 
@@ -249,7 +252,8 @@ set WORKSPACE=%CD%\..\..
   xcopy dependencies\*.* BUILD_WIN32\application /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
   xcopy ..\..\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  xcopy ..\..\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy ..\..\system\*.dll BUILD_WIN32\application /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  xcopy ..\..\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt+exclude_dll.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
   REM create AppxManifest.xml

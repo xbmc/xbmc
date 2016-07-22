@@ -233,7 +233,6 @@ Section "${APP_NAME}" SecAPP
   ;Start copying files
   SetOutPath "$INSTDIR"
   File "${app_root}\application\*.*"
-  File "${app_root}\application\system\*.dll"
   SetOutPath "$INSTDIR\addons"
   File /r "${app_root}\application\addons\*.*"
   File /nonfatal /r "${app_root}\addons\peripheral.*"
