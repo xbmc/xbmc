@@ -260,16 +260,16 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setUniqueIDs(values) }
       ///-----------------------------------------------------------------------
-      /// Sets the listitem's setUniqueIDs
+      /// Sets the listitem's uniqueID
       ///
       /// @param values             dictionary - pairs of `{ label: value }`.
       ///  - Some example values (any string possible):
       ///  | Label         | Type                                              |
       ///  |:-------------:|:--------------------------------------------------|
-      ///  | imdb          | string - image filename
-      ///  | tvdb          | string - image filename
-      ///  | tmdb          | string - image filename
-      ///  | anidb         | string - image filename
+      ///  | imdb          | string - uniqueid name
+      ///  | tvdb          | string - uniqueid name
+      ///  | tmdb          | string - uniqueid name
+      ///  | anidb         | string - uniqueid name
       ///
       ///
       ///
@@ -331,14 +331,14 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// Returns a listitem uniqueID as a string, similar to an infolabel.\n
       ///
-      /// @param key            string - uniqueID type.
+      /// @param key            string - uniqueID name.
       /// - Some default uniqueID values (any string possible):
       ///  | Label         | Type                                             |
       ///  |---------------|--------------------------------------------------|
-      ///  | imdb          | string - image filename
-      ///  | tvdb          | string - image filename
-      ///  | tmdb          | string - image filename
-      ///  | anidb         | string - image filename
+      ///  | imdb          | string - uniqueid name
+      ///  | tvdb          | string - uniqueid name
+      ///  | tmdb          | string - uniqueid name
+      ///  | anidb         | string - uniqueid name
       ///
       ///
       ///

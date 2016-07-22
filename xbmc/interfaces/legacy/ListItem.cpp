@@ -150,7 +150,6 @@ namespace XBMCAddon
     void ListItem::setUniqueIDs(const Properties& dictionary)
     {
       if (!item) return;
-      if (!item->HasVideoInfoTag()) return;
 
       LOCKGUI;
       CVideoInfoTag& vtag = *item->GetVideoInfoTag();
