@@ -19,8 +19,4 @@ set(HEADERS DVDOverlay.h
             contrib/cc_decoder.h
             contrib/cc_decoder708.h)
 
-if(CORE_SYSTEM_NAME STREQUAL "windows")
-  set_source_files_properties(${SOURCES} PROPERTIES LANGUAGE CXX)
-endif()
-
 core_add_library(dvdoverlaycodecs)

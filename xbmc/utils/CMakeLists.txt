@@ -173,8 +173,6 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows)
                       GLUtils.cpp)
   list(APPEND HEADERS CryptThreading.h
                       GLUtils.h)
-else()
-  set_source_files_properties(fstrcmp.c PROPERTIES LANGUAGE CXX)
 endif()
 
 if(AML_FOUND)
