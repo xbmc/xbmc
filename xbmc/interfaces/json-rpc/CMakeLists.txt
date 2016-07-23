@@ -44,4 +44,4 @@ set(HEADERS AddonsOperations.h
             XBMCOperations.h)
 
 core_add_library(jsonrpc_interface)
-add_dependencies(jsonrpc_interface generate_json_header)
+add_dependencies(${CORE_LIBRARY} generate_json_header)

@@ -65,32 +65,6 @@ function(add_precompiled_header target pch_header pch_source)
   endif()
 endfunction()
 
-# Adds an FX-compiled shader to a target
-#   Creates a custom command that FX-compiles the given shader and adds the
-#   generated header file to the given target.
-# Arguments:
-#   target Target to add the FX-compiled shader to
-#   hlsl HLSL shader input file
-#   profile HLSL profile that specifies the shader model
-#   entrypoint Shader entry point
-# On return:
-#   FXC_FILE is set to the name of the generated header file.
-function(add_shader_dx target hlsl profile entrypoint)
-  get_filename_component(file ${hlsl} NAME_WE)
-  add_custom_command(OUTPUT ${file}.h
-                     COMMAND ${FXC} /Fh ${file}.h
-                                    /E ${entrypoint}
-                                    /T ${profile}
-                                    /Vn ${file}
-                                    /Qstrip_reflect
-                                    ${hlsl}
-                     DEPENDS ${hlsl}
-                     COMMENT "FX compile ${hlsl}"
-                     VERBATIM)
-  target_sources(${target} PRIVATE ${file}.h)
-  target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-endfunction()
-
 # Copies the main dlls to the root of the buildtree
 # On return:
 #   files added to ${install_data}, mirror in build tree

@@ -29,7 +29,6 @@ set(HEADERS Bookmark.h
             VideoThumbLoader.h)
 
 core_add_library(video)
-
 if(CORE_SYSTEM_NAME STREQUAL windows)
-  add_dependencies(video d3dx11effects)
+  add_dependencies(${CORE_LIBRARY} d3dx11effects)
 endif()

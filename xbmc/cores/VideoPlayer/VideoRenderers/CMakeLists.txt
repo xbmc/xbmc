@@ -50,7 +50,6 @@ if(ARCH MATCHES arm)
 endif()
 
 core_add_library(videorenderers)
-
 if(CORE_SYSTEM_NAME STREQUAL windows)
-  add_dependencies(videorenderers d3dx11effects)
+  add_dependencies(${CORE_LIBRARY} d3dx11effects)
 endif()

@@ -8,7 +8,7 @@ set(SOURCES ActorProtocol.cpp
             BitstreamConverter.cpp
             BitstreamStats.cpp
             BooleanLogic.cpp
-            CharsetConverter.cpp 
+            CharsetConverter.cpp
             CharsetDetection.cpp
             CPUInfo.cpp
             Crc32.cpp
@@ -183,7 +183,3 @@ if(AML_FOUND)
 endif()
 
 core_add_library(utils)
-
-if(ENABLE_INTERNAL_CROSSGUID)
-  add_dependencies(utils crossguid)
-endif()

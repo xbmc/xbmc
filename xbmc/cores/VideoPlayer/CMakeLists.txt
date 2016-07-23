@@ -35,7 +35,3 @@ set(HEADERS DVDAudio.h
             VideoPlayerVideo.h)
 
 core_add_library(VideoPlayer)
-
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
-  add_dependencies(VideoPlayer dvdnav)
-endif()

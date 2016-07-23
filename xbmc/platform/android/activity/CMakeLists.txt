@@ -25,6 +25,6 @@ set(HEADERS AndroidExtra.h
             XBMCApp.h)
 
 core_add_library(platform_android_activity)
-target_include_directories(platform_android_activity
+target_include_directories(${CORE_LIBRARY}
                            PRIVATE ${NDKROOT}/sources/android/native_app_glue
                                    ${NDKROOT}/sources/android/cpufeatures)

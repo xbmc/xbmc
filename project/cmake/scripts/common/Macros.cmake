@@ -51,66 +51,54 @@ function(source_group_by_folder target)
   endif()
 endfunction()
 
-# Add a library, optionally as a dependency of the main application
+# Add sources to main application
 # Arguments:
 #   name name of the library to add
 # Implicit arguments:
+#   ENABLE_STATIC_LIBS Build static libraries per directory
 #   SOURCES the sources of the library
 #   HEADERS the headers of the library (only for IDE support)
 #   OTHERS  other library related files (only for IDE support)
 # On return:
 #   Library will be built, optionally added to ${core_DEPENDS}
+#   Sets CORE_LIBRARY for calls for setting target specific options
 function(core_add_library name)
-  if(NOT SOURCES)
-      message(STATUS "No sources added to ${name} skipping")
-      return()
-  endif()
+  if(ENABLE_STATIC_LIBS)
+    add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
+    set_target_properties(${name} PROPERTIES PREFIX "")
+    set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
+    add_dependencies(${name} libcpluff ffmpeg dvdnav crossguid)
+    set(CORE_LIBRARY ${name} PARENT_SCOPE)
 
-  add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
-  set_target_properties(${name} PROPERTIES PREFIX "")
-  set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
-  add_dependencies(${name} libcpluff ffmpeg)
-
-  # Add precompiled headers to Kodi main libraries
-  if(CORE_SYSTEM_NAME STREQUAL windows AND CMAKE_CURRENT_LIST_DIR MATCHES "^${CORE_SOURCE_DIR}/xbmc")
-    add_precompiled_header(${name} pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp
-                           PCH_TARGET kodi)
-    set_language_cxx(${name})
-  endif()
-
-  # IDE support
-  if(CMAKE_GENERATOR MATCHES "Xcode")
-    file(RELATIVE_PATH parentfolder ${CORE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/..)
-    set_target_properties(${name} PROPERTIES FOLDER "${parentfolder}")
-  elseif(CMAKE_GENERATOR MATCHES "Visual Studio")
-    file(RELATIVE_PATH foldername ${CORE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-    set_target_properties(${name} PROPERTIES FOLDER "${foldername}")
-    source_group(" " REGULAR_EXPRESSION ".*")
+    # Add precompiled headers to Kodi main libraries
+    if(CORE_SYSTEM_NAME STREQUAL windows)
+      add_precompiled_header(${name} pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+      set_language_cxx(${name})
+    endif()
+  else()
+    foreach(src IN LISTS SOURCES HEADERS OTHERS)
+      get_filename_component(src_path "${src}" ABSOLUTE)
+      list(APPEND FILES ${src_path})
+    endforeach()
+    target_sources(lib${APP_NAME_LC} PRIVATE ${FILES})
+    set(CORE_LIBRARY lib${APP_NAME_LC} PARENT_SCOPE)
   endif()
 endfunction()
 
 # Add a test library, and add sources to list for gtest integration macros
 function(core_add_test_library name)
-  # Backup the old SOURCES variable, since we'll append SUPPORT_SOURCES to it
-  set(TEST_ONLY_SOURCES ${SOURCES})
-  add_library(${name} STATIC ${SOURCES} ${SUPPORTED_SOURCES} ${HEADERS} ${OTHERS})
-  set_target_properties(${name} PROPERTIES PREFIX ""
-                                           EXCLUDE_FROM_ALL 1)
-
-  # Add precompiled headers to Kodi main libraries
-  if(CORE_SYSTEM_NAME STREQUAL windows AND CMAKE_CURRENT_LIST_DIR MATCHES "^${CORE_SOURCE_DIR}/xbmc")
-    add_precompiled_header(${name} pch.h ${CORE_SOURCE_DIR}/xbmc/win32/pch.cpp
-                           PCH_TARGET kodi)
+  if(ENABLE_STATIC_LIBS)
+    add_library(${name} STATIC ${SOURCES} ${SUPPORTED_SOURCES} ${HEADERS} ${OTHERS})
+    set_target_properties(${name} PROPERTIES PREFIX ""
+                                             EXCLUDE_FROM_ALL 1
+                                             FOLDER "Build Utilities/tests")
+    add_dependencies(${name} libcpluff ffmpeg dvdnav crossguid)
+    set(test_archives ${test_archives} ${name} CACHE STRING "" FORCE)
   endif()
-
-  add_dependencies(${name} libcpluff ffmpeg)
-  foreach(src ${TEST_ONLY_SOURCES})
-    # This will prepend CMAKE_CURRENT_SOURCE_DIR if the path is relative,
-    # otherwise use the absolute path.
+  foreach(src IN LISTS SOURCES)
     get_filename_component(src_path "${src}" ABSOLUTE)
     set(test_sources "${src_path}" ${test_sources} CACHE STRING "" FORCE)
   endforeach()
-  set(test_archives ${test_archives} ${name} CACHE STRING "" FORCE)
 endfunction()
 
 # Add an addon callback library
@@ -400,7 +388,7 @@ function(core_add_subdirs_from_filelist files)
       list(GET subdir  0 subdir_src)
       list(GET subdir -1 subdir_dest)
       if(VERBOSE)
-        message(STATUS "  core_add_subdirs_from_filelist - adding subdir: ${CORE_SOURCE_DIR}${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
+        message(STATUS "  core_add_subdirs_from_filelist - adding subdir: ${CORE_SOURCE_DIR}/${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
       endif()
       add_subdirectory(${CORE_SOURCE_DIR}/${subdir_src} ${CORE_BUILD_DIR}/${subdir_dest})
     endforeach()
