@@ -365,13 +365,6 @@ if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
   include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
 endif()
 
-# WiiRemote
-if(ENABLE_EVENTCLIENTS)
-  if(CORE_SYSTEM_NAME STREQUAL linux)
-    add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
-  endif()
-endif()
-
 include(scripts/${CORE_SYSTEM_NAME}/Install.cmake)
 
 # Create target that allows to build binary-addons.
