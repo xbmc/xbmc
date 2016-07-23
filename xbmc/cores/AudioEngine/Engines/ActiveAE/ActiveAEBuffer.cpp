@@ -544,6 +544,40 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
   return busy;
 }
 
+void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool dspenabled, bool stereoupmix, AEQuality quality)
+{
+  bool normalize = true;
+  if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count()) &&
+      normalizelevels)
+    normalize = false;
+
+  /* Disable upmix if DSP layout > 2.0, becomes perfomed by DSP */
+  bool ignoreUpmix = false;
+  if (dspenabled && m_useDSP && m_processor->GetChannelLayout().Count() > 2)
+    ignoreUpmix = true;
+
+  if (m_useResampler &&
+      ((m_resampleQuality != quality) ||
+       ((m_stereoUpmix != stereoupmix) && !ignoreUpmix) ||
+       (m_normalize != normalize)))
+  {
+    m_changeResampler = true;
+  }
+
+  if (m_useDSP != dspenabled ||
+      (m_useDSP &&
+      ((m_resampleQuality != quality) ||
+      (m_stereoUpmix != stereoupmix))))
+  {
+    m_changeDSP = true;
+  }
+
+  m_useDSP = dspenabled;
+  m_resampleQuality = quality;
+  m_stereoUpmix = stereoupmix;
+  m_normalize = normalize;
+}
+
 float CActiveAEBufferPoolResample::GetDelay()
 {
   float delay = 0;
@@ -602,4 +636,40 @@ void CActiveAEBufferPoolResample::Flush()
   }
   if (m_resampler)
     ChangeResampler();
+}
+
+void CActiveAEBufferPoolResample::SetDrain(bool drain)
+{
+  m_drain = drain;
+}
+
+void CActiveAEBufferPoolResample::SetRR(double rr)
+{
+  m_resampleRatio = rr;
+}
+
+double CActiveAEBufferPoolResample::GetRR()
+{
+  return m_resampleRatio;
+}
+
+void CActiveAEBufferPoolResample::FillBuffer()
+{
+  m_fillPackets = true;
+}
+
+bool CActiveAEBufferPoolResample::DoesNormalize()
+{
+  return m_normalize;
+}
+
+void CActiveAEBufferPoolResample::ForceResampler(bool force)
+{
+  m_forceResampler = force;
+}
+
+void CActiveAEBufferPoolResample::SetDSPConfig(bool usedsp, bool bypassdsp)
+{
+  m_useDSP = usedsp;
+  m_bypassDSP = bypassdsp;
 }

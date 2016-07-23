@@ -115,10 +115,10 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
       float delay = 0;
       str.m_syncState = stream->m_syncState;
       str.m_syncError = stream->m_syncError.GetLastError(str.m_errorTime);
-      if (stream->m_resampleBuffers)
+      if (stream->m_processingBuffers)
       {
-        str.m_resampleRatio = stream->m_resampleBuffers->m_resampleRatio;
-        delay += stream->m_resampleBuffers->GetDelay();
+        str.m_resampleRatio = stream->m_processingBuffers->GetRR();
+        delay += stream->m_processingBuffers->GetDelay();
       }
       else
       {
@@ -403,7 +403,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEDataProtocol::DRAINSTREAM:
           stream = *(CActiveAEStream**)msg->data;
           stream->m_drain = true;
-          stream->m_resampleBuffers->m_drain = true;
+          stream->m_processingBuffers->SetDrain(true);
           msg->Reply(CActiveAEDataProtocol::ACC);
           stream->m_streamPort->SendInMessage(CActiveAEDataProtocol::STREAMDRAINED);
           return;
@@ -638,9 +638,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           return;
         case CActiveAEControlProtocol::STREAMRESAMPLERATIO:
           par = (MsgStreamParameter*)msg->data;
-          if (par->stream->m_resampleBuffers)
+          if (par->stream->m_processingBuffers)
           {
-            par->stream->m_resampleBuffers->m_resampleRatio = par->parameter.double_par;
+            par->stream->m_processingBuffers->SetRR(par->parameter.double_par);
           }
           return;
         case CActiveAEControlProtocol::STREAMFFMPEGINFO:
@@ -724,7 +724,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           if (msgData->buffer->pkt->nb_samples == 0)
             msgData->buffer->Return();
           else
-            msgData->stream->m_resampleBuffers->m_inputSamples.push_back(msgData->buffer);
+            msgData->stream->m_processingBuffers->m_inputSamples.push_back(msgData->buffer);
           m_extTimeout = 0;
           m_state = AE_TOP_CONFIGURED_PLAY;
           return;
@@ -750,7 +750,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEDataProtocol::DRAINSTREAM:
           stream = *(CActiveAEStream**)msg->data;
           stream->m_drain = true;
-          stream->m_resampleBuffers->m_drain = true;
+          stream->m_processingBuffers->SetDrain(true);
           m_extTimeout = 0;
           m_state = AE_TOP_CONFIGURED_PLAY;
           msg->Reply(CActiveAEDataProtocol::ACC);
@@ -1272,26 +1272,28 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         // if input format does not follow ffmpeg channel mask, we may need to remap channels
         (*it)->InitRemapper();
       }
-      if (initSink && (*it)->m_resampleBuffers)
+      if (initSink && (*it)->m_processingBuffers)
       {
-        m_discardBufferPools.push_back((*it)->m_resampleBuffers);
-        (*it)->m_resampleBuffers = NULL;
+        m_discardBufferPools.push_back((*it)->m_processingBuffers->GetResampleBuffers());
+        delete (*it)->m_processingBuffers;
+        (*it)->m_processingBuffers = nullptr;
       }
-      if (!(*it)->m_resampleBuffers)
+      if (!(*it)->m_processingBuffers)
       {
         bool useDSP = !isRaw ? m_settings.dspaddonsenabled : false;
 
-        (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
-        (*it)->m_resampleBuffers->m_forceResampler = (*it)->m_forceResampler;
-        (*it)->m_resampleBuffers->m_bypassDSP = (*it)->m_bypassDSP;
-        if (useDSP && !(*it)->m_resampleBuffers->m_bypassDSP)
-          (*it)->m_resampleBuffers->SetExtraData((*it)->m_profile, (*it)->m_matrixEncoding, (*it)->m_audioServiceType);
-        (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels, useDSP);
+        (*it)->m_processingBuffers = new CActiveAEStreamBuffers((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
+        (*it)->m_processingBuffers->ForceResampler((*it)->m_forceResampler);
+        (*it)->m_processingBuffers->SetDSPConfig(useDSP, (*it)->m_bypassDSP);
+
+        if (useDSP && !(*it)->m_bypassDSP)
+          (*it)->m_processingBuffers->SetExtraData((*it)->m_profile, (*it)->m_matrixEncoding, (*it)->m_audioServiceType);
+        (*it)->m_processingBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels, useDSP);
 
         m_stats.SetDSP(useDSP);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
-        (*it)->m_resampleBuffers->m_fillPackets = true;
+        (*it)->m_processingBuffers->FillBuffer();
 
       // amplification
       (*it)->m_limiter.SetSamplerate(outputFormat.m_sampleRate);
@@ -1395,7 +1397,7 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
 
   // create buffer pool
   stream->m_inputBuffers = NULL; // create in Configure when we know the sink format
-  stream->m_resampleBuffers = NULL; // create in Configure when we know the sink format
+  stream->m_processingBuffers = NULL; // create in Configure when we know the sink format
   stream->m_fadingSamples = 0;
   stream->m_started = false;
   stream->m_resampleMode = 0;
@@ -1437,8 +1439,9 @@ void CActiveAE::DiscardStream(CActiveAEStream *stream)
       }
       if ((*it)->m_inputBuffers)
         m_discardBufferPools.push_back((*it)->m_inputBuffers);
-      if ((*it)->m_resampleBuffers)
-        m_discardBufferPools.push_back((*it)->m_resampleBuffers);
+      if ((*it)->m_processingBuffers)
+        m_discardBufferPools.push_back((*it)->m_processingBuffers->GetResampleBuffers());
+      delete (*it)->m_processingBuffers;
       CLog::Log(LOGDEBUG, "CActiveAE::DiscardStream - audio stream deleted");
       m_stats.RemoveStream((*it)->m_id);
       delete (*it)->m_streamPort;
@@ -1459,7 +1462,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
     stream->m_processingSamples.front()->Return();
     stream->m_processingSamples.pop_front();
   }
-  stream->m_resampleBuffers->Flush();
+  stream->m_processingBuffers->Flush();
   stream->m_streamPort->Purge();
   stream->m_bufferedTime = 0.0;
   stream->m_paused = false;
@@ -1561,36 +1564,7 @@ void CActiveAE::ChangeResamplers()
   std::list<CActiveAEStream*>::iterator it;
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
-    bool normalize = true;
-    if (((*it)->m_resampleBuffers->m_format.m_channelLayout.Count() <
-         (*it)->m_resampleBuffers->m_inputFormat.m_channelLayout.Count()) &&
-         !m_settings.normalizelevels)
-      normalize = false;
-
-    /* Disable upmix if DSP layout > 2.0, becomes perfomed by DSP */
-    bool ignoreUpmix = false;
-    if (m_settings.dspaddonsenabled && (*it)->m_resampleBuffers->m_useDSP && (*it)->m_resampleBuffers->m_processor->GetChannelLayout().Count() > 2)
-      ignoreUpmix = true;
-
-    if ((*it)->m_resampleBuffers->m_useResampler &&
-        (((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality) ||
-        (((*it)->m_resampleBuffers->m_stereoUpmix != m_settings.stereoupmix) && !ignoreUpmix) ||
-        ((*it)->m_resampleBuffers->m_normalize != normalize)))
-    {
-      (*it)->m_resampleBuffers->m_changeResampler = true;
-    }
-    if ((*it)->m_resampleBuffers->m_useDSP != m_settings.dspaddonsenabled ||
-        ((*it)->m_resampleBuffers->m_useDSP &&
-        (((*it)->m_resampleBuffers->m_resampleQuality != m_settings.resampleQuality) ||
-        ((*it)->m_resampleBuffers->m_stereoUpmix != m_settings.stereoupmix))))
-    {
-      (*it)->m_resampleBuffers->m_changeDSP = true;
-    }
-
-    (*it)->m_resampleBuffers->m_useDSP = m_settings.dspaddonsenabled;
-    (*it)->m_resampleBuffers->m_resampleQuality = m_settings.resampleQuality;
-    (*it)->m_resampleBuffers->m_stereoUpmix = m_settings.stereoupmix;
-    (*it)->m_resampleBuffers->m_normalize = normalize;
+    (*it)->m_processingBuffers->ConfigureResampler(m_settings.normalizelevels, m_settings.dspaddonsenabled, m_settings.stereoupmix, m_settings.resampleQuality);
   }
 }
 
@@ -1850,12 +1824,12 @@ bool CActiveAE::RunStages()
   std::list<CActiveAEStream*>::iterator it;
   for (it = m_streams.begin(); it != m_streams.end(); ++it)
   {
-    if ((*it)->m_resampleBuffers && !(*it)->m_paused)
-      busy = (*it)->m_resampleBuffers->ResampleBuffers();
+    if ((*it)->m_processingBuffers && !(*it)->m_paused)
+      busy = (*it)->m_processingBuffers->ProcessBuffers();
 
     if ((*it)->m_streamIsBuffering &&
-        (*it)->m_resampleBuffers &&
-        ((*it)->m_resampleBuffers->m_inputSamples.size() > (*it)->m_resampleBuffers->m_allSamples.size() * 0.5))
+        (*it)->m_processingBuffers &&
+        ((*it)->m_processingBuffers->HasInputLevel(50)))
     {
       CSingleLock lock((*it)->m_streamLock);
       (*it)->m_streamIsBuffering = false;
@@ -1880,13 +1854,12 @@ bool CActiveAE::RunStages()
     }
     else
     {
-      if ((*it)->m_resampleBuffers->m_inputSamples.empty() &&
-          (*it)->m_resampleBuffers->m_outputSamples.empty() &&
+      if ((*it)->m_processingBuffers->IsDrained() &&
           (*it)->m_processingSamples.empty())
       {
         (*it)->m_streamPort->SendInMessage(CActiveAEDataProtocol::STREAMDRAINED);
         (*it)->m_drain = false;
-        (*it)->m_resampleBuffers->m_drain = false;
+        (*it)->m_processingBuffers->SetDrain(false);
         (*it)->m_started = false;
 
         // set variables being polled via stream interface
@@ -1915,13 +1888,13 @@ bool CActiveAE::RunStages()
     // calculate sync error
     for (it = m_streams.begin(); it != m_streams.end(); ++it)
     {
-      if ((*it)->m_paused || !(*it)->m_started || !(*it)->m_resampleBuffers || !(*it)->m_pClock)
+      if ((*it)->m_paused || !(*it)->m_started || !(*it)->m_processingBuffers || !(*it)->m_pClock)
         continue;
 
-      if ((*it)->m_resampleBuffers->m_outputSamples.empty())
+      if ((*it)->m_processingBuffers->m_outputSamples.empty())
         continue;
 
-      CSampleBuffer *buf = (*it)->m_resampleBuffers->m_outputSamples.front();
+      CSampleBuffer *buf = (*it)->m_processingBuffers->m_outputSamples.front();
       if (buf->timestamp)
       {
         AEDelayStatus status;
@@ -1959,20 +1932,20 @@ bool CActiveAE::RunStages()
       bool allStreamsReady = true;
       for (it = m_streams.begin(); it != m_streams.end(); ++it)
       {
-        if ((*it)->m_paused || !(*it)->m_started || !(*it)->m_resampleBuffers)
+        if ((*it)->m_paused || !(*it)->m_started || !(*it)->m_processingBuffers)
           continue;
 
-        if ((*it)->m_resampleBuffers->m_outputSamples.empty())
+        if ((*it)->m_processingBuffers->m_outputSamples.empty())
           allStreamsReady = false;
       }
 
       bool needClamp = false;
       for (it = m_streams.begin(); it != m_streams.end() && allStreamsReady; ++it)
       {
-        if ((*it)->m_paused || !(*it)->m_resampleBuffers)
+        if ((*it)->m_paused || !(*it)->m_processingBuffers)
           continue;
 
-        if (!(*it)->m_resampleBuffers->m_outputSamples.empty())
+        if (!(*it)->m_processingBuffers->m_outputSamples.empty())
         {
           CSampleBuffer *tmp = SyncStream(*it);
           m_stats.UpdateStream(*it);
@@ -1987,8 +1960,8 @@ bool CActiveAE::RunStages()
 
           if (!out)
           {
-            out = (*it)->m_resampleBuffers->m_outputSamples.front();
-            (*it)->m_resampleBuffers->m_outputSamples.pop_front();
+            out = (*it)->m_processingBuffers->m_outputSamples.front();
+            (*it)->m_processingBuffers->m_outputSamples.pop_front();
 
             int nb_floats = out->pkt->nb_samples * out->pkt->config.channels / out->pkt->planes;
             int nb_loops = 1;
@@ -2020,7 +1993,7 @@ bool CActiveAE::RunStages()
             // turned off downmix normalization,
             // or if sink format is float (in order to prevent from clipping)
             // we need to run on a per sample basis
-            if ((*it)->m_amplify != 1.0 || !(*it)->m_resampleBuffers->m_normalize || (m_sinkFormat.m_dataFormat == AE_FMT_FLOAT))
+            if ((*it)->m_amplify != 1.0 || !(*it)->m_processingBuffers->DoesNormalize() || (m_sinkFormat.m_dataFormat == AE_FMT_FLOAT))
             {
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
@@ -2063,8 +2036,8 @@ bool CActiveAE::RunStages()
           else
           {
             CSampleBuffer *mix = NULL;
-            mix = (*it)->m_resampleBuffers->m_outputSamples.front();
-            (*it)->m_resampleBuffers->m_outputSamples.pop_front();
+            mix = (*it)->m_processingBuffers->m_outputSamples.front();
+            (*it)->m_processingBuffers->m_outputSamples.pop_front();
 
             int nb_floats = mix->pkt->nb_samples * mix->pkt->config.channels / mix->pkt->planes;
             int nb_loops = 1;
@@ -2087,7 +2060,7 @@ bool CActiveAE::RunStages()
 
             // for streams amplification of turned off downmix normalization
             // we need to run on a per sample basis
-            if ((*it)->m_amplify != 1.0 || !(*it)->m_resampleBuffers->m_normalize)
+            if ((*it)->m_amplify != 1.0 || !(*it)->m_processingBuffers->DoesNormalize())
             {
               nb_floats = out->pkt->config.channels / out->pkt->planes;
               nb_loops = out->pkt->nb_samples;
@@ -2244,15 +2217,15 @@ bool CActiveAE::RunStages()
       CSampleBuffer *buffer;
       for (it = m_streams.begin(); it != m_streams.end(); ++it)
       {
-        if (!(*it)->m_resampleBuffers->m_outputSamples.empty() && !(*it)->m_paused)
+        if (!(*it)->m_processingBuffers->m_outputSamples.empty() && !(*it)->m_paused)
         {
           (*it)->m_started = true;
           buffer = SyncStream(*it);
           m_stats.UpdateStream(*it);
           if (!buffer)
           {
-            buffer = (*it)->m_resampleBuffers->m_outputSamples.front();
-            (*it)->m_resampleBuffers->m_outputSamples.pop_front();
+            buffer = (*it)->m_processingBuffers->m_outputSamples.front();
+            (*it)->m_processingBuffers->m_outputSamples.pop_front();
           }
           m_stats.AddSamples(1, m_streams);
           m_sinkBuffers->m_inputSamples.push_back(buffer);
@@ -2288,9 +2261,7 @@ bool CActiveAE::HasWork()
   std::list<CActiveAEStream*>::iterator it;
   for (it = m_streams.begin(); it != m_streams.end(); ++it)
   {
-    if (!(*it)->m_resampleBuffers->m_inputSamples.empty())
-      return true;
-    if (!(*it)->m_resampleBuffers->m_outputSamples.empty())
+    if (!(*it)->m_processingBuffers->HasWork())
       return true;
     if (!(*it)->m_processingSamples.empty())
       return true;
@@ -2310,7 +2281,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   {
     stream->m_syncState = CAESyncInfo::AESyncState::SYNC_MUTE;
     stream->m_syncError.Flush(100);
-    stream->m_resampleBuffers->m_resampleRatio = 1.0;
+    stream->m_processingBuffers->SetRR(1.0);
     stream->m_resampleIntegral = 0;
     CLog::Log(LOGDEBUG,"ActiveAE - start sync of audio stream");
   }
@@ -2331,7 +2302,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
   {
     stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
-    stream->m_resampleBuffers->m_resampleRatio = 1.0;
+    stream->m_processingBuffers->SetRR(1.0);
     stream->m_resampleIntegral = 0;
     stream->m_lastSyncError = error;
     CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f above threshold of %f", error, threshold);
@@ -2345,11 +2316,11 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
 
   if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE)
   {
-    CSampleBuffer *buf = stream->m_resampleBuffers->m_outputSamples.front();
+    CSampleBuffer *buf = stream->m_processingBuffers->m_outputSamples.front();
     if (m_mode == MODE_RAW)
     {
       buf->pkt->nb_samples = 0;
-      buf->pkt->pause_burst_ms = stream->m_resampleBuffers->m_format.m_streamInfo.GetDuration();
+      buf->pkt->pause_burst_ms = stream->m_processingBuffers->m_inputFormat.m_streamInfo.GetDuration();
     }
     else
     {
@@ -2408,7 +2379,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     }
     else
     {
-      CSampleBuffer *buf = stream->m_resampleBuffers->m_outputSamples.front();
+      CSampleBuffer *buf = stream->m_processingBuffers->m_outputSamples.front();
       int framesToSkip = -error / 1000 * buf->pkt->config.sample_rate;
       if (framesToSkip > buf->pkt->nb_samples)
         framesToSkip = buf->pkt->nb_samples;
@@ -2455,7 +2426,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         stream->m_syncState = CAESyncInfo::AESyncState::SYNC_INSYNC;
         stream->m_syncError.Flush(1000);
         stream->m_resampleIntegral = 0;
-        stream->m_resampleBuffers->m_resampleRatio = 1.0;
+        stream->m_processingBuffers->SetRR(1.0);
         CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f below threshold of %f", error, 30.0);
       }
     }
@@ -2468,14 +2439,14 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
 
   if (stream->m_resampleMode)
   {
-    if (stream->m_resampleBuffers)
+    if (stream->m_processingBuffers)
     {
-      stream->m_resampleBuffers->m_resampleRatio = stream->CalcResampleRatio(error);
+      stream->m_processingBuffers->SetRR(stream->CalcResampleRatio(error));
     }
   }
-  else if (stream->m_resampleBuffers)
+  else if (stream->m_processingBuffers)
   {
-    stream->m_resampleBuffers->m_resampleRatio = 1.0;
+    stream->m_processingBuffers->SetRR(1.0);
   }
   return ret;
 }
