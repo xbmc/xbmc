@@ -93,7 +93,7 @@ private:
   char et_getdigit(double *val, int *cnt);
   void appendSpace(StrAccum *pAccum, int N);
   void mysqlVXPrintf(StrAccum *pAccum, int useExtended, const char *fmt, va_list ap);
-  void mysqlStrAccumAppend(StrAccum *p, const char *z, int N);
+  bool mysqlStrAccumAppend(StrAccum *p, const char *z, int N);
   char * mysqlStrAccumFinish(StrAccum *p);
   void mysqlStrAccumReset(StrAccum *p);
   void mysqlStrAccumInit(StrAccum *p, char *zBase, int n, int mx);
