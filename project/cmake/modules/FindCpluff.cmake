@@ -44,6 +44,7 @@ else()
   copy_file_to_buildtree(${CORE_SOURCE_DIR}/system/cpluff.dll ${CORE_SOURCE_DIR})
   add_dependencies(export-files libcpluff)
 endif()
+set_target_properties(libcpluff PROPERTIES FOLDER "External Projects")
 
 set(CPLUFF_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/include)
 set(CPLUFF_FOUND 1)

@@ -237,6 +237,7 @@ list(APPEND install_data addons/xbmc.addon/addon.xml)
 list(APPEND install_data addons/xbmc.json/addon.xml)
 list(APPEND install_data addons/kodi.guilib/addon.xml)
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
+set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")
 
 # RC File
@@ -244,6 +245,7 @@ if(WIN32)
   configure_file(${CORE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
                  ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc @ONLY)
   add_library(resources OBJECT ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc)
+  set_target_properties(resources PROPERTIES FOLDER "Build Utilities")
   target_include_directories(resources PRIVATE ${CORE_SOURCE_DIR}/tools/windows/packaging/media)
   set(RESOURCES $<TARGET_OBJECTS:resources>)
 endif()
@@ -259,6 +261,7 @@ mark_as_advanced(test_archives)
 mark_as_advanced(test_sources)
 
 add_subdirectory(${CORE_SOURCE_DIR}/lib/gtest ${CORE_BUILD_DIR}/gtest EXCLUDE_FROM_ALL)
+set_target_properties(gtest PROPERTIES FOLDER "External Projects")
 
 # Subdirs
 core_add_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/common/*.txt
@@ -282,6 +285,7 @@ endforeach()
 
 add_custom_target(pack-skins ALL
                   DEPENDS TexturePacker::TexturePacker export-files ${XBT_FILES})
+set_target_properties(pack-skins PROPERTIES FOLDER "Build Utilities")
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 
@@ -342,6 +346,7 @@ if(NOT CMAKE_CROSSCOMPILING)
   # For testing commit series
   add_custom_target(check-commits ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/CheckCommits.cmake
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
+  set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
 endif()
 
 # code coverage

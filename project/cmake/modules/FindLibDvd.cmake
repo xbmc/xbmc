@@ -55,6 +55,7 @@ if(NOT WIN32)
                                     COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                     WORKING_DIRECTORY <SOURCE_DIR>)
 
+    set_target_properties(dvdcss PROPERTIES FOLDER "External Projects")
     core_link_library(${DVDCSS_LIBRARY} system/players/VideoPlayer/libdvdcss dvdcss)
   endif()
 
@@ -86,6 +87,7 @@ if(NOT WIN32)
     add_dependencies(dvdread dvdcss)
   endif()
 
+  set_target_properties(dvdread PROPERTIES FOLDER "External Projects")
   core_link_library(${DVDREAD_LIBRARY} system/players/VideoPlayer/libdvdread dvdread)
 
   if(ENABLE_DVDCSS)
@@ -115,6 +117,7 @@ if(NOT WIN32)
                                   COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                   WORKING_DIRECTORY <SOURCE_DIR>)
   add_dependencies(dvdnav dvdread)
+  set_target_properties(dvdnav PROPERTIES FOLDER "External Projects")
   core_link_library(${DVDNAV_LIBRARY} system/players/VideoPlayer/libdvdnav dvdnav)
 
   set(LIBDVD_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include)
@@ -133,6 +136,9 @@ else()
 
   if(LIBDVD_FOUND)
     set(LIBDVD_INCLUDE_DIRS ${LIBDVD_INCLUDE_DIR})
+
+    add_custom_target(dvdnav)
+    set_target_properties(dvdnav PROPERTIES FOLDER "External Projects")
   endif()
 
   mark_as_advanced(LIBDVD_INCLUDE_DIR)

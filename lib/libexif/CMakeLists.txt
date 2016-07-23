@@ -11,3 +11,4 @@ set(HEADERS ExifParse.h
 core_add_shared_library(exif WRAPPED)
 target_compile_definitions(exif PRIVATE _LINUX _DLL)
 set_target_properties(exif PROPERTIES FOLDER lib)
+source_group_by_folder(exif)

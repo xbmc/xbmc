@@ -16,6 +16,7 @@ ExternalProject_Add(d3dx11effects
                                   /t:Effects11 /p:Configuration=${CORE_BUILD_CONFIG}
             INSTALL_COMMAND ""
             BUILD_BYPRODUCTS ${D3DX11EFFECTS_LIBRARY_RELEASE} ${D3DX11EFFECTS_LIBRARY_DEBUG})
+set_target_properties(d3dx11effects PROPERTIES FOLDER "External Projects")
 
 set(D3DX11EFFECTS_FOUND 1)
 set(D3DX11EFFECTS_INCLUDE_DIRS ${CORE_SOURCE_DIR}/lib/win32/Effects11/inc)

@@ -21,6 +21,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
                                     ${CORE_SOURCE_DIR}/tools/depends/target/crossguid/FindCXX11.cmake
                                     <SOURCE_DIR>
                       BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
+  set_target_properties(crossguid PROPERTIES FOLDER "External Projects")
 
   set(CROSSGUID_FOUND 1)
   set(CROSSGUID_LIBRARIES ${CROSSGUID_LIBRARY})
@@ -45,6 +46,9 @@ else()
   if(CROSSGUID_FOUND)
     set(CROSSGUID_LIBRARIES ${CROSSGUID_LIBRARY})
     set(CROSSGUID_INCLUDE_DIRS ${CROSSGUID_INCLUDE_DIR})
+
+    add_custom_target(crossguid)
+    set_target_properties(crossguid PROPERTIES FOLDER "External Projects")
   endif()
   mark_as_advanced(CROSSGUID_INCLUDE_DIR CROSSGUID_LIBRARY)
 endif()
