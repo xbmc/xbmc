@@ -2329,6 +2329,8 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\utils\Crc32.h" />
     <ClInclude Include="..\..\xbmc\utils\DatabaseUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\EndianSwap.h" />
+    <ClInclude Include="..\..\xbmc\utils\EventStream.h" />
+    <ClInclude Include="..\..\xbmc\utils\EventStreamDetail.h" />
     <ClInclude Include="..\..\xbmc\utils\Fanart.h" />
     <ClInclude Include="..\..\xbmc\utils\FileOperationJob.h" />
     <ClInclude Include="..\..\xbmc\utils\FileUtils.h" />
@@ -2562,6 +2564,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\QueryParams.h" />
     <ClInclude Include="..\..\xbmc\addons\Addon.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDll.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonEvents.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonManager.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonStatusHandler.h" />
     <ClInclude Include="..\..\xbmc\addons\AudioEncoder.h" />

@@ -23,6 +23,7 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
+#include "utils/EventStream.h"
 #include "XBDateTime.h"
 #include <vector>
 
@@ -65,7 +66,12 @@ public:
    */
   CDateTime LastUpdated() const;
 
+
   virtual void OnSettingChanged(const CSetting* setting) override;
+
+  struct RepositoryUpdated { };
+
+  CEventStream<RepositoryUpdated>& Events() { return m_events; }
 
 private:
   CRepositoryUpdater();
@@ -82,5 +88,7 @@ private:
   CTimer m_timer;
   CEvent m_doneEvent;
   std::vector<CRepositoryUpdateJob*> m_jobs;
+
+  CEventSource<RepositoryUpdated> m_events;
 };
 }

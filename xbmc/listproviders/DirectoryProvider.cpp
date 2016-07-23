@@ -260,6 +260,19 @@ void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items) const
   }
 }
 
+void CDirectoryProvider::OnEvent(const ADDON::AddonEvent& event)
+{
+  CSingleLock lock(m_section);
+  if (URIUtils::IsProtocol(m_currentUrl, "addons"))
+  {
+    if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged) ||
+        typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged))
+    m_updateState = PENDING;
+  }
+}
+
 void CDirectoryProvider::Reset(bool immediately /* = false */)
 {
   // cancel any pending jobs
@@ -278,7 +291,7 @@ void CDirectoryProvider::Reset(bool immediately /* = false */)
     m_currentSort.sortOrder = SortOrderAscending;
     m_currentLimit = 0;
     m_updateState = OK;
-    RegisterListProvider(false);
+    RegisterListProvider();
   }
 }
 
@@ -365,17 +378,20 @@ void CDirectoryProvider::FireJob()
   m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
 }
 
-void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
+void CDirectoryProvider::RegisterListProvider()
 {
-  if (hasLibraryContent && !m_isAnnounced)
+  CSingleLock lock(m_section);
+  if (!m_isAnnounced)
   {
     m_isAnnounced = true;
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnEvent);
   }
-  else if (!hasLibraryContent && m_isAnnounced)
+  else if (m_isAnnounced)
   {
     m_isAnnounced = false;
     CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
   }
 }
 
@@ -387,9 +403,7 @@ bool CDirectoryProvider::UpdateURL()
 
   m_currentUrl = value;
 
-  // Register this provider only if we have library content
-  RegisterListProvider(URIUtils::IsLibraryContent(m_currentUrl));
-
+  RegisterListProvider();
   return true;
 }
 

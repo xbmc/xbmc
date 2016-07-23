@@ -20,7 +20,6 @@
 
 #include "RepositoryUpdater.h"
 #include "Application.h"
-#include "GUIUserMessages.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
@@ -89,8 +88,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
     ScheduleUpdate();
 
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-    g_windowManager.SendThreadMessage(msg);
+    m_events.Publish(RepositoryUpdated{});
   }
 }
 

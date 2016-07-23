@@ -17,33 +17,37 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 #pragma once
 
-#include "utils/Observer.h"
-#include "Addon.h"
-#include "AddonEvents.h"
-#include "threads/CriticalSection.h"
-#include <map>
-#include <vector>
+#include <string>
 
-namespace ADDON {
-
-class CBinaryAddonCache
+namespace ADDON
 {
-public:
-  virtual ~CBinaryAddonCache();
-  void Init();
-  void Deinit();
-  void GetAddons(VECADDONS& addons, const TYPE& type);
+  struct AddonEvent
+  {
+    virtual ~AddonEvent() {};
+  };
 
-protected:
-  void Update();
-  void OnEvent(const AddonEvent& event);
-  
-  CCriticalSection m_critSection;
-  std::multimap<TYPE, VECADDONS> m_addons;
-  std::vector<TYPE> m_addonsToCache;
+  namespace AddonEvents
+  {
+    struct Enabled : AddonEvent
+    {
+      std::string id;
+      Enabled(std::string id) : id(std::move(id)) {}
+    };
+
+    struct Disabled : AddonEvent
+    {
+      std::string id;
+      Disabled(std::string id) : id(std::move(id)) {}
+    };
+
+    struct MetadataChanged : AddonEvent
+    {
+      std::string id;
+      MetadataChanged(std::string id) : id(std::move(id)) {}
+    };
+
+    struct InstalledChanged : AddonEvent {};
+  };
 };
-
-}

@@ -61,9 +61,8 @@ bool CGUIControllerList::Initialize(void)
   if (m_controllerButton)
     m_controllerButton->SetVisible(false);
 
+  CAddonMgr::GetInstance().Events().Subscribe(this, &CGUIControllerList::OnEvent);
   Refresh();
-
-  CAddonMgr::GetInstance().RegisterObserver(this);
 
   return m_controllerList != nullptr &&
          m_controllerButton != nullptr;
@@ -71,7 +70,7 @@ bool CGUIControllerList::Initialize(void)
 
 void CGUIControllerList::Deinitialize(void)
 {
-  CAddonMgr::GetInstance().UnregisterObserver(this);
+  CAddonMgr::GetInstance().Events().Unsubscribe(this);
 
   CleanupButtons();
 
@@ -143,12 +142,11 @@ void CGUIControllerList::ResetController(void)
   }
 }
 
-void CGUIControllerList::Notify(const Observable& obs, const ObservableMessage msg)
+void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
-  using namespace KODI::MESSAGING;
-
-  if (msg == ObservableMessageAddons)
+  if (typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged))
   {
+    using namespace KODI::MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
     CApplicationMessenger::GetInstance().SendGUIMessage(msg);
   }

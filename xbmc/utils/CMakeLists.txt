@@ -92,6 +92,8 @@ set(HEADERS ActorProtocol.h
             DatabaseUtils.h
             EndianSwap.h
             Environment.h
+            EventStream.h
+            EventStreamDetail.h
             Fanart.h
             FileOperationJob.h
             FileUtils.h

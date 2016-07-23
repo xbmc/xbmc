@@ -736,6 +736,8 @@ bool CAddonMgr::FindAddonsAndNotify()
 
   NotifyObservers(ObservableMessageAddons);
 
+  m_events.Publish(AddonEvents::InstalledChanged());
+
   return true;
 }
 
@@ -780,6 +782,18 @@ bool CAddonMgr::IsBlacklisted(const std::string& id) const
   return m_updateBlacklist.find(id) != m_updateBlacklist.end();
 }
 
+void CAddonMgr::UpdateLastUsed(const std::string& id)
+{
+  auto time = CDateTime::GetCurrentDateTime();
+  CJobManager::GetInstance().Submit([this, id, time](){
+    {
+      CSingleLock lock(m_critSection);
+      m_database.SetLastUsed(id, time);
+    }
+    m_events.Publish(AddonEvents::MetadataChanged(id));
+  });
+}
+
 static void ResolveDependencies(const std::string& addonId, std::vector<std::string>& needed, std::vector<std::string>& missing)
 {
   if (std::find(needed.begin(), needed.end(), addonId) != needed.end())
@@ -809,12 +823,14 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   if (!m_disabled.insert(id).second)
     return false;
 
+  //success
+  ADDON::OnDisabled(id);
+
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
 
-  //success
-  ADDON::OnDisabled(id);
+  m_events.Publish(AddonEvents::Disabled(id));
   return true;
 }
 
@@ -833,11 +849,14 @@ bool CAddonMgr::EnableSingle(const std::string& id)
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
   CLog::Log(LOGDEBUG, "CAddonMgr: enabled %s", addon->ID().c_str());
+  m_events.Publish(AddonEvents::Enabled(id));
   return true;
 }
 
 bool CAddonMgr::EnableAddon(const std::string& id)
 {
+  if (id.empty() || !IsAddonInstalled(id))
+    return false;
   std::vector<std::string> needed;
   std::vector<std::string> missing;
   ResolveDependencies(id, needed, missing);
@@ -846,6 +865,7 @@ bool CAddonMgr::EnableAddon(const std::string& id)
         "correctly", dep.c_str(), id.c_str());
   for (auto it = needed.rbegin(); it != needed.rend(); ++it)
     EnableSingle(*it);
+
   return true;
 }
 

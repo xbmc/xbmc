@@ -22,7 +22,7 @@
 
 #include <string>
 #include <vector>
-
+#include "addons/AddonEvents.h"
 #include "IListProvider.h"
 #include "guilib/GUIStaticItem.h"
 #include "utils/Job.h"
@@ -85,8 +85,9 @@ private:
   CCriticalSection m_section;
 
   void FireJob();
-  void RegisterListProvider(bool hasLibraryContent);
+  void RegisterListProvider();
   bool UpdateURL();
   bool UpdateLimit();
   bool UpdateSort();
+  void OnEvent(const ADDON::AddonEvent& event);
 };

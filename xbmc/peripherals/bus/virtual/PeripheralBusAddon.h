@@ -34,8 +34,7 @@
 namespace PERIPHERALS
 {
   class CPeripheralBusAddon : public CPeripheralBus,
-                              public ADDON::IAddonMgrCallback,
-                              public Observer
+                              public ADDON::IAddonMgrCallback
   {
   public:
     CPeripheralBusAddon(CPeripherals *manager);
@@ -76,9 +75,6 @@ namespace PERIPHERALS
     bool RequestRestart(ADDON::AddonPtr addon, bool datachanged) override;
     bool RequestRemoval(ADDON::AddonPtr addon) override;
 
-    // implementation of Observer
-    void Notify(const Observable &obs, const ObservableMessage msg) override;
-
     bool SplitLocation(const std::string& strLocation, PeripheralAddonPtr& addon, unsigned int& peripheralIndex) const;
 
   protected:
@@ -89,6 +85,7 @@ namespace PERIPHERALS
 
   private:
     void UpdateAddons(void);
+    void OnEvent(const ADDON::AddonEvent& event);
 
     PeripheralAddonVector m_addons;
     PeripheralAddonVector m_failedAddons;
