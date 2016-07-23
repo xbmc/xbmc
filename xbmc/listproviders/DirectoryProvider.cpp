@@ -397,11 +397,14 @@ void CDirectoryProvider::RegisterListProvider()
 
 bool CDirectoryProvider::UpdateURL()
 {
-  std::string value(m_url.GetLabel(m_parentID, false));
-  if (value == m_currentUrl)
-    return false;
+  {
+    CSingleLock lock(m_section);
+    std::string value(m_url.GetLabel(m_parentID, false));
+    if (value == m_currentUrl)
+      return false;
 
-  m_currentUrl = value;
+    m_currentUrl = value;
+  }
 
   RegisterListProvider();
   return true;
@@ -409,6 +412,7 @@ bool CDirectoryProvider::UpdateURL()
 
 bool CDirectoryProvider::UpdateLimit()
 {
+  CSingleLock lock(m_section);
   unsigned int value = m_limit.GetIntValue(m_parentID);
   if (value == m_currentLimit)
     return false;
@@ -420,6 +424,7 @@ bool CDirectoryProvider::UpdateLimit()
 
 bool CDirectoryProvider::UpdateSort()
 {
+  CSingleLock lock(m_section);
   SortBy sortMethod(SortUtils::SortMethodFromString(m_sortMethod.GetLabel(m_parentID, false)));
   SortOrder sortOrder(SortUtils::SortOrderFromString(m_sortOrder.GetLabel(m_parentID, false)));
   if (sortOrder == SortOrderNone)
