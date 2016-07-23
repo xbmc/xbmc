@@ -36,6 +36,7 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -205,7 +206,13 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   fireJob |= UpdateSort();
   fireJob |= UpdateLimit();
   if (fireJob)
+  {
+    {
+      CSingleLock lock(m_section);
+      CLog::Log(LOGDEBUG, "CDirectoryProvider[%s]: refreshing..", m_currentUrl.c_str());
+    }
     FireJob();
+  }
 
   for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
     changed |= (*i)->UpdateVisibility(m_parentID);
