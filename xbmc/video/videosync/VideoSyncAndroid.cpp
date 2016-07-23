@@ -69,7 +69,7 @@ float CVideoSyncAndroid::GetFps()
   return m_fps;
 }
 
-void CVideoSyncAndroid::OnResetDevice()
+void CVideoSyncAndroid::OnResetDisplay()
 {
   m_abort = true;
 }

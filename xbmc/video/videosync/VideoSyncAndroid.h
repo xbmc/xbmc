@@ -35,7 +35,7 @@ public:
   virtual float GetFps();
   
   // IDispResource interface
-  virtual void OnResetDevice();
+  virtual void OnResetDisplay();
 
   // Choreographer callback
   void FrameCallback(int64_t frameTimeNanos);

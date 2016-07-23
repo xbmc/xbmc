@@ -101,6 +101,7 @@ public:
   virtual bool    GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual bool    ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void    SetDropState(bool bDrop);
+  virtual void    SetCodecControl(int flags);
   virtual int     GetDataSize(void);
   virtual double  GetTimeSize(void);
   virtual const char* GetName(void) { return m_formatname.c_str(); }
@@ -125,6 +126,7 @@ protected:
   std::string     m_formatname;
   bool            m_opened;
   bool            m_drop;
+  int             m_codecControlFlags;
 
   CJNISurface    *m_surface;
   unsigned int    m_textureId;
