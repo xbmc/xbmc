@@ -6305,13 +6305,13 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
         sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
-    else if (xsp.GetType() == "artists")
+    else if (xsp.GetType() == "artists" || xsp.GetType() == "albums")
     {
-      /* Have navigated down from an "artists" playlist. Any genre, path and role criteria 
-       from this original playlist need to be applied e.g. having previously listed artists
+      /* Have navigated down from an "artists" or "albums" playlist. Any genre, path and artist/role 
+       criteria from the original playlist need to be applied e.g. having previously listed artists
        that composed jazz songs then those are the songs that should play, not all the songs,
        if any, that have this artist as a title artist.
-       Convert the "artists" song based rules to SQL for this type of item e.g. "albums" or "songs".
+       Convert the song based rules from the original list to SQL for this type of item.
       */
       xspSongRulesClause = xsp.GetSongRulesClause(*this, type);
     }

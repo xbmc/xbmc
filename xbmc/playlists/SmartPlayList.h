@@ -95,10 +95,10 @@ public:
   void AddRule(const CSmartPlaylistRule &rule);
 
   bool HasRuleFields(const std::vector<int> &rulefields, std::set<std::string> &referencedPlaylists) const;
-  std::string GetArtistSongClause(const CDatabase &db, 
-                                  const std::string& strType, 
-                                  std::set<std::string> &referencedPlaylists) const;
-  bool IsArtistSongRule(const int field) const;
+  std::string GetTransSongClause(const CDatabase &db, 
+                                  const std::string& strOrigType, 
+                                  std::set<std::string> &referencedPlaylists,
+                                  const std::string& strType) const;
 };
 
 class CSmartPlaylist : public IDatabaseQueryRuleFactory
