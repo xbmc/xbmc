@@ -269,6 +269,11 @@ core_add_optional_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/optional/
 copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/common/*.txt
                                       ${PROJECT_SOURCE_DIR}/installdata/${CORE_SYSTEM_NAME}/*.txt)
 
+# copy system specific additional files to build tree
+if(COMMAND copy_additional_files_to_buildtree)
+  copy_additional_files_to_buildtree()
+endif()
+
 list(APPEND SKINS "${CORE_SOURCE_DIR}/addons/skin.estuary\;${CORE_SOURCE_DIR}")
 list(APPEND SKINS "${CORE_SOURCE_DIR}/addons/skin.estouchy\;${CORE_SOURCE_DIR}")
 
@@ -316,7 +321,6 @@ unset(_MAIN_LIBRARIES)
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
   set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME_LC})
-  copy_main_dlls_to_buildtree()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
 else()

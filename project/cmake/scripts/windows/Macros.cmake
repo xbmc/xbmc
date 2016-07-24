@@ -93,7 +93,7 @@ endfunction()
 # Copies the main dlls to the root of the buildtree
 # On return:
 #   files added to ${install_data}, mirror in build tree
-function(copy_main_dlls_to_buildtree)
+function(copy_additional_files_to_buildtree)
   set(dir ${PROJECT_SOURCE_DIR}/../Win32BuildSetup/dependencies)
   file(GLOB_RECURSE files ${dir}/*)
   foreach(file ${files})
