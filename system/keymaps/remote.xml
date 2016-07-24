@@ -176,7 +176,7 @@
       <rootmenu>OSD</rootmenu>
       <start>OSD</start>
       <select>OSD</select>
-      <title>CodecInfo</title>
+      <title>PlayerProcessInfo</title>
       <info>Info</info>
       <guide>ActivateWindow(PVROSDGuide)</guide>
       <teletext>ActivateWindow(Teletext)</teletext>
@@ -197,7 +197,7 @@
   </VideoTimeSeek>
   <FullscreenInfo>
     <remote>
-      <title>CodecInfo</title>
+      <title>PlayerProcessInfo</title>
       <info>Back</info>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>
@@ -220,7 +220,7 @@
       <pageplus>IncreaseRating</pageplus>
       <pageminus>DecreaseRating</pageminus>
       <back>Back</back>
-      <title>CodecInfo</title>
+      <title>PlayerProcessInfo</title>
       <select>OSD</select>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>
@@ -237,7 +237,7 @@
       <contentsmenu>Back</contentsmenu>
       <rootmenu>Back</rootmenu>
       <title>Info</title>
-      <info>CodecInfo</info>
+      <info>PlayerProcessInfo</info>
     </remote>
   </MusicOSD>
   <VisualisationPresetList>
@@ -294,7 +294,7 @@
       <contentsmenu>OSD</contentsmenu>
       <rootmenu>OSD</rootmenu>
       <info>Info</info>
-      <title>CodecInfo</title>
+      <title>PlayerProcessInfo</title>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>Number2</two>
@@ -656,4 +656,9 @@
       <blue>Blue</blue>
     </remote>
   </Addon>
+  <PlayerProcessInfo>
+    <remote>
+      <title>PlayerProcessInfo</title>
+    </remote>
+  </PlayerProcessInfo>
 </keymap>
