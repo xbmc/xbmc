@@ -2356,6 +2356,15 @@ bool CApplication::OnAction(const CAction &action)
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
   }
+  if (action.GetID() == ACTION_PLAYER_PROCESS_INFO)
+  {
+    if (m_pPlayer->GetCurrentPlayer() == "VideoPlayer" &&
+        g_windowManager.GetActiveWindow() != WINDOW_DIALOG_PLAYER_PROCESS_INFO)
+    {
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_PLAYER_PROCESS_INFO);
+      return true;
+    }
+  }
   return false;
 }
 

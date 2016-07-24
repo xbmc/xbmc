@@ -16,6 +16,7 @@ set(SOURCES GUIDialogBoxBase.cpp
             GUIDialogOK.cpp
             GUIDialogPlayEject.cpp
             GUIDialogPlayerControls.cpp
+            GUIDialogPlayerProcessInfo.cpp
             GUIDialogProgress.cpp
             GUIDialogSeekBar.cpp
             GUIDialogSelect.cpp
@@ -46,6 +47,7 @@ set(HEADERS GUIDialogBoxBase.h
             GUIDialogOK.h
             GUIDialogPlayEject.h
             GUIDialogPlayerControls.h
+            GUIDialogPlayerProcessInfo.h
             GUIDialogProgress.h
             GUIDialogSeekBar.h
             GUIDialogSelect.h
