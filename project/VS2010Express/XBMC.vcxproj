@@ -341,6 +341,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogOK.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayerControls.cpp" />
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayerProcessInfo.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogProgress.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSeekBar.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSelect.cpp" />
@@ -1088,6 +1089,7 @@ copy "..\Win32BuildSetup\dependencies\python27.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardTouch.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h" />
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayerProcessInfo.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.h" />
     <ClInclude Include="..\..\xbmc\epg\GUIEPGGridContainerModel.h" />
     <ClInclude Include="..\..\xbmc\events\AddonEvent.h" />
