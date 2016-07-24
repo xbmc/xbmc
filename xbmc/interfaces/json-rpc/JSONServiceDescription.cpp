@@ -217,6 +217,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.Home",                                   CInputOperations::Home },
   { "Input.ShowCodec",                              CInputOperations::ShowCodec },
   { "Input.ShowOSD",                                CInputOperations::ShowOSD },
+  { "Input.ShowPlayerProcessInfo",                  CInputOperations::ShowPlayerProcessInfo },
 
 // Application operations
   { "Application.GetProperties",                    CApplicationOperations::GetProperties },
