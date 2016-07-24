@@ -22,7 +22,7 @@
 
 #include "Win32SMBDirectory.h"
 #include "FileItem.h"
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 #include "utils/SystemInfo.h"
 #include "utils/CharsetConverter.h"
 #include "URL.h"

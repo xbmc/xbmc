@@ -32,7 +32,7 @@ typedef fpos_t fpos64_t;
 #endif
 
 #ifdef TARGET_WINDOWS
-#include "win32/dirent.h"
+#include "platform/win32/dirent.h"
 #else
 #include <dirent.h>
 #endif

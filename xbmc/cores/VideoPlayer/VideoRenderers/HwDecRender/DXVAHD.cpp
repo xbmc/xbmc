@@ -34,7 +34,7 @@
 #include "settings/MediaSettings.h"
 #include "utils/Log.h"
 #include "utils/win32/memcpy_sse2.h"
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
 
 using namespace DXVA;

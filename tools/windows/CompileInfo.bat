@@ -30,5 +30,5 @@ CALL SET file_version=%%addon_api:.=%separator%%%%separator%0
 REM create the files with the proper version information
 "%sed_exe%" -e s/@APP_NAME@/%app_name%/g -e s/@APP_VERSION_MAJOR@/%major%/g -e s/@APP_VERSION_MINOR@/%minor%/g -e s/@APP_VERSION_TAG@/%tag%/g "%base_dir%\xbmc\CompileInfo.cpp.in" > "%base_dir%\xbmc\CompileInfo.cpp"
 "%sed_exe%" s/@APP_ADDON_API@/%addon_api%/g "%base_dir%\addons\xbmc.addon\addon.xml.in" > "%base_dir%\addons\xbmc.addon\addon.xml"
-"%sed_exe%" -e s/@APP_NAME@/%app_name%/g -e s/@COMPANY_NAME@/%company_name%/g -e s/@APP_VERSION_MAJOR@/%major%/g -e s/@APP_VERSION_MINOR@/%minor%/g -e s/@APP_VERSION_TAG@/%tag%/g -e s/@FILE_VERSION@/%file_version%/g -e s/@APP_VERSION@/%app_version%/g "%base_dir%\xbmc\win32\XBMC_PC.rc.in" > "%base_dir%\xbmc\win32\XBMC_PC.rc"
+"%sed_exe%" -e s/@APP_NAME@/%app_name%/g -e s/@COMPANY_NAME@/%company_name%/g -e s/@APP_VERSION_MAJOR@/%major%/g -e s/@APP_VERSION_MINOR@/%minor%/g -e s/@APP_VERSION_TAG@/%tag%/g -e s/@FILE_VERSION@/%file_version%/g -e s/@APP_VERSION@/%app_version%/g "%base_dir%\xbmc\platform\win32\XBMC_PC.rc.in" > "%base_dir%\xbmc\platform\win32\XBMC_PC.rc"
 

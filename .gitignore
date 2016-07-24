@@ -518,10 +518,10 @@ lib/cpluff/stamp-h1
 #/xbmc/utils
 /xbmc/utils/Makefile
 
-#/xbmc/win32/
-/xbmc/win32/XBMC_PC.rc
+#/xbmc/platform/win32/
+/xbmc/platform/win32/XBMC_PC.rc
 # no longer used
-/xbmc/win32/git_rev.h
+/xbmc/platform/win32/git_rev.h
 
 # /xbmc/windowing/
 /xbmc/windowing/Makefile

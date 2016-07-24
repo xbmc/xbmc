@@ -28,7 +28,7 @@
 #include "windowing\WindowingFactory.h"
 #include "video/videosync/VideoSyncD3D.h"
 #include "guilib/GraphicContext.h"
-#include "win32/dxerr.h"
+#include "platform/win32/dxerr.h"
 #include "utils/StringUtils.h"
 
 void CVideoSyncD3D::OnLostDisplay()

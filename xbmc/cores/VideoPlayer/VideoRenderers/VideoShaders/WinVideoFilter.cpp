@@ -31,7 +31,7 @@
 #include "guilib/GraphicContext.h"
 #include "Util.h"
 #include "utils/log.h"
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
 #include "YUV2RGBShader.h"
 #include <map>

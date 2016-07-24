@@ -5,7 +5,7 @@ set(ARCH win32)
 
 # -------- Paths (mainly for find_package) ---------
 
-set(PLATFORM_DIR win32)
+set(PLATFORM_DIR platform/win32)
 
 # Precompiled headers fail with per target output directory. (needs CMake 3.1)
 set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)

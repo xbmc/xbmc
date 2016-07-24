@@ -66,7 +66,7 @@ namespace PLAYLIST
 #include "storage/DetectDVDType.h"
 #endif
 #ifdef TARGET_WINDOWS
-#include "win32/WIN32Util.h"
+#include "platform/win32/WIN32Util.h"
 #endif
 #include "utils/Stopwatch.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
