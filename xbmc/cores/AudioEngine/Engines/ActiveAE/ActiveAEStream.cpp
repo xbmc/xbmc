@@ -70,6 +70,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid)
   m_lastPts = 0;
   m_lastPtsJump = 0;
   m_errorInterval = 1000;
+  m_clockSpeed = 1.0;
 }
 
 CActiveAEStream::~CActiveAEStream()
@@ -213,7 +214,12 @@ double CActiveAEStream::CalcResampleRatio(double error)
 
   double clockspeed = 1.0;
   if (m_pClock)
+  {
     clockspeed = m_pClock->GetClockSpeed();
+    if (m_clockSpeed != clockspeed)
+      m_resampleIntegral = 0;
+    m_clockSpeed = clockspeed;
+  }
 
   double ret = 1.0 / clockspeed + proportional + m_resampleIntegral;
   //CLog::Log(LOGNOTICE,"----- error: %f, rr: %f, prop: %f, int: %f",

@@ -2296,10 +2296,13 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   double threshold = 100;
   if (stream->m_resampleMode)
   {
-    if (stream->m_pClock && stream->m_pClock->GetClockSpeed() > 1.1)
-      threshold *= 10;
-    else
-      threshold *= 2;
+    threshold *= 2;
+    if (stream->m_pClock)
+    {
+      double clockspeed = stream->m_pClock->GetClockSpeed();
+      if (clockspeed >= 1.05 || clockspeed <= 0.95)
+        threshold *= 5;
+    }
   }
 
   int timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : (int)stream->m_errorInterval;

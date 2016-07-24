@@ -227,6 +227,7 @@ protected:
   int m_profile;
   int m_resampleMode;
   double m_resampleIntegral;
+  double m_clockSpeed;
   enum AVMatrixEncoding m_matrixEncoding;
   enum AVAudioServiceType m_audioServiceType;
   bool m_forceResampler;

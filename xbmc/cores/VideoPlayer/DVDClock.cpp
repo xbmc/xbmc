@@ -297,6 +297,8 @@ double CDVDClock::SystemToPlaying(int64_t system)
 
 double CDVDClock::GetClockSpeed()
 {
+  CSingleLock lock(m_critSection);
+
   double speed = (double)m_systemFrequency / m_systemUsed;
-  return m_videoRefClock->GetSpeed() * speed;
+  return m_videoRefClock->GetSpeed() * speed + m_speedAdjust;
 }
