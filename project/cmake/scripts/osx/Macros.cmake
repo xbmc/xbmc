@@ -105,3 +105,15 @@ function(find_soname lib)
   endif()
   set(${lib}_SONAME ${${lib}_SONAME} PARENT_SCOPE)
 endfunction()
+
+# Copies additional files to the root of the buildtree so that kodi can be
+# started from there.
+# On return:
+#   files added to ${install_data}, mirror in build tree
+function(copy_additional_files_to_buildtree)
+  copy_file_to_buildtree(${CORE_SOURCE_DIR}/tools/depends/target/openssl/cacert.pem
+                         ${CORE_SOURCE_DIR}/tools/depends/target/openssl
+                         SUBDIR system/certs)
+
+  set(install_data ${install_data} PARENT_SCOPE)
+endfunction()
