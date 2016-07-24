@@ -593,5 +593,7 @@ if test "x$has_localeconv" == "xno" && test "$platform_os" == "android"; then
 fi
 
 cp -vf target/config.site $prefix/$deps_dir/share
+cp -vf target/config-binaddons.site $prefix/$tool_dir/share
 cp -vf target/Toolchain.cmake $prefix/$deps_dir/share
+cp -vf target/Toolchain_binaddons.cmake $prefix/$deps_dir/share
 cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
