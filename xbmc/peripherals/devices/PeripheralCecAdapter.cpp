@@ -175,7 +175,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
-    if ((!g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused()) && m_configuration.bPowerOffScreensaver == 1)
+    if (!g_application.m_pPlayer->IsPlaying() && m_configuration.bPowerOffScreensaver == 1)
     {
       // only power off when we're the active source
       if (m_cecAdapter->IsLibCECActiveSource())
