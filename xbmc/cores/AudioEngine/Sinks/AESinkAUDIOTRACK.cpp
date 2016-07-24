@@ -48,7 +48,7 @@ using namespace jni;
 // is the max TrueHD package
 const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 61440;
 const unsigned int MAX_RAW_AUDIO_BUFFER = 16384;
-const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 20;
+const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 5;
 
 /*
  * ADT-1 on L preview as of 2014-10 downmixes all non-5.1/7.1 content
