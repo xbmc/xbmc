@@ -45,10 +45,22 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   CMediaSource share;
 
   // User home folder
-  share.strPath = getenv("HOME");
+  #ifdef TARGET_DARWIN_IOS
+    share.strPath = "special://envhome/";
+  #else
+    share.strPath = getenv("HOME");
+  #endif
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   localDrives.push_back(share);
+  
+#if defined(TARGET_DARWIN_IOS)
+  // iOS Inbox folder
+  share.strPath = "special://envhome/Documents/Inbox";
+  share.strName = "Inbox";
+  share.m_ignore = true;
+  localDrives.push_back(share);
+#endif
 
 #if defined(TARGET_DARWIN_OSX)
   // User desktop folder
