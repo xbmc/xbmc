@@ -34,4 +34,6 @@ BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_codec.h
 BINDINGS+=xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
 BINDINGS+=xbmc/cores/AudioEngine/Utils/AEChannelData.h
+BINDINGS+=xbmc/cores/AudioEngine/Utils/AEChannelInfo.h
+BINDINGS+=xbmc/cores/AudioEngine/Utils/AEStreamData.h
 BINDINGS+=xbmc/filesystem/IFileTypes.h

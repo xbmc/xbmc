@@ -27,9 +27,9 @@
 
 #include "kodi_audioengine_types.h"
 #ifdef BUILD_KODI_ADDON
-  #include "kodi/AudioEngine/AEChannelData.h"
-  #include "kodi/AudioEngine/AEChannelInfo.h"
-  #include "kodi/AudioEngine/AEStreamData.h"
+  #include "AEChannelData.h"
+  #include "AEChannelInfo.h"
+  #include "AEStreamData.h"
 #else
   #include "cores/AudioEngine/Utils/AEChannelData.h"
   #include "cores/AudioEngine/Utils/AEChannelInfo.h"
