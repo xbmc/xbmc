@@ -267,6 +267,7 @@ struct SinkInfoStruct
   bool device_found;
   pa_threaded_mainloop *mainloop;
   int samplerate;
+  pa_channel_map map;
   SinkInfoStruct()
   {
     list = NULL;
@@ -274,6 +275,7 @@ struct SinkInfoStruct
     device_found = true;
     mainloop = NULL;
     samplerate = 0;
+    pa_channel_map_init(&map);
   }
 };
 
@@ -290,6 +292,7 @@ static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void
 
     sinkStruct->samplerate = i->sample_spec.rate;
     sinkStruct->device_found = true;
+    sinkStruct->map = i->channel_map;
   }
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
 }
@@ -628,13 +631,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   pa_sample_spec spec;
-  #if PA_CHECK_VERSION(2,0,0)
-    pa_format_info_to_sample_spec(info[0], &spec, NULL);
-  #else
-    spec.rate = (info[0]->encoding == PA_ENCODING_EAC3_IEC61937) ? 4 * samplerate : samplerate;
-    spec.format = pa_fmt;
-    spec.channels = m_Channels;
-  #endif
+  pa_format_info_to_sample_spec(info[0], &spec, NULL);
   if (!pa_sample_spec_valid(&spec))
   {
     CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
@@ -681,8 +678,18 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   buffer_attr.minreq = process_time;
   buffer_attr.prebuf = (uint32_t) -1;
   buffer_attr.tlength = latency;
+  int flags = (PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY);
 
-  if (pa_stream_connect_playback(m_Stream, isDefaultDevice ? NULL : device.c_str(), &buffer_attr, ((pa_stream_flags)(PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE | PA_STREAM_ADJUST_LATENCY)), NULL, NULL) < 0)
+  // by default PA will upmix / remix everything when multi channel layout is configured
+  // if we have enough channels in the target layout ask PA not to remix to related channels
+  // 1:1 remapping is allowed though
+  if (!m_passthrough && m_Channels <= sinkStruct.map.channels)
+    flags |= PA_STREAM_NO_REMIX_CHANNELS;
+
+  if (m_passthrough)
+    flags |= PA_STREAM_PASSTHROUGH;
+
+  if (pa_stream_connect_playback(m_Stream, isDefaultDevice ? NULL : device.c_str(), &buffer_attr, (pa_stream_flags) flags, NULL, NULL) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
     pa_threaded_mainloop_unlock(m_MainLoop);
