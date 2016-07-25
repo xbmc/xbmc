@@ -261,7 +261,7 @@ namespace ActiveAE
       bool RecheckProcessArray(unsigned int inputFrames);
       bool ReallocProcessArray(unsigned int requestSize);
       void CalculateCPUUsage(uint64_t iTime);
-      void SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_DSP_CH_MAX], float **array_in, float **array_out);
+      void SetFFMpegDSPProcessorArray(float *array_ffmpeg[AE_DSP_CH_MAX], float *array_dsp[AE_DSP_CH_MAX], int idx[AE_CH_MAX], unsigned long ChannelFlags);
     //@}
     //@{
       /*!
@@ -273,11 +273,8 @@ namespace ActiveAE
       bool                              m_forceInit;                /*!< if set to true the process function perform a reinitialization of addons and data */
       AE_DSP_ADDONMAP                   m_usedMap;                  /*!< a map of all currently used audio dsp add-on's */
       AEAudioFormat                     m_inputFormat;              /*!< the used input stream format */
-      AEAudioFormat                     m_outputFormat;             /*!< the from XBMX requested output format */
-      unsigned int                      m_outputSamplerate;         /*!< the currently active output samplerate can be become changed from addon resamplers */
-      unsigned int                      m_outputFrames;             /*!< the maximum present output frames */
+      AEAudioFormat                     m_outputFormat;             /*!< the from Kodi requested output format */
       AEQuality                         m_streamQuality;            /*!< from KODI requested stream quality, based also to addons */
-      enum AEDataFormat                 m_dataFormat;               /*!< The inside addon system used data format, currently fixed to float */
       AE_DSP_SETTINGS                   m_addonSettings;            /*!< the current stream's settings passed to dsp add-ons */
       AE_DSP_STREAM_PROPERTIES          m_addonStreamProperties;    /*!< the current stream's properties (eg. stream type) passed to dsp add-ons */
       int                               m_NewMasterMode;            /*!< if master mode is changed it set here and handled by process function */
@@ -334,8 +331,6 @@ namespace ActiveAE
       /*!>
        * Internal ffmpeg process data
        */
-      #define FFMPEG_PROC_ARRAY_IN  0
-      #define FFMPEG_PROC_ARRAY_OUT 1
       IAEResample                      *m_resamplerDSPProcessor;       /*!< ffmpeg resampler usage for down mix of input stream to required output channel alignment or internal processing*/
       float                            *m_ffMpegConvertArray[2][AE_DSP_CH_MAX]; /*!< the process array memory pointers for ffmpeg used for format convert. No own memory only addresses taken from m_processArray in correct ffmpeg channel alignment */
       float                            *m_ffMpegProcessArray[2][AE_DSP_CH_MAX]; /*!< the process array memory pointers for ffmpeg. No own memory only addresses taken from m_processArray in correct ffmpeg channel alignment */
