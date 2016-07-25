@@ -198,6 +198,7 @@ void CGUIDialogAudioDSPManager::OnInitWindow()
 
   Update();
   SetSelectedModeType();
+  SET_CONTROL_FOCUS(CONTROL_LIST_MODE_SELECTION, 0);
 }
 
 void CGUIDialogAudioDSPManager::OnDeinitWindow(int nextWindowID)
