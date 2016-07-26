@@ -585,6 +585,8 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   m_processInfo.SetVideoDecoderName(m_pFormatName, true);
+  m_processInfo.SetVideoDimensions(m_decoded_width, m_decoded_height);
+  m_processInfo.SetVideoDAR(m_aspect_ratio);
 
   return true;
 }
