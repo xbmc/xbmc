@@ -28,12 +28,8 @@
 
 typedef void* GUIHANDLE;
 
-#ifdef _WIN32
-#define GUI_HELPER_DLL "\\library.kodi.guilib\\libKODI_guilib" ADDON_HELPER_EXT
-#else
-#define GUI_HELPER_DLL_NAME "libKODI_guilib-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define GUI_HELPER_DLL "/library.kodi.guilib/" GUI_HELPER_DLL_NAME
-#endif
+#define GUI_HELPER_DLL KODI_DLL("guilib")
+#define GUI_HELPER_DLL_NAME KODI_DLL_NAME("guilib")
 
 /* current ADDONGUI API version */
 #define KODI_GUILIB_API_VERSION "5.11.0"
@@ -79,15 +75,6 @@ public:
     std::string libBasePath;
     libBasePath  = ((cb_array*)m_Handle)->libPath;
     libBasePath += GUI_HELPER_DLL;
-
-#if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + GUI_HELPER_DLL_NAME;
-      }
-#endif
 
     m_libKODI_guilib = dlopen(libBasePath.c_str(), RTLD_LAZY);
     if (m_libKODI_guilib == NULL)

@@ -38,12 +38,8 @@
 
 #include "libXBMC_addon.h"
 
-#ifdef _WIN32
-#define AUDIOENGINE_HELPER_DLL "\\library.kodi.audioengine\\libKODI_audioengine" ADDON_HELPER_EXT
-#else
-#define AUDIOENGINE_HELPER_DLL_NAME "libKODI_audioengine-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define AUDIOENGINE_HELPER_DLL "/library.kodi.audioengine/" AUDIOENGINE_HELPER_DLL_NAME
-#endif
+#define AUDIOENGINE_HELPER_DLL KODI_DLL("audioengine")
+#define AUDIOENGINE_HELPER_DLL_NAME KODI_DLL_NAME("audioengine")
 
 class CAddonAEStream;
 
@@ -77,15 +73,6 @@ public:
     std::string libBasePath;
     libBasePath  = ((cb_array*)m_Handle)->libPath;
     libBasePath += AUDIOENGINE_HELPER_DLL;
-
-#if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + AUDIOENGINE_HELPER_DLL;
-      }
-#endif
 
     m_libKODI_audioengine = dlopen(libBasePath.c_str(), RTLD_LAZY);
     if (m_libKODI_audioengine == NULL)
