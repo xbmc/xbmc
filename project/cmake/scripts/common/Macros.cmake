@@ -179,39 +179,43 @@ function(set_language_cxx target)
 endfunction()
 
 # Add a data file to installation list with a mirror in build tree
+# Mirroring files in the buildtree allows to execute the app from there.
 # Arguments:
-#   file     full path to file to mirror
-#   relative the relative base of file path in the build/install tree
+#   file        full path to file to mirror
 # Optional Arguments:
-#   NO_INSTALL: exclude file from installation target
-# Implicit arguments:
-#   CORE_SOURCE_DIR - root of source tree
+#   NO_INSTALL: exclude file from installation target (only mirror)
+#   DIRECTORY:  directory where the file should be mirrored to
+#               (default: preserve tree structure relative to CORE_SOURCE_DIR)
 # On return:
 #   Files is mirrored to the build tree and added to ${install_data}
 #   (if NO_INSTALL is not given).
-function(copy_file_to_buildtree file relative)
-  cmake_parse_arguments(arg "NO_INSTALL" "" "" ${ARGN})
-  string(REPLACE "${relative}/" "" outfile ${file})
-  get_filename_component(outdir ${outfile} DIRECTORY)
+function(copy_file_to_buildtree file)
+  cmake_parse_arguments(arg "NO_INSTALL" "DIRECTORY" "" ${ARGN})
+  if(arg_DIRECTORY)
+    set(outdir ${arg_DIRECTORY})
+    get_filename_component(outfile ${file} NAME)
+    set(outfile ${outdir}/${outfile})
+  else()
+    string(REPLACE "${CORE_SOURCE_DIR}/" "" outfile ${file})
+    get_filename_component(outdir ${outfile} DIRECTORY)
+  endif()
 
-  if(NOT CMAKE_BINARY_DIR STREQUAL CORE_SOURCE_DIR)
-    if(NOT TARGET export-files)
-      file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
-      add_custom_target(export-files ALL COMMENT "Copying files into build tree"
-                        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
-      set_target_properties(export-files PROPERTIES FOLDER "Build Utilities")
-    endif()
+  if(NOT TARGET export-files)
+    file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
+    add_custom_target(export-files ALL COMMENT "Copying files into build tree"
+                      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
+    set_target_properties(export-files PROPERTIES FOLDER "Build Utilities")
+    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake "# Export files to build tree\n")
+  endif()
+
+  if(NOT file STREQUAL ${CMAKE_BINARY_DIR}/${outfile})
     if(VERBOSE)
       message(STATUS "copy_file_to_buildtree - copying file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
     endif()
     file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
          "file(COPY \"${file}\" DESTINATION \"${CMAKE_BINARY_DIR}/${outdir}\")\n")
-  else()
-    if(NOT TARGET export-files)
-      add_custom_target(export-files ALL)
-      set_target_properties(export-files PROPERTIES FOLDER "Build Utilities")
-    endif()
   endif()
+
   if(NOT arg_NO_INSTALL)
     list(APPEND install_data ${outfile})
     set(install_data ${install_data} PARENT_SCOPE)
@@ -244,12 +248,20 @@ function(copy_files_from_filelist_to_buildtree pattern)
       string(STRIP ${filename} filename)
       core_file_read_filtered(fstrings ${filename})
       foreach(dir ${fstrings})
-        file(GLOB_RECURSE files RELATIVE ${CORE_SOURCE_DIR} ${CORE_SOURCE_DIR}/${dir})
+        string(REPLACE " " ";" dir ${dir})
+        list(GET dir 0 src)
+        list(LENGTH dir len)
+        if(len EQUAL 1)
+          set(dest)
+        else()
+          list(GET dir -1 dest)
+        endif()
+        file(GLOB_RECURSE files RELATIVE ${CORE_SOURCE_DIR} ${CORE_SOURCE_DIR}/${src})
         foreach(file ${files})
           if(arg_NO_INSTALL)
-            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} ${CORE_SOURCE_DIR} NO_INSTALL)
+            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} DIRECTORY ${dest} NO_INSTALL)
           else()
-            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} ${CORE_SOURCE_DIR})
+            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} DIRECTORY ${dest})
           endif()
         endforeach()
       endforeach()

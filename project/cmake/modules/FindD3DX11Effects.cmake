@@ -38,6 +38,7 @@ if(NOT D3DCOMPILER_DLL)
   message(WARNING "Could NOT find Direct3D Compiler")
 endif()
 mark_as_advanced(D3DCOMPILER_DLL)
+copy_file_to_buildtree(${D3DCOMPILER_DLL} DIRECTORY .)
 
 find_program(FXC fxc
              PATHS

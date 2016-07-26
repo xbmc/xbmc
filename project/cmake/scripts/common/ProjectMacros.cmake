@@ -23,18 +23,17 @@ endfunction()
 # Add a skin to installation list, mirroring it in build tree, packing textures
 # Arguments:
 #   skin     skin directory
-#   relative relative base path in build tree
 # On return:
 #   xbt is added to ${XBT_FILES}, data added to ${install_data}, mirror in build tree
-function(copy_skin_to_buildtree skin relative)
+function(copy_skin_to_buildtree skin)
   file(GLOB_RECURSE FILES ${skin}/*)
   file(GLOB_RECURSE MEDIA_FILES ${skin}/media/*)
   list(REMOVE_ITEM FILES ${MEDIA_FILES})
   foreach(file ${FILES})
-    copy_file_to_buildtree(${file} ${relative})
+    copy_file_to_buildtree(${file})
   endforeach()
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${dest}/media)
-  string(REPLACE "${relative}/" "" dest ${skin})
+  string(REPLACE "${CORE_SOURCE_DIR}/" "" dest ${skin})
   pack_xbt(${skin}/media ${CMAKE_BINARY_DIR}/${dest}/media/Textures.xbt)
 
   file(GLOB THEMES RELATIVE ${skin}/themes ${skin}/themes/*)
