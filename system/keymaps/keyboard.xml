@@ -12,7 +12,7 @@
 <!-- not used in the current window's section.                                            -->
 <!--                                                                                      -->
 <!-- Actions can be built-in functions.                                                   -->
-<!--  eg <B>ActivateWindow(Music)</B>                                                   -->
+<!--  eg <B>ActivateWindow(Music)</B>                                                     -->
 <!-- would automatically go to Music on the press of the B button.                        -->
 <!--                                                                                      -->
 <!--  Long presses                                                                        -->
@@ -123,6 +123,7 @@
       <prev_track>SkipPrevious</prev_track>
       <stop>Stop</stop>
       <play_pause>PlayPause</play_pause>
+      <play_pause mod="longpress">Info</play_pause>
       <fastforward>FastForward</fastforward>
       <rewind>Rewind</rewind>
       <record/>
@@ -188,6 +189,7 @@
       <backspace>Backspace</backspace>
       <browser_back>Backspace</browser_back>
       <browser_back mod="longpress">PreviousMenu</browser_back>
+      <play_pause mod="longpress">Enter</play_pause>
     </keyboard>
   </VirtualKeyboard>
   <MyTVChannels>
@@ -321,6 +323,10 @@
       <right>StepForward</right>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
+      <left mod="longpress">Rewind</left>
+      <right mod="longpress">FastForward</right>
+      <up mod="longpress">AudioNextLanguage</up>
+      <down mod="longpress">NextSubtitle</down>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <c>Playlist</c>
@@ -368,7 +374,9 @@
       <browser_back>Fullscreen</browser_back>
       <browser_back mod="longpress">Stop</browser_back>
       <return>OSD</return>
+      <return mod="longpress">PlayPause</return>
       <enter>OSD</enter>
+      <enter mod="longpress">PlayPause</enter>
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
@@ -378,6 +386,8 @@
       <n>ActivateWindow(MusicPlaylist)</n>
       <left>StepBack</left>
       <right>StepForward</right>
+      <left mod="longpress">Rewind</left>
+      <right mod="longpress">FastForward</right>
       <up>SkipNext</up>
       <down>SkipPrevious</down>
       <o>CodecInfo</o>
