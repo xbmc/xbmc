@@ -1682,7 +1682,7 @@ if test "x$use_vaapi" != "xno"; then
   else
     initial_val=$use_vaapi
     if test "x$use_vaapi" != "xno"; then
-      PKG_CHECK_MODULES([LIBVA], [libva libva-x11],
+      PKG_CHECK_MODULES([LIBVA], [libva >= 0.38 libva-x11 >= 0.38],
         [INCLUDES="$INCLUDES $LIBVA_CFLAGS"; LIBS="$LIBS $LIBVA_LIBS"; USE_VAAPI=1;
          AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries])],
         [use_vaapi="no"; USE_VAAPI=0; AC_MSG_RESULT($vaapi_not_found)])
