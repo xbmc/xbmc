@@ -2048,7 +2048,7 @@ void COutput::InitCycle()
         else if (method == VS_INTERLACEMETHOD_VAAPI_MADI)
           m_config.processInfo->SetVideoDeintMethod("vaapi-madi");
         else if (method == VS_INTERLACEMETHOD_VAAPI_MACI)
-          m_config.processInfo->SetVideoDeintMethod("vaapi-maci");
+          m_config.processInfo->SetVideoDeintMethod("vaapi-mcdi");
       }
       else
       {
