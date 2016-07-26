@@ -163,7 +163,7 @@
 				<item id="7">
 					<label>24001</label>
 					<label2>31407</label2>
-					<onclick>ActivateWindow(AddonBrowser)</onclick>
+					<onclick>ActivateWindow(AddonsSettings)</onclick>
 					<icon>icon_settings_addons.png</icon>
 				</item>
 				<item id="8">

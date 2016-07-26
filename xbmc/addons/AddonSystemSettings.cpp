@@ -37,7 +37,12 @@ CAddonSystemSettings& CAddonSystemSettings::GetInstance()
 
 void CAddonSystemSettings::OnSettingAction(const CSetting* setting)
 {
-  if (setting->GetId() == CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES)
+  if (setting->GetId() == CSettings::SETTING_ADDON_BROWSER)
+  {
+    std::vector<std::string> params{"addons://", "return"};
+    g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
+  }
+  else if (setting->GetId() == CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES)
   {
     std::vector<std::string> params{"addons://dependencies/", "return"};
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);

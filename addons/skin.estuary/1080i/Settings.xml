@@ -143,6 +143,11 @@
 					<onclick>ActivateWindow(systeminfo)</onclick>
 					<icon>icons/settings/sysinfo.png</icon>
 				</item>
+				<item>
+					<label>$LOCALIZE[24001]</label>
+					<onclick>ActivateWindow(AddonsSettings)</onclick>
+					<icon>icons/settings/addons.png</icon>
+				</item>
 			</content>
 		</control>
 		<include content="TopBar">
