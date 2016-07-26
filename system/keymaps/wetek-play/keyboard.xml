@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keymap>
+  <Global>
+    <keyboard>
+      <play_pause>Playpause</play_pause>
+      <play_pause mod="longpress">Info</play_pause>
+      <f2>ActivateWindow(TVGuide)</f2>
+      <f3>ActivateWindow(Home)</f3>
+      <f4>ContextMenu</f4>
+      <f4 mod="longpress">Menu</f4>
+      <f6>Info</f6>
+      <f6 mod="longpress">Playpause</f6>
+      <f7>ContextMenu</f7>
+      <f7 mod="longpress">Menu</f7>
+      <f11>ShowSubtitles</f11>
+      <escape>Back</escape>
+      <escape mod="longpress">ActivateWindow(Home)</escape>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>JumpSMS2</two>
+      <three>JumpSMS3</three>
+      <four>JumpSMS4</four>
+      <five>JumpSMS5</five>
+      <six>JumpSMS6</six>
+      <seven>JumpSMS7</seven>
+      <eight>JumpSMS8</eight>
+      <nine>JumpSMS9</nine>
+    </keyboard>
+  </Global>
+  <Home>
+    <keyboard>
+      <backspace>ActivateWindow(Favourites)</backspace>
+      <backspace mod="longpress">ActivateWindow(ShutdownMenu)</backspace>
+      <browser_back>ActivateWindow(Favourites)</browser_back>
+      <browser_back mod="longpress">ActivateWindow(ShutdownMenu)</browser_back>
+      <escape>ActivateWindow(Favourites)</escape>
+      <escape mod="longpress">ActivateWindow(ShutdownMenu)</escape>
+    </keyboard>
+  </Home>
+  <FullscreenVideo>
+    <keyboard>
+      <f4>Playlist</f4>
+      <f7>Playlist</f7>
+      <escape>Stop</escape>
+      <escape mod="longpress">Fullscreen</escape>
+      <backspace>Stop</backspace>
+      <backspace mod="longpress">Fullscreen</backspace>
+      <browser_back>Stop</browser_back>
+      <browser_back mod="longpress">Fullscreen</browser_back>
+      <return>PlayPause</return>
+      <return mod="longpress">OSD</return>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <backspace mod="longpress">FullScreen</backspace>
+      <browser_back mod="longpress">FullScreen</browser_back>
+      <escape mod="longpress">FullScreen</escape>
+      <up mod="longpress">SkipNext</up>
+      <down mod="longpress">SkipPrevious</down>
+      <left mod="longpress">Rewind</left>
+      <right mod="longpress">FastForward</right>
+    </keyboard>
+  </FullscreenVideo>
+  <Visualisation>
+    <keyboard>
+      <f4>Playlist</f4>
+      <f7>Playlist</f7>
+      <return>PlayPause</return>
+      <return mod="longpress">OSD</return>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <backspace mod="longpress">Stop</backspace>
+      <browser_back mod="longpress">Stop</browser_back>
+      <escape mod="longpress">Stop</escape>
+    </keyboard>
+  </Visualisation>
+  <VirtualKeyboard>
+    <keyboard>
+      <f1>Backspace</f1>
+      <f2>Shift</f2>
+      <f6>Enter</f6>
+      <play_pause>Enter</play_pause>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <backspace>Backspace</backspace>
+      <browser_back>PreviousMenu</browser_back>
+      <escape>PreviousMenu</escape>
+    </keyboard>
+  </VirtualKeyboard>
+  <VideoMenu>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <return mod="longpress">OSD</return>
+      <enter mod="longpress">OSD</enter>
+    </keyboard>
+  </VideoMenu>
+  <NumericInput>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+    </keyboard>
+  </NumericInput>
+  <Teletext>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+    </keyboard>
+  </Teletext>
+  <VideoOSD>
+    <keyboard>
+      <return mod="longpress">Back</return>
+      <enter mod="longpress">Back</enter>
+    </keyboard>
+  </VideoOSD>
+  <ContextMenu>
+    <keyboard>
+      <f4>Back</f4>
+      <f7>Back</f7>
+    </keyboard>
+  </ContextMenu>
+  <PVROSDChannels>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <f4>Close</f4>
+      <f7>Close</f7>
+    </keyboard>
+  </PVROSDChannels>
+  <TVChannels>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+    </keyboard>
+  </TVChannels>
+  <PVROSDGuide>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+    </keyboard>
+  </PVROSDGuide>
+  <TVGuide>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+    </keyboard>
+  </TVGuide>
+  <RadioChannels>
+    <keyboard>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+    </keyboard>
+  </RadioChannels>
+  <FullscreenLiveTV>
+    <keyboard>
+      <return>OSD</return>
+      <enter>OSD</enter>
+    </keyboard>
+  </FullscreenLiveTV>
+  <FullscreenRadio>
+    <keyboard>
+      <return>OSD</return>
+      <enter>OSD</enter>
+    </keyboard>
+  </FullscreenRadio>
+  <SlideShow>
+    <keyboard>
+      <up>ZoomIn</up>
+      <down>ZoomOut</down>
+      <left>PreviousPicture</left>
+      <right>NextPicture</right>
+      <up mod="longpress">Up</up> <!-- Longpress on direction keys for panning when zoomed in -->
+      <down mod="longpress">Down</down>
+      <left mod="longpress">Left</left>
+      <right mod="longpress">Right</right>
+      <backspace>Stop</backspace>
+      <browser_back>Stop</browser_back>
+      <return mod="longpress">Info</return>
+      <enter mod="longpress">Info</enter>
+    </keyboard>
+  </SlideShow>
+  <FileManager>
+    <keyboard>
+      <right mod="longpress">Highlight</right>
+      <left mod="longpress">Highlight</left>
+    </keyboard>
+  </FileManager>
+</keymap>
