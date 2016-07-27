@@ -100,7 +100,8 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
   { "artists",      FieldGenre,         515,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
 
   { "albums",       FieldAlbum,         556,    SettingTypeString,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
-  { "albums",       FieldArtist,        557,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
+//  { "albums",       FieldArtist,        557,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS }, ####Blake
+  { "albums",       FieldAlbumArtist,   566,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "albums",       FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "albums",       FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "albums",       FieldAlbumType,     564,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
@@ -680,7 +681,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     
     if (filter.field == FieldGenre)
       musicdb.GetGenresNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
-    else if (filter.field == FieldArtist)
+    else if (filter.field == FieldArtist || filter.field == FieldAlbumArtist)
       musicdb.GetArtistsNav(m_dbUrl->ToString(), selectItems, m_mediaType == "albums", -1, -1, -1, dbfilter, SortDescription(), countOnly);
     else if (filter.field == FieldAlbum)
       musicdb.GetAlbumsNav(m_dbUrl->ToString(), selectItems, -1, -1, dbfilter, SortDescription(), countOnly);
