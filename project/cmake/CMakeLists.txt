@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(kodi)
+project(kodi LANGUAGES CXX C ASM)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/modules)
 if(DEPENDS_DIR)
@@ -9,6 +9,7 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp")
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
@@ -55,6 +56,15 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   option(ENABLE_LIRC            "Enable LIRC support?" ON)
   option(ENABLE_EVENTCLIENTS    "Enable event clients support?" OFF)
 endif()
+
+# Build static libraries per directory
+if(NOT CMAKE_GENERATOR MATCHES "Visual Studio" AND NOT CMAKE_GENERATOR STREQUAL Xcode)
+  set(STATIC_LIBS_DEFAULT ON)
+else()
+  set(STATIC_LIBS_DEFAULT OFF)
+endif()
+option(ENABLE_STATIC_LIBS "Build static libraries per directory" ${STATIC_LIBS_DEFAULT})
+unset(STATIC_LIBS_DEFAULT)
 
 get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../.. ABSOLUTE)
 set(CORE_BUILD_DIR build)
@@ -236,6 +246,7 @@ list(APPEND install_data addons/xbmc.addon/addon.xml)
 list(APPEND install_data addons/xbmc.json/addon.xml)
 list(APPEND install_data addons/kodi.guilib/addon.xml)
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
+set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")
 
 # RC File
@@ -243,6 +254,7 @@ if(WIN32)
   configure_file(${CORE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
                  ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc @ONLY)
   add_library(resources OBJECT ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc)
+  set_target_properties(resources PROPERTIES FOLDER "Build Utilities")
   target_include_directories(resources PRIVATE ${CORE_SOURCE_DIR}/tools/windows/packaging/media)
   set(RESOURCES $<TARGET_OBJECTS:resources>)
 endif()
@@ -258,12 +270,7 @@ mark_as_advanced(test_archives)
 mark_as_advanced(test_sources)
 
 add_subdirectory(${CORE_SOURCE_DIR}/lib/gtest ${CORE_BUILD_DIR}/gtest EXCLUDE_FROM_ALL)
-
-# Subdirs
-core_add_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/common/*.txt
-                               ${PROJECT_SOURCE_DIR}/treedata/${CORE_SYSTEM_NAME}/*.txt)
-core_add_optional_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/optional/common/*.txt
-                                        ${PROJECT_SOURCE_DIR}/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)
+set_target_properties(gtest PROPERTIES FOLDER "External Projects")
 
 # copy files to build tree
 copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/common/*.txt
@@ -281,6 +288,7 @@ endforeach()
 
 add_custom_target(pack-skins ALL
                   DEPENDS TexturePacker::TexturePacker export-files ${XBT_FILES})
+set_target_properties(pack-skins PROPERTIES FOLDER "Build Utilities")
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 
@@ -293,30 +301,48 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
 endif()
 
+# main library (used for main binary and tests)
+add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
+set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
+add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid)
+
 # Codegen
 add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
 
 # Other files (IDE)
 set(OTHER_FILES README.md)
 
+# Subdirs
+core_add_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/common/*.txt
+                               ${PROJECT_SOURCE_DIR}/treedata/${CORE_SYSTEM_NAME}/*.txt)
+core_add_optional_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/optional/common/*.txt
+                                        ${PROJECT_SOURCE_DIR}/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)
+
+target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS})
+set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
+source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CORE_SOURCE_DIR}/xbmc)
+if(WIN32)
+  add_precompiled_header(lib${APP_NAME_LC} pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+  set_language_cxx(lib${APP_NAME_LC})
+endif()
+
 # main binary
 if(NOT CORE_SYSTEM_NAME STREQUAL android)
-  add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+  add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} "${RESOURCES}" ${OTHER_FILES})
   add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries export-files pack-skins)
 else()
-  add_library(${APP_NAME_LC} SHARED ${CORE_MAIN_SOURCE} $<TARGET_OBJECTS:compileinfo> "${RESOURCES}" ${OTHER_FILES})
+  add_library(${APP_NAME_LC} SHARED ${CORE_MAIN_SOURCE} "${RESOURCES}" ${OTHER_FILES})
   # The libraries depend on the main shared library for wrapping. Because of this we cannot build
   # the libraries as a dependency. This requires to build the all target on android (and not only kodi).
   add_dependencies(${APP_NAME_LC} export-files pack-skins)
 endif()
 whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
-target_link_libraries(${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${_MAIN_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_MAIN_LIBRARIES)
 
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
   set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME_LC})
-  copy_main_dlls_to_buildtree()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
 else()
@@ -325,11 +351,14 @@ endif()
 
 # testing
 copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt NO_INSTALL)
-add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp $<TARGET_OBJECTS:compileinfo>)
-whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest ${test_archives})
-target_link_libraries(${APP_NAME_LC}-test ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} ${DEPLIBS} ${CMAKE_DL_LIBS})
+add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
+whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest)
+target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_TEST_LIBRARIES)
 add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files)
+if(WIN32)
+  add_precompiled_header(${APP_NAME_LC}-test pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+endif()
 
 # make test and make check (cannot be executed when cross compiling)
 if(NOT CMAKE_CROSSCOMPILING)
@@ -341,6 +370,7 @@ if(NOT CMAKE_CROSSCOMPILING)
   # For testing commit series
   add_custom_target(check-commits ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/CheckCommits.cmake
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
+  set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
 endif()
 
 # code coverage

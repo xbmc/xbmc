@@ -30,7 +30,3 @@ if(BLURAY_FOUND)
 endif()
 
 core_add_library(dvdinputstreams)
-
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
-  add_dependencies(dvdinputstreams dvdnav)
-endif()

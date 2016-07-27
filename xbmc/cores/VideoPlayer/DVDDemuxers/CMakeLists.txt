@@ -22,7 +22,3 @@ set(HEADERS DemuxMultiSource.h
             DVDFactoryDemuxer.h)
 
 core_add_library(dvddemuxers)
-
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
-  add_dependencies(dvddemuxers dvdnav)
-endif()

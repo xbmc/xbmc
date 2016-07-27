@@ -95,5 +95,6 @@ else()
   set(FFMPEG_FOUND 1)
   list(APPEND FFMPEG_DEFINITIONS -DFFMPEG_VER_SHA=\"${FFMPEG_VER}\")
 endif()
+set_target_properties(ffmpeg PROPERTIES FOLDER "External Projects")
 
 mark_as_advanced(FFMPEG_INCLUDE_DIRS FFMPEG_LIBRARIES FFMPEG_DEFINITIONS FFMPEG_FOUND)

@@ -23,6 +23,7 @@ add_custom_target(bundle
             "FULL_PRODUCT_NAME=${APP_NAME}.app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
             ${CORE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-osx.command)
+set_target_properties(bundle PROPERTIES FOLDER "Build Utilities")
 add_dependencies(bundle ${APP_NAME_LC})
 
 configure_file(${CORE_SOURCE_DIR}/tools/darwin/packaging/osx/mkdmg-osx.sh.in
@@ -35,4 +36,5 @@ add_custom_target(dmg
                                                ${CMAKE_BINARY_DIR}/tools/darwin/packaging/media/osx/
     COMMAND ./mkdmg-osx.sh ${CORE_BUILD_CONFIG}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx)
+set_target_properties(dmg PROPERTIES FOLDER "Build Utilities")
 add_dependencies(dmg bundle)

@@ -8,7 +8,7 @@ set(SOURCES ActorProtocol.cpp
             BitstreamConverter.cpp
             BitstreamStats.cpp
             BooleanLogic.cpp
-            CharsetConverter.cpp 
+            CharsetConverter.cpp
             CharsetDetection.cpp
             CPUInfo.cpp
             Crc32.cpp
@@ -173,8 +173,6 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows)
                       GLUtils.cpp)
   list(APPEND HEADERS CryptThreading.h
                       GLUtils.h)
-else()
-  set_source_files_properties(fstrcmp.c PROPERTIES LANGUAGE CXX)
 endif()
 
 if(AML_FOUND)
@@ -185,7 +183,3 @@ if(AML_FOUND)
 endif()
 
 core_add_library(utils)
-
-if(ENABLE_INTERNAL_CROSSGUID)
-  add_dependencies(utils crossguid)
-endif()

@@ -1,6 +1,2 @@
-system/*.dll
-system/airplay/*.dll
-system/cdrip/*.dll
-system/players/dvdplayer/*.dll
-system/players/paplayer/*.dll
-system/players/VideoPlayer/*.dll
+system/*.dll .
+project/Win32BuildSetup/dependencies/python27.dll .

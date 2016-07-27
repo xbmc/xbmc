@@ -3,65 +3,102 @@
 # include system specific macros
 include(${CORE_SOURCE_DIR}/project/cmake/scripts/${CORE_SYSTEM_NAME}/Macros.cmake)
 
-# Add a library, optionally as a dependency of the main application
+# IDEs: Group source files in target in folders (file system hierarchy)
+# Source: http://blog.audio-tk.com/2015/09/01/sorting-source-files-and-projects-in-folders-with-cmake-and-visual-studioxcode/
+# Arguments:
+#   target The target that shall be grouped by folders.
+# Optional Arguments:
+#   RELATIVE allows to specify a different reference folder.
+function(source_group_by_folder target)
+  if(NOT TARGET ${target})
+    message(FATAL_ERROR "There is no target named '${target}'")
+  endif()
+
+  set(SOURCE_GROUP_DELIMITER "/")
+
+  cmake_parse_arguments(arg "" "RELATIVE" "" ${ARGN})
+  if(arg_RELATIVE)
+    set(relative_dir ${arg_RELATIVE})
+  else()
+    set(relative_dir ${CMAKE_CURRENT_SOURCE_DIR})
+  endif()
+
+  get_property(files TARGET ${target} PROPERTY SOURCES)
+  if(files)
+    list(SORT files)
+
+    if(CMAKE_GENERATOR STREQUAL Xcode)
+      set_target_properties(${target} PROPERTIES SOURCES "${files}")
+    endif()
+  endif()
+  foreach(file ${files})
+    if(NOT IS_ABSOLUTE ${file})
+      set(file ${CMAKE_CURRENT_SOURCE_DIR}/${file})
+    endif()
+    file(RELATIVE_PATH relative_file ${relative_dir} ${file})
+    get_filename_component(dir "${relative_file}" PATH)
+    if(NOT dir STREQUAL "${last_dir}")
+      if(files)
+        source_group("${last_dir}" FILES ${files})
+      endif()
+      set(files "")
+    endif()
+    set(files ${files} ${file})
+    set(last_dir "${dir}")
+  endforeach(file)
+  if(files)
+    source_group("${last_dir}" FILES ${files})
+  endif()
+endfunction()
+
+# Add sources to main application
 # Arguments:
 #   name name of the library to add
 # Implicit arguments:
+#   ENABLE_STATIC_LIBS Build static libraries per directory
 #   SOURCES the sources of the library
 #   HEADERS the headers of the library (only for IDE support)
 #   OTHERS  other library related files (only for IDE support)
 # On return:
 #   Library will be built, optionally added to ${core_DEPENDS}
+#   Sets CORE_LIBRARY for calls for setting target specific options
 function(core_add_library name)
-  if(NOT SOURCES)
-      message(STATUS "No sources added to ${name} skipping")
-      return()
-  endif()
+  if(ENABLE_STATIC_LIBS)
+    add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
+    set_target_properties(${name} PROPERTIES PREFIX "")
+    set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
+    add_dependencies(${name} libcpluff ffmpeg dvdnav crossguid)
+    set(CORE_LIBRARY ${name} PARENT_SCOPE)
 
-  add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
-  set_target_properties(${name} PROPERTIES PREFIX "")
-  set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
-  add_dependencies(${name} libcpluff ffmpeg)
-
-  # Add precompiled headers to Kodi main libraries
-  if(CORE_SYSTEM_NAME STREQUAL windows AND CMAKE_CURRENT_LIST_DIR MATCHES "^${CORE_SOURCE_DIR}/xbmc")
-    add_precompiled_header(${name} pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp
-                           PCH_TARGET kodi)
-  endif()
-
-  # IDE support
-  if(CMAKE_GENERATOR MATCHES "Xcode")
-    file(RELATIVE_PATH parentfolder ${CORE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/..)
-    set_target_properties(${name} PROPERTIES FOLDER "${parentfolder}")
-  elseif(CMAKE_GENERATOR MATCHES "Visual Studio")
-    file(RELATIVE_PATH foldername ${CORE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-    set_target_properties(${name} PROPERTIES FOLDER "${foldername}")
-    source_group(" " REGULAR_EXPRESSION ".*")
+    # Add precompiled headers to Kodi main libraries
+    if(CORE_SYSTEM_NAME STREQUAL windows)
+      add_precompiled_header(${name} pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+      set_language_cxx(${name})
+    endif()
+  else()
+    foreach(src IN LISTS SOURCES HEADERS OTHERS)
+      get_filename_component(src_path "${src}" ABSOLUTE)
+      list(APPEND FILES ${src_path})
+    endforeach()
+    target_sources(lib${APP_NAME_LC} PRIVATE ${FILES})
+    set(CORE_LIBRARY lib${APP_NAME_LC} PARENT_SCOPE)
   endif()
 endfunction()
 
 # Add a test library, and add sources to list for gtest integration macros
 function(core_add_test_library name)
-  # Backup the old SOURCES variable, since we'll append SUPPORT_SOURCES to it
-  set(TEST_ONLY_SOURCES ${SOURCES})
-  add_library(${name} STATIC ${SOURCES} ${SUPPORTED_SOURCES} ${HEADERS} ${OTHERS})
-  set_target_properties(${name} PROPERTIES PREFIX ""
-                                           EXCLUDE_FROM_ALL 1)
-
-  # Add precompiled headers to Kodi main libraries
-  if(CORE_SYSTEM_NAME STREQUAL windows AND CMAKE_CURRENT_LIST_DIR MATCHES "^${CORE_SOURCE_DIR}/xbmc")
-    add_precompiled_header(${name} pch.h ${CORE_SOURCE_DIR}/xbmc/win32/pch.cpp
-                           PCH_TARGET kodi)
+  if(ENABLE_STATIC_LIBS)
+    add_library(${name} STATIC ${SOURCES} ${SUPPORTED_SOURCES} ${HEADERS} ${OTHERS})
+    set_target_properties(${name} PROPERTIES PREFIX ""
+                                             EXCLUDE_FROM_ALL 1
+                                             FOLDER "Build Utilities/tests")
+    add_dependencies(${name} libcpluff ffmpeg dvdnav crossguid)
+    set(test_archives ${test_archives} ${name} CACHE STRING "" FORCE)
   endif()
-
-  add_dependencies(${name} libcpluff ffmpeg)
-  foreach(src ${TEST_ONLY_SOURCES})
-    # This will prepend CMAKE_CURRENT_SOURCE_DIR if the path is relative,
-    # otherwise use the absolute path.
+  foreach(src IN LISTS SOURCES)
     get_filename_component(src_path "${src}" ABSOLUTE)
     set(test_sources "${src_path}" ${test_sources} CACHE STRING "" FORCE)
   endforeach()
-  set(test_archives ${test_archives} ${name} CACHE STRING "" FORCE)
 endfunction()
 
 # Add an addon callback library
@@ -103,7 +140,9 @@ function(core_add_shared_library name)
   if(arg_OUTPUT_DIRECTORY)
     set(OUTPUT_DIRECTORY ${arg_OUTPUT_DIRECTORY})
   else()
-    set(OUTPUT_DIRECTORY system)
+    if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+      set(OUTPUT_DIRECTORY system)
+    endif()
   endif()
   if(CORE_SYSTEM_NAME STREQUAL windows)
     set(OUTPUT_NAME lib${name})
@@ -128,38 +167,57 @@ function(core_add_shared_library name)
   endif()
 endfunction()
 
-# Add a data file to installation list with a mirror in build tree
+# Sets the compile language for all C source files in a target to CXX.
+# Needs to be called from the CMakeLists.txt that defines the target.
 # Arguments:
-#   file     full path to file to mirror
-#   relative the relative base of file path in the build/install tree
+#   target   target
+function(set_language_cxx target)
+  get_property(sources TARGET ${target} PROPERTY SOURCES)
+  foreach(file IN LISTS sources)
+    if(file MATCHES "\.c$")
+      set_source_files_properties(${file} PROPERTIES LANGUAGE CXX)
+    endif()
+  endforeach()
+endfunction()
+
+# Add a data file to installation list with a mirror in build tree
+# Mirroring files in the buildtree allows to execute the app from there.
+# Arguments:
+#   file        full path to file to mirror
 # Optional Arguments:
-#   NO_INSTALL: exclude file from installation target
-# Implicit arguments:
-#   CORE_SOURCE_DIR - root of source tree
+#   NO_INSTALL: exclude file from installation target (only mirror)
+#   DIRECTORY:  directory where the file should be mirrored to
+#               (default: preserve tree structure relative to CORE_SOURCE_DIR)
 # On return:
 #   Files is mirrored to the build tree and added to ${install_data}
 #   (if NO_INSTALL is not given).
-function(copy_file_to_buildtree file relative)
-  cmake_parse_arguments(arg "NO_INSTALL" "" "" ${ARGN})
-  string(REPLACE "${relative}/" "" outfile ${file})
-  get_filename_component(outdir ${outfile} DIRECTORY)
+function(copy_file_to_buildtree file)
+  cmake_parse_arguments(arg "NO_INSTALL" "DIRECTORY" "" ${ARGN})
+  if(arg_DIRECTORY)
+    set(outdir ${arg_DIRECTORY})
+    get_filename_component(outfile ${file} NAME)
+    set(outfile ${outdir}/${outfile})
+  else()
+    string(REPLACE "${CORE_SOURCE_DIR}/" "" outfile ${file})
+    get_filename_component(outdir ${outfile} DIRECTORY)
+  endif()
 
-  if(NOT CMAKE_BINARY_DIR STREQUAL CORE_SOURCE_DIR)
-    if(NOT TARGET export-files)
-      file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
-      add_custom_target(export-files ALL COMMENT "Copying files into build tree"
-                        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
-    endif()
+  if(NOT TARGET export-files)
+    file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
+    add_custom_target(export-files ALL COMMENT "Copying files into build tree"
+                      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
+    set_target_properties(export-files PROPERTIES FOLDER "Build Utilities")
+    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake "# Export files to build tree\n")
+  endif()
+
+  if(NOT file STREQUAL ${CMAKE_BINARY_DIR}/${outfile})
     if(VERBOSE)
       message(STATUS "copy_file_to_buildtree - copying file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
     endif()
     file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
          "file(COPY \"${file}\" DESTINATION \"${CMAKE_BINARY_DIR}/${outdir}\")\n")
-  else()
-    if(NOT TARGET export-files)
-      add_custom_target(export-files ALL)
-    endif()
   endif()
+
   if(NOT arg_NO_INSTALL)
     list(APPEND install_data ${outfile})
     set(install_data ${install_data} PARENT_SCOPE)
@@ -192,12 +250,20 @@ function(copy_files_from_filelist_to_buildtree pattern)
       string(STRIP ${filename} filename)
       core_file_read_filtered(fstrings ${filename})
       foreach(dir ${fstrings})
-        file(GLOB_RECURSE files RELATIVE ${CORE_SOURCE_DIR} ${CORE_SOURCE_DIR}/${dir})
+        string(REPLACE " " ";" dir ${dir})
+        list(GET dir 0 src)
+        list(LENGTH dir len)
+        if(len EQUAL 1)
+          set(dest)
+        else()
+          list(GET dir -1 dest)
+        endif()
+        file(GLOB_RECURSE files RELATIVE ${CORE_SOURCE_DIR} ${CORE_SOURCE_DIR}/${src})
         foreach(file ${files})
           if(arg_NO_INSTALL)
-            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} ${CORE_SOURCE_DIR} NO_INSTALL)
+            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} DIRECTORY ${dest} NO_INSTALL)
           else()
-            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} ${CORE_SOURCE_DIR})
+            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} DIRECTORY ${dest})
           endif()
         endforeach()
       endforeach()
@@ -336,7 +402,7 @@ function(core_add_subdirs_from_filelist files)
       list(GET subdir  0 subdir_src)
       list(GET subdir -1 subdir_dest)
       if(VERBOSE)
-        message(STATUS "  core_add_subdirs_from_filelist - adding subdir: ${CORE_SOURCE_DIR}${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
+        message(STATUS "  core_add_subdirs_from_filelist - adding subdir: ${CORE_SOURCE_DIR}/${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
       endif()
       add_subdirectory(${CORE_SOURCE_DIR}/${subdir_src} ${CORE_BUILD_DIR}/${subdir_dest})
     endforeach()

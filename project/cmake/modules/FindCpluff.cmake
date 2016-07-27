@@ -32,19 +32,21 @@ if(NOT WIN32)
   set(ldflags "${ldflags};-lexpat")
   core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a
                     system/libcpluff libcpluff extras "${ldflags}")
+  set(CPLUFF_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/include)
+  set(CPLUFF_FOUND 1)
+  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_FOUND)
 else()
-  ExternalProject_Add(libcpluff SOURCE_DIR ${CORE_SOURCE_DIR}/lib/cpluff
-                      PREFIX ${CORE_BUILD_DIR}/cpluff
-                      CONFIGURE_COMMAND ""
-                      # TODO: Building the project directly from lib/cpluff/libcpluff/win32/cpluff.vcxproj
-                      #       fails becaue it imports XBMC.defaults.props
-                      BUILD_COMMAND msbuild ${CORE_SOURCE_DIR}/project/VS2010Express/XBMC\ for\ Windows.sln
-                                            /t:cpluff /p:Configuration=${CORE_BUILD_CONFIG}
-                      INSTALL_COMMAND "")
-  copy_file_to_buildtree(${CORE_SOURCE_DIR}/system/cpluff.dll ${CORE_SOURCE_DIR})
-  add_dependencies(export-files libcpluff)
-endif()
+  find_path(CPLUFF_INCLUDE_DIR cpluff.h)
 
-set(CPLUFF_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/include)
-set(CPLUFF_FOUND 1)
-mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_FOUND)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(CPLUFF
+                                    REQUIRED_VARS CPLUFF_INCLUDE_DIR)
+
+  if(CPLUFF_FOUND)
+    set(CPLUFF_INCLUDE_DIRS ${CPLUFF_INCLUDE_DIR})
+  endif()
+  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_FOUND)
+
+  add_custom_target(libcpluff)
+endif()
+set_target_properties(libcpluff PROPERTIES FOLDER "External Projects")

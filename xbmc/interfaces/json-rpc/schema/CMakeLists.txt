@@ -22,6 +22,7 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/addons/xbmc.json/addon.xml
 add_custom_target(generate_json_header ALL
                   DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ServiceDescription.h
                           ${CMAKE_BINARY_DIR}/addons/xbmc.json/addon.xml)
+set_target_properties(generate_json_header PROPERTIES FOLDER "Build Utilities")
 
 if(BOOTSTRAP_IN_TREE)
   add_dependencies(generate_json_header JsonSchemaBuilder::JsonSchemaBuilder)

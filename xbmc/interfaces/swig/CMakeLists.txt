@@ -1,4 +1,4 @@
-macro(generate_file file)
+function(generate_file file)
   set(classpath ${GROOVY_DIR}/groovy-all-${GROOVY_VER}.jar
                 ${GROOVY_DIR}/commons-lang-${COMMONS_VER}.jar
                 ${CORE_SOURCE_DIR}/tools/codegenerator
@@ -10,14 +10,15 @@ macro(generate_file file)
     set(devnull "nul")
   endif()
 
-  add_custom_command(OUTPUT ${file}.cpp
+  set(CPP_FILE ${file}.cpp)
+  add_custom_command(OUTPUT ${CPP_FILE}
                      COMMAND ${SWIG_EXECUTABLE}
                      ARGS -w401 -c++ -o ${file}.xml -xml -I${CORE_SOURCE_DIR}/xbmc -xmllang python ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file}
                      COMMAND ${Java_JAVA_EXECUTABLE}
                      ARGS -cp "${classpath}" groovy.ui.GroovyMain ${CORE_SOURCE_DIR}/tools/codegenerator/Generator.groovy ${file}.xml ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template ${file}.cpp > ${devnull}
-                     IMPLICIT_DEPENDS CXX ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file})
-  list(APPEND SOURCES ${file}.cpp)
-endmacro()
+                     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file})
+  set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
+endfunction()
 
 find_package(Java COMPONENTS Runtime REQUIRED)
 find_package(SWIG REQUIRED)
@@ -34,13 +35,15 @@ set(GROOVY_DIR ${CORE_SOURCE_DIR}/tools/codegenerator/groovy)
 set(GROOVY_VER 2.4.4)
 set(COMMONS_VER 2.6)
 
-file(GLOB INTERFACE_FILES ${CORE_SOURCE_DIR}/xbmc/lib/legacy)
-
-set(SOURCES "")
-
-foreach(INPUT ${INPUTS})
+foreach(INPUT IN LISTS INPUTS)
   generate_file(${INPUT})
+  list(APPEND GEN_SRCS ${CMAKE_CURRENT_BINARY_DIR}/${INPUT}.cpp)
 endforeach()
 
-core_add_library(python_binding)
-add_dependencies(python_binding python_interface)
+add_library(python_binding STATIC ${SOURCES})
+set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
+                                                FOLDER "Build Utilities")
+set(core_DEPENDS python_binding ${core_DEPENDS} CACHE STRING "" FORCE)
+if(WIN32)
+  add_precompiled_header(python_binding pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+endif()

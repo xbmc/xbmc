@@ -52,7 +52,8 @@ function(add_precompiled_header target pch_header pch_source)
     if(NOT TARGET ${PCH_PCH_TARGET}_pch)
       add_library(${PCH_PCH_TARGET}_pch STATIC ${pch_source})
       set_target_properties(${PCH_PCH_TARGET}_pch PROPERTIES COMPILE_PDB_NAME vc140
-                                                             COMPILE_PDB_OUTPUT_DIRECTORY ${PRECOMPILEDHEADER_DIR})
+                                                             COMPILE_PDB_OUTPUT_DIRECTORY ${PRECOMPILEDHEADER_DIR}
+                                                             FOLDER "Build Utilities")
     endif()
     # From VS2012 onwards, precompiled headers have to be linked against (LNK2011).
     target_link_libraries(${target} PUBLIC ${PCH_PCH_TARGET}_pch)
@@ -62,48 +63,4 @@ function(add_precompiled_header target pch_header pch_source)
     # As part of the target
     target_sources(${target} PRIVATE ${pch_source})
   endif()
-endfunction()
-
-# Adds an FX-compiled shader to a target
-#   Creates a custom command that FX-compiles the given shader and adds the
-#   generated header file to the given target.
-# Arguments:
-#   target Target to add the FX-compiled shader to
-#   hlsl HLSL shader input file
-#   profile HLSL profile that specifies the shader model
-#   entrypoint Shader entry point
-# On return:
-#   FXC_FILE is set to the name of the generated header file.
-function(add_shader_dx target hlsl profile entrypoint)
-  get_filename_component(file ${hlsl} NAME_WE)
-  add_custom_command(OUTPUT ${file}.h
-                     COMMAND ${FXC} /Fh ${file}.h
-                                    /E ${entrypoint}
-                                    /T ${profile}
-                                    /Vn ${file}
-                                    /Qstrip_reflect
-                                    ${hlsl}
-                     DEPENDS ${hlsl}
-                     COMMENT "FX compile ${hlsl}"
-                     VERBATIM)
-  target_sources(${target} PRIVATE ${file}.h)
-  target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-endfunction()
-
-# Copies the main dlls to the root of the buildtree
-# On return:
-#   files added to ${install_data}, mirror in build tree
-function(copy_main_dlls_to_buildtree)
-  set(dir ${PROJECT_SOURCE_DIR}/../Win32BuildSetup/dependencies)
-  file(GLOB_RECURSE files ${dir}/*)
-  foreach(file ${files})
-    copy_file_to_buildtree(${file} ${dir})
-  endforeach()
-
-  if(D3DCOMPILER_DLL)
-    get_filename_component(d3dcompiler_dir ${D3DCOMPILER_DLL} DIRECTORY)
-    copy_file_to_buildtree(${D3DCOMPILER_DLL} ${d3dcompiler_dir})
-  endif()
-
-  set(install_data ${install_data} PARENT_SCOPE)
 endfunction()
