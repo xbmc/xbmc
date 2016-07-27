@@ -100,7 +100,7 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
   { "artists",      FieldGenre,         515,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
 
   { "albums",       FieldAlbum,         556,    SettingTypeString,  "edit",   "string",   CDatabaseQueryRule::OPERATOR_CONTAINS },
-//  { "albums",       FieldArtist,        557,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS }, ####Blake
+//  { "albums",       FieldArtist,        557,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "albums",       FieldAlbumArtist,   566,    SettingTypeList,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
   { "albums",       FieldRating,        563,    SettingTypeNumber,  "range",  "number",   CDatabaseQueryRule::OPERATOR_BETWEEN },
   { "albums",       FieldUserRating,    38018,  SettingTypeInteger, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
@@ -284,11 +284,6 @@ void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
         {
           strValueLower = CDateTime(static_cast<time_t>(valueLower)).GetAsDBDate();
           strValueUpper = CDateTime(static_cast<time_t>(valueUpper)).GetAsDBDate();
-        }
-        else if (filter.controlFormat == "time")
-        {
-          strValueLower = CDateTime(static_cast<time_t>(valueLower)).GetAsLocalizedTime("mm:ss");
-          strValueUpper = CDateTime(static_cast<time_t>(valueUpper)).GetAsLocalizedTime("mm:ss");
         }
         else
         {
