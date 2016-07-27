@@ -73,6 +73,7 @@
 #include "platform/android/jni/ContentResolver.h"
 #include "platform/android/jni/MediaStore.h"
 #include "platform/android/jni/Build.h"
+#include "filesystem/SpecialProtocol.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif
@@ -561,7 +562,7 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
     CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
     int numPackages = packageList.size();
     for (int i = 0; i < numPackages; i++)
-    {            
+    {
       CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent && CJNIBuild::SDK_INT >= 21)
         intent = GetPackageManager().getLeanbackLaunchIntentForPackage(packageList.get(i).packageName);
@@ -745,6 +746,11 @@ void CXBMCApp::SetSystemVolume(float percent)
     audioManager.setStreamVolume(maxVolume);
   else
     android_printf("CXBMCApp::SetSystemVolume: Could not get Audio Manager");
+}
+
+void CXBMCApp::InitDirectories()
+{
+  CSpecialProtocol::SetXBMCBinAddonPath(getApplicationInfo().nativeLibraryDir.c_str());
 }
 
 void CXBMCApp::onReceive(CJNIIntent intent)

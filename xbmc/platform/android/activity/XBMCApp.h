@@ -121,6 +121,7 @@ public:
   static int GetMaxSystemVolume();
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);
+  static void InitDirectories();
 
   static void SetRefreshRate(float rate);
   static int GetDPI();
