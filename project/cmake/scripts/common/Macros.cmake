@@ -134,14 +134,18 @@ endfunction()
 #   relative the relative base of file path in the build/install tree
 # Optional Arguments:
 #   NO_INSTALL: exclude file from installation target
+#   SUBDIR:     install file into subdirectory
 # Implicit arguments:
 #   CORE_SOURCE_DIR - root of source tree
 # On return:
 #   Files is mirrored to the build tree and added to ${install_data}
 #   (if NO_INSTALL is not given).
 function(copy_file_to_buildtree file relative)
-  cmake_parse_arguments(arg "NO_INSTALL" "" "" ${ARGN})
+  cmake_parse_arguments(arg "NO_INSTALL" "SUBDIR" "" ${ARGN})
   string(REPLACE "${relative}/" "" outfile ${file})
+  if(arg_SUBDIR)
+    set(outfile "${arg_SUBDIR}/${outfile}")
+  endif()
   get_filename_component(outdir ${outfile} DIRECTORY)
 
   if(NOT CMAKE_BINARY_DIR STREQUAL CORE_SOURCE_DIR)
