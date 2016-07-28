@@ -77,6 +77,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     pItem.reset(new CFileItem(strLabel));  // "All Seasons"
     videoUrl.AppendPath("-1/");
     pItem->SetPath(videoUrl.ToString());
+    pItem->SetArt("thumb", items.GetArt("thumb"));
     // set the number of watched and unwatched items accordingly
     int watched = 0;
     int unwatched = 0;
