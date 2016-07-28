@@ -469,7 +469,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
         // don't create the filter if there's no real range
         if (min == max)
-          break;
+          continue;
 
         int iValueLower = valueLower.isNull() ? min : static_cast<int>(valueLower.asInteger());
         int iValueUpper = valueUpper.isNull() ? max : static_cast<int>(valueUpper.asInteger());
@@ -490,7 +490,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
         // don't create the filter if there's no real range
         if (min == max)
-          break;
+          continue;
 
         float fValueLower = valueLower.isNull() ? min : valueLower.asFloat();
         float fValueUpper = valueUpper.isNull() ? max : valueUpper.asFloat();
@@ -797,8 +797,8 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
         return;
 
       CDatabase::Filter filter;
-      filter.where = DatabaseUtils::GetField(FieldYear, m_mediaType, DatabaseQueryPartWhere) + " > 0";
-      GetMinMax(table, DatabaseUtils::GetField(FieldYear, m_mediaType, DatabaseQueryPartSelect), min, max, filter);
+      filter.where = DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType), DatabaseQueryPartWhere) + " > 0";
+      GetMinMax(table, DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType), DatabaseQueryPartSelect), min, max, filter);
     }
   }
   else if (filter.field == FieldAirDate)
