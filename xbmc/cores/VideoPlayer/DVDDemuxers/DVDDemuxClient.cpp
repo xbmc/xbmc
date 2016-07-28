@@ -613,14 +613,6 @@ void CDVDDemuxClient::EnableStream(int id, bool enable)
   }
 }
 
-void CDVDDemuxClient::EnableStreamAtPTS(int id, uint64_t pts)
-{
-  if (m_IDemux)
-  {
-    m_IDemux->EnableStreamAtPTS(id, pts);
-  }
-}
-
 void CDVDDemuxClient::SetVideoResolution(int width, int height)
 {
   if (m_IDemux)

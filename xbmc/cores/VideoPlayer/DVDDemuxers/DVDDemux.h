@@ -329,19 +329,9 @@ public:
   virtual std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) { return GetStreamCodecName(iStreamId); };
 
   /*
-  * return true if demuxer supports enabling at a specific PTS
-  */
-  virtual bool SupportsEnableAtPTS(int64_t demuxerId) { return SupportsEnableAtPTS(); };
-
-  /*
    * enable / disable demux stream
    */
   virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); };
-
-  /*
-  * enable / disable demux stream at given PTS
-  */
-  virtual void EnableStreamAtPTS(int64_t demuxerId, int id, uint64_t pts) { EnableStreamAtPTS(id, pts); };
 
   /*
    * sets desired width / height for video stream
@@ -356,8 +346,6 @@ public:
 
 protected:
   virtual void EnableStream(int id, bool enable) {};
-  virtual void EnableStreamAtPTS(int id, uint64_t pts) {};
-  virtual bool SupportsEnableAtPTS() { return false; };
   virtual CDemuxStream* GetStream(int iStreamId) const = 0;
   virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
 

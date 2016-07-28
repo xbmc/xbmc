@@ -47,7 +47,6 @@ bool CInputStreamAddon::Open()
     m_hasPosTime = m_addon->HasPosTime();
     m_canPause = m_addon->CanPause();
     m_canSeek = m_addon->CanSeek();
-    m_canEnableAtPTS = m_addon->CanEnableAtPTS();
   }
   return ret;
 }
@@ -203,14 +202,6 @@ void CInputStreamAddon::EnableStream(int iStreamId, bool enable)
     return;
 
   return m_addon->EnableStream(iStreamId, enable);
-}
-
-void CInputStreamAddon::EnableStreamAtPTS(int iStreamId, uint64_t pts)
-{
-  if (!m_addon)
-    return;
-
-  return m_addon->EnableStreamAtPTS(iStreamId, pts);
 }
 
 int CInputStreamAddon::GetNrOfStreams() const

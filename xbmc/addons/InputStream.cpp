@@ -452,22 +452,6 @@ void CInputStream::EnableStream(int iStreamId, bool enable)
   }
 }
 
-void CInputStream::EnableStreamAtPTS(int iStreamId, uint64_t pts)
-{
-  std::map<int, CDemuxStream*>::iterator it = m_streams.find(iStreamId);
-  if (it == m_streams.end())
-    return;
-
-  try
-  {
-    m_pStruct->EnableStreamAtPTS(it->second->uniqueId, pts);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::EnableStreamAtPTS - error. Reason: %s", e.what());
-  }
-}
-
 DemuxPacket* CInputStream::ReadDemux()
 {
   DemuxPacket* pPacket = nullptr;

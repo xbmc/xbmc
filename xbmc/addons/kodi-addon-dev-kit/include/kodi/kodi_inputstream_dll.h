@@ -82,14 +82,6 @@ extern "C"
   void EnableStream(int streamid, bool enable);
 
   /*!
-  * Enables a stream at the given PTS.
-  * @param streamId unique id of stream
-  * @param pts position in stream in microseconds 
-  * @remarks will only be called if CAPABILITIES::m_supportsEnableAtPTS is set to true
-  */
-  void EnableStreamAtPTS(int streamid, uint64_t pts);
-
-  /*!
    * Reset the demultiplexer in the add-on.
    * @remarks Required if bHandlesDemuxing is set to true.
    */
@@ -236,7 +228,6 @@ extern "C"
     pClient->GetStreamIds = GetStreamIds;
     pClient->GetStream = GetStream;
     pClient->EnableStream = EnableStream;
-    pClient->EnableStreamAtPTS = EnableStreamAtPTS;
     pClient->DemuxReset = DemuxReset;
     pClient->DemuxAbort = DemuxAbort;
     pClient->DemuxFlush = DemuxFlush;

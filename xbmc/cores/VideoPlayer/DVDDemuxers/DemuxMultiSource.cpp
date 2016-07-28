@@ -65,24 +65,6 @@ void CDemuxMultiSource::EnableStream(int64_t demuxerId, int id, bool enable)
   }
 }
 
-void CDemuxMultiSource::EnableStreamAtPTS(int64_t demuxerId, int id, uint64_t pts)
-{
-  auto iter = m_demuxerMap.find(demuxerId);
-  if (iter != m_demuxerMap.end())
-  {
-    DemuxPtr demuxer = iter->second;
-    if (demuxer->SupportsEnableAtPTS(demuxerId))
-    {
-      demuxer->EnableStreamAtPTS(demuxerId, id, pts);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s called, but the demuxer for file %s does not support it",
-        __FUNCTION__, CURL::GetRedacted(demuxer->GetFileName()).c_str());
-    }
-  }
-}
-
 void CDemuxMultiSource::Flush()
 {
   for (auto& iter : m_demuxerMap)
@@ -267,15 +249,4 @@ void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
       }
     }
   }
-}
-
-bool CDemuxMultiSource::SupportsEnableAtPTS(int64_t demuxerId)
-{
-  auto iter = m_demuxerMap.find(demuxerId);
-  if (iter != m_demuxerMap.end())
-  {
-    return iter->second->SupportsEnableAtPTS(demuxerId);
-  }
-
-  return false;
 }
