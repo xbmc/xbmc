@@ -1,0 +1,581 @@
+diff -pur samba-3.6.12/lib/util/util.c arm-linux-androideabi-21/lib/util/util.c
+--- samba-3.6.12/lib/util/util.c	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/lib/util/util.c	2016-07-27 20:01:54.128052081 +0200
+@@ -255,7 +255,7 @@ _PUBLIC_ bool process_exists_by_pid(pid_
+  is dealt with in posix.c
+ **/
+ 
+-_PUBLIC_ bool fcntl_lock(int fd, int op, off_t offset, off_t count, int type)
++_PUBLIC_ bool fcntl_lock(int fd, int op, off64_t offset, off64_t count, int type)
+ {
+ 	struct flock lock;
+ 	int ret;
+diff -pur samba-3.6.12/lib/util/util.h arm-linux-androideabi-21/lib/util/util.h
+--- samba-3.6.12/lib/util/util.h	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/lib/util/util.h	2016-07-27 20:01:44.155992544 +0200
+@@ -674,7 +674,7 @@ _PUBLIC_ bool process_exists_by_pid(pid_
+  Simple routine to do POSIX file locking. Cruft in NFS and 64->32 bit mapping
+  is dealt with in posix.c
+ **/
+-_PUBLIC_ bool fcntl_lock(int fd, int op, off_t offset, off_t count, int type);
++_PUBLIC_ bool fcntl_lock(int fd, int op, off64_t offset, off64_t count, int type);
+ 
+ /**
+  * Write dump of binary data to a callback
+diff -pur samba-3.6.12/source3/include/libsmb_internal.h arm-linux-androideabi-21/source3/include/libsmb_internal.h
+--- samba-3.6.12/source3/include/libsmb_internal.h	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/include/libsmb_internal.h	2016-07-27 20:07:42.306136381 +0200
+@@ -300,14 +300,14 @@ int
+ SMBC_rmdir_ctx(SMBCCTX *context,
+                const char *fname);
+ 
+-off_t
++off64_t
+ SMBC_telldir_ctx(SMBCCTX *context,
+                  SMBCFILE *dir);
+ 
+ int
+ SMBC_lseekdir_ctx(SMBCCTX *context,
+                   SMBCFILE *dir,
+-                  off_t offset);
++                  off64_t offset);
+ 
+ int
+ SMBC_fstatdir_ctx(SMBCCTX *context,
+@@ -383,16 +383,16 @@ SMBC_setatr(SMBCCTX * context, SMBCSRV *
+             time_t change_time,
+             uint16 mode);
+ 
+-off_t
++off64_t
+ SMBC_lseek_ctx(SMBCCTX *context,
+                SMBCFILE *file,
+-               off_t offset,
++               off64_t offset,
+                int whence);
+ 
+ int
+ SMBC_ftruncate_ctx(SMBCCTX *context,
+                    SMBCFILE *file,
+-                   off_t length);
++                   off64_t length);
+ 
+ 
+ /* Functions in libsmb_misc.c */
+diff -pur samba-3.6.12/source3/include/libsmbclient.h arm-linux-androideabi-21/source3/include/libsmbclient.h
+--- samba-3.6.12/source3/include/libsmbclient.h	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/include/libsmbclient.h	2016-07-28 10:21:20.267305706 +0200
+@@ -862,9 +862,9 @@ typedef int (*smbc_rename_fn)(SMBCCTX *o
+ smbc_rename_fn smbc_getFunctionRename(SMBCCTX *c);
+ void smbc_setFunctionRename(SMBCCTX *c, smbc_rename_fn fn);
+ 
+-typedef off_t (*smbc_lseek_fn)(SMBCCTX *c,
++typedef off64_t (*smbc_lseek_fn)(SMBCCTX *c,
+                                SMBCFILE * file,
+-                               off_t offset,
++                               off64_t offset,
+                                int whence);
+ smbc_lseek_fn smbc_getFunctionLseek(SMBCCTX *c);
+ void smbc_setFunctionLseek(SMBCCTX *c, smbc_lseek_fn fn);
+@@ -895,7 +895,7 @@ void smbc_setFunctionFstatVFS(SMBCCTX *c
+ 
+ typedef int (*smbc_ftruncate_fn)(SMBCCTX *c,
+                                  SMBCFILE *f,
+-                                 off_t size);
++                                 off64_t size);
+ smbc_ftruncate_fn smbc_getFunctionFtruncate(SMBCCTX *c);
+ void smbc_setFunctionFtruncate(SMBCCTX *c, smbc_ftruncate_fn fn);
+ 
+@@ -945,14 +945,14 @@ typedef int (*smbc_rmdir_fn)(SMBCCTX *c,
+ smbc_rmdir_fn smbc_getFunctionRmdir(SMBCCTX *c);
+ void smbc_setFunctionRmdir(SMBCCTX *c, smbc_rmdir_fn fn);
+ 
+-typedef off_t (*smbc_telldir_fn)(SMBCCTX *c,
++typedef off64_t (*smbc_telldir_fn)(SMBCCTX *c,
+                                  SMBCFILE *dir);
+ smbc_telldir_fn smbc_getFunctionTelldir(SMBCCTX *c);
+ void smbc_setFunctionTelldir(SMBCCTX *c, smbc_telldir_fn fn);
+ 
+ typedef int (*smbc_lseekdir_fn)(SMBCCTX *c,
+                                 SMBCFILE *dir,
+-                                off_t offset);
++                                off64_t offset);
+ smbc_lseekdir_fn smbc_getFunctionLseekdir(SMBCCTX *c);
+ void smbc_setFunctionLseekdir(SMBCCTX *c, smbc_lseekdir_fn fn);
+ 
+@@ -1324,7 +1324,7 @@ ssize_t smbc_write(int fd, const void *b
+  * @return          Upon successful completion, lseek returns the 
+  *                  resulting offset location as measured in bytes 
+  *                  from the beginning  of the file. Otherwise, a value
+- *                  of (off_t)-1 is returned and errno is set to 
++ *                  of (off64_t)-1 is returned and errno is set to 
+  *                  indicate the error:
+  *                  - EBADF  Fildes is not an open file descriptor.
+  *                  - EINVAL Whence is not a proper value or smbc_init
+@@ -1334,7 +1334,7 @@ ssize_t smbc_write(int fd, const void *b
+  * 
+  * @todo Are errno values complete and correct?
+  */
+-off_t smbc_lseek(int fd, off_t offset, int whence);
++off64_t smbc_lseek(int fd, off64_t offset, int whence);
+ 
+ 
+ /**@ingroup file
+@@ -1518,7 +1518,7 @@ struct smbc_dirent* smbc_readdir(unsigne
+  * @see             smbc_readdir()
+  *
+  */
+-off_t smbc_telldir(int dh);
++off64_t smbc_telldir(int dh);
+ 
+ 
+ /**@ingroup directory
+@@ -1543,7 +1543,7 @@ off_t smbc_telldir(int dh);
+  *
+  * @todo In what does the reture and errno values mean?
+  */
+-int smbc_lseekdir(int fd, off_t offset);
++int smbc_lseekdir(int fd, off64_t offset);
+ 
+ /**@ingroup directory
+  * Create a directory.
+@@ -1700,7 +1700,7 @@ smbc_fstatvfs(int fd,
+  * @see             , Unix ftruncate()
+  *
+  */
+-int smbc_ftruncate(int fd, off_t size);
++int smbc_ftruncate(int fd, off64_t size);
+ 
+ 
+ /**@ingroup attribute
+diff -pur samba-3.6.12/source3/libsmb/clireadwrite.c arm-linux-androideabi-21/source3/libsmb/clireadwrite.c
+--- samba-3.6.12/source3/libsmb/clireadwrite.c	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/libsmb/clireadwrite.c	2016-07-27 20:08:06.134279334 +0200
+@@ -102,7 +102,7 @@ static void cli_read_andx_done(struct te
+ struct tevent_req *cli_read_andx_create(TALLOC_CTX *mem_ctx,
+ 					struct event_context *ev,
+ 					struct cli_state *cli, uint16_t fnum,
+-					off_t offset, size_t size,
++					off64_t offset, size_t size,
+ 					struct tevent_req **psmbreq)
+ {
+ 	struct tevent_req *req, *subreq;
+@@ -160,7 +160,7 @@ struct tevent_req *cli_read_andx_create(
+ struct tevent_req *cli_read_andx_send(TALLOC_CTX *mem_ctx,
+ 				      struct event_context *ev,
+ 				      struct cli_state *cli, uint16_t fnum,
+-				      off_t offset, size_t size)
++				      off64_t offset, size_t size)
+ {
+ 	struct tevent_req *req, *subreq;
+ 	NTSTATUS status;
+@@ -257,7 +257,7 @@ struct cli_readall_state {
+ 	struct tevent_context *ev;
+ 	struct cli_state *cli;
+ 	uint16_t fnum;
+-	off_t start_offset;
++	off64_t start_offset;
+ 	size_t size;
+ 	size_t received;
+ 	uint8_t *buf;
+@@ -269,7 +269,7 @@ static struct tevent_req *cli_readall_se
+ 					   struct event_context *ev,
+ 					   struct cli_state *cli,
+ 					   uint16_t fnum,
+-					   off_t offset, size_t size)
++					   off64_t offset, size_t size)
+ {
+ 	struct tevent_req *req, *subreq;
+ 	struct cli_readall_state *state;
+@@ -392,7 +392,7 @@ struct cli_pull_state {
+ 	struct event_context *ev;
+ 	struct cli_state *cli;
+ 	uint16_t fnum;
+-	off_t start_offset;
++	off64_t start_offset;
+ 	SMB_OFF_T size;
+ 
+ 	NTSTATUS (*sink)(char *buf, size_t n, void *priv);
+@@ -451,7 +451,7 @@ static void cli_pull_read_done(struct te
+ struct tevent_req *cli_pull_send(TALLOC_CTX *mem_ctx,
+ 				 struct event_context *ev,
+ 				 struct cli_state *cli,
+-				 uint16_t fnum, off_t start_offset,
++				 uint16_t fnum, off64_t start_offset,
+ 				 SMB_OFF_T size, size_t window_size,
+ 				 NTSTATUS (*sink)(char *buf, size_t n,
+ 						  void *priv),
+@@ -649,7 +649,7 @@ NTSTATUS cli_pull_recv(struct tevent_req
+ }
+ 
+ NTSTATUS cli_pull(struct cli_state *cli, uint16_t fnum,
+-		  off_t start_offset, SMB_OFF_T size, size_t window_size,
++		  off64_t start_offset, SMB_OFF_T size, size_t window_size,
+ 		  NTSTATUS (*sink)(char *buf, size_t n, void *priv),
+ 		  void *priv, SMB_OFF_T *received)
+ {
+@@ -699,7 +699,7 @@ static NTSTATUS cli_read_sink(char *buf,
+ }
+ 
+ ssize_t cli_read(struct cli_state *cli, uint16_t fnum, char *buf,
+-		 off_t offset, size_t size)
++		 off64_t offset, size_t size)
+ {
+ 	NTSTATUS status;
+ 	SMB_OFF_T ret;
+@@ -717,7 +717,7 @@ ssize_t cli_read(struct cli_state *cli,
+ ****************************************************************************/
+ 
+ NTSTATUS cli_smbwrite(struct cli_state *cli, uint16_t fnum, char *buf,
+-		      off_t offset, size_t size1, size_t *ptotal)
++		      off64_t offset, size_t size1, size_t *ptotal)
+ {
+ 	uint8_t *bytes;
+ 	ssize_t total = 0;
+@@ -797,7 +797,7 @@ struct tevent_req *cli_write_andx_create
+ 					 struct event_context *ev,
+ 					 struct cli_state *cli, uint16_t fnum,
+ 					 uint16_t mode, const uint8_t *buf,
+-					 off_t offset, size_t size,
++					 off64_t offset, size_t size,
+ 					 struct tevent_req **reqs_before,
+ 					 int num_reqs_before,
+ 					 struct tevent_req **psmbreq)
+@@ -860,7 +860,7 @@ struct tevent_req *cli_write_andx_send(T
+ 				       struct event_context *ev,
+ 				       struct cli_state *cli, uint16_t fnum,
+ 				       uint16_t mode, const uint8_t *buf,
+-				       off_t offset, size_t size)
++				       off64_t offset, size_t size)
+ {
+ 	struct tevent_req *req, *subreq;
+ 	NTSTATUS status;
+@@ -931,7 +931,7 @@ struct cli_writeall_state {
+ 	uint16_t fnum;
+ 	uint16_t mode;
+ 	const uint8_t *buf;
+-	off_t offset;
++	off64_t offset;
+ 	size_t size;
+ 	size_t written;
+ };
+@@ -944,7 +944,7 @@ static struct tevent_req *cli_writeall_s
+ 					    uint16_t fnum,
+ 					    uint16_t mode,
+ 					    const uint8_t *buf,
+-					    off_t offset, size_t size)
++					    off64_t offset, size_t size)
+ {
+ 	struct tevent_req *req, *subreq;
+ 	struct cli_writeall_state *state;
+@@ -1028,7 +1028,7 @@ static NTSTATUS cli_writeall_recv(struct
+ }
+ 
+ NTSTATUS cli_writeall(struct cli_state *cli, uint16_t fnum, uint16_t mode,
+-		      const uint8_t *buf, off_t offset, size_t size,
++		      const uint8_t *buf, off64_t offset, size_t size,
+ 		      size_t *pwritten)
+ {
+ 	TALLOC_CTX *frame = talloc_stackframe();
+@@ -1064,7 +1064,7 @@ NTSTATUS cli_writeall(struct cli_state *
+ struct cli_push_write_state {
+ 	struct tevent_req *req;/* This is the main request! Not the subreq */
+ 	uint32_t idx;
+-	off_t ofs;
++	off64_t ofs;
+ 	uint8_t *buf;
+ 	size_t size;
+ };
+@@ -1074,7 +1074,7 @@ struct cli_push_state {
+ 	struct cli_state *cli;
+ 	uint16_t fnum;
+ 	uint16_t mode;
+-	off_t start_offset;
++	off64_t start_offset;
+ 	size_t window_size;
+ 
+ 	size_t (*source)(uint8_t *buf, size_t n, void *priv);
+@@ -1083,7 +1083,7 @@ struct cli_push_state {
+ 	bool eof;
+ 
+ 	size_t chunk_size;
+-	off_t next_offset;
++	off64_t next_offset;
+ 
+ 	/*
+ 	 * Outstanding requests
+@@ -1146,7 +1146,7 @@ static bool cli_push_write_setup(struct
+ struct tevent_req *cli_push_send(TALLOC_CTX *mem_ctx, struct event_context *ev,
+ 				 struct cli_state *cli,
+ 				 uint16_t fnum, uint16_t mode,
+-				 off_t start_offset, size_t window_size,
++				 off64_t start_offset, size_t window_size,
+ 				 size_t (*source)(uint8_t *buf, size_t n,
+ 						  void *priv),
+ 				 void *priv)
+@@ -1249,7 +1249,7 @@ NTSTATUS cli_push_recv(struct tevent_req
+ }
+ 
+ NTSTATUS cli_push(struct cli_state *cli, uint16_t fnum, uint16_t mode,
+-		  off_t start_offset, size_t window_size,
++		  off64_t start_offset, size_t window_size,
+ 		  size_t (*source)(uint8_t *buf, size_t n, void *priv),
+ 		  void *priv)
+ {
+diff -pur samba-3.6.12/source3/libsmb/libsmb_compat.c arm-linux-androideabi-21/source3/libsmb/libsmb_compat.c
+--- samba-3.6.12/source3/libsmb/libsmb_compat.c	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/libsmb/libsmb_compat.c	2016-07-27 20:03:05.636479317 +0200
+@@ -213,9 +213,9 @@ smbc_write(int fd,
+         return smbc_getFunctionWrite(statcont)(statcont, file, buf, bufsize);
+ }
+ 
+-off_t
++off64_t
+ smbc_lseek(int fd,
+-           off_t offset,
++           off64_t offset,
+            int whence)
+ {
+ 	SMBCFILE * file = find_fd(fd);
+@@ -285,7 +285,7 @@ smbc_readdir(unsigned int dh)
+         return smbc_getFunctionReaddir(statcont)(statcont, file);
+ }
+ 
+-off_t
++off64_t
+ smbc_telldir(int dh)
+ {
+ 	SMBCFILE * file = find_fd(dh);
+@@ -294,7 +294,7 @@ smbc_telldir(int dh)
+ 
+ int
+ smbc_lseekdir(int fd,
+-              off_t offset)
++              off64_t offset)
+ {
+ 	SMBCFILE * file = find_fd(fd);
+         return smbc_getFunctionLseekdir(statcont)(statcont, file, offset);
+@@ -345,7 +345,7 @@ smbc_fstatvfs(int fd,
+ 
+ int
+ smbc_ftruncate(int fd,
+-               off_t size)
++               off64_t size)
+ {
+ 	SMBCFILE * file = find_fd(fd);
+         return smbc_getFunctionFtruncate(statcont)(statcont, file, size);
+diff -pur samba-3.6.12/source3/libsmb/libsmb_dir.c arm-linux-androideabi-21/source3/libsmb/libsmb_dir.c
+--- samba-3.6.12/source3/libsmb/libsmb_dir.c	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/libsmb/libsmb_dir.c	2016-07-27 20:08:51.646552457 +0200
+@@ -1383,7 +1383,7 @@ SMBC_rmdir_ctx(SMBCCTX *context,
+  * Routine to return the current directory position
+  */
+ 
+-off_t
++off64_t
+ SMBC_telldir_ctx(SMBCCTX *context,
+                  SMBCFILE *dir)
+ {
+@@ -1424,7 +1424,7 @@ SMBC_telldir_ctx(SMBCCTX *context,
+ 	 * We return the pointer here as the offset
+ 	 */
+ 	TALLOC_FREE(frame);
+-        return (off_t)(long)dir->dir_next->dirent;
++        return (off64_t)(long)dir->dir_next->dirent;
+ }
+ 
+ /*
+@@ -1465,7 +1465,7 @@ check_dir_ent(struct smbc_dir_list *list
+ int
+ SMBC_lseekdir_ctx(SMBCCTX *context,
+                   SMBCFILE *dir,
+-                  off_t offset)
++                  off64_t offset)
+ {
+ 	long int l_offset = offset;  /* Handle problems of size */
+ 	struct smbc_dirent *dirent = (struct smbc_dirent *)l_offset;
+diff -pur samba-3.6.12/source3/libsmb/libsmb_file.c arm-linux-androideabi-21/source3/libsmb/libsmb_file.c
+--- samba-3.6.12/source3/libsmb/libsmb_file.c	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/libsmb/libsmb_file.c	2016-07-27 20:09:06.190639760 +0200
+@@ -235,12 +235,12 @@ SMBC_read_ctx(SMBCCTX *context,
+          * offset:
+          *
+          * Compiler bug (possibly) -- gcc (GCC) 3.3.5 (Debian 1:3.3.5-2) --
+-         * appears to pass file->offset (which is type off_t) differently than
+-         * a local variable of type off_t.  Using local variable "offset" in
++         * appears to pass file->offset (which is type off64_t) differently than
++         * a local variable of type off64_t.  Using local variable "offset" in
+          * the call to cli_read() instead of file->offset fixes a problem
+          * retrieving data at an offset greater than 4GB.
+          */
+-        off_t offset;
++        off64_t offset;
+ 
+ 	if (!context || !context->internal->initialized) {
+ 		errno = EINVAL;
+@@ -319,7 +319,7 @@ SMBC_write_ctx(SMBCCTX *context,
+                const void *buf,
+                size_t count)
+ {
+-        off_t offset;
++        off64_t offset;
+ 	char *server = NULL, *share = NULL, *user = NULL, *password = NULL;
+ 	char *path = NULL;
+ 	char *targetpath = NULL;
+@@ -665,10 +665,10 @@ SMBC_setatr(SMBCCTX * context, SMBCSRV *
+  * A routine to lseek() a file
+  */
+ 
+-off_t
++off64_t
+ SMBC_lseek_ctx(SMBCCTX *context,
+                SMBCFILE *file,
+-               off_t offset,
++               off64_t offset,
+                int whence)
+ {
+ 	SMB_OFF_T size;
+@@ -763,7 +763,7 @@ SMBC_lseek_ctx(SMBCCTX *context,
+ int
+ SMBC_ftruncate_ctx(SMBCCTX *context,
+                    SMBCFILE *file,
+-                   off_t length)
++                   off64_t length)
+ {
+ 	SMB_OFF_T size = length;
+ 	char *server = NULL;
+diff -pur samba-3.6.12/source3/libsmb/proto.h arm-linux-androideabi-21/source3/libsmb/proto.h
+--- samba-3.6.12/source3/libsmb/proto.h	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/libsmb/proto.h	2016-07-27 20:08:33.766445144 +0200
+@@ -691,36 +691,36 @@ NTSTATUS cli_set_fs_quota_info(struct cl
+ struct tevent_req *cli_read_andx_create(TALLOC_CTX *mem_ctx,
+ 					struct event_context *ev,
+ 					struct cli_state *cli, uint16_t fnum,
+-					off_t offset, size_t size,
++					off64_t offset, size_t size,
+ 					struct tevent_req **psmbreq);
+ struct tevent_req *cli_read_andx_send(TALLOC_CTX *mem_ctx,
+ 				      struct event_context *ev,
+ 				      struct cli_state *cli, uint16_t fnum,
+-				      off_t offset, size_t size);
++				      off64_t offset, size_t size);
+ NTSTATUS cli_read_andx_recv(struct tevent_req *req, ssize_t *received,
+ 			    uint8_t **rcvbuf);
+ struct tevent_req *cli_pull_send(TALLOC_CTX *mem_ctx,
+ 				 struct event_context *ev,
+ 				 struct cli_state *cli,
+-				 uint16_t fnum, off_t start_offset,
++				 uint16_t fnum, off64_t start_offset,
+ 				 SMB_OFF_T size, size_t window_size,
+ 				 NTSTATUS (*sink)(char *buf, size_t n,
+ 						  void *priv),
+ 				 void *priv);
+ NTSTATUS cli_pull_recv(struct tevent_req *req, SMB_OFF_T *received);
+ NTSTATUS cli_pull(struct cli_state *cli, uint16_t fnum,
+-		  off_t start_offset, SMB_OFF_T size, size_t window_size,
++		  off64_t start_offset, SMB_OFF_T size, size_t window_size,
+ 		  NTSTATUS (*sink)(char *buf, size_t n, void *priv),
+ 		  void *priv, SMB_OFF_T *received);
+ ssize_t cli_read(struct cli_state *cli, uint16_t fnum, char *buf,
+-		 off_t offset, size_t size);
++		 off64_t offset, size_t size);
+ NTSTATUS cli_smbwrite(struct cli_state *cli, uint16_t fnum, char *buf,
+-		      off_t offset, size_t size1, size_t *ptotal);
++		      off64_t offset, size_t size1, size_t *ptotal);
+ struct tevent_req *cli_write_andx_create(TALLOC_CTX *mem_ctx,
+ 					 struct event_context *ev,
+ 					 struct cli_state *cli, uint16_t fnum,
+ 					 uint16_t mode, const uint8_t *buf,
+-					 off_t offset, size_t size,
++					 off64_t offset, size_t size,
+ 					 struct tevent_req **reqs_before,
+ 					 int num_reqs_before,
+ 					 struct tevent_req **psmbreq);
+@@ -728,23 +728,23 @@ struct tevent_req *cli_write_andx_send(T
+ 				       struct event_context *ev,
+ 				       struct cli_state *cli, uint16_t fnum,
+ 				       uint16_t mode, const uint8_t *buf,
+-				       off_t offset, size_t size);
++				       off64_t offset, size_t size);
+ NTSTATUS cli_write_andx_recv(struct tevent_req *req, size_t *pwritten);
+ 
+ NTSTATUS cli_writeall(struct cli_state *cli, uint16_t fnum, uint16_t mode,
+-		      const uint8_t *buf, off_t offset, size_t size,
++		      const uint8_t *buf, off64_t offset, size_t size,
+ 		      size_t *pwritten);
+ 
+ struct tevent_req *cli_push_send(TALLOC_CTX *mem_ctx, struct event_context *ev,
+ 				 struct cli_state *cli,
+ 				 uint16_t fnum, uint16_t mode,
+-				 off_t start_offset, size_t window_size,
++				 off64_t start_offset, size_t window_size,
+ 				 size_t (*source)(uint8_t *buf, size_t n,
+ 						  void *priv),
+ 				 void *priv);
+ NTSTATUS cli_push_recv(struct tevent_req *req);
+ NTSTATUS cli_push(struct cli_state *cli, uint16_t fnum, uint16_t mode,
+-		  off_t start_offset, size_t window_size,
++		  off64_t start_offset, size_t window_size,
+ 		  size_t (*source)(uint8_t *buf, size_t n, void *priv),
+ 		  void *priv);
+ 
+diff -pur samba-3.6.12/source3/registry/regfio.c arm-linux-androideabi-21/source3/registry/regfio.c
+--- samba-3.6.12/source3/registry/regfio.c	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/registry/regfio.c	2016-07-27 20:09:31.246790183 +0200
+@@ -492,7 +492,7 @@ static bool read_regf_block( REGF_FILE *
+ /*******************************************************************
+ *******************************************************************/
+ 
+-static REGF_HBIN* read_hbin_block( REGF_FILE *file, off_t offset )
++static REGF_HBIN* read_hbin_block( REGF_FILE *file, off64_t offset )
+ {
+ 	REGF_HBIN *hbin;
+ 	uint32 record_size, curr_off, block_size, header;
+diff -pur samba-3.6.12/source3/utils/smbget.c arm-linux-androideabi-21/source3/utils/smbget.c
+--- samba-3.6.12/source3/utils/smbget.c	2013-01-29 09:49:31.000000000 +0100
++++ arm-linux-androideabi-21/source3/utils/smbget.c	2016-07-27 20:09:47.194885943 +0200
+@@ -36,7 +36,7 @@ static char *outputfile;
+ 
+ 
+ static time_t total_start_time = 0;
+-static off_t total_bytes = 0;
++static off64_t total_bytes = 0;
+ 
+ #define SMB_MAXPATHLEN MAXPATHLEN
+ 
+@@ -75,7 +75,7 @@ static void change_columns(int sig)
+ 	columns = get_num_cols();
+ }
+ 
+-static void human_readable(off_t s, char *buffer, int l)
++static void human_readable(off64_t s, char *buffer, int l)
+ {
+ 	if (s > 1024 * 1024 * 1024) {
+ 		snprintf(buffer, l, "%.2fGB", 1.0 * s / (1024 * 1024 * 1024));
+@@ -239,7 +239,7 @@ static char *print_time(long t)
+ 	return buffer;
+ }
+ 
+-static void print_progress(const char *name, time_t start, time_t now, off_t start_pos, off_t pos, off_t total)
++static void print_progress(const char *name, time_t start, time_t now, off64_t start_pos, off64_t pos, off64_t total)
+ {
+ 	double avg = 0.0;
+ 	long  eta = -1; 
+@@ -287,7 +287,7 @@ static int smb_download_file(const char
+ 	char path[SMB_MAXPATHLEN];
+ 	char checkbuf[2][RESUME_CHECK_SIZE];
+ 	char *readbuf = NULL;
+-	off_t offset_download = 0, offset_check = 0, curpos = 0, start_offset = 0;
++	off64_t offset_download = 0, offset_check = 0, curpos = 0, start_offset = 0;
+ 	struct stat localstat, remotestat;
+ 
+ 	snprintf(path, SMB_MAXPATHLEN-1, "%s%s%s", base, (*base && *name && name[0] != '/' && base[strlen(base)-1] != '/')?"/":"", name);
+@@ -395,7 +395,7 @@ static int smb_download_file(const char
+ 		}
+ 
+ 		if(offset_check) { 
+-			off_t off1, off2;
++			off64_t off1, off2;
+ 			/* First, check all bytes from offset_check to offset_download */
+ 			off1 = lseek(localhandle, offset_check, SEEK_SET);
+ 			if(off1 < 0) {
