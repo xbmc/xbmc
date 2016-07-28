@@ -817,14 +817,30 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
     timerType = CPVRTimerType::CreateFromAttributes(
       PVR_TIMER_TYPE_IS_REPEATING,
       PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES, channel->ClientID());
+
+    if (timerType)
+    {
+      if (timerType->SupportsEpgTitleMatch())
+        newTag->m_strEpgSearchString = newTag->m_strTitle;
+
+      if (timerType->SupportsWeekdays())
+        newTag->m_iWeekdays = PVR_WEEKDAY_ALLDAYS;
+
+      if (timerType->SupportsStartAnyTime())
+        newTag->m_bStartAnyTime = true;
+
+      if (timerType->SupportsEndAnyTime())
+        newTag->m_bEndAnyTime = true;
+    }
   }
-  if (!timerType)
+  else
   {
     // create one-shot epg-based timer
     timerType = CPVRTimerType::CreateFromAttributes(
       PVR_TIMER_TYPE_ATTRIBUTE_NONE,
       PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES, channel->ClientID());
   }
+
   if (!timerType)
   {
     CLog::Log(LOGERROR, "%s - unable to create any epg-based timer type", __FUNCTION__);
