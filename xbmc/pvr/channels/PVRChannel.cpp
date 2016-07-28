@@ -135,6 +135,8 @@ void CPVRChannel::Serialize(CVariant& value) const
   epg = GetEPGNext();
   if (epg)
     epg->Serialize(value["broadcastnext"]);
+
+  value["isrecording"] = IsRecording();
 }
 
 /********** XBMC related channel methods **********/

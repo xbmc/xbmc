@@ -966,7 +966,7 @@
     "items": { "type": "string",
       "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed",
                 "broadcastnow", "broadcastnext", "uniqueid", "icon", "channelnumber",
-                "subchannelnumber" ]
+                "subchannelnumber", "isrecording" ]
     }
   },
   "PVR.Details.Channel": {
@@ -984,7 +984,8 @@
       "uniqueid": { "type": "integer", "required": true },
       "icon": { "type": "string" },
       "channelnumber": { "type": "integer" },
-      "subchannelnumber": { "type": "integer" }
+      "subchannelnumber": { "type": "integer" },
+      "isrecording": { "type": "boolean" }
     }
   },
   "PVR.Details.ChannelGroup": {
