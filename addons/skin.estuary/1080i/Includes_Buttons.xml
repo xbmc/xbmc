@@ -129,7 +129,7 @@
 				<aligny>top</aligny>
 				<font>font10</font>
 				<textoffsetx>100</textoffsetx>
-				<textwidth>200</textwidth>
+				<textwidth>300</textwidth>
 				<textoffsety>35</textoffsety>
 				<label>$PARAM[label]</label>
 				<selectedcolor>white</selectedcolor>
@@ -203,6 +203,7 @@
 				<aligny>center</aligny>
 				<onclick>$PARAM[onclick]</onclick>
 				<font>-</font>
+				<label>$PARAM[label]</label>
 				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 				<radioposx>38</radioposx>

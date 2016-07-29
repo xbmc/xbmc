@@ -10,8 +10,8 @@
 		<control type="image">
 			<left>0</left>
 			<top>0</top>
-			<width>1920</width>
-			<height>1080</height>
+			<width>100%</width>
+			<height>100%</height>
 			<aspectratio>scale</aspectratio>
 			<fadetime>400</fadetime>
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
@@ -20,8 +20,8 @@
 		</control>
 		<control type="image">
 			<texture fallback="special://skin/extras/backgrounds/SKINDEFAULT.jpg">$VAR[GlobalFanartVar]</texture>
-			<width>1920</width>
-			<height>1080</height>
+			<width>100%</width>
+			<height>100%</height>
 			<aspectratio align="center">scale</aspectratio>
 			<animation effect="fade" start="100" end="50" time="0" condition="!String.IsEmpty(Player.Art(fanart)) | !String.IsEmpty(Visualisation.Name)">Conditional</animation>
 		</control>
@@ -40,7 +40,7 @@
 		</control>
 		<control type="group">
 			<top>-30</top>
-			<visible>Player.ShowInfo | Window.IsActive(musicosd)</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(musicosd)] + !Window.IsActive(playerprocessinfo)</visible>
 			<include>OpenClose_Right</include>
 			<include>Visible_Right</include>
 			<control type="image">
@@ -124,6 +124,7 @@
 					<height>99</height>
 					<texture colordiffuse="grey" fallback="empty.png">$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]</texture>
 					<aspectratio>keep</aspectratio>
+					<visible>!Player.ChannelPreviewActive</visible>
 				</control>
 				<control type="image">
 					<left>280</left>
@@ -135,8 +136,8 @@
 				</control>
 			</control>
 			<control type="label">
-				<left>1840</left>
-				<top>834</top>
+				<left>1450</left>
+				<top>720</top>
 				<width>400</width>
 				<height>45</height>
 				<align>right</align>
@@ -158,6 +159,7 @@
 				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
 				<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+				<visible>!Player.ChannelPreviewActive</visible>
 			</control>
 			<control type="progress" id="23">
 				<animation effect="fade" end="0" time="200">WindowClose</animation>
@@ -168,6 +170,7 @@
 				<info>Player.Progress</info>
 				<texturebg border="3" colordiffuse="80FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
+				<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
 			</control>
 		</control>
 		<control type="group">

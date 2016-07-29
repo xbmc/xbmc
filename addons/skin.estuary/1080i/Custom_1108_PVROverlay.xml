@@ -60,6 +60,7 @@
 			<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
 			<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
 			<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+			<visible>!Player.ChannelPreviewActive</visible>
 		</control>
 		<control type="progress" id="23">
 			<animation effect="fade" end="0" time="200">WindowClose</animation>
@@ -70,6 +71,7 @@
 			<info>Player.Progress</info>
 			<texturebg border="3" colordiffuse="80FFFFFF">colors/white50.png</texturebg>
 			<midtexture colordiffuse="button_focus">colors/white50.png</midtexture>
+			<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
 		</control>
 		<control type="label">
 			<left>530</left>
@@ -78,6 +80,7 @@
 			<height>25</height>
 			<label>[COLOR button_focus]$INFO[VideoPlayer.NextStartTime]$INFO[VideoPlayer.NextEndTime, - ,: ][/COLOR]$INFO[VideoPlayer.NextTitle]</label>
 			<aligny>center</aligny>
+			<visible>VideoPlayer.HasEpg</visible>
 		</control>
 		<control type="grouplist">
 			<left>1260</left>
@@ -87,6 +90,7 @@
 			<align>right</align>
 			<orientation>horizontal</orientation>
 			<itemgap>10</itemgap>
+			<visible>!Player.ChannelPreviewActive</visible>
 			<include content="MediaFlag">
 				<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
 			</include>

@@ -6,7 +6,7 @@
 			<description>background close area</description>
 			<left>0</left>
 			<top>0</top>
-			<width>1920</width>
+			<width>100%</width>
 			<height>900</height>
 			<texturefocus>-</texturefocus>
 			<texturenofocus>-</texturenofocus>
@@ -14,14 +14,14 @@
 		</control>
 		<control type="group">
 			<top>900</top>
-			<visible>!Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings)</visible>
+			<visible>!Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(playerprocessinfo)</visible>
 			<animation effect="fade" end="100" time="200">WindowOpen</animation>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 			<control type="grouplist" id="201">
 				<left>50</left>
 				<top>10</top>
-				<width>1920</width>
+				<width>100%</width>
 				<height>135</height>
 				<align>left</align>
 				<itemgap>-20</itemgap>
@@ -152,18 +152,6 @@
 					</include>
 					<onclick>ActivateWindow(1105)</onclick>
 				</control>
-			</control>
-			<control type="label">
-				<left>30</left>
-				<top>40</top>
-				<width>1858</width>
-				<height>75</height>
-				<align>center</align>
-				<aligny>bottom</aligny>
-				<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-				<font>font30</font>
-				<shadowcolor>black</shadowcolor>
-				<textcolor>white</textcolor>
 			</control>
 			<control type="label">
 				<right>30</right>

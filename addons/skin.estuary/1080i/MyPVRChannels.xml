@@ -189,12 +189,12 @@
 							<width>50</width>
 							<height>12</height>
 							<midtexture border="3">progress/texturebg_white.png</midtexture>
-							<visible>ListItem.HasEpg + !ListItem.IsRecording</visible>
+							<visible>ListItem.HasEpg</visible>
 							<info>ListItem.Progress</info>
 						</control>
 						<control type="image">
-							<left>945</left>
-							<top>9</top>
+							<left>870</left>
+							<top>20</top>
 							<width>40</width>
 							<height>40</height>
 							<texture>$VAR[PVRStatusImageVar]</texture>
@@ -254,12 +254,12 @@
 							<width>50</width>
 							<height>12</height>
 							<colordiffuse>88FFFFFF</colordiffuse>
-							<visible>ListItem.HasEpg + !ListItem.IsRecording</visible>
+							<visible>ListItem.HasEpg</visible>
 							<info>ListItem.Progress</info>
 						</control>
 						<control type="image">
-							<left>945</left>
-							<top>9</top>
+							<left>870</left>
+							<top>20</top>
 							<width>40</width>
 							<height>40</height>
 							<texture>$VAR[PVRStatusImageVar]</texture>

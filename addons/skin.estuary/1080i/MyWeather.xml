@@ -6,7 +6,7 @@
 	<controls>
 		<control type="button" id="20000">
 			<include>HiddenObject</include>
-			<onfocus>ActivateWindow(weathersettings)</onfocus>
+			<onfocus>ActivateWindow(servicesettings,weather)</onfocus>
 			<onclick>noop</onclick>
 		</control>
 			<control type="videowindow">
