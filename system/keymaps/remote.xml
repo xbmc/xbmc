@@ -1,49 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
-<!-- The <global> section is a fall through - they will only be used if the button is not          -->
-<!-- used in the current window's section.  Note that there is only handling                       -->
-<!-- for a single action per button at this stage.                                                 -->
-<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
-<!-- gamepads.                                                                                     -->
-
-<!-- The format is:                      -->
-<!--    <device>                         -->
-<!--      <button>action</button>        -->
-<!--    </device>                        -->
-
-<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
-<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
-<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
-<!--    <universalremote>             -->
-<!--       <obc45>Stop</obc45>         -->
-<!--    </universalremote>            -->
-
-<!-- Note that the action can be a built-in function.                                         -->
-<!--  eg <B>ActivateWindow(Music)</B>                                                       -->
-<!-- would automatically go to My Music on the press of the B button.                         -->
-<!-- An empty action removes the corresponding mapping from the default keymap                -->
-
-<!-- Joysticks / Gamepads:                                                                    -->
-<!--   See the sample PS3 controller configuration below for the format.                      -->
-<!--                                                                                          -->
-<!--  Joystick Name:                                                                          -->
-<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
-<!--   detected joysticks. The name used in the configuration should match the detected name. -->
-<!--                                                                                          -->
-<!--  Button Ids:                                                                             -->
-<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
-<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
-<!--                                                                                          -->
-<!--  Axis Ids / Analog Controls                                                              -->
-<!--   Coming soon.                                                                           -->
-<!--                                                                                          -->
-<!--  Long presses                                                                            -->
-<!--   A limitation is that if a single press is mapped in a section, a global "longpress"    -->
-<!--   will be ignored. The workaround is to duplicate the long mapping in the section.       -->
+<!-- This file contains the mapping of remote keys to actions within Kodi.                -->
+<!--                                                                                      -->
+<!-- The format is:                                                                       -->
+<!--  <window>                                                                            -->
+<!--    <device>                                                                          -->
+<!--      <button>action</button>                                                         -->
+<!--    </device>                                                                         -->
+<!--  </window>                                                                           -->
+<!--                                                                                      -->
+<!-- The <global> section is a fall through - they will only be used if the button is     -->
+<!-- not used in the current window's section.                                            -->
+<!--                                                                                      -->
+<!-- Actions can be built-in functions.                                                   -->
+<!--  eg <B>ActivateWindow(Music)</B>                                                     -->
+<!-- would automatically go to Music on the press of the B button.                        -->
+<!--                                                                                      -->
+<!--  Long presses                                                                        -->
+<!--   A limitation is that if a single press is mapped in a section, a global "longpress"-->
+<!--   will be ignored. The workaround is to duplicate the long mapping in the section.   -->
+<!--                                                                                      -->
+<!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
+<!-- This is different from a "noop" action, which disables a button.                     -->
+<!--                                                                                      -->
+<!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
 <keymap>
   <global>
     <remote>
       <play>PlayPause</play>
+      <play mod="longpress">Info</play>
       <pause>Pause</pause>
       <stop>Stop</stop>
       <forward>FastForward</forward>
@@ -53,10 +37,12 @@
       <up>Up</up>
       <down>Down</down>
       <select>Select</select>
+      <select mod="longpress">ContextMenu</select>
       <enter>FullScreen</enter> 
       <pageplus>PageUp</pageplus>
       <pageminus>PageDown</pageminus>
       <back>Back</back>
+      <back mod="longpress">ActivateWindow(Home)</back>
       <menu>ContextMenu</menu>
       <menu mod="longpress">Menu</menu>
       <contentsmenu>PreviousMenu</contentsmenu>
@@ -104,6 +90,7 @@
       <info>ActivateWindow(SystemInfo)</info>
       <clear>ActivateWindow(Weather)</clear>
       <hash>ActivateWindow(Settings)</hash>
+      <back mod="longpress">ActivateWindow(ShutdownMenu)</back>
     </remote>
   </Home>
   <MyTVRecordings>
@@ -148,6 +135,7 @@
       <zero>Highlight</zero>
       <star>Move</star>
       <hash>Rename</hash>
+      <play mod="longpress">Highlight</play>
     </remote>
   </FileManager>
   <MyMusicPlaylist>
@@ -188,12 +176,18 @@
       <right>StepForward</right>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
+      <left mod="longpress">Rewind</left>
+      <right mod="longpress">FastForward</right>
+      <up mod="longpress">AudioNextLanguage</up>
+      <down mod="longpress">NextSubtitle</down>
       <back>Back</back>
+      <back mod="longpress">Stop</back>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>
       <rootmenu>OSD</rootmenu>
       <start>OSD</start>
       <select>OSD</select>
+      <select mod="longpress">PlayPause</select>
       <title>CodecInfo</title>
       <info>Info</info>
       <guide>ActivateWindow(PVROSDGuide)</guide>
@@ -235,11 +229,15 @@
       <right>StepForward</right>
       <up>SkipNext</up>
       <down>SkipPrevious</down>
+      <left mod="longpress">Rewind</left>
+      <right mod="longpress">FastForward</right>
       <pageplus>IncreaseRating</pageplus>
       <pageminus>DecreaseRating</pageminus>
       <back>Back</back>
+      <back mod="longpress">Stop</back>
       <title>CodecInfo</title>
       <select>OSD</select>
+      <select mod="longpress">PlayPause</select>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>
       <rootmenu>OSD</rootmenu>
@@ -383,6 +381,7 @@
       <enter>Enter</enter>
       <pageminus>CursorLeft</pageminus>
       <pageplus>CursorRight</pageplus>
+      <play mod="longpress">Enter</play>
     </remote>
   </VirtualKeyboard>
   <ContextMenu>
