@@ -690,7 +690,7 @@
 							<param name="item3_onclick" value="Weather.LocationNext" />
 							<param name="item3_icon" value="location-next.png" />
 							<param name="item3_label" value="$LOCALIZE[31078]" />
-							<param name="item4_onclick" value="ActivateWindow(weathersettings)" />
+							<param name="item4_onclick" value="ActivateWindow(servicesettings,weather)" />
 							<param name="item4_icon" value="weather-settings.png" />
 							<param name="item4_label" value="$LOCALIZE[1390]" />
 							<param name="item5_vis" value="False" />
@@ -794,7 +794,7 @@
 							<param name="image_path" value="special://skin/extras/home-images/weather.jpg"/>
 							<param name="text_label" value="$LOCALIZE[31120]" />
 							<param name="button_label" value="$LOCALIZE[31121]" />
-							<param name="button_onclick" value="ActivateWindow(weathersettings)"/>
+							<param name="button_onclick" value="ActivateWindow(servicesettings,weather)"/>
 							<param name="button_id" value="15300"/>
 							<param name="visible" value="String.IsEmpty(Weather.plugin)"/>
 							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoWeatherButton)"/>
@@ -1106,21 +1106,25 @@
 						<param name="control_id" value="804" />
 						<param name="onclick" value="ActivateWindow(shutdownmenu)" />
 						<param name="icon" value="icons/power.png" />
+						<param name="label" value="$LOCALIZE[33060]" />
 					</include>
 					<include content="BottomMainMenuItem">
 						<param name="control_id" value="802" />
 						<param name="onclick" value="ActivateWindow(settings)" />
 						<param name="icon" value="icons/settings.png" />
+						<param name="label" value="$LOCALIZE[21417]" />
 					</include>
 					<include content="BottomMainMenuItem">
 						<param name="control_id" value="803" />
 						<param name="onclick" value="ActivateWindow(favourites)" />
 						<param name="icon" value="icons/favourites.png" />
+						<param name="label" value="$LOCALIZE[10134]" />
 					</include>
 					<include content="BottomMainMenuItem">
 						<param name="control_id" value="801" />
 						<param name="onclick" value="ActivateWindow(filemanager)" />
 						<param name="icon" value="icons/filemanager.png" />
+						<param name="label" value="$LOCALIZE[10003]" />
 					</include>
 				</control>
 			</control>
@@ -1157,7 +1161,7 @@
 					<left>0</left>
 					<top>1041</top>
 					<height>30</height>
-					<width>1920</width>
+					<width>100%</width>
 					<font>font12</font>
 					<urlset>1</urlset>
 					<titlecolor>button_focus</titlecolor>

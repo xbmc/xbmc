@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="0.8.3" name="Estuary" provider-name="phil65, Piers">
+<addon id="skin.estuary" version="0.8.4" name="Estuary" provider-name="phil65, Piers">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
+		<res width="2560" height="1080" aspect="21:9" default="false" folder="1080i" />
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="bg_BG">Estuary облик от phil65 и Piers. (стандартния облик на Kodi)</summary>
@@ -104,5 +105,17 @@
 		<license>CC BY-SA 4.0, GNU GENERAL PUBLIC LICENSE Version 2.0</license>
 		<forum>http://forum.kodi.tv/</forum>
 		<source>https://github.com/xbmc/skin.estuary/</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+			<screenshot>resources/screenshot-01.jpg</screenshot>
+			<screenshot>resources/screenshot-02.jpg</screenshot>
+			<screenshot>resources/screenshot-03.jpg</screenshot>
+			<screenshot>resources/screenshot-04.jpg</screenshot>
+			<screenshot>resources/screenshot-05.jpg</screenshot>
+			<screenshot>resources/screenshot-06.jpg</screenshot>
+			<screenshot>resources/screenshot-07.jpg</screenshot>
+			<screenshot>resources/screenshot-08.jpg</screenshot>
+		</assets>
 	</extension>
 </addon>

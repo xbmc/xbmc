@@ -84,10 +84,11 @@
 				<description>control area</description>
 				<left>442</left>
 				<top>160</top>
+				<pagecontrol>60</pagecontrol>
 				<width>1256</width>
 				<height>640</height>
 				<onleft>3</onleft>
-				<onright>3</onright>
+				<onright>60</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 			</control>
@@ -150,14 +151,14 @@
 			<param name="down_posy" value="940" />
 			<param name="visible" value="!System.HasModalDialog" />
 		</include>
-		<control type="image">
-			<description>Section header image</description>
-			<left>20</left>
-			<top>3</top>
-			<width>35</width>
-			<height>35</height>
-			<aspectratio>keep</aspectratio>
-			<texture>icon_system.png</texture>
+		<control type="scrollbar" id="60">
+			<right>0</right>
+			<top>80</top>
+			<width>12</width>
+			<height>920</height>
+			<onleft>5</onleft>
+			<onright>5</onright>
+			<orientation>vertical</orientation>
 		</control>
 		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[5]$INFO[Control.GetLabel(2), / ]" />

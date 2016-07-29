@@ -27,7 +27,7 @@
 	<constant name="DepthBackground">-0.80</constant>
 	<constant name="DepthSideBlade">0.10</constant>
 	<constant name="bg_alpha">79</constant>
-	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)</expression>
+	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)</expression>
 	<expression name="sidebar_focused">ControlGroup(9000).HasFocus | Control.HasFocus(6130)</expression>
 	<include name="CommonScrollbars">
 		<control type="group">
@@ -35,7 +35,7 @@
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="System.HasModalDialog">Conditional</animation>
 			<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
 			<control type="scrollbar" id="531">
-				<left>1907</left>
+				<right>0</right>
 				<top>80</top>
 				<width>13</width>
 				<height>919</height>
@@ -50,7 +50,7 @@
 			<control type="scrollbar" id="5199">
 				<left>0</left>
 				<top>988</top>
-				<width>1920</width>
+				<width>100%</width>
 				<height>12</height>
 				<texturesliderbackground colordiffuse="22FFFFFF">colors/white.png</texturesliderbackground>
 				<onup>50</onup>
@@ -880,7 +880,7 @@
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
-					<width>2000</width>
+					<width>110%</width>
 					<height>83</height>
 					<texture>frame/InfoBar.png</texture>
 					<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
@@ -925,7 +925,7 @@
 						<label>$INFO[Container.FolderName, / ]</label>
 						<include>BreadcrumbsLabel</include>
 						<visible>![Container.Content() + Window.IsActive(videos)]</visible>
-						<visible>![Window.IsActive(PVR) | Window.IsActive(MyPVRTimers.xml)]</visible>
+						<visible>![Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRTimers.xml)]</visible>
 					</control>
 					<control type="label">
 						<label>$INFO[Container.PluginCategory, / ]</label>
@@ -990,7 +990,7 @@
 							<top>40</top>
 							<label>$PARAM[time_sublabel]</label>
 							<font>font10</font>
-							<left>1340</left>
+							<right>85</right>
 							<shadowcolor>text_shadow</shadowcolor>
 							<height>100</height>
 							<width>500</width>
@@ -1077,7 +1077,7 @@
 				<control type="image">
 					<left>0</left>
 					<top>995</top>
-					<width>2000</width>
+					<width>110%</width>
 					<height>85</height>
 					<texture flipy="true">frame/InfoBar.png</texture>
 				</control>
@@ -1296,7 +1296,7 @@
 	<include name="FullScreenDimensions">
 		<left>0</left>
 		<top>0</top>
-		<width>1920</width>
-		<height>1080</height>
+		<width>100%</width>
+		<height>100%</height>
 	</include>
 </includes>

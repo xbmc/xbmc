@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window type="dialog" id="1109">
-    <visible>Window.IsActive(videoosd) | Window.IsActive(fullscreeninfo) | [Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)]</visible>
+    <visible>Window.IsActive(videoosd) | Window.IsActive(fullscreeninfo) | [Window.IsActive(playerprocessinfo) + Window.IsActive(fullscreenvideo)] | [Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)]</visible>
     <depth>DepthOSD</depth>
     <animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
     <animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
@@ -11,7 +11,7 @@
             <control type="image">
                 <left>0</left>
                 <top>0</top>
-                <width>1920</width>
+                <width>100%</width>
                 <height>83</height>
                 <texture>frame/InfoBar.png</texture>
             </control>
@@ -79,6 +79,7 @@
                     <height>100</height>
                     <width>500</width>
                     <align>right</align>
+                    <visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasEpg</visible>
                 </control>
             </control>
         </control>

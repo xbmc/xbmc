@@ -155,7 +155,7 @@
 			<width>509</width>
 			<height>509</height>
 			<aspectratio>scale</aspectratio>
-			<texture>colors/black.png</texture>
+			<texture colordiffuse="BFFFFFFF">colors/black.png</texture>
 			<bordertexture border="20">overlays/shadow.png</bordertexture>
 			<bordersize>20</bordersize>
 		</control>

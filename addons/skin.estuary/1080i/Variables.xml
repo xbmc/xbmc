@@ -120,6 +120,7 @@
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="ListBoxInfoVar">
+		<value condition="Stringcompare(Container.FolderPath,addons://outdated/) + !IsEmpty(ListItem.Addonnews)">$INFO[ListItem.Addonnews]</value>
 		<value condition="Container.Content(addons)">$INFO[ListItem.AddonDescription]</value>
 		<value condition="Container.Content(albums)">$INFO[ListItem.Property(album_description)]</value>
 		<value condition="Container.Content(mixed) | Container.Content(videos)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]$INFO[ListItem.Plot]</value>
@@ -176,7 +177,7 @@
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
 	</variable>
 	<variable name="ListPosterVar">
-		<value condition="ListItem.IsParentFolder">DefaultFolderBack.png</value>
+		<value condition="ListItem.IsParentFolder">DefaultFolderBackSquare.png</value>
 		<value>$INFO[ListItem.Art(poster)]</value>
 	</variable>
 	<variable name="BannerLabel2Var">
@@ -214,13 +215,15 @@
 		<value condition="Control.HasFocus(70041)">$LOCALIZE[19069]</value>
 		<value condition="Control.HasFocus(70043)">$LOCALIZE[5]</value>
 		<value condition="Control.HasFocus(255)">$LOCALIZE[36501]</value>
+		<value condition="Control.HasFocus(606)+ Player.Recording">$LOCALIZE[19059]</value>
 		<value condition="Control.HasFocus(606)">$LOCALIZE[264]</value>
 		<value condition="ControlGroup(6000).HasFocus + Player.SeekEnabled">$LOCALIZE[31054]</value>
 	</variable>
 	<variable name="MusicOSDHelpTextVar">
 		<value condition="Control.HasFocus(620)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
 		<value condition="Control.HasFocus(704)">$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</value>
-		<value condition="Control.HasFocus(607)">$LOCALIZE[590]$INFO[Playlist.Random, : ]</value>
+		<value condition="Control.HasFocus(607) + Playlist.IsRandom">$LOCALIZE[590]: $LOCALIZE[16041]</value>
+		<value condition="Control.HasFocus(607)">$LOCALIZE[590]: $LOCALIZE[16039]</value>
 		<value condition="Control.HasFocus(703)">$LOCALIZE[24013]</value>
 		<value condition="Control.HasFocus(5000)">$LOCALIZE[10004]</value>
 	</variable>
@@ -321,7 +324,6 @@
 		<value condition="Window.IsActive(pvrsettings)">icons/settings/livetv.png</value>
 		<value condition="Window.IsActive(servicesettings)">icons/settings/network.png</value>
 		<value condition="Window.IsActive(interfacesettings)">icons/settings/appearance.png</value>
-		<value condition="Window.IsActive(musicsettings)">icons/settings/music.png</value>
 		<value condition="Window.IsActive(systemsettings)">icons/settings/system.png</value>
 	</variable>
 	<!-- Breadcrumbs -->
@@ -388,5 +390,9 @@
 		<value condition="ListItem.HasTimer + !ListItem.TimerIsActive">icons/pvr/PVR-HasTimerDisabled.png</value>
 		<value condition="ListItem.HasTimerSchedule">icons/pvr/PVR-HasTimerSchedule.png</value>
 		<value condition="ListItem.HasTimer">icons/pvr/PVR-HasTimer.png</value>
+	</variable>
+	<variable name="VideoHWDecoder">
+		<value condition="Player.Process(videohwdecoder)">HW</value>
+		<value>SW</value>
 	</variable>
 </includes>

@@ -8,7 +8,7 @@
 			<description>background close area</description>
 			<left>0</left>
 			<top>0</top>
-			<width>1920</width>
+			<width>100%</width>
 			<height>800</height>
 			<texturefocus>-</texturefocus>
 			<texturenofocus>-</texturenofocus>
@@ -16,6 +16,8 @@
 		</control>
 		<control type="group">
 			<top>912</top>
+			<visible>!Window.IsVisible(playerprocessinfo)</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="image">
 				<left>10</left>
 				<top>-240</top>
@@ -49,7 +51,7 @@
 				<align>left</align>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
-				<visible>Control.HasFocus(5552)</visible>
+				<visible>Control.HasFocus(5552) + !Player.ChannelPreviewActive</visible>
 				<include content="MediaFlag">
 					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
 				</include>
@@ -233,7 +235,7 @@
 				<control type="label">
 					<left>250</left>
 					<top>940</top>
-					<width>1920</width>
+					<width>100%</width>
 					<height>100</height>
 					<font>font16</font>
 					<shadowcolor>text_shadow</shadowcolor>

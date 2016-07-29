@@ -16,7 +16,7 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(playerprocessinfo)]</visible>
 			<animation effect="fade" end="100" time="200">WindowOpen</animation>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -188,6 +188,7 @@
 							<include content="OSDButton">
 								<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 							</include>
+							<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasSubtitles</visible>
 						</control>
 						<control type="radiobutton" id="255">
 							<include content="OSDButton">

@@ -79,101 +79,103 @@
 						</control>
 					</focusedlayout>
 				</control>
-				<control type="image">
-					<right>90</right>
-					<top>375</top>
-					<width>1232</width>
-					<height>110</height>
-					<texture border="22">dialogs/dialog-bg.png</texture>
-				</control>
-				<control type="image">
-					<right>90</right>
-					<top>455</top>
-					<width>1232</width>
-					<height>272</height>
-					<texture border="22">dialogs/dialog-bg.png</texture>
-				</control>
 				<control type="group">
-					<left>635</left>
-					<top>475</top>
-					<visible>ListItem.IsCollection</visible>
-					<include content="InfoList">
-						<param name="sortby" value="year" />
-						<param name="sortorder" value="descending" />
-						<param name="font" value="font12" />
-					</include>
-				</control>
-				<control type="image">
-					<left>645</left>
-					<top>415</top>
-					<width>32</width>
-					<height>32</height>
-					<texture>$VAR[ListWatchedIconVar]</texture>
-				</control>
-				<control type="label">
-					<left>695</left>
-					<top>400</top>
-					<width>930</width>
-					<height>40</height>
-					<label>$INFO[ListItem.Label]</label>
-					<font>font30_title</font>
-					<shadowcolor>text_shadow</shadowcolor>
-				</control>
-				<control type="label">
-					<right>130</right>
-					<top>400</top>
-					<width>1160</width>
-					<height>40</height>
-					<label>$VAR[ListSubLabelVar]</label>
-					<font>font30_title</font>
-					<textcolor>button_focus</textcolor>
-					<shadowcolor>text_shadow</shadowcolor>
-					<align>right</align>
-				</control>
-				<control type="grouplist">
-					<orientation>vertical</orientation>
-					<left>645</left>
-					<top>480</top>
-					<height>195</height>
-					<control type="label">
-						<font>font12</font>
-						<width>1160</width>
-						<height>38</height>
-						<label>$INFO[ListItem.Duration,[COLOR button_focus]$LOCALIZE[180]: [/COLOR], $LOCALIZE[31060]]</label>
-						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!String.IsEmpty(ListItem.Duration)</visible>
+					<control type="image">
+						<left>598</left>
+						<top>375</top>
+						<width>1232</width>
+						<height>110</height>
+						<texture border="22">dialogs/dialog-bg.png</texture>
+					</control>
+					<control type="image">
+						<left>598</left>
+						<top>455</top>
+						<width>1232</width>
+						<height>272</height>
+						<texture border="22">dialogs/dialog-bg.png</texture>
+					</control>
+					<control type="group">
+						<left>635</left>
+						<top>475</top>
+						<visible>ListItem.IsCollection</visible>
+						<include content="InfoList">
+							<param name="sortby" value="year" />
+							<param name="sortorder" value="descending" />
+							<param name="font" value="font12" />
+						</include>
+					</control>
+					<control type="image">
+						<left>645</left>
+						<top>415</top>
+						<width>32</width>
+						<height>32</height>
+						<texture>$VAR[ListWatchedIconVar]</texture>
 					</control>
 					<control type="label">
-						<font>font12</font>
-						<width>1160</width>
-						<height>38</height>
-						<label>$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]</label>
+						<left>695</left>
+						<top>400</top>
+						<width>930</width>
+						<height>40</height>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font30_title</font>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!String.IsEmpty(ListItem.Director)</visible>
 					</control>
 					<control type="label">
-						<font>font12</font>
+						<right>130</right>
+						<top>400</top>
 						<width>1160</width>
-						<height>38</height>
-						<label>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR]]</label>
+						<height>40</height>
+						<label>$VAR[ListSubLabelVar]</label>
+						<font>font30_title</font>
+						<textcolor>button_focus</textcolor>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>[String.IsEmpty(ListItem.Director) | String.IsEmpty(ListItem.Duration)] + !String.IsEmpty(ListItem.Genre)</visible>
+						<align>right</align>
 					</control>
-					<control type="label">
-						<font>font12</font>
-						<width>1160</width>
-						<height>38</height>
-						<label>$INFO[ListItem.Season,[COLOR button_focus]$LOCALIZE[33054]: [/COLOR],]$INFO[ListItem.Episode,  •  [COLOR button_focus] $LOCALIZE[20360]: [/COLOR],]</label>
-						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!String.IsEmpty(ListItem.Season)</visible>
-					</control>
-					<control type="textbox">
-						<width>1150</width>
-						<height max="195">auto</height>
-						<font>font12</font>
-						<autoscroll time="3000" delay="3000" repeat="5000">!System.HasModalDialog</autoscroll>
-						<label>$INFO[ListItem.Plot]</label>
-						<shadowcolor>text_shadow</shadowcolor>
+					<control type="grouplist">
+						<orientation>vertical</orientation>
+						<left>645</left>
+						<top>480</top>
+						<height>195</height>
+						<control type="label">
+							<font>font12</font>
+							<width>1160</width>
+							<height>38</height>
+							<label>$INFO[ListItem.Duration,[COLOR button_focus]$LOCALIZE[180]: [/COLOR], $LOCALIZE[31060]]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+							<visible>!String.IsEmpty(ListItem.Duration)</visible>
+						</control>
+						<control type="label">
+							<font>font12</font>
+							<width>1160</width>
+							<height>38</height>
+							<label>$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+							<visible>!String.IsEmpty(ListItem.Director)</visible>
+						</control>
+						<control type="label">
+							<font>font12</font>
+							<width>1160</width>
+							<height>38</height>
+							<label>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR]]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+							<visible>[String.IsEmpty(ListItem.Director) | String.IsEmpty(ListItem.Duration)] + !String.IsEmpty(ListItem.Genre)</visible>
+						</control>
+						<control type="label">
+							<font>font12</font>
+							<width>1160</width>
+							<height>38</height>
+							<label>$INFO[ListItem.Season,[COLOR button_focus]$LOCALIZE[33054]: [/COLOR],]$INFO[ListItem.Episode,  •  [COLOR button_focus] $LOCALIZE[20360]: [/COLOR],]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+							<visible>!String.IsEmpty(ListItem.Season)</visible>
+						</control>
+						<control type="textbox">
+							<width>1150</width>
+							<height max="195">auto</height>
+							<font>font12</font>
+							<autoscroll time="3000" delay="3000" repeat="5000">!System.HasModalDialog</autoscroll>
+							<label>$INFO[ListItem.Plot]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
 					</control>
 				</control>
 			</control>

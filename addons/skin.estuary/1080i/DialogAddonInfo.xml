@@ -13,6 +13,11 @@
 				<width>1235</width>
 				<height>375</height>
 				<label>-</label>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<onclick>SetProperty(TextViewer_Header,Changes for version $INFO[ListItem.AddonVersion],home)</onclick>
+				<onclick>SetProperty(TextViewer_Text,$ESCINFO[ListItem.AddonNews],home)</onclick>
+				<onclick>ActivateWindow(1102)</onclick>
 			</control>
 			<control type="textbox">
 				<left>670</left>
@@ -22,6 +27,7 @@
 				<font>font_textbox</font>
 				<label>$INFO[ListItem.AddonSummary,[B],[/B][CR]][COLOR=white]$INFO[ListItem.AddonDescription][/COLOR][COLOR=white][CR][/COLOR]</label>
 				<textcolor>button_focus</textcolor>
+				<autoscroll delay="5000" repeat="7500" time="5000">true</autoscroll>
 			</control>
 			<control type="group">
 				<left>625</left>
@@ -118,7 +124,7 @@
 				<height>300</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
-				<onup>50</onup>
+				<onup>5000</onup>
 				<ondown>9000</ondown>
 				<align>center</align>
 				<itemgap>-18</itemgap>

@@ -20,10 +20,11 @@
 				<control type="togglebutton" id="4">
 					<width>420</width>
 					<height>110</height>
-					<align>center</align>
+					<align>left</align>
 					<aligny>top</aligny>
 					<font>font12</font>
-					<textoffsetx>20</textoffsetx>
+					<textoffsetx>100</textoffsetx>
+					<textwidth>300</textwidth>
 					<textoffsety>35</textoffsety>
 					<label>$LOCALIZE[31032]: $LOCALIZE[584]</label>
 					<altlabel>$LOCALIZE[31032]: $LOCALIZE[585]</altlabel>
@@ -48,11 +49,12 @@
 				<control type="radiobutton" id="22">
 					<width>420</width>
 					<height>110</height>
-					<align>center</align>
+					<align>left</align>
 					<aligny>top</aligny>
 					<font>font12</font>
-					<textoffsetx>20</textoffsetx>
+					<textoffsetx>100</textoffsetx>
 					<textoffsety>35</textoffsety>
+					<textwidth>300</textwidth>
 					<radioposx>-1</radioposx>
 				</control>
 				<include content="PlaylistWindowButton">

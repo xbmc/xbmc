@@ -690,3 +690,33 @@ msgstr ""
 msgctxt "#31134"
 msgid "Remaining"
 msgstr ""
+
+#: /1080i/DialogAddonInfo.xml
+msgctxt "#31135"
+msgid "Installed from"
+msgstr ""
+
+#: /1080i/DialogAddonInfo.xml
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr ""
+
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31137"
+msgid "PVR info"
+msgstr ""
+
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31138"
+msgid "Player process info"
+msgstr ""
+
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr ""
+
+#: /1080i/DialogPlayerProcessInfo.xml
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr ""

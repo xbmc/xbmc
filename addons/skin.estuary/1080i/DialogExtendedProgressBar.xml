@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol />
 	<zorder>3</zorder>
 	<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -9,6 +8,7 @@
 			<depth>DepthBars</depth>
 			<left>1830</left>
 			<top>0</top>
+			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo)">conditional</animation>
 			<control type="image">
 				<left>-4</left>
