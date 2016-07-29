@@ -78,18 +78,7 @@
           <control type="list" format="string" />
         </setting>
       </group>
-      <group id="3">
-        <requirement>
-          <and>
-            <or>
-              <condition>HAS_GL</condition>
-              <condition>HAS_GLESv2</condition>
-            </or>
-            <condition>HAVE_LIBVDPAU</condition>
-          </and>
-        </requirement>
-      </group>
-      <group id="4" label="14231">
+      <group id="3" label="14231">
         <setting id="videoplayer.rendermethod" type="integer" label="13415" help="36153">
           <level>2</level>
           <default>0</default> <!-- RENDER_METHOD_AUTO -->
@@ -335,7 +324,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="5" label="14232">
+      <group id="4" label="14232">
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
           <level>2</level>
           <default>0</default>
@@ -355,7 +344,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="6" label="14233">
+      <group id="5" label="14233">
         <setting id="videoplayer.teletextenabled" type="boolean" label="23050" help="36174">
           <level>3</level>
           <default>true</default>
