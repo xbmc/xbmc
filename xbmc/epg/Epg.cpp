@@ -309,129 +309,6 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   }
 }
 
-bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
-{
-  if (!data)
-    return false;
-
-  CEpgInfoTagPtr tag(new CEpgInfoTag(*data));
-  return UpdateEntry(tag, false, bUpdateDatabase);
-}
-
-bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObservers, bool bUpdateDatabase /* = false */)
-{
-  CSingleLock lock(m_critSection);
-  auto it = m_tags.find(tag->StartAsUTC());
-  EPG_EVENT_STATE state = (it == m_tags.end()) ? EPG_EVENT_CREATED : EPG_EVENT_UPDATED;
-
-  if (UpdateEntry(tag, state, it, bUpdateDatabase))
-  {
-    if (bNotifyObservers)
-    {
-      SetChanged();
-      lock.Leave();
-      NotifyObservers(ObservableMessageEpg);
-    }
-    return true;
-  }
-  return false;
-}
-
-bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase /* = false */)
-{
-  CSingleLock lock(m_critSection);
-  auto it = m_tags.end();
-  if (UpdateEntry(tag, newState, it, bUpdateDatabase))
-  {
-    SetChanged();
-    lock.Leave();
-    NotifyObservers(ObservableMessageEpg);
-    return true;
-  }
-  return false;
-}
-
-bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std::map<CDateTime, CEpgInfoTagPtr>::iterator &eit, bool bUpdateDatabase /* = false */)
-{
-  CEpgInfoTagPtr infoTag;
-  bool bNewTag(false);
-
-  CSingleLock lock(m_critSection);
-
-  if (newState == EPG_EVENT_CREATED || newState == EPG_EVENT_UPDATED)
-  {
-    // Reuse passed iterator in favor of doing expensive find self
-    auto it = (eit == m_tags.end()) ? m_tags.find(tag->StartAsUTC()) : eit;
-    if (it != m_tags.end())
-    {
-      if (newState == EPG_EVENT_CREATED)
-        CLog::Log(LOGERROR, "EPG - %s - Error: EPG_EVENT_CREATED: uid %d found! Updating existing event.", __FUNCTION__, tag->UniqueBroadcastID());
-
-      infoTag = it->second;
-    }
-    else
-    {
-      if (newState == EPG_EVENT_UPDATED)
-        CLog::Log(LOGERROR, "EPG - %s - Error: EPG_EVENT_UPDATED: uid %d not found. Inserting new event.", __FUNCTION__, tag->UniqueBroadcastID());
-
-      infoTag.reset(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
-      infoTag->SetUniqueBroadcastID(tag->UniqueBroadcastID());
-      m_tags.insert(std::make_pair(tag->StartAsUTC(), infoTag));
-      bNewTag = true;
-    }
-  }
-  else if (newState == EPG_EVENT_DELETED)
-  {
-    // Reuse passed iterator in favor of doing expensive find self
-    auto it = (eit == m_tags.end()) ? m_tags.find(tag->StartAsUTC()) : eit;
-    if (it == m_tags.end())
-    {
-      // It is not guaranteed that the deleted tag contains valid start time. search sequential.
-      for (it = m_tags.begin(); it != m_tags.end(); ++it)
-      {
-        if (it->second->UniqueBroadcastID() == tag->UniqueBroadcastID())
-          break;
-      }
-    }
-
-    if (it != m_tags.end())
-    {
-      // Respect epg linger time.
-      const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
-      if (it->second->EndAsUTC() < cleanupTime)
-      {
-        if (bUpdateDatabase)
-          m_deletedTags.insert(std::make_pair(it->second->UniqueBroadcastID(), it->second));
-
-        it->second->ClearTimer();
-        m_tags.erase(it);
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "EPG - %s - Error: EPG_EVENT_DELETED: uid %d not found.", __FUNCTION__, tag->UniqueBroadcastID());
-      return false;
-    }
-
-    return true;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "EPG - %s - unknownn epg event state '%d'.", __FUNCTION__, newState);
-    return false;
-  }
-
-  infoTag->Update(*tag, bNewTag);
-  infoTag->SetEpg(this);
-  infoTag->SetPVRChannel(m_pvrChannel);
-  infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
-
-  if (bUpdateDatabase)
-    m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
-
-  return true;
-}
-
 bool CEpg::Load(void)
 {
   bool bReturn(false);
@@ -471,7 +348,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 #endif
   /* copy over tags */
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); ++it)
-    UpdateEntry(it->second, false, bStoreInDb);
+    UpdateEntry(it->second, bStoreInDb);
 
 #if EPG_DEBUGGING
   CLog::Log(LOGDEBUG, "EPG - %s - %" PRIuS" entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
@@ -520,6 +397,102 @@ CDateTime CEpg::GetLastScanTime(void)
   }
 
   return m_lastScanTime;
+}
+
+bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
+{
+  if (!data)
+    return false;
+
+  CEpgInfoTagPtr tag(new CEpgInfoTag(*data));
+  return UpdateEntry(tag, bUpdateDatabase);
+}
+
+bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase /* = false */)
+{
+  CEpgInfoTagPtr infoTag;
+  CSingleLock lock(m_critSection);
+  std::map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.find(tag->StartAsUTC());
+  bool bNewTag(false);
+  if (it != m_tags.end())
+  {
+    infoTag = it->second;
+  }
+  else
+  {
+    infoTag.reset(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
+    infoTag->SetUniqueBroadcastID(tag->UniqueBroadcastID());
+    m_tags.insert(std::make_pair(tag->StartAsUTC(), infoTag));
+    bNewTag = true;
+  }
+
+  infoTag->Update(*tag, bNewTag);
+  infoTag->SetEpg(this);
+  infoTag->SetPVRChannel(m_pvrChannel);
+  infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
+
+  if (bUpdateDatabase)
+    m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
+
+  return true;
+}
+
+bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool bUpdateDatabase /* = false */)
+{
+  bool bRet(true);
+  bool bNotify(true);
+
+  if (newState == EPG_EVENT_CREATED || newState == EPG_EVENT_UPDATED)
+  {
+    bRet = UpdateEntry(tag, bUpdateDatabase);
+  }
+  else if (newState == EPG_EVENT_DELETED)
+  {
+    CSingleLock lock(m_critSection);
+
+    auto it = m_tags.begin();
+    for (; it != m_tags.end(); ++it)
+    {
+      if (it->second->UniqueBroadcastID() == tag->UniqueBroadcastID())
+        break;
+    }
+
+    if (it == m_tags.end())
+    {
+      CLog::Log(LOGERROR, "EPG - %s - Error: EPG_EVENT_DELETED: uid %d not found.", __FUNCTION__, tag->UniqueBroadcastID());
+      bRet = false;
+    }
+    else
+    {
+      // Respect epg linger time.
+      const CDateTime cleanupTime(CDateTime::GetUTCDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0));
+      if (it->second->EndAsUTC() < cleanupTime)
+      {
+        if (bUpdateDatabase)
+          m_deletedTags.insert(std::make_pair(it->second->UniqueBroadcastID(), it->second));
+
+        it->second->ClearTimer();
+        m_tags.erase(it);
+      }
+      else
+      {
+        bNotify = false;
+      }
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "EPG - %s - unknown epg event state value: %d", __FUNCTION__, newState);
+    bRet = false;
+  }
+
+  if (bRet && bNotify)
+  {
+    SetChanged();
+    NotifyObservers(ObservableMessageEpg);
+  }
+
+  return bRet;
 }
 
 bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bForceUpdate /* = false */)
