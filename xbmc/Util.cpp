@@ -239,7 +239,7 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
 {
   if (strPath.empty())
   {
-    auto strHomePath = CUtils::ResolveExecutablePath();
+    auto strHomePath = CUtil::ResolveExecutablePath();
     size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
     if (last_sep != std::string::npos)
       strPath = strHomePath.substr(0, last_sep);
