@@ -1185,7 +1185,8 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
         // pause/resume player
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
     }
-    else if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_STOP)
+    else if (bPlayingAndDeactivated
+      && adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_STOP)
     {
       if (pSlideShow)
         pSlideShow->OnAction(CAction(ACTION_STOP));
