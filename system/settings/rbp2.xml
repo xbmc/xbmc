@@ -2,7 +2,7 @@
 <settings>
   <section id="player">
     <category id="videoplayer">
-      <group id="4">
+      <group id="3">
         <setting id="videoplayer.useomxplayer">
           <default>false</default>
         </setting>
