@@ -191,12 +191,19 @@ namespace EPG
 
     /*!
      * @brief Update an entry in this EPG.
-     * @param tag The tag to update.
-     * @param bNotifyObservers True if observers should be notified
+     * @param data The tag to update.
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
      * @return True if it was updated successfully, false otherwise.
      */
-    bool UpdateEntry(const CEpgInfoTagPtr &tag, bool bNotifyObservers, bool bUpdateDatabase = false);
+    bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
+
+    /*!
+     * @brief Update an entry in this EPG.
+     * @param tag The tag to update.
+     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+     * @return True if it was updated successfully, false otherwise.
+     */
+    bool UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase = false);
 
     /*!
      * @brief Update an entry in this EPG.
@@ -268,14 +275,6 @@ namespace EPG
      */
     static const std::string &ConvertGenreIdToString(int iID, int iSubID);
 
-    /*!
-     * @brief Update an entry in this EPG.
-     * @param data The tag to update.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @return True if it was updated successfully, false otherwise.
-     */
-    bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
-
     CEpgInfoTagPtr GetNextEvent(const CEpgInfoTag& tag) const;
 
     size_t Size(void) const;
@@ -289,16 +288,6 @@ namespace EPG
 
   protected:
     CEpg(void);
-
-    /*!
-     * @brief Update an entry in this EPG.
-     * @param data The tag to update.
-     * @param newState The new state of the event.
-     * @param it An iterator pointing to m_tags entry for the EPG event to update or m_tags.end().
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @return True if it was updated successfully, false otherwise.
-     */
-    bool UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, std::map<CDateTime, CEpgInfoTagPtr>::iterator &eit, bool bUpdateDatabase = false);
 
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
