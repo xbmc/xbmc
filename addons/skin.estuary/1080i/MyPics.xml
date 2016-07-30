@@ -181,11 +181,11 @@
 					</include>
 					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21843]"/>
-						<param name="value" value="$INFO[ListItem.PictureOrientation]" />
+						<param name="value" value="ListItem.PictureOrientation" />
 					</include>
 					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21808]"/>
-						<param name="value" value="$INFO[ListItem.PictureProcess]" />
+						<param name="value" value="ListItem.PictureProcess" />
 					</include>
 				</control>
 			</control>
