@@ -7,17 +7,18 @@
 	<controls>
 		<control type="group">
 			<include>OpenClose_Right</include>
-			<control type="button">
+			<control type="button" id="5000">
 				<left>605</left>
 				<top>400</top>
 				<width>1235</width>
 				<height>375</height>
 				<label>-</label>
-				<onup>9000</onup>
+				<onup>50</onup>
 				<ondown>9000</ondown>
-				<onclick>SetProperty(TextViewer_Header,Changes for version $INFO[ListItem.AddonVersion],home)</onclick>
+				<onclick>SetProperty(TextViewer_Header,$LOCALIZE[31141] $INFO[ListItem.AddonVersion],home)</onclick>
 				<onclick>SetProperty(TextViewer_Text,$ESCINFO[ListItem.AddonNews],home)</onclick>
 				<onclick>ActivateWindow(1102)</onclick>
+				<enable>!String.IsEmpty(ListItem.AddonNews)</enable>
 			</control>
 			<control type="textbox">
 				<left>670</left>
@@ -25,7 +26,7 @@
 				<width>1050</width>
 				<height>300</height>
 				<font>font_textbox</font>
-				<label>$INFO[ListItem.AddonSummary,[B],[/B][CR]][COLOR=white]$INFO[ListItem.AddonDescription][/COLOR][COLOR=white][CR][/COLOR]</label>
+				<label>$INFO[ListItem.AddonSummary,[B],[/B][CR]][COLOR=white]$INFO[ListItem.AddonDescription][/COLOR][COLOR=white][CR][/COLOR]$VAR[AddonNewsVar,[CR][CR]]</label>
 				<textcolor>button_focus</textcolor>
 				<autoscroll delay="5000" repeat="7500" time="5000">true</autoscroll>
 			</control>
@@ -65,7 +66,7 @@
 				<top>176</top>
 				<width>1215</width>
 				<height>233</height>
-				<ondown>9000</ondown>
+				<ondown>5000</ondown>
 				<onup>9000</onup>
 				<orientation>horizontal</orientation>
 				<itemlayout height="225" width="405">
@@ -202,7 +203,7 @@
 				<label>-</label>
 			</control>
 			<control type="textbox">
-				<left>42</left>
+				<left>30</left>
 				<top>515</top>
 				<width>446</width>
 				<height>80</height>

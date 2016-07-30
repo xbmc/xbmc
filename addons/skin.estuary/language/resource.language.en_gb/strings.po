@@ -720,3 +720,8 @@ msgstr ""
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr ""
+
+#: /1080i/DialogAddonInfo.xml
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr ""

@@ -53,8 +53,7 @@ SYNCSKIN_B="${SKINSYNC} --exclude *.png --exclude *.jpg"
 fi
 ${SYNCSKIN_B} "$SRCROOT/addons/skin.estuary"     "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
 ${SYNC} "$SRCROOT/addons/skin.estuary/extras"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estuary"
-${SYNC} "$SRCROOT/addons/skin.estuary/icon.png"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estuary"
-${SYNC} "$SRCROOT/addons/skin.estuary/fanart.jpg"    "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estuary"
+${SYNC} "$SRCROOT/addons/skin.estuary/resources"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons/skin.estuary"
 
 ${SYNC} "$SRCROOT/system"     "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 ${SYNC} "$SRCROOT/userdata"   "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
