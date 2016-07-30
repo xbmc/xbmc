@@ -395,4 +395,7 @@
 		<value condition="Player.Process(videohwdecoder)">HW</value>
 		<value>SW</value>
 	</variable>
+	<variable name="AddonNewsVar">
+		<value condition="!String.IsEmpty(ListItem.AddonNews)">$LOCALIZE[31136]</value>
+	</variable>
 </includes>
