@@ -27,12 +27,8 @@
 #include "xbmc_codec_types.h"
 #include "libXBMC_addon.h"
 
-#ifdef _WIN32
-#define CODEC_HELPER_DLL "\\library.xbmc.codec\\libXBMC_codec" ADDON_HELPER_EXT
-#else
-#define CODEC_HELPER_DLL_NAME "libXBMC_codec-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define CODEC_HELPER_DLL "/library.xbmc.codec/" CODEC_HELPER_DLL_NAME
-#endif
+#define CODEC_HELPER_DLL_NAME XBMC_DLL_NAME("codec")
+#define CODEC_HELPER_DLL XBMC_DLL("codec")
 
 class CHelper_libXBMC_codec
 {
@@ -64,15 +60,6 @@ public:
     std::string libBasePath;
     libBasePath  = ((cb_array*)m_Handle)->libPath;
     libBasePath += CODEC_HELPER_DLL;
-
-#if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + CODEC_HELPER_DLL_NAME;
-      }
-#endif
 
     m_libXBMC_codec = dlopen(libBasePath.c_str(), RTLD_LAZY);
     if (m_libXBMC_codec == NULL)

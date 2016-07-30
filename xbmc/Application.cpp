@@ -554,7 +554,7 @@ bool CApplication::Create()
       CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
   }
 #endif
-  
+
   std::string cpuModel(g_cpuInfo.getCPUModel());
   if (!cpuModel.empty())
     CLog::Log(LOGNOTICE, "Host CPU: %s, %d core%s available", cpuModel.c_str(), g_cpuInfo.getCPUCount(), (g_cpuInfo.getCPUCount() == 1) ? "" : "s");
@@ -940,6 +940,11 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetLogPath(strTempPath);
     CreateUserDirs();
   }
+  CSpecialProtocol::SetXBMCBinAddonPath(appBinPath + "/addons");
+
+#if defined(TARGET_ANDROID)
+  CXBMCApp::InitDirectories();
+#endif
 
   return true;
 #else
@@ -1026,7 +1031,7 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetTempPath(strTempPath);
     CSpecialProtocol::SetLogPath(strTempPath);
   }
-
+  CSpecialProtocol::SetXBMCBinAddonPath(appPath + "/addons");
   return true;
 #else
   return false;
@@ -1042,6 +1047,7 @@ bool CApplication::InitDirectoriesWin32()
   CEnvironment::setenv("KODI_HOME", xbmcPath);
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
+  CSpecialProtocol::SetXBMCBinAddonPath(xbmcPath + "/addons");
 
   std::string strWin32UserFolder = CWIN32Util::GetProfilePath();
   CSpecialProtocol::SetLogPath(strWin32UserFolder);

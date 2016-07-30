@@ -27,12 +27,8 @@
 #include "xbmc_pvr_types.h"
 #include "libXBMC_addon.h"
 
-#ifdef _WIN32
-#define PVR_HELPER_DLL "\\library.xbmc.pvr\\libXBMC_pvr" ADDON_HELPER_EXT
-#else
-#define PVR_HELPER_DLL_NAME "libXBMC_pvr-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define PVR_HELPER_DLL "/library.xbmc.pvr/" PVR_HELPER_DLL_NAME
-#endif
+#define PVR_HELPER_DLL_NAME XBMC_DLL_NAME("pvr")
+#define PVR_HELPER_DLL XBMC_DLL("pvr")
 
 #define DVD_TIME_BASE 1000000
 
@@ -69,15 +65,6 @@ public:
     std::string libBasePath;
     libBasePath  = ((cb_array*)m_Handle)->libPath;
     libBasePath += PVR_HELPER_DLL;
-
-#if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + PVR_HELPER_DLL_NAME;
-      }
-#endif
 
     m_libXBMC_pvr = dlopen(libBasePath.c_str(), RTLD_LAZY);
     if (m_libXBMC_pvr == NULL)

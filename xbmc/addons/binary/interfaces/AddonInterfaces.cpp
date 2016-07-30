@@ -53,7 +53,7 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_helperInputStream(nullptr),
     m_helperPeripheral(nullptr)
 {
-  m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
+  m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
   m_callbacks->addonData                    = this;
 
   m_callbacks->AddOnLib_RegisterMe          = CAddonInterfaces::AddOnLib_RegisterMe;

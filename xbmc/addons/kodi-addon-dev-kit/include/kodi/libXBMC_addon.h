@@ -34,6 +34,7 @@
 #endif
 
 struct VFSDirEntry;
+struct __stat64;
 
 #ifdef _WIN32                   // windows
 #ifndef _SSIZE_T_DEFINED
@@ -47,9 +48,14 @@ typedef intptr_t      ssize_t;
 #include "dlfcn-win32.h"
 #endif
 
-#define ADDON_DLL               "\\library.xbmc.addon\\libXBMC_addon" ADDON_HELPER_EXT
 #define ADDON_HELPER_EXT        ".dll"
+#define ADDON_HELPER_PATHSEP    "\\"
+#define ADDON_HELPER_ARCHSEP    ""
+#define ADDON_HELPER_ARCH       ""
+
 #else // windows
+#define ADDON_HELPER_PATHSEP    "/"
+#define ADDON_HELPER_ARCHSEP    "-"
 // the ADDON_HELPER_ARCH is the platform dependend name which is used
 // as part of the name of dynamic addon libraries. It has to match the 
 // strings which are set in configure.ac for the "ARCH" variable.
@@ -79,14 +85,20 @@ typedef intptr_t      ssize_t;
 #define ADDON_HELPER_EXT        ".so"
 #endif
 #include <dlfcn.h>              // linux+osx
-#define ADDON_DLL_NAME "libXBMC_addon-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define ADDON_DLL "/library.xbmc.addon/" ADDON_DLL_NAME
-#endif
-#if defined(ANDROID)
-#include <sys/stat.h>
 #endif
 
-struct __stat64;
+#define KODI_DLL_NAME(name) "libKODI_" name ADDON_HELPER_ARCHSEP ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define XBMC_DLL_NAME(name) "libXBMC_" name ADDON_HELPER_ARCHSEP ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#if defined(ANDROID)
+#define KODI_DLL(name) ADDON_HELPER_PATHSEP KODI_DLL_NAME(name)
+#define XBMC_DLL(name) ADDON_HELPER_PATHSEP XBMC_DLL_NAME(name)
+#else
+#define KODI_DLL(name) ADDON_HELPER_PATHSEP "library.kodi." name ADDON_HELPER_PATHSEP KODI_DLL_NAME(name)
+#define XBMC_DLL(name) ADDON_HELPER_PATHSEP "library.xbmc." name ADDON_HELPER_PATHSEP XBMC_DLL_NAME(name)
+#endif
+
+#define ADDON_DLL_NAME XBMC_DLL_NAME("addon")
+#define ADDON_DLL XBMC_DLL("addon")
 
 #ifdef LOG_DEBUG
 #undef LOG_DEBUG
@@ -146,15 +158,6 @@ namespace ADDON
       std::string libBasePath;
       libBasePath  = ((cb_array*)m_Handle)->libPath;
       libBasePath += ADDON_DLL;
-
-#if defined(ANDROID)
-      struct stat st;
-      if(stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + ADDON_DLL_NAME;
-      }
-#endif
 
       m_libXBMC_addon = dlopen(libBasePath.c_str(), RTLD_LAZY);
       if (m_libXBMC_addon == NULL)

@@ -33,12 +33,8 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
 
-#ifdef _WIN32
-#define INPUTSTREAM_HELPER_DLL "\\library.kodi.inputstream\\libKODI_inputstream" ADDON_HELPER_EXT
-#else
-#define INPUTSTREAM_HELPER_DLL_NAME "libKODI_inputstream-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define INPUTSTREAM_HELPER_DLL "/library.kodi.inputstream/" INPUTSTREAM_HELPER_DLL_NAME
-#endif
+#define INPUTSTREAM_HELPER_DLL KODI_DLL("inputstream")
+#define INPUTSTREAM_HELPER_DLL_NAME KODI_DLL_NAME("inputstream")
 
 /* current input stream API version */
 #define KODI_INPUTSTREAM_API_VERSION "1.0.0"
