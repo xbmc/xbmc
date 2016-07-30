@@ -2,7 +2,7 @@
 <settings>
   <section id="player">
     <category id="videoplayer">
-      <group id="4">
+      <group id="3">
         <setting id="videoplayer.limitguiupdate" type="integer" label="38013" help="38014">
           <level>2</level>
           <default>10</default>
