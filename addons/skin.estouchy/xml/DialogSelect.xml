@@ -153,7 +153,7 @@
 					<font>font22</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.AddonSummary]</label>
+					<label>$INFO[ListItem.Label2]</label>
 				</control>
 				<control type="image">
 					<posx>555</posx>
@@ -190,7 +190,7 @@
 					<font>font22</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.AddonSummary]</label>
+					<label>$INFO[ListItem.Label2]</label>
 				</control>
 				<control type="image">
 					<posx>555</posx>

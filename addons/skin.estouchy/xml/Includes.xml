@@ -70,12 +70,11 @@
 		<value>icon_breadcrumb_settings.png</value>
 	</variable>
 	<variable name="SeekLabel">
+		<value condition="!String.IsEmpty(Player.SeekStepSize)">[UPPERCASE]$LOCALIZE[773][/UPPERCASE] $INFO[Player.SeekStepSize]</value>
+		<value condition="!String.IsEmpty(Player.SeekOffset)">[UPPERCASE]$LOCALIZE[773][/UPPERCASE] $INFO[Player.SeekOffset]</value>
 		<value condition="Player.Forwarding">$LOCALIZE[31044] $VAR[Speed]</value>
 		<value condition="Player.Rewinding">$LOCALIZE[31045] $VAR[Speed]</value>
-		<value condition="Player.Seeking + !Player.DisplayAfterSeek">[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</value>
-		<value condition="Player.Seeking">$INFO[Player.SeekTime]</value>
-		<value condition="Player.DisplayAfterSeek + ![Player.Forwarding | Player.Rewinding]">[UPPERCASE]$LOCALIZE[773][/UPPERCASE] $INFO[Player.SeekOffset]</value>
-		<value condition="!String.IsEmpty(Player.SeekStepSize) + ![Player.Forwarding | Player.Rewinding]">[UPPERCASE]$LOCALIZE[773][/UPPERCASE] $INFO[Player.SeekStepSize]</value>
+		<value condition="Player.Paused">[UPPERCASE]$LOCALIZE[31043][/UPPERCASE]</value>
 	</variable>
 	<variable name="Speed">
 		<value condition="Player.Forwarding2x | Player.Rewinding2x">2x</value>
