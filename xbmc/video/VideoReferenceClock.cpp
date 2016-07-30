@@ -195,7 +195,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
     m_VblankTime += m_SystemFrequency * static_cast<int64_t>(NrVBlanks) / MathUtils::round_int(m_RefreshRate); //set the vblank time forward
   }
 
-  if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
+  if (NrVBlanks > 0 && CheckMissed) //update the clock with the adjusted frequency if we have any vblanks
   {
     double increment = UpdateInterval() * NrVBlanks;
     double integer   = floor(increment);
