@@ -145,6 +145,11 @@ JSONRPC_STATUS CInputOperations::ShowCodec(const std::string &method, ITransport
   return SendAction(ACTION_SHOW_CODEC);
 }
 
+JSONRPC_STATUS CInputOperations::ShowPlayerProcessInfo(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_PLAYER_PROCESS_INFO);
+}
+
 JSONRPC_STATUS CInputOperations::ShowOSD(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return SendAction(ACTION_SHOW_OSD);

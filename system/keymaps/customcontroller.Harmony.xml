@@ -103,7 +103,7 @@
       <!-- pwrToggle   -->   <button id="166">ShutDown()</button>
       <!-- Queue	-->      <button id="162">Queue</button>
       <!-- Sleep	-->      <button id="146">Suspend()</button>
-      <!-- Red		-->      <button id="183">CodecInfo</button>
+      <!-- Red		-->      <button id="183">PlayerProcessInfo</button>
       <!-- Green	-->      <button id="184">ActivateWindow(Settings)</button>
       <!-- Yellow	-->      <button id="185">xbmc.ActivateWindow(SystemSettings)</button>
       <!-- Blue		-->      <button id="186">ActivateWindow(SystemInfo)</button>
@@ -201,7 +201,7 @@
   <MusicOSD>
     <customcontroller name="Harmony">
       <!-- menu       	-->      <button id="106">Back</button>
-      <!-- Info  	-->      <button id="131">CodecInfo</button>
+      <!-- Info  	-->      <button id="131">PlayerProcessInfo</button>
     </customcontroller>
   </MusicOSD>
   <AddonSettings>

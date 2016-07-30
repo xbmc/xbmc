@@ -16,6 +16,7 @@ SRCS=GUIDialogBoxBase.cpp \
      GUIDialogOK.cpp \
      GUIDialogPlayEject.cpp \
      GUIDialogPlayerControls.cpp \
+     GUIDialogPlayerProcessInfo.cpp \
      GUIDialogProgress.cpp \
      GUIDialogSeekBar.cpp \
      GUIDialogSelect.cpp \

@@ -134,6 +134,8 @@
 		1DE0443515828F4B005DDB4D /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1DE0443315828F4B005DDB4D /* Exception.cpp */; };
 		228FA65D1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
 		228FA65E1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
+		2A1D96BD1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A1D96BC1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp */; };
+		2A1D96BE1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A1D96BC1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp */; };
 		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2AB491701CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AB4916E1CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp */; };
@@ -2567,6 +2569,9 @@
 		1DE0443415828F4B005DDB4D /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = commons/Exception.h; sourceTree = "<group>"; };
 		228FA65B1C53F9D50023BBF0 /* InfoScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoScanner.h; sourceTree = "<group>"; };
 		228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoScanner.cpp; sourceTree = "<group>"; };
+		2A1D96BB1D4378CC009D8B25 /* GUIDialogPlayerProcessInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayerProcessInfo.h; sourceTree = "<group>"; };
+		2A1D96BC1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayerProcessInfo.cpp; sourceTree = "<group>"; };
+		2A1D96BF1D437CDB009D8B25 /* WindowIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WindowIDs.h; sourceTree = "<group>"; };
 		2A45E7A71D2D042B000E49FA /* types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = types.json; path = schema/types.json; sourceTree = "<group>"; };
 		2A45E7A81D2D042B000E49FA /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = schema/version.txt; sourceTree = "<group>"; };
 		2A4AAD251CEBC2060057AD44 /* DVDDemuxVobsub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxVobsub.h; sourceTree = "<group>"; };
@@ -5350,6 +5355,7 @@
 				18B7C7501294222E009E7A26 /* Tween.h */,
 				18B7C7A61294222E009E7A26 /* VisibleEffect.cpp */,
 				18B7C7511294222E009E7A26 /* VisibleEffect.h */,
+				2A1D96BF1D437CDB009D8B25 /* WindowIDs.h */,
 				18B7C7A71294222E009E7A26 /* XBTF.cpp */,
 				18B7C7521294222E009E7A26 /* XBTF.h */,
 				18B7C7A81294222E009E7A26 /* XBTFReader.cpp */,
@@ -5740,6 +5746,8 @@
 				7C99B7941340723F00FC2B16 /* GUIDialogPlayEject.h */,
 				E38E17C80D25F9FA00618676 /* GUIDialogPlayerControls.cpp */,
 				E38E17C90D25F9FA00618676 /* GUIDialogPlayerControls.h */,
+				2A1D96BC1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp */,
+				2A1D96BB1D4378CC009D8B25 /* GUIDialogPlayerProcessInfo.h */,
 				E38E17CE0D25F9FA00618676 /* GUIDialogProgress.cpp */,
 				E38E17CF0D25F9FA00618676 /* GUIDialogProgress.h */,
 				E38E17D00D25F9FA00618676 /* GUIDialogSeekBar.cpp */,
@@ -10701,6 +10709,7 @@
 				7CCDAA82192756250074CF51 /* NptPosixDynamicLibraries.cpp in Sources */,
 				7CCDAA85192756250074CF51 /* NptPosixEnvironment.cpp in Sources */,
 				7CCDAA8B192756250074CF51 /* NptPosixNetwork.cpp in Sources */,
+				2A1D96BD1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp in Sources */,
 				7CCDAA8E192756250074CF51 /* NptPosixQueue.cpp in Sources */,
 				7CCDAA97192756250074CF51 /* NptPosixSystem.cpp in Sources */,
 				7CCDAAA0192756250074CF51 /* NptPosixThreads.cpp in Sources */,
@@ -11116,6 +11125,7 @@
 				E49912E3174E5DAD00741B6D /* GUIAction.cpp in Sources */,
 				E49912E4174E5DAD00741B6D /* GUIAudioManager.cpp in Sources */,
 				E49912E5174E5DAD00741B6D /* GUIBaseContainer.cpp in Sources */,
+				2A1D96BE1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp in Sources */,
 				E49912E6174E5DAD00741B6D /* GUIBorderedImage.cpp in Sources */,
 				E49912E7174E5DAD00741B6D /* GUIButtonControl.cpp in Sources */,
 				E49912E9174E5DAD00741B6D /* GUIColorManager.cpp in Sources */,

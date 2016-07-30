@@ -2842,6 +2842,9 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\AudioDSPAddons\ActiveAEDSP.cpp">
       <Filter>cores\AudioEngine\Engines\ActiveAE\AudioDSPAddons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayerProcessInfo.cpp">
+      <Filter>dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\media\MediaType.cpp">
@@ -6700,6 +6703,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\AudioDSPAddons\ActiveAEDSP.h">
       <Filter>cores\AudioEngine\Engines\ActiveAE\AudioDSPAddons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayerProcessInfo.h">
+      <Filter>dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

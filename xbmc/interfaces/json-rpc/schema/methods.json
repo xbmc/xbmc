@@ -2362,6 +2362,14 @@
     "params": [],
     "returns": "string"
   },
+  "Input.ShowPlayerProcessInfo": {
+    "type": "method",
+    "description": "Show player process information of the playing item, like video decoder, pixel format, pvr signal strength, ...",
+    "transport": "Response",
+    "permission": "Navigate",
+    "params": [],
+    "returns": "string"
+  },
   "Application.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the given properties",
