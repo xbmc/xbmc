@@ -4489,6 +4489,14 @@ bool CVideoPlayer::OnAction(const CAction &action)
     case ACTION_PLAYER_DEBUG:
       m_renderManager.ToggleDebug();
       break;
+
+    case ACTION_PLAYER_PROCESS_INFO:
+      if (g_windowManager.GetActiveWindow() != WINDOW_DIALOG_PLAYER_PROCESS_INFO)
+      {
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_PLAYER_PROCESS_INFO);
+        return true;
+      }
+      break;
   }
 
   // return false to inform the caller we didn't handle the message
