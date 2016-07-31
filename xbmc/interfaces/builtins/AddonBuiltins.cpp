@@ -302,7 +302,7 @@ static int UpdateRepos(const std::vector<std::string>& params)
  */
 static int UpdateLocals(const std::vector<std::string>& params)
 {
-  CAddonMgr::GetInstance().FindAddonsAndNotify();
+  CAddonMgr::GetInstance().FindAddons();
 
   return 0;
 }

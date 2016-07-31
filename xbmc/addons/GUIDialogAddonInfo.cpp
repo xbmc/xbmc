@@ -457,7 +457,6 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     CAddonMgr::GetInstance().EnableAddon(m_localAddon->ID());
 
   UpdateControls();
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
 }
 
 void CGUIDialogAddonInfo::OnSettings()

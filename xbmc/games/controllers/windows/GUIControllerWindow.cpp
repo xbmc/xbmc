@@ -151,10 +151,9 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIControllerWindow::Notify(const Observable &obs, const ObservableMessage msg)
+void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
 {
-  if (msg == ObservableMessageAddons)
-    UpdateButtons();
+  UpdateButtons();
 }
 
 void CGUIControllerWindow::OnInitWindow(void)
@@ -205,14 +204,15 @@ void CGUIControllerWindow::OnInitWindow(void)
     Close();
   }
 
-  UpdateButtons();
+  // FIXME: not thread safe
+//  ADDON::CRepositoryUpdater::GetInstance().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
 
-  ADDON::CAddonMgr::GetInstance().RegisterObserver(this);
+  UpdateButtons();
 }
 
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
 {
-  ADDON::CAddonMgr::GetInstance().UnregisterObserver(this);
+  ADDON::CRepositoryUpdater::GetInstance().Events().Unsubscribe(this);
 
   if (m_controllerList)
   {

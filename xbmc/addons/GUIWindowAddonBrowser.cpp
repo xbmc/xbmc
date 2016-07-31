@@ -71,12 +71,18 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
+      CRepositoryUpdater::GetInstance().Events().Unsubscribe(this);
+      CAddonMgr::GetInstance().Events().Unsubscribe(this);
+
       if (m_thumbLoader.IsLoading())
         m_thumbLoader.StopThread();
     }
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      CRepositoryUpdater::GetInstance().Events().Subscribe(this, &CGUIWindowAddonBrowser::OnEvent);
+      CAddonMgr::GetInstance().Events().Subscribe(this, &CGUIWindowAddonBrowser::OnEvent);
+
       SetProperties();
     }
     break;
@@ -163,6 +169,17 @@ class UpdateAddons : public IRunnable
   }
 };
 
+void CGUIWindowAddonBrowser::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
+{
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+  g_windowManager.SendThreadMessage(msg);
+}
+
+void CGUIWindowAddonBrowser::OnEvent(const ADDON::AddonEvent& event)
+{
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+  g_windowManager.SendThreadMessage(msg);
+}
 
 bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
 {

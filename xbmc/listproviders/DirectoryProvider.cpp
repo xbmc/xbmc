@@ -36,6 +36,7 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -205,7 +206,13 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   fireJob |= UpdateSort();
   fireJob |= UpdateLimit();
   if (fireJob)
+  {
+    {
+      CSingleLock lock(m_section);
+      CLog::Log(LOGDEBUG, "CDirectoryProvider[%s]: refreshing..", m_currentUrl.c_str());
+    }
     FireJob();
+  }
 
   for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
     changed |= (*i)->UpdateVisibility(m_parentID);
@@ -253,6 +260,19 @@ void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items) const
   }
 }
 
+void CDirectoryProvider::OnEvent(const ADDON::AddonEvent& event)
+{
+  CSingleLock lock(m_section);
+  if (URIUtils::IsProtocol(m_currentUrl, "addons"))
+  {
+    if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged) ||
+        typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged))
+    m_updateState = PENDING;
+  }
+}
+
 void CDirectoryProvider::Reset(bool immediately /* = false */)
 {
   // cancel any pending jobs
@@ -271,7 +291,7 @@ void CDirectoryProvider::Reset(bool immediately /* = false */)
     m_currentSort.sortOrder = SortOrderAscending;
     m_currentLimit = 0;
     m_updateState = OK;
-    RegisterListProvider(false);
+    RegisterListProvider();
   }
 }
 
@@ -358,36 +378,41 @@ void CDirectoryProvider::FireJob()
   m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
 }
 
-void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
+void CDirectoryProvider::RegisterListProvider()
 {
-  if (hasLibraryContent && !m_isAnnounced)
+  CSingleLock lock(m_section);
+  if (!m_isAnnounced)
   {
     m_isAnnounced = true;
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnEvent);
   }
-  else if (!hasLibraryContent && m_isAnnounced)
+  else if (m_isAnnounced)
   {
     m_isAnnounced = false;
     CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
   }
 }
 
 bool CDirectoryProvider::UpdateURL()
 {
-  std::string value(m_url.GetLabel(m_parentID, false));
-  if (value == m_currentUrl)
-    return false;
+  {
+    CSingleLock lock(m_section);
+    std::string value(m_url.GetLabel(m_parentID, false));
+    if (value == m_currentUrl)
+      return false;
 
-  m_currentUrl = value;
+    m_currentUrl = value;
+  }
 
-  // Register this provider only if we have library content
-  RegisterListProvider(URIUtils::IsLibraryContent(m_currentUrl));
-
+  RegisterListProvider();
   return true;
 }
 
 bool CDirectoryProvider::UpdateLimit()
 {
+  CSingleLock lock(m_section);
   unsigned int value = m_limit.GetIntValue(m_parentID);
   if (value == m_currentLimit)
     return false;
@@ -399,6 +424,7 @@ bool CDirectoryProvider::UpdateLimit()
 
 bool CDirectoryProvider::UpdateSort()
 {
+  CSingleLock lock(m_section);
   SortBy sortMethod(SortUtils::SortMethodFromString(m_sortMethod.GetLabel(m_parentID, false)));
   SortOrder sortOrder(SortUtils::SortOrderFromString(m_sortOrder.GetLabel(m_parentID, false)));
   if (sortOrder == SortOrderNone)

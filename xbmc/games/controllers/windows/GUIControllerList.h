@@ -20,9 +20,9 @@
 #pragma once
 
 #include "IConfigurationWindow.h"
+#include "addons/AddonEvents.h"
 #include "addons/Addon.h"
 #include "games/controllers/ControllerTypes.h"
-#include "utils/Observer.h"
 
 #include <set>
 #include <string>
@@ -35,8 +35,7 @@ namespace GAME
 {
   class CGUIControllerWindow;
 
-  class CGUIControllerList : public IControllerList,
-                             public Observer
+  class CGUIControllerList : public IControllerList
   {
   public:
     CGUIControllerList(CGUIWindow* window, IFeatureList* featureList);
@@ -50,9 +49,6 @@ namespace GAME
     virtual void OnSelect(unsigned int controllerIndex) override;
     virtual void ResetController(void) override;
 
-    // implementation of Observer
-    virtual void Notify(const Observable& obs, const ObservableMessage msg) override;
-
   private:
     bool RefreshControllers(void);
 
@@ -63,6 +59,7 @@ namespace GAME
     void UnregisterController(const std::string& controllerId);
 
     void CleanupButtons(void);
+    void OnEvent(const ADDON::AddonEvent& event);
 
     // GUI stuff
     CGUIWindow* const     m_guiWindow;
