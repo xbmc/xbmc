@@ -413,6 +413,9 @@ const std::string CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES = "addons.unkn
 const std::string CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES = "addons.managedependencies";
 const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
+const std::string CSettings::SETTING_SOURCE_VIDEOS = "source.videos";
+const std::string CSettings::SETTING_SOURCE_MUSIC = "source.music";
+const std::string CSettings::SETTING_SOURCE_PICTURES = "source.pictures";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1092,6 +1095,9 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS);
+  settingSet.insert(CSettings::SETTING_SOURCE_VIDEOS);
+  settingSet.insert(CSettings::SETTING_SOURCE_MUSIC);
+  settingSet.insert(CSettings::SETTING_SOURCE_PICTURES);
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();

@@ -7552,7 +7552,17 @@ msgctxt "#14210"
 msgid "Profile settings"
 msgstr ""
 
-#empty strings from id 14211 to 14214
+#: system/settings/settings.xml
+msgctxt "#14211"
+msgid "Media"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14212"
+msgid "Media settings"
+msgstr ""
+
+#empty strings from id 14213 to 14214
 
 #: system/settings/settings.xml
 msgctxt "#14215"
@@ -7609,7 +7619,12 @@ msgctxt "#14225"
 msgid "Network Control"
 msgstr ""
 
-#empty strings from id 14226 to 14229
+#: system/settings/settings.xml
+msgctxt "#14226"
+msgid "Manage Sources"
+msgstr ""
+
+#empty strings from id 14227 to 14229
 
 #: system/settings/settings.xml
 msgctxt "#14230"
@@ -7641,7 +7656,17 @@ msgctxt "#14235"
 msgid "Download Services"
 msgstr ""
 
-#empty strings from id 14236 to 14239
+#: system/settings/settings.xml
+msgctxt "#14236"
+msgid "Video Library"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14237"
+msgid "Music Library"
+msgstr ""
+
+#empty strings from id 14238 to 14239
 
 #: system/settings/settings.xml
 msgctxt "#14240"
@@ -7653,7 +7678,20 @@ msgctxt "#14241"
 msgid "Metadata"
 msgstr ""
 
-#empty strings from id 14242 to 14244
+#: system/settings/settings.xml
+msgctxt "#14242"
+msgid "Videos..."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14243"
+msgid "Music..."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14244"
+msgid "Pictures..."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14245"
@@ -19316,10 +19354,10 @@ msgctxt "#38100"
 msgid "Section that contains the settings for the playback of media"
 msgstr ""
 
-#. Description of section #14201 "Library"
+#. Description of section #14201 "Media"
 #: system/settings/settings.xml
 msgctxt "#38101"
-msgid "Section that contains the settings for how media information is collected, stored, shown, and navigated"
+msgid "Section that contains the settings for sources and how media information is collected, stored, shown, and navigated"
 msgstr ""
 
 #. Description of section #14203 "Customise"
@@ -19403,3 +19441,28 @@ msgstr ""
 msgctxt "#39003"
 msgid "Accelerate h264"
 msgstr ""
+
+#. Description of category "Library" with label #14202
+#: system/settings/settings.xml
+msgctxt "#39004"
+msgid "This category contains provides access to the windows for source management and the Library settings for the databases"
+msgstr ""
+
+#. Description of setting "Videos... with label #14242
+#: system/settings/settings.xml
+msgctxt "#39005"
+msgid "This provides access to where video sources can be added and otherwise managed."
+msgstr ""
+
+#. Description of setting "Music... with label #14243
+#: system/settings/settings.xml
+msgctxt "#39006"
+msgid "This provides access to where music sources can be added and otherwise managed."
+msgstr ""
+
+#. Description of setting "Pictures... with label #14244
+#: system/settings/settings.xml
+msgctxt "#39007"
+msgid "This provides access to where picture sources can be added and otherwise managed."
+msgstr ""
+

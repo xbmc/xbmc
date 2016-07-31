@@ -244,7 +244,7 @@ msgid "Configure actions that can be used during playback · Configure how media
 msgstr ""
 
 msgctxt "#31409"
-msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
+msgid "Configure library sources· Show the media lists display content · Configure how library lists are navigated"
 msgstr ""
 
 msgctxt "#31410"
