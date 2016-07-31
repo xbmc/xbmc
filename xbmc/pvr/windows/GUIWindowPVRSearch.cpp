@@ -65,8 +65,10 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
       }
 
       const CPVRTimerTypePtr timerType(timer->GetTimerType());
-      if (timerType && !timerType->IsReadOnly())
+      if (timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
         buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19242);    /* Edit timer */
+      else
+        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19241);    /* View timer information */
 
       if (timer->IsRecording())
         buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);   /* Stop recording */

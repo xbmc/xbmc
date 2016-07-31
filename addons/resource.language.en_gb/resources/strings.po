@@ -9981,10 +9981,19 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr ""
 
-#empty strings from id 19240 to 19241
+#empty string with id 19240
+
+#. Label for context menu entry to open settings dialog for a timer (read-only)
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
+msgctxt "#19241"
+msgid "View timer information"
+msgstr ""
 
 #. Label for context menu entry to open settings dialog for a timer
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 msgctxt "#19242"
 msgid "Edit timer"
 msgstr ""
