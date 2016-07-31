@@ -4486,7 +4486,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011),
                                             g_localizeStrings.Get(m_SkipCommercials ? 25013 : 25012));
       break;
-    case ACTION_SHOW_CODEC:
+    case ACTION_PLAYER_DEBUG:
       m_renderManager.ToggleDebug();
       break;
   }
