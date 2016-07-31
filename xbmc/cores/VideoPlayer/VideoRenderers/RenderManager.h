@@ -91,7 +91,6 @@ public:
 
   // Functions called from GUI
   bool Supports(ERENDERFEATURE feature);
-  bool Supports(EDEINTERLACEMODE method);
   bool Supports(EINTERLACEMETHOD method);
   bool Supports(ESCALINGMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);

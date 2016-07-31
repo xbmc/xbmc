@@ -2478,19 +2478,6 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
   return g_Windowing.IsExtSupported("GL_EXT_framebuffer_object");
 }
 
-bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
-{
-  if(m_renderMethod & RENDER_CVREF)
-    return false;
-
-  if(mode == VS_DEINTERLACEMODE_OFF
-  || mode == VS_DEINTERLACEMODE_AUTO
-  || mode == VS_DEINTERLACEMODE_FORCE)
-    return true;
-
-  return false;
-}
-
 bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 {
   if(m_renderMethod & RENDER_CVREF)

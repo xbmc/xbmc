@@ -1990,23 +1990,22 @@ void COutput::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EDEINTERLACEMODE mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
 
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
-      (mode == VS_DEINTERLACEMODE_FORCE ||
-      (mode == VS_DEINTERLACEMODE_AUTO && interlaced)))
+      interlaced &&
+      method != VS_INTERLACEMETHOD_NONE)
   {
-    if((method == VS_INTERLACEMETHOD_AUTO && interlaced)
-        ||  method == VS_INTERLACEMETHOD_VAAPI_BOB
-        ||  method == VS_INTERLACEMETHOD_VAAPI_MADI
-        ||  method == VS_INTERLACEMETHOD_VAAPI_MACI
-        ||  method == VS_INTERLACEMETHOD_DEINTERLACE
-        ||  method == VS_INTERLACEMETHOD_RENDER_BOB)
+    if (method == VS_INTERLACEMETHOD_AUTO ||
+        method == VS_INTERLACEMETHOD_VAAPI_BOB ||
+        method == VS_INTERLACEMETHOD_VAAPI_MADI ||
+        method == VS_INTERLACEMETHOD_VAAPI_MACI ||
+        method == VS_INTERLACEMETHOD_DEINTERLACE ||
+        method == VS_INTERLACEMETHOD_RENDER_BOB)
     {
-        if (method == VS_INTERLACEMETHOD_AUTO)
-          method = VS_INTERLACEMETHOD_RENDER_BOB;
+      if (method == VS_INTERLACEMETHOD_AUTO)
+        method = VS_INTERLACEMETHOD_RENDER_BOB;
     }
     else
     {

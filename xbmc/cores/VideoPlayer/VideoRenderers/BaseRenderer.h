@@ -103,7 +103,6 @@ public:
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;
   virtual bool Supports(ERENDERFEATURE feature) { return false; };
-  virtual bool Supports(EDEINTERLACEMODE mode) = 0;
   virtual bool Supports(EINTERLACEMETHOD method) = 0;
   virtual bool Supports(ESCALINGMETHOD method) = 0;
 

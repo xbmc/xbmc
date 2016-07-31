@@ -245,11 +245,6 @@ bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCE
 
 bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended_format)
 {
-  if (g_advancedSettings.m_DXVANoDeintProcForProgressive)
-  {
-    CLog::Log(LOGNOTICE, "%s - Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.", __FUNCTION__);
-  }
-
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
   if (!IsFormatSupported(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
     return false;
@@ -538,12 +533,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   if (!views[2])
     return false;
 
-  EDEINTERLACEMODE deinterlace_mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-  if (g_advancedSettings.m_DXVANoDeintProcForProgressive)
-    deinterlace_mode = (flags & RENDER_FLAG_FIELD0 || flags & RENDER_FLAG_FIELD1) ? VS_DEINTERLACEMODE_FORCE : VS_DEINTERLACEMODE_OFF;
-
-  bool progressive = deinterlace_mode == VS_DEINTERLACEMODE_OFF;
-
   RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
   RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 
@@ -613,17 +602,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
     dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
   if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_TOP)
     dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
-
-  // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
-  if (progressive)
-  {
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
-  }
-  else if (deinterlace_mode == VS_DEINTERLACEMODE_FORCE 
-    && dxvaFrameFormat == D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE)
-  {
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  }
 
   bool frameProgressive = dxvaFrameFormat == D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
 

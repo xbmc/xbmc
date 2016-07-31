@@ -192,12 +192,10 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   {
     m_renderFeatures.clear();
     m_scalingMethods.clear();
-    m_deinterlaceModes.clear();
     m_deinterlaceMethods.clear();
 
     g_application.m_pPlayer->GetRenderFeatures(m_renderFeatures);
     g_application.m_pPlayer->GetDeinterlaceMethods(m_deinterlaceMethods);
-    g_application.m_pPlayer->GetDeinterlaceModes(m_deinterlaceModes);
     g_application.m_pPlayer->GetScalingMethods(m_scalingMethods);
   }
 
@@ -1668,25 +1666,6 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 
 bool CLinuxRendererGLES::SupportsMultiPassRendering()
 {
-  return false;
-}
-
-bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
-{
-  // Player controls render, let it dictate available deinterlace modes
-  if((m_renderMethod & RENDER_BYPASS))
-  {
-    Features::iterator itr = std::find(m_deinterlaceModes.begin(),m_deinterlaceModes.end(), mode);
-    return itr != m_deinterlaceModes.end();
-  }
-
-  if (mode == VS_DEINTERLACEMODE_OFF)
-    return true;
-
-  if(mode == VS_DEINTERLACEMODE_AUTO
-  || mode == VS_DEINTERLACEMODE_FORCE)
-    return true;
-
   return false;
 }
 

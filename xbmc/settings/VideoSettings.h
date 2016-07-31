@@ -35,7 +35,6 @@ public:
 
   bool operator!=(const CVideoSettings &right) const;
 
-  EDEINTERLACEMODE m_DeinterlaceMode;
   EINTERLACEMETHOD m_InterlaceMethod;
   ESCALINGMETHOD   m_ScalingMethod;
   int m_ViewMode;   // current view mode

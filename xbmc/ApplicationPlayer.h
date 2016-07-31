@@ -92,7 +92,6 @@ public:
   bool IsRenderingVideo();
   bool IsRenderingGuiLayer();
   bool IsRenderingVideoLayer();
-  bool Supports(EDEINTERLACEMODE mode);
   bool Supports(EINTERLACEMETHOD method);
   bool Supports(ESCALINGMETHOD method);
   bool Supports(ERENDERFEATURE feature);
@@ -119,7 +118,6 @@ public:
   void  GetChapterName(std::string& strChapterName, int chapterIdx=-1);
   int64_t GetChapterPos(int chapterIdx=-1);
   void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
-  void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
   float GetPercentage() const;
   std::string GetPlayerState();
   std::string GetPlayingTitle();

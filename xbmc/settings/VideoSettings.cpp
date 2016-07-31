@@ -29,7 +29,6 @@
 
 CVideoSettings::CVideoSettings()
 {
-  m_DeinterlaceMode = VS_DEINTERLACEMODE_AUTO;
   m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
   m_ScalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_ViewMode = ViewModeNormal;
@@ -60,7 +59,6 @@ CVideoSettings::CVideoSettings()
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
 {
-  if (m_DeinterlaceMode != right.m_DeinterlaceMode) return true;
   if (m_InterlaceMethod != right.m_InterlaceMethod) return true;
   if (m_ScalingMethod != right.m_ScalingMethod) return true;
   if (m_ViewMode != right.m_ViewMode) return true;
