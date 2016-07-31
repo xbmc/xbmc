@@ -1108,9 +1108,13 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
   if (info)
   {
     // Correct the path. load_plugin_descriptor_from_memory sets it to 'memory'
-    info->plugin_path = (char*)malloc(strlen(directory.c_str()) + 1);
-    strcpy(info->plugin_path, directory.c_str());
+    info->plugin_path = static_cast<char*>(malloc(directory.length() + 1));
+    strncpy(info->plugin_path, directory.c_str(), directory.length());
+    info->plugin_path[directory.length()] = '\0';
     addon = Factory(info, ADDON_UNKNOWN);
+
+    free(info->plugin_path);
+    info->plugin_path = nullptr;
     m_cpluff->release_info(context, info);
   }
   else
@@ -1156,8 +1160,9 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
     {
       CAddonBuilder builder;
       auto basePath = URIUtils::AddFileToFolder(repo.datadir, std::string(info->identifier));
-      info->plugin_path = (char*)malloc(strlen(basePath.c_str()) + 1);
-      strcpy(info->plugin_path, basePath .c_str());
+      info->plugin_path = static_cast<char*>(malloc(basePath.length() + 1));
+      strncpy(info->plugin_path, basePath.c_str(), basePath.length());
+      info->plugin_path[basePath.length()] = '\0';
 
       if (Factory(info, ADDON_UNKNOWN, builder))
       {
@@ -1167,6 +1172,8 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
         if (addon)
           addons.push_back(std::move(addon));
       }
+      free(info->plugin_path);
+      info->plugin_path = nullptr;
       m_cpluff->release_info(context, info);
     }
     element = element->NextSiblingElement("addon");
