@@ -438,12 +438,12 @@ static void setupWindowMenu(void)
 #define VK_VOLUME_MUTE      0xAD
 #define VK_VOLUME_DOWN      0xAE
 #define VK_VOLUME_UP        0xAF
-#define VK_MEDIA_NEXT_TRACK 0xB0
-#define VK_MEDIA_PREV_TRACK 0xB1
+#define VK_MEDIA_NEXT_TRACK 0x9E
+#define VK_MEDIA_PREV_TRACK 0x9D
 #define VK_MEDIA_STOP       0xB2
 #define VK_MEDIA_PLAY_PAUSE 0xB3
-#define VK_REWIND           0x9D
-#define VK_FAST_FWD         0x9E
+#define VK_REWIND           0xB1
+#define VK_FAST_FWD         0xB0
 
 - (void)powerKeyNotification
 {
