@@ -214,8 +214,11 @@ bool CDirectoryProvider::Update(bool forceRefresh)
     m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
   }
 
-  for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
-    changed |= (*i)->UpdateVisibility(m_parentID);
+  if (!changed)
+  {
+    for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
+      changed |= (*i)->UpdateVisibility(m_parentID);
+  }
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
