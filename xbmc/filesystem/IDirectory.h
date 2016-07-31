@@ -102,6 +102,13 @@ public:
   virtual bool Remove(const CURL& url) { return false; }
 
   /*!
+  \brief Recursively removes the directory
+  \param url Directory to remove.
+  \return Returns \e false if not succesful
+  */
+  virtual bool RemoveRecursive(const CURL& url) { return false; }
+
+  /*!
   \brief Whether this file should be listed
   \param url File to test.
   \return Returns \e true if the file should be listed

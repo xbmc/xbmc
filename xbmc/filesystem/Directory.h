@@ -58,6 +58,7 @@ public:
   static bool Create(const CURL& url);
   static bool Exists(const CURL& url, bool bUseCache = true);
   static bool Remove(const CURL& url);
+  static bool RemoveRecursive(const CURL& url);
 
   static bool GetDirectory(const std::string& strPath
                            , CFileItemList &items
@@ -73,6 +74,7 @@ public:
   static bool Create(const std::string& strPath);
   static bool Exists(const std::string& strPath, bool bUseCache = true);
   static bool Remove(const std::string& strPath);
+  static bool RemoveRecursive(const std::string& strPath);
 
   /*! \brief Filter files that act like directories from the list, replacing them with their directory counterparts
    \param items The item list to filter
