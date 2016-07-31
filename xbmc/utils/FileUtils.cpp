@@ -239,14 +239,14 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
     "sources.xml",
     "guisettings.xml",
     "advancedsettings.xml",
-    NULL
+    nullptr
   };
 
-  for (const char **ptr = blacklist_files; *ptr; ++ptr)
+  for (auto ptr = blacklist_files; *ptr; ++ptr)
   {
     if (filePath.find(*ptr) != std::string::npos)
     {
-      CLog::Log(LOGDEBUG,"http access denied");
+      CLog::Log(LOGDEBUG, "%s access denied to %s", __FUNCTION__, filePath.c_str());
       return false;
     }
   }
@@ -268,7 +268,7 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
     free(fullpath);
 
     // if this is a real path and accesses into user home, allow.
-    std::string userHome = CSpecialProtocol::TranslatePath("special://home");
+    auto userHome = CSpecialProtocol::TranslatePath("special://home");
     if (testpath.find(userHome) != std::string::npos)
       return true;
 
@@ -277,7 +277,7 @@ bool CFileUtils::ZebraListAccessCheck(const std::string &filePath)
     CUtil::GetHomePath(appRoot);
     if (testpath.find(appRoot) == std::string::npos)
     {
-      CLog::Log(LOGDEBUG,"http access denied");
+      CLog::Log(LOGDEBUG, "%s access denied to %s", __FUNCTION__, filePath.c_str());
       return false;
     }
   }
