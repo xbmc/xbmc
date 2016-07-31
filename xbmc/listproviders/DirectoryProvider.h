@@ -49,7 +49,7 @@ public:
   typedef enum
   {
     OK,
-    PENDING,
+    INVALIDATED,
     DONE
   } UpdateState;
 
@@ -84,7 +84,6 @@ private:
   std::vector<InfoTagType> m_itemTypes;
   CCriticalSection m_section;
 
-  void FireJob();
   void RegisterListProvider();
   bool UpdateURL();
   bool UpdateLimit();

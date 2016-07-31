@@ -192,26 +192,26 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   // we never need to force refresh here
   bool changed = false;
   bool fireJob = false;
-  {
-    CSingleLock lock(m_section);
-    if (m_updateState == DONE)
-      changed = true;
-    else if (m_updateState == PENDING)
-      fireJob = true;
-    m_updateState = OK;
-  }
 
   // update the URL & limit and fire off a new job if needed
   fireJob |= UpdateURL();
   fireJob |= UpdateSort();
   fireJob |= UpdateLimit();
+
+  CSingleLock lock(m_section);
+  if (m_updateState == INVALIDATED)
+    fireJob = true;
+  else if (m_updateState == DONE)
+    changed = true;
+
+  m_updateState = OK;
+
   if (fireJob)
   {
-    {
-      CSingleLock lock(m_section);
-      CLog::Log(LOGDEBUG, "CDirectoryProvider[%s]: refreshing..", m_currentUrl.c_str());
-    }
-    FireJob();
+    CLog::Log(LOGDEBUG, "CDirectoryProvider[%s]: refreshing..", m_currentUrl.c_str());
+    if (m_jobID)
+      CJobManager::GetInstance().CancelJob(m_jobID);
+    m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
   }
 
   for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
@@ -245,7 +245,7 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
         strcmp(message, "OnCleanFinished") == 0 ||
         strcmp(message, "OnUpdate") == 0 ||
         strcmp(message, "OnRemove") == 0)
-      m_updateState = PENDING;
+      m_updateState = INVALIDATED;
   }
 }
 
@@ -269,7 +269,7 @@ void CDirectoryProvider::OnEvent(const ADDON::AddonEvent& event)
         typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
         typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged) ||
         typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged))
-    m_updateState = PENDING;
+    m_updateState = INVALIDATED;
   }
 }
 
@@ -303,7 +303,8 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
     m_items = ((CDirectoryJob*)job)->GetItems();
     m_currentTarget = ((CDirectoryJob*)job)->GetTarget();
     ((CDirectoryJob*)job)->GetItemTypes(m_itemTypes);
-    m_updateState = DONE;
+    if (m_updateState == OK)
+      m_updateState = DONE;
   }
   m_jobID = 0;
 }
@@ -368,14 +369,6 @@ bool CDirectoryProvider::IsUpdating() const
 {
   CSingleLock lock(m_section);
   return m_jobID || (m_updateState == DONE);
-}
-
-void CDirectoryProvider::FireJob()
-{
-  CSingleLock lock(m_section);
-  if (m_jobID)
-    CJobManager::GetInstance().CancelJob(m_jobID);
-  m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
 }
 
 void CDirectoryProvider::RegisterListProvider()
