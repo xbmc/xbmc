@@ -24,72 +24,20 @@
 
 #include <algorithm>
 
-Observer::~Observer(void)
-{
-  StopObserving();
-}
-
-void Observer::StopObserving(void)
-{
-  CSingleLock lock(m_obsCritSection);
-  for (auto& observable : m_observables)
-    observable->UnregisterObserver(this);
-}
-
-bool Observer::IsObserving(const Observable &obs) const
-{
-  CSingleLock lock(m_obsCritSection);
-  return find(m_observables.begin(), m_observables.end(), &obs) != m_observables.end();
-}
-
-void Observer::RegisterObservable(Observable *obs)
-{
-  CSingleLock lock(m_obsCritSection);
-  if (!IsObserving(*obs))
-    m_observables.push_back(obs);
-}
-
-void Observer::UnregisterObservable(Observable *obs)
-{
-  CSingleLock lock(m_obsCritSection);
-  std::vector<Observable *>::iterator it = find(m_observables.begin(), m_observables.end(), obs);
-  if (it != m_observables.end())
-    m_observables.erase(it);
-}
-
-Observable::Observable() :
-    m_bObservableChanged(false)
-{
-}
-
-Observable::~Observable()
-{
-  StopObserver();
-}
-
 Observable &Observable::operator=(const Observable &observable)
 {
   CSingleLock lock(m_obsCritSection);
 
-  m_bObservableChanged = observable.m_bObservableChanged;
-  m_observers.clear();
-  for (unsigned int iObsPtr = 0; iObsPtr < observable.m_observers.size(); iObsPtr++)
-    m_observers.push_back(observable.m_observers.at(iObsPtr));
+  m_bObservableChanged = static_cast<bool>(observable.m_bObservableChanged);
+  m_observers = observable.m_observers;
 
   return *this;
-}
-
-void Observable::StopObserver(void)
-{
-  CSingleLock lock(m_obsCritSection);
-  for (auto& observer : m_observers)
-    observer->UnregisterObservable(this);
 }
 
 bool Observable::IsObserving(const Observer &obs) const
 {
   CSingleLock lock(m_obsCritSection);
-  return find(m_observers.begin(), m_observers.end(), &obs) != m_observers.end();
+  return std::find(m_observers.begin(), m_observers.end(), &obs) != m_observers.end();
 }
 
 void Observable::RegisterObserver(Observer *obs)
@@ -98,30 +46,20 @@ void Observable::RegisterObserver(Observer *obs)
   if (!IsObserving(*obs))
   {
     m_observers.push_back(obs);
-    obs->RegisterObservable(this);
   }
 }
 
 void Observable::UnregisterObserver(Observer *obs)
 {
   CSingleLock lock(m_obsCritSection);
-  std::vector<Observer *>::iterator it = find(m_observers.begin(), m_observers.end(), obs);
-  if (it != m_observers.end())
-  {
-    obs->UnregisterObservable(this);
-    m_observers.erase(it);
-  }
+  std::remove(m_observers.begin(), m_observers.end(), obs);
 }
 
 void Observable::NotifyObservers(const ObservableMessage message /* = ObservableMessageNone */)
 {
-  bool bNotify(false);
-  {
-    CSingleLock lock(m_obsCritSection);
-    if (m_bObservableChanged)
-      bNotify = true;
-    m_bObservableChanged = false;
-  }
+  // Make sure the set/compare is atomic 
+  // so we don't clobber the variable in a race condition
+  auto bNotify = m_bObservableChanged.exchange(false);
 
   if (bNotify)
     SendMessage(message);
@@ -129,13 +67,13 @@ void Observable::NotifyObservers(const ObservableMessage message /* = Observable
 
 void Observable::SetChanged(bool SetTo)
 {
-  CSingleLock lock(m_obsCritSection);
   m_bObservableChanged = SetTo;
 }
 
 void Observable::SendMessage(const ObservableMessage message)
 {
   CSingleLock lock(m_obsCritSection);
+
   for (auto& observer : m_observers)
   {
     observer->Notify(*this, message);
