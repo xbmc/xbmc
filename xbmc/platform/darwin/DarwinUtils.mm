@@ -635,6 +635,7 @@ const std::string& CDarwinUtils::GetManufacturer(void)
 bool CDarwinUtils::IsAliasShortcut(const std::string& path, bool isdirectory)
 {
   bool ret = false;
+
 #if defined(TARGET_DARWIN_OSX)
   CCocoaAutoPool pool;
   

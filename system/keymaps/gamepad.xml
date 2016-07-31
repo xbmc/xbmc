@@ -177,7 +177,7 @@
       <B>Stop</B>
       <Y>Rotate</Y>
       <X>ZoomNormal</X>
-      <black>PlayerProcessInfo</black>
+      <black>Info</black>
       <white>Info</white>
       <righttrigger>NextPicture</righttrigger>
       <lefttrigger>PreviousPicture</lefttrigger>
