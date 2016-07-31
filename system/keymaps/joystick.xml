@@ -141,7 +141,7 @@
       <b>Stop</b>
       <y>ZoomNormal</y>
       <leftbumper>Rotate</leftbumper>
-      <rightbumper>CodecInfo</rightbumper>
+      <rightbumper>Info</rightbumper>
       <up>ZoomIn</up>
       <down>ZoomOut</down>
       <left>PreviousPicture</left>

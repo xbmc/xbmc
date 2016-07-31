@@ -737,7 +737,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-  case ACTION_SHOW_CODEC:
+  case ACTION_SHOW_INFO:
     {
       CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
       if (pictureInfo)

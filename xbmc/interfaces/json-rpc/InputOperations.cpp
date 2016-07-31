@@ -142,7 +142,7 @@ JSONRPC_STATUS CInputOperations::Home(const std::string &method, ITransportLayer
 
 JSONRPC_STATUS CInputOperations::ShowCodec(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendAction(ACTION_SHOW_CODEC);
+  return MethodNotFound;
 }
 
 JSONRPC_STATUS CInputOperations::ShowPlayerProcessInfo(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

@@ -4486,8 +4486,16 @@ bool CVideoPlayer::OnAction(const CAction &action)
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011),
                                             g_localizeStrings.Get(m_SkipCommercials ? 25013 : 25012));
       break;
-    case ACTION_SHOW_CODEC:
+    case ACTION_PLAYER_DEBUG:
       m_renderManager.ToggleDebug();
+      break;
+
+    case ACTION_PLAYER_PROCESS_INFO:
+      if (g_windowManager.GetActiveWindow() != WINDOW_DIALOG_PLAYER_PROCESS_INFO)
+      {
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_PLAYER_PROCESS_INFO);
+        return true;
+      }
       break;
   }
 
