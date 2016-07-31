@@ -35,7 +35,7 @@
 #define SETTINGS_SERVICE                WINDOW_SETTINGS_SERVICE - WINDOW_SETTINGS_START
 #define SETTINGS_PVR                    WINDOW_SETTINGS_MYPVR - WINDOW_SETTINGS_START
 #define SETTINGS_PLAYER                 WINDOW_SETTINGS_PLAYER - WINDOW_SETTINGS_START
-#define SETTINGS_LIBRARY                WINDOW_SETTINGS_LIBRARY - WINDOW_SETTINGS_START
+#define SETTINGS_MEDIA                  WINDOW_SETTINGS_MEDIA - WINDOW_SETTINGS_START
 #define SETTINGS_INTERFACE              WINDOW_SETTINGS_INTERFACE - WINDOW_SETTINGS_START
 
 #define CONTRL_BTN_LEVELS               20
@@ -49,7 +49,7 @@ static const SettingGroup s_settingGroupMap[] = { { SETTINGS_SYSTEM,      "syste
                                                   { SETTINGS_SERVICE,     "services" },
                                                   { SETTINGS_PVR,         "pvr" },
                                                   { SETTINGS_PLAYER,      "player" },
-                                                  { SETTINGS_LIBRARY,     "library" },
+                                                  { SETTINGS_MEDIA,       "media" },
                                                   { SETTINGS_INTERFACE,   "interface" } };
                                                   
 #define SettingGroupSize sizeof(s_settingGroupMap) / sizeof(SettingGroup)
@@ -68,7 +68,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
   m_idRange.push_back(WINDOW_SETTINGS_SERVICE);
   m_idRange.push_back(WINDOW_SETTINGS_MYPVR);
   m_idRange.push_back(WINDOW_SETTINGS_PLAYER);
-  m_idRange.push_back(WINDOW_SETTINGS_LIBRARY);
+  m_idRange.push_back(WINDOW_SETTINGS_MEDIA);
   m_idRange.push_back(WINDOW_SETTINGS_INTERFACE);
 }
 

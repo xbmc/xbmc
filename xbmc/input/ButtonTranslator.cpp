@@ -331,7 +331,7 @@ static const ActionMapping windows[] =
     { "servicesettings"          , WINDOW_SETTINGS_SERVICE },
     { "pvrsettings"              , WINDOW_SETTINGS_MYPVR },
     { "playersettings"           , WINDOW_SETTINGS_PLAYER },
-    { "librarysettings"          , WINDOW_SETTINGS_LIBRARY },
+    { "mediasettings"            , WINDOW_SETTINGS_MEDIA },
     { "interfacesettings"        , WINDOW_SETTINGS_INTERFACE },	
     { "videoplaylist"            , WINDOW_VIDEO_PLAYLIST },
     { "loginscreen"              , WINDOW_LOGIN_SCREEN },
