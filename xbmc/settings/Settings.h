@@ -370,6 +370,9 @@ public:
   static const std::string SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES;
   static const std::string SETTING_GENERAL_ADDONFOREIGNFILTER;
   static const std::string SETTING_GENERAL_ADDONBROKENFILTER;
+  static const std::string SETTING_SOURCE_VIDEOS;
+  static const std::string SETTING_SOURCE_MUSIC;
+  static const std::string SETTING_SOURCE_PICTURES;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
