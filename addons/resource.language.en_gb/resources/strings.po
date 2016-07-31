@@ -7714,7 +7714,17 @@ msgctxt "#14260"
 msgid "Debug"
 msgstr ""
 
-#empty strings from id 14261 to 14269
+#: system/settings/settings.xml
+msgctxt "#14261"
+msgid "Add-on Browser"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14262"
+msgid "Update Policy"
+msgstr ""
+
+#empty strings from id 14263 to 14269
 
 #: system/settings/settings.xml
 msgctxt "#14270"
@@ -14551,7 +14561,12 @@ msgctxt "#24147"
 msgid "Failed to scan %s: %s"
 msgstr ""
 
-#empty strings from id 24148 to 24990
+#empty strings from id 24148 to 24989
+
+#: system/settings/settings.xml
+msgctxt "#24990"
+msgid "Browse add-ons..."
+msgstr ""
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -14573,7 +14588,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24994"
-msgid "Running"
+msgid "Running..."
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -14583,7 +14598,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24996"
-msgid "Manage dependencies"
+msgid "Manage dependencies..."
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -18737,7 +18752,11 @@ msgctxt "#36603"
 msgid "This category contains the settings for displays."
 msgstr ""
 
-#empty string with id 36604
+#. Description of setting with label #24990 "Browse add-ons..."
+#: system/settings/settings.xml
+msgctxt "#36604"
+msgid "Select to browse all add-ons"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36605"
@@ -18785,12 +18804,12 @@ msgctxt "#36612"
 msgid "Show notification when an add-on have been updated."
 msgstr ""
 
-#. Description of setting with label #24996 "Manage dependencies"
+#. Description of setting with label #24996 "Manage dependencies..."
 msgctxt "#36613"
 msgid "Manage modules and support libraries that have been automatically installed as a dependency to other add-ons. Items listed as \"Orphaned\" are no longer required by any add-ons and are safe to uninstall."
 msgstr ""
 
-#. Description of setting with label #24994 "Running"
+#. Description of setting with label #24994 "Running..."
 #: system/settings/settings.xml
 msgctxt "#36614"
 msgid "Show add-ons that are currently running in the background."
