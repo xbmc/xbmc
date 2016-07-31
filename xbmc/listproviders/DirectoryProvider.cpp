@@ -368,7 +368,7 @@ bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
 bool CDirectoryProvider::IsUpdating() const
 {
   CSingleLock lock(m_section);
-  return m_jobID || (m_updateState == DONE);
+  return m_jobID || m_updateState == DONE || m_updateState == INVALIDATED;
 }
 
 void CDirectoryProvider::RegisterListProvider()
