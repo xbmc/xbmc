@@ -45,10 +45,7 @@ extern "C" {
 #include "libavfilter/buffersrc.h"
 }
 
-#if VA_CHECK_VERSION(0,34,0)
 #include <va/va_vpp.h>
-#define HAVE_VPP 1
-#endif
 
 using namespace VAAPI;
 #define NUM_RENDER_PICS 7
@@ -559,7 +556,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       }
       break;
     }
-#if VA_CHECK_VERSION(0,38,0)
     case AV_CODEC_ID_HEVC:
     {
       profile = VAProfileHEVCMain;
@@ -567,7 +563,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         return false;
       break;
     }
-#endif
 #if VA_CHECK_VERSION(0,38,1)
     case AV_CODEC_ID_VP9:
     {
@@ -2568,10 +2563,6 @@ CVppPostproc::~CVppPostproc()
 
 bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 {
-#if !defined(HAVE_VPP)
-  return false;
-#else
-
   m_config = config;
 
   // create config
@@ -2677,16 +2668,11 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
       }
     }
   }
-#endif
   return true;
 }
 
 bool CVppPostproc::Init(EINTERLACEMETHOD method)
 {
-#if !defined(HAVE_VPP)
-  return false;
-#else
-
   m_vppMethod = method;
 
   VAProcDeinterlacingType vppMethod = VAProcDeinterlacingNone;
@@ -2739,7 +2725,6 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
   m_forwardRefs = pplCaps.num_forward_references;
   m_backwardRefs = pplCaps.num_backward_references;
 
-#endif
   return true;
 }
 
@@ -2790,10 +2775,6 @@ bool CVppPostproc::AddPicture(CVaapiDecodedPicture &pic)
 
 bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
 {
-#if !defined(HAVE_VPP)
-  return false;
-#else
-
   if (m_step>1)
   {
     Advance();
@@ -2983,7 +2964,6 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
                             DVP_FLAG_REPEAT_TOP_FIELD |
                             DVP_FLAG_INTERLACED);
 
-#endif
   return true;
 }
 
