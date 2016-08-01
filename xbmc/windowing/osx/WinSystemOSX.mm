@@ -686,7 +686,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // set the window title
   NSMutableString *string;
   string = [NSMutableString stringWithUTF8String:CCompileInfo::GetAppName()];
-  [string appendString:@" Entertainment Center" ];
+  [string appendString:@" Media Center" ];
   [ [ [new_context view] window] setTitle:string ];
 
   m_glContext = new_context;
