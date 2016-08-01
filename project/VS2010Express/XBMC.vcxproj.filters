@@ -6718,7 +6718,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayerProcessInfo.h">
       <Filter>dialogs</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEFilter.h">
       <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClInclude>
