@@ -70,6 +70,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid)
   m_lastPts = 0;
   m_lastPtsJump = 0;
   m_errorInterval = 1000;
+  m_clockSpeed = 1.0;
 }
 
 CActiveAEStream::~CActiveAEStream()
@@ -213,7 +214,12 @@ double CActiveAEStream::CalcResampleRatio(double error)
 
   double clockspeed = 1.0;
   if (m_pClock)
+  {
     clockspeed = m_pClock->GetClockSpeed();
+    if (m_clockSpeed != clockspeed)
+      m_resampleIntegral = 0;
+    m_clockSpeed = clockspeed;
+  }
 
   double ret = 1.0 / clockspeed + proportional + m_resampleIntegral;
   //CLog::Log(LOGNOTICE,"----- error: %f, rr: %f, prop: %f, int: %f",
@@ -569,3 +575,215 @@ void CActiveAEStream::RegisterSlave(IAEStream *slave)
   m_streamSlave = slave;
 }
 
+//------------------------------------------------------------------------------
+// CActiveAEStreamBuffers
+//------------------------------------------------------------------------------
+
+CActiveAEStreamBuffers::CActiveAEStreamBuffers(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality)
+{
+  m_inputFormat = inputFormat;
+  m_resampleBuffers = new CActiveAEBufferPoolResample(inputFormat, outputFormat, quality);
+  m_atempoBuffers = new CActiveAEBufferPoolAtempo(outputFormat);
+}
+
+CActiveAEStreamBuffers::~CActiveAEStreamBuffers()
+{
+  delete m_resampleBuffers;
+  delete m_atempoBuffers;
+}
+
+bool CActiveAEStreamBuffers::HasInputLevel(int level)
+{
+  if ((m_inputSamples.size() + m_resampleBuffers->m_inputSamples.size()) >
+      (m_resampleBuffers->m_allSamples.size() * level / 100))
+    return true;
+  else
+    return false;
+}
+
+bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize, bool useDSP)
+{
+  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize, useDSP))
+    return false;
+
+  if (!m_atempoBuffers->Create(totaltime))
+    return false;
+
+  return true;
+}
+
+void CActiveAEStreamBuffers::SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
+{
+  m_resampleBuffers->SetExtraData(profile, matrix_encoding, audio_service_type);
+}
+
+bool CActiveAEStreamBuffers::ProcessBuffers()
+{
+  bool busy = false;
+  CSampleBuffer *buf;
+
+  while (!m_inputSamples.empty())
+  {
+    buf = m_inputSamples.front();
+    m_inputSamples.pop_front();
+    m_resampleBuffers->m_inputSamples.push_back(buf);
+    busy = true;
+  }
+
+  busy |= m_resampleBuffers->ResampleBuffers();
+
+  while (!m_resampleBuffers->m_outputSamples.empty())
+  {
+    buf = m_resampleBuffers->m_outputSamples.front();
+    m_resampleBuffers->m_outputSamples.pop_front();
+    m_atempoBuffers->m_inputSamples.push_back(buf);
+    busy = true;
+  }
+
+  busy |= m_atempoBuffers->ProcessBuffers();
+
+  while (!m_atempoBuffers->m_outputSamples.empty())
+  {
+    buf = m_atempoBuffers->m_outputSamples.front();
+    m_atempoBuffers->m_outputSamples.pop_front();
+    m_outputSamples.push_back(buf);
+    busy = true;
+  }
+
+  return busy;
+}
+
+void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool dspenabled, bool stereoupmix, AEQuality quality)
+{
+  m_resampleBuffers->ConfigureResampler(normalizelevels, dspenabled, stereoupmix, quality);
+}
+
+float CActiveAEStreamBuffers::GetDelay()
+{
+  float delay = 0;
+
+  for (auto &buf : m_inputSamples)
+  {
+    delay += (float)buf->pkt->nb_samples / buf->pkt->config.sample_rate;
+  }
+
+  delay += m_resampleBuffers->GetDelay();
+  delay += m_atempoBuffers->GetDelay();
+
+  for (auto &buf : m_outputSamples)
+  {
+    delay += (float)buf->pkt->nb_samples / buf->pkt->config.sample_rate;
+  }
+
+  return delay;
+}
+
+void CActiveAEStreamBuffers::Flush()
+{
+  m_resampleBuffers->Flush();
+  m_atempoBuffers->Flush();
+
+  while (!m_inputSamples.empty())
+  {
+    m_inputSamples.front()->Return();
+    m_inputSamples.pop_front();
+  }
+  while (!m_outputSamples.empty())
+  {
+    m_outputSamples.front()->Return();
+    m_outputSamples.pop_front();
+  }
+}
+
+void CActiveAEStreamBuffers::SetDrain(bool drain)
+{
+  m_resampleBuffers->SetDrain(drain);
+  m_atempoBuffers->SetDrain(drain);
+}
+
+bool CActiveAEStreamBuffers::IsDrained()
+{
+  if (m_resampleBuffers->m_inputSamples.empty() &&
+      m_resampleBuffers->m_outputSamples.empty() &&
+      m_atempoBuffers->m_inputSamples.empty() &&
+      m_atempoBuffers->m_outputSamples.empty() &&
+      m_inputSamples.empty() &&
+      m_outputSamples.empty())
+    return true;
+  else
+    return false;
+}
+
+void CActiveAEStreamBuffers::SetRR(double rr)
+{
+  if (rr < 1.02 && rr > 0.98)
+  {
+    m_resampleBuffers->SetRR(rr);
+    m_atempoBuffers->SetTempo(1.0);
+  }
+  else
+  {
+    m_resampleBuffers->SetRR(1.0);
+    m_atempoBuffers->SetTempo(1.0/rr);
+  }
+}
+
+double CActiveAEStreamBuffers::GetRR()
+{
+  double tempo = m_resampleBuffers->GetRR();
+  tempo /= m_atempoBuffers->GetTempo();
+  return tempo;
+}
+
+void CActiveAEStreamBuffers::FillBuffer()
+{
+  m_resampleBuffers->FillBuffer();
+  m_atempoBuffers->FillBuffer();
+}
+
+bool CActiveAEStreamBuffers::DoesNormalize()
+{
+  return m_resampleBuffers->DoesNormalize();
+}
+
+void CActiveAEStreamBuffers::ForceResampler(bool force)
+{
+  m_resampleBuffers->ForceResampler(force);
+}
+
+void CActiveAEStreamBuffers::SetDSPConfig(bool usedsp, bool bypassdsp)
+{
+  m_resampleBuffers->SetDSPConfig(usedsp, bypassdsp);
+}
+
+CActiveAEBufferPool* CActiveAEStreamBuffers::GetResampleBuffers()
+{
+  CActiveAEBufferPool *ret = m_resampleBuffers;
+  m_resampleBuffers = nullptr;
+  return ret;
+}
+
+CActiveAEBufferPool* CActiveAEStreamBuffers::GetAtempoBuffers()
+{
+  CActiveAEBufferPool *ret = m_atempoBuffers;
+  m_atempoBuffers = nullptr;
+  return ret;
+}
+
+bool CActiveAEStreamBuffers::HasWork()
+{
+  if (!m_inputSamples.empty())
+    return true;
+  if (!m_outputSamples.empty())
+    return true;
+  if (!m_resampleBuffers->m_inputSamples.empty())
+    return true;
+  if (!m_resampleBuffers->m_outputSamples.empty())
+    return true;
+  if (!m_atempoBuffers->m_inputSamples.empty())
+    return true;
+  if (!m_atempoBuffers->m_outputSamples.empty())
+    return true;
+
+  return false;
+}

@@ -23,6 +23,7 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include <deque>
+#include <memory>
 
 extern "C" {
 #include "libavutil/avutil.h"
@@ -96,42 +97,87 @@ class CActiveAEBufferPoolResample : public CActiveAEBufferPool
 public:
   CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality);
   virtual ~CActiveAEBufferPoolResample();
-  virtual bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true, bool useDSP = false);
+  bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true, bool useDSP = false);
   void SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type);
-  void ChangeResampler();
-  void ChangeAudioDSP();
   bool ResampleBuffers(int64_t timestamp = 0);
+  void ConfigureResampler(bool normalizelevels, bool dspenabled, bool stereoupmix, AEQuality quality);
   float GetDelay();
   void Flush();
+  void SetDrain(bool drain);
+  void SetRR(double rr);
+  double GetRR();
+  void FillBuffer();
+  bool DoesNormalize();
+  void ForceResampler(bool force);
+  void SetDSPConfig(bool usedsp, bool bypassdsp);
   AEAudioFormat m_inputFormat;
-  AEAudioFormat m_dspFormat;
   std::deque<CSampleBuffer*> m_inputSamples;
   std::deque<CSampleBuffer*> m_outputSamples;
+
+protected:
+  void ChangeResampler();
+
+  uint8_t *m_planes[16];
+  bool m_empty;
+  bool m_drain;
+  int m_Profile;
+  int64_t m_lastSamplePts;
+  bool m_remap;
   CSampleBuffer *m_procSample;
   IAEResample *m_resampler;
-  CSampleBuffer *m_dspSample;
-  CActiveAEBufferPool *m_dspBuffer;
-  CActiveAEDSPProcessPtr m_processor;
-  uint8_t *m_planes[16];
-  bool m_fillPackets;
-  bool m_drain;
-  bool m_empty;
-  bool m_useResampler;
-  bool m_useDSP;
-  bool m_bypassDSP;
-  bool m_changeResampler;
-  bool m_forceResampler;
-  bool m_changeDSP;
   double m_resampleRatio;
-  AEQuality m_resampleQuality;
+  bool m_fillPackets;
   bool m_stereoUpmix;
   bool m_normalize;
-  bool m_remap;
-  int64_t m_lastSamplePts;
+  bool m_useResampler;
+  bool m_changeResampler;
+  bool m_forceResampler;
+  AEQuality m_resampleQuality;
+
+  // ADSP
+  // TODO move away from resample buffers
+  void ChangeAudioDSP();
   unsigned int m_streamId;
   enum AVMatrixEncoding m_MatrixEncoding;
   enum AVAudioServiceType m_AudioServiceType;
-  int m_Profile;
+  CSampleBuffer *m_dspSample;
+  AEAudioFormat m_dspFormat;
+  CActiveAEDSPProcessPtr m_processor;
+  CActiveAEBufferPool *m_dspBuffer;
+  bool m_changeDSP;
+  bool m_useDSP;
+  bool m_bypassDSP;
 };
 
+class CActiveAEFilter;
+
+class CActiveAEBufferPoolAtempo : public CActiveAEBufferPool
+{
+public:
+  CActiveAEBufferPoolAtempo(AEAudioFormat format);
+  virtual ~CActiveAEBufferPoolAtempo();
+  bool Create(unsigned int totaltime) override;
+  bool ProcessBuffers();
+  float GetDelay();
+  void Flush();
+  void SetTempo(float tempo);
+  float GetTempo();
+  void FillBuffer();
+  void SetDrain(bool drain);
+  std::deque<CSampleBuffer*> m_inputSamples;
+  std::deque<CSampleBuffer*> m_outputSamples;
+
+protected:
+  void ChangeFilter();
+  std::unique_ptr<CActiveAEFilter> m_pTempoFilter;
+  uint8_t *m_planes[16];
+  CSampleBuffer *m_procSample;
+  bool m_empty;
+  bool m_drain;
+  bool m_changeFilter;
+  float m_tempo;
+  int64_t m_lastSamplePts;
+  bool m_fillPackets;
+};
+  
 }

@@ -2845,6 +2845,9 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayerProcessInfo.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEFilter.cpp">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\media\MediaType.cpp">
@@ -6715,6 +6718,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayerProcessInfo.h">
       <Filter>dialogs</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\ActiveAE\ActiveAEFilter.h">
+      <Filter>cores\AudioEngine\Engines\ActiveAE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
