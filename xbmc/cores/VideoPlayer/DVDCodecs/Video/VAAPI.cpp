@@ -1020,7 +1020,7 @@ bool CDecoder::Supports(EINTERLACEMETHOD method)
 
 EINTERLACEMETHOD CDecoder::AutoInterlaceMethod()
 {
-  return VS_INTERLACEMETHOD_RENDER_BOB;
+  return VS_INTERLACEMETHOD_VAAPI_BOB;
 }
 
 bool CDecoder::ConfigVAAPI()
@@ -2000,13 +2000,13 @@ void COutput::InitCycle()
         method == VS_INTERLACEMETHOD_RENDER_BOB)
     {
       if (method == VS_INTERLACEMETHOD_AUTO)
-        method = VS_INTERLACEMETHOD_RENDER_BOB;
+        method = VS_INTERLACEMETHOD_VAAPI_BOB;
     }
     else
     {
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"VAAPI - deinterlace method not supported, falling back to BOB");
-      method = VS_INTERLACEMETHOD_RENDER_BOB;
+        CLog::Log(LOGDEBUG,"VAAPI - deinterlace method not supported, falling back to VAAPI's BOB implementation");
+      method = VS_INTERLACEMETHOD_VAAPI_BOB;
     }
 
     if (m_pp && (method != m_currentDiMethod || !m_pp->Compatible(method)))
