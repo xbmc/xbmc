@@ -8,9 +8,7 @@
         </setting>
       </group>
     </category>
-  </section>
-  <section id="interface">
-    <category id="control">
+    <category id="input">
       <group id="2">
         <setting id="input.appleremotealwayson">
           <level>1</level>

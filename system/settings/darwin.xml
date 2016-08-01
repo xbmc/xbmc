@@ -22,9 +22,7 @@
         </setting>
       </group>
     </category>
-  </section>
-  <section id="interface">
-    <category id="control">
+    <category id="input">
       <group id="2">
         <setting id="input.appleremotemode" type="integer" label="13600" help="36416">
           <level>1</level>

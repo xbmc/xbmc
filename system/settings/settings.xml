@@ -1705,48 +1705,9 @@
         </setting>
       </group>
     </category>
-    <category id="upnp" label="20187" help="36322">
-      <requirement>HAS_UPNP</requirement>
-      <group id="1" label="16000">
-        <setting id="services.upnpserver" type="boolean" label="21360" help="36323">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="services.upnpannounce" type="boolean" parent="services.upnpserver" label="20188" help="36324">
-          <level>2</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable" setting="services.upnpserver">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="services.upnplookforexternalsubtitles" type="boolean" parent="services.upnpserver" label="20222" help="36420">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="services.upnpserver">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="services.upnpcontroller" type="boolean" parent="services.upnpserver" label="21361" help="36326">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="services.upnpserver">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="services.upnprenderer" type="boolean" label="21881" help="36325">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-    <category id="webserver" label="33101" help="36327">
+    <category id="control" label="14223" help="36327">
+      <group id="1" label="33101">
       <requirement>HAS_WEB_SERVER</requirement>
-      <group id="1">
         <setting id="services.webserver" type="boolean" label="263" help="36328">
           <level>1</level>
           <default>false</default>
@@ -1801,6 +1762,138 @@
           <control type="button" format="addon">
             <show more="true" details="true">installed</show>
           </control>
+        </setting>
+      </group>
+      <group id="2" label="14275">
+      <requirement>
+        <or>
+          <condition>HAS_EVENT_SERVER</condition>
+          <condition>HAS_JSONRPC</condition>
+        </or>
+      </requirement>
+        <setting id="services.esenabled" type="boolean" label="14276" help="36334">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.esport" type="integer" label="792" help="36335">
+          <requirement>HAS_EVENT_SERVER</requirement>
+          <level>4</level>
+          <default>9777</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>65535</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="services.esenabled">true</dependency>
+          </dependencies>
+          <control type="edit" format="integer" />
+        </setting>
+        <setting id="services.esportrange" type="integer" label="793" help="36336">
+          <requirement>HAS_EVENT_SERVER</requirement>
+          <level>4</level>
+          <default>10</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>100</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="services.esenabled">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="services.esmaxclients" type="integer" label="797" help="36337">
+          <requirement>HAS_EVENT_SERVER</requirement>
+          <level>4</level>
+          <default>20</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>100</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="services.esenabled">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="services.esallinterfaces" type="boolean" label="14277" help="36338">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable">
+                <condition setting="services.esenabled" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.esinitialdelay" type="integer" label="795" help="36339">
+          <requirement>HAS_EVENT_SERVER</requirement>
+          <level>4</level>
+          <default>750</default>
+          <constraints>
+            <minimum>5</minimum>
+            <step>5</step>
+            <maximum>10000</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="services.esenabled">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+        <setting id="services.escontinuousdelay" type="integer" label="796" help="36340">
+          <requirement>HAS_EVENT_SERVER</requirement>
+          <level>4</level>
+          <default>25</default>
+          <constraints>
+            <minimum>5</minimum>
+            <step>5</step>
+            <maximum>10000</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="services.esenabled">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
+      </group>
+    </category>
+    <category id="upnp" label="20187" help="36322">
+      <requirement>HAS_UPNP</requirement>
+      <group id="1" label="16000">
+        <setting id="services.upnpserver" type="boolean" label="21360" help="36323">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.upnpannounce" type="boolean" parent="services.upnpserver" label="20188" help="36324">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="services.upnpserver">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.upnplookforexternalsubtitles" type="boolean" parent="services.upnpserver" label="20222" help="36420">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="services.upnpserver">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.upnpcontroller" type="boolean" parent="services.upnpserver" label="21361" help="36326">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="services.upnpserver">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.upnprenderer" type="boolean" label="21881" help="36325">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
     </category>
@@ -2485,6 +2578,31 @@
         </setting>
       </group>
     </category>
+    <category id="input" label="15087" help="36374">
+      <group id="1" label="35000">
+        <setting id="input.peripherals" type="action" label="35000" help="36375">
+          <level>2</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="HasPeripherals" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="2" label="14094">
+        <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
+          <level>0</level>
+          <control type="toggle" />
+          <default>true</default>
+        </setting>
+        <setting id="input.controllerconfig" type="action" label="35063" help="35064">
+          <level>0</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="SupportsPeripheralControllers" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
     <category id="network" label="798" help="36379">
       <group id="1" label="16000">
         <setting id="network.usehttpproxy" type="boolean" label="708" help="36380">
@@ -3088,122 +3206,6 @@
             <dependency type="update" setting="locale.country" />
           </dependencies>
           <control type="list" format="string" />
-        </setting>
-      </group>
-    </category>
-    <category id="control" label="14223" help="36374">
-      <group id="1" label="35000">
-        <setting id="input.peripherals" type="action" label="35000" help="36375">
-          <level>2</level>
-          <dependencies>
-            <dependency type="enable" on="property" name="HasPeripherals" />
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-      <group id="2" label="14094">
-        <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
-          <level>0</level>
-          <control type="toggle" />
-          <default>true</default>
-        </setting>
-        <setting id="input.controllerconfig" type="action" label="35063" help="35064">
-          <level>0</level>
-          <dependencies>
-            <dependency type="enable" on="property" name="SupportsPeripheralControllers" />
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-      <group id="3" label="14275">
-      <requirement>
-        <or>
-          <condition>HAS_EVENT_SERVER</condition>
-          <condition>HAS_JSONRPC</condition>
-        </or>
-      </requirement>
-        <setting id="services.esenabled" type="boolean" label="14276" help="36334">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="services.esport" type="integer" label="792" help="36335">
-          <requirement>HAS_EVENT_SERVER</requirement>
-          <level>4</level>
-          <default>9777</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>65535</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="services.esenabled">true</dependency>
-          </dependencies>
-          <control type="edit" format="integer" />
-        </setting>
-        <setting id="services.esportrange" type="integer" label="793" help="36336">
-          <requirement>HAS_EVENT_SERVER</requirement>
-          <level>4</level>
-          <default>10</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>100</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="services.esenabled">true</dependency>
-          </dependencies>
-          <control type="spinner" format="integer" />
-        </setting>
-        <setting id="services.esmaxclients" type="integer" label="797" help="36337">
-          <requirement>HAS_EVENT_SERVER</requirement>
-          <level>4</level>
-          <default>20</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>100</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="services.esenabled">true</dependency>
-          </dependencies>
-          <control type="spinner" format="integer" />
-        </setting>
-        <setting id="services.esallinterfaces" type="boolean" label="14277" help="36338">
-          <level>1</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="services.esenabled">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="services.esinitialdelay" type="integer" label="795" help="36339">
-          <requirement>HAS_EVENT_SERVER</requirement>
-          <level>4</level>
-          <default>750</default>
-          <constraints>
-            <minimum>5</minimum>
-            <step>5</step>
-            <maximum>10000</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="services.esenabled">true</dependency>
-          </dependencies>
-          <control type="spinner" format="integer" />
-        </setting>
-        <setting id="services.escontinuousdelay" type="integer" label="796" help="36340">
-          <requirement>HAS_EVENT_SERVER</requirement>
-          <level>4</level>
-          <default>25</default>
-          <constraints>
-            <minimum>5</minimum>
-            <step>5</step>
-            <maximum>10000</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="services.esenabled">true</dependency>
-          </dependencies>
-          <control type="spinner" format="integer" />
         </setting>
       </group>
     </category>
