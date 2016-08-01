@@ -28,6 +28,5 @@ set(ENABLE_X11 OFF)
 set(ENABLE_EGL ON)
 set(ENABLE_AML ON)
 set(ENABLE_OPTICAL OFF)
-set(ENABLE_BREAKPAD ON)
 
 list(APPEND DEPLIBS android log jnigraphics)
