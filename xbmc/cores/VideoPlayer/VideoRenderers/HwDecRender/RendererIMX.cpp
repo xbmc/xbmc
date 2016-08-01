@@ -93,16 +93,6 @@ bool CRendererIMX::Supports(EINTERLACEMETHOD method)
     return false;
 }
 
-bool CRendererIMX::Supports(EDEINTERLACEMODE mode)
-{
-  if(mode == VS_DEINTERLACEMODE_AUTO
-  || mode == VS_DEINTERLACEMODE_FORCE
-  || mode == VS_DEINTERLACEMODE_OFF)
-    return true;
-
-  return false;
-}
-
 bool CRendererIMX::Supports(ESCALINGMETHOD method)
 {
   return false;

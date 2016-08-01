@@ -71,11 +71,6 @@ bool CRendererOMX::Supports(EINTERLACEMETHOD method)
   return false;
 }
 
-bool CRendererOMX::Supports(EDEINTERLACEMODE mode)
-{
-  return false;
-}
-
 bool CRendererOMX::Supports(ESCALINGMETHOD mode)
 {
   return false;
