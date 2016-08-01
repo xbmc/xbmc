@@ -128,6 +128,56 @@ bool CPosixDirectory::Remove(const CURL& url)
 
   return !Exists(url);
 }
+ bool CPosixDirectory::RemoveRecursive(const CURL& url)
+ {
+  std::string root = url.Get();
+
+  if (IsAliasShortcut(root, true))
+    TranslateAliasShortcut(root);
+
+  DIR *dir = opendir(root.c_str());
+  if (!dir)
+    return false;
+
+  struct dirent* entry;
+  while ((entry = readdir(dir)) != NULL)
+  {
+    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+      continue;
+
+    std::string itemLabel(entry->d_name);
+    CCharsetConverter::unknownToUTF8(itemLabel);
+    std::string itemPath(URIUtils::AddFileToFolder(root, entry->d_name));
+
+    bool bStat = false;
+    struct stat buffer;
+
+    // Unix-based readdir implementations may return an incorrect dirent.d_ino value that
+    // is not equal to the (correct) stat() obtained one. In this case the file type
+    // could not be determined and the value of dirent.d_type is set to DT_UNKNOWN.
+    // In order to get a correct value we have to incur the cost of calling stat.
+    if (entry->d_type == DT_UNKNOWN || entry->d_type == DT_LNK)
+    {
+      if (stat(itemPath.c_str(), &buffer) == 0)
+        bStat = true;
+    }
+
+    if (entry->d_type == DT_DIR || (bStat && S_ISDIR(buffer.st_mode)))
+    {
+      if (!RemoveRecursive(CURL{ itemPath }))
+        return false;
+      if (rmdir(itemPath.c_str()) != 0)
+        return false;
+    }
+    else
+    {
+      if (unlink(itemPath.c_str()) != 0)
+        return false;
+    }
+  }
+  closedir(dir);
+  return true;
+ }
 
 bool CPosixDirectory::Exists(const CURL& url)
 {
