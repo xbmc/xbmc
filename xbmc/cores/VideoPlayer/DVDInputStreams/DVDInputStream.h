@@ -122,9 +122,7 @@ public:
     virtual DemuxPacket* ReadDemux() = 0;
     virtual CDemuxStream* GetStream(int iStreamId) const = 0;
     virtual std::vector<CDemuxStream*> GetStreams() const = 0;
-    virtual bool SupportsEnableAtPTS() const { return false; };
     virtual void EnableStream(int iStreamId, bool enable) = 0;
-    virtual void EnableStreamAtPTS(int iStreamId, uint64_t pts) {};
     virtual int GetNrOfStreams() const = 0;
     virtual void SetSpeed(int iSpeed) = 0;
     virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) = 0;

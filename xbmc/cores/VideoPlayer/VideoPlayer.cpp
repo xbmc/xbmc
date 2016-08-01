@@ -2603,10 +2603,7 @@ void CVideoPlayer::HandleMessages()
             OpenStream(m_CurrentAudio, st.demuxerId, st.id, st.source);
             AdaptForcedSubtitles();
             
-            if (!m_pDemuxer || !m_pDemuxer->SupportsEnableAtPTS(st.demuxerId))
-              m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
-            else
-              m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_CONT;
+            m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
           }
         }
       }
@@ -3527,10 +3524,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
     if(!stream || stream->disabled)
       return false;
     
-    if (!m_pSubtitleDemuxer->SupportsEnableAtPTS(demuxerId))
-      m_pSubtitleDemuxer->EnableStream(demuxerId, iStream, true);
-    else
-      m_pSubtitleDemuxer->EnableStreamAtPTS(demuxerId, iStream, DVD_MSEC_TO_TIME(GetTime()));
+    m_pSubtitleDemuxer->EnableStream(demuxerId, iStream, true);
 
     hint.Assign(*stream, true);
   }
@@ -3554,10 +3548,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
     if(!stream || stream->disabled)
       return false;
 
-    if (!m_pDemuxer->SupportsEnableAtPTS(demuxerId))
-      m_pDemuxer->EnableStream(demuxerId, iStream, true);
-    else
-      m_pDemuxer->EnableStreamAtPTS(demuxerId, iStream, DVD_MSEC_TO_TIME(GetTime()));
+    m_pDemuxer->EnableStream(demuxerId, iStream, true);
 
     hint.Assign(*stream, true);
 

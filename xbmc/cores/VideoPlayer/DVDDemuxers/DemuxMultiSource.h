@@ -48,7 +48,6 @@ public:
   
   void Abort();
   virtual void EnableStream(int64_t demuxerId, int id, bool enable) override;
-  virtual void EnableStreamAtPTS(int64_t demuxerId, int id, uint64_t pts) override;
   void Flush();
   virtual std::string GetFileName() { return ""; };
   int GetNrOfStreams() const override;
@@ -62,7 +61,6 @@ public:
   void Reset();
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
   virtual void SetSpeed(int iSpeed) {};
-  virtual bool SupportsEnableAtPTS(int64_t demuxerId) override;
 
 private:
   void Dispose();
