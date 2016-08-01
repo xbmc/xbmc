@@ -806,6 +806,9 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 
   }
   else
   {
+    if (sync == FS_NONE)
+      presentmethod = PRESENT_METHOD_SINGLE;
+    else
     {
       bool invert = false;
       if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)
