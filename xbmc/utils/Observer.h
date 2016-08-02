@@ -21,6 +21,7 @@
  */
 
 #include "threads/CriticalSection.h"
+#include <atomic>
 #include <vector>
 
 class Observable;
@@ -45,46 +46,15 @@ typedef enum
 
 class Observer
 {
-  friend class Observable;
-
 public:
-  Observer(void) {};
-  virtual ~Observer(void);
-
-  /*!
-   * @brief Remove this observer from all observables.
-   */
-  virtual void StopObserving(void);
-
-  /*!
-   * @brief Check whether this observer is observing an observable.
-   * @param obs The observable to check.
-   * @return True if this observer is observing the given observable, false otherwise.
-   */
-  virtual bool IsObserving(const Observable &obs) const;
-
+  Observer() = default;
+  virtual ~Observer() = default;
   /*!
    * @brief Process a message from an observable.
    * @param obs The observable that sends the message.
    * @param msg The message.
    */
   virtual void Notify(const Observable &obs, const ObservableMessage msg) = 0;
-
-protected:
-  /*!
-   * @brief Callback to register an observable.
-   * @param obs The observable to register.
-   */
-  virtual void RegisterObservable(Observable *obs);
-
-  /*!
-   * @brief Callback to unregister an observable.
-   * @param obs The observable to unregister.
-   */
-  virtual void UnregisterObservable(Observable *obs);
-
-  std::vector<Observable *> m_observables;     /*!< all observables that are watched */
-  CCriticalSection          m_obsCritSection;  /*!< mutex */
 };
 
 class Observable
@@ -92,14 +62,9 @@ class Observable
   friend class ObservableMessageJob;
 
 public:
-  Observable();
-  virtual ~Observable();
+  Observable() = default;
+  virtual ~Observable() = default;
   virtual Observable &operator=(const Observable &observable);
-
-  /*!
-   * @brief Remove this observable from all observers.
-   */
-  virtual void StopObserver(void);
 
   /*!
    * @brief Register an observer.
@@ -140,7 +105,7 @@ protected:
    */
   void SendMessage(const ObservableMessage message);
 
-  bool                    m_bObservableChanged; /*!< true when the observable is marked as changed, false otherwise */
-  std::vector<Observer *> m_observers;          /*!< all observers */
-  CCriticalSection        m_obsCritSection;     /*!< mutex */
+  std::atomic<bool>       m_bObservableChanged{false}; /*!< true when the observable is marked as changed, false otherwise */
+  std::vector<Observer *> m_observers;                 /*!< all observers */
+  CCriticalSection        m_obsCritSection;            /*!< mutex */
 };
