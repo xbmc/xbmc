@@ -107,6 +107,167 @@ using namespace PLAYLIST;
 unsigned int CUtil::s_randomSeed = time(NULL);
 #endif
 
+namespace
+{
+#ifdef TARGET_WINDOWS
+bool IsDirectoryValidRoot(std::wstring path)
+{
+  path += L"\\system\\settings\\settings.xml";
+  auto h = CreateFileW(path.c_str(), GENERIC_READ, 0, nullptr,
+    OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (h != INVALID_HANDLE_VALUE)
+  {
+    CloseHandle(h);
+    return true;
+  }
+
+  return false;
+}
+
+std::string GetHomePath(const std::string& strTarget, std::string strPath)
+{
+  std::wstring strPathW;
+
+  // Environment variable was set and we have a path
+  // Let's make sure it's not relative and test it
+  // so it's actually pointing to a directory containing
+  // our stuff
+  if (strPath.find("..") != std::string::npos)
+  {
+    //expand potential relative path to full path
+    g_charsetConverter.utf8ToW(strPath, strPathW, false);
+    CWIN32Util::AddExtraLongPathPrefix(strPathW);
+    auto bufSize = GetFullPathNameW(strPathW.c_str(), 0, nullptr, nullptr);
+    if (bufSize != 0)
+    {
+      auto buf = std::make_unique<wchar_t[]>(bufSize);
+      if (GetFullPathNameW(strPathW.c_str(), bufSize, buf.get(), nullptr) <= bufSize - 1)
+      {
+        strPathW = buf.get();
+        CWIN32Util::RemoveExtraLongPathPrefix(strPathW);
+        g_charsetConverter.wToUTF8(strPathW, strPath);
+        if (IsDirectoryValidRoot(strPathW))
+          return strPath;
+      }
+    }
+  }
+
+  // Okay se no environment variable is set, let's
+  // grab the executable path and check if it's being
+  // run from a directory containing our stuff
+  strPath = CUtil::ResolveExecutablePath();
+  auto last_sep = strPath.find_last_of(PATH_SEPARATOR_CHAR);
+  if (last_sep != std::string::npos)
+      strPath = strPath.substr(0, last_sep);
+
+  g_charsetConverter.utf8ToW(strPath, strPathW);
+  if (IsDirectoryValidRoot(strPathW))
+    return strPath;
+
+  // Still nothing, let's check the current working
+  // directory and see if it points to a directory
+  // with our stuff in it. This bit should never be
+  // needed when running on a users system, it's intended
+  // to make our dev environment easier.
+  auto bufSize = GetCurrentDirectoryW(0, nullptr);
+  if (bufSize > 0)
+  {
+    auto buf = new wchar_t[bufSize];
+    if (0 != GetCurrentDirectoryW(bufSize, buf))
+    {
+      std::string currentDirectory;
+      std::wstring currentDirectoryW(buf);
+      CWIN32Util::RemoveExtraLongPathPrefix(currentDirectoryW);
+      g_charsetConverter.wToUTF8(currentDirectoryW, currentDirectory);
+
+      if (IsDirectoryValidRoot(currentDirectoryW))
+        return currentDirectory;
+    }
+  }
+
+  // If we ended up here we're most likely screwed
+  // we will crash in a few seconds
+  return strPath;
+}
+#endif
+#if defined(TARGET_DARWIN)
+std::string GetHomePath(const std::string& strTarget, std::string strPath)
+{
+  if (strPath.empty())
+  {
+    auto strHomePath = CUtil::ResolveExecutablePath();
+    int      result = -1;
+    char     given_path[2 * MAXPATHLEN];
+    size_t path_size = 2 * MAXPATHLEN;
+
+    result = CDarwinUtils::GetExecutablePath(given_path, &path_size);
+    if (result == 0)
+    {
+      // Move backwards to last /.
+      for (int n = strlen(given_path) - 1; given_path[n] != '/'; n--)
+        given_path[n] = '\0';
+
+#if defined(TARGET_DARWIN_IOS)
+      strcat(given_path, "/AppData/AppHome/");
+#else
+      // Assume local path inside application bundle.
+      strcat(given_path, "../Resources/");
+      strcat(given_path, CCompileInfo::GetAppName());
+      strcat(given_path, "/");
+#endif
+
+      // Convert to real path.
+      char real_path[2 * MAXPATHLEN];
+      if (realpath(given_path, real_path) != NULL)
+      {
+        strPath = real_path;
+        return strPath;
+      }
+    }
+    size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
+    if (last_sep != std::string::npos)
+      strPath = strHomePath.substr(0, last_sep);
+    else
+      strPath = strHomePath;
+
+  }
+  return strPath;
+}
+#endif
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+std::string GetHomePath(const std::string& strTarget, std::string strPath)
+{
+  if (strPath.empty())
+  {
+    auto strHomePath = CUtil::ResolveExecutablePath();
+    size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
+    if (last_sep != std::string::npos)
+      strPath = strHomePath.substr(0, last_sep);
+    else
+      strPath = strHomePath;
+  }
+  /* Change strPath accordingly when target is KODI_HOME and when INSTALL_PATH
+   * and BIN_INSTALL_PATH differ
+   */
+  std::string installPath = INSTALL_PATH;
+  std::string binInstallPath = BIN_INSTALL_PATH;
+
+  if (strTarget.empty() && installPath.compare(binInstallPath))
+  {
+    int pos = strPath.length() - binInstallPath.length();
+    std::string tmp = strPath;
+    tmp.erase(0, pos);
+    if (!tmp.compare(binInstallPath))
+    {
+      strPath.erase(pos, strPath.length());
+      strPath.append(installPath);
+    }
+  }
+
+  return strPath;
+}
+#endif
+}
 CUtil::CUtil(void)
 {
 }
@@ -319,95 +480,11 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
 
-void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
+std::string CUtil::GetHomePath(std::string strTarget)
 {
-  if (strTarget.empty())
-    strPath = CEnvironment::getenv("KODI_HOME");
-  else
-    strPath = CEnvironment::getenv(strTarget);
+  auto strPath = CEnvironment::getenv(strTarget);
 
-#ifdef TARGET_WINDOWS
-  if (strPath.find("..") != std::string::npos)
-  {
-    //expand potential relative path to full path
-    std::wstring strPathW;
-    g_charsetConverter.utf8ToW(strPath, strPathW, false);
-    CWIN32Util::AddExtraLongPathPrefix(strPathW);
-    const unsigned int bufSize = GetFullPathNameW(strPathW.c_str(), 0, NULL, NULL);
-    if (bufSize != 0)
-    {
-      wchar_t * buf = new wchar_t[bufSize];
-      if (GetFullPathNameW(strPathW.c_str(), bufSize, buf, NULL) <= bufSize-1)
-      {
-        std::wstring expandedPathW(buf);
-        CWIN32Util::RemoveExtraLongPathPrefix(expandedPathW);
-        g_charsetConverter.wToUTF8(expandedPathW, strPath);
-      }
-
-      delete [] buf;
-    }
-  }
-#endif
-
-  if (strPath.empty())
-  {
-    std::string strHomePath = ResolveExecutablePath();
-#if defined(TARGET_DARWIN)
-    int      result = -1;
-    char     given_path[2*MAXPATHLEN];
-    size_t path_size =2*MAXPATHLEN;
-
-    result = CDarwinUtils::GetExecutablePath(given_path, &path_size);
-    if (result == 0)
-    {
-      // Move backwards to last /.
-      for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
-        given_path[n] = '\0';
-
-      #if defined(TARGET_DARWIN_IOS)
-        strcat(given_path, "/AppData/AppHome/");
-      #else
-        // Assume local path inside application bundle.
-        strcat(given_path, "../Resources/");
-        strcat(given_path, CCompileInfo::GetAppName());
-        strcat(given_path, "/");
-      #endif
-
-      // Convert to real path.
-      char real_path[2*MAXPATHLEN];
-      if (realpath(given_path, real_path) != NULL)
-      {
-        strPath = real_path;
-        return;
-      }
-    }
-#endif
-    size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
-    if (last_sep != std::string::npos)
-      strPath = strHomePath.substr(0, last_sep);
-    else
-      strPath = strHomePath;
-  }
-
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  /* Change strPath accordingly when target is KODI_HOME and when INSTALL_PATH
-   * and BIN_INSTALL_PATH differ
-   */
-  std::string installPath = INSTALL_PATH;
-  std::string binInstallPath = BIN_INSTALL_PATH;
-
-  if (strTarget.empty() && installPath.compare(binInstallPath))
-  {
-    int pos = strPath.length() - binInstallPath.length();
-    std::string tmp = strPath;
-    tmp.erase(0, pos);
-    if (!tmp.compare(binInstallPath))
-    {
-      strPath.erase(pos, strPath.length());
-      strPath.append(installPath);
-    }
-  }
-#endif
+  return ::GetHomePath(strTarget, strPath);
 }
 
 bool CUtil::IsPVR(const std::string& strFile)

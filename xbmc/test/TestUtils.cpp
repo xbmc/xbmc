@@ -113,8 +113,7 @@ std::string CXBMCTestUtils::ReferenceFilePath(const std::string& path)
 
 bool CXBMCTestUtils::SetReferenceFileBasePath()
 {
-  std::string xbmcPath;
-  CUtil::GetHomePath(xbmcPath);
+  std::string xbmcPath = CUtil::GetHomePath();
   if (xbmcPath.empty())
     return false;
 

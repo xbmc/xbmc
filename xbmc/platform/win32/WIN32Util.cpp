@@ -402,9 +402,7 @@ std::string CWIN32Util::GetSystemPath()
 std::string CWIN32Util::GetProfilePath()
 {
   std::string strProfilePath;
-  std::string strHomePath;
-
-  CUtil::GetHomePath(strHomePath);
+  std::string strHomePath = CUtil::GetHomePath();
 
   if(g_application.PlatformDirectoriesEnabled())
     strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "Kodi");
