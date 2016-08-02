@@ -1,4 +1,4 @@
-@ECHO OFF
+﻿@ECHO OFF
 SETLOCAL ENABLEDELAYEDEXPANSION
 REM setup all paths
 SET cur_dir=%CD%
@@ -252,7 +252,7 @@ set WORKSPACE=%CD%\..\..
   xcopy dependencies\*.* BUILD_WIN32\application /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
   xcopy ..\..\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  xcopy ..\..\system\*.dll BUILD_WIN32\application /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  xcopy ..\..\system\*.dll BUILD_WIN32\application /Q /I /Y > NUL
   xcopy ..\..\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt+exclude_dll.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
@@ -294,6 +294,7 @@ set WORKSPACE=%CD%\..\..
   TITLE %APP_NAME% for Windows Build Script
 
   IF EXIST exclude.txt del exclude.txt  > NUL
+  IF EXIST exclude_dll.txt del exclude_dll.txt  > NUL
   del /s /q /f BUILD_WIN32\application\*.so  > NUL
   del /s /q /f BUILD_WIN32\application\*.h  > NUL
   del /s /q /f BUILD_WIN32\application\*.cpp  > NUL
