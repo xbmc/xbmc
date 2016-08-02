@@ -41,6 +41,8 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
 
+#include <math.h>
+
 #ifdef HAS_DVD_DRIVE
 #include "Autorun.h"
 #endif
@@ -159,6 +161,24 @@ static int PlayerControl(const std::vector<std::string>& params)
         playSpeed = 1;
 
       g_application.m_pPlayer->SetPlaySpeed(playSpeed);
+    }
+  }
+  else if (paramlow =="tempoup" || paramlow == "tempodown")
+  {
+    if (g_application.m_pPlayer->SupportsTempo() &&
+        g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    {
+      float playSpeed = g_application.m_pPlayer->GetPlaySpeed();
+      if (playSpeed >= 0.75 && playSpeed <= 1.55)
+      {
+        if (paramlow == "tempodown" && playSpeed > 0.85)
+          playSpeed -= 0.1;
+        else if (paramlow == "tempoup" && playSpeed < 1.45)
+          playSpeed += 0.1;
+
+        playSpeed = floor(playSpeed * 100 + 0.5) / 100;
+        g_application.m_pPlayer->SetPlaySpeed(playSpeed);
+      }
     }
   }
   else if (paramlow == "next")
