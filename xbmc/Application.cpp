@@ -891,7 +891,7 @@ bool CApplication::InitDirectoriesLinux()
     if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "userdata")))
     {
       /* Attempt to locate arch independent data files. */
-      CUtil::GetHomePath(appPath);
+      appPath = CUtil::GetHomePath("");
       if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "userdata")))
       {
         fprintf(stderr, "Unable to find path to %s data files!\n", appName.c_str());
