@@ -47,16 +47,7 @@
         </setting>
       </group>
     </category>
-  </section>
-  <section id="interface">
-    <category id="skin">
-      <group id="1">
-        <setting id="lookandfeel.skin" type="addon">
-          <default>skin.estouchy</default>
-        </setting>
-      </group>
-    </category>
-    <category id="control">
+    <category id="input">
       <group id="1">
         <setting id="input.peripherals">
           <visible>false</visible>
@@ -71,6 +62,15 @@
         </setting>
         <setting id="input.enablemouse">
           <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="interface">
+    <category id="skin">
+      <group id="1">
+        <setting id="lookandfeel.skin" type="addon">
+          <default>skin.estouchy</default>
         </setting>
       </group>
     </category>

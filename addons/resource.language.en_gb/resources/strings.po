@@ -7326,7 +7326,7 @@ msgid "Security"
 msgstr ""
 
 msgctxt "#14094"
-msgid "Input devices"
+msgid "Devices"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8136,6 +8136,7 @@ msgstr ""
 
 #. Audio DSP process chain indication
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
+#: system/settings/settings.xml
 msgctxt "#15087"
 msgid "Input"
 msgstr ""
@@ -17583,10 +17584,10 @@ msgctxt "#36326"
 msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control it's playback."
 msgstr ""
 
-#. Description of settings category with label #20187 "Webserver"
+#. Description of settings category with label #20187 "Control"
 #: system/settings/settings.xml
 msgctxt "#36327"
-msgid "This category contains the settings for how the web server service is handled."
+msgid "This category contains the settings for how the web server service and the application control service is handled."
 msgstr ""
 
 #. Description of setting with label #263 "Allow remote control via HTTP"
@@ -17859,7 +17860,7 @@ msgctxt "#36373"
 msgid "Configure how interface sounds are handled, such as menu navigation and important notifications."
 msgstr ""
 
-#. Description of settings category with label #14219 "Control"
+#. Description of settings category with label #15087 "Input"
 #: system/settings/settings.xml
 msgctxt "#36374"
 msgid "This category contains the settings for how input devices are handled."
