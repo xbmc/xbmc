@@ -202,7 +202,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   if (!scrURL.m_cache.empty())
   {
     strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
-                              "scrapers/" + cacheContext + "/" + scrURL.m_cache);
+                              "scrapers", cacheContext, scrURL.m_cache);
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
@@ -302,7 +302,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   if (!scrURL.m_cache.empty())
   {
     std::string strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
-                              "scrapers/" + cacheContext + "/" + scrURL.m_cache);
+                              "scrapers", cacheContext, scrURL.m_cache);
     XFILE::CFile file;
     if (!file.OpenForWrite(strCachePath, true) || file.Write(strHTML.data(), strHTML.size()) != static_cast<ssize_t>(strHTML.size()))
       return false;

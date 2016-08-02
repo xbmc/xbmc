@@ -5855,8 +5855,9 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFile, bo
           if (images)
           {
             std::string thumb = GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
-            if (!thumb.empty() && (overwrite || !CFile::Exists(URIUtils::AddFileToFolder(strPath,"folder.jpg"))))
-              CTextureCache::GetInstance().Export(thumb, URIUtils::AddFileToFolder(strPath,"folder.jpg"));
+            std::string imagePath = URIUtils::AddFileToFolder(strPath, "folder.jpg");
+            if (!thumb.empty() && (overwrite || !CFile::Exists(imagePath)))
+              CTextureCache::GetInstance().Export(thumb, imagePath);
           }
           xmlDoc.Clear();
           TiXmlDeclaration decl("1.0", "UTF-8", "yes");

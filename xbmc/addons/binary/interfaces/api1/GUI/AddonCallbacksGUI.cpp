@@ -260,9 +260,11 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       /* Check for the matching folder for the skin in the fallback skins folder */
-      std::string basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
-      basePath = URIUtils::AddFileToFolder(basePath, "skins");
-      basePath = URIUtils::AddFileToFolder(basePath, URIUtils::GetFileName(g_SkinInfo->Path()));
+      std::string basePath = URIUtils::AddFileToFolder(
+        guiHelper->m_addon->Path(),
+        "resources",
+        "skins",
+        URIUtils::GetFileName(g_SkinInfo->Path()));
       strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
@@ -278,14 +280,15 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     //FIXME make this static method of current skin?
     std::string str("none");
     AddonProps props(str, ADDON_SKIN);
-    std::string basePath = URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources");
-    basePath = URIUtils::AddFileToFolder(basePath, "skins");
-    basePath = URIUtils::AddFileToFolder(basePath, defaultSkin);
-    props.path = basePath;
+    props.path = URIUtils::AddFileToFolder(
+      guiHelper->m_addon->Path(),
+      "resources",
+      "skins",
+      defaultSkin);
 
     CSkinInfo skinInfo(props);
     skinInfo.Start();
-    strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res, basePath);
+    strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res, props.path);
 
     if (!XFILE::CFile::Exists(strSkinPath))
     {

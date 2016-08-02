@@ -229,8 +229,8 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     std::string path;
     if (CGUIKeyboardFactory::ShowAndGetInput(filename, CVariant{g_localizeStrings.Get(16013)}, false))
     {
-      path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation());
-      path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(filename));
+      path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation(),
+                                        CUtil::MakeLegalFileName(filename));
     }
     else
       return;
@@ -251,8 +251,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
       if (strFolder != m_playlist.GetSaveLocation())
       { // move to the correct folder
         XFILE::CFile::Delete(m_path);
-        m_path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation());
-        m_path = URIUtils::AddFileToFolder(m_path, filename);
+        m_path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation(), filename);
       }
     }
   }

@@ -462,6 +462,10 @@ TEST_F(TestURIUtils, AddFileToFolder)
   std::string ref = "/path/to/file";
   std::string var = URIUtils::AddFileToFolder("/path/to", "file");
   EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "/path/to/file/and/more";
+  var = URIUtils::AddFileToFolder("/path", "to", "file", "and", "more");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
 TEST_F(TestURIUtils, HasParentInHostname)

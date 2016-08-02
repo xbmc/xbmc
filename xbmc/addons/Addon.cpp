@@ -175,7 +175,7 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
     return true;
   if (!m_hasSettings)
     return false;
-  std::string addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
+  std::string addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources", "settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
