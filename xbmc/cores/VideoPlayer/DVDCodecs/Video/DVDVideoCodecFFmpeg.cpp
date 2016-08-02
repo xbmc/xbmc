@@ -123,6 +123,8 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
   const AVPixelFormat * cur = fmt;
   while(*cur != AV_PIX_FMT_NONE)
   {
+    pixFmtName = av_get_pix_fmt_name(*cur);
+
 #ifdef HAVE_LIBVDPAU
     if(VDPAU::CDecoder::IsVDPAUFormat(*cur) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
     {
