@@ -941,13 +941,13 @@ void PAPlayer::SetDynamicRangeCompression(long drc)
 
 }
 
-void PAPlayer::SetSpeed(int iSpeed)
+void PAPlayer::SetSpeed(float speed)
 {
-  m_playbackSpeed  = iSpeed;
+  m_playbackSpeed = static_cast<int>(speed);
   m_signalSpeedChange = true;
 }
 
-int PAPlayer::GetSpeed()
+float PAPlayer::GetSpeed()
 {
   return m_playbackSpeed;
 }

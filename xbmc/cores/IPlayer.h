@@ -325,8 +325,10 @@ public:
   virtual void SetTotalTime(int64_t time) { }
   virtual int GetSourceBitrate(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
-  virtual void SetSpeed(int iSpeed) = 0;
-  virtual int GetSpeed() = 0;
+  virtual void SetSpeed(float speed) = 0;
+  virtual float GetSpeed() = 0;
+  virtual bool SupportsTempo() { return false; }
+
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 

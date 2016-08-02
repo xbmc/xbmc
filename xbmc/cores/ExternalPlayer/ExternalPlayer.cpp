@@ -584,12 +584,12 @@ int64_t CExternalPlayer::GetTotalTime() // in milliseconds
   return (int64_t)m_totalTime * 1000;
 }
 
-void CExternalPlayer::SetSpeed(int iSpeed)
+void CExternalPlayer::SetSpeed(float iSpeed)
 {
-  m_speed = iSpeed;
+  m_speed = static_cast<int>(iSpeed);
 }
 
-int CExternalPlayer::GetSpeed()
+float CExternalPlayer::GetSpeed()
 {
   return m_speed;
 }

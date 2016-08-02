@@ -61,8 +61,8 @@ public:
   virtual void SetDynamicRangeCompression(long drc);
   virtual void GetAudioInfo( std::string& strAudioInfo) {}
   virtual void GetVideoInfo( std::string& strVideoInfo) {}
-  virtual void SetSpeed(int iSpeed = 0) override;
-  virtual int GetSpeed() override;
+  virtual void SetSpeed(float speed = 0) override;
+  virtual float GetSpeed() override;
   virtual int GetCacheLevel() const;
   virtual int64_t GetTotalTime();
   virtual void SetTotalTime(int64_t time);

@@ -3467,26 +3467,26 @@ int64_t CVideoPlayer::GetTotalTime()
   return GetTotalTimeInMsec();
 }
 
-void CVideoPlayer::SetSpeed(int iSpeed)
+void CVideoPlayer::SetSpeed(float speed)
 {
   // can't rewind in menu as seeking isn't possible
   // forward is fine
-  if (iSpeed < 0 && IsInMenu())
+  if (speed < 0 && IsInMenu())
     return;
 
   if (!CanSeek())
     return;
   
-  m_newPlaySpeed = iSpeed * DVD_PLAYSPEED_NORMAL;
-  SetPlaySpeed(iSpeed * DVD_PLAYSPEED_NORMAL);
+  m_newPlaySpeed = speed * DVD_PLAYSPEED_NORMAL;
+  SetPlaySpeed(speed * DVD_PLAYSPEED_NORMAL);
 }
 
-int CVideoPlayer::GetSpeed()
+float CVideoPlayer::GetSpeed()
 {
   if (m_playSpeed != m_newPlaySpeed)
-    return m_newPlaySpeed / DVD_PLAYSPEED_NORMAL;
+    return (float)m_newPlaySpeed / DVD_PLAYSPEED_NORMAL;
 
-  return m_playSpeed / DVD_PLAYSPEED_NORMAL;
+  return (float)m_playSpeed / DVD_PLAYSPEED_NORMAL;
 }
 
 bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset /*= true*/)

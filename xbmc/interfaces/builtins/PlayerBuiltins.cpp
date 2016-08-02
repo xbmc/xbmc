@@ -138,23 +138,27 @@ static int PlayerControl(const std::vector<std::string>& params)
   {
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
-      int iPlaySpeed = g_application.m_pPlayer->GetPlaySpeed();
-      if (paramlow == "rewind" && iPlaySpeed == 1) // Enables Rewinding
-        iPlaySpeed *= -2;
-      else if (paramlow ==  "rewind" && iPlaySpeed > 1) //goes down a notch if you're FFing
-        iPlaySpeed /= 2;
-      else if (paramlow == "forward" && iPlaySpeed < 1) //goes up a notch if you're RWing
+      float playSpeed = g_application.m_pPlayer->GetPlaySpeed();
+      if (playSpeed >= 0.75 && playSpeed <= 1.55)
+        playSpeed = 1;
+
+      if (paramlow == "rewind" && playSpeed == 1) // Enables Rewinding
+        playSpeed *= -2;
+      else if (paramlow == "rewind" && playSpeed > 1) //goes down a notch if you're FFing
+        playSpeed /= 2;
+      else if (paramlow == "forward" && playSpeed < 1) //goes up a notch if you're RWing
       {
-        iPlaySpeed /= 2;
-        if (iPlaySpeed == -1) iPlaySpeed = 1;
+        playSpeed /= 2;
+        if (playSpeed == -1)
+          playSpeed = 1;
       }
       else
-        iPlaySpeed *= 2;
+        playSpeed *= 2;
 
-      if (iPlaySpeed > 32 || iPlaySpeed < -32)
-        iPlaySpeed = 1;
+      if (playSpeed > 32 || playSpeed < -32)
+        playSpeed = 1;
 
-      g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed);
+      g_application.m_pPlayer->SetPlaySpeed(playSpeed);
     }
   }
   else if (paramlow == "next")

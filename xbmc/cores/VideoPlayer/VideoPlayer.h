@@ -299,8 +299,9 @@ public:
   virtual bool SeekTimeRelative(int64_t iTime);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
-  virtual void SetSpeed(int iSpeed) override;
-  virtual int GetSpeed() override;
+  virtual void SetSpeed(float speed) override;
+  virtual float GetSpeed() override;
+  virtual bool SupportsTempo() override { return true; }
   virtual bool OnAction(const CAction &action);
 
   virtual int GetSourceBitrate();

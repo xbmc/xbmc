@@ -602,12 +602,12 @@ bool CUPnPPlayer::OnAction(const CAction &action)
   }
 }
 
-void CUPnPPlayer::SetSpeed(int iSpeed)
+void CUPnPPlayer::SetSpeed(float speed)
 {
 
 }
 
-int CUPnPPlayer::GetSpeed()
+float CUPnPPlayer::GetSpeed()
 {
   if (IsPaused())
     return 0;
