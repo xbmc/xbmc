@@ -81,16 +81,6 @@ bool CRendererAML::Supports(EINTERLACEMETHOD method)
   return false;
 }
 
-bool CRendererAML::Supports(EDEINTERLACEMODE mode)
-{
-  if(mode == VS_DEINTERLACEMODE_OFF
-  || mode == VS_DEINTERLACEMODE_AUTO
-  || mode == VS_DEINTERLACEMODE_FORCE)
-    return true;
-
-  return false;
-}
-
 bool CRendererAML::Supports(ESCALINGMETHOD method)
 {
   return false;
