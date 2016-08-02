@@ -1914,6 +1914,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\DllLibCurl.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\EFileFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\File.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5079,6 +5082,9 @@
     <ClInclude Include="..\..\xbmc\filesystem\DllLibNfs.h">
       <Filter>filesystem</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\xbmc\filesystem\EFileFile.h">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClInclude Include="..\..\xbmc\filesystem\File.h">
       <Filter>filesystem</Filter>
     </ClInclude>

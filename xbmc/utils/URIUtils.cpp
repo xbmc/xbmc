@@ -18,15 +18,19 @@
  *
  */
 
+#include "filesystem/File.h"
 #include "network/Network.h"
 #include "URIUtils.h"
 #include "Application.h"
 #include "FileItem.h"
+#include "filesystem/EFileFile.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
+#include "storage/MediaManager.h"
 #include "URL.h"
 #include "StringUtils.h"
 
@@ -251,6 +255,49 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
   }
 }
 
+std::string URIUtils::GetOpticalMediaPath()
+{
+#ifdef HAS_DVD_DRIVE
+  if (g_mediaManager.HasOpticalDrive() && g_mediaManager.IsDiscInDrive())
+    return GetOpticalMediaPath(g_mediaManager.GetDiscPath());
+#endif
+  return "";
+}
+
+std::string URIUtils::GetOpticalMediaPath(const std::string& filename)
+{
+  std::string path;
+  std::string dvdPath;
+  path = URIUtils::AddFileToFolder(filename, "VIDEO_TS.IFO");
+  if (CFile::Exists(path))
+    dvdPath = path;
+  else
+  {
+    dvdPath = URIUtils::AddFileToFolder(filename, "VIDEO_TS");
+    path = URIUtils::AddFileToFolder(dvdPath, "VIDEO_TS.IFO");
+    dvdPath.clear();
+    if (CFile::Exists(path))
+      dvdPath = path;
+  }
+#ifdef HAVE_LIBBLURAY
+  if (dvdPath.empty())
+  {
+    path = URIUtils::AddFileToFolder(filename, "index.bdmv");
+    if (CFile::Exists(path))
+      dvdPath = path;
+    else
+    {
+      dvdPath = URIUtils::AddFileToFolder(filename, "BDMV");
+      path = URIUtils::AddFileToFolder(dvdPath, "index.bdmv");
+      dvdPath.clear();
+      if (CFile::Exists(path))
+        dvdPath = path;
+    }
+  }
+#endif
+  return dvdPath;
+}
+
 bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip")
@@ -258,7 +305,8 @@ bool URIUtils::HasParentInHostname(const CURL& url)
       || url.IsProtocol("apk")
       || url.IsProtocol("bluray")
       || url.IsProtocol("udf")
-      || url.IsProtocol("xbt");
+      || url.IsProtocol("xbt")
+      || url.IsProtocol("efile");
 }
 
 bool URIUtils::HasEncodedHostname(const CURL& url)
@@ -302,14 +350,14 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     if (!dir.GetDirectory(url, items))
       return false;
     items[0]->m_strDVDLabel = GetDirectory(items[0]->GetPath());
-    if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
+    if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip") || IsProtocol(items[0]->m_strDVDLabel, "efile"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip"))
+      if (IsProtocol(items[0]->m_strDVDLabel, "rar") || IsProtocol(items[0]->m_strDVDLabel, "zip") || IsProtocol(items[0]->m_strDVDLabel, "efile"))
         items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
         items[i]->SetPath(items[i]->m_strDVDLabel);
@@ -776,6 +824,23 @@ bool URIUtils::IsAPK(const std::string& strFile)
 bool URIUtils::IsZIP(const std::string& strFile) // also checks for comic books!
 {
   return HasExtension(strFile, ".zip|.cbz");
+}
+
+bool URIUtils::IsDiscImage(const std::string& strFile)
+{
+  return HasExtension(strFile, ".img|.iso|.nrg") ||
+        (IsEFileStub(strFile) && 
+        IsDiscImage(CEFileFile::GetTranslatedPath(CURL(strFile))));
+}
+
+bool URIUtils::IsDiscStub(const std::string& strFile)
+{
+  return HasExtension(strFile, ".disc");
+}
+
+bool URIUtils::IsEFileStub(const std::string& strFile)
+{
+  return HasExtension(strFile, ".efile");
 }
 
 bool URIUtils::IsArchive(const std::string& strFile)

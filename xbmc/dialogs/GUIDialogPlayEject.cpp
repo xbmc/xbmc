@@ -18,10 +18,14 @@
  *
  */
 
+#include "Autorun.h"
+#include "filesystem/EFileFile.h"
 #include "GUIDialogPlayEject.h"
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
+#include "URL.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
@@ -29,6 +33,11 @@
 
 #define ID_BUTTON_PLAY      11
 #define ID_BUTTON_EJECT     10
+
+using namespace XFILE;
+
+std::string stubOriginal;
+bool isDisc;
 
 CGUIDialogPlayEject::CGUIDialogPlayEject()
     : CGUIDialogYesNo(WINDOW_DIALOG_PLAY_EJECT)
@@ -46,7 +55,7 @@ bool CGUIDialogPlayEject::OnMessage(CGUIMessage& message)
     int iControl = message.GetSenderId();
     if (iControl == ID_BUTTON_PLAY)
     {
-      if (g_mediaManager.IsDiscInDrive())
+      if (CFile::Exists(stubOriginal))
       {
         m_bConfirmed = true;
         Close();
@@ -56,7 +65,13 @@ bool CGUIDialogPlayEject::OnMessage(CGUIMessage& message)
     }
     if (iControl == ID_BUTTON_EJECT)
     {
-      g_mediaManager.ToggleTray();
+#ifdef HAS_DVD_DRIVE
+      if (isDisc)
+        g_mediaManager.ToggleTray();
+      else
+#endif
+        Close();
+
       return true;
     }
   }
@@ -66,14 +81,16 @@ bool CGUIDialogPlayEject::OnMessage(CGUIMessage& message)
 
 void CGUIDialogPlayEject::FrameMove()
 {
-  CONTROL_ENABLE_ON_CONDITION(ID_BUTTON_PLAY, g_mediaManager.IsDiscInDrive());
+  if (isDisc)
+    stubOriginal = URIUtils::GetOpticalMediaPath();
+  CONTROL_ENABLE_ON_CONDITION(ID_BUTTON_PLAY, CFile::Exists(stubOriginal));
 
   CGUIDialogYesNo::FrameMove();
 }
 
 void CGUIDialogPlayEject::OnInitWindow()
 {
-  if (g_mediaManager.IsDiscInDrive())
+  if (CFile::Exists(stubOriginal))
   {
     m_defaultControl = ID_BUTTON_PLAY;
   }
@@ -89,9 +106,32 @@ void CGUIDialogPlayEject::OnInitWindow()
 bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
   unsigned int uiAutoCloseTime /* = 0 */)
 {
-  // Make sure we're actually dealing with a Disc Stub
-  if (!item.IsDiscStub())
+  // Make sure we're actually dealing with a Stub
+  if (!item.IsEFileStub() && !item.IsDiscStub())
     return false;
+
+  CURL stubUrl = item.GetURL();
+  isDisc = item.IsDiscStub();
+
+  int headingStr;
+  int line0Str;
+  int ejectButtonStr;
+
+  if (isDisc)
+  {
+    headingStr = 219;
+    line0Str = 429;
+    ejectButtonStr = 13391;
+  }
+  else
+  {
+    stubOriginal = CEFileFile::GetTranslatedPath(stubUrl);
+    if (CFile::Exists(stubOriginal))
+      return true;
+    headingStr = 295;
+    line0Str = 472;
+    ejectButtonStr = 13460;
+  }
 
   // Create the dialog
   CGUIDialogPlayEject * pDialog = (CGUIDialogPlayEject *)g_windowManager.
@@ -101,30 +141,20 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
 
   // Figure out Lines 1 and 2 of the dialog
   std::string strLine1, strLine2;
-  CXBMCTinyXML discStubXML;
-  if (discStubXML.LoadFile(item.GetPath()))
-  {
-    TiXmlElement * pRootElement = discStubXML.RootElement();
-    if (!pRootElement || strcmpi(pRootElement->Value(), "discstub") != 0)
-      CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
-    else
-    {
-      XMLUtils::GetString(pRootElement, "title", strLine1);
-      XMLUtils::GetString(pRootElement, "message", strLine2);
-    }
-  }
+  CEFileFile::GetMessages(stubUrl, strLine1, strLine2);
+
 
   // Use the label for Line 1 if not defined
   if (strLine1.empty())
     strLine1 = item.GetLabel();
 
   // Setup dialog parameters
-  pDialog->SetHeading(CVariant{219});
-  pDialog->SetLine(0, CVariant{429});
+  pDialog->SetHeading(CVariant{headingStr});
+  pDialog->SetLine(0, CVariant{line0Str});
   pDialog->SetLine(1, CVariant{std::move(strLine1)});
   pDialog->SetLine(2, CVariant{std::move(strLine2)});
   pDialog->SetChoice(ID_BUTTON_PLAY - 10, 208);
-  pDialog->SetChoice(ID_BUTTON_EJECT - 10, 13391);
+  pDialog->SetChoice(ID_BUTTON_EJECT - 10, ejectButtonStr);
   if (uiAutoCloseTime)
     pDialog->SetAutoClose(uiAutoCloseTime);
 

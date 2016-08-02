@@ -780,7 +780,8 @@ bool CVideoPlayer::OpenInputStream()
   // correct the filename if needed
   std::string filename(m_item.GetPath());
   if (URIUtils::IsProtocol(filename, "dvd") ||
-      StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
+      StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo") || 
+      URIUtils::IsDiscStub(filename))
   {
     m_item.SetPath(g_mediaManager.TranslateDevicePath(""));
   }
