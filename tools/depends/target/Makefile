@@ -41,7 +41,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  DEPENDS += mdnsresponder google-breakpad libuuid
+  DEPENDS += mdnsresponder libuuid
   CROSSGUID_DEPS = libuuid
 endif
 
