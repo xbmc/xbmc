@@ -640,6 +640,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
   m_streamPlayerSpeed = DVD_PLAYSPEED_NORMAL;
+  m_canTempo = false;
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
@@ -746,6 +747,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
 
   m_HasVideo = false;
   m_HasAudio = false;
+  m_canTempo = false;
 
   CLog::Log(LOGNOTICE, "VideoPlayer: finished waiting");
   m_renderManager.UnInit();
@@ -839,6 +841,16 @@ bool CVideoPlayer::OpenInputStream()
   m_dvd.Clear();
   m_errorCount = 0;
   m_ChannelEntryTimeOut.SetInfinite();
+
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) &&
+      !m_pInputStream->IsRealtime())
+  {
+    m_canTempo = true;
+  }
+  else
+  {
+    m_canTempo = false;
+  }
 
   return true;
 }
@@ -3487,6 +3499,11 @@ float CVideoPlayer::GetSpeed()
     return (float)m_newPlaySpeed / DVD_PLAYSPEED_NORMAL;
 
   return (float)m_playSpeed / DVD_PLAYSPEED_NORMAL;
+}
+
+bool CVideoPlayer::SupportsTempo()
+{
+  return m_canTempo;
 }
 
 bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset /*= true*/)

@@ -301,7 +301,7 @@ public:
   virtual int64_t GetTotalTime();
   virtual void SetSpeed(float speed) override;
   virtual float GetSpeed() override;
-  virtual bool SupportsTempo() override { return true; }
+  virtual bool SupportsTempo() override;
   virtual bool OnAction(const CAction &action);
 
   virtual int GetSourceBitrate();
@@ -466,6 +466,7 @@ protected:
     int lastseekpts;
     double  lastabstime;
   } m_SpeedState;
+  std::atomic_bool m_canTempo;
 
   int m_errorCount;
   double m_offset_pts;
