@@ -84,7 +84,6 @@ private:
   std::vector<InfoTagType> m_itemTypes;
   CCriticalSection m_section;
 
-  void RegisterListProvider();
   bool UpdateURL();
   bool UpdateLimit();
   bool UpdateSort();
