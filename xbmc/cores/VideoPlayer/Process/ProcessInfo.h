@@ -58,6 +58,10 @@ public:
   void SetAudioBitsPerSample(int bitsPerSample);
   int GetAudioBitsPerSampe();
 
+  // render info
+  void SetRenderClockSync(bool enabled);
+  bool IsRenderClockSync();
+
 protected:
   CProcessInfo();
 
@@ -78,4 +82,8 @@ protected:
   int m_audioSampleRate;
   int m_audioBitsPerSample;
   CCriticalSection m_audioCodecSection;
+
+  // render info
+  CCriticalSection m_renderSection;
+  bool m_isClockSync;
 };
