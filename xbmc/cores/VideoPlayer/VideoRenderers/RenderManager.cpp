@@ -1398,10 +1398,18 @@ void CRenderManager::CheckEnableClockSync()
 
   if (m_fps != 0)
   {
-    if (g_graphicsContext.GetFPS() >= m_fps)
-      diff = fmod(g_graphicsContext.GetFPS(), m_fps);
+    float fps = m_fps;
+    double refreshrate, clockspeed;
+    int missedvblanks;
+    if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
+    {
+      fps *= clockspeed;
+    }
+
+    if (g_graphicsContext.GetFPS() >= fps)
+      diff = fmod(g_graphicsContext.GetFPS(), fps);
     else
-      diff = m_fps - g_graphicsContext.GetFPS();
+      diff = fps - g_graphicsContext.GetFPS();
   }
 
   if (diff < 0.01)
