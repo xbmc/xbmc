@@ -24,6 +24,14 @@
 
 using namespace jni;
 
+std::string CJNIEnvironment::MEDIA_MOUNTED = "mounted";
+
+void CJNIEnvironment::PopulateStaticFields()
+{
+  jhclass c = find_class("android/os/Environment");
+  CJNIEnvironment::MEDIA_MOUNTED          = jcast<std::string>(get_static_field<jhstring>(c,"MEDIA_MOUNTED"));
+}
+
 std::string CJNIEnvironment::getExternalStorageState()
 {
   return jcast<std::string>(call_static_method<jhstring>("android/os/Environment",

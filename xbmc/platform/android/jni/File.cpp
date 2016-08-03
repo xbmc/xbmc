@@ -26,5 +26,11 @@ using namespace jni;
 std::string CJNIFile::getAbsolutePath()
 {
   return jcast<std::string>(call_method<jhstring>(m_object,
-    "getAbsolutePath", "()Ljava/lang/String;"));
+                                                  "getAbsolutePath", "()Ljava/lang/String;"));
+}
+
+int64_t CJNIFile::getUsableSpace()
+{
+  return call_method<jlong>(m_object,
+                            "getUsableSpace", "()J");
 }
