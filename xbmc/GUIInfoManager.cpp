@@ -8674,10 +8674,91 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
   }
   else if (m_currentFile->HasPVRRecordingInfoTag())
   {
+    const CPVRRecordingPtr tag(m_currentFile->GetPVRRecordingInfoTag());
+
     switch (item)
     {
-    case VIDEOPLAYER_PLOT:
-      return m_currentFile->GetPVRRecordingInfoTag()->m_strPlot;
+      case VIDEOPLAYER_TITLE:
+        return tag->m_strTitle;
+
+      case VIDEOPLAYER_GENRE:
+        return StringUtils::Join(tag->m_genre, g_advancedSettings.m_videoItemSeparator);
+
+      case VIDEOPLAYER_PLOT:
+        return tag->m_strPlot;
+
+      case VIDEOPLAYER_PLOT_OUTLINE:
+        return tag->m_strPlotOutline;
+
+      case VIDEOPLAYER_STARTTIME:
+        return tag->RecordingTimeAsLocalTime().GetAsLocalizedTime("", false);
+
+      case VIDEOPLAYER_ENDTIME:
+        return (tag->RecordingTimeAsLocalTime() + tag->m_duration).GetAsLocalizedTime("", false);
+
+      case VIDEOPLAYER_YEAR:
+        if (tag->HasYear())
+          return StringUtils::Format("%i", tag->GetYear());
+        break;
+
+      case VIDEOPLAYER_EPISODE:
+        if (tag->m_iEpisode > 0)
+        {
+          if (tag->m_iEpisode == 0) // prefix episode with 'S'
+            return StringUtils::Format("S%i", tag->m_iEpisode);
+          else
+            return StringUtils::Format("%i", tag->m_iEpisode);
+        }
+        break;
+
+      case VIDEOPLAYER_SEASON:
+        if (tag->m_iSeason > 0)
+          return StringUtils::Format("%i", tag->m_iSeason);
+        break;
+
+      case VIDEOPLAYER_EPISODENAME:
+        return tag->EpisodeName();
+
+      case VIDEOPLAYER_CHANNEL_NAME:
+        return tag->m_strChannelName;
+
+      case VIDEOPLAYER_CHANNEL_NUMBER:
+      {
+        const CPVRChannelPtr channel(tag->Channel());
+        if (channel)
+          return StringUtils::Format("%i", channel->ChannelNumber());
+        break;
+      }
+
+      case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
+      {
+        const CPVRChannelPtr channel(tag->Channel());
+        if (channel)
+          return StringUtils::Format("%i", channel->SubChannelNumber());
+        break;
+      }
+
+      case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
+      {
+        const CPVRChannelPtr channel(tag->Channel());
+        if (channel)
+          return channel->FormattedChannelNumber();
+        break;
+      }
+
+      case VIDEOPLAYER_CHANNEL_GROUP:
+      {
+        if (!tag->IsRadio())
+          return g_PVRManager.GetPlayingTVGroupName();
+        break;
+      }
+
+      case VIDEOPLAYER_PLAYCOUNT:
+      {
+        if (tag->m_playCount > 0)
+          return StringUtils::Format("%i", tag->m_playCount);
+        break;
+      }
     }
   }
   else if (m_currentFile->HasVideoInfoTag())
