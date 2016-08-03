@@ -294,7 +294,13 @@ void CDirectoryProvider::Reset(bool immediately /* = false */)
     m_currentSort.sortOrder = SortOrderAscending;
     m_currentLimit = 0;
     m_updateState = OK;
-    RegisterListProvider();
+
+    if (m_isAnnounced)
+    {
+      m_isAnnounced = false;
+      CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+      ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
+    }
   }
 }
 
@@ -374,35 +380,21 @@ bool CDirectoryProvider::IsUpdating() const
   return m_jobID || m_updateState == DONE || m_updateState == INVALIDATED;
 }
 
-void CDirectoryProvider::RegisterListProvider()
+bool CDirectoryProvider::UpdateURL()
 {
   CSingleLock lock(m_section);
+  std::string value(m_url.GetLabel(m_parentID, false));
+  if (value == m_currentUrl)
+    return false;
+
+  m_currentUrl = value;
+
   if (!m_isAnnounced)
   {
     m_isAnnounced = true;
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
     ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnEvent);
   }
-  else if (m_isAnnounced)
-  {
-    m_isAnnounced = false;
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
-    ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
-  }
-}
-
-bool CDirectoryProvider::UpdateURL()
-{
-  {
-    CSingleLock lock(m_section);
-    std::string value(m_url.GetLabel(m_parentID, false));
-    if (value == m_currentUrl)
-      return false;
-
-    m_currentUrl = value;
-  }
-
-  RegisterListProvider();
   return true;
 }
 
