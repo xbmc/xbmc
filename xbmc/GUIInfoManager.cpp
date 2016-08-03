@@ -10945,8 +10945,8 @@ bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
   return m_playerShowInfo &&
          g_application.m_pPlayer->IsPlaying() &&
-         m_currentFile->HasPVRChannelInfoTag() &&
-         !g_PVRManager.IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag());
+         (g_application.m_pPlayer->IsSwitchingChannels() ||
+          (m_currentFile->HasPVRChannelInfoTag() && !g_PVRManager.IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag())));
 }
 
 CEpgInfoTagPtr CGUIInfoManager::GetEpgInfoTag() const

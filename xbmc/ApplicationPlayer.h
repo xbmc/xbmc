@@ -176,6 +176,7 @@ public:
   void  SetVideoStream(int iStream);
   void  SetVolume(float volume);
   bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
+  bool  IsSwitchingChannels() const;
   void  SetSpeed(float speed);
   bool SupportsTempo();
 

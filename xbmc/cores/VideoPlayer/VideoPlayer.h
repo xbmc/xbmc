@@ -314,6 +314,7 @@ public:
   virtual std::string GetPlayingTitle();
 
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
+  virtual bool IsSwitchingChannels() const;
 
   virtual void FrameMove();
   virtual bool HasFrame();
@@ -550,6 +551,7 @@ protected:
 
   bool m_HasVideo;
   bool m_HasAudio;
+  bool m_bIsSwitchingChannels;
 
   std::atomic<bool> m_displayLost;
 

@@ -644,6 +644,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
+  m_bIsSwitchingChannels = false;
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
@@ -748,6 +749,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   m_HasVideo = false;
   m_HasAudio = false;
   m_canTempo = false;
+  m_bIsSwitchingChannels = false;
 
   CLog::Log(LOGNOTICE, "VideoPlayer: finished waiting");
   m_renderManager.UnInit();
@@ -1068,6 +1070,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
         if(m_CurrentAudio.id < 0)
           m_HasAudio = false;
 
+        m_bIsSwitchingChannels = false;
         return true;
     }
 
@@ -4459,6 +4462,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
       {
         // Offset from key codes back to button number
         int channel = (int) action.GetAmount();
+        m_bIsSwitchingChannels = true;
         m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER, channel));
         g_infoManager.SetDisplayAfterSeek();
         ShowPVRChannelInfo();
@@ -4999,10 +5003,17 @@ bool CVideoPlayer::SwitchChannel(const CPVRChannelPtr &channel)
   UpdateApplication(0);
   UpdatePlayState(0);
 
+  m_bIsSwitchingChannels = true;
+
   /* select the new channel */
   m_messenger.Put(new CDVDMsgType<CPVRChannelPtr>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
 
   return true;
+}
+
+bool CVideoPlayer::IsSwitchingChannels() const
+{
+  return m_bIsSwitchingChannels;
 }
 
 void CVideoPlayer::FrameMove()
