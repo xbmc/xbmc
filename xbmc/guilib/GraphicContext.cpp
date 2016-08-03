@@ -21,6 +21,7 @@
 #include "system.h"
 #include "GraphicContext.h"
 #include "Application.h"
+#include "cores/DataCacheCore.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -30,6 +31,7 @@
 #include "TextureManager.h"
 #include "input/InputManager.h"
 #include "GUIWindowManager.h"
+#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 
@@ -977,7 +979,7 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 
 void CGraphicContext::Flip(bool rendered, bool videoLayer)
 {
-  if (IsFullScreenVideo())
+  if (IsFullScreenVideo() && CServiceBroker::GetDataCacheCore().IsRenderClockSync())
     g_Windowing.FinishPipeline();
 
   g_Windowing.PresentRender(rendered, videoLayer);
