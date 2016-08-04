@@ -14,7 +14,7 @@ else
   cd $WORKSPACE;make -j$BUILDTHREADS $TARGET
 fi
 $RUN_SIGNSTEP
-mv tools/android/packaging/Kodi.symbols*.tar.bz2 $WORKSPACE/
+
 cd $WORKSPACE
 
 #rename for upload

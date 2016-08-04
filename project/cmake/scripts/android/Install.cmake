@@ -14,9 +14,6 @@ if(NOT ZIPALIGN_EXECUTABLE)
 endif()
 
 # Configure files into packaging environment.
-if(BREAKPAD_FOUND)
-  set(USE_BREAKPAD 1)
-endif()
 configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/Makefile.in
                ${CMAKE_BINARY_DIR}/tools/android/packaging/Makefile @ONLY)
 configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/apksign

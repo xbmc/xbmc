@@ -25,11 +25,6 @@
 #include "linux/RBP.h"
 #endif
 
-#if defined(HAVE_BREAKPAD)
-#include "filesystem/SpecialProtocol.h"
-#include "client/linux/handler/exception_handler.h"
-#endif
-
 #ifdef TARGET_WINDOWS
 #include <mmdeviceapi.h>
 #include "platform/win32/IMMNotificationClient.h"
@@ -59,18 +54,6 @@ extern "C" int XBMC_Run(bool renderGUI)
     CMessagePrinter::DisplayError("ERROR: Unable to create application. Exiting");
     return status;
   }
-
-#if defined(HAVE_BREAKPAD)
-  // Must have our TEMP dir fixed first
-  std::string tempPath = CSpecialProtocol::TranslatePath("special://temp/");
-  google_breakpad::MinidumpDescriptor descriptor(tempPath.c_str());
-  google_breakpad::ExceptionHandler eh(descriptor,
-                                       NULL,
-                                       NULL,
-                                       NULL,
-                                       true,
-                                       -1);
-#endif
 
 #ifdef TARGET_RASPBERRY_PI
   if(!g_RBP.Initialize())
