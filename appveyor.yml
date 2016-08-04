@@ -53,10 +53,12 @@ build_script:
         }
         # Copy all libs and includes under Kodi's dependencies folder
         xcopy /s /y mingw32\*.* .
-        xcopy /s /y mingw32\bin\*.dll $env:APPVEYOR_BUILD_FOLDER\system\players\VideoPlayer
+        xcopy /s /y mingw32\bin\*.dll $env:APPVEYOR_BUILD_FOLDER\system\
         # Build  
-        cd $env:APPVEYOR_BUILD_FOLDER\project\Win32BuildSetup
-        msbuild "$env:APPVEYOR_BUILD_FOLDER\project\VS2010Express\XBMC for Windows.sln" /p:Configuration="$env:CONFIG"
+        mkdir $env:APPVEYOR_BUILD_FOLDER\kodi-build
+        cd $env:APPVEYOR_BUILD_FOLDER\kodi-build
+        cmake -G "Visual Studio 14" ..\project\cmake
+        cmake --build . --target all_build --config RelWithDebInfo
       }
   
   #

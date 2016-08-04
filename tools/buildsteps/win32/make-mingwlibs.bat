@@ -2,7 +2,7 @@
 SETLOCAL
 
 rem batch file to compile mingw libs via BuildSetup
-SET WORKDIR=%WORKSPACE%
+SET WORKDIR=%base_dir%
 rem set M$ env
 call "%VS140COMNTOOLS%\..\..\VC\bin\vcvars32.bat" || exit /b 1
 
