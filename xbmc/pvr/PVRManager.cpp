@@ -485,15 +485,21 @@ bool CPVRManager::Load(bool bShowProgress)
   if (!bShowProgress)
     HideProgressDialog();
 
-  /* load at least one client */
+   /* load all clients */
   while (IsInitialising() && m_addons && !m_addons->HasCreatedClients())
     Sleep(50);
 
-  if (!IsInitialising() || !m_addons->HasCreatedClients())
+   CLog::Log(LOGDEBUG, "PVRManager - Connected clients = %d, enabled clients = %d", m_addons->CreatedClientAmount(), m_addons->EnabledClientAmount());
+   while (IsInitialising() && m_addons && m_addons->CreatedClientAmount()< m_addons->EnabledClientAmount())
+  Sleep(50);
+   CLog::Log(LOGDEBUG, "PVRManager - Connected clients = %d, enabled clients = %d", m_addons->CreatedClientAmount(), m_addons->EnabledClientAmount());
+
+ if (!IsInitialising() || !m_addons->HasCreatedClients())
     return false;
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
-
+  
+  
   /* reset observer for pvr windows */
   for (std::size_t i = 0; i != ARRAY_SIZE(m_pvrWindowIds); i++)
   {
