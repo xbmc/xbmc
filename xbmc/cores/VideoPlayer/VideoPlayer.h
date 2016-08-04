@@ -431,6 +431,7 @@ protected:
 
   bool OpenInputStream();
   bool OpenDemuxStream();
+  void CloseDemuxer();
   void OpenDefaultStreams(bool reset = true);
 
   void UpdateApplication(double timeout);

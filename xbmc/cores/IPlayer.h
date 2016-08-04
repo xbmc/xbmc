@@ -110,6 +110,7 @@ struct SPlayerSubtitleStreamInfo
 
 struct SPlayerVideoStreamInfo
 {
+  bool valid;
   int bitrate;
   float videoAspectRatio;
   int height;
@@ -123,6 +124,7 @@ struct SPlayerVideoStreamInfo
 
   SPlayerVideoStreamInfo()
   {
+    valid = false;
     bitrate = 0;
     videoAspectRatio = 1.0f;
     height = 0;
