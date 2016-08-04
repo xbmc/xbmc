@@ -689,7 +689,7 @@ namespace PVR
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
-    CFileItem *                     m_currentFile;                 /*!< the PVR file that is currently playing */
+    CFileItemPtr                    m_currentFile;                 /*!< the PVR file that is currently playing */
     CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
@@ -770,14 +770,14 @@ namespace PVR
   class CPVRChannelSwitchJob : public CJob
   {
   public:
-    CPVRChannelSwitchJob(CFileItem* previous, CFileItem* next) : m_previous(previous), m_next(next) {}
+    CPVRChannelSwitchJob(const CFileItemPtr &previous, const CFileItemPtr & next) : m_previous(previous), m_next(next) {}
     virtual ~CPVRChannelSwitchJob() {}
     virtual const char *GetType() const { return "pvr-channel-switch"; }
 
     virtual bool DoWork();
   private:
-    CFileItem* m_previous;
-    CFileItem* m_next;
+    CFileItemPtr m_previous;
+    CFileItemPtr m_next;
   };
 
   class CPVRSearchMissingChannelIconsJob : public CJob
