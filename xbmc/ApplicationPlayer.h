@@ -66,7 +66,7 @@ class CApplicationPlayer
   XbmcThreads::EndTime m_subtitleStreamUpdate;
   int m_iSubtitleStream;
   XbmcThreads::EndTime m_speedUpdate;
-  int m_iPlaySpeed;
+  float m_fPlaySpeed;
 
 public:
   CApplicationPlayer();
@@ -77,10 +77,10 @@ public:
   void ClosePlayerGapless(std::string &playername);
   void CreatePlayer(const std::string &player, IPlayerCallback& callback);
   std::string GetCurrentPlayer();
-  int  GetPlaySpeed();
+  float  GetPlaySpeed();
   bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
-  void SetPlaySpeed(int iSpeed);
+  void SetPlaySpeed(float speed);
 
   void FrameMove();
   bool HasFrame();
@@ -176,8 +176,9 @@ public:
   void  SetVideoStream(int iStream);
   void  SetVolume(float volume);
   bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
-  void  SetSpeed(int iSpeed);
-  
+  void  SetSpeed(float speed);
+  bool SupportsTempo();
+
   protected:
     std::shared_ptr<IPlayer> GetInternal() const;
 };

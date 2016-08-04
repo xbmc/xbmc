@@ -361,7 +361,8 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
 
 void CGUIWindowFullScreen::FrameMove()
 {
-  if (g_application.m_pPlayer->GetPlaySpeed() != 1)
+  float playspeed = g_application.m_pPlayer->GetPlaySpeed();
+  if (playspeed < 0.75 || playspeed > 1.55)
     g_infoManager.SetDisplayAfterSeek();
 
   if (!g_application.m_pPlayer->HasPlayer())

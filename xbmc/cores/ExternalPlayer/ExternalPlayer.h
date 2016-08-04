@@ -67,8 +67,8 @@ public:
   virtual void SeekTime(int64_t iTime);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
-  virtual void SetSpeed(int iSpeed) override;
-  virtual int GetSpeed() override;
+  virtual void SetSpeed(float iSpeed) override;
+  virtual float GetSpeed() override;
   virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork() {};
   

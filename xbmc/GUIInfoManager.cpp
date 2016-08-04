@@ -506,7 +506,10 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "isinternetstream", PLAYER_ISINTERNETSTREAM },
                                   { "pauseenabled",     PLAYER_CAN_PAUSE },
                                   { "seekenabled",      PLAYER_CAN_SEEK },
-                                  { "channelpreviewactive", PLAYER_IS_CHANNEL_PREVIEW_ACTIVE}};
+                                  { "channelpreviewactive", PLAYER_IS_CHANNEL_PREVIEW_ACTIVE},
+                                  { "tempoenabled", PLAYER_SUPPORTS_TEMPO},
+                                  { "istempo", PLAYER_IS_TEMPO},
+                                  { "playspeed", PLAYER_PLAYSPEED}};
 
 /// \page modules__General__List_of_gui_access
 /// @{
@@ -5896,6 +5899,10 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       }
     }
     break;
+  case PLAYER_PLAYSPEED:
+      if(g_application.m_pPlayer->IsPlaying())
+        strLabel = StringUtils::Format("%.2f", g_application.m_pPlayer->GetPlaySpeed());
+      break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -6963,7 +6970,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = g_application.m_pPlayer->IsPlayingVideo();
       break;
     case PLAYER_PLAYING:
-      bReturn = g_application.m_pPlayer->GetPlaySpeed() == 1;
+      {
+        float speed = g_application.m_pPlayer->GetPlaySpeed();
+        bReturn = (speed >= 0.75 && speed <= 1.55);
+      }
       break;
     case PLAYER_PAUSED:
       bReturn = g_application.m_pPlayer->IsPausedPlayback();
@@ -6972,7 +6982,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = g_application.m_pPlayer->GetPlaySpeed() < 0;
       break;
     case PLAYER_FORWARDING:
-      bReturn = g_application.m_pPlayer->GetPlaySpeed() > 1;
+      bReturn = g_application.m_pPlayer->GetPlaySpeed() > 1.5;
       break;
     case PLAYER_REWINDING_2x:
       bReturn = g_application.m_pPlayer->GetPlaySpeed() == -2;
@@ -7012,6 +7022,15 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case PLAYER_CAN_SEEK:
       bReturn = g_application.m_pPlayer->CanSeek();
+      break;
+    case PLAYER_SUPPORTS_TEMPO:
+      bReturn = g_application.m_pPlayer->SupportsTempo();
+      break;
+    case PLAYER_IS_TEMPO:
+      {
+        float speed = g_application.m_pPlayer->GetPlaySpeed();
+        bReturn = (speed >= 0.75 && speed <= 1.55 & speed != 1);
+      }
       break;
     case PLAYER_RECORDING:
       bReturn = g_application.m_pPlayer->IsRecording();
@@ -7777,8 +7796,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   else if (info.m_info == PLAYER_TIME_SPEED)
   {
     std::string strTime;
-    if (g_application.m_pPlayer->GetPlaySpeed() != 1)
-      strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), g_application.m_pPlayer->GetPlaySpeed());
+    float speed = g_application.m_pPlayer->GetPlaySpeed();
+    if (speed < 0.8 || speed > 1.5)
+      strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), (int)speed);
     else
       strTime = GetCurrentPlayTime();
     return strTime;
