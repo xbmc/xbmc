@@ -72,12 +72,6 @@ apk-noobb: apk-clean package apk-sign
 xbmc/assets:
 	mkdir -p xbmc/assets
 
-symbols: libs
-ifeq (1,@USE_BREAKPAD@)
-	for f in xbmc/obj/local/$(CPU)/*.so; do sh ./make_symbols.sh $$f; done
-	tar -cjf @APP_NAME@.symbols-$(CPU)-`$(XBMCROOT)/tools/darwin/packaging/gitrev-posix`.tar.bz2 symbols
-endif
-
 shared:
 	mkdir -p assets
 	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./assets
@@ -140,7 +134,7 @@ xbmc/classes.dex: res
 	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
 
-package: libs symbols python xbmc/classes.dex
+package: libs python xbmc/classes.dex
 	@echo "Creating package..."
 	@cp images/@APP_NAME_LC@app-debug-skeleton.apk images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
 	@cd xbmc; $(ZIP) -r -q ../images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk lib/$(CPU) assets classes.dex
@@ -159,7 +153,6 @@ $(SRCLIBS):
 
 apk-clean:
 	rm -rf images
-	rm -rf symbols
 	rm -rf xbmc/lib
 	rm -rf xbmc/libs
 	rm -rf xbmc/assets
