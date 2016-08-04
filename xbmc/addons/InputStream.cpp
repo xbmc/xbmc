@@ -69,6 +69,18 @@ CInputStream::CInputStream(const AddonProps& props,
   }
 }
 
+bool CInputStream::CheckAPIVersion()
+{
+  std::string dllVersion = m_pStruct->GetApiVersion();
+  if (dllVersion.compare(INPUTSTREAM_API_VERSION) != 0)
+  {
+    CLog::Log(LOGERROR, "CInputStream::CheckAPIVersion - API version does not match");
+    return true;
+  }
+
+  return true;
+}
+
 void CInputStream::SaveSettings()
 {
   CAddon::SaveSettings();
