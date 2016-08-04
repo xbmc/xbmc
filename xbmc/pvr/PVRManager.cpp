@@ -93,7 +93,6 @@ const int CPVRManager::m_pvrWindowIds[12] = {
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_triggerEvent(true),
-    m_currentFile(NULL),
     m_database(NULL),
     m_bFirstStart(true),
     m_bIsSwitchingChannels(false),
@@ -247,7 +246,7 @@ void CPVRManager::Cleanup(void)
   SAFE_DELETE(m_database);
   m_triggerEvent.Set();
 
-  m_currentFile           = NULL;
+  m_currentFile.reset();
   m_bIsSwitchingChannels  = false;
   m_bEpgsCreated = false;
 
@@ -1133,9 +1132,7 @@ bool CPVRManager::OpenLiveStream(const CFileItem &fileItem)
   if ((bReturn = m_addons->OpenStream(fileItem.GetPVRChannelInfoTag(), false)) != false)
   {
     CSingleLock lock(m_critSection);
-    if(m_currentFile)
-      delete m_currentFile;
-    m_currentFile = new CFileItem(fileItem);
+    m_currentFile.reset(new CFileItem(fileItem));
 
     CPVRChannelPtr channel(m_addons->GetPlayingChannel());
     if (channel)
@@ -1157,8 +1154,7 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecordingPtr &tag)
 
   if ((bReturn = m_addons->OpenStream(tag)) != false)
   {
-    delete m_currentFile;
-    m_currentFile = new CFileItem(tag);
+    m_currentFile.reset(new CFileItem(tag));
   }
 
   return bReturn;
@@ -1178,7 +1174,7 @@ void CPVRManager::CloseStream(void)
   }
 
   m_addons->CloseStream();
-  SAFE_DELETE(m_currentFile);
+  m_currentFile.reset();
 }
 
 bool CPVRManager::PlayMedia(const CFileItem& item)
@@ -1222,8 +1218,7 @@ void CPVRManager::UpdateCurrentChannel(void)
       playingChannel &&
       !IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag()))
   {
-    delete m_currentFile;
-    m_currentFile = new CFileItem(playingChannel);
+    m_currentFile.reset(new CFileItem(playingChannel));
     UpdateItem(*m_currentFile);
   }
 }
@@ -1252,8 +1247,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     return false;
 
   g_application.SetCurrentFileItem(*m_currentFile);
-  CFileItemPtr itemptr(new CFileItem(*m_currentFile));
-  g_infoManager.SetCurrentItem(itemptr);
+  g_infoManager.SetCurrentItem(m_currentFile);
 
   CPVRChannelPtr channelTag(item.GetPVRChannelInfoTag());
   CEpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());
@@ -1409,8 +1403,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     // no need to do anything except switching m_currentFile
     if (bPreview)
     {
-      delete m_currentFile;
-      m_currentFile = new CFileItem(channel);
+      m_currentFile.reset(new CFileItem(channel));
       return true;
     }
 
@@ -1419,9 +1412,8 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
 
-  // will be deleted by CPVRChannelSwitchJob::DoWork()
-  CFileItem* previousFile = m_currentFile;
-  m_currentFile = NULL;
+  const CFileItemPtr previousFile(m_currentFile);
+  m_currentFile.reset();
 
   bool bSwitched(false);
 
@@ -1455,7 +1447,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     UpdateLastWatched(channel);
 
     CSingleLock lock(m_critSection);
-    m_currentFile = new CFileItem(channel);
+    m_currentFile.reset(new CFileItem(channel));
     m_bIsSwitchingChannels = false;
 
     CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
