@@ -81,7 +81,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strShowTitle                   = recording.strEpisodeName;
   m_iSeason                        = recording.iSeriesNumber;
   m_iEpisode                       = recording.iEpisodeNumber;
-  SetYear(recording.iYear);
+  if (recording.iYear > 0)
+    SetYear(recording.iYear);
   m_iClientId                      = iClientId;
   m_recordingTime                  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_duration                       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
