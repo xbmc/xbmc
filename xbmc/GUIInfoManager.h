@@ -198,7 +198,7 @@ public:
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
-  void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
+  void SetShowInfo(bool showinfo);
   bool GetShowInfo() const { return m_playerShowInfo; }
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool IsPlayerChannelPreviewActive() const;
@@ -353,6 +353,7 @@ protected:
 
   SPlayerVideoStreamInfo m_videoInfo;
   SPlayerAudioStreamInfo m_audioInfo;
+  bool m_isPvrChannelPreview;
 
   CCriticalSection m_critInfo;
 

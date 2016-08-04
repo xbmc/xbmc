@@ -559,6 +559,16 @@ private:
      */
     void ConnectionStateChange(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
 
+    /*!
+     * @brief Explicitly set the state of channel preview. This is when channel is displayed on OSD without actually switching
+     */
+    void SetChannelPreview(bool preview);
+
+    /*!
+     * @brief Query the state of channel preview
+     */
+    bool IsChannelPreview() const;
+
   protected:
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -655,6 +665,8 @@ private:
     ManagerState                    m_managerState;
     std::unique_ptr<CStopWatch>     m_parentalTimer;
     static const int                m_pvrWindowIds[12];
+
+    std::atomic_bool m_isChannelPreview;
   };
 
   class CPVRStartupJob : public CJob
