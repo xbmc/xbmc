@@ -38,6 +38,7 @@
 #include "cores/IPlayer.h"
 #include "FileItem.h"
 
+#include <memory>
 #include <list>
 #include <map>
 #include <vector>
@@ -323,8 +324,8 @@ protected:
   //Fullscreen OSD Stuff
   unsigned int m_AfterSeekTimeout;
   int m_seekOffset;
-  bool m_playerShowTime;
-  bool m_playerShowInfo;
+  std::atomic_bool m_playerShowTime;
+  std::atomic_bool m_playerShowInfo;
 
   // FPS counters
   float m_fps;

@@ -2797,11 +2797,13 @@ void CVideoPlayer::HandleMessages()
           // when using fast channel switching some shortcuts are taken which 
           // means we'll have to update the view mode manually
           m_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-        }else
+        }
+        else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
         }
+        ShowPVRChannelInfo();
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
@@ -2821,6 +2823,7 @@ void CVideoPlayer::HandleMessages()
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
         }
+        ShowPVRChannelInfo();
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
                pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV))
@@ -2871,6 +2874,7 @@ void CVideoPlayer::HandleMessages()
               // means we'll have to update the view mode manually
               m_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
             }
+            ShowPVRChannelInfo();
           }
           else
           {
@@ -4422,7 +4426,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
             g_infoManager.SetDisplayAfterSeek();
         }
 
-        ShowPVRChannelInfo();
         return true;
       }
 
@@ -4460,7 +4463,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
             g_infoManager.SetDisplayAfterSeek();
         }
 
-        ShowPVRChannelInfo();
         return true;
       }
 
@@ -4470,7 +4472,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
         int channel = (int) action.GetAmount();
         m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER, channel));
         g_infoManager.SetDisplayAfterSeek();
-        ShowPVRChannelInfo();
         return true;
       }
       break;
