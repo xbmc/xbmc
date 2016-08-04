@@ -5102,6 +5102,11 @@ void CVideoPlayer::GetDebugInfo(std::string &audio, std::string &video, std::str
   GetGeneralInfo(general);
 }
 
+void CVideoPlayer::UpdateClockSync(bool enabled)
+{
+  m_processInfo->SetRenderClockSync(enabled);
+}
+
 // IDispResource interface
 void CVideoPlayer::OnLostDisplay()
 {

@@ -58,7 +58,11 @@ public:
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
   int GetAudioBitsPerSampe();
-  
+
+  // render info
+  void SetRenderClockSync(bool enabled);
+  bool IsRenderClockSync();
+
 protected:
   std::atomic_bool m_hasAVInfoChanges;
 
@@ -83,4 +87,10 @@ protected:
     int sampleRate;
     int bitsPerSample;
   } m_playerAudioInfo;
+
+  CCriticalSection m_renderSection;
+  struct SRenderInfo
+  {
+    bool m_isClockSync;
+  } m_renderInfo;
 };

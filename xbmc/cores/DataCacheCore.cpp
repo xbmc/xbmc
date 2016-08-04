@@ -206,3 +206,17 @@ int CDataCacheCore::GetAudioBitsPerSampe()
 
   return m_playerAudioInfo.bitsPerSample;
 }
+
+void CDataCacheCore::SetRenderClockSync(bool enable)
+{
+  CSingleLock lock(m_renderSection);
+
+  m_renderInfo.m_isClockSync = enable;
+}
+
+bool CDataCacheCore::IsRenderClockSync()
+{
+  CSingleLock lock(m_renderSection);
+
+  return m_renderInfo.m_isClockSync;
+}

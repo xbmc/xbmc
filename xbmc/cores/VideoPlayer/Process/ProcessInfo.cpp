@@ -259,3 +259,19 @@ int CProcessInfo::GetAudioBitsPerSampe()
 
   return m_audioBitsPerSample;
 }
+
+void CProcessInfo::SetRenderClockSync(bool enabled)
+{
+  CSingleLock lock(m_renderSection);
+
+  m_isClockSync = enabled;
+
+  CServiceBroker::GetDataCacheCore().SetRenderClockSync(enabled);
+}
+
+bool CProcessInfo::IsRenderClockSync()
+{
+  CSingleLock lock(m_renderSection);
+
+  return m_isClockSync;
+}
