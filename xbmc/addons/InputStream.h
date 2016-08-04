@@ -50,6 +50,7 @@ namespace ADDON
     virtual ~CInputStream() {}
 
     virtual void SaveSettings() override;
+    virtual bool CheckAPIVersion(void) override;
 
     bool UseParent();
     bool Supports(const CFileItem &fileitem);
