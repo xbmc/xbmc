@@ -1243,6 +1243,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   CSingleLock lock(m_critSection);
+  g_infoManager.SetPlayerChannelPreview(m_currentFile && m_currentFile->HasPVRChannelInfoTag() && !IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag()));
+
   if (!m_currentFile || *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
