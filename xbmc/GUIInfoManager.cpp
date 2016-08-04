@@ -10946,7 +10946,7 @@ bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
   return m_playerShowInfo &&
          g_application.m_pPlayer->IsPlaying() &&
-         (m_bChannelPreview || g_application.m_pPlayer->IsSwitchingChannels());
+         (m_bChannelPreview || /*g_application.m_pPlayer->IsSwitchingChannels()*/ !m_videoInfo.valid);
 }
 
 void CGUIInfoManager::SetPlayerChannelPreview(bool bSet)
