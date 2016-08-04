@@ -110,6 +110,7 @@ struct SPlayerSubtitleStreamInfo
 
 struct SPlayerVideoStreamInfo
 {
+  bool valid;
   int bitrate;
   float videoAspectRatio;
   int height;
@@ -123,6 +124,7 @@ struct SPlayerVideoStreamInfo
 
   SPlayerVideoStreamInfo()
   {
+    valid = false;
     bitrate = 0;
     videoAspectRatio = 1.0f;
     height = 0;
@@ -350,6 +352,7 @@ public:
   virtual std::string GetPlayingTitle() { return ""; };
 
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) { return false; }
+  virtual bool IsSwitchingChannels() const { return false; }
 
   // Note: the following "OMX" methods are deprecated and will be removed in the future
   // They should be handled by the video renderer, not the player

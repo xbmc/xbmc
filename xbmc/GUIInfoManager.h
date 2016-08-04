@@ -201,6 +201,7 @@ public:
   bool GetShowInfo() const { return m_playerShowInfo; }
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool IsPlayerChannelPreviewActive() const;
+  void SetPlayerChannelPreview(bool bSet);
 
   std::string GetSystemHeatInfo(int info);
   CTemperature GetGPUTemperature();
@@ -313,6 +314,7 @@ protected:
   CFileItem* m_currentFile;
   std::string m_currentMovieThumb;
   CFileItem* m_currentSlide;
+  bool m_bChannelPreview;
 
   // fan stuff
   unsigned int m_lastSysHeatInfoTime;

@@ -134,7 +134,8 @@ public:
 };
 
 CGUIInfoManager::CGUIInfoManager(void) :
-    Observable()
+    Observable(),
+    m_bChannelPreview(false)
 {
   m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_fanSpeed = 0;
@@ -10945,8 +10946,12 @@ bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
   return m_playerShowInfo &&
          g_application.m_pPlayer->IsPlaying() &&
-         m_currentFile->HasPVRChannelInfoTag() &&
-         !g_PVRManager.IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag());
+         (m_bChannelPreview || /*g_application.m_pPlayer->IsSwitchingChannels()*/ !m_videoInfo.valid);
+}
+
+void CGUIInfoManager::SetPlayerChannelPreview(bool bSet)
+{
+  m_bChannelPreview = bSet;
 }
 
 CEpgInfoTagPtr CGUIInfoManager::GetEpgInfoTag() const

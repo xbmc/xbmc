@@ -666,6 +666,12 @@ bool CApplicationPlayer::SwitchChannel(const PVR::CPVRChannelPtr &channel)
   return (player && player->SwitchChannel(channel));
 }
 
+bool CApplicationPlayer::IsSwitchingChannels() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  return (player && player->IsSwitchingChannels());
+}
+
 void CApplicationPlayer::LoadPage(int p, int sp, unsigned char* buffer)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
