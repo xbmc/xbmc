@@ -61,6 +61,11 @@ if(CMAKE_BINARY_DIR STREQUAL CORE_SOURCE_DIR)
   message(WARNING "In-source build detected. It is recommended to build out-of-source.")
 endif()
 
+# Hide messages from Check*.cmake (e.g. CheckCSourceCompiles)
+if(NOT VERBOSE)
+  set(CMAKE_REQUIRED_QUIET ON)
+endif()
+
 include(modules/extra/ECMEnableSanitizers.cmake)
 include(scripts/common/GeneratorSetup.cmake)
 include(scripts/common/AddOptions.cmake)
@@ -90,12 +95,11 @@ set(INCLUDES ${CORE_SOURCE_DIR}
 find_package(PkgConfig)
 if(CMAKE_CROSSCOMPILING)
   if(PKG_CONFIG_EXECUTABLE)
-    message(STATUS "CMAKE_CROSSCOMPILING: ${CMAKE_CROSSCOMPILING}")
     set(PKG_CONFIG_FOUND TRUE)
   endif()
 endif()
 
-find_package(Threads REQUIRED)
+find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
