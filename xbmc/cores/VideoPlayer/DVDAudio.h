@@ -55,7 +55,7 @@ public:
   void Destroy();
   unsigned int AddPackets(const DVDAudioFrame &audioframe);
   double GetPlayingPts();
-  double GetCacheTime();  // returns total amount of data cached in audio output at this time
+  double GetCacheTime();
   double GetCacheTotal(); // returns total amount the audio device can buffer
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetSyncError();
