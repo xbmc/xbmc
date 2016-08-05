@@ -75,7 +75,7 @@ bool CInputStream::CheckAPIVersion()
   if (dllVersion.compare(INPUTSTREAM_API_VERSION) != 0)
   {
     CLog::Log(LOGERROR, "CInputStream::CheckAPIVersion - API version does not match");
-    return true;
+    return false;
   }
 
   return true;
