@@ -66,9 +66,6 @@ public:
   void Drain();
   void AbortAddPackets();
 
-  void SetSpeed(int iSpeed);
-  void SetResampleRatio(double ratio);
-
   double GetClock();
   double GetClockSpeed();
   IAEStream *m_pAudioStream;
