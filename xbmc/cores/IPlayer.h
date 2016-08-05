@@ -85,6 +85,7 @@ enum IPlayerSubtitleCapabilities
 
 struct SPlayerAudioStreamInfo
 {
+  bool valid;
   int bitrate;
   int channels;
   int samplerate;
@@ -95,6 +96,7 @@ struct SPlayerAudioStreamInfo
 
   SPlayerAudioStreamInfo()
   {
+    valid = false;
     bitrate = 0;
     channels = 0;
     samplerate = 0;
@@ -110,6 +112,7 @@ struct SPlayerSubtitleStreamInfo
 
 struct SPlayerVideoStreamInfo
 {
+  bool valid;
   int bitrate;
   float videoAspectRatio;
   int height;
@@ -123,6 +126,7 @@ struct SPlayerVideoStreamInfo
 
   SPlayerVideoStreamInfo()
   {
+    valid = false;
     bitrate = 0;
     videoAspectRatio = 1.0f;
     height = 0;

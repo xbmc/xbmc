@@ -9226,6 +9226,11 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
   return false;
 }
 
+void CGUIInfoManager::SetShowInfo(bool showinfo)
+{
+  m_playerShowInfo = showinfo;
+}
+
 void CGUIInfoManager::Clear()
 {
   CSingleLock lock(m_critInfo);
@@ -9276,6 +9281,8 @@ void CGUIInfoManager::UpdateAVInfo()
 
       m_videoInfo = video;
       m_audioInfo = audio;
+
+      m_isPvrChannelPreview = g_PVRManager.IsChannelPreview();
     }
   }
 }
@@ -10943,10 +10950,12 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
 
 bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
+  bool streamValid = m_videoInfo.valid;
+  if (m_currentFile->HasPVRChannelInfoTag() && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
+    streamValid = m_audioInfo.valid;
+
   return m_playerShowInfo &&
-         g_application.m_pPlayer->IsPlaying() &&
-         m_currentFile->HasPVRChannelInfoTag() &&
-         !g_PVRManager.IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag());
+         (m_isPvrChannelPreview || !streamValid);
 }
 
 CEpgInfoTagPtr CGUIInfoManager::GetEpgInfoTag() const

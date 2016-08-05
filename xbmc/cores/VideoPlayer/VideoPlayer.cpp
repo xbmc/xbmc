@@ -857,8 +857,7 @@ bool CVideoPlayer::OpenInputStream()
 
 bool CVideoPlayer::OpenDemuxStream()
 {
-  if(m_pDemuxer)
-    SAFE_DELETE(m_pDemuxer);
+  CloseDemuxer();
 
   CLog::Log(LOGNOTICE, "Creating Demuxer");
 
@@ -896,6 +895,16 @@ bool CVideoPlayer::OpenDemuxStream()
   m_offset_pts = 0;
 
   return true;
+}
+
+void CVideoPlayer::CloseDemuxer()
+{
+  delete m_pDemuxer;
+  m_pDemuxer = nullptr;
+  m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
+
+  CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
 }
 
 void CVideoPlayer::OpenDefaultStreams(bool reset)
@@ -1469,7 +1478,7 @@ void CVideoPlayer::Process()
       CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
       if(next == CDVDInputStream::NEXTSTREAM_OPEN)
       {
-        SAFE_DELETE(m_pDemuxer);
+        CloseDemuxer();
 
         SetCaching(CACHESTATE_DONE);
         CLog::Log(LOGNOTICE, "VideoPlayer: next stream, wait for old streams to be finished");
@@ -2778,21 +2787,23 @@ void CVideoPlayer::HandleMessages()
         //! a stream is not sopposed to be terminated before demuxer
         if (input && input->IsOtherStreamHack())
         {
-          SAFE_DELETE(m_pDemuxer);
+          CloseDemuxer();
         }
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
-          SAFE_DELETE(m_pDemuxer);
+          CloseDemuxer();
           m_playSpeed = DVD_PLAYSPEED_NORMAL;
 
           // when using fast channel switching some shortcuts are taken which 
           // means we'll have to update the view mode manually
           m_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-        }else
+        }
+        else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
         }
+        ShowPVRChannelInfo();
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
@@ -2800,11 +2811,11 @@ void CVideoPlayer::HandleMessages()
         CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         if (input && input->IsOtherStreamHack())
         {
-          SAFE_DELETE(m_pDemuxer);
+          CloseDemuxer();
         }
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannelPtr> *>(pMsg)->m_value))
         {
-          SAFE_DELETE(m_pDemuxer);
+          CloseDemuxer();
           m_playSpeed = DVD_PLAYSPEED_NORMAL;
         }
         else
@@ -2812,6 +2823,8 @@ void CVideoPlayer::HandleMessages()
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
           CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
         }
+        g_PVRManager.SetChannelPreview(false);
+        ShowPVRChannelInfo();
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
                pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREVIEW_PREV))
@@ -2830,7 +2843,7 @@ void CVideoPlayer::HandleMessages()
             FlushBuffers(false);
             if (input->IsOtherStreamHack())
             {
-              SAFE_DELETE(m_pDemuxer);
+              CloseDemuxer();
             }
           }
 
@@ -2853,15 +2866,17 @@ void CVideoPlayer::HandleMessages()
             else
             {
               m_ChannelEntryTimeOut.SetInfinite();
-              SAFE_DELETE(m_pDemuxer);
+              CloseDemuxer();
               m_playSpeed = DVD_PLAYSPEED_NORMAL;
 
               g_infoManager.SetDisplayAfterSeek();
+              g_PVRManager.SetChannelPreview(false);
 
               // when using fast channel switching some shortcuts are taken which 
               // means we'll have to update the view mode manually
               m_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
             }
+            ShowPVRChannelInfo();
           }
           else
           {
@@ -4187,6 +4202,8 @@ bool CVideoPlayer::ShowPVRChannelInfo(void)
     bReturn = true;
   }
 
+  CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
   return bReturn;
 }
 
@@ -4413,7 +4430,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
             g_infoManager.SetDisplayAfterSeek();
         }
 
-        ShowPVRChannelInfo();
         return true;
       }
 
@@ -4451,7 +4467,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
             g_infoManager.SetDisplayAfterSeek();
         }
 
-        ShowPVRChannelInfo();
         return true;
       }
 
@@ -4461,7 +4476,6 @@ bool CVideoPlayer::OnAction(const CAction &action)
         int channel = (int) action.GetAmount();
         m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER, channel));
         g_infoManager.SetDisplayAfterSeek();
-        ShowPVRChannelInfo();
         return true;
       }
       break;
@@ -4620,7 +4634,10 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info
     streamId = GetVideoStream();
 
   if (streamId < 0 || streamId > GetVideoStreamCount() - 1)
+  {
+    info.valid = false;
     return;
+  }
 
   SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, streamId);
   if (s.language.length() > 0)
@@ -4629,6 +4646,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, SPlayerVideoStreamInfo &info
   if (s.name.length() > 0)
     info.name = s.name;
 
+  info.valid = true;
   info.bitrate = s.bitrate;
   info.width = s.width;
   info.height = s.height;
@@ -4653,19 +4671,23 @@ void CVideoPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   if (index == CURRENT_STREAM)
     index = GetAudioStream();
 
-  if (index < 0 || index > GetAudioStreamCount() - 1 )
+  if (index < 0 || index > GetAudioStreamCount() - 1)
+  {
+    info.valid = false;
     return;
+  }
 
   SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
-  if(s.language.length() > 0)
+  if (s.language.length() > 0)
     info.language = s.language;
 
-  if(s.name.length() > 0)
+  if (s.name.length() > 0)
     info.name = s.name;
 
-  if(s.type == STREAM_NONE)
+  if (s.type == STREAM_NONE)
     info.name += " (Invalid)";
 
+  info.valid = true;
   info.bitrate = s.bitrate;
   info.channels = s.channels;
   info.audioCodecName = s.codec;
