@@ -210,10 +210,6 @@ if(ENABLE_CCACHE)
   core_optional_dep(CCache)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL android)
-  core_optional_dep(Breakpad)
-endif()
-
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                           ${CMAKE_BINARY_DIR}/addons/xbmc.addon/addon.xml
