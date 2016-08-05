@@ -1,22 +1,37 @@
-# - Try to find Lzo2
-# Once done this will define
+#.rst:
+# FindLzo2
+# --------
+# Finds the Lzo2 library
 #
-# Lzo2_FOUND - system has Lzo2
-# Lzo2_INCLUDE_DIR - the Lzo2 include directory
-# Lzo2_LIBRARIES - Link these to use Lzo2
-# Lzo2_NEED_PREFIX - this is set if the functions are prefixed with BZ2_
-
-# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>
+# This will will define the following variables::
 #
-# Redistribution and use is allowed according to the terms of the BSD license.
-# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+# LZO2_FOUND - system has Lzo2
+# LZO2_INCLUDE_DIRS - the Lzo2 include directory
+# LZO2_LIBRARIES - the Lzo2 libraries
+#
+# and the following imported targets::
+#
+#   Lzo2::Lzo2   - The Lzo2 library
 
+find_path(LZO2_INCLUDE_DIR NAMES lzo1x.h
+                           PATH_SUFFIXES lzo)
 
-find_path(LZO2_INCLUDE_DIRS lzo1x.h PATH_SUFFIXES lzo)
-
-find_library(LZO2_LIBRARIES NAMES lzo2 liblzo2)
+find_library(LZO2_LIBRARY NAMES lzo2 liblzo2)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Lzo2 DEFAULT_MSG LZO2_INCLUDE_DIRS LZO2_LIBRARIES)
+find_package_handle_standard_args(Lzo2
+                                  REQUIRED_VARS LZO2_LIBRARY LZO2_INCLUDE_DIR)
 
-mark_as_advanced(LZO2_INCLUDE_DIRS LZO2_LIBRARIES)
+if(LZO2_FOUND)
+  set(LZO2_LIBRARIES ${LZO2_LIBRARY})
+  set(LZO2_INCLUDE_DIRS ${LZO2_INCLUDE_DIR})
+
+  if(NOT TARGET Lzo2::Lzo2)
+    add_library(Lzo2::Lzo2 UNKNOWN IMPORTED)
+    set_target_properties(Lzo2::Lzo2 PROPERTIES
+                                     IMPORTED_LOCATION "${LZO2_LIBRARY}"
+                                     INTERFACE_INCLUDE_DIRECTORIES "${LZO2_INCLUDE_DIR}")
+  endif()
+endif()
+
+mark_as_advanced(LZO2_INCLUDE_DIR LZO2_LIBRARY)

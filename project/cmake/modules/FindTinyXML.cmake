@@ -33,7 +33,7 @@ include(SelectLibraryConfigurations)
 select_library_configurations(TINYXML)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(TINYXML
+find_package_handle_standard_args(TinyXML
                                   REQUIRED_VARS TINYXML_LIBRARY TINYXML_INCLUDE_DIR
                                   VERSION_VAR TINYXML_VERSION)
 

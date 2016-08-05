@@ -9,6 +9,10 @@
 # VAAPI_INCLUDE_DIRS - the VAAPI include directory
 # VAAPI_LIBRARIES - the VAAPI libraries
 # VAAPI_DEFINITIONS - the VAAPI definitions
+#
+# and the following imported targets::
+#
+#   VAAPI::VAAPI   - The VAAPI library
 
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_VAAPI libva libva-x11 QUIET)
@@ -42,6 +46,20 @@ if(VAAPI_FOUND)
   set(VAAPI_INCLUDE_DIRS ${VAAPI_INCLUDE_DIR})
   set(VAAPI_LIBRARIES ${VAAPI_libva_LIBRARY} ${VAAPI_libva-x11_LIBRARY})
   set(VAAPI_DEFINITIONS -DHAVE_LIBVA=1)
+
+  if(NOT TARGET VAAPI::VAAPI_X11)
+    add_library(VAAPI::VAAPI_X11 UNKNOWN IMPORTED)
+    set_target_properties(VAAPI::VAAPI_X11 PROPERTIES
+                                           IMPORTED_LOCATION "${VAAPI_libva-x11_LIBRARY}")
+  endif()
+  if(NOT TARGET VAAPI::VAAPI)
+    add_library(VAAPI::VAAPI UNKNOWN IMPORTED)
+    set_target_properties(VAAPI::VAAPI PROPERTIES
+                                       IMPORTED_LOCATION "${VAAPI_libva_LIBRARY}"
+                                       INTERFACE_INCLUDE_DIRECTORIES "${VAAPI_INCLUDE_DIR}"
+                                       INTERFACE_COMPILE_DEFINITIONS HAVE_LIBVA=1
+                                       INTERFACE_LINK_LIBRARIES VAAPI::VAAPI_X11)
+  endif()
 endif()
 
 mark_as_advanced(VAAPI_INCLUDE_DIR VAAPI_libva_LIBRARY VAAPI_libva-x11_LIBRARY)

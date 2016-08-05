@@ -107,7 +107,7 @@ set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
                   TinyXML Python Yajl
                   Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
-  list(APPEND required_deps LibSmbClient ZLIB)
+  list(APPEND required_deps SmbClient ZLIB)
 else()
   list(APPEND required_deps D3DX11Effects)
 endif()
@@ -116,8 +116,8 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 # Optional dependencies
-set(optional_deps MicroHttpd MySqlClient SSH Xslt
-                  Alsa UDev Dbus Avahi
+set(optional_deps MicroHttpd MySqlClient SSH XSLT
+                  Alsa UDEV DBus Avahi
                   PulseAudio VDPAU VAAPI)
 
 # Required, dyloaded deps
@@ -192,11 +192,13 @@ if(NOT WIN32)
   core_optional_dep(OpenGl)
   if(OPENGL_FOUND)
     core_optional_dep(X ENABLE_X11)
+    core_optional_dep(LibDRM ENABLE_X11)
     core_optional_dep(XRandR ENABLE_X11)
   else()
     core_optional_dep(OpenGLES)
     if(OPENGLES_FOUND)
       core_optional_dep(X ENABLE_X11)
+      core_optional_dep(LibDRM ENABLE_X11)
     endif()
   endif()
   if(NOT APPLE)

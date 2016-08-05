@@ -11,7 +11,7 @@
 # OPENGL_DEFINITIONS - the OpenGl definitions
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_OPENGL gl glu)
+  pkg_check_modules(PC_OPENGL gl glu QUIET)
 endif()
 
 if(NOT CORE_SYSTEM_NAME STREQUAL osx)

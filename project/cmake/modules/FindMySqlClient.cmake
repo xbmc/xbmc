@@ -29,12 +29,19 @@ find_library(MYSQLCLIENT_LIBRARY_DEBUG NAMES mysqlclient libmysql
                                        PATH_SUFFIXES mysql
                                        ${EXTRA_FIND_ARGS})
 
+if(MYSQLCLIENT_INCLUDE_DIR AND EXISTS "${MYSQLCLIENT_INCLUDE_DIR}/mysql/mysql_version.h")
+  file(STRINGS "${MYSQLCLIENT_INCLUDE_DIR}/mysql/mysql_version.h" mysql_version_str REGEX "^#define[\t ]+LIBMYSQL_VERSION[\t ]+\".*\".*")
+  string(REGEX REPLACE "^#define[\t ]+LIBMYSQL_VERSION[\t ]+\"([^\"]+)\".*" "\\1" MYSQLCLIENT_VERSION_STRING "${mysql_version_str}")
+  unset(mysql_version_str)
+endif()
+
 include(SelectLibraryConfigurations)
 select_library_configurations(MYSQLCLIENT)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(MYSQLCLIENT
-                                  REQUIRED_VARS MYSQLCLIENT_LIBRARY MYSQLCLIENT_INCLUDE_DIR)
+find_package_handle_standard_args(MySqlClient
+                                  REQUIRED_VARS MYSQLCLIENT_LIBRARY MYSQLCLIENT_INCLUDE_DIR
+                                  VERSION_VAR MYSQLCLIENT_VERSION_STRING)
 
 if(MYSQLCLIENT_FOUND)
   set(MYSQLCLIENT_LIBRARIES ${MYSQLCLIENT_LIBRARY})

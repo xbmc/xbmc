@@ -102,4 +102,3 @@ if(NOT SSE4_1_FOUND)
 endif()
 
 mark_as_advanced(SSE2_FOUND SSE3_FOUND SSSE3_FOUND SSE4_1_FOUND)
-
