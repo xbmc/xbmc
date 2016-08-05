@@ -267,13 +267,6 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension)
   }
 }
 
-static int64_t abs64(int64_t a)
-{
-  if(a < 0)
-    return -a;
-  return a;
-}
-
 void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
 {
   SetVSync(true);
