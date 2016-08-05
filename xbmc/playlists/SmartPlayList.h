@@ -95,10 +95,9 @@ public:
   void AddRule(const CSmartPlaylistRule &rule);
 
   bool HasRuleFields(const std::vector<int> &rulefields, std::set<std::string> &referencedPlaylists) const;
-  std::string GetTransSongClause(const CDatabase &db, 
-                                  const std::string& strOrigType, 
-                                  std::set<std::string> &referencedPlaylists,
-                                  const std::string& strType) const;
+  std::string GetTransSongClause(const CDatabase &db, const std::string& strType,  std::set<std::string> &referencedPlaylists,
+    bool albumArtistsOnly = false, int idGenre = -1, int idArtist = -1, int idRole = 1, int idAlbum = -1) const;
+  void AppendRules(CSmartPlaylistRuleCombination &referencedRules);
 };
 
 class CSmartPlaylist : public IDatabaseQueryRuleFactory
@@ -173,9 +172,10 @@ public:
   virtual CDatabaseQueryRuleCombination *CreateCombination() const;
 
   bool HasArtistSongRules() const;
-  std::string GetSongRulesClause(const CDatabase &db, const std::string &type) const;
   bool HasRuleFields(const std::vector<int> &rulefields, std::set<std::string> &referencedPlaylists) const;
   std::string GetArtistSongClause(const CDatabase &db, std::set<std::string> &referencedPlaylists) const;
+  std::string GetSongRulesClause(const CDatabase &db, bool albumArtistsOnly = false, int idGenre = -1, int idArtist = -1, int idRole = 1, int idAlbum = -1) const;
+  void AppendRules(CSmartPlaylist &referencedPlaylist);
 
 private:
   friend class CGUIDialogSmartPlaylistEditor;

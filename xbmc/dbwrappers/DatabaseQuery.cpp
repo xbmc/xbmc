@@ -333,6 +333,14 @@ std::string CDatabaseQueryRule::GetOperatorString(SEARCH_OPERATOR op) const
   return operatorString;
 }
 
+std::string CDatabaseQueryRule::GetOperatorFormat(const std::string& strType) const
+{
+  SEARCH_OPERATOR op = GetOperator(strType);
+  std::string operatorString = GetOperatorString(op);
+
+  return operatorString;
+}
+
 std::string CDatabaseQueryRule::GetWhereClause(const CDatabase &db, const std::string& strType) const
 {
   SEARCH_OPERATOR op = GetOperator(strType);

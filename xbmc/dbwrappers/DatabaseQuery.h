@@ -77,6 +77,7 @@ public:
   void                        SetParameter(const std::vector<std::string> &values);
 
   virtual std::string         GetWhereClause(const CDatabase &db, const std::string& strType) const;
+  virtual std::string         GetOperatorFormat (const std::string& strType) const;
 
   int                         m_field;
   SEARCH_OPERATOR             m_operator;
