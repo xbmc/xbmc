@@ -732,7 +732,7 @@ struct SAnonymousShader : public TUncastableVariable<ID3DX11EffectShaderVariable
 {
     SShaderBlock    *pShaderBlock;
 
-    SAnonymousShader(_In_ SShaderBlock *pBlock = nullptr);
+    SAnonymousShader(_In_opt_ SShaderBlock *pBlock = nullptr);
 
     // ID3DX11EffectShaderVariable interface
     STDMETHOD_(bool, IsValid)() override;

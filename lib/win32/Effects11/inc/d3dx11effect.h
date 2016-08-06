@@ -15,52 +15,21 @@
 
 #pragma once
 
-#define D3DX11_EFFECTS_VERSION 1111
+#define D3DX11_EFFECTS_VERSION 1117
 
 #if defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>
 #define DCOMMON_H_INCLUDED
 #define NO_D3D11_DEBUG_NAME
-#elif (_WIN32_WINNT >= 0x0602) || defined(_WIN7_PLATFORM_UPDATE) 
-#include <d3d11_1.h>
-#include <d3d11shader.h>
 #else
-#include <d3d11.h>
+#include <d3d11_1.h>
 #include <d3d11shader.h>
 #endif
 
 #pragma comment( lib, "d3dcompiler.lib" )
 #pragma comment( lib, "dxguid.lib" )
 
-// VS 2010's stdint.h conflicts with intsafe.h
-#pragma warning(push)
-#pragma warning(disable : 4005)
 #include <stdint.h>
-#pragma warning(pop)
-
-#if defined(_MSC_VER) && (_MSC_VER<1610) && !defined(_In_reads_)
-#define _Analysis_assume_(exp) __analysis_assume(exp)
-#define _In_reads_(exp) _In_count_x_(exp)
-#define _In_reads_opt_(exp) _In_opt_count_x_(exp)
-#define _In_reads_bytes_(exp) _In_bytecount_x_(exp)
-#define _Inout_updates_(exp) _Inout_cap_x_(exp)
-#define _Inout_updates_z_(exp) _Inout_z_cap_x_(exp)
-#define _Inout_updates_bytes_(exp) _Inout_bytecap_x_(exp)
-#define _Out_writes_(exp) _Out_cap_x_(exp)
-#define _Out_writes_bytes_(exp) _Out_bytecap_x_(exp)
-#define _Outptr_ _Deref_out_
-#define _Outptr_result_z_ _Deref_out_z_
-#define _Outptr_opt_result_maybenull_ _Deref_opt_out_opt_
-#define _Outptr_result_maybenull_z_ _Deref_opt_out_opt_z_
-#define _Outptr_result_buffer_(exp) _Deref_post_cap_x_(exp)
-#define _Outptr_result_buffer_all_maybenull_(exp) _Deref_post_opt_cap_x_(exp)
-#define _COM_Outptr_ _Deref_out_
-#define _When_(test,exp)
-#endif
-
-#ifndef _Use_decl_annotations_
-#define _Use_decl_annotations_
-#endif
 
 //////////////////////////////////////////////////////////////////////////////
 // File contents:

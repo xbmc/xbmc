@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Binary\EffectBinaryFormat.h" />
+    <ClInclude Include="Binary\EffectStateBase11.h" />
+    <ClInclude Include="Binary\EffectStates11.h" />
+    <ClInclude Include="Binary\SOParser.h" />
+    <ClInclude Include="inc\d3dx11effect.h" />
+    <ClInclude Include="inc\d3dxGlobal.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="EffectLoad.h" />
+    <ClInclude Include="IUnknownImp.h" />
+    <ClInclude Include="pchfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="d3dxGlobal.cpp" />
+    <ClCompile Include="EffectAPI.cpp" />
+    <ClCompile Include="EffectLoad.cpp" />
+    <ClCompile Include="EffectNonRuntime.cpp" />
+    <ClCompile Include="EffectReflection.cpp" />
+    <ClCompile Include="EffectRuntime.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EffectVariable.inl" />
+  </ItemGroup>
+</Project>

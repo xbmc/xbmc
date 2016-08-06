@@ -2533,7 +2533,8 @@ HRESULT TVector4Variable<IBaseInterface>::SetFloatVectorArray(const float *pData
 
     DirtyVariable();
     // ensure we don't write over the padding at the end of the vector array
-    memcpy(Data.pVector + Offset, pData, std::min<size_t>((Offset + Count) * sizeof(CEffectVector4), pType->TotalSize));
+    memcpy(Data.pVector + Offset, pData,
+           std::min<size_t>(Count * sizeof(CEffectVector4), pType->TotalSize - (Offset * sizeof(CEffectVector4))));
 
 lExit:
     return hr;
@@ -2556,7 +2557,8 @@ HRESULT TVector4Variable<IBaseInterface>::GetFloatVectorArray(float *pData, uint
 #endif
 
     // ensure we don't read past the end of the vector array
-    memcpy(pData, Data.pVector + Offset, std::min<size_t>((Offset + Count) * sizeof(CEffectVector4), pType->TotalSize));
+    memcpy(pData, Data.pVector + Offset,
+           std::min<size_t>(Count * sizeof(CEffectVector4), pType->TotalSize - (Offset * sizeof(CEffectVector4)))); 
 
 lExit:
     return hr;

@@ -15,11 +15,7 @@
 
 #include "pchfx.h"
 
-// VS 2010's stdint.h conflicts with intsafe.h
-#pragma warning(push)
-#pragma warning(disable : 4005)
 #include <intsafe.h>
-#pragma warning(pop)
 
 #include <stdio.h>
 #include <stdarg.h>

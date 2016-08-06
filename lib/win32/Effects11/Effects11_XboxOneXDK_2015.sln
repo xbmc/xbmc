@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Effects11", "Effects11_XboxOneXDK_2015.vcxproj", "{A2D70D23-3516-40EC-B831-2FAD3DAFD8B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Durango = Debug|Durango
+		Profile|Durango = Profile|Durango
+		Release|Durango = Release|Durango
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2D70D23-3516-40EC-B831-2FAD3DAFD8B7}.Debug|Durango.ActiveCfg = Debug|Durango
+		{A2D70D23-3516-40EC-B831-2FAD3DAFD8B7}.Debug|Durango.Build.0 = Debug|Durango
+		{A2D70D23-3516-40EC-B831-2FAD3DAFD8B7}.Profile|Durango.ActiveCfg = Profile|Durango
+		{A2D70D23-3516-40EC-B831-2FAD3DAFD8B7}.Profile|Durango.Build.0 = Profile|Durango
+		{A2D70D23-3516-40EC-B831-2FAD3DAFD8B7}.Release|Durango.ActiveCfg = Release|Durango
+		{A2D70D23-3516-40EC-B831-2FAD3DAFD8B7}.Release|Durango.Build.0 = Release|Durango
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
