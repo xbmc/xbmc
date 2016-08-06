@@ -26,7 +26,7 @@ SETLOCAL DisableDelayedExpansion
 rem set Visual C++ build environment
 call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
-SET WORKDIR=%WORKSPACE%
+SET WORKDIR=%base_dir%
 
 IF "%WORKDIR%" == "" (
   rem resolve the relative path
@@ -82,7 +82,7 @@ CD "%ADDONS_BUILD_PATH%"
 
 rem determine the proper install path for the built addons
 IF %install% == true (
-  SET ADDONS_INSTALL_PATH=%WORKDIR%\addons
+  SET ADDONS_INSTALL_PATH=%WORKSPACE%\addons
 ) ELSE (
   SET ADDONS_INSTALL_PATH=%WORKDIR%\project\Win32BuildSetup\BUILD_WIN32\addons
 )

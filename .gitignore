@@ -112,6 +112,7 @@ cmake_install.cmake
 /git_revision.h
 /libtool
 /*.patch
+/kodi-build/
 
 # /addons/
 /addons/packages
@@ -263,25 +264,6 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
 
-# /project/VS2010Express
-/project/VS2010Express/Debug
-/project/VS2010Express/Release
-/project/VS2010Express/XBMC
-/project/VS2010Express/glib
-/project/VS2010Express/guilib
-/project/VS2010Express/libPlatinum
-/project/VS2010Express/UnrarXLib
-/project/VS2010Express/test-XbmcThreads
-/project/VS2010Express/libs
-/project/VS2010Express/objs
-/project/VS2010Express/ipch
-/project/VS2010Express/shaders
-/project/VS2010Express/*.vsp
-/project/VS2010Express/*.metaproj
-/project/VS2010Express/*.metaproj.tmp
-/project/VS2010Express/.vs
-/project/VS2010Express/XBMC for Windows.VC.opendb
-
 # /system
 /system/cpluff.dll
 /system/EasyHook32.dll
@@ -315,8 +297,6 @@ lib/cpluff/stamp-h1
 /system/python27.dll
 /system/zlib.dll
 
-
-
 # /system/players/VideoPlayer
 /system/players/VideoPlayer/*
 
@@ -330,9 +310,6 @@ lib/cpluff/stamp-h1
 /system/webserver
 
 /system/airplay
-
-# /system
-/system/zlib1.dll
 
 #/tools/android
 /tools/android/packaging/Makefile
@@ -572,8 +549,6 @@ lib/cpluff/stamp-h1
 /docs/html
 lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
 lib/addons/library.kodi.inputstream/project/VS2010Express/Release
-/project/VS2010Express/XBMC for Windows.VC.db
-/project/VS2010Express/XBMC for Windows.VC.VC.opendb
 tools/depends/native/TexturePacker/src/Win32/Debug/
 tools/depends/native/TexturePacker/src/Win32/Release/
 tools/depends/native/TexturePacker/src/Win32/TexturePacker.VC.db
