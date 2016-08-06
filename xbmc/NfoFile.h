@@ -41,14 +41,15 @@ public:
     FULL_NFO     = 1,
     URL_NFO      = 2,
     COMBINED_NFO = 3,
-    ERROR_NFO    = 4
+    ERROR_NFO    = 4,
+    PARTIAL_NFO  = 5
   };
 
   NFOResult Create(const std::string&, const ADDON::ScraperPtr&, int episode=-1);
   template<class T>
-    bool GetDetails(T& details,const char* document=NULL, bool prioritise=false)
+    bool GetDetails(T& details, const char* document=NULL,
+                    bool prioritise=false)
   {
-
     CXBMCTinyXML doc;
     if (document)
       doc.Parse(document, TIXML_ENCODING_UNKNOWN);
