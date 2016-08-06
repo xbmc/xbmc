@@ -104,7 +104,9 @@
 #define HAS_AUDIO
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
+#ifndef HAVE_LIBSSH
 #define HAVE_LIBSSH
+#endif
 #define HAS_FILESYSTEM_SMB
 #define HAS_ZEROCONF
 #define HAS_MDNS
