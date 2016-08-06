@@ -90,7 +90,6 @@ void CBinaryAddonCache::Update()
 {
   using AddonMap = std::multimap<TYPE, VECADDONS>;
   AddonMap addonmap;
-  addonmap.clear();
 
   for (auto &addonType : m_addonsToCache)
   {
@@ -101,7 +100,7 @@ void CBinaryAddonCache::Update()
 
   {
     CSingleLock lock(m_critSection);
-    m_addons = addonmap;
+    m_addons = std::move(addonmap);
   }
 }
 
