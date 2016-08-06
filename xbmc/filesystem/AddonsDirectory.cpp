@@ -686,8 +686,6 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDON
 
 bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileItemList &items)
 {
-  items.Clear();
-
   VECADDONS addons;
   if (!GetScriptsAndPlugins(content, addons))
     return false;
