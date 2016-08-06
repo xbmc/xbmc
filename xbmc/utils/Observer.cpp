@@ -52,7 +52,9 @@ void Observable::RegisterObserver(Observer *obs)
 void Observable::UnregisterObserver(Observer *obs)
 {
   CSingleLock lock(m_obsCritSection);
-  std::remove(m_observers.begin(), m_observers.end(), obs);
+  auto iter = std::remove(m_observers.begin(), m_observers.end(), obs);
+  if (iter != m_observers.end())
+    m_observers.erase(iter);
 }
 
 void Observable::NotifyObservers(const ObservableMessage message /* = ObservableMessageNone */)
