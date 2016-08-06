@@ -85,12 +85,8 @@
  * Non-free Components
  **********************/
 
-#if defined(TARGET_WINDOWS)
+#if defined(HAVE_XBMC_NONFREE)
   #define HAS_FILESYSTEM_RAR
-#else
-  #if defined(HAVE_XBMC_NONFREE)
-    #define HAS_FILESYSTEM_RAR
-  #endif
 #endif
 
 /*****************
@@ -104,23 +100,11 @@
 #define HAS_AUDIO
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
-#define HAVE_LIBSSH
 #define HAS_FILESYSTEM_SMB
 #define HAS_ZEROCONF
 #define HAS_MDNS
 #define HAS_AIRTUNES
 #define HAS_UPNP
-
-// With CMake these are set by options (through conditional defines in
-// the 'All platforms' section above.
-#if !defined(BUILDING_WITH_CMAKE)
-  #define HAS_AIRPLAY
-  #define HAS_FILESYSTEM_NFS
-  #define HAS_MYSQL
-  #define HAVE_LIBBLURAY
-  #define HAVE_LIBSHAIRPLAY
-  #define HAVE_LIBCEC
-#endif
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
