@@ -90,7 +90,7 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   else
     m_IMXCodec = g_IMXCodec;
 
-  return g_IMXCodec->Open(hints, options, m_pFormatName);
+  return g_IMXCodec->Open(hints, options, m_pFormatName, &m_processInfo);
 }
 
 unsigned CDVDVideoCodecIMX::GetAllowedReferences()
@@ -405,6 +405,8 @@ bool CIMXCodec::VpuAllocFrameBuffers()
   if (VPU_DEC_RET_SUCCESS != VPU_DecRegisterFrameBuffer(m_vpuHandle, &m_vpuFrameBuffers[0], m_vpuFrameBuffers.size()))
     return false;
 
+  m_processInfo->SetVideoDAR((double)m_initInfo.nQ16ShiftWidthDivHeightRatio/0x10000);
+
   m_decOutput.setquotasize(m_vpuFrameBuffers.size() - m_initInfo.nMinFrameBufferCount - m_extraVpuBuffers);
   return true;
 }
@@ -435,6 +437,7 @@ CIMXCodec::CIMXCodec()
 
 CIMXCodec::~CIMXCodec()
 {
+  g_IMXContext.SetVideoPixelFormat(nullptr);
   StopThread(false);
   ProcessSignals(SIGNAL_SIGNAL);
   SetDrainMode(VPU_DEC_IN_DRAIN);
@@ -457,7 +460,7 @@ void CIMXCodec::Reset()
   CLog::Log(LOGDEBUG, "iMX VPU : queues cleared ===== in/out %d/%d =====\n", m_decInput.size(), m_decOutput.size());
 }
 
-bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::string &m_pFormatName)
+bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::string &m_pFormatName, CProcessInfo *m_pProcessInfo)
 {
   CSingleLock lk(m_openLock);
 
@@ -618,6 +621,12 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
     CLog::Log(LOGERROR, "iMX VPU : codecid %d is not (yet) handled.\n", m_hints.codec);
     return false;
   }
+
+  m_processInfo = m_pProcessInfo;
+  m_processInfo->SetVideoDecoderName(m_pFormatName, true);
+  m_processInfo->SetVideoDimensions(m_hints.width, m_hints.height);
+  m_processInfo->SetVideoDeintMethod("hardware");
+  g_IMXContext.SetVideoPixelFormat(m_processInfo);
 
   return true;
 }
@@ -923,12 +932,6 @@ void CIMXCodec::Process()
         if (VPU_DecGetInitialInfo(m_vpuHandle, &m_initInfo) != VPU_DEC_RET_SUCCESS)
           ExitError("VPU get initial info failed");
 
-        CLog::Log(LOGDEBUG, "%s - VPU Init Stream Info : %dx%d (interlaced : %d - Minframe : %d)"\
-                  " - Align : %d bytes - crop : %d %d %d %d - Q16Ratio : %x, fps: %.3f\n", __FUNCTION__,
-          m_initInfo.nPicWidth, m_initInfo.nPicHeight, m_initInfo.nInterlace, m_initInfo.nMinFrameBufferCount,
-          m_initInfo.nAddressAlignment, m_initInfo.PicCropRect.nLeft, m_initInfo.PicCropRect.nTop,
-          m_initInfo.PicCropRect.nRight, m_initInfo.PicCropRect.nBottom, m_initInfo.nQ16ShiftWidthDivHeightRatio, m_fps);
-
         if (!VpuFreeBuffers(false) || !VpuAllocFrameBuffers())
           ExitError("VPU error while registering frame buffers");
 
@@ -937,8 +940,16 @@ void CIMXCodec::Process()
           m_decOpenParam.nMapType = 0;
           Dispose();
           VpuOpen();
+          m_fps /= 2;
           continue;
         }
+        m_processInfo->SetVideoFps(m_fps);
+
+        CLog::Log(LOGDEBUG, "%s - VPU Init Stream Info : %dx%d (interlaced : %d - Minframe : %d)"\
+                  " - Align : %d bytes - crop : %d %d %d %d - Q16Ratio : %x, fps: %.3f\n", __FUNCTION__,
+          m_initInfo.nPicWidth, m_initInfo.nPicHeight, m_initInfo.nInterlace, m_initInfo.nMinFrameBufferCount,
+          m_initInfo.nAddressAlignment, m_initInfo.PicCropRect.nLeft, m_initInfo.PicCropRect.nTop,
+          m_initInfo.PicCropRect.nRight, m_initInfo.PicCropRect.nBottom, m_initInfo.nQ16ShiftWidthDivHeightRatio, m_fps);
 
         m_decInput.setquotasize(m_initInfo.nMinFrameBufferCount*7);
 
@@ -1591,6 +1602,18 @@ bool CIMXContext::ShowPage()
   return ret;
 }
 
+void CIMXContext::SetVideoPixelFormat(CProcessInfo *m_pProcessInfo)
+{
+  m_processInfo = m_pProcessInfo;
+  if (!m_processInfo)
+    return;
+
+  if (m_processInfo && m_fbVar.bits_per_pixel == 16)
+    m_processInfo->SetVideoPixelFormat("YUV 4:2:2");
+  else if (m_processInfo)
+    m_processInfo->SetVideoPixelFormat("RGB 32");
+}
+
 void CIMXContext::Clear(int page)
 {
   if (!m_fbVirtAddr) return;
@@ -1620,6 +1643,8 @@ void CIMXContext::Clear(int page)
       memcpy(tmp_buf, &clr, 2);
   else
     CLog::Log(LOGERROR, "iMX Clear fb error : Unexpected format");
+
+  SetVideoPixelFormat(m_processInfo);
 }
 
 #define clamp_byte(x) (x<0?0:(x>255?255:x))

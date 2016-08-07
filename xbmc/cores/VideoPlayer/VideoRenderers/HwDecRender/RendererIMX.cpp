@@ -35,6 +35,7 @@
 CRendererIMX::CRendererIMX()
 {
   m_bufHistory.clear();
+  g_IMXContext.Clear();
 }
 
 CRendererIMX::~CRendererIMX()

@@ -113,6 +113,7 @@ public:
 
   // Blitter configuration
   bool IsDoubleRate() const { return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN; }
+  void SetVideoPixelFormat(CProcessInfo *m_pProcessInfo);
 
   void SetBlitRects(const CRect &srcRect, const CRect &dstRect);
 
@@ -305,7 +306,7 @@ public:
   CIMXCodec();
   ~CIMXCodec();
 
-  bool                  Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::string &m_pFormatName);
+  bool                  Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::string &m_pFormatName, CProcessInfo *m_pProcessInfo);
   int                   Decode(BYTE *pData, int iSize, double dts, double pts);
 
   void                  SetDropState(bool bDrop);
@@ -424,6 +425,7 @@ private:
   double                       m_fps;
   unsigned int                 m_burst;
   bool                         m_requestDrop;
+  CProcessInfo                *m_processInfo;
 
 private:
   void                         ExitError(const char *msg, ...);
