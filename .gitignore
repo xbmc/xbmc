@@ -553,3 +553,7 @@ tools/depends/native/TexturePacker/src/Win32/Debug/
 tools/depends/native/TexturePacker/src/Win32/Release/
 tools/depends/native/TexturePacker/src/Win32/TexturePacker.VC.db
 exclude_dll.txt
+/tools/buildsteps/win32/1
+/tools/buildsteps/win32/4
+/.vscode
+/xbmc/win32/XBMC_PC.rc
