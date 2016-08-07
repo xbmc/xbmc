@@ -52,8 +52,11 @@ bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
   if (GetKeyID(feature) != 0)
     return true;
 
-  // Try analog stick direction
-  if (GetKeyID(feature, CARDINAL_DIRECTION::UP) != 0)
+  // Try analog stick directions
+  if (GetKeyID(feature, CARDINAL_DIRECTION::UP)    != 0 ||
+      GetKeyID(feature, CARDINAL_DIRECTION::DOWN)  != 0 ||
+      GetKeyID(feature, CARDINAL_DIRECTION::RIGHT) != 0 ||
+      GetKeyID(feature, CARDINAL_DIRECTION::LEFT)  != 0)
     return true;
 
   return false;
