@@ -27,6 +27,10 @@
 
 #include "cores/AudioEngine/AEFactory.h"
 
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
+
 #define TRUEHD_BUF_SIZE 61440
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo) :
@@ -114,6 +118,7 @@ void CDVDAudioCodecPassthrough::Dispose()
 int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   int used = 0;
+  int skip = 0;
   if (m_backlogSize)
   {
     if (m_currentPts == DVD_NOPTS_VALUE)
@@ -127,12 +132,25 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     m_bufferSize = std::max(m_bufferSize, m_dataSize);
     if (consumed != m_backlogSize)
     {
-      memmove(m_backlogBuffer, m_backlogBuffer+consumed, consumed);
+      memmove(m_backlogBuffer, m_backlogBuffer+consumed, m_backlogSize-consumed);
       m_backlogSize -= consumed;
     }
   }
 
-  if (pData && !m_dataSize)
+  // get rid of potential side data
+  if (pData)
+  {
+    AVPacket pkt;
+    av_init_packet(&pkt);
+    pkt.data = pData;
+    pkt.size = iSize;
+    av_packet_split_side_data(&pkt);
+    skip = iSize - pkt.size;
+    pData = pkt.data;
+    iSize = pkt.size;
+  }
+
+  if (pData && !m_backlogSize)
   {
     if (iSize <= 0)
       return 0;
@@ -169,6 +187,20 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
   if (!m_dataSize)
     return used;
 
+  if (m_dataSize)
+  {
+    m_format.m_dataFormat = AE_FMT_RAW;
+    m_format.m_streamInfo = m_parser.GetStreamInfo();
+    m_format.m_sampleRate = m_parser.GetSampleRate();
+    m_format.m_frameSize = 1;
+    CAEChannelInfo layout;
+    for (unsigned int i=0; i<m_parser.GetChannels(); i++)
+    {
+      layout += AE_CH_RAW;
+    }
+    m_format.m_channelLayout = layout;
+  }
+
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
   {
     if (!m_trueHDoffset)
@@ -190,21 +222,7 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
       m_dataSize = 0;
   }
 
-  if (m_dataSize)
-  {
-    m_format.m_dataFormat = AE_FMT_RAW;
-    m_format.m_streamInfo = m_parser.GetStreamInfo();
-    m_format.m_sampleRate = m_parser.GetSampleRate();
-    m_format.m_frameSize = 1;
-    CAEChannelInfo layout;
-    for (unsigned int i=0; i<m_parser.GetChannels(); i++)
-    {
-      layout += AE_CH_RAW;
-    }
-    m_format.m_channelLayout = layout;
-  }
-
-  return used;
+  return used + skip;
 }
 
 void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
