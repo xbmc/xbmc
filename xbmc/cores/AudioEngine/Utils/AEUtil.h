@@ -28,10 +28,10 @@ extern "C" {
 }
 
 #ifdef TARGET_WINDOWS
-#if _M_IX86_FP>0 && !defined(HAVE_SSE)
-#define HAVE_SSE
-#if _M_IX86_FP>1 && !defined(HAVE_SSE2)
-#define HAVE_SSE2
+#if _M_IX86_FP>0 && !defined(__SSE__)
+#define __SSE__
+#if _M_IX86_FP>1 && !defined(__SSE2__)
+#define __SSE2__
 #endif
 #endif
 #endif
@@ -223,7 +223,6 @@ public:
     This is NOT safe for crypto work, but perfectly fine for audio usage (dithering)
   */
   static float FloatRand1(const float min, const float max);
-  static void  FloatRand4(const float min, const float max, float result[4], __m128 *sseresult = NULL);
 
   static bool S16NeedsByteSwap(AEDataFormat in, AEDataFormat out);
 

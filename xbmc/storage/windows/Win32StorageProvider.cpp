@@ -95,6 +95,7 @@ CDetectDisc::CDetectDisc(const std::string &strPath, const bool bautorun)
 
 bool CDetectDisc::DoWork()
 {
+#if defined(HAS_DVD_DRIVE)
   CLog::Log(LOGDEBUG, "%s: Optical media found in drive %s", __FUNCTION__, m_strPath.c_str());
   CMediaSource share;
   share.strPath = m_strPath;
@@ -108,5 +109,6 @@ bool CDetectDisc::DoWork()
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   g_mediaManager.AddAutoSource(share, m_bautorun);
+#endif
   return true;
 }
