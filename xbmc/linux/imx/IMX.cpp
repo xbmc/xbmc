@@ -36,6 +36,11 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "guilib/GraphicContext.h"
+#include "utils/MathUtils.h"
+#include "DVDClock.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
+
+#include <algorithm>
 
 #define  DCIC_DEVICE    "/dev/mxc_dcic0"
 #define  FB_DEVICE      "/dev/fb0"
@@ -155,4 +160,83 @@ void CIMX::OnResetDisplay()
 {
   m_frameTime = (double)1300 / g_graphicsContext.GetFPS();
   m_change = true;
+}
+
+
+bool CIMXFps::Recalc()
+{
+  double prev = DVD_NOPTS_VALUE;
+  unsigned int count = 0;
+  double frameDuration = 0.0;
+  bool hasMatch;
+
+  std::sort(m_ts.begin(), m_ts.end());
+
+  m_hgraph.clear();
+  for (auto d : m_ts)
+  {
+    if (d != 0.0 && prev != DVD_NOPTS_VALUE)
+      m_hgraph[MathUtils::round_int(d - prev)]++;
+    prev = d;
+  }
+
+  unsigned int patternLength = 0;
+  for (auto it = m_hgraph.begin(); it != m_hgraph.end();)
+  {
+    if (it->second > 1)
+    {
+      count += it->second;
+      frameDuration += it->first * it->second;
+      ++it;
+    }
+    else
+      m_hgraph.erase(it++);
+  }
+
+  if (count)
+    frameDuration /= count;
+
+  double frameNorm = CDVDCodecUtils::NormalizeFrameduration(frameDuration, &hasMatch);
+
+  if (hasMatch && !patternLength)
+    m_patternLength = 1;
+  else
+    m_patternLength = patternLength;
+
+  if (!m_hasPattern && hasMatch)
+    m_frameDuration = frameNorm;
+
+  if ((m_ts.size() == DIFFRINGSIZE && !m_hasPattern && hasMatch))
+    m_hasPattern = true;
+
+  if (m_hasPattern)
+    m_ptscorrection = (m_ts.size() - 1) * m_frameDuration + m_ts.front() - m_ts.back();
+
+  if (m_hasPattern && m_ts.size() == DIFFRINGSIZE && m_ptscorrection > m_frameDuration / 4)
+  {
+    m_hasPattern = false;
+    m_frameDuration = DVD_NOPTS_VALUE;
+  }
+
+  return m_hgraph.size() <= 2;
+  bool ret = m_hgraph.size() <= 2;
+  if (!m_hasPattern && ret)
+    m_frameDuration = frameNorm;
+  return ret;
+}
+
+void CIMXFps::Add(double tm)
+{
+  m_ts.push_back(tm);
+  if (m_ts.size() > DIFFRINGSIZE)
+    m_ts.pop_front();
+  Recalc();
+}
+
+void CIMXFps::Flush()
+{
+  m_ts.clear();
+  m_frameDuration = 0.0;
+  m_ptscorrection = 0.0;
+  m_hasPattern = false;
 }

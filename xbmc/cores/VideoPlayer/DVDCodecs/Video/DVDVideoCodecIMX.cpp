@@ -29,7 +29,6 @@
 #include "utils/StringUtils.h"
 #include "settings/MediaSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
-#include "utils/MathUtils.h"
 
 #include "linux/imx/IMX.h"
 #include "libavcodec/avcodec.h"
@@ -723,67 +722,37 @@ bool CIMXCodec::getOutputFrame(VpuDecOutFrameInfo *frm)
   return ret == VPU_DEC_RET_SUCCESS;
 }
 
-double myround(double f)
-{
-  if (f >= 0x1.0p23) return f;
-  return (double) (unsigned long long) (f + 0.49999997f);
-}
-
 int CIMXCodec::Decode(BYTE *pData, int iSize, double dts, double pts)
 {
+  static class CIMXFps ptrn;
+
   if (EOS() && m_drainMode && !m_decOutput.size())
     return VC_BUFFER;
+
+  if (!m_decInput.size())
+    ptrn.Flush();
 
   int ret = 0;
   if (!g_IMXCodec->IsRunning())
   {
-    static std::vector<double> ts;
-    if (!m_decInput.full())
+    if ((!m_decInput.full() || !ptrn.Recalc()) && m_decInput.size() < 40)
     {
-      ret |= VC_BUFFER;
+      if (m_decInput.full())
+        m_decInput.setquotasize(m_decInput.getquotasize()+1);
+
       if (dts != DVD_NOPTS_VALUE)
-        ts.push_back(dts);
+        ptrn.Add(dts);
       else if (pts != DVD_NOPTS_VALUE)
-        ts.push_back(pts);
+        ptrn.Add(pts);
+
+      ret |= VC_BUFFER;
     }
     else
     {
-      double prev = DVD_NOPTS_VALUE;
-      double pattern = 0.0;
-      unsigned int count = 0;
-      std::map<double,int> hgraph;
-
-      std::sort(ts.begin(), ts.end());
-      for (auto d : ts)
-      {
-        if (d != 0.0 && prev != DVD_NOPTS_VALUE)
-          hgraph[myround(d - prev)]++;
-        prev = d;
-      }
-      for (auto it = hgraph.begin(); it != hgraph.end(); ++it)
-      {
-        if (it->second > 1)
-        {
-          count += it->second;
-          pattern += it->first * it->second;
-        }
-        else
-        {
-          count += MathUtils::round_int((double)it->first / (pattern / count));
-          pattern += it->first;
-        }
-      }
-
-      if (count)
-        pattern /= count;
-
-      if (pattern > 0.01)
-        m_fps = (double)DVD_TIME_BASE/pattern;
-      else
-        m_fps = m_hints.fpsscale ? (double)m_hints.fpsrate / m_hints.fpsscale : 60;
+      m_fps = DVD_TIME_BASE / ptrn.GetFrameDuration();
       m_decOpenParam.nMapType = 1;
 
-      ts.clear();
+      ptrn.Flush();
       g_IMXCodec->Create();
       g_IMXCodec->WaitStartup();
     }
