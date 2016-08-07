@@ -238,7 +238,7 @@ void CVideoPlayerAudio::Process()
   while (!m_bStop)
   {
     CDVDMsg* pMsg;
-    int timeout  = (int)(1000 * m_dvdAudio.GetCacheTime()) + 100;
+    int timeout  = (int)(1000 * m_dvdAudio.GetCacheTime());
 
     // read next packet and return -1 on error
     int priority = 1;
@@ -254,13 +254,6 @@ void CVideoPlayerAudio::Process()
 
     if (m_paused)
       priority = 1;
-
-    // consider stream stalled if queue is empty
-    // we can't sync audio to clock with an empty queue
-    if (ALLOW_AUDIO(m_speed) && !m_stalled && !m_paused)
-    {
-      timeout = 0;
-    }
 
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
 

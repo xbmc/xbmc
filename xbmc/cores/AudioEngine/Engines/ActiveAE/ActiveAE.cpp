@@ -197,9 +197,7 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
 float CEngineStats::GetCacheTime(CActiveAEStream *stream)
 {
   CSingleLock lock(m_lock);
-  float delay = (float)m_bufferedSamples / m_sinkSampleRate;
-  if (!m_pcmOutput)
-    delay = (float)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+  float delay = 0;
 
   for (auto &str : m_streamStats)
   {

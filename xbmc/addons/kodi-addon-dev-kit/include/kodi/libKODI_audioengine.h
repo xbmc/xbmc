@@ -194,8 +194,8 @@ public:
   virtual bool IsBuffering();
 
   /**
-  * Returns the time in seconds that it will take
-  * to underrun the cache if no sample is added.
+   * Returns the time in seconds of the stream's
+   * cached audio samples. Engine buffers excluded.
   * @return seconds
   */
   virtual double GetCacheTime();
