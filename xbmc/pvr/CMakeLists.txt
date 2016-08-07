@@ -8,6 +8,7 @@ set(HEADERS PVRActionListener.h
             PVRDatabase.h
             PVRGUIInfo.h
             PVRManager.h
+            PVRManagerState.h
             PVRSettings.h)
 
 core_add_library(pvr)

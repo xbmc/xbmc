@@ -29,6 +29,7 @@
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
 
+#include "pvr/PVRManagerState.h"
 #include "pvr/recordings/PVRRecording.h"
 
 #include <map>
@@ -60,16 +61,6 @@ namespace PVR
   class CPVRGUIInfo;
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
-
-  enum ManagerState
-  {
-    ManagerStateError = 0,
-    ManagerStateStopped,
-    ManagerStateStarting,
-    ManagerStateStopping,
-    ManagerStateInterrupted,
-    ManagerStateStarted
-  };
 
   enum PlaybackType
   {
