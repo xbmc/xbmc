@@ -1,6 +1,5 @@
+cmake_minimum_required(VERSION 3.1)
 project(tinyxml)
-
-cmake_minimum_required(VERSION 2.8)
 
 set(SOURCES src/tinystr.cpp
             src/tinyxml.cpp
