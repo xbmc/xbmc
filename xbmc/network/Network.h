@@ -36,6 +36,8 @@
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
 enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };
 
+typedef std::shared_ptr<struct sockaddr_storage> sockaddrPtr;
+
 class NetworkAccessPoint
 {
 public:
@@ -240,6 +242,8 @@ public:
    void StartServices();
    void StopServices(bool bWait);
 
+   static socklen_t sa_len(struct sockaddr *addr);
+
    /*!
     \brief  Tests if parameter specifies valid IPv6 address (as specified by RFCs)
     \param  ipaddress to convert/test
@@ -278,7 +282,7 @@ public:
     \brief  Converts host IP address into binary sockaddr
             (wrapper to ConvIP(std::string&, ushort))
     */
-   static struct sockaddr_storage *ConvIP(unsigned long address, unsigned short port = 0) { return ConvIP(GetIpStr(address), port); }
+   static sockaddrPtr ConvIP(unsigned long address, unsigned short port = 0) { return ConvIP(GetIpStr(address), port); }
 
    /*!
     \brief  Converts host IP address into binary sockaddr
@@ -291,7 +295,7 @@ public:
             (sockaddr_in, sockaddr_in6, sockaddr, ...)
             You have to relese memory with free(p) after use.
     */
-   static struct sockaddr_storage *ConvIP(const std::string &address, unsigned short port = 0);
+   static sockaddrPtr ConvIP(const std::string &address, unsigned short port = 0);
 
    static int ParseHex(char *str, unsigned char *addr);
 

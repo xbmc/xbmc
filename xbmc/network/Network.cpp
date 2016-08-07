@@ -49,7 +49,7 @@
 using namespace KODI::MESSAGING;
 using namespace ANNOUNCEMENT;
 
-socklen_t sa_len(struct sockaddr *addr)
+socklen_t CNetwork::sa_len(struct sockaddr *addr)
 {
   switch(((struct sockaddr_storage*)addr)->ss_family)
   {
@@ -270,20 +270,17 @@ bool CNetwork::ConvIPv6(const std::string &address, struct sockaddr_in6 *sa, uns
   return (ret > 0);
 }
 
-struct sockaddr_storage *CNetwork::ConvIP(const std::string &address, unsigned short port)
+sockaddrPtr CNetwork::ConvIP(const std::string &address, unsigned short port)
 {
-  struct sockaddr_storage *sa = NULL;
+  sockaddrPtr sa(new struct sockaddr_storage);
 
-  if (!address.empty())
-    if ((sa = (struct sockaddr_storage *) malloc(sizeof(struct sockaddr_storage))))
-      if (ConvIPv4(address, (struct sockaddr_in  *) sa, port)
-      ||  ConvIPv6(address, (struct sockaddr_in6 *) sa, port))
-        return sa;
+  if (!address.empty() && sa)
+    if (ConvIPv4(address, (struct sockaddr_in  *) sa.get(), port)
+    ||  ConvIPv6(address, (struct sockaddr_in6 *) sa.get(), port))
+      return sa;
 
-  if (sa)
-    free(sa);
-
-  return NULL;
+  sa.reset();
+  return sa;
 }
 
 bool CNetwork::GetHostName(std::string& hostname)
@@ -548,7 +545,7 @@ static const char* ConnectHostPort(SOCKET soc, struct sockaddr *addr, struct tim
   if (result != 0)
     return "set non-blocking option failed";
 
-  result = connect(soc, addr, sa_len(addr)); // non-blocking connect, will fail ..
+  result = connect(soc, addr, CNetwork::sa_len(addr)); // non-blocking connect, will fail ..
 
   if (result < 0)
   {
@@ -617,7 +614,7 @@ bool CNetwork::PingHost(const std::string &ipaddr, unsigned short port, unsigned
   if (port == 0) // use icmp ping
     return PingHostImpl (ipaddr, timeOutMs);
 
-  struct sockaddr_storage *addr = ConvIP(ipaddr, port);
+  sockaddrPtr addr = ConvIP(ipaddr, port);
 
   if (!addr)
     return false;
@@ -632,7 +629,7 @@ bool CNetwork::PingHost(const std::string &ipaddr, unsigned short port, unsigned
     tmout.tv_sec = timeOutMs / 1000; 
     tmout.tv_usec = (timeOutMs % 1000) * 1000; 
 
-    err_msg = ConnectHostPort (soc, (struct sockaddr *)addr, tmout, readability_check);
+    err_msg = ConnectHostPort (soc, (struct sockaddr *)addr.get(), tmout, readability_check);
 
     (void) closesocket (soc);
   }
@@ -648,7 +645,6 @@ bool CNetwork::PingHost(const std::string &ipaddr, unsigned short port, unsigned
     CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, ipaddr.c_str(), port, err_msg, sock_err.c_str());
   }
 
-  free(addr);
   return err_msg == 0;
 }
 
