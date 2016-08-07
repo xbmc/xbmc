@@ -1,7 +1,7 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile pillow-crosscompile.patch
 
-VERSION.TXT := $(XBMCROOT)/version.txt
+VERSION.TXT := $(CORE_SOURCE_DIR)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 # lib name, version

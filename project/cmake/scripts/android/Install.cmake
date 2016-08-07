@@ -94,7 +94,7 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
   add_custom_target(${target}
       COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM}
               -C ${CMAKE_BINARY_DIR}/tools/android/packaging
-              XBMCROOT=${CORE_SOURCE_DIR}
+              CORE_SOURCE_DIR=${CORE_SOURCE_DIR}
               CC=${CMAKE_C_COMPILER}
               CPU=${CPU}
               ARCH=${ARCH}

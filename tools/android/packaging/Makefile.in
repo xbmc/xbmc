@@ -9,7 +9,7 @@ OBJS = libcurl.so \
 PLATFORM_OBJS =
 EXCLUDED_ADDONS = 
 
-XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
+CORE_SOURCE_DIR = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons media
 GCC_VERSION=$(shell $(CC) -dumpversion)
 ZIP=zip
@@ -80,15 +80,15 @@ shared:
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 	mkdir -p assets/system/certs
-	cp $(XBMCROOT)/tools/depends/target/openssl/cacert.pem assets/system/certs
+	cp $(CORE_SOURCE_DIR)/tools/depends/target/openssl/cacert.pem assets/system/certs
 
 sharedapk: shared | xbmc/assets
 	cp -rfp assets/* ./xbmc/assets
 
 sharedobb: shared
-	rm -f $(XBMCROOT)/main.@APP_NAME_LC@.obb
-	$(ZIP) -9 -q -r $(XBMCROOT)/main.@APP_NAME_LC@.obb assets
-	@echo "$(XBMCROOT)/main.@APP_NAME_LC@.obb created"
+	rm -f $(CORE_SOURCE_DIR)/main.@APP_NAME_LC@.obb
+	$(ZIP) -9 -q -r $(CORE_SOURCE_DIR)/main.@APP_NAME_LC@.obb assets
+	@echo "$(CORE_SOURCE_DIR)/main.@APP_NAME_LC@.obb created"
 
 python: | xbmc/assets
 	mkdir -p xbmc/assets/python2.7/lib/
@@ -98,7 +98,7 @@ python: | xbmc/assets
 res:
 	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
 	@echo "native_arch=$(ARCH)" > xbmc/res/raw/xbmc.properties
-	cp -fp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
+	cp -fp $(CORE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable/splash.png
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
 	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
 	cp -fp media/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
@@ -125,7 +125,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	install -p $(GDBPATH) ./xbmc/libs/$(CPU)/gdbserver
 	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/libs/$(CPU)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(XBMCROOT)  $(PREFIX)/include jni" >> ./xbmc/libs/$(CPU)/gdb.setup
+	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(CORE_SOURCE_DIR)  $(PREFIX)/include jni" >> ./xbmc/libs/$(CPU)/gdb.setup
 	cp -fp xbmc/libs/$(CPU)/* xbmc/lib/$(CPU)
 
 xbmc/classes.dex: res
@@ -142,9 +142,9 @@ package: libs python xbmc/classes.dex
 apk-sign:
 	@echo "Signing..."
 	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore $(SIGN_STORE) -storepass $(SIGN_STOREPASS) $(SIGN_KEYPASS_OPT) images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk $(SIGN_KEY)
-	@$(ZIPALIGN) -f 4 images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk $(XBMCROOT)/@APP_NAME_LC@app-$(CPU)-debug.apk
+	@$(ZIPALIGN) -f 4 images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk $(CORE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-debug.apk
 	@rm images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
-	@echo "$(XBMCROOT)/@APP_NAME_LC@app-$(CPU)-debug.apk created"
+	@echo "$(CORE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-debug.apk created"
 
 $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 	$(MAKE) -C ../../depends/target/xbmc

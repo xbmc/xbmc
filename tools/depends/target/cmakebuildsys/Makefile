@@ -1,14 +1,14 @@
 -include ../../Makefile.include
 
-VERSION.TXT := $(XBMCROOT)/version.txt
+VERSION.TXT := $(CORE_SOURCE_DIR)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 all:
-	mkdir -p $(XBMCROOT)/build
-	cd $(XBMCROOT)/build; $(CMAKE) -DCMAKE_BUILD_TYPE=$(Configuration) $(XBMCROOT)/project/cmake
+	mkdir -p $(CORE_SOURCE_DIR)/build
+	cd $(CORE_SOURCE_DIR)/build; $(CMAKE) -DCMAKE_BUILD_TYPE=$(Configuration) $(CORE_SOURCE_DIR)/project/cmake
 
 clean:
-	cd $(XBMCROOT)/build; $(MAKE) clean
+	cd $(CORE_SOURCE_DIR)/build; $(MAKE) clean
 
 distclean:
-	cd $(XBMCROOT)/build; $(MAKE) clean
+	cd $(CORE_SOURCE_DIR)/build; $(MAKE) clean
