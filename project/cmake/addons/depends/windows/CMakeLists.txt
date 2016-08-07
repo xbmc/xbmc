@@ -36,8 +36,6 @@ function(add_internal id url inputfile)
                      )
 endfunction()
 
-#find_package(7Zip REQUIRED)
-
 file(GLOB_RECURSE download_input_files prebuilt/*.txt)
 foreach(file ${download_input_files})
   if(NOT file MATCHES install.txt)
