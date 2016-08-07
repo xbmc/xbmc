@@ -72,7 +72,7 @@ else()
   endif()
   set(FFMPEG_PKGS libavcodec>=56.26.100 libavfilter>=5.11.100 libavformat>=56.25.101
                   libavutil>=54.20.100 libswscale>=3.1.101 libswresample>=1.1.100 libpostproc>=53.3.100)
-  if(PKG_CONFIG_FOUND)
+  if(PKG_CONFIG_FOUND AND NOT WIN32)
     pkg_check_modules (FFMPEG ${FFMPEG_PKGS})
     string(REGEX REPLACE "framework;" "framework " FFMPEG_LDFLAGS "${FFMPEG_LDFLAGS}")
     set(FFMPEG_LIBRARIES ${FFMPEG_LDFLAGS})
