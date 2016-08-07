@@ -92,17 +92,17 @@ public:
 
   bool Open(CDVDInputStream* pInput, bool streaminfo = true, bool fileinfo = false);
   void Dispose();
-  void Reset();
-  void Flush();
-  void Abort();
-  void SetSpeed(int iSpeed);
-  virtual std::string GetFileName();
+  void Reset() override ;
+  void Flush() override;
+  void Abort() override;
+  void SetSpeed(int iSpeed) override;
+  virtual std::string GetFileName() override;
 
-  DemuxPacket* Read();
+  DemuxPacket* Read() override;
 
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
+  bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override;
   bool SeekByte(int64_t pos);
-  int GetStreamLength();
+  int GetStreamLength() override;
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
@@ -133,7 +133,7 @@ protected:
   bool IsVideoReady();
   void ResetVideoStreams();
 
-  AVDictionary *GetFFMpegOptionsFromURL(CURL &url);
+  AVDictionary *GetFFMpegOptionsFromInput();
   double ConvertTimestamp(int64_t pts, int den, int num);
   void UpdateCurrentPTS();
   bool IsProgramChange();
