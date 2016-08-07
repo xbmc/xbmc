@@ -32,7 +32,7 @@ function(add_internal id url inputfile)
                                       -DINPUTDIR=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
                                       -DINPUTFILE=${inputfile}
                                       -DDESTDIR=${DEPENDS_PATH}
-                                      -P ${PROJECT_SOURCE_DIR}/install.cmake
+                                      -P ${PROJECT_SOURCE_DIR}/Install.cmake
                      )
 endfunction()
 
