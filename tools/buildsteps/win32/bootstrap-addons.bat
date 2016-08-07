@@ -18,7 +18,7 @@ if "%1" == "clean" (
 )
 
 rem set Visual C++ build environment
-call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+call "%VS140COMNTOOLS%..\..\VC\bin\amd64\vcvars64.bat"
 
 SET WORKDIR=%WORKSPACE%
 
