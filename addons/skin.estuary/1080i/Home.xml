@@ -293,6 +293,7 @@
 							<param name="list_id" value="7100"/>
 							<param name="onup_id" value="7900"/>
 							<param name="ondown_id" value="7200"/>
+							<param name="widget_limit" value="10"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="musicdb://recentlyaddedalbums/"/>
@@ -301,6 +302,7 @@
 							<param name="list_id" value="7200"/>
 							<param name="onup_id" value="7100"/>
 							<param name="ondown_id" value="7300"/>
+							<param name="widget_limit" value="10"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="special://skin/playlists/random_albums.xsp"/>
@@ -309,6 +311,7 @@
 							<param name="list_id" value="7300"/>
 							<param name="onup_id" value="7200"/>
 							<param name="ondown_id" value="7400"/>
+							<param name="widget_limit" value="10"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="special://skin/playlists/random_artists.xsp"/>
@@ -320,6 +323,7 @@
 							<param name="single_label" value="$INFO[ListItem.Label]"/>
 							<param name="main_label" value=""/>
 							<param name="sub_label" value=""/>
+							<param name="widget_limit" value="10"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="special://skin/playlists/unplayed_albums.xsp"/>
@@ -328,6 +332,7 @@
 							<param name="list_id" value="7500"/>
 							<param name="onup_id" value="7400"/>
 							<param name="ondown_id" value="7600"/>
+							<param name="widget_limit" value="10"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="special://skin/playlists/mostplayed_albums.xsp"/>
@@ -338,6 +343,7 @@
 							<param name="ondown_id" value="20001"/>
 							<param name="sortby" value="playcount"/>
 							<param name="sortorder" value="descending"/>
+							<param name="widget_limit" value="10"/>
 						</include>
 						<include content="ImageWidget">
 							<param name="image_path" value="special://skin/extras/home-images/music.jpg"/>
@@ -376,7 +382,7 @@
 							<param name="item1_label" value="$LOCALIZE[10040]" />
 							<param name="item2_onclick" value="ActivateWindow(systemsettings,addons)" />
 							<param name="item2_icon" value="settings.png" />
-							<param name="item2_label" value="$LOCALIZE[1045]" />
+							<param name="item2_label" value="$LOCALIZE[5]" />
 							<param name="item3_vis" value="False" />
 							<param name="item4_vis" value="False" />
 							<param name="item5_vis" value="False" />
@@ -449,15 +455,19 @@
 							<param name="main_label" value=""/>
 							<param name="sub_label" value=""/>
 						</include>
-						<include content="ImageWidget">
-							<param name="image_path" value="special://skin/extras/home-images/add-ons.jpg"/>
-							<param name="text_label" value="$LOCALIZE[31119]" />
-							<param name="button_label" value="$LOCALIZE[31118]" />
-							<param name="button_onclick" value="ActivateWindow(addonbrowser)"/>
-							<param name="button_id" value="8600"/>
-							<param name="onup_id" value="8100"/>
-							<param name="visible" value="!Integer.IsGreater(Container(8100).NumItems,0) + !Integer.IsGreater(Container(8200).NumItems,0) + !Integer.IsGreater(Container(8300).NumItems,0) + !Integer.IsGreater(Container(8400).NumItems,0) + !Integer.IsGreater(Container(8500).NumItems,0)"/>
-							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoProgramsButton)"/>
+						<include content="WidgetListSquare">
+							<param name="content_path" value="addons://repository.xbmc.org/"/>
+							<param name="widget_header" value="Kodi $LOCALIZE[24011]"/>
+							<param name="widget_target" value="addonbrowser"/>
+							<param name="sortby" value="label"/>
+							<param name="sortorder" value="ascending"/>
+							<param name="list_id" value="8600"/>
+							<param name="onup_id" value="8500"/>
+							<param name="ondown_id" value="20001"/>
+							<param name="single_label" value="$INFO[ListItem.Label]"/>
+							<param name="main_label" value=""/>
+							<param name="sub_label" value=""/>
+							<param name="widget_limit" value="20"/>
 						</include>
 					</control>
 				</control>
