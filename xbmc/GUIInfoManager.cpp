@@ -10092,7 +10092,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
-      return tag ? tag->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      if (tag)
+        return tag->StartAsLocalTime().GetAsLocalizedTime("", false);
     }
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->StartAsLocalTime().GetAsLocalizedTime("", false);
@@ -10115,7 +10116,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
-      return tag ? tag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      if (tag)
+        return tag->EndAsLocalTime().GetAsLocalizedTime("", false);
     }
     else if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->EndAsLocalTime().GetAsLocalizedTime("", false);
@@ -10133,7 +10135,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
-      return tag ? tag->StartAsLocalTime().GetAsLocalizedDate(true) : CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
+      if (tag)
+        return tag->StartAsLocalTime().GetAsLocalizedDate(true);
     }
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->StartAsLocalTime().GetAsLocalizedDate(true);
@@ -10148,7 +10151,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasPVRChannelInfoTag())
     {
       CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
-      return tag ? tag->EndAsLocalTime().GetAsLocalizedDate(true) : CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
+      if (tag)
+        return tag->EndAsLocalTime().GetAsLocalizedDate(true);
     }
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->EndAsLocalTime().GetAsLocalizedDate(true);
