@@ -277,7 +277,7 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<content target="$PARAM[widget_target]" limit="10">$PARAM[content_path]</content>
+				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="10">$PARAM[content_path]</content>
 			</control>
 		</control>
 	</include>
@@ -965,7 +965,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
+					<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
 				</control>
 			</control>
 		</definition>

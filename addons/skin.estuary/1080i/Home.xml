@@ -570,8 +570,10 @@
 							<param name="item7_vis" value="False" />
 							<param name="item8_vis" value="False" />
 						</include>
-						<include content="WidgetListChannels" condition="PVR.HasTVChannels">
+						<include content="WidgetListChannels">
 							<param name="content_path" value="pvr://channels/tv/All channels/"/>
+							<param name="sortby" value="lastplayed"/>
+							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31016]"/>
 							<param name="widget_target" value="pvr"/>
 							<param name="list_id" value="12200"/>
@@ -650,8 +652,10 @@
 							<param name="item7_vis" value="False" />
 							<param name="item8_vis" value="False" />
 						</include>
-						<include content="WidgetListChannels" condition="PVR.HasRadioChannels">
+						<include content="WidgetListChannels">
 							<param name="content_path" value="pvr://channels/radio/All channels/"/>
+							<param name="sortby" value="lastplayed"/>
+							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31018]"/>
 							<param name="widget_target" value="files"/>
 							<param name="list_id" value="13200"/>
