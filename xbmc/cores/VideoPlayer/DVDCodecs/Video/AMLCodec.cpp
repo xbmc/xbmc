@@ -1986,7 +1986,7 @@ double CAMLCodec::GetTimeSize()
   if (m_cur_pts == 0)
     m_timesize = (double)(am_private->am_pkt.lastpts - m_1st_pts) / PTS_FREQ;
   else
-    m_timesize = (double)(am_private->am_pkt.lastpts - m_cur_pts) / PTS_FREQ;
+    m_timesize = (double)(am_private->am_pkt.lastpts - GetOMXPts()) / PTS_FREQ;
 
   // lie to VideoPlayer, it is hardcoded to a max of 8 seconds,
   // if you buffer more than 8 seconds, it goes nuts.
