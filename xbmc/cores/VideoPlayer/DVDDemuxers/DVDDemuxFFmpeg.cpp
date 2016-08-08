@@ -230,14 +230,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
-    CURL url = m_pInput->GetURL();
-
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
-    AVDictionary *options = GetFFMpegOptionsFromURL(url);
+    AVDictionary *options = GetFFMpegOptionsFromInput();
 
-    // use updated url - options may have been stripped
-    strFile = url.Get();
+    CURL url = m_pInput->GetURL();
 
     int result=-1;
     if (url.IsProtocol("mms"))
@@ -632,11 +629,12 @@ void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
   }
 }
 
-AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(CURL &url)
+AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
 {
   const CDVDInputStreamFFmpeg *const input =
     dynamic_cast<CDVDInputStreamFFmpeg*>(m_pInput);
 
+  CURL url = m_pInput->GetURL();
   AVDictionary *options = nullptr;
 
   if (url.IsProtocol("http") || url.IsProtocol("https"))
@@ -698,13 +696,13 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(CURL &url)
 
       av_dict_set(&options, "http_proxy", urlStream.str().c_str(), 0);
     }
-  }
 
-  if (url.IsProtocol("rtmp")  || url.IsProtocol("rtmpt")  ||
-      url.IsProtocol("rtmpe") || url.IsProtocol("rtmpte") ||
-      url.IsProtocol("rtmps"))
-  {
-    static const std::map<std::string,std::string> optionmap =
+    // rtmp options
+    if (url.IsProtocol("rtmp")  || url.IsProtocol("rtmpt")  ||
+        url.IsProtocol("rtmpe") || url.IsProtocol("rtmpte") ||
+        url.IsProtocol("rtmps"))
+    {
+      static const std::map<std::string,std::string> optionmap =
       {{{"SWFPlayer", "rtmp_swfurl"},
         {"PageURL", "rtmp_pageurl"},
         {"PlayPath", "rtmp_playpath"},
@@ -714,35 +712,40 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromURL(CURL &url)
         {"swfurl",   "rtmp_swfurl"},
         {"swfvfy",   "rtmp_swfverify"},
       }};
-    CDVDInputStreamFFmpeg* is = static_cast<CDVDInputStreamFFmpeg*>(m_pInput);
-    for (const auto& it : optionmap)
-    {
-      if (is->GetItem().HasProperty(it.first))
-        av_dict_set(&options, it.second.c_str(),
-                    is->GetItem().GetProperty(it.first).asString().c_str(),0);
-    }
-    std::vector<std::string> opts = StringUtils::Split(url.Get(), " ");
-    if (opts.size() > 1) // inline rtmp options
-    {
-      std::string swfurl;
-      bool swfvfy=false;
-      for (size_t i = 1; i < opts.size(); ++i)
+
+      for (const auto& it : optionmap)
       {
-        std::vector<std::string> value = StringUtils::Split(opts[i], "=");
-        auto it = optionmap.find(value[0]);
-        if (it != optionmap.end())
+        if (input->GetItem().HasProperty(it.first))
         {
-          if (value[0] == "swfurl" || value[0] == "SWFPlayer")
-            swfurl = value[1];
-          if (value[0] == "swfvfy" && value[1] == "true")
-            swfvfy = true;
-          else
-            av_dict_set(&options, it->second.c_str(), value[1].c_str(), 0);
+          av_dict_set(&options, it.second.c_str(),
+                      input->GetItem().GetProperty(it.first).asString().c_str(),0);
         }
-        if (swfvfy)
-          av_dict_set(&options, "rtmp_swfverify", swfurl.c_str(), 0);
       }
-      url = CURL(opts.front());
+
+      CURL tmpUrl = url;
+      std::vector<std::string> opts = StringUtils::Split(tmpUrl.Get(), " ");
+      if (opts.size() > 1) // inline rtmp options
+      {
+        std::string swfurl;
+        bool swfvfy=false;
+        for (size_t i = 1; i < opts.size(); ++i)
+        {
+          std::vector<std::string> value = StringUtils::Split(opts[i], "=");
+          auto it = optionmap.find(value[0]);
+          if (it != optionmap.end())
+          {
+            if (value[0] == "swfurl" || value[0] == "SWFPlayer")
+              swfurl = value[1];
+            if (value[0] == "swfvfy" && value[1] == "true")
+              swfvfy = true;
+            else
+              av_dict_set(&options, it->second.c_str(), value[1].c_str(), 0);
+          }
+          if (swfvfy)
+            av_dict_set(&options, "rtmp_swfverify", swfurl.c_str(), 0);
+        }
+        tmpUrl = CURL(opts.front());
+      }
     }
   }
 
