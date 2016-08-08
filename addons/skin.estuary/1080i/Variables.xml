@@ -193,10 +193,9 @@
 		<value condition="Player.Forwarding32x | Player.Rewinding32x">32x</value>
 	</variable>
 	<variable name="SeekLabel">
-		<value condition="[Player.Paused + !Player.Caching] + !Player.Seeking + !Player.DisplayAfterSeek">$LOCALIZE[112]</value>
+		<value condition="[Player.Paused + !Player.Caching] + !Player.Seeking">$LOCALIZE[112]</value>
 		<value condition="!String.IsEmpty(Player.SeekStepSize) + ![player.forwarding | player.rewinding]">$LOCALIZE[773][COLOR=grey] $INFO[Player.SeekStepSize][/COLOR]</value>
-		<value condition="Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]">$LOCALIZE[773][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</value>
-		<value condition="!Player.DisplayAfterSeek + Player.Seeking">$LOCALIZE[773]</value>
+		<value condition="Player.DisplayAfterSeek + !String.IsEmpty(Player.SeekOffset) + ![player.forwarding | player.rewinding]">$LOCALIZE[773][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</value>
 		<value condition="Player.Forwarding">$LOCALIZE[31039] $VAR[VideoPlayerForwardRewindVar]</value>
 		<value condition="Player.Rewinding">$LOCALIZE[31038] $VAR[VideoPlayerForwardRewindVar]</value>
 	</variable>
