@@ -48,6 +48,7 @@ void CRumbleGenerator::NotifyUser(IInputReceiver* receiver)
     Create();
   }
 }
+
 bool CRumbleGenerator::DoTest(IInputReceiver* receiver)
 {
   if (receiver && !m_motors.empty())
@@ -75,6 +76,9 @@ void CRumbleGenerator::Process(void)
 
     Sleep(1000);
 
+    if (m_bStop)
+      break;
+
     for (const std::string& motor : m_motors)
       m_receiver->SetRumbleState(motor, 0.0f);
 
@@ -88,10 +92,10 @@ void CRumbleGenerator::Process(void)
 
       Sleep(1000);
 
-      m_receiver->SetRumbleState(motor, 0.0f);
-
       if (m_bStop)
         break;
+
+      m_receiver->SetRumbleState(motor, 0.0f);
     }
     break;
   }
