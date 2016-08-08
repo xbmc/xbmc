@@ -52,12 +52,12 @@ public:
   double        GetTimeSize();
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   int64_t       GetCurPts() const { return m_cur_pts; }
+  int       	GetOMXPts() const { return static_cast<int>(m_cur_pts - m_start_pts); }
 
 protected:
   virtual void  Process();
 
 private:
-  void          SetVideoPtsSeconds(double pts);
   void          ShowMainVideo(const bool show);
   void          SetVideoZoom(const float zoom);
   void          SetVideoContrast(const int contrast);
@@ -69,7 +69,7 @@ private:
   void          CloseAmlVideo();
   std::string   GetVfmMap(const std::string &name);
   void          SetVfmMap(const std::string &name, const std::string &map);
-  int           DequeueBuffer(int &pts);
+  int           DequeueBuffer(int64_t &pts);
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;
@@ -96,6 +96,6 @@ private:
 
   PosixFilePtr     m_amlVideoFile;
   std::string      m_defaultVfmMap;
-  std::deque<int>  m_ptsQueue;
+  std::deque<int64_t>  m_ptsQueue;
   CCriticalSection m_ptsQueueMutex;
 };

@@ -294,7 +294,7 @@ bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     m_Codec->GetPicture(&m_videobuffer);
   *pDvdVideoPicture = m_videobuffer;
 
-  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec, (int)m_Codec->GetCurPts());
+  CDVDAmlogicInfo* info = new CDVDAmlogicInfo(this, m_Codec, m_Codec->GetOMXPts());
 
   {
     CSingleLock lock(m_secure);
