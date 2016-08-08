@@ -150,7 +150,7 @@ public:
     write.notify_one();
   }
 
-  bool full()  { return m_size == queue.size(); }
+  bool full()  { return queue.size() >= m_size; }
 
 private:
   std::deque<T>           queue;
