@@ -1153,10 +1153,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       responseBody = StringUtils::Format(PLAYBACK_INFO, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
 
-      if (g_application.m_pPlayer->IsCaching())
-      {
-        CAirPlayServer::ServerInstance->AnnounceToClients(EVENT_LOADING);
-      }
     }
     else
     {
