@@ -25,6 +25,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
+#include "utils/EventStream.h"
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
 
@@ -569,6 +570,11 @@ private:
      */
     bool IsChannelPreview() const;
 
+    /*!
+     * @brief Query the events available for CEventStream
+     */
+    CEventStream<ManagerState>& Events() { return m_events; }
+
   protected:
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -667,6 +673,7 @@ private:
     static const int                m_pvrWindowIds[12];
 
     std::atomic_bool m_isChannelPreview;
+    CEventSource<ManagerState> m_events;
   };
 
   class CPVRStartupJob : public CJob

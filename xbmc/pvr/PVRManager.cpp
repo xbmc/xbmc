@@ -363,7 +363,11 @@ void CPVRManager::SetState(ManagerState state)
 {
   {
     CSingleLock lock(m_managerStateMutex);
+    if (m_managerState == state)
+      return;
+
     m_managerState = state;
+    m_events.Publish(m_managerState);
     SetChanged();
   }
 
