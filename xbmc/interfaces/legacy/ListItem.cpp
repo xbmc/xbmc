@@ -157,6 +157,14 @@ namespace XBMCAddon
         vtag.SetUniqueID(it->second, it->first);
     }
 
+    void ListItem::setRating(std::string type, float rating, int votes /* = 0 */, bool def /* = false */)
+    {
+      if (!item) return;
+
+      LOCKGUI;
+      item->GetVideoInfoTag()->SetRating(rating, votes, type, def);
+    }
+
     void ListItem::select(bool selected)
     {
       if (!item) return;
@@ -246,6 +254,17 @@ namespace XBMCAddon
       return item->GetVideoInfoTag()->GetUniqueID(key);
     }
 
+    float ListItem::getRating(const char* key)
+    {
+      LOCKGUI;
+      return item->GetVideoInfoTag()->GetRating(key).rating;
+    }
+
+    int ListItem::getVotes(const char* key)
+    {
+      LOCKGUI;
+      return item->GetVideoInfoTag()->GetRating(key).votes;
+    }
 
     void ListItem::setPath(const String& path)
     {
