@@ -22,6 +22,7 @@
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IInputHandler.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 using namespace JOYSTICK;
@@ -61,6 +62,8 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
   CJoystickFeature(name, handler, buttonMap),
   m_inputType(handler->GetInputType(name)),
   m_bDigitalState(false),
+  m_bDigitalHandled(false),
+  m_holdStartTimeMs(0),
   m_analogState(0.0f)
 {
 }
@@ -91,16 +94,35 @@ bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnit
   return true;
 }
 
+void CScalarFeature::ProcessMotions(void)
+{
+  if (m_bDigitalState && m_bDigitalHandled)
+  {
+    if (m_holdStartTimeMs == 0)
+    {
+      // Button was just pressed, record start time and exit
+      m_holdStartTimeMs = XbmcThreads::SystemClockMillis();
+    }
+    else
+    {
+      // Button has been pressed more than one event frame
+      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_holdStartTimeMs;
+      m_handler->OnButtonHold(m_name, elapsed);
+    }
+  }
+}
+
 void CScalarFeature::OnDigitalMotion(bool bPressed)
 {
   if (m_bDigitalState != bPressed)
   {
     m_bDigitalState = bPressed;
+    m_holdStartTimeMs = 0; // This is set in ProcessMotions()
 
     CLog::Log(LOGDEBUG, "Feature [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
               bPressed ? "pressed" : "released");
 
-    m_handler->OnButtonPress(m_name, bPressed);
+    m_bDigitalHandled = m_handler->OnButtonPress(m_name, bPressed);
   }
 }
 
@@ -129,7 +151,8 @@ void CScalarFeature::OnAnalogMotion(float magnitude)
 CAnalogStick::CAnalogStick(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
   m_vertState(0.0f),
-  m_horizState(0.0f)
+  m_horizState(0.0f),
+  m_motionStartTimeMs(0)
 {
 }
 
@@ -184,7 +207,22 @@ void CAnalogStick::ProcessMotions(void)
   {
     m_vertState = newVertState;
     m_horizState = newHorizState;
-    m_handler->OnAnalogStickMotion(m_name, newHorizState, newVertState);
+
+    unsigned int motionTimeMs = 0;
+
+    if (bActivated)
+    {
+      if (m_motionStartTimeMs == 0)
+        m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
+      else
+        motionTimeMs = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+    }
+    else
+    {
+      m_motionStartTimeMs = 0;
+    }
+
+    m_handler->OnAnalogStickMotion(m_name, newHorizState, newVertState, motionTimeMs);
   }
 }
 

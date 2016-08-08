@@ -23,6 +23,7 @@
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
+#include "utils/log.h"
 
 #include <algorithm>
 
@@ -34,17 +35,14 @@ using namespace MESSAGING;
 
 using namespace JOYSTICK;
 
-CKeymapHandler::CKeymapHandler(void)
-  : CThread("KeymapHandler"),
+CKeymapHandler::CKeymapHandler(void) :
     m_state(STATE_UNPRESSED),
     m_lastButtonPress(0)
 {
-  Create(false);
 }
 
 CKeymapHandler::~CKeymapHandler(void)
 {
-  StopThread(true);
 }
 
 INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
@@ -64,15 +62,13 @@ INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
   return INPUT_TYPE::UNKNOWN;
 }
 
-void CKeymapHandler::OnDigitalKey(unsigned int keyId, bool bPressed)
+void CKeymapHandler::OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs /* = 0 */)
 {
   if (keyId != 0)
   {
-    CSingleLock lock(m_digitalMutex);
-
-    if (bPressed && !IsPressed(keyId))
-      ProcessButtonPress(keyId);
-    else if (!bPressed && IsPressed(keyId))
+    if (bPressed)
+      ProcessButtonPress(keyId, holdTimeMs);
+    else
       ProcessButtonRelease(keyId);
   }
 }
@@ -83,105 +79,41 @@ void CKeymapHandler::OnAnalogKey(unsigned int keyId, float magnitude)
     SendAnalogAction(keyId, magnitude);
 }
 
-void CKeymapHandler::Process()
+void CKeymapHandler::ProcessButtonPress(unsigned int keyId, unsigned int holdTimeMs)
 {
-  unsigned int holdStartTime = 0;
-  unsigned int pressedButton = 0;
-
-  while (!m_bStop)
+  if (!IsPressed(keyId))
   {
-    switch (m_state)
+    m_pressedButtons.push_back(keyId);
+
+    if (SendDigitalAction(keyId))
     {
-      case STATE_UNPRESSED:
-      {
-        // Wait for button press
-        WaitResponse waitResponse = AbortableWait(m_pressEvent);
-
-        CSingleLock lock(m_digitalMutex);
-
-        if (waitResponse == WAIT_SIGNALED && m_lastButtonPress != 0)
-        {
-          pressedButton = m_lastButtonPress;
-          m_state = STATE_BUTTON_PRESSED;
-        }
-        break;
-      }
-
-      case STATE_BUTTON_PRESSED:
-      {
-        holdStartTime = XbmcThreads::SystemClockMillis();
-
-        // Wait for hold time to elapse
-        WaitResponse waitResponse = AbortableWait(m_pressEvent, HOLD_TIMEOUT_MS);
-
-        CSingleLock lock(m_digitalMutex);
-
-        if (m_lastButtonPress == 0)
-        {
-          m_state = STATE_UNPRESSED;
-        }
-        else if (waitResponse == WAIT_SIGNALED || m_lastButtonPress != pressedButton)
-        {
-          pressedButton = m_lastButtonPress;
-          // m_state is unchanged
-        }
-        else if (waitResponse == WAIT_TIMEDOUT)
-        {
-          m_state = STATE_BUTTON_HELD;
-        }
-        break;
-      }
-
-      case STATE_BUTTON_HELD:
-      {
-        const unsigned int holdTimeMs = XbmcThreads::SystemClockMillis() - holdStartTime;
-        SendDigitalAction(pressedButton, holdTimeMs);
-
-        // Wait for repeat time to elapse
-        WaitResponse waitResponse = AbortableWait(m_pressEvent, REPEAT_TIMEOUT_MS);
-
-        CSingleLock lock(m_digitalMutex);
-
-        if (m_lastButtonPress == 0)
-        {
-          m_state = STATE_UNPRESSED;
-        }
-        else if (waitResponse == WAIT_SIGNALED || m_lastButtonPress != pressedButton)
-        {
-          pressedButton = m_lastButtonPress;
-          m_state = STATE_BUTTON_PRESSED;
-        }
-        break;
-      }
-
-      default:
-        break;
+      m_lastButtonPress = keyId;
+      m_lastDigitalActionMs = holdTimeMs;
     }
   }
-}
-
-bool CKeymapHandler::ProcessButtonPress(unsigned int keyId)
-{
-  m_pressedButtons.push_back(keyId);
-
-  if (SendDigitalAction(keyId))
+  else if (keyId == m_lastButtonPress && holdTimeMs > HOLD_TIMEOUT_MS)
   {
-    m_lastButtonPress = keyId;
-    m_pressEvent.Set();
-    return true;
+    if (holdTimeMs > m_lastDigitalActionMs + REPEAT_TIMEOUT_MS)
+    {
+      SendDigitalAction(keyId, holdTimeMs);
+      m_lastDigitalActionMs = holdTimeMs;
+    }
   }
-
-  return false;
 }
 
 void CKeymapHandler::ProcessButtonRelease(unsigned int keyId)
 {
   m_pressedButtons.erase(std::remove(m_pressedButtons.begin(), m_pressedButtons.end(), keyId), m_pressedButtons.end());
 
-  if (keyId == m_lastButtonPress || m_pressedButtons.empty())
-  {
+  // Update last button press if the button was released
+  if (keyId == m_lastButtonPress)
     m_lastButtonPress = 0;
-    m_pressEvent.Set();
+
+  // If all buttons are depressed, m_lastButtonPress must be 0
+  if (m_pressedButtons.empty() && m_lastButtonPress != 0)
+  {
+    CLog::Log(LOGDEBUG, "ERROR: invalid state in CKeymapHandler!");
+    m_lastButtonPress = 0;
   }
 }
 

@@ -73,6 +73,17 @@ namespace JOYSTICK
     virtual bool OnButtonPress(const FeatureName& feature, bool bPressed) = 0;
 
     /*!
+    * \brief A digital button has been pressed for more than one event frame
+    *
+    * \param feature      The feature being held
+    * \param holdTimeMs   The time elapsed since the initial press (ms)
+    *
+    * If OnButtonPress() returns true for the initial press, then this callback
+    * is invoked on subsequent frames until the button is released.
+    */
+    virtual void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) = 0;
+
+    /*!
      * \brief An analog button (trigger or a pressure-sensitive button) has changed state
      *
      * \param feature      The feature changing state
@@ -89,10 +100,12 @@ namespace JOYSTICK
      * \param feature      The analog stick being moved
      * \param x            The x coordinate in the closed interval [-1, 1]
      * \param y            The y coordinate in the closed interval [-1, 1]
+     * \param motionTimeMs The time elapsed since this analog stick was centered,
+     *                     or 0 if the analog stick is centered
      *
      * \return True if the event was handled otherwise false
      */
-    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y) = 0;
+    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs = 0) = 0;
 
     /*!
      * \brief An accelerometer's state has changed

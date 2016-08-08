@@ -102,7 +102,7 @@ namespace JOYSTICK
     // implementation of CJoystickFeature
     virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
     virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
-    virtual void ProcessMotions(void) override { } // Actions are dispatched immediately
+    virtual void ProcessMotions(void) override;
 
   private:
     void OnDigitalMotion(bool bPressed);
@@ -110,6 +110,8 @@ namespace JOYSTICK
 
     const INPUT_TYPE m_inputType;
     bool             m_bDigitalState;
+    bool             m_bDigitalHandled;
+    unsigned int     m_holdStartTimeMs;
     float            m_analogState;
   };
 
@@ -194,6 +196,8 @@ namespace JOYSTICK
 
     float m_vertState;
     float m_horizState;
+
+    unsigned int m_motionStartTimeMs;
   };
 
   class CAccelerometer : public CJoystickFeature
