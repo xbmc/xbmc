@@ -1520,9 +1520,9 @@ bool checkIPUStrideOffset(struct ipu_deinterlace *d)
 inline
 int setIPUMotion(bool hasPrev, EINTERLACEMETHOD imethod)
 {
-  if (hasPrev && imethod == VS_INTERLACEMETHOD_IMX_WEAVE)
-    return LOW_MOTION;
-  else if (hasPrev && (imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION || imethod == VS_INTERLACEMETHOD_AUTO))
+  if (hasPrev && imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION)
+    return MED_MOTION;
+  else if (hasPrev && (imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF || imethod == VS_INTERLACEMETHOD_AUTO))
     return MED_MOTION;
 
   return HIGH_MOTION;

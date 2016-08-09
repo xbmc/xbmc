@@ -90,7 +90,7 @@ bool CRendererIMX::Supports(EINTERLACEMETHOD method)
     return true;
 
   if(method == VS_INTERLACEMETHOD_IMX_ADVMOTION
-  || method == VS_INTERLACEMETHOD_IMX_WEAVE
+  || method == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF
   || method == VS_INTERLACEMETHOD_IMX_FASTMOTION
   || method == VS_INTERLACEMETHOD_RENDER_BOB
   || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
@@ -106,7 +106,7 @@ bool CRendererIMX::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CRendererIMX::AutoInterlaceMethod()
 {
-  return VS_INTERLACEMETHOD_IMX_ADVMOTION;
+  return VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF;
 }
 
 bool CRendererIMX::WantsDoublePass()
