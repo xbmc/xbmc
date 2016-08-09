@@ -338,22 +338,21 @@ public:
   virtual void OnLostDisplay();
   virtual void OnResetDisplay();
 
-  enum ECacheState
-  { CACHESTATE_DONE = 0
-  , CACHESTATE_FULL     // player is filling up the demux queue
-  , CACHESTATE_INIT     // player is waiting for first packet of each stream
-  , CACHESTATE_PLAY     // player is waiting for players to not be stalled
-  , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
-  };
-
-  virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
-  virtual int GetCacheLevel() const ;
+  virtual int GetCacheLevel() const override;
 
   virtual int OnDVDNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
 protected:
   friend class CSelectionStreams;
+  enum ECacheState
+  {
+    CACHESTATE_DONE = 0,
+    CACHESTATE_FULL,     // player is filling up the demux queue
+    CACHESTATE_INIT,     // player is waiting for first packet of each stream
+    CACHESTATE_PLAY,     // player is waiting for players to not be stalled
+    CACHESTATE_FLUSH,    // temporary state player will choose startup between init or full
+  };
 
   virtual void OnStartup();
   virtual void OnExit();

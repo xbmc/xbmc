@@ -141,7 +141,6 @@ public:
   bool  HasMenu() const;
   bool  HasVideo() const;
   bool  HasRDS() const;
-  bool  IsCaching() const;
   bool  IsInMenu() const;
   bool  IsPaused();
   bool  IsPausedPlayback();

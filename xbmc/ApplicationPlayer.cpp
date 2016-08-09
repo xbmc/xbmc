@@ -319,12 +319,6 @@ int64_t CApplicationPlayer::GetTime() const
     return 0;
 }
 
-bool CApplicationPlayer::IsCaching() const
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->IsCaching());
-}
-
 bool CApplicationPlayer::IsInMenu() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();

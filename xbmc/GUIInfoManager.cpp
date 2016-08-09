@@ -7039,7 +7039,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = GetDisplayAfterSeek();
     break;
     case PLAYER_CACHING:
-      bReturn = g_application.m_pPlayer->IsCaching();
+      bReturn = false;
     break;
     case PLAYER_SEEKBAR:
       {
