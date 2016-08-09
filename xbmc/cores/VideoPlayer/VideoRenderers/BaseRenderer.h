@@ -106,6 +106,8 @@ public:
   virtual bool Supports(EINTERLACEMETHOD method) = 0;
   virtual bool Supports(ESCALINGMETHOD method) = 0;
 
+  virtual bool WantsDoublePass() { return false; };
+
   void SetViewMode(int viewMode);
 
   /*! \brief Get video rectangle and view window

@@ -828,7 +828,12 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 
         invert = true;
       }
       else
-        presentmethod = PRESENT_METHOD_SINGLE;
+      {
+        if (!m_pRenderer->WantsDoublePass())
+          presentmethod = PRESENT_METHOD_SINGLE;
+        else
+          presentmethod = PRESENT_METHOD_BOB;
+      }
 
       if (presentmethod != PRESENT_METHOD_SINGLE)
       {
