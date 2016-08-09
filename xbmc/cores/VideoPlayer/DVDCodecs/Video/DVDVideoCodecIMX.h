@@ -171,12 +171,14 @@ private:
     int shift = true;
   };
 
+  typedef std::shared_ptr<struct IPUTask> IPUTaskPtr;
+
   bool GetFBInfo(const std::string &fbdev, struct fb_var_screeninfo *fbVar);
 
-  void PrepareTask(IPUTask *ipu, CIMXBuffer *source_p, CIMXBuffer *source,
+  void PrepareTask(IPUTaskPtr &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
                    CRect *dest = NULL);
-  bool DoTask(IPUTask *ipu);
-  bool TileTask(IPUTask *ipu);
+  bool DoTask(IPUTaskPtr &ipu);
+  bool TileTask(IPUTaskPtr &ipu);
 
   void SetFieldData(uint8_t fieldFmt, double fps);
 

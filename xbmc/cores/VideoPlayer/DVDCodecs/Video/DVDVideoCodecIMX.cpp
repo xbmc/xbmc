@@ -1539,7 +1539,7 @@ void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, uint8_t fieldFm
 
   m_pg = ++m_pg % m_fbPages;
 
-  IPUTask *ipu = new IPUTask;
+  IPUTaskPtr ipu(new IPUTask);
   ipu->page = page;
 
   SetFieldData(fieldFmt, source->m_fps);
@@ -1735,7 +1735,7 @@ void CIMXContext::WaitCapture()
 {
 }
 
-void CIMXContext::PrepareTask(IPUTask *ipu, CIMXBuffer *source_p, CIMXBuffer *source,
+void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
                               CRect *dest)
 {
   // Fill with zeros
@@ -1826,7 +1826,7 @@ void CIMXContext::PrepareTask(IPUTask *ipu, CIMXBuffer *source_p, CIMXBuffer *so
   }
 }
 
-bool CIMXContext::TileTask(IPUTask *ipu)
+bool CIMXContext::TileTask(IPUTaskPtr &ipu)
 {
   int pad = ipu->task.input.height == 1080 && ipu->current->iHeight>ipu->task.input.height ? 16*ipu->current->iWidth : 0;
 
@@ -1901,7 +1901,7 @@ bool CIMXContext::TileTask(IPUTask *ipu)
   return true;
 }
 
-bool CIMXContext::DoTask(IPUTask *ipu)
+bool CIMXContext::DoTask(IPUTaskPtr &ipu)
 {
   bool swapColors = false;
 
