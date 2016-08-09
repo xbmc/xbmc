@@ -156,7 +156,7 @@ HRESULT WINAPI D3DX11CreateEffectFromFile( LPCWSTR pFileName, UINT FXFlags, ID3D
     int result = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH, nullptr, FALSE );
     if ( !result )
     {
-        DPF(0, "Failed to load effect file due to WC to MB conversion failure: %S", pFileName);
+        DPF(0, "Failed to load effect file due to WC to MB conversion failure: %ls", pFileName);
         hr = E_FAIL;
         goto lExit;
     }
@@ -245,7 +245,7 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
     HRESULT hr = D3DCompileFromFile( pFileName, pDefines, pInclude, "", "fx_5_0", HLSLFlags, FXFlags, &blob, ppErrors );
     if ( FAILED(hr) )
     {
-        DPF(0, "D3DCompileFromFile of fx_5_0 profile failed %08X: %S", hr, pFileName );
+        DPF(0, "D3DCompileFromFile of fx_5_0 profile failed %08X: %ls", hr, pFileName );
         return hr;
     }
 
@@ -256,7 +256,7 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
     HRESULT hr = LoadBinaryFromFile( pFileName, fileData, size );
     if ( FAILED(hr) )
     {
-        DPF(0, "Failed to load effect file %08X: %S", hr, pFileName);
+        DPF(0, "Failed to load effect file %08X: %ls", hr, pFileName);
         return hr;
     }
 
@@ -265,7 +265,7 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
     int result = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH, nullptr, FALSE );
     if ( !result )
     {
-        DPF(0, "Failed to load effect file due to WC to MB conversion failure: %S", pFileName);
+        DPF(0, "Failed to load effect file due to WC to MB conversion failure: %ls", pFileName);
         return E_FAIL;
     }
 
@@ -308,7 +308,7 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
     int result = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH, nullptr, FALSE );
     if ( !result  )
     {
-        DPF(0, "Failed to load effect file due to WC to MB conversion failure: %S", pFileName);
+        DPF(0, "Failed to load effect file due to WC to MB conversion failure: %ls", pFileName);
         hr = E_FAIL;
         goto lExit;
     }

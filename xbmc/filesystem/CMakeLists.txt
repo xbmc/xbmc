@@ -180,7 +180,7 @@ if(BLURAY_FOUND)
                       BlurayFile.h)
 endif()
 
-core_add_library(filesystem upnp)
+core_add_library(filesystem)
 if(ENABLE_STATIC_LIBS)
   target_link_libraries(filesystem PRIVATE upnp)
 endif()

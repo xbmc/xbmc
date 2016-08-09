@@ -1025,11 +1025,14 @@ void CEffect::AddRefAllForCloning( _In_ CEffect* pEffectSource )
     }
 
     // There's no need to AddRef CBs, since they are recreated
-    assert(nullptr == m_pCBs || pEffectSource->m_Heap.IsInHeap(m_pCBs));
-    for ( size_t i = 0; i < m_CBCount; ++ i)
+    if (m_pCBs)
     {
-        SAFE_ADDREF(m_pCBs[i].TBuffer.pShaderResource);
-        SAFE_ADDREF(m_pCBs[i].pD3DObject);
+        assert(pEffectSource->m_Heap.IsInHeap(m_pCBs));
+        for (size_t i = 0; i < m_CBCount; ++i)
+        {
+            SAFE_ADDREF(m_pCBs[i].TBuffer.pShaderResource);
+            SAFE_ADDREF(m_pCBs[i].pD3DObject);
+        }
     }
 
     assert(nullptr == m_pShaderBlocks || pEffectSource->m_Heap.IsInHeap(m_pShaderBlocks));

@@ -601,7 +601,7 @@ lExit:
 // ID3DX11EffectShaderVariable (SAnonymousShader implementation)
 ////////////////////////////////////////////////////////////////////////////////
 
-SAnonymousShader::SAnonymousShader(_In_ SShaderBlock *pBlock) : pShaderBlock(pBlock)
+SAnonymousShader::SAnonymousShader(_In_opt_ SShaderBlock *pBlock) : pShaderBlock(pBlock)
 {
 }
 
