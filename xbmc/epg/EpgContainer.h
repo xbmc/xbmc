@@ -297,7 +297,10 @@ namespace EPG
     CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
     CEvent                         m_updateEvent;    /*!< trigger when an update finishes */
 
-    std::list<SUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon*/
-    CCriticalSection m_updateRequestsLock;      /*!< protect update requests*/
+    std::list<SUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon */
+    CCriticalSection m_updateRequestsLock;      /*!< protect update requests */
+
+  private:
+    bool m_bUpdateNotificationPending; /*!< true while an epg updated notification to observers is pending. */
   };
 }
