@@ -4614,6 +4614,12 @@ void CVideoPlayer::AddSubtitle(const std::string& strSubPath)
   m_messenger.Put(new CDVDMsgType<std::string>(CDVDMsg::SUBTITLE_ADDFILE, strSubPath));
 }
 
+bool CVideoPlayer::IsCaching() const
+{
+  CSingleLock lock(m_StateSection);
+  return m_State.caching;
+}
+
 int CVideoPlayer::GetCacheLevel() const
 {
   CSingleLock lock(m_StateSection);
@@ -4866,11 +4872,16 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.time_total  = (double) m_Edl.RemoveCutTime(llrint(state.time_total));
   }
 
-  if(state.time_total <= 0)
+  if (state.time_total <= 0)
     state.canseek  = false;
 
+  if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
+    state.caching = true;
+  else
+    state.caching = false;
+
   double level, delay, offset;
-  if(GetCachingTimes(level, delay, offset))
+  if (GetCachingTimes(level, delay, offset))
   {
     state.cache_delay  = std::max(0.0, delay);
     state.cache_level  = std::max(0.0, std::min(1.0, level));
@@ -4884,7 +4895,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   }
 
   XFILE::SCacheStatus status;
-  if(m_pInputStream && m_pInputStream->GetCacheStatus(&status))
+  if (m_pInputStream && m_pInputStream->GetCacheStatus(&status))
   {
     state.cache_bytes = status.forward;
     if(state.time_total)

@@ -41,60 +41,6 @@ class CDVDMsg;
 class CDVDStreamInfo;
 class CProcessInfo;
 
-struct SPlayerState
-{
-  SPlayerState() { Clear(); }
-  void Clear()
-  {
-    player        = 0;
-    timestamp     = 0;
-    time          = 0;
-    time_total    = 0;
-    time_offset   = 0;
-    dts           = DVD_NOPTS_VALUE;
-    player_state  = "";
-    isInMenu = false;
-    hasMenu = false;
-    chapter       = 0;
-    chapters.clear();
-    canrecord     = false;
-    recording     = false;
-    canpause      = false;
-    canseek       = false;
-    cache_bytes   = 0;
-    cache_level   = 0.0;
-    cache_delay   = 0.0;
-    cache_offset  = 0.0;
-  }
-
-  int    player;            // source of this data
-
-  double timestamp;         // last time of update
-  double time_offset;       // difference between time and pts
-
-  double time;              // current playback time
-  double time_total;        // total playback time
-  double dts;               // last known dts
-
-  std::string player_state;  // full player state
-  bool isInMenu;
-  bool hasMenu;
-
-  int         chapter;                   // current chapter
-  std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
-
-  bool canrecord;           // can input stream record
-  bool recording;           // are we currently recording
-
-  bool canpause;            // pvr: can pause the current playing item
-  bool canseek;             // pvr: can seek in the current playing item
-
-  int64_t cache_bytes;   // number of bytes current's cached
-  double  cache_level;   // current estimated required cache level
-  double  cache_delay;   // time until cache is expected to reach estimated level
-  double  cache_offset;  // percentage of file ahead of current position
-};
-
 struct SStartMsg
 {
   double timestamp;

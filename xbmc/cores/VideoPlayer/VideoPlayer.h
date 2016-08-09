@@ -84,6 +84,58 @@ struct SOmxPlayerState
   double stamp;                   // last media timestamp
 };
 
+struct SPlayerState
+{
+  SPlayerState() { Clear(); }
+  void Clear()
+  {
+    timestamp = 0;
+    time = 0;
+    time_total = 0;
+    time_offset = 0;
+    dts = DVD_NOPTS_VALUE;
+    player_state  = "";
+    isInMenu = false;
+    hasMenu = false;
+    chapter = 0;
+    chapters.clear();
+    canrecord = false;
+    recording = false;
+    canpause = false;
+    canseek = false;
+    caching = false;
+    cache_bytes = 0;
+    cache_level = 0.0;
+    cache_delay = 0.0;
+    cache_offset = 0.0;
+  }
+
+  double timestamp;         // last time of update
+  double time_offset;       // difference between time and pts
+
+  double time;              // current playback time
+  double time_total;        // total playback time
+  double dts;               // last known dts
+
+  std::string player_state; // full player state
+  bool isInMenu;
+  bool hasMenu;
+
+  int chapter;              // current chapter
+  std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
+
+  bool canrecord;           // can input stream record
+  bool recording;           // are we currently recording
+  bool canpause;            // pvr: can pause the current playing item
+  bool canseek;             // pvr: can seek in the current playing item
+  bool caching;
+
+  int64_t cache_bytes;   // number of bytes current's cached
+  double cache_level;   // current estimated required cache level
+  double cache_delay;   // time until cache is expected to reach estimated level
+  double cache_offset;  // percentage of file ahead of current position
+};
+
 class CDVDInputStream;
 
 class CDVDDemux;
@@ -338,16 +390,8 @@ public:
   virtual void OnLostDisplay();
   virtual void OnResetDisplay();
 
-  enum ECacheState
-  { CACHESTATE_DONE = 0
-  , CACHESTATE_FULL     // player is filling up the demux queue
-  , CACHESTATE_INIT     // player is waiting for first packet of each stream
-  , CACHESTATE_PLAY     // player is waiting for players to not be stalled
-  , CACHESTATE_FLUSH    // temporary state player will choose startup between init or full
-  };
-
-  virtual bool IsCaching() const { return m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY; }
-  virtual int GetCacheLevel() const ;
+  virtual bool IsCaching() const override;
+  virtual int GetCacheLevel() const override;
 
   virtual int OnDVDNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
@@ -397,6 +441,16 @@ protected:
    */
   void SetPlaySpeed(int iSpeed);
   int GetPlaySpeed() { return m_playSpeed; }
+
+  enum ECacheState
+  {
+    CACHESTATE_DONE = 0,
+    CACHESTATE_FULL,     // player is filling up the demux queue
+    CACHESTATE_INIT,     // player is waiting for first packet of each stream
+    CACHESTATE_PLAY,     // player is waiting for players to not be stalled
+    CACHESTATE_FLUSH,    // temporary state player will choose startup between init or full
+  };
+
   void SetCaching(ECacheState state);
 
   int64_t GetTotalTimeInMsec();
