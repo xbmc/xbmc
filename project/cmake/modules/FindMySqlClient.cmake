@@ -14,11 +14,20 @@
 #
 #   MySqlClient::MySqlClient   - The MySqlClient library
 
+# Don't find system wide installed version on Windows
+if(WIN32)
+  set(EXTRA_FIND_ARGS NO_SYSTEM_ENVIRONMENT_PATH)
+else()
+  set(EXTRA_FIND_ARGS)
+endif()
+
 find_path(MYSQLCLIENT_INCLUDE_DIR mysql/mysql_time.h)
 find_library(MYSQLCLIENT_LIBRARY_RELEASE NAMES mysqlclient libmysql
-                                         PATH_SUFFIXES mysql)
+                                         PATH_SUFFIXES mysql
+                                         ${EXTRA_FIND_ARGS})
 find_library(MYSQLCLIENT_LIBRARY_DEBUG NAMES mysqlclient libmysql
-                                       PATH_SUFFIXES mysql)
+                                       PATH_SUFFIXES mysql
+                                       ${EXTRA_FIND_ARGS})
 
 include(SelectLibraryConfigurations)
 select_library_configurations(MYSQLCLIENT)
