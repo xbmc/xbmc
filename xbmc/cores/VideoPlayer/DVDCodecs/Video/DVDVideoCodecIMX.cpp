@@ -652,7 +652,7 @@ void CIMXCodec::Dispose()
     if (ret != VPU_DEC_RET_SUCCESS)
       CLog::Log(LOGERROR, "%s - VPU close failed with error code %d.\n", __FUNCTION__, ret);
     else
-      CLog::Log(LOGVIDEO, "%s - VPU closed.", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - VPU closed.", __FUNCTION__);
 
     m_vpuHandle = 0;
   }
@@ -790,7 +790,7 @@ int CIMXCodec::Decode(BYTE *pData, int iSize, double dts, double pts)
   }
 
 #ifdef IMX_PROFILE
-  CLog::Log(LOGVIDEO, "%s - demux size: %d  dts : %f - pts : %f - addr : 0x%x, return %d ===== in/out %d/%d =====\n",
+  CLog::Log(LOGDEBUG, "%s - demux size: %d  dts : %f - pts : %f - addr : 0x%x, return %d ===== in/out %d/%d =====\n",
                        __FUNCTION__, iSize, recalcPts(dts), recalcPts(pts), (uint)pData, ret, m_decInput.size(), m_decOutput.size());
 #endif
 
@@ -864,7 +864,7 @@ void CIMXCodec::Process()
     unsigned long long before_dec;
 #ifdef IMX_PROFILE
     current = XbmcThreads::SystemClockMillis();
-    CLog::Log(LOGVIDEO, "%s - delta time decode : %llu - demux size : %d  dts : %f - pts : %f - addr : 0x%x\n",
+    CLog::Log(LOGDEBUG, "%s - delta time decode : %llu - demux size : %d  dts : %f - pts : %f - addr : 0x%x\n",
                                       __FUNCTION__, current - previous, task->demux.iSize, recalcPts(task->demux.dts), recalcPts(task->demux.pts), (uint)task->demux.pData);
     previous = current;
 #endif
