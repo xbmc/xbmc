@@ -2370,6 +2370,16 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="audiooutput.atempothreshold" type="integer" label="13517" help="13518">
+          <level>3</level>
+          <default>2</default> <!-- 2% -->
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="edit" format="integer" />
+        </setting>
         <setting id="audiooutput.samplerate" type="integer" label="458" help="36523">
           <level>2</level>
           <default>48000</default>

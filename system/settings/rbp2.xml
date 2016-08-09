@@ -18,6 +18,11 @@
       </group>
     </category>
     <category id="audio">
+      <group id="1">
+        <setting id="audiooutput.atempothreshold">
+          <default>2</default> <!-- 2% -->
+        </setting>
+      </group>
       <group id="3">
         <setting id="audiooutput.ac3transcode" help="36429">
         </setting>

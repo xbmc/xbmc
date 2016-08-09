@@ -6818,7 +6818,18 @@ msgctxt "#13516"
 msgid "Add art"
 msgstr ""
 
-#empty strings from id 13517 to 13549
+#: system/settings/settings.xml
+msgctxt "#13517"
+msgid "Threshold for pitch correction"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#13518"
+msgid "When the speed change exceeds this threshold, a pitch-correction filter will be applied. This avoids the \"chipmonk voices\" that normally result from speeding up a video"
+msgstr ""
+
+
+#empty strings from id 13519 to 13549
 
 #: system/settings/settings.xml
 msgctxt "#13550"

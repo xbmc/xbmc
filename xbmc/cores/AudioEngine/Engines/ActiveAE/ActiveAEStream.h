@@ -103,7 +103,7 @@ public:
   void Flush();
   void SetDrain(bool drain);
   bool IsDrained();
-  void SetRR(double rr);
+  void SetRR(double rr, double atempoThreshold);
   double GetRR();
   void FillBuffer();
   bool DoesNormalize();
