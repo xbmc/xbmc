@@ -96,7 +96,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
         if(demuxer->Open(pOtherStream))
           return demuxer.release();
         else
-           return nullptr;
+          return nullptr;
       }
 
       /* Used for MediaPortal PVR addon (uses PVR otherstream for playback of rtsp streams) */
