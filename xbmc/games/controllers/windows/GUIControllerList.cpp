@@ -174,8 +174,6 @@ bool CGUIControllerList::RefreshControllers(void)
   for (const std::string& addonId : removed)
     UnregisterController(addonId);
 
-
-
   // Sort add-ons, with default controller first
   const bool bChanged = !added.empty() || !removed.empty();
   if (bChanged)
