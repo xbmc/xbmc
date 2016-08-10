@@ -7029,7 +7029,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_IS_TEMPO:
       {
         float speed = g_application.m_pPlayer->GetPlaySpeed();
-        bReturn = (speed >= 0.75 && speed <= 1.55 & speed != 1);
+        bReturn = (speed >= 0.75 && speed <= 1.55 && speed != 1);
       }
       break;
     case PLAYER_RECORDING:
