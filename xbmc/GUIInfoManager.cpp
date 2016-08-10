@@ -5173,7 +5173,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       {
         for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); i++)
         {
-          if (prop.param() == player_process[i].str)
+          if (StringUtils::EqualsNoCase(prop.param(), player_process[i].str))
             return player_process[i].val;
         }
       }
