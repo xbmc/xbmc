@@ -725,3 +725,8 @@ msgstr ""
 msgctxt "#31141"
 msgid "Changes for version"
 msgstr ""
+
+#: /1080i/Variables.xml
+msgctxt "#31142"
+msgid "Play speed"
+msgstr ""
