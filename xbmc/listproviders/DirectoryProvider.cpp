@@ -33,6 +33,7 @@
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
+#include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
@@ -48,6 +49,7 @@
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
+using namespace PVR;
 
 class CDirectoryJob : public CJob
 {
@@ -224,8 +226,8 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 
 void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  // we are only interested in library changes
-  if ((flag & (VideoLibrary | AudioLibrary)) == 0)
+  // we are only interested in library and player changes
+  if ((flag & (VideoLibrary | AudioLibrary | Player)) == 0)
     return;
 
   {
@@ -238,17 +240,31 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
          (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::AUDIO) == m_itemTypes.end())))
       return;
 
-    // if we're in a database transaction, don't bother doing anything just yet
-    if (data.isMember("transaction") && data["transaction"].asBoolean())
-      return;
+    if (flag & Player)
+    {
+      if (strcmp(message, "OnPlay") == 0 ||
+          strcmp(message, "OnStop") == 0)
+      {
+        if (m_currentSort.sortBy == SortByLastPlayed ||
+            m_currentSort.sortBy == SortByPlaycount ||
+            m_currentSort.sortBy == SortByLastUsed)
+          m_updateState = INVALIDATED;
+      }
+    }
+    else
+    {
+      // if we're in a database transaction, don't bother doing anything just yet
+      if (data.isMember("transaction") && data["transaction"].asBoolean())
+        return;
 
-    // if there was a database update, we set the update state
-    // to PENDING to fire off a new job in the next update
-    if (strcmp(message, "OnScanFinished") == 0 ||
-        strcmp(message, "OnCleanFinished") == 0 ||
-        strcmp(message, "OnUpdate") == 0 ||
-        strcmp(message, "OnRemove") == 0)
-      m_updateState = INVALIDATED;
+      // if there was a database update, we set the update state
+      // to PENDING to fire off a new job in the next update
+      if (strcmp(message, "OnScanFinished") == 0 ||
+          strcmp(message, "OnCleanFinished") == 0 ||
+          strcmp(message, "OnUpdate") == 0 ||
+          strcmp(message, "OnRemove") == 0)
+        m_updateState = INVALIDATED;
+    }
   }
 }
 
@@ -263,7 +279,7 @@ void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items) const
   }
 }
 
-void CDirectoryProvider::OnEvent(const ADDON::AddonEvent& event)
+void CDirectoryProvider::OnAddonEvent(const ADDON::AddonEvent& event)
 {
   CSingleLock lock(m_section);
   if (URIUtils::IsProtocol(m_currentUrl, "addons"))
@@ -272,7 +288,20 @@ void CDirectoryProvider::OnEvent(const ADDON::AddonEvent& event)
         typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
         typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged) ||
         typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged))
-    m_updateState = INVALIDATED;
+      m_updateState = INVALIDATED;
+  }
+}
+
+void CDirectoryProvider::OnPVRManagerEvent(const PVR::ManagerState& event)
+{
+  CSingleLock lock(m_section);
+  if (URIUtils::IsProtocol(m_currentUrl, "pvr"))
+  {
+    if (event == ManagerStateStarted ||
+        event == ManagerStateStopped ||
+        event == ManagerStateError ||
+        event == ManagerStateInterrupted)
+      m_updateState = INVALIDATED;
   }
 }
 
@@ -300,6 +329,7 @@ void CDirectoryProvider::Reset(bool immediately /* = false */)
       m_isAnnounced = false;
       CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
       ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
+      g_PVRManager.Events().Unsubscribe(this);
     }
   }
 }
@@ -393,7 +423,8 @@ bool CDirectoryProvider::UpdateURL()
   {
     m_isAnnounced = true;
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
-    ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnEvent);
+    ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
+    g_PVRManager.Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);
   }
   return true;
 }

@@ -929,11 +929,15 @@ void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)
       // save the current item
       int currentItem = GetSelectedItem();
       CGUIListItem *current = (currentItem >= 0 && currentItem < (int)m_items.size()) ? m_items[currentItem].get() : NULL;
+      const std::string prevSelectedPath((current && current->IsFileItem()) ? static_cast<CFileItem *>(current)->GetPath() : "");
+
       Reset();
       m_listProvider->Fetch(m_items);
       SetPageControlRange();
       // update the newly selected item
       bool found = false;
+
+      // first, try to re-identify selected item by comparing item pointers, though it is not guaranteed that item instances got not recreated on update.
       for (int i = 0; i < (int)m_items.size(); i++)
       {
         if (m_items[i].get() == current)
@@ -943,6 +947,27 @@ void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)
           {
             SelectItem(i);
             break;
+          }
+        }
+      }
+      if (!found && !prevSelectedPath.empty())
+      {
+        // as fallback, try to re-identify selected item by comparing item paths.
+        for (int i = 0; i < static_cast<int>(m_items.size()); i++)
+        {
+          const CGUIListItemPtr c(m_items[i]);
+          if (c->IsFileItem())
+          {
+            const std::string &selectedPath = static_cast<CFileItem *>(c.get())->GetPath();
+            if (selectedPath == prevSelectedPath)
+            {
+              found = true;
+              if (i != currentItem)
+              {
+                SelectItem(i);
+                break;
+              }
+            }
           }
         }
       }

@@ -43,7 +43,8 @@ using namespace EPG;
 using namespace PVR;
 
 CEpgContainer::CEpgContainer(void) :
-    CThread("EPGUpdater")
+  CThread("EPGUpdater"),
+  m_bUpdateNotificationPending(false)
 {
   m_progressHandle = NULL;
   m_bStop = true;
@@ -114,6 +115,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     m_bStarted = false;
     m_bIsInitialising = true;
     m_iNextEpgId = 0;
+    m_bUpdateNotificationPending = false;
   }
 
   /* clear the database entries */
@@ -172,6 +174,7 @@ void CEpgContainer::Start(bool bAsync)
 
     m_iNextEpgUpdate  = 0;
     m_iNextEpgActiveTagCheck = 0;
+    m_bUpdateNotificationPending = false;
   }
 
   LoadFromDB();
@@ -207,6 +210,14 @@ bool CEpgContainer::Stop(void)
 
 void CEpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
 {
+  if (msg == ObservableMessageEpg)
+  {
+    // there can be many of these notifications during short time period. Thus, announce async and not every event.
+    CSingleLock lock(m_critSection);
+    m_bUpdateNotificationPending = true;
+    return;
+  }
+
   SetChanged();
   CSingleExit ex(m_critSection);
   NotifyObservers(msg);
@@ -354,6 +365,20 @@ void CEpgContainer::Process(void)
     /* check for updated active tag */
     if (!m_bStop)
       CheckPlayingEvents();
+
+    /* check for pending update notifications */
+    if (!m_bStop)
+    {
+      CSingleLock lock(m_critSection);
+      if (m_bUpdateNotificationPending)
+      {
+        m_bUpdateNotificationPending = false;
+        SetChanged();
+
+        CSingleExit ex(m_critSection);
+        NotifyObservers(ObservableMessageEpg);
+      }
+    }
 
     /* check for changes that need to be saved every 60 seconds */
     if (iNow - iLastSave > 60)

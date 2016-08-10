@@ -54,7 +54,7 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelGroup &group
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal(void)
 {
   Unload();
-  g_PVRManager.UnregisterObserver(this);
+  g_PVRManager.Events().Unsubscribe(this);
 }
 
 bool CPVRChannelGroupInternal::Load(void)
@@ -62,8 +62,7 @@ bool CPVRChannelGroupInternal::Load(void)
   if (CPVRChannelGroup::Load())
   {
     UpdateChannelPaths();
-    g_PVRManager.RegisterObserver(this);
-
+    g_PVRManager.Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
     return true;
   }
 
@@ -348,10 +347,8 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
   return true;
 }
 
-void CPVRChannelGroupInternal::Notify(const Observable &obs, const ObservableMessage msg)
+void CPVRChannelGroupInternal::OnPVRManagerEvent(const PVR::ManagerState& event)
 {
-  if (msg == ObservableMessageManagerStateChanged)
-  {
+  if (event == ManagerStateStarted)
     g_PVRManager.TriggerEpgsCreate();
-  }
 }
