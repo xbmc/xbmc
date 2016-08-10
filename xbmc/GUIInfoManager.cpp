@@ -9229,6 +9229,15 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
 void CGUIInfoManager::SetShowInfo(bool showinfo)
 {
   m_playerShowInfo = showinfo;
+
+  if (!showinfo)
+    m_isPvrChannelPreview = false;
+}
+
+bool CGUIInfoManager::ToggleShowInfo()
+{
+  SetShowInfo(!m_playerShowInfo);
+  return m_playerShowInfo;
 }
 
 void CGUIInfoManager::Clear()

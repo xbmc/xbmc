@@ -1227,6 +1227,7 @@ void CPVRManager::UpdateCurrentChannel(void)
     delete m_currentFile;
     m_currentFile = new CFileItem(playingChannel);
     UpdateItem(*m_currentFile);
+    m_isChannelPreview = false;
   }
 }
 
