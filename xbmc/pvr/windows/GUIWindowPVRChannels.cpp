@@ -70,6 +70,11 @@ void CGUIWindowPVRChannels::UnregisterObservers(void)
   g_EpgContainer.UnregisterObserver(this);
 }
 
+bool CGUIWindowPVRChannels::CanBeActivated() const
+{
+  return true;
+}
+
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())

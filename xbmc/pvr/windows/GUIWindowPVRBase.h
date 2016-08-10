@@ -96,6 +96,8 @@ namespace PVR
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
 
     virtual std::string GetDirectoryPath(void) = 0;
+
+    bool InitGroup(void);
     virtual CPVRChannelGroupPtr GetGroup(void);
     virtual void SetGroup(const CPVRChannelGroupPtr &group);
 

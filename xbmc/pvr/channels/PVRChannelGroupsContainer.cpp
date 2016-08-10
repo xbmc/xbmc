@@ -35,7 +35,8 @@ CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void) :
     m_groupsRadio(new CPVRChannelGroups(true)),
     m_groupsTV(new CPVRChannelGroups(false)),
     m_bUpdateChannelsOnly(false),
-    m_bIsUpdating(false)
+    m_bIsUpdating(false),
+    m_bLoaded(false)
 {
 }
 
@@ -68,15 +69,20 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
 bool CPVRChannelGroupsContainer::Load(void)
 {
   Unload();
+  m_bLoaded = m_groupsRadio->Load() && m_groupsTV->Load();
+  return m_bLoaded;
+}
 
-  return m_groupsRadio->Load() &&
-         m_groupsTV->Load();
+bool CPVRChannelGroupsContainer::Loaded(void) const
+{
+  return m_bLoaded;
 }
 
 void CPVRChannelGroupsContainer::Unload(void)
 {
   m_groupsRadio->Clear();
   m_groupsTV->Clear();
+  m_bLoaded = false;
 }
 
 CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio) const

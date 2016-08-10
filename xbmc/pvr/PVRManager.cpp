@@ -509,6 +509,9 @@ bool CPVRManager::Load(bool bShowProgress)
   if (!m_channelGroups->Load() || !IsInitialising())
     return false;
 
+  SetChanged();
+  NotifyObservers(ObservableMessageChannelGroupsLoaded);
+
   /* get timers from the backends */
   if (bShowProgress)
     ShowProgressDialog(g_localizeStrings.Get(19237), 50); // Loading timers from clients
