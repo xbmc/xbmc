@@ -9229,6 +9229,15 @@ bool CGUIInfoManager::GetDisplayAfterSeek()
 void CGUIInfoManager::SetShowInfo(bool showinfo)
 {
   m_playerShowInfo = showinfo;
+
+  if (!showinfo)
+    m_isPvrChannelPreview = false;
+}
+
+bool CGUIInfoManager::ToggleShowInfo()
+{
+  SetShowInfo(!m_playerShowInfo);
+  return m_playerShowInfo;
 }
 
 void CGUIInfoManager::Clear()
@@ -10950,12 +10959,21 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
 
 bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
-  bool streamValid = m_videoInfo.valid;
-  if (m_currentFile->HasPVRChannelInfoTag() && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
-    streamValid = m_audioInfo.valid;
-
-  return m_playerShowInfo &&
-         (m_isPvrChannelPreview || !streamValid);
+  bool bReturn(false);
+  if (m_playerShowInfo)
+  {
+    if (m_isPvrChannelPreview)
+    {
+      bReturn = true;
+    }
+    else
+    {
+      bReturn = !m_videoInfo.valid;
+      if (bReturn && m_currentFile->HasPVRChannelInfoTag() && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
+        bReturn = !m_audioInfo.valid;
+    }
+  }
+  return bReturn;
 }
 
 CEpgInfoTagPtr CGUIInfoManager::GetEpgInfoTag() const

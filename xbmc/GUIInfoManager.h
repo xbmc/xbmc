@@ -200,7 +200,7 @@ public:
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowInfo(bool showinfo);
   bool GetShowInfo() const { return m_playerShowInfo; }
-  bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
+  bool ToggleShowInfo();
   bool IsPlayerChannelPreviewActive() const;
 
   std::string GetSystemHeatInfo(int info);

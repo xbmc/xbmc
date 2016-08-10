@@ -1178,6 +1178,7 @@ void CPVRManager::CloseStream(void)
     g_application.SaveFileState();
   }
 
+  m_isChannelPreview = false;
   m_addons->CloseStream();
   SAFE_DELETE(m_currentFile);
 }
@@ -1226,6 +1227,7 @@ void CPVRManager::UpdateCurrentChannel(void)
     delete m_currentFile;
     m_currentFile = new CFileItem(playingChannel);
     UpdateItem(*m_currentFile);
+    m_isChannelPreview = false;
   }
 }
 
