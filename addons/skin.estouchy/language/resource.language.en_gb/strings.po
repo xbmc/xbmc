@@ -103,7 +103,11 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr ""
 
-#empty strings from id 31046 to 31048
+msgctxt "#31046"
+msgid "Play speed"
+msgstr ""
+
+#empty strings from id 31047 to 31048
 
 msgctxt "#31049"
 msgid "End Time"
