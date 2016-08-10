@@ -88,6 +88,15 @@ bool SupportsPeripheralControllers(const std::string &condition, const std::stri
   return bus != nullptr && bus->HasFeature(FEATURE_JOYSTICK);
 }
 
+bool HasRumbleFeature(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  using namespace PERIPHERALS;
+
+  std::vector<CPeripheral*> results;
+  g_peripherals.GetPeripheralsWithFeature(results, FEATURE_RUMBLE);
+  return !results.empty();
+}
+
 bool IsFullscreen(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return g_Windowing.IsFullScreen();
@@ -342,6 +351,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("checkpvrparentalpin",           CheckPVRParentalPin));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("hasperipherals",                HasPeripherals));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("supportsperipheralcontrollers", SupportsPeripheralControllers));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("hasrumblefeature",              HasRumbleFeature));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isfullscreen",                  IsFullscreen));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("ismasteruser",                  IsMasterUser));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isusingttfsubtitles",           IsUsingTTFSubtitles));

@@ -21,6 +21,7 @@
 
 #include "kodi_peripheral_types.h"
 
+#include <array> // Requires c++11
 #include <cstring>
 #include <map>
 #include <string>
@@ -204,6 +205,7 @@ namespace ADDON
     JOYSTICK_STATE_BUTTON ButtonState(void) const     { return m_event.driver_button_state; }
     JOYSTICK_STATE_HAT    HatState(void) const        { return m_event.driver_hat_state; }
     JOYSTICK_STATE_AXIS   AxisState(void) const       { return m_event.driver_axis_state; }
+    JOYSTICK_STATE_MOTOR  MotorState(void) const      { return m_event.motor_state; }
 
     void SetType(PERIPHERAL_EVENT_TYPE type)         { m_event.type                = type; }
     void SetPeripheralIndex(unsigned int index)      { m_event.peripheral_index    = index; }
@@ -211,6 +213,7 @@ namespace ADDON
     void SetButtonState(JOYSTICK_STATE_BUTTON state) { m_event.driver_button_state = state; }
     void SetHatState(JOYSTICK_STATE_HAT state)       { m_event.driver_hat_state    = state; }
     void SetAxisState(JOYSTICK_STATE_AXIS state)     { m_event.driver_axis_state   = state; }
+    void SetMotorState(JOYSTICK_STATE_MOTOR state)   { m_event.motor_state         = state; }
 
     void ToStruct(PERIPHERAL_EVENT& event) const
     {
@@ -243,7 +246,9 @@ namespace ADDON
       m_requestedPort(NO_PORT_REQUESTED),
       m_buttonCount(0),
       m_hatCount(0),
-      m_axisCount(0)
+      m_axisCount(0),
+      m_motorCount(0),
+      m_supportsPowerOff(false)
     {
     }
 
@@ -258,7 +263,9 @@ namespace ADDON
       m_requestedPort(info.requested_port),
       m_buttonCount(info.button_count),
       m_hatCount(info.hat_count),
-      m_axisCount(info.axis_count)
+      m_axisCount(info.axis_count),
+      m_motorCount(info.motor_count),
+      m_supportsPowerOff(info.supports_poweroff)
     {
     }
 
@@ -275,6 +282,8 @@ namespace ADDON
         m_buttonCount   = rhs.m_buttonCount;
         m_hatCount      = rhs.m_hatCount;
         m_axisCount     = rhs.m_axisCount;
+        m_motorCount    = rhs.m_motorCount;
+        m_supportsPowerOff = rhs.m_supportsPowerOff;
       }
       return *this;
     }
@@ -284,6 +293,8 @@ namespace ADDON
     unsigned int       ButtonCount(void) const   { return m_buttonCount; }
     unsigned int       HatCount(void) const      { return m_hatCount; }
     unsigned int       AxisCount(void) const     { return m_axisCount; }
+    unsigned int       MotorCount(void) const    { return m_motorCount; }
+    bool               SupportsPowerOff(void) const { return m_supportsPowerOff; }
 
     // Derived property: Counts are unknown if all are zero
     bool AreElementCountsKnown(void) const { return m_buttonCount != 0 || m_hatCount != 0 || m_axisCount != 0; }
@@ -293,6 +304,8 @@ namespace ADDON
     void SetButtonCount(unsigned int buttonCount)     { m_buttonCount   = buttonCount; }
     void SetHatCount(unsigned int hatCount)           { m_hatCount      = hatCount; }
     void SetAxisCount(unsigned int axisCount)         { m_axisCount     = axisCount; }
+    void SetMotorCount(unsigned int motorCount)       { m_motorCount    = motorCount; }
+    void SetSupportsPowerOff(bool supportsPowerOff)   { m_supportsPowerOff = supportsPowerOff; }
 
     void ToStruct(JOYSTICK_INFO& info) const
     {
@@ -303,6 +316,8 @@ namespace ADDON
       info.button_count   = m_buttonCount;
       info.hat_count      = m_hatCount;
       info.axis_count     = m_axisCount;
+      info.motor_count    = m_motorCount;
+      info.supports_poweroff = m_supportsPowerOff;
 
       std::strcpy(info.provider, m_provider.c_str());
     }
@@ -320,6 +335,8 @@ namespace ADDON
     unsigned int                  m_buttonCount;
     unsigned int                  m_hatCount;
     unsigned int                  m_axisCount;
+    unsigned int                  m_motorCount;
+    bool                          m_supportsPowerOff;
   };
 
   typedef PeripheralVector<Joystick, JOYSTICK_INFO> Joysticks;
@@ -332,6 +349,7 @@ namespace ADDON
    *   1) a button
    *   2) a hat direction
    *   3) a semiaxis (either the positive or negative half of an axis)
+   *   4) a motor
    *
    * The type determines the fields in use:
    *
@@ -345,9 +363,24 @@ namespace ADDON
    *    Semiaxis:
    *       - driver index
    *       - semiaxis direction
+   *
+   *    Motor:
+   *       - driver index
    */
-  class DriverPrimitive
+  struct DriverPrimitive
   {
+  protected:
+    /*!
+     * \brief Construct a driver primitive of the specified type
+     */
+    DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE type, unsigned int driverIndex) :
+      m_type(type),
+      m_driverIndex(driverIndex),
+      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
+      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN)
+    {
+    }
+
   public:
     /*!
      * \brief Construct an invalid driver primitive
@@ -363,12 +396,9 @@ namespace ADDON
     /*!
      * \brief Construct a driver primitive representing a button
      */
-    DriverPrimitive(unsigned int buttonIndex) :
-      m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_BUTTON),
-      m_driverIndex(buttonIndex),
-      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN)
+    static DriverPrimitive CreateButton(unsigned int buttonIndex)
     {
+      return DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE_BUTTON, buttonIndex);
     }
 
     /*!
@@ -393,6 +423,14 @@ namespace ADDON
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
       m_semiAxisDirection(direction)
     {
+    }
+
+    /*!
+     * \brief Construct a driver primitive representing a motor
+     */
+    static DriverPrimitive CreateMotor(unsigned int motorIndex)
+    {
+      return DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR, motorIndex);
     }
 
     DriverPrimitive(const JOYSTICK_DRIVER_PRIMITIVE& primitive) :
@@ -420,6 +458,11 @@ namespace ADDON
           m_semiAxisDirection = primitive.semiaxis.direction;
           break;
         }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
+        {
+          m_driverIndex = primitive.motor.index;
+          break;
+        }
         default:
           break;
       }
@@ -437,6 +480,7 @@ namespace ADDON
         switch (m_type)
         {
           case JOYSTICK_DRIVER_PRIMITIVE_TYPE_BUTTON:
+          case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
           {
             return m_driverIndex == other.m_driverIndex;
           }
@@ -479,6 +523,11 @@ namespace ADDON
           driver_primitive.semiaxis.direction = m_semiAxisDirection;
           break;
         }
+        case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
+        {
+          driver_primitive.motor.index = m_driverIndex;
+          break;
+        }
         default:
           break;
       }
@@ -499,6 +548,7 @@ namespace ADDON
    *   1) scalar[1]
    *   2) analog stick
    *   3) accelerometer
+   *   4) motor
    *
    * [1] All three driver primitives (buttons, hats and axes) have a state that
    *     can be represented using a single scalar value. For this reason,
@@ -520,23 +570,19 @@ namespace ADDON
    *       - positive X
    *       - positive Y
    *       - positive Z
+   *
+   *    Motor:
+   *       - primitive
    */
   class JoystickFeature
   {
   public:
-    const unsigned int MAX_PRIMITIVES = 4;
+    enum { MAX_PRIMITIVES = 4 };
 
-    JoystickFeature(void) :
-      m_type(JOYSTICK_FEATURE_TYPE_UNKNOWN)
-    {
-      m_primitives.resize(MAX_PRIMITIVES);
-    }
-
-    JoystickFeature(const std::string& name, JOYSTICK_FEATURE_TYPE type) :
+    JoystickFeature(const std::string& name = "", JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN) :
       m_name(name),
       m_type(type)
     {
-      m_primitives.resize(MAX_PRIMITIVES);
     }
 
     JoystickFeature(const JoystickFeature& other)
@@ -548,7 +594,6 @@ namespace ADDON
       m_name(feature.name ? feature.name : ""),
       m_type(feature.type)
     {
-      m_primitives.resize(MAX_PRIMITIVES);
       switch (m_type)
       {
         case JOYSTICK_FEATURE_TYPE_SCALAR:
@@ -564,6 +609,9 @@ namespace ADDON
           SetPositiveX(feature.accelerometer.positive_x);
           SetPositiveY(feature.accelerometer.positive_y);
           SetPositiveZ(feature.accelerometer.positive_z);
+          break;
+        case JOYSTICK_FEATURE_TYPE_MOTOR:
+          SetPrimitive(feature.motor.primitive);
           break;
         default:
           break;
@@ -636,6 +684,9 @@ namespace ADDON
           PositiveY().ToStruct(feature.accelerometer.positive_y);
           PositiveZ().ToStruct(feature.accelerometer.positive_z);
           break;
+        case JOYSTICK_FEATURE_TYPE_MOTOR:
+          Primitive().ToStruct(feature.motor.primitive);
+          break;
         default:
           break;
       }
@@ -650,7 +701,7 @@ namespace ADDON
   private:
     std::string                  m_name;
     JOYSTICK_FEATURE_TYPE        m_type;
-    std::vector<DriverPrimitive> m_primitives;
+    std::array<DriverPrimitive, MAX_PRIMITIVES> m_primitives;
   };
 
   typedef PeripheralVector<JoystickFeature, JOYSTICK_FEATURE> JoystickFeatures;

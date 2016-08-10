@@ -107,7 +107,8 @@ bool CAddonButtonMap::GetScalar(const FeatureName& feature, CDriverPrimitive& pr
   {
     const ADDON::JoystickFeature& addonFeature = it->second;
 
-    if (addonFeature.Type() == JOYSTICK_FEATURE_TYPE_SCALAR)
+    if (addonFeature.Type() == JOYSTICK_FEATURE_TYPE_SCALAR ||
+        addonFeature.Type() == JOYSTICK_FEATURE_TYPE_MOTOR)
     {
       primitive = CPeripheralAddonTranslator::TranslatePrimitive(addonFeature.Primitive());
       retVal = true;
@@ -129,7 +130,9 @@ bool CAddonButtonMap::AddScalar(const FeatureName& feature, const CDriverPrimiti
   {
     UnmapPrimitive(primitive);
 
-    ADDON::JoystickFeature scalar(feature, JOYSTICK_FEATURE_TYPE_SCALAR);
+    const bool bMotor = (primitive.Type() == PRIMITIVE_TYPE::MOTOR);
+
+    ADDON::JoystickFeature scalar(feature, bMotor ? JOYSTICK_FEATURE_TYPE_MOTOR : JOYSTICK_FEATURE_TYPE_SCALAR);
     scalar.SetPrimitive(CPeripheralAddonTranslator::TranslatePrimitive(primitive));
 
     m_features[feature] = scalar;

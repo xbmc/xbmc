@@ -40,15 +40,17 @@ public:
   CControllerFeature& operator=(const CControllerFeature& rhs);
 
   JOYSTICK::FEATURE_TYPE Type(void) const       { return m_type; }
+  JOYSTICK::FEATURE_CATEGORY Category(void) const { return m_category; }
   const std::string&     Name(void) const       { return m_strName; }
   const std::string&     Label(void) const      { return m_strLabel; }
   unsigned int           LabelID(void) const    { return m_labelId; }
   JOYSTICK::INPUT_TYPE   InputType(void) const  { return m_inputType; }
 
-  bool Deserialize(const TiXmlElement* pElement, const CController* controller);
+  bool Deserialize(const TiXmlElement* pElement, const CController* controller, const std::string& strCategory);
 
 private:
   JOYSTICK::FEATURE_TYPE m_type;
+  JOYSTICK::FEATURE_CATEGORY m_category;
   std::string            m_strName;
   std::string            m_strLabel;
   unsigned int           m_labelId;

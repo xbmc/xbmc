@@ -21,6 +21,7 @@
 
 #include "IInputHandler.h"
 #include "JoystickTypes.h"
+#include "RumbleGenerator.h"
 
 #include <vector>
 
@@ -51,6 +52,11 @@ namespace JOYSTICK
     virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y) override;
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
 
+    // Forward rumble commands to rumble generator
+    void NotifyUser(void) { m_rumbleGenerator.NotifyUser(InputReceiver()); }
+    bool TestRumble(void) { return m_rumbleGenerator.DoTest(InputReceiver()); }
+    void AbortRumble() { return m_rumbleGenerator.AbortRumble(); }
+
   private:
     bool ActivateDirection(const FeatureName& feature, float magnitude, CARDINAL_DIRECTION dir);
     void DeactivateDirection(const FeatureName& feature, CARDINAL_DIRECTION dir);
@@ -72,5 +78,7 @@ namespace JOYSTICK
     static const std::vector<CARDINAL_DIRECTION>& GetDirections(void);
 
     IKeymapHandler* const  m_handler;
+
+    CRumbleGenerator m_rumbleGenerator;
   };
 }

@@ -63,7 +63,7 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const ADDON::Dri
   {
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_BUTTON:
     {
-      retVal = CDriverPrimitive(primitive.DriverIndex());
+      retVal = CDriverPrimitive(PRIMITIVE_TYPE::BUTTON, primitive.DriverIndex());
       break;
     }
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_HAT_DIRECTION:
@@ -74,6 +74,11 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const ADDON::Dri
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_SEMIAXIS:
     {
       retVal = CDriverPrimitive(primitive.DriverIndex(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()));
+      break;
+    }
+    case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
+    {
+      retVal = CDriverPrimitive(PRIMITIVE_TYPE::MOTOR, primitive.DriverIndex());
       break;
     }
     default:
@@ -89,19 +94,24 @@ ADDON::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const CDri
 
   switch (primitive.Type())
   {
-    case CDriverPrimitive::BUTTON:
+    case BUTTON:
     {
-      retVal = ADDON::DriverPrimitive(primitive.Index());
+      retVal = ADDON::DriverPrimitive::CreateButton(primitive.Index());
       break;
     }
-    case CDriverPrimitive::HAT:
+    case HAT:
     {
       retVal = ADDON::DriverPrimitive(primitive.Index(), TranslateHatDirection(primitive.HatDirection()));
       break;
     }
-    case CDriverPrimitive::SEMIAXIS:
+    case SEMIAXIS:
     {
       retVal = ADDON::DriverPrimitive(primitive.Index(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()));
+      break;
+    }
+    case MOTOR:
+    {
+      retVal = ADDON::DriverPrimitive::CreateMotor(primitive.Index());
       break;
     }
     default:
@@ -182,6 +192,7 @@ JOYSTICK::FEATURE_TYPE CPeripheralAddonTranslator::TranslateFeatureType(JOYSTICK
     case JOYSTICK_FEATURE_TYPE_SCALAR:        return JOYSTICK::FEATURE_TYPE::SCALAR;
     case JOYSTICK_FEATURE_TYPE_ANALOG_STICK:  return JOYSTICK::FEATURE_TYPE::ANALOG_STICK;
     case JOYSTICK_FEATURE_TYPE_ACCELEROMETER: return JOYSTICK::FEATURE_TYPE::ACCELEROMETER;
+    case JOYSTICK_FEATURE_TYPE_MOTOR:         return JOYSTICK::FEATURE_TYPE::MOTOR;
     default:
       break;
   }
@@ -195,6 +206,7 @@ JOYSTICK_FEATURE_TYPE CPeripheralAddonTranslator::TranslateFeatureType(JOYSTICK:
     case JOYSTICK::FEATURE_TYPE::SCALAR:        return JOYSTICK_FEATURE_TYPE_SCALAR;
     case JOYSTICK::FEATURE_TYPE::ANALOG_STICK:  return JOYSTICK_FEATURE_TYPE_ANALOG_STICK;
     case JOYSTICK::FEATURE_TYPE::ACCELEROMETER: return JOYSTICK_FEATURE_TYPE_ACCELEROMETER;
+    case JOYSTICK::FEATURE_TYPE::MOTOR:         return JOYSTICK_FEATURE_TYPE_MOTOR;
     default:
       break;
   }

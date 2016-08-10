@@ -32,6 +32,7 @@ namespace JOYSTICK
 {
   class IButtonMapper;
   class IDriverHandler;
+  class IDriverReceiver;
   class IInputHandler;
 }
 
@@ -98,6 +99,18 @@ namespace PERIPHERALS
      * @return True when the feature has been initialised succesfully, false otherwise.
      */
     virtual bool InitialiseFeature(const PeripheralFeature feature) { return true; }
+
+    /*!
+    * @brief Briefly activate a feature to notify the user
+    */
+    virtual void OnUserNotification() { }
+
+    /*!
+     * @brief Briefly test one of the features of this peripheral.
+     * @param feature The feature to test.
+     * @return True if the test succeeded, false otherwise.
+     */
+    virtual bool TestFeature(PeripheralFeature feature) { return false; }
 
     /*!
      * @brief Called when a setting changed.
@@ -181,6 +194,8 @@ namespace PERIPHERALS
     virtual void RegisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
     virtual void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
 
+    virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
+
   protected:
     virtual void ClearSettings(void);
 
@@ -204,7 +219,7 @@ namespace PERIPHERALS
     std::map<std::string, PeripheralDeviceSetting> m_settings;
     std::set<std::string>             m_changedSettings;
     CPeripheralBus*                  m_bus;
-    std::map<JOYSTICK::IInputHandler*, JOYSTICK::IDriverHandler*> m_inputHandlers;
+    std::map<JOYSTICK::IInputHandler*, std::unique_ptr<JOYSTICK::IDriverHandler>> m_inputHandlers;
     std::map<JOYSTICK::IButtonMapper*, JOYSTICK::IDriverHandler*> m_buttonMappers;
   };
 }

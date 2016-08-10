@@ -75,6 +75,7 @@ namespace PERIPHERALS
     //@{
     bool PerformDeviceScan(PeripheralScanResults &results);
     bool ProcessEvents(void);
+    bool SendRumbleEvent(unsigned int index, unsigned int driverIndex, float magnitude);
     //@}
 
     /** @name Joystick methods */
@@ -84,6 +85,7 @@ namespace PERIPHERALS
     bool GetFeatures(const CPeripheral* device, const std::string& strControllerId, FeatureMap& features);
     bool MapFeatures(const CPeripheral* device, const std::string& strControllerId, const FeatureMap& features);
     void ResetButtonMap(const CPeripheral* device, const std::string& strControllerId);
+    void PowerOffJoystick(unsigned int index);
     //@}
 
     void RegisterButtonMap(CPeripheral* device, JOYSTICK::IButtonMap* buttonMap);

@@ -30,9 +30,9 @@ CDriverPrimitive::CDriverPrimitive(void)
 {
 }
 
-CDriverPrimitive::CDriverPrimitive(unsigned int buttonIndex)
-  : m_type(BUTTON),
-    m_driverIndex(buttonIndex),
+CDriverPrimitive::CDriverPrimitive(PRIMITIVE_TYPE type, unsigned int index)
+  : m_type(type),
+    m_driverIndex(index),
     m_hatDirection(),
     m_semiAxisDirection()
 {
@@ -61,6 +61,7 @@ bool CDriverPrimitive::operator==(const CDriverPrimitive& rhs) const
     switch (m_type)
     {
     case BUTTON:
+    case MOTOR:
       return m_driverIndex == rhs.m_driverIndex;
     case HAT:
       return m_driverIndex == rhs.m_driverIndex && m_hatDirection == rhs.m_hatDirection;
@@ -102,7 +103,7 @@ bool CDriverPrimitive::operator<(const CDriverPrimitive& rhs) const
 
 bool CDriverPrimitive::IsValid(void) const
 {
-  if (m_type == BUTTON)
+  if (m_type == BUTTON || m_type == MOTOR)
     return true;
 
   if (m_type == HAT)

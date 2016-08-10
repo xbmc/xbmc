@@ -3,6 +3,7 @@ SRCS=DefaultJoystick.cpp \
      JoystickMonitor.cpp \
      JoystickTranslator.cpp \
      KeymapHandler.cpp \
+     RumbleGenerator.cpp \
 
 LIB=input_joysticks.a
 

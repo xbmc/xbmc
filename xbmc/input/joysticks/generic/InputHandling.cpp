@@ -21,7 +21,6 @@
 #include "InputHandling.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
-#include "input/joysticks/IInputHandler.h"
 #include "input/joysticks/JoystickUtils.h"
 
 using namespace JOYSTICK;
@@ -38,7 +37,7 @@ CInputHandling::~CInputHandling(void)
 
 bool CInputHandling::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
-  return OnDigitalMotion(CDriverPrimitive(buttonIndex), bPressed);
+  return OnDigitalMotion(CDriverPrimitive(PRIMITIVE_TYPE::BUTTON, buttonIndex), bPressed);
 }
 
 bool CInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE state)

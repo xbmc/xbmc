@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2014-2016 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,25 +19,26 @@
  */
 #pragma once
 
-#include "ControllerTypes.h"
-#include "input/joysticks/JoystickTypes.h"
+#include "JoystickTypes.h"
 
-#include <string>
-
-namespace GAME
+namespace JOYSTICK
 {
+  /*!
+   * \brief Interface for sending input events to game controllers
+   */
+  class IInputReceiver
+  {
+  public:
+    virtual ~IInputReceiver(void) { }
 
-class CControllerTranslator
-{
-public:
-  static const char* TranslateFeatureType(JOYSTICK::FEATURE_TYPE type);
-  static JOYSTICK::FEATURE_TYPE TranslateFeatureType(const std::string& strType);
-
-  static const char* TranslateCategory(JOYSTICK::FEATURE_CATEGORY category);
-  static JOYSTICK::FEATURE_CATEGORY TranslateCategory(const std::string& strCategory);
-
-  static const char* TranslateInputType(JOYSTICK::INPUT_TYPE type);
-  static JOYSTICK::INPUT_TYPE TranslateInputType(const std::string& strType);
-};
-
+    /*!
+     * \brief Set the value of a rumble motor
+     *
+     * \param feature      The name of the motor to rumble
+     * \param magnitude    The motor's new magnitude of vibration in the closed interval [0, 1]
+     *
+     * \return True if the event was handled otherwise false
+     */
+    virtual bool SetRumbleState(const FeatureName& feature, float magnitude) = 0;
+  };
 }

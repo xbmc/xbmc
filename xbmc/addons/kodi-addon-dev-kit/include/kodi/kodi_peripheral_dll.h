@@ -100,6 +100,14 @@ extern "C"
    * @param events       The array of allocated events
    */
   void FreeEvents(unsigned int event_count, PERIPHERAL_EVENT* events);
+
+  /*!
+   * @brief Send an input event to the specified peripheral
+   * @param peripheralIndex The index of the device receiving the input event
+   * @param event The input event
+   * @return true if the event was handled, false otherwise
+   */
+  bool SendEvent(const PERIPHERAL_EVENT* event);
   ///}
 
   /// @name Joystick operations
@@ -163,6 +171,12 @@ extern "C"
    * @param controller_id The game controller profile being reset
    */
   void ResetButtonMap(const JOYSTICK_INFO* joystick, const char* controller_id);
+  
+  /*!
+   * @brief Powers off the given joystick if supported
+   * @param index  The joystick's driver index
+   */
+  void PowerOffJoystick(unsigned int index);
 #endif
   ///}
 
@@ -180,6 +194,7 @@ extern "C"
     pClient->FreeScanResults                = FreeScanResults;
     pClient->GetEvents                      = GetEvents;
     pClient->FreeEvents                     = FreeEvents;
+    pClient->SendEvent                      = SendEvent;
 
 #ifdef PERIPHERAL_ADDON_JOYSTICKS
     pClient->GetJoystickInfo                = GetJoystickInfo;
@@ -188,6 +203,7 @@ extern "C"
     pClient->FreeFeatures                   = FreeFeatures;
     pClient->MapFeatures                    = MapFeatures;
     pClient->ResetButtonMap                 = ResetButtonMap;
+    pClient->PowerOffJoystick               = PowerOffJoystick;
 #endif
   }
 

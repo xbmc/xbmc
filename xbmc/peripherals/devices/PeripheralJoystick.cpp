@@ -35,13 +35,17 @@ CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult,
   m_requestedPort(JOYSTICK_PORT_UNKNOWN),
   m_buttonCount(0),
   m_hatCount(0),
-  m_axisCount(0)
+  m_axisCount(0),
+  m_motorCount(0),
+  m_supportsPowerOff(false)
 {
   m_features.push_back(FEATURE_JOYSTICK);
+  // FEATURE_RUMBLE conditionally added via SetMotorCount()
 }
 
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
+  m_defaultInputHandler.AbortRumble();
   UnregisterJoystickInputHandler(&m_defaultInputHandler);
   UnregisterJoystickDriverHandler(&m_joystickMonitor);
 }
@@ -79,6 +83,10 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
       }
 #endif
     }
+    else if (feature == FEATURE_RUMBLE)
+    {
+      bSuccess = true; // Nothing to do
+    }
   }
 
   if (bSuccess)
@@ -86,6 +94,27 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
     // Give joystick monitor priority over default controller
     RegisterJoystickInputHandler(&m_defaultInputHandler);
     RegisterJoystickDriverHandler(&m_joystickMonitor, false);
+  }
+
+  return bSuccess;
+}
+
+void CPeripheralJoystick::OnUserNotification()
+{
+  m_defaultInputHandler.NotifyUser();
+}
+
+bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
+{
+  bool bSuccess = false;
+
+  switch (feature)
+  {
+  case FEATURE_RUMBLE:
+    bSuccess = m_defaultInputHandler.TestRumble();
+    break;
+  default:
+    break;
   }
 
   return bSuccess;
@@ -218,4 +247,29 @@ void CPeripheralJoystick::ProcessAxisMotions(void)
 
   for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin(); it != m_driverHandlers.end(); ++it)
     it->handler->ProcessAxisMotions();
+}
+
+bool CPeripheralJoystick::SetMotorState(unsigned int motorIndex, float magnitude)
+{
+  bool bHandled = false;
+
+  if (m_mappedBusType == PERIPHERAL_BUS_ADDON)
+  {
+    CPeripheralBusAddon* addonBus = static_cast<CPeripheralBusAddon*>(m_bus);
+    if (addonBus)
+    {
+      bHandled = addonBus->SendRumbleEvent(m_strLocation, motorIndex, magnitude);
+    }
+  }
+  return bHandled;
+}
+
+void CPeripheralJoystick::SetMotorCount(unsigned int motorCount)
+{
+  m_motorCount = motorCount;
+
+  if (m_motorCount == 0)
+    m_features.erase(std::remove(m_features.begin(), m_features.end(), FEATURE_RUMBLE), m_features.end());
+  else if (std::find(m_features.begin(), m_features.end(), FEATURE_RUMBLE) == m_features.end())
+    m_features.push_back(FEATURE_RUMBLE);
 }

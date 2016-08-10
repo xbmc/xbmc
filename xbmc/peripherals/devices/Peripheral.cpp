@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "guilib/LocalizeStrings.h"
+#include "input/joysticks/IInputHandler.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
 #include "peripherals/addons/AddonButtonMapping.h"
@@ -543,22 +544,21 @@ void CPeripheral::ClearSettings(void)
 
 void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler)
 {
-  std::map<IInputHandler*, IDriverHandler*>::iterator it = m_inputHandlers.find(handler);
+  auto it = m_inputHandlers.find(handler);
   if (it == m_inputHandlers.end())
   {
-    CAddonInputHandling* inputHandling = new CAddonInputHandling(this, handler);
-    RegisterJoystickDriverHandler(inputHandling, false);
-    m_inputHandlers[handler] = inputHandling;
+    CAddonInputHandling* addonInput = new CAddonInputHandling(this, handler, GetDriverReceiver());
+    RegisterJoystickDriverHandler(addonInput, false);
+    m_inputHandlers[handler].reset(addonInput);
   }
 }
 
 void CPeripheral::UnregisterJoystickInputHandler(IInputHandler* handler)
 {
-  std::map<IInputHandler*, IDriverHandler*>::iterator it = m_inputHandlers.find(handler);
+  auto it = m_inputHandlers.find(handler);
   if (it != m_inputHandlers.end())
   {
-    UnregisterJoystickDriverHandler(it->second);
-    delete it->second;
+    UnregisterJoystickDriverHandler(it->second.get());
     m_inputHandlers.erase(it);
   }
 }
@@ -568,7 +568,7 @@ void CPeripheral::RegisterJoystickButtonMapper(IButtonMapper* mapper)
   std::map<IButtonMapper*, IDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
   if (it == m_buttonMappers.end())
   {
-    CAddonButtonMapping* addonMapping = new CAddonButtonMapping(this, mapper);
+    IDriverHandler* addonMapping = new CAddonButtonMapping(this, mapper);
     RegisterJoystickDriverHandler(addonMapping, false);
     m_buttonMappers[mapper] = addonMapping;
   }

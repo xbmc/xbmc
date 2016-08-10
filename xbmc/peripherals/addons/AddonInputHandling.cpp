@@ -19,15 +19,18 @@
  */
 
 #include "AddonInputHandling.h"
+#include "input/joysticks/generic/DriverReceiving.h"
 #include "input/joysticks/generic/InputHandling.h"
 #include "input/joysticks/IInputHandler.h"
+#include "input/joysticks/IDriverReceiver.h"
 #include "peripherals/addons/AddonButtonMap.h"
+#include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/Peripherals.h"
 
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral, IInputHandler* handler)
+CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral, IInputHandler* handler, IDriverReceiver* receiver)
 {
   PeripheralAddonPtr addon = g_peripherals.GetAddon(peripheral);
 
@@ -39,15 +42,28 @@ CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral, IInputHandler*
   {
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())
+    {
       m_driverHandler.reset(new CInputHandling(handler, m_buttonMap.get()));
+
+      if (receiver)
+      {
+        m_inputReceiver.reset(new CDriverReceiving(receiver, m_buttonMap.get()));
+
+        // Interfaces are connected here because they share button map as a common resource
+        handler->SetInputReceiver(m_inputReceiver.get());
+      }
+    }
     else
+    {
       m_buttonMap.reset();
+    }
   }
 }
 
 CAddonInputHandling::~CAddonInputHandling(void)
 {
   m_driverHandler.reset();
+  m_inputReceiver.reset();
   m_buttonMap.reset();
 }
 
@@ -79,4 +95,12 @@ void CAddonInputHandling::ProcessAxisMotions(void)
 {
   if (m_driverHandler)
     m_driverHandler->ProcessAxisMotions();
+}
+
+bool CAddonInputHandling::SetRumbleState(const JOYSTICK::FeatureName& feature, float magnitude)
+{
+  if (m_inputReceiver)
+    return m_inputReceiver->SetRumbleState(feature, magnitude);
+
+  return false;
 }

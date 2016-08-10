@@ -49,7 +49,7 @@ bool CButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
   if (bPressed)
   {
-    CDriverPrimitive buttonPrimitive(buttonIndex);
+    CDriverPrimitive buttonPrimitive(PRIMITIVE_TYPE::BUTTON, buttonIndex);
     if (buttonPrimitive.IsValid())
     {
       MapPrimitive(buttonPrimitive);

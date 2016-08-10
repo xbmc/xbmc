@@ -727,6 +727,29 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
   return false;
 }
 
+void CPeripherals::OnUserNotification()
+{
+  std::vector<CPeripheral*> peripherals;
+  GetPeripheralsWithFeature(peripherals, FEATURE_RUMBLE);
+
+  for (CPeripheral* peripheral : peripherals)
+    peripheral->OnUserNotification();
+}
+
+bool CPeripherals::TestFeature(PeripheralFeature feature)
+{
+  std::vector<CPeripheral*> peripherals;
+  GetPeripheralsWithFeature(peripherals, feature);
+
+  if (!peripherals.empty())
+  {
+    for (CPeripheral* peripheral : peripherals)
+      peripheral->TestFeature(feature);
+    return true;
+  }
+  return false;
+}
+
 void CPeripherals::ProcessEvents(void)
 {
   std::vector<PeripheralBusPtr> busses;
@@ -876,6 +899,8 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_INPUT_CONTROLLERCONFIG)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
+  else if (settingId == CSettings::SETTING_INPUT_TESTRUMBLE)
+    TestFeature(FEATURE_RUMBLE);
 }
 
 void CPeripherals::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
