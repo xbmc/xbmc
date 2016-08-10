@@ -65,7 +65,10 @@ CEpgContainer::CEpgContainer(void) :
 
 CEpgContainer::~CEpgContainer(void)
 {
-  Unload();
+  // Don't call Unload here, it'll try
+  // to notify observers which may be in
+  // different states of teardown
+  Stop();
 }
 
 CEpgContainer &CEpgContainer::GetInstance()

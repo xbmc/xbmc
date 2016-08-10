@@ -30,7 +30,7 @@ namespace PVR
 
   /** XBMC's internal group, the group containing all channels */
 
-  class CPVRChannelGroupInternal : public CPVRChannelGroup, public Observer
+  class CPVRChannelGroupInternal : public CPVRChannelGroup
   {
     friend class CPVRChannelGroups;
     friend class CPVRDatabase;
@@ -44,9 +44,7 @@ namespace PVR
 
     CPVRChannelGroupInternal(const CPVRChannelGroup &group);
 
-    virtual ~CPVRChannelGroupInternal(void);
-
-    virtual void Notify(const Observable &obs, const ObservableMessage msg);
+    virtual ~CPVRChannelGroupInternal(void) = default;
 
     /**
      * @brief The amount of channels in this container.

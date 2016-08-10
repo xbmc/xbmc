@@ -365,6 +365,7 @@ void CPVRManager::SetState(ManagerState state)
     CSingleLock lock(m_managerStateMutex);
     m_managerState = state;
     SetChanged();
+    TriggerEpgsCreate();
   }
 
   NotifyObservers(ObservableMessageManagerStateChanged);
