@@ -61,6 +61,11 @@ if(CMAKE_BINARY_DIR STREQUAL CORE_SOURCE_DIR)
   message(WARNING "In-source build detected. It is recommended to build out-of-source.")
 endif()
 
+# Hide messages from Check*.cmake (e.g. CheckCSourceCompiles)
+if(NOT VERBOSE)
+  set(CMAKE_REQUIRED_QUIET ON)
+endif()
+
 include(modules/extra/ECMEnableSanitizers.cmake)
 include(scripts/common/GeneratorSetup.cmake)
 include(scripts/common/AddOptions.cmake)
@@ -90,12 +95,11 @@ set(INCLUDES ${CORE_SOURCE_DIR}
 find_package(PkgConfig)
 if(CMAKE_CROSSCOMPILING)
   if(PKG_CONFIG_EXECUTABLE)
-    message(STATUS "CMAKE_CROSSCOMPILING: ${CMAKE_CROSSCOMPILING}")
     set(PKG_CONFIG_FOUND TRUE)
   endif()
 endif()
 
-find_package(Threads REQUIRED)
+find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
@@ -103,7 +107,7 @@ set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
                   TinyXML Python Yajl
                   Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
-  list(APPEND required_deps LibSmbClient ZLIB)
+  list(APPEND required_deps SmbClient ZLIB)
 else()
   list(APPEND required_deps D3DX11Effects)
 endif()
@@ -112,8 +116,8 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 # Optional dependencies
-set(optional_deps MicroHttpd MySqlClient SSH Xslt
-                  Alsa UDev Dbus Avahi
+set(optional_deps MicroHttpd MySqlClient SSH XSLT
+                  Alsa UDEV DBus Avahi
                   PulseAudio VDPAU VAAPI)
 
 # Required, dyloaded deps
@@ -188,11 +192,13 @@ if(NOT WIN32)
   core_optional_dep(OpenGl)
   if(OPENGL_FOUND)
     core_optional_dep(X ENABLE_X11)
+    core_optional_dep(LibDRM ENABLE_X11)
     core_optional_dep(XRandR ENABLE_X11)
   else()
     core_optional_dep(OpenGLES)
     if(OPENGLES_FOUND)
       core_optional_dep(X ENABLE_X11)
+      core_optional_dep(LibDRM ENABLE_X11)
     endif()
   endif()
   if(NOT APPLE)
@@ -208,10 +214,6 @@ endif()
 
 if(ENABLE_CCACHE)
   core_optional_dep(CCache)
-endif()
-
-if(CORE_SYSTEM_NAME STREQUAL android)
-  core_optional_dep(Breakpad)
 endif()
 
 # Compile Info

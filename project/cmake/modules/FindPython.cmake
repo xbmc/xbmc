@@ -6,7 +6,7 @@
 # PYTHON_LIBRARIES - The python libraries
 
 if(PKG_CONFIG_FOUND AND NOT CMAKE_CROSSCOMPILING)
-  pkg_check_modules (PYTHON python)
+  pkg_check_modules(PYTHON python QUIET)
 endif()
 
 if(NOT PYTHON_FOUND)

@@ -87,6 +87,7 @@ include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ArchSetup.cmake)
 message(STATUS "Core system type: ${CORE_SYSTEM_NAME}")
 message(STATUS "Platform: ${PLATFORM}")
 message(STATUS "CPU: ${CPU}, ARCH: ${ARCH}")
+message(STATUS "Cross-Compiling: ${CMAKE_CROSSCOMPILING}")
 
 check_type(string std::u16string HAVE_STD__U16_STRING)
 check_type(string std::u32string HAVE_STD__U32_STRING)

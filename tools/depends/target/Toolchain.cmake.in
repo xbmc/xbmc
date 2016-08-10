@@ -31,9 +31,16 @@ set(CMAKE_CXX_COMPILER @CXX@)
 set(CMAKE_AR @AR@ CACHE FILEPATH "Archiver")
 set(CMAKE_LINKER @LD@ CACHE FILEPATH "Linker")
 
-# where is the target environment 
-set(CMAKE_FIND_ROOT_PATH  @prefix@/@deps_dir@ @use_toolchain@ @use_toolchain@/usr @use_sdk_path@ @use_sdk_path@/usr @use_toolchain@/sysroot/usr)
-set(CMAKE_LIBRARY_PATH @prefix@/@deps_dir@/lib:@use_toolchain@/usr/lib/@use_host@:@use_toolchain@/lib/@use_host@)
+# where is the target environment
+set(CMAKE_FIND_ROOT_PATH @prefix@/@deps_dir@)
+set(CMAKE_LIBRARY_PATH @prefix@/@deps_dir@/lib)
+if(NOT "@use_toolchain@" STREQUAL "")
+  list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@ @use_toolchain@/usr @use_toolchain@/sysroot/usr)
+  set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}:@use_toolchain@/usr/lib/@use_host@:@use_toolchain@/lib/@use_host@")
+endif()
+if(NOT "@use_sdk_path@" STREQUAL "")
+  list(APPEND CMAKE_FIND_ROOT_PATH @use_sdk_path@ @use_sdk_path@/usr)
+endif()
 
 # add RBPI's firmware directories
 if("${CORE_SYSTEM_NAME}" STREQUAL "rbpi")

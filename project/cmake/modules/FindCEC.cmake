@@ -15,10 +15,10 @@
 #   CEC::CEC   - The libCEC library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_CEC libCEC>=3.0.0 QUIET)
+  pkg_check_modules(PC_CEC libcec>=3.0.0 QUIET)
 endif()
 
-find_path(CEC_INCLUDE_DIR libCEC/CEC.h
+find_path(CEC_INCLUDE_DIR libcec/cec.h libCEC/CEC.h
                           PATHS ${PC_CEC_INCLUDEDIR})
 
 set(CEC_VERSION ${PC_CEC_VERSION})

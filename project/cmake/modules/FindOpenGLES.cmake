@@ -13,7 +13,7 @@
 find_package(EMBEDDED)
 
 if(PKG_CONFIG_FOUND AND NOT PLATFORM STREQUAL "raspberry-pi")
-  pkg_check_modules(PC_OPENGLES glesv2)
+  pkg_check_modules(PC_OPENGLES glesv2 QUIET)
   if(NOT OPENGLES_FOUND AND EMBEDDED_FOUND)
     set(CMAKE_PREFIX_PATH ${EMBEDDED_FOUND} ${CMAKE_PREFIX_PATH})
   endif()

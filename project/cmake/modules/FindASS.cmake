@@ -1,18 +1,44 @@
-# - Try to find ASS
-# Once done this will define
+#.rst:
+# FindASS
+# -------
+# Finds the ASS library
 #
-# ASS_FOUND - system has libass
-# ASS_INCLUDE_DIRS - the libass include directory
-# ASS_LIBRARIES - The libass libraries
+# This will will define the following variables::
+#
+# ASS_FOUND - system has ASS
+# ASS_INCLUDE_DIRS - the ASS include directory
+# ASS_LIBRARIES - the ASS libraries
+#
+# and the following imported targets::
+#
+#   ASS::ASS   - The ASS library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules (ASS libass)
-else()
-  find_path(ASS_INCLUDE_DIRS ass/ass.h)
-  find_library(ASS_LIBRARIES NAMES ass libass)
+  pkg_check_modules(PC_ASS libass QUIET)
 endif()
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(ASS DEFAULT_MSG ASS_INCLUDE_DIRS ASS_LIBRARIES)
+find_path(ASS_INCLUDE_DIR NAMES ass/ass.h
+                          PATHS ${PC_ASS_INCLUDEDIR})
+find_library(ASS_LIBRARY NAMES ass libass
+                         PATHS ${PC_ASS_LIBDIR})
 
-mark_as_advanced(ASS_INCLUDE_DIRS ASS_LIBRARIES)
+set(ASS_VERSION ${PC_ASS_VERSION})
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(ASS
+                                  REQUIRED_VARS ASS_LIBRARY ASS_INCLUDE_DIR
+                                  VERSION_VAR ASS_VERSION)
+
+if(ASS_FOUND)
+  set(ASS_LIBRARIES ${ASS_LIBRARY})
+  set(ASS_INCLUDE_DIRS ${ASS_INCLUDE_DIR})
+
+  if(NOT TARGET ASS::ASS)
+    add_library(ASS::ASS UNKNOWN IMPORTED)
+    set_target_properties(ASS::ASS PROPERTIES
+                                   IMPORTED_LOCATION "${ASS_LIBRARY}"
+                                   INTERFACE_INCLUDE_DIRECTORIES "${ASS_INCLUDE_DIR}")
+  endif()
+endif()
+
+mark_as_advanced(ASS_INCLUDE_DIR ASS_LIBRARY)

@@ -35,11 +35,11 @@ if(NOT WIN32)
                             " HAVE_SHAIRPLAY_CALLBACK_CLS)
   endif()
 
-  find_package_handle_standard_args(SHAIRPLAY
+  find_package_handle_standard_args(Shairplay
                                     REQUIRED_VARS SHAIRPLAY_LIBRARY SHAIRPLAY_INCLUDE_DIR HAVE_SHAIRPLAY_CALLBACK_CLS)
 else()
   # Dynamically loaded DLL
-  find_package_handle_standard_args(SHAIRPLAY
+  find_package_handle_standard_args(Shairplay
                                     REQUIRED_VARS SHAIRPLAY_INCLUDE_DIR)
 endif()
 

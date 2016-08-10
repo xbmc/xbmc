@@ -1,20 +1,45 @@
-# - Try to find cdio
-# Once done this will define
+#.rst:
+# FindCdio
+# --------
+# Finds the cdio library
 #
-# CDIO_FOUND - system has libcdio
-# CDIO_INCLUDE_DIRS - the libcdio include directory
-# CDIO_LIBRARIES - The libcdio libraries
+# This will will define the following variables::
+#
+# CDIO_FOUND - system has cdio
+# CDIO_INCLUDE_DIRS - the cdio include directory
+# CDIO_LIBRARIES - the cdio libraries
+#
+# and the following imported targets::
+#
+#   CDIO::CDIO - The cdio library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules (CDIO libcdio libiso9660)
-  list(APPEND CDIO_INCLUDE_DIRS ${CDIO_libcdio_INCLUDEDIR} ${CDIO_libiso9660_INCLUDEDIR})
+  pkg_check_modules(PC_CDIO libcdio libiso9660 QUIET)
 endif()
-if(NOT CDIO_FOUND)
-  find_path(CDIO_INCLUDE_DIRS cdio/cdio.h)
-  find_library(MODPLUG_LIBRARIES NAMES cdio)
-endif()
+
+find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h
+                           PATHS ${PC_CDIO_libcdio_INCLUDEDIR}
+                                 ${PC_CDIO_libiso9660_INCLUDEDIR})
+find_library(CDIO_LIBRARY NAMES cdio
+                          PATHS ${CDIO_libcdio_LIBDIR} ${CDIO_libiso9660_LIBDIR})
+
+set(CDIO_VERSION ${PC_CDIO_libcdio_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Cdio DEFAULT_MSG CDIO_INCLUDE_DIRS CDIO_LIBRARIES)
+find_package_handle_standard_args(CDIO
+                                  REQUIRED_VARS CDIO_LIBRARY CDIO_INCLUDE_DIR
+                                  VERSION_VAR CDIO_VERSION)
 
-mark_as_advanced(CDIO_INCLUDE_DIRS CDIO_LIBRARIES)
+if(CDIO_FOUND)
+  set(CDIO_LIBRARIES ${CDIO_LIBRARY})
+  set(CDIO_INCLUDE_DIRS ${CDIO_INCLUDE_DIR})
+
+  if(NOT TARGET CDIO::CDIO)
+    add_library(CDIO::CDIO UNKNOWN IMPORTED)
+    set_target_properties(CDIO::CDIO PROPERTIES
+                                     IMPORTED_LOCATION "${CDIO_LIBRARY}"
+                                     INTERFACE_INCLUDE_DIRECTORIES "${CDIO_INCLUDE_DIR}")
+  endif()
+endif()
+
+mark_as_advanced(CDIO_INCLUDE_DIR CDIO_LIBRARY)

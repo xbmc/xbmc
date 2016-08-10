@@ -15,26 +15,27 @@
 #   Bluray::Bluray   - The libblueray library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(BLURAY libbluray>=0.7.0)
-  set(BLURAY_VERSION ${PC_BLURAY_VERSION})
+  pkg_check_modules(PC_BLURAY libbluray>=0.7.0 QUIET)
+endif()
+
+find_path(BLURAY_INCLUDE_DIR libbluray/bluray.h
+                             PATHS ${PC_BLURAY_INCLUDEDIR})
+
+set(BLURAY_VERSION ${PC_BLURAY_VERSION})
+
+include(FindPackageHandleStandardArgs)
+if(NOT WIN32)
+  find_library(BLURAY_LIBRARY NAMES bluray
+                              PATHS ${PC_BLURAY_LIBDIR})
+
+  find_package_handle_standard_args(Bluray
+                                    REQUIRED_VARS BLURAY_LIBRARY BLURAY_INCLUDE_DIR
+                                    VERSION_VAR BLURAY_VERSION)
 else()
-  find_path(BLURAY_INCLUDE_DIR libbluray/bluray.h
-                               PATHS ${PC_BLURAY_INCLUDEDIR})
-
-  include(FindPackageHandleStandardArgs)
-  if(NOT WIN32)
-    find_library(BLURAY_LIBRARY NAMES bluray
-                                PATHS ${PC_BLURAY_LIBDIR})
-
-    find_package_handle_standard_args(BLURAY
-                                      REQUIRED_VARS BLURAY_LIBRARY BLURAY_INCLUDE_DIR
-                                      VERSION_VAR BLURAY_VERSION)
-  else()
-    # Dynamically loaded DLL
-    find_package_handle_standard_args(BLURAY
-                                      REQUIRED_VARS BLURAY_INCLUDE_DIR
-                                      VERSION_VAR BLURAY_VERSION)
-  endif()
+  # Dynamically loaded DLL
+  find_package_handle_standard_args(Bluray
+                                    REQUIRED_VARS BLURAY_INCLUDE_DIR
+                                    VERSION_VAR BLURAY_VERSION)
 endif()
 
 if(BLURAY_FOUND)

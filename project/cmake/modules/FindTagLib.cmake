@@ -29,7 +29,7 @@ include(SelectLibraryConfigurations)
 select_library_configurations(TAGLIB)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(TAGLIB
+find_package_handle_standard_args(TagLib
                                   REQUIRED_VARS TAGLIB_LIBRARY TAGLIB_INCLUDE_DIR
                                   VERSION_VAR TAGLIB_VERSION)
 

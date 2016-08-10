@@ -14,4 +14,3 @@ if(NOT CMAKE_CROSSCOMPILING AND NOT TARGET_ARCH_ARM)
 endif()
 
 find_path(EMBEDDED_FOUND NAMES include/linux/imxfb.h include/bcm_host.h PATHS /opt/vc)
-
