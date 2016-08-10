@@ -1,5 +1,5 @@
 include ../../Makefile.include
-VERSION.TXT := $(XBMCROOT)/version.txt
+VERSION.TXT := $(CORE_SOURCE_DIR)/version.txt
 DEPS= ../../Makefile.include Makefile dummy-libxbmc.c $(VERSION.TXT)
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 

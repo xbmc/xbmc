@@ -51,7 +51,7 @@ endif
 ifeq ($(OS),ios)
 ifeq ($(TARGET_PLATFORM),appletvos)
 	#deploy into source tree for tvos - we distribute libboblight with the bundle...
-	cp $(PLATFORM)/src/.libs/libboblight.0.dylib $(XBMCROOT)/system/libboblight-tvos.0.dylib
+	cp $(PLATFORM)/src/.libs/libboblight.0.dylib $(CORE_SOURCE_DIR)/system/libboblight-tvos.0.dylib
 endif
 else
 	echo "libboblight isn't a dependency of XBMC and won't be installed"

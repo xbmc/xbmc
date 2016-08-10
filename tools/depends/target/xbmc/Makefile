@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 
-VERSION.TXT := $(XBMCROOT)/version.txt
+VERSION.TXT := $(CORE_SOURCE_DIR)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 SOURCE=../../../../

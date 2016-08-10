@@ -1,11 +1,5 @@
+cmake_minimum_required(VERSION 3.1)
 project(kodi-addons)
-
-if(WIN32)
-  # there seems to be a bug in the CMake generator implementation in CMake 2.8.x releases for WIN32
-  cmake_minimum_required(VERSION 3.0)
-else()
-  cmake_minimum_required(VERSION 2.8)
-endif()
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
@@ -33,12 +27,11 @@ include(ExternalProject)
 ### setup all the necessary paths
 if(APP_ROOT)
   set(CORE_SOURCE_DIR ${APP_ROOT})
+  unset(APP_ROOT)
   message(WARNING "APP_ROOT is deprecated. Please use CORE_SOURCE_DIR instead.")
 endif()
-if(NOT CORE_SOURCE_DIR AND NOT XBMCROOT)
+if(NOT CORE_SOURCE_DIR)
   set(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../../..)
-elseif(NOT CORE_SOURCE_DIR)
-  file(TO_CMAKE_PATH "${XBMCROOT}" CORE_SOURCE_DIR)
 else()
   file(TO_CMAKE_PATH "${CORE_SOURCE_DIR}" CORE_SOURCE_DIR)
 endif()

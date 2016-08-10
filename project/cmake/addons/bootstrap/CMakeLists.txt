@@ -1,6 +1,5 @@
+cmake_minimum_required(VERSION 3.1)
 project(kodi-addons-bootstrap)
-
-cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
@@ -52,7 +51,7 @@ function(bootstrap_repo repo_id repo_url repo_revision)
                                       -DPROJECT_SOURCE_DIR=<SOURCE_DIR>
                                       -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
                                       -DADDONS_TO_BUILD=${ADDONS_TO_BUILD}
-                                      -P ${PROJECT_SOURCE_DIR}/bootstrap.cmake
+                                      -P ${PROJECT_SOURCE_DIR}/Bootstrap.cmake
                       )
 endfunction()
 

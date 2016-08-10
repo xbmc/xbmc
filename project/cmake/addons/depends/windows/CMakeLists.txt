@@ -1,6 +1,5 @@
+cmake_minimum_required(VERSION 3.1)
 project(kodi-addons-depends-windows)
-
-cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
@@ -32,11 +31,9 @@ function(add_internal id url inputfile)
                                       -DINPUTDIR=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
                                       -DINPUTFILE=${inputfile}
                                       -DDESTDIR=${DEPENDS_PATH}
-                                      -P ${PROJECT_SOURCE_DIR}/install.cmake
+                                      -P ${PROJECT_SOURCE_DIR}/Install.cmake
                      )
 endfunction()
-
-#find_package(7Zip REQUIRED)
 
 file(GLOB_RECURSE download_input_files prebuilt/*.txt)
 foreach(file ${download_input_files})
