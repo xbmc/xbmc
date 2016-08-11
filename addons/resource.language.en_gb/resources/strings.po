@@ -9742,9 +9742,10 @@ msgctxt "#19179"
 msgid "Deleted"
 msgstr ""
 
+#. Settings -> Interface -> Other -> Startup window
 #: system/settings/settings.xml
 msgctxt "#19180"
-msgid "TV"
+msgid "TV channels"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -9757,9 +9758,10 @@ msgctxt "#19182"
 msgid "Days to display"
 msgstr ""
 
+#. Settings -> Interface -> Other -> Startup window
 #: system/settings/settings.xml
 msgctxt "#19183"
-msgid "Radio"
+msgid "Radio channels"
 msgstr ""
 
 #. Used on pvr recordings as button to show of them
