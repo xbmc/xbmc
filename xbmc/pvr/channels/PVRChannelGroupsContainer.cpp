@@ -56,8 +56,7 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   lock.Leave();
 
   CLog::Log(LOGDEBUG, "CPVRChannelGroupsContainer - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
-  bool bReturn = m_groupsRadio->Update(bChannelsOnly) &&
-       m_groupsTV->Update(bChannelsOnly);
+  bool bReturn = m_groupsTV->Update(bChannelsOnly) && m_groupsRadio->Update(bChannelsOnly);
 
   lock.Enter();
   m_bIsUpdating = false;
@@ -69,7 +68,7 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
 bool CPVRChannelGroupsContainer::Load(void)
 {
   Unload();
-  m_bLoaded = m_groupsRadio->Load() && m_groupsTV->Load();
+  m_bLoaded = m_groupsTV->Load() && m_groupsRadio->Load();
   return m_bLoaded;
 }
 
@@ -269,8 +268,7 @@ CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetLastPlayedGroup(int iChannelI
 
 bool CPVRChannelGroupsContainer::CreateChannelEpgs(void)
 {
-  return m_groupsRadio->CreateChannelEpgs() &&
-         m_groupsTV->CreateChannelEpgs();
+  return m_groupsTV->CreateChannelEpgs() && m_groupsRadio->CreateChannelEpgs();
 }
 
 CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetPreviousPlayedGroup(void)
