@@ -112,7 +112,6 @@ namespace PVR
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
     virtual void UpdateSelectedItemPath();
-    virtual bool IsValidMessage(CGUIMessage& message);
     bool CheckResumeRecording(CFileItem *item);
 
     bool OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button);

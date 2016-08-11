@@ -237,9 +237,6 @@ void CGUIWindowPVRRecordings::UpdateButtons(void)
 
 bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
 {
-  if (!IsValidMessage(message))
-    return false;
-  
   bool bReturn = false;
   switch (message.GetMessage())
   {
