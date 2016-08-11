@@ -35,6 +35,7 @@ typedef enum
   ObservableMessageEpg,
   ObservableMessageEpgContainer,
   ObservableMessageEpgActiveItem,
+  ObservableMessageEpgItemUpdate,
   ObservableMessageChannelGroup,
   ObservableMessageChannelGroupReset,
   ObservableMessageTimers,
