@@ -23,6 +23,7 @@
 #include "ControllerTypes.h"
 #include "addons/Addon.h"
 
+#include <atomic>
 #include <string>
 
 namespace GAME
@@ -39,16 +40,20 @@ public:
 
   static const ControllerPtr EmptyPtr;
 
+  // implementation of IAddon via CAddon
+  virtual ADDON::AddonPtr GetRunningInstance() const override;
+  virtual void OnPostInstall(bool update, bool modal) override;
+
   std::string Label(void);
   std::string ImagePath(void) const;
 
   bool LoadLayout(void);
 
-  const CControllerLayout& Layout(void) const { return m_layout; }
+  const CControllerLayout& Layout(void);
 
 private:
   CControllerLayout m_layout;
-  bool              m_bLoaded;
+  std::atomic<bool> m_bLoaded;
 };
 
 }
