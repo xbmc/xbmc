@@ -489,7 +489,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool
   if (bRet && bNotify)
   {
     SetChanged();
-    NotifyObservers(ObservableMessageEpg);
+    NotifyObservers(ObservableMessageEpgItemUpdate);
   }
 
   return bRet;

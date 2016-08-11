@@ -210,7 +210,7 @@ bool CEpgContainer::Stop(void)
 
 void CEpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageEpg)
+  if (msg == ObservableMessageEpgItemUpdate)
   {
     // there can be many of these notifications during short time period. Thus, announce async and not every event.
     CSingleLock lock(m_critSection);
