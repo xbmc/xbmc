@@ -73,7 +73,7 @@ namespace PVR
     virtual void UpdateButtons(void) override;
     virtual bool OnAction(const CAction &action) override;
     virtual bool OnBack(int actionID) override;
-    virtual bool OpenGroupSelectionDialog(void);
+    virtual bool OpenChannelGroupSelectionDialog(void);
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
     virtual void SetInvalid() override;
     virtual bool CanBeActivated() const override;
@@ -97,9 +97,9 @@ namespace PVR
 
     virtual std::string GetDirectoryPath(void) = 0;
 
-    bool InitGroup(void);
-    virtual CPVRChannelGroupPtr GetGroup(void);
-    virtual void SetGroup(const CPVRChannelGroupPtr &group);
+    bool InitChannelGroup(void);
+    virtual CPVRChannelGroupPtr GetChannelGroup(void);
+    virtual void SetChannelGroup(const CPVRChannelGroupPtr &group);
 
     virtual bool ActionShowTimerRule(CFileItem *item);
     virtual bool ActionToggleTimer(CFileItem *item);
@@ -151,7 +151,7 @@ namespace PVR
     static bool DeleteTimer(CFileItem *item, bool bIsRecording, bool bDeleteRule);
     static bool AddTimer(CFileItem *item, bool bCreateRule, bool bShowTimerSettings);
 
-    CPVRChannelGroupPtr m_group;
+    CPVRChannelGroupPtr m_channelGroup;
     XbmcThreads::EndTime m_refreshTimeout;
   };
 }

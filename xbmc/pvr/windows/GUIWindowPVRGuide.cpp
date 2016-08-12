@@ -244,7 +244,7 @@ void CGUIWindowPVRGuide::UpdateButtons(void)
       break;
   }
 
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetChannelGroup()->GroupName());
 }
 
 bool CGUIWindowPVRGuide::GetDirectory(const std::string &strDirectory, CFileItemList &items)
@@ -467,7 +467,7 @@ void CGUIWindowPVRGuide::GetViewChannelItems(CFileItemList &items)
 void CGUIWindowPVRGuide::GetViewNowItems(CFileItemList &items)
 {
   items.Clear();
-  int iEpgItems = GetGroup()->GetEPGNow(items);
+  int iEpgItems = GetChannelGroup()->GetEPGNow(items);
 
   if (iEpgItems == 0)
   {
@@ -482,7 +482,7 @@ void CGUIWindowPVRGuide::GetViewNowItems(CFileItemList &items)
 void CGUIWindowPVRGuide::GetViewNextItems(CFileItemList &items)
 {
   items.Clear();
-  int iEpgItems = GetGroup()->GetEPGNext(items);
+  int iEpgItems = GetChannelGroup()->GetEPGNext(items);
 
   if (iEpgItems)
   {
@@ -503,7 +503,7 @@ bool CGUIWindowPVRGuide::RefreshTimelineItems()
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (epgGridContainer)
     {
-      const CPVRChannelGroupPtr group(GetGroup());
+      const CPVRChannelGroupPtr group(GetChannelGroup());
       std::unique_ptr<CFileItemList> timeline(new CFileItemList);
 
       // can be very expensive. never call with lock acquired.
@@ -544,7 +544,7 @@ void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
   CSingleLock lock(m_critSection);
 
   // group change detected reset grid coordinates and refresh grid items
-  if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetGroup())
+  if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetChannelGroup())
   {
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (!epgGridContainer)
