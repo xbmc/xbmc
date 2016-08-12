@@ -590,7 +590,7 @@ bool CPeripheralAddon::MapFeatures(const CPeripheral* device,
   if (retVal == PERIPHERAL_NO_ERROR)
   {
     // Notify observing button maps
-    RefreshButtonMaps(device->DeviceName(), strControllerId);
+    RefreshButtonMaps(device->DeviceName());
   }
 
   return retVal == PERIPHERAL_NO_ERROR;
@@ -638,16 +638,12 @@ void CPeripheralAddon::UnregisterButtonMap(IButtonMap* buttonMap)
   }
 }
 
-void CPeripheralAddon::RefreshButtonMaps(const std::string& strDeviceName /* = "" */,
-                                         const std::string& strControllerId /* = "" */)
+void CPeripheralAddon::RefreshButtonMaps(const std::string& strDeviceName /* = "" */)
 {
   for (auto it = m_buttonMaps.begin(); it != m_buttonMaps.end(); ++it)
   {
-    if ((strDeviceName.empty() || strDeviceName == it->first->DeviceName()) &&
-        (strControllerId.empty() || strControllerId == it->second->ControllerID()))
-    {
+    if (strDeviceName.empty() || strDeviceName == it->first->DeviceName())
       it->second->Load();
-    }
   }
 }
 
