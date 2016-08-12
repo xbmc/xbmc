@@ -203,6 +203,12 @@ void CAnalogStick::ProcessMotions(void)
 
   const bool bWasActivated = (m_vertState != 0.0f || m_horizState != 0.0f);
 
+  if (bActivated ^ bWasActivated)
+  {
+    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
+              bActivated ? "activated" : "deactivated");
+  }
+
   if (bActivated || bWasActivated)
   {
     m_vertState = newVertState;
