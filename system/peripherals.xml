@@ -45,7 +45,7 @@
     <setting key="disable_winjoystick" type="bool" value="1" label="35102" order="1" />
   </peripheral>
 
-  <peripheral vendor_product="2252:0106" bus="usb" name="WETEK Play remote" mapTo="hid">
+  <peripheral vendor_product="2252:0106,22A1:2801" bus="usb" name="WETEK Play remote" mapTo="hid">
     <setting key="do_not_use_custom_keymap" type="bool" value="0" label="35009" order="1" />
     <setting key="keymap" value="wetek-play" label="35007" configurable="0" />
   </peripheral>
