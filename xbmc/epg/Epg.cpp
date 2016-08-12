@@ -459,7 +459,6 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool
 
     if (it == m_tags.end())
     {
-      CLog::Log(LOGERROR, "EPG - %s - Error: EPG_EVENT_DELETED: uid %d not found.", __FUNCTION__, tag->UniqueBroadcastID());
       bRet = false;
     }
     else
