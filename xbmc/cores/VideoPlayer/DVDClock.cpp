@@ -156,6 +156,8 @@ void CDVDClock::SetSpeed(int iSpeed)
 
 void CDVDClock::SetSpeedAdjust(double adjust)
 {
+  CLog::Log(LOGDEBUG, "CDVDClock::SetSpeedAdjust - adjusted:%f", adjust);
+
   CSingleLock lock(m_critSection);
   m_speedAdjust = adjust;
 }

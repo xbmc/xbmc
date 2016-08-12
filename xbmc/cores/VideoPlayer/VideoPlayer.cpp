@@ -1971,7 +1971,6 @@ void CVideoPlayer::HandlePlaySpeed()
             m_clock.SetSpeedAdjust(adjust);
             if (m_omxplayer_mode)
               m_OmxPlayerState.av_clock.OMXSetSpeedAdjust(adjust);
-            CLog::Log(LOGDEBUG, "CVideoPlayer::HandlePlaySpeed set clock adjust: %f", adjust);
           }
         }
       }
