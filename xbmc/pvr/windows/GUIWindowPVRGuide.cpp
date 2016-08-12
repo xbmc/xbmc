@@ -58,11 +58,13 @@ CGUIEPGGridContainer* CGUIWindowPVRGuide::GetGridControl()
   return dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
 }
 
-void CGUIWindowPVRGuide::OnInitWindow()
+bool CGUIWindowPVRGuide::CanBeActivated() const
 {
-  if (m_guiState.get())
-    m_viewControl.SetCurrentView(m_guiState->GetViewAsControl(), false);
+  return true;
+}
 
+void CGUIWindowPVRGuide::Init()
+{
   CGUIEPGGridContainer *epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
@@ -72,6 +74,15 @@ void CGUIWindowPVRGuide::OnInitWindow()
 
   m_bRefreshTimelineItems = true;
   StartRefreshTimelineItemsThread();
+}
+
+void CGUIWindowPVRGuide::OnInitWindow()
+{
+  if (m_guiState.get())
+    m_viewControl.SetCurrentView(m_guiState->GetViewAsControl(), false);
+
+  if (InitChannelGroup()) // no channels -> lazy init
+    Init();
 
   CGUIWindowPVRBase::OnInitWindow();
 }
@@ -402,6 +413,13 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
     case GUI_MSG_REFRESH_LIST:
       switch(message.GetParam1())
       {
+        case ObservableMessageChannelGroupsLoaded:
+        {
+          // late init
+          InitChannelGroup();
+          Init();
+          break;
+        }
         case ObservableMessageChannelGroupReset:
         case ObservableMessageChannelGroup:
         case ObservableMessageEpg:
