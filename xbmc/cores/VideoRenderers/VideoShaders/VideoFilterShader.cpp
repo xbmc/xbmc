@@ -55,7 +55,7 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 
   m_stretch = 0.0f;
 
-#ifdef HAS_GLES == 2
+#if HAS_GLES == 2
   m_hVertex = -1;
   m_hcoord = -1;
   m_hProj   = -1;
