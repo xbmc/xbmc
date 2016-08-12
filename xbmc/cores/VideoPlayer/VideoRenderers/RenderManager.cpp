@@ -934,7 +934,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
         vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%%",
                                      refreshrate,
                                      missedvblanks,
-                                     clockspeed - 100.0);
+                                     clockspeed);
       }
 
       m_debugRenderer.SetInfo(audio, video, player, vsync);
