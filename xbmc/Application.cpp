@@ -2222,7 +2222,7 @@ bool CApplication::OnAction(const CAction &action)
         if (playSpeed >= 0.75 && playSpeed <= 1.55)
           playSpeed = 1;
 
-        if (action.GetID() == ACTION_PLAYER_REWIND && (playSpeed = 1)) // Enables Rewinding
+        if (action.GetID() == ACTION_PLAYER_REWIND && (playSpeed == 1)) // Enables Rewinding
           playSpeed *= -2;
         else if (action.GetID() == ACTION_PLAYER_REWIND && playSpeed > 1) //goes down a notch if you're FFing
           playSpeed /= 2;
