@@ -944,6 +944,16 @@ void PAPlayer::SetDynamicRangeCompression(long drc)
 void PAPlayer::SetSpeed(float speed)
 {
   m_playbackSpeed = static_cast<int>(speed);
+  if (m_playbackSpeed != 0 && m_isPaused)
+  {
+    m_isPaused = false;
+    SoftStart();
+  }
+  else if (m_playbackSpeed == 0 && !m_isPaused)
+  {
+    m_isPaused = true;
+    SoftStop(true, false);
+  }
   m_signalSpeedChange = true;
 }
 
