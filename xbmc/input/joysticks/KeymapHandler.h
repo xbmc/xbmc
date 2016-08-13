@@ -20,16 +20,12 @@
 #pragma once
 
 #include "input/joysticks/IKeymapHandler.h"
-#include "threads/CriticalSection.h"
-#include "threads/Event.h"
-#include "threads/Thread.h"
 
 #include <vector>
 
 namespace JOYSTICK
 {
-  class CKeymapHandler : public IKeymapHandler,
-                         protected CThread
+  class CKeymapHandler : public IKeymapHandler
   {
   public:
     CKeymapHandler(void);
@@ -38,12 +34,8 @@ namespace JOYSTICK
 
     // implementation of IKeymapHandler
     virtual INPUT_TYPE GetInputType(unsigned int keyId) const override;
-    virtual void OnDigitalKey(unsigned int keyId, bool bPressed) override;
+    virtual void OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs = 0) override;
     virtual void OnAnalogKey(unsigned int keyId, float magnitude) override;
-
-  protected:
-    // implementation of CThread
-    virtual void Process(void) override;
 
   private:
     enum BUTTON_STATE
@@ -53,7 +45,7 @@ namespace JOYSTICK
       STATE_BUTTON_HELD,
     };
 
-    bool ProcessButtonPress(unsigned int keyId);
+    void ProcessButtonPress(unsigned int keyId, unsigned int holdTimeMs);
     void ProcessButtonRelease(unsigned int keyId);
     bool IsPressed(unsigned int keyId) const;
 
@@ -62,8 +54,7 @@ namespace JOYSTICK
 
     BUTTON_STATE              m_state;
     unsigned int              m_lastButtonPress;
+    unsigned int              m_lastDigitalActionMs;
     std::vector<unsigned int> m_pressedButtons;
-    CEvent                    m_pressEvent;
-    CCriticalSection          m_digitalMutex;
   };
 }

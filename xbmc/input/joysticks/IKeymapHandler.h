@@ -47,10 +47,11 @@ namespace JOYSTICK
     /*!
      * \brief A key mapped to a digital action has been pressed or released
      *
-     * \param keyId     The key ID from Key.h
-     * \param bPressed  true if the key's button/axis is activated, false if deactivated
+     * \param keyId      The key ID from Key.h
+     * \param bPressed   true if the key's button/axis is activated, false if deactivated
+     * \param holdTimeMs The held time in ms for pressed buttons, or 0 for released
      */
-    virtual void OnDigitalKey(unsigned int keyId, bool bPressed) = 0;
+    virtual void OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs = 0) = 0;
 
     /*!
      * \brief Callback for keys mapped to analog actions

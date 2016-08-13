@@ -76,10 +76,21 @@ namespace JOYSTICK
      */
     virtual void ProcessMotions(void) = 0;
 
+    /*!
+     * \brief Check if the input handler is accepting input
+     *
+     * \param bActivation True if the motion is activating (true or positive),
+     *                    false if the motion is deactivating (false or zero)
+     *
+     * \return True if input should be sent to the input handler, false otherwise
+     */
+    bool AcceptsInput(bool bActivation);
+
   protected:
-    const FeatureName            m_name;
+    const FeatureName    m_name;
     IInputHandler* const m_handler;
     IButtonMap* const    m_buttonMap;
+    const bool           m_bEnabled;
   };
 
   class CScalarFeature : public CJoystickFeature
@@ -91,14 +102,16 @@ namespace JOYSTICK
     // implementation of CJoystickFeature
     virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
     virtual bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
-    virtual void ProcessMotions(void) override { } // Actions are dispatched immediately
+    virtual void ProcessMotions(void) override;
 
   private:
-    bool OnDigitalMotion(bool bPressed);
-    bool OnAnalogMotion(float magnitude);
+    void OnDigitalMotion(bool bPressed);
+    void OnAnalogMotion(float magnitude);
 
     const INPUT_TYPE m_inputType;
     bool             m_bDigitalState;
+    bool             m_bDigitalHandled;
+    unsigned int     m_holdStartTimeMs;
     float            m_analogState;
   };
 
@@ -183,6 +196,8 @@ namespace JOYSTICK
 
     float m_vertState;
     float m_horizState;
+
+    unsigned int m_motionStartTimeMs;
   };
 
   class CAccelerometer : public CJoystickFeature
