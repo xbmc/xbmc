@@ -937,7 +937,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
         vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%%",
                                      refreshrate,
                                      missedvblanks,
-                                     clockspeed - 100.0);
+                                     clockspeed);
       }
 
       m_debugRenderer.SetInfo(audio, video, player, vsync);
@@ -1422,7 +1422,7 @@ void CRenderManager::CheckEnableClockSync()
   else
   {
     m_clockSync.m_enabled = false;
-    m_dvdClock.SetSpeedAdjust(0);
+    m_dvdClock.SetVsyncAdjust(0);
   }
 
   m_playerPort->UpdateClockSync(m_clockSync.m_enabled);

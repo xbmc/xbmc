@@ -268,7 +268,7 @@ void CVideoReferenceClock::SetSpeed(double Speed)
     if (Speed != m_ClockSpeed)
     {
       m_ClockSpeed = Speed;
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %f%%", GetSpeed() * 100.0);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %f%%", m_ClockSpeed * 100.0);
     }
   }
 }
@@ -321,10 +321,12 @@ int64_t CVideoReferenceClock::TimeOfNextVblank() const
 //for the codec information screen
 bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const
 {
+  CSingleLock SingleLock(m_CritSection);
+
   if (m_UseVblank)
   {
     MissedVblanks = m_TotalMissedVblanks;
-    ClockSpeed = m_ClockSpeed * 100.0;
+    ClockSpeed = m_ClockSpeed;
     RefreshRate = m_RefreshRate;
     return true;
   }
