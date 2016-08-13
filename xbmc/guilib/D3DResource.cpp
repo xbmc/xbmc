@@ -225,16 +225,35 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
 bool CD3DTexture::CreateInternal(const void* pixels /* nullptr */, unsigned int srcPitch /* 0 */)
 {
   ID3D11Device* pD3DDevice = g_Windowing.Get3D11Device();
+  ID3D11DeviceContext* pD3D11Context = g_Windowing.Get3D11Context();
 
-  CD3D11_TEXTURE2D_DESC textureDesc(m_format, m_width, m_height, 1, m_mipLevels, m_bindFlags, m_usage, m_cpuFlags, 1, 0,
-    (m_mipLevels > 1) ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0);
+  UINT miscFlags = 0;
+  bool autogenmm = false;
+  if (m_mipLevels == 0 && g_Windowing.IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN))
+  {
+    autogenmm = pixels != nullptr;
+    miscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+  }
+  else
+    m_mipLevels = 1;
 
+  CD3D11_TEXTURE2D_DESC textureDesc(m_format, m_width, m_height, 1, m_mipLevels, m_bindFlags, m_usage, m_cpuFlags, 1, 0, miscFlags);
   D3D11_SUBRESOURCE_DATA initData = { 0 };
   initData.pSysMem = pixels;
   initData.SysMemPitch = srcPitch ? srcPitch : CD3DHelper::BitsPerPixel(m_format) * m_width / 8;
   initData.SysMemSlicePitch = 0;
 
-  return SUCCEEDED(pD3DDevice->CreateTexture2D(&textureDesc, (pixels ? &initData : NULL), &m_texture));
+  HRESULT hr = pD3DDevice->CreateTexture2D(&textureDesc, (!autogenmm && pixels) ? &initData : nullptr, &m_texture);
+  if (SUCCEEDED(hr) && autogenmm)
+  {
+    pD3D11Context->UpdateSubresource(m_texture, 0, nullptr, pixels,
+      (srcPitch ? srcPitch : CD3DHelper::BitsPerPixel(m_format) * m_width / 8), 0);
+  }
+
+  if (autogenmm)
+    GenerateMipmaps();
+
+  return SUCCEEDED(hr);
 }
 
 ID3D11ShaderResourceView* CD3DTexture::GetShaderResource()
@@ -244,7 +263,7 @@ ID3D11ShaderResourceView* CD3DTexture::GetShaderResource()
 
   if (!m_textureView) 
   {
-    CD3D11_SHADER_RESOURCE_VIEW_DESC cSRVDesc(D3D11_SRV_DIMENSION_TEXTURE2D);
+    CD3D11_SHADER_RESOURCE_VIEW_DESC cSRVDesc(D3D11_SRV_DIMENSION_TEXTURE2D, m_format, 0, -1);
     HRESULT hr = g_Windowing.Get3D11Device()->CreateShaderResourceView(m_texture, &cSRVDesc, &m_textureView);
 
     if (FAILED(hr))
@@ -412,6 +431,12 @@ unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const
   default:
     return pitch * m_height;
   }
+}
+
+void CD3DTexture::GenerateMipmaps()
+{
+  if (m_mipLevels == 0)
+    g_Windowing.Get3D11Context()->GenerateMips(GetShaderResource());
 }
 
 // static methods
