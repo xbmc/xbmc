@@ -20,7 +20,7 @@ compiler:
   - clang
 
 env:
-  - BUILD=Kodi TOOLS=Autotools
+#  - BUILD=Kodi TOOLS=Autotools
   - BUILD=Kodi TOOLS=CMake
   - ADDONS=adsp
   - ADDONS=audiodecoder
