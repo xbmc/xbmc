@@ -928,7 +928,10 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     }
   }
   if(!valid)
+  {
     CloseStream(m_CurrentVideo, true);
+    m_processInfo->ResetVideoCodecInfo();
+  }
 
   // open audio stream
   valid   = false;
@@ -945,7 +948,10 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   }
 
   if(!valid)
+  {
     CloseStream(m_CurrentAudio, true);
+    m_processInfo->ResetAudioCodecInfo();
+  }
 
   // enable  or disable subtitles
   bool visible = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn;
