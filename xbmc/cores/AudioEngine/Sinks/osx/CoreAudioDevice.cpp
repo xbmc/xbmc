@@ -215,17 +215,14 @@ std::string CCoreAudioDevice::GetName() const
   AudioObjectPropertyAddress  propertyAddress;
   propertyAddress.mScope    = kAudioDevicePropertyScopeOutput;
   propertyAddress.mElement  = 0;
-  propertyAddress.mSelector = kAudioDevicePropertyDeviceName;
-
-  UInt32 propertySize;
-  OSStatus ret = AudioObjectGetPropertyDataSize(m_DeviceId, &propertyAddress, 0, NULL, &propertySize);
-  if (ret != noErr)
-    return "";
+  propertyAddress.mSelector = kAudioDevicePropertyDeviceNameCFString;
 
   std::string name;
-  char *buff = new char[propertySize + 1];
-  buff[propertySize] = 0x00;
-  ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, buff);
+  CFStringRef deviceName = NULL;
+  UInt32 propertySize = sizeof(deviceName);
+
+  OSStatus ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, &deviceName);
+  
   if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioDevice::GetName: "
@@ -233,10 +230,9 @@ std::string CCoreAudioDevice::GetName() const
   }
   else
   {
-    name = buff;
-    name.erase(name.find_last_not_of(" ") + 1);
+    CDarwinUtils::CFStringRefToUTF8String(deviceName, name);
+    CFRelease(deviceName);
   }
-  delete[] buff;
 
   return name;
 }
