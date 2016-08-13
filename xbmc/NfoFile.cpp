@@ -24,6 +24,7 @@
 #include "NfoFile.h"
 #include "video/VideoInfoDownloader.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonSystemSettings.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "music/Album.h"
@@ -46,7 +47,7 @@ CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath, const ScraperPt
 
   AddonPtr addon;
   ScraperPtr defaultScraper;
-  if (CAddonMgr::GetInstance().GetDefault(m_type, addon))
+  if (CAddonSystemSettings::GetInstance().GetActive(m_type, addon))
     defaultScraper = std::dynamic_pointer_cast<CScraper>(addon);
 
   if (m_type == ADDON_SCRAPER_ALBUMS)

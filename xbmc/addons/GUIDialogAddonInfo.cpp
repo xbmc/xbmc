@@ -367,7 +367,7 @@ void CGUIDialogAddonInfo::OnSelect()
   if (CanOpen() || CanRun())
     CBuiltins::GetInstance().Execute("RunAddon(" + m_localAddon->ID() + ")");
   else if (CanUse())
-    CAddonMgr::GetInstance().SetDefault(m_localAddon->Type(), m_localAddon->ID());
+    CAddonSystemSettings::GetInstance().SetActive(m_localAddon->Type(), m_localAddon->ID());
 }
 
 bool CGUIDialogAddonInfo::CanOpen() const

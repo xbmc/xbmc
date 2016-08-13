@@ -83,9 +83,6 @@ namespace ADDON
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
     void UnregisterAddonMgrCallback(TYPE type);
 
-    /* Addon access */
-    bool GetDefault(const TYPE &type, AddonPtr &addon);
-    bool SetDefault(const TYPE &type, const std::string &addonID);
     /*! \brief Retrieve a specific addon (of a specific type)
      \param id the id of the addon to retrieve.
      \param addon [out] the retrieved addon pointer - only use if the function returns true.

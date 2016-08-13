@@ -24,6 +24,7 @@
 
 #include "addons/AddonManager.h"
 #include "addons/AddonInstaller.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/PluginSource.h"
@@ -221,7 +222,7 @@ static int OpenDefaultSettings(const std::vector<std::string>& params)
 {
   AddonPtr addon;
   ADDON::TYPE type = TranslateType(params[0]);
-  if (CAddonMgr::GetInstance().GetDefault(type, addon))
+  if (CAddonSystemSettings::GetInstance().GetActive(type, addon))
   {
     bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
     if (type == ADDON_VIZ && changed)
@@ -246,7 +247,7 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
   if (type != ADDON_UNKNOWN && 
       CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
   {
-    CAddonMgr::GetInstance().SetDefault(type,addonID);
+    CAddonSystemSettings::GetInstance().SetActive(type, addonID);
     if (type == ADDON_VIZ)
       g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }

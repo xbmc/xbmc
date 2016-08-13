@@ -19,8 +19,9 @@
  *
  */
 
+#include "addons/IAddon.h"
 #include "settings/lib/ISettingCallback.h"
-
+#include <string>
 
 namespace ADDON
 {
@@ -35,6 +36,9 @@ public:
   static CAddonSystemSettings& GetInstance();
   void OnSettingAction(const CSetting* setting) override;
   void OnSettingChanged(const CSetting* setting) override;
+
+  bool GetActive(const TYPE& type, AddonPtr& addon);
+  bool SetActive(const TYPE& type, const std::string& addonID);
 
 private:
   CAddonSystemSettings() = default;
