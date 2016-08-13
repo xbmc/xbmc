@@ -10964,7 +10964,7 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
 bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
 {
   bool bReturn(false);
-  if (m_playerShowInfo)
+  if (m_playerShowInfo && m_currentFile->HasPVRChannelInfoTag())
   {
     if (m_isPvrChannelPreview)
     {
@@ -10973,7 +10973,7 @@ bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
     else
     {
       bReturn = !m_videoInfo.valid;
-      if (bReturn && m_currentFile->HasPVRChannelInfoTag() && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
+      if (bReturn && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
         bReturn = !m_audioInfo.valid;
     }
   }
