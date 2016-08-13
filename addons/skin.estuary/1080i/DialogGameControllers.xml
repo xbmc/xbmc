@@ -13,7 +13,7 @@
                 <param name="DialogHeaderId" value="2" />
             </include>
                 <control type="label">
-                    <description>Controller types heading</description>
+                    <description>Controller profiles grouplist heading</description>
                     <top>90</top>
                     <left>15</left>
                     <width>330</width>
@@ -33,7 +33,7 @@
                     <texture border="40">buttons/dialogbutton-nofo.png</texture>
                 </control>
                 <control type="grouplist" id="3">
-                    <description>Controller types grouplist</description>
+                    <description>Controller profiles grouplist</description>
                     <left>15</left>
                     <top>130</top>
                     <width>330</width>
@@ -44,7 +44,7 @@
                     <ondown>3</ondown>
                 </control>
                 <control type="button" id="10">
-                    <description>Default controller types button</description>
+                    <description>Default controller button</description>
                     <height>60</height>
                     <width>330</width>
                     <align>center</align>
@@ -60,7 +60,7 @@
                     <height>343</height>
                 </control>
                 <control type="label">
-                    <description>Feature types heading</description>
+                    <description>Feature list heading</description>
                     <top>90</top>
                     <left>995</left>
                     <width>330</width>
@@ -80,7 +80,7 @@
                     <texture border="40">buttons/dialogbutton-nofo.png</texture>
                 </control>
                 <control type="grouplist" id="5">
-                    <description>Feature types grouplist</description>
+                    <description>Features grouplist</description>
                     <left>995</left>
                     <top>130</top>
                     <width>330</width>
@@ -101,7 +101,7 @@
                     <orientation>vertical</orientation>
                 </control>
                 <control type="button" id="7">
-                    <description>Default feature types button</description>
+                    <description>Default feature button</description>
                     <height>60</height>
                     <width>330</width>
                     <align>center</align>
