@@ -733,8 +733,13 @@ bool CFileItem::IsVideo() const
   if (HasPictureInfoTag())
     return false;
 
+  // only tv recordings are videos...
   if (IsPVRRecording())
-    return true;
+    return !GetPVRRecordingInfoTag()->IsRadio();
+
+  // ... all other PVR items are not.
+  if (IsPVR())
+    return false;
 
   if (URIUtils::IsDVD(m_strPath))
     return true;
