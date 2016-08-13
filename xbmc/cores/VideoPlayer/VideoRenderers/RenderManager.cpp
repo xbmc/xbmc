@@ -827,10 +827,13 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts /* = 
         presentmethod = PRESENT_METHOD_BOB;
         invert = true;
       }
-      else if (interlacemethod == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)
-        presentmethod = PRESENT_METHOD_BOB;
       else
-        presentmethod = PRESENT_METHOD_SINGLE;
+      {
+        if (!m_pRenderer->WantsDoublePass())
+          presentmethod = PRESENT_METHOD_SINGLE;
+        else
+          presentmethod = PRESENT_METHOD_BOB;
+      }
 
       if (presentmethod != PRESENT_METHOD_SINGLE)
       {

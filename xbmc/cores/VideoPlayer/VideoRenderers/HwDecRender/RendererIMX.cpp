@@ -23,7 +23,6 @@
 #if defined(HAS_IMXVPU)
 #include "cores/IPlayer.h"
 #include "windowing/egl/EGLWrapper.h"
-#include "DVDCodecs/Video/DVDVideoCodecIMX.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "settings/MediaSettings.h"
@@ -35,21 +34,21 @@
 
 CRendererIMX::CRendererIMX()
 {
-
+  m_bufHistory.clear();
+  g_IMXContext.Clear();
 }
 
 CRendererIMX::~CRendererIMX()
 {
   UnInit();
+  std::for_each(m_bufHistory.begin(), m_bufHistory.end(), Release);
+  g_IMXContext.Clear();
+  g_IMX.Deinitialize();
 }
 
 bool CRendererIMX::RenderCapture(CRenderCapture* capture)
 {
-  CRect rect(0, 0, capture->GetWidth(), capture->GetHeight());
-
-  CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(m_buffers[m_iYV12RenderBuffer].hwDec);
   capture->BeginRender();
-  g_IMXContext.PushCaptureTask(buffer, &rect);
   capture->EndRender();
   return true;
 }
@@ -86,31 +85,33 @@ bool CRendererIMX::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(method == VS_INTERLACEMETHOD_IMX_FASTMOTION
-  || method == VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE)
+  if(method == VS_INTERLACEMETHOD_IMX_ADVMOTION
+  || method == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF
+  || method == VS_INTERLACEMETHOD_IMX_FASTMOTION
+  || method == VS_INTERLACEMETHOD_RENDER_BOB
+  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
     return true;
   else
     return false;
 }
 
-bool CRendererIMX::Supports(EDEINTERLACEMODE mode)
-{
-  if(mode == VS_DEINTERLACEMODE_AUTO
-  || mode == VS_DEINTERLACEMODE_FORCE
-  || mode == VS_DEINTERLACEMODE_OFF)
-    return true;
-
-  return false;
-}
-
 bool CRendererIMX::Supports(ESCALINGMETHOD method)
 {
-  return false;
+  return method == VS_SCALINGMETHOD_AUTO;
 }
 
 EINTERLACEMETHOD CRendererIMX::AutoInterlaceMethod()
 {
-  return VS_INTERLACEMETHOD_IMX_FASTMOTION;
+  return VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF;
+}
+
+bool CRendererIMX::WantsDoublePass()
+{
+  if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod ==
+      VS_INTERLACEMETHOD_IMX_ADVMOTION)
+    return true;
+  else
+    return false;
 }
 
 CRenderInfo CRendererIMX::GetRenderInfo()
@@ -145,8 +146,19 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
   previous = current;
 #endif
   CDVDVideoCodecIMXBuffer *buffer = static_cast<CDVDVideoCodecIMXBuffer*>(m_buffers[m_iYV12RenderBuffer].hwDec);
-  if (buffer != NULL && buffer->IsValid())
+  if (buffer)
   {
+    if (!m_bufHistory.empty() && m_bufHistory.back() != buffer || m_bufHistory.empty())
+    {
+      buffer->Lock();
+      m_bufHistory.push_back(buffer);
+    }
+    if (m_bufHistory.size() > 2)
+    {
+      m_bufHistory.front()->Release();
+      m_bufHistory.pop_front();
+    }
+
     // this hack is needed to get the 2D mode of a 3D movie going
     RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
     if (stereo_mode)
@@ -178,25 +190,26 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     //CLog::Log(LOGDEBUG, "BLIT RECTS: source x1 %f x2 %f y1 %f y2 %f dest x1 %f x2 %f y1 %f y2 %f", srcRect.x1, srcRect.x2, srcRect.y1, srcRect.y2, dstRect.x1, dstRect.x2, dstRect.y1, dstRect.y2);
     g_IMXContext.SetBlitRects(srcRect, dstRect);
 
-    uint8_t fieldFmt = 0;
-    if (g_graphicsContext.IsFullScreenVideo())
+    uint8_t fieldFmt = flags & RENDER_FLAG_FIELDMASK;
+
+    if (!g_graphicsContext.IsFullScreenVideo())
+      flags &= ~RENDER_FLAG_FIELDS;
+
+    if (flags & RENDER_FLAG_FIELDS)
     {
-      fieldFmt |= flags & RENDER_FLAG_FIELDMASK;
-      if (flags & RENDER_FLAG_FIELDS)
+      fieldFmt |= IPU_DEINTERLACE_RATE_EN;
+      if (flags & RENDER_FLAG_FIELD1)
       {
-        fieldFmt |= IPU_DEINTERLACE_RATE_EN;
-        if (flags & RENDER_FLAG_FIELD1)
-        {
-          fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
-          // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
-          // this makes IPU render same picture as before, just shifted one line.
-          // let's correct this
-          fieldFmt ^= RENDER_FLAG_FIELDMASK;
-        }
+        fieldFmt |= IPU_DEINTERLACE_RATE_FRAME1;
+        // CXBMCRenderManager::PresentFields() is swapping field flag for frame1
+        // this makes IPU render same picture as before, just shifted one line.
+        // let's correct this
+        fieldFmt ^= RENDER_FLAG_FIELDMASK;
       }
     }
 
-    g_IMXContext.BlitAsync(NULL, buffer, fieldFmt);
+    CDVDVideoCodecIMXBuffer *buffer_p = m_bufHistory.front();
+    g_IMXContext.Blit(buffer_p == buffer ? nullptr : buffer_p, buffer, fieldFmt);
   }
 
 #if 0
@@ -204,6 +217,7 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
   printf("r: %d  %d\n", m_iYV12RenderBuffer, (int)(current2-current));
 #endif
 
+  g_IMXContext.WaitVSync();
   return true;
 }
 
