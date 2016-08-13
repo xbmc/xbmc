@@ -60,11 +60,11 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CLog::Log(LOGDEBUG, "CPVRDirectory::GetDirectory(%s)", base.c_str());
   items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
 
-  if (!g_PVRManager.IsStarted())
-    return false;
-
   if (fileName == "")
   {
+    if (!g_PVRManager.IsStarted())
+      return false;
+
     CFileItemPtr item;
 
     item.reset(new CFileItem(base + "channels/", true));
@@ -89,16 +89,25 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
   else if (StringUtils::StartsWith(fileName, "recordings"))
   {
+    if (!g_PVRManager.IsStarted())
+      return false;
+
     const std::string pathToUrl(url.Get());
     return g_PVRRecordings->GetDirectory(pathToUrl, items);
   }
   else if (StringUtils::StartsWith(fileName, "channels"))
   {
+    if (!g_PVRChannelGroups || !g_PVRChannelGroups->Loaded())
+      return false;
+
     const std::string pathToUrl(url.Get());
     return g_PVRChannelGroups->GetDirectory(pathToUrl, items);
   }
   else if (StringUtils::StartsWith(fileName, "timers"))
   {
+    if (!g_PVRManager.IsStarted())
+      return false;
+
     const std::string pathToUrl(url.Get());
     return g_PVRTimers->GetDirectory(pathToUrl, items);
   }

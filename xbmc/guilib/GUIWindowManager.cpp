@@ -651,9 +651,11 @@ void CGUIWindowManager::PreviousWindow()
   }
   // get the previous window in our stack
   if (m_windowHistory.size() < 2)
-  { // no previous window history yet - check if we should just activate home
+  {
+    // no previous window history yet - check if we should just activate home
     if (GetActiveWindow() != WINDOW_INVALID && GetActiveWindow() != WINDOW_HOME)
     {
+      CloseWindowSync(pCurrentWindow);
       ClearWindowHistory();
       ActivateWindow(WINDOW_HOME);
     }
@@ -667,6 +669,7 @@ void CGUIWindowManager::PreviousWindow()
   if (!pNewWindow)
   {
     CLog::Log(LOGERROR, "Unable to activate the previous window");
+    CloseWindowSync(pCurrentWindow);
     ClearWindowHistory();
     ActivateWindow(WINDOW_HOME);
     return;
@@ -1500,8 +1503,10 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   { // found window in history
     m_windowHistory = historySave;
   }
-  else
-  { // didn't find window in history - add it to the stack
+  else if (newWindowID != WINDOW_SPLASH)
+  {
+    // didn't find window in history - add it to the stack
+    // but do not add the splash window to history, as we never want to travel back to it
     m_windowHistory.push(newWindowID);
   }
 }

@@ -253,13 +253,10 @@
 	<include name="MediaMenuCommon">
 		<include>OpenClose_Left</include>
 		<depth>DepthSideBlade</depth>
-		<animation type="Conditional" condition="$EXP[sidebar_focused]">
+		<left>-484</left>
+		<animation type="Conditional" condition="$EXP[sidebar_focused]" reversible="true">
 			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
-			<effect type="slide" start="-320" end="0" time="400" tween="cubic" easing="out" />
-		</animation>
-		<animation type="Conditional" condition="!$EXP[sidebar_focused]">
-			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="in" />
-			<effect type="slide" start="0" end="-320" time="300" tween="cubic" easing="in" />
+			<effect type="slide" start="0" end="484" time="400" tween="cubic" easing="out" />
 		</animation>
 		<control type="image">
 			<left>0</left>

@@ -566,6 +566,18 @@ private:
      */
     CEventStream<ManagerState>& Events() { return m_events; }
 
+    /*!
+     * @brief Show or update the progress dialog.
+     * @param strText The current status.
+     * @param iProgress The current progress in %.
+     */
+    void ShowProgressDialog(const std::string &strText, int iProgress);
+
+    /*!
+     * @brief Hide the progress dialog if it's visible.
+     */
+    void HideProgressDialog(void);
+
   protected:
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -605,18 +617,6 @@ private:
      * @return True if playback was continued, false otherwise.
      */
     bool ContinueLastChannel(void);
-
-    /*!
-     * @brief Show or update the progress dialog.
-     * @param strText The current status.
-     * @param iProgress The current progress in %.
-     */
-    void ShowProgressDialog(const std::string &strText, int iProgress);
-
-    /*!
-     * @brief Hide the progress dialog if it's visible.
-     */
-    void HideProgressDialog(void);
 
     void ExecutePendingJobs(void);
 

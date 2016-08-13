@@ -41,6 +41,7 @@ namespace PVR
     CGUIWindowPVRGuide(bool bRadio);
     virtual ~CGUIWindowPVRGuide(void);
 
+    virtual bool CanBeActivated() const override;
     virtual void OnInitWindow() override;
     virtual void OnDeinitWindow(int nextWindowID) override;
     virtual bool OnMessage(CGUIMessage& message) override;
@@ -61,6 +62,8 @@ namespace PVR
     virtual void UnregisterObservers(void) override;
 
   private:
+    void Init();
+
     EPG::CGUIEPGGridContainer* GetGridControl();
 
     bool SelectPlayingFile(void);

@@ -53,6 +53,12 @@ namespace PVR
     bool Load(void);
 
     /*!
+     * @brief Checks whether groups were already loaded.
+     * @return True if groups were successfully loaded, false otherwise.
+     */
+    bool Loaded(void) const;
+
+    /*!
      * @brief Unload and destruct all channel groups and all channels in them.
      */
     void Unload(void);
@@ -209,5 +215,7 @@ namespace PVR
   private :
     CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&);
     CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&);
+
+    bool m_bLoaded;
   };
 }
