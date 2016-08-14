@@ -714,9 +714,9 @@ bool CActiveAEStreamBuffers::IsDrained()
     return false;
 }
 
-void CActiveAEStreamBuffers::SetRR(double rr)
+void CActiveAEStreamBuffers::SetRR(double rr, double atempoThreshold)
 {
-  if (rr < 1.02 && rr > 0.98)
+  if (fabs(rr - 1.0) < atempoThreshold)
   {
     m_resampleBuffers->SetRR(rr);
     m_atempoBuffers->SetTempo(1.0);

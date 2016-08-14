@@ -638,7 +638,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           par = (MsgStreamParameter*)msg->data;
           if (par->stream->m_processingBuffers)
           {
-            par->stream->m_processingBuffers->SetRR(par->parameter.double_par);
+            par->stream->m_processingBuffers->SetRR(par->parameter.double_par, m_settings.atempoThreshold);
           }
           return;
         case CActiveAEControlProtocol::STREAMFFMPEGINFO:
@@ -2285,7 +2285,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   {
     stream->m_syncState = CAESyncInfo::AESyncState::SYNC_MUTE;
     stream->m_syncError.Flush(100);
-    stream->m_processingBuffers->SetRR(1.0);
+    stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
     stream->m_resampleIntegral = 0;
     CLog::Log(LOGDEBUG,"ActiveAE - start sync of audio stream");
   }
@@ -2309,7 +2309,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
   {
     stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
-    stream->m_processingBuffers->SetRR(1.0);
+    stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
     stream->m_resampleIntegral = 0;
     stream->m_lastSyncError = error;
     CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f above threshold of %f", error, threshold);
@@ -2433,7 +2433,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         stream->m_syncState = CAESyncInfo::AESyncState::SYNC_INSYNC;
         stream->m_syncError.Flush(1000);
         stream->m_resampleIntegral = 0;
-        stream->m_processingBuffers->SetRR(1.0);
+        stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
         CLog::Log(LOGDEBUG,"ActiveAE::SyncStream - average error %f below threshold of %f", error, 30.0);
       }
     }
@@ -2448,12 +2448,12 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   {
     if (stream->m_processingBuffers)
     {
-      stream->m_processingBuffers->SetRR(stream->CalcResampleRatio(error));
+      stream->m_processingBuffers->SetRR(stream->CalcResampleRatio(error), m_settings.atempoThreshold);
     }
   }
   else if (stream->m_processingBuffers)
   {
-    stream->m_processingBuffers->SetRR(1.0);
+    stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
   }
   return ret;
 }
@@ -2558,6 +2558,7 @@ void CActiveAE::LoadSettings()
   m_settings.dtshdpassthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH);
 
   m_settings.resampleQuality = static_cast<AEQuality>(CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY));
+  m_settings.atempoThreshold = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD) / 100.0;
 }
 
 bool CActiveAE::Initialize()
@@ -2616,6 +2617,7 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX            ||
       setting == CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE          ||
       setting == CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY         ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD        ||
       setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH            ||
       setting == CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE             ||
       setting == CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME ||

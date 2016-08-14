@@ -92,6 +92,9 @@
         <setting id="audiooutput.processquality">
           <default>101</default> <!-- AE_QUALITY_GPU -->
         </setting>
+        <setting id="audiooutput.atempothreshold">
+          <default>100</default> <!-- disabled -->
+        </setting>
       </group>
       <group id="3">
         <setting id="audiooutput.ac3transcode" help="37024">
