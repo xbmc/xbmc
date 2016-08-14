@@ -94,13 +94,15 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
   if (host_statistics(stat_port, HOST_VM_INFO, (host_info_t)&vm_stat, &count) == 0)
   {
       // Find page size.
-      int pageSize;
-#if defined(TARGET_DARWIN) && defined(__aarch64__)
-      // Workaround for 64-bit arm devices (e.g. iPhone 5s, etc.).
-      // sysctl() and host_page_size() give both wrong 4x value (16384).
-      // So, we need to hardcode page size to 4096 here.
-      pageSize = 4096;
+#if defined(TARGET_DARWIN_IOS)
+      // on ios with 64bit ARM CPU the page size is wrongly given as 16K
+      // when using the sysctl approach. We can use the host_page_size
+      // function instead which will give the proper 4k pagesize
+      // on both 32 and 64 bit ARM CPUs
+      vm_size_t pageSize;
+      host_page_size(stat_port, &pageSize);
 #else
+      int pageSize;
       mib[0] = CTL_HW; mib[1] = HW_PAGESIZE;
       len = sizeof(int);
       if (sysctl(mib, miblen, &pageSize, &len, NULL, 0) == 0)
