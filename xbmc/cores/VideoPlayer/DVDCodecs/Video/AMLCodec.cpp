@@ -401,23 +401,6 @@ void dumpfile_write(am_private_t *para, void* buf, int bufsiz)
     write(para->dumpfile, buf, bufsiz);
 }
 
-static int set_pts_pcrscr(int64_t value)
-{
-  int fd = open("/sys/class/tsync/pts_pcrscr", O_WRONLY);
-  if (fd >= 0)
-  {
-    char pts_str[64];
-    unsigned long pts = (unsigned long)value;
-    sprintf(pts_str, "0x%lx", pts);
-    write(fd, pts_str, strlen(pts_str));
-    close(fd);
-    return 0;
-  }
-
-  CLog::Log(LOGERROR, "set_pts_pcrscr: open pts_pcrscr error");
-  return -1;
-}
-
 static vformat_t codecid_to_vformat(enum AVCodecID id)
 {
   vformat_t format;
@@ -1897,7 +1880,7 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   return rtn;
 }
 
-int CAMLCodec::DequeueBuffer(int &pts)
+int CAMLCodec::DequeueBuffer(int64_t &pts)
 {
   v4l2_buffer vbuf = { 0 };
   vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -1914,16 +1897,15 @@ int CAMLCodec::DequeueBuffer(int &pts)
   // parameter, because it was introduced since kernel 3.14.
   if (access("/sys/module/amvideo/parameters/omx_pts_interval_lower", F_OK) != -1)
   {
-    int64_t pts64 = vbuf.timestamp.tv_sec & 0xFFFFFFFF;
-    pts64 <<= 32;
-    pts64 += vbuf.timestamp.tv_usec & 0xFFFFFFFF;
-    pts = (int)((pts64 * PTS_FREQ) / DVD_TIME_BASE);
+    pts = vbuf.timestamp.tv_sec & 0xFFFFFFFF;
+    pts <<= 32;
+    pts += vbuf.timestamp.tv_usec & 0xFFFFFFFF;
+    pts = (pts * PTS_FREQ) / DVD_TIME_BASE;
   }
   else
   {
     pts = vbuf.timestamp.tv_usec;
   }
-  
   return 0;
 }
 
@@ -2004,7 +1986,7 @@ double CAMLCodec::GetTimeSize()
   if (m_cur_pts == 0)
     m_timesize = (double)(am_private->am_pkt.lastpts - m_1st_pts) / PTS_FREQ;
   else
-    m_timesize = (double)(am_private->am_pkt.lastpts - m_cur_pts) / PTS_FREQ;
+    m_timesize = (double)(am_private->am_pkt.lastpts - GetOMXPts()) / PTS_FREQ;
 
   // lie to VideoPlayer, it is hardcoded to a max of 8 seconds,
   // if you buffer more than 8 seconds, it goes nuts.
@@ -2031,31 +2013,16 @@ void CAMLCodec::Process()
 
     {
       CSingleLock lock(m_ptsQueueMutex);
-      int pts = 0;
+      int64_t pts = 0;
       if (DequeueBuffer(pts) == 0)
       {
-        m_ptsQueue.push_back(pts);
+        m_ptsQueue.push_back(pts + m_start_pts);
         m_ready_event.Set();
       }
     }
   }
 
   CLog::Log(LOGDEBUG, "CAMLCodec::Process Stopped");
-}
-
-void CAMLCodec::SetVideoPtsSeconds(const double pts)
-{
-  //CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoPtsSeconds: pts(%f)", pts);
-  if (pts >= 0.0)
-  {
-    int64_t pts_video = (int64_t)(pts * PTS_FREQ);
-    if (m_start_pts != 0)
-      pts_video -= m_start_pts;
-    else if (m_start_dts != 0)
-      pts_video -= m_start_dts;
-
-    set_pts_pcrscr(pts_video);
-  }
 }
 
 void CAMLCodec::ShowMainVideo(const bool show)
