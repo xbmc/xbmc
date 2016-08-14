@@ -147,18 +147,29 @@ void XBMCClientWrapperImpl::restartTimer(){
 	CFRunLoopAddTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
 }
 
-XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address, int f_port, bool f_verbose_mode): 
-m_mode(f_mode), m_address(fcr_address), m_port(f_port), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(f_verbose_mode){	
-  if(m_mode == MULTIREMOTE_MODE){
-    if(m_verbose_mode)
-      NSLog(@"XBMCClientWrapperImpl started in multiremote mode sending to address %s, port %i", fcr_address.c_str(), f_port);
-    populateMultiRemoteModeMap();
-  } else {
-    if(m_mode == UNIVERSAL_MODE){
+XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address, int f_port, bool f_verbose_mode):
+    m_mode(f_mode),
+    m_address(fcr_address),
+    m_port(f_port),
+    m_timer(0),
+    m_sequence_timeout(0.5),
+    m_device_id(150),
+    m_verbose_mode(f_verbose_mode)
+  {
+    if(m_mode == MULTIREMOTE_MODE){
+      if(m_verbose_mode)
+        NSLog(@"XBMCClientWrapperImpl started in multiremote mode sending to address %s, port %i", fcr_address.c_str(), f_port);
+      populateMultiRemoteModeMap();
+  }
+  else
+  {
+    if(m_mode == UNIVERSAL_MODE)
+    {
       if(m_verbose_mode)
         NSLog(@"XBMCClientWrapperImpl started in universal mode sending to address %s, port %i", fcr_address.c_str(), f_port);
       populateSequenceMap();
-    } else if(m_verbose_mode)
+    }
+    else if(m_verbose_mode)
         NSLog(@"XBMCClientWrapperImpl started in normal mode sending to address %s, port %i", fcr_address.c_str(), f_port);
     populateEventMap();
   }
