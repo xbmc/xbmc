@@ -61,86 +61,41 @@ void CAddonSystemSettings::OnSettingChanged(const CSetting* setting)
   }
 }
 
+static const std::map<ADDON::TYPE, std::string> settingMap = {
+    {ADDON_VIZ, CSettings::SETTING_MUSICPLAYER_VISUALISATION},
+    {ADDON_SCREENSAVER, CSettings::SETTING_SCREENSAVER_MODE},
+    {ADDON_SCRAPER_ALBUMS, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER},
+    {ADDON_SCRAPER_ARTISTS, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER},
+    {ADDON_SCRAPER_MOVIES, CSettings::SETTING_SCRAPERS_MOVIESDEFAULT},
+    {ADDON_SCRAPER_MUSICVIDEOS, CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT},
+    {ADDON_SCRAPER_TVSHOWS, CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT},
+    {ADDON_WEB_INTERFACE, CSettings::SETTING_SERVICES_WEBSKIN},
+    {ADDON_RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
+    {ADDON_SCRIPT_WEATHER, CSettings::SETTING_WEATHER_ADDON},
+    {ADDON_SKIN, CSettings::SETTING_LOOKANDFEEL_SKIN},
+    {ADDON_RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},
+};
+
 bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
 {
-  std::string setting;
-  switch (type)
+  auto it = settingMap.find(type);
+  if (it != settingMap.end())
   {
-    case ADDON_VIZ:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      break;
-    case ADDON_SCREENSAVER:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE);
-      break;
-    case ADDON_SCRAPER_ALBUMS:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER);
-      break;
-    case ADDON_SCRAPER_ARTISTS:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER);
-      break;
-    case ADDON_SCRAPER_MOVIES:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT);
-      break;
-    case ADDON_SCRAPER_MUSICVIDEOS:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT);
-      break;
-    case ADDON_SCRAPER_TVSHOWS:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT);
-      break;
-    case ADDON_WEB_INTERFACE:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSKIN);
-      break;
-    case ADDON_RESOURCE_LANGUAGE:
-      setting = CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
-      break;
-    default:
-      return false;
+    auto settingValue = CSettings::GetInstance().GetString(it->second);
+    return CAddonMgr::GetInstance().GetAddon(settingValue, addon, type);
   }
-  return CAddonMgr::GetInstance().GetAddon(setting, addon, type);
+  return false;
 }
 
 bool CAddonSystemSettings::SetActive(const TYPE& type, const std::string& addonID)
 {
-  switch (type)
+  auto it = settingMap.find(type);
+  if (it != settingMap.end())
   {
-    case ADDON_VIZ:
-      CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
-      break;
-    case ADDON_SCREENSAVER:
-      CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE, addonID);
-      break;
-    case ADDON_SCRAPER_ALBUMS:
-      CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, addonID);
-      break;
-    case ADDON_SCRAPER_ARTISTS:
-      CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, addonID);
-      break;
-    case ADDON_SCRAPER_MOVIES:
-      CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT, addonID);
-      break;
-    case ADDON_SCRAPER_MUSICVIDEOS:
-      CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT, addonID);
-      break;
-    case ADDON_SCRAPER_TVSHOWS:
-      CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT, addonID);
-      break;
-    case ADDON_RESOURCE_LANGUAGE:
-      CSettings::GetInstance().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
-      break;
-    case ADDON_SCRIPT_WEATHER:
-      CSettings::GetInstance().SetString(CSettings::SETTING_WEATHER_ADDON, addonID);
-      break;
-    case ADDON_SKIN:
-      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, addonID);
-      break;
-    case ADDON_RESOURCE_UISOUNDS:
-      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN, addonID);
-      break;
-    default:
-      return false;
+    CSettings::GetInstance().SetString(it->second, addonID);
+    return true;
   }
-
-  return true;
+  return false;
 }
 
 }
