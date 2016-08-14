@@ -36,7 +36,6 @@
 #include "pvr/windows/GUIWindowPVRBase.h"
 
 #include "GUIDialogPVRChannelsOSD.h"
-#include "GUIDialogPVRGuideInfo.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -301,32 +300,10 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
 {
-  /* Check file item is in list range and get his pointer */
-  if (item < 0 || item >= (int)m_vecItems->Size()) return;
+  if (item < 0 || item >= (int)m_vecItems->Size())
+    return;
 
-  CFileItemPtr pItem = m_vecItems->Get(item);
-  if (pItem && pItem->IsPVRChannel())
-  {
-    CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
-    if (!g_PVRManager.CheckParentalLock(channel))
-      return;
-
-    /* Get the current running show on this channel from the EPG storage */
-    CEpgInfoTagPtr epgnow(channel->GetEPGNow());
-    if (!epgnow)
-      return;
-
-    /* Load programme info dialog */
-    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-    if (!pDlgInfo)
-      return;
-
-    /* inform dialog about the file item and open dialog window */
-    pDlgInfo->SetProgInfo(epgnow);
-    pDlgInfo->Open();
-  }
-
-  return;
+  CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(item));
 }
 
 void CGUIDialogPVRChannelsOSD::OnWindowLoaded()

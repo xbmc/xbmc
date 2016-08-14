@@ -2,7 +2,9 @@ SRCS=PVRGUIInfo.cpp \
      PVRManager.cpp \
      PVRDatabase.cpp \
      PVRActionListener.cpp \
-     PVRSettings.cpp
+     PVRSettings.cpp \
+     PVRContextMenus.cpp \
+     PVRGUIActions.cpp
 
 LIB=pvr.a
 

@@ -118,8 +118,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_INFO, 19053);        /* Recording Information */
     if (!isDeletedRecording)
     {
-      buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar */
-
       std::string resumeString = GetResumeString(*pItem);
       if (resumeString.empty())
       {

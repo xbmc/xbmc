@@ -34,6 +34,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -67,17 +68,6 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
 
-  if (channel->GetEPGNow())
-  {
-    buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                        /* Programme information */
-    buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                        /* Find similar */
-  }
-
-  if (channel->IsRecording())
-    buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);  /* Stop recording */
-  else if (g_PVRClients->SupportsTimers(channel->ClientID()))
-    buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* Record */
-
   if (CServiceBroker::GetADSP().IsProcessing())
     buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);                        /* Audio DSP settings */
 
@@ -103,12 +93,8 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonAdd(pItem.get(), button) ||
-      OnContextButtonInfo(pItem.get(), button) ||
-      OnContextButtonGroupManager(pItem.get(), button) ||
+  return OnContextButtonGroupManager(pItem.get(), button) ||
       OnContextButtonUpdateEpg(pItem.get(), button) ||
-      OnContextButtonStartRecord(pItem.get(), button) ||
-      OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonManage(pItem.get(), button) ||
       OnContextButtonActiveAEDSPSettings(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
@@ -186,7 +172,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
              ActionPlayChannel(m_vecItems->Get(iItem).get());
              break;
            case ACTION_SHOW_INFO:
-             ShowEPGInfo(m_vecItems->Get(iItem).get());
+             CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(iItem));
              break;
            case ACTION_DELETE_ITEM:
              ActionDeleteChannel(m_vecItems->Get(iItem).get());
@@ -248,19 +234,6 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRChannels::OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_ADD)
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
 bool CGUIWindowPVRChannels::OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
@@ -268,19 +241,6 @@ bool CGUIWindowPVRChannels::OnContextButtonGroupManager(CFileItem *item, CONTEXT
   if (button == CONTEXT_BUTTON_GROUP_MANAGER)
   {
     ShowGroupManager();
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRChannels::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_INFO)
-  {
-    ShowEPGInfo(item);
     bReturn = true;
   }
 
@@ -322,37 +282,6 @@ bool CGUIWindowPVRChannels::OnContextButtonManage(CFileItem *item, CONTEXT_BUTTO
       Refresh(true);
     }
 
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRChannels::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_START_RECORD)
-  {
-    AddTimer(item);
-    bReturn = true;
-  }
-  else if (button == CONTEXT_BUTTON_ADD_TIMER)
-  {
-    AddTimerRule(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRChannels::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_STOP_RECORD)
-  {
-    StopRecordFile(item);
     bReturn = true;
   }
 

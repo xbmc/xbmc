@@ -18,19 +18,16 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
-#include "GUIWindowPVRRecordings.h"
-
 #include "Application.h"
 #include "addons/AddonManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "epg/Epg.h"
+#include "epg/EpgInfoTag.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "filesystem/StackDirectory.h"
 #include "GUIUserMessages.h"
@@ -38,23 +35,22 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
-#include "threads/SingleLock.h"
-#include "utils/Observer.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-
-#include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
-#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/PVRGUIActions.h"
+#include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
+#include "ServiceBroker.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
-#include <utility>
+#include "GUIWindowPVRRecordings.h" // TODO: include of derived class???
+
+#include "GUIWindowPVRBase.h"
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 
@@ -275,18 +271,6 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         bReturn = true;
       }
       break;
-    case CONTEXT_BUTTON_FIND:
-    {
-      int windowSearchId = m_bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
-      CGUIWindowPVRBase *windowSearch = (CGUIWindowPVRBase*) g_windowManager.GetWindow(windowSearchId);
-      if (windowSearch && itemNumber >= 0 && itemNumber < m_vecItems->Size())
-      {
-        CFileItemPtr item = m_vecItems->Get(itemNumber);
-        g_windowManager.ActivateWindow(windowSearchId);
-        bReturn = windowSearch->OnContextButton(*item.get(), button);
-      }
-      break;
-    }
     default:
       bReturn = false;
   }
@@ -304,48 +288,6 @@ bool CGUIWindowPVRBase::OnContextButtonActiveAEDSPSettings(CFileItem *item, CONT
 
     if (CServiceBroker::GetADSP().IsProcessing())
       g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRBase::OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_EDIT_TIMER)
-  {
-    EditTimer(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRBase::OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_EDIT_TIMER_RULE)
-  {
-    EditTimerRule(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRBase::OnContextButtonDeleteTimerRule(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_DELETE_TIMER_RULE)
-  {
-    CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
-    if (parentTimer)
-      DeleteTimerRule(parentTimer.get());
-
-    bReturn = true;
   }
 
   return bReturn;
@@ -525,217 +467,6 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
   return true;
 }
 
-bool CGUIWindowPVRBase::ShowTimerSettings(const CPVRTimerInfoTagPtr &timer)
-{
-  CGUIDialogPVRTimerSettings* pDlgInfo = (CGUIDialogPVRTimerSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_TIMER_SETTING);
-
-  if (!pDlgInfo)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to get WINDOW_DIALOG_PVR_TIMER_SETTING!", __FUNCTION__);
-    return false;
-  }
-
-  pDlgInfo->SetTimer(timer);
-  pDlgInfo->Open();
-
-  return pDlgInfo->IsConfirmed();
-}
-
-bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bShowTimerSettings)
-{
-  return AddTimer(item, false, bShowTimerSettings);
-}
-
-bool CGUIWindowPVRBase::AddTimerRule(CFileItem *item, bool bShowTimerSettings)
-{
-  return AddTimer(item, true, bShowTimerSettings);
-}
-
-bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bCreateRule, bool bShowTimerSettings)
-{
-  CEpgInfoTagPtr epgTag;
-  CPVRChannelPtr channel;
-
-  if (item->IsEPG())
-  {
-    epgTag  = item->GetEPGInfoTag();
-    channel = epgTag->ChannelTag();
-  }
-  else if (item->IsPVRChannel())
-  {
-    channel = item->GetPVRChannelInfoTag();
-    epgTag  = channel->GetEPGNow();
-  }
-
-  if (!channel)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no channel!", __FUNCTION__);
-    return false;
-  }
-
-  if (!g_PVRManager.CheckParentalLock(channel))
-    return false;
-
-  if (!epgTag && bCreateRule)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no epg tag!", __FUNCTION__);
-    return false;
-  }
-
-  CPVRTimerInfoTagPtr timer(bCreateRule || !epgTag ? nullptr : epgTag->Timer());
-  CPVRTimerInfoTagPtr rule (bCreateRule ? g_PVRTimers->GetTimerRule(timer) : nullptr);
-  if (timer || rule)
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19034}); // "Information", "There is already a timer set for this event"
-    return false;
-  }
-
-  CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, bCreateRule) : CPVRTimerInfoTag::CreateInstantTimerTag(channel));
-  if (!newTimer)
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033},
-                                  bCreateRule
-                                    ? CVariant{19095} // "Information", "Timer rule creation failed. The PVR add-on does not support a suitable timer rule type."
-                                    : CVariant{19094}); // "Information", "Timer creation failed. The PVR add-on does not support a suitable timer type."
-    return false;
-  }
-
-  if (bShowTimerSettings)
-  {
-    if (!ShowTimerSettings(newTimer))
-      return false;
-  }
-
-  return g_PVRTimers->AddTimer(newTimer);
-}
-
-bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
-{
-  CPVRTimerInfoTagPtr timer;
-
-  if (item->IsPVRTimer())
-  {
-    timer = item->GetPVRTimerInfoTag();
-  }
-  else if (item->IsEPG())
-  {
-    timer = item->GetEPGInfoTag()->Timer();
-  }
-
-  if (!timer)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no timer!", __FUNCTION__);
-    return false;
-  }
-
-  // clone the timer.
-  const CPVRTimerInfoTagPtr newTimer(new CPVRTimerInfoTag);
-  newTimer->UpdateEntry(timer);
-
-  if (ShowTimerSettings(newTimer) && (!timer->GetTimerType()->IsReadOnly() || timer->GetTimerType()->SupportsEnableDisable()))
-  {
-    if (newTimer->GetTimerType() == timer->GetTimerType())
-    {
-      return g_PVRTimers->UpdateTimer(newTimer);
-    }
-    else
-    {
-      // timer type changed. delete the original timer, then create the new timer. this order is
-      // important. for instance, the new timer might be a rule which schedules the original timer.
-      // deleting the original timer after creating the rule would do literally this and we would
-      // end up with one timer missing wrt to the rule defined by the new timer.
-      if (g_PVRTimers->DeleteTimer(timer, timer->IsRecording(), false))
-      {
-        if (g_PVRTimers->AddTimer(newTimer))
-          return true;
-
-        // rollback.
-        return g_PVRTimers->AddTimer(timer);
-      }
-    }
-  }
-  return false;
-}
-
-bool CGUIWindowPVRBase::EditTimerRule(CFileItem *item)
-{
-  CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
-  if (parentTimer)
-    return EditTimer(parentTimer.get());
-
-  return false;
-}
-
-bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item)
-{
-  return DeleteTimer(item, false, false);
-}
-
-bool CGUIWindowPVRBase::StopRecordFile(CFileItem *item)
-{
-  return DeleteTimer(item, true, false);
-}
-
-bool CGUIWindowPVRBase::DeleteTimerRule(CFileItem *item)
-{
-  return DeleteTimer(item, false, true);
-}
-
-bool CGUIWindowPVRBase::DeleteTimer(CFileItem *item, bool bIsRecording, bool bDeleteRule)
-{
-  CPVRTimerInfoTagPtr timer;
-
-  if (item->IsPVRTimer())
-  {
-    timer = item->GetPVRTimerInfoTag();
-  }
-  else if (item->IsEPG())
-  {
-    timer = item->GetEPGInfoTag()->Timer();
-  }
-  else if (item->IsPVRChannel())
-  {
-    const CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
-    if (epgTag)
-      timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asychrounously
-
-    if (!timer)
-      timer = g_PVRTimers->GetActiveTimerForChannel(item->GetPVRChannelInfoTag()); // more expensive, but reliable and works even for channels with no epg data
-  }
-
-  if (!timer)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no timer!", __FUNCTION__);
-    return false;
-  }
-
-  if (bDeleteRule && !timer->IsTimerRule())
-    timer = g_PVRTimers->GetTimerRule(timer);
-
-  if (!timer)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no timer rule!", __FUNCTION__);
-    return false;
-  }
-
-  if (bIsRecording)
-  {
-    if (ConfirmStopRecording(timer))
-      return g_PVRTimers->DeleteTimer(timer, true, false);
-  }
-  else if (timer->HasTimerType() && timer->GetTimerType()->IsReadOnly())
-  {
-    return false;
-  }
-  else
-  {
-    bool bAlsoDeleteRule(false);
-    if (ConfirmDeleteTimer(timer, bAlsoDeleteRule))
-      return g_PVRTimers->DeleteTimer(timer, false, bAlsoDeleteRule);
-  }
-  return false;
-}
-
 bool CGUIWindowPVRBase::CheckResumeRecording(CFileItem *item)
 {
   bool bPlayIt(true);
@@ -830,48 +561,6 @@ void CGUIWindowPVRBase::ShowRecordingInfo(CFileItem *item)
   }
 }
 
-void CGUIWindowPVRBase::ShowEPGInfo(CFileItem *item)
-{
-  CEpgInfoTagPtr epgTag;
-  CPVRChannelPtr channel;
-
-  if (item->IsEPG())
-  {
-    epgTag  = item->GetEPGInfoTag();
-    channel = epgTag->ChannelTag();
-  }
-  else if (item->IsPVRChannel())
-  {
-    channel = item->GetPVRChannelInfoTag();
-    epgTag  = channel->GetEPGNow();
-  }
-  else if (item->IsPVRTimer())
-  {
-    epgTag = item->GetPVRTimerInfoTag()->GetEpgInfoTag();
-    if (epgTag && epgTag->HasPVRChannel())
-      channel = epgTag->ChannelTag();
-  }
-
-  if (channel && !g_PVRManager.CheckParentalLock(channel))
-    return;
-
-  if (!epgTag)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - no epg tag!", __FUNCTION__);
-    return;
-  }
-
-  CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-  if (!pDlgInfo)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to get WINDOW_DIALOG_PVR_GUIDE_INFO!", __FUNCTION__);
-    return;
-  }
-
-  pDlgInfo->SetProgInfo(epgTag);
-  pDlgInfo->Open();
-}
-
 bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
 {
   std::string strInput = StringUtils::Format("%i", input);
@@ -906,26 +595,6 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
   }
 
   return false;
-}
-
-bool CGUIWindowPVRBase::ActionShowTimerRule(CFileItem *item)
-{
-  if (!g_PVRTimers->GetTimerRule(item))
-    return AddTimerRule(item, true);
-  else
-    return EditTimerRule(item);
-}
-
-bool CGUIWindowPVRBase::ActionToggleTimer(CFileItem *item)
-{
-  if (!item->HasEPGInfoTag())
-    return false;
-
-  CPVRTimerInfoTagPtr timer(item->GetEPGInfoTag()->Timer());
-  if (timer)
-    return DeleteTimer(item, timer->IsRecording(), false);
-  else
-    return AddTimer(item, false, false);
 }
 
 bool CGUIWindowPVRBase::ActionPlayChannel(CFileItem *item)
@@ -1019,51 +688,6 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 {
   CGUIMediaWindow::UpdateButtons();
   SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + m_channelGroup->GroupName());
-}
-
-bool CGUIWindowPVRBase::ConfirmDeleteTimer(const CPVRTimerInfoTagPtr &timer, bool &bDeleteRule)
-{
-  bool bConfirmed(false);
-
-  if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
-  {
-    // timer was scheduled by a timer rule. prompt user for confirmation for deleting the timer rule, including scheduled timers.
-    bool bCancel(false);
-    bDeleteRule = CGUIDialogYesNo::ShowAndGetInput(
-                        CVariant{122}, // "Confirm delete"
-                        CVariant{840}, // "Do you want to delete only this timer or also the timer rule that has scheduled it?"
-                        CVariant{""},
-                        CVariant{timer->Title()},
-                        bCancel,
-                        CVariant{841}, // "Only this"
-                        CVariant{593}, // "All"
-                        0); // no autoclose
-    bConfirmed = !bCancel;
-  }
-  else
-  {
-    bDeleteRule = false;
-
-    // prompt user for confirmation for deleting the timer
-    bConfirmed = CGUIDialogYesNo::ShowAndGetInput(
-                        CVariant{122}, // "Confirm delete"
-                        timer->IsTimerRule()
-                          ? CVariant{845}  // "Are you sure you want to delete this timer rule and all timers it has scheduled?"
-                          : CVariant{846}, // "Are you sure you want to delete this timer?"
-                        CVariant{""},
-                        CVariant{timer->Title()});
-  }
-
-  return bConfirmed;
-}
-
-bool CGUIWindowPVRBase::ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer)
-{
-  return CGUIDialogYesNo::ShowAndGetInput(
-                         CVariant{847}, // "Confirm stop recording"
-                         CVariant{848}, // "Are you sure you want to stop this recording?"
-                         CVariant{""},
-                         CVariant{timer->Title()});
 }
 
 void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProgress)

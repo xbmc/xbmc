@@ -30,6 +30,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -147,42 +148,10 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* Switch channel */
-  buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
-  buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar */
 
   CEpgInfoTagPtr epg(pItem->GetEPGInfoTag());
   if (epg)
   {
-    CPVRTimerInfoTagPtr timer(epg->Timer());
-    if (timer)
-    {
-      if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
-      {
-        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
-        buttons.Add(CONTEXT_BUTTON_DELETE_TIMER_RULE, 19295); /* Delete timer rule */
-      }
-
-      const CPVRTimerTypePtr timerType(timer->GetTimerType());
-      if (timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
-        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19242);    /* Edit timer */
-      else
-        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19241);    /* View timer information */
-
-      if (timer->IsRecording())
-        buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);   /* Stop recording */
-      else
-      {
-        if (timerType && !timerType->IsReadOnly())
-          buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
-      }
-    }
-    else if (g_PVRClients->SupportsTimers())
-    {
-      if (epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
-      buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
-    }
-
     if (epg->HasRecording())
       buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
   }
@@ -311,17 +280,17 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_INFO:
-                  ShowEPGInfo(pItem.get());
+                  CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_RECORD:
-                  ActionToggleTimer(pItem.get());
+                  CPVRGUIActions::GetInstance().ToggleTimer(pItem);
                   bReturn = true;
                   break;
               }
               break;
             case ACTION_SHOW_INFO:
-              ShowEPGInfo(pItem.get());
+              CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
               bReturn = true;
               break;
             case ACTION_PLAY:
@@ -329,11 +298,11 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_RECORD:
-              ActionToggleTimer(pItem.get());
+              CPVRGUIActions::GetInstance().ToggleTimer(pItem);
               bReturn = true;
               break;
             case ACTION_PVR_SHOW_TIMER_RULE:
-              ActionShowTimerRule(pItem.get());
+              CPVRGUIActions::GetInstance().AddTimerRule(pItem, true);
               bReturn = true;
               break;
             case ACTION_CONTEXT_MENU:
@@ -423,13 +392,6 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   return OnContextButtonPlay(pItem.get(), button) ||
-      OnContextButtonInfo(pItem.get(), button) ||
-      OnContextButtonStartRecord(pItem.get(), button) ||
-      OnContextButtonStopRecord(pItem.get(), button) ||
-      OnContextButtonEditTimer(pItem.get(), button) ||
-      OnContextButtonEditTimerRule(pItem.get(), button) ||
-      OnContextButtonDeleteTimer(pItem.get(), button) ||
-      OnContextButtonDeleteTimerRule(pItem.get(), button) ||
       OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
@@ -526,19 +488,6 @@ bool CGUIWindowPVRGuide::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON butt
   return bReturn;
 }
 
-bool CGUIWindowPVRGuide::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_INFO)
-  {
-    ShowEPGInfo(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
 bool CGUIWindowPVRGuide::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
@@ -546,50 +495,6 @@ bool CGUIWindowPVRGuide::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON but
   if (button == CONTEXT_BUTTON_PLAY_ITEM || button == CONTEXT_BUTTON_PLAY_OTHER)
   {
     ActionPlayEpg(item, button == CONTEXT_BUTTON_PLAY_OTHER);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRGuide::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_START_RECORD)
-  {
-    AddTimer(item);
-    bReturn = true;
-  }
-  else if (button == CONTEXT_BUTTON_ADD_TIMER)
-  {
-    AddTimerRule(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRGuide::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_STOP_RECORD)
-  {
-    StopRecordFile(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRGuide::OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_DELETE_TIMER)
-  {
-    DeleteTimer(item);
     bReturn = true;
   }
 

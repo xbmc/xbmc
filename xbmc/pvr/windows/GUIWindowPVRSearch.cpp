@@ -18,7 +18,6 @@
  *
  */
 
-#include "ContextMenuManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "epg/EpgContainer.h"
@@ -26,6 +25,7 @@
 #include "input/Key.h"
 #include "utils/Variant.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -53,38 +53,6 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
   CEpgInfoTagPtr epg(pItem->GetEPGInfoTag());
   if (epg)
   {
-    buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Programme information */
-
-    CPVRTimerInfoTagPtr timer(epg->Timer());
-    if (timer)
-    {
-      if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
-      {
-        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER_RULE, 19243); /* Edit timer rule */
-        buttons.Add(CONTEXT_BUTTON_DELETE_TIMER_RULE, 19295); /* Delete timer rule */
-      }
-
-      const CPVRTimerTypePtr timerType(timer->GetTimerType());
-      if (timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
-        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19242);    /* Edit timer */
-      else
-        buttons.Add(CONTEXT_BUTTON_EDIT_TIMER, 19241);    /* View timer information */
-
-      if (timer->IsRecording())
-        buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);   /* Stop recording */
-      else
-      {
-        if (timerType && !timerType->IsReadOnly())
-          buttons.Add(CONTEXT_BUTTON_DELETE_TIMER, 19060);  /* Delete timer */
-      }
-    }
-    else if (g_PVRClients->SupportsTimers())
-    {
-      if (epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-        buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
-      buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
-    }
-
     if (epg->HasRecording())
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19687);       /* Play recording */
 
@@ -110,57 +78,37 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   return OnContextButtonClear(pItem.get(), button) ||
-      OnContextButtonInfo(pItem.get(), button) ||
-      OnContextButtonStartRecord(pItem.get(), button) ||
-      OnContextButtonStopRecord(pItem.get(), button) ||
-      OnContextButtonEditTimer(pItem.get(), button) ||
-      OnContextButtonEditTimerRule(pItem.get(), button) ||
-      OnContextButtonDeleteTimer(pItem.get(), button) ||
-      OnContextButtonDeleteTimerRule(pItem.get(), button) ||
       OnContextButtonPlay(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRSearch::FindSimilar(const CFileItemPtr &item)
 {
-  bool bReturn = false;
+  m_searchfilter.Reset();
 
-  switch(button)
+  // construct the search term
+  if (item->IsEPG())
+    m_searchfilter.m_strSearchTerm = "\"" + item->GetEPGInfoTag()->Title() + "\"";
+  else if (item->IsPVRChannel())
   {
-    case CONTEXT_BUTTON_FIND:
-    {
-      m_searchfilter.Reset();
-
-      // construct the search term
-      if (item.IsEPG())
-        m_searchfilter.m_strSearchTerm = "\"" + item.GetEPGInfoTag()->Title() + "\"";
-      else if (item.IsPVRChannel())
-      {
-        const CEpgInfoTagPtr tag(item.GetPVRChannelInfoTag()->GetEPGNow());
-        if (tag)
-          m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
-      }
-      else if (item.IsUsablePVRRecording())
-        m_searchfilter.m_strSearchTerm = "\"" + item.GetPVRRecordingInfoTag()->m_strTitle + "\"";
-      else if (item.IsPVRTimer())
-      {
-        const CPVRTimerInfoTagPtr info(item.GetPVRTimerInfoTag());
-        const CEpgInfoTagPtr tag(info->GetEpgInfoTag());
-        if (tag)
-          m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
-        else
-          m_searchfilter.m_strSearchTerm = "\"" + info->m_strTitle + "\"";
-      }
-      m_bSearchConfirmed = true;
-      Refresh(true);
-      bReturn = true;
-      break;
-    }
-    default:
-      bReturn = false;
+    const CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
+    if (tag)
+      m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
   }
-
-  return bReturn;
+  else if (item->IsUsablePVRRecording())
+    m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->m_strTitle + "\"";
+  else if (item->IsPVRTimer())
+  {
+    const CPVRTimerInfoTagPtr info(item->GetPVRTimerInfoTag());
+    const CEpgInfoTagPtr tag(info->GetEpgInfoTag());
+    if (tag)
+      m_searchfilter.m_strSearchTerm = "\"" + tag->Title() + "\"";
+    else
+      m_searchfilter.m_strSearchTerm = "\"" + info->m_strTitle + "\"";
+  }
+  m_bSearchConfirmed = true;
+  Refresh(true);
+  return true;
 }
 
 void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
@@ -223,7 +171,7 @@ bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
             if (URIUtils::PathEquals(pItem->GetPath(), "pvr://guide/searchresults/search/"))
               OpenDialogSearch();
             else
-               ShowEPGInfo(pItem.get());
+               CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
             return true;
           }
 
@@ -233,7 +181,7 @@ bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
             return true;
 
           case ACTION_RECORD:
-            ActionToggleTimer(pItem.get());
+            CPVRGUIActions::GetInstance().ToggleTimer(pItem);
             return true;
         }
       }
@@ -260,20 +208,6 @@ bool CGUIWindowPVRSearch::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON b
   return bReturn;
 }
 
-bool CGUIWindowPVRSearch::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_INFO)
-  {
-    bReturn = true;
-
-    ShowEPGInfo(item);
-  }
-
-  return bReturn;
-}
-
 bool CGUIWindowPVRSearch::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
@@ -281,50 +215,6 @@ bool CGUIWindowPVRSearch::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON bu
   if (button == CONTEXT_BUTTON_PLAY_ITEM)
   {
     ActionPlayEpg(item, true /* play recording, not channel */);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRSearch::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_START_RECORD)
-  {
-    AddTimer(item);
-    bReturn = true;
-  }
-  else if (button == CONTEXT_BUTTON_ADD_TIMER)
-  {
-    AddTimerRule(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRSearch::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_STOP_RECORD)
-  {
-    StopRecordFile(item);
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRSearch::OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_DELETE_TIMER)
-  {
-    DeleteTimer(item);
     bReturn = true;
   }
 

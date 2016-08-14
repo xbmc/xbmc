@@ -47,10 +47,6 @@ namespace PVR
   protected:
     virtual void OnInitWindow() override;
 
-    bool ActionStartTimer(const EPG::CEpgInfoTagPtr &tag);
-    bool ActionCancelTimer(const CFileItemPtr &timer);
-    bool ActionAddTimerRule(const EPG::CEpgInfoTagPtr &tag);
-
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);
     bool OnClickButtonPlay(CGUIMessage &message);

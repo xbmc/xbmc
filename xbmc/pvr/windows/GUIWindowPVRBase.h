@@ -76,15 +76,6 @@ namespace PVR
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
 
-    static bool ShowTimerSettings(const CPVRTimerInfoTagPtr &timer);
-    static bool AddTimer(CFileItem *item, bool bShowTimerSettings = false);
-    static bool AddTimerRule(CFileItem *item, bool bShowTimerSettings = true);
-    static bool EditTimer(CFileItem *item);
-    static bool EditTimerRule(CFileItem *item);
-    static bool DeleteTimer(CFileItem *item);
-    static bool DeleteTimerRule(CFileItem *item);
-    static bool StopRecordFile(CFileItem *item);
-
     static bool PlayRecording(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
 
   protected:
@@ -98,23 +89,17 @@ namespace PVR
     virtual CPVRChannelGroupPtr GetChannelGroup(void);
     virtual void SetChannelGroup(const CPVRChannelGroupPtr &group);
 
-    virtual bool ActionShowTimerRule(CFileItem *item);
-    virtual bool ActionToggleTimer(CFileItem *item);
     virtual bool ActionPlayChannel(CFileItem *item);
     virtual bool ActionPlayEpg(CFileItem *item, bool bPlayRecording);
     virtual bool ActionDeleteChannel(CFileItem *item);
     virtual bool ActionInputChannelNumber(int input);
 
     virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
-    virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
+
     virtual void UpdateSelectedItemPath();
     static bool CheckResumeRecording(CFileItem *item);
-
-    bool OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonDeleteTimerRule(CFileItem *item, CONTEXT_BUTTON button);
 
     void RegisterObservers(void);
     void UnregisterObservers(void);
@@ -127,24 +112,6 @@ namespace PVR
 
   private:
     /*!
-     * @brief Open a dialog to confirm timer delete.
-     * @param timer the timer to delete.
-     * @param bDeleteRule in: ignored
-     *                    out, for one shot timer scheduled by a timer rule: true to also delete the timer
-     *                    rule that has scheduled this timer, false to only delete the one shot timer.
-     *                    out, for one shot timer not scheduled by a timer rule: ignored
-     * @return true, to proceed with delete, false otherwise.
-     */
-    static bool ConfirmDeleteTimer(const CPVRTimerInfoTagPtr &timer, bool &bDeleteRule);
-
-    /*!
-     * @brief Open a dialog to confirm stop recording.
-     * @param timer the recording to stop (actually the timer to delete).
-     * @return true, to proceed with delete, false otherwise.
-     */
-    static bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer);
-
-    /*!
      * @brief Show or update the progress dialog.
      * @param strText The current status.
      * @param iProgress The current progress in %.
@@ -155,9 +122,6 @@ namespace PVR
      * @brief Hide the progress dialog if it's visible.
      */
     void HideProgressDialog(void);
-
-    static bool DeleteTimer(CFileItem *item, bool bIsRecording, bool bDeleteRule);
-    static bool AddTimer(CFileItem *item, bool bCreateRule, bool bShowTimerSettings);
 
     CPVRChannelGroupPtr m_channelGroup;
     XbmcThreads::EndTime m_refreshTimeout;
