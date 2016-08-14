@@ -34,6 +34,7 @@
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/smc.h"
 #endif
+#include "linux/LinuxResourceCounter.h"
 #endif
 
 #if defined(TARGET_FREEBSD)
@@ -115,6 +116,8 @@ CCPUInfo::CCPUInfo(void)
   m_cpuFeatures = 0;
 
 #if defined(TARGET_DARWIN)
+  m_pResourceCounter = new CLinuxResourceCounter();
+
   size_t len = 4;
   std::string cpuVendor;
   
@@ -482,14 +485,21 @@ CCPUInfo::~CCPUInfo()
 
   if (m_cpuQueryLoad)
     PdhCloseQuery(m_cpuQueryLoad);
+#elif defined(TARGET_DARWIN)
+  delete m_pResourceCounter;
 #endif
 }
 
 int CCPUInfo::getUsedPercentage()
 {
+  int result = 0;
+
   if (!m_nextUsedReadTime.IsTimePast())
     return m_lastUsedPercentage;
 
+#if defined(TARGET_DARWIN)
+  result = m_pResourceCounter->GetCPUUsage();
+#else
   unsigned long long userTicks;
   unsigned long long niceTicks;
   unsigned long long systemTicks;
@@ -507,14 +517,14 @@ int CCPUInfo::getUsedPercentage()
 
   if(userTicks + niceTicks + systemTicks + idleTicks + ioTicks == 0)
     return m_lastUsedPercentage;
-  int result = static_cast<int>(double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
+  result = static_cast<int>(double(userTicks + niceTicks + systemTicks) * 100.0 / double(userTicks + niceTicks + systemTicks + idleTicks + ioTicks) + 0.5);
 
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;
   m_systemTicks += systemTicks;
   m_idleTicks += idleTicks;
   m_ioTicks += ioTicks;
-
+#endif
   m_lastUsedPercentage = result;
   m_nextUsedReadTime.Set(MINIMUM_TIME_BETWEEN_READS);
 
