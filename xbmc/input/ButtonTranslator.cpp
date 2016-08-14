@@ -332,7 +332,8 @@ static const ActionMapping windows[] =
     { "pvrsettings"              , WINDOW_SETTINGS_MYPVR },
     { "playersettings"           , WINDOW_SETTINGS_PLAYER },
     { "mediasettings"            , WINDOW_SETTINGS_MEDIA },
-    { "interfacesettings"        , WINDOW_SETTINGS_INTERFACE },	
+    { "interfacesettings"        , WINDOW_SETTINGS_INTERFACE },
+    { "appearancesettings"       , WINDOW_SETTINGS_INTERFACE },	// backward compatibility to v16
     { "videoplaylist"            , WINDOW_VIDEO_PLAYLIST },
     { "loginscreen"              , WINDOW_LOGIN_SCREEN },
     { "profiles"                 , WINDOW_SETTINGS_PROFILES },
