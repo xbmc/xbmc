@@ -393,6 +393,9 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
+  if (!g_SkinInfo)
+    return;
+
   std::string settingValue = ((const CSettingString*)setting)->GetValue();
   // Remove the .xml extension from the Themes
   if (URIUtils::HasExtension(settingValue, ".xml"))
@@ -434,6 +437,9 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
 
 void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
+  if (!g_SkinInfo)
+    return;
+
   std::string settingValue = ((const CSettingString*)setting)->GetValue();
   bool currentValueSet = false;
   std::string strPath = g_SkinInfo->GetSkinPath("Font.xml");
@@ -512,6 +518,9 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
 
 void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
+  if (!g_SkinInfo)
+    return;
+
   int settingValue = ((const CSettingInt *)setting)->GetValue();
   current = -1;
 
