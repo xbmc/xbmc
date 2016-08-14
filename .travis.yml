@@ -20,24 +20,24 @@ compiler:
   - clang
 
 env:
-  - BUILD=Kodi TOOLS=Autotools
+#  - BUILD=Kodi TOOLS=Autotools
   - BUILD=Kodi TOOLS=CMake
-  - ADDONS=adsp
-  - ADDONS=audiodecoder
-  - ADDONS=audioencoder
-  - ADDONS=pvr
-  - ADDONS=screensaver
-  - ADDONS=visualization
+#  - ADDONS=adsp
+#  - ADDONS=audiodecoder
+#  - ADDONS=audioencoder
+#  - ADDONS=pvr
+#  - ADDONS=screensaver
+#  - ADDONS=visualization
 
 matrix:
   fast_finish: true
   allow_failures:
-    - env: ADDONS=adsp
-    - env: ADDONS=audiodecoder
-    - env: ADDONS=audioencoder
-    - env: ADDONS=pvr
-    - env: ADDONS=screensaver
-    - env: ADDONS=visualization
+#    - env: ADDONS=adsp
+#    - env: ADDONS=audiodecoder
+#    - env: ADDONS=audioencoder
+#    - env: ADDONS=pvr
+#    - env: ADDONS=screensaver
+#    - env: ADDONS=visualization
 
 # Prepare system
 #
