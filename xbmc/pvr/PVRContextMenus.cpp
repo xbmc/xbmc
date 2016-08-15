@@ -26,6 +26,7 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "settings/Settings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "utils/URIUtils.h"
 
@@ -54,6 +55,10 @@ namespace PVR
     DECL_CONTEXTMENUITEM(DeleteTimerRule);
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
+    DECL_CONTEXTMENUITEM(PlayChannel);
+    DECL_CONTEXTMENUITEM(ResumePlayRecording);
+    DECL_CONTEXTMENUITEM(PlayRecording);
+
     DECL_CONTEXTMENUITEM(ShowAudioDSPSettings);
     DECL_CONTEXTMENUITEM(PVRClientMenuHook);
 
@@ -118,7 +123,109 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Record
+    // Play channel
+
+    std::string PlayChannel::GetLabel(const CFileItem &item) const
+    {
+      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      if (epg)
+        return g_localizeStrings.Get(19000); /* Switch to channel */
+
+      return g_localizeStrings.Get(208); /* Play */
+    }
+
+    bool PlayChannel::IsVisible(const CFileItem &item) const
+    {
+      const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
+      if (channel)
+        return true;
+
+      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      if (epg)
+        return true;
+
+      return false;
+    }
+
+    bool PlayChannel::Execute(const CFileItemPtr &item) const
+    {
+      return CPVRGUIActions::GetInstance().SwitchToChannel(
+        item, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), false /* bCheckResume */);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Resume play recording
+
+    std::string ResumePlayRecording::GetLabel(const CFileItem &item) const
+    {
+      return CPVRGUIActions::GetInstance().GetResumeLabel(item);
+    }
+
+    bool ResumePlayRecording::IsVisible(const CFileItem &item) const
+    {
+      CPVRRecordingPtr recording;
+
+      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      if (epg)
+        recording = epg->Recording();
+
+      if (!recording)
+        recording = item.GetPVRRecordingInfoTag();
+
+      if (recording)
+        return !recording->IsDeleted() && !CPVRGUIActions::GetInstance().GetResumeLabel(item).empty();
+
+      return false;
+    }
+
+    bool ResumePlayRecording::Execute(const CFileItemPtr &item) const
+    {
+      item->m_lStartOffset = STARTOFFSET_RESUME; // must always be set if PlayRecording is called with bCheckResume == false
+      return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, false /* bCheckResume */);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Play recording
+
+    std::string PlayRecording::GetLabel(const CFileItem &item) const
+    {
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (recording && !recording->IsDeleted())
+      {
+        if (CPVRGUIActions::GetInstance().GetResumeLabel(item).empty())
+          return g_localizeStrings.Get(208); /* Play */
+        else
+          return g_localizeStrings.Get(12021); /* Play from beginning */
+      }
+
+      return g_localizeStrings.Get(19687); /* Play recording */
+    }
+
+    bool PlayRecording::IsVisible(const CFileItem &item) const
+    {
+      CPVRRecordingPtr recording;
+
+      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      if (epg)
+        recording = epg->Recording();
+
+      if (!recording)
+        recording = item.GetPVRRecordingInfoTag();
+
+      if (recording)
+        return !recording->IsDeleted();
+
+      return false;
+    }
+
+    bool PlayRecording::Execute(const CFileItemPtr &item) const
+    {
+      item->m_lStartOffset = 0; // must always be set if PlayRecording is called with bCheckResume == false
+      return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, false /* bCheckResume */);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Start recording
 
     std::string StartRecording::GetLabel(const CFileItem &item) const
     {
@@ -444,6 +551,9 @@ namespace PVR
     {
       std::make_shared<CONTEXTMENUITEM::ProgrammeInformation>(),
       std::make_shared<CONTEXTMENUITEM::FindSimilar>(),
+      std::make_shared<CONTEXTMENUITEM::PlayChannel>(),
+      std::make_shared<CONTEXTMENUITEM::ResumePlayRecording>(),
+      std::make_shared<CONTEXTMENUITEM::PlayRecording>(),
       std::make_shared<CONTEXTMENUITEM::AddTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(),

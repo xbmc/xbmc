@@ -5167,7 +5167,7 @@ msgstr ""
 #: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#12021"
-msgid "Start from beginning"
+msgid "Play from beginning"
 msgstr ""
 
 #: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp

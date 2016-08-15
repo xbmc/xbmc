@@ -222,6 +222,12 @@ namespace PVR
     bool IsPlayingChannel(const CPVRChannelPtr &channel) const;
 
     /*!
+     * @brief Check if the given recording is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingRecording(const CPVRRecordingPtr &recording) const;
+
+    /*!
      * @return True while the PVRManager is initialising.
      */
     inline bool IsInitialising(void) const
@@ -261,6 +267,12 @@ namespace PVR
      * @return The channel or NULL if none is playing.
      */
     CPVRChannelPtr GetCurrentChannel(void) const;
+
+    /*!
+     * @brief Return the recording that is currently playing.
+     * @return The recording or NULL if none is playing.
+     */
+    CPVRRecordingPtr GetCurrentRecording(void) const;
 
     /*!
      * @brief Update the channel displayed in guiinfomanager and application to match the currently playing channel.

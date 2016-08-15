@@ -120,6 +120,40 @@ namespace PVR
      */
     bool StopRecording(const CFileItemPtr &item) const;
 
+    /*!
+     * @brief Get a localized resume play label, if the given item can be resumed.
+     * @param item containing a recording or an epg tag.
+     * @return the localized resume play label that can be used for instance as context menu item label or an empty string if resume is not possible.
+     */
+    std::string GetResumeLabel(const CFileItem &item) const;
+
+    /*!
+     * @brief Resume a previously not completely played recording.
+     * @param item containing a recording or an epg tag.
+     * @param bPlayMinimized controls whether the recording should be played fullscreen or in a window.
+     * @param bFallbackToPlay controls whether playback of the recording should be started at the beginning ig no resume data are available.
+     * @return true on success, false otherwise.
+     */
+    bool ResumePlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bFallbackToPlay) const;
+
+    /*!
+     * @brief Play recording.
+     * @param item containing a recording or an epg tag.
+     * @param bPlayMinimized controls whether the recording should be played fullscreen or in a window.
+     * @param bCheckResume controls resume check.
+     * @return true on success, false otherwise.
+     */
+    bool PlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const;
+
+    /*!
+     * @brief Switch channel.
+     * @param item containing a channel or an epg tag.
+     * @param bPlayMinimized controls whether the channel should be played fullscreen or in a window.
+     * @param bCheckResume controls resume check in case a recording for the current epg event is present.
+     * @return true on success, false otherwise.
+     */
+    bool SwitchToChannel(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const;
+
   private:
     CPVRGUIActions() = default;
     CPVRGUIActions(const CPVRGUIActions&) = delete;
@@ -168,6 +202,13 @@ namespace PVR
      * @return true, to proceed with delete, false otherwise.
      */
     bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer) const;
+
+    /*!
+     * @brief Check whether resume play is possible for a given item, display "resume from ..."/"play from start" context menu in case.
+     * @param item containing a recording or an epg tag.
+     * @return true, to play/resume the item, false otherwise.
+     */
+    bool CheckResumeRecording(const CFileItemPtr &item) const;
   };
 
 } // namespace PVR

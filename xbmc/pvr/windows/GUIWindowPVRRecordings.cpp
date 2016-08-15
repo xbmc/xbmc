@@ -18,7 +18,6 @@
  *
  */
 
-#include "ContextMenuManager.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
@@ -28,13 +27,12 @@
 #include "input/Key.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
@@ -66,35 +64,6 @@ std::string CGUIWindowPVRRecordings::GetDirectoryPath(void)
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
-std::string CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
-{
-  std::string resumeString;
-  if (item.IsUsablePVRRecording())
-  {
-
-    // First try to find the resume position on the back-end, if that fails use video database
-    int positionInSeconds = item.GetPVRRecordingInfoTag()->GetLastPlayedPosition();
-    // If the back-end does report a saved position it will be picked up by FileItem
-    if (positionInSeconds < 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        CBookmark bookmark;
-        std::string itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
-        if (db.GetResumeBookMark(itemPath, bookmark) )
-          positionInSeconds = lrint(bookmark.timeInSeconds);
-        db.Close();
-      }
-    }
-
-    // Suppress resume from 0
-    if (positionInSeconds > 0)
-      resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(positionInSeconds, TIME_FORMAT_HH_MM_SS).c_str());
-  }
-  return resumeString;
-}
-
 void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
@@ -115,20 +84,8 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     isDeletedRecording = recording->IsDeleted();
 
     buttons.Add(CONTEXT_BUTTON_INFO, 19053);        /* Recording Information */
-    if (!isDeletedRecording)
-    {
-      std::string resumeString = GetResumeString(*pItem);
-      if (resumeString.empty())
-      {
-        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); /* Play */
-      }
-      else
-      {
-        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString); /* Resume from HH:MM:SS */
-        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12023); /* Play from beginning */
-      }
-    }
-    else
+
+    if (isDeletedRecording)
     {
       buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);      /* Undelete */
       buttons.Add(CONTEXT_BUTTON_DELETE, 19291);        /* Delete permanently */
@@ -183,8 +140,7 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonPlay(pItem.get(), button) ||
-      OnContextButtonRename(pItem.get(), button) ||
+  return OnContextButtonRename(pItem.get(), button) ||
       OnContextButtonDelete(pItem.get(), button) ||
       OnContextButtonUndelete(pItem.get(), button) ||
       OnContextButtonDeleteAll(pItem.get(), button) ||
@@ -270,7 +226,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
 
               if (message.GetParam1() == ACTION_PLAY)
               {
-                PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
+                CPVRGUIActions::GetInstance().PlayRecording(item, false /* don't play minimized */, true /* check resume */);
                 bReturn = true;
               }
               else
@@ -282,14 +238,14 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
                     bReturn = true;
                     break;
                   case SELECT_ACTION_PLAY_OR_RESUME:
-                    PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
+                    CPVRGUIActions::GetInstance().PlayRecording(item, false /* don't play minimized */, true /* check resume */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_RESUME:
                   {
                     const std::string resumeString = GetResumeString(*item);
                     item->m_lStartOffset = resumeString.empty() ? 0 : STARTOFFSET_RESUME;
-                    PlayFile(item.get(), false /* don't play minimized */, false /* don't check resume */);
+                    CPVRGUIActions::GetInstance().ResumePlayRecording(item, false /* don't play minimized */, true /* fall back to play if no resume possible */);
                     bReturn = true;
                     break;
                   }
@@ -489,20 +445,6 @@ bool CGUIWindowPVRRecordings::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTO
   {
     bReturn = true;
     ShowRecordingInfo(item);
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRRecordings::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if ((button == CONTEXT_BUTTON_PLAY_ITEM) ||
-      (button == CONTEXT_BUTTON_RESUME_ITEM))
-  {
-    item->m_lStartOffset = button == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0;
-    bReturn = PlayFile(item, false, false); /* play recording, don't check resume */
   }
 
   return bReturn;

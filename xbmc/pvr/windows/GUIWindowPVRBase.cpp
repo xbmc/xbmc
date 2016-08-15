@@ -19,18 +19,14 @@
  */
 
 #include "GUIWindowPVRBase.h"
-#include "GUIWindowPVRRecordings.h" // TODO: wtf?! include of derived class???
 
-#include "Application.h"
 #include "addons/AddonManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "epg/Epg.h"
 #include "epg/GUIEPGGridContainer.h"
-#include "filesystem/StackDirectory.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -44,8 +40,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "ServiceBroker.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -336,171 +330,6 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
   }
 }
 
-bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false */, bool bCheckResume /* = true */)
-{
-  if (item->m_bIsFolder)
-  {
-    return false;
-  }
-
-  CPVRChannelPtr channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : CPVRChannelPtr();
-  if (item->GetPath() == g_application.CurrentFile() ||
-      (channel && channel->HasRecording() && channel->GetRecording()->GetPath() == g_application.CurrentFile()))
-  {
-    CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, GetID());
-    g_windowManager.SendMessage(msg);
-    return true;
-  }
-
-  CMediaSettings::GetInstance().SetVideoStartWindowed(bPlayMinimized);
-
-  if (item->HasPVRRecordingInfoTag())
-  {
-    return PlayRecording(item, bPlayMinimized, bCheckResume);
-  }
-  else
-  {
-    bool bSwitchSuccessful(false);
-    CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
-
-    if (channel && g_PVRManager.CheckParentalLock(channel))
-    {
-      CPVRRecordingPtr recording = channel->GetRecording();
-      if (recording)
-      {
-        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*) g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        if (pDialog)
-        {
-          pDialog->SetHeading(CVariant{19687}); // Play recording
-          pDialog->SetLine(0, CVariant{""});
-          pDialog->SetLine(1, CVariant{12021}); // Start from beginning
-          pDialog->SetLine(2, CVariant{recording->m_strTitle});
-          pDialog->Open();
-
-          if (pDialog->IsConfirmed())
-          {
-            CFileItem recordingItem(recording);
-            return PlayRecording(&recordingItem, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), bCheckResume);
-          }
-        }
-      }
-
-      /* try a fast switch */
-      if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-         (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
-      {
-        if (channel->StreamURL().empty())
-          bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
-      }
-
-      if (!bSwitchSuccessful)
-      {
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
-        return true;
-      }
-    }
-
-    if (!bSwitchSuccessful)
-    {
-      std::string channelName = g_localizeStrings.Get(19029); // Channel
-      if (channel)
-        channelName = channel->ChannelName();
-      std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
-
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-              g_localizeStrings.Get(19166), // PVR information
-              msg);
-      return false;
-    }
-  }
-
-  return true;
-}
-
-bool CGUIWindowPVRBase::CheckResumeRecording(CFileItem *item)
-{
-  bool bPlayIt(true);
-  std::string resumeString = CGUIWindowPVRRecordings::GetResumeString(*item);
-  if (!resumeString.empty())
-  {
-    CContextButtons choices;
-    choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
-    choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); // Start from beginning
-    int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-    if (choice > 0)
-      item->m_lStartOffset = choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0;
-    else
-      bPlayIt = false; // context menu cancelled
-  }
-  return bPlayIt;
-}
-
-bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = false */, bool bCheckResume /* = true */)
-{
-  if (!item->HasPVRRecordingInfoTag())
-    return false;
-
-  std::string stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
-  if (stream.empty())
-  {
-    if (!bCheckResume || CheckResumeRecording(item))
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
-
-    return true;
-  }
-
-  /* Isolate the folder from the filename */
-  size_t found = stream.find_last_of("/");
-  if (found == std::string::npos)
-    found = stream.find_last_of("\\");
-
-  if (found != std::string::npos)
-  {
-    /* Check here for asterisk at the begin of the filename */
-    if (stream[found+1] == '*')
-    {
-      /* Create a "stack://" url with all files matching the extension */
-      std::string ext = URIUtils::GetExtension(stream);
-      std::string dir = stream.substr(0, found);
-
-      CFileItemList items;
-      XFILE::CDirectory::GetDirectory(dir, items);
-      items.Sort(SortByFile, SortOrderAscending);
-
-      std::vector<int> stack;
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        if (URIUtils::HasExtension(items[i]->GetPath(), ext))
-          stack.push_back(i);
-      }
-
-      if (stack.empty())
-      {
-        /* If we have a stack change the path of the item to it */
-        XFILE::CStackDirectory dir;
-        std::string stackPath = dir.ConstructStackPath(items, stack);
-        item->SetPath(stackPath);
-      }
-    }
-    else
-    {
-      /* If no asterisk is present play only the given stream URL */
-      item->SetPath(stream);
-    }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - can't open recording: no valid filename", __FUNCTION__);
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19036});
-    return false;
-  }
-
-  if (!bCheckResume || CheckResumeRecording(item))
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
-
-  return true;
-}
-
 void CGUIWindowPVRBase::ShowRecordingInfo(CFileItem *item)
 {
   CGUIDialogPVRRecordingInfo* pDlgInfo = (CGUIDialogPVRRecordingInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_RECORDING_INFO);
@@ -545,42 +374,6 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
   }
 
   return false;
-}
-
-bool CGUIWindowPVRBase::ActionPlayChannel(CFileItem *item)
-{
-  return PlayFile(item, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED));
-}
-
-bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item, bool bPlayRecording)
-{
-  if (!item || !item->HasEPGInfoTag())
-    return false;
-
-  CPVRChannelPtr channel;
-  CEpgInfoTagPtr epgTag(item->GetEPGInfoTag());
-  if (epgTag && epgTag->HasPVRChannel())
-    channel = epgTag->ChannelTag();
-
-  if (!channel || !g_PVRManager.CheckParentalLock(channel))
-    return false;
-
-  CFileItem fileItem;
-  if (bPlayRecording && epgTag->HasRecording())
-    fileItem = CFileItem(epgTag->Recording());
-  else
-    fileItem = CFileItem(channel);
-
-  g_application.SwitchToFullScreen();
-  if (!PlayFile(&fileItem))
-  {
-    // CHANNELNAME could not be played. Check the log for details.
-    std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str());
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{std::move(msg)});
-    return false;
-  }
-
-  return true;
 }
 
 bool CGUIWindowPVRBase::ActionDeleteChannel(CFileItem *item)

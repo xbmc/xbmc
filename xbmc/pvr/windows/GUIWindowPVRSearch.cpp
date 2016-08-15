@@ -46,16 +46,8 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);               /* Clear search results */
-
-  CEpgInfoTagPtr epg(pItem->GetEPGInfoTag());
-  if (epg)
-  {
-    if (epg->HasRecording())
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19687);       /* Play recording */
-  }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
@@ -73,7 +65,6 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   return OnContextButtonClear(pItem.get(), button) ||
-      OnContextButtonPlay(pItem.get(), button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
@@ -198,19 +189,6 @@ bool CGUIWindowPVRSearch::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON b
     m_searchfilter.Reset();
 
     Refresh(true);
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRSearch::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_PLAY_ITEM)
-  {
-    ActionPlayEpg(item, true /* play recording, not channel */);
-    bReturn = true;
   }
 
   return bReturn;

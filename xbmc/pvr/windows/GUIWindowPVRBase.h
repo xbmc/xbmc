@@ -87,17 +87,13 @@ namespace PVR
     virtual CPVRChannelGroupPtr GetChannelGroup(void);
     virtual void SetChannelGroup(const CPVRChannelGroupPtr &group);
 
-    virtual bool ActionPlayChannel(CFileItem *item);
-    virtual bool ActionPlayEpg(CFileItem *item, bool bPlayRecording);
     virtual bool ActionDeleteChannel(CFileItem *item);
     virtual bool ActionInputChannelNumber(int input);
 
-    virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
 
     virtual void UpdateSelectedItemPath();
-    static bool CheckResumeRecording(CFileItem *item);
 
     void RegisterObservers(void);
     void UnregisterObservers(void);

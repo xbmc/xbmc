@@ -137,28 +137,12 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
   {
     Close();
 
-    if (m_progItem)
-    {
-      if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING && m_progItem->HasRecording())
-        g_application.PlayFile(CFileItem(m_progItem->Recording()), "videoplayer");
-      else if (m_progItem->HasPVRChannel())
-      {
-        CPVRChannelPtr channel = m_progItem->ChannelTag();
-        // try a fast switch
-        bool bSwitchSuccessful = false;
-        if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-            (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
-        {
-          if (channel->StreamURL().empty())
-            bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
-        }
+    const CFileItemPtr item(new CFileItem(m_progItem));
+    if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
+      CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, true /* bCheckResume */);
+    else
+      CPVRGUIActions::GetInstance().SwitchToChannel(item, false /* bPlayMinimized */, true /* bCheckResume */);
 
-        if (!bSwitchSuccessful)
-        {
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(channel)), "videoplayer");
-        }
-      }
-    }
     bReturn = true;
   }
 

@@ -145,21 +145,10 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-
-  buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* Switch channel */
-
-  CEpgInfoTagPtr epg(pItem->GetEPGInfoTag());
-  if (epg)
-  {
-    if (epg->HasRecording())
-      buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* Play recording */
-  }
-
 
   buttons.Add(CONTEXT_BUTTON_BEGIN, 19063); /* Go to begin */
-  buttons.Add(CONTEXT_BUTTON_NOW, 19070); /* Go to now */
-  buttons.Add(CONTEXT_BUTTON_END, 19064); /* Go to end */
+  buttons.Add(CONTEXT_BUTTON_NOW,   19070); /* Go to now */
+  buttons.Add(CONTEXT_BUTTON_END,   19064); /* Go to end */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
@@ -265,11 +254,11 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
-                  ActionPlayEpg(pItem.get(), false);
+                  CPVRGUIActions::GetInstance().SwitchToChannel(pItem, false, true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_PLAY_RECORDING:
-                  ActionPlayEpg(pItem.get(), true);
+                  CPVRGUIActions::GetInstance().PlayRecording(pItem, false, true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_INFO:
@@ -287,7 +276,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_PLAY:
-              ActionPlayEpg(pItem.get(), true);
+              CPVRGUIActions::GetInstance().PlayRecording(pItem, false, true);
               bReturn = true;
               break;
             case ACTION_RECORD:
@@ -318,10 +307,10 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               CGUIEPGGridContainer *epgGridContainer = GetGridControl();
               if (epgGridContainer)
               {
-                CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
+                const CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
                 if (item)
                 {
-                  ActionPlayEpg(item.get(), false);
+                  CPVRGUIActions::GetInstance().SwitchToChannel(item, false, true);
                   bReturn = true;
                 }
               }
@@ -384,8 +373,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonPlay(pItem.get(), button) ||
-      OnContextButtonBegin(pItem.get(), button) ||
+  return OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
@@ -475,19 +463,6 @@ bool CGUIWindowPVRGuide::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON butt
   {
     CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
     epgGridContainer->GoToNow();
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRGuide::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_PLAY_ITEM || button == CONTEXT_BUTTON_PLAY_OTHER)
-  {
-    ActionPlayEpg(item, button == CONTEXT_BUTTON_PLAY_OTHER);
     bReturn = true;
   }
 

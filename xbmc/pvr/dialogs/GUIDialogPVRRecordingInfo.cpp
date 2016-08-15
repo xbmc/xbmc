@@ -20,7 +20,7 @@
 
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
-#include "pvr/windows/GUIWindowPVRBase.h"
+#include "pvr/PVRGUIActions.h"
 
 #include "GUIDialogPVRRecordingInfo.h"
 
@@ -68,7 +68,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage &message)
     Close();
 
     if (m_recordItem)
-      CGUIWindowPVRBase::PlayRecording(m_recordItem.get(), false /* don't play minimized */, true /* check resume */);
+      CPVRGUIActions::GetInstance().PlayRecording(m_recordItem, false /* don't play minimized */, true /* check resume */);
 
     bReturn = true;
   }

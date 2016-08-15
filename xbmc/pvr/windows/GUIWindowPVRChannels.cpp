@@ -28,6 +28,7 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -62,8 +63,6 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
 
   // Add parent buttons before the Manage button
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
@@ -159,7 +158,9 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
            case ACTION_SELECT_ITEM:
            case ACTION_MOUSE_LEFT_CLICK:
            case ACTION_PLAY:
-             ActionPlayChannel(m_vecItems->Get(iItem).get());
+             CPVRGUIActions::GetInstance().SwitchToChannel(m_vecItems->Get(iItem),
+                                                           CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
+                                                           true);
              break;
            case ACTION_SHOW_INFO:
              CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(iItem));

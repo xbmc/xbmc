@@ -750,9 +750,28 @@ bool CPVRManager::IsPlayingChannel(const CPVRChannelPtr &channel) const
   return bReturn;
 }
 
+bool CPVRManager::IsPlayingRecording(const CPVRRecordingPtr &recording) const
+{
+  bool bReturn(false);
+
+  if (recording && IsStarted())
+  {
+    CPVRRecordingPtr current(GetCurrentRecording());
+    if (current && *current == *recording)
+      bReturn = true;
+  }
+
+  return bReturn;
+}
+
 CPVRChannelPtr CPVRManager::GetCurrentChannel(void) const
 {
   return m_addons->GetPlayingChannel();
+}
+
+CPVRRecordingPtr CPVRManager::GetCurrentRecording(void) const
+{
+  return m_addons->GetPlayingRecording();
 }
 
 int CPVRManager::GetCurrentEpg(CFileItemList &results) const

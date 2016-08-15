@@ -48,7 +48,6 @@ namespace PVR
 
   private:
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
 
     void OpenDialogSearch();
 

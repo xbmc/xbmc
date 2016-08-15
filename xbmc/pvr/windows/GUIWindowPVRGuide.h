@@ -70,7 +70,6 @@ namespace PVR
     bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
 
     void StartRefreshTimelineItemsThread();
     void StopRefreshTimelineItemsThread();
