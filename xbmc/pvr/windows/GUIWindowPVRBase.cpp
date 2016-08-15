@@ -18,16 +18,17 @@
  *
  */
 
+#include "GUIWindowPVRBase.h"
+#include "GUIWindowPVRRecordings.h" // TODO: wtf?! include of derived class???
+
 #include "Application.h"
 #include "addons/AddonManager.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "epg/Epg.h"
-#include "epg/EpgInfoTag.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "filesystem/StackDirectory.h"
 #include "GUIUserMessages.h"
@@ -47,10 +48,6 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-
-#include "GUIWindowPVRRecordings.h" // TODO: include of derived class???
-
-#include "GUIWindowPVRBase.h"
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 
@@ -276,21 +273,6 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
 
   return bReturn || CGUIMediaWindow::OnContextButton(itemNumber, button);
-}
-
-bool CGUIWindowPVRBase::OnContextButtonActiveAEDSPSettings(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS)
-  {
-    bReturn = true;
-
-    if (CServiceBroker::GetADSP().IsProcessing())
-      g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
-  }
-
-  return bReturn;
 }
 
 void CGUIWindowPVRBase::SetInvalid()

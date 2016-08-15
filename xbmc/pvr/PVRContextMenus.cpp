@@ -19,6 +19,7 @@
  */
 
 #include "ContextMenuItem.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "epg/EpgInfoTag.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -53,6 +54,7 @@ namespace PVR
     DECL_CONTEXTMENUITEM(DeleteTimerRule);
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
+    DECL_CONTEXTMENUITEM(ShowAudioDSPSettings);
 
     ///////////////////////////////////////////////////////////////////////////////
     // Programme information
@@ -350,6 +352,28 @@ namespace PVR
     {
       return CPVRGUIActions::GetInstance().DeleteTimer(item);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Show Audio DSP settings
+
+    std::string ShowAudioDSPSettings::GetLabel(const CFileItem &item) const
+    {
+      return g_localizeStrings.Get(15047); /* Audio DSP settings */
+    }
+
+    bool ShowAudioDSPSettings::IsVisible(const CFileItem &item) const
+    {
+      if (item.GetPVRChannelInfoTag() || item.GetPVRRecordingInfoTag())
+        return CServiceBroker::GetADSP().IsProcessing();
+
+      return false;
+    }
+
+    bool ShowAudioDSPSettings::Execute(const CFileItemPtr &item) const
+    {
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
+      return true;
+    }
   } // namespace CONEXTMENUITEM
 
   CPVRContextMenuManager& CPVRContextMenuManager::GetInstance()
@@ -371,6 +395,7 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
       std::make_shared<CONTEXTMENUITEM::StartRecording>(),
       std::make_shared<CONTEXTMENUITEM::StopRecording>(),
+      std::make_shared<CONTEXTMENUITEM::ShowAudioDSPSettings>(),
     };
   }
 
