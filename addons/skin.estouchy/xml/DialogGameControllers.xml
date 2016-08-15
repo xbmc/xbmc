@@ -131,6 +131,19 @@
 			<height>70</height>
 			<font>font25</font>
 		</control>
+		<control type="image" id="9">
+			<description>separator image</description>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+		</control>
+		<control type="label" id="8">
+			<posx>20</posx>
+			<height>50</height>
+			<font>font20_title</font>
+			<label>-</label>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
 		<control type="scrollbar" id="61">
 			<posx>1102</posx>
 			<posy>140</posy>
