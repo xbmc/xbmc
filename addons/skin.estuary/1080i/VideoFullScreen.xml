@@ -2,6 +2,16 @@
 <window>
 	<defaultcontrol>-</defaultcontrol>
 	<controls>
+		<control type="group" id="0">
+			<control type="label" id="10">
+				<left>45</left>
+				<top>15</top>
+				<width>1770</width>
+				<height>100</height>
+				<label>-</label>
+				<font>font12</font>
+			</control>
+		</control>
 		<control type="group" id="1">
 			<visible>Player.Caching</visible>
 			<animation delay="300" effect="fade" time="200">Visible</animation>
