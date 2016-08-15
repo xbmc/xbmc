@@ -20,11 +20,13 @@
 #pragma once
 
 #include "IConfigurationWindow.h"
+#include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerTypes.h"
-#include "threads/Thread.h"
 
 class CGUIButtonControl;
 class CGUIControlGroupList;
+class CGUIImage;
+class CGUILabelControl;
 class CGUIWindow;
 
 namespace GAME
@@ -47,10 +49,21 @@ namespace GAME
 
     void CleanupButtons(void);
 
+    // Helper functions
+    struct FeatureGroup
+    {
+      std::string groupName;
+      std::vector<CControllerFeature> features;
+    };
+    static std::vector<FeatureGroup> GetFeatureGroups(const std::vector<CControllerFeature>& features);
+    std::vector<CGUIButtonControl*> GetButtons(const std::vector<CControllerFeature>& features, unsigned int startIndex);
+
     // GUI stuff
     CGUIWindow* const       m_window;
     CGUIControlGroupList*   m_guiList;
     CGUIButtonControl*      m_guiButtonTemplate;
+    CGUILabelControl*       m_guiGroupTitle;
+    CGUIImage*              m_guiFeatureSeparator;
 
     // Game window stuff 
     ControllerPtr           m_controller;

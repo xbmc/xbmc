@@ -1,6 +1,7 @@
 SRCS=GUIAnalogStickButton.cpp \
      GUIControllerButton.cpp \
      GUIFeatureButton.cpp \
+     GUIFeatureControls.cpp \
      GUIGameController.cpp \
      GUIScalarFeatureButton.cpp \
 

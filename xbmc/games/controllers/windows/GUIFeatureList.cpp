@@ -19,13 +19,17 @@
  */
 
 #include "GUIFeatureList.h"
+
 #include "GUIConfigurationWizard.h"
 #include "GUIControllerDefines.h"
 #include "games/controllers/guicontrols/GUIAnalogStickButton.h"
+#include "games/controllers/guicontrols/GUIFeatureControls.h"
 #include "games/controllers/guicontrols/GUIScalarFeatureButton.h"
 #include "games/controllers/Controller.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
+#include "guilib/GUIImage.h"
+#include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindow.h"
 
 using namespace GAME;
@@ -34,6 +38,8 @@ CGUIFeatureList::CGUIFeatureList(CGUIWindow* window) :
   m_window(window),
   m_guiList(nullptr),
   m_guiButtonTemplate(nullptr),
+  m_guiGroupTitle(nullptr),
+  m_guiFeatureSeparator(nullptr),
   m_wizard(new CGUIConfigurationWizard)
 {
 }
@@ -48,11 +54,19 @@ bool CGUIFeatureList::Initialize(void)
 {
   m_guiList = dynamic_cast<CGUIControlGroupList*>(m_window->GetControl(CONTROL_FEATURE_LIST));
   m_guiButtonTemplate = dynamic_cast<CGUIButtonControl*>(m_window->GetControl(CONTROL_FEATURE_BUTTON_TEMPLATE));
+  m_guiGroupTitle = dynamic_cast<CGUILabelControl*>(m_window->GetControl(CONTROL_FEATURE_GROUP_TITLE));
+  m_guiFeatureSeparator = dynamic_cast<CGUIImage*>(m_window->GetControl(CONTROL_FEATURE_SEPARATOR));
 
   if (m_guiButtonTemplate)
     m_guiButtonTemplate->SetVisible(false);
 
-  return m_guiList && m_guiButtonTemplate;
+  if (m_guiGroupTitle)
+    m_guiGroupTitle->SetVisible(false);
+
+  if (m_guiFeatureSeparator)
+    m_guiFeatureSeparator->SetVisible(false);
+
+  return m_guiList != nullptr && m_guiButtonTemplate != nullptr;
 }
 
 void CGUIFeatureList::Deinitialize(void)
@@ -61,6 +75,8 @@ void CGUIFeatureList::Deinitialize(void)
 
   m_guiList = nullptr;
   m_guiButtonTemplate = nullptr;
+  m_guiGroupTitle = nullptr;
+  m_guiFeatureSeparator = nullptr;
 }
 
 void CGUIFeatureList::Load(const ControllerPtr& controller)
@@ -70,35 +86,48 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
 
   CleanupButtons();
 
+  // Set new controller
   m_controller = controller;
 
+  // Get features
   const std::vector<CControllerFeature>& features = controller->Layout().Features();
 
-  for (unsigned int buttonIndex = 0; buttonIndex < features.size(); buttonIndex++)
-  {
-    const CControllerFeature& feature = features[buttonIndex];
+  // Split into groups
+  auto featureGroups = GetFeatureGroups(features);
 
-    CGUIButtonControl* pButton = nullptr;
-    switch (feature.Type())
+  // Create controls
+  unsigned int featureIndex = 0;
+  for (auto itGroup = featureGroups.begin(); itGroup != featureGroups.end(); ++itGroup)
+  {
+    const std::string& groupName = itGroup->groupName;
+
+    // Create buttons
+    std::vector<CGUIButtonControl*> buttons = GetButtons(itGroup->features, featureIndex);
+    if (!buttons.empty())
     {
-      case JOYSTICK::FEATURE_TYPE::SCALAR:
+      // Add a separator if the group list isn't empty
+      if (m_guiFeatureSeparator && m_guiList->GetTotalSize() > 0)
       {
-        pButton = new CGUIScalarFeatureButton(*m_guiButtonTemplate, m_wizard, feature, buttonIndex);
-        break;
+        CGUIFeatureSeparator* pSeparator = new CGUIFeatureSeparator(*m_guiFeatureSeparator, featureIndex);
+        m_guiList->AddControl(pSeparator);
       }
-      case JOYSTICK::FEATURE_TYPE::ANALOG_STICK:
+
+      // Add the group title
+      if (m_guiGroupTitle && !groupName.empty())
       {
-        pButton = new CGUIAnalogStickButton(*m_guiButtonTemplate, m_wizard, feature, buttonIndex);
-        break;
+        CGUIFeatureGroupTitle* pGroupTitle = new CGUIFeatureGroupTitle(*m_guiGroupTitle, groupName, featureIndex);
+        m_guiList->AddControl(pGroupTitle);
       }
-      default:
-        break;
+
+      // Add the buttons
+      for (CGUIButtonControl* pButton : buttons)
+        m_guiList->AddControl(pButton);
+
+      featureIndex += itGroup->features.size();
     }
-    if (pButton)
-      m_guiList->AddControl(pButton);
 
     // Just in case
-    if (buttonIndex >= MAX_FEATURE_COUNT)
+    if (featureIndex >= MAX_FEATURE_COUNT)
       break;
   }
 }
@@ -112,10 +141,8 @@ void CGUIFeatureList::OnSelect(unsigned int index)
   for ( ; index < featureCount; index++)
   {
     IFeatureButton* control = GetButtonControl(index);
-    if (!control)
-      break;
-
-    buttons.push_back(control);
+    if (control)
+      buttons.push_back(control);
   }
 
   m_wizard->Run(m_controller->ID(), buttons);
@@ -134,4 +161,68 @@ void CGUIFeatureList::CleanupButtons(void)
 
   if (m_guiList)
     m_guiList->ClearAll();
+}
+
+std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(const std::vector<CControllerFeature>& features)
+{
+  std::vector<CGUIFeatureList::FeatureGroup> groups;
+
+  // Get group names
+  std::vector<std::string> groupNames;
+  for (const CControllerFeature& feature : features)
+  {
+    if (std::find(groupNames.begin(), groupNames.end(), feature.Group()) == groupNames.end())
+      groupNames.push_back(feature.Group());
+  }
+
+  // Divide features into groups
+  for (std::string& groupName : groupNames)
+  {
+    FeatureGroup group = { groupName };
+    for (const CControllerFeature& feature : features)
+    {
+      if (feature.Group() == groupName)
+        group.features.push_back(feature);
+    }
+    groups.emplace_back(std::move(group));
+  }
+
+  return groups;
+}
+
+std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(const std::vector<CControllerFeature>& features, unsigned int startIndex)
+{
+  std::vector<CGUIButtonControl*> buttons;
+
+  // Create buttons
+  unsigned int featureIndex = startIndex;
+  for (const CControllerFeature& feature : features)
+  {
+    CGUIButtonControl* pButton = nullptr;
+
+    // Create button
+    switch (feature.Type())
+    {
+      case JOYSTICK::FEATURE_TYPE::SCALAR:
+      {
+        pButton = new CGUIScalarFeatureButton(*m_guiButtonTemplate, m_wizard, feature, featureIndex);
+        break;
+      }
+      case JOYSTICK::FEATURE_TYPE::ANALOG_STICK:
+      {
+        pButton = new CGUIAnalogStickButton(*m_guiButtonTemplate, m_wizard, feature, featureIndex);
+        break;
+      }
+      default:
+        break;
+    }
+
+    // If successful, add button to result
+    if (pButton)
+      buttons.push_back(pButton);
+
+    featureIndex++;
+  }
+
+  return buttons;
 }

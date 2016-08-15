@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2016 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,22 +19,26 @@
  */
 #pragma once
 
-#include "ControllerTypes.h"
-#include "input/joysticks/JoystickTypes.h"
+#include "guilib/GUILabelControl.h"
+#include "guilib/GUIImage.h"
 
 #include <string>
 
 namespace GAME
 {
+  class CGUIFeatureGroupTitle : public CGUILabelControl
+  {
+  public:
+    CGUIFeatureGroupTitle(const CGUILabelControl& groupTitleTemplate, const std::string& groupName, unsigned int featureIndex);
 
-class CControllerTranslator
-{
-public:
-  static const char* TranslateFeatureType(JOYSTICK::FEATURE_TYPE type);
-  static JOYSTICK::FEATURE_TYPE TranslateFeatureType(const std::string& strType);
+    virtual ~CGUIFeatureGroupTitle(void) { }
+  };
 
-  static const char* TranslateInputType(JOYSTICK::INPUT_TYPE type);
-  static JOYSTICK::INPUT_TYPE TranslateInputType(const std::string& strType);
-};
+  class CGUIFeatureSeparator : public CGUIImage
+  {
+  public:
+    CGUIFeatureSeparator(const CGUIImage& separatorTemplate, unsigned int featureIndex);
 
+    virtual ~CGUIFeatureSeparator(void) { }
+  };
 }
