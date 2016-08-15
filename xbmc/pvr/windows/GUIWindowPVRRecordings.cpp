@@ -158,13 +158,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
   }
 
-  if (recording)
-  {
-    if ((!isDeletedRecording && g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_RECORDING)) ||
-        (isDeletedRecording && g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING)))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
-  }
-
   if (!isDeletedRecording)
     CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
@@ -197,7 +190,7 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       OnContextButtonDeleteAll(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonMarkWatched(pItem, button) ||
-      CGUIWindowPVRBase::OnContextButton(itemNumber, button);
+      CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)

@@ -61,7 +61,6 @@ namespace PVR
     virtual void OnInitWindow(void) override;
     virtual void OnDeinitWindow(int nextWindowID) override;
     virtual bool OnMessage(CGUIMessage& message) override;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
     virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
     virtual void UpdateButtons(void) override;

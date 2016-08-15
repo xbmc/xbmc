@@ -55,11 +55,6 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (epg->HasRecording())
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19687);       /* Play recording */
-
-    CPVRChannelPtr channel(epg->ChannelTag());
-    if (channel &&
-        g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_EPG))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
@@ -79,7 +74,7 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   return OnContextButtonClear(pItem.get(), button) ||
       OnContextButtonPlay(pItem.get(), button) ||
-      CGUIWindowPVRBase::OnContextButton(itemNumber, button);
+      CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowPVRSearch::FindSimilar(const CFileItemPtr &item)

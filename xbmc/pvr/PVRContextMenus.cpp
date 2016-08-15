@@ -55,6 +55,7 @@ namespace PVR
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
     DECL_CONTEXTMENUITEM(ShowAudioDSPSettings);
+    DECL_CONTEXTMENUITEM(PVRClientMenuHook);
 
     ///////////////////////////////////////////////////////////////////////////////
     // Programme information
@@ -374,6 +375,61 @@ namespace PVR
       g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
       return true;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // PVR Client menu hook
+
+    std::string PVRClientMenuHook::GetLabel(const CFileItem &item) const
+    {
+      return g_localizeStrings.Get(19195); /* PVR client specific action */
+    }
+
+    bool PVRClientMenuHook::IsVisible(const CFileItem &item) const
+    {
+      const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
+      if (channel)
+        return g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_CHANNEL);
+
+      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      if (epg)
+      {
+        const CPVRChannelPtr channel(epg->ChannelTag());
+        return (channel && g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_EPG));
+      }
+
+      const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
+      if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+        return g_PVRClients->HasMenuHooks(timer->m_iClientId, PVR_MENUHOOK_TIMER);
+
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (recording)
+      {
+        if (recording->IsDeleted())
+          return g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING);
+        else
+          return g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_RECORDING);
+      }
+
+      return false;
+    }
+
+    bool PVRClientMenuHook::Execute(const CFileItemPtr &item) const
+    {
+      if (item->IsEPG() && item->GetEPGInfoTag()->HasPVRChannel())
+        g_PVRClients->ProcessMenuHooks(item->GetEPGInfoTag()->ChannelTag()->ClientID(), PVR_MENUHOOK_EPG, item.get());
+      else if (item->IsPVRChannel())
+        g_PVRClients->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID(), PVR_MENUHOOK_CHANNEL, item.get());
+      else if (item->IsDeletedPVRRecording())
+        g_PVRClients->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING, item.get());
+      else if (item->IsUsablePVRRecording())
+        g_PVRClients->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING, item.get());
+      else if (item->IsPVRTimer())
+        g_PVRClients->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientId, PVR_MENUHOOK_TIMER, item.get());
+      else
+        return false;
+
+      return true;
+    }
   } // namespace CONEXTMENUITEM
 
   CPVRContextMenuManager& CPVRContextMenuManager::GetInstance()
@@ -396,6 +452,7 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::StartRecording>(),
       std::make_shared<CONTEXTMENUITEM::StopRecording>(),
       std::make_shared<CONTEXTMENUITEM::ShowAudioDSPSettings>(),
+      std::make_shared<CONTEXTMENUITEM::PVRClientMenuHook>(),
     };
   }
 

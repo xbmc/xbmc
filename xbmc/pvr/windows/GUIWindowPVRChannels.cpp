@@ -19,11 +19,10 @@
  */
 
 
-#include "ContextMenuManager.h"
 #include "GUIInfoManager.h"
 #include "epg/EpgContainer.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -39,7 +38,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
-#include "pvr/timers/PVRTimers.h"
 
 #include "GUIWindowPVRChannels.h"
 
@@ -67,9 +65,6 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
 
-  if (g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_CHANNEL))
-    buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
-
   // Add parent buttons before the Manage button
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 
@@ -92,7 +87,7 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
   return OnContextButtonGroupManager(pItem.get(), button) ||
       OnContextButtonUpdateEpg(pItem.get(), button) ||
       OnContextButtonManage(pItem.get(), button) ||
-      CGUIWindowPVRBase::OnContextButton(itemNumber, button);
+      CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)

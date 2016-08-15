@@ -73,9 +73,6 @@ void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons 
         if (timer->IsManual() && !timerType->IsReadOnly())
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* Rename */
       }
-
-      if (g_PVRClients->HasMenuHooks(timer->m_iClientId, PVR_MENUHOOK_TIMER))
-        buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
     }
   }
 
@@ -106,7 +103,7 @@ bool CGUIWindowPVRTimersBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   return OnContextButtonActivate(pItem.get(), button) ||
       OnContextButtonRename(pItem.get(), button) ||
-      CGUIWindowPVRBase::OnContextButton(itemNumber, button);
+      CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowPVRTimersBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)

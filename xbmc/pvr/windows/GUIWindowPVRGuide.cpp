@@ -161,13 +161,6 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
   buttons.Add(CONTEXT_BUTTON_NOW, 19070); /* Go to now */
   buttons.Add(CONTEXT_BUTTON_END, 19064); /* Go to end */
 
-  if (epg)
-  {
-    CPVRChannelPtr channel(epg->ChannelTag());
-    if (channel && g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_EPG))
-      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
-  }
-
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
@@ -395,7 +388,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       OnContextButtonNow(pItem.get(), button) ||
-      CGUIWindowPVRBase::OnContextButton(itemNumber, button);
+      CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowPVRGuide::RefreshTimelineItems()
