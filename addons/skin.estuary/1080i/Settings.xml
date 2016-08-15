@@ -94,11 +94,6 @@
 			</focusedlayout>
 			<content>
 				<item>
-					<label>$LOCALIZE[20094]</label>
-					<onclick>ActivateWindow(1103)</onclick>
-					<icon>icons/settings/filemanager.png</icon>
-				</item>
-				<item>
 					<label>$LOCALIZE[14201]</label>
 					<onclick>ActivateWindow(PlayerSettings)</onclick>
 					<icon>icons/settings/video.png</icon>
