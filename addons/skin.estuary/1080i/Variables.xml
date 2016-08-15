@@ -194,7 +194,6 @@
 	</variable>
 	<variable name="SeekLabel">
 		<value condition="!String.IsEmpty(Player.SeekStepSize)">$LOCALIZE[773][COLOR=grey] $INFO[Player.SeekStepSize][/COLOR]</value>
-		<value condition="!String.IsEmpty(Player.SeekOffset)">$LOCALIZE[773][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</value>
 		<value condition="Player.Caching">$LOCALIZE[15107]</value>
 		<value condition="Player.Paused">$LOCALIZE[112]</value>
 		<value condition="Player.Forwarding">$LOCALIZE[31039] $VAR[VideoPlayerForwardRewindVar]</value>
