@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="1.0.20" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="1.0.21" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -75,6 +75,6 @@
 		<forum>http://forum.kodi.tv/forumdisplay.php?fid=261</forum>
 		<website></website>
 		<email></email>
-		<source>https://github.com/xbmc/skin.estouchy/</source>
+		<source>https://github.com/xbmc/xbmc/</source>
 	</extension>
 </addon>
