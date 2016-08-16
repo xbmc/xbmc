@@ -330,16 +330,6 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
   }
 }
 
-void CGUIWindowPVRBase::ShowRecordingInfo(CFileItem *item)
-{
-  CGUIDialogPVRRecordingInfo* pDlgInfo = (CGUIDialogPVRRecordingInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_RECORDING_INFO);
-  if (item->IsPVRRecording() && pDlgInfo)
-  {
-    pDlgInfo->SetRecording(item);
-    pDlgInfo->Open();
-  }
-}
-
 bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
 {
   std::string strInput = StringUtils::Format("%i", input);

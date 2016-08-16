@@ -114,6 +114,13 @@ namespace PVR
     bool DeleteTimerRule(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Open a dialog with information for a given recording.
+     * @param item containing a recording.
+     * @return true on success, false otherwise.
+     */
+    bool ShowRecordingInfo(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Stop a currently active recording, always showing a confirmation dialog.
      * @param item containing a recording to stop. item must be a timer, an epg tag or a channel.
      * @return true, if the recording was stopped successfully, false otherwise.

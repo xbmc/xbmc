@@ -49,7 +49,6 @@ namespace PVR
     bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 

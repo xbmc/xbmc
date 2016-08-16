@@ -46,7 +46,7 @@ namespace PVR
       bool Execute(const CFileItemPtr &item) const override; \
     }
 
-    DECL_CONTEXTMENUITEM(ProgrammeInformation);
+    DECL_CONTEXTMENUITEM(ShowInformation);
     DECL_CONTEXTMENUITEM(FindSimilar);
     DECL_CONTEXTMENUITEM(StartRecording);
     DECL_CONTEXTMENUITEM(StopRecording);
@@ -63,14 +63,17 @@ namespace PVR
     DECL_CONTEXTMENUITEM(PVRClientMenuHook);
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Programme information
+    // Show information (epg, recording)
 
-    std::string ProgrammeInformation::GetLabel(const CFileItem &item) const
+    std::string ShowInformation::GetLabel(const CFileItem &item) const
     {
+      if (item.GetPVRRecordingInfoTag())
+        return g_localizeStrings.Get(19053); /* Recording Information */
+
       return g_localizeStrings.Get(19047); /* Programme information */
     }
 
-    bool ProgrammeInformation::IsVisible(const CFileItem &item) const
+    bool ShowInformation::IsVisible(const CFileItem &item) const
     {
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
@@ -84,11 +87,17 @@ namespace PVR
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
         return timer->GetEpgInfoTag().get() != nullptr;
 
+      if (item.GetPVRRecordingInfoTag())
+        return true;
+
       return false;
     }
 
-    bool ProgrammeInformation::Execute(const CFileItemPtr &item) const
+    bool ShowInformation::Execute(const CFileItemPtr &item) const
     {
+      if (item->GetPVRRecordingInfoTag())
+        return CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
+
       return CPVRGUIActions::GetInstance().ShowEPGInfo(item);
     }
 
@@ -549,7 +558,7 @@ namespace PVR
   {
     m_items =
     {
-      std::make_shared<CONTEXTMENUITEM::ProgrammeInformation>(),
+      std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
       std::make_shared<CONTEXTMENUITEM::FindSimilar>(),
       std::make_shared<CONTEXTMENUITEM::PlayChannel>(),
       std::make_shared<CONTEXTMENUITEM::ResumePlayRecording>(),

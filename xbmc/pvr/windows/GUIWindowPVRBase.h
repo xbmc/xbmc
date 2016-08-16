@@ -90,7 +90,6 @@ namespace PVR
     virtual bool ActionDeleteChannel(CFileItem *item);
     virtual bool ActionInputChannelNumber(int input);
 
-    virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
 
     virtual void UpdateSelectedItemPath();

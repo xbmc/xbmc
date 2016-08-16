@@ -19,7 +19,6 @@
  */
 
 #include "FileItem.h"
-#include "guilib/GUIWindowManager.h"
 #include "pvr/PVRGUIActions.h"
 
 #include "GUIDialogPVRRecordingInfo.h"
@@ -94,14 +93,6 @@ CFileItemPtr CGUIDialogPVRRecordingInfo::GetCurrentListItem(int offset)
 
 void CGUIDialogPVRRecordingInfo::ShowFor(const CFileItemPtr& item)
 {
-  if (item && item->IsPVRRecording())
-  {
-    CGUIDialogPVRRecordingInfo* pDlgInfo = dynamic_cast<CGUIDialogPVRRecordingInfo*>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_RECORDING_INFO));
-    if (pDlgInfo)
-    {
-      pDlgInfo->SetRecording(item.get());
-      pDlgInfo->Open();
-    }
-  }
+  CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
 }
 

@@ -30,6 +30,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
+#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
@@ -94,7 +95,26 @@ namespace PVR
 
     pDlgInfo->SetProgInfo(epgTag);
     pDlgInfo->Open();
+    return true;
+  }
 
+  bool CPVRGUIActions::ShowRecordingInfo(const CFileItemPtr &item) const
+  {
+    if (!item->IsPVRRecording())
+    {
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - no recording!", __FUNCTION__);
+      return false;
+    }
+
+    CGUIDialogPVRRecordingInfo* pDlgInfo = dynamic_cast<CGUIDialogPVRRecordingInfo*>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_RECORDING_INFO));
+    if (!pDlgInfo)
+    {
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_PVR_RECORDING_INFO!", __FUNCTION__);
+      return false;
+    }
+
+    pDlgInfo->SetRecording(item.get());
+    pDlgInfo->Open();
     return true;
   }
 

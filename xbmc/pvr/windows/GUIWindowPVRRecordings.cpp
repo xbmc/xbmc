@@ -83,8 +83,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   {
     isDeletedRecording = recording->IsDeleted();
 
-    buttons.Add(CONTEXT_BUTTON_INFO, 19053);        /* Recording Information */
-
     if (isDeletedRecording)
     {
       buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);      /* Undelete */
@@ -144,7 +142,6 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       OnContextButtonDelete(pItem.get(), button) ||
       OnContextButtonUndelete(pItem.get(), button) ||
       OnContextButtonDeleteAll(pItem.get(), button) ||
-      OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonMarkWatched(pItem, button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
@@ -250,7 +247,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
                     break;
                   }
                   case SELECT_ACTION_INFO:
-                    ShowRecordingInfo(item.get());
+                    CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
                     bReturn = true;
                     break;
                   default:
@@ -266,7 +263,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
               bReturn = true;
               break;
             case ACTION_SHOW_INFO:
-              ShowRecordingInfo(item.get());
+              CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
               bReturn = true;
               break;
             case ACTION_DELETE_ITEM:
@@ -434,19 +431,6 @@ bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_
     if (path.IsValid() && !path.IsRecordingsRoot() && m_vecItems->GetObjectCount() == 0)
       GoParentFolder();
   }
-  return bReturn;
-}
-
-bool CGUIWindowPVRRecordings::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_INFO)
-  {
-    bReturn = true;
-    ShowRecordingInfo(item);
-  }
-
   return bReturn;
 }
 
