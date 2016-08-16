@@ -44,6 +44,16 @@ typedef struct CB_PeripheralLib
    */
   void (*RefreshButtonMaps)(void* addonData, const char* deviceName, const char* controllerId);
 
+  /*!
+   * @brief Return the number of features belonging to the specified controller
+   *
+   * @param controllerId    The controller ID to enumerate
+   * @param type[optional]  Type to filter by, or JOYSTICK_FEATURE_TYPE_UNKNOWN for all features
+   *
+   * @return The number of features matching the request parameters
+   */
+  unsigned int (*FeatureCount)(void* addonData, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
+
 } CB_PeripheralLib;
 
 #ifdef __cplusplus

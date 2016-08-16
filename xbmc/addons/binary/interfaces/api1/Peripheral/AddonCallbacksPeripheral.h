@@ -47,6 +47,7 @@ public:
 
   static void TriggerScan(void* addonData);
   static void RefreshButtonMaps(void* addonData, const char* deviceName, const char* controllerId);
+  static unsigned int FeatureCount(void* addonData, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
 
 private:
   static PERIPHERALS::CPeripheralAddon* GetPeripheralAddon(void* addonData, const char* strFunction);
