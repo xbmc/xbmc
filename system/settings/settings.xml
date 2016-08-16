@@ -2593,7 +2593,7 @@
         </setting>
       </group>
     </category>
-    <category id="input" label="15087" help="36374">
+    <category id="input" label="14125" help="36374">
       <group id="1" label="35000">
         <setting id="input.peripherals" type="action" label="35000" help="36375">
           <level>2</level>
