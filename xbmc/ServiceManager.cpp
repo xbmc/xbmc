@@ -35,12 +35,16 @@ bool CServiceManager::Init1()
 
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
+  
+  m_Platform.reset(CPlatform::CreateInstance());
 
   return true;
 }
 
 bool CServiceManager::Init2()
 {
+  m_Platform->Init();
+  
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -110,6 +114,11 @@ ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
 CDataCacheCore& CServiceManager::GetDataCacheCore()
 {
   return *m_dataCacheCore;
+}
+
+CPlatform& CServiceManager::GetPlatform()
+{
+  return *m_Platform;
 }
 
 // deleters for unique_ptr

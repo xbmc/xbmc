@@ -21,6 +21,7 @@
 #pragma once
 
 #include <memory>
+#include "platform/Platform.h"
 
 namespace ADDON {
 class CAddonMgr;
@@ -58,6 +59,9 @@ public:
   PVR::CPVRManager& GetPVRManager();
   ActiveAE::CActiveAEDSP& GetADSPManager();
   CDataCacheCore& GetDataCacheCore();
+  /**\brief Get the platform object. This is save to be called after Init1() was called
+   */
+  CPlatform& GetPlatform();
 
 protected:
   struct delete_dataCacheCore
@@ -72,4 +76,5 @@ protected:
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
+  std::unique_ptr<CPlatform> m_Platform;
 };
