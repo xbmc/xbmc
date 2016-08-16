@@ -814,6 +814,9 @@
 		DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF033D361946612400BFC82E /* AEDeviceEnumerationOSX.cpp */; };
 		DF0ABB73183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
 		DF0ABB74183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
+		DF0D9F4D1D63931F006A7DBB /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F4B1D63931F006A7DBB /* Platform.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE"; }; };
+		DF0D9F511D63961B006A7DBB /* PlatformDarwinOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F501D63961B006A7DBB /* PlatformDarwinOSX.cpp */; };
+		DF0D9F551D639898006A7DBB /* PlatformDarwinIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F531D639893006A7DBB /* PlatformDarwinIOS.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
 		DF0E4AC51AD597ED00A75430 /* VideoPlayerRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC31AD597ED00A75430 /* VideoPlayerRadioRDS.cpp */; };
 		DF0E4AC61AD597ED00A75430 /* VideoPlayerRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC31AD597ED00A75430 /* VideoPlayerRadioRDS.cpp */; };
@@ -933,6 +936,7 @@
 		DF89901D1709BB2D00B35C21 /* MediaSourceSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8990181709BB2D00B35C21 /* MediaSourceSettings.cpp */; };
 		DF89901E1709BB2D00B35C21 /* SkinSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901A1709BB2D00B35C21 /* SkinSettings.cpp */; };
 		DF8990211709BB5400B35C21 /* ViewStateSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF89901F1709BB5400B35C21 /* ViewStateSettings.cpp */; };
+		DF8E55971D5F1D7000FD2BA3 /* PlatformDarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8E55951D5F1D7000FD2BA3 /* PlatformDarwin.cpp */; };
 		DF91E9341C0A1C610011084D /* HotKeyController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF91E92A1C0A1C610011084D /* HotKeyController.m */; };
 		DF91E9351C0A1C610011084D /* OSXTextInputResponder.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF91E92E1C0A1C610011084D /* OSXTextInputResponder.mm */; };
 		DF91E9361C0A1C610011084D /* smc.c in Sources */ = {isa = PBXBuildFile; fileRef = DF91E92F1C0A1C610011084D /* smc.c */; };
@@ -3614,6 +3618,10 @@
 		DF033D371946612400BFC82E /* AEDeviceEnumerationOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AEDeviceEnumerationOSX.h; path = Sinks/osx/AEDeviceEnumerationOSX.h; sourceTree = "<group>"; };
 		DF0ABB71183A94A30018445D /* Utf8Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utf8Utils.cpp; sourceTree = "<group>"; };
 		DF0ABB72183A94A30018445D /* Utf8Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utf8Utils.h; sourceTree = "<group>"; };
+		DF0D9F4B1D63931F006A7DBB /* Platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Platform.cpp; sourceTree = "<group>"; };
+		DF0D9F4C1D63931F006A7DBB /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
+		DF0D9F501D63961B006A7DBB /* PlatformDarwinOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlatformDarwinOSX.cpp; sourceTree = "<group>"; };
+		DF0D9F531D639893006A7DBB /* PlatformDarwinIOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlatformDarwinIOS.cpp; sourceTree = "<group>"; };
 		DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		DF0E4AC31AD597ED00A75430 /* VideoPlayerRadioRDS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoPlayerRadioRDS.cpp; sourceTree = "<group>"; };
@@ -3842,6 +3850,8 @@
 		DF89901B1709BB2D00B35C21 /* SkinSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinSettings.h; sourceTree = "<group>"; };
 		DF89901F1709BB5400B35C21 /* ViewStateSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewStateSettings.cpp; sourceTree = "<group>"; };
 		DF8990201709BB5400B35C21 /* ViewStateSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewStateSettings.h; sourceTree = "<group>"; };
+		DF8E55951D5F1D7000FD2BA3 /* PlatformDarwin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlatformDarwin.cpp; sourceTree = "<group>"; };
+		DF8E55961D5F1D7000FD2BA3 /* PlatformDarwin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformDarwin.h; sourceTree = "<group>"; };
 		DF91E9291C0A1C610011084D /* HotKeyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyController.h; sourceTree = "<group>"; };
 		DF91E92A1C0A1C610011084D /* HotKeyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyController.m; sourceTree = "<group>"; };
 		DF91E92B1C0A1C610011084D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -7107,6 +7117,31 @@
 			path = epg;
 			sourceTree = "<group>";
 		};
+		DF0D9F4E1D63961B006A7DBB /* overrides */ = {
+			isa = PBXGroup;
+			children = (
+				DF0D9F521D639893006A7DBB /* ios */,
+				DF0D9F4F1D63961B006A7DBB /* osx */,
+			);
+			path = overrides;
+			sourceTree = "<group>";
+		};
+		DF0D9F4F1D63961B006A7DBB /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				DF0D9F501D63961B006A7DBB /* PlatformDarwinOSX.cpp */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		DF0D9F521D639893006A7DBB /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				DF0D9F531D639893006A7DBB /* PlatformDarwinIOS.cpp */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
 		DF1ACFD015FCE50700E10810 /* generated */ = {
 			isa = PBXGroup;
 			children = (
@@ -7534,9 +7569,12 @@
 		DFD717211C09EDCE0025D964 /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				DF0D9F4E1D63961B006A7DBB /* overrides */,
 				DFD7172E1C09FEC60025D964 /* darwin */,
 				DFD717231C09EDCE0025D964 /* posix */,
 				DFD717221C09EDCE0025D964 /* MessagePrinter.h */,
+				DF0D9F4B1D63931F006A7DBB /* Platform.cpp */,
+				DF0D9F4C1D63931F006A7DBB /* Platform.h */,
 				DF91E9381C0A21D60011084D /* xbmc.cpp */,
 				DF91E9391C0A21D60011084D /* xbmc.h */,
 				DFD7172A1C09F5CF0025D964 /* XbmcContext.cpp */,
@@ -7571,6 +7609,8 @@
 				DF396ED01C42A25F00214C1A /* NSLogDebugHelpers.h */,
 				DFD717341C09FEC60025D964 /* OSXGNUReplacements.c */,
 				DFD717351C09FEC60025D964 /* OSXGNUReplacements.h */,
+				DF8E55951D5F1D7000FD2BA3 /* PlatformDarwin.cpp */,
+				DF8E55961D5F1D7000FD2BA3 /* PlatformDarwin.h */,
 			);
 			path = darwin;
 			sourceTree = "<group>";
@@ -10051,6 +10091,7 @@
 				397877D51AAAF87700F98A45 /* Speed.cpp in Sources */,
 				7C8E02341BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */,
 				68AE5BF51C92431300C4D527 /* EventScanner.cpp in Sources */,
+				DF0D9F4D1D63931F006A7DBB /* Platform.cpp in Sources */,
 				DF29BCF71B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */,
 				7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */,
@@ -10232,6 +10273,7 @@
 				18B7C7F91294222E009E7A26 /* TextureGL.cpp in Sources */,
 				18B7C7FA1294222E009E7A26 /* TextureManager.cpp in Sources */,
 				18B7C7FB1294222E009E7A26 /* VisibleEffect.cpp in Sources */,
+				DF8E55971D5F1D7000FD2BA3 /* PlatformDarwin.cpp in Sources */,
 				18B7C7FC1294222E009E7A26 /* XBTF.cpp in Sources */,
 				18B7C7FD1294222E009E7A26 /* XBTFReader.cpp in Sources */,
 				18B7C890129423A7009E7A26 /* MusicInfoTag.cpp in Sources */,
@@ -10664,6 +10706,7 @@
 				7CCDA16B192753E30074CF51 /* PltService.cpp in Sources */,
 				7C2ED53D1C7F7A9800C04032 /* ProcessInfo.cpp in Sources */,
 				7CCDA174192753E30074CF51 /* PltSsdp.cpp in Sources */,
+				DF0D9F511D63961B006A7DBB /* PlatformDarwinOSX.cpp in Sources */,
 				7CCDA17D192753E30074CF51 /* PltStateVariable.cpp in Sources */,
 				7CCDA186192753E30074CF51 /* PltTaskManager.cpp in Sources */,
 				7CCDA18F192753E30074CF51 /* PltThreadTask.cpp in Sources */,
@@ -11117,6 +11160,7 @@
 				E49912BC174E5D9900741B6D /* udf25.cpp in Sources */,
 				E49912BD174E5D9900741B6D /* UDFDirectory.cpp in Sources */,
 				E49912BE174E5D9900741B6D /* UDFFile.cpp in Sources */,
+				DF0D9F551D639898006A7DBB /* PlatformDarwinIOS.cpp in Sources */,
 				E49912BF174E5D9900741B6D /* UPnPDirectory.cpp in Sources */,
 				E49912C0174E5D9900741B6D /* UPnPFile.cpp in Sources */,
 				E49912C1174E5DA000741B6D /* DirectoryNode.cpp in Sources */,
