@@ -73,7 +73,7 @@ XBMCHelper::XBMCHelper()
 {
   // Compute the KODI_HOME path.
   std::string homePath;
-  CUtil::GetHomePath(homePath);
+  homePath = CUtil::GetHomePath();
   m_homepath = homePath;
 
   // Compute the helper filename.
