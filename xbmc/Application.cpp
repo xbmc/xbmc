@@ -415,7 +415,7 @@ void CApplication::Preflight()
 #if defined(TARGET_DARWIN_OSX)
   std::string install_path;
 
-  CUtil::GetHomePath(install_path);
+  install_path = CUtil::GetHomePath();
   setenv("KODI_HOME", install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
