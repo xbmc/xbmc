@@ -1,8 +1,14 @@
 .SUFFIXES : .m .mm .cpp
 
+OVERRIDES = $(wildcard overrides/@CORE_SYSTEM_NAME@/*.cpp) $(wildcard overrides/@CORE_SYSTEM_VARIANT@/*.cpp)
+ifneq ($(strip $(OVERRIDES)),)
+  CXXFLAGS += -DPLATFORM_OVERRIDE
+endif
+  
 SRCS = posix/MessagePrinter.cpp
 SRCS += xbmc.cpp
 SRCS += XbmcContext.cpp
+SRCS += $(OVERRIDES)
 
 ifeq ($(findstring osx,@ARCH@), osx)
 SRCS += darwin/AutoPool.mm
