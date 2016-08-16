@@ -79,8 +79,7 @@ namespace PVR
       if (channel)
         return channel->GetEPGNow().get() != nullptr;
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
+      if (item.GetEPGInfoTag())
         return true;
 
       const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
@@ -115,8 +114,7 @@ namespace PVR
       if (channel)
         return channel->GetEPGNow().get() != nullptr;
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
+      if (item.GetEPGInfoTag())
         return true;
 
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
@@ -136,8 +134,7 @@ namespace PVR
 
     std::string PlayChannel::GetLabel(const CFileItem &item) const
     {
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
+      if (item.GetEPGInfoTag())
         return g_localizeStrings.Get(19000); /* Switch to channel */
 
       return g_localizeStrings.Get(208); /* Play */
@@ -145,12 +142,10 @@ namespace PVR
 
     bool PlayChannel::IsVisible(const CFileItem &item) const
     {
-      const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
-      if (channel)
+      if (item.GetPVRChannelInfoTag())
         return true;
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
+      if (item.GetEPGInfoTag())
         return true;
 
       return false;
@@ -438,8 +433,7 @@ namespace PVR
 
     std::string DeleteTimer::GetLabel(const CFileItem &item) const
     {
-      const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
-      if (timer)
+      if (item.GetPVRTimerInfoTag())
         return g_localizeStrings.Get(117); /* Delete */
 
       return g_localizeStrings.Get(19060); /* Delete timer */
