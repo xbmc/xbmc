@@ -45,8 +45,6 @@ namespace PVR
     virtual void OnPrepareFileItems(CFileItemList &items) override;
 
   private:
-    bool ActionDeleteRecording(CFileItem *item);
-    bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);

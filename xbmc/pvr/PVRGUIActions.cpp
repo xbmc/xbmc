@@ -34,6 +34,7 @@
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -154,7 +155,6 @@ namespace PVR
   bool CPVRGUIActions::ShowTimerSettings(const CPVRTimerInfoTagPtr &timer) const
   {
     CGUIDialogPVRTimerSettings* pDlgInfo = dynamic_cast<CGUIDialogPVRTimerSettings*>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_TIMER_SETTING));
-
     if (!pDlgInfo)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_PVR_TIMER_SETTING!", __FUNCTION__);
@@ -410,8 +410,8 @@ namespace PVR
       // prompt user for confirmation for deleting the timer
       bConfirmed = CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
                                                     timer->IsTimerRule()
-                                                    ? CVariant{845}  // "Are you sure you want to delete this timer rule and all timers it has scheduled?"
-                                                    : CVariant{846}, // "Are you sure you want to delete this timer?"
+                                                      ? CVariant{845}  // "Are you sure you want to delete this timer rule and all timers it has scheduled?"
+                                                      : CVariant{846}, // "Are you sure you want to delete this timer?"
                                                     CVariant{""},
                                                     CVariant{timer->Title()});
     }
@@ -434,6 +434,33 @@ namespace PVR
                                             CVariant{848}, // "Are you sure you want to stop this recording?"
                                             CVariant{""},
                                             CVariant{timer->Title()});
+  }
+
+  bool CPVRGUIActions::DeleteRecording(const CFileItemPtr &item) const
+  {
+    if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
+      return false;
+
+    if (!ConfirmDeleteRecording(item))
+      return false;
+
+    if (!g_PVRRecordings->Delete(*item))
+      return false;
+
+    g_PVRManager.TriggerRecordingsUpdate();
+    return true;
+  }
+
+  bool CPVRGUIActions::ConfirmDeleteRecording(const CFileItemPtr &item) const
+  {
+    return CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
+                                            item->m_bIsFolder
+                                              ? CVariant{19113} // "Delete all recordings in this folder?"
+                                              : item->GetPVRRecordingInfoTag()->IsDeleted()
+                                                ? CVariant{19294}  // "Delete this recording permanently?"
+                                                : CVariant{19112}, // "Delete this recording?"
+                                            CVariant{""},
+                                            CVariant{item->GetLabel()});
   }
 
   std::string CPVRGUIActions::GetResumeLabel(const CFileItem &item) const

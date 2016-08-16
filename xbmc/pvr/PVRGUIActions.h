@@ -128,6 +128,13 @@ namespace PVR
     bool StopRecording(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Delete a recording, always showing a confirmation dialog.
+     * @param item containing a recording to delete.
+     * @return true, if the recording was deleted successfully, false otherwise.
+     */
+    bool DeleteRecording(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Get a localized resume play label, if the given item can be resumed.
      * @param item containing a recording or an epg tag.
      * @return the localized resume play label that can be used for instance as context menu item label or an empty string if resume is not possible.
@@ -209,6 +216,13 @@ namespace PVR
      * @return true, to proceed with delete, false otherwise.
      */
     bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer) const;
+
+    /*!
+     * @brief Open a dialog to confirm to delete a recording.
+     * @param item the recording to delete.
+     * @return true, to proceed with delete, false otherwise.
+     */
+    bool ConfirmDeleteRecording(const CFileItemPtr &item) const;
 
     /*!
      * @brief Check whether resume play is possible for a given item, display "resume from ..."/"play from start" context menu in case.

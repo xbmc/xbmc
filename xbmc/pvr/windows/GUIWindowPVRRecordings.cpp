@@ -86,7 +86,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     if (isDeletedRecording)
     {
       buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);      /* Undelete */
-      buttons.Add(CONTEXT_BUTTON_DELETE, 19291);        /* Delete permanently */
       if (m_vecItems->GetObjectCount() > 1)
         buttons.Add(CONTEXT_BUTTON_DELETE_ALL, 19292);  /* Delete all permanently */
     }
@@ -109,8 +108,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
       buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
     }
-
-    buttons.Add(CONTEXT_BUTTON_DELETE, 117);        /* Delete */
   }
 
   if (!isDeletedRecording)
@@ -139,7 +136,6 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   return OnContextButtonRename(pItem.get(), button) ||
-      OnContextButtonDelete(pItem.get(), button) ||
       OnContextButtonUndelete(pItem.get(), button) ||
       OnContextButtonDeleteAll(pItem.get(), button) ||
       OnContextButtonMarkWatched(pItem, button) ||
@@ -150,10 +146,17 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
 {
   m_thumbLoader.StopThread();
 
+  int iOldCount = m_vecItems->GetObjectCount();
+  const std::string oldPath = m_vecItems->GetPath();
+
   bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
   if (bReturn)
   {
+    // TODO: does it make sense to show the non-deleted recordings, although user wants
+    //       to see the deleted recordings? Or is this just another hack to avoid misbehavior
+    //       of CGUIMediaWindow if it has no content?
+
     CSingleLock lock(m_critSection);
 
     /* empty list for deleted recordings */
@@ -163,7 +166,16 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
       m_bShowDeletedRecordings = false;
       lock.Leave();
       Update(GetDirectoryPath());
+      return bReturn;
     }
+  }
+
+  if (bReturn && iOldCount > 0 && m_vecItems->GetObjectCount() == 0 && oldPath == m_vecItems->GetPath())
+  {
+    /* go to the parent folder if we're in a subdirectory and for instance just deleted the last item */
+    const CPVRRecordingsPath path(m_vecItems->GetPath());
+    if (path.IsValid() && !path.IsRecordingsRoot())
+      GoParentFolder();
   }
   return bReturn;
 }
@@ -267,7 +279,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
               bReturn = true;
               break;
             case ACTION_DELETE_ITEM:
-              ActionDeleteRecording(item.get());
+              CPVRGUIActions::GetInstance().DeleteRecording(item);
               bReturn = true;
               break;
             default:
@@ -318,54 +330,6 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRRecordings::ActionDeleteRecording(CFileItem *item)
-{
-  bool bReturn = false;
-
-  if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
-    return bReturn;
-
-  /* show a confirmation dialog */
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog)
-    return bReturn;
-
-  int iLine0 = item->m_bIsFolder ? 19113 : item->GetPVRRecordingInfoTag()->IsDeleted() ? 19294 : 19112;
-  pDialog->SetHeading(CVariant{122}); // Confirm delete
-  pDialog->SetLine(0, CVariant{iLine0}); // Delete all recordings in this folder? / Delete this recording permanently? / Delete this recording?
-  pDialog->SetLine(1, CVariant{""});
-  pDialog->SetLine(2, CVariant{item->GetLabel()});
-  pDialog->SetChoice(1, CVariant{117}); // Delete
-
-  /* prompt for the user's confirmation */
-  pDialog->Open();
-  if (!pDialog->IsConfirmed())
-    return bReturn;
-
-  /* delete the recording */
-  if (g_PVRRecordings->Delete(*item))
-  {
-    g_PVRManager.TriggerRecordingsUpdate();
-    bReturn = true;
-
-    /* remove the item from the list immediately, otherwise the
-    item count further down may be wrong */
-    m_vecItems->Remove(item);
-
-    /* go to the parent folder if we're in a subdirectory and just deleted the last item */
-    CPVRRecordingsPath path(m_vecItems->GetPath());
-    if (path.IsValid() && !path.IsRecordingsRoot() && m_vecItems->GetObjectCount() == 0)
-      GoParentFolder();
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button)
-{
-  return button == CONTEXT_BUTTON_DELETE ? ActionDeleteRecording(item) : false;
-}
-
 bool CGUIWindowPVRRecordings::OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
@@ -378,15 +342,6 @@ bool CGUIWindowPVRRecordings::OnContextButtonUndelete(CFileItem *item, CONTEXT_B
   {
     g_PVRManager.TriggerRecordingsUpdate();
     bReturn = true;
-
-    /* remove the item from the list immediately, otherwise the
-    item count further down may be wrong */
-    m_vecItems->Remove(item);
-
-    /* go to the parent folder if we're in a subdirectory and just deleted the last item */
-    CPVRRecordingsPath path(m_vecItems->GetPath());
-    if (path.IsValid() && !path.IsRecordingsRoot() && m_vecItems->GetObjectCount() == 0)
-      GoParentFolder();
   }
 
   return bReturn;
@@ -421,15 +376,6 @@ bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_
   {
     g_PVRManager.TriggerRecordingsUpdate();
     bReturn = true;
-
-    /* remove the item from the list immediately, otherwise the
-    item count further down may be wrong */
-    m_vecItems->Clear();
-
-    /* go to the parent folder if we're in a subdirectory and just deleted the last item */
-    CPVRRecordingsPath path(m_vecItems->GetPath());
-    if (path.IsValid() && !path.IsRecordingsRoot() && m_vecItems->GetObjectCount() == 0)
-      GoParentFolder();
   }
   return bReturn;
 }
