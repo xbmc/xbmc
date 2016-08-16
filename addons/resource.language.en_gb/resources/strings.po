@@ -7506,7 +7506,13 @@ msgctxt "#14124"
 msgid "Region C"
 msgstr ""
 
-#empty strings from id 14125 to 14199
+#. This is in the context of input devices!
+#: system/settings/settings.xml
+msgctxt "#14125"
+msgid "Input"
+msgstr ""
+
+#empty strings from id 14126 to 14199
 
 #: system/settings/settings.xml
 msgctxt "#14200"
@@ -8145,7 +8151,7 @@ msgctxt "#15086"
 msgid "Post-process"
 msgstr ""
 
-#. Audio DSP process chain indication
+#. Audio DSP process chain indication - this is in the context of input signal
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 #: system/settings/settings.xml
 msgctxt "#15087"
