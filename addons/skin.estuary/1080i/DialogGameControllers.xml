@@ -100,19 +100,6 @@
                 <onright>9001</onright>
                 <orientation>vertical</orientation>
             </control>
-            <control type="label" id="8">
-                <description>Default feature category label</description>
-                <height>60</height>
-                <width>330</width>
-                <top>0</top>
-                <label>-</label>
-                <align>center</align>
-                <aligny>center</aligny>
-                <font>font12_title</font>
-                <texturenofocus>lists/separator.png</texturenofocus>
-                <textcolor>grey</textcolor>
-                <shadowcolor>black</shadowcolor>
-            </control>
             <control type="button" id="7">
                 <description>Default feature button</description>
                 <height>60</height>
