@@ -101,6 +101,7 @@ public:
   virtual double GetSubtitleDelay() = 0;
   virtual void SetSubtitleDelay(double delay) = 0;
   virtual bool IsStalled() const = 0;
+  virtual bool IsRewindStalled() const { return false; }
   virtual double GetCurrentPts() = 0;
   virtual double GetOutputDelay() = 0;
   virtual std::string GetPlayerInfo() = 0;
