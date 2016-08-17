@@ -149,11 +149,6 @@ bool CGUIWindowPVRTimersBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowPVRTimersBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
-{
-  return CGUIWindowPVRBase::Update(strDirectory);
-}
-
 void CGUIWindowPVRTimersBase::UpdateButtons(void)
 {
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));

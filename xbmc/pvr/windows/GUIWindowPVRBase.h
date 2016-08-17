@@ -70,6 +70,7 @@ namespace PVR
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
     virtual bool OnContextButtonActiveAEDSPSettings(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
     virtual void UpdateButtons(void) override;
     virtual bool OnAction(const CAction &action) override;
     virtual bool OnBack(int actionID) override;

@@ -131,18 +131,20 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
 
 bool CGUIWindowPVRChannels::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
-  CSingleLock lock(m_critSection);
   bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
-  /* empty list for hidden channels */
-  if (m_vecItems->GetObjectCount() == 0 && m_bShowHiddenChannels)
+  if (bReturn)
   {
-    /* show the visible channels instead */
-    m_bShowHiddenChannels = false;
-    lock.Leave();
-    Update(GetDirectoryPath());
+    CSingleLock lock(m_critSection);
+    /* empty list for hidden channels */
+    if (m_vecItems->GetObjectCount() == 0 && m_bShowHiddenChannels)
+    {
+      /* show the visible channels instead */
+      m_bShowHiddenChannels = false;
+      lock.Leave();
+      Update(GetDirectoryPath());
+    }
   }
-
   return bReturn;
 }
 
