@@ -37,7 +37,8 @@ using namespace JOYSTICK;
 
 CKeymapHandler::CKeymapHandler(void) :
     m_state(STATE_UNPRESSED),
-    m_lastButtonPress(0)
+    m_lastButtonPress(0),
+    m_lastDigitalActionMs(0)
 {
 }
 
