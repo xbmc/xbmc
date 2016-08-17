@@ -2596,7 +2596,7 @@
     <category id="input" label="14125" help="36374">
       <group id="1" label="35000">
         <setting id="input.peripherals" type="action" label="35000" help="36375">
-          <level>2</level>
+          <level>1</level>
           <dependencies>
             <dependency type="enable" on="property" name="HasPeripherals" />
           </dependencies>
