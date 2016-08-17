@@ -774,8 +774,10 @@ PeripheralAddonPtr CPeripherals::GetAddon(const CPeripheral* device)
     if (busType == PERIPHERAL_BUS_ADDON)
     {
       // If device is from an add-on, use that add-on
+      PeripheralAddonPtr peripheralAddon;
       unsigned int index;
-      addonBus->SplitLocation(device->Location(), addon, index);
+      if (addonBus->SplitLocation(device->Location(), addon, index))
+        addon = std::move(peripheralAddon);
     }
     else
     {
