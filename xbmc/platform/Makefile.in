@@ -6,6 +6,7 @@ ifneq ($(strip $(OVERRIDES)),)
 endif
   
 SRCS = posix/MessagePrinter.cpp
+SRCS += Platform.cpp
 SRCS += xbmc.cpp
 SRCS += XbmcContext.cpp
 SRCS += $(OVERRIDES)
@@ -15,6 +16,7 @@ SRCS += darwin/AutoPool.mm
 SRCS += darwin/DarwinUtils.mm
 SRCS += darwin/DictionaryUtils.mm
 SRCS += darwin/DarwinNSUserDefaults.mm
+SRCS += darwin/PlatformDarwin.cpp
 SRCS += darwin/osx/HotKeyController.m
 SRCS += darwin/OSXGNUReplacements.c
 SRCS += darwin/osx/OSXTextInputResponder.mm
