@@ -82,7 +82,8 @@ public:
   void EnableFullscreen(bool bEnable) { m_bAllowFullscreen = bEnable; }
   double GetSubtitleDelay() { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay) { m_iSubtitleDelay = delay; }
-  bool IsStalled() const { return m_stalled; }
+  bool IsStalled() const override { return m_stalled; }
+  bool IsRewindStalled() const override { return m_rewindStalled; }
   double GetCurrentPts();
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   int GetDecoderFreeSpace() { return 0; }
@@ -129,7 +130,8 @@ protected:
   bool m_bRenderSubs;
   float m_fForcedAspectRatio;
   int m_speed;
-  bool m_stalled;
+  std::atomic_bool m_stalled;
+  std::atomic_bool m_rewindStalled;
   bool m_paused;
   IDVDStreamPlayer::ESyncState m_syncState;
   std::atomic_bool m_bAbortOutput;

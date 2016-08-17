@@ -1309,6 +1309,8 @@ void CRenderManager::PrepareNextRender()
   double renderPts = frameOnScreen + totalLatency;
 
   double nextFramePts = m_Queue[m_queued.front()].pts;
+  if (m_dvdClock.GetClockSpeed() < 0)
+    nextFramePts = renderPts;
 
   if (m_clockSync.m_enabled)
   {
