@@ -762,29 +762,15 @@ void CPeripherals::ProcessEvents(void)
     bus->ProcessEvents();
 }
 
-PeripheralAddonPtr CPeripherals::GetAddon(const CPeripheral* device)
+PeripheralAddonPtr CPeripherals::GetAddonWithButtonMap(const CPeripheral* device)
 {
+  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
+
   PeripheralAddonPtr addon;
 
-  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
-  if (device && addonBus)
-  {
-    PeripheralBusType busType = device->GetBusType();
-
-    if (busType == PERIPHERAL_BUS_ADDON)
-    {
-      // If device is from an add-on, use that add-on
-      PeripheralAddonPtr peripheralAddon;
-      unsigned int index;
-      if (addonBus->SplitLocation(device->Location(), addon, index))
-        addon = std::move(peripheralAddon);
-    }
-    else
-    {
-      // Otherwise, have the add-on bus find a suitable add-on
-      addonBus->GetAddonWithButtonMap(device, addon);
-    }
-  }
+  PeripheralAddonPtr addonWithButtonMap;
+  if (addonBus && addonBus->GetAddonWithButtonMap(device, addonWithButtonMap))
+    addon = std::move(addonWithButtonMap);
 
   return addon;
 }

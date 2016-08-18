@@ -32,7 +32,7 @@ using namespace PERIPHERALS;
 
 CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral, IInputHandler* handler, IDriverReceiver* receiver)
 {
-  PeripheralAddonPtr addon = g_peripherals.GetAddon(peripheral);
+  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(peripheral);
 
   if (!addon)
   {

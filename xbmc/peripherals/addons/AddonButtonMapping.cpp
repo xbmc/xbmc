@@ -29,7 +29,7 @@ using namespace PERIPHERALS;
 
 CAddonButtonMapping::CAddonButtonMapping(CPeripheral* peripheral, IButtonMapper* mapper)
 {
-  PeripheralAddonPtr addon = g_peripherals.GetAddon(peripheral);
+  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(peripheral);
 
   if (!addon)
   {
