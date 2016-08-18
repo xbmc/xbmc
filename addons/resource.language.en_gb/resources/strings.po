@@ -923,6 +923,7 @@ msgctxt "#207"
 msgid "Plot"
 msgstr ""
 
+#: xbmc/pvr/windows/PVRGUIWindowRecordings.cpp
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: system/settings/settings.xml
 msgctxt "#208"
@@ -5176,6 +5177,8 @@ msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
 
+#. Label of video/recordings context menu items
+#: xbmc/pvr/windows/PVRGUIWindowRecordings.cpp
 #: xbmc/video/ContextMenus.cpp
 msgctxt "#12023"
 msgid "Play from beginning"

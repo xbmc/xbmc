@@ -123,10 +123,17 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     if (!isDeletedRecording)
     {
       buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar */
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Start from beginning */
+
       std::string resumeString = GetResumeString(*pItem);
-      if (!resumeString.empty())
-        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
+      if (resumeString.empty())
+      {
+        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); /* Play */
+      }
+      else
+      {
+        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString); /* Resume from HH:MM:SS */
+        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12023); /* Play from beginning */
+      }
     }
     else
     {
