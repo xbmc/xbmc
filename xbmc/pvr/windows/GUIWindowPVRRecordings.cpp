@@ -84,7 +84,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
     if (isDeletedRecording)
     {
-      buttons.Add(CONTEXT_BUTTON_UNDELETE, 19290);      /* Undelete */
       if (m_vecItems->GetObjectCount() > 1)
         buttons.Add(CONTEXT_BUTTON_DELETE_ALL, 19292);  /* Delete all permanently */
     }
@@ -132,8 +131,7 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonUndelete(pItem.get(), button) ||
-      OnContextButtonDeleteAll(pItem.get(), button) ||
+  return OnContextButtonDeleteAll(pItem.get(), button) ||
       OnContextButtonMarkWatched(pItem, button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
@@ -324,23 +322,6 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
-}
-
-bool CGUIWindowPVRRecordings::OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button != CONTEXT_BUTTON_UNDELETE || !item->IsDeletedPVRRecording())
-    return bReturn;
-
-  /* undelete the recording */
-  if (g_PVRRecordings->Undelete(*item))
-  {
-    g_PVRManager.TriggerRecordingsUpdate();
-    bReturn = true;
-  }
-
-  return bReturn;
 }
 
 bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button)

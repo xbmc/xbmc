@@ -142,6 +142,13 @@ namespace PVR
     bool DeleteRecording(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Undelete a recording.
+     * @param item containing a recording to undelete.
+     * @return true, if the recording was undeleted successfully, false otherwise.
+     */
+    bool UndeleteRecording(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Get a localized resume play label, if the given item can be resumed.
      * @param item containing a recording or an epg tag.
      * @return the localized resume play label that can be used for instance as context menu item label or an empty string if resume is not possible.

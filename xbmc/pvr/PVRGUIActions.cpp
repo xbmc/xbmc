@@ -481,6 +481,19 @@ namespace PVR
                                             CVariant{item->GetLabel()});
   }
 
+  bool CPVRGUIActions::UndeleteRecording(const CFileItemPtr &item) const
+  {
+    if (!item->IsDeletedPVRRecording())
+      return false;
+
+    /* undelete the recording */
+    if (!g_PVRRecordings->Undelete(*item))
+      return false;
+
+    g_PVRManager.TriggerRecordingsUpdate();
+    return true;
+  }
+
   std::string CPVRGUIActions::GetResumeLabel(const CFileItem &item) const
   {
     std::string resumeString;

@@ -45,7 +45,6 @@ namespace PVR
     virtual void OnPrepareFileItems(CFileItemList &items) override;
 
   private:
-    bool OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
