@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
@@ -434,6 +435,23 @@ namespace PVR
                                             CVariant{848}, // "Are you sure you want to stop this recording?"
                                             CVariant{""},
                                             CVariant{timer->Title()});
+  }
+
+  bool CPVRGUIActions::RenameRecording(const CFileItemPtr &item) const
+  {
+    const CPVRRecordingPtr recording(item->GetPVRRecordingInfoTag());
+    if (!recording)
+      return false;
+
+    std::string strNewName(recording->m_strTitle);
+    if (!CGUIKeyboardFactory::ShowAndGetInput(strNewName, CVariant{g_localizeStrings.Get(19041)}, false))
+      return false;
+
+    if (!g_PVRRecordings->RenameRecording(*item, strNewName))
+      return false;
+
+    g_PVRManager.TriggerRecordingsUpdate();
+    return true;
   }
 
   bool CPVRGUIActions::DeleteRecording(const CFileItemPtr &item) const

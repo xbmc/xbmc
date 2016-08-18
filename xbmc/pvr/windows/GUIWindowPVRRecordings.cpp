@@ -21,7 +21,6 @@
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -105,8 +104,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
-
-      buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename */
     }
   }
 
@@ -135,8 +132,7 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     return false;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonRename(pItem.get(), button) ||
-      OnContextButtonUndelete(pItem.get(), button) ||
+  return OnContextButtonUndelete(pItem.get(), button) ||
       OnContextButtonDeleteAll(pItem.get(), button) ||
       OnContextButtonMarkWatched(pItem, button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
@@ -377,29 +373,6 @@ bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_
     g_PVRManager.TriggerRecordingsUpdate();
     bReturn = true;
   }
-  return bReturn;
-}
-
-bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_RENAME)
-  {
-    CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
-    if (recording)
-    {
-      bReturn = true;
-
-      std::string strNewName = recording->m_strTitle;
-      if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, CVariant{g_localizeStrings.Get(19041)}, false))
-      {
-        if (g_PVRRecordings->RenameRecording(*item, strNewName))
-          Refresh(true);
-      }
-    }
-  }
-
   return bReturn;
 }
 

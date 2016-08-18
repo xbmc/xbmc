@@ -58,6 +58,7 @@ namespace PVR
     DECL_CONTEXTMENUITEM(PlayChannel);
     DECL_CONTEXTMENUITEM(ResumePlayRecording);
     DECL_CONTEXTMENUITEM(PlayRecording);
+    DECL_CONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_CONTEXTMENUITEM(ShowAudioDSPSettings);
     DECL_CONTEXTMENUITEM(PVRClientMenuHook);
@@ -286,6 +287,28 @@ namespace PVR
     bool StopRecording::Execute(const CFileItemPtr &item) const
     {
       return CPVRGUIActions::GetInstance().StopRecording(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Rename recording
+
+    std::string RenameRecording::GetLabel(const CFileItem &item) const
+    {
+      return g_localizeStrings.Get(118); /* Rename */
+    }
+
+    bool RenameRecording::IsVisible(const CFileItem &item) const
+    {
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (recording && !recording->IsDeleted())
+        return true;
+
+      return false;
+    }
+
+    bool RenameRecording::Execute(const CFileItemPtr &item) const
+    {
+      return CPVRGUIActions::GetInstance().RenameRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -589,6 +612,7 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
       std::make_shared<CONTEXTMENUITEM::StartRecording>(),
       std::make_shared<CONTEXTMENUITEM::StopRecording>(),
+      std::make_shared<CONTEXTMENUITEM::RenameRecording>(),
       std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
       std::make_shared<CONTEXTMENUITEM::ShowAudioDSPSettings>(),
       std::make_shared<CONTEXTMENUITEM::PVRClientMenuHook>(),
