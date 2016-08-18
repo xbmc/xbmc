@@ -56,11 +56,6 @@ namespace PERIPHERALS
     unsigned int GetAddonCount(void) const;
 
     /*!
-     * \brief Initialize the properties of a peripheral with a known location
-     */
-    bool InitializeProperties(CPeripheral* peripheral);
-
-    /*!
      * \brief Set the rumble state of a rumble motor
      *
      * \param strLocation The location of the peripheral with the motor
@@ -74,6 +69,7 @@ namespace PERIPHERALS
     bool SendRumbleEvent(const std::string& strLocation, unsigned int motorIndex, float magnitude);
 
     // Inherited from CPeripheralBus
+    virtual bool         InitializeProperties(CPeripheral* peripheral) override;
     virtual void         Register(CPeripheral *peripheral) override;
     virtual void         GetFeatures(std::vector<PeripheralFeature> &features) const override;
     virtual bool         HasFeature(const PeripheralFeature feature) const override;

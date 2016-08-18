@@ -58,42 +58,22 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   {
     if (feature == FEATURE_JOYSTICK)
     {
-      if (m_mappedBusType == PERIPHERAL_BUS_ADDON)
+      if (m_bus->InitializeProperties(this))
+        bSuccess = true;
+      else
+        CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
+
+      if (bSuccess)
       {
-        CPeripheralBusAddon* addonBus = dynamic_cast<CPeripheralBusAddon*>(m_bus);
-        if (addonBus)
-        {
-          if (addonBus->InitializeProperties(this))
-            bSuccess = true;
-          else
-            CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
-        }
+        // Give joystick monitor priority over default controller
+        RegisterJoystickInputHandler(&m_defaultInputHandler);
+        RegisterJoystickDriverHandler(&m_joystickMonitor, false);
       }
-#ifdef TARGET_ANDROID
-      else if (m_mappedBusType == PERIPHERAL_BUS_ANDROID)
-      {
-        CPeripheralBusAndroid* androidBus = dynamic_cast<CPeripheralBusAndroid*>(m_bus);
-        if (androidBus)
-        {
-          if (androidBus->InitializeProperties(this))
-            bSuccess = true;
-          else
-            CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
-        }
-      }
-#endif
     }
     else if (feature == FEATURE_RUMBLE)
     {
       bSuccess = true; // Nothing to do
     }
-  }
-
-  if (bSuccess)
-  {
-    // Give joystick monitor priority over default controller
-    RegisterJoystickInputHandler(&m_defaultInputHandler);
-    RegisterJoystickDriverHandler(&m_joystickMonitor, false);
   }
 
   return bSuccess;

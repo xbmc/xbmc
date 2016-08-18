@@ -41,12 +41,8 @@ namespace PERIPHERALS
     CPeripheralBusAndroid(CPeripherals *manager);
     virtual ~CPeripheralBusAndroid();
 
-    /*!
-     * \brief Initialize the properties of a peripheral with a known location
-     */
-    bool InitializeProperties(CPeripheral* peripheral) const;
-
     // specialisation of CPeripheralBus
+    bool InitializeProperties(CPeripheral* peripheral) override;
     void ProcessEvents() override;
 
     // implementations of IInputDeviceCallbacks
