@@ -976,6 +976,17 @@ bool CGUIWindowPVRBase::UpdateEpgForChannel(CFileItem *item)
   return true;
 }
 
+bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilterPath /*= true*/)
+{
+  if (!GetChannelGroup())
+  {
+    // no updates before fully initialized
+    return false;
+  }
+
+  return CGUIMediaWindow::Update(strDirectory, updateFilterPath);
+}
+
 void CGUIWindowPVRBase::UpdateButtons(void)
 {
   CGUIMediaWindow::UpdateButtons();

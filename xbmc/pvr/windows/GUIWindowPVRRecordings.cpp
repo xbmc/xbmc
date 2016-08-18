@@ -209,14 +209,19 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
 
   bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
-  /* empty list for deleted recordings */
-  if (m_vecItems->GetObjectCount() == 0 && m_bShowDeletedRecordings)
+  if (bReturn)
   {
-    /* show the normal recordings instead */
-    m_bShowDeletedRecordings = false;
-    Update(GetDirectoryPath());
-  }
+    CSingleLock lock(m_critSection);
 
+    /* empty list for deleted recordings */
+    if (m_vecItems->GetObjectCount() == 0 && m_bShowDeletedRecordings)
+    {
+      /* show the normal recordings instead */
+      m_bShowDeletedRecordings = false;
+      lock.Leave();
+      Update(GetDirectoryPath());
+    }
+  }
   return bReturn;
 }
 
