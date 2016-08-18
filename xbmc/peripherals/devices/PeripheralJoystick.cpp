@@ -19,7 +19,9 @@
  */
 
 #include "PeripheralJoystick.h"
+#include "input/joysticks/DeadzoneFilter.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/android/PeripheralBusAndroid.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "threads/SingleLock.h"
@@ -45,6 +47,8 @@ CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult,
 
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
+  m_deadzoneFilter.reset();
+  m_buttonMap.reset();
   m_defaultInputHandler.AbortRumble();
   UnregisterJoystickInputHandler(&m_defaultInputHandler);
   UnregisterJoystickDriverHandler(&m_joystickMonitor);
@@ -65,6 +69,8 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
 
       if (bSuccess)
       {
+        InitializeDeadzoneFiltering();
+
         // Give joystick monitor priority over default controller
         RegisterJoystickInputHandler(&m_defaultInputHandler);
         RegisterJoystickDriverHandler(&m_joystickMonitor, false);
@@ -77,6 +83,29 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   }
 
   return bSuccess;
+}
+
+void CPeripheralJoystick::InitializeDeadzoneFiltering()
+{
+  // Get a button map for deadzone filtering
+  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(this);
+  if (addon)
+  {
+    m_buttonMap.reset(new CAddonButtonMap(this, addon, DEFAULT_CONTROLLER_ID));
+    if (m_buttonMap->Load())
+    {
+      m_deadzoneFilter.reset(new CDeadzoneFilter(m_buttonMap.get(), this));
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CPeripheralJoystick: Failed to load button map for deadzone filtering on %s", m_strLocation.c_str());
+      m_buttonMap.reset();
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CPeripheralJoystick: Failed to create button map for deadzone filtering on %s", m_strLocation.c_str());
+  }
 }
 
 void CPeripheralJoystick::OnUserNotification()
@@ -190,6 +219,10 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
 {
   CSingleLock lock(m_handlerMutex);
+
+  // Apply deadzone filtering
+  if (m_deadzoneFilter)
+    position = m_deadzoneFilter->FilterAxis(axisIndex, position);
 
   // Process promiscuous handlers
   for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin(); it != m_driverHandlers.end(); ++it)

@@ -1,11 +1,13 @@
-set(SOURCES DefaultJoystick.cpp
+set(SOURCES DeadzoneFilter.cpp
+            DefaultJoystick.cpp
             DriverPrimitive.cpp
             JoystickMonitor.cpp
             JoystickTranslator.cpp
             KeymapHandler.cpp
             RumbleGenerator.cpp)
 
-set(HEADERS DefaultJoystick.h
+set(HEADERS DeadzoneFilter.h
+            DefaultJoystick.h
             DriverPrimitive.h
             IButtonMap.h
             IButtonMapper.h
