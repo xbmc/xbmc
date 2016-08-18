@@ -402,7 +402,8 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScan
       PeripheralTypeTranslator::FormatHexString(result.m_iProductId, strProductId);
       CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
       result.m_mappedType    = mapping.m_mappedTo;
-      result.m_strDeviceName = mapping.m_strDeviceName;
+      if (!mapping.m_strDeviceName.empty())
+        result.m_strDeviceName = mapping.m_strDeviceName;
       return true;
     }
   }
