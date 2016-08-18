@@ -51,7 +51,7 @@
 #endif
 
 /* current Peripheral API version */
-#define PERIPHERAL_API_VERSION "1.0.20"
+#define PERIPHERAL_API_VERSION "1.0.21"
 
 /* min. Peripheral API version */
 #define PERIPHERAL_MIN_API_VERSION "1.0.19"
@@ -112,6 +112,7 @@ extern "C"
   typedef struct PERIPHERAL_CAPABILITIES
   {
     bool provides_joysticks;            /*!< @brief true if the add-on provides joysticks */
+    bool provides_buttonmaps;           /*!< @brief true if the add-on provides button maps */
   } ATTRIBUTE_PACKED PERIPHERAL_CAPABILITIES;
   ///}
 
