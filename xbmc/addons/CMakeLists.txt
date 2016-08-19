@@ -30,6 +30,7 @@ set(SOURCES Addon.cpp
             Service.cpp
             Skin.cpp
             UISoundsResource.cpp
+            VFSEntry.cpp
             Visualisation.cpp
             Webinterface.cpp)
 
@@ -70,6 +71,7 @@ set(HEADERS Addon.h
             Service.h
             Skin.h
             UISoundsResource.h
+            VFSEntry.h
             Visualisation.h
             Webinterface.h)
 

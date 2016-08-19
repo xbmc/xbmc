@@ -33,6 +33,7 @@
 #include "addons/Service.h"
 #include "addons/Skin.h"
 #include "addons/UISoundsResource.h"
+#include "addons/VFSEntry.h"
 #include "addons/Visualisation.h"
 #include "addons/Webinterface.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
@@ -89,6 +90,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       type == ADDON_ADSPDLL ||
       type == ADDON_AUDIOENCODER ||
       type == ADDON_AUDIODECODER ||
+      type == ADDON_VFS ||
       type == ADDON_INPUTSTREAM ||
       type == ADDON_PERIPHERALDLL ||
       type == ADDON_GAMEDLL)
@@ -142,6 +144,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_GAMEDLL:
       return GAME::CGameClient::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_VFS:
+      return CVFSEntry::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_SKIN:
       return CSkinInfo::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_RESOURCE_IMAGES:
