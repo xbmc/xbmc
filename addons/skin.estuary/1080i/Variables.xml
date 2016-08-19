@@ -321,7 +321,7 @@
 	</variable>
 	<variable name="SettingsSectionIcon">
 		<value condition="Window.IsActive(playersettings)">icons/settings/video.png</value>
-		<value condition="Window.IsActive(librarysettings)">icons/settings/library.png</value>
+		<value condition="Window.IsActive(mediasettings)">icons/settings/library.png</value>
 		<value condition="Window.IsActive(pvrsettings)">icons/settings/livetv.png</value>
 		<value condition="Window.IsActive(servicesettings)">icons/settings/network.png</value>
 		<value condition="Window.IsActive(interfacesettings)">icons/settings/appearance.png</value>
