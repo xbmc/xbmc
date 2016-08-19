@@ -28,13 +28,12 @@
 
 using namespace Shaders;
 
-GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange, GLuint clutTex, int clutSize, unsigned videoflags)
+GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange, GLuint clutTex, int clutSize)
 {
   // set member variable initial values
   m_1stTexUnit = texunit;
   m_uDither = m_1stTexUnit+0;
   m_uCLUT = m_1stTexUnit+1;
-  m_flags = videoflags;
 
   //   textures
   m_tDitherTex  = 0;

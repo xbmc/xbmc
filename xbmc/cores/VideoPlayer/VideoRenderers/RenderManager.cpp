@@ -934,10 +934,10 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
       vsync = StringUtils::Format("VSyncOff: %.1f  ", m_clockSync.m_syncOffset / 1000);
       if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
       {
-        vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%+.3f%%",
+        vsync += StringUtils::Format("VSync: refresh:%.3f missed:%i speed:%.3f%%",
                                      refreshrate,
                                      missedvblanks,
-                                     clockspeed);
+                                     clockspeed * 100);
       }
 
       m_debugRenderer.SetInfo(audio, video, player, vsync);
