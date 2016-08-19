@@ -72,6 +72,7 @@ public:
   CPlatform& GetPlatform();
 
   PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
+  int init_level = 0;
 
   CSettings& GetSettings();
 
