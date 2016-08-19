@@ -242,3 +242,21 @@ CURL CDVDInputStreamFFmpeg::GetM3UBestBandwidthStream(const CURL &url, size_t ba
   subStreamUrl.SetProtocolOptions(url.GetProtocolOptions());
   return subStreamUrl;
 }
+
+std::string CDVDInputStreamFFmpeg::GetFileName()
+{
+  CURL url = GetURL();
+  // rtmp options
+  if (url.IsProtocol("rtmp")  || url.IsProtocol("rtmpt")  ||
+      url.IsProtocol("rtmpe") || url.IsProtocol("rtmpte") ||
+      url.IsProtocol("rtmps"))
+  {
+    std::vector<std::string> opts = StringUtils::Split(url.Get(), " ");
+    if (opts.size() > 0)
+    {
+      return opts.front();
+    }
+    return url.Get();
+  }
+  return CDVDInputStream::GetFileName();
+}
