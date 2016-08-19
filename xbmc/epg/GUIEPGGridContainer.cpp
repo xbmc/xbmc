@@ -500,7 +500,16 @@ void CGUIEPGGridContainer::UpdateItems()
 
     if (prevSelectedEpgTag->StartAsUTC().IsValid()) // "normal" tag selected
     {
-      newBlockIndex = (prevSelectedEpgTag->StartAsUTC() - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
+      const CDateTime gridStart(m_gridModel->GetGridStart());
+      const CDateTime eventStart(prevSelectedEpgTag->StartAsUTC());
+
+      if (gridStart >= eventStart)
+      {
+        // start of previously selected event is before grid start
+        newBlockIndex = eventOffset;
+      }
+      else
+        newBlockIndex = (eventStart - gridStart).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
 
       const CPVRChannelPtr channel(prevSelectedEpgTag->ChannelTag());
       if (channel)
@@ -516,7 +525,16 @@ void CGUIEPGGridContainer::UpdateItems()
         const CEpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
         if (tag && tag->EndAsUTC().IsValid())
         {
-          newBlockIndex = (tag->EndAsUTC() - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
+          const CDateTime gridStart(m_gridModel->GetGridStart());
+          const CDateTime eventEnd(tag->EndAsUTC());
+
+          if (gridStart >= eventEnd)
+          {
+            // start of previously selected gap tag is before grid start
+            newBlockIndex = eventOffset;
+          }
+          else
+            newBlockIndex = (eventEnd - gridStart).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK + eventOffset;
 
           const CPVRChannelPtr channel(tag->ChannelTag());
           if (channel)
