@@ -323,8 +323,6 @@
       <right>StepForward</right>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
-      <left mod="longpress">Rewind</left>
-      <right mod="longpress">FastForward</right>
       <up mod="longpress">AudioNextLanguage</up>
       <down mod="longpress">NextSubtitle</down>
       <a>AudioDelay</a>
