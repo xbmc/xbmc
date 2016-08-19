@@ -664,6 +664,10 @@ namespace ADDON
     void SetPositiveY(const DriverPrimitive& primitive) { m_primitives[1] = primitive; }
     void SetPositiveZ(const DriverPrimitive& primitive) { m_primitives[2] = primitive; }
 
+    // Access primitives
+    std::array<DriverPrimitive, MAX_PRIMITIVES>& Primitives() { return m_primitives; }
+    const std::array<DriverPrimitive, MAX_PRIMITIVES>& Primitives() const { return m_primitives; }
+
     void ToStruct(JOYSTICK_FEATURE& feature) const
     {
       feature.name = new char[m_name.length() + 1];
