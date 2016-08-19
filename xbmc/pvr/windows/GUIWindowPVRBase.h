@@ -74,7 +74,11 @@ namespace PVR
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
 
-    static bool PlayRecording(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
+    /*!
+     * @brief Refresh window content.
+     * @return true, if refresh succeeded, false otherwise.
+     */
+    bool DoRefresh(void) { return Refresh(true); }
 
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);

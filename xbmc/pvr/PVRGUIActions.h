@@ -174,6 +174,20 @@ namespace PVR
     bool PlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const;
 
     /*!
+     * @brief Mark a recording or a recordings folder as watched.
+     * @param item containing a recording or a recordings folder.
+     * @return true, if the recording or the recordings folder was successfully marked as watched, false otherwise.
+     */
+    bool MarkWatched(const CFileItemPtr &item) const;
+
+    /*!
+     * @brief Mark a recording or a recordings folder as unwatched.
+     * @param item containing a recording or a recordings folder.
+     * @return true, if the recording or the recordings folder was successfully marked as unwatched, false otherwise.
+     */
+    bool MarkUnwatched(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Switch channel.
      * @param item containing a channel or an epg tag.
      * @param bPlayMinimized controls whether the channel should be played fullscreen or in a window.

@@ -88,23 +88,6 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
         buttons.Add(CONTEXT_BUTTON_DELETE_ALL, 19292);  /* Delete all permanently */
     }
   }
-  if (!isDeletedRecording)
-  {
-    if (pItem->m_bIsFolder)
-    {
-      // Have both options for folders since we don't know whether all children are watched/unwatched
-      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
-      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
-    }
-
-    if (recording)
-    {
-      if (recording->m_playCount > 0)
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
-      else
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
-    }
-  }
 
   if (!isDeletedRecording)
     CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
@@ -132,7 +115,6 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   return OnContextButtonDeleteAll(pItem.get(), button) ||
-      OnContextButtonMarkWatched(pItem, button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
@@ -245,13 +227,9 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
                     bReturn = true;
                     break;
                   case SELECT_ACTION_RESUME:
-                  {
-                    const std::string resumeString = GetResumeString(*item);
-                    item->m_lStartOffset = resumeString.empty() ? 0 : STARTOFFSET_RESUME;
                     CPVRGUIActions::GetInstance().ResumePlayRecording(item, false /* don't play minimized */, true /* fall back to play if no resume possible */);
                     bReturn = true;
                     break;
-                  }
                   case SELECT_ACTION_INFO:
                     CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
                     bReturn = true;
@@ -354,28 +332,6 @@ bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_
     g_PVRManager.TriggerRecordingsUpdate();
     bReturn = true;
   }
-  return bReturn;
-}
-
-bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_MARK_WATCHED || button == CONTEXT_BUTTON_MARK_UNWATCHED)
-  {
-    if (button == CONTEXT_BUTTON_MARK_WATCHED)
-      bReturn = g_PVRRecordings->IncrementRecordingsPlayCount(item);
-    else
-      bReturn = g_PVRRecordings->SetRecordingsPlayCount(item, 0);
-
-    if (bReturn)
-    {
-      // Advance the selected item one notch
-      m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
-      Refresh(true);
-    }
-  }
-
   return bReturn;
 }
 

@@ -46,7 +46,6 @@ namespace PVR
 
   private:
     bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;

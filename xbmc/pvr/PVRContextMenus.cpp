@@ -26,6 +26,7 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "settings/Settings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "utils/URIUtils.h"
@@ -58,6 +59,8 @@ namespace PVR
     DECL_CONTEXTMENUITEM(PlayChannel);
     DECL_CONTEXTMENUITEM(ResumePlayRecording);
     DECL_CONTEXTMENUITEM(PlayRecording);
+    DECL_CONTEXTMENUITEM(MarkWatched);
+    DECL_CONTEXTMENUITEM(MarkUnwatched);
     DECL_CONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_CONTEXTMENUITEM(UndeleteRecording);
@@ -228,6 +231,76 @@ namespace PVR
     {
       item->m_lStartOffset = 0; // must always be set if PlayRecording is called with bCheckResume == false
       return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, false /* bCheckResume */);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Mark watched
+
+    std::string MarkWatched::GetLabel(const CFileItem &item) const
+    {
+      return g_localizeStrings.Get(16103); /* Mark as watched */
+    }
+
+    bool MarkWatched::IsVisible(const CFileItem &item) const
+    {
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (!recording)
+        return false;
+
+      // ".." folders don't have have "mark watched" context menu item
+      if (item.IsParentFolder())
+        return false;
+
+      // recording folders always have "mark watched" context menu item
+      if (item.m_bIsFolder)
+        return true;
+
+      if (!recording->IsDeleted())
+      {
+        if (recording->m_playCount == 0)
+          return true;
+      }
+      return false;
+    }
+
+    bool MarkWatched::Execute(const CFileItemPtr &item) const
+    {
+      return CPVRGUIActions::GetInstance().MarkWatched(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Mark unwatched
+
+    std::string MarkUnwatched::GetLabel(const CFileItem &item) const
+    {
+      return g_localizeStrings.Get(16104); /* Mark as unwatched */
+    }
+
+    bool MarkUnwatched::IsVisible(const CFileItem &item) const
+    {
+      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+      if (!recording)
+        return false;
+
+      // ".." folders don't have have "mark unwatched" context menu item
+      if (item.IsParentFolder())
+        return false;
+
+      // recording folders always have "mark unwatched" context menu item
+      if (item.m_bIsFolder)
+        return true;
+
+      if (!recording->IsDeleted())
+      {
+        if (recording->m_playCount > 0)
+          return true;
+      }
+      return false;
+    }
+
+    bool MarkUnwatched::Execute(const CFileItemPtr &item) const
+    {
+      return CPVRGUIActions::GetInstance().MarkUnwatched(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -628,6 +701,8 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::PlayChannel>(),
       std::make_shared<CONTEXTMENUITEM::ResumePlayRecording>(),
       std::make_shared<CONTEXTMENUITEM::PlayRecording>(),
+      std::make_shared<CONTEXTMENUITEM::MarkWatched>(),
+      std::make_shared<CONTEXTMENUITEM::MarkUnwatched>(),
       std::make_shared<CONTEXTMENUITEM::AddTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(),
