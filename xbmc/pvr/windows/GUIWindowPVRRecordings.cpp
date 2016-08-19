@@ -101,7 +101,7 @@ std::string CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
 
     // Suppress resume from 0
     if (positionInSeconds > 0)
-      resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(positionInSeconds).c_str());
+      resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(positionInSeconds, TIME_FORMAT_HH_MM_SS).c_str());
   }
   return resumeString;
 }
@@ -123,10 +123,17 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     if (!isDeletedRecording)
     {
       buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar */
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Start from beginning */
+
       std::string resumeString = GetResumeString(*pItem);
-      if (!resumeString.empty())
-        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
+      if (resumeString.empty())
+      {
+        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); /* Play */
+      }
+      else
+      {
+        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString); /* Resume from HH:MM:SS */
+        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12023); /* Play from beginning */
+      }
     }
     else
     {
@@ -493,14 +500,16 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
 
   if (button == CONTEXT_BUTTON_MARK_WATCHED || button == CONTEXT_BUTTON_MARK_UNWATCHED)
   {
-    int playCount = button == CONTEXT_BUTTON_MARK_WATCHED ? 1 : 0;
+    if (button == CONTEXT_BUTTON_MARK_WATCHED)
+      bReturn = g_PVRRecordings->IncrementRecordingsPlayCount(item);
+    else
+      bReturn = g_PVRRecordings->SetRecordingsPlayCount(item, 0);
 
-    if (g_PVRRecordings->SetRecordingsPlayCount(item, playCount))
+    if (bReturn)
     {
       // Advance the selected item one notch
       m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
       Refresh(true);
-      bReturn = true;
     }
   }
 

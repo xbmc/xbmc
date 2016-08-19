@@ -58,6 +58,19 @@ namespace PVR
     bool DeleteDirectory(const CFileItem &item);
     bool DeleteRecording(const CFileItem &item);
 
+    /**
+     * @brief special value for parameter count of method ChangeRecordingsPlayCount
+     */
+    static const int INCREMENT_PLAY_COUNT = -1;
+
+    /**
+     * @brief change the playcount of the given recording or recursively of all children of the given recordings folder
+     * @param item the recording or directory containing recordings
+     * @param count the new playcount or INCREMENT_PLAY_COUNT to denote that the current playcount(s) are to be incremented by one
+     * @return true if all playcounts were changed
+     */
+    bool ChangeRecordingsPlayCount(const CFileItemPtr &item, int count);
+
   public:
     CPVRRecordings(void);
     virtual ~CPVRRecordings(void);
@@ -87,6 +100,7 @@ namespace PVR
     bool DeleteAllRecordingsFromTrash();
     bool RenameRecording(CFileItem &item, std::string &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
+    bool IncrementRecordingsPlayCount(const CFileItemPtr &item);
 
     bool GetDirectory(const std::string& strPath, CFileItemList &items);
     CFileItemPtr GetByPath(const std::string &path);
