@@ -8525,9 +8525,9 @@ msgstr ""
 #empty strings from id 16040 to 16040
 
 #: xbmc/guilib/GUIRadioButtonControl.cpp"
-msgctxt "#16041"		
-msgid "On"		
-msgstr ""		
+msgctxt "#16041"
+msgid "On"
+msgstr ""
 
 #empty strings from id 16042 to 16099
 
