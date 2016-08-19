@@ -35,8 +35,7 @@ namespace Shaders
       unsigned int ditherDepth,
       bool fullrange,
       GLuint clutTex,
-      int clutSize,
-      unsigned videoflags);
+      int clutSize);
     std::string GetDefines();
     void OnCompiledAndLinked(GLuint programHandle);
     bool OnEnabled();
@@ -50,7 +49,6 @@ namespace Shaders
     unsigned int m_ditherDepth;
     bool m_fullRange;
     bool m_3DLUT;
-    unsigned m_flags;
     // first texture unit available to us
     int m_1stTexUnit;
     int m_uDither;
