@@ -271,7 +271,7 @@ static void VFSDirEntriesToCFileItemList(int num_entries,
     item->SetLabel(entries[i].label);
     item->SetPath(entries[i].path);
     item->m_dwSize = entries[i].size;
-    item->m_dateTime = entries[i].mtime;
+    //item->m_dateTime = entries[i].mtime;
     item->m_bIsFolder = entries[i].folder;
     if (entries[i].title)
       item->m_strTitle = entries[i].title;

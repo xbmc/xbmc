@@ -58,7 +58,7 @@ extern "C"
     char* path;              //!< item path
     int num_props;           //!< Number of properties attached to item
     VFSProperty* properties; //!< Properties
-    FILETIME mtime;          //!< Mtime for file represented by item
+    //FILETIME mtime;          //!< Mtime for file represented by item
     bool folder;             //!< Item is a folder
     uint64_t size;           //!< Size of file represented by item
   };
