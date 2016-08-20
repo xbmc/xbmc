@@ -6831,7 +6831,6 @@ msgctxt "#13518"
 msgid "When the speed change exceeds this threshold, a pitch-correction filter will be applied. This avoids the \"chipmonk voices\" that normally result from speeding up a video"
 msgstr ""
 
-
 #empty strings from id 13519 to 13549
 
 #: system/settings/settings.xml
@@ -8522,7 +8521,7 @@ msgctxt "#16039"
 msgid "Off"
 msgstr ""
 
-#empty strings from id 16040 to 16040
+#empty string with id 16040
 
 #: xbmc/guilib/GUIRadioButtonControl.cpp"
 msgctxt "#16041"
@@ -19559,4 +19558,3 @@ msgstr ""
 msgctxt "#39007"
 msgid "This provides access to where picture sources can be added and otherwise managed."
 msgstr ""
-
