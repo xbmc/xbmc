@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Ajustaments d'Audio"
+msgstr "Ajusts de l'àudio"
 
 msgctxt "#31003"
 msgid "IP"
@@ -78,7 +78,7 @@ msgstr "REBOBINAR"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Hora de finalització"
+msgstr "Hora d'acabament"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
@@ -166,11 +166,11 @@ msgstr "Basat en Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Canvia la pell · Estableix la llengua i la regió · Canvia les opcions de llistat · Estableix un protector de pantalla"
+msgstr "Canvia la pell · Estableix l'idioma i la regió · Canvia les opcions de llistat · Estableix un estalvi de pantalla"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Seleccioneu el vostre perfil d'usuari de l'Kodi[CR]per iniciar la sessió i continuar"
+msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per iniciar la sessió i continuar"
 
 msgctxt "#31500"
 msgid "Home Menu Catagory Buttons"
@@ -195,6 +195,10 @@ msgstr "Drecera d'afegitó"
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "TV en directe"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Ajusts dels canals"
 
 msgctxt "#31561"
 msgid "Add Group"

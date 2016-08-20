@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Procesează..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Recent"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Filme"
@@ -67,6 +71,10 @@ msgstr "Listă Informații"
 msgctxt "#31038"
 msgid "Login"
 msgstr "Autentificare"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Actualizat:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -231,3 +239,11 @@ msgstr "Redenumește Grup"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Șterge Grup"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Arată ascunse"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Arată șterse"

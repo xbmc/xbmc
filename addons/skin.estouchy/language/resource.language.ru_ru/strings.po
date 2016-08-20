@@ -168,6 +168,10 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Изменение обложки · Настройка языка и региона · Изменение параметров списка файлов · Настройка заставки"
 
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Управление дополнениями · Поиск и установка дополнений с kodi.tv · Настройки дополнений"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Выберите профиль пользователя Kodi,[CR]чтобы войти в систему"
@@ -231,3 +235,7 @@ msgstr "Переименовать группу"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Удалить группу"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Первый запуск"

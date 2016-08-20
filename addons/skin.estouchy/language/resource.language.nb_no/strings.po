@@ -192,10 +192,6 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Konfigurer handlinger som kan brukes under avspilling · Konfigurer hvordan mediainnhold avspilles"
 
-msgctxt "#31409"
-msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
-msgstr "Konfigurer hvordan medialister vises · Konfigurer hvordan biblioteklister er navigert · Konfigurer databaseinnstillinger"
-
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Konfigurer skin · Konfigurer region · Konfigurer kontroll · Konfigurer skjermsparer · Konfigurer systemlås"

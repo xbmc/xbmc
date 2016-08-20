@@ -38,7 +38,7 @@ msgstr "Visualisoinnin esiasetukset"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Pikavalikko"
+msgstr "Sisältövalikko"
 
 msgctxt "#31009"
 msgid "Working..."
@@ -46,7 +46,7 @@ msgstr "Suoritetaan..."
 
 msgctxt "#31011"
 msgid "Recent"
-msgstr "Viimeisin"
+msgstr "Viimeisimmät"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -70,7 +70,7 @@ msgstr "Lista ja tiedot"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Kirjaudu"
+msgstr "Kirjautuminen"
 
 msgctxt "#31039"
 msgid "Updated:"
@@ -90,11 +90,11 @@ msgstr "Päättymisaika"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Järjestä: Nousevasti"
+msgstr "Suunta: Nouseva"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Järjestä: Laskevasti"
+msgstr "Suunta: Laskeva"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -170,11 +170,15 @@ msgstr "Ulkoasun oletus"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Arial pohjainen"
+msgstr "Arial-pohjainen"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Vaihda ulkoasua · Vaihda kieliasetuksia · Aseta tiedostolistauksen asetukset[CR]Aseta ruudunsäästäjä"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Muokkaa mediajakoasetuksia · Muokkaa sääpalvelun asetuksia"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
@@ -183,6 +187,22 @@ msgstr "Määritä näyttö · Määritä ääni · Määritä internetyhteys ·
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia kodi.tv:stä · Muokkaa lisäosien asetuksia"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Määritä toiston aikana käytettävissä olevat asetukset · Määritä mediatoiston asetukset"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Määritä ulkoasu · Määritä alue · Määritä ohjaustapa · Määritä näytönsäästäjä · Määritä lukitusasetukset"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Määritä käyttäjäprofiilit · Muokkaa lukitusasetuksia · Aseta kirjautumisruutu"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Näytä järjestelmätiedot · Laitteiston tila · Tallennustila · Verkkoasetukset"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -220,17 +240,25 @@ msgctxt "#31554"
 msgid "Background:"
 msgstr "Taustakuva:"
 
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Määritä tv-asetukset · Vaihda kokoruudun infoa · Hallitse EPG-tietojen asetuksia"
+
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "TV-lähetys"
+msgstr "Tv-lähetys"
 
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Piilota taustavideo"
 
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Piilota taustan visualisointi"
+
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr "Kanava asetukset"
+msgstr "Kanava-asetukset"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -254,11 +282,23 @@ msgstr "Näytä piilotetut"
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr "Näyty poistetut"
+msgstr "Näytä poistetut"
 
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Ensimmäinen käynnistys"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Estouchyn ohjaamisessa on kaksi tärkeää asiaa"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Kodi-logo toimii 'KOTI'-nappina. Sitä painamalla pääsee aina takaisin päävalikkoon."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Toistettavan videon tai musiikkitiedoston nimi näkyy ruudun yläreunassa. Sitä painamalla pääsee kokoruututilaan."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

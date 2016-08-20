@@ -152,6 +152,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "ดาวน์โหลด คำบรรยาย"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletext"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "หน้าตาพื้นฐาน"

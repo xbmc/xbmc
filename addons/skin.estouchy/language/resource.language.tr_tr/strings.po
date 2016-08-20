@@ -70,7 +70,7 @@ msgstr "Bilgi Listesi"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Giriş"
+msgstr "Oturum Aç"
 
 msgctxt "#31039"
 msgid "Updated:"
@@ -176,9 +176,33 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Dış görünümü değiştir · Bölge ve dili ayarla · Dosya listeleme ayarlarını değiştir · Bir ekran koruyucu ayarla"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Medya paylaşımı hizmetlerini yapılandır ve yönet · Hava durumu hizmetini yapılandır ve yönet"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Görüntüyü yapılandırın · Sesi yapılandırın · İnternet erişimini yapılandırın · Güç tasarrufunu yapılandırın · Günlüğü yapılandırın"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Yüklü eklentilerinizi yönetin · kodi.tv sitesindeki uygulamalara gözatın ve yükleyin · Eklenti ayarlarını değiştirin"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Oynatım sırasında kullanılacak etlemleri yapılandırın · Medya içeriğinin nasıl oynatılacağını yapılandırın"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Dış görünümü yapılandırın · Bölge ayarlarını yapılandırın · Denetim ayarlarını yapılandırın · Ekran koruyucuyu yapılandırın · Yönetici kilidini yapılandırın"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Profillerini yapılandır · Kilit seçeneklerini ayarla · Oturum açma ekranını etkinleştir"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Sistem bilgisini görüntüle · Donanım istatistikleri · Depolama kullanılabilirliğini kontrol edin · Ağ yapılandırmasını görüntüleyin"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

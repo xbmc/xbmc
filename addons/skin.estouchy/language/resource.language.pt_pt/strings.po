@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Definições de áudio"
+msgstr "Configuração do Áudio"
 
 msgctxt "#31003"
 msgid "IP"
@@ -30,15 +30,15 @@ msgstr "Caps[CR]Lock"
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "Opções de visualização"
+msgstr "Opções de Visualização"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Pré-ajustes de visualização"
+msgstr "Predefinições de Visualização"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Menu de contexto"
+msgstr "Menu de Contexto"
 
 msgctxt "#31009"
 msgid "Working..."
@@ -78,23 +78,23 @@ msgstr "Última atualização:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "Avançar"
+msgstr "AVANÇAR"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "Recuar"
+msgstr "RECUAR"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Hora de término"
+msgstr "Hora de fim"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ordem crescente"
+msgstr "Ordem: Ascendente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ordem decrescente"
+msgstr "Ordem: Descendente"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -118,7 +118,7 @@ msgstr "Lista de reprodução atual"
 
 msgctxt "#31200"
 msgid "Back"
-msgstr "Retroceder"
+msgstr "Recuar"
 
 msgctxt "#31201"
 msgid "Location"
@@ -130,11 +130,11 @@ msgstr "Ver"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Temperatura atual"
+msgstr "Temperatura Atual"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Última atualização"
+msgstr "Última Atualização"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -142,11 +142,11 @@ msgstr "Fornecedor de dados"
 
 msgctxt "#31309"
 msgid "Memory Used:"
-msgstr "Memória utilizada:"
+msgstr "Memória Usada:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Última vez ligado"
+msgstr "Última Ligação"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -154,11 +154,11 @@ msgstr "Exibido"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Menu de vídeo"
+msgstr "Menu de Vídeo"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Descarregar legendas"
+msgstr "Descarregar Legendas"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -174,11 +174,35 @@ msgstr "Baseada em Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Mudar de tema - Definir idioma e região - Opções de listagem de ficheiros - Definir uma proteção de ecrã"
+msgstr "Mudar de tema · Definir idioma e região · Opções de listagem de ficheiros · Definir um protetor de ecrã"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configurar & gerir os serviços de partilha de conteúdos · Configurar & gerir o serviço meteorológico"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configurar o ecrã · Configurar o áudio · Configurar o acesso à Internet · Configurar a poupança de energia · Configurar o registo de eventos"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Gerir os add-ons instalados · Procurar e instalar os add-ons a partir de kodi.tv · Modificar as definições dos add-ons"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configurar as ações que podem ser usadas durante a reprodução · Configurar a forma como os conteúdos são reproduzidos"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configurar o visual · Configurar a região · Configurar o controlo · Configurar o protetor de ecrã · Configurar o bloqueio-mestre"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Configurar os seus perfis · Definir as opções de bloqueio · Activar o ecrã de autenticação"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Mostrar as informações do sistema · Estatísticas do 'hardware' · Verificar a disponibilidade do 'hardware' · Ver a configuração da rede"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -186,15 +210,15 @@ msgstr "Escolha o seu perfil de utilizador do Kodi[CR]para iniciar sessão e con
 
 msgctxt "#31500"
 msgid "Home Menu Catagory Buttons"
-msgstr "Botões de categorias do menu"
+msgstr "Botões de Categorias do Menu Inicial"
 
 msgctxt "#31501"
 msgid "Home Page Add-on Quick Links"
-msgstr "Ligações à pagina web dos add-ons"
+msgstr "Ligações à Página Web dos add-ons da Página Inicial"
 
 msgctxt "#31502"
 msgid "Miscellaneous Options"
-msgstr "Opções diversas"
+msgstr "Opções Diversas"
 
 msgctxt "#31550"
 msgid "Home Screen Weather Info and button"
@@ -202,15 +226,15 @@ msgstr "Info e botão de meteorologia na página inicial"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Atalho do add-on"
+msgstr "Atalho do Add-On"
 
 msgctxt "#31552"
 msgid "SYNC"
-msgstr "Sincronizar"
+msgstr "SINCRONIZAR"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
-msgstr "Utilizar fundos personalizados"
+msgstr "Usar um fundo personalizado"
 
 msgctxt "#31554"
 msgid "Background:"
@@ -222,15 +246,15 @@ msgstr "Configurar definições de TV · Informação em ecrã completo · Gerir
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "TV em direto"
+msgstr "TV em Direto"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr "Ocultar fundo de vídeo"
+msgstr "Esconder o fundo do vídeo"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr "Ocultar fundo da visualização"
+msgstr "Esconder o fundo da visualização"
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -242,40 +266,40 @@ msgstr "Grupos disponíveis"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Adicionar grupo"
+msgstr "Adicionar Grupo"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Renomear grupo"
+msgstr "Renomear Grupo"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Apagar grupo"
+msgstr "Apagar Grupo"
 
 msgctxt "#31564"
 msgid "Show hidden"
-msgstr "Mostrar ocultos"
+msgstr "Mostrar os escondidos"
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr "Mostrar apagados"
+msgstr "Mostrar os apagados"
 
 msgctxt "#31900"
 msgid "First Run"
-msgstr "Primeira execução"
+msgstr "Primeira Execução"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Existem duas coisas que deve saber sobre o Estouchy"
+msgstr "Existem duas coisas a saber sobre a navegação no Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "O logo Kodi funciona como o botão 'Home'. Sempre que lhe tocar, será enviado para o ecrã principal."
+msgstr "O logótipo do Kodi funciona como o botão 'Home'. Sempre que lhe tocar, será enviado para o ecrã principal."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Se estiver a reproduzir músicas ou vídeos, o título do item aparecerá no topo do ecrã. Se lhe tocar, alternará entre a vista de ecrã completo e a vista de janela."
+msgstr "Se estiver a reproduzir músicas ou vídeos, o título do item aparecerá no topo do ecrã. Se lhe tocar, alternará entre a vista de ecrã completo e a janela do vídeo."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Título da reprodução..."
+msgstr "Título da Reprodução..."

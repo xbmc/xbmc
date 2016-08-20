@@ -192,10 +192,6 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "設定播放中可執行的動作 · 設定媒體檔案播放的方式"
 
-msgctxt "#31409"
-msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
-msgstr "設定媒體檔列表方式如何顯示內容 · 設定如何進行資料庫列表的導覽 · 設定資料庫的選項"
-
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "設定佈景主題 · 設定地區 · 設定控制項 · 設定螢幕保護程式 · 設定主密碼鎖"

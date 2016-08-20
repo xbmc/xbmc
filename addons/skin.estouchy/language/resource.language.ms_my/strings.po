@@ -192,10 +192,6 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Konfigur tindakan yang digunakan semasa main balik · Konfigur bagaimana kandungan media dimainkan"
 
-msgctxt "#31409"
-msgid "Configure how the media lists display content ·  Configure how library lists are navigated · Configure database options"
-msgstr "Konfigur bagaimana paparan pustaka/fail memaparkan kandungan ·  Konfigur bagaimana paparan/senarai pustaka dinavigasi · Konfigur pilihan pangkalan data media"
-
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Konfigur kulit · Konfigur wilayah · Konfigur kawalan · Konfigur penyelamat skrin · Konfigur kunci induk"

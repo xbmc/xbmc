@@ -38,7 +38,7 @@ msgstr "Visualisatie voorinstellingen"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Context Menu"
+msgstr "Contextmenu"
 
 msgctxt "#31009"
 msgid "Working..."
@@ -66,7 +66,7 @@ msgstr "Pagina"
 
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Info Lijst"
+msgstr "Infolijst"
 
 msgctxt "#31038"
 msgid "Login"
@@ -154,7 +154,7 @@ msgstr "Uitgezonden"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Video Menu"
+msgstr "Videomenu"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -166,7 +166,7 @@ msgstr "Teletekst"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Standaard Skin"
+msgstr "Standaardskin"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -176,9 +176,33 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Verander je Skin · Instellen van Taal en Land · Verander bestandslijst opties · Stel een schermbeveiliging in"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configureer & beheer media sharing services · Configureer & beheer de weerservice"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configureer beeld · Configureer audio · Configureer internettoegang · Configureer stroombeheer · Configureer logbestanden"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Beheer uw geïnstalleerde add-ons · Zoek naar en installeer add-ons van Kodi.tv - Wijzig add-on instellingen"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configureer acties die gebruikt kunnen worden tijdens het afspelen · Configureer hoe media-inhoud wordt afgespeeld"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configureer skin · Configureer regio · Configureer controle · Configureer screensaver · Configureer hoofdslot"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Configureer uw profielen · Stel vergrendelingsopties in · Loginscherm inschakelen"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Beeldschermsysteeminformatie · Hardwarestatistieken · Controle beschikbare opslagruimte · Bekijk netwerkconfiguratie"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -186,7 +210,7 @@ msgstr "Kies je Kodi gebruikersprofiel[CR]om in te loggen en door te gaan"
 
 msgctxt "#31500"
 msgid "Home Menu Catagory Buttons"
-msgstr "Begin menu categorie knoppen"
+msgstr "Beginmenu categorieknoppen"
 
 msgctxt "#31501"
 msgid "Home Page Add-on Quick Links"
@@ -218,7 +242,7 @@ msgstr "Achtergrond:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Configureer TV instellingen · Verander volledig scherm info · beheer EPG gegens instellingen"
+msgstr "Configureer TV-instellingen · Verander volledig scherminfo · beheer EPG-gegevensinstellingen"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -226,15 +250,15 @@ msgstr "Live TV"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr "Verberg video achtergrond"
+msgstr "Verberg video-achtergrond"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr "Verberg visualisatie achtergrond"
+msgstr "Verberg visualisatie-achtergrond"
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr "Kanaal instellingen"
+msgstr "Kanaalinstellingen"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -266,16 +290,16 @@ msgstr "Eerste sessie"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Er zijn twee dingen om te weten over navigatie bij Estouchy"
+msgstr "Er zijn twee dingen om te weten over de navigatie bij Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Het Kodi logo functioneert als een 'HOME' knop. Wanneer u deze aanraakt wordt u terug gebracht naar het startscherm."
+msgstr "Het Kodi-logo functioneert als een 'HOME' knop. Wanneer u deze aanraakt wordt u terug gebracht naar het startscherm."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Wanneer u audio of video afspeelt dan zal de item titel verschijnen bovenaan het scherm. Deze aanraken brengt u naar de scherm vullende weergave of video scherm."
+msgstr "Wanneer u audio of video afspeelt dan zal het titelitem bovenaan het scherm verschijnen. Door deze weer aan te aanraken krijgt u de schermvullende weergave of het videoscherm."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Nu spelende titel..."
+msgstr "Nu afspelend..."

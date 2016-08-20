@@ -1,3 +1,6 @@
+V1.0.22
+- Updated language files from Transifex
+
 V1.0.20
 - Fix seeklabel
 
