@@ -700,9 +700,9 @@ bool CGUISliderControl::UpdateColors()
 float CGUISliderControl::GetProportion(RangeSelector selector /* = RangeSelectorLower */) const
 {
   if (m_iType == SLIDER_CONTROL_TYPE_FLOAT)
-    return (GetFloatValue(selector) - m_fStart) / (m_fEnd - m_fStart);
+    return m_fStart != m_fEnd ? (GetFloatValue(selector) - m_fStart) / (m_fEnd - m_fStart) : 0.0f;
   else if (m_iType == SLIDER_CONTROL_TYPE_INT)
-    return (float)(GetIntValue(selector) - m_iStart) / (float)(m_iEnd - m_iStart);
+    return m_iStart != m_iEnd ? (float)(GetIntValue(selector) - m_iStart) / (float)(m_iEnd - m_iStart) : 0.0f;
   return 0.01f * GetPercentage(selector);
 }
 
