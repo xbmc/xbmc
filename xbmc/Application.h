@@ -145,7 +145,7 @@ public:
   virtual void FrameMove(bool processEvents, bool processGUI = true) override;
   virtual void Render() override;
   virtual void Preflight();
-  virtual bool Create() override;
+  bool Create();
   virtual bool Cleanup() override;
 
   bool CreateGUI();
