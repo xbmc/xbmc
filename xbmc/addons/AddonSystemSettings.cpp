@@ -98,4 +98,27 @@ bool CAddonSystemSettings::SetActive(const TYPE& type, const std::string& addonI
   return false;
 }
 
+bool CAddonSystemSettings::IsActive(const IAddon& addon)
+{
+  AddonPtr active;
+  return GetActive(addon.Type(), active) && active->ID() == addon.ID();
+}
+
+bool CAddonSystemSettings::UnsetActive(const AddonPtr& addon)
+{
+  auto it = settingMap.find(addon->Type());
+  if (it == settingMap.end())
+    return true;
+
+  auto setting = static_cast<CSettingString*>(CSettings::GetInstance().GetSetting(it->second));
+  if (setting->GetValue() != addon->ID())
+    return true;
+
+  if (setting->GetDefault() == addon->ID())
+    return false; // Cant unset defaults
+
+  setting->Reset();
+  return true;
+}
+
 }

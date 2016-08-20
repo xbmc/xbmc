@@ -39,6 +39,13 @@ public:
 
   bool GetActive(const TYPE& type, AddonPtr& addon);
   bool SetActive(const TYPE& type, const std::string& addonID);
+  bool IsActive(const IAddon& addon);
+
+  /*!
+   * Attempt to unset addon as active. Returns true if addon is no longer active,
+   * false if it could not be unset (e.g. if the addon is the default)
+   */
+  bool UnsetActive(const AddonPtr& addon);
 
 private:
   CAddonSystemSettings() = default;
