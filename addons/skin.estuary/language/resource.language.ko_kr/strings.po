@@ -551,3 +551,7 @@ msgstr "분"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "숨김"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "남음"

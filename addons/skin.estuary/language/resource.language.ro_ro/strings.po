@@ -52,6 +52,10 @@ msgctxt "#31010"
 msgid "In progress movies"
 msgstr "Filme în curs de vizionare"
 
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Cele mai redate albume"
+
 msgctxt "#31012"
 msgid "Random albums"
 msgstr "Albume aleatoare"
@@ -67,6 +71,18 @@ msgstr "Albume neredate"
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr "Înregistrări recente"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Canale redate recent"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Evaluat"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Cele mai redate canale"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -100,6 +116,10 @@ msgctxt "#31030"
 msgid "Memory used"
 msgstr "Memorie folosită"
 
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Informații versiune"
+
 msgctxt "#31032"
 msgid "Order"
 msgstr "Ordine"
@@ -119,6 +139,10 @@ msgstr "Pagini"
 msgctxt "#31036"
 msgid "items"
 msgstr "Elemente"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Listă piese"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -156,6 +180,10 @@ msgctxt "#31048"
 msgid "Available"
 msgstr "Disponibil"
 
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Schimbă limba"
+
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrat"
@@ -180,9 +208,17 @@ msgctxt "#31067"
 msgid "Event log"
 msgstr "Jurnal de evenimente"
 
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Alege valori implicite"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Ultima actualizare"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Adăugare sursă media"
 
 msgctxt "#31071"
 msgid "by"
@@ -196,9 +232,25 @@ msgctxt "#31073"
 msgid "Titles"
 msgstr "Titluri"
 
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Mediatecă"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Colecție de filme"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Locație anterioară"
+
 msgctxt "#31078"
 msgid "Next location"
 msgstr "Locația următoare"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Se termină la"
 
 msgctxt "#31081"
 msgid "Album info"
@@ -215,6 +267,10 @@ msgstr "Grup canal"
 msgctxt "#31086"
 msgid "Metadata"
 msgstr "Metadata"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Setări furnizor"
 
 msgctxt "#31088"
 msgid "Content scanning options"
@@ -276,6 +332,22 @@ msgctxt "#31115"
 msgid "Search TheMovieDB"
 msgstr "Caută pe TheMovieDB"
 
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Modificare noduri"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Navigator suplimente"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Alege sursa de informații meteo"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Seriale TV nevăzute"
+
 msgctxt "#31123"
 msgid "Same director"
 msgstr "Același regizor"
@@ -283,6 +355,10 @@ msgstr "Același regizor"
 msgctxt "#31124"
 msgid "Show images on map"
 msgstr "Arată imaginile pe hartă"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Apasă în sus pentru informații despre actori"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"

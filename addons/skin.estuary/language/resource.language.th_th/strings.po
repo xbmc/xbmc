@@ -96,6 +96,10 @@ msgctxt "#31085"
 msgid "Channel Group"
 msgstr "กลุ่มช่องสัญญาณ"
 
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "ข้อมูลเมต้า"
+
 msgctxt "#31088"
 msgid "Content scanning options"
 msgstr "ตัวเลือกการสืบค้นเนื้อหา"
@@ -119,6 +123,10 @@ msgstr "เลือกโปรไฟล์ผู้ใช้ Kodi ของค
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
 
 msgctxt "#31133"
 msgid "Hide"

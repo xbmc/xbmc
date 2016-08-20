@@ -70,7 +70,7 @@ msgstr "Satunnaiset albumit"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Satunnaiset artistit"
+msgstr "Satunnaiset esittäjät"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -106,7 +106,7 @@ msgstr "Muut asetukset"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Järjestä"
+msgstr "Lajittelu"
 
 msgctxt "#31023"
 msgid "Viewtype"
@@ -118,7 +118,7 @@ msgstr "Seuraavat raidat"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Suosikkeja ei löytynyt. Avaa kontekstivalikko haluamasi mediatiedoston kohdalla ja valitse \"Lisää suosikkeihin\"."
+msgstr "Suosikkeja ei löytynyt. Avaa sisältövalikko haluamasi mediatiedoston kohdalla ja valitse \"Lisää suosikkeihin\"."
 
 msgctxt "#31026"
 msgid "Go to albums"
@@ -138,7 +138,7 @@ msgstr "Viimeksi kirjauduttu"
 
 msgctxt "#31030"
 msgid "Memory used"
-msgstr "Käytetty muisti"
+msgstr "Muistin käyttö"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -146,7 +146,7 @@ msgstr "Versiotiedot"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr "Järjestys"
+msgstr "Suunta"
 
 msgctxt "#31033"
 msgid "Your rating"
@@ -154,7 +154,7 @@ msgstr "Oma arvosana"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Laajennettu info"
+msgstr "Lisätiedot"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -242,7 +242,7 @@ msgstr "Tekstityksen lataus"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Mene toistolistaan"
+msgstr "Avaa toistolista"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -282,7 +282,7 @@ msgstr "Videotoistolista"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Musiikkisoittolista"
+msgstr "Musiikkitoistolista"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -318,7 +318,7 @@ msgstr "Kirjaston päävalikko"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr "Elokuvasetit"
+msgstr "Elokuvaryhmät"
 
 msgctxt "#31076"
 msgid "Play optical disc"
@@ -362,7 +362,7 @@ msgstr "Kanavaryhmä"
 
 msgctxt "#31086"
 msgid "Metadata"
-msgstr "Metatieto"
+msgstr "Lisätiedot"
 
 msgctxt "#31087"
 msgid "Provider settings"
@@ -406,7 +406,7 @@ msgstr "Paikallinen tekstitys saatavilla"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Kanava-asetukset"
+msgstr "Kanavan asetukset"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -454,7 +454,7 @@ msgstr "Valinnainen taustakuva käytössä"
 
 msgctxt "#31109"
 msgid "Choose image path"
-msgstr "Valitse kuvan polku"
+msgstr "Valitse kuvan sijainti"
 
 msgctxt "#31110"
 msgid "Enter files section"

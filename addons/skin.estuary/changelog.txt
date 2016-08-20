@@ -1,3 +1,6 @@
+[B]0.8.5[/B]
+• Updated language files from Transifex
+
 [B]0.8.3[/B]
 • Updated language files from Transifex
 

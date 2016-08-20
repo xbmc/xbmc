@@ -58,7 +58,7 @@ msgstr "Icons herunterladen"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "Laufende Filme"
+msgstr "Begonnene Filme"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -70,7 +70,7 @@ msgstr "Zufällige Alben"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Zufällige Artisten"
+msgstr "Zufällige Interpreten"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -78,11 +78,11 @@ msgstr "Ungespielte Alben"
 
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Neue Aufnahmen"
+msgstr "Zeletzt gemachte Aufnahmen"
 
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr "Kürzlich abgespielte Kanäle"
+msgstr "Zuletzt gesehene Kanäle"
 
 msgctxt "#31017"
 msgid "Rated"
@@ -90,7 +90,7 @@ msgstr "Bewertung"
 
 msgctxt "#31018"
 msgid "Most played channels"
-msgstr "Meistgespielte Kanäle"
+msgstr "Zuletzt gehörte Kanäle"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -114,19 +114,19 @@ msgstr "Ansicht"
 
 msgctxt "#31024"
 msgid "Next tracks"
-msgstr "Nächste Lieder"
+msgstr "Nächste Titel"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Keine Favoriten gespeichert. Du kannst jedes beliebige Element aus den Medienansichten via Rechtsklick zu deinen Favoriten hinzufügen."
+msgstr "Keine Favoriten gespeichert. Es kann jedes beliebige Element aus den Medienansichten via Rechtsklick zu den Favoriten hinzugefügt werden."
 
 msgctxt "#31026"
 msgid "Go to albums"
-msgstr "Gehe zu Album"
+msgstr "Zu den Alben..."
 
 msgctxt "#31027"
 msgid "Go to songs"
-msgstr "Gehe zu Liedern"
+msgstr "Zu den Liedern..."
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -150,7 +150,7 @@ msgstr "Reihenfolge"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "Deine Wertung"
+msgstr "Persönliche Bewertung"
 
 msgctxt "#31034"
 msgid "Extended info"
@@ -166,7 +166,7 @@ msgstr "Einträge"
 
 msgctxt "#31037"
 msgid "Tracklist"
-msgstr "Songliste"
+msgstr "Titelliste"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -178,7 +178,7 @@ msgstr "Schneller Vorlauf"
 
 msgctxt "#31040"
 msgid "Cancel update"
-msgstr "Update abbrechen"
+msgstr "Aktualisierung abbrechen"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -190,7 +190,7 @@ msgstr "Wiedergabelisten-Einstellungen"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Stelle den Typ ein und füge Regeln für die Smart Playlist hinzu. Diese Art von Playlisten sind dynamisch und beinhalten alle Medien aus deiner Datenbank, die die gesetzten Regeln erfüllen."
+msgstr "Typ einstellen und Regeln für die Smart Playlist hinzufügen. Diese Art von Playlisten ist dynamisch und beinhaltet alle Medien aus deiner Bibliothek, die die gesetzten Regeln erfüllen."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -214,11 +214,11 @@ msgstr "Verfügbar"
 
 msgctxt "#31049"
 msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Drücke [B]Hoch[/B] zum Zurück- oder Vorspulen."
+msgstr "[B]Hoch[/B]  zum Zurück- oder Vorspulen drücken."
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "[B]OK[/B] drücken, um zu to stoppen"
+msgstr "[B]OK[/B] zum Stoppen drücken"
 
 msgctxt "#31051"
 msgid "Toggle language"
@@ -234,7 +234,7 @@ msgstr "Arial-basiert"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Drücke[B]Links[/B] zum Zurückspulen, oder [B]Rechts[/B] zum Vorspulen"
+msgstr "[B]Links[/B] zum Zurückspulen, [B]Rechts[/B] zum Vorspulen drücken"
 
 msgctxt "#31055"
 msgid "Subtitle download"
@@ -242,7 +242,7 @@ msgstr "Untertitel-Download"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Gehe zu Playlist"
+msgstr "Zur Playlist..."
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -254,7 +254,7 @@ msgstr "Automatischer Login beim Programmstart"
 
 msgctxt "#31059"
 msgid "Updates available"
-msgstr "Updates verfügbar"
+msgstr "Aktualisierungen verfügbar"
 
 msgctxt "#31060"
 msgid "minutes"
@@ -266,7 +266,7 @@ msgstr "Hauptmenüeinträge"
 
 msgctxt "#31062"
 msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Shortcuts zu den \"Dateien\"-Sektionen der verschiedenen Medientypen. Folge ihnen, um zusätzliche Quellen für deine Datenbanken einzurichten."
+msgstr "Shortcuts zu den \"Dateien\"-Sektionen der verschiedenen Medientypen. Ihnen folgen, um zusätzliche Medienquellen für die persönlichen Bibliotheken einzurichten."
 
 msgctxt "#31063"
 msgid "Sections"
@@ -286,7 +286,7 @@ msgstr "Musik-Playlist"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Event log"
+msgstr "Ereignisse"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -302,11 +302,11 @@ msgstr "Medienquellen hinzufügen"
 
 msgctxt "#31071"
 msgid "by"
-msgstr "by"
+msgstr "von"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Energieeinstellungen"
+msgstr "Energie-Einstellungen"
 
 msgctxt "#31073"
 msgid "Titles"
@@ -314,7 +314,7 @@ msgstr "Titel"
 
 msgctxt "#31074"
 msgid "Library root"
-msgstr "Datenbank"
+msgstr "Bibliothek"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -334,7 +334,7 @@ msgstr "Nächster Ort"
 
 msgctxt "#31079"
 msgid "Cast not available"
-msgstr "Cast nicht verfügbar"
+msgstr "Vorhersage nicht verfügbar"
 
 msgctxt "#31080"
 msgid "Ends at"
@@ -350,7 +350,7 @@ msgstr "Liedtexte-Addon"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Lyrics add-on Einstellungen"
+msgstr "Liedtexte-Addon-Einstellungen"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -390,11 +390,11 @@ msgstr "Videomenü"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
-msgstr "Wetterinformationen in oberer Leiste anzeigen"
+msgstr "Wetterinformationen in Kopfleiste anzeigen"
 
 msgctxt "#31094"
 msgid "Show media flags for movies / episodes / music videos"
-msgstr "Mediaflags für Videoeinträge zeigen"
+msgstr "Medieneigenschaften für Videoeinträge zeigen"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -414,7 +414,7 @@ msgstr "Bitte Kodi-Benutzerprofil auswählen[CR]um fortzufahren"
 
 msgctxt "#31099"
 msgid "Icon Wall"
-msgstr "Icon Wall"
+msgstr "IconWall"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -434,11 +434,11 @@ msgstr "Text hier eingeben..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Deine Bibliothek ist derzeit leer. Um sie mit deinen Inhalten zu füllen, wechsle zu \"Dateien\", füge eine Medienquelle hinzu und konfiguriere sie. Nachdem die Quelle hinzugefügt und indiziert wurde, kannst du deine Bibliothek durchstöbern."
+msgstr "Die persönliche Bibliothek ist derzeit leer. Um sie mit Inhalten zu füllen, zu \"Dateien\" wechseln, eine Medienquelle hinzufügen und diese dann konfigurieren. Nachdem die Quelle hinzugefügt und indiziert wurde, kann die Bibliothek durchstöbert werden."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Füge Videoquellen hinzu und stellen den korrekten Inhaltstyp ein, um die Datenbank zu befüllen."
+msgstr "Videoquellen hinzufügen und den korrekten Inhaltstyp auswählen, um die persönlichen Bibliotheken zu befüllen."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -458,11 +458,11 @@ msgstr "Bildpfad auswählen"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "\"Dateien\"-Sektion betreten"
+msgstr "Zu \"Dateien\"..."
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Schaue dir deine persönlichen Fotos an oder probiere eines der vielen Bilder-Addons aus dem offiziellen Repository."
+msgstr "Persönliche Fotos anschauen oder eines der vielen Bilder-Addons aus dem offiziellen Repository ausprobieren."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -470,7 +470,7 @@ msgstr "Tonspur wechseln"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Lokale Datenbank durchsuchen"
+msgstr "Lokale Bibliothek durchsuchen"
 
 msgctxt "#31114"
 msgid "Search YouTube"
@@ -490,15 +490,15 @@ msgstr "Menü editieren"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Add-on Browser betreten"
+msgstr "Zum Addon-Browser..."
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Du hast noch keine Add-ons installiert. Besuche den Add-on Browser, um unsere Add-on-Sammlung zu durchforsten und mit ihnen deine Kodi-Erfahrung zu verbessern."
+msgstr "Es sind noch keine Addons installiert. Den Addon-Browser öffnen, um in der Addon-Sammlung zu stöbern."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Du hast noch keinen Wetterprovider eingerichtet. Um Wetterinformationen zu erhalten, wähle einen Wetterprovider und stelle deinen Ort in den Einstellungen ein."
+msgstr "Es ist noch kein Wetterprovider eingerichtet. Um Wetterinformationen zu erhalten, einen Wetterprovider auswählen und Orte einrichten."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -506,11 +506,11 @@ msgstr "Wetterprovider wählen"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Ungesehene TV Serien"
+msgstr "Ungesehene Serien"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr "Filme des Direktors"
+msgstr "Filme dieses Regisseurs"
 
 msgctxt "#31124"
 msgid "Show images on map"
@@ -518,11 +518,11 @@ msgstr "Bilder auf Karte zeigen"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "Drücke \"hoch\" für Schauspieler-Infos"
+msgstr "[B]Hoch[/B] für Schauspieler-Infos drücken"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Drücke \"OK\" zum Lesen der Handlung"
+msgstr "[B]OK[/B] zum Lesen der Handlung drücken"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -534,15 +534,15 @@ msgstr "Mitwirkende"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Allgemeine Einstellungen für das gesamte Theme"
+msgstr "Allgemeine Einstellungen, die für den gesamten Skin gelten."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Einstellungen für das Hauptmenü: Passe den Hauptbildschirm nach Belieben an."
+msgstr "Einstellungen für das Hauptmenü: Der Hauptbildschirm kann nach Belieben angepaßt werden."
 
 msgctxt "#31131"
 msgid "Choose home fanart pack"
-msgstr "Wähle Fanart für den Hauptbildschirm"
+msgstr "Fanart für den Hauptbildschirm wählen"
 
 msgctxt "#31132"
 msgid "min"

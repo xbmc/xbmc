@@ -551,3 +551,7 @@ msgstr "分"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "隐藏"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "剩余"

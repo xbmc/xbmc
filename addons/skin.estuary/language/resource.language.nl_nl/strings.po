@@ -26,7 +26,7 @@ msgstr "Zoeken..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Toon media fanart als achtergrond"
+msgstr "Toon mediafanart als achtergrond"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -46,7 +46,7 @@ msgstr "Willekeurige films"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "Niet bekeken films"
+msgstr "Niet-bekeken films"
 
 msgctxt "#31008"
 msgid "No disclaimer"
@@ -58,7 +58,7 @@ msgstr "Download pictogrammen"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "Lopende films"
+msgstr "Gedeeltelijk bekeken films"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -74,7 +74,7 @@ msgstr "Willekeurige artiesten"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "Niet afgespeelde albums"
+msgstr "Niet-afgespeelde albums"
 
 msgctxt "#31015"
 msgid "Recent recordings"
@@ -90,7 +90,7 @@ msgstr "Rated"
 
 msgctxt "#31018"
 msgid "Most played channels"
-msgstr "Meest gespeelde kanalen"
+msgstr "Meest afgespeelde kanalen"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -118,7 +118,7 @@ msgstr "Volgende nummers"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Geen favorieten gevonden. U kunt ieder item uit media weergaven toevoegen aan deze lijst middels het context menu."
+msgstr "Geen favorieten gevonden. U kunt elk item uit media-weergaven toevoegen aan deze lijst met het contextmenu."
 
 msgctxt "#31026"
 msgid "Go to albums"
@@ -190,7 +190,7 @@ msgstr "Afspeellijst opties"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Stel het type in en voeg regels toe om een slimme afspeellijst te maken. Deze afspeellijst zijn dynamisch en bevatten alle media items vanuit uw database die voldoen aan uw gekozen regels."
+msgstr "Stel het type in en voeg regels toe om een slimme afspeellijst te maken. Deze afspeellijsten zijn dynamisch en bevatten alle media items vanuit uw database die voldoen aan uw gekozen regels."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -202,7 +202,7 @@ msgstr "Hernoem groep"
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "Verwijder Groep"
+msgstr "Verwijder groep"
 
 msgctxt "#31047"
 msgid "Read more..."
@@ -222,7 +222,7 @@ msgstr "Druk [B]Ok[/B] om te stoppen"
 
 msgctxt "#31051"
 msgid "Toggle language"
-msgstr "Scroll taal"
+msgstr "Verander taal"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -238,7 +238,7 @@ msgstr "Druk [B]Links[/B] om terug te spoelen of [B]Rechts[/B] voor snel vooruit
 
 msgctxt "#31055"
 msgid "Subtitle download"
-msgstr "Ondertitel download"
+msgstr "Download ondertitel"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -250,7 +250,7 @@ msgstr "Toon inlogscherm bij opstarten"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Automatisch inloggen tijens opstarten"
+msgstr "Automatisch inloggen tijdens opstarten"
 
 msgctxt "#31059"
 msgid "Updates available"
@@ -266,7 +266,7 @@ msgstr "Hoofdmenu items"
 
 msgctxt "#31062"
 msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Snelkoppeling naar de \"bestanden\" sectie van elk mediatype. Ga daarheen om extra bronnen toe te voegen aan uw databases."
+msgstr "Snelkoppeling naar de \"Bestanden\"-sectie van elk mediatype. Ga daarheen om extra bronnen toe te voegen aan uw databases."
 
 msgctxt "#31063"
 msgid "Sections"
@@ -278,15 +278,15 @@ msgstr "niet bekeken"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Video playlist"
+msgstr "Videoafspeellijst"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Music playlist"
+msgstr "Muziekafspeellijst"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Gebeurtenis registratie"
+msgstr "Gebeurtenisregistratie"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -298,7 +298,7 @@ msgstr "Laatst bijgewerkt"
 
 msgctxt "#31070"
 msgid "Add media sources"
-msgstr "Voeg media bronnen toe"
+msgstr "Voeg media locaties toe"
 
 msgctxt "#31071"
 msgid "by"
@@ -314,7 +314,7 @@ msgstr "Titels"
 
 msgctxt "#31074"
 msgid "Library root"
-msgstr "Library root"
+msgstr "Bibliotheek beginpunt"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -358,7 +358,7 @@ msgstr "Visualisatie instellingen"
 
 msgctxt "#31085"
 msgid "Channel Group"
-msgstr "Kanaal groep"
+msgstr "Kanaalgroep"
 
 msgctxt "#31086"
 msgid "Metadata"
@@ -366,7 +366,7 @@ msgstr "Metadata"
 
 msgctxt "#31087"
 msgid "Provider settings"
-msgstr "Provider instellingen"
+msgstr "Providerinstellingen"
 
 msgctxt "#31088"
 msgid "Content scanning options"
@@ -386,7 +386,7 @@ msgstr "Download ondertitels"
 
 msgctxt "#31092"
 msgid "Video menu"
-msgstr "Video menu"
+msgstr "Videomenu"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
@@ -394,11 +394,11 @@ msgstr "Toon weerbericht in bovenbalk"
 
 msgctxt "#31094"
 msgid "Show media flags for movies / episodes / music videos"
-msgstr "Toon media markering voor films / afleveringen / muziek video's"
+msgstr "Toon mediamarkering voor films / afleveringen / muziekvideo's"
 
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "Gebruik schuif animaties"
+msgstr "Gebruik schuifanimaties"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -406,7 +406,7 @@ msgstr "Lokale ondertitel beschikbaar"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Kanaal opties"
+msgstr "Kanaalopties"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -414,7 +414,7 @@ msgstr "Selecteer jouw Kodi Gebruikersprofiel[CR]om in te loggen en door te gaan
 
 msgctxt "#31099"
 msgid "Icon Wall"
-msgstr "Icoon Muur"
+msgstr "Ikoonmuur"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -434,11 +434,11 @@ msgstr "Voor hier tekst in..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Uw bibliotheek is momenteel leeg. Om deze te vullen met uw eigen media, ga naar \"Bestanden\" sectie, voeg een mediabron toe en configureer deze. Nadat de bron is toegevoegd en geïndexeerd, kunt u uw bibliotheek bekijken."
+msgstr "Uw bibliotheek is momenteel leeg. Om deze te vullen met uw eigen media, ga naar \"Bestanden\" sectie, voeg een medialocatie toe en configureer deze. Nadat de bron is toegevoegd en geïndexeerd, kunt u uw bibliotheek bekijken."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Voeg video bronnen toe en stel het juiste content type in om uw video bibliotheken te vullen."
+msgstr "Voeg video bronnen toe en stel het juiste contenttype in om uw videobibliotheken te vullen."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -446,7 +446,7 @@ msgstr "Teletekst"
 
 msgctxt "#31107"
 msgid "WideList"
-msgstr "Breedelijst"
+msgstr "Brede lijst"
 
 msgctxt "#31108"
 msgid "Use custom global background"
@@ -466,23 +466,23 @@ msgstr "Toon uw persoonlijke afbeeldingen of download één van de vele afbeeldi
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "Toggle audio stream"
+msgstr "Verander audiostream"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Zoek lokale bibliotheek"
+msgstr "Zoek in lokale bibliotheek"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "Zoek YouTube"
+msgstr "Zoek in YouTube"
 
 msgctxt "#31115"
 msgid "Search TheMovieDB"
-msgstr "Zoek TheMovieDB"
+msgstr "Zoek in TheMovieDB"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Verwijder dit hoofdmenu item"
+msgstr "Verwijder dit hoofdmenu-item"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -490,7 +490,7 @@ msgstr "Wijzig nodes"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Invoeren add-on verkenner"
+msgstr "Ga naar add-on verkenner"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -498,7 +498,7 @@ msgstr "U heeft nog geen add-ons geïnstalleerd. Bezoek onze add-on verkenner om
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "U heeft nog geen weerbericht provider ingesteld. Om weerberichten te zien, kies een weerprovider en stel uw locatie in."
+msgstr "U heeft nog geen weerprovider ingesteld. Om weerberichten te zien, kies een weerprovider en stel uw locatie in."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -506,7 +506,7 @@ msgstr "Stel weerprovider in"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Niet bekeken TV series"
+msgstr "Niet-bekeken TV-series"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -538,11 +538,11 @@ msgstr "Algemene instellingen die van toepassing zijn op alle onderdelen van de 
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Hoofdmenu gerelateerde instellingen: Configureer het home screen naar wens."
+msgstr "Hoofdmenu gerelateerde instellingen: Configureer het homescreen naar wens."
 
 msgctxt "#31131"
 msgid "Choose home fanart pack"
-msgstr "Kies home fanart pakket"
+msgstr "Kies home fanartpakket"
 
 msgctxt "#31132"
 msgid "min"
@@ -551,3 +551,7 @@ msgstr "min"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "Verbergen"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Resterend"

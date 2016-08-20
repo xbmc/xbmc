@@ -134,7 +134,7 @@ msgstr "Fanartı göster"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Son giriş yapan"
+msgstr "Son oturum açma"
 
 msgctxt "#31030"
 msgid "Memory used"
@@ -458,7 +458,7 @@ msgstr "Resim yolu seç"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Dosyalar bölümüne gir"
+msgstr "Dosyalar bölümüne girin"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -490,7 +490,7 @@ msgstr "Düğümleri düzenle"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Eklenti tarayıcısına gir"
+msgstr "Eklenti tarayıcısına girin"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -551,3 +551,7 @@ msgstr "dk"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "Gizle"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Kalan"

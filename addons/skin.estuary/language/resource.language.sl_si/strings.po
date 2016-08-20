@@ -48,6 +48,10 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Zadnja prijava"
 
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Uporabljen pomnilnik"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Nazaj"

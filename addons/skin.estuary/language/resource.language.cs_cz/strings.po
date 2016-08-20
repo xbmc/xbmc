@@ -22,7 +22,7 @@ msgstr "Přehrává se"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Hledat..."
+msgstr "Hledat…"
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -30,7 +30,7 @@ msgstr "Zobrazit fanart médií jako pozadí"
 
 msgctxt "#31003"
 msgid "Cinema mode"
-msgstr "Mód kino"
+msgstr "Režim kino"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -46,7 +46,7 @@ msgstr "Náhodné filmy"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "Neshlédnuté filmy"
+msgstr "Nezhlédnuté filmy"
 
 msgctxt "#31008"
 msgid "No disclaimer"
@@ -110,7 +110,7 @@ msgstr "Řadit podle"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "TypZobrazení"
+msgstr "Typ zobrazení"
 
 msgctxt "#31024"
 msgid "Next tracks"
@@ -142,7 +142,7 @@ msgstr "Využití pamět"
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr "informace o verzi"
+msgstr "Informace o verzi"
 
 msgctxt "#31032"
 msgid "Order"
@@ -206,7 +206,7 @@ msgstr "Smazat skupinu"
 
 msgctxt "#31047"
 msgid "Read more..."
-msgstr "Přečíst více..."
+msgstr "Přečíst více…"
 
 msgctxt "#31048"
 msgid "Available"
@@ -262,11 +262,11 @@ msgstr "minuty"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Položky hlavního menu"
+msgstr "Položky hlavní nabídky"
 
 msgctxt "#31062"
 msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Zkratky pro každý typ média v sekci \"Soubory\". Přejděte tam aby jste mohli přidat další zdroje do vašich databází."
+msgstr "Zkratky pro každý typ média v sekci „Soubory“. Přejděte tam, abyste mohli přidat další zdroje do svých databází."
 
 msgctxt "#31063"
 msgid "Sections"
@@ -274,19 +274,19 @@ msgstr "Sekce"
 
 msgctxt "#31064"
 msgid "unwatched"
-msgstr "neshlédnuté"
+msgstr "nezhlédnuté"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Video seznamy stop"
+msgstr "Seznam video stop"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Hudební seznam stop"
+msgstr "Seznam hudebních stop"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Log událostí"
+msgstr "Protokol událostí"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -434,7 +434,7 @@ msgstr "Zde vložte text..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Vaše knihovna je v současné době úplně prázdná. Aby jste ji naplnili, zvolte sekci Soubory, přidejte zdroj medií a nakonfigurujte jej. Po přidání zdroje bude automaticky naindexován jeho obsah a bude moci procházet svoji novou knihovnou medií."
+msgstr "Vaše knihovna je v současné době úplně prázdná. Abyste ji naplnili, zvolte sekci Soubory, přidejte zdroj medií a nastavte jej. Po přidání zdroje bude automaticky zaindexován jeho obsah a budete moci procházet svoji novou knihovnou medií."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -482,7 +482,7 @@ msgstr "Vyhledat na TheMovieDB"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Odebrat tuto položku hlavního menu"
+msgstr "Odebrat tuto položku hlavní nabídky"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -506,7 +506,7 @@ msgstr "Nastavte poskytovatele počasí"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Neshlédnuté TV seriály"
+msgstr "Nezhlédnuté TV seriály"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -551,3 +551,7 @@ msgstr "min"
 msgctxt "#31133"
 msgid "Hide"
 msgstr "Skrýt"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Zbývající"

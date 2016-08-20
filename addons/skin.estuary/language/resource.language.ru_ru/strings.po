@@ -32,6 +32,10 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Смотреть в 2D"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Случайные фильмы"
+
 msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Не просмотреные фильмы"
@@ -39,6 +43,14 @@ msgstr "Не просмотреные фильмы"
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Загрузить иконки"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Просматриваемые фильмы"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Самые проигрываемые альбомы"
 
 msgctxt "#31012"
 msgid "Random albums"
@@ -124,6 +136,10 @@ msgctxt "#31036"
 msgid "items"
 msgstr "Объекты"
 
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Треклист"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Перемотка назад"
@@ -179,6 +195,10 @@ msgstr "На основе Arial"
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Нажмите [B]Влево[/B] для перемотки назад или [B]Вправо[/B] для перемотки вперед"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Показывать экран входа при запуске"
 
 msgctxt "#31059"
 msgid "Updates available"
@@ -307,6 +327,14 @@ msgstr "Телетекст"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Широкий список"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Не просмотренные сериалы"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "мин"
 
 msgctxt "#31133"
 msgid "Hide"

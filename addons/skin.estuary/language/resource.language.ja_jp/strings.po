@@ -498,7 +498,7 @@ msgstr "アドオンはまだ何もインストールされていません。ア
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "あなたはまだ天気プロパイダーを設定していません。天気予報プロパイダーを選択し現在地を設定すれば天気予報を表示できます。"
+msgstr "天気プロパイダーを設定していません。天気予報プロパイダーを選択し現在地を設定すれば天気予報を表示できます。"
 
 msgctxt "#31121"
 msgid "Set weather provider"

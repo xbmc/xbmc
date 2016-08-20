@@ -54,7 +54,7 @@ msgstr "הורד אייקונים"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "בתהליך צפייה בסרטים"
+msgstr "סרטים בצפייה"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -103,6 +103,10 @@ msgstr "מיון לפי"
 msgctxt "#31024"
 msgid "Next tracks"
 msgstr "השיר הבא"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "לא נמצאו מועדפים. ניתן להוסיף כל פריט מדיה לרשימה זו ע\"י שימוש בתפריט משנה."
 
 msgctxt "#31026"
 msgid "Go to albums"
@@ -235,6 +239,10 @@ msgstr "דקות"
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "פריטי תפריט"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "קיצורי דרך למסך \"קבצים\" של כל סוג מדיה. שם ניתן להוסיף מקורות נוספים למסד הנתונים."
 
 msgctxt "#31063"
 msgid "Sections"
@@ -399,6 +407,10 @@ msgstr "קיר"
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "...הכנס פה טקסט"
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "הספריה שלך ריקה כרגע. על מנת להוסיף לה את התכנים שלך, יש להוסיף מקורות מדיה דרך מסך \"קבצים\". לאחר שהמקור נוסף ונסרק, הוא יהיה זמין בספריה."
 
 msgctxt "#31106"
 msgid "Teletext"

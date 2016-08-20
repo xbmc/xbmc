@@ -302,7 +302,7 @@ msgstr "Pridėti media šaltinių"
 
 msgctxt "#31071"
 msgid "by"
-msgstr "pagal"
+msgstr "nuo"
 
 msgctxt "#31072"
 msgid "Power Options"
