@@ -46,7 +46,6 @@ namespace JOYSTICK
     {
       RUMBLE_UNKNOWN,
       RUMBLE_NOTIFICATION,
-      RUMBLE_TEST,
     };
 
     static std::vector<std::string> GetMotors(const std::string& controllerId);

@@ -731,11 +731,14 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
 
 void CPeripherals::OnUserNotification()
 {
-  std::vector<CPeripheral*> peripherals;
-  GetPeripheralsWithFeature(peripherals, FEATURE_RUMBLE);
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_RUMBLE_NOTIFY))
+  {
+    std::vector<CPeripheral*> peripherals;
+    GetPeripheralsWithFeature(peripherals, FEATURE_RUMBLE);
 
-  for (CPeripheral* peripheral : peripherals)
-    peripheral->OnUserNotification();
+    for (CPeripheral* peripheral : peripherals)
+      peripheral->OnUserNotification();
+  }
 }
 
 bool CPeripherals::TestFeature(PeripheralFeature feature)
