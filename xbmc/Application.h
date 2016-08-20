@@ -416,8 +416,7 @@ protected:
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   bool LoadSkin(const std::string& skinID);
-  bool LoadSkin(const std::shared_ptr<ADDON::CSkinInfo>& skin);
-  
+
   /*!
    \brief Delegates the action to all registered action handlers.
    \param action The action

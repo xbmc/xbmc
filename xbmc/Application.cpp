@@ -1620,20 +1620,13 @@ bool CApplication::Save(TiXmlNode *settings) const
 
 bool CApplication::LoadSkin(const std::string& skinID)
 {
-  AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(skinID, addon, ADDON_SKIN))
+  SkinPtr skin;
   {
-    if (LoadSkin(std::dynamic_pointer_cast<ADDON::CSkinInfo>(addon)))
-      return true;
+    AddonPtr addon;
+    if (!CAddonMgr::GetInstance().GetAddon(skinID, addon, ADDON_SKIN))
+      return false;
+    skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
-  CLog::Log(LOGERROR, "failed to load requested skin '%s'", skinID.c_str());
-  return false;
-}
-
-bool CApplication::LoadSkin(const SkinPtr& skin)
-{
-  if (!skin)
-    return false;
 
   // start/prepare the skin
   skin->Start();
@@ -1643,7 +1636,10 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 
   // check if the skin has been properly loaded and if it has a Home.xml
   if (!skin->HasSkinFile("Home.xml"))
+  {
+    CLog::Log(LOGERROR, "failed to load requested skin '%s'", skin->ID().c_str());
     return false;
+  }
 
   bool bPreviousPlayingState=false;
   bool bPreviousRenderingState=false;
