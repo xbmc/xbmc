@@ -1027,7 +1027,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
 
     if (filters.compare(0,5,"yadif") == 0)
     {
-      m_processInfo.SetVideoDeintMethod(filters);
+      m_processInfo.SetVideoDeintMethod(filters + " (input adaptive)");
     }
   }
   else
