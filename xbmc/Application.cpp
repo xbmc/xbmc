@@ -1406,11 +1406,14 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     // reset the settings to ignore during changing skins
     m_skinReloadSettingIgnore.clear();
 
-    // now we can finally reload skins
-    std::string builtin("ReloadSkin");
-    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
-      builtin += "(confirm)";
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+    if (g_SkinInfo)
+    {
+      // now we can finally reload skins
+      std::string builtin("ReloadSkin");
+      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
+        builtin += "(confirm)";
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+    }
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
   {
@@ -1549,7 +1552,10 @@ bool CApplication::OnSettingsSaving() const
 
 void CApplication::ReloadSkin(bool confirm/*=false*/)
 {
-  std::string oldSkin = g_SkinInfo ? g_SkinInfo->ID() : "";
+  if (!g_SkinInfo || m_bInitializing)
+    return; // Don't allow reload before skin is loaded by system
+
+  std::string oldSkin = g_SkinInfo->ID();
 
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
   g_windowManager.SendMessage(msg);
@@ -1565,10 +1571,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
         DialogResponse::YES)
       {
         m_skinReverting = true;
-        if (oldSkin.empty())
-          CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN)->Reset();
-        else
-          CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
+        CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
       }
     }
   }
