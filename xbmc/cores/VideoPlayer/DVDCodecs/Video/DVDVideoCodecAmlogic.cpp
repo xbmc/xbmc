@@ -100,6 +100,13 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_H264:
       if (m_hints.width <= CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECH264))
         return false;
+      switch(hints.profile)
+      {
+        case FF_PROFILE_H264_HIGH_10:
+        case FF_PROFILE_H264_HIGH_10_INTRA:
+          // Amlogic decodes Hi10P with lots of artifacts
+          return false;
+      }
       if ((!aml_support_h264_4k2k()) && ((m_hints.width > 1920) || (m_hints.height > 1088)))
       {
         // 4K is supported only on Amlogic S802/S812 chip
