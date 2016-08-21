@@ -63,7 +63,7 @@ struct find_map : public std::binary_function<CAddonInstaller::JobMap::value_typ
   }
 };
 
-CAddonInstaller::CAddonInstaller()
+CAddonInstaller::CAddonInstaller() : m_idle(true)
 { }
 
 CAddonInstaller::~CAddonInstaller()
@@ -81,6 +81,8 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
+  if (m_downloadJobs.empty())
+    m_idle.Set();
   lock.Leave();
   PrunePackageCache();
 
@@ -150,6 +152,8 @@ bool CAddonInstaller::Cancel(const std::string &addonID)
   {
     CJobManager::GetInstance().CancelJob(i->second.jobID);
     m_downloadJobs.erase(i);
+    if (m_downloadJobs.empty())
+      m_idle.Set();
     return true;
   }
 
@@ -187,6 +191,7 @@ bool CAddonInstaller::InstallModal(const std::string &addonID, ADDON::AddonPtr &
 
   return CAddonMgr::GetInstance().GetAddon(addonID, addon);
 }
+
 
 bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool background /* = true */, bool modal /* = false */)
 {
@@ -239,10 +244,12 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo
   {
     unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this);
     m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
+    m_idle.Reset();
     return true;
   }
 
   m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
+  m_idle.Reset();
   lock.Leave();
 
   bool result = false;
@@ -255,6 +262,8 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo
   lock.Enter();
   JobMap::iterator i = m_downloadJobs.find(addon->ID());
   m_downloadJobs.erase(i);
+  if (m_downloadJobs.empty())
+    m_idle.Set();
 
   return result;
 }
@@ -418,12 +427,21 @@ void CAddonInstaller::PrunePackageCache()
     delete it->second;
 }
 
-void CAddonInstaller::InstallUpdates(bool includeBlacklisted /* = false */)
+void CAddonInstaller::InstallUpdates()
 {
-  for (const auto& addon : CAddonMgr::GetInstance().GetAvailableUpdates())
+  auto updates = CAddonMgr::GetInstance().GetAvailableUpdates();
+  for (const auto& addon : updates)
   {
-    if (includeBlacklisted || !CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
+    if (!CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
       CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
+  }
+
+  CSingleLock lock(m_critSection);
+  if (!m_downloadJobs.empty())
+  {
+    m_idle.Reset();
+    lock.Leave();
+    m_idle.Wait();
   }
 }
 

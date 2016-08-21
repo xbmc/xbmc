@@ -120,5 +120,4 @@ bool CAddonSystemSettings::UnsetActive(const AddonPtr& addon)
   setting->Reset();
   return true;
 }
-
 }
