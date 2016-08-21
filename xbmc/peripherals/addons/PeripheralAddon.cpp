@@ -174,6 +174,13 @@ bool CPeripheralAddon::GetAddonProperties(void)
         m_bProvidesJoysticks ? "true" : "false", Author().c_str());
     return false;
   }
+  if (m_bProvidesButtonMaps != addonCapabilities.provides_buttonmaps)
+  {
+    CLog::Log(LOGERROR, "PERIPHERAL - Add-on '%s': provides_buttonmaps' (%s) in add-on DLL  doesn't match 'provides_buttonmaps' (%s) in addon.xml. Please contact the developer of this add-on: %s",
+        Name().c_str(), addonCapabilities.provides_buttonmaps ? "true" : "false",
+        m_bProvidesButtonMaps ? "true" : "false", Author().c_str());
+    return false;
+  }
 
   return true;
 }

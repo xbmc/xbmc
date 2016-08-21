@@ -69,6 +69,13 @@ DLLEXPORT void PERIPHERAL_refresh_button_maps(AddonCB* frontend, CB_PeripheralLi
   return cb->RefreshButtonMaps(frontend->addonData, deviceName ? deviceName : "", controllerId ? controllerId : "");
 }
 
+DLLEXPORT unsigned int PERIPHERAL_feature_count(AddonCB* frontend, CB_PeripheralLib* cb, const char* controllerId, JOYSTICK_FEATURE_TYPE type)
+{
+  if (frontend == NULL || cb == NULL)
+    return 0;
+  return cb->FeatureCount(frontend->addonData, controllerId, type);
+}
+
 #ifdef __cplusplus
 }
 #endif

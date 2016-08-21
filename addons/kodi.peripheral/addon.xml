@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="kodi.peripheral" version="1.0.19" provider-name="Team-Kodi">
+<addon id="kodi.peripheral" version="1.0.22" provider-name="Team-Kodi">
 	<backwards-compatibility abi="1.0.19"/>
 	<requires>
 		<import addon="xbmc.core" version="0.1.0"/>
