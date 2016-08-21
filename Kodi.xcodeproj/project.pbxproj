@@ -393,6 +393,8 @@
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
+		7C68401B1D87C6D400C55360 /* ViewModeSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6840191D87C6D400C55360 /* ViewModeSettings.cpp */; };
+		7C68401C1D87C6D400C55360 /* ViewModeSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6840191D87C6D400C55360 /* ViewModeSettings.cpp */; };
 		7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB32E155BD1D40080368A /* ImageFile.cpp */; };
 		7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */; };
 		7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
@@ -2941,6 +2943,8 @@
 		7C62F24110505BC7002AD2C1 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
 		7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSingles.cpp; sourceTree = "<group>"; };
 		7C62F45D1057A62D002AD2C1 /* DirectoryNodeSingles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSingles.h; sourceTree = "<group>"; };
+		7C6840191D87C6D400C55360 /* ViewModeSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewModeSettings.cpp; sourceTree = "<group>"; };
+		7C68401A1D87C6D400C55360 /* ViewModeSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewModeSettings.h; sourceTree = "<group>"; };
 		7C6EB32E155BD1D40080368A /* ImageFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageFile.cpp; sourceTree = "<group>"; };
 		7C6EB32F155BD1D40080368A /* ImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFile.h; sourceTree = "<group>"; };
 		7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageHandler.cpp; sourceTree = "<group>"; };
@@ -6031,6 +6035,8 @@
 				F59876BE0FBA351D008EF4FB /* VideoReferenceClock.h */,
 				7CC30DBE16291C2C003E7579 /* VideoThumbLoader.cpp */,
 				7CC30DBF16291C2C003E7579 /* VideoThumbLoader.h */,
+				7C6840191D87C6D400C55360 /* ViewModeSettings.cpp */,
+				7C68401A1D87C6D400C55360 /* ViewModeSettings.h */,
 			);
 			path = video;
 			sourceTree = "<group>";
@@ -10113,6 +10119,7 @@
 				E38A06CE0D95AA5500FF8227 /* GUIDialogKaiToast.cpp in Sources */,
 				7C8E023D1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */,
 				E3B53E7C0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp in Sources */,
+				7C68401B1D87C6D400C55360 /* ViewModeSettings.cpp in Sources */,
 				E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */,
 				E36C29E00DA72429001F0C9D /* Album.cpp in Sources */,
 				E36C29E60DA72442001F0C9D /* DVDSubtitleParserSami.cpp in Sources */,
@@ -11451,6 +11458,7 @@
 				E49913AE174E5F3300741B6D /* UPnPPlayer.cpp in Sources */,
 				E49913AF174E5F3300741B6D /* UPnPRenderer.cpp in Sources */,
 				E49913B0174E5F3300741B6D /* UPnPServer.cpp in Sources */,
+				7C68401C1D87C6D400C55360 /* ViewModeSettings.cpp in Sources */,
 				E49913B1174E5F3300741B6D /* UPnPSettings.cpp in Sources */,
 				E49913B2174E5F3700741B6D /* WebSocket.cpp in Sources */,
 				E49913B3174E5F3700741B6D /* WebSocketManager.cpp in Sources */,

@@ -10,7 +10,8 @@ set(SOURCES Bookmark.cpp
             VideoInfoTag.cpp
             VideoLibraryQueue.cpp
             VideoReferenceClock.cpp
-            VideoThumbLoader.cpp)
+            VideoThumbLoader.cpp
+            ViewModeSettings.cpp)
 
 set(HEADERS Bookmark.h
             ContextMenus.h

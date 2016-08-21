@@ -38,6 +38,7 @@
 #include "Application.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "video/ViewModeSettings.h"
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"
@@ -332,10 +333,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   if (g_application.m_pPlayer->Supports(RENDERFEATURE_STRETCH) || g_application.m_pPlayer->Supports(RENDERFEATURE_PIXEL_RATIO))
   {
-    entries.clear();
-    for (int i = 0; i < 7; ++i)
-      entries.push_back(std::make_pair(630 + i, i));
-    AddSpinner(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, 0, videoSettings.m_ViewMode, entries);
+    AddList(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, 0, videoSettings.m_ViewMode, CViewModeSettings::ViewModesFiller, 629);
   }
   if (g_application.m_pPlayer->Supports(RENDERFEATURE_ZOOM))
     AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, 0, videoSettings.m_CustomZoomAmount, "%2.2f", 0.5f, 0.01f, 2.0f, 216, usePopup);
@@ -426,4 +424,3 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(const CSetting *setting, 
     current = -1;
   }
 }
-
