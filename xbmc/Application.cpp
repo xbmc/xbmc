@@ -1164,12 +1164,19 @@ bool CApplication::Initialize()
     if (g_advancedSettings.m_splashImage)
       g_windowManager.ActivateWindow(WINDOW_SPLASH);
 
-    // Make sure we have at least the default skin
+    m_confirmSkinChange = false;
+    m_incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons();
+    m_confirmSkinChange = true;
+
     std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
-    if (!LoadSkin(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)) && !LoadSkin(defaultSkin))
+    if (!LoadSkin(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
     {
-      CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
-      return false;
+      CLog::Log(LOGERROR, "Failed to load skin '%s'", CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
+      if (!LoadSkin(defaultSkin))
+      {
+        CLog::Log(LOGFATAL, "Default skin '%s' could not be loaded! Terminating..", defaultSkin.c_str());
+        return false;
+      }
     }
 
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
@@ -1248,8 +1255,6 @@ bool CApplication::Initialize()
   CRepositoryUpdater::GetInstance().Start();
 
   CLog::Log(LOGNOTICE, "initialize done");
-
-  m_bInitializing = false;
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
@@ -4157,8 +4162,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_fallbackLanguageLoaded)
           CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
 
+        if (!m_incompatibleAddons.empty())
+        {
+          auto addonList = StringUtils::Join(m_incompatibleAddons, ", ");
+          auto msg = StringUtils::Format(g_localizeStrings.Get(24149).c_str(), addonList.c_str());
+          CGUIDialogOK::ShowAndGetInput(CVariant{24148}, CVariant{std::move(msg)});
+          m_incompatibleAddons.clear();
+        }
+
         // show info dialog about moved configuration files if needed
         ShowAppMigrationMessage();
+
+        m_bInitializing = false;
       }
     }
     break;

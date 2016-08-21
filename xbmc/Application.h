@@ -23,6 +23,7 @@
 #include "system.h" // for HAS_DVD_DRIVE et. al.
 #include "XBApplicationEx.h"
 
+#include "addons/AddonSystemSettings.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
@@ -521,7 +522,9 @@ protected:
   std::vector<IActionListener *> m_actionListeners;
 
   bool m_fallbackLanguageLoaded;
-  
+
+  std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
+
 private:
   CCriticalSection m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
 

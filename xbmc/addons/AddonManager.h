@@ -244,6 +244,8 @@ namespace ADDON
 
     bool ServicesHasStarted() const;
 
+    bool IsCompatible(const IAddon& addon);
+
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);

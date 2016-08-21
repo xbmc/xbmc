@@ -19,11 +19,13 @@
  */
 
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
+#include "utils/log.h"
 
 
 namespace ADDON
@@ -119,5 +121,50 @@ bool CAddonSystemSettings::UnsetActive(const AddonPtr& addon)
 
   setting->Reset();
   return true;
+}
+
+
+std::vector<std::string> CAddonSystemSettings::MigrateAddons()
+{
+  auto getIncompatible = [](){
+    VECADDONS incompatible;
+    CAddonMgr::GetInstance().GetAddons(incompatible);
+    incompatible.erase(std::remove_if(incompatible.begin(), incompatible.end(),
+        [](const AddonPtr a){ return CAddonMgr::GetInstance().IsCompatible(*a); }), incompatible.end());
+    return incompatible;
+  };
+
+  if (getIncompatible().empty())
+    return std::vector<std::string>();
+
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
+  {
+    if (CRepositoryUpdater::GetInstance().CheckForUpdates())
+      CRepositoryUpdater::GetInstance().Await();
+
+    CLog::Log(LOGINFO, "ADDON: waiting for add-ons to update...");
+    CAddonInstaller::GetInstance().InstallUpdates();
+  }
+
+  auto incompatible = getIncompatible();
+  for (const auto& addon : incompatible)
+    CLog::Log(LOGNOTICE, "ADDON: %s version %s is incompatible", addon->ID().c_str(), addon->Version().asString().c_str());
+
+  std::vector<std::string> changed;
+  for (const auto& addon : incompatible)
+  {
+    if (!UnsetActive(addon))
+    {
+      CLog::Log(LOGWARNING, "ADDON: failed to unset %s", addon->ID().c_str());
+      continue;
+    }
+    if (!CAddonMgr::GetInstance().DisableAddon(addon->ID()))
+    {
+      CLog::Log(LOGWARNING, "ADDON: failed to disable %s", addon->ID().c_str());
+    }
+    changed.push_back(addon->Name());
+  }
+
+  return changed;
 }
 }

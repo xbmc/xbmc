@@ -47,6 +47,11 @@ public:
    */
   bool UnsetActive(const AddonPtr& addon);
 
+  /*!
+   * Attempt to migrate installed addons. Returns a list of addons that was modified.
+   */
+  std::vector<std::string> MigrateAddons();
+
 private:
   CAddonSystemSettings() = default;
   CAddonSystemSettings(const CAddonSystemSettings&) = default;
