@@ -451,7 +451,7 @@ void CPVRRecordings::UpdateEpgTags(void)
   for (const auto recording : m_recordings)
   {
     iEpgEvent = recording.second->BroadcastUid();
-    if (iEpgEvent != EPG_TAG_INVALID_UID && recording.second->IsDeleted())
+    if (iEpgEvent != EPG_TAG_INVALID_UID && !recording.second->IsDeleted())
     {
       channel = recording.second->Channel();
       if (channel)
