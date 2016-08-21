@@ -108,15 +108,25 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
   /* check for invalid start and end time */
   if (gridStart >= gridEnd)
   {
-    // default to start "now minus 30 minutes" and end "start plus one page".
-    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, 30, 0);
+    // default to start "now minus GRID_START_PADDING minutes" and end "start plus one page".
+    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GRID_START_PADDING, 0);
     m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, iBlocksPerPage * MINSPERBLOCK, 0);
+  }
+  else if (gridStart > (CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GRID_START_PADDING, 0)))
+  {
+    // adjust to start "now minus GRID_START_PADDING minutes".
+    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GRID_START_PADDING, 0);
+    m_gridEnd = gridEnd;
   }
   else
   {
-    m_gridStart = CDateTime(gridStart.GetYear(), gridStart.GetMonth(), gridStart.GetDay(), gridStart.GetHour(), gridStart.GetMinute() >= 30 ? 30 : 0, 0);
-    m_gridEnd = CDateTime(gridEnd.GetYear(), gridEnd.GetMonth(), gridEnd.GetDay(), gridEnd.GetHour(), gridEnd.GetMinute() >= 30 ? 30 : 0, 0);
+    m_gridStart = gridStart;
+    m_gridEnd = gridEnd;
   }
+
+  // roundup
+  m_gridStart = CDateTime(m_gridStart.GetYear(), m_gridStart.GetMonth(), m_gridStart.GetDay(), m_gridStart.GetHour(), m_gridStart.GetMinute() >= 30 ? 30 : 0, 0);
+  m_gridEnd = CDateTime(m_gridEnd.GetYear(), m_gridEnd.GetMonth(), m_gridEnd.GetDay(), m_gridEnd.GetHour(), m_gridEnd.GetMinute() >= 30 ? 30 : 0, 0);
 
   ////////////////////////////////////////////////////////////////////////
   // Create ruler items
