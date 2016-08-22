@@ -58,7 +58,7 @@ public:
   void SetAudioSampleRate(int sampleRate);
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
-  int GetAudioBitsPerSampe();
+  int GetAudioBitsPerSample();
   virtual bool AllowDTSHDDecode();
 
   // render info

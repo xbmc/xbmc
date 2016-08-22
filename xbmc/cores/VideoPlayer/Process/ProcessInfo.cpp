@@ -266,7 +266,7 @@ void CProcessInfo::SetAudioBitsPerSample(int bitsPerSample)
   CServiceBroker::GetDataCacheCore().SetAudioBitsPerSample(m_audioBitsPerSample);
 }
 
-int CProcessInfo::GetAudioBitsPerSampe()
+int CProcessInfo::GetAudioBitsPerSample()
 {
   CSingleLock lock(m_audioCodecSection);
 
