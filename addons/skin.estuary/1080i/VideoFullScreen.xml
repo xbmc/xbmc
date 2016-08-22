@@ -23,21 +23,26 @@
 				<height>100</height>
 				<texture colordiffuse="button_focus">dialogs/extendedprogress/loading-back.png</texture>
 			</control>
-<!-- 			<control type="image" id="1">
+			<control type="image" id="1">
 				<left>910</left>
 				<top>490</top>
 				<width>100</width>
 				<height>100</height>
 				<texture>dialogs/volume/progress/p$INFO[Player.CacheLevel].png</texture>
 				<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
-			</control> -->
-			<control type="image" id="1">
-				<left>910</left>
-				<top>490</top>
-				<width>100</width>
-				<height>100</height>
-				<texture>dialogs/extendedprogress/loading.png</texture>
-				<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
+			</control>
+			<control type="label" id="1">
+				<description>buffering label</description>
+				<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
+				<left>840</left>
+				<top>600</top>
+				<width>280</width>
+				<height>20</height>
+				<aligny>center</aligny>
+				<align>center</align>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
 			</control>
 		</control>
 	</controls>
