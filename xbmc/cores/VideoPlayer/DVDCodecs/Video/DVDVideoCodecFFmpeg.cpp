@@ -506,7 +506,7 @@ void CDVDVideoCodecFFmpeg::SetFilters()
   // ask codec to do deinterlacing if possible
   EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
 
-  if (mInt != VS_INTERLACEMETHOD_DEINTERLACE && mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+  if (mInt != VS_INTERLACEMETHOD_NONE && mInt != VS_INTERLACEMETHOD_DEINTERLACE && mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF)
     mInt = m_processInfo.GetFallbackDeintMethod();
 
   unsigned int filters = 0;
@@ -1027,7 +1027,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
 
     if (filters.compare(0,5,"yadif") == 0)
     {
-      m_processInfo.SetVideoDeintMethod(filters);
+      m_processInfo.SetVideoDeintMethod(filters + " (input adaptive)");
     }
   }
   else
