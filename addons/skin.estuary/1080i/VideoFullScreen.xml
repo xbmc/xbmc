@@ -17,27 +17,45 @@
 			<animation delay="300" effect="fade" time="200">Visible</animation>
 			<animation effect="fade" delay="200" time="150">Hidden</animation>
 			<control type="image" id="1">
-				<left>910</left>
-				<top>490</top>
-				<width>100</width>
-				<height>100</height>
-				<texture colordiffuse="button_focus">dialogs/extendedprogress/loading-back.png</texture>
-			</control>
-<!-- 			<control type="image" id="1">
-				<left>910</left>
-				<top>490</top>
-				<width>100</width>
-				<height>100</height>
-				<texture>dialogs/volume/progress/p$INFO[Player.CacheLevel].png</texture>
+				<left>860</left>
+				<top>440</top>
+				<width>200</width>
+				<height>200</height>
+				<texture>dialogs/volume/progress/p100.png</texture>
 				<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
-			</control> -->
-			<control type="image" id="1">
-				<left>910</left>
-				<top>490</top>
-				<width>100</width>
-				<height>100</height>
-				<texture>dialogs/extendedprogress/loading.png</texture>
-				<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
+			</control>
+ 			<control type="image" id="1">
+				<left>860</left>
+				<top>440</top>
+				<width>200</width>
+				<height>200</height>
+				<texture colordiffuse="button_focus">dialogs/volume/progress/p$INFO[Player.CacheLevel].png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>buffering value</description>
+				<label>$INFO[Player.CacheLevel]%</label>
+				<left>860</left>
+				<top>440</top>
+				<width>200</width>
+				<height>200</height>
+				<aligny>center</aligny>
+				<align>center</align>
+				<font>font12_title</font>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label" id="2">
+				<description>buffering label</description>
+				<label>$LOCALIZE[15107]</label>
+				<left>860</left>
+				<top>620</top>
+				<width>200</width>
+				<height>20</height>
+				<aligny>center</aligny>
+				<align>center</align>
+				<font>font12_title</font>
+				<textcolor>button_focus</textcolor>
+				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
 	</controls>
