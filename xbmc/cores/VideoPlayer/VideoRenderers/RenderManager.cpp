@@ -319,6 +319,14 @@ bool CRenderManager::Configure()
     m_renderState = STATE_CONFIGURED;
 
     CLog::Log(LOGDEBUG, "CRenderManager::Configure - %d", m_QueueSize);
+
+    std::list<EINTERLACEMETHOD> deintmethods;
+    for (int deint = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE; deint != EINTERLACEMETHOD::VS_INTERLACEMETHOD_MAX; deint++)
+    {
+      if (m_pRenderer->Supports((EINTERLACEMETHOD)deint))
+        deintmethods.push_back((EINTERLACEMETHOD)deint);
+    }
+    m_playerPort->UpdateDeinterlacingMethods(deintmethods);
   }
   else
     m_renderState = STATE_UNCONFIGURED;
