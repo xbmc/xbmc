@@ -321,6 +321,31 @@ namespace PVR
     return false;
   }
 
+  bool CPVRGUIActions::RenameTimer(const CFileItemPtr &item) const
+  {
+    if (!item->HasPVRTimerInfoTag())
+      return false;
+
+    const CPVRTimerInfoTagPtr timer(item->GetPVRTimerInfoTag());
+
+    std::string strNewName(timer->m_strTitle);
+    if (CGUIKeyboardFactory::ShowAndGetInput(strNewName,
+                                             CVariant{g_localizeStrings.Get(19042)}, // "Are you sure you want to rename this timer?"
+                                             false))
+    {
+      if (!g_PVRTimers->RenameTimer(*item, strNewName))
+        return false;
+    }
+
+    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase *>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));
+    if (pvrWindow)
+      pvrWindow->DoRefresh();
+    else
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
+
+    return true;
+  }
+
   bool CPVRGUIActions::DeleteTimer(const CFileItemPtr &item) const
   {
     return DeleteTimer(item, false, false);

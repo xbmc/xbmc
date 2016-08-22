@@ -64,6 +64,7 @@ namespace PVR
     DECL_CONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_CONTEXTMENUITEM(UndeleteRecording);
+    DECL_CONTEXTMENUITEM(RenameTimer);
     DECL_CONTEXTMENUITEM(ShowAudioDSPSettings);
     DECL_CONTEXTMENUITEM(PVRClientMenuHook);
 
@@ -573,6 +574,36 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
+    // Rename timer
+
+    std::string RenameTimer::GetLabel(const CFileItem &item) const
+    {
+      return g_localizeStrings.Get(118); /* Rename */
+    }
+
+    bool RenameTimer::IsVisible(const CFileItem &item) const
+    {
+      const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
+      if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+        return false;
+
+      // As epg-based timers will get it's title from the epg tag, they should not be renamable.
+      if (timer->IsManual())
+      {
+        const CPVRTimerTypePtr timerType(timer->GetTimerType());
+        if (!timerType->IsReadOnly())
+          return true;
+      }
+
+      return false;
+    }
+
+    bool RenameTimer::Execute(const CFileItemPtr &item) const
+    {
+      return CPVRGUIActions::GetInstance().RenameTimer(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
     // Delete timer
 
     std::string DeleteTimer::GetLabel(const CFileItem &item) const
@@ -707,6 +738,7 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::EditTimer>(),
+      std::make_shared<CONTEXTMENUITEM::RenameTimer>(),
       std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
       std::make_shared<CONTEXTMENUITEM::StartRecording>(),
       std::make_shared<CONTEXTMENUITEM::StopRecording>(),

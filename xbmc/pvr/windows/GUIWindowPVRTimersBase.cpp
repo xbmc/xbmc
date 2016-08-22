@@ -20,7 +20,6 @@
 
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogOK.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "input/Key.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -32,7 +31,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
 
-#include "GUIWindowPVRTimers.h"
+#include "GUIWindowPVRTimersBase.h"
 
 using namespace PVR;
 
@@ -68,10 +67,6 @@ void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons 
           else
             buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* Deactivate */
         }
-
-        // As epg-based timers will get it's title from the epg tag, they should not be renamable.
-        if (timer->IsManual() && !timerType->IsReadOnly())
-          buttons.Add(CONTEXT_BUTTON_RENAME, 118);        /* Rename */
       }
     }
   }
@@ -102,7 +97,6 @@ bool CGUIWindowPVRTimersBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   return OnContextButtonActivate(pItem.get(), button) ||
-      OnContextButtonRename(pItem.get(), button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
@@ -235,25 +229,6 @@ bool CGUIWindowPVRTimersBase::OnContextButtonActivate(CFileItem *item, CONTEXT_B
       timer->m_state = PVR_TIMER_STATE_DISABLED;
 
     g_PVRTimers->UpdateTimer(timer);
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRTimersBase::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_RENAME)
-  {
-    bReturn = true;
-    if (!item->HasPVRTimerInfoTag())
-      return bReturn;
-    CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
-
-    std::string strNewName(timer->m_strTitle);
-    if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, CVariant{g_localizeStrings.Get(19042)}, false))
-      g_PVRTimers->RenameTimer(*item, strNewName);
   }
 
   return bReturn;

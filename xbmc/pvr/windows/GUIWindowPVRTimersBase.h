@@ -45,7 +45,6 @@ namespace PVR
     bool ActionShowTimer(const CFileItemPtr &item);
 
     bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
 
     CFileItemPtr m_currentFileItem;
   };
