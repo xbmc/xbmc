@@ -53,6 +53,8 @@ public:
 protected:
   bool SetDisplayResolution(const char *resolution);
   void SetupVideoScaling(const char *mode);
+  void DealWithScale(const RESOLUTION_INFO &res);
+  void EnableFreeScale(const RESOLUTION_INFO &res);
   void DisableFreeScale();
 
 private:
