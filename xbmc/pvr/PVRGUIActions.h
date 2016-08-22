@@ -86,6 +86,13 @@ namespace PVR
     bool ToggleTimer(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Toggles a given timer's enabled/disabled state.
+     * @param item containing a timer.
+     * @return true on success, false otherwise.
+     */
+    bool ToggleTimerState(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Open the timer settings dialog to edit an existing timer.
      * @param item containing an epg tag or a timer.
      * @return true on success, false otherwise.

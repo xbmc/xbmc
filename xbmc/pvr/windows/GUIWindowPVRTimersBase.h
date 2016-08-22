@@ -36,15 +36,11 @@ namespace PVR
 
     bool OnMessage(CGUIMessage& message);
     bool OnAction(const CAction &action);
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     bool Update(const std::string &strDirectory, bool updateFilterPath = true);
     void UpdateButtons(void);
 
   private:
     bool ActionShowTimer(const CFileItemPtr &item);
-
-    bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
 
     CFileItemPtr m_currentFileItem;
   };

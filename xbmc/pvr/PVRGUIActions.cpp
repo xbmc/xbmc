@@ -264,6 +264,20 @@ namespace PVR
       return AddTimer(item, false);
   }
 
+  bool CPVRGUIActions::ToggleTimerState(const CFileItemPtr &item) const
+  {
+    if (!item->HasPVRTimerInfoTag())
+      return false;
+
+    CPVRTimerInfoTagPtr timer(item->GetPVRTimerInfoTag());
+    if (timer->m_state == PVR_TIMER_STATE_DISABLED)
+      timer->m_state = PVR_TIMER_STATE_SCHEDULED;
+    else
+      timer->m_state = PVR_TIMER_STATE_DISABLED;
+
+    return g_PVRTimers->UpdateTimer(timer);
+  }
+
   bool CPVRGUIActions::EditTimer(const CFileItemPtr &item) const
   {
     CPVRTimerInfoTagPtr timer;

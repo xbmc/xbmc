@@ -46,34 +46,6 @@ CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase()
   g_infoManager.UnregisterObserver(this);
 }
 
-void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
-{
-  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
-    return;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-
-  if (!URIUtils::PathEquals(pItem->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-  {
-    CPVRTimerInfoTagPtr timer(pItem->GetPVRTimerInfoTag());
-    if (timer)
-    {
-      CPVRTimerTypePtr timerType(timer->GetTimerType());
-      if (timerType)
-      {
-        if (timerType->SupportsEnableDisable())
-        {
-          if (timer->m_state == PVR_TIMER_STATE_DISABLED)
-            buttons.Add(CONTEXT_BUTTON_ACTIVATE, 843);    /* Activate */
-          else
-            buttons.Add(CONTEXT_BUTTON_ACTIVATE, 844);    /* Deactivate */
-        }
-      }
-    }
-  }
-
-  CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-}
-
 bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PARENT_DIR ||
@@ -88,16 +60,6 @@ bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)
     }
   }
   return CGUIWindowPVRBase::OnAction(action);
-}
-
-bool CGUIWindowPVRTimersBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
-{
-  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
-    return false;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-
-  return OnContextButtonActivate(pItem.get(), button) ||
-      CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowPVRTimersBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
@@ -210,28 +172,6 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
-}
-
-bool CGUIWindowPVRTimersBase::OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_ACTIVATE)
-  {
-    bReturn = true;
-    if (!item->HasPVRTimerInfoTag())
-      return bReturn;
-
-    CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
-    if (timer->m_state == PVR_TIMER_STATE_DISABLED)
-      timer->m_state = PVR_TIMER_STATE_SCHEDULED;
-    else
-      timer->m_state = PVR_TIMER_STATE_DISABLED;
-
-    g_PVRTimers->UpdateTimer(timer);
-  }
-
-  return bReturn;
 }
 
 bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr &item)

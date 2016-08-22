@@ -64,6 +64,7 @@ namespace PVR
     DECL_CONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_CONTEXTMENUITEM(UndeleteRecording);
+    DECL_CONTEXTMENUITEM(ToggleTimerState);
     DECL_CONTEXTMENUITEM(RenameTimer);
     DECL_CONTEXTMENUITEM(ShowAudioDSPSettings);
     DECL_CONTEXTMENUITEM(PVRClientMenuHook);
@@ -434,6 +435,33 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
+    // Activate / deactivate timer or timer rule
+
+    std::string ToggleTimerState::GetLabel(const CFileItem &item) const
+    {
+      const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
+      if (timer && timer->m_state != PVR_TIMER_STATE_DISABLED)
+        return g_localizeStrings.Get(844); /* Deactivate */
+
+      return g_localizeStrings.Get(843); /* Activate */
+    }
+
+    bool ToggleTimerState::IsVisible(const CFileItem &item) const
+    {
+      const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
+      if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+        return false;
+
+      const CPVRTimerTypePtr timerType(timer->GetTimerType());
+      return timerType && timerType->SupportsEnableDisable();
+    }
+
+    bool ToggleTimerState::Execute(const CFileItemPtr &item) const
+    {
+      return CPVRGUIActions::GetInstance().ToggleTimerState(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
     // Add timer rule
 
     std::string AddTimerRule::GetLabel(const CFileItem &item) const
@@ -734,6 +762,7 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::PlayRecording>(),
       std::make_shared<CONTEXTMENUITEM::MarkWatched>(),
       std::make_shared<CONTEXTMENUITEM::MarkUnwatched>(),
+      std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
       std::make_shared<CONTEXTMENUITEM::AddTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(),
