@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "epg/EpgContainer.h"
+#include "epg/EpgInfoTag.h"
 #include "FileItem.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -443,25 +444,35 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   }
 }
 
-void CPVRRecordings::UpdateEpgTags(void)
+CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const
 {
   CSingleLock lock(m_critSection);
-  unsigned int iEpgEvent;
-  CPVRChannelPtr channel;
+
   for (const auto recording : m_recordings)
   {
-    iEpgEvent = recording.second->BroadcastUid();
-    if (iEpgEvent != EPG_TAG_INVALID_UID && !recording.second->IsDeleted())
+    if (recording.second->IsDeleted())
+      continue;
+
+    unsigned int iEpgEvent = recording.second->BroadcastUid();
+    if (iEpgEvent != EPG_TAG_INVALID_UID)
     {
-      channel = recording.second->Channel();
-      if (channel)
+      if (iEpgEvent == epgTag->UniqueBroadcastID())
       {
-        const EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(channel, iEpgEvent);
-        if (epgTag)
-          epgTag->SetRecording(recording.second);
+        // uid matches. perfect.
+        return recording.second;
       }
     }
+    else
+    {
+      // uid is optional, so check other relevant data.
+      if (recording.second->Channel() == epgTag->ChannelTag() &&
+          recording.second->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
+          (recording.second->RecordingTimeAsUTC() + recording.second->m_duration) >= epgTag->EndAsUTC())
+        return recording.second;
+    }
   }
+
+  return CPVRRecordingPtr();
 }
 
 bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int count)

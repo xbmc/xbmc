@@ -19,10 +19,19 @@
  *
  */
 
+#include <memory>
+#include <map>
+
 #include "FileItem.h"
 #include "video/VideoDatabase.h"
 
 #include "PVRRecording.h"
+
+namespace EPG
+{
+  class CEpgInfoTag;
+  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
+}
 
 namespace PVR
 {
@@ -78,7 +87,6 @@ namespace PVR
     int Load();
     void Clear();
     void UpdateFromClient(const CPVRRecordingPtr &tag);
-    void UpdateEpgTags(void);
 
     /**
      * @brief refresh the recordings list from the clients.
@@ -107,5 +115,12 @@ namespace PVR
     CPVRRecordingPtr GetById(int iClientId, const std::string &strRecordingId) const;
     void GetAll(CFileItemList &items, bool bDeleted = false);
     CFileItemPtr GetById(unsigned int iId) const;
+
+    /*!
+     * @brief Get the recording for the given epg tag, if any.
+     * @param epgTag The epg tag.
+     * @return The requested recording, or an empty recordingptr if none was found.
+     */
+    CPVRRecordingPtr GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const;
   };
 }

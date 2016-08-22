@@ -692,9 +692,6 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   }
   else
   {
-    if (g_PVRManager.IsStarted())
-      g_PVRManager.Recordings()->UpdateEpgTags();
-
     CSingleLock lock(m_critSection);
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
     m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
