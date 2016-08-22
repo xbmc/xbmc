@@ -69,7 +69,7 @@ public:
   virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   virtual int64_t GetTime();
   virtual void SetTime(int64_t time);
-  virtual void SeekTime(int64_t iTime = 0);
+  virtual void SeekTime(uint64_t iTime = 0);
   virtual bool SkipNext();
   virtual void GetAudioCapabilities(std::vector<int> &audioCaps) {}
 

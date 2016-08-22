@@ -28,7 +28,7 @@
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE 0xFFF0000000000000
 
-#define DVD_TIME_TO_MSEC(x) ((int)((double)(x) * 1000 / DVD_TIME_BASE))
+#define DVD_TIME_TO_MSEC(x) ((int64_t)((double)(x) * 1000 / DVD_TIME_BASE))
 #define DVD_SEC_TO_TIME(x)  ((double)(x) * DVD_TIME_BASE)
 #define DVD_MSEC_TO_TIME(x) ((double)(x) * DVD_TIME_BASE / 1000)
 

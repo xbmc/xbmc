@@ -299,7 +299,7 @@ public:
   virtual int  SeekChapter(int iChapter)                       { return -1; }
 //  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
 
-  virtual void SeekTime(int64_t iTime = 0){};
+  virtual void SeekTime(uint64_t iTime = 0){};
   /*
    \brief seek relative to current time, returns false if not implemented by player
    \param iTime The time in milliseconds to seek. A positive value will seek forward, a negative backward.

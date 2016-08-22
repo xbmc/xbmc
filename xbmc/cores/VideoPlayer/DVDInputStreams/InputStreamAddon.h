@@ -70,7 +70,7 @@ public:
 
   // IPosTime
   virtual CDVDInputStream::IPosTime* GetIPosTime() override;
-  virtual bool PosTime(int ms) override;
+  virtual bool PosTime(uint64_t ms) override;
 
   //IDemux
   CDVDInputStream::IDemux* GetIDemux() override;
@@ -81,7 +81,7 @@ public:
   virtual void EnableStream(int iStreamId, bool enable) override;
   virtual int GetNrOfStreams() const override;
   virtual void SetSpeed(int iSpeed) override;
-  virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
+  virtual bool SeekTime(uint64_t time, bool backward = false, double* startpts = NULL) override;
   virtual void AbortDemux() override;
   virtual void FlushDemux() override;
   virtual void SetVideoResolution(int width, int height) override;

@@ -328,7 +328,7 @@ namespace XBMCAddon
       ///
       onPlayBackSeek(...);
 #else
-      virtual void onPlayBackSeek(int time, int seekOffset);
+      virtual void onPlayBackSeek(long long time, int seekOffset);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -708,7 +708,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL void OnPlayBackResumed();
       SWIGHIDDENVIRTUAL void OnQueueNextItem();
       SWIGHIDDENVIRTUAL void    OnPlayBackSpeedChanged(int iSpeed);
-      SWIGHIDDENVIRTUAL void    OnPlayBackSeek(int iTime, int seekOffset);
+      SWIGHIDDENVIRTUAL void    OnPlayBackSeek(uint64_t iTime, int seekOffset);
       SWIGHIDDENVIRTUAL void    OnPlayBackSeekChapter(int iChapter);
 #endif
 

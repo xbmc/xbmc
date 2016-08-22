@@ -301,7 +301,7 @@ int CInputStream::GetTime()
 }
 
 // IPosTime
-bool CInputStream::PosTime(int ms)
+bool CInputStream::PosTime(uint64_t ms)
 {
   bool ret = false;
   try
@@ -493,7 +493,7 @@ DemuxPacket* CInputStream::ReadDemux()
   return pPacket;
 }
 
-bool CInputStream::SeekTime(int time, bool backward, double* startpts)
+bool CInputStream::SeekTime(uint64_t time, bool backward, double* startpts)
 {
   bool ret = false;
   try

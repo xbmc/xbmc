@@ -143,7 +143,7 @@ CDVDInputStream::IPosTime* CInputStreamAddon::GetIPosTime()
   return this;
 }
 
-bool CInputStreamAddon::PosTime(int ms)
+bool CInputStreamAddon::PosTime(uint64_t ms)
 {
   if (!m_addon)
     return false;
@@ -221,7 +221,7 @@ void CInputStreamAddon::SetSpeed(int iSpeed)
   m_addon->SetSpeed(iSpeed);
 }
 
-bool CInputStreamAddon::SeekTime(int time, bool backward, double* startpts)
+bool CInputStreamAddon::SeekTime(uint64_t time, bool backward, double* startpts)
 {
   if (!m_addon)
     return false;

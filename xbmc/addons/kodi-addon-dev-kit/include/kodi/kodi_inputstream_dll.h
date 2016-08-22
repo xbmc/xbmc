@@ -122,7 +122,7 @@ extern "C"
    * @return True if the seek operation was possible
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  bool DemuxSeekTime(int time, bool backwards, double *startpts);
+  bool DemuxSeekTime(uint64_t time, bool backwards, double *startpts);
 
   /*!
    * Notify the InputStream addon/demuxer that XBMC wishes to change playback speed
@@ -153,7 +153,7 @@ extern "C"
    * Positions inputstream to playing time given in ms
    * @remarks
    */
-  bool PosTime(int ms);
+  bool PosTime(uint64_t ms);
 
 
   /*!

@@ -174,7 +174,7 @@ public:
   float GetVideoAspectRatio();
 
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
-  bool PosTime(int iTimeInMsec); //seek within current pg(c)
+  bool PosTime(uint64_t iTimeInMsec); //seek within current pg(c)
 
   std::string GetDVDTitleString();
   std::string GetDVDSerialString();
