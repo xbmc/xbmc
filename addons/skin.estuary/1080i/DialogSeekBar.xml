@@ -2,7 +2,6 @@
 <window>
 	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding</visible>
 	<visible>!Window.IsActive(videoosd) + Window.IsActive(fullscreenvideo)</visible>
-	<visible>!VideoPlayer.Content(livetv)</visible>
 	<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 	<depth>DepthOSD</depth>
