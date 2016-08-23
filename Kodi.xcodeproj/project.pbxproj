@@ -970,6 +970,8 @@
 		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
+		DFACDB891D6CAC33003BBB92 /* PlatformDarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8E55951D5F1D7000FD2BA3 /* PlatformDarwin.cpp */; };
+		DFACDB8E1D6CAD06003BBB92 /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F4B1D63931F006A7DBB /* Platform.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE"; }; };
 		DFAF6A4F16EBAE3800D6AE12 /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */; };
 		DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB02DE816629DBA00F37752 /* PyContext.cpp */; };
 		DFB0F472161B747500D744F4 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB0F470161B747500D744F4 /* AddonsOperations.cpp */; };
@@ -11465,6 +11467,7 @@
 				E49913E4174E5F8D00741B6D /* PlayListURL.cpp in Sources */,
 				E49913E5174E5F8D00741B6D /* PlayListWPL.cpp in Sources */,
 				E49913E6174E5F8D00741B6D /* PlayListXML.cpp in Sources */,
+				DFACDB8E1D6CAD06003BBB92 /* Platform.cpp in Sources */,
 				E49913E7174E5F8D00741B6D /* SmartPlayList.cpp in Sources */,
 				E49913E8174E5F9900741B6D /* CocoaPowerSyscall.cpp in Sources */,
 				E49913E9174E5F9900741B6D /* DPMSSupport.cpp in Sources */,
@@ -11933,6 +11936,7 @@
 				7CF34DA01930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				395C29F71A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
+				DFACDB891D6CAC33003BBB92 /* PlatformDarwin.cpp in Sources */,
 				B179BD6C1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				B179BD6F1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
 				B179BD721AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
