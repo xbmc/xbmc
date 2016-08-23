@@ -80,7 +80,6 @@
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder  
 
   !insertmacro MUI_PAGE_INSTFILES
-  !define MUI_PAGE_CUSTOMFUNCTION_PRE CallbackPreFinish
   !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_WELCOME
@@ -96,67 +95,10 @@
 
 ;--------------------------------
 ;HelperFunction
-Function CallbackPreFinish 
-  Var /GLOBAL ShouldMigrateUserData
-  StrCpy $ShouldMigrateUserData "0"
-  Var /GLOBAL OldXBMCInstallationFound
-  StrCpy $OldXBMCInstallationFound "0"
-
-  Call HandleOldXBMCInstallation
-  ;Migrate userdata from XBMC to Kodi
-  Call HandleUserdataMigration
-FunctionEnd
 
 Function CallbackDirLeave
   ;deinstall kodi if it is already there in destination folder
   Call HandleKodiInDestDir
-FunctionEnd
-
-Function HandleUserdataMigration
-  Var /GLOBAL INSTDIR_XBMC
-  ReadRegStr $INSTDIR_XBMC HKCU "Software\XBMC" ""
-
-  ;Migration from XBMC to Kodi
-  ;Move XBMC portable_data and appdata folder if exists to new location
-  ${If} $ShouldMigrateUserData == "1"
-      ${If} ${FileExists} "$APPDATA\XBMC\*.*"
-      ${AndIfNot} ${FileExists} "$APPDATA\${APP_NAME}\*.*"
-          Rename "$APPDATA\XBMC\" "$APPDATA\${APP_NAME}\"
-          MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "Your current XBMC settings and library data were moved to the new ${APP_NAME} userdata location.$\nThis is to make the transition without any user interaction needed."
-          ;mark that it was migrated in the filesystem - kodi will show another info message during first Kodi startup
-          ;for really making sure that the user has read that message.
-          FileOpen $0 "$APPDATA\${APP_NAME}\.kodi_data_was_migrated" w
-          FileClose $0
-      ${EndIf}
-  ${Else}
-    ; old installation was found but not uninstalled - inform the user
-    ; that his userdata is not automatically migrted
-    ${If} $OldXBMCInstallationFound == "1"
-      MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST|MB_SETFOREGROUND "There was a former XBMC Installation detected but you didn't uninstall it. The older settings and library data will not be moved to the ${APP_NAME} userdata location. ${APP_NAME} will use the default settings."
-    ${EndIf}
-  ${EndIf}
-FunctionEnd
-
-Function HandleOldXBMCInstallation
-  Var /GLOBAL INSTDIR_XBMC_OLD
-  ReadRegStr $INSTDIR_XBMC_OLD HKCU "Software\XBMC" ""
-  
-  ;ask if a former XBMC installation should be uninstalled if detected
-  ${IfNot} $INSTDIR_XBMC_OLD == ""
-    StrCpy $OldXBMCInstallationFound "1"
-    MessageBox MB_YESNO|MB_ICONQUESTION "You are upgrading from XBMC to ${APP_NAME}. Would you like to copy your settings and library data from XBMC to ${APP_NAME}?$\nWARNING: If you do so, XBMC will be completely un-installed and removed. It is recommended that you back up your library before continuing.$\nFor more information visit http://kodi.wiki/view/Userdata " IDYES true IDNO false
-    true:
-      DetailPrint "Uninstalling $INSTDIR_XBMC"
-      SetDetailsPrint none
-      ExecWait '"$INSTDIR_XBMC_OLD\uninstall.exe" /S _?=$INSTDIR_XBMC_OLD'
-      SetDetailsPrint both
-      ;this also removes the uninstall.exe which doesn't remove it self...
-      Delete "$INSTDIR_XBMC_OLD\uninstall.exe"
-      ;if the directory is now empty we can safely remove it (rmdir won't remove non-empty dirs!)
-      RmDir "$INSTDIR_XBMC_OLD"
-      StrCpy $ShouldMigrateUserData "1"
-    false:
-  ${EndIf}
 FunctionEnd
 
 Function HandleOldKodiInstallation
@@ -225,8 +167,6 @@ Section "${APP_NAME}" SecAPP
   SectionIn RO
   SectionIn 1 2 3 #section is in install type Normal/Full/Minimal
 
-  ;handle an old kodi installation in a folder different from the destination folder
-  Call HandleOldKodiInstallation
   ;deinstall kodi in destination dir if $CleanDestDir == "1" - meaning user has confirmed it
   Call DeinstallKodiInDestDir
 
