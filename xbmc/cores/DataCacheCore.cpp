@@ -200,7 +200,7 @@ void CDataCacheCore::SetAudioBitsPerSample(int bitsPerSample)
   m_playerAudioInfo.bitsPerSample = bitsPerSample;
 }
 
-int CDataCacheCore::GetAudioBitsPerSampe()
+int CDataCacheCore::GetAudioBitsPerSample()
 {
   CSingleLock lock(m_audioPlayerSection);
 

@@ -45,16 +45,6 @@ CProcessInfo::~CProcessInfo()
 
 }
 
-EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()
-{
-  return VS_INTERLACEMETHOD_DEINTERLACE;
-}
-
-bool CProcessInfo::AllowDTSHDDecode()
-{
-  return true;
-}
-
 void CProcessInfo::ResetVideoCodecInfo()
 {
   CSingleLock lock(m_videoCodecSection);
@@ -180,6 +170,29 @@ float CProcessInfo::GetVideoDAR()
   return m_videoDAR;
 }
 
+EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()
+{
+  return VS_INTERLACEMETHOD_DEINTERLACE;
+}
+
+void CProcessInfo::UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods)
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  m_deintMethods = methods;
+}
+
+bool CProcessInfo::Supports(EINTERLACEMETHOD method)
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  auto it = std::find(m_deintMethods.begin(), m_deintMethods.end(), method);
+  if (it != m_deintMethods.end())
+    return true;
+
+  return false;
+}
+
 // player audio info
 void CProcessInfo::ResetAudioCodecInfo()
 {
@@ -253,11 +266,16 @@ void CProcessInfo::SetAudioBitsPerSample(int bitsPerSample)
   CServiceBroker::GetDataCacheCore().SetAudioBitsPerSample(m_audioBitsPerSample);
 }
 
-int CProcessInfo::GetAudioBitsPerSampe()
+int CProcessInfo::GetAudioBitsPerSample()
 {
   CSingleLock lock(m_audioCodecSection);
 
   return m_audioBitsPerSample;
+}
+
+bool CProcessInfo::AllowDTSHDDecode()
+{
+  return true;
 }
 
 void CProcessInfo::SetRenderClockSync(bool enabled)

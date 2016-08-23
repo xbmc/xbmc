@@ -6062,7 +6062,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioSampleRate());
       break;
   case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
-      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSampe());
+      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSample());
       break;
   case RDS_AUDIO_LANG:
   case RDS_CHANNEL_COUNTRY:

@@ -57,7 +57,7 @@ public:
   void SetAudioSampleRate(int sampleRate);
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
-  int GetAudioBitsPerSampe();
+  int GetAudioBitsPerSample();
 
   // render info
   void SetRenderClockSync(bool enabled);

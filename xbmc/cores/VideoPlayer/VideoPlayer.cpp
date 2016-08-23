@@ -5095,7 +5095,9 @@ bool CVideoPlayer::IsRenderingVideoLayer()
 
 bool CVideoPlayer::Supports(EINTERLACEMETHOD method)
 {
-  return m_renderManager.Supports(method);
+  if (!m_processInfo)
+    return false;
+  return m_processInfo->Supports(method);
 }
 
 bool CVideoPlayer::Supports(ESCALINGMETHOD method)
@@ -5143,6 +5145,11 @@ void CVideoPlayer::GetDebugInfo(std::string &audio, std::string &video, std::str
 void CVideoPlayer::UpdateClockSync(bool enabled)
 {
   m_processInfo->SetRenderClockSync(enabled);
+}
+
+void CVideoPlayer::UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods)
+{
+  m_processInfo->UpdateDeinterlacingMethods(methods);
 }
 
 // IDispResource interface

@@ -21,6 +21,7 @@
 
 #include "cores/IPlayer.h"
 #include "threads/CriticalSection.h"
+#include <list>
 #include <string>
 
 class CProcessInfo
@@ -28,8 +29,6 @@ class CProcessInfo
 public:
   static CProcessInfo* CreateInstance();
   virtual ~CProcessInfo();
-  virtual EINTERLACEMETHOD GetFallbackDeintMethod();
-  virtual bool AllowDTSHDDecode();
 
   // player video info
   void ResetVideoCodecInfo();
@@ -46,6 +45,9 @@ public:
   float GetVideoFps();
   void SetVideoDAR(float dar);
   float GetVideoDAR();
+  virtual EINTERLACEMETHOD GetFallbackDeintMethod();
+  void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
+  bool Supports(EINTERLACEMETHOD method);
 
   // player audio info
   void ResetAudioCodecInfo();
@@ -56,7 +58,8 @@ public:
   void SetAudioSampleRate(int sampleRate);
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
-  int GetAudioBitsPerSampe();
+  int GetAudioBitsPerSample();
+  virtual bool AllowDTSHDDecode();
 
   // render info
   void SetRenderClockSync(bool enabled);
@@ -74,6 +77,7 @@ protected:
   int m_videoHeight;
   float m_videoFPS;
   float m_videoDAR;
+  std::list<EINTERLACEMETHOD> m_deintMethods;
   CCriticalSection m_videoCodecSection;
 
   // player audio info

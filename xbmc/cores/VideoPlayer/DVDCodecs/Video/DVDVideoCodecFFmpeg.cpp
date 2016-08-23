@@ -506,7 +506,7 @@ void CDVDVideoCodecFFmpeg::SetFilters()
   // ask codec to do deinterlacing if possible
   EINTERLACEMETHOD mInt = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
 
-  if (mInt != VS_INTERLACEMETHOD_DEINTERLACE && mInt != VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+  if (!m_processInfo.Supports(mInt))
     mInt = m_processInfo.GetFallbackDeintMethod();
 
   unsigned int filters = 0;
