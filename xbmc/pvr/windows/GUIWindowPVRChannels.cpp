@@ -246,6 +246,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
         case ObservableMessageEpgContainer:
         case ObservableMessageEpgActiveItem:
         case ObservableMessageCurrentItem:
+        case ObservableMessageRecordings:
         {
           SetInvalid();
           break;
