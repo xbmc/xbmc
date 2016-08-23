@@ -623,8 +623,6 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24023));
     if (hasUpdate)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
-    if (addon->Broken() == "DEPSNOTMET")
-      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24049));
     else if (!addon->Broken().empty())
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24098));
 

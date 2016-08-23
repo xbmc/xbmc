@@ -14089,11 +14089,7 @@ msgctxt "#24043"
 msgid "Available updates"
 msgstr ""
 
-#: xbmc/addons/AddonInstaller.cpp
-#: xbmc/addons/AddonsDatabase.cpp
-msgctxt "#24044"
-msgid "Dependencies not met. Please contact add-on author."
-msgstr ""
+# empty string 24043
 
 #. Used as an event log description for add-ons failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
@@ -14116,10 +14112,7 @@ msgctxt "#24048"
 msgid "VideoPlayer InputStream"
 msgstr ""
 
-#: xbmc/filesystem/AddonsDirectory.cpp
-msgctxt "#24049"
-msgid "Incompatible"
-msgstr ""
+# empty string 24049
 
 #: unknown
 msgctxt "#24050"

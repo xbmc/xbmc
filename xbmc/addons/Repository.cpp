@@ -258,57 +258,47 @@ bool CRepositoryUpdateJob::DoWork()
 
   database.UpdateRepositoryContent(m_repo->ID(), m_repo->Version(), newChecksum, addons);
 
-  //Update broken status
-  database.BeginMultipleExecute();
+  //Notify about broken status changes
   for (const auto& addon : addons)
   {
     AddonPtr localAddon;
-    CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon);
+    if (!CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon))
+      continue;
 
     if (localAddon && localAddon->Version() > addon->Version())
-      //We have a newer verison locally
+      //We have a newer version locally
       continue;
+
+    AddonPtr oldAddon;
+    database.GetAddon(addon->ID(), oldAddon);
 
     if (database.GetAddonVersion(addon->ID()).first > addon->Version())
       //Newer version in db (ie. in a different repo)
       continue;
 
     std::string broken = addon->Broken();
-    bool depsMet = CAddonInstaller::GetInstance().CheckDependencies(addon);
-    if (!depsMet && broken.empty())
-      broken = "DEPSNOTMET";
-
-    if (localAddon)
+    bool isBroken = !addon->Broken().empty();
+    bool isBrokenInDb = oldAddon && !oldAddon->Broken().empty();
+    if (isBroken && !isBrokenInDb)
     {
-      bool brokenInDb = database.IsAddonBroken(addon->ID());
-      if (!broken.empty() && !brokenInDb)
+      //newly broken
+      if (HELPERS::ShowYesNoDialogLines(CVariant{addon->Name()}, CVariant{24096}, CVariant{24097}, CVariant{""})
+        == DialogResponse::YES)
       {
-        //newly broken
-        int line = 24096;
-        if (broken == "DEPSNOTMET")
-          line = 24104;
-        if (HELPERS::ShowYesNoDialogLines(CVariant{addon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}) 
-          == DialogResponse::YES)
-        {
-          CAddonMgr::GetInstance().DisableAddon(addon->ID());
-        }
-
-        CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' marked broken. reason: \"%s\"",
-             m_repo->ID().c_str(), addon->ID().c_str(), broken.c_str());
-
-        CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24096)));
+        CAddonMgr::GetInstance().DisableAddon(addon->ID());
       }
-      else if (broken.empty() && brokenInDb)
-      {
-        //Unbroken
-        CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' unbroken",
-            m_repo->ID().c_str(), addon->ID().c_str());
-      }
+
+      CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' marked broken. reason: \"%s\"",
+           m_repo->ID().c_str(), addon->ID().c_str(), broken.c_str());
+
+      CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24096)));
     }
-
-    //Update broken status
-    database.BreakAddon(addon->ID(), broken);
+    else if (!isBroken && isBrokenInDb)
+    {
+      //Unbroken
+      CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' unbroken",
+          m_repo->ID().c_str(), addon->ID().c_str());
+    }
   }
-  database.CommitMultipleExecute();
   return true;
 }
