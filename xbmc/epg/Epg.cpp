@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -160,6 +161,7 @@ void CEpg::Cleanup(const CDateTime &Time)
         m_nowActiveStart.SetValid(false);
 
       it->second->ClearTimer();
+      it->second->ClearRecording();
       it = m_tags.erase(it);
     }
     else
@@ -306,6 +308,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     newTag->SetPVRChannel(m_pvrChannel);
     newTag->SetEpg(this);
     newTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(newTag));
+    newTag->SetRecording(g_PVRRecordings->GetRecordingForEpgTag(newTag));
   }
 }
 
@@ -430,6 +433,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase /* = fals
   infoTag->SetEpg(this);
   infoTag->SetPVRChannel(m_pvrChannel);
   infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
+  infoTag->SetRecording(g_PVRRecordings->GetRecordingForEpgTag(infoTag));
 
   if (bUpdateDatabase)
     m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
@@ -471,6 +475,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, EPG_EVENT_STATE newState, bool
           m_deletedTags.insert(std::make_pair(it->second->UniqueBroadcastID(), it->second));
 
         it->second->ClearTimer();
+        it->second->ClearRecording();
         m_tags.erase(it);
       }
       else
@@ -671,6 +676,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
         m_nowActiveStart.SetValid(false);
 
       it->second->ClearTimer();
+      it->second->ClearRecording();
       m_tags.erase(it++);
     }
     else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
