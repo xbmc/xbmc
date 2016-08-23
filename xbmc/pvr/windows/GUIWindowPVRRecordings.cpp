@@ -262,11 +262,34 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
+              switch(CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION))
+              {
+                case SELECT_ACTION_CHOOSE:
+                  OnPopupMenu(iItem);
+                  bReturn = true;
+                  break;
+                case SELECT_ACTION_PLAY_OR_RESUME:
+                  PlayFile(m_vecItems->Get(iItem).get(), false, true);
+                  bReturn = true;
+                  break;
+                case SELECT_ACTION_RESUME:
+                {
+                  CFileItemPtr item(m_vecItems->Get(iItem));
+                  const std::string resumeString = GetResumeString(*item);
+                  item->m_lStartOffset = resumeString.empty() ? 0 : STARTOFFSET_RESUME;
+                  PlayFile(item.get(), false, false);
+                  bReturn = true;
+                  break;
+                }
+                case SELECT_ACTION_INFO:
+                  ShowRecordingInfo(m_vecItems->Get(iItem).get());
+                  bReturn = true;
+                  break;
+              }
+              break;
             case ACTION_PLAY:
-            {
               bReturn = PlayFile(m_vecItems->Get(iItem).get());
               break;
-            }
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
               OnPopupMenu(iItem);
