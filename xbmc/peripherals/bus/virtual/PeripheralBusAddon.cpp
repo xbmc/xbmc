@@ -90,6 +90,8 @@ bool CPeripheralBusAddon::GetAddonWithButtonMap(const CPeripheral* device, Perip
     {
       if (addonWithButtonMap->HasButtonMaps())
         addon = std::move(addonWithButtonMap);
+      else
+        CLog::Log(LOGDEBUG, "Add-on %s doesn't provide button maps for its controllers", addonWithButtonMap->ID().c_str());
     }
   }
 
