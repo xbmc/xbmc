@@ -465,7 +465,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTO
       (button == CONTEXT_BUTTON_RESUME_ITEM))
   {
     item->m_lStartOffset = button == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0;
-    bReturn = PlayFile(item, false); /* play recording */
+    bReturn = PlayFile(item, false, false); /* play recording, don't check resume */
   }
 
   return bReturn;
