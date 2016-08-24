@@ -24,7 +24,6 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "epg/Epg.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "GUIUserMessages.h"
@@ -364,34 +363,6 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
   }
 
   return false;
-}
-
-bool CGUIWindowPVRBase::ActionDeleteChannel(CFileItem *item)
-{
-  CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
-
-  /* check if the channel tag is valid */
-  if (!channel || channel->ChannelNumber() <= 0)
-    return false;
-
-  /* show a confirmation dialog */
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*) g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog)
-    return false;
-  pDialog->SetHeading(CVariant{19039});
-  pDialog->SetLine(0, CVariant{""});
-  pDialog->SetLine(1, CVariant{channel->ChannelName()});
-  pDialog->SetLine(2, CVariant{""});
-  pDialog->Open();
-
-  /* prompt for the user's confirmation */
-  if (!pDialog->IsConfirmed())
-    return false;
-
-  g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel);
-  Refresh(true);
-
-  return true;
 }
 
 bool CGUIWindowPVRBase::UpdateEpgForChannel(CFileItem *item)

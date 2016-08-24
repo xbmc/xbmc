@@ -30,6 +30,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
@@ -756,6 +757,32 @@ namespace PVR
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(19166), msg); // PVR information
       return false;
     }
+
+    return true;
+  }
+
+  bool CPVRGUIActions::HideChannel(const CFileItemPtr &item) const
+  {
+    const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+
+    /* check if the channel tag is valid */
+    if (!channel || channel->ChannelNumber() <= 0)
+      return false;
+
+    if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19054}, // "Hide channel"
+                                          CVariant{19039}, // "Are you sure you want to hide this channel?"
+                                          CVariant{""},
+                                          CVariant{channel->ChannelName()}))
+      return false;
+
+    if (!g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel))
+      return false;
+
+    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase *>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));
+    if (pvrWindow)
+      pvrWindow->DoRefresh();
+    else
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
 
     return true;
   }

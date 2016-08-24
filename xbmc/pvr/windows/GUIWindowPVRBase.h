@@ -91,7 +91,6 @@ namespace PVR
     virtual CPVRChannelGroupPtr GetChannelGroup(void);
     virtual void SetChannelGroup(const CPVRChannelGroupPtr &group);
 
-    virtual bool ActionDeleteChannel(CFileItem *item);
     virtual bool ActionInputChannelNumber(int input);
 
     virtual bool UpdateEpgForChannel(CFileItem *item);

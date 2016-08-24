@@ -166,7 +166,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
              CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(iItem));
              break;
            case ACTION_DELETE_ITEM:
-             ActionDeleteChannel(m_vecItems->Get(iItem).get());
+             CPVRGUIActions::GetInstance().HideChannel(m_vecItems->Get(iItem));
              break;
            case ACTION_CONTEXT_MENU:
            case ACTION_MOUSE_RIGHT_CLICK:
