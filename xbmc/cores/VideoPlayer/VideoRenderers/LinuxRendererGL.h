@@ -132,13 +132,11 @@ public:
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   virtual void Update();
   virtual bool RenderCapture(CRenderCapture* capture);
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
   virtual CRenderInfo GetRenderInfo();
 
   // Feature support
   virtual bool SupportsMultiPassRendering();
   virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
 protected:

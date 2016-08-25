@@ -5147,11 +5147,6 @@ void CVideoPlayer::UpdateClockSync(bool enabled)
   m_processInfo->SetRenderClockSync(enabled);
 }
 
-void CVideoPlayer::UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods)
-{
-  m_processInfo->UpdateDeinterlacingMethods(methods);
-}
-
 // IDispResource interface
 void CVideoPlayer::OnLostDisplay()
 {

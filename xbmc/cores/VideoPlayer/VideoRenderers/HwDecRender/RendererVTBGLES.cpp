@@ -85,11 +85,6 @@ bool CRendererVTB::Supports(EINTERLACEMETHOD method)
   return false;
 }
 
-EINTERLACEMETHOD CRendererVTB::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_NONE;
-}
-
 CRenderInfo CRendererVTB::GetRenderInfo()
 {
   CRenderInfo info;

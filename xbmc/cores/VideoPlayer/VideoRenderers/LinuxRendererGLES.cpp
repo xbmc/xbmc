@@ -1669,30 +1669,6 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
   return false;
 }
 
-bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
-{
-  // Player controls render, let it dictate available deinterlace methods
-  if((m_renderMethod & RENDER_BYPASS))
-  {
-    Features::iterator itr = std::find(m_deinterlaceMethods.begin(),m_deinterlaceMethods.end(), method);
-    return itr != m_deinterlaceMethods.end();
-  }
-
-  if(method == VS_INTERLACEMETHOD_AUTO)
-    return true;
-
-#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
-  if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-#else
-  if(method == VS_INTERLACEMETHOD_RENDER_BOB
-  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
-#endif
-    return true;
-
-  return false;
-}
-
 bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 {
   // Player controls render, let it dictate available scaling methods
@@ -1707,24 +1683,6 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
     return true;
 
   return false;
-}
-
-EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
-{
-  // Player controls render, let it pick the auto-deinterlace method
-  if((m_renderMethod & RENDER_BYPASS))
-  {
-    if (!m_deinterlaceMethods.empty())
-      return ((EINTERLACEMETHOD)m_deinterlaceMethods[0]);
-    else
-      return VS_INTERLACEMETHOD_NONE;
-  }
-
-#if !defined(TARGET_ANDROID) && (defined(__i386__) || defined(__x86_64__))
-  return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
-#else
-  return VS_INTERLACEMETHOD_RENDER_BOB;
-#endif
 }
 
 CRenderInfo CLinuxRendererGLES::GetRenderInfo()

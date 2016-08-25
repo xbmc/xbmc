@@ -868,13 +868,20 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
 
   // set fieldsync if picture is interlaced
+  EINTERLACEMETHOD deintMethod = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
   EFIELDSYNC mDisplayField = FS_NONE;
-  if( pPicture->iFlags & DVP_FLAG_INTERLACED )
+  if (pPicture->iFlags & DVP_FLAG_INTERLACED)
   {
-    if( pPicture->iFlags & DVP_FLAG_TOP_FIELD_FIRST )
-      mDisplayField = FS_TOP;
+    deintMethod = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+    if (m_processInfo.Supports(deintMethod))
+    {
+      if (pPicture->iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+        mDisplayField = FS_TOP;
+      else
+        mDisplayField = FS_BOT;
+    }
     else
-      mDisplayField = FS_BOT;
+      deintMethod = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
   }
 
   int timeToDisplay = DVD_TIME_TO_MSEC(pts - iPlayingClock);
@@ -908,7 +915,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_DROPPED;
   }
 
-  m_renderManager.FlipPage(m_bAbortOutput, pts, -1, mDisplayField);
+  m_renderManager.FlipPage(m_bAbortOutput, pts, deintMethod, mDisplayField);
 
   return result;
 }

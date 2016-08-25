@@ -46,6 +46,7 @@ public:
   void SetVideoDAR(float dar);
   float GetVideoDAR();
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
+  virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
   bool Supports(EINTERLACEMETHOD method);
 

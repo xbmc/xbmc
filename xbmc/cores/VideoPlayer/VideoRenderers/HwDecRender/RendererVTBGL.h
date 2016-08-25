@@ -39,8 +39,6 @@ public:
   // Feature support
   virtual bool Supports(EINTERLACEMETHOD method);
 
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
-
 protected:
   virtual bool LoadShadersHook();
 
