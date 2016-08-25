@@ -43,7 +43,7 @@ CProcessInfoPi::~CProcessInfoPi()
 
 EINTERLACEMETHOD CProcessInfoPi::GetFallbackDeintMethod()
 {
-  return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+  return EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
 
 bool CProcessInfoPi::AllowDTSHDDecode()

@@ -523,7 +523,7 @@ void CMMALRenderer::Run()
       {
         EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
-          interlace_method = AutoInterlaceMethod();
+          interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
         // we don't keep up when running at 60fps in the background so switch to half rate
         if (!g_graphicsContext.IsFullScreenVideo())
@@ -936,11 +936,6 @@ bool CMMALRenderer::Supports(ERENDERFEATURE feature)
 bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 {
   return false;
-}
-
-EINTERLACEMETHOD CMMALRenderer::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_MMAL_ADVANCED;
 }
 
 void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect)

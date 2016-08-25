@@ -315,7 +315,7 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   ProcessOverlays(media_pts + preroll);
 
   time += m_av_clock->GetAbsoluteClock();
-  m_renderManager.FlipPage(m_bAbortOutput, time/DVD_TIME_BASE);
+  m_renderManager.FlipPage(m_bAbortOutput, time/DVD_TIME_BASE, EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE, FS_NONE);
 }
 
 void OMXPlayerVideo::Process()
@@ -549,6 +549,16 @@ bool OMXPlayerVideo::OpenDecoder()
 
     m_processInfo.SetVideoDecoderName(m_omxVideo.GetDecoderName(), true);
   }
+
+  m_processInfo.SetVideoDeintMethod("none");
+
+  std::list<EINTERLACEMETHOD> deintMethods;
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_ADVANCED);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_BOB);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_BOB_HALF);
+  m_processInfo.UpdateDeinterlacingMethods(deintMethods);
 
   return bVideoDecoderOpen;
 }

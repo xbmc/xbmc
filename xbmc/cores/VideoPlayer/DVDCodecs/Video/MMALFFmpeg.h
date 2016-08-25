@@ -52,7 +52,7 @@ class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
 {
 public:
-  CDecoder();
+  CDecoder(CProcessInfo& processInfo);
   virtual ~CDecoder();
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces);
   virtual int Decode(AVCodecContext* avctx, AVFrame* frame);
@@ -68,6 +68,7 @@ public:
 
 protected:
   AVCodecContext *m_avctx;
+  CProcessInfo &m_processInfo;
   unsigned int m_shared;
   CCriticalSection m_section;
   std::shared_ptr<CMMALPool> m_pool;

@@ -108,8 +108,6 @@ public:
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
-
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
