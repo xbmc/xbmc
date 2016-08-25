@@ -217,16 +217,16 @@
 				<include>OpenClose_Fade</include>
 				<control type="image">
 					<left>24</left>
-					<top>186</top>
-					<width>511</width>
-					<height>511</height>
+					<top>24</top>
+					<width>457</width>
+					<height>457</height>
 					<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
 				</control>
 				<control type="textbox">
 					<left>24</left>
-					<top>186</top>
-					<width>511</width>
-					<height>511</height>
+					<top>24</top>
+					<width>457</width>
+					<height>457</height>
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>$LOCALIZE[24096]</label>
