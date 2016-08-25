@@ -354,7 +354,7 @@ bool CAddonButtonMap::UnmapPrimitive(const CDriverPrimitive& primitive)
     {
       ADDON::JoystickFeature& addonFeature = itFeature->second;
       ResetPrimitive(addonFeature, CPeripheralAddonTranslator::TranslatePrimitive(primitive));
-      if (addonFeature.Type() == JOYSTICK_FEATURE_TYPE_UNKNOWN)
+      if (!addonFeature.IsValid())
         m_features.erase(itFeature);
       bModified = true;
     }
@@ -372,7 +372,7 @@ void CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDO
       if (primitive == feature.Primitive())
       {
         CLog::Log(LOGDEBUG, "Removing \"%s\" from button map due to conflict", feature.Name().c_str());
-        feature.SetType(JOYSTICK_FEATURE_TYPE_UNKNOWN);
+        feature.SetInvalid();
       }
       break;
     }
@@ -409,7 +409,7 @@ void CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDO
             feature.Left().Type() == JOYSTICK_DRIVER_PRIMITIVE_TYPE_UNKNOWN)
         {
           CLog::Log(LOGDEBUG, "Removing \"%s\" from button map due to conflict", feature.Name().c_str());
-          feature.SetType(JOYSTICK_FEATURE_TYPE_UNKNOWN);
+          feature.SetInvalid();
         }
       }
       break;
@@ -444,7 +444,7 @@ void CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDO
             feature.PositiveZ().Type() == JOYSTICK_DRIVER_PRIMITIVE_TYPE_UNKNOWN)
         {
           CLog::Log(LOGDEBUG, "Removing \"%s\" from button map due to conflict", feature.Name().c_str());
-          feature.SetType(JOYSTICK_FEATURE_TYPE_UNKNOWN);
+          feature.SetInvalid();
         }
       }
       break;

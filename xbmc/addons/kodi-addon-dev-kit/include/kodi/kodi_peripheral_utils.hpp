@@ -638,9 +638,11 @@ namespace ADDON
 
     const std::string& Name(void) const { return m_name; }
     JOYSTICK_FEATURE_TYPE Type(void) const { return m_type; }
+    bool IsValid() const { return m_type != JOYSTICK_FEATURE_TYPE_UNKNOWN; }
 
     void SetName(const std::string& name) { m_name = name; }
     void SetType(JOYSTICK_FEATURE_TYPE type) { m_type = type; }
+    void SetInvalid(void) { m_type = JOYSTICK_FEATURE_TYPE_UNKNOWN; }
 
     // Scalar methods
     const DriverPrimitive& Primitive(void) const { return m_primitives[0]; }
