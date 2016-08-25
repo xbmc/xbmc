@@ -315,6 +315,7 @@ protected:
   void SetHWUpscaling();
   void DisableHQScaling();
   EINTERLACEMETHOD GetDeinterlacingMethod(bool log = false);
+  std::string GetDeintStrFromInterlaceMethod(EINTERLACEMETHOD method);
   bool CheckStatus(VdpStatus vdp_st, int line);
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;

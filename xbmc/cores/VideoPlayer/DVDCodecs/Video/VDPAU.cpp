@@ -2064,6 +2064,13 @@ void CMixer::SetDeinterlacing()
   }
   else
   {
+    // fall back path if called with non supported method
+    if (!m_config.vdpau->Supports(method))
+    {
+      method = VS_INTERLACEMETHOD_AUTO;
+      m_Deint = VS_INTERLACEMETHOD_AUTO;
+    }
+
     if (method == VS_INTERLACEMETHOD_AUTO)
     {
       VdpBool enabled[] = {1,0,0};
@@ -2098,6 +2105,10 @@ void CMixer::SetDeinterlacing()
   SetDeintSkipChroma();
 
   m_config.useInteropYuv = !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
+
+  std::string deintStr = GetDeintStrFromInterlaceMethod(method);
+  // update deinterlacing method used in processInfo (none if progressive)
+  m_config.processInfo->SetVideoDeintMethod(deintStr);
 }
 
 void CMixer::SetDeintSkipChroma()
@@ -2334,6 +2345,33 @@ void CMixer::Flush()
       m_outputSurfaces.push(*surf);
     }
     msg->Release();
+  }
+}
+
+std::string CMixer::GetDeintStrFromInterlaceMethod(EINTERLACEMETHOD method)
+{
+  switch (method)
+  {
+    case VS_INTERLACEMETHOD_NONE:
+      return "none";
+    case VS_INTERLACEMETHOD_AUTO:
+      return "vdpau-auto";
+    case VS_INTERLACEMETHOD_VDPAU_BOB:
+      return "vdpau-bob";
+    case VS_INTERLACEMETHOD_VDPAU_TEMPORAL:
+      return "vdpau-temp";
+    case VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF:
+      return "vdpau-temp-half";
+    case VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL:
+      return "vdpau-temp-spat";
+    case VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF:
+      return "vdpau-temp-spat-half";
+    case VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE:
+      return "vdpau-inv-tele";
+    case VS_INTERLACEMETHOD_RENDER_BOB:
+      return "bob";
+    default:
+      return "unknown";
   }
 }
 
@@ -2986,6 +3024,18 @@ bool COutput::Init()
 
   m_mixer.Start();
   m_vdpError = false;
+
+  // update processInfo
+  std::list<EINTERLACEMETHOD> deintMethods;
+  deintMethods.push_back(VS_INTERLACEMETHOD_NONE);
+  for(SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
+  {
+      if (m_config.vdpau->Supports(p->feature))
+        deintMethods.push_back(p->method);
+  }
+  // manual evaluated modes
+  deintMethods.push_back(VS_INTERLACEMETHOD_VDPAU_BOB);
+  m_config.processInfo->UpdateDeinterlacingMethods(deintMethods);
 
   return true;
 }
