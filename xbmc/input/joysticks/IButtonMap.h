@@ -118,51 +118,39 @@ namespace JOYSTICK
      * \return True if the feature was updated, false if the feature is
      *         unchanged or failure occurs
      */
-    virtual bool AddScalar(
+    virtual void AddScalar(
       const FeatureName& feature,
       const CDriverPrimitive& primitive
     ) = 0;
 
     /*!
-     * \brief Get an analog stick from the button map
+     * \brief Get an analog stick direction from the button map
      *
-     * \param feature  Must be an analog stick or this will return false
-     * \param up       The primitive mapped to the up direction (possibly unknown)
-     * \param down     The primitive mapped to the down direction (possibly unknown)
-     * \param right    The primitive mapped to the right direction (possibly unknown)
-     * \param left     The primitive mapped to the left direction (possibly unknown)
+     * \param      feature   Must be an analog stick or this will return false
+     * \param      direction The direction whose primitive is to be retrieved
+     * \param[out] primitive The primitive mapped to the specified direction
      *
-     * \return True if the feature resolved to an analog stick with at least 1 known direction
+     * \return True if the feature and direction resolved to a driver primitive
      */
     virtual bool GetAnalogStick(
       const FeatureName& feature,
-      CDriverPrimitive& up,
-      CDriverPrimitive& down,
-      CDriverPrimitive& right,
-      CDriverPrimitive& left
+      ANALOG_STICK_DIRECTION direction,
+      CDriverPrimitive& primitive
     ) = 0;
 
     /*!
-     * \brief Add or update an analog stick
+     * \brief Add or update an analog stick direction
      *
-     * \param feature  Must be an analog stick or this will return false
-     * \param up       The driver primitive for the up direction
-     * \param down     The driver primitive for the down direction
-     * \param right    The driver primitive for the right direction
-     * \param left     The driver primitive for the left direction
-     *
-     * It is not required that these primitives be axes. If a primitive is a
-     * semiaxis, its opposite should point to the same axis index but with
-     * opposite direction.
+     * \param feature   Must be an analog stick or this will return false
+     * \param direction The direction being mapped
+     * \param primitive The driver primitive for the specified analog stick and direction
      *
      * \return True if the analog stick was updated, false otherwise
      */
-    virtual bool AddAnalogStick(
+    virtual void AddAnalogStick(
       const FeatureName& feature,
-      const CDriverPrimitive& up,
-      const CDriverPrimitive& down,
-      const CDriverPrimitive& right,
-      const CDriverPrimitive& left
+      ANALOG_STICK_DIRECTION direction,
+      const CDriverPrimitive& primitive
     ) = 0;
 
     /*!
@@ -194,7 +182,7 @@ namespace JOYSTICK
      *
      * \return True if the accelerometer was updated, false if unchanged or failure occurred
      */
-    virtual bool AddAccelerometer(
+    virtual void AddAccelerometer(
       const FeatureName& feature,
       const CDriverPrimitive& positiveX,
       const CDriverPrimitive& positiveY,

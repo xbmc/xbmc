@@ -165,30 +165,14 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
       {
         case FEATURE_TYPE::SCALAR:
         {
-          bHandled = buttonMap->AddScalar(feature.Name(), primitive);
+          buttonMap->AddScalar(feature.Name(), primitive);
+          bHandled = true;
           break;
         }
         case FEATURE_TYPE::ANALOG_STICK:
         {
-          CDriverPrimitive up;
-          CDriverPrimitive down;
-          CDriverPrimitive right;
-          CDriverPrimitive left;
-
-          buttonMap->GetAnalogStick(feature.Name(), up, down, right, left);
-
-          switch (currentDirection)
-          {
-            case ANALOG_STICK_DIRECTION::UP:    up    = primitive; break;
-            case ANALOG_STICK_DIRECTION::DOWN:  down  = primitive; break;
-            case ANALOG_STICK_DIRECTION::RIGHT: right = primitive; break;
-            case ANALOG_STICK_DIRECTION::LEFT:  left  = primitive; break;
-            default:
-              break;
-          }
-
-          bHandled = buttonMap->AddAnalogStick(feature.Name(), up, down, right, left);
-
+          buttonMap->AddAnalogStick(feature.Name(), currentDirection, primitive);
+          bHandled = true;
           break;
         }
         default:

@@ -24,6 +24,8 @@
 #include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"
 
+#include <vector>
+
 using namespace JOYSTICK;
 
 // Settings for analog sticks
@@ -53,22 +55,26 @@ float CDeadzoneFilter::FilterAxis(unsigned int axisIndex, float axisValue)
 
 bool CDeadzoneFilter::GetDeadzone(unsigned int axisIndex, float& deadzone, const char* featureName, const char* settingName)
 {
-  CDriverPrimitive up;
-  CDriverPrimitive down;
-  CDriverPrimitive right;
-  CDriverPrimitive left;
+  std::vector<ANALOG_STICK_DIRECTION> dirs = {
+    ANALOG_STICK_DIRECTION::UP,
+    ANALOG_STICK_DIRECTION::RIGHT,
+    ANALOG_STICK_DIRECTION::DOWN,
+    ANALOG_STICK_DIRECTION::LEFT,
+  };
 
-  if (m_buttonMap->GetAnalogStick(featureName, up, down, right, left))
+  CDriverPrimitive primitive;
+  for (auto dir : dirs)
   {
-    if (up.Index() == axisIndex ||
-        down.Index() == axisIndex ||
-        right.Index() == axisIndex ||
-        left.Index() == axisIndex)
+    if (m_buttonMap->GetAnalogStick(featureName, dir, primitive))
     {
-      deadzone = m_peripheral->GetSettingFloat(settingName);
-      return true;
+      if (primitive.Type() == PRIMITIVE_TYPE::SEMIAXIS && primitive.Index() == axisIndex)
+      {
+        deadzone = m_peripheral->GetSettingFloat(settingName);
+        return true;
+      }
     }
   }
+
   return false;
 }
 
