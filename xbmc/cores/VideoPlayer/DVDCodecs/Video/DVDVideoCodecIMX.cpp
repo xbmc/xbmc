@@ -1709,6 +1709,7 @@ void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CIMXBuffer *source_p, CIMXBuffer 
 bool CIMXContext::TileTask(IPUTaskPtr &ipu)
 {
   int pad = ipu->task.input.height == 1080 && ipu->current->iHeight>ipu->task.input.height ? 16*ipu->current->iWidth : 0;
+  m_zoomAllowed = true;
 
   if (ipu->current->iFormat != _4CC('T', 'N', 'V', 'F') && ipu->current->iFormat != _4CC('T', 'N', 'V', 'P'))
   {
@@ -1725,13 +1726,13 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
   // Use band mode directly to FB, as no transformations needed (eg cropping)
   if (m_fps >= 49 && m_fbWidth == 1920 && ipu->task.input.width == 1920 && !ipu->task.input.deinterlace.enable)
   {
+    m_zoomAllowed = false;
     ipu->task.output.crop.pos.x = ipu->task.input.crop.pos.x = 0;
     ipu->task.output.crop.pos.y = ipu->task.input.crop.pos.y = 0;
     ipu->task.output.crop.h     = ipu->task.input.height     = ipu->task.input.crop.h = ipu->current->iHeight;
     ipu->task.output.paddr     += m_fbLineLength * (m_fbHeight - ipu->task.input.crop.h)/2;
     return true;
   }
-
   // rasterize from tile (frame)
   struct ipu_task    vdoa;
 

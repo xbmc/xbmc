@@ -116,6 +116,7 @@ public:
   void SetVideoPixelFormat(CProcessInfo *m_pProcessInfo);
 
   void SetBlitRects(const CRect &srcRect, const CRect &dstRect);
+  bool IsZoomAllowed() const { return m_zoomAllowed; }
 
   // Blits a buffer to a particular page (-1 for auto page)
   // source_p (previous buffer) is required for de-interlacing
@@ -212,6 +213,7 @@ private:
   CEvent                         m_waitFlip;
   CProcessInfo                  *m_processInfo;
 
+  bool                           m_zoomAllowed;
   CCriticalSection               m_pageSwapLock;
 public:
   void                          *m_g2dHandle;
