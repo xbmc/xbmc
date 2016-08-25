@@ -101,7 +101,7 @@ namespace PERIPHERALS
 
     bool UnmapPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
 
-    static bool ResetPrimitive(ADDON::JoystickFeature& feature, const ADDON::DriverPrimitive& primitive);
+    static void ResetPrimitive(ADDON::JoystickFeature& feature, const ADDON::DriverPrimitive& primitive);
 
     CPeripheral* const  m_device;
     std::weak_ptr<CPeripheralAddon>  m_addon;

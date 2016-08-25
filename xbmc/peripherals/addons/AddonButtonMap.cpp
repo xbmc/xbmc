@@ -363,10 +363,8 @@ bool CAddonButtonMap::UnmapPrimitive(const CDriverPrimitive& primitive)
   return bModified;
 }
 
-bool CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDON::DriverPrimitive& primitive)
+void CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDON::DriverPrimitive& primitive)
 {
-  bool bModified = false;
-
   switch (feature.Type())
   {
     case JOYSTICK_FEATURE_TYPE_SCALAR:
@@ -375,12 +373,13 @@ bool CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDO
       {
         CLog::Log(LOGDEBUG, "Removing \"%s\" from button map due to conflict", feature.Name().c_str());
         feature.SetType(JOYSTICK_FEATURE_TYPE_UNKNOWN);
-        bModified = true;
       }
       break;
     }
     case JOYSTICK_FEATURE_TYPE_ANALOG_STICK:
     {
+      bool bModified = false;
+
       if (primitive == feature.Up())
       {
         feature.SetUp(ADDON::DriverPrimitive());
@@ -417,6 +416,8 @@ bool CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDO
     }
     case JOYSTICK_FEATURE_TYPE_ACCELEROMETER:
     {
+      bool bModified = false;
+
       if (primitive == feature.PositiveX() ||
           primitive == CPeripheralAddonTranslator::Opposite(feature.PositiveX()))
       {
@@ -451,5 +452,4 @@ bool CAddonButtonMap::ResetPrimitive(ADDON::JoystickFeature& feature, const ADDO
     default:
       break;
   }
-  return bModified;
 }
