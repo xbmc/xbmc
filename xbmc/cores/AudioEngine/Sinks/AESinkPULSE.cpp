@@ -548,21 +548,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
      pa_fmt = PA_SAMPLE_FLOAT32;
      m_passthrough = false;
    }
-
-  if(m_passthrough)
-  {
-    map.channels = 2;
-    format.m_channelLayout = AE_CH_LAYOUT_2_0;
-  }
-  else
-  {
-    map = AEChannelMapToPAChannel(format.m_channelLayout);
-    // if count has changed we need to fit the AE Map
-    if(map.channels != format.m_channelLayout.Count())
-      format.m_channelLayout = PAChannelToAEChannelMap(map);
-  }
-  m_Channels = format.m_channelLayout.Count();
-
   // store information about current sink
   SinkInfoStruct sinkStruct;
   sinkStruct.mainloop = m_MainLoop;
@@ -579,6 +564,36 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     Deinitialize();
     return false;
   }
+
+  bool use_pa_mixing = false;
+
+  if(m_passthrough)
+  {
+    map.channels = 2;
+    format.m_channelLayout = AE_CH_LAYOUT_2_0;
+  }
+  else
+  {
+    // as we mix for PA now to avoid default upmixing, we need to care for
+    // channel resolving
+    CAEChannelInfo target_layout = format.m_channelLayout;
+    CAEChannelInfo available_layout = PAChannelToAEChannelMap(sinkStruct.map);
+    target_layout.ResolveChannels(available_layout);
+
+    // if we cannot map all requested channels - tell PA to mix for us
+    if (target_layout.Count() != format.m_channelLayout.Count())
+    {
+      use_pa_mixing = true;
+      map = AEChannelMapToPAChannel(format.m_channelLayout);
+    }
+    else
+    {
+      // use our layout to update AE
+      map = AEChannelMapToPAChannel(target_layout);
+    }
+    format.m_channelLayout = PAChannelToAEChannelMap(map);
+  }
+  m_Channels = format.m_channelLayout.Count();
 
   // Pulse can resample everything between 1 hz and 192000 hz / 384000 hz (starting with 9.0)
   // Make sure we are in the range that we originally added
@@ -683,7 +698,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   // by default PA will upmix / remix everything when multi channel layout is configured
   // if we have enough channels in the target layout ask PA not to remix to related channels
   // 1:1 remapping is allowed though
-  if (!m_passthrough && m_Channels <= sinkStruct.map.channels)
+  if (!m_passthrough && !use_pa_mixing)
     flags |= PA_STREAM_NO_REMIX_CHANNELS;
 
   if (m_passthrough)
