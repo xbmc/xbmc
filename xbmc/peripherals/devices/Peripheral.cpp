@@ -158,10 +158,11 @@ bool CPeripheral::Initialise(void)
   }
   else
   {
-    m_strSettingsFile = StringUtils::Format("special://profile/peripheral_data/%s_%s_%s.xml",
+    m_strSettingsFile = StringUtils::Format("special://profile/peripheral_data/%s_%s_%s_%s.xml",
                                             PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
                                             m_strVendorId.c_str(),
-                                            m_strProductId.c_str());
+                                            m_strProductId.c_str(),
+                                            CUtil::MakeLegalFileName(m_strDeviceName, LEGAL_WIN32_COMPAT).c_str());
   }
 
   LoadPersistedSettings();
