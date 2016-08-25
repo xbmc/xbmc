@@ -744,21 +744,23 @@ int CIMXCodec::Decode(BYTE *pData, int iSize, double dts, double pts)
   int ret = 0;
   if (!g_IMXCodec->IsRunning())
   {
-    if ((!m_decInput.full() || !ptrn.Recalc()) && m_decInput.size() < 40)
+    if (!m_decInput.full())
     {
-      if (m_decInput.full())
-        m_decInput.setquotasize(m_decInput.getquotasize()+1);
-
-      if (dts != DVD_NOPTS_VALUE)
-        ptrn.Add(dts);
-      else if (pts != DVD_NOPTS_VALUE)
+      if (pts != DVD_NOPTS_VALUE)
         ptrn.Add(pts);
+      else if (dts != DVD_NOPTS_VALUE)
+        ptrn.Add(dts);
 
       ret |= VC_BUFFER;
     }
     else
     {
-      m_fps = DVD_TIME_BASE / ptrn.GetFrameDuration();
+      double fd = ptrn.GetFrameDuration(true);
+      if (!fd && m_hints.fpsscale)
+        m_fps = (double)m_hints.fpsrate / m_hints.fpsscale;
+      else if (fd)
+        m_fps = DVD_TIME_BASE / fd;
+
       m_decOpenParam.nMapType = 1;
 
       ptrn.Flush();
@@ -940,9 +942,12 @@ void CIMXCodec::Process()
           m_decOpenParam.nMapType = 0;
           Dispose();
           VpuOpen();
-          m_fps /= 2;
           continue;
         }
+
+        if (m_initInfo.nInterlace && m_fps <= 30)
+          m_fps *= 2;
+
         m_processInfo->SetVideoFps(m_fps);
 
         CLog::Log(LOGDEBUG, "%s - VPU Init Stream Info : %dx%d (interlaced : %d - Minframe : %d)"\
@@ -1277,7 +1282,7 @@ bool CIMXContext::AdaptScreen(bool allocate)
   m_fbVar.xoffset = 0;
   m_fbVar.yoffset = 0;
 
-  if (!allocate && (fbVar.bits_per_pixel == 16 || m_currentFieldFmt || (m_fbHeight >= 1080 && m_fps >= 49)))
+  if (!allocate && (fbVar.bits_per_pixel == 16 || m_fps >= 49))
   {
     m_fbVar.nonstd = _4CC('Y', 'U', 'Y', 'V');
     m_fbVar.bits_per_pixel = 16;
@@ -1724,7 +1729,7 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
   }
 
   // Use band mode directly to FB, as no transformations needed (eg cropping)
-  if (m_fps >= 49 && m_fbWidth == 1920 && ipu->task.input.width == 1920 && !ipu->task.input.deinterlace.enable)
+  if (m_fps > 51 && m_fbWidth == 1920 && ipu->task.input.width == 1920 && !ipu->task.input.deinterlace.enable)
   {
     m_zoomAllowed = false;
     ipu->task.output.crop.pos.x = ipu->task.input.crop.pos.x = 0;
