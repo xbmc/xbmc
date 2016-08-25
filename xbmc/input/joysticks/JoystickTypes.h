@@ -64,9 +64,9 @@ namespace JOYSTICK
   };
 
   /*!
-   * \brief Generic typedef for cardinal directions
+   * \brief Typedef for analog stick directions
    */
-  typedef HAT_DIRECTION CARDINAL_DIRECTION;
+  typedef HAT_DIRECTION  ANALOG_STICK_DIRECTION;
 
   /*!
    * \brief States in which a hat can be
@@ -83,11 +83,6 @@ namespace JOYSTICK
     LEFTUP    = LEFT  | UP,
     LEFTDOWN  = LEFT  | DOWN,
   };
-
-  /*!
-   * \brief Generic typedef for intercardinal directions
-   */
-  typedef HAT_STATE  INTERCARDINAL_DIRECTION;
 
   /*!
    * \brief Directions in which a semiaxis can point

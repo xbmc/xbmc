@@ -77,7 +77,7 @@ namespace GAME
 
     // State variables and mutex
     IFeatureButton*                      m_currentButton;
-    JOYSTICK::CARDINAL_DIRECTION         m_currentDirection;
+    JOYSTICK::ANALOG_STICK_DIRECTION     m_currentDirection;
     std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
     CCriticalSection                     m_stateMutex;
 

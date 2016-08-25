@@ -50,12 +50,12 @@ SEMIAXIS_DIRECTION CJoystickTranslator::PositionToSemiAxisDirection(float positi
   return SEMIAXIS_DIRECTION::ZERO;
 }
 
-CARDINAL_DIRECTION CJoystickTranslator::VectorToCardinalDirection(float x, float y)
+ANALOG_STICK_DIRECTION CJoystickTranslator::VectorToAnalogStickDirection(float x, float y)
 {
-  if      (y >= x && y >  -x) return CARDINAL_DIRECTION::UP;
-  else if (y <  x && y >= -x) return CARDINAL_DIRECTION::RIGHT;
-  else if (y <= x && y <  -x) return CARDINAL_DIRECTION::DOWN;
-  else if (y >  x && y <= -x) return CARDINAL_DIRECTION::LEFT;
+  if      (y >= x && y >  -x) return ANALOG_STICK_DIRECTION::UP;
+  else if (y <  x && y >= -x) return ANALOG_STICK_DIRECTION::RIGHT;
+  else if (y <= x && y <  -x) return ANALOG_STICK_DIRECTION::DOWN;
+  else if (y >  x && y <= -x) return ANALOG_STICK_DIRECTION::LEFT;
 
-  return CARDINAL_DIRECTION::UNKNOWN;
+  return ANALOG_STICK_DIRECTION::UNKNOWN;
 }

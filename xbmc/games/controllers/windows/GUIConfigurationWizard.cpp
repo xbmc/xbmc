@@ -41,7 +41,7 @@ CGUIConfigurationWizard::CGUIConfigurationWizard() :
 void CGUIConfigurationWizard::InitializeState(void)
 {
   m_currentButton = nullptr;
-  m_currentDirection = JOYSTICK::CARDINAL_DIRECTION::UNKNOWN;
+  m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
 }
 
@@ -151,7 +151,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
   {
     // Get the current state of the thread
     IFeatureButton* currentButton;
-    CARDINAL_DIRECTION currentDirection;
+    ANALOG_STICK_DIRECTION currentDirection;
     {
       CSingleLock lock(m_stateMutex);
       currentButton = m_currentButton;
@@ -179,10 +179,10 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
 
           switch (currentDirection)
           {
-            case CARDINAL_DIRECTION::UP:    up    = primitive; break;
-            case CARDINAL_DIRECTION::DOWN:  down  = primitive; break;
-            case CARDINAL_DIRECTION::RIGHT: right = primitive; break;
-            case CARDINAL_DIRECTION::LEFT:  left  = primitive; break;
+            case ANALOG_STICK_DIRECTION::UP:    up    = primitive; break;
+            case ANALOG_STICK_DIRECTION::DOWN:  down  = primitive; break;
+            case ANALOG_STICK_DIRECTION::RIGHT: right = primitive; break;
+            case ANALOG_STICK_DIRECTION::LEFT:  left  = primitive; break;
             default:
               break;
           }
