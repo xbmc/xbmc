@@ -26,7 +26,7 @@
 #include "DllAddon.h"
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
-#include "addons/binary/interfaces/AddonInterfaces.h"
+#include "addons/interfaces/AddonInterfaces.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "utils/URIUtils.h"

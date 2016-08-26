@@ -144,7 +144,7 @@
 #include "settings/dialogs/GUIDialogAudioDSPSettings.h"
 
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
-#include "addons/binary/interfaces/AddonInterfaces.h"
+#include "addons/interfaces/AddonInterfaces.h"
 
 /* Game related include files */
 #include "games/controllers/windows/GUIControllerWindow.h"
