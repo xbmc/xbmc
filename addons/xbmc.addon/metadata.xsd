@@ -20,6 +20,7 @@
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
+      <xs:attribute name="apilevel" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:simpleType name="simpleIdentifier">

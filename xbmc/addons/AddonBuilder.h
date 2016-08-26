@@ -45,6 +45,7 @@ public:
   void SetBroken(std::string broken) { m_props.broken = std::move(broken); }
   void SetPath(std::string path) { m_props.path = std::move(path); }
   void SetLibName(std::string libname) { m_props.libname = std::move(libname); }
+  void SetAPILevel(int apiLevel) { m_props.apiLevel = apiLevel; }
   void SetVersion(AddonVersion version) { m_props.version = std::move(version); }
   void SetMinVersion(AddonVersion minversion) { m_props.minversion = std::move(minversion); }
   void SetDependencies(ADDONDEPS dependencies) { m_props.dependencies = std::move(dependencies); }
@@ -58,6 +59,7 @@ public:
   void SetPackageSize(uint64_t size) { m_props.packageSize = size; }
 
   const std::string& GetId() const { return m_props.id; }
+  const int GetAPILevel() const { return m_props.apiLevel; }
   const AddonVersion& GetVersion() const { return m_props.version; }
 
 private:
