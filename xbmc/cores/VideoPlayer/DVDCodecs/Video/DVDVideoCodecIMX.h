@@ -55,9 +55,8 @@
 // priorities to those subsystems can result in a very different user
 // experience. With that setting enabled we can build some statistics,
 // as numbers are always better than "feelings"
-#define IMX_PROFILE_BUFFERS
-
-#define IMX_PROFILE
+//#define IMX_PROFILE_BUFFERS
+//#define IMX_PROFILE
 //#define TRACE_FRAMES
 
 #define RENDER_USE_G2D 0
