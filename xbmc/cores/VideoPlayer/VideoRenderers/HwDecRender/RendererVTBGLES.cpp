@@ -80,11 +80,6 @@ int CRendererVTB::GetImageHook(YV12Image *image, int source, bool readonly)
   return source;
 }
 
-bool CRendererVTB::Supports(EINTERLACEMETHOD method)
-{
-  return false;
-}
-
 CRenderInfo CRendererVTB::GetRenderInfo()
 {
   CRenderInfo info;
