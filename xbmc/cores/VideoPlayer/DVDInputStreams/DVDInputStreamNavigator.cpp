@@ -1189,7 +1189,7 @@ int CDVDInputStreamNavigator::GetTime()
   return m_iTime;
 }
 
-bool CDVDInputStreamNavigator::PosTime(int iTimeInMsec)
+bool CDVDInputStreamNavigator::PosTime(uint64_t iTimeInMsec)
 {
   if( m_dll.dvdnav_jump_to_sector_by_time(m_dvdnav, iTimeInMsec * 90, 0) == DVDNAV_STATUS_ERR )
   {

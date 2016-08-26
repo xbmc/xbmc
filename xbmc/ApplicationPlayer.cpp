@@ -280,7 +280,7 @@ bool CApplicationPlayer::SeekScene(bool bPlus)
   return (player && player->SeekScene(bPlus));
 }
 
-void CApplicationPlayer::SeekTime(int64_t iTime)
+void CApplicationPlayer::SeekTime(uint64_t iTime)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
@@ -295,7 +295,7 @@ void CApplicationPlayer::SeekTimeRelative(int64_t iTime)
     // use relative seeking if implemented by player
     if (!player->SeekTimeRelative(iTime))
     {
-      int64_t abstime = player->GetTime() + iTime;
+      uint64_t abstime = player->GetTime() + iTime;
       player->SeekTime(abstime);
     }
   }

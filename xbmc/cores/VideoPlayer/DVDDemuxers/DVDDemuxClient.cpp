@@ -586,7 +586,7 @@ std::string CDVDDemuxClient::GetStreamCodecName(int iStreamId)
   return strName;
 }
 
-bool CDVDDemuxClient::SeekTime(int timems, bool backwards, double *startpts)
+bool CDVDDemuxClient::SeekTime(uint64_t timems, bool backwards, double *startpts)
 {
   if (m_IDemux)
   {

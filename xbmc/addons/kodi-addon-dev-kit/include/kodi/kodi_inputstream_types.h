@@ -140,7 +140,7 @@ extern "C" {
     void (__cdecl* DemuxAbort)(void);
     void (__cdecl* DemuxFlush)(void);
     DemuxPacket* (__cdecl* DemuxRead)(void);
-    bool (__cdecl* DemuxSeekTime)(int, bool, double*);
+    bool (__cdecl* DemuxSeekTime)(uint64_t, bool, double*);
     void (__cdecl* DemuxSetSpeed)(int);
     void (__cdecl* SetVideoResolution)(int, int);
 
@@ -149,7 +149,7 @@ extern "C" {
     int (__cdecl* GetTime)(void);
 
     // IPosTime
-    bool (__cdecl* PosTime)(int);
+    bool (__cdecl* PosTime)(uint64_t);
 
     // Seekable (mandatory)
     bool (__cdecl* CanPauseStream)(void);

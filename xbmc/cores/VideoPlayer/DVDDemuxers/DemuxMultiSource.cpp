@@ -203,7 +203,7 @@ DemuxPacket* CDemuxMultiSource::Read()
   return packet;
 }
 
-bool CDemuxMultiSource::SeekTime(int time, bool backwords, double* startpts)
+bool CDemuxMultiSource::SeekTime(uint64_t time, bool backwords, double* startpts)
 {
   DemuxQueue demuxerQueue = DemuxQueue();
   bool ret = false;
@@ -212,12 +212,12 @@ bool CDemuxMultiSource::SeekTime(int time, bool backwords, double* startpts)
     if (iter.second->SeekTime(time, false, startpts))
     {
       demuxerQueue.push(std::make_pair(*startpts, iter.second));
-      CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, time);
+      CLog::Log(LOGDEBUG, "%s - starting demuxer from: %lu", __FUNCTION__, time);
       ret = true;
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, time);
+      CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %lu", __FUNCTION__, time);
     }
   }
   m_demuxerQueue = demuxerQueue;

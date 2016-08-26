@@ -59,7 +59,7 @@ public:
   bool Open(CDVDInputStream* pInput);
   DemuxPacket* Read();
   void Reset();
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
+  bool SeekTime(uint64_t time, bool backwords = false, double* startpts = NULL);
   virtual void SetSpeed(int iSpeed) {};
 
 private:

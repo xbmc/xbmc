@@ -161,7 +161,7 @@ public:
   int   SeekChapter(int iChapter);
   void  SeekPercentage(float fPercent = 0);
   bool  SeekScene(bool bPlus = true);
-  void  SeekTime(int64_t iTime = 0);
+  void  SeekTime(uint64_t iTime = 0);
   void  SeekTimeRelative(int64_t iTime = 0);
   void  SetAudioStream(int iStream);
   void  SetAVDelay(float fValue = 0.0f);

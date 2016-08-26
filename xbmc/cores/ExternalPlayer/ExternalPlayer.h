@@ -64,7 +64,7 @@ public:
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
 
-  virtual void SeekTime(int64_t iTime);
+  virtual void SeekTime(uint64_t iTime);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
   virtual void SetSpeed(float iSpeed) override;

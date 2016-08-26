@@ -347,7 +347,7 @@ public:
   virtual int64_t GetChapterPos(int chapterIdx=-1);
   virtual int  SeekChapter(int iChapter);
 
-  virtual void SeekTime(int64_t iTime);
+  virtual void SeekTime(uint64_t iTime);
   virtual bool SeekTimeRelative(int64_t iTime);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();

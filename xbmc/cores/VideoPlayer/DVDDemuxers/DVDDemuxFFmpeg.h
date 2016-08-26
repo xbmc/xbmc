@@ -100,7 +100,7 @@ public:
 
   DemuxPacket* Read() override;
 
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override;
+  bool SeekTime(uint64_t time, bool backwords = false, double* startpts = NULL) override;
   bool SeekByte(int64_t pos);
   int GetStreamLength() override;
   CDemuxStream* GetStream(int iStreamId) const override;

@@ -216,7 +216,7 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true, bool restore = true, bool trickplay = false, bool sync = true)
+  CDVDMsgPlayerSeek(uint64_t time, bool backward, bool flush = true, bool accurate = true, bool restore = true, bool trickplay = false, bool sync = true)
     : CDVDMsg(PLAYER_SEEK)
     , m_time(time)
     , m_backward(backward)
@@ -226,7 +226,7 @@ public:
     , m_trickplay(trickplay)
     , m_sync(sync)
   {}
-  int  GetTime()              { return m_time; }
+  uint64_t  GetTime()         { return m_time; }
   bool GetBackward()          { return m_backward; }
   bool GetFlush()             { return m_flush; }
   bool GetAccurate()          { return m_accurate; }
@@ -234,7 +234,7 @@ public:
   bool GetTrickPlay()         { return m_trickplay; }
   bool GetSync()              { return m_sync; }
 private:
-  int  m_time;
+  uint64_t  m_time;
   bool m_backward;
   bool m_flush;
   bool m_accurate;

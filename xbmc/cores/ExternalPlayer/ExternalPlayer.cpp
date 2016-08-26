@@ -565,7 +565,7 @@ float CExternalPlayer::GetSubTitleDelay()
   return 0.0;
 }
 
-void CExternalPlayer::SeekTime(int64_t iTime)
+void CExternalPlayer::SeekTime(uint64_t iTime)
 {
 }
 

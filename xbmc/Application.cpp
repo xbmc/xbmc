@@ -3677,7 +3677,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSpeedChanged", m_itemCurrentFile, param);
 }
 
-void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
+void CApplication::OnPlayBackSeek(uint64_t iTime, int seekOffset)
 {
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackSeek(iTime, seekOffset);

@@ -1002,7 +1002,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   return pPacket;
 }
 
-bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
+bool CDVDDemuxFFmpeg::SeekTime(uint64_t time, bool backwords, double *startpts)
 {
   bool hitEnd = false;
 
@@ -1042,7 +1042,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return false;
   }
 
-  int64_t seek_pts = (int64_t)time * (AV_TIME_BASE / 1000);
+  int64_t seek_pts = time * (AV_TIME_BASE / 1000);
   bool ismp3 = m_pFormatContext->iformat && (strcmp(m_pFormatContext->iformat->name, "mp3") == 0);
   if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3)
     seek_pts += m_pFormatContext->start_time;

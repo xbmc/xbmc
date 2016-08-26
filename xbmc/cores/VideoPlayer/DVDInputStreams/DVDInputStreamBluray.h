@@ -106,7 +106,7 @@ public:
   int GetTime() override;
 
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
-  bool PosTime(int ms);
+  bool PosTime(uint64_t ms);
 
   void GetStreamInfo(int pid, char* language);
 

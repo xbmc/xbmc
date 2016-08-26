@@ -141,7 +141,7 @@ void CDVDDemuxVobsub::Flush()
   m_Demuxer->Flush();
 }
 
-bool CDVDDemuxVobsub::SeekTime(int time, bool backwords, double* startpts)
+bool CDVDDemuxVobsub::SeekTime(uint64_t time, bool backwords, double* startpts)
 {
   double pts = DVD_MSEC_TO_TIME(time);
   m_Timestamp = m_Timestamps.begin();
