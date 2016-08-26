@@ -115,13 +115,12 @@ public:
   bool IsDoubleRate() const { return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN; }
   void SetVideoPixelFormat(CProcessInfo *m_pProcessInfo);
 
-  void SetBlitRects(const CRect &srcRect, const CRect &dstRect);
   bool IsZoomAllowed() const { return m_zoomAllowed; }
 
   // Blits a buffer to a particular page (-1 for auto page)
   // source_p (previous buffer) is required for de-interlacing
   // modes LOW_MOTION and MED_MOTION.
-  void Blit(CIMXBuffer *source_p, CIMXBuffer *source,
+  void Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &srcRect, const CRect &dstRect,
             uint8_t fieldFmt = 0, int targetPage = RENDER_TASK_AUTOPAGE);
 
   // Shows a page vsynced
@@ -145,15 +144,9 @@ public:
 private:
   struct IPUTask
   {
-    void Assign(CIMXBuffer *buffer_p, CIMXBuffer *buffer)
+    IPUTask(CIMXBuffer *buffer_p, CIMXBuffer *buffer, int p = 0)
+      : previous(buffer_p), current(buffer), page(p)
     {
-      previous = buffer_p;
-      current = buffer;
-    }
-
-    void Zero()
-    {
-      current = previous = NULL;
       memset(&task, 0, sizeof(task));
     }
 
@@ -172,7 +165,7 @@ private:
 
   bool GetFBInfo(const std::string &fbdev, struct fb_var_screeninfo *fbVar);
 
-  void PrepareTask(IPUTaskPtr &ipu, CIMXBuffer *source_p, CIMXBuffer *source);
+  void PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect);
   bool DoTask(IPUTaskPtr &ipu, CRect *dest = nullptr);
   bool TileTask(IPUTaskPtr &ipu);
 
@@ -204,8 +197,6 @@ private:
   int                            m_ipuHandle;
   uint8_t                        m_currentFieldFmt;
   bool                           m_vsync;
-  CRect                          m_srcRect;
-  CRect                          m_dstRect;
   CRectInt                      *m_pageCrops;
   bool                           m_bFbIsConfigured;
   CEvent                         m_waitVSync;

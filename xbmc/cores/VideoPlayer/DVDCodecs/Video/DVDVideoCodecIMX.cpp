@@ -1240,8 +1240,6 @@ CIMXContext::CIMXContext()
   m_pageCrops = new CRectInt[m_fbPages];
   CLog::Log(LOGDEBUG, "iMX : Allocated %d render buffers\n", m_fbPages);
 
-  SetBlitRects(CRectInt(), CRectInt());
-
   g2dOpenDevices();
 }
 
@@ -1470,12 +1468,6 @@ bool CIMXContext::SetVSync(bool enable)
   return true;
 }
 
-void CIMXContext::SetBlitRects(const CRect &srcRect, const CRect &dstRect)
-{
-  m_srcRect = srcRect;
-  m_dstRect = dstRect;
-}
-
 inline
 void CIMXContext::SetFieldData(uint8_t fieldFmt, double fps)
 {
@@ -1529,7 +1521,8 @@ int setIPUMotion(bool hasPrev, EINTERLACEMETHOD imethod)
   return HIGH_MOTION;
 }
 
-void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, uint8_t fieldFmt, int page)
+void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &srcRect,
+                       const CRect &dstRect, uint8_t fieldFmt, int page)
 {
   if (page == RENDER_TASK_AUTOPAGE)
     page = m_pg;
@@ -1542,12 +1535,20 @@ void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, uint8_t fieldFm
   ipu->page = page;
 
   SetFieldData(fieldFmt, source->m_fps);
-  PrepareTask(ipu, source_p, source);
+  PrepareTask(ipu, srcRect, dstRect);
 
 #ifdef IMX_PROFILE_BUFFERS
   unsigned long long before = XbmcThreads::SystemClockMillis();
 #endif
-  DoTask(ipu);
+  SetFieldData(fieldFmt, source->m_fps);
+  PrepareTask(ipu, srcRect, dstRect);
+
+  if (!DoTask(ipu))
+    return;
+
+  m_flip = ipu->page | checkIPUStrideOffset(&ipu->task.input.deinterlace) << 4;
+  m_pingFlip.Set();
+
 #ifdef IMX_PROFILE_BUFFERS
   unsigned long long after = XbmcThreads::SystemClockMillis();
   CLog::Log(LOGDEBUG, "+P 0x%x@%d  %d\n", ((CDVDVideoCodecIMXBuffer*)ipu->current)->GetIdx(), ipu->page, (int)(after-before));
@@ -1640,15 +1641,8 @@ void CIMXContext::Clear(int page)
   SetVideoPixelFormat(m_processInfo);
 }
 
-void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CIMXBuffer *source_p, CIMXBuffer *source)
+void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
 {
-  // Fill with zeros
-  ipu->Zero();
-  ipu->Assign(source_p, source);
-
-  CRect srcRect = m_srcRect;
-  CRect dstRect = m_dstRect;
-
   CRectInt iSrcRect, iDstRect;
 
   float srcWidth = srcRect.Width();

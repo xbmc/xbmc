@@ -199,8 +199,6 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     }
 
     //CLog::Log(LOGDEBUG, "BLIT RECTS: source x1 %f x2 %f y1 %f y2 %f dest x1 %f x2 %f y1 %f y2 %f", srcRect.x1, srcRect.x2, srcRect.y1, srcRect.y2, dstRect.x1, dstRect.x2, dstRect.y1, dstRect.y2);
-    g_IMXContext.SetBlitRects(srcRect, dstRect);
-
     uint8_t fieldFmt = flags & RENDER_FLAG_FIELDMASK;
 
     if (!g_graphicsContext.IsFullScreenVideo())
@@ -220,7 +218,7 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     }
 
     CDVDVideoCodecIMXBuffer *buffer_p = m_bufHistory.front();
-    g_IMXContext.Blit(buffer_p == buffer ? nullptr : buffer_p, buffer, fieldFmt);
+    g_IMXContext.Blit(buffer_p == buffer ? nullptr : buffer_p, buffer, srcRect, dstRect, fieldFmt);
   }
 
 #if 0
