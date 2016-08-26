@@ -231,17 +231,17 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
 
-  if (!LoadDll() || !CheckAPIVersion())
-    return ADDON_STATUS_PERMANENT_FAILURE;
-
-  /* Allocate the helper function class to allow crosstalk over
-     helper libraries */
-  m_pHelpers = new CAddonInterfaces(this);
-
-  /* Call Create to make connections, initializing data or whatever is
-     needed to become the AddOn running */
   try
   {
+    if (!LoadDll() || !CheckAPIVersion())
+      return ADDON_STATUS_PERMANENT_FAILURE;
+
+    /* Allocate the helper function class to allow crosstalk over
+       helper libraries */
+    m_pHelpers = new CAddonInterfaces(this);
+
+    /* Call Create to make connections, initializing data or whatever is
+       needed to become the AddOn running */
     status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status == ADDON_STATUS_OK)
     {
@@ -273,6 +273,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
   catch (std::exception &e)
   {
     HandleException(e, "m_pDll->Create");
+    status = ADDON_STATUS_PERMANENT_FAILURE;
   }
 
   return status;
