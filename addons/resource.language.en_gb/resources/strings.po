@@ -16083,7 +16083,19 @@ msgctxt "#35077"
 msgid "Analog sticks"
 msgstr ""
 
-#empty strings from id 35078 to 35087
+#. Setting title for left analog stick deadzone
+#: system/peripherals.xml
+msgctxt "#35078"
+msgid "Left stick deadzone"
+msgstr ""
+
+#. Setting title for right analog stick deadzone
+#: system/peripherals.xml
+msgctxt "#35079"
+msgid "Right stick deadzone"
+msgstr ""
+
+#empty strings from id 35080 to 35087
 
 #. Name of the setting that enables/disables powering off controllers on exit
 #: system/settings/settings.xml

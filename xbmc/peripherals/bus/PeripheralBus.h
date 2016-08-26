@@ -57,6 +57,11 @@ namespace PERIPHERALS
     bool NeedsPolling(void) const { CSingleLock lock(m_critSection); return m_bNeedsPolling; }
 
     /*!
+    * \brief Initialize the properties of a peripheral with a known location
+    */
+    virtual bool InitializeProperties(CPeripheral* peripheral) { return true; }
+
+    /*!
      * @brief Get the instance of the peripheral at the given location.
      * @param strLocation The location.
      * @return The peripheral or NULL if it wasn't found.

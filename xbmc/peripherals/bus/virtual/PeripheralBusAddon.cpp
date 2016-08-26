@@ -80,15 +80,34 @@ bool CPeripheralBusAddon::GetAddon(const std::string &strId, AddonPtr &addon) co
 bool CPeripheralBusAddon::GetAddonWithButtonMap(const CPeripheral* device, PeripheralAddonPtr &addon) const
 {
   CSingleLock lock(m_critSection);
-  for (const auto& addonIt : m_addons)
+
+  // If device is from an add-on, try to use that add-on
+  if (device && device->GetBusType() == PERIPHERAL_BUS_ADDON)
   {
-    if (addonIt->HasButtonMaps())
+    PeripheralAddonPtr addonWithButtonMap;
+    unsigned int index;
+    if (SplitLocation(device->Location(), addonWithButtonMap, index))
     {
-      addon = addonIt;
-      return true;
+      if (addonWithButtonMap->HasButtonMaps())
+        addon = std::move(addonWithButtonMap);
+      else
+        CLog::Log(LOGDEBUG, "Add-on %s doesn't provide button maps for its controllers", addonWithButtonMap->ID().c_str());
     }
   }
-  return false;
+
+  if (!addon)
+  {
+    auto it = std::find_if(m_addons.begin(), m_addons.end(),
+      [](const PeripheralAddonPtr& addon)
+      {
+        return addon->HasButtonMaps();
+      });
+
+    if (it != m_addons.end())
+      addon = *it;
+  }
+
+  return addon.get() != nullptr;
 }
 
 unsigned int CPeripheralBusAddon::GetAddonCount(void) const

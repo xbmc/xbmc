@@ -1,4 +1,5 @@
-SRCS=DefaultJoystick.cpp \
+SRCS=DeadzoneFilter.cpp \
+     DefaultJoystick.cpp \
      DriverPrimitive.cpp \
      JoystickMonitor.cpp \
      JoystickTranslator.cpp \

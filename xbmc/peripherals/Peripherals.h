@@ -239,7 +239,7 @@ namespace PERIPHERALS
     // implementation of IEventScannerCallback
     virtual void ProcessEvents(void) override;
 
-    virtual PeripheralAddonPtr GetAddon(const CPeripheral* device);
+    virtual PeripheralAddonPtr GetAddonWithButtonMap(const CPeripheral* device);
 
     virtual void ResetButtonMaps(const std::string& controllerId);
 

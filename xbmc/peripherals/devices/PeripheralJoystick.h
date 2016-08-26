@@ -27,10 +27,17 @@
 #include "input/joysticks/JoystickTypes.h"
 #include "threads/CriticalSection.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #define JOYSTICK_PORT_UNKNOWN  (-1)
+
+namespace JOYSTICK
+{
+  class CDeadzoneFilter;
+  class IButtonMap;
+}
 
 namespace PERIPHERALS
 {
@@ -97,6 +104,8 @@ namespace PERIPHERALS
     void SetSupportsPowerOff(bool supportsPowerOff) { m_supportsPowerOff = supportsPowerOff; }
 
   protected:
+    void InitializeDeadzoneFiltering();
+
     struct DriverHandler
     {
       JOYSTICK::IDriverHandler* handler;
@@ -112,6 +121,8 @@ namespace PERIPHERALS
     bool                                m_supportsPowerOff;
     JOYSTICK::CDefaultJoystick          m_defaultInputHandler;
     JOYSTICK::CJoystickMonitor          m_joystickMonitor;
+    std::unique_ptr<JOYSTICK::IButtonMap>      m_buttonMap;
+    std::unique_ptr<JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;
     std::vector<DriverHandler>          m_driverHandlers;
     CCriticalSection                    m_handlerMutex;
   };

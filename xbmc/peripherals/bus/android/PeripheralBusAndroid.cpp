@@ -60,7 +60,7 @@ CPeripheralBusAndroid::~CPeripheralBusAndroid()
   CXBMCApp::UnregisterInputDeviceCallbacks();
 }
 
-bool CPeripheralBusAndroid::InitializeProperties(CPeripheral* peripheral) const
+bool CPeripheralBusAndroid::InitializeProperties(CPeripheral* peripheral)
 {
   if (peripheral == nullptr || peripheral->Type() != PERIPHERAL_JOYSTICK)
   {
