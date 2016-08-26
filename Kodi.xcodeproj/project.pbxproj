@@ -377,8 +377,8 @@
 		7C2612711825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2612721825B6340086E04D /* DatabaseQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C26126F1825B6340086E04D /* DatabaseQuery.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
-		7C2ED53D1C7F7A9800C04032 /* ProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */; };
-		7C2ED53E1C7F7A9800C04032 /* ProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */; };
+		7C2ED53D1C7F7A9800C04032 /* ProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE"; }; };
+		7C2ED53E1C7F7A9800C04032 /* ProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE"; }; };
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
@@ -969,6 +969,8 @@
 		DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6931444A8B0007C6459 /* UDFFile.cpp */; };
 		DF93D6B21444A8B1007C6459 /* UPnPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6951444A8B0007C6459 /* UPnPFile.cpp */; };
 		DF93D6B31444A8B1007C6459 /* ZipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6971444A8B0007C6459 /* ZipFile.cpp */; };
+		DF9484031D70DCB100EFCF79 /* ProcessInfoOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9483FD1D70DCB100EFCF79 /* ProcessInfoOSX.cpp */; };
+		DF9484051D70DCC300EFCF79 /* ProcessInfoIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9483FA1D70DCB100EFCF79 /* ProcessInfoIOS.cpp */; };
 		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
@@ -3915,6 +3917,10 @@
 		DF93D6961444A8B0007C6459 /* UPnPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPFile.h; sourceTree = "<group>"; };
 		DF93D6971444A8B0007C6459 /* ZipFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipFile.cpp; sourceTree = "<group>"; };
 		DF93D6981444A8B0007C6459 /* ZipFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipFile.h; sourceTree = "<group>"; };
+		DF9483FA1D70DCB100EFCF79 /* ProcessInfoIOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProcessInfoIOS.cpp; sourceTree = "<group>"; };
+		DF9483FB1D70DCB100EFCF79 /* ProcessInfoIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessInfoIOS.h; sourceTree = "<group>"; };
+		DF9483FD1D70DCB100EFCF79 /* ProcessInfoOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProcessInfoOSX.cpp; sourceTree = "<group>"; };
+		DF9483FE1D70DCB100EFCF79 /* ProcessInfoOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessInfoOSX.h; sourceTree = "<group>"; };
 		DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
 		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DFA0E8C219FD6BEE00269A92 /* VideoSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoSync.h; path = videosync/VideoSync.h; sourceTree = "<group>"; };
@@ -6333,6 +6339,7 @@
 		7C2ED5381C7F7A5800C04032 /* Process */ = {
 			isa = PBXGroup;
 			children = (
+				DF9483F81D70DCB100EFCF79 /* overrides */,
 				7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */,
 				7C2ED53C1C7F7A9800C04032 /* ProcessInfo.h */,
 			);
@@ -7445,6 +7452,34 @@
 				DF91E9301C0A1C610011084D /* smc.h */,
 				DF91E9311C0A1C610011084D /* XBMCHelper.cpp */,
 				DF91E9321C0A1C610011084D /* XBMCHelper.h */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		DF9483F81D70DCB100EFCF79 /* overrides */ = {
+			isa = PBXGroup;
+			children = (
+				DF9483F91D70DCB100EFCF79 /* ios */,
+				DF9483FC1D70DCB100EFCF79 /* osx */,
+			);
+			name = overrides;
+			path = VideoPlayer/Process/overrides;
+			sourceTree = "<group>";
+		};
+		DF9483F91D70DCB100EFCF79 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				DF9483FA1D70DCB100EFCF79 /* ProcessInfoIOS.cpp */,
+				DF9483FB1D70DCB100EFCF79 /* ProcessInfoIOS.h */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
+		DF9483FC1D70DCB100EFCF79 /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				DF9483FD1D70DCB100EFCF79 /* ProcessInfoOSX.cpp */,
+				DF9483FE1D70DCB100EFCF79 /* ProcessInfoOSX.h */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -10330,6 +10365,7 @@
 				6815C1411CC7BADB000DB91A /* RumbleGenerator.cpp in Sources */,
 				7C84A59E12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */,
 				7C99B6A4133D342100FC2B16 /* CircularCache.cpp in Sources */,
+				DF9484031D70DCB100EFCF79 /* ProcessInfoOSX.cpp in Sources */,
 				7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */,
 				F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */,
 				F5AE409F13415D9E0004BD79 /* FileItemHandler.cpp in Sources */,
@@ -11113,6 +11149,7 @@
 				E499127A174E5D8F00741B6D /* MultiPathDirectory.cpp in Sources */,
 				76AEFB3D1C8F79D500EF2EC0 /* AddonCallbacksGUI.cpp in Sources */,
 				E499127B174E5D8F00741B6D /* MultiPathFile.cpp in Sources */,
+				DF9484051D70DCC300EFCF79 /* ProcessInfoIOS.cpp in Sources */,
 				E499127C174E5D9900741B6D /* DirectoryNode.cpp in Sources */,
 				E499127D174E5D9900741B6D /* DirectoryNodeAlbum.cpp in Sources */,
 				B5101B5919DFF8E300294D1E /* BlurayFile.cpp in Sources */,
