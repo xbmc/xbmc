@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--  Button Ids:                                                                             -->
-<!--    0: left                                                                               -->
-<!--    1: right                                                                              -->
-<!--    2: middle                                                                             -->
-<!--    3/4/5/6: extra                                                                        -->
-
+<!-- This file contains the mapping of mouse keys to actions within Kodi.                 -->
+<!--                                                                                      -->
+<!-- The format is:                                                                       -->
+<!--  <window>                                                                            -->
+<!--    <device>                                                                          -->
+<!--      <button>action</button>                                                         -->
+<!--    </device>                                                                         -->
+<!--  </window>                                                                           -->
+<!--                                                                                      -->
+<!-- The <global> section is a fall through - they will only be used if the button is     -->
+<!-- not used in the current window's section.                                            -->
+<!--                                                                                      -->
+<!-- Actions can be built-in functions.                                                   -->
+<!--  eg <middleclick>ActivateWindow(Music)</middleclick>                                 -->
+<!-- would automatically go to Music on the press of the middle mouse button.             -->
+<!--                                                                                      -->
+<!--                                                                                      -->
+<!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
+<!-- This is different from a "noop" action, which disables a button.                     -->
+<!--                                                                                      -->
+<!--  Button Ids:                                                                         -->
+<!--    0: left                                                                           -->
+<!--    1: right                                                                          -->
+<!--    2: middle                                                                         -->
+<!--    3/4/5/6: extra                                                                    -->
+<!--                                                                                      -->
+<!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
 <keymap>
   <global>
     <mouse>
@@ -14,7 +34,6 @@
       <middleclick>middleclick</middleclick>
       <doubleclick id="0">doubleclick</doubleclick>
       <longclick id="0">contextmenu</longclick>
-
       <wheeldown>wheeldown</wheeldown>
       <wheelup>wheelup</wheelup>
       <mousedrag>mousedrag</mousedrag>
@@ -34,6 +53,4 @@
       <rightclick>Info</rightclick>
     </mouse>
   </FullscreenVideo>
-
-
 </keymap>

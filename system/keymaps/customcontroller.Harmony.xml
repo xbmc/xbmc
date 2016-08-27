@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
-<!-- The <global> section is a fall through - they will only be used if the button is not          -->
-<!-- used in the current window's section.  Note that there is only handling                       -->
-<!-- for a single action per button at this stage.                                                 -->
-<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
-<!-- gamepads.                                                                                     -->
-
-<!-- The format is:                      -->
-<!--    <device>                         -->
-<!--      <button>action</key>        -->
-<!--    </device>                        -->
-
-<!-- To map keys from other remotes using the RCA protocol, you may add <customcontroller name="Harmony"> blocks -->
-<!-- In this case, the tags used are <button id=""#> where # is the original button code (OBC) of the key -->
-<!-- You set it up by adding a <customcontroller name="Harmony"> block to the window or <global> section:       -->
-<!--    <customcontroller name="Harmony">             -->
-<!--       <button id="45">Stop</button>            -->
-<!--    </customcontroller>            -->
-
-<!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>ActivateWindow(Music)</B>                         -->
-<!-- would automatically go to My Music on the press of the B button. -->
-
-<!-- Joysticks / Gamepads:                                                                    -->
-<!--   See the sample PS3 controller configuration below for the format.                      -->
-<!--                                                                                          -->
-<!--  Joystick Name:                                                                          -->
-<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
-<!--   detected joysticks. The name used in the configuration should match the detected name. -->
-<!--                                                                                          -->
-<!--  Button Ids:                                                                             -->
-<!--   'id' is the button ID used by SDL. Joystick key ids of connected joysticks appear   -->
-<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
-<!--                                                                                          -->
-<!--  Axis Ids / Analog Controls                                                              -->
-<!--   Coming soon.                                                                           -->
+<!-- This file contains the mapping of keys to actions within Kodi.                       -->
+<!--                                                                                      -->
+<!-- The format is:                                                                       -->
+<!--  <window>                                                                            -->
+<!--    <device>                                                                          -->
+<!--      <button>action</button>                                                         -->
+<!--    </device>                                                                         -->
+<!--  </window>                                                                           -->
+<!--                                                                                      -->
+<!-- The <global> section is a fall through - they will only be used if the button is     -->
+<!-- not used in the current window's section.                                            -->
+<!--                                                                                      -->
+<!-- Actions can be built-in functions.                                                   -->
+<!--  eg <button id="6">ActivateWindow(Music)</button>                                    -->
+<!-- would automatically go to Music on the press of the "Menu" button.                   -->
+<!--                                                                                      -->
+<!--                                                                                      -->
+<!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
+<!-- This is different from a "noop" action, which disables a button.                     -->
+<!--                                                                                      -->
+<!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
+<!--                                                                                      -->
+<!-- To map keys from other remotes using the RCA protocol, you may add                   -->
+<!--   <customcontroller name="Harmony"> blocks.                                          -->
+<!-- In this case, the tags used are <button id=""#> where # is the original button code  -->
+<!-- (OBC) of the key.                                                                    -->
+<!-- You set it up by adding a <customcontroller name="Harmony"> block to the window      -->
+<!-- or <global> section:                                                                 -->
+<!--    <customcontroller name="Harmony">                                                 -->
+<!--       <button id="45">Stop</button>                                                  -->
+<!--    </customcontroller>                                                               -->
+<!--                                                                                      -->
+<!--  Button Ids:                                                                         -->
+<!--  'id' is the button ID used by SDL. The key ids recognized from your remote appears  -->
+<!--  in the log file for each button pressed and when debug mode is enabled.             -->
+<!--  Use your log to discover and map custom buttons to actions.                         -->
 <keymap>
   <global>
     <customcontroller name="Harmony">
@@ -126,13 +126,13 @@
       <!-- * clear 	-->      <button id="145">Delete</button>
     </customcontroller>
   </FileManager>
-  <MyMusicPlaylist>
+  <MusicPlaylist>
     <customcontroller name="Harmony">
       <!-- * clear 	-->      <button id="145">Delete</button>
       <!-- Channel Up  	-->      <button id="171">MoveItemUp</button>
       <!-- Channel Down -->      <button id="172">MoveItemDown</button>
     </customcontroller>
-  </MyMusicPlaylist>
+  </MusicPlaylist>
   <Music>
     <customcontroller name="Harmony">
       <!-- 1 		-->      <button id="111">number1</button>
@@ -289,13 +289,13 @@
       <!-- 9 		-->      <button id="143">JumpSMS9</button>
     </customcontroller>
   </Videos>
-  <MyVideoPlaylist>
+  <VideoPlaylist>
     <customcontroller name="Harmony">
       <!-- * clear 	-->      <button id="145">Delete</button>
       <!-- Channel Up  	-->      <button id="171">MoveItemUp</button>
       <!-- Channel Down -->      <button id="172">MoveItemDown</button>
     </customcontroller>
-  </MyVideoPlaylist>
+  </VideoPlaylist>
   <VirtualKeyboard>
     <customcontroller name="Harmony">
       <!-- Prev		-->      <button id="132">BackSpace</button>

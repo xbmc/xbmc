@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This file contains the mapping of keys to actions within Kodi.                       -->
+<!--                                                                                      -->
+<!-- The format is:                                                                       -->
+<!--  <window>                                                                            -->
+<!--    <device>                                                                          -->
+<!--      <button>action</button>                                                         -->
+<!--    </device>                                                                         -->
+<!--  </window>                                                                           -->
+<!--                                                                                      -->
+<!-- The <global> section is a fall through - they will only be used if the button is     -->
+<!-- not used in the current window's section.                                            -->
+<!--                                                                                      -->
+<!-- Actions can be built-in functions.                                                   -->
+<!--  eg <B>ActivateWindow(Music)</B>                                                     -->
+<!-- would automatically go to Music on the press of the B button.                        -->
+<!--                                                                                      -->
+<!--                                                                                      -->
+<!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
+<!-- This is different from a "noop" action, which disables a button.                     -->
+<!--                                                                                      -->
+<!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
 <keymap>
   <global>
     <joystick>
@@ -7,7 +28,7 @@
       <x>ContextMenu</x>
       <y>FullScreen</y>
       <start>ActivateWindow(PlayerControls)</start>
-      <back>Back</back>
+      <back>PreviousMenu</back>
       <guide>ActivateWindow(Home)</guide>
       <up>Up</up>
       <down>Down</down>
@@ -34,11 +55,11 @@
       <rightbumper>Highlight</rightbumper>
     </joystick>
   </FileManager>
-  <MyMusicPlaylist>
+  <MusicPlaylist>
     <joystick>
       <leftbumper>Delete</leftbumper>
     </joystick>
-  </MyMusicPlaylist>
+  </MusicPlaylist>
   <Music>
   </Music>
   <FullscreenVideo>
@@ -200,11 +221,11 @@
   </VideoBookmarks>
   <Videos>
   </Videos>
-  <MyVideoPlaylist>
+  <VideoPlaylist>
     <joystick>
       <leftbumper>Delete</leftbumper>
     </joystick>
-  </MyVideoPlaylist>
+  </VideoPlaylist>
   <VirtualKeyboard>
     <joystick>
       <b>BackSpace</b>
@@ -220,11 +241,6 @@
       <b>Close</b>
     </joystick>
   </ContextMenu>
-  <Programs>
-    <joystick>
-      <x>ContextMenu</x>
-    </joystick>
-  </Programs>
   <Settings>
     <joystick>
       <b>PreviousMenu</b>
