@@ -357,6 +357,16 @@ if(NOT CMAKE_CROSSCOMPILING)
   add_custom_target(check ${CMAKE_CTEST_COMMAND} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
   add_dependencies(check ${APP_NAME_LC}-test)
 
+  # Valgrind (memcheck)
+  find_program(VALGRIND_EXECUTABLE NAMES valgrind)
+  if(VALGRIND_EXECUTABLE)
+    set(CTEST_MEMORYCHECK_COMMAND ${VALGRIND_EXECUTABLE})
+    set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "-q --trace-children=yes --leak-check=yes --track-origins=yes")
+    include(CTest)
+    add_custom_target(check-valgrind ${CMAKE_CTEST_COMMAND} -D ExperimentalMemCheck \${ARGS} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+    add_dependencies(check-valgrind ${APP_NAME_LC}-test)
+  endif()
+
   # For testing commit series
   add_custom_target(check-commits ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/CheckCommits.cmake
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
