@@ -465,7 +465,12 @@ CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr
     else
     {
       // uid is optional, so check other relevant data.
-      if (recording.second->Channel() == epgTag->ChannelTag() &&
+
+      // note: don't use recording.second->Channel() for comparing channels here as this can lead
+      //       to deadlocks. compare client ids and channel ids instead, this has the same effect.
+      if (epgTag->ChannelTag() &&
+          recording.second->ClientID() == epgTag->ChannelTag()->ClientID() &&
+          recording.second->ChannelUid() == epgTag->ChannelTag()->UniqueID() &&
           recording.second->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
           (recording.second->RecordingTimeAsUTC() + recording.second->m_duration) >= epgTag->EndAsUTC())
         return recording.second;

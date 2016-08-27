@@ -220,6 +220,18 @@ namespace PVR
     CPVRChannelPtr Channel(void) const;
 
     /*!
+     * @brief Get the uid of the channel on which this recording is/was running
+     * @return the uid of the channel or PVR_CHANNEL_INVALID_UID
+     */
+    int ChannelUid(void) const;
+
+    /*!
+     * @brief the identifier of the client that serves this recording
+     * @return the client identifier
+     */
+    int ClientID(void) const;
+
+    /*!
      * @brief Retrieve the recording Episode Name
      * @note Returns an empty string if no Episode Name was provided by the PVR client
      */
