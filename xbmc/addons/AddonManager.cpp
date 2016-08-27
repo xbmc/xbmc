@@ -257,7 +257,8 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
 
 CAddonMgr::CAddonMgr()
   : m_cp_context(nullptr),
-  m_cpluff(nullptr)
+  m_cpluff(nullptr),
+  m_serviceSystemStarted(false)
 { }
 
 CAddonMgr::~CAddonMgr()
@@ -1204,6 +1205,11 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
   return true;
 }
 
+bool CAddonMgr::ServicesHasStarted() const
+{
+  CSingleLock lock(m_critSection);
+  return m_serviceSystemStarted;
+}
 
 bool CAddonMgr::StartServices(const bool beforelogin)
 {
@@ -1224,6 +1230,9 @@ bool CAddonMgr::StartServices(const bool beforelogin)
         ret &= service->Start();
     }
   }
+
+  CSingleLock lock(m_critSection);
+  m_serviceSystemStarted = true;
 
   return ret;
 }

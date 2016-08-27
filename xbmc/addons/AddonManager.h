@@ -245,6 +245,8 @@ namespace ADDON
     */
     void StopServices(const bool onlylogin);
 
+    bool ServicesHasStarted() const;
+
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
@@ -273,6 +275,7 @@ namespace ADDON
     CEventSource<AddonEvent> m_events;
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
+    bool m_serviceSystemStarted;
   };
 
 }; /* namespace ADDON */
