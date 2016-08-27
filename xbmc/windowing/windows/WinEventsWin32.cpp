@@ -667,6 +667,26 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         m_pEventFunc(newEvent);
       }
       return(0);
+    case WM_DISPLAYCHANGE:
+      CLog::Log(LOGDEBUG, __FUNCTION__": display change event");  
+      if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)  
+      {
+        g_Windowing.UpdateResolutions();
+        if (g_advancedSettings.m_fullScreen)  
+        {  
+          newEvent.type = XBMC_VIDEOMOVE;  
+          newEvent.move.x = 0;  
+          newEvent.move.y = 0;  
+        }  
+        else  
+        {  
+          newEvent.type = XBMC_VIDEORESIZE;  
+          newEvent.resize.w = GET_X_LPARAM(lParam);  
+          newEvent.resize.h = GET_Y_LPARAM(lParam);  
+        }  
+        m_pEventFunc(newEvent);  
+      }  
+      return(0);  
     case WM_SIZE:
       newEvent.type = XBMC_VIDEORESIZE;
       newEvent.resize.w = GET_X_LPARAM(lParam);
