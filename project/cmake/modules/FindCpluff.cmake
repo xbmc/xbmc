@@ -19,6 +19,7 @@ if(NOT WIN32)
                                         --disable-shared
                                         --with-pic
                                         --prefix=<INSTALL_DIR>
+                                        --libdir=<INSTALL_DIR>/lib
                                         --host=${ARCH}
                                         CFLAGS=${defines}
                                         LDFLAGS=${ldflags})
