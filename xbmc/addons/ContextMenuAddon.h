@@ -48,6 +48,4 @@ namespace ADDON
 
     std::vector<CContextMenuItem> m_items;
   };
-
-  typedef std::shared_ptr<const CContextMenuAddon> ContextItemAddonPtr;
 }

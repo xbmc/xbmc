@@ -20,6 +20,7 @@
 
 #include "ServiceManager.h"
 #include "addons/BinaryAddonCache.h"
+#include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/DataCacheCore.h"
 #include "utils/log.h"
@@ -59,6 +60,8 @@ bool CServiceManager::Init2()
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
 
+  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
+
   return true;
 }
 
@@ -66,12 +69,14 @@ bool CServiceManager::Init3()
 {
   m_ADSPManager->Init();
   m_PVRManager->Init();
+  m_contextMenuManager->Init();
 
   return true;
 }
 
 void CServiceManager::Deinit()
 {
+  m_contextMenuManager.reset();
   m_binaryAddonCache.reset();
   m_PVRManager.reset();
   m_ADSPManager.reset();
@@ -111,6 +116,11 @@ ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
   return *m_ADSPManager;
 }
 
+CContextMenuManager& CServiceManager::GetContextMenuManager()
+{
+  return *m_contextMenuManager;
+}
+
 CDataCacheCore& CServiceManager::GetDataCacheCore()
 {
   return *m_dataCacheCore;
@@ -123,6 +133,11 @@ CPlatform& CServiceManager::GetPlatform()
 
 // deleters for unique_ptr
 void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
+{
+  delete p;
+}
+
+void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager *p) const
 {
   delete p;
 }
