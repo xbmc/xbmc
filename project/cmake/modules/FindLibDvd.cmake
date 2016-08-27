@@ -36,6 +36,8 @@ if(NOT WIN32)
   if(ENABLE_DVDCSS)
     set(DVDCSS_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
     ExternalProject_Add(dvdcss URL ${libdvdcss_BASE_URL}/archive/${libdvdcss_VER}.tar.gz
+                               DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
+                               DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                                PREFIX ${CORE_BUILD_DIR}/libdvd
                                CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                  --target=${HOST_ARCH}
@@ -66,6 +68,8 @@ if(NOT WIN32)
 
   set(DVDREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
   ExternalProject_Add(dvdread URL ${libdvdread_BASE_URL}/archive/${libdvdread_VER}.tar.gz
+                              DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
+                              DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                               PREFIX ${CORE_BUILD_DIR}/libdvd
                               CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                 --target=${HOST_ARCH}
@@ -96,6 +100,8 @@ if(NOT WIN32)
 
   set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a)
   ExternalProject_Add(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
+                             DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
+                             DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                              PREFIX ${CORE_BUILD_DIR}/libdvd
                              CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                --target=${HOST_ARCH}

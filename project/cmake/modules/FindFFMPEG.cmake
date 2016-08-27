@@ -29,6 +29,8 @@ if(ENABLE_INTERNAL_FFMPEG)
 
   externalproject_add(ffmpeg
                       URL ${FFMPEG_BASE_URL}/${FFMPEG_VER}.tar.gz
+                      DOWNLOAD_NAME ffmpeg-${FFMPEG_VER}.tar.gz
+                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/ffmpeg
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
