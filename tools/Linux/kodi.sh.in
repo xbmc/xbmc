@@ -29,6 +29,10 @@ CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
 USERDATA_DIR="${HOME}/.${bin_name}"
 
 
+# Workaround for high CPU load with nvidia GFX
+export __GL_YIELD=USLEEP
+
+
 # Check for some options used by this script
 while [ "$#" -gt "0" ]
 do
