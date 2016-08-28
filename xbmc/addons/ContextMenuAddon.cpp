@@ -122,9 +122,4 @@ CContextMenuAddon::CContextMenuAddon(AddonProps props, std::vector<CContextMenuI
 {
 }
 
-std::vector<CContextMenuItem> CContextMenuAddon::GetItems() const
-{
-  return m_items;
-}
-
 }
