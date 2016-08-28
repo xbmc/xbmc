@@ -107,7 +107,7 @@ set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
                   TinyXML Python Yajl
                   Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
-  list(APPEND required_deps SmbClient ZLIB)
+  list(APPEND required_deps ZLIB)
 else()
   list(APPEND required_deps D3DX11Effects)
 endif()
@@ -117,7 +117,7 @@ endif()
 
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH XSLT
-                  Alsa UDEV DBus Avahi
+                  Alsa UDEV DBus Avahi SmbClient
                   PulseAudio VDPAU VAAPI)
 
 # Required, dyloaded deps

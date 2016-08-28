@@ -166,7 +166,7 @@ if(CORE_SYSTEM_NAME STREQUAL android)
                       AndroidAppFile.h)
 endif()
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND ENABLE_SMBCLIENT)
   list(APPEND SOURCES SMBDirectory.cpp
                       SMBFile.cpp)
   list(APPEND HEADERS SMBDirectory.h
