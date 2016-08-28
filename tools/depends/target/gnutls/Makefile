@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=gnutls
-VERSION=3.3.15
+VERSION=3.4.14
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -16,7 +16,8 @@ endif
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --enable-local-libopts --disable-doc --disable-tests $(CONFIGURE_HACKS)
+          ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls \
+                      --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests $(CONFIGURE_HACKS)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
