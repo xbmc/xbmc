@@ -45,7 +45,7 @@ endif()
 
 find_package(GnuTls)
 if(GNUTLS_FOUND)
-  list(APPEND ffmpeg_conf --enable-gnutls)
+  list(APPEND ffmpeg_conf --enable-gnutls --extra-libs=-liconv)
 endif()
 
 include(ExternalProject)

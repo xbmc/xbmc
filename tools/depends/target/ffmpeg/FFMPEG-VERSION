@@ -2,4 +2,4 @@ LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg/archive
 VERSION=3.1.2-Krypton-Beta1
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-GNUTLS_VER=3.4.9
+GNUTLS_VER=3.4.14
