@@ -742,12 +742,23 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   if (!CXBMCApp::IsHeadsetPlugged())
   {
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
-    m_info.m_dataFormats.push_back(AE_FMT_RAW);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+    if (CJNIAudioManager::GetSDKVersion() >= 21)
+    {
+      m_info.m_wantsIECPassthrough = false;
+      m_info.m_dataFormats.push_back(AE_FMT_RAW);
+      if (CJNIAudioFormat::ENCODING_AC3 != -1)
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    }
+    if (CJNIAudioManager::GetSDKVersion() >= 23)
+    {
+      if (CJNIAudioFormat::ENCODING_DTS != -1)
+      {
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      }
+    }
 
 #if defined(HAS_LIBAMCODEC)
     if (aml_present())
@@ -783,17 +794,13 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       }
       if (CJNIAudioManager::GetSDKVersion() >= 23)
       {
-        m_info.m_wantsIECPassthrough = false;
         // here only 5.1 would work but we cannot correctly distinguish
-        // m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-      }
-      if (StringUtils::StartsWithNoCase(CJNIBuild::DEVICE, "foster")) // SATV is ahead of API
-      {
-        m_info.m_wantsIECPassthrough = false;
-        if (CJNIAudioManager::GetSDKVersion() == 22)
+        // if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+        //   m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+        if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
           m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+        if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
       }
     }
     std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
