@@ -471,3 +471,13 @@ CPVRChannelPtr CPVRRecording::Channel(void) const
 
   return CPVRChannelPtr();
 }
+
+int CPVRRecording::ChannelUid(void) const
+{
+  return m_iChannelUid;
+}
+
+int CPVRRecording::ClientID(void) const
+{
+  return m_iClientId;
+}
