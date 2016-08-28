@@ -424,7 +424,7 @@ protected:
    */
   bool NotifyActionListeners(const CAction &action) const;
 
-  bool m_skinReverting;
+  bool m_confirmSkinChange;
   std::string m_skinReloadSettingIgnore;
 
   bool m_saveSkinOnUnloading;

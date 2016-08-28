@@ -280,7 +280,7 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_bPlaybackStarting = false;
   m_ePlayState = PLAY_STATE_NONE;
-  m_skinReverting = false;
+  m_confirmSkinChange = true;
 
 #ifdef HAS_GLX
   XInitThreads();
@@ -1410,7 +1410,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     {
       // now we can finally reload skins
       std::string builtin("ReloadSkin");
-      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
+      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && m_confirmSkinChange)
         builtin += "(confirm)";
       CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
     }
@@ -1563,14 +1563,14 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
   std::string newSkin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   if (LoadSkin(newSkin))
   {
-    /* The Reset() or SetString() below will cause recursion, so the m_skinReverting boolean is set so as to not prompt the
+    /* The Reset() or SetString() below will cause recursion, so the m_confirmSkinChange boolean is set so as to not prompt the
        user as to whether they want to keep the current skin. */
-    if (confirm && !m_skinReverting)
+    if (confirm && m_confirmSkinChange)
     {
       if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) != 
         DialogResponse::YES)
       {
-        m_skinReverting = true;
+        m_confirmSkinChange = false;
         CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
       }
     }
@@ -1581,12 +1581,12 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
     std::string defaultSkin = ((CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
     if (newSkin != defaultSkin)
     {
-      m_skinReverting = true;
+      m_confirmSkinChange = false;
       CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN)->Reset();
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102), g_localizeStrings.Get(24103));
     }
   }
-  m_skinReverting = false;
+  m_confirmSkinChange = true;
 }
 
 bool CApplication::Load(const TiXmlNode *settings)
