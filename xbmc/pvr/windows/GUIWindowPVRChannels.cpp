@@ -61,13 +61,10 @@ CGUIWindowPVRChannels::~CGUIWindowPVRChannels()
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
-    return;
-
   // Add parent buttons before the Manage button
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 
-  buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* Manage... */
+  buttons.Add(CONTEXT_BUTTON_EDIT, 16106); /* Manage... */
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)
@@ -81,11 +78,8 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return false;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonGroupManager(pItem.get(), button) ||
-      OnContextButtonUpdateEpg(pItem.get(), button) ||
-      OnContextButtonManage(pItem.get(), button) ||
+  return OnContextButtonManage(m_vecItems->Get(itemNumber), button) ||
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
@@ -225,20 +219,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRChannels::OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_GROUP_MANAGER)
-  {
-    ShowGroupManager();
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRChannels::OnContextButtonManage(CFileItem *item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRChannels::OnContextButtonManage(const CFileItemPtr &item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
 
@@ -263,7 +244,7 @@ bool CGUIWindowPVRChannels::OnContextButtonManage(CFileItem *item, CONTEXT_BUTTO
           ShowChannelManager();
           break;
         case CONTEXT_BUTTON_UPDATE_EPG:
-          OnContextButtonUpdateEpg(item, (CONTEXT_BUTTON)button);
+          UpdateEpg(item);
           break;
         default:
           break;
@@ -279,36 +260,37 @@ bool CGUIWindowPVRChannels::OnContextButtonManage(CFileItem *item, CONTEXT_BUTTO
   return bReturn;
 }
 
-bool CGUIWindowPVRChannels::OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BUTTON button)
+void CGUIWindowPVRChannels::UpdateEpg(const CFileItemPtr &item)
 {
-  bool bReturn = false;
+  const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
-  if (button == CONTEXT_BUTTON_UPDATE_EPG)
+  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19251}, // "Update guide information"
+                                        CVariant{19252}, // "Schedule guide update for this channel?"
+                                        CVariant{""},
+                                        CVariant{channel->ChannelName()}))
+    return;
+
+  const CEpgPtr epg = channel->GetEPG();
+  if (epg)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialog)
-      return bReturn;
+    epg->ForceUpdate();
 
-    CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
-
-    pDialog->SetHeading(CVariant{19251});
-    pDialog->SetLine(0, CVariant{g_localizeStrings.Get(19252)});
-    pDialog->SetLine(1, CVariant{channel->ChannelName()});
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-
-    if (!pDialog->IsConfirmed())
-      return bReturn;
-
-    bReturn = UpdateEpgForChannel(item);
-
-    std::string strMessage = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(bReturn ? 19253 : 19254).c_str(), channel->ChannelName().c_str());
-    CGUIDialogKaiToast::QueueNotification(bReturn ? CGUIDialogKaiToast::Info : CGUIDialogKaiToast::Error,
-        g_localizeStrings.Get(19166),
-        strMessage);
+    const std::string strMessage = StringUtils::Format("%s: '%s'",
+                                                       g_localizeStrings.Get(19253).c_str(), // "Guide update scheduled for channel"
+                                                       channel->ChannelName().c_str());
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                          g_localizeStrings.Get(19166), // "PVR information"
+                                          strMessage);
   }
-
-  return bReturn;
+  else
+  {
+    const std::string strMessage = StringUtils::Format("%s: '%s'",
+                                                       g_localizeStrings.Get(19254).c_str(), // "Guide update failed for channel"
+                                                       channel->ChannelName().c_str());
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                          g_localizeStrings.Get(19166), // "PVR information"
+                                          strMessage);
+  }
 }
 
 void CGUIWindowPVRChannels::ShowChannelManager()

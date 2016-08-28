@@ -93,8 +93,6 @@ namespace PVR
 
     virtual bool ActionInputChannelNumber(int input);
 
-    virtual bool UpdateEpgForChannel(CFileItem *item);
-
     virtual void UpdateSelectedItemPath();
 
     void RegisterObservers(void);

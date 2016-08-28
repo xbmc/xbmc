@@ -365,18 +365,6 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
   return false;
 }
 
-bool CGUIWindowPVRBase::UpdateEpgForChannel(CFileItem *item)
-{
-  CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
-
-  CEpgPtr epg = channel->GetEPG();
-  if (!epg)
-    return false;
-
-  epg->ForceUpdate();
-  return true;
-}
-
 bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilterPath /*= true*/)
 {
   if (!GetChannelGroup())
