@@ -19,12 +19,14 @@
  */
 
 #include "FileItem.h"
+#include "pvr/windows/GUIWindowPVRBase.h"
 
 #include "GUIDialogPVRRecordingInfo.h"
 
 using namespace PVR;
 
 #define CONTROL_BTN_OK  7
+#define CONTROL_BTN_PLAY_RECORDING  8
 
 CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo(void)
   : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRInfo.xml")
@@ -34,18 +36,43 @@ CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo(void)
 
 bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
 {
-  if (message.GetMessage() == GUI_MSG_CLICKED)
+  switch (message.GetMessage())
   {
-    int iControl = message.GetSenderId();
-
-    if (iControl == CONTROL_BTN_OK)
-    {
-      Close();
-      return true;
-    }
+    case GUI_MSG_CLICKED:
+      return OnClickButtonOK(message) || OnClickButtonPlay(message);
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+bool CGUIDialogPVRRecordingInfo::OnClickButtonOK(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_OK)
+  {
+    Close();
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
+  {
+    Close();
+
+    if (m_recordItem)
+      CGUIWindowPVRBase::PlayRecording(m_recordItem.get(), false /* don't play minimized */, true /* check resume */);
+
+    bReturn = true;
+  }
+
+  return bReturn;
 }
 
 bool CGUIDialogPVRRecordingInfo::OnInfo(int actionID)
