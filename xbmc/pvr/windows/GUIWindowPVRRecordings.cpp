@@ -258,6 +258,14 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
         int iItem = m_viewControl.GetSelectedItem();
         if (iItem >= 0 && iItem < m_vecItems->Size())
         {
+          const CFileItemPtr item(m_vecItems->Get(iItem));
+          if (item->m_bIsFolder)
+          {
+            // recording folders are handled by base class.
+            bReturn = false;
+            break;
+          }
+
           switch (message.GetParam1())
           {
             case ACTION_SELECT_ITEM:
@@ -269,26 +277,29 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
                   bReturn = true;
                   break;
                 case SELECT_ACTION_PLAY_OR_RESUME:
-                  PlayFile(m_vecItems->Get(iItem).get(), false, true);
+                  PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
                   bReturn = true;
                   break;
                 case SELECT_ACTION_RESUME:
                 {
-                  CFileItemPtr item(m_vecItems->Get(iItem));
                   const std::string resumeString = GetResumeString(*item);
                   item->m_lStartOffset = resumeString.empty() ? 0 : STARTOFFSET_RESUME;
-                  PlayFile(item.get(), false, false);
+                  PlayFile(item.get(), false /* don't play minimized */, false /* don't check resume */);
                   bReturn = true;
                   break;
                 }
                 case SELECT_ACTION_INFO:
-                  ShowRecordingInfo(m_vecItems->Get(iItem).get());
+                  ShowRecordingInfo(item.get());
                   bReturn = true;
+                  break;
+                default:
+                  bReturn = false;
                   break;
               }
               break;
             case ACTION_PLAY:
-              bReturn = PlayFile(m_vecItems->Get(iItem).get());
+              PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
+              bReturn = true;
               break;
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
@@ -296,11 +307,11 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
               bReturn = true;
               break;
             case ACTION_SHOW_INFO:
-              ShowRecordingInfo(m_vecItems->Get(iItem).get());
+              ShowRecordingInfo(item.get());
               bReturn = true;
               break;
             case ACTION_DELETE_ITEM:
-              ActionDeleteRecording(m_vecItems->Get(iItem).get());
+              ActionDeleteRecording(item.get());
               bReturn = true;
               break;
             default:
