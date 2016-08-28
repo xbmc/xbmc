@@ -102,7 +102,7 @@
 								<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 							</include>
 							<onclick>PlayerControl(Next)</onclick>
-							<visible>!VideoPlayer.Content(livetv) + Integer.IsGreater(Playlist.Length(video),1)</visible>
+							<visible>!VideoPlayer.Content(livetv) + [Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1)]</visible>
 						</control>
 						<control type="radiobutton" id="804">
 							<include content="OSDButton">
