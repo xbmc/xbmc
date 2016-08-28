@@ -24,6 +24,8 @@
 
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/IInputHandler.h"
+#include "peripherals/addons/PeripheralAddon.h"
+#include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/Peripherals.h"
 #include "settings/lib/Setting.h"
 #include "peripherals/addons/AddonButtonMapping.h"
@@ -595,6 +597,27 @@ void CPeripheral::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
     delete it->second;
     m_buttonMappers.erase(it);
   }
+}
+
+std::string CPeripheral::GetIcon() const
+{
+  std::string icon = "DefaultAddon.png";
+
+  if (m_busType == PERIPHERAL_BUS_ADDON)
+  {
+    CPeripheralBusAddon* bus = static_cast<CPeripheralBusAddon*>(m_bus);
+
+    PeripheralAddonPtr addon;
+    unsigned int index;
+    if (bus->SplitLocation(m_strLocation, addon, index))
+    {
+      std::string addonIcon = addon->Icon();
+      if (!addonIcon.empty())
+        icon = std::move(addonIcon);
+    }
+  }
+
+  return icon;
 }
 
 bool CPeripheral::operator ==(const PeripheralScanResult& right) const
