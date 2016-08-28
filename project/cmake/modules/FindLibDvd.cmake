@@ -13,6 +13,22 @@ if(NOT WIN32)
     string(REGEX MATCH "BASE_URL=([^ ]*)" ${dvdlib}_BASE_URL "${VER}")
     list(GET ${dvdlib}_BASE_URL 0 ${dvdlib}_BASE_URL)
     string(SUBSTRING "${${dvdlib}_BASE_URL}" 9 -1 ${dvdlib}_BASE_URL)
+    string(TOUPPER ${dvdlib} DVDLIB)
+
+    # allow user to override the download URL with a local tarball
+    # needed for offline build envs
+    # allow upper and lowercase var name
+    if(${dvdlib}_URL)
+      set(${DVDLIB}_URL ${${dvdlib}_URL})
+    endif()
+    if(${DVDLIB}_URL)
+      get_filename_component(${DVDLIB}_URL "${${DVDLIB}_URL}" ABSOLUTE)
+    else()
+      set(${DVDLIB}_URL ${${dvdlib}_BASE_URL}/archive/${${dvdlib}_VER}.tar.gz)
+    endif()
+    if(VERBOSE)
+      message(STATUS "${DVDLIB}_URL: ${${DVDLIB}_URL}")
+    endif()
   endforeach()
 
   set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
@@ -35,7 +51,9 @@ if(NOT WIN32)
 
   if(ENABLE_DVDCSS)
     set(DVDCSS_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
-    ExternalProject_Add(dvdcss URL ${libdvdcss_BASE_URL}/archive/${libdvdcss_VER}.tar.gz
+    ExternalProject_Add(dvdcss URL ${LIBDVDCSS_URL}
+                               DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
+                               DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                                PREFIX ${CORE_BUILD_DIR}/libdvd
                                CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                  --target=${HOST_ARCH}
@@ -65,7 +83,9 @@ if(NOT WIN32)
   endif()
 
   set(DVDREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
-  ExternalProject_Add(dvdread URL ${libdvdread_BASE_URL}/archive/${libdvdread_VER}.tar.gz
+  ExternalProject_Add(dvdread URL ${LIBDVDREAD_URL}
+                              DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
+                              DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                               PREFIX ${CORE_BUILD_DIR}/libdvd
                               CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                 --target=${HOST_ARCH}
@@ -95,7 +115,9 @@ if(NOT WIN32)
   endif()
 
   set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a)
-  ExternalProject_Add(dvdnav URL ${libdvdnav_BASE_URL}/archive/${libdvdnav_VER}.tar.gz
+  ExternalProject_Add(dvdnav URL ${LIBDVDNAV_URL}
+                             DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
+                             DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                              PREFIX ${CORE_BUILD_DIR}/libdvd
                              CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                --target=${HOST_ARCH}

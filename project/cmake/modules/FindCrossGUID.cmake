@@ -5,10 +5,17 @@ if(ENABLE_INTERNAL_CROSSGUID)
   list(GET CGUID_VER 0 CGUID_VER)
   string(SUBSTRING "${CGUID_VER}" 8 -1 CGUID_VER)
 
+  # allow user to override the download URL with a local tarball
+  # needed for offline build envs
+  if(NOT EXISTS ${CROSSGUID_URL})
+    set(CROSSGUID_URL http://mirrors.kodi.tv/build-deps/sources/crossguid-${CGUID_VER}.tar.gz)
+  endif()
+
   set(CROSSGUID_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libcrossguid.a)
   set(CROSSGUID_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(crossguid
-                      URL http://mirrors.kodi.tv/build-deps/sources/crossguid-${CGUID_VER}.tar.gz
+                      URL ${CROSSGUID_URL}
+                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/crossguid
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
