@@ -46,7 +46,8 @@ namespace ADDON
                  const std::string& name,
                  const std::string& listitemprops,
                  const std::string& extensions,
-                 const std::string& protocols);
+                 const std::string& protocols,
+                 bool hasAPIVersion);
     virtual ~CInputStream() {}
 
     virtual void SaveSettings() override;
@@ -100,6 +101,7 @@ namespace ADDON
     std::vector<std::string> m_extensionsList;
     std::vector<std::string> m_protocolsList;
     INPUTSTREAM_CAPABILITIES m_caps;
+    bool m_matchAPIVersion;
     std::map<int, CDemuxStream*> m_streams;
 
     static CCriticalSection m_parentSection;
