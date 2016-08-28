@@ -15,9 +15,10 @@ else()
 endif()
 
 # CMake config
-set(APP_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib/${APP_NAME_LC})
-set(APP_PREFIX ${CMAKE_INSTALL_PREFIX})
-set(APP_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include/${APP_NAME_LC})
+set(APP_PREFIX ${prefix})
+set(APP_LIB_DIR ${libdir}/${APP_NAME_LC})
+set(APP_DATA_DIR ${datarootdir}/${APP_NAME_LC})
+set(APP_INCLUDE_DIR ${includedir}/${APP_NAME_LC})
 set(CXX11_SWITCH "-std=c++11")
 
 # Set XBMC_STANDALONE_SH_PULSE so we can insert PulseAudio block into kodi-standalone
@@ -44,18 +45,18 @@ configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
 
 # Install app
 install(TARGETS ${APP_NAME_LC}
-        DESTINATION lib/${APP_NAME_LC}
+        DESTINATION ${libdir}/${APP_NAME_LC}
         COMPONENT kodi-bin)
 if(ENABLE_X11 AND XRANDR_FOUND)
   install(TARGETS ${APP_NAME_LC}-xrandr
-          DESTINATION lib/${APP_NAME_LC}
+          DESTINATION ${libdir}/${APP_NAME_LC}
           COMPONENT kodi-bin)
 endif()
 
 # Install scripts
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
                  ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
-        DESTINATION bin
+        DESTINATION ${bindir}
         COMPONENT kodi)
 
 # Install libraries
@@ -63,7 +64,7 @@ foreach(library ${LIBRARY_FILES})
   get_filename_component(dir ${library} PATH)
   string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${dir})
   install(PROGRAMS ${library}
-          DESTINATION lib/${APP_NAME_LC}/${dir}
+          DESTINATION ${libdir}/${APP_NAME_LC}/${dir}
           COMPONENT kodi-bin)
 endforeach()
 
@@ -72,52 +73,52 @@ endforeach()
 foreach(file ${install_data})
   get_filename_component(dir ${file} PATH)
   install(FILES ${CMAKE_BINARY_DIR}/${file}
-          DESTINATION share/${APP_NAME_LC}/${dir}
+          DESTINATION ${datarootdir}/${APP_NAME_LC}/${dir}
           COMPONENT kodi)
 endforeach()
 
 # Install xsession entry
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
-        DESTINATION share/xsessions
+        DESTINATION ${datarootdir}/xsessions
         COMPONENT kodi)
 
 # Install desktop entry
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/kodi.desktop
-        DESTINATION share/applications
+        DESTINATION ${datarootdir}/applications
         COMPONENT kodi)
 
 # Install icons
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon16x16.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/16x16/apps
+        DESTINATION ${datarootdir}/icons/hicolor/16x16/apps
         COMPONENT kodi)
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon22x22.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/22x22/apps
+        DESTINATION ${datarootdir}/icons/hicolor/22x22/apps
         COMPONENT kodi)
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon24x24.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/24x24/apps
+        DESTINATION ${datarootdir}/icons/hicolor/24x24/apps
         COMPONENT kodi)
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon32x32.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/32x32/apps
+        DESTINATION ${datarootdir}/icons/hicolor/32x32/apps
         COMPONENT kodi)
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon48x48.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/48x48/apps
+        DESTINATION ${datarootdir}/icons/hicolor/48x48/apps
         COMPONENT kodi)
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon64x64.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/64x64/apps
+        DESTINATION ${datarootdir}/icons/hicolor/64x64/apps
         COMPONENT kodi)
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon128x128.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/128x128/apps
+        DESTINATION ${datarootdir}/icons/hicolor/128x128/apps
         COMPONENT kodi)
 install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon256x256.png
         RENAME ${APP_NAME_LC}.png
-        DESTINATION share/icons/hicolor/256x256/apps
+        DESTINATION ${datarootdir}/icons/hicolor/256x256/apps
         COMPONENT kodi)
 install(CODE "execute_process(COMMAND gtk-update-icon-cache -f -q -t
         $ENV{DESTDIR}${datarootdir}/icons/hicolor ERROR_QUIET)"
@@ -128,12 +129,12 @@ install(FILES ${CORE_SOURCE_DIR}/copying.txt
               ${CORE_SOURCE_DIR}/LICENSE.GPL
               ${CORE_SOURCE_DIR}/version.txt
               ${CORE_SOURCE_DIR}/docs/README.linux
-        DESTINATION share/doc/${APP_NAME_LC}
+        DESTINATION ${datarootdir}/doc/${APP_NAME_LC}
         COMPONENT kodi)
 
 # Install kodi-tools-texturepacker
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/texturepacker/TexturePacker
-        DESTINATION bin
+        DESTINATION ${bindir}
         COMPONENT kodi-tools-texturepacker)
 
 # Install kodi-addon-dev headers
@@ -152,7 +153,7 @@ install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kod
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h
               ${CORE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
               ${CORE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
-        DESTINATION include/${APP_NAME_LC}
+        DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev)
 
 # Install kodi-addon-dev add-on bindings
@@ -169,7 +170,7 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cm
               ${CORE_SOURCE_DIR}/project/cmake/scripts/common/PrepareEnv.cmake
               ${CORE_SOURCE_DIR}/project/cmake/scripts/common/ProjectMacros.cmake
               ${CORE_SOURCE_DIR}/project/cmake/scripts/linux/PathSetup.cmake
-        DESTINATION lib/${APP_NAME_LC}
+        DESTINATION ${libdir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev)
 
 # Install kodi-audio-dev
@@ -181,7 +182,7 @@ install(FILES ${CORE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_dll.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h
-        DESTINATION include/${APP_NAME_LC}
+        DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-audio-dev)
 
 if(ENABLE_EVENTCLIENTS)
@@ -216,17 +217,17 @@ if(ENABLE_EVENTCLIENTS)
                 ${CORE_SOURCE_DIR}/tools/EventClients/icons/phone.png
                 ${CORE_SOURCE_DIR}/tools/EventClients/icons/mail.png
                 ${CORE_SOURCE_DIR}/tools/EventClients/icons/mouse.png
-          DESTINATION share/pixmaps/${APP_NAME_LC}
+          DESTINATION ${datarootdir}/pixmaps/${APP_NAME_LC}
           COMPONENT kodi-eventclients-common)
 
   # Install kodi-eventclients-dev headers
   install(FILES ${CORE_SOURCE_DIR}/tools/EventClients/lib/c++/xbmcclient.h
-          DESTINATION include/${APP_NAME_LC}
+          DESTINATION ${includedir}/${APP_NAME_LC}
           COMPONENT kodi-eventclients-dev)
 
   # Install kodi-eventclients-dev C# examples
   install(FILES "${CORE_SOURCE_DIR}/tools/EventClients/examples/c#/XBMCDemoClient1.cs"
-          DESTINATION "share/doc/${APP_NAME_LC}-eventclients-dev/examples/C#"
+          DESTINATION "${docdir}/${APP_NAME_LC}-eventclients-dev/examples/C#"
           COMPONENT kodi-eventclients-dev)
 
   # Install kodi-eventclients-dev C++ examples
@@ -235,12 +236,12 @@ if(ENABLE_EVENTCLIENTS)
                 ${CORE_SOURCE_DIR}/tools/EventClients/examples/c++/example_button1.cpp
                 ${CORE_SOURCE_DIR}/tools/EventClients/examples/c++/example_mouse.cpp
                 ${CORE_SOURCE_DIR}/tools/EventClients/examples/c++/example_button2.cpp
-          DESTINATION share/doc/${APP_NAME_LC}-eventclients-dev/examples/C++
+          DESTINATION ${docdir}/${APP_NAME_LC}-eventclients-dev/examples/C++
           COMPONENT kodi-eventclients-dev)
 
   # Install kodi-eventclients-dev java examples
   install(FILES ${CORE_SOURCE_DIR}/tools/EventClients/examples/java/XBMCDemoClient1.java
-          DESTINATION share/doc/${APP_NAME_LC}-eventclients-dev/examples/java
+          DESTINATION ${docdir}/${APP_NAME_LC}-eventclients-dev/examples/java
           COMPONENT kodi-eventclients-dev)
 
   # Install kodi-eventclients-dev python examples
@@ -250,50 +251,50 @@ if(ENABLE_EVENTCLIENTS)
                    ${CORE_SOURCE_DIR}/tools/EventClients/examples/python/example_action.py
                    ${CORE_SOURCE_DIR}/tools/EventClients/examples/python/example_button2.py
                    ${CORE_SOURCE_DIR}/tools/EventClients/examples/python/example_simple.py
-          DESTINATION share/doc/${APP_NAME_LC}-eventclients-dev/examples/python
+          DESTINATION ${docdir}/${APP_NAME_LC}-eventclients-dev/examples/python
           COMPONENT kodi-eventclients-dev)
 
   # Install kodi-eventclients-ps3
   install(PROGRAMS "${CORE_SOURCE_DIR}/tools/EventClients/Clients/PS3 BD Remote/ps3_remote.py"
           RENAME ${APP_NAME_LC}-ps3remote
-          DESTINATION bin
+          DESTINATION ${bindir}
           COMPONENT kodi-eventclients-ps3)
 
   # Install kodi-eventclients-wiiremote
   install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
-          DESTINATION bin
+          DESTINATION ${bindir}
           COMPONENT kodi-eventclients-wiiremote)
 
   # Install kodi-eventclients-xbmc-send
   install(PROGRAMS "${CORE_SOURCE_DIR}/tools/EventClients/Clients/Kodi Send/kodi-send.py"
           RENAME ${APP_NAME_LC}-send
-          DESTINATION bin
+          DESTINATION ${bindir}
           COMPONENT kodi-eventclients-xbmc-send)
 endif()
 
 # Install kodi-inputstream-dev
 install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h
-        DESTINATION include/${APP_NAME_LC}
+        DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-inputstream-dev)
 
 # Install kodi-pvr-dev
 install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_dll.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h
-        DESTINATION include/${APP_NAME_LC}
+        DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-pvr-dev)
 
 # Install kodi-screensaver-dev
 install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_dll.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h
-        DESTINATION include/${APP_NAME_LC}
+        DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-screensaver-dev)
 
 # Install kodi-visualization-dev
 install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h
-        DESTINATION include/${APP_NAME_LC}
+        DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-visualization-dev)
 
 # Install XBT skin files
@@ -301,7 +302,7 @@ foreach(texture ${XBT_FILES})
   string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${texture})
   get_filename_component(dir ${dir} PATH)
   install(FILES ${texture}
-          DESTINATION share/${APP_NAME_LC}/${dir}
+          DESTINATION ${datarootdir}/${APP_NAME_LC}/${dir}
           COMPONENT kodi)
 endforeach()
 
@@ -312,7 +313,7 @@ if(EXISTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/extra-installs)
                 file(GLOB_RECURSE FILES RELATIVE ${CMAKE_BINARY_DIR} \${dir}/*)
                 foreach(file \${FILES})
                   get_filename_component(dir \${file} PATH)
-                  file(INSTALL \${file} DESTINATION share/${APP_NAME_LC}/\${dir})
+                  file(INSTALL \${file} DESTINATION ${datarootdir}/${APP_NAME_LC}/\${dir})
                 endforeach()
               endforeach()")
 endif()
