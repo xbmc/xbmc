@@ -93,6 +93,8 @@ namespace PVR
     static bool DeleteTimerRule(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
 
+    static bool PlayRecording(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
+
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
 
@@ -109,13 +111,12 @@ namespace PVR
     virtual bool ActionDeleteChannel(CFileItem *item);
     virtual bool ActionInputChannelNumber(int input);
 
-    virtual bool PlayRecording(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
     virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
     virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
     virtual void UpdateSelectedItemPath();
-    bool CheckResumeRecording(CFileItem *item);
+    static bool CheckResumeRecording(CFileItem *item);
 
     bool OnContextButtonEditTimer(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEditTimerRule(CFileItem *item, CONTEXT_BUTTON button);
