@@ -264,15 +264,17 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       if (!m_info.m_wantsIECPassthrough && CJNIAudioManager::GetSDKVersion() == 22 && m_sink_sampleRate > 48000)
         m_sink_sampleRate = 48000;
     }
+
+    // EAC3 needs real samplerate not the modulation
+    if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3)
+      m_sink_sampleRate = m_format.m_streamInfo.m_sampleRate;
+
     if (m_info.m_wantsIECPassthrough)
     {
       m_format.m_dataFormat     = AE_FMT_S16LE;
       if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
           m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
         m_sink_sampleRate = 192000;
-
-      if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3)
-        m_sink_sampleRate = m_format.m_streamInfo.m_sampleRate;
 
       // we are running on an old android version
       // that does neither know AC3, DTS or whatever
@@ -748,6 +750,10 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       m_info.m_dataFormats.push_back(AE_FMT_RAW);
       if (CJNIAudioFormat::ENCODING_AC3 != -1)
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+
+      // EAC3 working on shield, broken on FireTV
+      if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
     }
     if (CJNIAudioManager::GetSDKVersion() >= 23)
     {
@@ -794,9 +800,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       }
       if (CJNIAudioManager::GetSDKVersion() >= 23)
       {
-        // here only 5.1 would work but we cannot correctly distinguish
-        // if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
-        //   m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
         if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
           m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
         if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
