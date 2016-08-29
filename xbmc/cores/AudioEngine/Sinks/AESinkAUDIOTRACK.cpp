@@ -756,26 +756,21 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   if (!CXBMCApp::IsHeadsetPlugged())
   {
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
-    if (CJNIAudioManager::GetSDKVersion() >= 21)
-    {
-      m_info.m_wantsIECPassthrough = false;
-      m_info.m_dataFormats.push_back(AE_FMT_RAW);
-      if (CJNIAudioFormat::ENCODING_AC3 != -1)
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    m_info.m_wantsIECPassthrough = false;
+    m_info.m_dataFormats.push_back(AE_FMT_RAW);
+    if (CJNIAudioFormat::ENCODING_AC3 != -1)
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
 
-      // EAC3 working on shield, broken on FireTV
-      if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-    }
-    if (CJNIAudioManager::GetSDKVersion() >= 23)
+    // EAC3 working on shield, broken on FireTV
+    if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+
+    if (CJNIAudioFormat::ENCODING_DTS != -1)
     {
-      if (CJNIAudioFormat::ENCODING_DTS != -1)
-      {
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-      }
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
     }
 
 #if defined(HAS_LIBAMCODEC)
