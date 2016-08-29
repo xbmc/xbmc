@@ -89,6 +89,8 @@ namespace PERIPHERALS
       const JOYSTICK::CDriverPrimitive& positiveZ
     ) override;
 
+    virtual void SaveButtonMap() override;
+
   private:
     typedef std::map<JOYSTICK::CDriverPrimitive, JOYSTICK::FeatureName> DriverMap;
 

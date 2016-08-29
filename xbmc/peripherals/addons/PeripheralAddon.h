@@ -84,6 +84,7 @@ namespace PERIPHERALS
     bool HasButtonMaps(void) const { return m_bProvidesButtonMaps; }
     bool GetFeatures(const CPeripheral* device, const std::string& strControllerId, FeatureMap& features);
     bool MapFeature(const CPeripheral* device, const std::string& strControllerId, const ADDON::JoystickFeature& feature);
+    void SaveButtonMap(const CPeripheral* device);
     void ResetButtonMap(const CPeripheral* device, const std::string& strControllerId);
     void PowerOffJoystick(unsigned int index);
     //@}

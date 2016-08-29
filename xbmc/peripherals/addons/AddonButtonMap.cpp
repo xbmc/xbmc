@@ -222,6 +222,12 @@ void CAddonButtonMap::AddAccelerometer(const FeatureName& feature,
   Load();
 }
 
+void CAddonButtonMap::SaveButtonMap()
+{
+  if (auto addon = m_addon.lock())
+    addon->SaveButtonMap(m_device);
+}
+
 CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& features)
 {
   using namespace JOYSTICK;

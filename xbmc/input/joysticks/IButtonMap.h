@@ -188,5 +188,10 @@ namespace JOYSTICK
       const CDriverPrimitive& positiveY,
       const CDriverPrimitive& positiveZ
     ) = 0;
+
+    /*!
+     * \brief Save the button map
+     */
+    virtual void SaveButtonMap() = 0;
   };
 }

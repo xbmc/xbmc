@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "input/joysticks/IButtonMapCallback.h"
 #include "input/joysticks/IDriverHandler.h"
 
 #include <memory>
@@ -33,7 +34,8 @@ namespace PERIPHERALS
 {
   class CPeripheral;
 
-  class CAddonButtonMapping : public JOYSTICK::IDriverHandler
+  class CAddonButtonMapping : public JOYSTICK::IDriverHandler,
+                              public JOYSTICK::IButtonMapCallback
   {
   public:
     CAddonButtonMapping(CPeripheral* peripheral, JOYSTICK::IButtonMapper* mapper);
@@ -45,6 +47,9 @@ namespace PERIPHERALS
     virtual bool OnHatMotion(unsigned int hatIndex, JOYSTICK::HAT_STATE state) override;
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
     virtual void ProcessAxisMotions(void) override;
+
+    // implementation of IButtonMapCallback
+    virtual void SaveButtonMap() override;
 
   private:
     std::unique_ptr<JOYSTICK::IDriverHandler> m_driverHandler;

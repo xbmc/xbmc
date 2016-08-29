@@ -590,6 +590,21 @@ bool CPeripheralAddon::MapFeature(const CPeripheral* device,
   return retVal == PERIPHERAL_NO_ERROR;
 }
 
+void CPeripheralAddon::SaveButtonMap(const CPeripheral* device)
+{
+  if (!m_bProvidesButtonMaps)
+    return;
+
+  ADDON::Joystick joystickInfo;
+  GetJoystickInfo(device, joystickInfo);
+
+  JOYSTICK_INFO joystickStruct;
+  joystickInfo.ToStruct(joystickStruct);
+
+  try { m_pStruct->SaveButtonMap(&joystickStruct); }
+  catch (std::exception &e) { LogException(e, "SaveMap()"); return; }
+}
+
 void CPeripheralAddon::ResetButtonMap(const CPeripheral* device, const std::string& strControllerId)
 {
   if (!m_bProvidesButtonMaps)

@@ -23,6 +23,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IButtonMap.h"
+#include "input/joysticks/IButtonMapCallback.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
@@ -124,6 +125,9 @@ void CGUIConfigurationWizard::Process(void)
 
     m_currentButton = nullptr;
   }
+
+  if (ButtonMapCallback())
+    ButtonMapCallback()->SaveButtonMap();
 
   RemoveHooks();
 
