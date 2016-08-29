@@ -242,6 +242,11 @@ bool CPVREpgInfoTag::WasActive(void) const
   return (m_endTime < now);
 }
 
+bool CPVREpgInfoTag::IsRecordable(void) const
+{
+  return CServiceBroker::GetPVRManager().Clients()->IsRecordable(shared_from_this());
+}
+
 bool CPVREpgInfoTag::IsUpcoming(void) const
 {
   CDateTime now = GetCurrentPlayingTime();

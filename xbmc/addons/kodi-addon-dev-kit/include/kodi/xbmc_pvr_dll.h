@@ -558,6 +558,16 @@ extern "C"
    */
   bool CanSeekStream();
 
+  /*
+   * Check if the given EPG tag can be recorded.
+   * @param tag the epg tag
+   * @param isRecordable Set to true if the tag can be recorded
+   * @return PVR_ERROR_NO_ERROR if isRecordable was set by the addon
+   * @remarks Optional, return PVR_ERROR_NOT_IMPLEMENTED to let kodi decide
+   *
+   */
+  PVR_ERROR IsRecordable(const EPG_TAG &tag, bool *isRecordable);
+
   /*!
    * @brief Notify the pvr addon that XBMC (un)paused the currently playing stream
    */
@@ -712,6 +722,7 @@ extern "C"
     pClient->toAddon.SeekRecordedStream             = SeekRecordedStream;
     pClient->toAddon.PositionRecordedStream         = PositionRecordedStream;
     pClient->toAddon.LengthRecordedStream           = LengthRecordedStream;
+    pClient->toAddon.IsRecordable                   = IsRecordable;
 
     pClient->toAddon.DemuxReset                     = DemuxReset;
     pClient->toAddon.DemuxAbort                     = DemuxAbort;

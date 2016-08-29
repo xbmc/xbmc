@@ -38,7 +38,7 @@ namespace PVR
 {
   class CPVREpg;
 
-  class CPVREpgInfoTag : public ISerializable
+  class CPVREpgInfoTag : public ISerializable, public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -82,6 +82,11 @@ namespace PVR
      * @return True if it's active, false otherwise.
      */
     bool IsActive(void) const;
+
+    /* @brief Check if this event can be recorded
+     * @return True if it can be recorded.
+     */
+    bool IsRecordable(void) const;
 
     /*!
      * @return True when this event has already passed, false otherwise.
@@ -402,6 +407,11 @@ namespace PVR
      */
     bool IsSeries() const;
 
+    /*!
+     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
+     */
+    unsigned int Flags() const { return m_iFlags; }
+
   private:
 
     /*!
@@ -420,11 +430,6 @@ namespace PVR
      * @brief Get current time, taking timeshifting into account.
      */
     CDateTime GetCurrentPlayingTime(void) const;
-
-    /*!
-     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
-     */
-    unsigned int Flags() const { return m_iFlags; }
 
     bool                     m_bNotify;            /*!< notify on start */
 
