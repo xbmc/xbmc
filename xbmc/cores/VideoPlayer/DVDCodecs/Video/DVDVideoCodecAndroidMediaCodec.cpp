@@ -35,6 +35,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "guilib/GraphicContext.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
@@ -335,11 +336,11 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
         CJNIDisplay display = view.getDisplay();
         if (display)
         {
-          CRect gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
-          scaleX = (double)display.getWidth() / gui.Width();
-          scaleY = (double)display.getHeight() / gui.Height();
+          RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
+          scaleX = (double)display.getWidth() / renderRes.iWidth;
+          scaleY = (double)display.getHeight() / renderRes.iHeight;
 
-          CLog::Log(LOGDEBUG, "RenderUpdate: GUI  - %fx%f", gui.Width(), gui.Height());
+          CLog::Log(LOGDEBUG, "RenderUpdate: GUI  - %fx%f", renderRes.iWidth, renderRes.iHeight);
           CLog::Log(LOGDEBUG, "RenderUpdate: Disp - %dx%d  scale(%fx%f)", display.getWidth(), display.getHeight(), scaleX, scaleY);
         }
       }
