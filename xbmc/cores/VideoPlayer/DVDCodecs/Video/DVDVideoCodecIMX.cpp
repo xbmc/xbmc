@@ -1239,8 +1239,6 @@ CIMXContext::CIMXContext()
   m_flip.resize(m_fbPages);
   m_pageCrops = new CRectInt[m_fbPages];
   CLog::Log(LOGDEBUG, "iMX : Allocated %d render buffers\n", m_fbPages);
-
-  g2dOpenDevices();
 }
 
 CIMXContext::~CIMXContext()
@@ -1248,7 +1246,6 @@ CIMXContext::~CIMXContext()
   Stop(false);
   Dispose();
   CloseDevices();
-  g2dCloseDevices();
 }
 
 bool CIMXContext::AdaptScreen(bool allocate)
@@ -1410,22 +1407,6 @@ bool CIMXContext::OpenDevices()
   }
 
   return m_fbHandle > 0;
-}
-
-void CIMXContext::g2dOpenDevices()
-{
-  // open g2d here to ensure all g2d fucntions are called from the same thread
-  if (!g2d_open(&m_g2dHandle))
-    return;
-
-  m_g2dHandle = NULL;
-  CLog::Log(LOGERROR, "%s - Error while trying open G2D\n", __FUNCTION__);
-}
-
-void CIMXContext::g2dCloseDevices()
-{
-  if (m_g2dHandle && !g2d_close(m_g2dHandle))
-    m_g2dHandle = NULL;
 }
 
 void CIMXContext::CloseDevices()
@@ -1860,6 +1841,12 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
   else if (blend)
     std::memcpy(m_bufferCapture->buf_vaddr, buffer, m_bufferCapture->buf_size);
 
+  if (g2d_open(&m_g2dHandle))
+  {
+    CLog::Log(LOGERROR, "%s : Error while trying open G2D\n", __FUNCTION__);
+    return false;
+  }
+
   if (m_bufferCapture && buffer)
   {
     struct g2d_surface src, dst;
@@ -1912,6 +1899,8 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
   if (m_bufferCapture && g2d_free(m_bufferCapture))
     CLog::Log(LOGERROR, "iMX : Error while freeing capture buuffer\n");
 
+  if (m_g2dHandle && !g2d_close(m_g2dHandle))
+    m_g2dHandle = NULL;
   return true;
 }
 

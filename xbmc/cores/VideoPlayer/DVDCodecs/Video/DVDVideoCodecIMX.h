@@ -102,8 +102,6 @@ public:
   bool AdaptScreen(bool allocate = false);
   bool TaskRestart();
   void CloseDevices();
-  void g2dCloseDevices();
-  void g2dOpenDevices();
   bool OpenDevices();
 
   bool Blank();
