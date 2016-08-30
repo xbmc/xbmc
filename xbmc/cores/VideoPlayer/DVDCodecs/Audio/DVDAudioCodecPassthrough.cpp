@@ -148,6 +148,7 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     skip = iSize - pkt.size;
     pData = pkt.data;
     iSize = pkt.size;
+    av_packet_free_side_data(&pkt);
   }
 
   if (pData && !m_backlogSize)
