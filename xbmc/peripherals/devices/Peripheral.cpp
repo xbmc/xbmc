@@ -569,6 +569,8 @@ void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler)
 
 void CPeripheral::UnregisterJoystickInputHandler(IInputHandler* handler)
 {
+  handler->ResetInputReceiver();
+
   auto it = m_inputHandlers.find(handler);
   if (it != m_inputHandlers.end())
   {
