@@ -8,7 +8,7 @@ APPLY_PATCHES=no
 
 # configuration settings
 ffmpg_config = --prefix=$(PREFIX) --extra-version="kodi-$(VERSION)"
-ffmpg_config += --cc=$(CC) --cxx=$(CXX) --ar=$(AR) --ranlib=$(RANLIB)
+ffmpg_config += --cc=$(CC) --cxx=$(CXX) --ar=$(AR) --ranlib=$(RANLIB) --extra-libs=-liconv
 ffmpg_config += --disable-devices --disable-doc
 ffmpg_config += --disable-ffplay --disable-ffmpeg --disable-sdl
 ffmpg_config += --disable-ffprobe --disable-ffserver
@@ -34,7 +34,7 @@ ifeq ($(OS), android)
   else
     ffmpg_config += --cpu=i686 --disable-mmx
   endif
-  ffmpg_config += --target-os=linux
+  ffmpg_config += --target-os=linux  --extra-libs=-liconv
 endif
 ifeq ($(OS), ios)
   ifneq ($(CPU), arm64)
