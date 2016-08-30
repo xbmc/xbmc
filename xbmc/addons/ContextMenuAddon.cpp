@@ -22,8 +22,6 @@
 #include "AddonManager.h"
 #include "ContextMenuManager.h"
 #include "ContextMenuItem.h"
-#include "GUIInfoManager.h"
-#include "interfaces/info/InfoBool.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include <sstream>
@@ -73,7 +71,7 @@ void CContextMenuAddon::ParseMenu(
       if (!label.empty() && !library.empty() && !visCondition.empty())
       {
         auto menu = CContextMenuItem::CreateItem(label, menuId,
-            URIUtils::AddFileToFolder(props.path, library), g_infoManager.Register(visCondition, 0), props.id);
+            URIUtils::AddFileToFolder(props.path, library), visCondition, props.id);
         items.push_back(menu);
       }
     }
@@ -110,8 +108,7 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(AddonProps p
         label = g_localizeStrings.GetAddonString(props.id, atoi(label.c_str()));
 
       CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,
-          URIUtils::AddFileToFolder(props.path, props.libname),
-          g_infoManager.Register(visCondition, 0), props.id);
+          URIUtils::AddFileToFolder(props.path, props.libname), visCondition, props.id);
 
       items.push_back(menuItem);
     }
@@ -123,11 +120,6 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(AddonProps p
 CContextMenuAddon::CContextMenuAddon(AddonProps props, std::vector<CContextMenuItem> items)
     : CAddon(std::move(props)), m_items(std::move(items))
 {
-}
-
-std::vector<CContextMenuItem> CContextMenuAddon::GetItems() const
-{
-  return m_items;
 }
 
 }

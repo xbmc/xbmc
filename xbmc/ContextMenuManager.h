@@ -35,34 +35,31 @@ public:
   static const CContextMenuItem MAIN;
   static const CContextMenuItem MANAGE;
 
+  CContextMenuManager(ADDON::CAddonMgr& addonMgr);
+  ~CContextMenuManager();
   static CContextMenuManager& GetInstance();
+
+  void Init();
 
   ContextMenuView GetItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
   ContextMenuView GetAddonItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
-  /*!
-   * \brief Adds a context item to this manager.
-   * NOTE: only 'enabled' context addons should be added.
-   */
-  void Register(const ADDON::ContextItemAddonPtr& cm);
-
-  /*!
-   * \brief Removes a context addon from this manager.
-   */
-  bool Unregister(const ADDON::ContextItemAddonPtr& cm);
+  bool Unload(const ADDON::CContextMenuAddon& addon);
 
 private:
-  CContextMenuManager();
   CContextMenuManager(const CContextMenuManager&);
   CContextMenuManager const& operator=(CContextMenuManager const&);
-  virtual ~CContextMenuManager() {}
 
-  void Init();
   bool IsVisible(
     const CContextMenuItem& menuItem,
     const CContextMenuItem& root,
     const CFileItem& fileItem) const;
+
+  void ReloadAddonItems();
+  void OnEvent(const ADDON::AddonEvent& event);
+
+  ADDON::CAddonMgr& m_addonMgr;
 
   CCriticalSection m_criticalSection;
   std::vector<CContextMenuItem> m_addonItems;

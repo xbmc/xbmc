@@ -51,6 +51,11 @@ ActiveAE::CActiveAEDSP &CServiceBroker::GetADSP()
   return g_application.m_ServiceManager->GetADSPManager();
 }
 
+CContextMenuManager& CServiceBroker::GetContextMenuManager()
+{
+  return g_application.m_ServiceManager->GetContextMenuManager();
+}
+
 CDataCacheCore &CServiceBroker::GetDataCacheCore()
 {
   return g_application.m_ServiceManager->GetDataCacheCore();

@@ -21,13 +21,13 @@
 #include "ContextMenuManager.h"
 #include "ContextMenuItem.h"
 #include "addons/Addon.h"
-#include "addons/AddonManager.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
 #include "music/ContextMenus.h"
 #include "video/ContextMenus.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 #include <iterator>
 
@@ -38,24 +38,24 @@ const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup
 const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage", "");
 
 
-CContextMenuManager::CContextMenuManager()
+CContextMenuManager::CContextMenuManager(CAddonMgr& addonMgr)
+  : m_addonMgr(addonMgr) {}
+
+CContextMenuManager::~CContextMenuManager()
 {
-  Init();
+  m_addonMgr.Events().Unsubscribe(this);
 }
 
 CContextMenuManager& CContextMenuManager::GetInstance()
 {
-  static CContextMenuManager mgr;
-  return mgr;
+  return CServiceBroker::GetContextMenuManager();
 }
 
 void CContextMenuManager::Init()
 {
-  VECADDONS addons;
-  if (CAddonMgr::GetInstance().GetAddons(addons, ADDON_CONTEXT_ITEM))
-    for (const auto& addon : addons)
-      Register(std::static_pointer_cast<CContextMenuAddon>(addon));
+  m_addonMgr.Events().Subscribe(this, &CContextMenuManager::OnEvent);
 
+  CSingleLock lock(m_criticalSection);
   m_items = {
       std::make_shared<CONTEXTMENU::CResume>(),
       std::make_shared<CONTEXTMENU::CPlay>(),
@@ -72,30 +72,41 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CMarkWatched>(),
       std::make_shared<CONTEXTMENU::CMarkUnWatched>(),
   };
+  ReloadAddonItems();
 }
 
-void CContextMenuManager::Register(const ContextItemAddonPtr& cm)
+void CContextMenuManager::ReloadAddonItems()
 {
-  if (!cm)
-    return;
-
-  CSingleLock lock(m_criticalSection);
-  for (const auto& menuItem : cm->GetItems())
+  VECADDONS addons;
+  if (!m_addonMgr.GetAddons(addons, ADDON_CONTEXT_ITEM))
   {
-    auto it = std::find(m_addonItems.begin(), m_addonItems.end(), menuItem);
-    if (it == m_addonItems.end())
-      m_addonItems.push_back(menuItem);
+    CLog::Log(LOGERROR, "ContextMenuManager: failed to load addons.");
+    return;
   }
-}
 
-bool CContextMenuManager::Unregister(const ContextItemAddonPtr& cm)
-{
-  if (!cm)
-    return false;
-
-  const auto menuItems = cm->GetItems();
+  std::vector<CContextMenuItem> addonItems;
+  for (const auto& addon : addons)
+  {
+    auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
+    for (auto& item : items)
+    {
+      auto it = std::find(addonItems.begin(), addonItems.end(), item);
+      if (it == addonItems.end())
+        addonItems.push_back(item);
+    }
+  }
 
   CSingleLock lock(m_criticalSection);
+  m_addonItems = std::move(addonItems);
+
+  CLog::Log(LOGDEBUG, "ContextMenuManager: addon menus reloaded.");
+}
+
+bool CContextMenuManager::Unload(const CContextMenuAddon& addon)
+{
+  CSingleLock lock(m_criticalSection);
+
+  const auto menuItems = addon.GetItems();
 
   auto it = std::remove_if(m_addonItems.begin(), m_addonItems.end(),
     [&](const CContextMenuItem& item)
@@ -106,7 +117,32 @@ bool CContextMenuManager::Unregister(const ContextItemAddonPtr& cm)
     }
   );
   m_addonItems.erase(it, m_addonItems.end());
+  CLog::Log(LOGDEBUG, "ContextMenuManager: %s unloaded.", addon.ID().c_str());
   return true;
+}
+
+void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
+{
+  if (typeid(event) == typeid(AddonEvents::InstalledChanged))
+  {
+    ReloadAddonItems();
+  }
+  else if (auto enableEvent = dynamic_cast<const AddonEvents::Enabled*>(&event))
+  {
+    AddonPtr addon;
+    if (m_addonMgr.GetAddon(enableEvent->id, addon, ADDON_CONTEXT_ITEM))
+    {
+      CSingleLock lock(m_criticalSection);
+      auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
+      for (auto& item : items)
+      {
+        auto it = std::find(m_addonItems.begin(), m_addonItems.end(), item);
+        if (it == m_addonItems.end())
+          m_addonItems.push_back(item);
+      }
+      CLog::Log(LOGDEBUG, "ContextMenuManager: loaded %s.", enableEvent->id.c_str());
+    }
+  }
 }
 
 bool CContextMenuManager::IsVisible(
@@ -159,7 +195,6 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
   }
   return result;
 }
-
 
 bool CONTEXTMENU::ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& root)
 {

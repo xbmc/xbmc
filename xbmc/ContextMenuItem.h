@@ -79,7 +79,7 @@ public:
     const std::string& label,
     const std::string& parent,
     const std::string& library,
-    const INFO::InfoPtr& condition,
+    const std::string& condition,
     const std::string& addonId);
 
   friend class ADDON::CContextMenuAddon;
@@ -89,6 +89,9 @@ private:
   std::string m_parent;
   std::string m_groupId;
   std::string m_library;
-  INFO::InfoPtr m_condition;
   std::string m_addonId; // The owner of this menu item
+
+  std::string m_visibilityCondition;
+  mutable INFO::InfoPtr m_infoBool;
+  mutable bool m_infoBoolRegistered{false};
 };

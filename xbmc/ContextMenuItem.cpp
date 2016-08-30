@@ -23,6 +23,7 @@
 #include "addons/AddonManager.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
+#include "GUIInfoManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/ContextItemAddonInvoker.h"
 #include "interfaces/python/XBPython.h"
@@ -31,7 +32,12 @@
 
 bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
-  return IsGroup() || (m_condition && m_condition->Get(&item));
+  if (!m_infoBoolRegistered)
+  {
+    m_infoBool = g_infoManager.Register(m_visibilityCondition, 0);
+    m_infoBoolRegistered = true;
+  }
+  return IsGroup() || (m_infoBool && m_infoBool->Get(&item));
 }
 
 bool CContextMenuItem::IsParentOf(const CContextMenuItem& other) const
@@ -90,13 +96,13 @@ CContextMenuItem CContextMenuItem::CreateGroup(const std::string& label, const s
 }
 
 CContextMenuItem CContextMenuItem::CreateItem(const std::string& label, const std::string& parent,
-    const std::string& library, const INFO::InfoPtr& condition, const std::string& addonId)
+    const std::string& library, const std::string& condition, const std::string& addonId)
 {
   CContextMenuItem menuItem;
   menuItem.m_label = label;
   menuItem.m_parent = parent;
   menuItem.m_library = library;
-  menuItem.m_condition = condition;
+  menuItem.m_visibilityCondition = condition;
   menuItem.m_addonId = addonId;
   return menuItem;
 }

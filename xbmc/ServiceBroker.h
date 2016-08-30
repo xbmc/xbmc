@@ -39,6 +39,7 @@ namespace PVR
   class CPVRManager;
 }
 
+class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
 
@@ -51,5 +52,6 @@ public:
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
   static ActiveAE::CActiveAEDSP& GetADSP();
+  static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
 };

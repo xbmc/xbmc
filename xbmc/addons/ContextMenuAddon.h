@@ -40,7 +40,7 @@ namespace ADDON
     explicit CContextMenuAddon(AddonProps props) : CAddon(std::move(props)) {}
     CContextMenuAddon(AddonProps props, std::vector<CContextMenuItem> items);
 
-    std::vector<CContextMenuItem> GetItems() const;
+    const std::vector<CContextMenuItem>& GetItems() const { return m_items; };
 
   private:
     static void ParseMenu(const AddonProps& props, cp_cfg_element_t* elem, const std::string& parent,
@@ -48,6 +48,4 @@ namespace ADDON
 
     std::vector<CContextMenuItem> m_items;
   };
-
-  typedef std::shared_ptr<const CContextMenuAddon> ContextItemAddonPtr;
 }
