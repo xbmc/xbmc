@@ -884,6 +884,10 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
+  std::string binaddonAltDir;
+  if (getenv("KODI_BINADDON_PATH"))
+    binaddonAltDir = getenv("KODI_BINADDON_PATH");
+
   std::string appPath;
   std::string appName = CCompileInfo::GetAppName();
   std::string dotLowerAppName = "." + appName;
@@ -922,6 +926,7 @@ bool CApplication::InitDirectoriesLinux()
   {
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
+    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
     CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
     CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
@@ -941,6 +946,7 @@ bool CApplication::InitDirectoriesLinux()
     URIUtils::AddSlashAtEnd(appPath);
 
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
+    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
     CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
     CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
