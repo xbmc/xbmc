@@ -96,11 +96,6 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
   if (m_strImage.empty())
     CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
 
-  // Overlay
-  m_strOverlay = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_LAYOUT_OVERLAY);
-  if (m_strOverlay.empty())
-    CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_OVERLAY);
-
   // Features
   for (const TiXmlElement* pGroup = pElement->FirstChildElement(); pGroup != nullptr; pGroup = pGroup->NextSiblingElement())
   {

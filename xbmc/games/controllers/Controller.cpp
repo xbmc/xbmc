@@ -54,13 +54,6 @@ std::string CController::ImagePath(void) const
   return "";
 }
 
-std::string CController::OverlayPath(void) const
-{
-  if (!m_layout.Overlay().empty())
-    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout.Overlay());
-  return "";
-}
-
 bool CController::LoadLayout(void)
 {
   if (!m_bLoaded)

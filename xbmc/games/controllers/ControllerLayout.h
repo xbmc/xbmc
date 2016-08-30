@@ -38,7 +38,6 @@ public:
 
   unsigned int       Label(void) const   { return m_label; }
   const std::string& Image(void) const   { return m_strImage; }
-  const std::string& Overlay(void) const { return m_strOverlay; }
   unsigned int       Width(void) const   { return m_width; }
   unsigned int       Height(void) const  { return m_height; }
 
