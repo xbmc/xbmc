@@ -91,7 +91,7 @@ namespace PERIPHERALS
 
     void RegisterButtonMap(CPeripheral* device, JOYSTICK::IButtonMap* buttonMap);
     void UnregisterButtonMap(JOYSTICK::IButtonMap* buttonMap);
-    void RefreshButtonMaps(const std::string& strDeviceName = "", const std::string& strControllerId = "");
+    void RefreshButtonMaps(const std::string& strDeviceName = "");
 
   protected:
     /*!

@@ -75,6 +75,12 @@ namespace PERIPHERALS
     const std::string &GetVersionInfo(void) const   { return m_strVersionInfo; }
 
     /*!
+     * @brief Get an icon for this peripheral
+     * @return Path to an icon, or skin icon file name
+     */
+    virtual std::string GetIcon() const;
+
+    /*!
      * @brief Check whether this device has the given feature.
      * @param feature The feature to check for.
      * @return True when the device has the feature, false otherwise.

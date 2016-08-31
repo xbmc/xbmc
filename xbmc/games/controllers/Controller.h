@@ -41,7 +41,6 @@ public:
 
   std::string Label(void);
   std::string ImagePath(void) const;
-  std::string OverlayPath(void) const;
 
   bool LoadLayout(void);
 

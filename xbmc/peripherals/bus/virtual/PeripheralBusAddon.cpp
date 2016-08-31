@@ -363,62 +363,79 @@ bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation, Peripher
 
 void CPeripheralBusAddon::UpdateAddons(void)
 {
-  PeripheralAddonVector removedAddons;
-  PeripheralAddonVector newAddons;
+  auto GetPeripheralAddonID = [](const PeripheralAddonPtr& addon) { return addon->ID(); };
+  auto GetAddonID = [](const AddonPtr& addon) { return addon->ID(); };
 
-  VECADDONS addons;
-  CAddonMgr::GetInstance().GetAddons(addons, ADDON_PERIPHERALDLL);
+  std::set<std::string> currentIds;
+  std::set<std::string> newIds;
 
+  std::set<std::string> added;
+  std::set<std::string> removed;
+
+  // Get current add-ons
+  PeripheralAddonVector currentAddons;
+  PeripheralAddonVector failedAddons;
   {
     CSingleLock lock(m_critSection);
-    
-    // Search for removed add-ons
-    for (const auto& addon : m_addons)
+    currentAddons = m_addons;
+    failedAddons = m_failedAddons;
+  }
+  std::transform(currentAddons.begin(), currentAddons.end(), std::inserter(currentIds, currentIds.end()), GetPeripheralAddonID);
+  std::transform(failedAddons.begin(), failedAddons.end(), std::inserter(currentIds, currentIds.end()), GetPeripheralAddonID);
+
+  // Get new add-ons
+  VECADDONS newAddons;
+  CAddonMgr::GetInstance().GetAddons(newAddons, ADDON_PERIPHERALDLL);
+  std::transform(newAddons.begin(), newAddons.end(), std::inserter(newIds, newIds.end()), GetAddonID);
+
+  // Differences
+  std::set_difference(newIds.begin(), newIds.end(), currentIds.begin(), currentIds.end(), std::inserter(added, added.end()));
+  std::set_difference(currentIds.begin(), currentIds.end(), newIds.begin(), newIds.end(), std::inserter(removed, removed.end()));
+
+  // Register new add-ons
+  for (const std::string& addonId : added)
+  {
+    CLog::Log(LOGDEBUG, "Add-on bus: Registering add-on %s", addonId.c_str());
+
+    auto GetAddon = [addonId](const AddonPtr& addon) { return addon->ID() == addonId; };
+
+    VECADDONS::iterator it = std::find_if(newAddons.begin(), newAddons.end(), GetAddon);
+    if (it != newAddons.end())
     {
-      const bool bRemoved = (std::find(addons.begin(), addons.end(),
-        std::static_pointer_cast<CAddon>(addon)) == addons.end());
-
-      if (bRemoved)
-        removedAddons.push_back(addon);
+      PeripheralAddonPtr newAddon = std::dynamic_pointer_cast<CPeripheralAddon>(*it);
+      if (newAddon)
+      {
+        if (newAddon->CreateAddon() == ADDON_STATUS_OK)
+          currentAddons.push_back(newAddon);
+        else
+          failedAddons.push_back(newAddon);
+      }
     }
-
-    // Search for new add-ons
-    for (const auto& addon : addons)
-    {
-      PeripheralAddonPtr peripheralAddon = std::dynamic_pointer_cast<CPeripheralAddon>(addon);
-      if (!peripheralAddon)
-        continue;
-
-      // If add-on failed to load, skip it
-      if (std::find(m_failedAddons.begin(), m_failedAddons.end(), peripheralAddon) != m_failedAddons.end())
-        continue;
-
-      // If add-on has already been created, skip it
-      if (std::find(m_addons.begin(), m_addons.end(), peripheralAddon) != m_addons.end())
-        continue;
-
-      newAddons.push_back(peripheralAddon);
-    }
-
-    // Update m_addons
-    for (const auto& addon : removedAddons)
-      m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), addon), m_addons.end());
-    for (const auto& addon : newAddons)
-      m_addons.push_back(addon);
   }
 
   // Destroy removed add-ons
-  for (const auto& addon : removedAddons)
-    addon->Destroy();
-
-  // Create new add-ons
-  for (const auto& addon : newAddons)
+  for (const std::string& addonId : removed)
   {
-    if (addon->CreateAddon() != ADDON_STATUS_OK)
-    {
-      CSingleLock lock(m_critSection);
-      m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), addon), m_addons.end());
-      m_failedAddons.push_back(addon);
-    }
+    CLog::Log(LOGDEBUG, "Add-on bus: Unregistering add-on %s", addonId.c_str());
+
+    auto ErasePeripheralAddon = [addonId](const PeripheralAddonPtr& addon)
+      {
+        if (addon->ID() == addonId)
+        {
+          addon->Destroy();
+          return true;
+        }
+        return false;
+      };
+
+    currentAddons.erase(std::remove_if(currentAddons.begin(), currentAddons.end(), ErasePeripheralAddon), currentAddons.end());
+    failedAddons.erase(std::remove_if(failedAddons.begin(), failedAddons.end(), ErasePeripheralAddon), failedAddons.end());
+  }
+
+  // Record results
+  {
+    CSingleLock lock(m_critSection);
+    m_addons = std::move(currentAddons);
+    m_failedAddons = std::move(failedAddons);
   }
 }

@@ -76,7 +76,7 @@ void CAddonCallbacksPeripheral::RefreshButtonMaps(void* addonData, const char* d
   if (!peripheralAddon)
     return;
 
-  peripheralAddon->RefreshButtonMaps(deviceName ? deviceName : "", controllerId ? controllerId : "");
+  peripheralAddon->RefreshButtonMaps(deviceName ? deviceName : "");
 }
 
 unsigned int CAddonCallbacksPeripheral::FeatureCount(void* addonData, const char* controllerId, JOYSTICK_FEATURE_TYPE type)
