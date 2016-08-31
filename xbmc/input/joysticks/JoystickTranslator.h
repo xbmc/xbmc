@@ -53,9 +53,9 @@ namespace JOYSTICK
      * \param x  The x component of the vector
      * \param y  The y component of the vector
      *
-     * \return The closest cardinal directon (up, down, right or left), or unknown
-     *         if x and y are both 0.
+     * \return The closest analog stick direction (up, down, right or left), or
+     *         ANALOG_STICK_DIRECTION::UNKNOWN if x and y are both 0
      */
-    static CARDINAL_DIRECTION VectorToCardinalDirection(float x, float y);
+    static ANALOG_STICK_DIRECTION VectorToAnalogStickDirection(float x, float y);
   };
 }

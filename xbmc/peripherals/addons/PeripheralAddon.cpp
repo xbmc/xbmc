@@ -559,9 +559,9 @@ bool CPeripheralAddon::GetFeatures(const CPeripheral* device,
   return false;
 }
 
-bool CPeripheralAddon::MapFeatures(const CPeripheral* device,
-                                   const std::string& strControllerId,
-                                   const FeatureMap& features)
+bool CPeripheralAddon::MapFeature(const CPeripheral* device,
+                                  const std::string& strControllerId,
+                                  const ADDON::JoystickFeature& feature)
 {
   if (!m_bProvidesButtonMaps)
     return false;
@@ -574,17 +574,11 @@ bool CPeripheralAddon::MapFeatures(const CPeripheral* device,
   JOYSTICK_INFO joystickStruct;
   joystickInfo.ToStruct(joystickStruct);
 
-  std::vector<ADDON::JoystickFeature> featureVector;
-  for (FeatureMap::const_iterator it = features.begin(); it != features.end(); ++it)
-    featureVector.push_back(it->second);
-
-  unsigned int featureCount = featureVector.size();
-
-  JOYSTICK_FEATURE* pFeatures = NULL;
-  ADDON::JoystickFeatures::ToStructs(featureVector, &pFeatures);
+  JOYSTICK_FEATURE addonFeature;
+  feature.ToStruct(addonFeature);
 
   try { LogError(retVal = m_pStruct->MapFeatures(&joystickStruct, strControllerId.c_str(),
-                                                 featureCount, pFeatures), "MapFeatures()"); }
+                                                 1, &addonFeature), "MapFeatures()"); }
   catch (std::exception &e) { LogException(e, "MapFeatures()"); return false;  }
 
   if (retVal == PERIPHERAL_NO_ERROR)
@@ -594,6 +588,21 @@ bool CPeripheralAddon::MapFeatures(const CPeripheral* device,
   }
 
   return retVal == PERIPHERAL_NO_ERROR;
+}
+
+void CPeripheralAddon::SaveButtonMap(const CPeripheral* device)
+{
+  if (!m_bProvidesButtonMaps)
+    return;
+
+  ADDON::Joystick joystickInfo;
+  GetJoystickInfo(device, joystickInfo);
+
+  JOYSTICK_INFO joystickStruct;
+  joystickInfo.ToStruct(joystickStruct);
+
+  try { m_pStruct->SaveButtonMap(&joystickStruct); }
+  catch (std::exception &e) { LogException(e, "SaveMap()"); return; }
 }
 
 void CPeripheralAddon::ResetButtonMap(const CPeripheral* device, const std::string& strControllerId)

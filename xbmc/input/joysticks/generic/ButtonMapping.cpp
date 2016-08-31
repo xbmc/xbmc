@@ -20,6 +20,7 @@
 
 #include "ButtonMapping.h"
 #include "input/joysticks/DriverPrimitive.h"
+#include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapper.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
@@ -110,6 +111,11 @@ void CButtonMapping::ProcessAxisMotions(void)
       MapPrimitive(semiaxis.driverPrimitive);
     }
   }
+}
+
+void CButtonMapping::SaveButtonMap()
+{
+  m_buttonMap->SaveButtonMap();
 }
 
 void CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)

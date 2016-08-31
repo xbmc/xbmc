@@ -23,6 +23,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IButtonMap.h"
+#include "input/joysticks/IButtonMapCallback.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
@@ -41,7 +42,7 @@ CGUIConfigurationWizard::CGUIConfigurationWizard() :
 void CGUIConfigurationWizard::InitializeState(void)
 {
   m_currentButton = nullptr;
-  m_currentDirection = JOYSTICK::CARDINAL_DIRECTION::UNKNOWN;
+  m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
 }
 
@@ -125,6 +126,9 @@ void CGUIConfigurationWizard::Process(void)
     m_currentButton = nullptr;
   }
 
+  if (ButtonMapCallback())
+    ButtonMapCallback()->SaveButtonMap();
+
   RemoveHooks();
 
   CLog::Log(LOGDEBUG, "Configuration wizard ended");
@@ -151,7 +155,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
   {
     // Get the current state of the thread
     IFeatureButton* currentButton;
-    CARDINAL_DIRECTION currentDirection;
+    ANALOG_STICK_DIRECTION currentDirection;
     {
       CSingleLock lock(m_stateMutex);
       currentButton = m_currentButton;
@@ -165,30 +169,14 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
       {
         case FEATURE_TYPE::SCALAR:
         {
-          bHandled = buttonMap->AddScalar(feature.Name(), primitive);
+          buttonMap->AddScalar(feature.Name(), primitive);
+          bHandled = true;
           break;
         }
         case FEATURE_TYPE::ANALOG_STICK:
         {
-          CDriverPrimitive up;
-          CDriverPrimitive down;
-          CDriverPrimitive right;
-          CDriverPrimitive left;
-
-          buttonMap->GetAnalogStick(feature.Name(), up, down, right, left);
-
-          switch (currentDirection)
-          {
-            case CARDINAL_DIRECTION::UP:    up    = primitive; break;
-            case CARDINAL_DIRECTION::DOWN:  down  = primitive; break;
-            case CARDINAL_DIRECTION::RIGHT: right = primitive; break;
-            case CARDINAL_DIRECTION::LEFT:  left  = primitive; break;
-            default:
-              break;
-          }
-
-          bHandled = buttonMap->AddAnalogStick(feature.Name(), up, down, right, left);
-
+          buttonMap->AddAnalogStick(feature.Name(), currentDirection, primitive);
+          bHandled = true;
           break;
         }
         default:

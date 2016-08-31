@@ -25,6 +25,7 @@ namespace JOYSTICK
 {
   class CDriverPrimitive;
   class IButtonMap;
+  class IButtonMapCallback;
 
   /*!
    * \ingroup joysticks
@@ -37,6 +38,8 @@ namespace JOYSTICK
   class IButtonMapper
   {
   public:
+    IButtonMapper() : m_callback(nullptr) { }
+
     virtual ~IButtonMapper(void) { }
 
     /*!
@@ -55,5 +58,13 @@ namespace JOYSTICK
      * \return True if action was mapped to a feature
      */
     virtual bool MapPrimitive(IButtonMap* buttonMap, const CDriverPrimitive& primitive) = 0;
+
+    // Button map callback interface
+    void SetButtonMapCallback(IButtonMapCallback* callback) { m_callback = callback; }
+    void ResetButtonMapCallback(void) { m_callback = nullptr; }
+    IButtonMapCallback* ButtonMapCallback(void) { return m_callback; }
+
+  private:
+    IButtonMapCallback* m_callback;
   };
 }

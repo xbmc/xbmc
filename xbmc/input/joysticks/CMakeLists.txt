@@ -10,6 +10,7 @@ set(HEADERS DeadzoneFilter.h
             DefaultJoystick.h
             DriverPrimitive.h
             IButtonMap.h
+            IButtonMapCallback.h
             IButtonMapper.h
             IDriverHandler.h
             IDriverReceiver.h

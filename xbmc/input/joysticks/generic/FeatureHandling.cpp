@@ -25,6 +25,8 @@
 #include "threads/SystemClock.h"
 #include "utils/log.h"
 
+#include <vector>
+
 using namespace JOYSTICK;
 
 #define ANALOG_DIGITAL_THRESHOLD  0.5f
@@ -166,26 +168,44 @@ bool CAnalogStick::OnAnalogMotion(const CDriverPrimitive& source, float magnitud
   if (!AcceptsInput(magnitude != 0.0f))
     return false;
 
-  CDriverPrimitive up;
-  CDriverPrimitive down;
-  CDriverPrimitive right;
-  CDriverPrimitive left;
+  ANALOG_STICK_DIRECTION direction = ANALOG_STICK_DIRECTION::UNKNOWN;
 
-  m_buttonMap->GetAnalogStick(m_name, up, down, right,  left);
+  std::vector<ANALOG_STICK_DIRECTION> dirs = {
+    ANALOG_STICK_DIRECTION::UP,
+    ANALOG_STICK_DIRECTION::DOWN,
+    ANALOG_STICK_DIRECTION::RIGHT,
+    ANALOG_STICK_DIRECTION::LEFT,
+  };
 
-  if (source == up)
-    m_vertAxis.SetPositiveDistance(magnitude);
-  else if (source == down)
-    m_vertAxis.SetNegativeDistance(magnitude);
-  else if (source == right)
-    m_horizAxis.SetPositiveDistance(magnitude);
-  else if (source == left)
-    m_horizAxis.SetNegativeDistance(magnitude);
-  else
+  CDriverPrimitive primitive;
+  for (auto dir : dirs)
   {
+    if (m_buttonMap->GetAnalogStick(m_name, dir, primitive) && primitive == source)
+    {
+      direction = dir;
+      break;
+    }
+  }
+
+  switch (direction)
+  {
+  case ANALOG_STICK_DIRECTION::UP:
+    m_vertAxis.SetPositiveDistance(magnitude);
+    break;
+  case ANALOG_STICK_DIRECTION::DOWN:
+    m_vertAxis.SetNegativeDistance(magnitude);
+    break;
+  case ANALOG_STICK_DIRECTION::RIGHT:
+    m_horizAxis.SetPositiveDistance(magnitude);
+    break;
+  case ANALOG_STICK_DIRECTION::LEFT:
+    m_horizAxis.SetNegativeDistance(magnitude);
+    break;
+  default:
     // Just in case, avoid sticking
     m_vertAxis.Reset();
     m_horizAxis.Reset();
+    break;
   }
 
   return true;

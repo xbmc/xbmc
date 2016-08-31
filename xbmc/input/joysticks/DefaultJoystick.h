@@ -64,8 +64,8 @@ namespace JOYSTICK
     void AbortRumble() { return m_rumbleGenerator.AbortRumble(); }
 
   private:
-    bool ActivateDirection(const FeatureName& feature, float magnitude, CARDINAL_DIRECTION dir, unsigned int motionTimeMs);
-    void DeactivateDirection(const FeatureName& feature, CARDINAL_DIRECTION dir);
+    bool ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs);
+    void DeactivateDirection(const FeatureName& feature, ANALOG_STICK_DIRECTION dir);
 
     /*!
      * \brief Get the keymap key, as defined in Key.h, for the specified
@@ -76,12 +76,12 @@ namespace JOYSTICK
      *
      * \return The key ID, or 0 if unknown
      */
-    static unsigned int GetKeyID(const FeatureName& feature, CARDINAL_DIRECTION dir = CARDINAL_DIRECTION::UNKNOWN);
+    static unsigned int GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN);
 
     /*!
      * \brief Return a vector of the four cardinal directions
      */
-    static const std::vector<CARDINAL_DIRECTION>& GetDirections(void);
+    static const std::vector<ANALOG_STICK_DIRECTION>& GetDirections(void);
 
     IKeymapHandler* const  m_handler;
 

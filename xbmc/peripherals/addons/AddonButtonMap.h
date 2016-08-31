@@ -58,25 +58,21 @@ namespace PERIPHERALS
       JOYSTICK::CDriverPrimitive& primitive
     ) override;
 
-    virtual bool AddScalar(
+    virtual void AddScalar(
       const JOYSTICK::FeatureName& feature,
       const JOYSTICK::CDriverPrimitive& primitive
     ) override;
 
     virtual bool GetAnalogStick(
       const JOYSTICK::FeatureName& feature,
-      JOYSTICK::CDriverPrimitive& up,
-      JOYSTICK::CDriverPrimitive& down,
-      JOYSTICK::CDriverPrimitive& right,
-      JOYSTICK::CDriverPrimitive& left
+      JOYSTICK::ANALOG_STICK_DIRECTION direction,
+      JOYSTICK::CDriverPrimitive& primitive
     ) override;
 
-    virtual bool AddAnalogStick(
-      const JOYSTICK::FeatureName& feature,
-      const JOYSTICK::CDriverPrimitive& up,
-      const JOYSTICK::CDriverPrimitive& down,
-      const JOYSTICK::CDriverPrimitive& right,
-      const JOYSTICK::CDriverPrimitive& left
+    virtual void AddAnalogStick(
+        const JOYSTICK::FeatureName& feature,
+        JOYSTICK::ANALOG_STICK_DIRECTION direction,
+        const JOYSTICK::CDriverPrimitive& primitive
     ) override;
 
     virtual bool GetAccelerometer(
@@ -86,12 +82,14 @@ namespace PERIPHERALS
       JOYSTICK::CDriverPrimitive& positiveZ
     ) override;
 
-    virtual bool AddAccelerometer(
+    virtual void AddAccelerometer(
       const JOYSTICK::FeatureName& feature,
       const JOYSTICK::CDriverPrimitive& positiveX,
       const JOYSTICK::CDriverPrimitive& positiveY,
       const JOYSTICK::CDriverPrimitive& positiveZ
     ) override;
+
+    virtual void SaveButtonMap() override;
 
   private:
     typedef std::map<JOYSTICK::CDriverPrimitive, JOYSTICK::FeatureName> DriverMap;
@@ -99,9 +97,7 @@ namespace PERIPHERALS
     // Utility functions
     static DriverMap CreateLookupTable(const FeatureMap& features);
 
-    bool UnmapPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
-
-    static bool ResetPrimitive(ADDON::JoystickFeature& feature, const ADDON::DriverPrimitive& primitive);
+    static JOYSTICK_FEATURE_PRIMITIVE GetPrimitiveIndex(JOYSTICK::ANALOG_STICK_DIRECTION dir);
 
     CPeripheral* const  m_device;
     std::weak_ptr<CPeripheralAddon>  m_addon;

@@ -54,10 +54,10 @@ bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
     return true;
 
   // Try analog stick directions
-  if (GetKeyID(feature, CARDINAL_DIRECTION::UP)    != 0 ||
-      GetKeyID(feature, CARDINAL_DIRECTION::DOWN)  != 0 ||
-      GetKeyID(feature, CARDINAL_DIRECTION::RIGHT) != 0 ||
-      GetKeyID(feature, CARDINAL_DIRECTION::LEFT)  != 0)
+  if (GetKeyID(feature, ANALOG_STICK_DIRECTION::UP)    != 0 ||
+      GetKeyID(feature, ANALOG_STICK_DIRECTION::DOWN)  != 0 ||
+      GetKeyID(feature, ANALOG_STICK_DIRECTION::RIGHT) != 0 ||
+      GetKeyID(feature, ANALOG_STICK_DIRECTION::LEFT)  != 0)
     return true;
 
   return false;
@@ -108,13 +108,13 @@ bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitud
 bool CDefaultJoystick::OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs)
 {
   // Calculate the direction of the stick's position
-  const CARDINAL_DIRECTION analogStickDir = CJoystickTranslator::VectorToCardinalDirection(x, y);
+  const ANALOG_STICK_DIRECTION analogStickDir = CJoystickTranslator::VectorToAnalogStickDirection(x, y);
 
   // Calculate the magnitude projected onto that direction
   const float magnitude = std::max(std::abs(x), std::abs(y));
 
   // Deactivate directions in which the stick is not pointing first
-  for (std::vector<CARDINAL_DIRECTION>::const_iterator it = GetDirections().begin(); it != GetDirections().end(); ++it)
+  for (std::vector<ANALOG_STICK_DIRECTION>::const_iterator it = GetDirections().begin(); it != GetDirections().end(); ++it)
   {
     if (*it != analogStickDir)
       DeactivateDirection(feature, *it);
@@ -129,7 +129,7 @@ bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x
   return false; //! @todo implement
 }
 
-bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magnitude, CARDINAL_DIRECTION dir, unsigned int motionTimeMs)
+bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs)
 {
   // Calculate the button key ID and input type for the analog stick's direction
   const unsigned int  keyId     = GetKeyID(feature, dir);
@@ -150,7 +150,7 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
   return false;
 }
 
-void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, CARDINAL_DIRECTION dir)
+void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_STICK_DIRECTION dir)
 {
   // Calculate the button key ID and input type for this direction
   const unsigned int  keyId     = GetKeyID(feature, dir);
@@ -166,7 +166,7 @@ void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, CARDINAL_
   }
 }
 
-unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, CARDINAL_DIRECTION dir /* = CARDINAL_DIRECTION::UNKNOWN */)
+unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir /* = ANALOG_STICK_DIRECTION::UNKNOWN */)
 {
   if      (feature == "a")             return KEY_JOYSTICK_BUTTON_A;
   else if (feature == "b")             return KEY_JOYSTICK_BUTTON_B;
@@ -189,10 +189,10 @@ unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, CARDINAL_DIR
   {
     switch (dir)
     {
-      case CARDINAL_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP;
-      case CARDINAL_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN;
-      case CARDINAL_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT;
-      case CARDINAL_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT;
+      case ANALOG_STICK_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP;
+      case ANALOG_STICK_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN;
+      case ANALOG_STICK_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT;
+      case ANALOG_STICK_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT;
       default:
         break;
     }
@@ -201,10 +201,10 @@ unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, CARDINAL_DIR
   {
     switch (dir)
     {
-      case CARDINAL_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP;
-      case CARDINAL_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN;
-      case CARDINAL_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-      case CARDINAL_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT;
+      case ANALOG_STICK_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP;
+      case ANALOG_STICK_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN;
+      case ANALOG_STICK_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+      case ANALOG_STICK_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT;
       default:
         break;
     }
@@ -214,15 +214,15 @@ unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, CARDINAL_DIR
   return 0;
 }
 
-const std::vector<CARDINAL_DIRECTION>& CDefaultJoystick::GetDirections(void)
+const std::vector<ANALOG_STICK_DIRECTION>& CDefaultJoystick::GetDirections(void)
 {
-  static std::vector<CARDINAL_DIRECTION> directions;
+  static std::vector<ANALOG_STICK_DIRECTION> directions;
   if (directions.empty())
   {
-    directions.push_back(CARDINAL_DIRECTION::UP);
-    directions.push_back(CARDINAL_DIRECTION::DOWN);
-    directions.push_back(CARDINAL_DIRECTION::RIGHT);
-    directions.push_back(CARDINAL_DIRECTION::LEFT);
+    directions.push_back(ANALOG_STICK_DIRECTION::UP);
+    directions.push_back(ANALOG_STICK_DIRECTION::DOWN);
+    directions.push_back(ANALOG_STICK_DIRECTION::RIGHT);
+    directions.push_back(ANALOG_STICK_DIRECTION::LEFT);
   }
   return directions;
 }

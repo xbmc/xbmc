@@ -20,6 +20,7 @@
 #pragma once
 
 #include "input/joysticks/DriverPrimitive.h"
+#include "input/joysticks/IButtonMapCallback.h"
 #include "input/joysticks/IDriverHandler.h"
 
 #include <vector>
@@ -38,7 +39,8 @@ namespace JOYSTICK
    * Button mapping commands are deferred for a short while after an axis is
    * activated, and only one command will be invoked per activation.
    */
-  class CButtonMapping : public IDriverHandler
+  class CButtonMapping : public IDriverHandler,
+                         public IButtonMapCallback
   {
   public:
     /*
@@ -56,6 +58,9 @@ namespace JOYSTICK
     virtual bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
     virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
     virtual void ProcessAxisMotions(void) override;
+
+    // implementation of IButtonMapCallback
+    virtual void SaveButtonMap() override;
 
   private:
     void MapPrimitive(const CDriverPrimitive& primitive);
