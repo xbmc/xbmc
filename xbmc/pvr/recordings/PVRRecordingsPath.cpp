@@ -43,26 +43,35 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string &strPath)
                (segments.at(1) == "recordings") &&
                ((segments.at(2) == "tv") || (segments.at(2) == "radio")) &&
                ((segments.at(3) == "active") || (segments.at(3) == "deleted")));
-  m_bRoot   = (m_bValid && (segments.size() == 4));
-  m_bRadio  = (m_bValid && (segments.at(2) == "radio"));
-  m_bActive = (m_bValid && (segments.at(3) == "active"));
-
-  if (m_bRoot)
-    strVarPath.append("/");
-  else
+  if (m_bValid)
   {
-    size_t paramStart = m_path.find(", TV");
-    if (paramStart == std::string::npos)
-      m_directoryPath = strVarPath.substr(GetDirectoryPathPosition());
+    m_bRoot   = (m_bValid && (segments.size() == 4));
+    m_bRadio  = (m_bValid && (segments.at(2) == "radio"));
+    m_bActive = (m_bValid && (segments.at(3) == "active"));
+
+    if (m_bRoot)
+      strVarPath.append("/");
     else
     {
-      size_t dirStart = GetDirectoryPathPosition();
-      m_directoryPath = strVarPath.substr(dirStart, paramStart - dirStart);
-      m_params = strVarPath.substr(paramStart);
+      size_t paramStart = m_path.find(", TV");
+      if (paramStart == std::string::npos)
+        m_directoryPath = strVarPath.substr(GetDirectoryPathPosition());
+      else
+      {
+        size_t dirStart = GetDirectoryPathPosition();
+        m_directoryPath = strVarPath.substr(dirStart, paramStart - dirStart);
+        m_params = strVarPath.substr(paramStart);
+      }
     }
-  }
 
-  m_path = strVarPath;
+    m_path = strVarPath;
+  }
+  else
+  {
+    m_bRoot = false;
+    m_bActive = false;
+    m_bRadio = false;
+  }
 }
 
 CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio)
