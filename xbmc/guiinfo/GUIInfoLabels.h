@@ -83,6 +83,7 @@
 #define PLAYER_IS_TEMPO              59
 #define PLAYER_PLAYSPEED             60
 #define PLAYER_SEEKNUMERIC           61
+#define PLAYER_HAS_GAME              62
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101

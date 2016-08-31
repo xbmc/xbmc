@@ -3794,7 +3794,7 @@ void CApplication::UpdateFileState()
       }
 
       // Check whether we're *really* playing video else we may race when getting eg. stream details
-      if (m_pPlayer->IsPlayingVideo())
+      if (m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPlayingGame())
       {
         /* Always update streamdetails, except for DVDs where we only update
            streamdetails if total duration > 15m (Should yield more correct info) */

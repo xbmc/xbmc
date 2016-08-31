@@ -463,6 +463,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
+                                  { "hasgame",          PLAYER_HAS_GAME },
                                   { "playing",          PLAYER_PLAYING },
                                   { "paused",           PLAYER_PAUSED },
                                   { "rewinding",        PLAYER_REWINDING },
@@ -7180,6 +7181,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case PLAYER_HAS_VIDEO:
       bReturn = g_application.m_pPlayer->IsPlayingVideo();
+      break;
+    case PLAYER_HAS_GAME:
+      bReturn = g_application.m_pPlayer->IsPlayingGame();
       break;
     case PLAYER_PLAYING:
       {
