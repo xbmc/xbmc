@@ -93,7 +93,7 @@ enum RENDER_TASK
 
 // iMX context class that handles all iMX hardware
 // related stuff
-class CIMXContext : private CThread, IDispResource
+class CIMXContext : private CThread, IDispResource, public IRunnable
 {
 public:
   CIMXContext();
@@ -175,14 +175,13 @@ private:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+  virtual void Run() override;
 
 private:
-  lkFIFO<IPUTaskPtr>             m_input;
-  std::vector<bool>              m_flip;
+  unsigned char                  m_flip;
 
   int                            m_fbHandle;
-  std::atomic<int>               m_fbCurrentPage;
-  int                            m_pg;
+  int                            m_fbCurrentPage;
   int                            m_fbWidth;
   int                            m_fbHeight;
   int                            m_fbLineLength;
@@ -203,6 +202,9 @@ private:
 
   bool                           m_zoomAllowed;
   CCriticalSection               m_pageSwapLock;
+
+  CThread                        m_processThread;
+
 public:
   void                          *m_g2dHandle;
   struct g2d_buf                *m_bufferCapture;

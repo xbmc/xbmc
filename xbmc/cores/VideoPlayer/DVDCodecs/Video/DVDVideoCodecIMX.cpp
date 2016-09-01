@@ -1228,6 +1228,7 @@ CIMXContext::CIMXContext()
   , m_vsync(true)
   , m_pageCrops(NULL)
   , m_bFbIsConfigured(false)
+  , m_processThread(this, "iMX BLK")
   , m_g2dHandle(NULL)
   , m_bufferCapture(NULL)
   , m_deviceName("/dev/fb1")
@@ -1235,8 +1236,6 @@ CIMXContext::CIMXContext()
   m_waitVSync.Reset();
   m_onStartup.Reset();
   m_waitFlip.Reset();
-  m_flip.clear();
-  m_flip.resize(m_fbPages);
   m_pageCrops = new CRectInt[m_fbPages];
   CLog::Log(LOGDEBUG, "iMX : Allocated %d render buffers\n", m_fbPages);
 }
@@ -1312,10 +1311,11 @@ bool CIMXContext::AdaptScreen(bool allocate)
 
   MemMap(&fb_fix);
 
-  if (m_fbVar.bits_per_pixel == 16 || !RENDER_USE_G2D)
-    m_ipuHandle = open("/dev/mxc_ipu", O_RDWR, 0);
+  m_ipuHandle = open("/dev/mxc_ipu", O_RDWR, 0);
 
   Unblank();
+  if (!allocate)
+    m_processThread.Create(false);
 
   return true;
 
@@ -1434,13 +1434,21 @@ bool CIMXContext::Blank()
   return ioctl(m_fbHandle, FBIOBLANK, 1) == 0;
 }
 
+void CIMXContext::Run()
+{
+  unsigned long curBlank = FB_BLANK_NORMAL;
+  while (curBlank &&
+        !ioctl(open(FB_DEVICE, O_RDONLY, 0), MXCFB_GET_FB_BLANK, &curBlank))
+    Sleep(10);
+
+  m_bFbIsConfigured = !curBlank;
+}
+
 bool CIMXContext::Unblank()
 {
   if (!m_fbHandle) return false;
 
-  int ret = ioctl(m_fbHandle, FBIOBLANK, FB_BLANK_UNBLANK);
-  m_bFbIsConfigured = true;
-  return ret == 0;
+  return ioctl(m_fbHandle, FBIOBLANK, FB_BLANK_UNBLANK) == 0;
 }
 
 bool CIMXContext::SetVSync(bool enable)
