@@ -431,7 +431,7 @@ CIMXCodec::CIMXCodec()
   m_skipMode = VPU_DEC_SKIPNONE;
 
   m_decOutput.setquotasize(1);
-  m_decInput.setquotasize(25);
+  m_decInput.setquotasize(60);
   m_loaded.Reset();
 }
 
@@ -498,7 +498,6 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
   {
     StopThread(false);
     ProcessSignals(SIGNAL_FLUSH);
-    m_dropped = 0;
   }
 
   m_hints = hints;
@@ -849,6 +848,9 @@ void CIMXCodec::Process()
   m_pts.clear();
   m_loaded.Set();
 
+  m_dropped = 0;
+  m_lastPTS = DVD_NOPTS_VALUE;
+
   memset(&dummy, 0, sizeof(dummy));
   AddExtraData(&dummy, (m_decOpenParam.CodecFormat == VPU_V_AVC && m_hints.extrasize));
   inData = dummy;
@@ -956,7 +958,7 @@ void CIMXCodec::Process()
           m_initInfo.nAddressAlignment, m_initInfo.PicCropRect.nLeft, m_initInfo.PicCropRect.nTop,
           m_initInfo.PicCropRect.nRight, m_initInfo.PicCropRect.nBottom, m_initInfo.nQ16ShiftWidthDivHeightRatio, m_fps);
 
-        m_decInput.setquotasize(m_initInfo.nMinFrameBufferCount*7);
+        m_decInput.setquotasize(m_fps);
 
         bool getFrame = m_decOpenParam.CodecFormat != VPU_V_AVC || !m_converter;
         getFrame     &= m_decOpenParam.CodecFormat != VPU_V_MPEG2;
@@ -1110,13 +1112,7 @@ bool CIMXCodec::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   previous = current;
 #endif
 
-  if (m_dropRequest)
-  {
-    pDvdVideoPicture->iFlags = DVP_FLAG_DROPPED;
-    ++m_dropped;
-  }
-  else
-    pDvdVideoPicture->iFlags = pDvdVideoPicture->IMXBuffer->GetFlags();
+  pDvdVideoPicture->iFlags = m_dropRequest ? DVP_FLAG_DROPPED : pDvdVideoPicture->IMXBuffer->GetFlags();
 
   if (m_initInfo.nInterlace)
   {
@@ -1149,7 +1145,7 @@ bool CIMXCodec::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
 void CIMXCodec::SetDropState(bool bDrop)
 {
-  m_dropRequest = bDrop ? m_decOutput.size() > m_decOutput.getquotasize() / 3 && !m_burst : false;
+  m_dropRequest = bDrop;
 }
 
 bool CIMXCodec::IsCurrentThread() const
