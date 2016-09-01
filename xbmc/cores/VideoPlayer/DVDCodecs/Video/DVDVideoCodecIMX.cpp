@@ -796,8 +796,8 @@ int CIMXCodec::Decode(BYTE *pData, int iSize, double dts, double pts)
                        __FUNCTION__, iSize, recalcPts(dts), recalcPts(pts), (uint)pData, ret, m_decInput.size(), m_decOutput.size());
 #endif
 
-  if (!ret || m_drainMode)
-    Sleep(3);
+  if (!(ret & VC_PICTURE) || !ret || m_drainMode)
+    Sleep(10);
 
   return ret;
 }
@@ -958,7 +958,9 @@ void CIMXCodec::Process()
 
         m_decInput.setquotasize(m_initInfo.nMinFrameBufferCount*7);
 
-        if (m_decOpenParam.CodecFormat != VPU_V_MPEG2 && !(m_decOpenParam.CodecFormat == VPU_V_AVC && m_converter))
+        bool getFrame = m_decOpenParam.CodecFormat != VPU_V_AVC || !m_converter;
+        getFrame     &= m_decOpenParam.CodecFormat != VPU_V_MPEG2;
+        if (getFrame || m_decRet & VPU_DEC_RESOLUTION_CHANGED)
         {
           SetDrainMode((VpuDecInputType)IN_DECODER_SET);
           inData = dummy;
@@ -1237,7 +1239,6 @@ CIMXContext::CIMXContext()
   m_onStartup.Reset();
   m_waitFlip.Reset();
   m_pageCrops = new CRectInt[m_fbPages];
-  CLog::Log(LOGDEBUG, "iMX : Allocated %d render buffers\n", m_fbPages);
 }
 
 CIMXContext::~CIMXContext()
@@ -1310,6 +1311,7 @@ bool CIMXContext::AdaptScreen(bool allocate)
   }
 
   MemMap(&fb_fix);
+  CLog::Log(LOGVIDEO, "iMX : Allocated %d render buffers\n", m_fbPages);
 
   m_ipuHandle = open("/dev/mxc_ipu", O_RDWR, 0);
 
@@ -1356,8 +1358,6 @@ void CIMXContext::MemMap(struct fb_fix_screeninfo *fb_fix)
     m_fbPageSize = m_fbLineLength * m_fbVar.yres_virtual / m_fbPages;
     m_fbPhysAddr = fb_fix->smem_start;
     m_fbVirtAddr = (uint8_t*)mmap(0, m_fbPhysSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fbHandle, 0);
-    m_fbCurrentPage = 0;
-    Clear();
   }
 }
 
@@ -1594,7 +1594,7 @@ void CIMXContext::SetVideoPixelFormat(CProcessInfo *m_pProcessInfo)
   if (m_processInfo && m_fbVar.bits_per_pixel == 16)
     m_processInfo->SetVideoPixelFormat("YUV 4:2:2");
   else if (m_processInfo)
-    m_processInfo->SetVideoPixelFormat("RGB 32");
+    m_processInfo->SetVideoPixelFormat("RGBA8888");
 }
 
 void CIMXContext::Clear(int page)

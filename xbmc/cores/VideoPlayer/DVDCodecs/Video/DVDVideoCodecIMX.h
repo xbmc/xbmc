@@ -59,8 +59,6 @@
 //#define IMX_PROFILE
 //#define TRACE_FRAMES
 
-#define RENDER_USE_G2D 0
-
 // If uncommented a file "stream.dump" will be created in the current
 // directory whenever a new stream is started. This is only for debugging
 // and performance tests. This define must never be active in distributions.
@@ -210,7 +208,6 @@ public:
   struct g2d_buf                *m_bufferCapture;
 
   std::string                    m_deviceName;
-  int                            m_speed;
 
   double                         m_fps;
 };
