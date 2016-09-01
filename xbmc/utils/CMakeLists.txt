@@ -185,3 +185,9 @@ if(AML_FOUND)
 endif()
 
 core_add_library(utils)
+
+if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+  if(HAVE_SSE2)
+    target_compile_options(utils PRIVATE -msse2)
+  endif()
+endif()
