@@ -185,7 +185,7 @@
 			<include>PVRSideBar</include>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimerVar]" />
+			<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimersVar]" />
 			<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 		</include>
 		<include>BottomBar</include>
