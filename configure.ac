@@ -809,13 +809,24 @@ fi
 use_sse4=no
 if test "$ARCH" = "x86_64-linux" || test "$ARCH" = "i486-linux"; then
   SAVE_CFLAGS="$CFLAGS"
-  CFLAGS="-msse4.1"
+  CFLAGS="-msse -msse2 -msse4.1"
   AC_COMPILE_IFELSE(
     [AC_LANG_SOURCE([int foo;])],
     [ use_sse4=yes
-      USE_SSE4=1],
+      HAVE_SSE=1
+      HAVE_SSE2=1
+      HAVE_SSE4=1
+      AC_DEFINE([HAVE_SSE],[1],[sse enabled])
+      AC_DEFINE([HAVE_SSE2],[1],[sse2 enabled])
+      AC_DEFINE([HAVE_SSE4],[1],[sse4.1 enabled])],
     [ use_sse4=no
-      USE_SSE4=0])
+      HAVE_SSE=0
+      HAVE_SSE2=0
+      HAVE_SSE4=0
+      AC_DEFINE([HAVE_SSE],[0],[sse enabled])
+      AC_DEFINE([HAVE_SSE2],[0],[sse2 enabled])
+      AC_DEFINE([HAVE_SSE4],[0],[sse4.1 enabled])
+    ])
   CFLAGS="$SAVE_CFLAGS"
 fi
 
@@ -2287,7 +2298,9 @@ AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(UPNP_DEFINES)
-AC_SUBST(USE_SSE4)
+AC_SUBST(HAVE_SSE)
+AC_SUBST(HAVE_SSE2)
+AC_SUBST(HAVE_SSE4)
 AC_SUBST(USE_MMAL)
 AC_SUBST(USE_X11)
 AC_SUBST(USE_OPTICAL_DRIVE)
