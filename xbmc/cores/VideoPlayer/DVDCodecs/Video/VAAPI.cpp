@@ -1005,24 +1005,6 @@ bool CDecoder::CheckSuccess(VAStatus status)
   return true;
 }
 
-bool CDecoder::Supports(EINTERLACEMETHOD method)
-{
-  if(method == VS_INTERLACEMETHOD_AUTO)
-    return true;
-
-  for (size_t i = 0; i < m_diMethods.size(); i++)
-  {
-    if (m_diMethods[i] == method)
-      return true;
-  }
-  return false;
-}
-
-EINTERLACEMETHOD CDecoder::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_VAAPI_BOB;
-}
-
 bool CDecoder::ConfigVAAPI()
 {
   memset(&m_hwContext, 0, sizeof(vaapi_context));
@@ -1093,16 +1075,6 @@ bool CDecoder::ConfigVAAPI()
       CLog::Log(LOGERROR, "VAAPI::%s - vaapi output returned error", __FUNCTION__);
       m_vaapiOutput.Dispose();
       return false;
-    }
-    SDiMethods *diMethods = NULL;
-    diMethods = (SDiMethods*)reply->data;
-    if (diMethods)
-    {
-      m_diMethods.clear();
-      for (int i=0; i<diMethods->numDiMethods; i++)
-      {
-        m_diMethods.push_back(diMethods->diMethods[i]);
-      }
     }
     reply->Release();
   }
@@ -1568,7 +1540,6 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           if (!m_vaError)
           {
             m_state = O_TOP_CONFIGURED_IDLE;
-            msg->Reply(COutputControlProtocol::ACC, &m_diMethods, sizeof(m_diMethods));
           }
           else
           {
@@ -1875,7 +1846,12 @@ bool COutput::Init()
   m_pp->PreInit(m_config, &m_diMethods);
   delete m_pp;
 
-  m_pp = NULL;
+  m_pp = nullptr;
+
+  std::list<EINTERLACEMETHOD> deintMethods;
+  deintMethods.assign(m_diMethods.diMethods, m_diMethods.diMethods + m_diMethods.numDiMethods);
+  m_config.processInfo->UpdateDeinterlacingMethods(deintMethods);
+  m_config.processInfo->SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_VAAPI_BOB);
 
   m_vaError = false;
 
@@ -1992,22 +1968,8 @@ void COutput::InitCycle()
       interlaced &&
       method != VS_INTERLACEMETHOD_NONE)
   {
-    if (method == VS_INTERLACEMETHOD_AUTO ||
-        method == VS_INTERLACEMETHOD_VAAPI_BOB ||
-        method == VS_INTERLACEMETHOD_VAAPI_MADI ||
-        method == VS_INTERLACEMETHOD_VAAPI_MACI ||
-        method == VS_INTERLACEMETHOD_DEINTERLACE ||
-        method == VS_INTERLACEMETHOD_RENDER_BOB)
-    {
-      if (method == VS_INTERLACEMETHOD_AUTO)
-        method = VS_INTERLACEMETHOD_VAAPI_BOB;
-    }
-    else
-    {
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG,"VAAPI - deinterlace method not supported, falling back to VAAPI's BOB implementation");
+    if (!m_config.processInfo->Supports(method))
       method = VS_INTERLACEMETHOD_VAAPI_BOB;
-    }
 
     if (m_pp && (method != m_currentDiMethod || !m_pp->Compatible(method)))
     {
