@@ -243,12 +243,12 @@
 						<height>262</height>
 						<label>$LOCALIZE[19076] ($INFO[Container(5000).NumItems,[B],[/B] $LOCALIZE[31036]])</label>
 						<font>font16</font>
-						<visible>ListItem.IsFolder</visible>
+						<visible>ListItem.IsFolder + !ListItem.IsParentFolder</visible>
 					</control>
 					<control type="group">
 						<left>-10</left>
 						<top>60</top>
-						<visible>ListItem.IsFolder</visible>
+						<visible>ListItem.IsFolder + !ListItem.IsParentFolder</visible>
 						<include content="InfoList">
 							<param name="path" value="$INFO[ListItem.Path]/$INFO[ListItem.Label]" />
 							<param name="height" value="362" />

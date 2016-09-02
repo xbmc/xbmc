@@ -112,6 +112,12 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     return;
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
+  if (pItem->IsParentFolder())
+  {
+    // No context menu for ".." items
+    return;
+  }
+
   bool isDeletedRecording = false;
 
   CPVRRecordingPtr recording(pItem->GetPVRRecordingInfoTag());
@@ -151,6 +157,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
       buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as unwatched */
       buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as watched */
     }
+
     if (recording)
     {
       if (recording->m_playCount > 0)
@@ -259,48 +266,64 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
         if (iItem >= 0 && iItem < m_vecItems->Size())
         {
           const CFileItemPtr item(m_vecItems->Get(iItem));
-          if (item->m_bIsFolder)
-          {
-            // recording folders are handled by base class.
-            bReturn = false;
-            break;
-          }
-
           switch (message.GetParam1())
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-              switch(CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION))
+            case ACTION_PLAY:
+            {
+              const CPVRRecordingsPath path(m_vecItems->GetPath());
+              if (path.IsValid() && path.IsRecordingsRoot() && item->IsParentFolder())
               {
-                case SELECT_ACTION_CHOOSE:
-                  OnPopupMenu(iItem);
-                  bReturn = true;
-                  break;
-                case SELECT_ACTION_PLAY_OR_RESUME:
-                  PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
-                  bReturn = true;
-                  break;
-                case SELECT_ACTION_RESUME:
+                // handle special 'go home' item.
+                g_windowManager.ActivateWindow(WINDOW_HOME);
+                bReturn = true;
+                break;
+              }
+
+              if (item->m_bIsFolder)
+              {
+                // recording folders and ".." folders in subfolders are handled by base class.
+                bReturn = false;
+                break;
+              }
+
+              if (message.GetParam1() == ACTION_PLAY)
+              {
+                PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
+                bReturn = true;
+              }
+              else
+              {
+                switch (CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION))
                 {
-                  const std::string resumeString = GetResumeString(*item);
-                  item->m_lStartOffset = resumeString.empty() ? 0 : STARTOFFSET_RESUME;
-                  PlayFile(item.get(), false /* don't play minimized */, false /* don't check resume */);
-                  bReturn = true;
-                  break;
+                  case SELECT_ACTION_CHOOSE:
+                    OnPopupMenu(iItem);
+                    bReturn = true;
+                    break;
+                  case SELECT_ACTION_PLAY_OR_RESUME:
+                    PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
+                    bReturn = true;
+                    break;
+                  case SELECT_ACTION_RESUME:
+                  {
+                    const std::string resumeString = GetResumeString(*item);
+                    item->m_lStartOffset = resumeString.empty() ? 0 : STARTOFFSET_RESUME;
+                    PlayFile(item.get(), false /* don't play minimized */, false /* don't check resume */);
+                    bReturn = true;
+                    break;
+                  }
+                  case SELECT_ACTION_INFO:
+                    ShowRecordingInfo(item.get());
+                    bReturn = true;
+                    break;
+                  default:
+                    bReturn = false;
+                    break;
                 }
-                case SELECT_ACTION_INFO:
-                  ShowRecordingInfo(item.get());
-                  bReturn = true;
-                  break;
-                default:
-                  bReturn = false;
-                  break;
               }
               break;
-            case ACTION_PLAY:
-              PlayFile(item.get(), false /* don't play minimized */, true /* check resume */);
-              bReturn = true;
-              break;
+            }
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
               OnPopupMenu(iItem);
