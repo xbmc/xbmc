@@ -75,7 +75,9 @@ CJNIAudioTrack::CJNIAudioTrack(int streamType, int sampleRateInHz, int channelCo
   }
 
   m_audioFormat = audioFormat;
-  if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+  if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
+    m_buffer = jharray(xbmc_jnienv()->NewShortArray(bufferSizeInBytes / sizeof(short)));
+  else if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
     m_buffer = jharray(xbmc_jnienv()->NewFloatArray(bufferSizeInBytes / sizeof(float)));
   else
     m_buffer = jharray(xbmc_jnienv()->NewByteArray(bufferSizeInBytes));
@@ -138,6 +140,11 @@ int CJNIAudioTrack::write(char* audioData, int offsetInBytes, int sizeInBytes)
     {
       written = call_method<int>(m_object, "write", "([FIII)I", m_buffer, (int)(offsetInBytes / sizeof(float)), (int)(sizeInBytes / sizeof(float)), CJNIAudioTrack::WRITE_BLOCKING);
       written *= sizeof(float);
+    }
+    else if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
+    {
+      written = call_method<int>(m_object, "write", "([SIII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)), CJNIAudioTrack::WRITE_BLOCKING);
+      written *= sizeof(short);
     }
     else
     {
