@@ -12,6 +12,9 @@ if(NOT CPACK_PACKAGE_DIRECTORY)
   set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)
 endif()
 
+# force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
+set(CPACK_SET_DESTDIR true)
+
 # set architecture
 if(NOT CPACK_SYSTEM_NAME)
   set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_PROCESSOR})
