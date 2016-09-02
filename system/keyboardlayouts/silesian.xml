@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Silesian" layout="QWERTY">
+    <keyboard>
+      <row>ôōŏśćńłżź(</row>
+      <row>qwertzuiopã)</row>
+      <row>asdfghjklõ_</row>
+      <row>/yxcvbnm:.-</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>ÔŌŎŚĆŃŁŻŹ(</row>
+      <row>QWERTZUIOPÃ)</row>
+      <row>ASDFGHJKLÕ_</row>
+      <row>\YXCVBNM:.-</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>1234567890%</row>
+      <row>+@#$~^&amp;*{}=</row>
+      <row>[]()/"'`;!</row>
+      <row>\|&lt;&gt;,.?:-_</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>
