@@ -42,7 +42,7 @@ See [docs/README.xxx] (https://github.com/xbmc/xbmc/tree/master/docs) for specif
 
 * [Contributing] (https://github.com/xbmc/xbmc/blob/master/CONTRIBUTING.md)
 * [Submitting a patch] (http://kodi.wiki/view/HOW-TO_submit_a_patch)
-* [Code guidelines] (http://kodi.wiki/view/Official:Code_guidelines_and_formatting_conventions)
+* [Code guidelines] (https://codedocs.xyz/xbmc/xbmc/code_guidelines.html)
 * [Kodi development] (http://kodi.wiki/view/Development)
 
 ## Useful links
