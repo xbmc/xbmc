@@ -103,10 +103,6 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   unsigned int nTime = XbmcThreads::SystemClockMillis();
   CFileItem item(strPath, false);
 
-  if (item.IsDiscImage() ||
-      item.IsPVR())
-    return false;
-
   item.SetMimeTypeForInternetFile();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
   if (!pInputStream)
