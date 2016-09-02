@@ -164,6 +164,7 @@ if(NOT WIN32)
   if(NOT ${can_write} AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(NEED_SUDO TRUE)
     set(ADDON_INSTALL_DIR ${CMAKE_BINARY_DIR}/.install)
+    list(APPEND BUILD_ARGS -DOVERRIDE_PATHS=ON)
     message(STATUS "NEED_SUDO: ${NEED_SUDO}")
   endif()
 endif()
@@ -412,12 +413,16 @@ endforeach()
 message(STATUS "")
 
 if(NEED_SUDO)
-  add_custom_target(install
-                    COMMAND ${CMAKE_COMMAND} -E echo "\n\n"
-                    COMMAND ${CMAKE_COMMAND} -E echo "WARNING: sudo rights needed to install to ${CMAKE_INSTALL_PREFIX}\n"
+  add_custom_target(sudo-install
+                    COMMAND ${CMAKE_COMMAND} -E echo "sudo rights needed to install to ${CMAKE_INSTALL_PREFIX}\n"
                     COMMAND sudo ${CMAKE_COMMAND} -E copy_directory ${ADDON_INSTALL_DIR}/ ${CMAKE_INSTALL_PREFIX}/
-                    COMMAND sudo ${CMAKE_COMMAND} -E remove_directory ${ADDON_INSTALL_DIR}/
                     COMMAND sudo -k)
+
+  foreach(_id ${ALL_ADDONS_BUILDING})
+    add_dependencies(sudo-install ${_id})
+  endforeach()
+  message(WARNING "sudo rights needed to install to ${CMAKE_INSTALL_PREFIX}")
+  message(STATUS "\nplease type \"make sudo-install\"\n\n")
 endif()
 
 if(NOT SUPPORTED_ADDON_FOUND)
@@ -429,3 +434,4 @@ endif()
 # add custom target "supported_addons" that returns all addons that are supported on this platform
 string(REPLACE ";" " " ALL_ADDONS_BUILDING "${ALL_ADDONS_BUILDING}")
 add_custom_target(supported_addons COMMAND ${CMAKE_COMMAND} -E echo "ALL_ADDONS_BUILDING: ${ALL_ADDONS_BUILDING}" VERBATIM)
+add_custom_target(need-sudo COMMAND ${CMAKE_COMMAND} -E echo ${NEED_SUDO} VERBATIM)

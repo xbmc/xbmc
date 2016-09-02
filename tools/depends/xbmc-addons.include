@@ -67,7 +67,7 @@ endif
          done
 ifneq ($(CROSS_COMPILING),yes)
 	@[ -f $(ADDON_PROJECT_DIR)/.failure ] && echo "Following Addons failed to build:" $(shell cat $(ADDON_PROJECT_DIR)/.failure) || :
-	@[ -w $(INSTALL_PREFIX) ] || $(MAKE) -C $(PLATFORM) install
+	@[ -w $(INSTALL_PREFIX) ] || { cd $(PLATFORM); $(MAKE) need-sudo | grep -q TRUE && $(MAKE) sudo-install || $(MAKE) install ;}
 endif
 	touch $@
 
