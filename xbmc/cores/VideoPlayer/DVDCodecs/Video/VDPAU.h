@@ -314,7 +314,6 @@ protected:
   void SetDeinterlacing();
   void SetHWUpscaling();
   void DisableHQScaling();
-  EINTERLACEMETHOD GetDeinterlacingMethod(bool log = false);
   std::string GetDeintStrFromInterlaceMethod(EINTERLACEMETHOD method);
   bool CheckStatus(VdpStatus vdp_st, int line);
   CEvent m_outMsgEvent;
@@ -576,8 +575,6 @@ public:
   virtual void SetCodecControl(int flags);
 
   bool Supports(VdpVideoMixerFeature feature);
-  bool Supports(EINTERLACEMETHOD method);
-  EINTERLACEMETHOD AutoInterlaceMethod();
   static bool IsVDPAUFormat(AVPixelFormat fmt);
 
   static void FFReleaseBuffer(void *opaque, uint8_t *data);
