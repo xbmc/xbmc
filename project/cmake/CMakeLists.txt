@@ -408,10 +408,13 @@ if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
 endif()
 
 # Prepare add-on build env
-foreach(binding ${addon_bindings})
-  get_filename_component(file ${binding} NAME)
-  set(BINDING_TARGET ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file})
-  configure_file(${binding} ${BINDING_TARGET} COPYONLY)
+core_file_read_filtered(bindings ${CORE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk)
+foreach(binding ${bindings})
+  string(REPLACE " =" ";" binding "${binding}")
+  string(REPLACE "+=" ";" binding "${binding}")
+  list(GET binding 1 header)
+  get_filename_component(file ${header} NAME)
+  configure_file(${CORE_SOURCE_DIR}/${header} ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file} COPYONLY)
 endforeach()
 
 set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
