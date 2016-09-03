@@ -58,6 +58,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoFPS = 0.0;
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
+  m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
 
   CServiceBroker::GetDataCacheCore().SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
   CServiceBroker::GetDataCacheCore().SetVideoDeintMethod(m_videoDeintMethod);
@@ -185,6 +186,7 @@ void CProcessInfo::SetSwDeinterlacingMethods()
   methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE_HALF);
 
   UpdateDeinterlacingMethods(methods);
+  SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE);
 }
 
 void CProcessInfo::UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods)
@@ -206,6 +208,20 @@ bool CProcessInfo::Supports(EINTERLACEMETHOD method)
     return true;
 
   return false;
+}
+
+void CProcessInfo::SetDeinterlacingMethodDefault(EINTERLACEMETHOD method)
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  m_deintMethodDefault = method;
+}
+
+EINTERLACEMETHOD CProcessInfo::GetDeinterlacingMethodDefault()
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  return m_deintMethodDefault;
 }
 
 // player audio info

@@ -408,6 +408,7 @@ public:
   virtual bool IsRenderingVideoLayer() { return false; };
 
   virtual bool Supports(EINTERLACEMETHOD method) { return false; };
+  virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() { return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE; }
   virtual bool Supports(ESCALINGMETHOD method) { return false; };
   virtual bool Supports(ERENDERFEATURE feature) { return false; };
 

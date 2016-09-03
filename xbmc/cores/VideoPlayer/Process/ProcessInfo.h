@@ -49,6 +49,8 @@ public:
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
   bool Supports(EINTERLACEMETHOD method);
+  void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
+  EINTERLACEMETHOD GetDeinterlacingMethodDefault();
 
   // player audio info
   void ResetAudioCodecInfo();
@@ -79,6 +81,7 @@ protected:
   float m_videoFPS;
   float m_videoDAR;
   std::list<EINTERLACEMETHOD> m_deintMethods;
+  EINTERLACEMETHOD m_deintMethodDefault;
   CCriticalSection m_videoCodecSection;
 
   // player audio info

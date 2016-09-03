@@ -5100,6 +5100,13 @@ bool CVideoPlayer::Supports(EINTERLACEMETHOD method)
   return m_processInfo->Supports(method);
 }
 
+EINTERLACEMETHOD CVideoPlayer::GetDeinterlacingMethodDefault()
+{
+  if (!m_processInfo)
+    return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
+  return m_processInfo->GetDeinterlacingMethodDefault();
+}
+
 bool CVideoPlayer::Supports(ESCALINGMETHOD method)
 {
   return m_renderManager.Supports(method);

@@ -844,6 +844,15 @@ bool CApplicationPlayer::Supports(EINTERLACEMETHOD method)
     return false;
 }
 
+EINTERLACEMETHOD CApplicationPlayer::GetDeinterlacingMethodDefault()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetDeinterlacingMethodDefault();
+  else
+    return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
+}
+
 bool CApplicationPlayer::Supports(ESCALINGMETHOD method)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

@@ -293,6 +293,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   if (!entries.empty())
   {
+    if (!g_application.m_pPlayer->Supports(videoSettings.m_InterlaceMethod))
+    {
+      videoSettings.m_InterlaceMethod = g_application.m_pPlayer->GetDeinterlacingMethodDefault();
+    }
     AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
   }
 
