@@ -28,7 +28,7 @@
 			<posy>0</posy>
 			<include>WindowTitleCommons</include>
 			<width>700</width>
-			<label>-</label>
+			<label></label>
 		</control>
 		<control type="group">
 			<posx>730</posx>
@@ -102,19 +102,19 @@
 				<description>OK Button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 			<control type="button" id="29">
 				<description>Cancel Button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 			<control type="button" id="30">
 				<description>Custom Button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 		</control>
 	</controls>

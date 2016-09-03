@@ -10,7 +10,7 @@
 		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1720" />
 			<param name="DialogBackgroundHeight" value="800" />
-			<param name="DialogHeaderLabel" value="-" />
+			<param name="DialogHeaderLabel" value="" />
 			<param name="DialogHeaderId" value="20" />
 		</include>
 		<control type="grouplist" id="9">
@@ -101,7 +101,7 @@
 		<control type="label" id="7">
 			<height>60</height>
 			<font>font12</font>
-			<label>-</label>
+			<label></label>
 			<textoffsetx>40</textoffsetx>
 			<textoffsety>20</textoffsety>
 			<textcolor>button_focus</textcolor>

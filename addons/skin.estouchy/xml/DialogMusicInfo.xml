@@ -67,7 +67,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="30">
 					<control type="label">
@@ -287,7 +287,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="30">
 					<control type="label">
@@ -447,7 +447,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="30">
 					<control type="label">
@@ -558,7 +558,7 @@
 			<onleft>50</onleft>
 			<onright>50</onright>
 			<ondown>50</ondown>
-			<pagecontrol>-</pagecontrol>
+			<pagecontrol></pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>VisibleFadeEffect</include>
 			<visible>[Container.Content(Artists) + !String.IsEmpty(Window.Property(ShowAlbumList))] | [Container.Content(Albums) + !String.IsEmpty(Window.Property(ShowSongList))]</visible>
@@ -684,25 +684,25 @@
 				<description>Refresh</description>
 				<width>235</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 			<control type="button" id="10">
 				<description>Get Thumb</description>
 				<width>235</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 			<control type="button" id="12">
 				<description>Get Fanart</description>
 				<width>235</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 			<control type="button" id="7">
 				<description>Rating button</description>
 				<width>235</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 			<control type="togglebutton" id="900">
 				<description>list / info button</description>

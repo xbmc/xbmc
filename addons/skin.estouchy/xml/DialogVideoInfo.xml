@@ -117,7 +117,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<visible>Container.Content(Movies)</visible>
 				<itemlayout height="30">
@@ -246,7 +246,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<visible>Container.Content(TVShows)</visible>
 				<itemlayout height="30">
@@ -351,7 +351,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<visible>Container.Content(Episodes)</visible>
 				<itemlayout height="30">
@@ -480,7 +480,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<visible>Container.Content(MusicVideos)</visible>
 				<itemlayout height="30">
@@ -612,7 +612,7 @@
 			<onleft>50</onleft>
 			<onright>50</onright>
 			<ondown>50</ondown>
-			<pagecontrol>-</pagecontrol>
+			<pagecontrol></pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>VisibleFadeEffect</include>
 			<itemlayout height="100" width="500">

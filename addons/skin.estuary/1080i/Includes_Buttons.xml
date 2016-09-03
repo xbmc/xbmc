@@ -7,14 +7,14 @@
 		<textureradiooffnofocus>$PARAM[texture]</textureradiooffnofocus>
 		<textureradioondisabled colordiffuse="disabled">$PARAM[texture]</textureradioondisabled>
 		<textureradiooffdisabled colordiffuse="disabled">$PARAM[texture]</textureradiooffdisabled>
-		<texturefocus>-</texturefocus>
+		<texturefocus></texturefocus>
 		<width>125</width>
 		<animation center="77,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
 		<height>123</height>
 		<radiowidth>74</radiowidth>
 		<radioheight>74</radioheight>
-		<font>-</font>
-		<texturenofocus>-</texturenofocus>
+		<font></font>
+		<texturenofocus></texturenofocus>
 		<radioposx>0</radioposx>
 		<radioposy>0</radioposy>
 	</include>
@@ -25,8 +25,8 @@
 			<textoffsetx>40</textoffsetx>
 			<aligny>center</aligny>
 			<font>font10</font>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<onclick>noop</onclick>
 			<label>$PARAM[label]</label>
 			<visible>$PARAM[visible]</visible>
@@ -52,7 +52,7 @@
 		<left>0</left>
 		<top>0</top>
 		<height>75</height>
-		<label>-</label>
+		<label></label>
 		<align>center</align>
 		<aligny>center</aligny>
 		<font>font12_title</font>
@@ -202,7 +202,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<onclick>$PARAM[onclick]</onclick>
-				<font>-</font>
+				<font></font>
 				<label>$PARAM[label]</label>
 				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>

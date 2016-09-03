@@ -137,7 +137,7 @@
 			<textoffsetx>45</textoffsetx>
 			<top>0</top>
 			<height>50</height>
-			<label>-</label>
+			<label></label>
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font12_title</font>

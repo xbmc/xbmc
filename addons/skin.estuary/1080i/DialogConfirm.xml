@@ -18,7 +18,7 @@
 			<top>82</top>
 			<width>855</width>
 			<height>150</height>
-			<label>-</label>
+			<label></label>
 			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 		</control>
 		<control type="progress" id="20">

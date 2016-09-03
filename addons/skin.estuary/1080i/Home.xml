@@ -53,13 +53,13 @@
 					<control type="button" id="5888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(5001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(5200).NumItems,0)">SetFocus(5200)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(5100).NumItems,0)">SetFocus(5100)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="5001">
 						<orientation>vertical</orientation>
@@ -148,13 +148,13 @@
 					<control type="button" id="6888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(6001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(6200).NumItems,0)">SetFocus(6200)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(6100).NumItems,0)">SetFocus(6100)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="6001">
 						<orientation>vertical</orientation>
@@ -242,12 +242,12 @@
 					<control type="button" id="7888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(7001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(7100).NumItems,0)">SetFocus(7100)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="7001">
 						<orientation>vertical</orientation>
@@ -363,12 +363,12 @@
 					<control type="button" id="8888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(8001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(8100).NumItems,0)">SetFocus(8100)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="8001">
 						<orientation>vertical</orientation>
@@ -463,12 +463,12 @@
 					<control type="button" id="11888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(11001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(11100).NumItems,0)">SetFocus(11100)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="11001">
 						<orientation>vertical</orientation>
@@ -530,12 +530,12 @@
 					<control type="button" id="12888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(12001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(12100).NumItems,0)">SetFocus(12100)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="12001">
 						<orientation>vertical</orientation>
@@ -613,12 +613,12 @@
 					<control type="button" id="13888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(13001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(13100).NumItems,0)">SetFocus(13100)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="13001">
 						<orientation>vertical</orientation>
@@ -666,13 +666,13 @@
 					<control type="button" id="15888">
 						<width>1</width>
 						<height>1</height>
-						<label>-</label>
+						<label></label>
 						<onfocus>SetFocus(15001)</onfocus>
 						<onfocus condition="Integer.IsGreater(Container(15100).NumItems,0)">SetFocus(15100)</onfocus>
 						<onfocus condition="String.IsEmpty(Weather.Plugin)">SetFocus(15300)</onfocus>
 						<onclick>noop</onclick>
-						<texturefocus>-</texturefocus>
-						<texturenofocus>-</texturenofocus>
+						<texturefocus></texturefocus>
+						<texturenofocus></texturenofocus>
 					</control>
 					<control type="grouplist" id="15001">
 						<orientation>vertical</orientation>

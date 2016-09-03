@@ -47,7 +47,7 @@
 		<control type="button" id="1000">
 			<description>button template</description>
 			<posx>0</posx>
-			<posy>-</posy>
+			<posy></posy>
 			<width>400</width>
 			<height>70</height>
 			<font>font25</font>

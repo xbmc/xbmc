@@ -392,7 +392,7 @@
 					<content>
 						<item>
 							<label>$LOCALIZE[31909]</label>
-							<icon>-</icon>
+							<icon></icon>
 							<onclick>noop</onclick>
 							<visible>!Weather.IsFetched</visible>
 						</item>

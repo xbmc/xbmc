@@ -144,14 +144,14 @@
 				<textureradioonnofocus>osd/fullscreen/buttons/play.png</textureradioonnofocus>
 				<textureradioofffocus colordiffuse="button_focus">osd/fullscreen/buttons/pause.png</textureradioofffocus>
 				<textureradiooffnofocus>osd/fullscreen/buttons/pause.png</textureradiooffnofocus>
-				<texturefocus>-</texturefocus>
+				<texturefocus></texturefocus>
 				<width>125</width>
 				<animation center="62,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
 				<height>123</height>
 				<radiowidth>80</radiowidth>
 				<radioheight>80</radioheight>
-				<font>-</font>
-				<texturenofocus>-</texturenofocus>
+				<font></font>
+				<texturenofocus></texturenofocus>
 				<selected>Player.Paused</selected>
 				<onclick>PlayerControl(Play)</onclick>
 			</control>
@@ -178,9 +178,9 @@
 					<width>74</width>
 					<height>74</height>
 					<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
-					<font>-</font>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>-</texturenofocus>
+					<font></font>
+					<texturefocus></texturefocus>
+					<texturenofocus></texturenofocus>
 					<onleft>605</onleft>
 					<onright>607</onright>
 					<onup>1000</onup>
@@ -203,13 +203,13 @@
 				<textureradiooffnofocus>osd/fullscreen/buttons/random-off.png</textureradiooffnofocus>
 				<textureradioondisabled colordiffuse="disabled">osd/fullscreen/buttons/random-on.png</textureradioondisabled>
 				<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random-off.png</textureradiooffdisabled>
-				<texturefocus>-</texturefocus>
+				<texturefocus></texturefocus>
 				<width>125</width>
 				<height>123</height>
 				<radiowidth>74</radiowidth>
 				<radioheight>74</radioheight>
-				<font>-</font>
-				<texturenofocus>-</texturenofocus>
+				<font></font>
+				<texturenofocus></texturenofocus>
 				<radioposx>0</radioposx>
 				<radioposy>0</radioposy>
 				<label>$LOCALIZE[590]$INFO[Playlist.Random, : ]</label>

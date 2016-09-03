@@ -8,8 +8,8 @@
 			<posy>0</posy>
 			<width>ScreenWidth</width>
 			<height>960</height>
-			<texturenofocus>-</texturenofocus>
-			<texturefocus>-</texturefocus>
+			<texturenofocus></texturenofocus>
+			<texturefocus></texturefocus>
 			<onclick>Back</onclick>
 			<visible>![Window.IsVisible(Notification) | Window.IsVisible(VolumeBar)]</visible>
 		</control>
@@ -59,9 +59,9 @@
 				<height>80</height>
  				<info>Player.Volume</info>
 				<action>Volume</action>
-				<texturesliderbar>-</texturesliderbar>
-				<textureslidernib>-</textureslidernib>
-				<textureslidernibfocus>-</textureslidernibfocus>
+				<texturesliderbar></texturesliderbar>
+				<textureslidernib></textureslidernib>
+				<textureslidernibfocus></textureslidernibfocus>
 			</control>
 		</control>
 	</controls>

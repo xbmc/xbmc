@@ -197,7 +197,7 @@
 			<height>70</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<label>-</label>
+			<label></label>
 			<font>font25</font>
 			<onup>10</onup>
 			<onleft>12</onleft>

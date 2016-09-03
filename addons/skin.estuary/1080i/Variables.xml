@@ -19,7 +19,7 @@
 		<value>$INFO[Player.Time]$INFO[Player.Title, - ]</value>
 	</variable>
 	<variable name="AutoCompletionContentVar">
-		<value condition="!System.HasAddon(plugin.program.autocompletion) | System.HasHiddenInput">-</value>
+		<value condition="!System.HasAddon(plugin.program.autocompletion) | System.HasHiddenInput"></value>
 		<value>plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
 	</variable>
 	<variable name="PlaylistLabel2Var">
@@ -27,7 +27,7 @@
 		<value>$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
 	</variable>
 	<variable name="AndroidAppPathVar">
-		<value condition="!System.Platform.Android">-</value>
+		<value condition="!System.Platform.Android"></value>
 		<value>androidapp://sources/apps/</value>
 	</variable>
 	<variable name="AddonCountLabel">
@@ -145,7 +145,7 @@
 	</variable>
 	<variable name="AddonsListIconVar">
 		<value condition="!String.IsEmpty(ListItem.AddonBroken)">icons/addonstatus/disable.png</value>
-		<value condition="ListItem.IsParentFolder">-</value>
+		<value condition="ListItem.IsParentFolder"></value>
 		<value condition="ListItem.Property(addon.orphaned)">icons/addonstatus/orphan.png</value>
 		<value condition="ListItem.Property(addon.downloading)">icons/addonstatus/install.png</value>
 		<value condition="ListItem.Property(addon.isinstalled) + !ListItem.Property(addon.isenabled) + Window.IsActive(addonbrowser)">icons/addonstatus/disable.png</value>
@@ -271,7 +271,6 @@
 		<value condition="!String.IsEmpty(Container(504).ListItem.Art(fanart)) + Control.HasFocus(504)">$INFO[Container(504).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Container(505).ListItem.Art(fanart)) + Control.HasFocus(505)">$INFO[Container(505).ListItem.Art(fanart)]</value>
 		<value condition="!String.IsEmpty(Skin.String(HomeFanart.path))">$INFO[Skin.String(HomeFanart.path)]$INFO[Container(9000).ListItem.Property(id)]$INFO[Skin.String(HomeFanart.ext)]</value>
-		<value>-</value>
 	</variable>
 	<variable name="HomeFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
@@ -296,7 +295,6 @@
 		<value condition="!String.IsEmpty(Container(15100).ListItem.Property(FanartCode)) + Control.HasFocus(15100)">$INFO[Skin.String(WeatherFanart.path)]$INFO[Container(15100).ListItem.Property(FanartCode)]</value>
 		<value condition="!String.IsEmpty(Container(15200).ListItem.Property(FanartCode)) + Control.HasFocus(15200)">$INFO[Skin.String(WeatherFanart.path)]$INFO[Container(15200).ListItem.Property(FanartCode)]</value>
 		<value condition="!String.IsEmpty(Skin.String(HomeFanart.path))">$INFO[Skin.String(HomeFanart.path)]$INFO[Container(9000).ListItem.Property(id)]$INFO[Skin.String(HomeFanart.ext)]</value>
-		<value>-</value>
 	</variable>
 	<variable name="MediaFanartVar">
 		<value condition="Skin.HasSetting(no_fanart)">$VAR[GlobalFanartVar]</value>
@@ -313,7 +311,7 @@
 	</variable>
 	<variable name="ListWatchedIconVar">
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
-		<value condition="ListItem.IsParentFolder">-</value>
+		<value condition="ListItem.IsParentFolder"></value>
 			<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
 		<value condition="ListItem.IsFolder + Container.Content(files)">overlays/folder.png</value>

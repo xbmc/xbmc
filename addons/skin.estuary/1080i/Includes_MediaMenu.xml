@@ -23,7 +23,7 @@
 				<height>95</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<font>-</font>
+				<font></font>
 				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
 				<radioposx>26</radioposx>
@@ -46,7 +46,7 @@
 		<definition>
 			<control type="button" id="28">
 				<left>-1000</left>
-				<label>-</label>
+				<label></label>
 				<height>1</height>
 			</control>
 			<control type="grouplist" id="9000">
@@ -366,13 +366,13 @@
 	</include>
 	<include name="MediaMenuMouseOverlay">
 		<control type="button" id="6130">
-			<label>-</label>
+			<label></label>
 			<height>100%</height>
 			<width>50</width>
 			<left>-50</left>
 			<top>0</top>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 		</control>
 	</include>
 </includes>

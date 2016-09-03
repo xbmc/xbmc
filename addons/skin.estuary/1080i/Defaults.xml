@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<default type="image">
-		<texture>-</texture>
+		<texture></texture>
 		<aspectratio>stretch</aspectratio>
 	</default>
 	<default type="multiimage">
@@ -11,7 +11,7 @@
 		<randomize>true</randomize>
 	</default>
 	<default type="label">
-		<label>-</label>
+		<label></label>
 		<align>left</align>
 		<font>font13</font>
 		<textcolor>white</textcolor>
@@ -45,7 +45,7 @@
 		<alttexturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</alttexturefocus>
 		<alttexturenofocus border="40">buttons/button-nofo.png</alttexturenofocus>
 		<textcolor>white</textcolor>
-		<label>-</label>
+		<label></label>
 		<font>font13</font>
 		<disabledcolor>disabled</disabledcolor>
 		<pulseonselect>no</pulseonselect>
@@ -60,9 +60,9 @@
 	<default type="progress">
 		<texturebg border="3">progress/texturebg_border_white.png</texturebg>
 		<midtexture colordiffuse="button_focus" border="3">progress/texturebg_white.png</midtexture>
-		<lefttexture>-</lefttexture>
-		<righttexture>-</righttexture>
-		<overlaytexture>-</overlaytexture>
+		<lefttexture></lefttexture>
+		<righttexture></righttexture>
+		<overlaytexture></overlaytexture>
 	</default>
 	<default type="spincontrol">
 		<textureup colordiffuse="disabled">buttons/spinctrl/arrow-light-up.png</textureup>
@@ -131,8 +131,8 @@
 		<texturesliderbackground colordiffuse="29FFFFFF">colors/white.png</texturesliderbackground>
 		<texturesliderbar colordiffuse="AAFFFFFF">colors/white.png</texturesliderbar>
 		<texturesliderbarfocus colordiffuse="button_focus">colors/white.png</texturesliderbarfocus>
-		<textureslidernib>-</textureslidernib>
-		<textureslidernibfocus>-</textureslidernibfocus>
+		<textureslidernib></textureslidernib>
+		<textureslidernibfocus></textureslidernibfocus>
 		<showonepage>false</showonepage>
 		<orientation>vertical</orientation>
 	</default>

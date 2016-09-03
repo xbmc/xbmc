@@ -299,7 +299,7 @@
 					<posy>0</posy>
 					<width>60</width>
 					<height>60</height>
-					<font>-</font>
+					<font></font>
 					<onclick>Skin.ToggleSetting(SubtitleSourceChooserVisible)</onclick>
 					<texturefocus>icon_dialog_close.png</texturefocus>
 					<texturenofocus>icon_dialog_close.png</texturenofocus>

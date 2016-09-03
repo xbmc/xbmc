@@ -15,9 +15,9 @@
 			<posy>2</posy>
 			<width>150</width>
 			<height>75</height>
-			<font>-</font>
-			<texturenofocus>-</texturenofocus>
-			<texturefocus>-</texturefocus>
+			<font></font>
+			<texturenofocus></texturenofocus>
+			<texturefocus></texturefocus>
 			<onclick>ActivateWindow(Home)</onclick>
 		</control>
 		<control type="image">
@@ -41,7 +41,7 @@
 				<posy>10</posy>
 				<width>40</width>
 				<height>40</height>
-				<label>-</label>
+				<label></label>
 				<texturenofocus>osd_volume.png</texturenofocus>
 				<texturefocus colordiffuse="blue">osd_volume.png</texturefocus>
 				<onclick>ActivateWindow(1112)</onclick>
@@ -87,7 +87,7 @@
 					<height>12</height>
 					<info>Player.Cache</info>
 					<midtexture colordiffuse="grey2">white.png</midtexture>
-					<texturebg>-</texturebg>
+					<texturebg></texturebg>
 				</control>
 				<control type="progress">
 					<description>Progressbar</description>
@@ -104,9 +104,9 @@
 					<width>552</width>
 					<height>32</height>
 					<action>seek</action>
-					<texturesliderbar>-</texturesliderbar>
-					<textureslidernib>-</textureslidernib>
-					<textureslidernibfocus>-</textureslidernibfocus>
+					<texturesliderbar></texturesliderbar>
+					<textureslidernib></textureslidernib>
+					<textureslidernibfocus></textureslidernibfocus>
 				</control>
 			</control>
 		</control>
@@ -127,7 +127,7 @@
 				<posy>9</posy>
 				<width>60</width>
 				<height>60</height>
-				<font>-</font>
+				<font></font>
 				<onclick>Back</onclick>
 				<texturefocus>icon_dialog_close.png</texturefocus>
 				<texturenofocus>icon_dialog_close.png</texturenofocus>

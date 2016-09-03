@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
-	<defaultcontrol>-</defaultcontrol>
+	<defaultcontrol></defaultcontrol>
 	<controls>
 		<control type="group" id="0">
 			<control type="label" id="10">
@@ -8,7 +8,7 @@
 				<top>15</top>
 				<width>1770</width>
 				<height>100</height>
-				<label>-</label>
+				<label></label>
 				<font>font12</font>
 			</control>
 		</control>

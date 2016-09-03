@@ -76,7 +76,7 @@
 				<width>660</width>
 				<height>230</height>
 				<font>font20</font>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<label>$INFO[ListItem.AddonDescription]</label>
 			</control>
 			<control type="image">

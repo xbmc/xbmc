@@ -119,7 +119,7 @@
 					<texturenofocus colordiffuse="grey3">white.png</texturenofocus>
 					<texturefocus>list_focus.png</texturefocus>
 					<textwidth>120</textwidth>
-					<label>-</label>
+					<label></label>
 					<textcolor>white</textcolor>
 					<onleft>13</onleft>
 					<onright>11</onright>
@@ -248,7 +248,7 @@
 					<texturenofocus colordiffuse="grey3">white.png</texturenofocus>
 					<texturefocus>list_focus.png</texturefocus>
 					<textwidth>120</textwidth>
-					<label>-</label>
+					<label></label>
 					<textcolor>white</textcolor>
 					<onleft>19</onleft>
 					<onright>17</onright>
@@ -271,7 +271,7 @@
 					<width>91</width>
 					<height>76</height>
 					<font>font30</font>
-					<label>-</label>
+					<label></label>
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -315,7 +315,7 @@
 					<width>91</width>
 					<height>76</height>
 					<font>font30</font>
-					<label>-</label>
+					<label></label>
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>

@@ -114,7 +114,7 @@
                 <description>Feature group title</description>
                 <height>60</height>
                 <width>330</width>
-                <label>-</label>
+                <label></label>
                 <align>center</align>
                 <aligny>center</aligny>
                 <font>font12_title</font>

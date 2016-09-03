@@ -179,7 +179,7 @@
 			<posy>0</posy>
 			<width>0</width>
 			<height>0</height>
-			<font>-</font>
+			<font></font>
 			<visible>false</visible>
 		</control>
 		<include content="PopupMenu">

@@ -51,8 +51,8 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
-				<texturefocus>-</texturefocus>
-				<texturenofocus>-</texturenofocus>
+				<texturefocus></texturefocus>
+				<texturenofocus></texturenofocus>
 			</control>
 			<control type="group">
 				<left>26</left>

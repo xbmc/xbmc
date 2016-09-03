@@ -158,7 +158,7 @@
 					<onright>3</onright>
 					<include content="DefaultDialogButton">
 						<param name="id" value="5" />
-						<param name="label" value="-" />
+						<param name="label" value="" />
 					</include>
 					<include content="DefaultDialogButton">
 						<param name="id" value="7" />

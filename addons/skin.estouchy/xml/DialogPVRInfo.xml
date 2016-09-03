@@ -93,7 +93,7 @@
 				<onright>49</onright>
 				<onup>9000</onup>
 				<ondown>61</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="30">
 					<control type="label">
@@ -202,7 +202,7 @@
 				<description>Record</description>
 				<width>230</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 				<visible>Window.IsActive(PVRGuideInfo)</visible>
 			</control>
 			<control type="button" id="7">

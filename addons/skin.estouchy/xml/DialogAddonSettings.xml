@@ -22,7 +22,7 @@
 			<posy>0</posy>
 			<include>WindowTitleCommons</include>
 			<width>910</width>
-			<label>-</label>
+			<label></label>
 		</control>
 		<control type="group">
 			<posx>930</posx>
@@ -136,7 +136,7 @@
 			<posx>20</posx>
 			<height>50</height>
 			<font>font20_title</font>
-			<label>-</label>
+			<label></label>
 			<align>center</align>
 			<aligny>center</aligny>
 		</control>
