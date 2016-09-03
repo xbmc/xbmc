@@ -317,7 +317,7 @@ void CGUIDialogSongInfo::OnGetThumb()
 
   std::string newThumb;
   if (result == "thumb://None")
-    newThumb = "-";
+    newThumb = "";
   else if (result == "thumb://allmusic.com")
     newThumb.clear();
   else if (result == "thumb://Local")

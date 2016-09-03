@@ -62,7 +62,9 @@ void CTextureCache::Deinitialize()
 
 bool CTextureCache::IsCachedImage(const std::string &url) const
 {
-  if (url != "-" && !CURL::IsFullPath(url))
+  if (url.empty())
+    return false;
+  if (!CURL::IsFullPath(url))
     return true;
   if (URIUtils::PathHasParent(url, "special://skin", true) ||
       URIUtils::PathHasParent(url, "special://temp", true) ||
@@ -83,7 +85,8 @@ bool CTextureCache::HasCachedImage(const std::string &url)
 std::string CTextureCache::GetCachedImage(const std::string &image, CTextureDetails &details, bool trackUsage)
 {
   std::string url = CTextureUtils::UnwrapImageURL(image);
-
+  if (url.empty())
+    return "";
   if (IsCachedImage(url))
     return url;
 
