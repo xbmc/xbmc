@@ -56,7 +56,7 @@
 					<height>60</height>
 					<left>405</left>
 					<top>4</top>
-					<texture border="2">$INFO[ListItem.Icon]</texture>
+					<texture border="2">$INFO[ListItem.ActualIcon]</texture>
 					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
@@ -94,7 +94,7 @@
 					<height>60</height>
 					<left>405</left>
 					<top>4</top>
-					<texture border="2">$INFO[ListItem.Icon]</texture>
+					<texture border="2">$INFO[ListItem.ActualIcon]</texture>
 					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
@@ -166,7 +166,7 @@
 							<top>5</top>
 							<width>48</width>
 							<height>48</height>
-							<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
+							<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Icon]</texture>
 							<fadetime>200</fadetime>
 							<aspectratio>keep</aspectratio>
 						</control>
@@ -231,7 +231,7 @@
 							<top>5</top>
 							<width>48</width>
 							<height>48</height>
-							<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
+							<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
@@ -359,7 +359,7 @@
 			<width>150</width>
 			<height>100</height>
 			<aspectratio>keep</aspectratio>
-			<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
+			<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Icon]</texture>
 			<fadetime>200</fadetime>
 		</control>
 		<control type="label">
