@@ -369,12 +369,13 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string
 
 void CSkinInfo::OnPreInstall()
 {
-  if (IsInUse())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "UnloadSkin");
 }
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
+  if (!g_SkinInfo)
+    return;
+
   if (IsInUse() || (!update && !modal && 
     HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) == DialogResponse::YES))
   {
@@ -385,7 +386,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
       toast->Close(true);
     }
     if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID())
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     else
       CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, ID());
   }
