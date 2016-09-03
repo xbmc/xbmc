@@ -810,41 +810,18 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts, EINT
       presentmethod = PRESENT_METHOD_SINGLE;
     else
     {
-      bool invert = false;
       if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)
         presentmethod = PRESENT_METHOD_BLEND;
       else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)
         presentmethod = PRESENT_METHOD_WEAVE;
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
-      {
-        presentmethod = PRESENT_METHOD_WEAVE;
-        invert = true;
-      }
       else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)
         presentmethod = PRESENT_METHOD_BOB;
-      else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
-      {
-        presentmethod = PRESENT_METHOD_BOB;
-        invert = true;
-      }
       else
       {
         if (!m_pRenderer->WantsDoublePass())
           presentmethod = PRESENT_METHOD_SINGLE;
         else
           presentmethod = PRESENT_METHOD_BOB;
-      }
-
-      if (presentmethod != PRESENT_METHOD_SINGLE)
-      {
-        /* invert present field */
-        if (invert)
-        {
-          if (sync == FS_BOT)
-            sync = FS_TOP;
-          else
-            sync = FS_BOT;
-        }
       }
     }
   }

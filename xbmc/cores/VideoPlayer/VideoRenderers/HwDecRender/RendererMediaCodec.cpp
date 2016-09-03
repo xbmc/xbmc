@@ -101,7 +101,7 @@ void CRendererMediaCodec::ReleaseBuffer(int idx)
 
 bool CRendererMediaCodec::Supports(EINTERLACEMETHOD method)
 {
-  if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+  if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else
     return false;
@@ -109,7 +109,7 @@ bool CRendererMediaCodec::Supports(EINTERLACEMETHOD method)
 
 EINTERLACEMETHOD CRendererMediaCodec::AutoInterlaceMethod()
 {
-  return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
+  return VS_INTERLACEMETHOD_RENDER_BOB;
 }
 
 CRenderInfo CRendererMediaCodec::GetRenderInfo()
