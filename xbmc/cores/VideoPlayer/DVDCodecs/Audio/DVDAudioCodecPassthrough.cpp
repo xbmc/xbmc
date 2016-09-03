@@ -121,12 +121,6 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
   int skip = 0;
   if (m_backlogSize)
   {
-    if (m_currentPts == DVD_NOPTS_VALUE)
-    {
-      m_currentPts = m_nextPts;
-      m_nextPts = DVD_NOPTS_VALUE;
-    }
-
     m_dataSize = m_bufferSize;
     unsigned int consumed = m_parser.AddData(m_backlogBuffer, m_backlogSize, &m_buffer, &m_dataSize);
     m_bufferSize = std::max(m_bufferSize, m_dataSize);
@@ -144,20 +138,38 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     av_init_packet(&pkt);
     pkt.data = pData;
     pkt.size = iSize;
-    av_packet_split_side_data(&pkt);
-    skip = iSize - pkt.size;
-    pData = pkt.data;
-    iSize = pkt.size;
-    av_packet_free_side_data(&pkt);
+    int didSplit = av_packet_split_side_data(&pkt);
+    if (didSplit)
+    {
+      skip = iSize - pkt.size;
+      pData = pkt.data;
+      iSize = pkt.size;
+      av_packet_free_side_data(&pkt);
+    }
+  }
+
+  if (pData)
+  {
+    if (m_currentPts == DVD_NOPTS_VALUE)
+    {
+      if (m_nextPts != DVD_NOPTS_VALUE)
+      {
+        m_currentPts = m_nextPts;
+        m_nextPts = DVD_NOPTS_VALUE;
+      }
+      else if (pts != DVD_NOPTS_VALUE)
+      {
+        m_currentPts = pts;
+      }
+    }
+
+    m_nextPts = pts;
   }
 
   if (pData && !m_backlogSize)
   {
     if (iSize <= 0)
-      return 0;
-
-    if (m_currentPts == DVD_NOPTS_VALUE)
-      m_currentPts = pts;
+      return used + skip;
 
     m_dataSize = m_bufferSize;
     used = m_parser.AddData(pData, iSize, &m_buffer, &m_dataSize);
@@ -167,26 +179,18 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     {
       m_backlogSize = iSize - used;
       memcpy(m_backlogBuffer, pData + used, m_backlogSize);
-      if (m_nextPts != DVD_NOPTS_VALUE)
-      {
-        m_nextPts = pts;
-      }
       used = iSize;
     }
   }
   else if (pData)
   {
-    if (m_nextPts != DVD_NOPTS_VALUE)
-    {
-      m_nextPts = pts;
-    }
     memcpy(m_backlogBuffer + m_backlogSize, pData, iSize);
     m_backlogSize += iSize;
     used = iSize;
   }
 
   if (!m_dataSize)
-    return used;
+    return used + skip;
 
   if (m_dataSize)
   {
