@@ -2304,58 +2304,53 @@ bool CVideoPlayer::CheckSceneSkip(CCurrentStream& current)
 
 void CVideoPlayer::CheckAutoSceneSkip()
 {
-  if(!m_Edl.HasCut())
+  if (!m_Edl.HasCut())
     return;
 
-  /*
-   * Check that there is an audio and video stream.
-   */
-  if(m_CurrentAudio.id < 0
-  || m_CurrentVideo.id < 0)
+
+  // Check that there is an audio and video stream.
+  if(m_CurrentAudio.id < 0 ||
+     m_CurrentVideo.id < 0)
     return;
 
-  /*
-   * If there is a startpts defined for either the audio or video stream then VideoPlayer is still
-   * still decoding frames to get to the previously requested seek point.
-   */
-  if(m_CurrentAudio.inited == false
-  || m_CurrentVideo.inited == false)
+
+  // If there is a startpts defined for either the audio or video stream then VideoPlayer is still
+  // still decoding frames to get to the previously requested seek point.
+
+  if (m_CurrentAudio.inited == false ||
+      m_CurrentVideo.inited == false)
     return;
 
-  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE
-  || m_CurrentVideo.dts == DVD_NOPTS_VALUE)
+  if (m_CurrentAudio.dts == DVD_NOPTS_VALUE ||
+      m_CurrentVideo.dts == DVD_NOPTS_VALUE)
     return;
 
   const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
 
   CEdl::Cut cut;
-  if(!m_Edl.InCut(clock, &cut))
+  if (!m_Edl.InCut(clock, &cut))
     return;
 
-  if(cut.action == CEdl::CUT
-  && !(cut.end == m_EdlAutoSkipMarkers.cut || cut.start == m_EdlAutoSkipMarkers.cut)) // To prevent looping if same cut again
+  if (cut.action == CEdl::CUT &&
+      !(cut.end == m_EdlAutoSkipMarkers.cut || cut.start == m_EdlAutoSkipMarkers.cut)) // To prevent looping if same cut again
   {
     CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
               __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
               CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
-    /*
-     * Seeking either goes to the start or the end of the cut depending on the play direction.
-     */
+
+    //Seeking either goes to the start or the end of the cut depending on the play direction.
     int seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
-    /*
-     * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
-     */
+
+    // Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
     m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, false, false, true, false, true));
-    /*
-     * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
-     * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
-     * cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
-     */
+
+    // Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
+    // if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
+    // cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
     m_EdlAutoSkipMarkers.cut = GetPlaySpeed() >= 0 ? cut.end : cut.start;
   }
-  else if(cut.action == CEdl::COMM_BREAK
-  &&      GetPlaySpeed() >= 0
-  &&      cut.start > m_EdlAutoSkipMarkers.commbreak_end)
+  else if (cut.action == CEdl::COMM_BREAK && GetPlaySpeed() >= 0 &&
+           cut.start > m_EdlAutoSkipMarkers.commbreak_end)
   {
     std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
     CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
@@ -2366,17 +2361,13 @@ void CVideoPlayer::CheckAutoSceneSkip()
                 __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
                 CEdl::MillisecondsToTimeString(clock).c_str());
 
-      /*
-       * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
-       */
+      // Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
       m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, false, true, false, true));
     }
 
-    /*
-     * Each commercial break is only skipped once so poorly detected commercial breaks can be
-     * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
-     * to the start of the commercial break if incorrectly flagged.
-     */
+    // Each commercial break is only skipped once so poorly detected commercial breaks can be
+    // manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
+    // to the start of the commercial break if incorrectly flagged.
     m_EdlAutoSkipMarkers.commbreak_start = cut.start;
     m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
     m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
@@ -2512,7 +2503,7 @@ void CVideoPlayer::HandleMessages()
           continue;
         }
 
-        if(!msg.GetTrickPlay())
+        if (!msg.GetTrickPlay())
         {
           g_infoManager.SetDisplayAfterSeek(100000);
           if(msg.GetFlush())
