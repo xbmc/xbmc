@@ -241,7 +241,8 @@ bool CGUIWindowPVRRecordings::Update(const std::string &strDirectory, bool updat
 
 void CGUIWindowPVRRecordings::UpdateButtons(void)
 {
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNGROUPITEMS, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS));
+  bool bGroupRecordings = CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNGROUPITEMS, bGroupRecordings);
 
   CGUIRadioButtonControl *btnShowDeleted = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWDELETED);
   if (btnShowDeleted)
@@ -252,6 +253,9 @@ void CGUIWindowPVRRecordings::UpdateButtons(void)
 
   CGUIWindowPVRBase::UpdateButtons();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, m_bShowDeletedRecordings ? g_localizeStrings.Get(19179) : ""); /* Deleted recordings trash */
+
+  const CPVRRecordingsPath path(m_vecItems->GetPath());
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, bGroupRecordings && path.IsValid() ? path.GetDirectoryPath() : "");
 }
 
 bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)

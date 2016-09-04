@@ -897,7 +897,7 @@
 					<top>0</top>
 					<width>120</width>
 					<height>100</height>
-					<onclick condition="!String.IsEmpty(Container.FolderPath)">Container.Update(" ",replace)</onclick>
+					<onclick condition="!String.IsEmpty(Container.FolderPath)">Container.Update($INFO[Container.FolderPath],replace)</onclick>
 					<onclick condition="String.IsEmpty(Container.FolderPath)">Action(Back)</onclick>
 					<texturefocus></texturefocus>
 					<texturenofocus></texturenofocus>
@@ -925,7 +925,7 @@
 						<label>$INFO[Container.FolderName, / ]</label>
 						<include>BreadcrumbsLabel</include>
 						<visible>![Container.Content() + Window.IsActive(videos)]</visible>
-						<visible>![Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRTimers.xml)]</visible>
+						<visible>![Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRTimers.xml) | Window.IsActive(MyPVRRecordings.xml) | Window.IsActive(MyPVRSearch.xml)]</visible>
 					</control>
 					<control type="label">
 						<label>$INFO[Container.PluginCategory, / ]</label>
