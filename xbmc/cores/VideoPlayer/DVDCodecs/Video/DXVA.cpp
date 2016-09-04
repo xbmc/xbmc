@@ -920,6 +920,12 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
 #endif
   }
 
+  std::list<EINTERLACEMETHOD> deintMethods;
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);
+  m_processInfo.UpdateDeinterlacingMethods(deintMethods);
+  m_processInfo.SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);
+
   m_state = DXVA_OPEN;
   return true;
 }
