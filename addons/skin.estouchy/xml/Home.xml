@@ -99,29 +99,29 @@
 					<item id="1">
 						<label>$LOCALIZE[31011][CR]$LOCALIZE[31013]</label>
 						<onclick>Control.Move(9010,1)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
+						<icon></icon>
+						<thumb></thumb>
 						<visible>Library.HasContent(Movies)</visible>
 					</item>
 					<item id="2">
 						<label>$LOCALIZE[31011][CR]$LOCALIZE[31014]</label>
 						<onclick>Control.Move(9010,1)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
+						<icon></icon>
+						<thumb></thumb>
 						<visible>Library.HasContent(TVShows)</visible>
 					</item>
 					<item id="3">
 						<label>$LOCALIZE[31011][CR]$LOCALIZE[31016]</label>
 						<onclick>Control.Move(9010,1)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
+						<icon></icon>
+						<thumb></thumb>
 						<visible>Library.HasContent(Music)</visible>
 					</item>
 					<item id="4">
 						<label>24001</label>
 						<onclick>Control.Move(9010,1)</onclick>
-						<icon>-</icon>
-						<thumb>-</thumb>
+						<icon></icon>
+						<thumb></thumb>
 						<visible>Integer.IsGreater(Container(2400).NumItems,0)</visible>
 					</item>
 				</content>
@@ -169,7 +169,7 @@
 				<onright>9002</onright>
 				<onup>9001</onup>
 				<ondown>20</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>300</scrolltime>
 				<orientation>Horizontal</orientation>
 				<itemlayout height="100" width="120">

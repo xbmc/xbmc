@@ -41,7 +41,7 @@
 			<posy>72</posy>
 			<width>660</width>
 			<height>138</height>
-			<label>-</label>
+			<label></label>
 			<font>font22</font>
 		</control>
 		<control type="progress" id="20">

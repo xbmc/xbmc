@@ -150,7 +150,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -169,7 +169,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -188,7 +188,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -207,7 +207,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -226,7 +226,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -245,7 +245,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -264,7 +264,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -283,7 +283,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -302,7 +302,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 				<control type="image">
@@ -321,7 +321,7 @@
 					<height>60</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<label></label>
 					<font>font22</font>
 				</control>
 			</control>

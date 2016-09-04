@@ -11,8 +11,8 @@
 			<top>0</top>
 			<width>1920</width>
 			<height>800</height>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
@@ -79,14 +79,14 @@
 							<textureradioonnofocus>osd/fullscreen/buttons/play.png</textureradioonnofocus>
 							<textureradioofffocus colordiffuse="button_focus">osd/fullscreen/buttons/pause.png</textureradioofffocus>
 							<textureradiooffnofocus>osd/fullscreen/buttons/pause.png</textureradiooffnofocus>
-							<texturefocus>-</texturefocus>
+							<texturefocus></texturefocus>
 							<width>125</width>
 							<animation center="77,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
 							<height>123</height>
 							<radiowidth>74</radiowidth>
 							<radioheight>74</radioheight>
-							<font>-</font>
-							<texturenofocus>-</texturenofocus>
+							<font></font>
+							<texturenofocus></texturenofocus>
 							<selected>Player.Paused</selected>
 							<onclick>PlayerControl(Play)</onclick>
 							<visible>Player.PauseEnabled</visible>
@@ -116,14 +116,14 @@
 							<textureradioonnofocus>osd/fullscreen/buttons/record-white.png</textureradioonnofocus>
 							<textureradioofffocus colordiffuse="button_focus">osd/fullscreen/buttons/record.png</textureradioofffocus>
 							<textureradiooffnofocus>osd/fullscreen/buttons/record.png</textureradiooffnofocus>
-							<texturefocus>-</texturefocus>
+							<texturefocus></texturefocus>
 							<width>125</width>
 							<animation center="77,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
 							<height>123</height>
 							<radiowidth>74</radiowidth>
 							<radioheight>74</radioheight>
-							<font>-</font>
-							<texturenofocus>-</texturenofocus>
+							<font></font>
+							<texturenofocus></texturenofocus>
 							<radioposx>0</radioposx>
 							<radioposy>0</radioposy>
 							<selected>!Player.Recording | Control.HasFocus(606)</selected>

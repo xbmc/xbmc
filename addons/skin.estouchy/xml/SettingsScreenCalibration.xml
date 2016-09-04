@@ -29,8 +29,8 @@
 			<posy>0</posy>
 			<width>64</width>
 			<height>32</height>
-			<label>-</label>
-			<font>-</font>
+			<label></label>
+			<font></font>
 			<onclick>Back</onclick>
 			<texturefocus>DialogCloseButton-focus.png</texturefocus>
 			<texturenofocus>DialogCloseButton.png</texturenofocus>
@@ -46,7 +46,7 @@
 			<width>128</width>
 			<height>128</height>
 			<texturefocus>calibrate_top.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturenofocus></texturenofocus>
 		</control>
 		<control type="mover" id="9">
 			<description>right bottom mover</description>
@@ -55,7 +55,7 @@
 			<width>128</width>
 			<height>128</height>
 			<texturefocus>calibrate_bottom.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturenofocus></texturenofocus>
 		</control>
 		<control type="mover" id="10">
 			<description>subtitle position mover</description>
@@ -64,7 +64,7 @@
 			<width>512</width>
 			<height>128</height>
 			<texturefocus>calibrate_subtitles.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturenofocus></texturenofocus>
 		</control>
 		<control type="resize" id="11">
 			<description>pixel aspect ratio box</description>
@@ -73,7 +73,7 @@
 			<width>256</width>
 			<height>256</height>
 			<texturefocus>calibrate_aspect.png</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturenofocus></texturenofocus>
 		</control>
 		<control type="group">
 			<posx>20</posx>
@@ -83,7 +83,7 @@
 				<posx>0</posx>
 				<posy>10</posy>
 				<width>1240</width>
-				<label>-</label>
+				<label></label>
 				<align>center</align>
 				<font>font13caps</font>
 			</control>
@@ -92,7 +92,7 @@
 				<posx>0</posx>
 				<posy>40</posy>
 				<width>1240</width>
-				<label>-</label>
+				<label></label>
 				<align>center</align>
 				<font>font13caps</font>
 			</control>

@@ -36,7 +36,7 @@
 		<control type="button" id="1000">
 			<description>button template</description>
 			<left>2</left>
-			<top>-</top>
+			<top></top>
 			<width>446</width>
 			<height>60</height>
 			<font>fontContextMenu</font>

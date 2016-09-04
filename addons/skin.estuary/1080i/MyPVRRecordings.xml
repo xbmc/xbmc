@@ -268,11 +268,11 @@
 				<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 			</include>
 			<control type="label" id="29">
-				<font>-</font>
+				<font></font>
 				<include>HiddenObject</include>
 			</control>
 			<control type="label" id="30">
-				<font>-</font>
+				<font></font>
 				<include>HiddenObject</include>
 			</control>
 			<include>BottomBar</include>

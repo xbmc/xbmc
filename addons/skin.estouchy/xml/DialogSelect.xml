@@ -243,7 +243,7 @@
 				<description>Cancel button</description>
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<label>-</label>
+				<label></label>
 			</control>
 		</control>
 	</controls>

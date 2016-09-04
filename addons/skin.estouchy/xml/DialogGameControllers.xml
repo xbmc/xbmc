@@ -140,7 +140,7 @@
 			<posx>20</posx>
 			<height>50</height>
 			<font>font20_title</font>
-			<label>-</label>
+			<label></label>
 			<align>center</align>
 			<aligny>center</aligny>
 		</control>

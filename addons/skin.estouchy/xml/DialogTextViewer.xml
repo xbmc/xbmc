@@ -42,7 +42,7 @@
 			<posy>60</posy>
 			<width>900</width>
 			<height>720</height>
-			<label>-</label>
+			<label></label>
 			<font>font20</font>
 			<align>justify</align>
 			<pagecontrol>61</pagecontrol>

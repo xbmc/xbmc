@@ -9,7 +9,7 @@
 			<include content="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="1300" />
 				<param name="DialogBackgroundHeight" value="850" />
-				<param name="DialogHeaderLabel" value="-" />
+				<param name="DialogHeaderLabel" value="" />
 				<param name="DialogHeaderId" value="411" />
 			</include>
 			<control type="grouplist" id="9000">

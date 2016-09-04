@@ -20,7 +20,7 @@
 				<align>center</align>
 				<font>font10</font>
 				<selectedcolor>white</selectedcolor>
-				<label fallback="-">$INFO[$PARAM[infolabel]]</label>
+				<label fallback="">$INFO[$PARAM[infolabel]]</label>
 			</control>
 		</control>
 	</include>
@@ -207,7 +207,7 @@
 							<selectedcolor>button_focus</selectedcolor>
 							<textcolor>button_focus</textcolor>
 							<aligny>center</aligny>
-							<label fallback="-">$INFO[ListItem.Label2]</label>
+							<label fallback="">$INFO[ListItem.Label2]</label>
 						</control>
 					</control>
 					<control type="group">
@@ -276,7 +276,7 @@
 								<selectedcolor>button_focus</selectedcolor>
 								<textcolor>button_focus</textcolor>
 								<aligny>center</aligny>
-								<label fallback="-">$INFO[ListItem.Label2]</label>
+								<label fallback="">$INFO[ListItem.Label2]</label>
 							</control>
 						</control>
 						<control type="group">

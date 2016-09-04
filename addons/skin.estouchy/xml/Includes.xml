@@ -201,9 +201,9 @@
 				<posy>2</posy>
 				<width>150</width>
 				<height>75</height>
-				<font>-</font>
-				<texturenofocus>-</texturenofocus>
-				<texturefocus>-</texturefocus>
+				<font></font>
+				<texturenofocus></texturenofocus>
+				<texturefocus></texturefocus>
 				<onclick>ActivateWindow(Home)</onclick>
 			</control>
 			<control type="image">
@@ -221,9 +221,9 @@
 			<posy>16</posy>
 			<height>45</height>
 			<width>145</width>
-			<font>-</font>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<font></font>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<onclick>ActivateWindow(weather)</onclick>
 			<visible>!String.IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
@@ -391,7 +391,7 @@
 			<posy>0</posy>
 			<width>60</width>
 			<height>60</height>
-			<font>-</font>
+			<font></font>
 			<onclick>back</onclick>
 			<texturefocus>icon_dialog_close.png</texturefocus>
 			<texturenofocus>icon_dialog_close.png</texturenofocus>
@@ -472,7 +472,7 @@
 		<onright>9002</onright>
 		<onup>9001</onup>
 		<ondown>20</ondown>
-		<pagecontrol>-</pagecontrol>
+		<pagecontrol></pagecontrol>
 		<scrolltime>300</scrolltime>
 		<orientation>Horizontal</orientation>
 		<itemlayout height="78" width="120">
@@ -581,7 +581,7 @@
 				<posy>20</posy>
 				<width>40</width>
 				<height>40</height>
-				<label>-</label>
+				<label></label>
 				<texturenofocus>osd_volume.png</texturenofocus>
 				<texturefocus colordiffuse="blue">osd_volume.png</texturefocus>
 				<onclick>ActivateWindow(1112)</onclick>
@@ -600,7 +600,7 @@
 				<posy>20</posy>
 				<width>40</width>
 				<height>40</height>
-				<label>-</label>
+				<label></label>
 				<texturefocus colordiffuse="blue">osd_pause.png</texturefocus>
 				<texturenofocus>osd_pause.png</texturenofocus>
 				<alttexturefocus colordiffuse="blue">osd_play.png</alttexturefocus>
@@ -633,8 +633,8 @@
 					<posy>0</posy>
 					<width>400</width>
 					<height>80</height>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>-</texturenofocus>
+					<texturefocus></texturefocus>
+					<texturenofocus></texturenofocus>
 					<onclick condition="Player.HasAudio">ActivateWindow(Visualisation)</onclick>
 					<onclick condition="Player.HasVideo">ActivateWindow(FullscreenVideo)</onclick>
 				</control>
@@ -722,7 +722,7 @@
 				<posy>20</posy>
 				<width>40</width>
 				<height>40</height>
-				<label>-</label>
+				<label></label>
 				<texturenofocus>osd_next.png</texturenofocus>
 				<texturefocus colordiffuse="blue">osd_next.png</texturefocus>
 				<onclick>PlayerControl(Next)</onclick>
@@ -741,7 +741,7 @@
 				<posy>20</posy>
 				<width>40</width>
 				<height>40</height>
-				<label>-</label>
+				<label></label>
 				<texturenofocus>osd_stop.png</texturenofocus>
 				<texturefocus colordiffuse="blue">osd_stop.png</texturefocus>
 				<onclick>PlayerControl(Stop)</onclick>
@@ -832,51 +832,51 @@
 				</focusedlayout>
 				<content>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(TVChannels)</onclick>
 						<icon>icon_menu_livetv.png</icon>
 						<visible>Skin.HasSetting(ShowHomeButtonLiveTV)</visible>
 					</item>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(RadioChannels)</onclick>
 						<icon>icon_menu_radio.png</icon>
 						<visible>Skin.HasSetting(ShowHomeButtonRadio)</visible>
 					</item>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
 						<icon>icon_menu_movies.png</icon>
 						<visible>Library.HasContent(Movies)</visible>
 						<visible>!Skin.HasSetting(HideHomeButtonMovies)</visible>
 					</item>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
 						<icon>icon_menu_tvshows.png</icon>
 						<visible>Library.HasContent(TVShows)</visible>
 						<visible>!Skin.HasSetting(HideHomeButtonTVShows)</visible>
 					</item>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(Videos,Root,Return)</onclick>
 						<icon>icon_menu_videos.png</icon>
 						<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>
 					</item>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(Music)</onclick>
 						<icon>icon_menu_music.png</icon>
 						<visible>!Skin.HasSetting(HideHomeButtonMusic)</visible>
 					</item>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(Pictures)</onclick>
 						<icon>icon_menu_pictures.png</icon>
 						<visible>!Skin.HasSetting(HideHomeButtonPictures)</visible>
 					</item>
 					<item>
-						<label>-</label>
+						<label></label>
 						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
 						<icon>icon_menu_addons.png</icon>
 						<visible>!Skin.HasSetting(HideHomeButtonPrograms)</visible>
@@ -941,7 +941,7 @@
 				<onright>9003</onright>
 				<onup>10</onup>
 				<ondown>10</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<scrolltime>300</scrolltime>
 				<orientation>vertical</orientation>
 				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,2)">conditional</animation>
@@ -1023,21 +1023,21 @@
 			<label>31556</label>
 			<onclick>ActivateWindow(TVChannels)</onclick>
 			<icon>icon_menu_livetv.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>Skin.HasSetting(ShowHomeButtonLiveTV)</visible>
 		</item>
 		<item id="2">
 			<label>19021</label>
 			<onclick>ActivateWindow(RadioChannels)</onclick>
 			<icon>icon_menu_radio.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>Skin.HasSetting(ShowHomeButtonRadio)</visible>
 		</item>
 		<item id="3">
 			<label>20342</label>
 			<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
 			<icon>icon_menu_movies.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>Library.HasContent(Movies)</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonMovies)</visible>
 		</item>
@@ -1045,7 +1045,7 @@
 			<label>20343</label>
 			<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
 			<icon>icon_menu_tvshows.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>Library.HasContent(TVShows)</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonTVShows)</visible>
 		</item>
@@ -1053,28 +1053,28 @@
 			<label>3</label>
 			<onclick>ActivateWindow(Videos,Root,Return)</onclick>
 			<icon>icon_menu_videos.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>
 		</item>
 		<item id="6">
 			<label>2</label>
 			<onclick>ActivateWindow(Music)</onclick>
 			<icon>icon_menu_music.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonMusic)</visible>
 		</item>
 		<item id="7">
 			<label>1</label>
 			<onclick>ActivateWindow(Pictures)</onclick>
 			<icon>icon_menu_pictures.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonPictures)</visible>
 		</item>
 		<item id="8">
 			<label>24001</label>
 			<onclick>ActivateWindow(Programs,Addons,return)</onclick>
 			<icon>icon_menu_addons.png</icon>
-			<thumb>-</thumb>
+			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonPrograms)</visible>
 		</item>
 	</include>
@@ -1098,8 +1098,8 @@
 				<posy>0</posy>
 				<include>ScreenWidth</include>
 				<height>960</height>
-				<texturenofocus>-</texturenofocus>
-				<texturefocus>-</texturefocus>
+				<texturenofocus></texturenofocus>
+				<texturefocus></texturefocus>
 				<onclick>ClearProperty(PopupMenuVisible,Home)</onclick>
 			</control>
 			<control type="group">
@@ -1199,13 +1199,13 @@
 		<control type="button" id="21">
 			<description>Level button</description>
 			<include>MenuButtonCommonValues</include>
-			<label>-</label>
+			<label></label>
 		</control>
 		<control type="radiobutton" id ="22">
 			<description>Only show current level</description>
 			<textwidth>240</textwidth>
 			<include>MenuButtonCommonValues</include>
-			<label>-</label>
+			<label></label>
 		</control>
 		<control type="button" id="20">
 			<description>Clear button</description>
@@ -1311,7 +1311,7 @@
 		<control type="button" id="26">
 			<description>Repeat button</description>
 			<include>MenuButtonCommonValues</include>
-			<label>-</label>
+			<label></label>
 		</control>
 		<control type="button" id="21">
 			<description>Save button</description>
@@ -1588,7 +1588,7 @@
 		<control type="button" id="26">
 			<description>Repeat button</description>
 			<include>MenuButtonCommonValues</include>
-			<label>-</label>
+			<label></label>
 		</control>
 		<control type="button" id="21">
 			<description>Save button</description>

@@ -85,8 +85,8 @@
 				<font>font25</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus>-</texturenofocus>
-				<texturefocus>-</texturefocus>
+				<texturenofocus></texturenofocus>
+				<texturefocus></texturefocus>
 			</control>
 			<control type="group">
 				<posx>0</posx>
@@ -186,7 +186,7 @@
 							<font>font25</font>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>-</label>
+							<label></label>
 						</control>
 						<control type="image">
 							<description>BackSpace Icon image</description>
@@ -294,7 +294,7 @@
 							<font>font25</font>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>-</label>
+							<label></label>
 						</control>
 						<control type="image">
 							<description>Enter\done Icon image</description>
@@ -500,7 +500,7 @@
 							<font>font25</font>
 							<align>left</align>
 							<aligny>center</aligny>
-							<label>-</label>
+							<label></label>
 						</control>
 						<control type="image">
 							<description>Shift Icon image</description>
@@ -566,7 +566,7 @@
 							<font>font25</font>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>-</label>
+							<label></label>
 						</control>
 						<control type="image">
 							<description>Previous Icon image</description>
@@ -595,7 +595,7 @@
 							<font>font25</font>
 							<align>center</align>
 							<aligny>center</aligny>
-							<label>-</label>
+							<label></label>
 						</control>
 						<control type="image">
 							<description>Next Icon image</description>

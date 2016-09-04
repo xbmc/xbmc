@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window type="dialog" id="1108">
 	<visible>Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
-	<defaultcontrol>-</defaultcontrol>
+	<defaultcontrol></defaultcontrol>
 	<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
 	<depth>DepthOSD</depth>

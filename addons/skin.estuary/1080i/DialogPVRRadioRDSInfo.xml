@@ -10,7 +10,7 @@
 		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="1300" />
 			<param name="DialogBackgroundHeight" value="920" />
-			<param name="DialogHeaderLabel" value="-" />
+			<param name="DialogHeaderLabel" value="" />
 			<param name="DialogHeaderId" value="2" />
 		</include>
 		<control type="group">
@@ -184,7 +184,7 @@
 				<top>66</top>
 				<width>704</width>
 				<height>29</height>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<label fallback="161">$INFO[RDS.Artist]</label>
 				<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				<visible>String.IsEmpty(RDS.Band) + !String.IsEmpty(RDS.Artist)</visible>
@@ -227,7 +227,7 @@
 				<top>70</top>
 				<width>328</width>
 				<height>100</height>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol></pagecontrol>
 				<label>$INFO[RDS.Artist]</label>
 				<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
@@ -629,12 +629,12 @@
 				<left>0</left>
 				<top>155</top>
 				<subtype>page</subtype>
-				<font>-</font>
+				<font></font>
 				<onright>9000</onright>
 				<onleft>9000</onleft>
 				<ondown>21</ondown>
 				<onup>21</onup>
-				<textcolor>-</textcolor>
+				<textcolor></textcolor>
 				<showonepage>true</showonepage>
 			</control>
 			<control type="textbox" id="22">

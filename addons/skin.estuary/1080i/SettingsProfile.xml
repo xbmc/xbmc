@@ -53,12 +53,12 @@
 					<item id="1">
 						<label>$LOCALIZE[128]</label>
 						<onclick>noop</onclick>
-						<icon>-</icon>
+						<icon></icon>
 					</item>
 					<item id="2">
 						<label>$LOCALIZE[13200]</label>
 						<onclick>noop</onclick>
-						<icon>-</icon>
+						<icon></icon>
 					</item>
 				</content>
 			</control>

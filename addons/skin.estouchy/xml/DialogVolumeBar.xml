@@ -47,9 +47,9 @@
 				<width>500</width>
 				<height>6</height>
  				<info>Player.Volume</info>
-				<texturesliderbar>-</texturesliderbar>
-				<textureslidernib>-</textureslidernib>
-				<textureslidernibfocus>-</textureslidernibfocus>
+				<texturesliderbar></texturesliderbar>
+				<textureslidernib></textureslidernib>
+				<textureslidernibfocus></textureslidernibfocus>
 			</control>
 		</control>
 	</controls>

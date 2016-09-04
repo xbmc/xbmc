@@ -11,7 +11,7 @@
 			<include content="DialogBackgroundCommons">
 				<param name="DialogBackgroundWidth" value="1300" />
 				<param name="DialogBackgroundHeight" value="920" />
-				<param name="DialogHeaderLabel" value="-" />
+				<param name="DialogHeaderLabel" value="" />
 				<param name="DialogHeaderId" value="2" />
 			</include>
 			<control type="grouplist" id="500">

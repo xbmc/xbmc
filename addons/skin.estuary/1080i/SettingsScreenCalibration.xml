@@ -45,7 +45,7 @@
 			<top>150</top>
 			<width>1920</width>
 			<align>center</align>
-			<label>-</label>
+			<label></label>
 			<font>font16</font>
 			<shadowcolor>FF000000</shadowcolor>
 		</control>
@@ -55,7 +55,7 @@
 			<top>210</top>
 			<width>1920</width>
 			<align>center</align>
-			<label>-</label>
+			<label></label>
 			<font>font16</font>
 			<shadowcolor>FF000000</shadowcolor>
 		</control>

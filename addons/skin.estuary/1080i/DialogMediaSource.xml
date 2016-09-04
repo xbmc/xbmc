@@ -140,7 +140,7 @@
 			<height>90</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<label>-</label>
+			<label></label>
 			<onup>10</onup>
 			<ondown>9001</ondown>
 		</control>

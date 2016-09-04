@@ -68,10 +68,10 @@
 		<top>-3000</top>
 		<width>1</width>
 		<height>1</height>
-		<texturefocus>-</texturefocus>
-		<texturenofocus>-</texturenofocus>
-		<label>-</label>
-		<font>-</font>
+		<texturefocus></texturefocus>
+		<texturenofocus></texturenofocus>
+		<label></label>
+		<font></font>
 	</include>
 	<include name="UserRatingCircle">
 		<param name="animation">False</param>
@@ -778,8 +778,8 @@
 				<top>$PARAM[posy]</top>
 				<width>28</width>
 				<height>28</height>
-				<texturefocus>-</texturefocus>
-				<texturenofocus>-</texturenofocus>
+				<texturefocus></texturefocus>
+				<texturenofocus></texturenofocus>
 				<onclick>Control.Move($PARAM[list_id],-1)</onclick>
 				<visible allowhiddenfocus="true">Container($PARAM[list_id]).HasPrevious + [Control.HasFocus($PARAM[list_id]) | Control.HasFocus($PARAM[list_id]500)]</visible>
 			</control>
@@ -788,8 +788,8 @@
 				<top>$PARAM[posy]</top>
 				<width>28</width>
 				<height>28</height>
-				<texturefocus>-</texturefocus>
-				<texturenofocus>-</texturenofocus>
+				<texturefocus></texturefocus>
+				<texturenofocus></texturenofocus>
 				<onclick>Control.Move($PARAM[list_id],1)</onclick>
 				<visible allowhiddenfocus="true">Container($PARAM[list_id]).HasNext + [Control.HasFocus($PARAM[list_id]) | Control.HasFocus($PARAM[list_id]501)]</visible>
 			</control>
@@ -838,8 +838,8 @@
 			<top>-1080</top>
 			<width>5760</width>
 			<height>3240</height>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="button" id="22002">
@@ -848,8 +848,8 @@
 			<top>0</top>
 			<width>$PARAM[DialogBackgroundWidth]</width>
 			<height>$PARAM[DialogBackgroundHeight]</height>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<onclick>noop</onclick>
 		</control>
 		<control type="radiobutton" id="22000">
@@ -859,8 +859,8 @@
 			<height>48</height>
 			<radiowidth>48</radiowidth>
 			<radioheight>48</radioheight>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<label></label>
 			<animation effect="slide" end="-70,0" time="0" condition="true">Conditional</animation>
 			<textureradioofffocus colordiffuse="EEFFFFFF">dialogs/close.png</textureradioofffocus>
@@ -899,8 +899,8 @@
 					<height>100</height>
 					<onclick condition="!String.IsEmpty(Container.FolderPath)">Container.Update(" ",replace)</onclick>
 					<onclick condition="String.IsEmpty(Container.FolderPath)">Action(Back)</onclick>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>-</texturenofocus>
+					<texturefocus></texturefocus>
+					<texturenofocus></texturenofocus>
 				</control>
 				<control type="grouplist">
 					<left>85</left>
@@ -1004,8 +1004,8 @@
 	<include name="TopWeatherIcon">
 		<control type="button">
 			<include>BreadcrumbsLabel</include>
-			<texturefocus>-</texturefocus>
-			<texturenofocus>-</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<aligny>top</aligny>
 			<textoffsetx>0</textoffsetx>
 			<onclick>ActivateWindow(weather)</onclick>
@@ -1118,8 +1118,8 @@
 							<shadowcolor>text_shadow</shadowcolor>
 							<label>$LOCALIZE[33063]</label>
 							<onclick>SetFocus(9000)</onclick>
-							<texturefocus>-</texturefocus>
-							<texturenofocus>-</texturenofocus>
+							<texturefocus></texturefocus>
+							<texturenofocus></texturenofocus>
 							<animation effect="fade" time="225">VisibleChange</animation>
 						</control>
 					</control>

@@ -12,7 +12,7 @@
 				<top>400</top>
 				<width>1235</width>
 				<height>375</height>
-				<label>-</label>
+				<label></label>
 				<onup>50</onup>
 				<ondown>9000</ondown>
 				<onclick>SetProperty(TextViewer_Header,$LOCALIZE[31141] $INFO[ListItem.AddonVersion],home)</onclick>
@@ -200,7 +200,7 @@
 				<top>490</top>
 				<width>511</width>
 				<height>128</height>
-				<label>-</label>
+				<label></label>
 			</control>
 			<control type="textbox">
 				<left>30</left>
