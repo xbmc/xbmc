@@ -147,11 +147,22 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
     {
       XFILE::CCurlFile url;
       // try opening the url to resolve all redirects if any
-      if (url.Open(finalFileitem.GetURL()))
+      try
       {
-        finalFileitem.SetPath(url.GetURL());
+        if (url.Open(finalFileitem.GetURL()))
+        {
+          finalFileitem.SetPath(url.GetURL());
+        }
+        url.Close();
       }
-      url.Close();
+      catch (XFILE::CRedirectException *pRedirectEx)
+      {
+        if (pRedirectEx)
+        {
+          delete pRedirectEx->m_pNewFileImp;
+          delete pRedirectEx;
+        }
+      }
     }
 
     if (finalFileitem.IsType(".m3u8"))
