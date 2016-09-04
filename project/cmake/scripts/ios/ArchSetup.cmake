@@ -31,5 +31,5 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework CoreMedia" "-framework AVFoundation"
                     "-framework VideoToolbox")
 
-set(ENABLE_DVDCSS OFF)
-set(ENABLE_OPTICAL OFF)
+set(ENABLE_DVDCSS OFF CACHE BOOL "" FORCE)
+set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
