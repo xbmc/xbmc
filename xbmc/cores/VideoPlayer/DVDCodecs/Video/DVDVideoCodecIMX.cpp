@@ -1517,18 +1517,15 @@ int setIPUMotion(bool hasPrev, EINTERLACEMETHOD imethod)
 void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &srcRect,
                        const CRect &dstRect, uint8_t fieldFmt, int page)
 {
+  static unsigned char pg;
+
   if (page == RENDER_TASK_AUTOPAGE)
-    page = m_pg;
+    page = pg;
   else if (page < 0 && page >= m_fbPages)
     return;
 
-  m_pg = ++m_pg % m_fbPages;
-
-  IPUTaskPtr ipu(new IPUTask);
-  ipu->page = page;
-
-  SetFieldData(fieldFmt, source->m_fps);
-  PrepareTask(ipu, srcRect, dstRect);
+  IPUTaskPtr ipu(new IPUTask(source_p, source, page));
+  pg = ++pg % m_fbPages;
 
 #ifdef IMX_PROFILE_BUFFERS
   unsigned long long before = XbmcThreads::SystemClockMillis();
@@ -1540,22 +1537,17 @@ void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &sr
     return;
 
   m_flip = ipu->page | checkIPUStrideOffset(&ipu->task.input.deinterlace) << 4;
-  m_pingFlip.Set();
+  m_waitFlip.Set();
 
 #ifdef IMX_PROFILE_BUFFERS
   unsigned long long after = XbmcThreads::SystemClockMillis();
   CLog::Log(LOGDEBUG, "+P 0x%x@%d  %d\n", ((CDVDVideoCodecIMXBuffer*)ipu->current)->GetIdx(), ipu->page, (int)(after-before));
 #endif
-
-  m_fbCurrentPage.store(ipu->page);
-  m_waitFlip.Set();
-
-  m_flip[ipu->page] = checkIPUStrideOffset(&ipu->task.input.deinterlace);
 }
 
 void CIMXContext::WaitVSync()
 {
-  m_waitVSync.WaitMSec(1000 / g_graphicsContext.GetFPS());
+  m_waitVSync.WaitMSec(1300 / g_graphicsContext.GetFPS());
 }
 
 bool CIMXContext::ShowPage()
