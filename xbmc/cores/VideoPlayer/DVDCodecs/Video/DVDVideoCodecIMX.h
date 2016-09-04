@@ -108,10 +108,10 @@ public:
 
   // Blitter configuration
   bool IsDoubleRate() const { return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN; }
-  void SetVideoPixelFormat(CProcessInfo *m_pProcessInfo);
-
+  void SetProcessInfo(CProcessInfo *m_pProcessInfo);
   bool IsZoomAllowed() const { return m_zoomAllowed; }
 
+  ipu_motion_sel SetIPUMotion(std::string &strImethod);
   // Blits a buffer to a particular page (-1 for auto page)
   // source_p (previous buffer) is required for de-interlacing
   // modes LOW_MOTION and MED_MOTION.
@@ -197,6 +197,7 @@ private:
   CEvent                         m_onStartup;
   CEvent                         m_waitFlip;
   CProcessInfo                  *m_processInfo;
+  ipu_motion_sel                 m_motion;
 
   bool                           m_zoomAllowed;
   CCriticalSection               m_pageSwapLock;

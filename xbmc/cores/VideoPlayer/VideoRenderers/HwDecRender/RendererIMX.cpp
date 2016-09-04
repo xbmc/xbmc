@@ -92,28 +92,9 @@ bool CRendererIMX::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-bool CRendererIMX::Supports(EINTERLACEMETHOD method)
-{
-  if(method == VS_INTERLACEMETHOD_AUTO)
-    return true;
-
-  if(method == VS_INTERLACEMETHOD_IMX_ADVMOTION
-  || method == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF
-  || method == VS_INTERLACEMETHOD_IMX_FASTMOTION
-  || method == VS_INTERLACEMETHOD_RENDER_BOB)
-    return true;
-  else
-    return false;
-}
-
 bool CRendererIMX::Supports(ESCALINGMETHOD method)
 {
   return method == VS_SCALINGMETHOD_AUTO;
-}
-
-EINTERLACEMETHOD CRendererIMX::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF;
 }
 
 bool CRendererIMX::WantsDoublePass()

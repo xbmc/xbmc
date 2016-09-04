@@ -33,6 +33,8 @@
 #include "linux/imx/IMX.h"
 #include "libavcodec/avcodec.h"
 
+#include "guilib/LocalizeStrings.h"
+
 #include <cassert>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -439,7 +441,7 @@ CIMXCodec::CIMXCodec()
 
 CIMXCodec::~CIMXCodec()
 {
-  g_IMXContext.SetVideoPixelFormat(nullptr);
+  g_IMXContext.SetProcessInfo(nullptr);
   StopThread(false);
   ProcessSignals(SIGNAL_SIGNAL);
   SetDrainMode(VPU_DEC_IN_DRAIN);
@@ -623,11 +625,18 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
     return false;
   }
 
+  std::list<EINTERLACEMETHOD> deintMethods({ EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO,
+                                             EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BOB });
+
+  for(int i = EINTERLACEMETHOD::VS_INTERLACEMETHOD_IMX_FASTMOTION; i <= EINTERLACEMETHOD::VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF; ++i)
+    deintMethods.push_back(static_cast<EINTERLACEMETHOD>(i));
+
   m_processInfo = m_pProcessInfo;
   m_processInfo->SetVideoDecoderName(m_pFormatName, true);
   m_processInfo->SetVideoDimensions(m_hints.width, m_hints.height);
-  m_processInfo->SetVideoDeintMethod("hardware");
-  g_IMXContext.SetVideoPixelFormat(m_processInfo);
+  m_processInfo->SetVideoDeintMethod("none");
+  m_processInfo->UpdateDeinterlacingMethods(deintMethods);
+  g_IMXContext.SetProcessInfo(m_processInfo);
 
   return true;
 }
@@ -1480,6 +1489,10 @@ void CIMXContext::SetFieldData(uint8_t fieldFmt, double fps)
     return;
 
   m_fps = fps;
+
+  std::string strMotion;
+  m_motion = SetIPUMotion(strMotion);
+  m_processInfo->SetVideoDeintMethod(strMotion);
   CLog::Log(LOGDEBUG, "iMX : Output parameters changed - deinterlace %s%s, fps: %.3f\n", !!fieldFmt ? "active" : "not active", IsDoubleRate() ? " DR" : "", m_fps);
 
   CSingleLock lk(m_pageSwapLock);
@@ -1503,15 +1516,28 @@ bool checkIPUStrideOffset(struct ipu_deinterlace *d)
   }
 }
 
-inline
-int setIPUMotion(bool hasPrev, EINTERLACEMETHOD imethod)
+ipu_motion_sel CIMXContext::SetIPUMotion(std::string &strImethod)
 {
-  if (hasPrev && imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION)
-    return MED_MOTION;
-  else if (hasPrev && (imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF || imethod == VS_INTERLACEMETHOD_AUTO))
+  EINTERLACEMETHOD imethod = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
+  switch (imethod)
+  {
+  case VS_INTERLACEMETHOD_IMX_ADVMOTION:
+    strImethod = g_localizeStrings.Get(16336);
     return MED_MOTION;
 
-  return HIGH_MOTION;
+  case VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF:
+  case VS_INTERLACEMETHOD_AUTO:
+    strImethod = g_localizeStrings.Get(16335);
+    return MED_MOTION;
+
+  case VS_INTERLACEMETHOD_IMX_FASTMOTION:
+    strImethod = g_localizeStrings.Get(16334);
+    return HIGH_MOTION;
+
+  default:
+    strImethod = g_localizeStrings.Get(16021);
+    return HIGH_MOTION;
+  }
 }
 
 void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &srcRect,
@@ -1576,15 +1602,15 @@ bool CIMXContext::ShowPage()
   return true;
 }
 
-void CIMXContext::SetVideoPixelFormat(CProcessInfo *m_pProcessInfo)
+void CIMXContext::SetProcessInfo(CProcessInfo *m_pProcessInfo)
 {
   m_processInfo = m_pProcessInfo;
   if (!m_processInfo)
     return;
 
-  if (m_processInfo && m_fbVar.bits_per_pixel == 16)
+  if (m_fbVar.bits_per_pixel == 16)
     m_processInfo->SetVideoPixelFormat("YUV 4:2:2");
-  else if (m_processInfo)
+  else
     m_processInfo->SetVideoPixelFormat("RGBA8888");
 }
 
@@ -1618,7 +1644,7 @@ void CIMXContext::Clear(int page)
   else
     CLog::Log(LOGERROR, "iMX Clear fb error : Unexpected format");
 
-  SetVideoPixelFormat(m_processInfo);
+  SetProcessInfo(m_processInfo);
 }
 
 void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
@@ -1680,7 +1706,7 @@ void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
   if (m_currentFieldFmt)
   {
     ipu->task.input.deinterlace.enable = 1;
-    ipu->task.input.deinterlace.motion = setIPUMotion(ipu->previous, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+    ipu->task.input.deinterlace.motion = m_motion;
     ipu->task.input.deinterlace.field_fmt = m_currentFieldFmt;
   }
 }
