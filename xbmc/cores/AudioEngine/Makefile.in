@@ -17,6 +17,13 @@ ifneq (0,${OSSLIBDIR})
 endif
 
 CXXFLAGS += -D__STDC_LIMIT_MACROS
+ifeq (@HAVE_SSE@,1)
+  CXXFLAGS += -DHAVE_SSE -msse
+endif
+ifeq (@HAVE_SSE2@,1)
+  CXXFLAGS += -DHAVE_SSE2 -msse2
+endif
+
 
 SRCS  = AEFactory.cpp
 
