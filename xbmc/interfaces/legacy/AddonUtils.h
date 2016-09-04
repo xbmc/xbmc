@@ -41,19 +41,22 @@
  * This file contains the public definitions for the Addon api. It's meant to be used
  * by those writing language bindings.
  */
+
+namespace XBMCAddon
+{
+class LanguageHook;
+}
+
 namespace XBMCAddonUtils
 {
-  //***********************************************************
-  // Some simple helpers
-  void guiLock();
-  void guiUnlock();
-  //***********************************************************
-
   class GuiLock
   {
   public:
-    GuiLock() { guiLock(); }
-    ~GuiLock() { guiUnlock(); }
+    GuiLock();
+    ~GuiLock();
+
+  protected:
+    XBMCAddon::LanguageHook* languageHook;
   };
 
   class InvertSingleLockGuard

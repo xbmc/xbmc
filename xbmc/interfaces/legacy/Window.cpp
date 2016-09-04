@@ -143,8 +143,14 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
 
-      // this is called from non-scripting-language callstacks. Don't use the delayed call guard.
-      CSingleLock lock(g_graphicsContext);
+      //! @todo rework locking
+      // Python GIL and g_graphicsContext are deadlock happy
+      // dispose is called from GUIWindowManager and in this case DelayGuard must not be used.
+      if (!g_application.IsCurrentThread())
+      {
+        SingleLockWithDelayGuard gslock(g_graphicsContext, languageHook);
+      }
+
       if (!isDisposed)
       {
         isDisposed = true;

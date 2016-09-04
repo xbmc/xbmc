@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "utils/XBMCTinyXML.h"
 #include "addons/Skin.h"
+#include "LanguageHook.h"
 #ifdef ENABLE_XBMC_TRACE_API
 #include "utils/log.h"
 #include "threads/ThreadLocal.h"
@@ -29,19 +30,23 @@
 
 namespace XBMCAddonUtils
 {
-  //***********************************************************
-  // Some simple helpers
-  void guiLock()
+  GuiLock::GuiLock()
   {
+    languageHook = XBMCAddon::LanguageHook::GetLanguageHook();
+    if (languageHook)
+      languageHook->DelayedCallOpen();
+
     g_application.LockFrameMoveGuard();
   }
 
-  void guiUnlock()
+  GuiLock::~GuiLock()
   {
     g_application.UnlockFrameMoveGuard();
+
+    if (languageHook)
+      languageHook->DelayedCallClose();
   }
-  //***********************************************************
-  
+
   static char defaultImage[1024];
 
   const char *getDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
