@@ -18,41 +18,46 @@
  *
  */
 
-#include "ProcessInfoPi.h"
-#include "linux/RBP.h"
+#include "ProcessInfoIOS.h"
+#include "threads/SingleLock.h"
 
 // Override for platform ports
-#if defined(TARGET_RASPBERRY_PI)
+#if defined(TARGET_DARWIN_IOS)
 
 CProcessInfo* CProcessInfo::CreateInstance()
 {
-  return new CProcessInfoPi();
+  return new CProcessInfoIOS();
 }
 
 
 // base class definitions
-CProcessInfoPi::CProcessInfoPi()
+CProcessInfoIOS::CProcessInfoIOS()
 {
 
 }
 
-CProcessInfoPi::~CProcessInfoPi()
+CProcessInfoIOS::~CProcessInfoIOS()
 {
 
 }
 
-EINTERLACEMETHOD CProcessInfoPi::GetFallbackDeintMethod()
+void CProcessInfoIOS::SetSwDeinterlacingMethods()
 {
-  return EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE_HALF;
-}
+  // first populate with the defaults from base implementation
+  CProcessInfo::SetSwDeinterlacingMethods();
 
-bool CProcessInfoPi::AllowDTSHDDecode()
-{
-  if (g_RBP.RasberryPiVersion() == 1)
-    return false;
-  return true;
-}
+  std::list<EINTERLACEMETHOD> methods;
+  {
+    // get the current methods
+    CSingleLock lock(m_videoCodecSection);
+    methods = m_deintMethods;
+  }
+  // add bob deinterlacer for ios
+  methods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BOB);
 
+  // update with the new methods list
+  UpdateDeinterlacingMethods(methods);
+}
 
 #endif
 

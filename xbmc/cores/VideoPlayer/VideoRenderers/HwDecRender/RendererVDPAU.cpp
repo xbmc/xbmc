@@ -98,14 +98,6 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-bool CRendererVDPAU::Supports(EINTERLACEMETHOD method)
-{
-  VDPAU::CVdpauRenderPicture *VDPAUPic = (VDPAU::CVdpauRenderPicture*)m_buffers[m_iYV12RenderBuffer].hwDec;
-  if(VDPAUPic && VDPAUPic->vdpau)
-    return VDPAUPic->vdpau->Supports(method);
-  return false;
-}
-
 bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
 {
   if (m_format == RENDER_FMT_VDPAU_420)

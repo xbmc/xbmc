@@ -88,8 +88,7 @@ bool CRendererIMX::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_IMX_ADVMOTION
   || method == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF
   || method == VS_INTERLACEMETHOD_IMX_FASTMOTION
-  || method == VS_INTERLACEMETHOD_RENDER_BOB
-  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+  || method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else
     return false;

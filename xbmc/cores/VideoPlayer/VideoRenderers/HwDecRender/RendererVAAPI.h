@@ -39,7 +39,6 @@ public:
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
 protected:

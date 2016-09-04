@@ -93,6 +93,7 @@ public:
   bool IsRenderingGuiLayer();
   bool IsRenderingVideoLayer();
   bool Supports(EINTERLACEMETHOD method);
+  EINTERLACEMETHOD GetDeinterlacingMethodDefault();
   bool Supports(ESCALINGMETHOD method);
   bool Supports(ERENDERFEATURE feature);
   unsigned int RenderCaptureAlloc();

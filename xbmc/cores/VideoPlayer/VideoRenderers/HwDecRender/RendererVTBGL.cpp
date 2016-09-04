@@ -65,11 +65,6 @@ bool CRendererVTB::Supports(EINTERLACEMETHOD method)
   return false;
 }
 
-EINTERLACEMETHOD CRendererVTB::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_NONE;
-}
-
 bool CRendererVTB::LoadShadersHook()
 {
   CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");

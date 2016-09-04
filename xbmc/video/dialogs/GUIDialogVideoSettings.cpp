@@ -257,9 +257,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(16039, VS_INTERLACEMETHOD_NONE));
   entries.push_back(std::make_pair(16019, VS_INTERLACEMETHOD_AUTO));
   entries.push_back(std::make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
-  entries.push_back(std::make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
   entries.push_back(std::make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
-  entries.push_back(std::make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
   entries.push_back(std::make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
   entries.push_back(std::make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
   entries.push_back(std::make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
@@ -293,6 +291,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   if (!entries.empty())
   {
+    if (!g_application.m_pPlayer->Supports(videoSettings.m_InterlaceMethod))
+    {
+      videoSettings.m_InterlaceMethod = g_application.m_pPlayer->GetDeinterlacingMethodDefault();
+    }
     AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
   }
 

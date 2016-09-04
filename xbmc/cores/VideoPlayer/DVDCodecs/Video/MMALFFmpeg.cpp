@@ -93,7 +93,7 @@ CMMALYUVBuffer::~CMMALYUVBuffer()
 #undef CLASSNAME
 #define CLASSNAME "CDecoder"
 
-CDecoder::CDecoder()
+CDecoder::CDecoder(CProcessInfo &processInfo) : m_processInfo(processInfo)
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - create %p", CLASSNAME, __FUNCTION__, this);
@@ -243,6 +243,15 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder output", CLASSNAME, __func__);
     return false;
   }
+
+  std::list<EINTERLACEMETHOD> deintMethods;
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_ADVANCED);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_BOB);
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_BOB_HALF);
+  m_processInfo.UpdateDeinterlacingMethods(deintMethods);
+
   return true;
 }
 

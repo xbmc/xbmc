@@ -377,9 +377,10 @@ public:
   virtual bool IsRenderingVideo();
   virtual bool IsRenderingGuiLayer();
   virtual bool IsRenderingVideoLayer();
-  virtual bool Supports(EINTERLACEMETHOD method);
-  virtual bool Supports(ESCALINGMETHOD method);
-  virtual bool Supports(ERENDERFEATURE feature);
+  virtual bool Supports(EINTERLACEMETHOD method) override;
+  virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
+  virtual bool Supports(ESCALINGMETHOD method) override;
+  virtual bool Supports(ERENDERFEATURE feature) override;
 
   virtual unsigned int RenderCaptureAlloc();
   virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags);
@@ -405,7 +406,6 @@ protected:
   virtual void VideoParamsChange() override;
   virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
   virtual void UpdateClockSync(bool enabled) override;
-  virtual void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods) override;
 
   void CreatePlayers();
   void DestroyPlayers();

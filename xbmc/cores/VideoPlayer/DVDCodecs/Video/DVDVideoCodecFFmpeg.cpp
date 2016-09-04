@@ -150,19 +150,17 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
   const char* pixFmtName = av_get_pix_fmt_name(*fmt);
 
   // if frame threading is enabled hw accel is not allowed
-  if(ctx->m_decoderState != STATE_HW_SINGLE)
+  // 2nd condition:
+  // fix an ffmpeg issue here, it calls us with an invalid profile
+  // then a 2nd call with a valid one
+  if(ctx->m_decoderState != STATE_HW_SINGLE ||
+     (avctx->codec_id == AV_CODEC_ID_VC1 && avctx->profile == FF_PROFILE_UNKNOWN))
   {
     AVPixelFormat defaultFmt = avcodec_default_get_format(avctx, fmt);
     pixFmtName = av_get_pix_fmt_name(defaultFmt);
     ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
+    ctx->m_processInfo.SetSwDeinterlacingMethods();
     return defaultFmt;
-  }
-
-  // fix an ffmpeg issue here, it calls us with an invalid profile
-  // then a 2nd call with a valid one
-  if (avctx->codec_id == AV_CODEC_ID_VC1 && avctx->profile == FF_PROFILE_UNKNOWN)
-  {
-    return avcodec_default_get_format(avctx, fmt);
   }
 
   // hardware decoder de-selected, restore standard ffmpeg
@@ -244,7 +242,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
 #ifdef HAS_MMAL
     if (*cur == AV_PIX_FMT_YUV420P)
     {
-      MMAL::CDecoder* dec = new MMAL::CDecoder();
+      MMAL::CDecoder* dec = new MMAL::CDecoder(ctx->m_processInfo);
       if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
       {
         ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
@@ -259,6 +257,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avct
   }
 
   ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
+  ctx->m_processInfo.SetSwDeinterlacingMethods();
   ctx->m_decoderState = STATE_HW_FAILED;
   return avcodec_default_get_format(avctx, fmt);
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2007-2015 Team XBMC
+ *      Copyright (C) 2005-2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,35 +17,15 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 #pragma once
 
-#include "system.h"
+#include "cores/IPlayer.h"
+#include "../../ProcessInfo.h"
 
-#if defined(TARGET_DARWIN_OSX)
-
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
-
-class CRendererVTB : public CLinuxRendererGL
+class CProcessInfoIOS : public CProcessInfo
 {
 public:
-  CRendererVTB();
-  virtual ~CRendererVTB();
-
-  // Player functions
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
-  virtual void ReleaseBuffer(int idx);
-
-  // Feature support
-  virtual bool Supports(EINTERLACEMETHOD method);
-
-protected:
-  virtual bool LoadShadersHook();
-
-  // textures
-  virtual bool UploadTexture(int index);
-  virtual void DeleteTexture(int index);
-  virtual bool CreateTexture(int index);
+  CProcessInfoIOS();
+  virtual ~CProcessInfoIOS();
+  void SetSwDeinterlacingMethods() override;
 };
-
-#endif

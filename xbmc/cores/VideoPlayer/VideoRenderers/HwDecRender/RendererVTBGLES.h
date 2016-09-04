@@ -38,8 +38,6 @@ public:
   virtual void ReleaseBuffer(int idx) override;
 
   // Feature support
-  virtual bool Supports(EINTERLACEMETHOD method) override;
-  virtual EINTERLACEMETHOD AutoInterlaceMethod() override;
   virtual CRenderInfo GetRenderInfo() override;
 
 protected:

@@ -88,6 +88,11 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   mainctx->hwaccel_context = avctx->hwaccel_context;
 
   m_processInfo.SetVideoDeintMethod("none");
+
+  std::list<EINTERLACEMETHOD> deintMethods;
+  deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
+  m_processInfo.UpdateDeinterlacingMethods(deintMethods);
+
   return true;
 }
 

@@ -429,9 +429,6 @@ public:
   virtual const std::string Name() { return "vaapi"; }
   virtual void SetCodecControl(int flags);
 
-  bool Supports(EINTERLACEMETHOD method);
-  EINTERLACEMETHOD AutoInterlaceMethod();
-
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
@@ -469,7 +466,6 @@ protected:
   CVaapiRenderPicture *m_presentPicture;
 
   int m_codecControl;
-  std::vector<EINTERLACEMETHOD> m_diMethods;
   CProcessInfo& m_processInfo;
 };
 

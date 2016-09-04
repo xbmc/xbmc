@@ -146,9 +146,7 @@ public:
   // Feature support
   virtual bool SupportsMultiPassRendering() override;
   virtual bool Supports(ERENDERFEATURE feature) override;
-  virtual bool Supports(EINTERLACEMETHOD method) override;
   virtual bool Supports(ESCALINGMETHOD method) override;
-  virtual EINTERLACEMETHOD AutoInterlaceMethod() override;
 
   virtual CRenderInfo GetRenderInfo() override;
 

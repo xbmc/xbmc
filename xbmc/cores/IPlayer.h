@@ -140,10 +140,8 @@ enum EINTERLACEMETHOD
   VS_INTERLACEMETHOD_AUTO=1,
   VS_INTERLACEMETHOD_RENDER_BLEND=2,
 
-  VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED=3,
   VS_INTERLACEMETHOD_RENDER_WEAVE=4,
 
-  VS_INTERLACEMETHOD_RENDER_BOB_INVERTED=5,
   VS_INTERLACEMETHOD_RENDER_BOB=6,
 
   VS_INTERLACEMETHOD_DEINTERLACE=7,
@@ -408,6 +406,7 @@ public:
   virtual bool IsRenderingVideoLayer() { return false; };
 
   virtual bool Supports(EINTERLACEMETHOD method) { return false; };
+  virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() { return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE; }
   virtual bool Supports(ESCALINGMETHOD method) { return false; };
   virtual bool Supports(ERENDERFEATURE feature) { return false; };
 
