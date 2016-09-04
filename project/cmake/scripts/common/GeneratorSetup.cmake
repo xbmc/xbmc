@@ -38,6 +38,11 @@ if(APPLE AND CMAKE_VERSION VERSION_LESS 3.4)
                   "or the usage of the patched version in depends.")
 endif()
 
+# Windows needs CMake 3.6 (VS_STARTUP_PROJECT)
+if(WIN32 AND CMAKE_VERSION VERSION_LESS 3.6)
+  message(FATAL_ERROR "Build on Windows needs CMake 3.6 or later")
+endif()
+
 # Ninja needs CMake 3.2 due to ExternalProject BUILD_BYPRODUCTS usage
 if(CMAKE_GENERATOR STREQUAL Ninja AND CMAKE_VERSION VERSION_LESS 3.2)
   message(FATAL_ERROR "Generator: Ninja requires CMake 3.2 or later")
