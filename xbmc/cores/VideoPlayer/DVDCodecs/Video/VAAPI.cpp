@@ -1540,6 +1540,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           if (!m_vaError)
           {
             m_state = O_TOP_CONFIGURED_IDLE;
+            msg->Reply(COutputControlProtocol::ACC);
           }
           else
           {
