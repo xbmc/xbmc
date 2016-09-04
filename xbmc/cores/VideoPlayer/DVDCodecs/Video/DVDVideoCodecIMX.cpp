@@ -1354,6 +1354,7 @@ void CIMXContext::MemMap(struct fb_fix_screeninfo *fb_fix)
     m_fbPageSize = m_fbLineLength * m_fbVar.yres_virtual / m_fbPages;
     m_fbPhysAddr = fb_fix->smem_start;
     m_fbVirtAddr = (uint8_t*)mmap(0, m_fbPhysSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fbHandle, 0);
+    Clear();
   }
 }
 
@@ -1433,6 +1434,8 @@ bool CIMXContext::Blank()
 void CIMXContext::Run()
 {
   unsigned long curBlank = FB_BLANK_NORMAL;
+
+  CSingleLock lk(m_pageSwapLock);
   while (curBlank &&
         !ioctl(open(FB_DEVICE, O_RDONLY, 0), MXCFB_GET_FB_BLANK, &curBlank))
     Sleep(10);
@@ -1456,7 +1459,7 @@ bool CIMXContext::SetVSync(bool enable)
 inline
 void CIMXContext::SetFieldData(uint8_t fieldFmt, double fps)
 {
-  if (m_bStop || !IsRunning())
+  if (m_bStop || !IsRunning() || !m_bFbIsConfigured)
     return;
 
   bool dr = IsDoubleRate();
@@ -1552,33 +1555,28 @@ void CIMXContext::WaitVSync()
 
 bool CIMXContext::ShowPage()
 {
-  m_waitFlip.Wait();
-  int page = m_fbCurrentPage.load();
+  {
+    CSingleLock lk(m_pageSwapLock);
+    if (!m_fbHandle || !m_bFbIsConfigured)
+      return false;
+  }
 
-  CSingleLock lk(m_pageSwapLock);
-  if (!m_fbHandle || !m_bFbIsConfigured) return false;
-  // Protect page swapping from screen capturing that does read the current
-  // front buffer. This is actually not done very frequently so the lock
-  // does not hurt.
-  bool ret = true;
+  m_waitFlip.Wait();
+
+  bool off = m_flip >> 4;
+  m_fbCurrentPage = m_flip & 0xf;
 
   m_fbVar.activate = FB_ACTIVATE_VBL;
-  m_fbVar.yoffset = (m_fbVar.yres + 1) * page + !m_flip[page];
+  m_fbVar.yoffset = (m_fbVar.yres + 1) * m_fbCurrentPage + !off;
   if (ioctl(m_fbHandle, FBIOPAN_DISPLAY, &m_fbVar) < 0)
   {
     CLog::Log(LOGWARNING, "Panning failed: %s\n", strerror(errno));
-    ret = false;
+    return false;
   }
 
   m_waitVSync.Set();
 
-  // Wait for flip
-  if (ret && m_vsync && ioctl(m_fbHandle, FBIO_WAITFORVSYNC, 0) < 0)
-  {
-    CLog::Log(LOGWARNING, "Vsync failed: %s\n", strerror(errno));
-    ret = false;
-  }
-  return ret;
+  return true;
 }
 
 void CIMXContext::SetVideoPixelFormat(CProcessInfo *m_pProcessInfo)
@@ -1851,6 +1849,7 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
     return false;
   }
 
+  CSingleLock lk(m_pageSwapLock);
   if (m_bufferCapture && buffer)
   {
     struct g2d_surface src, dst;
@@ -1858,7 +1857,7 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
     memset(&dst, 0, sizeof(dst));
 
     {
-      src.planes[0] = m_fbPhysAddr + m_fbCurrentPage.load() * m_fbPageSize;
+      src.planes[0] = m_fbPhysAddr + m_fbCurrentPage * m_fbPageSize;
       dst.planes[0] = m_bufferCapture->buf_paddr;
       if (m_fbVar.bits_per_pixel == 16)
       {
@@ -1896,9 +1895,7 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
     std::memcpy(buffer, m_bufferCapture->buf_vaddr, m_bufferCapture->buf_size);
   }
   else
-  {
     CLog::Log(LOGERROR, "iMX : Error allocating capture buffer\n");
-  }
 
   if (m_bufferCapture && g2d_free(m_bufferCapture))
     CLog::Log(LOGERROR, "iMX : Error while freeing capture buuffer\n");
@@ -1943,5 +1940,8 @@ void CIMXContext::Stop(bool bWait /*= true*/)
 void CIMXContext::Process()
 {
   while (!m_bStop)
+  {
     ShowPage();
+    std::this_thread::yield();
+  }
 }
