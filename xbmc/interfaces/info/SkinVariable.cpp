@@ -35,18 +35,17 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
     const TiXmlElement* valuenode = node.FirstChildElement("value");
     while (valuenode)
     {
-      if (valuenode->FirstChild())
-      {
-        CSkinVariableString::ConditionLabelPair pair;
-        const char *condition = valuenode->Attribute("condition");
-        if (condition)
-          pair.m_condition = g_infoManager.Register(condition, context);
+      CSkinVariableString::ConditionLabelPair pair;
+      const char *condition = valuenode->Attribute("condition");
+      if (condition)
+        pair.m_condition = g_infoManager.Register(condition, context);
 
-        pair.m_label = CGUIInfoLabel(valuenode->FirstChild()->ValueStr());
-        tmp->m_conditionLabelPairs.push_back(pair);
-        if (!pair.m_condition)
-          break; // once we reach default value (without condition) break iterating
-      }
+      auto label = valuenode->FirstChild() ? valuenode->FirstChild()->ValueStr() : "";
+      pair.m_label = CGUIInfoLabel(label);
+      tmp->m_conditionLabelPairs.push_back(pair);
+      if (!pair.m_condition)
+        break; // once we reach default value (without condition) break iterating
+
       valuenode = valuenode->NextSiblingElement("value");
     }
     if (!tmp->m_conditionLabelPairs.empty())
