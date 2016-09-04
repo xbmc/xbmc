@@ -422,6 +422,8 @@ CIMXCodec::CIMXCodec()
   , m_fps(-1)
   , m_burst(0)
 {
+  m_nrOut.store(0);
+
   m_vpuHandle = 0;
   m_converter = NULL;
 #ifdef DUMP_STREAM
@@ -813,6 +815,7 @@ void CIMXCodec::RecycleFrameBuffers()
     m_pts[m_recycleBuffers.front()] = DVD_NOPTS_VALUE;
     VPU_DecOutFrameDisplayed(m_vpuHandle, m_recycleBuffers.front());
     m_recycleBuffers.pop_front();
+  --m_nrOut;
   }
 }
 
@@ -925,12 +928,13 @@ void CIMXCodec::Process()
       if (m_decRet & VPU_DEC_INIT_OK || m_decRet & VPU_DEC_RESOLUTION_CHANGED)
       // VPU decoding init OK : We can retrieve stream info
       {
-        m_decOutput.setquotasize(1);
-        if (m_decRet & VPU_DEC_RESOLUTION_CHANGED && m_decOutput.size())
+        if (m_decRet & VPU_DEC_RESOLUTION_CHANGED)
         {
-          unsigned int returning = m_decOutput.size() + RENDER_QUEUE_SIZE;
-          while (m_recycleBuffers.size() < returning && !m_bStop)
+          while (m_nrOut > 3 && !m_bStop)
+          {
+            RecycleFrameBuffers();
             std::this_thread::yield();
+          }
         }
 
         if (VPU_DecGetInitialInfo(m_vpuHandle, &m_initInfo) != VPU_DEC_RET_SUCCESS)
@@ -980,6 +984,7 @@ void CIMXCodec::Process()
         m_frameInfo.pExtInfo->nFrmWidth  = (((m_frameInfo.pExtInfo->nFrmWidth) + 15) & ~15);
         m_frameInfo.pExtInfo->nFrmHeight = (((m_frameInfo.pExtInfo->nFrmHeight) + 15) & ~15);
 
+        ++m_nrOut;
         CDVDVideoCodecIMXBuffer *buffer = new CDVDVideoCodecIMXBuffer(&m_frameInfo, m_fps, m_decOpenParam.nMapType);
 
         /* quick & dirty fix to get proper timestamping for VP8 codec */
