@@ -1303,7 +1303,7 @@ void CRenderManager::PrepareNextRender()
       m_QueueSkip++;
     }
 
-    int lateframes = (renderPts - m_Queue[idx].pts) / frametime;
+    int lateframes = (renderPts - m_Queue[idx].pts) * m_fps / DVD_TIME_BASE;
     if (lateframes)
       m_lateframes += lateframes;
     else
