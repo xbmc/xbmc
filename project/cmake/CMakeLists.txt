@@ -55,7 +55,6 @@ if(UNIX)
   if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
     option(ENABLE_X11         "Enable X11 support?" ON)
   endif()
-  option(ENABLE_EGL         "Enable EGL?" OFF)
   option(ENABLE_OPTICAL     "Enable optical support?" ON)
 endif()
 # System options

@@ -9,4 +9,5 @@ xbmc/powermanagement/linux powermanagement/linux
 xbmc/storage/linux         storage/linux
 xbmc/filesystem/posix      filesystem/posix
 xbmc/utils/posix           utils_posix
+xbmc/windowing/egl         windowing/egl
 xbmc/platform/posix        posix
