@@ -71,7 +71,7 @@ std::list<VpuFrameBuffer*> m_recycleBuffers;
 const int CIMXContext::m_fbPages = 3;
 
 // Experiments show that we need at least one more (+1) VPU buffer than the min value returned by the VPU
-const unsigned int CIMXCodec::m_extraVpuBuffers = 2 + CIMXContext::m_fbPages + RENDER_QUEUE_SIZE;
+const unsigned int CIMXCodec::m_extraVpuBuffers = 1 + CIMXContext::m_fbPages + RENDER_QUEUE_SIZE;
 
 CDVDVideoCodecIMX::~CDVDVideoCodecIMX()
 {
