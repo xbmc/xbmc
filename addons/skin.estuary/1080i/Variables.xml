@@ -19,16 +19,14 @@
 		<value>$INFO[Player.Time]$INFO[Player.Title, - ]</value>
 	</variable>
 	<variable name="AutoCompletionContentVar">
-		<value condition="!System.HasAddon(plugin.program.autocompletion) | System.HasHiddenInput"></value>
-		<value>plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
+		<value condition="System.HasAddon(plugin.program.autocompletion) | !System.HasHiddenInput">plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
 	</variable>
 	<variable name="PlaylistLabel2Var">
 		<value condition="Window.IsActive(musicplaylist)">$INFO[ListItem.Duration]</value>
 		<value>$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
 	</variable>
 	<variable name="AndroidAppPathVar">
-		<value condition="!System.Platform.Android"></value>
-		<value>androidapp://sources/apps/</value>
+		<value condition="System.Platform.Android">androidapp://sources/apps/</value>
 	</variable>
 	<variable name="AddonCountLabel">
 		<value condition="Integer.IsGreater(Container(8000).NumItems,10)">&gt;9</value>
@@ -145,13 +143,12 @@
 	</variable>
 	<variable name="AddonsListIconVar">
 		<value condition="!String.IsEmpty(ListItem.AddonBroken)">icons/addonstatus/disable.png</value>
-		<value condition="ListItem.IsParentFolder"></value>
 		<value condition="ListItem.Property(addon.orphaned)">icons/addonstatus/orphan.png</value>
 		<value condition="ListItem.Property(addon.downloading)">icons/addonstatus/install.png</value>
 		<value condition="ListItem.Property(addon.isinstalled) + !ListItem.Property(addon.isenabled) + Window.IsActive(addonbrowser)">icons/addonstatus/disable.png</value>
 		<value condition="ListItem.Property(addon.hasupdate)">icons/addonstatus/update.png</value>
 		<value condition="ListItem.Property(addon.isinstalled)">OverlayWatched.png</value>
-		<value>OverlayUnwatched.png</value>
+		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
 	</variable>
 	<variable name="ResolutionFlagVar">
 		<value condition="ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
@@ -311,11 +308,10 @@
 	</variable>
 	<variable name="ListWatchedIconVar">
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
-		<value condition="ListItem.IsParentFolder"></value>
-			<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
+		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
 		<value condition="ListItem.IsFolder + Container.Content(files)">overlays/folder.png</value>
-		<value>OverlayUnwatched.png</value>
+		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
 	</variable>
 	<variable name="SettingsSectionIcon">
 		<value condition="Window.IsActive(playersettings)">icons/settings/video.png</value>
