@@ -1447,14 +1447,11 @@ bool CIMXContext::Blank()
 
 void CIMXContext::Run()
 {
-  unsigned long curBlank = FB_BLANK_NORMAL;
-
   CSingleLock lk(m_pageSwapLock);
-  while (curBlank &&
-        !ioctl(open(FB_DEVICE, O_RDONLY, 0), MXCFB_GET_FB_BLANK, &curBlank))
+  while (CIMX::IsBlank())
     Sleep(10);
 
-  m_bFbIsConfigured = !curBlank;
+  m_bFbIsConfigured = true;
 }
 
 bool CIMXContext::Unblank()
