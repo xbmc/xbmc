@@ -9361,7 +9361,19 @@ msgctxt "#19093"
 msgid "Instant recording: %s"
 msgstr ""
 
-#empty strings from id 19094 to 19096
+#. error message displayed in case adding a timer failed because no suitable epg-based timer type could be found.
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#19094"
+msgid "Timer creation failed. The PVR add-on does not support a suitable timer type."
+msgstr ""
+
+#. error message displayed in case adding a timer rule failed because no suitable epg-based timer rule type could be found.
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#19095"
+msgid "Timer rule creation failed. The PVR add-on does not support a suitable timer rule type."
+msgstr ""
+
+#empty string with id 19096
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
