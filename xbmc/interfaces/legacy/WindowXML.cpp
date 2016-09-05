@@ -240,7 +240,6 @@ namespace XBMCAddon
 
       if (fi == NULL)
       {
-        XBMCAddonUtils::guiUnlock();
         throw WindowException("Index out of range (%i)",position);
       }
 
