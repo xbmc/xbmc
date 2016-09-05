@@ -36,13 +36,13 @@ extern "C" {
 #endif
 #endif
 
-#ifdef HAVE_SSE
+#if defined(HAVE_SSE) && defined(__SSE__)
 #include <xmmintrin.h>
 #else
 #define __m128 void
 #endif
 
-#ifdef HAVE_SSE2
+#if defined(HAVE_SSE2) && defined(__SSE2__)
 #include <emmintrin.h>
 #endif
 
@@ -138,7 +138,7 @@ class CAEUtil
 {
 private:
   static unsigned int m_seed;
-  #ifdef HAVE_SSE2
+  #if defined(HAVE_SSE2) && defined(__SSE2__)
     static __m128i m_sseSeed;
   #endif
 
@@ -211,7 +211,7 @@ public:
     return 20*log10(scale);
   }
 
-  #ifdef HAVE_SSE
+  #if defined(HAVE_SSE) && defined(__SSE__)
   static void SSEMulArray     (float *data, const float mul, uint32_t count);
   static void SSEMulAddArray  (float *data, float *add, const float mul, uint32_t count);
   #endif

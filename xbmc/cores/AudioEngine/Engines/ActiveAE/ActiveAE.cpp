@@ -2025,7 +2025,7 @@ bool CActiveAE::RunStages()
 
               for(int j=0; j<out->pkt->planes; j++)
               {
-#ifdef HAVE_SSE
+#if defined(HAVE_SSE) && defined(__SSE__)
                 CAEUtil::SSEMulArray((float*)out->pkt->data[j]+i*nb_floats, volume, nb_floats);
 #else
                 float* fbuffer = (float*) out->pkt->data[j]+i*nb_floats;
@@ -2094,7 +2094,7 @@ bool CActiveAE::RunStages()
               {
                 float *dst = (float*)out->pkt->data[j]+i*nb_floats;
                 float *src = (float*)mix->pkt->data[j]+i*nb_floats;
-#ifdef HAVE_SSE
+#if defined(HAVE_SSE) && defined(__SSE__)
                 CAEUtil::SSEMulAddArray(dst, src, volume, nb_floats);
                 for (int k = 0; k < nb_floats; ++k)
                 {
@@ -2486,7 +2486,7 @@ void CActiveAE::MixSounds(CSoundPacket &dstSample)
       out = (float*)dstSample.data[j];
       sample_buffer = (float*)(it->sound->GetSound(false)->data[j]+start);
       int nb_floats = mix_samples * dstSample.config.channels / dstSample.planes;
-#ifdef HAVE_SSE
+#if defined(HAVE_SSE) && defined(__SSE__)
       CAEUtil::SSEMulAddArray(out, sample_buffer, volume, nb_floats);
 #else
       for (int k = 0; k < nb_floats; ++k)
@@ -2517,7 +2517,7 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
     for(int j=0; j<dstSample.planes; j++)
     {
       buffer = (float*)dstSample.data[j];
-#ifdef HAVE_SSE
+#if defined(HAVE_SSE) && defined(__SSE__)
       CAEUtil::SSEMulArray(buffer, volume, nb_floats);
 #else
       float *fbuffer = buffer;
