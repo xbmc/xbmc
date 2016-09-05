@@ -1700,7 +1700,7 @@ void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
   ipu->task.output.crop.h     = iDstRect.Height();
 
   // Setup deinterlacing if enabled
-  if (m_currentFieldFmt)
+  if (m_currentFieldFmt && ipu->previous)
   {
     ipu->task.input.deinterlace.enable = 1;
     ipu->task.input.deinterlace.motion = m_motion;
@@ -1715,7 +1715,7 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
 
   if (ipu->current->iFormat != _4CC('T', 'N', 'V', 'F') && ipu->current->iFormat != _4CC('T', 'N', 'V', 'P'))
   {
-    if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION && ipu->previous)
+    if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION)
     {
       ipu->task.input.paddr_n = ipu->task.input.paddr;
       ipu->task.input.paddr   = ipu->previous->pPhysAddr + pad;
@@ -1726,7 +1726,7 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
   }
 
   // Use band mode directly to FB, as no transformations needed (eg cropping)
-  if (m_fps > 51 && m_fbWidth == 1920 && ipu->task.input.width == 1920 && !ipu->task.input.deinterlace.enable)
+  if (m_fps >= 49 && m_fbWidth == 1920 && ipu->task.input.width == 1920 && !ipu->task.input.deinterlace.enable)
   {
     m_zoomAllowed = false;
     ipu->task.output.crop.pos.x = ipu->task.input.crop.pos.x = 0;
@@ -1773,7 +1773,7 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
 
   ipu->task.input.paddr   = vdoa.output.paddr + pad;
   ipu->task.input.format  = vdoa.output.format;
-  if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION && ipu->previous)
+  if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION)
   {
     ipu->task.input.paddr_n = ipu->task.input.paddr;
     ipu->task.input.paddr   = ipu->previous->pPhysAddr + pad;
