@@ -1952,6 +1952,7 @@ void CIMXContext::Stop(bool bWait /*= true*/)
     return;
 
   CThread::StopThread(false);
+  m_waitFlip.Set();
   Blank();
   if (bWait && IsRunning())
     CThread::StopThread(true);
