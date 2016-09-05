@@ -567,7 +567,10 @@ bool CGUIWindowPVRBase::AddTimer(CFileItem *item, bool bCreateRule, bool bShowTi
   CPVRTimerInfoTagPtr newTimer(epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, bCreateRule) : CPVRTimerInfoTag::CreateInstantTimerTag(channel));
   if (!newTimer)
   {
-    CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to create timer for epg tag!", __FUNCTION__);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033},
+                                  bCreateRule
+                                    ? CVariant{19095} // "Information", "Timer rule creation failed. The PVR add-on does not support a suitable timer rule type."
+                                    : CVariant{19094}); // "Information", "Timer creation failed. The PVR add-on does not support a suitable timer type."
     return false;
   }
 
