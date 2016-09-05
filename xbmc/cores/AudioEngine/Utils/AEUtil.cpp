@@ -33,7 +33,7 @@ extern "C" {
 
 /* declare the rng seed and initialize it */
 unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
-#ifdef HAVE_SSE2
+#if defined(HAVE_SSE2) && defined(__SSE2__)
   /* declare the SSE seed and initialize it */
   MEMALIGN(16, __m128i CAEUtil::m_sseSeed) = _mm_set_epi32(CAEUtil::m_seed, CAEUtil::m_seed+1, CAEUtil::m_seed, CAEUtil::m_seed+1);
 #endif
@@ -231,7 +231,7 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
   return formats[dataFormat];
 }
 
-#ifdef HAVE_SSE
+#if defined(HAVE_SSE) && defined(__SSE__)
 void CAEUtil::SSEMulArray(float *data, const float mul, uint32_t count)
 {
   const __m128 m = _mm_set_ps1(mul);
@@ -367,7 +367,7 @@ inline float CAEUtil::SoftClamp(const float x)
 
 void CAEUtil::ClampArray(float *data, uint32_t count)
 {
-#ifndef HAVE_SSE
+#if !defined(HAVE_SSE) || !defined(__SSE__)
   for (uint32_t i = 0; i < count; ++i)
     data[i] = SoftClamp(data[i]);
 
@@ -460,7 +460,7 @@ float CAEUtil::FloatRand1(const float min, const float max)
 
 void CAEUtil::FloatRand4(const float min, const float max, float result[4], __m128 *sseresult/* = NULL */)
 {
-  #ifdef HAVE_SSE2
+  #if defined(HAVE_SSE2) && defined(__SSE2__)
     /*
       this method may be called from other SSE code, we need
       to calculate the delta & factor using SSE as the FPU
