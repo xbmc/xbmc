@@ -26,6 +26,7 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using ADDON::CVisualisation;
 
@@ -61,7 +62,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation* vis)
   {
     SetUseDetails(false);
     SetMultiSelection(false);
-    SetHeading(StringUtils::Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str()));
+    SetHeading(CVariant{StringUtils::Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str())});
     std::vector<std::string> presets;
     if (m_viz->GetPresetList(presets))
     {
