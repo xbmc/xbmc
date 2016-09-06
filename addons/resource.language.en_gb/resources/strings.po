@@ -13448,7 +13448,9 @@ msgctxt "#21844"
 msgid "XP comment"
 msgstr ""
 
-#empty strings from id 21845 to 21856
+msgctxt "#21845"
+msgid "Scan to library"
+msgstr ""
 
 msgctxt "#21857"
 msgid "Sub-location"

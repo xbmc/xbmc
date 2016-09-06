@@ -954,6 +954,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
       }
+
+      if ((!item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId == -1) && info && info->Content() != CONTENT_NONE)
+        buttons.Add(CONTEXT_BUTTON_SCAN_TO_LIBRARY, 21845);
+
     }
   }
 }
@@ -1040,6 +1044,9 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       return true;
     }
+  case CONTEXT_BUTTON_SCAN_TO_LIBRARY:
+    CGUIDialogVideoInfo::ShowFor(*item);
+    return true;
 
   default:
     break;
