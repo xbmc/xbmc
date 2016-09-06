@@ -30,6 +30,7 @@
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
+#include "URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -74,15 +75,16 @@ std::string CPVRRecordings::TrimSlashes(const std::string &strOrig) const
   return strReturn;
 }
 
-bool CPVRRecordings::IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const
+bool CPVRRecordings::IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory, bool bGrouped) const
 {
   std::string strUseDirectory = TrimSlashes(strDirectory);
   std::string strUseEntryDirectory = TrimSlashes(strEntryDirectory);
 
   /* Case-insensitive comparison since sub folders are created with case-insensitive matching (GetSubDirectories) */
-  return CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS) ?
-      StringUtils::EqualsNoCase(strUseDirectory, strUseEntryDirectory) :
-        StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
+  if (bGrouped)
+    return StringUtils::EqualsNoCase(strUseDirectory, strUseEntryDirectory);
+  else
+    return StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
 }
 
 void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results)
@@ -267,13 +269,33 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
 {
   CSingleLock lock(m_critSection);
 
-  CPVRRecordingsPath recPath(strPath);
+  bool bGrouped = false;
+  const CURL url(strPath);
+  if (url.HasOption("view"))
+  {
+    const std::string view(url.GetOption("view"));
+    if (view == "grouped")
+      bGrouped = true;
+    else if (view == "flat")
+      bGrouped = false;
+    else
+    {
+      CLog::Log(LOGERROR, "CPVRRecordings - %s - unsupported value '%s' for url parameter 'view'", __FUNCTION__, view.c_str());
+      return false;
+    }
+  }
+  else
+  {
+    bGrouped = CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
+  }
+
+  CPVRRecordingsPath recPath(url.GetWithoutOptions());
   if (recPath.IsValid())
   {
     // Get the directory structure if in non-flatten mode
     // Deleted view is always flatten. So only for an active view
     std::string strDirectory(recPath.GetDirectoryPath());
-    if (!recPath.IsDeleted() && CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS))
+    if (!recPath.IsDeleted() && bGrouped)
       GetSubDirectories(recPath, &items);
 
     // get all files of the currrent directory or recursively all files starting at the current directory if in flatten mode
@@ -282,7 +304,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       CPVRRecordingPtr current = recording.second;
 
       // Omit recordings not matching criteria
-      if (!IsDirectoryMember(strDirectory, current->m_strDirectory) ||
+      if (!IsDirectoryMember(strDirectory, current->m_strDirectory, bGrouped) ||
           current->IsDeleted() != recPath.IsDeleted() ||
           current->IsRadio() != recPath.IsRadio())
         continue;
