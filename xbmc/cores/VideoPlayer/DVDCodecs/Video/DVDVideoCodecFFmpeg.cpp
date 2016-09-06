@@ -143,11 +143,13 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
   m_lastPTS = pts;
 }
 
-enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx, const AVPixelFormat * fmt)
+enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx, const AVPixelFormat * fmt)
 {
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
   const char* pixFmtName = av_get_pix_fmt_name(*fmt);
+
+  ctx->m_processInfo.SetVideoDimensions(avctx->coded_width, avctx->coded_height);
 
   // if frame threading is enabled hw accel is not allowed
   // 2nd condition:
@@ -452,7 +454,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   UpdateName();
 
-  m_processInfo.SetVideoDimensions(m_pCodecContext->coded_width, m_pCodecContext->coded_height);
   m_dropCtrl.Reset(true);
   return true;
 }
