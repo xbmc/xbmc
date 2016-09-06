@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "addons/interfaces/api1/PVR/AddonCallbacksPVR.h"
+#include "addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 

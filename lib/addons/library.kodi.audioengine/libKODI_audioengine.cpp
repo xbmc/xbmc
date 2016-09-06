@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string>
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"
-#include "addons/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h"
+#include "addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h"
 
 #ifdef _WIN32
 #include <windows.h>

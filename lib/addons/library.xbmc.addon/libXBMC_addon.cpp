@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h"
-#include "addons/interfaces/api1/Addon/AddonCallbacksAddon.h"
+#include "addons/binary/interfaces/api1/Addon/AddonCallbacksAddon.h"
 
 #ifdef _WIN32
 #include <windows.h>

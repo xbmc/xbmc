@@ -398,7 +398,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/addons/
 /xbmc/addons/Makefile
-/xbmc/addons/interfaces/Makefile
+/xbmc/addons/binary/interfaces/Makefile
 
 # /xbmc/platform/android
 /xbmc/platform/android/Makefile
