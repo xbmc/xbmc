@@ -63,6 +63,7 @@ if(NOT WIN32)
                                                  --disable-shared
                                                  --with-pic
                                                  --prefix=<INSTALL_DIR>
+                                                 --libdir=<INSTALL_DIR>/lib
                                                  "${EXTRA_FLAGS}"
                                                  "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                  "LDFLAGS=${CMAKE_LD_FLAGS}"
@@ -94,6 +95,7 @@ if(NOT WIN32)
                                                 --disable-shared
                                                 --with-pic
                                                 --prefix=<INSTALL_DIR>
+                                                --libdir=<INSTALL_DIR>/lib
                                                 "${EXTRA_FLAGS}"
                                                 "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                 "LDFLAGS=${CMAKE_LD_FLAGS}"
@@ -126,6 +128,7 @@ if(NOT WIN32)
                                                --disable-shared
                                                --with-pic
                                                --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
+                                               --libdir=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib
                                                "${EXTRA_FLAGS}"
                                                "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
                                                "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
