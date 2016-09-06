@@ -1206,6 +1206,9 @@ bool CPVRManager::PlayMedia(const CFileItem& item)
   if (pvrItem.IsPVRChannel() && !g_PVRManager.CheckParentalLock(pvrItem.GetPVRChannelInfoTag()))
     return false;
 
+  /* copy over resume info from original item */
+  pvrItem.m_lStartOffset = item.m_lStartOffset;
+
   if (!g_application.IsCurrentThread())
   {
     CFileItemList *l = new CFileItemList; //don't delete,
