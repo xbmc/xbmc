@@ -254,7 +254,7 @@
 						<width>150</width>
 						<height>56</height>
 						<aspectratio align="center">scale</aspectratio>
-						<texture>$INFO[VideoPlayer.VideoResolution,flags/video/,.png]</texture>
+						<texture>$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]</texture>
 					</control>
 					<control type="image">
 						<width>150</width>
@@ -268,7 +268,7 @@
 						<height>56</height>
 						<aspectratio align="center">scale</aspectratio>
 						<visible>String.IsEmpty(ADSP.MasterOverrideIcon)</visible>
-						<texture>$INFO[VideoPlayer.AudioCodec,flags/audio/,.png]</texture>
+						<texture>$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]</texture>
 					</control>
 					<control type="image">
 						<width>150</width>
@@ -281,7 +281,7 @@
 						<width>150</width>
 						<height>56</height>
 						<aspectratio align="center">scale</aspectratio>
-						<texture>$INFO[VideoPlayer.AudioChannels,flags/audio/,.png]</texture>
+						<texture>$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]</texture>
 					</control>
 				</control>
 			</control>
