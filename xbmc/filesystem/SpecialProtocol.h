@@ -57,6 +57,7 @@ public:
   static void SetXBMCPath(const std::string &path);
   static void SetXBMCBinPath(const std::string &path);
   static void SetXBMCBinAddonPath(const std::string &path);
+  static void SetXBMCAltBinAddonPath(const std::string &path);
   static void SetXBMCFrameworksPath(const std::string &path);
   static void SetHomePath(const std::string &path);
   static void SetUserHomePath(const std::string &path);
