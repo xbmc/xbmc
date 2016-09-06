@@ -91,12 +91,14 @@ msgctxt "#31014"
 msgid "Unplayed albums"
 msgstr ""
 
-#: /1080i/Home.xml:362
+#. home screen recordings widget: recent tv / radio recordings
+#: /1080i/Home.xml
 msgctxt "#31015"
 msgid "Recent recordings"
 msgstr ""
 
-#: /1080i/Home.xml:374
+#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /1080i/Home.xml
 msgctxt "#31016"
 msgid "Recently played channels"
 msgstr ""
@@ -106,9 +108,10 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr ""
 
-#: /1080i/Home.xml:443
+#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#: /1080i/Home.xml
 msgctxt "#31018"
-msgid "Most played channels"
+msgid "Recently played channels"
 msgstr ""
 
 #: /1080i/Home.xml:675 /1080i/MyWeather.xml:52

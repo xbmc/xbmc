@@ -574,8 +574,19 @@
 							<param name="widget_target" value="pvr"/>
 							<param name="list_id" value="12200"/>
 							<param name="onup_id" value="12900"/>
+							<param name="ondown_id" value="12300"/>
+							<param name="height" value="550"/>
+						</include>
+						<include content="WidgetListRecordings">
+							<param name="content_path" value="pvr://recordings/tv/active?view=flat"/>
+							<param name="sortby" value="date"/>
+							<param name="sortorder" value="descending"/>
+							<param name="widget_header" value="$LOCALIZE[31015]"/>
+							<param name="widget_target" value="pvr"/>
+							<param name="list_id" value="12300"/>
+							<param name="onup_id" value="12200"/>
 							<param name="ondown_id" value="20001"/>
-							<param name="height" value="540"/>
+							<param name="height" value="550"/>
 						</include>
 						<control type="grouplist">
 							<height>218</height>
@@ -656,7 +667,19 @@
 							<param name="widget_target" value="files"/>
 							<param name="list_id" value="13200"/>
 							<param name="onup_id" value="13900"/>
+							<param name="ondown_id" value="13300"/>
+							<param name="height" value="550"/>
+						</include>
+						<include content="WidgetListRecordings">
+							<param name="content_path" value="pvr://recordings/radio/active?view=flat"/>
+							<param name="sortby" value="date"/>
+							<param name="sortorder" value="descending"/>
+							<param name="widget_header" value="$LOCALIZE[31015]"/>
+							<param name="widget_target" value="pvr"/>
+							<param name="list_id" value="13300"/>
+							<param name="onup_id" value="13200"/>
 							<param name="ondown_id" value="20001"/>
+							<param name="height" value="550"/>
 						</include>
 					</control>
 				</control>
