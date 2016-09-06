@@ -23,7 +23,7 @@
 #include <stdarg.h>
 #include <string>
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_adsp.h"
-#include "addons/interfaces/api1/AudioDSP/AddonCallbacksAudioDSP.h"
+#include "addons/binary/interfaces/api1/AudioDSP/AddonCallbacksAudioDSP.h"
 
 #ifdef _WIN32
 #include <windows.h>

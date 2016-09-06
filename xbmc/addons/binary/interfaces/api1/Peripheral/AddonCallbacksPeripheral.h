@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "addons/interfaces/AddonInterfaces.h"
+#include "addons/binary/interfaces/AddonInterfaces.h"
 
 namespace PERIPHERALS { class CPeripheralAddon; }
 

@@ -18,7 +18,7 @@
  *
  */
 
-#include "addons/interfaces/AddonInterfaces.h"
+#include "addons/binary/interfaces/AddonInterfaces.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_callbacks.h"
 
 #include <stdio.h>

@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "addons/interfaces/api1/Codec/AddonCallbacksCodec.h"
+#include "addons/binary/interfaces/api1/Codec/AddonCallbacksCodec.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_codec.h"
 
 #ifdef _WIN32
