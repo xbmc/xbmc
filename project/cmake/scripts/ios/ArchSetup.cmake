@@ -14,6 +14,7 @@ if(WITH_ARCH)
 else()
   if(CPU STREQUAL armv7 OR CPU STREQUAL arm64)
     set(ARCH arm-osx)
+    set(NEON False)
   else()
     message(SEND_ERROR "Unknown CPU: ${CPU}")
   endif()
@@ -31,5 +32,5 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework CoreMedia" "-framework AVFoundation"
                     "-framework VideoToolbox")
 
-set(ENABLE_DVDCSS OFF)
-set(ENABLE_OPTICAL OFF)
+set(ENABLE_DVDCSS OFF CACHE BOOL "" FORCE)
+set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
