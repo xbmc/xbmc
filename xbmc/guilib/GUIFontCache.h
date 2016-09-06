@@ -37,11 +37,7 @@
 #include <cassert>
 
 #include "TransformMatrix.h"
-#include "system.h"
-
-#if defined(HAS_GL) || defined(HAS_GLES)
 #include "system_gl.h"
-#endif
 
 #define FONT_CACHE_TIME_LIMIT (1000)
 #define FONT_CACHE_DIST_LIMIT (0.01f)
