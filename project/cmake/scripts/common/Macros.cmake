@@ -259,7 +259,15 @@ function(copy_files_from_filelist_to_buildtree pattern)
         else()
           list(GET dir -1 dest)
         endif()
-        file(GLOB_RECURSE files RELATIVE ${CORE_SOURCE_DIR} ${CORE_SOURCE_DIR}/${src})
+
+        # If the full path to an existing file is specified then add that single file.
+        # Don't recursively add all files with the given name.
+        if(EXISTS ${CORE_SOURCE_DIR}/${src} AND NOT IS_DIRECTORY ${CORE_SOURCE_DIR}/${src})
+          set(files ${src})
+        else()
+          file(GLOB_RECURSE files RELATIVE ${CORE_SOURCE_DIR} ${CORE_SOURCE_DIR}/${src})
+        endif()
+
         foreach(file ${files})
           if(arg_NO_INSTALL)
             copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} DIRECTORY ${dest} NO_INSTALL)
