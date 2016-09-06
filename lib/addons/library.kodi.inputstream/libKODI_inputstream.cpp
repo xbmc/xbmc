@@ -24,7 +24,7 @@
 #include <stdarg.h>
 #include <string>
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"
-#include "addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
+#include "addons/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
 
 #ifdef _WIN32
 #include <windows.h>

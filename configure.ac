@@ -2132,7 +2132,7 @@ OUTPUT_FILES="Makefile \
     addons/skin.estuary/media/Makefile \
     addons/skin.estouchy/media/Makefile \
     xbmc/Makefile \
-    xbmc/addons/binary/interfaces/Makefile \
+    xbmc/addons/interfaces/Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoPlayer/VideoRenderers/Makefile \

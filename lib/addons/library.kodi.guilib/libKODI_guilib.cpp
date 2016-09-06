@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include "addons/binary/interfaces/api1/GUI/AddonCallbacksGUI.h"
+#include "addons/interfaces/api1/GUI/AddonCallbacksGUI.h"
 
 #ifdef _WIN32
 #include <windows.h>
