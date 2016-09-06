@@ -177,11 +177,14 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows)
                       GLUtils.h)
 endif()
 
+if(OPENGLES_FOUND)
+  list(APPEND SOURCES AMLUtils.cpp)
+  list(APPEND HEADERS AMLUtils.h)
+endif()
+
 if(AML_FOUND)
-  list(APPEND SOURCES AMLUtils.cpp
-                      ScreenshotAML.cpp)
-  list(APPEND HEADERS AMLUtils.h
-                      ScreenshotAML.h)
+  list(APPEND SOURCES ScreenshotAML.cpp)
+  list(APPEND HEADERS ScreenshotAML.h)
 endif()
 
 core_add_library(utils)
