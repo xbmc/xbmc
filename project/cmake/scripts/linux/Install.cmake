@@ -170,7 +170,7 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cm
               ${CORE_SOURCE_DIR}/project/cmake/scripts/common/PrepareEnv.cmake
               ${CORE_SOURCE_DIR}/project/cmake/scripts/common/ProjectMacros.cmake
               ${CORE_SOURCE_DIR}/project/cmake/scripts/linux/PathSetup.cmake
-        DESTINATION ${libdir}/${APP_NAME_LC}
+        DESTINATION ${datarootdir}/${APP_NAME_LC}/cmake
         COMPONENT kodi-addon-dev)
 
 # Install kodi-audio-dev
