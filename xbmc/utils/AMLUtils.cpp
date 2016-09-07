@@ -191,6 +191,23 @@ bool aml_support_hevc_4k2k()
   return (has_hevc_4k2k == 1);
 }
 
+bool aml_support_hevc_10bit()
+{
+  static int has_hevc_10bit = -1;
+
+  if (has_hevc_10bit == -1)
+  {
+    CRegExp regexp;
+    regexp.RegComp("hevc:.*10bit");
+    std::string valstr;
+    if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+      has_hevc_10bit = 0;
+    else
+      has_hevc_10bit = (regexp.RegFind(valstr) >= 0) ? 1 : 0;
+  }
+  return (has_hevc_10bit == 1);
+}
+
 bool aml_support_h264_4k2k()
 {
   static int has_h264_4k2k = -1;
