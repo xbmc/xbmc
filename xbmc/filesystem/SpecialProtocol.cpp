@@ -265,7 +265,6 @@ void CSpecialProtocol::LogPaths()
   CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetPath("xbmc").c_str());
   CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetPath("xbmcbin").c_str());
   CLog::Log(LOGNOTICE, "special://xbmcbinaddons/ is mapped to: %s", GetPath("xbmcbinaddons").c_str());
-  CLog::Log(LOGNOTICE, "special://xbmcaltbinaddons/ is mapped to: %s", GetPath("xbmcaltbinaddons").c_str());
   CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
 #if defined(TARGET_POSIX)
   CLog::Log(LOGNOTICE, "special://envhome/ is mapped to: %s", GetPath("envhome").c_str());
