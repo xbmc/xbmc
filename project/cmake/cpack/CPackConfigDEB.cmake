@@ -67,7 +67,7 @@ if(DEBIAN_PACKAGE_TYPE STREQUAL stable)
 elseif(DEBIAN_PACKAGE_TYPE STREQUAL unstable)
   set(RELEASE_IDENTIFIER ${APP_VERSION_TAG_LC})
 else()
-  set(RELEASE_IDENTIFIER ${GIT_HASH})
+  core_find_git_rev(RELEASE_IDENTIFIER)
 endif()
 
 # package name
