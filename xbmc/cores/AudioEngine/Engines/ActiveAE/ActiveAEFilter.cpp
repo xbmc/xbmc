@@ -193,6 +193,16 @@ void CActiveAEFilter::CloseFilter()
 
 int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, int src_bufsize)
 {
+  if (m_filterEof)
+  {
+    if (src_samples)
+    {
+      CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - adding data while already eof");
+      return -1;
+    }
+    return 0;
+  }
+
   int result;
 
   if (src_samples)
