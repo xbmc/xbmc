@@ -643,6 +643,7 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
     url.GetProtocolOptions(protocolOptions);
     std::string headers;
     bool hasUserAgent = false;
+    bool hasCookies = false;
     for(std::map<std::string, std::string>::const_iterator it = protocolOptions.begin(); it != protocolOptions.end(); ++it)
     {
       std::string name = it->first; StringUtils::ToLower(name);
@@ -656,6 +657,12 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
         av_dict_set(&options, "user-agent", value.c_str(), 0);
         CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'user-agent: %s'", value.c_str());
         hasUserAgent = true;
+      }
+      else if (name == "cookie")
+      {
+        av_dict_set(&options, "cookies", value.c_str(), 0);
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'cookies: %s'", value.c_str());
+        hasCookies = true;
       }
       // other standard headers (see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields) are appended as actual headers
       else if (name == "accept" || name == "accept-language" || name == "accept-datetime" || 
@@ -688,10 +695,12 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
     if (!headers.empty())
       av_dict_set(&options, "headers", headers.c_str(), 0);
 
-    std::string cookies;
-    if (XFILE::CCurlFile::GetCookies(url, cookies))
-      av_dict_set(&options, "cookies", cookies.c_str(), 0);
-
+    if (!hasCookies)
+    {
+      std::string cookies;
+      if (XFILE::CCurlFile::GetCookies(url, cookies))
+        av_dict_set(&options, "cookies", cookies.c_str(), 0);
+    }
   }
 
   if (input)
