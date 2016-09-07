@@ -36,6 +36,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "Util.h"
+#include "filesystem/File.h"
 
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
@@ -152,19 +153,30 @@ bool CPeripheral::Initialise(void)
     return bReturn;
 
   g_peripherals.GetSettingsFromMapping(*this);
+
+  std::string safeDeviceName = m_strDeviceName;
+  StringUtils::Replace(safeDeviceName, ' ', '_');
+
   if (m_iVendorId == 0x0000 && m_iProductId == 0x0000)
   {
     m_strSettingsFile = StringUtils::Format("special://profile/peripheral_data/%s_%s.xml",
                                             PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
-                                            CUtil::MakeLegalFileName(m_strDeviceName, LEGAL_WIN32_COMPAT).c_str());
+                                            CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT).c_str());
   }
   else
   {
-    m_strSettingsFile = StringUtils::Format("special://profile/peripheral_data/%s_%s_%s_%s.xml",
+    // Backwards compatibility - old settings files didn't include the device name
+    m_strSettingsFile = StringUtils::Format("special://profile/peripheral_data/%s_%s_%s.xml",
                                             PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
                                             m_strVendorId.c_str(),
-                                            m_strProductId.c_str(),
-                                            CUtil::MakeLegalFileName(m_strDeviceName, LEGAL_WIN32_COMPAT).c_str());
+                                            m_strProductId.c_str());
+
+    if (!XFILE::CFile::Exists(m_strSettingsFile))
+      m_strSettingsFile = StringUtils::Format("special://profile/peripheral_data/%s_%s_%s_%s.xml",
+                                              PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
+                                              m_strVendorId.c_str(),
+                                              m_strProductId.c_str(),
+                                              CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT).c_str());
   }
 
   LoadPersistedSettings();
