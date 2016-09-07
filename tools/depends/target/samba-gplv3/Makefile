@@ -69,12 +69,6 @@ ifeq (darwin, $(findstring darwin, $(HOST)))
 	mv $(PREFIX)/lib/libsmbclient.dylib.0 $(PREFIX)/lib/libsmbclient.dylib
 	install_name_tool -id $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.dylib
 endif
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libsmbclient.so 
-	mv -f $(PREFIX)/lib/libsmbclient.so.0 $(PREFIX)/lib/libsmbclient.so
-	$(RPL) -e "libsmbclient.so.0" "libsmbclient.so\x00\x00" $(PREFIX)/lib/libsmbclient.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libsmbclient.so | grep ibrary
-endif
 	touch $@
 
 clean:
