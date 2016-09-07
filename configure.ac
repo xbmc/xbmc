@@ -2238,9 +2238,11 @@ fi
 eval "APP_PREFIX=${prefix}"
 eval "APP_LIB_DIR=${libdir}/${APP_NAME_LC}"
 eval "APP_INCLUDE_DIR=${includedir}/${APP_NAME_LC}"
+eval "APP_DATA_DIR=${datarootdir}/${APP_NAME_LC}"
 AC_SUBST(APP_PREFIX)
 AC_SUBST(APP_LIB_DIR)
 AC_SUBST(APP_INCLUDE_DIR)
+AC_SUBST(APP_DATA_DIR)
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
