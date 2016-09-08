@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
-    <zorder>4</zorder>
+	<zorder>1</zorder>
     <controls>
         <control type="progress" id="20">
             <include>HiddenObject</include>

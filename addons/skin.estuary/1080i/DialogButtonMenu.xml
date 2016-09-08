@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window type="buttonMenu">
+<window>
 	<defaultcontrol>9000</defaultcontrol>
 	<coordinates>
 		<left>710</left>

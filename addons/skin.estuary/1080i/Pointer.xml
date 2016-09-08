@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window id="105">
+<window>
 	<controls>
 		<control type="image" id="1">
 			<description>Pointer</description>
