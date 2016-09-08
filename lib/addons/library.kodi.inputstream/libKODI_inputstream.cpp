@@ -34,7 +34,7 @@
 #endif
 
 using namespace std;
-using namespace V1::KodiAPI::InputStream;
+using namespace KodiAPI::V1::InputStream;
 
 extern "C"
 {

@@ -33,7 +33,7 @@
 #endif
 
 using namespace std;
-using namespace V1::KodiAPI::GUI;
+using namespace KodiAPI::V1::GUI;
 
 extern "C"
 {

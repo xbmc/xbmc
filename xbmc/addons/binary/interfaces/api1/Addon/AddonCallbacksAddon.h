@@ -37,11 +37,10 @@ namespace ADDON
   class CAddon;
 };
 
-namespace V1
-{
 namespace KodiAPI
 {
-
+namespace V1
+{
 namespace AddOn
 {
 
@@ -173,6 +172,5 @@ private:
 };
 
 } /* namespace AddOn */
-
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */

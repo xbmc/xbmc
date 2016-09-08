@@ -23,11 +23,10 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h"
 
-namespace V1
-{
 namespace KodiAPI
 {
-
+namespace V1
+{
 namespace InputStream
 {
 
@@ -71,6 +70,5 @@ private:
 };
 
 } /* namespace InputStream */
-
-} /* namespace KoidAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */
