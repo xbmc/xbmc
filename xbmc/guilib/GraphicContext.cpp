@@ -31,7 +31,6 @@
 #include "TextureManager.h"
 #include "input/InputManager.h"
 #include "GUIWindowManager.h"
-#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 
@@ -979,9 +978,6 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 
 void CGraphicContext::Flip(bool rendered, bool videoLayer)
 {
-  if (IsFullScreenVideo() && CServiceBroker::GetDataCacheCore().IsRenderClockSync())
-    g_Windowing.FinishPipeline();
-
   g_Windowing.PresentRender(rendered, videoLayer);
 
   if(m_stereoMode != m_nextStereoMode)

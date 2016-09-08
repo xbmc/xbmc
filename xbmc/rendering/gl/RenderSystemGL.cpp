@@ -297,7 +297,6 @@ void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)
     return;
 
   PresentRenderImpl(rendered);
-  m_latencyCounter++;
 
   if (!rendered)
     Sleep(40);
@@ -320,16 +319,6 @@ void CRenderSystemGL::SetVSync(bool enable)
   m_bVsyncInit = true;
 
   SetVSyncImpl(enable);
-}
-
-void CRenderSystemGL::FinishPipeline()
-{
-  // GL implementations are free to queue an undefined number of frames internally
-  // as a result video latency can be very high which is bad for a/v sync
-  // calling glFinish reduces latency to the number of back buffers
-  // in order to keep some elasticity, we call glFinish only every other cycle
-  if (m_latencyCounter & 0x01)
-    glFinish();
 }
 
 void CRenderSystemGL::CaptureStateBlock()

@@ -42,7 +42,6 @@ public:
 
   void SetVSync(bool vsync);
   void ResetVSync() { m_bVsyncInit = false; }
-  void FinishPipeline() override;
 
   void SetViewPort(CRect& viewPort) override;
   void GetViewPort(CRect& viewPort) override;
@@ -83,6 +82,4 @@ protected:
   int m_glslMinor = 0;
   
   GLint m_viewPort[4];
-
-  uint8_t m_latencyCounter = 0;
 };
