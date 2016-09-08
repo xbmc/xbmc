@@ -12,10 +12,8 @@ if(OPENGLES_FOUND)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL android)
-  list(APPEND SOURCES EGLNativeTypeAndroid.cpp
-                      EGLNativeTypeRKAndroid.cpp)
-  list(APPEND HEADERS EGLNativeTypeAndroid.h
-                      EGLNativeTypeRKAndroid.h)
+  list(APPEND SOURCES EGLNativeTypeAndroid.cpp)
+  list(APPEND HEADERS EGLNativeTypeAndroid.h)
   if(AML_FOUND)
     list(APPEND SOURCES EGLNativeTypeAmlAndroid.cpp)
     list(APPEND HEADERS EGLNativeTypeAmlAndroid.h)
