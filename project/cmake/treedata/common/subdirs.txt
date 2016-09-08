@@ -10,7 +10,6 @@ xbmc/addons/binary/interfaces/api1/InputStream  api1AddonCallbacks_InputStream
 xbmc/addons/binary/interfaces/api1/Peripheral   api1AddonCallbacks_Peripheral
 xbmc/addons/binary/interfaces/api1/PVR          api1AddonCallbacks_PVR
 xbmc/commons                                    commons
-xbmc/cdrip                                      cdrip
 xbmc/dbwrappers                                 dbwrappers
 xbmc/dialogs                                    dialogs
 xbmc/epg                                        epg

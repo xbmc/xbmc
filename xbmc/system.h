@@ -94,7 +94,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
