@@ -165,6 +165,7 @@ bool CActiveAEFilter::CreateAtempoFilter()
   m_hasData = false;
   m_needData = true;
   m_filterEof = false;
+  m_started = false;
 
   return true;
 }
@@ -236,6 +237,8 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - av_buffersrc_add_frame failed");
       return -1;
     }
+
+    m_started = true;
   }
   else if (!m_filterEof && m_needData)
   {
@@ -247,7 +250,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     }
   }
 
-  if (!m_hasData)
+  if (!m_hasData && m_started)
   {
     m_needData = false;
     AVFrame *outFrame = m_needConvert ? m_pConvertFrame : m_pOutFrame;
