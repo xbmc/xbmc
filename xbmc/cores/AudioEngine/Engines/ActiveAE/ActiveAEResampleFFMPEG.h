@@ -58,7 +58,6 @@ protected:
   int m_src_dither_bits, m_dst_dither_bits;
   SwrContext *m_pContext;
   double m_rematrix[AE_CH_MAX][AE_CH_MAX];
-  double m_resampleRatio;
 };
 
 }
