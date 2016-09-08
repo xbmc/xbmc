@@ -36,7 +36,6 @@ set(SOURCES AddonsDirectory.cpp
             MusicSearchDirectory.cpp
             NFSDirectory.cpp
             NFSFile.cpp
-            NptXbmcFile.cpp
             OverrideDirectory.cpp
             OverrideFile.cpp
             PipeFile.cpp
@@ -63,8 +62,6 @@ set(SOURCES AddonsDirectory.cpp
             udf25.cpp
             UDFDirectory.cpp
             UDFFile.cpp
-            UPnPDirectory.cpp
-            UPnPFile.cpp
             VideoDatabaseDirectory.cpp
             VirtualDirectory.cpp
             XbtDirectory.cpp
@@ -143,8 +140,6 @@ set(HEADERS AddonsDirectory.h
             udf25.h
             UDFDirectory.h
             UDFFile.h
-            UPnPDirectory.h
-            UPnPFile.h
             VideoDatabaseDirectory.h
             VirtualDirectory.h
             XbtDirectory.h
@@ -180,7 +175,15 @@ if(BLURAY_FOUND)
                       BlurayFile.h)
 endif()
 
+if(ENABLE_UPNP)
+  list(APPEND SOURCES NptXbmcFile.cpp
+                      UPnPDirectory.cpp
+                      UPnPFile.cpp)
+  list(APPEND HEADERS UPnPDirectory.h
+                      UPnPFile.h)
+endif()
+
 core_add_library(filesystem)
-if(ENABLE_STATIC_LIBS)
+if(ENABLE_STATIC_LIBS AND ENABLE_UPNP)
   target_link_libraries(filesystem PRIVATE upnp)
 endif()

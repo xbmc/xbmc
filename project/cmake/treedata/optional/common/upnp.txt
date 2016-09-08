@@ -1,0 +1,2 @@
+lib/libUPnP upnp # UPNP
+xbmc/network/upnp network/upnp # UPNP
