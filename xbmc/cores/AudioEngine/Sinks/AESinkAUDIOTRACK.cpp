@@ -31,9 +31,7 @@
 #include "platform/android/jni/Build.h"
 #include "utils/TimeUtils.h"
 
-#if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
-#endif
 
 //#define DEBUG_VERBOSE 1
 
@@ -845,6 +843,11 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     }
     std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
   }
+
+// Take care for old AML devices when they run official API they do
+// really strange things as they define passthrough formats
+  if (aml_present() && CJNIAudioManager::GetSDKVersion() < 23)
+    m_info.m_wantsIECPassthrough = true;
 
   list.push_back(m_info);
 }
