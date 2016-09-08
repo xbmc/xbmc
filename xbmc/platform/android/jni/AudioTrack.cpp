@@ -143,7 +143,10 @@ int CJNIAudioTrack::write(char* audioData, int offsetInBytes, int sizeInBytes)
     }
     else if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
     {
-      written = call_method<int>(m_object, "write", "([SIII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)), CJNIAudioTrack::WRITE_BLOCKING);
+      if (CJNIBase::GetSDKVersion() >= 23)
+        written = call_method<int>(m_object, "write", "([SIII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)), CJNIAudioTrack::WRITE_BLOCKING);
+      else
+       written = call_method<int>(m_object, "write", "([SII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)));
       written *= sizeof(short);
     }
     else
