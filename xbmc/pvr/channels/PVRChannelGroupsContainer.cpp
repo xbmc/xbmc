@@ -186,11 +186,22 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
   {
     std::string strGroupName(fileName.substr(12));
     URIUtils::RemoveSlashAtEnd(strGroupName);
-    CPVRChannelGroupPtr group = GetTV()->GetByName(strGroupName);
-    if (!group)
+
+    CPVRChannelGroupPtr group;
+    if (strGroupName == "*") // all channels
       group = GetGroupAllTV();
+    else
+      group = GetTV()->GetByName(strGroupName);
+
     if (group)
+    {
       group->GetMembers(results, !StringUtils::EndsWithNoCase(fileName, ".hidden"));
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CPVRChannelGroupsContainer - %s - unable to obtain members of channel group '%s'", __FUNCTION__, strGroupName.c_str());
+      return false;
+    }
 
     FilterDirectory(url, results);
     return true;
@@ -199,11 +210,22 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
   {
     std::string strGroupName(fileName.substr(15));
     URIUtils::RemoveSlashAtEnd(strGroupName);
-    CPVRChannelGroupPtr group = GetRadio()->GetByName(strGroupName);
-    if (!group)
+
+    CPVRChannelGroupPtr group;
+    if (strGroupName == "*") // all channels
       group = GetGroupAllRadio();
+    else
+      group = GetRadio()->GetByName(strGroupName);
+
     if (group)
+    {
       group->GetMembers(results, !StringUtils::EndsWithNoCase(fileName, ".hidden"));
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CPVRChannelGroupsContainer - %s - unable to obtain members of channel group '%s'", __FUNCTION__, strGroupName.c_str());
+      return false;
+    }
 
     FilterDirectory(url, results);
     return true;

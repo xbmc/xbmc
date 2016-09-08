@@ -567,7 +567,7 @@
 							<param name="item8_vis" value="False" />
 						</include>
 						<include content="WidgetListChannels">
-							<param name="content_path" value="pvr://channels/tv/All channels/?view=lastplayed"/>
+							<param name="content_path" value="pvr://channels/tv/*?view=lastplayed"/>
 							<param name="sortby" value="lastplayed"/>
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31016]"/>
@@ -661,7 +661,7 @@
 							<param name="item8_vis" value="False" />
 						</include>
 						<include content="WidgetListChannels">
-							<param name="content_path" value="pvr://channels/radio/All channels/?view=lastplayed"/>
+							<param name="content_path" value="pvr://channels/radio/*?view=lastplayed"/>
 							<param name="sortby" value="lastplayed"/>
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31018]"/>
