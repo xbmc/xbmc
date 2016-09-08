@@ -97,7 +97,6 @@ set(HEADERS Activity.h
             KeyCharacterMap.h
             KeyEvent.h
             List.h
-            Makefile.in
             MediaCodecBufferInfo.h
             MediaCodecCryptoInfo.h
             MediaCodec.h
