@@ -1,87 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window type="dialog" id="1109">
-    <visible>Window.IsActive(videoosd) | Window.IsActive(fullscreeninfo) | [Window.IsActive(playerprocessinfo) + Window.IsActive(fullscreenvideo)] | [Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)]</visible>
-    <depth>DepthOSD</depth>
-    <animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
-    <animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
-    <controls>
-        <control type="group">
-            <animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
-            <depth>DepthBars</depth>
-            <control type="image">
-                <left>0</left>
-                <top>0</top>
-                <width>100%</width>
-                <height>83</height>
-                <texture>frame/InfoBar.png</texture>
-            </control>
-            <control type="image">
-                <top>10</top>
-                <width>80</width>
-                <height>80</height>
-                <texture colordiffuse="button_focus">icons/settings/video.png</texture>
-            </control>
-            <control type="grouplist">
-                <left>85</left>
-                <description>Left side of top bar</description>
-                <width>900</width>
-                <height>100</height>
-                <orientation>horizontal</orientation>
-                <usecontrolcoords>true</usecontrolcoords>
-                <control type="label">
-                    <label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, ([COLOR button_focus],[/COLOR])]</label>
-                    <include>BreadcrumbsLabel</include>
-                </control>
-            </control>
-            <control type="label">
-                <top>40</top>
-                <label>$VAR[OSDSubLabelVar]</label>
-                <font>font10</font>
-                <left>85</left>
-                <shadowcolor>text_shadow</shadowcolor>
-                <height>100</height>
-                <width>auto</width>
-            </control>
-            <control type="group">
-                <visible>!Window.IsVisible(extendedprogressdialog)</visible>
-                <animation effect="fade" time="150">VisibleChange</animation>
-                <control type="grouplist">
-                    <description>Right side of top bar</description>
-                    <right>85</right>
-                    <width>500</width>
-                    <height>100</height>
-                    <align>right</align>
-                    <orientation>horizontal</orientation>
-                    <usecontrolcoords>true</usecontrolcoords>
-                    <include condition="Skin.HasSetting(show_weatherinfo)">TopWeatherIcon</include>
-                    <control type="label">
-                        <include>BreadcrumbsLabel</include>
-                        <label>$INFO[System.Time]</label>
-                    </control>
-                </control>
-                <control type="image">
-                    <right>25</right>
-                    <top>20</top>
-                    <height>40</height>
-                    <width>40</width>
-                    <texture colordiffuse="button_focus">frame/clock.png</texture>
-                    <animation effect="fade" time="300">Visible</animation>
-                    <animation effect="fade" time="150">Hidden</animation>
-                    <aspectratio>keep</aspectratio>
-                    <visible>!Window.IsActive(volumebar)</visible>
-                </control>
-                <control type="label">
-                    <top>40</top>
-                    <label>$INFO[Player.FinishTime,$LOCALIZE[31080]: ]</label>
-                    <font>font10</font>
-                    <left>1340</left>
-                    <shadowcolor>text_shadow</shadowcolor>
-                    <height>100</height>
-                    <width>500</width>
-                    <align>right</align>
-                    <visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasEpg</visible>
-                </control>
-            </control>
-        </control>
-    </controls>
+	<visible>Window.IsActive(videoosd) | Window.IsActive(fullscreeninfo) | [Window.IsActive(playerprocessinfo) + Window.IsActive(fullscreenvideo)] | [Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)]</visible>
+	<depth>DepthOSD</depth>
+	<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
+	<controls>
+		<control type="group">
+			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
+			<depth>DepthBars</depth>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>100%</width>
+				<height>83</height>
+				<texture>frame/InfoBar.png</texture>
+			</control>
+			<control type="image">
+				<top>10</top>
+				<width>80</width>
+				<height>80</height>
+				<texture colordiffuse="button_focus">icons/settings/video.png</texture>
+			</control>
+			<control type="grouplist">
+				<left>85</left>
+				<description>Left side of top bar</description>
+				<width>900</width>
+				<height>100</height>
+				<orientation>horizontal</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
+				<control type="label">
+					<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, ([COLOR button_focus],[/COLOR])]</label>
+					<include>BreadcrumbsLabel</include>
+				</control>
+			</control>
+			<control type="label">
+				<top>40</top>
+				<label>$VAR[OSDSubLabelVar]</label>
+				<font>font10</font>
+				<left>85</left>
+				<shadowcolor>text_shadow</shadowcolor>
+				<height>100</height>
+				<width>auto</width>
+			</control>
+			<control type="group">
+				<visible>!Window.IsVisible(extendedprogressdialog)</visible>
+				<animation effect="fade" time="150">VisibleChange</animation>
+				<control type="grouplist">
+					<description>Right side of top bar</description>
+					<right>85</right>
+					<width>500</width>
+					<height>100</height>
+					<align>right</align>
+					<orientation>horizontal</orientation>
+					<usecontrolcoords>true</usecontrolcoords>
+					<include condition="Skin.HasSetting(show_weatherinfo)">TopWeatherIcon</include>
+					<control type="label">
+						<include>BreadcrumbsLabel</include>
+						<label>$INFO[System.Time]</label>
+					</control>
+				</control>
+				<control type="image">
+					<right>25</right>
+					<top>20</top>
+					<height>40</height>
+					<width>40</width>
+					<texture colordiffuse="button_focus">frame/clock.png</texture>
+					<animation effect="fade" time="300">Visible</animation>
+					<animation effect="fade" time="150">Hidden</animation>
+					<aspectratio>keep</aspectratio>
+					<visible>!Window.IsActive(volumebar)</visible>
+				</control>
+				<control type="label">
+					<top>40</top>
+					<label>$INFO[Player.FinishTime,$LOCALIZE[31080]: ]</label>
+					<font>font10</font>
+					<left>1340</left>
+					<shadowcolor>text_shadow</shadowcolor>
+					<height>100</height>
+					<width>500</width>
+					<align>right</align>
+					<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasEpg</visible>
+				</control>
+			</control>
+		</control>
+	</controls>
 </window>
