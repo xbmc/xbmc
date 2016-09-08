@@ -72,8 +72,7 @@ set(SOURCES ActorProtocol.cpp
             Vector.cpp
             Weather.cpp
             XBMCTinyXML.cpp
-            XMLUtils.cpp
-            XSLTUtils.cpp)
+            XMLUtils.cpp)
 
 set(HEADERS ActorProtocol.h
             AlarmClock.h
@@ -162,8 +161,12 @@ set(HEADERS ActorProtocol.h
             Vector.h
             Weather.h
             XBMCTinyXML.h
-            XMLUtils.h
-            XSLTUtils.h)
+            XMLUtils.h)
+
+if(XSLT_FOUND)
+  list(APPEND SOURCES XSLTUtils.cpp)
+  list(APPEND HEADERS XSLTUtils.h)
+endif()
 
 # The large map trips the clang optimizer
 if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
