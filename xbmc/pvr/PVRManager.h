@@ -29,7 +29,7 @@
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
 
-#include "pvr/PVRManagerState.h"
+#include "pvr/PVREvent.h"
 #include "pvr/recordings/PVRRecording.h"
 
 #include <map>
@@ -564,7 +564,13 @@ private:
     /*!
      * @brief Query the events available for CEventStream
      */
-    CEventStream<ManagerState>& Events() { return m_events; }
+    CEventStream<PVREvent>& Events() { return m_events; }
+
+    /*!
+     * @brief Publish an event
+     * @param state the event
+     */
+    void PublishEvent(PVREvent state);
 
     /*!
      * @brief Show or update the progress dialog.
@@ -629,6 +635,16 @@ private:
      */
     void QueueJob(CJob *job);
 
+    enum ManagerState
+    {
+      ManagerStateError = 0,
+      ManagerStateStopped,
+      ManagerStateStarting,
+      ManagerStateStopping,
+      ManagerStateInterrupted,
+      ManagerStateStarted
+    };
+
     ManagerState GetState(void) const;
 
     void SetState(ManagerState state);
@@ -664,7 +680,7 @@ private:
     static const int                m_pvrWindowIds[12];
 
     std::atomic_bool m_isChannelPreview;
-    CEventSource<ManagerState> m_events;
+    CEventSource<PVREvent> m_events;
   };
 
   class CPVRStartupJob : public CJob

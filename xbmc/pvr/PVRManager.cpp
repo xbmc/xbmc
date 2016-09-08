@@ -353,20 +353,50 @@ void CPVRManager::Stop(void)
   Cleanup();
 }
 
-ManagerState CPVRManager::GetState(void) const
+CPVRManager::ManagerState CPVRManager::GetState(void) const
 {
   CSingleLock lock(m_managerStateMutex);
   return m_managerState;
 }
 
-void CPVRManager::SetState(ManagerState state)
+void CPVRManager::SetState(CPVRManager::ManagerState state)
 {
   CSingleLock lock(m_managerStateMutex);
   if (m_managerState == state)
     return;
 
   m_managerState = state;
-  m_events.Publish(m_managerState);
+
+  PVREvent event;
+  switch (state)
+  {
+    case ManagerStateError:
+      event = ManagerError;
+      break;
+    case ManagerStateStopped:
+      event = ManagerStopped;
+      break;
+    case ManagerStateStarting:
+      event = ManagerStarting;
+      break;
+    case ManagerStateStopping:
+      event = ManagerStopped;
+      break;
+    case ManagerStateInterrupted:
+      event = ManagerInterrupted;
+      break;
+    case ManagerStateStarted:
+      event = ManagerStarted;
+      break;
+    default:
+      return;
+  }
+  m_events.Publish(event);
+}
+
+void CPVRManager::PublishEvent(PVREvent event)
+{
+  m_events.Publish(event);
 }
 
 void CPVRManager::Process(void)

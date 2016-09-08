@@ -28,6 +28,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVREvent.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
@@ -167,6 +168,7 @@ void CPVRRecordings::Update(void)
   lock.Leave();
 
   g_PVRManager.NotifyObservers(ObservableMessageRecordings);
+  g_PVRManager.PublishEvent(RecordingsInvalidated);
 }
 
 int CPVRRecordings::GetNumTVRecordings() const

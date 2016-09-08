@@ -6,9 +6,9 @@ set(SOURCES PVRActionListener.cpp
 
 set(HEADERS PVRActionListener.h
             PVRDatabase.h
+            PVREvent.h
             PVRGUIInfo.h
             PVRManager.h
-            PVRManagerState.h
             PVRSettings.h)
 
 core_add_library(pvr)

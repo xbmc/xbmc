@@ -25,7 +25,7 @@
 #include "addons/AddonEvents.h"
 #include "IListProvider.h"
 #include "guilib/GUIStaticItem.h"
-#include "pvr/PVRManagerState.h"
+#include "pvr/PVREvent.h"
 #include "utils/Job.h"
 #include "threads/CriticalSection.h"
 #include "interfaces/IAnnouncer.h"
@@ -89,5 +89,5 @@ private:
   bool UpdateLimit();
   bool UpdateSort();
   void OnAddonEvent(const ADDON::AddonEvent& event);
-  void OnPVRManagerEvent(const PVR::ManagerState& event);
+  void OnPVRManagerEvent(const PVR::PVREvent& event);
 };
