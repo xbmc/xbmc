@@ -6,7 +6,7 @@ function(generate_mingw32_wrapper cmd)
   configure_file(${PROJECT_SOURCE_DIR}/mingw32-cmd.bat.in ${MINGW_PATH}/bin/${CMD}.bat @ONLY)
 endfunction()
 
-get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../../../../../../.. REALPATH)
+get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../../../../../.. REALPATH)
 
 set(MSYS_PATH "${CORE_SOURCE_DIR}/project/BuildDependencies/msys64")
 set(MINGW_PATH "${MSYS_PATH}/mingw32")

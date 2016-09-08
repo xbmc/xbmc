@@ -1,6 +1,6 @@
 if(ENABLE_INTERNAL_CROSSGUID)
   include(ExternalProject)
-  file(STRINGS ${CORE_SOURCE_DIR}/tools/depends/target/crossguid/Makefile VER)
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/Makefile VER)
   string(REGEX MATCH "VERSION=[^ ]*" CGUID_VER "${VER}")
   list(GET CGUID_VER 0 CGUID_VER)
   string(SUBSTRING "${CGUID_VER}" 8 -1 CGUID_VER)
@@ -30,13 +30,13 @@ if(ENABLE_INTERNAL_CROSSGUID)
                                  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
                                  "${EXTRA_ARGS}"
                       PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-                                    ${CORE_SOURCE_DIR}/tools/depends/target/crossguid/CMakeLists.txt
+                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/CMakeLists.txt
                                     <SOURCE_DIR> &&
                                     ${CMAKE_COMMAND} -E copy
-                                    ${CORE_SOURCE_DIR}/tools/depends/target/crossguid/FindUUID.cmake
+                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/FindUUID.cmake
                                     <SOURCE_DIR> &&
                                     ${CMAKE_COMMAND} -E copy
-                                    ${CORE_SOURCE_DIR}/tools/depends/target/crossguid/FindCXX11.cmake
+                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/FindCXX11.cmake
                                     <SOURCE_DIR>
                       BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
   set_target_properties(crossguid PROPERTIES FOLDER "External Projects")

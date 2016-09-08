@@ -11,12 +11,12 @@ set(PLATFORM_DIR platform/win32)
 set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)
 
 set(CMAKE_SYSTEM_NAME Windows)
-list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32)
-list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg)
-list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg/bin)
-list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../BuildDependencies)
+list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/lib/win32)
+list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg)
+list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin)
+list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependencies)
 
-set(PYTHON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/../BuildDependencies/include/python)
+set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/include/python)
 
 
 # -------- Compiler options ---------
@@ -44,8 +44,8 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 
 # For #pragma comment(lib X)
 # TODO: It would certainly be better to handle these libraries via CMake modules.
-link_directories(${PROJECT_SOURCE_DIR}/../../lib/win32/ffmpeg/bin
-                 ${PROJECT_SOURCE_DIR}/../BuildDependencies/lib)
+link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
+                 ${CMAKE_SOURCE_DIR}/project/BuildDependencies/lib)
 
 # Additional libraries
 list(APPEND DEPLIBS d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib

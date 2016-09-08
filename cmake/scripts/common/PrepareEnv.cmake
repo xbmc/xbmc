@@ -1,5 +1,5 @@
 # parse version.txt and libKODI_guilib.h to get the version and API info
-include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/Macros.cmake)
+include(${CORE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
 core_find_versions()
 
 # in case we need to download something, set KODI_MIRROR to the default if not alread set
@@ -33,11 +33,11 @@ if(NOT WIN32)
 endif()
 
 # generate the proper KodiConfig.cmake file
-configure_file(${CORE_SOURCE_DIR}/project/cmake/KodiConfig.cmake.in ${APP_LIB_DIR}/KodiConfig.cmake @ONLY)
+configure_file(${CORE_SOURCE_DIR}/cmake/KodiConfig.cmake.in ${APP_LIB_DIR}/KodiConfig.cmake @ONLY)
 
 # copy cmake helpers to lib/kodi
-file(COPY ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddonHelpers.cmake
-          ${CORE_SOURCE_DIR}/project/cmake/scripts/common/AddOptions.cmake
+file(COPY ${CORE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
+          ${CORE_SOURCE_DIR}/cmake/scripts/common/AddOptions.cmake
      DESTINATION ${APP_LIB_DIR})
 
 ### copy all the addon binding header files to include/kodi
@@ -52,8 +52,8 @@ foreach(binding ${bindings})
 endforeach()
 
 ### processing additional tools required by the platform
-if(EXISTS ${CORE_SOURCE_DIR}/project/cmake/scripts/${CORE_SYSTEM_NAME}/tools/)
-  file(GLOB platform_tools ${CORE_SOURCE_DIR}/project/cmake/scripts/${CORE_SYSTEM_NAME}/tools/*.cmake)
+if(EXISTS ${CORE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/tools/)
+  file(GLOB platform_tools ${CORE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/tools/*.cmake)
   foreach(platform_tool ${platform_tools})
     get_filename_component(platform_tool_name ${platform_tool} NAME_WE)
     message(STATUS "Processing ${CORE_SYSTEM_NAME} specific tool: ${platform_tool_name}")

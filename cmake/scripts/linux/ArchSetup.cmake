@@ -35,7 +35,7 @@ include(LDGOLD)
 # Code Coverage
 if(CMAKE_BUILD_TYPE STREQUAL Coverage)
   set(COVERAGE_TEST_BINARY ${APP_NAME_LC}-test)
-  set(COVERAGE_SOURCE_DIR ${CORE_SOURCE_DIR})
+  set(COVERAGE_SOURCE_DIR ${CMAKE_SOURCE_DIR})
   set(COVERAGE_DEPENDS "\${APP_NAME_LC}" "\${APP_NAME_LC}-test")
   set(COVERAGE_EXCLUDES */test/* lib/* */lib/*)
 endif()

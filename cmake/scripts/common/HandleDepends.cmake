@@ -1,4 +1,4 @@
-include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/CheckTargetPlatform.cmake)
+include(${CORE_SOURCE_DIR}/cmake/scripts/common/CheckTargetPlatform.cmake)
 
 # handle addon depends
 function(add_addon_depends addon searchpath)

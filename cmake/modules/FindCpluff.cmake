@@ -17,10 +17,10 @@ if(NOT WIN32)
     set(cppflags "-arch ${CPU}")
   endif()
 
-  ExternalProject_Add(libcpluff SOURCE_DIR ${CORE_SOURCE_DIR}/lib/cpluff
+  ExternalProject_Add(libcpluff SOURCE_DIR ${CMAKE_SOURCE_DIR}/lib/cpluff
                       BUILD_IN_SOURCE 1
                       PREFIX ${CORE_BUILD_DIR}/cpluff
-                      CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} ${CORE_SOURCE_DIR}/lib/cpluff/configure
+                      CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} ${CMAKE_SOURCE_DIR}/lib/cpluff/configure
                                         --disable-nls
                                         --enable-static
                                         --disable-shared

@@ -82,7 +82,7 @@ mkdir kodi-build && cd kodi-build
 ### Linux with GNU Makefiles
 
 ```
-cmake <KODI_SRC>/project/cmake/
+cmake <KODI_SRC>
 cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ./kodi.bin
 ```
@@ -108,14 +108,14 @@ Generated packages can be found in <BUILD_DIR>/packages.
 ### Raspberry Pi with GNU Makefiles
 
 ```
-cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>
 cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
 
 ### Windows with Visual Studio project files
 
 ```
-cmake -G "Visual Studio 14" <KODI_SRC>/project/cmake/
+cmake -G "Visual Studio 14" <KODI_SRC>
 cmake --build . --config "Debug"  # or: Build solution with Visual Studio
 Debug\kodi.exe
 ```
@@ -128,7 +128,7 @@ builds an installable package for Windows.
 ### Windows with NMake Makefiles
 
 ```
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release <KODI_SRC>/project/cmake/
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release <KODI_SRC>
 cmake --build .  # or: nmake
 kodi.exe
 ```
@@ -136,7 +136,7 @@ kodi.exe
 ### macOS with GNU Makefiles
 
 ```
-cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>
 cmake --build . -- VERBOSE=1 -j$(sysctl -n hw.ncpu)  # or: make VERBOSE=1 -j$(sysctl -n hw.ncpu)
 ./kodi.bin
 ```
@@ -144,7 +144,7 @@ cmake --build . -- VERBOSE=1 -j$(sysctl -n hw.ncpu)  # or: make VERBOSE=1 -j$(sy
 ### macOS with Xcode project files
 
 ```
-cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake -G "Xcode" <KODI_SRC>/project/cmake/
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake -G "Xcode" <KODI_SRC>
 cmake --build . --config "Release" -- -verbose -jobs $(sysctl -n hw.ncpu)  # or: Build solution with Xcode
 ./Release/kodi.bin
 ```
@@ -168,7 +168,7 @@ make deb
 ### Android with GNU Makefiles
 
 ```
-cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
+cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>
 cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
 
@@ -203,7 +203,7 @@ cmake ... -DFFMPEG_PATH=/opt/ffmpeg -DENABLE_INTERNAL_FFMPEG=OFF ...
 ```
 
 For more information and an updated list of option, please check the
-main [project/cmake/CMakeLists.txt](https://github.com/xbmc/xbmc/tree/master/project/cmake/CMakeLists.txt).
+main [CMakeLists.txt](https://github.com/xbmc/xbmc/tree/master/CMakeLists.txt).
 
 ## Tests
 
@@ -261,7 +261,7 @@ paths are used, they are considered relative to the build directory in which
 
 Both methods work only for already existing addons. See this
 [forum thread](http://forum.kodi.tv/showthread.php?tid=219166&pid=1934922#pid1934922)
-and [addons/README.md](https://github.com/xbmc/xbmc/blob/master/project/cmake/addons/README.md)
+and [addons/README.md](https://github.com/xbmc/xbmc/blob/master/cmake/addons/README.md)
 for addon development and detailed documentation about the addon build system.
 
 ## Sanitizers
@@ -269,7 +269,7 @@ for addon development and detailed documentation about the addon build system.
 Clang and GCC support different kinds of Sanitizers. To enable a Sanitizer call CMake with the
 option `-DECM_ENABLE_SANITIZERS=’san1;san2;...'`. For more information about enabling the
 Sanitizers read the documentation in 
-[modules/extra/ECMEnableSanitizers.cmake](https://github.com/xbmc/xbmc/tree/master/project/cmake/modules/extra/ECMEnableSanitizers.cmake).
+[modules/extra/ECMEnableSanitizers.cmake](https://github.com/xbmc/xbmc/tree/master/cmake/modules/extra/ECMEnableSanitizers.cmake).
 
 It is also recommended to read the sections about the Sanitizers in the [Clang 
 documentation](http://clang.llvm.org/docs/).

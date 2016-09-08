@@ -1,7 +1,12 @@
 # This script holds the main functions used to construct the build system
 
-# include system specific macros
-include(${CORE_SOURCE_DIR}/project/cmake/scripts/${CORE_SYSTEM_NAME}/Macros.cmake)
+# Include system specific macros but only if this file is included from
+# kodi main project. It's not needed for kodi-addons project
+# If CORE_SOURCE_DIR is set, it was called from kodi-addons project
+# TODO: drop check if we ever integrate kodi-addons into kodi project
+if(NOT CORE_SOURCE_DIR)
+  include(${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/Macros.cmake)
+endif()
 
 # IDEs: Group source files in target in folders (file system hierarchy)
 # Source: http://blog.audio-tk.com/2015/09/01/sorting-source-files-and-projects-in-folders-with-cmake-and-visual-studioxcode/
@@ -72,7 +77,7 @@ function(core_add_library name)
 
     # Add precompiled headers to Kodi main libraries
     if(CORE_SYSTEM_NAME STREQUAL windows)
-      add_precompiled_header(${name} pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+      add_precompiled_header(${name} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
       set_language_cxx(${name})
       target_link_libraries(${name} PUBLIC effects11)
     endif()
@@ -118,8 +123,8 @@ function(core_add_addon_library name)
   set_target_properties(${name} PROPERTIES FOLDER addons)
   target_include_directories(${name} PRIVATE
                              ${CMAKE_CURRENT_SOURCE_DIR}
-                             ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi
-                             ${CORE_SOURCE_DIR}/xbmc)
+                             ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi
+                             ${CMAKE_SOURCE_DIR}/xbmc)
 endfunction()
 
 # Add an dl-loaded shared library
@@ -191,7 +196,7 @@ endfunction()
 # Optional Arguments:
 #   NO_INSTALL: exclude file from installation target (only mirror)
 #   DIRECTORY:  directory where the file should be mirrored to
-#               (default: preserve tree structure relative to CORE_SOURCE_DIR)
+#               (default: preserve tree structure relative to CMAKE_SOURCE_DIR)
 # On return:
 #   Files is mirrored to the build tree and added to ${install_data}
 #   (if NO_INSTALL is not given).
@@ -202,7 +207,7 @@ function(copy_file_to_buildtree file)
     get_filename_component(outfile ${file} NAME)
     set(outfile ${outdir}/${outfile})
   else()
-    string(REPLACE "${CORE_SOURCE_DIR}/" "" outfile ${file})
+    string(REPLACE "${CMAKE_SOURCE_DIR}/" "" outfile ${file})
     get_filename_component(outdir ${outfile} DIRECTORY)
   endif()
 
@@ -243,7 +248,7 @@ endfunction()
 # Optional Arguments:
 #   NO_INSTALL: exclude files from installation target
 # Implicit arguments:
-#   CORE_SOURCE_DIR - root of source tree
+#   CMAKE_SOURCE_DIR - root of source tree
 # On return:
 #   Files are mirrored to the build tree and added to ${install_data}
 #   (if NO_INSTALL is not given).
@@ -273,17 +278,17 @@ function(copy_files_from_filelist_to_buildtree pattern)
 
         # If the full path to an existing file is specified then add that single file.
         # Don't recursively add all files with the given name.
-        if(EXISTS ${CORE_SOURCE_DIR}/${src} AND NOT IS_DIRECTORY ${CORE_SOURCE_DIR}/${src})
+        if(EXISTS ${CMAKE_SOURCE_DIR}/${src} AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${src})
           set(files ${src})
         else()
-          file(GLOB_RECURSE files RELATIVE ${CORE_SOURCE_DIR} ${CORE_SOURCE_DIR}/${src})
+          file(GLOB_RECURSE files RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/${src})
         endif()
 
         foreach(file ${files})
           if(arg_NO_INSTALL)
-            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} DIRECTORY ${dest} NO_INSTALL)
+            copy_file_to_buildtree(${CMAKE_SOURCE_DIR}/${file} DIRECTORY ${dest} NO_INSTALL)
           else()
-            copy_file_to_buildtree(${CORE_SOURCE_DIR}/${file} DIRECTORY ${dest})
+            copy_file_to_buildtree(${CMAKE_SOURCE_DIR}/${file} DIRECTORY ${dest})
           endif()
         endforeach()
       endforeach()
@@ -427,9 +432,9 @@ function(core_add_subdirs_from_filelist files)
       list(GET subdir  0 subdir_src)
       list(GET subdir -1 subdir_dest)
       if(VERBOSE)
-        message(STATUS "  core_add_subdirs_from_filelist - adding subdir: ${CORE_SOURCE_DIR}/${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
+        message(STATUS "  core_add_subdirs_from_filelist - adding subdir: ${CMAKE_SOURCE_DIR}/${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
       endif()
-      add_subdirectory(${CORE_SOURCE_DIR}/${subdir_src} ${CORE_BUILD_DIR}/${subdir_dest})
+      add_subdirectory(${CMAKE_SOURCE_DIR}/${subdir_src} ${CORE_BUILD_DIR}/${subdir_dest})
     endforeach()
   endforeach()
 endfunction()
@@ -466,9 +471,9 @@ macro(core_add_optional_subdirs_from_filelist pattern)
       foreach(opt ${opts})
         if(ENABLE_${opt})
           if(VERBOSE)
-            message(STATUS "  core_add_optional_subdirs_from_filelist - adding subdir: ${CORE_SOURCE_DIR}/${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
+            message(STATUS "  core_add_optional_subdirs_from_filelist - adding subdir: ${CMAKE_SOURCE_DIR}/${subdir_src} -> ${CORE_BUILD_DIR}/${subdir_dest}")
           endif()
-          add_subdirectory(${CORE_SOURCE_DIR}/${subdir_src} ${CORE_BUILD_DIR}/${subdir_dest})
+          add_subdirectory(${CMAKE_SOURCE_DIR}/${subdir_src} ${CORE_BUILD_DIR}/${subdir_dest})
         else()
           if(VERBOSE)
             message(STATUS "  core_add_optional_subdirs_from_filelist: OPTION ${opt} not enabled for ${subdir_src}, skipping subdir")
@@ -496,14 +501,14 @@ endfunction()
 #                        if no git tree is found, value is set to "nobody <nobody@example.com>"
 function(userstamp)
   find_package(Git)
-  if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
+  if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
     execute_process(COMMAND ${GIT_EXECUTABLE} config user.name
                     OUTPUT_VARIABLE username
-                    WORKING_DIRECTORY ${CORE_SOURCE_DIR}
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
     execute_process(COMMAND ${GIT_EXECUTABLE} config user.email
                     OUTPUT_VARIABLE useremail
-                    WORKING_DIRECTORY ${CORE_SOURCE_DIR}
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
     set(PACKAGE_MAINTAINER "${username} <${useremail}>" PARENT_SCOPE)
   else()
@@ -528,29 +533,29 @@ function(core_find_git_rev stamp)
     set(${stamp} ${GIT_VERSION} PARENT_SCOPE)
   else()
     find_package(Git)
-    if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
+    if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
       execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
                       RESULT_VARIABLE status_code
-                      WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+                      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
         if(NOT status_code)
           execute_process(COMMAND ${GIT_EXECUTABLE} diff-index --ignore-submodules --quiet HEAD --
                         RESULT_VARIABLE status_code
-                        WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
         endif()
         if(status_code)
           execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h-dirty" HEAD
                           OUTPUT_VARIABLE HASH
-                          WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+                          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
           string(SUBSTRING ${HASH} 1 13 HASH)
         else()
           execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h" HEAD
                           OUTPUT_VARIABLE HASH
-                          WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+                          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
           string(SUBSTRING ${HASH} 1 7 HASH)
         endif()
       execute_process(COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:"%cd" --date=short HEAD
                       OUTPUT_VARIABLE DATE
-                      WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+                      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
       string(SUBSTRING ${DATE} 1 10 DATE)
       string(REPLACE "-" "" DATE ${DATE})
     else()
@@ -586,6 +591,15 @@ endfunction()
 #   guilib_version - current ADDONGUI API version
 #   guilib_version_min - minimal ADDONGUI API version
 macro(core_find_versions)
+  # kodi-addons project also calls this macro and uses CORE_SOURCE_DIR
+  # to point to core base dir
+  # Set CORE_SOURCE_DIR here, otherwise kodi main project fails
+  # TODO: drop this code block and refactor the rest to use CMAKE_SOURCE_DIR
+  # if we ever integrate kodi-addons into kodi project
+  if(NOT CORE_SOURCE_DIR)
+    set(CORE_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+  endif()
+
   include(CMakeParseArguments)
   core_file_read_filtered(version_list ${CORE_SOURCE_DIR}/version.txt)
   string(REPLACE " " ";" version_list "${version_list}")

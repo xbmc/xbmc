@@ -1,10 +1,10 @@
 if(NOT CMAKE_TOOLCHAIN_FILE)
-  message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for osx. See ${PROJECT_SOURCE_DIR}/README.md")
+  message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for osx. See ${CMAKE_SOURCE_DIR}/cmake/README.md")
 endif()
 
-set(CORE_MAIN_SOURCE ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp
-                     ${CORE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.mm
-                     ${CORE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.h)
+set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/posix/main.cpp
+                     ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.mm
+                     ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.h)
 
 set(ARCH_DEFINES -D_LINUX -DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX)
 set(SYSTEM_DEFINES -D_REENTRANT -D_FILE_DEFINED -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE

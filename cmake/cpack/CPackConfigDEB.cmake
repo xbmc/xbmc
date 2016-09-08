@@ -1,5 +1,5 @@
 # include Macros.cmake to automate generation of time/date stamps, maintainer, etc.
-include(${PROJECT_SOURCE_DIR}/scripts/common/Macros.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
 
 # find stuff we need
 find_program(LSB_RELEASE_CMD lsb_release)
@@ -73,7 +73,6 @@ endif()
 # package name
 string(TIMESTAMP PACKAGE_TIMESTAMP "%Y%m%d.%H%M" UTC)
 set(PACKAGE_NAME_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}~git${PACKAGE_TIMESTAMP}-${RELEASE_IDENTIFIER}-${DISTRO_CODENAME})
-unset(RELEASE_IDENTIFIER)
 
 # package version
 if(DEBIAN_PACKAGE_EPOCH)
@@ -102,7 +101,7 @@ endif()
 
 # package description common to all packages
 if(NOT CPACK_DEBIAN_PACKAGE_DESCRIPTION)
-  file(STRINGS ${PROJECT_SOURCE_DIR}/cpack/deb/package-description.txt DESC_LINES)
+  file(STRINGS ${CMAKE_SOURCE_DIR}/cmake/cpack/deb/package-description.txt DESC_LINES)
   foreach(LINE IN LISTS DESC_LINES)
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_DEBIAN_PACKAGE_DESCRIPTION} ${LINE}\n")
   endforeach()
@@ -119,10 +118,10 @@ rfc2822stamp()
 # two spaces between maintainer and timestamp is NOT a mistake
 set(CHANGELOG_FOOTER " -- ${CPACK_DEBIAN_PACKAGE_MAINTAINER}  ${RFC2822_TIMESTAMP}")
 
-if(GIT_FOUND AND GZIP_CMD AND EXISTS ${CORE_SOURCE_DIR}/.git)
+if(GIT_FOUND AND GZIP_CMD AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
   execute_process(COMMAND ${GIT_EXECUTABLE} log --no-merges --pretty=format:"%n  [%an]%n   * %s" --since="last month"
                   OUTPUT_VARIABLE CHANGELOG
-                  WORKING_DIRECTORY ${CORE_SOURCE_DIR}
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
   string(REPLACE "\"" "" CHANGELOG ${CHANGELOG})
   file(WRITE ${CPACK_PACKAGE_DIRECTORY}/deb/changelog.Debian ${CHANGELOG_HEADER}\n${CHANGELOG}\n\n${CHANGELOG_FOOTER})
@@ -135,7 +134,7 @@ else()
 endif()
 
 # Generate NEWS.Debian
-configure_file(${PROJECT_SOURCE_DIR}/cpack/deb/NEWS.Debian
+configure_file(${CMAKE_SOURCE_DIR}/cmake/cpack/deb/NEWS.Debian
                ${CPACK_PACKAGE_DIRECTORY}/deb/NEWS.Debian @ONLY)
 if(GZIP_CMD)
   execute_process(COMMAND ${GZIP_CMD} -f -9 -n ${CPACK_PACKAGE_DIRECTORY}/deb/NEWS.Debian)
@@ -144,18 +143,18 @@ else()
 endif()
 
 # Generate man pages
-configure_file(${CORE_SOURCE_DIR}/docs/manpages/kodi.bin.1
+configure_file(${CMAKE_SOURCE_DIR}/docs/manpages/kodi.bin.1
                ${CPACK_PACKAGE_DIRECTORY}/deb/kodi.1 COPYONLY)
-configure_file(${CORE_SOURCE_DIR}/docs/manpages/kodi.bin.1
+configure_file(${CMAKE_SOURCE_DIR}/docs/manpages/kodi.bin.1
                ${CPACK_PACKAGE_DIRECTORY}/deb/kodi.bin.1 COPYONLY)
-configure_file(${CORE_SOURCE_DIR}/docs/manpages/kodi-standalone.1
+configure_file(${CMAKE_SOURCE_DIR}/docs/manpages/kodi-standalone.1
                ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-standalone.1 COPYONLY)
 if(ENABLE_EVENTCLIENTS)
-  configure_file(${CORE_SOURCE_DIR}/docs/manpages/kodi-ps3remote.1
+  configure_file(${CMAKE_SOURCE_DIR}/docs/manpages/kodi-ps3remote.1
                  ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-ps3remote.1 COPYONLY)
-  configure_file(${CORE_SOURCE_DIR}/docs/manpages/kodi-send.1
+  configure_file(${CMAKE_SOURCE_DIR}/docs/manpages/kodi-send.1
                  ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-send.1 COPYONLY)
-  configure_file(${CORE_SOURCE_DIR}/docs/manpages/kodi-wiiremote.1
+  configure_file(${CMAKE_SOURCE_DIR}/docs/manpages/kodi-wiiremote.1
                  ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-wiiremote.1 COPYONLY)
 endif()
 
@@ -190,7 +189,7 @@ install(FILES ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-wiiremote.1.gz
 endif()
 
 # configure package metadata files
-file(GLOB DEBIAN_PACKAGE_FILES ${PROJECT_SOURCE_DIR}/cpack/deb/packages/*.txt.in)
+file(GLOB DEBIAN_PACKAGE_FILES ${CMAKE_SOURCE_DIR}/cmake/cpack/deb/packages/*.txt.in)
 foreach(file ${DEBIAN_PACKAGE_FILES})
   get_filename_component(package ${file} NAME_WE)
   # filter eventclients so we don't have to support two more deps
@@ -304,18 +303,18 @@ ${DEB_PACKAGE_DESCRIPTION_FOOTER}")
 
   install(FILES ${CPACK_PACKAGE_DIRECTORY}/deb/changelog.Debian.gz
                 ${CPACK_PACKAGE_DIRECTORY}/deb/NEWS.Debian.gz
-                ${PROJECT_SOURCE_DIR}/cpack/deb/copyright
+                ${CMAKE_SOURCE_DIR}/cmake/cpack/deb/copyright
           DESTINATION share/doc/${file}
           COMPONENT ${file})
 
   # kodi package exclusive files
   if(CPACK_DEBIAN_KODI_PACKAGE_NAME)
     set(CPACK_DEBIAN_KODI_PACKAGE_CONTROL_EXTRA
-        "${PROJECT_SOURCE_DIR}/cpack/deb/postinst;${PROJECT_SOURCE_DIR}/cpack/deb/postrm")
-    install(FILES ${PROJECT_SOURCE_DIR}/cpack/deb/lintian/overrides/kodi
+        "${CMAKE_SOURCE_DIR}/cmake/cpack/deb/postinst;${CMAKE_SOURCE_DIR}/cmake/cpack/deb/postrm")
+    install(FILES ${CMAKE_SOURCE_DIR}/cmake/cpack/deb/lintian/overrides/kodi
         DESTINATION share/lintian/overrides
         COMPONENT kodi)
-    install(FILES ${PROJECT_SOURCE_DIR}/cpack/deb/menu/kodi
+    install(FILES ${CMAKE_SOURCE_DIR}/cmake/cpack/deb/menu/kodi
         DESTINATION share/menu
         COMPONENT kodi)
   endif()
@@ -327,10 +326,8 @@ unset(DEBIAN_PACKAGES)
 set(CPACK_SOURCE_GENERATOR TGZ)
 
 # source package name
-set(CPACK_SOURCE_PACKAGE_FILE_NAME ${APP_NAME_LC}_${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}~git${PACKAGE_TIMESTAMP}-${GIT_HASH}.orig)
-
-# source dir
-set(CMAKE_SOURCE_DIR ${CORE_SOURCE_DIR})
+set(CPACK_SOURCE_PACKAGE_FILE_NAME ${APP_NAME_LC}_${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}~git${PACKAGE_TIMESTAMP}-${RELEASE_IDENTIFIER}.orig)
+unset(RELEASE_IDENTIFIER)
 
 # ignore files for source package
 set(CPACK_SOURCE_IGNORE_FILES

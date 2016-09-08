@@ -1,18 +1,17 @@
 cmake_minimum_required(VERSION 3.1)
 project(kodi LANGUAGES CXX C ASM)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 if(DEPENDS_DIR)
   list(APPEND CMAKE_PREFIX_PATH ${DEPENDS_DIR})
 endif()
 
-# Set CORE_SOURCE_DIR and CORE_BUILD_DIR
-get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../.. ABSOLUTE)
+# Set CORE_BUILD_DIR
 set(CORE_BUILD_DIR build)
 
-message(STATUS "Source directory: ${CORE_SOURCE_DIR}")
+message(STATUS "Source directory: ${CMAKE_SOURCE_DIR}")
 message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
-if(CMAKE_BINARY_DIR STREQUAL CORE_SOURCE_DIR)
+if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
   message(WARNING "In-source build detected. It is recommended to build out-of-source.")
 endif()
 
@@ -22,13 +21,13 @@ if(NOT VERBOSE)
 endif()
 
 # Includes
-include(modules/extra/ECMEnableSanitizers.cmake)
-include(scripts/common/GeneratorSetup.cmake)
-include(scripts/common/AddOptions.cmake)
-include(scripts/common/ArchSetup.cmake)
-include(scripts/common/Macros.cmake)
-include(scripts/common/ProjectMacros.cmake)
-include(scripts/${CORE_SYSTEM_NAME}/PathSetup.cmake)
+include(cmake/modules/extra/ECMEnableSanitizers.cmake)
+include(cmake/scripts/common/GeneratorSetup.cmake)
+include(cmake/scripts/common/AddOptions.cmake)
+include(cmake/scripts/common/ArchSetup.cmake)
+include(cmake/scripts/common/Macros.cmake)
+include(cmake/scripts/common/ProjectMacros.cmake)
+include(cmake/scripts/${CORE_SYSTEM_NAME}/PathSetup.cmake)
 include(ExternalProject)
 
 # Languages and global compiler settings
@@ -84,12 +83,12 @@ add_custom_target(${APP_NAME_LC}-libraries)
 set(LIBRARY_FILES "" CACHE STRING "" FORCE)
 mark_as_advanced(LIBRARY_FILES)
 
-set(INCLUDES ${CORE_SOURCE_DIR}
-             ${CORE_SOURCE_DIR}/lib
-             ${CORE_SOURCE_DIR}/lib/gtest/include
-             ${CORE_SOURCE_DIR}/xbmc
-             ${CORE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
-             ${CORE_SOURCE_DIR}/xbmc/cores/VideoPlayer
+set(INCLUDES ${CMAKE_SOURCE_DIR}
+             ${CMAKE_SOURCE_DIR}/lib
+             ${CMAKE_SOURCE_DIR}/lib/gtest/include
+             ${CMAKE_SOURCE_DIR}/xbmc
+             ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
+             ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer
              ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
 
 find_package(PkgConfig)
@@ -235,18 +234,18 @@ endif()
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                           ${CMAKE_BINARY_DIR}/addons/xbmc.addon/addon.xml
                           ${CMAKE_BINARY_DIR}/addons/kodi.guilib/addon.xml
-                   COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CORE_SOURCE_DIR}
+                   COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
                                             -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
                                             -DAPP_SCMID=${APP_SCMID}
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                            -P ${PROJECT_SOURCE_DIR}/scripts/common/GenerateVersionedFiles.cmake
-                  DEPENDS ${CORE_SOURCE_DIR}/version.txt
-                          ${CORE_SOURCE_DIR}/addons/xbmc.addon/addon.xml.in
-                          ${CORE_SOURCE_DIR}/addons/kodi.guilib/addon.xml.in
-                          ${CORE_SOURCE_DIR}/xbmc/CompileInfo.cpp.in)
+                                            -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
+                   DEPENDS ${CMAKE_SOURCE_DIR}/version.txt
+                           ${CMAKE_SOURCE_DIR}/addons/xbmc.addon/addon.xml.in
+                           ${CMAKE_SOURCE_DIR}/addons/kodi.guilib/addon.xml.in
+                           ${CMAKE_SOURCE_DIR}/xbmc/CompileInfo.cpp.in)
 list(APPEND install_data addons/xbmc.addon/addon.xml)
 list(APPEND install_data addons/xbmc.json/addon.xml)
 list(APPEND install_data addons/kodi.guilib/addon.xml)
@@ -256,11 +255,11 @@ target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")
 
 # RC File
 if(WIN32)
-  configure_file(${CORE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
+  configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
                  ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc @ONLY)
   add_library(resources OBJECT ${CORE_BUILD_DIR}/xbmc/platform/win32/XBMC_PC.rc)
   set_target_properties(resources PROPERTIES FOLDER "Build Utilities")
-  target_include_directories(resources PRIVATE ${CORE_SOURCE_DIR}/tools/windows/packaging/media)
+  target_include_directories(resources PRIVATE ${CMAKE_SOURCE_DIR}/tools/windows/packaging/media)
   set(RESOURCES $<TARGET_OBJECTS:resources>)
 endif()
 
@@ -274,15 +273,15 @@ mark_as_advanced(core_DEPENDS)
 mark_as_advanced(test_archives)
 mark_as_advanced(test_sources)
 
-add_subdirectory(${CORE_SOURCE_DIR}/lib/gtest ${CORE_BUILD_DIR}/gtest EXCLUDE_FROM_ALL)
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/gtest ${CORE_BUILD_DIR}/gtest EXCLUDE_FROM_ALL)
 set_target_properties(gtest PROPERTIES FOLDER "External Projects")
 
 # copy files to build tree
-copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/common/*.txt
-                                      ${PROJECT_SOURCE_DIR}/installdata/${CORE_SYSTEM_NAME}/*.txt)
+copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/common/*.txt
+                                      ${CMAKE_SOURCE_DIR}/cmake/installdata/${CORE_SYSTEM_NAME}/*.txt)
 
-list(APPEND SKINS "${CORE_SOURCE_DIR}/addons/skin.estuary\;${CORE_SOURCE_DIR}")
-list(APPEND SKINS "${CORE_SOURCE_DIR}/addons/skin.estouchy\;${CORE_SOURCE_DIR}")
+list(APPEND SKINS "${CMAKE_SOURCE_DIR}/addons/skin.estuary\;${CMAKE_SOURCE_DIR}")
+list(APPEND SKINS "${CMAKE_SOURCE_DIR}/addons/skin.estouchy\;${CMAKE_SOURCE_DIR}")
 
 # These are skins that are copied into place from the source tree
 foreach(skin ${SKINS})
@@ -299,10 +298,10 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 
 set(LIBCEC_SONAME "${CEC_SONAME}")
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android)
-  configure_file(${CORE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
+  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
                  ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
 elseif(CORE_SYSTEM_NAME STREQUAL android)
-  configure_file(${CORE_SOURCE_DIR}/xbmc/DllPaths_generated_android.h.in
+  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated_android.h.in
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
 endif()
 
@@ -312,22 +311,22 @@ set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid)
 
 # Codegen
-add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
+add_subdirectory(${CMAKE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
 
 # Other files (IDE)
-set(OTHER_FILES README.md)
+set(OTHER_FILES cmake/README.md)
 
 # Subdirs
-core_add_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/common/*.txt
-                               ${PROJECT_SOURCE_DIR}/treedata/${CORE_SYSTEM_NAME}/*.txt)
-core_add_optional_subdirs_from_filelist(${PROJECT_SOURCE_DIR}/treedata/optional/common/*.txt
-                                        ${PROJECT_SOURCE_DIR}/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)
+core_add_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/common/*.txt
+                               ${CMAKE_SOURCE_DIR}/cmake/treedata/${CORE_SYSTEM_NAME}/*.txt)
+core_add_optional_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/optional/common/*.txt
+                                        ${CMAKE_SOURCE_DIR}/cmake/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)
 
 target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
-source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CORE_SOURCE_DIR}/xbmc)
+source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CMAKE_SOURCE_DIR}/xbmc)
 if(WIN32)
-  add_precompiled_header(lib${APP_NAME_LC} pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+  add_precompiled_header(lib${APP_NAME_LC} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
   set_language_cxx(lib${APP_NAME_LC})
 endif()
 
@@ -346,25 +345,25 @@ unset(_MAIN_LIBRARIES)
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
   set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME_LC})
-  target_sources(${APP_NAME_LC} PRIVATE ${CORE_SOURCE_DIR}/xbmc/platform/win32/app.manifest)
+  target_sources(${APP_NAME_LC} PRIVATE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/app.manifest)
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
 elseif(CORE_SYSTEM_NAME STREQUAL ios)
   set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
-                                                  MACOSX_BUNDLE_INFO_PLIST ${CORE_SOURCE_DIR}/xbmc/platform/darwin/ios/Info.plist.in)
+                                                  MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Info.plist.in)
 else()
   set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ".bin")
 endif()
 
 # testing
-copy_files_from_filelist_to_buildtree(${PROJECT_SOURCE_DIR}/installdata/test-reference-data.txt NO_INSTALL)
-add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CORE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
+copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/test-reference-data.txt NO_INSTALL)
+add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
 whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest)
 target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_TEST_LIBRARIES)
 add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files)
 if(WIN32)
-  add_precompiled_header(${APP_NAME_LC}-test pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+  add_precompiled_header(${APP_NAME_LC}-test pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
 endif()
 
 # Enable unit-test related targets
@@ -385,14 +384,14 @@ if(CORE_HOST_IS_TARGET)
   endif()
 
   # For testing commit series
-  add_custom_target(check-commits ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/CheckCommits.cmake
+  add_custom_target(check-commits ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/CheckCommits.cmake
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
   set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
 
   # code coverage
   if(CMAKE_BUILD_TYPE STREQUAL Coverage)
-    if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
-      include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+      include(${CMAKE_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
     else()
       message(FATAL_ERROR "Code coverage not (yet) implemented for platform ${CORE_SYSTEM_NAME}")
     endif()
@@ -402,9 +401,9 @@ if(CORE_HOST_IS_TARGET)
   find_package(Doxygen)
   if(DOXYGEN_FOUND)
     add_custom_target(doc
-                      COMMAND ${DOXYGEN_EXECUTABLE} ${CORE_SOURCE_DIR}/doxygen_resources/Doxyfile.doxy
-                      COMMAND ${CMAKE_COMMAND} -E echo "Documentation built to: file://${CORE_SOURCE_DIR}/docs/html/index.html"
-                      WORKING_DIRECTORY ${CORE_SOURCE_DIR}/doxygen_resources
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doxygen_resources/Doxyfile.doxy
+                      COMMAND ${CMAKE_COMMAND} -E echo "Documentation built to: file://${CMAKE_SOURCE_DIR}/docs/html/index.html"
+                      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doxygen_resources
                       COMMENT "Generating Doxygen documentation" VERBATIM)
   endif()
 endif()
@@ -418,15 +417,15 @@ if(FFMPEG_CREATE_SHARED_LIBRARY)
 endif()
 
 # Platform specific additional extra targets
-if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
-  include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
+if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
+  include(${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/ExtraTargets.cmake)
 endif()
 
-include(scripts/${CORE_SYSTEM_NAME}/Install.cmake)
+include(cmake/scripts/${CORE_SYSTEM_NAME}/Install.cmake)
 
 # Add uninstall target
 if(CMAKE_GENERATOR MATCHES Makefile)
-  add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/Uninstall.cmake)
+  add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/scripts/common/Uninstall.cmake)
   set_target_properties(uninstall PROPERTIES FOLDER "Build Utilities")
 endif()
 
@@ -443,31 +442,31 @@ if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
     set(_prefix ${CMAKE_INSTALL_PREFIX})
   endif()
   add_custom_target(binary-addons
-    COMMAND $(MAKE) -C ${CORE_SOURCE_DIR}/tools/depends/target/binary-addons clean
-    COMMAND $(MAKE) -C ${CORE_SOURCE_DIR}/tools/depends/target/binary-addons VERBOSE=1 V=99
+    COMMAND $(MAKE) -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons clean
+    COMMAND $(MAKE) -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons VERBOSE=1 V=99
                     PREFIX=${_prefix} INSTALL_PREFIX=${_prefix} ${_cross_args} ${_extra})
   unset(_cross_args)
   unset(_prefix)
 endif()
 
 # Prepare add-on build env
-core_file_read_filtered(bindings ${CORE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk)
+core_file_read_filtered(bindings ${CMAKE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk)
 foreach(binding ${bindings})
   string(REPLACE " =" ";" binding "${binding}")
   string(REPLACE "+=" ";" binding "${binding}")
   list(GET binding 1 header)
   get_filename_component(file ${header} NAME)
-  configure_file(${CORE_SOURCE_DIR}/${header} ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file} COPYONLY)
+  configure_file(${CMAKE_SOURCE_DIR}/${header} ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file} COPYONLY)
 endforeach()
 
 set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
 set(APP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/${APP_NAME_LC})
 set(CXX11_SWITCH "-std=c++11")
-configure_file(${PROJECT_SOURCE_DIR}/KodiConfig.cmake.in
+configure_file(${CMAKE_SOURCE_DIR}/cmake/KodiConfig.cmake.in
                ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/${APP_NAME}Config.cmake @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/scripts/common/AddonHelpers.cmake
+configure_file(${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
                ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/AddonHelpers.cmake COPYONLY)
-configure_file(${PROJECT_SOURCE_DIR}/scripts/common/AddOptions.cmake
+configure_file(${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddOptions.cmake
                ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/AddOptions.cmake COPYONLY)
 
 # Status

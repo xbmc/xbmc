@@ -211,7 +211,7 @@ endif()
 # Internal FFMPEG
 if(NOT FFMPEG_FOUND)
   include(ExternalProject)
-  file(STRINGS ${CORE_SOURCE_DIR}/tools/depends/target/ffmpeg/FFMPEG-VERSION VER)
+  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/FFMPEG-VERSION VER)
   string(REGEX MATCH "VERSION=[^ ]*$.*" FFMPEG_VER "${VER}")
   list(GET FFMPEG_VER 0 FFMPEG_VER)
   string(SUBSTRING "${FFMPEG_VER}" 8 -1 FFMPEG_VER)
@@ -256,10 +256,10 @@ if(NOT FFMPEG_FOUND)
                                  -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                  ${CROSS_ARGS}
                       PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-                                    ${CORE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
+                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                                     <SOURCE_DIR> &&
                                     ${CMAKE_COMMAND} -E copy
-                                    ${CORE_SOURCE_DIR}/tools/depends/target/ffmpeg/FindGnuTls.cmake
+                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/FindGnuTls.cmake
                                     <SOURCE_DIR>)
 
   file(WRITE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper

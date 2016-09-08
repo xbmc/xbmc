@@ -29,7 +29,7 @@ endif()
 get_filename_component(BUILD_DIR "${BUILD_DIR}" ABSOLUTE)
 
 ## use add_addon_depends to handle the cmake based dependencies
-include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/HandleDepends.cmake)
+include(${CORE_SOURCE_DIR}/cmake/scripts/common/HandleDepends.cmake)
 add_addon_depends(depends "${PROJECT_SOURCE_DIR}")
 
 ## if there's a platform-specific sub-directory containing a CMakeLists.txt, add it to the build as well

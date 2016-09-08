@@ -1,5 +1,5 @@
 if(NOT CMAKE_TOOLCHAIN_FILE)
-  message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for android. See ${PROJECT_SOURCE_DIR}/README.md")
+  message(FATAL_ERROR "CMAKE_TOOLCHAIN_FILE required for android. See ${CMAKE_SOURCE_DIR}/cmake/README.md")
 elseif(NOT SDK_PLATFORM)
   message(FATAL_ERROR "Toolchain did not define SDK_PLATFORM. Possibly outdated depends.")
 endif()

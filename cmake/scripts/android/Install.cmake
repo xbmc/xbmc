@@ -14,11 +14,11 @@ if(NOT ZIPALIGN_EXECUTABLE)
 endif()
 
 # Configure files into packaging environment.
-configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/Makefile.in
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/Makefile.in
                ${CMAKE_BINARY_DIR}/tools/android/packaging/Makefile @ONLY)
-configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/apksign
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/apksign
                ${CMAKE_BINARY_DIR}/tools/android/packaging/apksign COPYONLY)
-configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/make_symbols.sh
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/make_symbols.sh
                ${CMAKE_BINARY_DIR}/tools/android/packaging/make_symbols.sh COPYONLY)
 file(WRITE ${CMAKE_BINARY_DIR}/tools/depends/Makefile.include
      "$(PREFIX)/lib/${APP_NAME_LC}/lib${APP_NAME_LC}.so: ;\n")
@@ -35,15 +35,15 @@ set(package_files strings.xml
                   src/org/xbmc/kodi/Splash.java
                   src/org/xbmc/kodi/XBMCBroadcastReceiver.java)
 foreach(file IN LISTS package_files)
-  configure_file(${CORE_SOURCE_DIR}/tools/android/packaging/xbmc/${file}.in
+  configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/xbmc/${file}.in
                  ${CMAKE_BINARY_DIR}/tools/android/packaging/xbmc/${file} @ONLY)
 endforeach()
 
 # Copy files to the location expected by the Android packaging scripts.
 add_custom_target(bundle
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CORE_SOURCE_DIR}/tools/android/packaging/media
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/tools/android/packaging/media
                                                ${CMAKE_BINARY_DIR}/tools/android/packaging/media
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CORE_SOURCE_DIR}/tools/android/packaging/xbmc/res
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/tools/android/packaging/xbmc/res
                                                ${CMAKE_BINARY_DIR}/tools/android/packaging/xbmc/res
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${DEPENDS_PATH}/lib/python2.7 ${libdir}/python2.7
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${DEPENDS_PATH}/share/${APP_NAME_LC} ${datadir}/${APP_NAME_LC}
@@ -101,7 +101,7 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
   add_custom_target(${target}
       COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM}
               -C ${CMAKE_BINARY_DIR}/tools/android/packaging
-              CORE_SOURCE_DIR=${CORE_SOURCE_DIR}
+              CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
               CC=${CMAKE_C_COMPILER}
               CPU=${CPU}
               ARCH=${ARCH}

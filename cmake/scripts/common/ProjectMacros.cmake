@@ -33,7 +33,7 @@ function(copy_skin_to_buildtree skin)
     copy_file_to_buildtree(${file})
   endforeach()
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${dest}/media)
-  string(REPLACE "${CORE_SOURCE_DIR}/" "" dest ${skin})
+  string(REPLACE "${CMAKE_SOURCE_DIR}/" "" dest ${skin})
   pack_xbt(${skin}/media ${CMAKE_BINARY_DIR}/${dest}/media/Textures.xbt)
 
   file(GLOB THEMES RELATIVE ${skin}/themes ${skin}/themes/*)
