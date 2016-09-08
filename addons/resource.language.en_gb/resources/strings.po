@@ -1581,7 +1581,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#348"
-msgid "Enable passthrough"
+msgid "Allow passthrough"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17943,7 +17943,7 @@ msgstr ""
 #. Description of setting with label #348 "Enable passthrough"
 #: system/settings/settings.xml
 msgctxt "#36368"
-msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital (AC3), DTS, etc."
+msgid "Select to allow passthrough audio for playback of compressed audio such as Dolby Digital (AC3), DTS, etc. The Client of the AudioEngine, for example Videoplayer, might decide to decode the audio stream under certain conditions. In Videoplayer case, passthrough won't be used for live streams and when you sync playback to display."
 msgstr ""
 
 #. Description of setting with label #349 "TrueHD capable receiver"
