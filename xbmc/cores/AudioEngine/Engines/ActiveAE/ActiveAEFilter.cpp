@@ -165,6 +165,7 @@ bool CActiveAEFilter::CreateAtempoFilter()
   m_hasData = false;
   m_needData = true;
   m_filterEof = false;
+  m_started = false;
 
   return true;
 }
@@ -193,6 +194,16 @@ void CActiveAEFilter::CloseFilter()
 
 int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, int src_bufsize)
 {
+  if (m_filterEof)
+  {
+    if (src_samples)
+    {
+      CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - adding data while already eof");
+      return -1;
+    }
+    return 0;
+  }
+
   int result;
 
   if (src_samples)
@@ -226,6 +237,8 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - av_buffersrc_add_frame failed");
       return -1;
     }
+
+    m_started = true;
   }
   else if (!m_filterEof && m_needData)
   {
@@ -237,7 +250,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     }
   }
 
-  if (!m_hasData)
+  if (!m_hasData && m_started)
   {
     m_needData = false;
     AVFrame *outFrame = m_needConvert ? m_pConvertFrame : m_pOutFrame;

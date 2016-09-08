@@ -60,6 +60,7 @@ protected:
   bool m_needConvert;
   float m_tempo;
   bool m_filterEof;
+  bool m_started;
   bool m_hasData;
   bool m_needData;
   int m_sampleOffset;
