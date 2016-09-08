@@ -1,0 +1,12 @@
+--- mysys/mf_pack.c-org	2016-03-27 10:59:19.176558034 -0400
++++ mysys/mf_pack.c	2016-03-27 11:00:00.364557719 -0400
+@@ -381,7 +381,7 @@ static char * NEAR_F expand_tilde(char *
+ {
+   if (path[0][0] == FN_LIBCHAR)
+     return home_dir;			/* ~/ expanded to home */
+-#ifdef HAVE_GETPWNAM
++#if defined(HAVE_GETPWNAM) && defined(HAVE_GETPWENT)
+   {
+     char *str,save;
+     struct passwd *user_entry;
+

@@ -34,8 +34,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../04-strnlen.patch
 	cd $(PLATFORM); patch -p1 < ../05-mysqlclient-ios64.patch
 	cd $(PLATFORM); patch -p0 < ../06-fixsslcheck.patch
+	cd $(PLATFORM); patch -p0 < ../07-no-endpwent.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
-	cd $(PLATFORM); $(CONFIGURE) 
+	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/include
