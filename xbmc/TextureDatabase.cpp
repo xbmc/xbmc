@@ -53,14 +53,14 @@ typedef struct
 
 static const translateField fields[] = {
   { "none",          TF_None,          CDatabaseQueryRule::TEXT_FIELD    },
-  { "textureid",     TF_Id,            CDatabaseQueryRule::NUMERIC_FIELD },
+  { "textureid",     TF_Id,            CDatabaseQueryRule::REAL_FIELD    },
   { "url",           TF_Url,           CDatabaseQueryRule::TEXT_FIELD    },
   { "cachedurl",     TF_CachedUrl,     CDatabaseQueryRule::TEXT_FIELD    },
   { "lasthashcheck", TF_LastHashCheck, CDatabaseQueryRule::TEXT_FIELD    },
   { "imagehash",     TF_ImageHash,     CDatabaseQueryRule::TEXT_FIELD    },
-  { "width",         TF_Width,         CDatabaseQueryRule::NUMERIC_FIELD },
-  { "height",        TF_Height,        CDatabaseQueryRule::NUMERIC_FIELD },
-  { "usecount",      TF_UseCount,      CDatabaseQueryRule::NUMERIC_FIELD },
+  { "width",         TF_Width,         CDatabaseQueryRule::REAL_FIELD    },
+  { "height",        TF_Height,        CDatabaseQueryRule::REAL_FIELD    },
+  { "usecount",      TF_UseCount,      CDatabaseQueryRule::REAL_FIELD    },
   { "lastused",      TF_LastUsed,      CDatabaseQueryRule::TEXT_FIELD    }
 };
 

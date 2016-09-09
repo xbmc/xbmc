@@ -430,6 +430,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_ENDS_WITH));
     break;
 
+  case CDatabaseQueryRule::REAL_FIELD:
   case CDatabaseQueryRule::NUMERIC_FIELD:
   case CDatabaseQueryRule::SECONDS_FIELD:
     // numerical fields - less than greater than
@@ -481,6 +482,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   case CDatabaseQueryRule::TEXT_FIELD:
   case CDatabaseQueryRule::PLAYLIST_FIELD:
   case CDatabaseQueryRule::TEXTIN_FIELD:
+  case CDatabaseQueryRule::REAL_FIELD:
   case CDatabaseQueryRule::NUMERIC_FIELD:
     type = CGUIEditControl::INPUT_TYPE_TEXT;
     break;
