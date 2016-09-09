@@ -78,7 +78,7 @@ endif()
 option(ENABLE_STATIC_LIBS "Build static libraries per directory" ${STATIC_LIBS_DEFAULT})
 unset(STATIC_LIBS_DEFAULT)
 
-core_find_git_rev()
+core_find_git_rev(APP_SCMID FULL)
 core_find_versions()
 
 # Dynamically loaded libraries built with the project

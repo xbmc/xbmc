@@ -468,21 +468,6 @@ macro(core_add_optional_subdirs_from_filelist pattern)
   endforeach()
 endmacro()
 
-macro(today RESULT)
-  if(WIN32)
-    execute_process(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${RESULT})
-    string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${RESULT} ${${RESULT}})
-  elseif(UNIX)
-    execute_process(COMMAND date -u +%F
-                    OUTPUT_VARIABLE ${RESULT})
-    string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${RESULT} ${${RESULT}})
-  else()
-    message(SEND_ERROR "date not implemented")
-    set(${RESULT} 00000000)
-  endif()
-  string(REGEX REPLACE "(\r?\n)+$" "" ${RESULT} "${${RESULT}}")
-endmacro()
-
 # Generates an RFC2822 timestamp
 #
 # The following variable is set:
@@ -516,48 +501,57 @@ function(userstamp)
 endfunction()
 
 # Parses git info and sets variables used to identify the build
-#
-# The following variables are set:
-#   APP_SCMID - git HEAD commit in the form of 'YYYYMMDD-hash'
-#               if git tree is dirty, value is set in the form of 'YYYYMMDD-hash-dirty'
-#               if no git tree is found, value is set in the form of 'YYYYMMDD-nogitfound'
-#   GIT_HASH  - git HEAD commit in the form of 'hash'. if git tree is dirty,
-#               value is set in the form of 'hash-dirty'
-function(core_find_git_rev)
-  find_package(Git)
-  if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
-    execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
-                    RESULT_VARIABLE status_code
-                    WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-      if(NOT status_code)
-        execute_process(COMMAND ${GIT_EXECUTABLE} diff-index --ignore-submodules --quiet HEAD --
+# Arguments:
+#   stamp variable name to return
+# Optional Arguments:
+#   FULL: generate git HEAD commit in the form of 'YYYYMMDD-hash'
+#         if git tree is dirty, value is set in the form of 'YYYYMMDD-hash-dirty'
+#         if no git tree is found, value is set in the form of 'YYYYMMDD-nogitfound'
+#         if FULL is not given, stamp is generated following the same process as above
+#         but without 'YYYYMMDD'
+# On return:
+#   Variable is set with generated stamp to PARENT_SCOPE
+function(core_find_git_rev stamp)
+  # allow manual setting GIT_VERSION
+  if(GIT_VERSION)
+    set(${stamp} ${GIT_VERSION} PARENT_SCOPE)
+  else()
+    find_package(Git)
+    if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
+      execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
                       RESULT_VARIABLE status_code
                       WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-      endif()
-      if(status_code)
-        execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h-dirty" HEAD
-                        OUTPUT_VARIABLE HASH
+        if(NOT status_code)
+          execute_process(COMMAND ${GIT_EXECUTABLE} diff-index --ignore-submodules --quiet HEAD --
+                        RESULT_VARIABLE status_code
                         WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-        string(SUBSTRING ${HASH} 1 13 HASH)
-      else()
-        execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h" HEAD
-                        OUTPUT_VARIABLE HASH
-                        WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-        string(SUBSTRING ${HASH} 1 7 HASH)
-      endif()
-    execute_process(COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:"%cd" --date=short HEAD
-                    OUTPUT_VARIABLE DATE
-                    WORKING_DIRECTORY ${CORE_SOURCE_DIR})
-    string(SUBSTRING ${DATE} 1 10 DATE)
-  else()
-    today(DATE)
-    set(HASH "nogitfound")
-  endif()
-  string(REPLACE "-" "" DATE ${DATE})
-  set(GIT_REV "${DATE}-${HASH}")
-  if(GIT_REV)
-    set(APP_SCMID ${GIT_REV} PARENT_SCOPE)
-    set(GIT_HASH ${HASH} PARENT_SCOPE)
+        endif()
+        if(status_code)
+          execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h-dirty" HEAD
+                          OUTPUT_VARIABLE HASH
+                          WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+          string(SUBSTRING ${HASH} 1 13 HASH)
+        else()
+          execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h" HEAD
+                          OUTPUT_VARIABLE HASH
+                          WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+          string(SUBSTRING ${HASH} 1 7 HASH)
+        endif()
+      execute_process(COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:"%cd" --date=short HEAD
+                      OUTPUT_VARIABLE DATE
+                      WORKING_DIRECTORY ${CORE_SOURCE_DIR})
+      string(SUBSTRING ${DATE} 1 10 DATE)
+      string(REPLACE "-" "" DATE ${DATE})
+    else()
+      string(TIMESTAMP DATE "%Y%m%d" UTC)
+      set(HASH "nogitfound")
+    endif()
+    cmake_parse_arguments(arg "FULL" "" "" ${ARGN})
+    if(arg_FULL)
+      set(${stamp} ${DATE}-${HASH} PARENT_SCOPE)
+    else()
+      set(${stamp} ${HASH} PARENT_SCOPE)
+    endif()
   endif()
 endfunction()
 
