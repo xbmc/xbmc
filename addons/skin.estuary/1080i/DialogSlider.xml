@@ -19,7 +19,7 @@
 			<description>Dialog header</description>
 			<left>40</left>
 			<top>10</top>
-			<width>230</width>
+			<width>550</width>
 			<height>20</height>
 			<aligny>center</aligny>
 			<font>font14</font>
