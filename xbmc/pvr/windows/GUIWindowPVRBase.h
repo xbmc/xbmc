@@ -91,8 +91,6 @@ namespace PVR
     virtual CPVRChannelGroupPtr GetChannelGroup(void);
     virtual void SetChannelGroup(const CPVRChannelGroupPtr &group);
 
-    virtual bool ActionInputChannelNumber(int input);
-
     virtual void UpdateSelectedItemPath();
 
     void RegisterObservers(void);

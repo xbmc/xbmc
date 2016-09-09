@@ -21,11 +21,9 @@
 #include "GUIWindowPVRBase.h"
 
 #include "addons/AddonManager.h"
-#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "epg/Epg.h"
-#include "epg/GUIEPGGridContainer.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -39,7 +37,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "ServiceBroker.h"
-#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
@@ -327,42 +324,6 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
     g_PVRManager.SetPlayingGroup(m_channelGroup);
     Update(GetDirectoryPath());
   }
-}
-
-bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
-{
-  std::string strInput = StringUtils::Format("%i", input);
-  if (CGUIDialogNumeric::ShowAndGetNumber(strInput, g_localizeStrings.Get(19103)))
-  {
-    int iChannelNumber = atoi(strInput.c_str());
-    if (iChannelNumber >= 0)
-    {
-      int itemIndex = 0;
-      VECFILEITEMS items = m_vecItems->GetList();
-      for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
-      {
-        if(((*it)->HasPVRChannelInfoTag() && (*it)->GetPVRChannelInfoTag()->ChannelNumber() == iChannelNumber) ||
-           ((*it)->HasEPGInfoTag() && (*it)->GetEPGInfoTag()->HasPVRChannel() && (*it)->GetEPGInfoTag()->PVRChannelNumber() == iChannelNumber))
-        {
-          // different handling for guide grid
-          if (GetID() == WINDOW_TV_GUIDE || GetID() == WINDOW_RADIO_GUIDE)
-          {
-            CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
-            if ((*it)->HasEPGInfoTag() && (*it)->GetEPGInfoTag()->HasPVRChannel())
-              epgGridContainer->SetChannel((*it)->GetEPGInfoTag()->ChannelTag());
-            else
-              epgGridContainer->SetChannel((*it)->GetPVRChannelInfoTag());
-          }
-          else
-            m_viewControl.SetSelectedItem(itemIndex);
-          return true;
-        }
-        ++itemIndex;
-      }
-    }
-  }
-
-  return false;
 }
 
 bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilterPath /*= true*/)

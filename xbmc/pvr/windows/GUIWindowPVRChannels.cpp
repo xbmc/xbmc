@@ -23,6 +23,7 @@
 #include "epg/EpgContainer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -119,7 +120,6 @@ bool CGUIWindowPVRChannels::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-    case REMOTE_0:
     case REMOTE_1:
     case REMOTE_2:
     case REMOTE_3:
@@ -129,7 +129,7 @@ bool CGUIWindowPVRChannels::OnAction(const CAction &action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      return ActionInputChannelNumber(action.GetID() - REMOTE_0);
+      return InputChannelNumber(action.GetID() - REMOTE_0);
   }
 
   return CGUIWindowPVRBase::OnAction(action);
@@ -311,4 +311,28 @@ void CGUIWindowPVRChannels::ShowGroupManager(void)
   pDlgInfo->Open();
 
   return;
+}
+
+bool CGUIWindowPVRChannels::InputChannelNumber(int input)
+{
+  std::string strInput = StringUtils::Format("%i", input);
+  if (CGUIDialogNumeric::ShowAndGetNumber(strInput, g_localizeStrings.Get(19103)))
+  {
+    int iChannelNumber = atoi(strInput.c_str());
+    if (iChannelNumber >= 0)
+    {
+      int itemIndex = 0;
+      for (auto channel : m_vecItems->GetList())
+      {
+        if (channel->GetPVRChannelInfoTag()->ChannelNumber() == iChannelNumber)
+        {
+          m_viewControl.SetSelectedItem(itemIndex);
+          return true;
+        }
+        ++itemIndex;
+      }
+    }
+  }
+
+  return false;
 }

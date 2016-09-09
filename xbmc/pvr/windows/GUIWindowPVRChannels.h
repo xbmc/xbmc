@@ -45,6 +45,7 @@ namespace PVR
     void ShowChannelManager();
     void ShowGroupManager();
     void UpdateEpg(const CFileItemPtr &item);
+    bool InputChannelNumber(int input);
 
     bool m_bShowHiddenChannels;
   };

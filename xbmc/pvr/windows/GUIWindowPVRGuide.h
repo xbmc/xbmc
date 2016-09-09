@@ -71,6 +71,8 @@ namespace PVR
     bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON button);
 
+    bool InputChannelNumber(int input);
+
     void StartRefreshTimelineItemsThread();
     void StopRefreshTimelineItemsThread();
 

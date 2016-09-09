@@ -19,6 +19,7 @@
  */
 
 #include "ContextMenuManager.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "GUIUserMessages.h"
 #include "epg/EpgContainer.h"
@@ -223,7 +224,7 @@ bool CGUIWindowPVRGuide::OnAction(const CAction &action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      return ActionInputChannelNumber(action.GetID() - REMOTE_0);
+      return InputChannelNumber(action.GetID() - REMOTE_0);
   }
 
   return CGUIWindowPVRBase::OnAction(action);
@@ -467,6 +468,33 @@ bool CGUIWindowPVRGuide::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON butt
   }
 
   return bReturn;
+}
+
+bool CGUIWindowPVRGuide::InputChannelNumber(int input)
+{
+  std::string strInput = StringUtils::Format("%i", input);
+  if (CGUIDialogNumeric::ShowAndGetNumber(strInput, g_localizeStrings.Get(19103)))
+  {
+    int iChannelNumber = atoi(strInput.c_str());
+    if (iChannelNumber >= 0)
+    {
+      for (auto event : m_vecItems->GetList())
+      {
+        const CEpgInfoTagPtr tag(event->GetEPGInfoTag());
+        if (tag->HasPVRChannel() && tag->PVRChannelNumber() == iChannelNumber)
+        {
+          CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+          if (epgGridContainer)
+          {
+            epgGridContainer->SetChannel(tag->ChannelTag());
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuide *pGuideWindow)
