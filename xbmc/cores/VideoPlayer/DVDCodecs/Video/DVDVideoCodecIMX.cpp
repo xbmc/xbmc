@@ -1381,7 +1381,8 @@ void CIMXContext::OnLostDisplay()
 void CIMXContext::OnResetDisplay()
 {
   CSingleLock lk(m_pageSwapLock);
-  m_bFbIsConfigured = false;
+  if (m_bFbIsConfigured)
+    return;
 
   CLog::Log(LOGDEBUG, "iMX : %s - going to change screen parameters\n", __FUNCTION__);
   AdaptScreen();

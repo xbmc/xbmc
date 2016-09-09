@@ -263,6 +263,8 @@ bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
   CreateNativeDisplay();
   CreateNativeWindow();
 
+  g_IMXContext.OnResetDisplay();
+  ShowWindow(true);
   CLog::Log(LOGDEBUG, "%s: %s",__FUNCTION__, res.strId.c_str());
 
   return true;
