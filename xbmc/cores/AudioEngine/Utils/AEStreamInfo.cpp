@@ -426,31 +426,33 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
     }
     else
     {
-      /* Enhanced AC-3 */
+      // Enhanced AC-3
       uint8_t strmtyp = data[2] >> 6;
       if (strmtyp == 3)
         continue;
 
       unsigned int framesize = (((data[2] & 0x7) << 8) | data[3]) + 1;
-      uint8_t      fscod     = (data[4] >> 6) & 0x3;
-      uint8_t      cod       = (data[4] >> 4) & 0x3;
-      uint8_t      blocks;
+      uint8_t fscod = (data[4] >> 6) & 0x3;
+      uint8_t cod = (data[4] >> 4) & 0x3;
+      uint8_t acmod = (data[4] >> 1) & 0x7;
+      uint8_t lfeon = data[4] & 0x1;
+      uint8_t blocks;
 
       if (fscod == 0x3)
       {
         if (cod == 0x3)
           continue;
 
-        blocks       = 6;
+        blocks = 6;
         m_info.m_sampleRate = AC3FSCod[cod] >> 1;
       }
       else
       {
-        blocks = AC3BlkCod[cod  ];
-        m_info.m_sampleRate = AC3FSCod [fscod];
+        blocks = AC3BlkCod[cod];
+        m_info.m_sampleRate = AC3FSCod[fscod];
       }
 
-      m_fsize        = framesize << 1;
+      m_fsize = framesize << 1;
 
       // concatenate substream to independent stream
       if (strmtyp == 1 && m_fsizeMain)
@@ -464,9 +466,9 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
       if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
         return 0;
 
-      /* if we get here, we can sync */
+      // if we get here, we can sync
       m_hasSync = true;
-      m_info.m_channels = 8; /* FIXME: this should be read out of the stream */
+      m_info.m_channels = AC3Channels[acmod] + lfeon;
       m_syncFunc = &CAEStreamParser::SyncAC3;
       m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
       m_info.m_ac3FrameSize = m_fsize;
@@ -477,7 +479,7 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
     }
   }
 
-  /* if we get here, the entire packet is invalid and we have lost sync */
+  // if we get here, the entire packet is invalid and we have lost sync
   CLog::Log(LOGINFO, "CAEStreamParser::SyncAC3 - AC3 sync lost");
   m_hasSync = false;
   m_fsizeMain = 0;
