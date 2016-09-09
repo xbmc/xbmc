@@ -32,9 +32,6 @@
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
-#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
-#pragma comment(lib, "libmysql.lib")
-#endif
 
 #ifdef TARGET_POSIX
 #include "linux/ConvUtils.h"
