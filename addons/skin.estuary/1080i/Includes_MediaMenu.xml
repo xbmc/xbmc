@@ -56,7 +56,11 @@
 				<height>100%</height>
 				<onleft>9000</onleft>
 				<onup>9000</onup>
-				<onright>50</onright>
+				<onright condition="!Window.IsActive(MyPVRGuide.xml)">50</onright>
+				<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(10)">10</onright>
+				<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(11)">11</onright>
+				<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(12)">12</onright>
+				<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(13)">13</onright>
 				<ondown>14100</ondown>
 				<onback>50</onback>
 				<defaultcontrol>6054</defaultcontrol>
@@ -86,7 +90,11 @@
 						<left>5</left>
 						<height>95</height>
 						<onleft>6056</onleft>
-						<onright>50</onright>
+						<onright condition="!Window.IsActive(MyPVRGuide.xml)">50</onright>
+						<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(10)">10</onright>
+						<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(11)">11</onright>
+						<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(12)">12</onright>
+						<onright condition="Window.IsActive(MyPVRGuide.xml) + Control.IsVisible(13)">13</onright>
 						<onup>14100</onup>
 						<ondown>6054</ondown>
 						<width>1000</width>
