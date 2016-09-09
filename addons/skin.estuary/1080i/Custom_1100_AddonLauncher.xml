@@ -132,11 +132,11 @@
 							<property name="path">addons://sources/executable/</property>
 						</item>
 						<item id="4">
-							<label>$LOCALIZE[1043]</label>
-							<onclick>ActivateWindow(programs,androidapps://,return)</onclick>
+							<label>$LOCALIZE[20244]</label>
+							<onclick>ActivateWindow(programs,androidapp://sources/apps/,return)</onclick>
 							<thumb>icons/settings/android.png</thumb>
 							<property name="id">android</property>
-							<property name="path">androidapps://</property>
+							<property name="path">androidapp://sources/apps/</property>
 							<visible>System.Platform.Android</visible>
 						</item>
 						<item id="5">
@@ -267,7 +267,7 @@
 				<include content="AddonLauncherPanel" condition="System.Platform.Android">
 					<param name="container_id" value="506" />
 					<param name="visible" value="Container(9000).HasFocus(4)" />
-					<param name="container_path" value="androidapps://" />
+					<param name="container_path" value="androidapp://sources/apps/" />
 					<param name="container_target" value="programs" />
 				</include>
 				<include content="AddonLauncherPanel">
