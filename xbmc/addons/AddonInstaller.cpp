@@ -345,10 +345,10 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     //! @todo should we assume that installed deps are OK?
     if (dep && std::find(preDeps.begin(), preDeps.end(), dep->ID()) == preDeps.end())
     {
+      preDeps.push_back(dep->ID());
       if (!CheckDependencies(dep, preDeps, database, failedDep))
       {
         database.Close();
-        preDeps.push_back(dep->ID());
         return false;
       }
     }
