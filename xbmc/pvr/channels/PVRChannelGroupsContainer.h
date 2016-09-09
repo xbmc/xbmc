@@ -23,6 +23,8 @@
 
 #include "PVRChannelGroups.h"
 
+class CURL;
+
 namespace PVR
 {
   class CPVRManager;
@@ -215,6 +217,8 @@ namespace PVR
   private :
     CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&);
     CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&);
+
+    bool FilterDirectory(const CURL &url, CFileItemList &results) const;
 
     bool m_bLoaded;
   };

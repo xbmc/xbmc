@@ -21,13 +21,17 @@
 
 namespace PVR
 {
-  enum ManagerState
+  enum PVREvent
   {
-    ManagerStateError = 0,
-    ManagerStateStopped,
-    ManagerStateStarting,
-    ManagerStateStopping,
-    ManagerStateInterrupted,
-    ManagerStateStarted
+    // PVR Manager states
+    ManagerError = 0,
+    ManagerStopped,
+    ManagerStarting,
+    ManagerStopping,
+    ManagerInterrupted,
+    ManagerStarted,
+
+    // Recording events
+    RecordingsInvalidated
   };
 } // namespace PVR

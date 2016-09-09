@@ -56,7 +56,7 @@ namespace PVR
 
     virtual void UpdateFromClients(void);
     virtual std::string TrimSlashes(const std::string &strOrig) const;
-    virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const;
+    virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory, bool bGrouped) const;
     virtual void GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results);
 
     /**

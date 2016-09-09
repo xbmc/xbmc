@@ -180,7 +180,8 @@ void CURL::Parse(const std::string& strURL1)
      IsProtocol("image") ||
      IsProtocol("videodb") ||
      IsProtocol("musicdb") ||
-     IsProtocol("androidapp"))
+     IsProtocol("androidapp") ||
+     IsProtocol("pvr"))
     sep = "?";
   else
   if(  IsProtocolEqual(strProtocol2, "http")

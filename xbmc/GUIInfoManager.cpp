@@ -4110,7 +4110,7 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///   \table_row3{   <b>`Pvr.IsRecording`</b>,
 ///                  \anchor Pvr_IsRecording
 ///                  _boolean_,
-///     Returns true when the system is recording a tv programme.
+///     Returns true when the system is recording a tv or radio programme.
 ///   }
 ///   \table_row3{   <b>`Pvr.HasTimer`</b>,
 ///                  \anchor Pvr_HasTimer
@@ -4145,7 +4145,7 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///   \table_row3{   <b>`Pvr.NowRecordingChannel`</b>,
 ///                  \anchor Pvr_NowRecordingChannel
 ///                  _string_,
-///     Channel number that's being recorded
+///     Channel name of the current recording
 ///   }
 ///   \table_row3{   <b>`Pvr.NowRecordingChannelIcon`</b>,
 ///                  \anchor Pvr_NowRecordingChannelIcon
@@ -4367,6 +4367,116 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _integer_,
 ///     Returns the position of currently timeshifted title on TV as interger
 ///   }
+///   \table_row3{   <b>`Pvr.TVNowRecordingTitle`</b>,
+///                  \anchor Pvr_TVNowRecordingTitle
+///                  _string_,
+///     Title of the tv programme being recorded
+///   }
+///   \table_row3{   <b>`Pvr.TVNowRecordingDateTime`</b>,
+///                  \anchor Pvr_TVNowRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the current tv recording
+///   }
+///   \table_row3{   <b>`Pvr.TVNowRecordingChannel`</b>,
+///                  \anchor Pvr_TVNowRecordingChannel
+///                  _string_,
+///     Channel name of the current tv recording
+///   }
+///   \table_row3{   <b>`Pvr.TVNowRecordingChannelIcon`</b>,
+///                  \anchor Pvr_TVNowRecordingChannelIcon
+///                  _path_,
+///     Icon of the current recording TV channel
+///   }
+///   \table_row3{   <b>`Pvr.TVNextRecordingTitle`</b>,
+///                  \anchor Pvr_TVNextRecordingTitle
+///                  _string_,
+///     Title of the next tv programme that will be recorded
+///   }
+///   \table_row3{   <b>`Pvr.TVNextRecordingDateTime`</b>,
+///                  \anchor Pvr_TVNextRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the next tv recording
+///   }
+///   \table_row3{   <b>`Pvr.TVNextRecordingChannel`</b>,
+///                  \anchor Pvr_TVNextRecordingChannel
+///                  _string_,
+///     Channel name of the next tv recording
+///   }
+///   \table_row3{   <b>`Pvr.TVNextRecordingChannelIcon`</b>,
+///                  \anchor Pvr_TVNextRecordingChannelIcon
+///                  _path_,
+///     Icon of the next recording tv channel
+///   }
+///   \table_row3{   <b>`Pvr.RadioNowRecordingTitle`</b>,
+///                  \anchor Pvr_RadioNowRecordingTitle
+///                  _string_,
+///     Title of the radio programme being recorded
+///   }
+///   \table_row3{   <b>`Pvr.RadioNowRecordingDateTime`</b>,
+///                  \anchor Pvr_RadioNowRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the current radio recording
+///   }
+///   \table_row3{   <b>`Pvr.RadioNowRecordingChannel`</b>,
+///                  \anchor Pvr_RadioNowRecordingChannel
+///                  _string_,
+///     Channel name of the current radio recording
+///   }
+///   \table_row3{   <b>`Pvr.RadioNowRecordingChannelIcon`</b>,
+///                  \anchor Pvr_RadioNowRecordingChannelIcon
+///                  _path_,
+///     Icon of the current recording radio channel
+///   }
+///   \table_row3{   <b>`Pvr.RadioNextRecordingTitle`</b>,
+///                  \anchor Pvr_RadioNextRecordingTitle
+///                  _string_,
+///     Title of the next radio programme that will be recorded
+///   }
+///   \table_row3{   <b>`Pvr.RadioNextRecordingDateTime`</b>,
+///                  \anchor Pvr_RadioNextRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the next radio recording
+///   }
+///   \table_row3{   <b>`Pvr.RadioNextRecordingChannel`</b>,
+///                  \anchor Pvr_RadioNextRecordingChannel
+///                  _string_,
+///     Channel name of the next radio recording
+///   }
+///   \table_row3{   <b>`Pvr.RadioNextRecordingChannelIcon`</b>,
+///                  \anchor Pvr_RadioNextRecordingChannelIcon
+///                  _path_,
+///     Icon of the next recording radio channel
+///   }
+///   \table_row3{   <b>`Pvr.IsRecordingTV`</b>,
+///                  \anchor Pvr_IsRecordingTV
+///                  _boolean_,
+///     Returns true when the system is recording a tv programme.
+///   }
+///   \table_row3{   <b>`Pvr.HasTVTimer`</b>,
+///                  \anchor Pvr_HasTVTimer
+///                  _boolean_,
+///     Returns true if at least one tv timer is active.
+///   }
+///   \table_row3{   <b>`Pvr.HasNonRecordingTVTimer`</b>,
+///                  \anchor Pvr_HasNonRecordingTVTimer
+///                  _boolean_,
+///     Returns true if there are tv timers present who currently not do recording
+///   }
+///   \table_row3{   <b>`Pvr.IsRecordingRadio`</b>,
+///                  \anchor Pvr_IsRecordingRadio
+///                  _boolean_,
+///     Returns true when the system is recording a radio programme.
+///   }
+///   \table_row3{   <b>`Pvr.HasRadioTimer`</b>,
+///                  \anchor Pvr_HasRadioTimer
+///                  _boolean_,
+///     Returns true if at least one radio timer is active.
+///   }
+///   \table_row3{   <b>`Pvr.HasNonRecordingRadioTimer`</b>,
+///                  \anchor Pvr_HasNonRecordingRadioTimer
+///                  _boolean_,
+///     Returns true if there are radio timers present who currently not do recording
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4422,7 +4532,37 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftstart",           PVR_TIMESHIFT_START_TIME },
                                   { "timeshiftend",             PVR_TIMESHIFT_END_TIME },
                                   { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
-                                  { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS }};
+                                  { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS },
+                                  { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
+                                  { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },
+                                  { "nowrecordingchannel",      PVR_NOW_RECORDING_CHANNEL },
+                                  { "nowrecordingchannelicon",  PVR_NOW_RECORDING_CHAN_ICO },
+                                  { "nextrecordingtitle",       PVR_NEXT_RECORDING_TITLE },
+                                  { "nextrecordingdatetime",    PVR_NEXT_RECORDING_DATETIME },
+                                  { "nextrecordingchannel",     PVR_NEXT_RECORDING_CHANNEL },
+                                  { "nextrecordingchannelicon", PVR_NEXT_RECORDING_CHAN_ICO },
+                                  { "tvnowrecordingtitle",            PVR_TV_NOW_RECORDING_TITLE },
+                                  { "tvnowrecordingdatetime",         PVR_TV_NOW_RECORDING_DATETIME },
+                                  { "tvnowrecordingchannel",          PVR_TV_NOW_RECORDING_CHANNEL },
+                                  { "tvnowrecordingchannelicon",      PVR_TV_NOW_RECORDING_CHAN_ICO },
+                                  { "tvnextrecordingtitle",           PVR_TV_NEXT_RECORDING_TITLE },
+                                  { "tvnextrecordingdatetime",        PVR_TV_NEXT_RECORDING_DATETIME },
+                                  { "tvnextrecordingchannel",         PVR_TV_NEXT_RECORDING_CHANNEL },
+                                  { "tvnextrecordingchannelicon",     PVR_TV_NEXT_RECORDING_CHAN_ICO },
+                                  { "radionowrecordingtitle",         PVR_RADIO_NOW_RECORDING_TITLE },
+                                  { "radionowrecordingdatetime",      PVR_RADIO_NOW_RECORDING_DATETIME },
+                                  { "radionowrecordingchannel",       PVR_RADIO_NOW_RECORDING_CHANNEL },
+                                  { "radionowrecordingchannelicon",   PVR_RADIO_NOW_RECORDING_CHAN_ICO },
+                                  { "radionextrecordingtitle",        PVR_RADIO_NEXT_RECORDING_TITLE },
+                                  { "radionextrecordingdatetime",     PVR_RADIO_NEXT_RECORDING_DATETIME },
+                                  { "radionextrecordingchannel",      PVR_RADIO_NEXT_RECORDING_CHANNEL },
+                                  { "radionextrecordingchannelicon",  PVR_RADIO_NEXT_RECORDING_CHAN_ICO },
+                                  { "isrecordingtv",              PVR_IS_RECORDING_TV },
+                                  { "hastvtimer",                 PVR_HAS_TV_TIMER },
+                                  { "hasnonrecordingtvtimer",     PVR_HAS_NONRECORDING_TV_TIMER },
+                                  { "isrecordingradio",           PVR_IS_RECORDING_RADIO },
+                                  { "hasradiotimer",              PVR_HAS_RADIO_TIMER },
+                                  { "hasnonrecordingradiotimer",  PVR_HAS_NONRECORDING_RADIO_TIMER }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_ADSP ADSP
@@ -5762,6 +5902,22 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_TIMESHIFT_START_TIME:
   case PVR_TIMESHIFT_END_TIME:
   case PVR_TIMESHIFT_PLAY_TIME:
+  case PVR_TV_NOW_RECORDING_TITLE:
+  case PVR_TV_NOW_RECORDING_CHANNEL:
+  case PVR_TV_NOW_RECORDING_CHAN_ICO:
+  case PVR_TV_NOW_RECORDING_DATETIME:
+  case PVR_TV_NEXT_RECORDING_TITLE:
+  case PVR_TV_NEXT_RECORDING_CHANNEL:
+  case PVR_TV_NEXT_RECORDING_CHAN_ICO:
+  case PVR_TV_NEXT_RECORDING_DATETIME:
+  case PVR_RADIO_NOW_RECORDING_TITLE:
+  case PVR_RADIO_NOW_RECORDING_CHANNEL:
+  case PVR_RADIO_NOW_RECORDING_CHAN_ICO:
+  case PVR_RADIO_NOW_RECORDING_DATETIME:
+  case PVR_RADIO_NEXT_RECORDING_TITLE:
+  case PVR_RADIO_NEXT_RECORDING_CHANNEL:
+  case PVR_RADIO_NEXT_RECORDING_CHAN_ICO:
+  case PVR_RADIO_NEXT_RECORDING_DATETIME:
     g_PVRManager.TranslateCharInfo(info, strLabel);
     break;
   case ADSP_ACTIVE_STREAM_TYPE:

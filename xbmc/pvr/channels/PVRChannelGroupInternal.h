@@ -19,7 +19,7 @@
  *
  */
 
-#include "pvr/PVRManagerState.h"
+#include "pvr/PVREvent.h"
 
 #include "PVRChannelGroup.h"
 
@@ -154,6 +154,6 @@ namespace PVR
     size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 
   private:
-    void OnPVRManagerEvent(const PVR::ManagerState& event);
+    void OnPVRManagerEvent(const PVR::PVREvent& event);
   };
 }

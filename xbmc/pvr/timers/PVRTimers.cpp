@@ -372,26 +372,46 @@ bool CPVRTimers::UpdateFromClient(const CPVRTimerInfoTagPtr &timer)
   return tag->UpdateEntry(timer);
 }
 
-/********** getters **********/
+bool CPVRTimers::KindMatchesTag(const TimerKind &eKind, const CPVRTimerInfoTagPtr &tag) const
+{
+  return (eKind == TimerKindAny) ||
+         (eKind == TimerKindTV && !tag->m_bIsRadio) ||
+         (eKind == TimerKindRadio && tag->m_bIsRadio);
+}
 
-CFileItemPtr CPVRTimers::GetNextActiveTimer(void) const
+CFileItemPtr CPVRTimers::GetNextActiveTimer(const TimerKind &eKind) const
 {
   CSingleLock lock(m_critSection);
-  for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
+
+  for (const auto &tagsEntry : m_tags)
   {
-    for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
+    for (const auto &timersEntry : *tagsEntry.second)
     {
-      CPVRTimerInfoTagPtr current = *timerIt;
-      if (current->IsActive() && !current->IsRecording() && !current->IsTimerRule() && !current->IsBroken())
-      {
-        CFileItemPtr fileItem(new CFileItem(current));
-        return fileItem;
-      }
+      if (KindMatchesTag(eKind, timersEntry) &&
+          timersEntry->IsActive() &&
+          !timersEntry->IsRecording() &&
+          !timersEntry->IsTimerRule() &&
+          !timersEntry->IsBroken())
+        return CFileItemPtr(new CFileItem(timersEntry));
     }
   }
 
-  CFileItemPtr fileItem;
-  return fileItem;
+  return CFileItemPtr();
+}
+
+CFileItemPtr CPVRTimers::GetNextActiveTimer(void) const
+{
+  return GetNextActiveTimer(TimerKindAny);
+}
+
+CFileItemPtr CPVRTimers::GetNextActiveTVTimer(void) const
+{
+  return GetNextActiveTimer(TimerKindTV);
+}
+
+CFileItemPtr CPVRTimers::GetNextActiveRadioTimer(void) const
+{
+  return GetNextActiveTimer(TimerKindRadio);
 }
 
 std::vector<CFileItemPtr> CPVRTimers::GetActiveTimers(void) const
@@ -415,32 +435,54 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveTimers(void) const
   return tags;
 }
 
-int CPVRTimers::AmountActiveTimers(void) const
+int CPVRTimers::AmountActiveTimers(const TimerKind &eKind) const
 {
-  int iReturn(0);
+  int iReturn = 0;
   CSingleLock lock(m_critSection);
 
-  for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
-    for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
-      if ((*timerIt)->IsActive() && !(*timerIt)->IsTimerRule())
+  for (const auto &tagsEntry : m_tags)
+  {
+    for (const auto &timersEntry : *tagsEntry.second)
+    {
+      if (KindMatchesTag(eKind, timersEntry) &&
+          timersEntry->IsActive() &&
+          !timersEntry->IsTimerRule())
         ++iReturn;
+    }
+  }
 
   return iReturn;
 }
 
-std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(void) const
+int CPVRTimers::AmountActiveTimers(void) const
+{
+  return AmountActiveTimers(TimerKindAny);
+}
+
+int CPVRTimers::AmountActiveTVTimers(void) const
+{
+  return AmountActiveTimers(TimerKindTV);
+}
+
+int CPVRTimers::AmountActiveRadioTimers(void) const
+{
+  return AmountActiveTimers(TimerKindRadio);
+}
+
+std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(const TimerKind &eKind) const
 {
   std::vector<CFileItemPtr> tags;
   CSingleLock lock(m_critSection);
 
-  for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
+  for (const auto &tagsEntry : m_tags)
   {
-    for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
+    for (const auto &timersEntry : *tagsEntry.second)
     {
-      CPVRTimerInfoTagPtr current = *timerIt;
-      if (current->IsRecording() && !current->IsTimerRule())
+      if (KindMatchesTag(eKind, timersEntry) &&
+          timersEntry->IsRecording() &&
+          !timersEntry->IsTimerRule())
       {
-        CFileItemPtr fileItem(new CFileItem(current));
+        CFileItemPtr fileItem(new CFileItem(timersEntry));
         tags.push_back(fileItem);
       }
     }
@@ -449,17 +491,53 @@ std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(void) const
   return tags;
 }
 
-int CPVRTimers::AmountActiveRecordings(void) const
+std::vector<CFileItemPtr> CPVRTimers::GetActiveRecordings(void) const
 {
-  int iReturn(0);
+  return GetActiveRecordings(TimerKindAny);
+}
+
+std::vector<CFileItemPtr> CPVRTimers::GetActiveTVRecordings(void) const
+{
+  return GetActiveRecordings(TimerKindTV);
+}
+
+std::vector<CFileItemPtr> CPVRTimers::GetActiveRadioRecordings(void) const
+{
+  return GetActiveRecordings(TimerKindRadio);
+}
+
+int CPVRTimers::AmountActiveRecordings(const TimerKind &eKind) const
+{
+  int iReturn = 0;
   CSingleLock lock(m_critSection);
 
-  for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
-    for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
-      if ((*timerIt)->IsRecording() && !(*timerIt)->IsTimerRule())
+  for (const auto &tagsEntry : m_tags)
+  {
+    for (const auto &timersEntry : *tagsEntry.second)
+    {
+      if (KindMatchesTag(eKind, timersEntry) &&
+          timersEntry->IsRecording() &&
+          !timersEntry->IsTimerRule())
         ++iReturn;
+    }
+  }
 
   return iReturn;
+}
+
+int CPVRTimers::AmountActiveRecordings(void) const
+{
+  return AmountActiveRecordings(TimerKindAny);
+}
+
+int CPVRTimers::AmountActiveTVRecordings(void) const
+{
+  return AmountActiveRecordings(TimerKindTV);
+}
+
+int CPVRTimers::AmountActiveRadioRecordings(void) const
+{
+  return AmountActiveRecordings(TimerKindRadio);
 }
 
 bool CPVRTimers::HasActiveTimers(void) const

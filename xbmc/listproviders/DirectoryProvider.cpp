@@ -292,15 +292,16 @@ void CDirectoryProvider::OnAddonEvent(const ADDON::AddonEvent& event)
   }
 }
 
-void CDirectoryProvider::OnPVRManagerEvent(const PVR::ManagerState& event)
+void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
 {
   CSingleLock lock(m_section);
   if (URIUtils::IsProtocol(m_currentUrl, "pvr"))
   {
-    if (event == ManagerStateStarted ||
-        event == ManagerStateStopped ||
-        event == ManagerStateError ||
-        event == ManagerStateInterrupted)
+    if (event == ManagerStarted ||
+        event == ManagerStopped ||
+        event == ManagerError ||
+        event == ManagerInterrupted ||
+        event == RecordingsInvalidated)
       m_updateState = INVALIDATED;
   }
 }
