@@ -411,4 +411,12 @@
 	<variable name="AddonNewsVar">
 		<value condition="!String.IsEmpty(ListItem.AddonNews)">$LOCALIZE[31136]</value>
 	</variable>
+	<variable name="VideoLibraryScanLabel">
+		<value condition="Library.IsScanningVideo">$LOCALIZE[13353]</value>
+		<value>$LOCALIZE[653]</value>
+	</variable>
+	<variable name="MusicLibraryScanLabel">
+		<value condition="Library.IsScanningMusic">$LOCALIZE[13353]</value>
+		<value>$LOCALIZE[653]</value>
+	</variable>
 </includes>
