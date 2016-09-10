@@ -2194,7 +2194,6 @@ OUTPUT_FILES="Makefile \
     lib/addons/library.kodi.audioengine/Makefile \
     lib/addons/library.xbmc.codec/Makefile \
     lib/addons/library.kodi.guilib/Makefile \
-    lib/addons/library.kodi.peripheral/Makefile \
     tools/Linux/kodi.sh \
     tools/Linux/kodi-standalone.sh \
     tools/Linux/kodi-xsession.desktop \
