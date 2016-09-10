@@ -33,27 +33,43 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
 
-#define INPUTSTREAM_HELPER_DLL KODI_DLL("inputstream")
-#define INPUTSTREAM_HELPER_DLL_NAME KODI_DLL_NAME("inputstream")
-
 /* current input stream API version */
 #define KODI_INPUTSTREAM_API_VERSION "1.0.0"
+
+namespace KodiAPI
+{
+namespace V1
+{
+namespace InputStream
+{
+
+typedef void (*InputStreamFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
+typedef DemuxPacket* (*InputStreamAllocateDemuxPacket)(void *addonData, int iDataSize);
+
+typedef struct CB_INPUTSTREAMLib
+{
+  InputStreamFreeDemuxPacket FreeDemuxPacket;
+  InputStreamAllocateDemuxPacket AllocateDemuxPacket;
+} CB_INPUTSTREAMLib;
+
+} /* namespace InputStream */
+} /* namespace V1 */
+} /* namespace KodiAPI */
 
 class CHelper_libKODI_inputstream
 {
 public:
   CHelper_libKODI_inputstream(void)
   {
-    m_libKODI_inputstream = nullptr;
     m_Handle = nullptr;
+    m_Callbacks = nullptr;
   }
 
   ~CHelper_libKODI_inputstream(void)
   {
-    if (m_libKODI_inputstream)
+    if (m_Handle && m_Callbacks)
     {
-      INPUTSTREAM_unregister_me(m_Handle, m_Callbacks);
-      dlclose(m_libKODI_inputstream);
+      m_Handle->INPUTSTREAMLib_UnRegisterMe(m_Handle->addonData, m_Callbacks);
     }
   }
 
@@ -64,52 +80,12 @@ public:
    */
   bool RegisterMe(void* handle)
   {
-    m_Handle = handle;
+    m_Handle = static_cast<AddonCB*>(handle);
+    if (m_Handle)
+      m_Callbacks = (KodiAPI::V1::InputStream::CB_INPUTSTREAMLib*)m_Handle->INPUTSTREAMLib_RegisterMe(m_Handle->addonData);
+    if (!m_Callbacks)
+      fprintf(stderr, "libKODI_inputstream-ERROR: InputStream_RegisterMe can't get callback table from Kodi !!!\n");
 
-    std::string libBasePath;
-    libBasePath  = ((cb_array*)m_Handle)->libPath;
-    libBasePath += INPUTSTREAM_HELPER_DLL;
-
-    m_libKODI_inputstream = dlopen(libBasePath.c_str(), RTLD_LAZY);
-    if (m_libKODI_inputstream == nullptr)
-    {
-      fprintf(stderr, "Unable to load %s\n", dlerror());
-      return false;
-    }
-
-    INPUTSTREAM_register_me = (void* (*)(void *HANDLE))
-      dlsym(m_libKODI_inputstream, "INPUTSTREAM_register_me");
-    if (INPUTSTREAM_register_me == nullptr)
-    {
-      fprintf(stderr, "Unable to assign function %s\n", dlerror());
-      return false;
-    }
-
-    INPUTSTREAM_unregister_me = (void (*)(void* HANDLE, void* CB))
-      dlsym(m_libKODI_inputstream, "INPUTSTREAM_unregister_me");
-    if (INPUTSTREAM_unregister_me == nullptr)
-    {
-      fprintf(stderr, "Unable to assign function %s\n", dlerror());
-      return false;
-    }
-
-    INPUTSTREAM_free_demux_packet = (void (*)(void* HANDLE, void* CB, DemuxPacket* pPacket))
-      dlsym(m_libKODI_inputstream, "INPUTSTREAM_free_demux_packet");
-    if (INPUTSTREAM_free_demux_packet == NULL)
-    {
-      fprintf(stderr, "Unable to assign function %s\n", dlerror());
-      return false;
-    }
-
-    INPUTSTREAM_allocate_demux_packet = (DemuxPacket* (*)(void* HANDLE, void* CB, int iDataSize))
-      dlsym(m_libKODI_inputstream, "INPUTSTREAM_allocate_demux_packet");
-    if (INPUTSTREAM_allocate_demux_packet == NULL)
-    {
-      fprintf(stderr, "Unable to assign function %s\n", dlerror());
-      return false;
-    }
-
-    m_Callbacks = INPUTSTREAM_register_me(m_Handle);
     return m_Callbacks != nullptr;
   }
 
@@ -120,7 +96,7 @@ public:
    */
   DemuxPacket* AllocateDemuxPacket(int iDataSize)
   {
-    return INPUTSTREAM_allocate_demux_packet(m_Handle, m_Callbacks, iDataSize);
+    return m_Callbacks->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
   }
 
   /*!
@@ -129,21 +105,10 @@ public:
    */
   void FreeDemuxPacket(DemuxPacket* pPacket)
   {
-    return INPUTSTREAM_free_demux_packet(m_Handle, m_Callbacks, pPacket);
+    return m_Callbacks->FreeDemuxPacket(m_Handle->addonData, pPacket);
   }
 
-protected:
-  void* (*INPUTSTREAM_register_me)(void*);
-  void (*INPUTSTREAM_unregister_me)(void*, void*);
-  void (*INPUTSTREAM_free_demux_packet)(void*, void*, DemuxPacket*);
-  DemuxPacket* (*INPUTSTREAM_allocate_demux_packet)(void*, void*, int);
-
 private:
-  void* m_libKODI_inputstream;
-  void* m_Handle;
-  void* m_Callbacks;
-  struct cb_array
-  {
-    const char* libPath;
-  };
+  AddonCB* m_Handle;
+  KodiAPI::V1::InputStream::CB_INPUTSTREAMLib* m_Callbacks;
 };
