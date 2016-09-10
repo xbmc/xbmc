@@ -43,13 +43,10 @@ namespace V1
 namespace InputStream
 {
 
-typedef void (*InputStreamFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
-typedef DemuxPacket* (*InputStreamAllocateDemuxPacket)(void *addonData, int iDataSize);
-
 typedef struct CB_INPUTSTREAMLib
 {
-  InputStreamFreeDemuxPacket FreeDemuxPacket;
-  InputStreamAllocateDemuxPacket AllocateDemuxPacket;
+  void (*FreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
+  DemuxPacket* (*AllocateDemuxPacket)(void *addonData, int iDataSize);
 } CB_INPUTSTREAMLib;
 
 } /* namespace InputStream */
