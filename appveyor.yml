@@ -57,8 +57,8 @@ build_script:
         # Build  
         mkdir $env:APPVEYOR_BUILD_FOLDER\kodi-build
         cd $env:APPVEYOR_BUILD_FOLDER\kodi-build
-        cmake -G "Visual Studio 14" ..\project\cmake
-        cmake --build . --target all_build --config RelWithDebInfo
+        cmd /c 'cmake -G "Visual Studio 14" ..\project\cmake 2>&1'
+        cmd /c 'cmake --build . --target all_build --config RelWithDebInfo 2>&1'
       }
   
   #
