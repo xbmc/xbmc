@@ -244,6 +244,23 @@ AML_SUPPORT_H264_4K2K aml_support_h264_4k2k()
   return has_h264_4k2k;
 }
 
+bool aml_support_vp9()
+{
+  static int has_vp9 = -1;
+
+  if (has_vp9 == -1)
+  {
+    CRegExp regexp;
+    regexp.RegComp("vp9:.*compressed");
+    std::string valstr;
+    if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
+      has_vp9 = 0;
+    else
+      has_vp9 = (regexp.RegFind(valstr) >= 0) ? 1 : 0;
+  }
+  return (has_vp9 == 1);
+}
+
 void aml_set_audio_passthrough(bool passthrough)
 {
   SysfsUtils::SetInt("/sys/class/audiodsp/digital_raw", passthrough ? 2:0);

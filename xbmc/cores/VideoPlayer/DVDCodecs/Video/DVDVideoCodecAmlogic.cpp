@@ -236,6 +236,11 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_CAVS:
       m_pFormatName = "am-avs";
       break;
+    case AV_CODEC_ID_VP9:
+      if (!aml_support_vp9())
+        return false;
+      m_pFormatName = "am-vp9";
+      break;
     case AV_CODEC_ID_HEVC:
       if (aml_support_hevc()) {
         if (!aml_support_hevc_4k2k() && ((m_hints.width > 1920) || (m_hints.height > 1088)))
