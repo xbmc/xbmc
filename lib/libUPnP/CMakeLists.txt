@@ -81,7 +81,6 @@ else()
   list(APPEND SOURCES Neptune/Source/System/Win32/NptWin32Console.cpp
                       Neptune/Source/System/Win32/NptWin32Debug.cpp
                       Neptune/Source/System/Win32/NptWin32DynamicLibraries.cpp
-                      Neptune/Source/System/Win32/NptWin32File.cpp
                       Neptune/Source/System/Win32/NptWin32MessageQueue.cpp
                       Neptune/Source/System/Win32/NptWin32Network.cpp
                       Neptune/Source/System/Win32/NptWin32Queue.cpp
