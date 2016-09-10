@@ -20,7 +20,7 @@
 
 XBMC_DEPENDS_ROOT = @DEPENDS_ROOT_FOR_XCODE@
 
-HEADER_SEARCH_PATHS = $(inherited) $SRCROOT xbmc xbmc/linux xbmc/cores/VideoPlayer lib addons/library.xbmc.addon $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.7 $XBMC_DEPENDS/include/libxml2
+HEADER_SEARCH_PATHS = $(inherited) $SRCROOT xbmc xbmc/linux xbmc/cores/VideoPlayer lib $XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.7 $XBMC_DEPENDS/include/libxml2
 
 LIBRARY_SEARCH_PATHS = $(inherited) $(SRCROOT) $(SRCROOT)/xbmc/interfaces/json-rpc "$(SRCROOT)/xbmc/interfaces/python" "$(SRCROOT)/xbmc/interfaces/legacy"
 FRAMEWORK_SEARCH_PATHS = $(inherited) "$(SDKROOT)/System/Library/PrivateFrameworks/" "$(SDKROOT)/System/Library/Frameworks/"
