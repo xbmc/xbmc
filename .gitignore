@@ -161,7 +161,6 @@ cmake_install.cmake
 /lib/addons/library.kodi.audioengine/Makefile
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
-/lib/addons/library.kodi.inputstream/Makefile
 /lib/addons/library.kodi.peripheral/project/VS2010Express/Release
 /lib/addons/library.kodi.peripheral/project/VS2010Express/Debug
 /lib/addons/library.kodi.game/project/VS2010Express/Release
@@ -556,8 +555,6 @@ lib/cpluff/stamp-h1
 
 # Doxygen generated files
 /docs/html
-lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
-lib/addons/library.kodi.inputstream/project/VS2010Express/Release
 tools/depends/native/TexturePacker/src/Win32/Debug/
 tools/depends/native/TexturePacker/src/Win32/Release/
 tools/depends/native/TexturePacker/src/Win32/TexturePacker.VC.db

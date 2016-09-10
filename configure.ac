@@ -2198,7 +2198,6 @@ OUTPUT_FILES="Makefile \
     lib/addons/library.kodi.game/Makefile \
     lib/addons/library.kodi.guilib/Makefile \
     lib/addons/library.kodi.peripheral/Makefile \
-    lib/addons/library.kodi.inputstream/Makefile \
     tools/Linux/kodi.sh \
     tools/Linux/kodi-standalone.sh \
     tools/Linux/kodi-xsession.desktop \
