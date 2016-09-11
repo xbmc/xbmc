@@ -10,6 +10,7 @@ Echo Desktop.ini>>exclude.txt
 Echo dsstdfx.bin>>exclude.txt
 Echo build.bat>>exclude.txt
 Echo \skin.estuary\media\>>exclude.txt
+Echo \skin.estuary\themes\>>exclude.txt
 Echo exclude.txt>>exclude.txt
 
 ECHO ----------------------------------------
