@@ -53,6 +53,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_programmeLayout(nullptr),
   m_focusedProgrammeLayout(nullptr),
   m_rulerLayout(nullptr),
+  m_pageControl(0),
   m_rulerUnit(rulerUnit),
   m_channelsPerPage(0),
   m_programmesPerPage(0),
@@ -105,6 +106,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_programmeLayout(other.m_programmeLayout),
   m_focusedProgrammeLayout(other.m_focusedProgrammeLayout),
   m_rulerLayout(other.m_rulerLayout),
+  m_pageControl(other.m_pageControl),
   m_rulerUnit(other.m_rulerUnit),
   m_channelsPerPage(other.m_channelsPerPage),
   m_programmesPerPage(other.m_programmesPerPage),
@@ -147,18 +149,37 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
 {
 }
 
+void CGUIEPGGridContainer::SetPageControl(int id)
+{
+  m_pageControl = id;
+}
+
 void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   ValidateOffset();
 
   if (m_bInvalidated)
+  {
     UpdateLayout();
+
+    if (m_pageControl && m_gridModel->ChannelItemsSize())
+    {
+      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_channelsPerPage, m_gridModel->ChannelItemsSize());
+      SendWindowMessage(msg);
+    }
+  }
 
   UpdateScrollOffset(currentTime);
   ProcessChannels(currentTime, dirtyregions);
   ProcessRuler(currentTime, dirtyregions);
   ProcessProgrammeGrid(currentTime, dirtyregions);
   ProcessProgressIndicator(currentTime, dirtyregions);
+
+  if (m_pageControl && m_gridModel->ChannelItemsSize())
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, MathUtils::round_int(m_channelScrollOffset / m_channelHeight));
+    SendWindowMessage(msg);
+  }
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -452,6 +473,14 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       case GUI_MSG_ITEM_SELECTED:
         message.SetParam1(GetSelectedItem());
         return true;
+
+      case GUI_MSG_PAGE_CHANGE:
+        if (message.GetSenderId() == m_pageControl && IsVisible())
+        {
+          ScrollToChannelOffset(message.GetParam1());
+          return true;
+        }
+        break;
 
       case GUI_MSG_LABEL_BIND:
         UpdateItems();

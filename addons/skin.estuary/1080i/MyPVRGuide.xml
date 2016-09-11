@@ -27,11 +27,12 @@
 					<top>0</top>
 					<width>1700</width>
 					<height>510</height>
-					<pagecontrol>10</pagecontrol>
+					<pagecontrol>60</pagecontrol>
 					<scrolltime tween="quadratic" easing="out">200</scrolltime>
 					<timeblocks>36</timeblocks>
 					<rulerunit>6</rulerunit>
 					<onleft>9000</onleft>
+					<onright>60</onright>
 					<onup>10</onup>
 					<ondown>10</ondown>
 					<viewtype label="19032">list</viewtype>
@@ -153,6 +154,16 @@
 							<texture>$VAR[PVRTimerIcon]</texture>
 						</control>
 					</focusedlayout>
+				</control>
+				<control type="scrollbar" id="60">
+					<right>85</right>
+					<top>45</top>
+					<width>13</width>
+					<height>465</height>
+					<onleft>10</onleft>
+					<onright>10</onright>
+					<orientation>vertical</orientation>
+					<texturesliderbackground colordiffuse="22FFFFFF">colors/white.png</texturesliderbackground>
 				</control>
 				<control type="group">
 					<top>540</top>
