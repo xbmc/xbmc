@@ -57,7 +57,7 @@ endif()
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}
                  ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME_LC}-standalone
         DESTINATION ${bindir}
-        COMPONENT kodi)
+        COMPONENT kodi-bin)
 
 # Install libraries
 foreach(library ${LIBRARY_FILES})
