@@ -883,8 +883,11 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
          (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_1024) ||
          (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_512)))
     {
+      if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3)
+        wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS;
+      else
+        wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
       wfxex.dwChannelMask               = bool (format.m_channelLayout.Count() == 2) ? KSAUDIO_SPEAKER_STEREO : KSAUDIO_SPEAKER_5POINT1;
-      wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
       wfxex.Format.wBitsPerSample       = 16;
       wfxex.Samples.wValidBitsPerSample = 16;
       wfxex.Format.nChannels            = (WORD)format.m_channelLayout.Count();
@@ -904,11 +907,6 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
 
       switch (format.m_streamInfo.m_type)
       {
-        case CAEStreamInfo::STREAM_TYPE_EAC3:
-          wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS;
-          wfxex.Format.nChannels      = 2; // One IEC 60958 Line.
-          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
-          break;
         case CAEStreamInfo::STREAM_TYPE_TRUEHD:
           wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
           wfxex.Format.nChannels      = 8; // Four IEC 60958 Lines.
