@@ -22,31 +22,13 @@
     </category>
     <category id="audio">
       <group id="1">
-        <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
-          <level>0</level>
+        <setting id="audiooutput.audiodevice">
           <default>DIRECTSOUND:default</default>
-          <constraints>
-            <options>audiodevices</options>
-          </constraints>
-          <control type="list" format="string" />
         </setting>
       </group>
       <group id="3">
-        <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
-          <level>1</level>
+        <setting id="audiooutput.passthroughdevice">
           <default>DIRECTSOUND:default</default>
-          <constraints>
-            <options>audiodevicespassthrough</options>
-          </constraints>
-          <dependencies>
-            <dependency type="visible">
-              <and>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
-              </and>
-            </dependency>
-          </dependencies>
-          <control type="list" format="string" />
         </setting>
       </group>
     </category>

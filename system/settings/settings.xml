@@ -49,6 +49,9 @@
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>1</level>
           <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="audiooutput.passthrough" operator="is">false</dependency>
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.errorinaspect" type="integer" label="22021" help="36170">
@@ -2313,7 +2316,7 @@
           <level>0</level>
           <default>1</default> <!-- AE_CH_LAYOUT_2_0 -->
           <dependencies>
-            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.channels</dependency>
+            <dependency type="enable" on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.channels</dependency>
           </dependencies>
           <constraints>
             <options>
@@ -2389,7 +2392,7 @@
           <level>2</level>
           <default>48000</default>
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.samplerate</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.samplerate</condition>
@@ -2449,12 +2452,13 @@
           <level>1</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.audiodevice">audiooutput.passthrough</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
               </and>
             </dependency>
+            <dependency type="enable" setting="videoplayer.usedisplayasclock" operator="is">false</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
@@ -2462,7 +2466,7 @@
           <level>1</level>
           <default>Default</default> <!-- will be properly set on startup -->
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.passthrough</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
@@ -2479,7 +2483,7 @@
           <level>2</level>
           <default>true</default>
           <dependencies>
-            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</dependency>
+            <dependency type="enable" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</dependency>
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
@@ -2494,7 +2498,7 @@
                 <condition setting="audiooutput.ac3passthrough" operator="is">true</condition>
               </and>
             </dependency>
-            <dependency type="visible">
+            <dependency type="enable">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.ac3transcode</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.channels">audiooutput.ac3transcode</condition>
@@ -2507,7 +2511,7 @@
           <level>2</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.eac3passthrough</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.eac3passthrough</condition>
@@ -2521,7 +2525,7 @@
           <level>2</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</dependency>
+            <dependency type="enable" on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</dependency>
             <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
           </dependencies>
           <control type="toggle" />
@@ -2530,7 +2534,7 @@
           <level>2</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.truehdpassthrough</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.truehdpassthrough</condition>
@@ -2544,7 +2548,7 @@
           <level>2</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <and>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.dtshdpassthrough</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.passthroughdevice">audiooutput.dtshdpassthrough</condition>
@@ -2560,7 +2564,7 @@
           <level>3</level>
           <default>false</default>
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <or>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
@@ -2573,7 +2577,7 @@
           <level>3</level>
           <control type="button" format="action" />
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <or>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
               </or>
@@ -2584,7 +2588,7 @@
           <level>3</level>
           <control type="button" format="action" />
           <dependencies>
-            <dependency type="visible">
+            <dependency type="enable">
               <or>
                 <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspresetdb</condition>
               </or>

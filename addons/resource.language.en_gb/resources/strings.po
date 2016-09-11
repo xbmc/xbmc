@@ -1581,7 +1581,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#348"
-msgid "Enable passthrough"
+msgid "Allow passthrough"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -16870,7 +16870,7 @@ msgstr ""
 #. Description of setting with label #13510 "Sync playback to display"
 #: system/settings/settings.xml
 msgctxt "#36166"
-msgid "Synchronise video and audio to the refresh rate of the monitor. VideoPlayer won't use passthrough audio in this case because resampling may be required."
+msgid "Synchronise video and audio to the refresh rate of the connected display. Since this function may require the resampling of audio, when this setting is enabled the \"Allow passthrough\" audio setting is disabled."
 msgstr ""
 
 #. Description of setting with label #14107 "Time format"
@@ -17940,10 +17940,10 @@ msgctxt "#36367"
 msgid "Select the maximum number of audio channels / speakers available for decoded audio. If optical / coax digital outputs are used, this must be set to 2.0"
 msgstr ""
 
-#. Description of setting with label #348 "Enable passthrough"
+#. Description of setting with label #348 "Allow  passthrough"
 #: system/settings/settings.xml
 msgctxt "#36368"
-msgid "Select to enable the passthrough audio options for playback of encoded audio such as Dolby Digital (AC3), DTS, etc."
+msgid "Select to allow passthrough of audio such as Dolby Digital (AC3) & DTS to another device such as AVR, however under certain conditions the audio may still be decoded to PCM, for example when playing Live TV. Since passthrough requires audio to be sent unaltered, when this setting is enabled the \"Sync playback to display\" setting will be disabled."
 msgstr ""
 
 #. Description of setting with label #349 "TrueHD capable receiver"
