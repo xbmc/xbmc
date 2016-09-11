@@ -200,6 +200,7 @@
 						<align>justify</align>
 						<label>$INFO[ListItem.Plot]</label>
 						<font>font12</font>
+						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 					</control>
 				</control>
 				<control type="image">

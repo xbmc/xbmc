@@ -93,7 +93,7 @@
 							<param name="item7_label" value="$LOCALIZE[31074]" />
 							<param name="item8_onclick" value="UpdateLibrary(video)" />
 							<param name="item8_icon" value="updatelibrary.png" />
-							<param name="item8_label" value="$LOCALIZE[653]" />
+							<param name="item8_label" value="$VAR[VideoLibraryScanLabel]" />
 						</include>
 						<include content="WidgetListMovies">
 							<param name="content_path" value="special://skin/playlists/inprogress_movies.xsp"/>
@@ -187,7 +187,7 @@
 							<param name="item7_label" value="$LOCALIZE[31074]" />
 							<param name="item8_onclick" value="UpdateLibrary(video)" />
 							<param name="item8_icon" value="updatelibrary.png" />
-							<param name="item8_label" value="$LOCALIZE[653]" />
+							<param name="item8_label" value="$VAR[VideoLibraryScanLabel]" />
 						</include>
 						<include content="WidgetListEpisodes">
 							<param name="content_path" value="videodb://inprogresstvshows"/>
@@ -283,7 +283,7 @@
 							<param name="item7_label" value="$LOCALIZE[31074]" />
 							<param name="item8_onclick" value="UpdateLibrary(music)" />
 							<param name="item8_icon" value="updatelibrary.png" />
-							<param name="item8_label" value="$LOCALIZE[653]" />
+							<param name="item8_label" value="$VAR[MusicLibraryScanLabel]" />
 							<param name="item8_vis" value="Library.HasContent(music)" />
 						</include>
 						<include content="WidgetListSquare">

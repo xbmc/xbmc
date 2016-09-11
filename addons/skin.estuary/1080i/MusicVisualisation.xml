@@ -129,9 +129,9 @@
 				<control type="image">
 					<left>280</left>
 					<top>1022</top>
-					<width>130</width>
+					<width>256</width>
 					<height>65</height>
-					<texture>flags/starrating/rating$INFO[MusicPlayer.UserRating].png</texture>
+					<texture>flags/starrating/$INFO[MusicPlayer.UserRating].png</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 			</control>

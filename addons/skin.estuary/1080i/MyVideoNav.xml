@@ -60,6 +60,7 @@
 					<font>font12</font>
 					<visible>Control.IsVisible(54)</visible>
 					<label>$INFO[ListItem.Plot]</label>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 				</control>
 				<control type="textbox">
 					<right>130</right>
@@ -69,6 +70,7 @@
 					<font>font12</font>
 					<visible>!Control.IsVisible(54)</visible>
 					<label>$INFO[ListItem.Tagline,[B],[/B][CR]]$INFO[ListItem.Plot]</label>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 				</control>
 				<control type="textbox">
 					<right>130</right>
@@ -220,6 +222,7 @@
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[653]</label>
 						<onclick>UpdateLibrary(video)</onclick>
+						<visible>!Container.Content(addons)</visible>
 						<altlabel>$LOCALIZE[13353]</altlabel>
 						<usealttexture>library.isscanningvideo</usealttexture>
 					</control>

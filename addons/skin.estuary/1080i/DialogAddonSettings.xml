@@ -47,7 +47,7 @@
 			<width>1060</width>
 			<height>680</height>
 			<onup>2</onup>
-			<ondown>2</ondown>
+			<ondown>9001</ondown>
 			<onleft>9</onleft>
 			<onright>9001</onright>
 		</control>

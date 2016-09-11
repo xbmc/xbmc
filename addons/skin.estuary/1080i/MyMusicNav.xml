@@ -41,6 +41,7 @@
 					<height>388</height>
 					<font>font12</font>
 					<label>$INFO[ListItem.Property(artist_description)]$INFO[ListItem.Property(album_description),[CR]]</label>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 				</control>
 				<control type="textbox">
 					<right>130</right>
@@ -51,6 +52,7 @@
 					<font>font24_title</font>
 					<label>$LOCALIZE[19055]</label>
 					<visible>String.IsEmpty(Listitem.Property(artist_description)) + String.IsEmpty(Listitem.Property(album_description)) + !ListItem.IsParentFolder</visible>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 				</control>
 				<control type="image">
 					<right>113</right>
