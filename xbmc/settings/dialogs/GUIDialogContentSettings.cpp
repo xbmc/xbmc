@@ -249,10 +249,13 @@ void CGUIDialogContentSettings::OnSettingAction(const CSetting *setting)
   else if (settingId == SETTING_SCRAPER_LIST)
   {
     ADDON::TYPE type = ADDON::ScraperTypeFromContent(m_content);
-    std::string selectedAddonId = m_scraper->ID();
+    std::string currentScraperId;
+    if (m_scraper != nullptr)
+      currentScraperId = m_scraper->ID();
+    std::string selectedAddonId = currentScraperId;
 
     if (CGUIWindowAddonBrowser::SelectAddonID(type, selectedAddonId, false) == 1
-        && selectedAddonId != m_scraper->ID())
+        && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
       CAddonMgr::GetInstance().GetAddon(selectedAddonId, scraperAddon);
