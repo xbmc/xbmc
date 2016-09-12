@@ -1338,10 +1338,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     break;
   case CGUIControl::GUICONTAINER_EPGGRID:
     {
-      control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, scrollTime, preloadItems, timeBlocks, rulerUnit, textureProgressIndicator);
-      ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
-      ((CGUIEPGGridContainer *)control)->SetRenderOffset(offset);
-      ((CGUIEPGGridContainer *)control)->SetType(viewType, viewLabel);
+      CGUIEPGGridContainer *epgGridContainer = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, scrollTime, preloadItems, timeBlocks, rulerUnit, textureProgressIndicator);
+      control = epgGridContainer;
+      epgGridContainer->LoadLayout(pControlNode);
+      epgGridContainer->SetRenderOffset(offset);
+      epgGridContainer->SetType(viewType, viewLabel);
+      epgGridContainer->SetPageControl(pageControl);
     }
     break;
   case CGUIControl::GUICONTAINER_FIXEDLIST:

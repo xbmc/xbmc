@@ -43,6 +43,8 @@ namespace EPG
 
     virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); }
 
+    void SetPageControl(int id);
+
     virtual bool OnAction(const CAction &action);
     virtual void OnDown();
     virtual void OnUp();
@@ -138,6 +140,8 @@ namespace EPG
     CGUIListItemLayout *m_programmeLayout;
     CGUIListItemLayout *m_focusedProgrammeLayout;
     CGUIListItemLayout *m_rulerLayout;
+
+    int m_pageControl;
 
     void GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter);
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
