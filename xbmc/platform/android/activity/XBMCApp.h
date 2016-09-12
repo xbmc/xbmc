@@ -40,6 +40,8 @@
 
 #include "JNIMainActivity.h"
 
+#include "guilib/Geometry.h"
+
 // forward delares
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
@@ -128,6 +130,8 @@ public:
   static void SetRefreshRate(float rate);
   static void SetDisplayMode(int mode);
   static int GetDPI();
+
+  static CRect MapRenderToDroid(const CRect& srcRect);
 
   // Playback callbacks
   static void OnPlayBackStarted();

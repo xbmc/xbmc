@@ -52,6 +52,7 @@
 #include "platform/XbmcContext.h"
 #include <android/bitmap.h>
 #include "cores/AudioEngine/AEFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "platform/android/jni/JNIThreading.h"
@@ -82,6 +83,8 @@
 #include "platform/android/jni/Window.h"
 #include "platform/android/jni/WindowManager.h"
 #include "platform/android/jni/KeyEvent.h"
+#include "platform/android/jni/Display.h"
+#include "platform/android/jni/View.h"
 #include "AndroidKey.h"
 
 #include "CompileInfo.h"
@@ -537,6 +540,30 @@ int CXBMCApp::GetDPI()
   AConfiguration_delete(config);
 
   return dpi;
+}
+
+CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
+{
+  float scaleX = 1.0;
+  float scaleY = 1.0;
+
+  CJNIWindow window = CXBMCApp::getWindow();
+  if (window)
+  {
+    CJNIView view(window.getDecorView());
+    if (view)
+    {
+      CJNIDisplay display = view.getDisplay();
+      if (display)
+      {
+        RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
+        scaleX = (double)display.getWidth() / renderRes.iWidth;
+        scaleY = (double)display.getHeight() / renderRes.iHeight;
+      }
+    }
+  }
+
+  return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
 }
 
 void CXBMCApp::OnPlayBackStarted()
