@@ -172,11 +172,11 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
   auto bufSize = GetCurrentDirectoryW(0, nullptr);
   if (bufSize > 0)
   {
-    auto buf = new wchar_t[bufSize];
-    if (0 != GetCurrentDirectoryW(bufSize, buf))
+    auto buf = std::make_unique<wchar_t[]>(bufSize);
+    if (0 != GetCurrentDirectoryW(bufSize, buf.get()))
     {
       std::string currentDirectory;
-      std::wstring currentDirectoryW(buf);
+      std::wstring currentDirectoryW(buf.get());
       CWIN32Util::RemoveExtraLongPathPrefix(currentDirectoryW);
       g_charsetConverter.wToUTF8(currentDirectoryW, currentDirectory);
 
