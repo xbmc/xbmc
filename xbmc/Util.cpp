@@ -145,9 +145,12 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
       {
         strPathW = buf.get();
         CWIN32Util::RemoveExtraLongPathPrefix(strPathW);
-        g_charsetConverter.wToUTF8(strPathW, strPath);
+
         if (IsDirectoryValidRoot(strPathW))
+        {
+          g_charsetConverter.wToUTF8(strPathW, strPath);
           return strPath;
+        }
       }
     }
   }
@@ -178,10 +181,12 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
       std::string currentDirectory;
       std::wstring currentDirectoryW(buf.get());
       CWIN32Util::RemoveExtraLongPathPrefix(currentDirectoryW);
-      g_charsetConverter.wToUTF8(currentDirectoryW, currentDirectory);
-
+      
       if (IsDirectoryValidRoot(currentDirectoryW))
+      {
+        g_charsetConverter.wToUTF8(currentDirectoryW, currentDirectory);
         return currentDirectory;
+      }
     }
   }
 
