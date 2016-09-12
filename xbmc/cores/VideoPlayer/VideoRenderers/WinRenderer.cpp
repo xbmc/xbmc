@@ -349,7 +349,7 @@ void CWinRenderer::FlipPage(int source)
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
-    m_iYV12RenderBuffer = NextYV12Texture();;
+    m_iYV12RenderBuffer = NextYV12Texture();
 
   if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
     m_VideoBuffers[m_iYV12RenderBuffer]->StartRender();
