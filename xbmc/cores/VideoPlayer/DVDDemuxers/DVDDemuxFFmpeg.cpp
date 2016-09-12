@@ -646,7 +646,8 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
     bool hasCookies = false;
     for(std::map<std::string, std::string>::const_iterator it = protocolOptions.begin(); it != protocolOptions.end(); ++it)
     {
-      std::string name = it->first; StringUtils::ToLower(name);
+      std::string name = it->first;
+      StringUtils::ToLower(name);
       const std::string &value = it->second;
 
       if (name == "seekable")
@@ -660,24 +661,30 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       }
       else if (name == "cookie")
       {
-        av_dict_set(&options, "cookies", value.c_str(), 0);
         CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'cookies: %s'", value.c_str());
+        headers.append(it->first).append(": ").append(value).append("\r\n");
         hasCookies = true;
       }
       // other standard headers (see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields) are appended as actual headers
       else if (name == "accept" || name == "accept-language" || name == "accept-datetime" || 
-        name == "authorization" || name == "cache-control" || name == "connection" || name == "content-md5" || 
-        name == "date" || name == "expect" || name == "forwarded" || name == "from" || name == "if-match" || 
-        name == "if-modified-since" || name == "if-none-match" || name == "if-range" || name == "if-unmodified-since" || name == "max-forwards" || 
-        name == "origin" || name == "pragma" || name == "range" || name == "referer" || name == "te" || name == "upgrade" || 
-        name == "via" || name == "warning" || name == "x-requested-with" || name == "dnt" || name == "x-forwarded-for" || name == "x-forwarded-host" || 
-        name == "x-forwarded-proto" || name == "front-end-https" || name == "x-http-method-override" || name == "x-att-deviceid" || 
-        name == "x-wap-profile" || name == "x-uidh" || name == "x-csrf-token" || name == "x-request-id" || name == "x-correlation-id")
+               name == "authorization" || name == "cache-control" || name == "connection" || name == "content-md5" ||
+               name == "date" || name == "expect" || name == "forwarded" || name == "from" || name == "if-match" ||
+               name == "if-modified-since" || name == "if-none-match" || name == "if-range" || name == "if-unmodified-since" ||
+               name == "max-forwards" || name == "origin" || name == "pragma" || name == "range" || name == "referer" ||
+               name == "te" || name == "upgrade" || name == "via" || name == "warning" || name == "x-requested-with" ||
+               name == "dnt" || name == "x-forwarded-for" || name == "x-forwarded-host" || name == "x-forwarded-proto" ||
+               name == "front-end-https" || name == "x-http-method-override" || name == "x-att-deviceid" ||
+               name == "x-wap-profile" || name == "x-uidh" || name == "x-csrf-token" || name == "x-request-id" ||
+               name == "x-correlation-id")
       {
         if (name == "authorization")
+        {
           CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding custom header option '%s: ***********'", it->first.c_str());
+        }
         else
+        {
           CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding custom header option '%s: %s'", it->first.c_str(), value.c_str());
+        }
         headers.append(it->first).append(": ").append(value).append("\r\n");
       }
       // we don't add blindly all options to headers anymore
@@ -689,8 +696,10 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       }
     }
     if (!hasUserAgent)
+    {
       // set default xbmc user-agent.
       av_dict_set(&options, "user-agent", g_advancedSettings.m_userAgent.c_str(), 0);
+    }
 
     if (!headers.empty())
       av_dict_set(&options, "headers", headers.c_str(), 0);
