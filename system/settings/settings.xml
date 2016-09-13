@@ -2758,7 +2758,21 @@
       </group>
     </category>
     <category id="addons" label="24001" help="36610">
-      <group id="1" label="16000">
+      <group id="1" label="14261">
+        <setting id="addon.browser" type="action" label="24990" help="36604">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="addons.managedependencies" type="action" label="24996" help="36613">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="addons.showrunning" type="action" label="24994" help="36614">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="2" label="14262">
         <setting id="general.addonupdates" type="integer" label="36605" help="36611">
           <level>0</level>
           <default>0</default>
@@ -2779,14 +2793,8 @@
             <dependency type="enable" setting="general.addonupdates">0</dependency>
           </dependencies>
         </setting>
-        <setting id="addons.managedependencies" type="action" label="24996" help="36613">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="addons.showrunning" type="action" label="24994" help="36614">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
+      </group>
+      <group id="3" label="14093">
         <setting id="addons.unknownsources" type="boolean" label="36615" help="36616">
           <level>0</level>
           <default>false</default>
