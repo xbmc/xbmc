@@ -38,8 +38,6 @@
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace InputStream
 {
 
@@ -50,7 +48,6 @@ typedef struct CB_INPUTSTREAMLib
 } CB_INPUTSTREAMLib;
 
 } /* namespace InputStream */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 
 class CHelper_libKODI_inputstream
@@ -79,7 +76,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::V1::InputStream::CB_INPUTSTREAMLib*)m_Handle->INPUTSTREAMLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (KodiAPI::InputStream::CB_INPUTSTREAMLib*)m_Handle->INPUTSTREAMLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libKODI_inputstream-ERROR: InputStream_RegisterMe can't get callback table from Kodi !!!\n");
 
@@ -107,5 +104,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::InputStream::CB_INPUTSTREAMLib* m_Callbacks;
+  KodiAPI::InputStream::CB_INPUTSTREAMLib* m_Callbacks;
 };

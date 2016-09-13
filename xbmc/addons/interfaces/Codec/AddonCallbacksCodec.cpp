@@ -34,8 +34,6 @@ using namespace ADDON;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace Codec
 {
 
@@ -121,5 +119,4 @@ xbmc_codec_t CAddonCallbacksCodec::GetCodecByName(const void* addonData, const c
 }
 
 } /* namespace Codec */
-} /* namespace V1 */
 } /* namespace KodiAPI */

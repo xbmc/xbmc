@@ -34,8 +34,6 @@
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace PVR
 {
 
@@ -64,7 +62,6 @@ typedef struct CB_PVRLib
 } CB_PVRLib;
 
 } /* namespace PVR */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 
 class CHelper_libXBMC_pvr
@@ -93,7 +90,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::V1::PVR::CB_PVRLib*)m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (KodiAPI::PVR::CB_PVRLib*)m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from Kodi !!!\n");
   
@@ -268,5 +265,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::PVR::CB_PVRLib *m_Callbacks;
+  KodiAPI::PVR::CB_PVRLib *m_Callbacks;
 };

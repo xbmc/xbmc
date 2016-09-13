@@ -42,8 +42,6 @@ extern "C"
 {
 namespace KodiAPI
 {
-namespace V1
-{
 namespace AudioEngine
 {
 
@@ -79,7 +77,6 @@ typedef struct CB_AudioEngineLib
 } CB_AudioEngineLib;
 
 } /* namespace AudioEngine */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 } /* extern "C" */
 
@@ -88,7 +85,7 @@ typedef struct CB_AudioEngineLib
 class CAddonAEStream
 {
 public:
-  CAddonAEStream(AddonCB* addon, KodiAPI::V1::AudioEngine::CB_AudioEngineLib* callbacks, AEStreamHandle* streamHandle)
+  CAddonAEStream(AddonCB* addon, KodiAPI::AudioEngine::CB_AudioEngineLib* callbacks, AEStreamHandle* streamHandle)
     : m_Handle(addon),
       m_cb(callbacks),
       m_StreamHandle(streamHandle) {}
@@ -304,7 +301,7 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::AudioEngine::CB_AudioEngineLib *m_cb;
+  KodiAPI::AudioEngine::CB_AudioEngineLib *m_cb;
   AEStreamHandle  *m_StreamHandle;
 };
 
@@ -334,7 +331,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::V1::AudioEngine::CB_AudioEngineLib*)m_Handle->AudioEngineLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (KodiAPI::AudioEngine::CB_AudioEngineLib*)m_Handle->AudioEngineLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libKODI_audioengine-ERROR: AudioEngineLib_RegisterMe can't get callback table from Kodi !!!\n");
 
@@ -386,5 +383,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::AudioEngine::CB_AudioEngineLib *m_Callbacks;
+  KodiAPI::AudioEngine::CB_AudioEngineLib *m_Callbacks;
 };

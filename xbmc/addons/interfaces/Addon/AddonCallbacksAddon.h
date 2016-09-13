@@ -39,8 +39,6 @@ namespace ADDON
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace AddOn
 {
 
@@ -97,5 +95,4 @@ private:
 };
 
 } /* namespace AddOn */
-} /* namespace V1 */
 } /* namespace KodiAPI */

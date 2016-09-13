@@ -31,8 +31,6 @@ typedef void* ADSPHANDLE;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace AudioDSP
 {
 
@@ -55,13 +53,12 @@ typedef struct CB_ADSPLib
 } CB_ADSPLib;
 
 } /* namespace AudioDSP */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 
 class CAddonSoundPlay
 {
 public:
-  CAddonSoundPlay(AddonCB* hdl, KodiAPI::V1::AudioDSP::CB_ADSPLib* cb, const char* filename)
+  CAddonSoundPlay(AddonCB* hdl, KodiAPI::AudioDSP::CB_ADSPLib* cb, const char* filename)
     : m_Filename(filename),
       m_Handle(hdl),
       m_cb(cb)
@@ -141,7 +138,7 @@ public:
 private:
   std::string m_Filename;
   AddonCB* m_Handle;
-  KodiAPI::V1::AudioDSP::CB_ADSPLib *m_cb;
+  KodiAPI::AudioDSP::CB_ADSPLib *m_cb;
   ADSPHANDLE  m_PlayHandle;
 };
 
@@ -171,7 +168,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::V1::AudioDSP::CB_ADSPLib*)m_Handle->ADSPLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (KodiAPI::AudioDSP::CB_ADSPLib*)m_Handle->ADSPLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libKODI_adsp-ERROR: ADSLib_RegisterMe can't get callback table from Kodi !!!\n");
 
@@ -235,5 +232,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::AudioDSP::CB_ADSPLib *m_Callbacks;
+  KodiAPI::AudioDSP::CB_ADSPLib *m_Callbacks;
 };

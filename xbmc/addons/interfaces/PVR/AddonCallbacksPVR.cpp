@@ -44,8 +44,6 @@ using namespace EPG;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace PVR
 {
 
@@ -426,5 +424,4 @@ void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, u
 }
 
 } /* namespace PVR */
-} /* namespace V1 */
 } /* namespace KodiAPI */

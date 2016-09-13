@@ -30,8 +30,6 @@ typedef void* GUIHANDLE;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace GUI
 {
 
@@ -168,7 +166,6 @@ typedef struct CB_GUILib
 } CB_GUILib;
 
 } /* namespace GUI */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 
 
@@ -194,7 +191,7 @@ class CAddonListItem
 friend class CAddonGUIWindow;
 
 public:
-  CAddonListItem(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
+  CAddonListItem(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
     : m_Handle(hdl)
     , m_cb(cb)
   {
@@ -272,7 +269,7 @@ public:
 protected:
   GUIHANDLE m_ListItemHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
 class CAddonGUIWindow
@@ -285,7 +282,7 @@ friend class CAddonGUISliderControl;
 friend class CAddonGUISettingsSliderControl;
 
 public:
-  CAddonGUIWindow(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
+  CAddonGUIWindow(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
     : m_Handle(hdl),
       m_cb(cb)
   {
@@ -486,7 +483,7 @@ public:
 protected:
   GUIHANDLE m_WindowHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 
   static bool OnInitCB(GUIHANDLE cbhdl);
   static bool OnClickCB(GUIHANDLE cbhdl, int controlId);
@@ -518,7 +515,7 @@ inline bool CAddonGUIWindow::OnActionCB(GUIHANDLE cbhdl, int actionId)
 class CAddonGUISpinControl
 {
 public:
-  CAddonGUISpinControl(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
+  CAddonGUISpinControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
     : m_Window(window),
       m_ControlId(controlId),
       m_Handle(hdl),
@@ -571,13 +568,13 @@ private:
   int m_ControlId;
   GUIHANDLE m_SpinHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
 class CAddonGUIRadioButton
 {
 public:
-  CAddonGUIRadioButton(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
+  CAddonGUIRadioButton(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
     : m_Window(window)
     , m_ControlId(controlId)
     , m_Handle(hdl)
@@ -618,13 +615,13 @@ private:
   int m_ControlId;
   GUIHANDLE m_ButtonHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
 class CAddonGUIProgressControl
 {
 public:
-  CAddonGUIProgressControl(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
+  CAddonGUIProgressControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
     : m_Window(window)
     , m_ControlId(controlId)
     , m_Handle(hdl)
@@ -676,13 +673,13 @@ private:
   int m_ControlId;
   GUIHANDLE m_ProgressHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
 class CAddonGUISliderControl
 {
 public:
-  CAddonGUISliderControl(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
+  CAddonGUISliderControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
     : m_Window(window)
     , m_ControlId(controlId)
     , m_Handle(hdl)
@@ -776,13 +773,13 @@ private:
   int m_ControlId;
   GUIHANDLE m_SliderHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
 class CAddonGUISettingsSliderControl
 {
 public:
-  CAddonGUISettingsSliderControl(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
+  CAddonGUISettingsSliderControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
     : m_Window(window)
     , m_ControlId(controlId)
     , m_Handle(hdl)
@@ -882,13 +879,13 @@ private:
   int m_ControlId;
   GUIHANDLE m_SettingsSliderHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
 class CAddonGUIRenderingControl
 {
 public:
-  CAddonGUIRenderingControl(AddonCB* hdl, KodiAPI::V1::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
+  CAddonGUIRenderingControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
     : m_Window(window)
     , m_ControlId(controlId)
     , m_Handle(hdl)
@@ -954,7 +951,7 @@ private:
   int m_ControlId;
   GUIHANDLE m_RenderingHandle;
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_cb;
+  KodiAPI::GUI::CB_GUILib* m_cb;
 
   static bool OnCreateCB(GUIHANDLE cbhdl, int x, int y, int w, int h, void* device);
   static void OnRenderCB(GUIHANDLE cbhdl);
@@ -1003,7 +1000,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::V1::GUI::CB_GUILib*)m_Handle->GUILib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (KodiAPI::GUI::CB_GUILib*)m_Handle->GUILib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libKODI_guilib-ERROR: GUILib_RegisterMe can't get callback table from Kodi !!!\n");
   
@@ -1268,5 +1265,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::GUI::CB_GUILib* m_Callbacks;
+  KodiAPI::GUI::CB_GUILib* m_Callbacks;
 };

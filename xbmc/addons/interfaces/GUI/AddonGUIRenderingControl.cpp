@@ -24,8 +24,6 @@
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace GUI
 {
 
@@ -89,5 +87,4 @@ bool CGUIAddonRenderingControl::IsDirty()
 }
 
 } /* namespace GUI */
-} /* namespace V1 */
 } /* namespace KodiAPI */

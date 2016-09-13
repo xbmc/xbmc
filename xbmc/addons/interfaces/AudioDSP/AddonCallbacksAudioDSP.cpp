@@ -35,8 +35,6 @@ using namespace ActiveAE;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace AudioDSP
 {
 
@@ -276,5 +274,4 @@ float CAddonCallbacksADSP::ADSPSoundPlay_GetVolume(void *addonData, ADSPHANDLE h
 }
 
 } /* namespace AudioDSP */
-} /* namespace V1 */
 } /* namespace KodiAPI */

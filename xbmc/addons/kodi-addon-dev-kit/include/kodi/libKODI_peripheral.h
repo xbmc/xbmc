@@ -33,8 +33,6 @@ extern "C"
 {
 namespace KodiAPI
 {
-namespace V1
-{
 namespace Peripheral
 {
 
@@ -46,7 +44,6 @@ typedef struct CB_PeripheralLib
 } CB_PeripheralLib;
 
 } /* namespace Peripheral */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 } /* extern "C" */
 
@@ -76,7 +73,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::V1::Peripheral::CB_PeripheralLib*)m_Handle->PeripheralLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (KodiAPI::Peripheral::CB_PeripheralLib*)m_Handle->PeripheralLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from Kodi !!!\n");
 
@@ -119,5 +116,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::Peripheral::CB_PeripheralLib* m_Callbacks;
+  KodiAPI::Peripheral::CB_PeripheralLib* m_Callbacks;
 };
