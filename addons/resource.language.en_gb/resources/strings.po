@@ -15248,18 +15248,6 @@ msgctxt "#29985"
 msgid "If traffic advisory is send from RDS, volume is increased"
 msgstr ""
 
-#. Boolean value on settings
-#: system/settings/settings.xml
-msgctxt "#29986"
-msgid "Publicate traffic messages"
-msgstr ""
-
-#. Help text of boolean on/off value
-#: system/settings/settings.xml
-msgctxt "#29987"
-msgid "Send present traffic messages around and can be handled from add-ons (nothing inside Kodi)"
-msgstr ""
-
 #. Music role category
 #: system/library/music/musicroles/Arrangers.xml
 msgctxt "#29988"

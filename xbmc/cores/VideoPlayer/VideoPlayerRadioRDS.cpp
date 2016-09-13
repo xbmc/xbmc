@@ -1730,9 +1730,6 @@ unsigned int CDVDRadioRDSData::DecodeTDC(uint8_t *msgElement, unsigned int len)
 
 void CDVDRadioRDSData::SendTMCSignal(unsigned int flags, uint8_t *data)
 {
-  if (!CSettings::GetInstance().GetBool("pvrplayback.sendrdstrafficmsg"))
-    return;
-
   if (!(flags & 0x80) && (memcmp(data, m_TMC_LastData, 5) == 0))
     return;
 
