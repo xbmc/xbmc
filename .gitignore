@@ -149,9 +149,6 @@ cmake_install.cmake
 /lib/addons/library.xbmc.addon/Makefile
 /lib/addons/library.xbmc.addon/project/VS2010Express/Release
 /lib/addons/library.xbmc.addon/project/VS2010Express/Debug
-/lib/addons/library.kodi.audioengine/Makefile
-/lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
-/lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -529,8 +526,6 @@ lib/cpluff/stamp-h1
 /addons/library.xbmc.addon/libXBMC_addon.lib
 /addons/library.kodi.guilib/libKODI_guilib.dll
 /addons/library.kodi.guilib/libKODI_guilib.lib
-/addons/library.kodi.audioengine/libKODI_audioengine.dll
-/addons/library.kodi.audioengine/libKODI_audioengine.lib
 
 /pvr-addons
 /adsp-addons

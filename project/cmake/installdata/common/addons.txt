@@ -18,7 +18,6 @@ addons/xbmc.metadata/*
 addons/xbmc.pvr/*
 addons/xbmc.python/*
 addons/xbmc.webinterface/*
-addons/library.kodi.audioengine/*
 addons/library.kodi.guilib/*
 addons/library.xbmc.addon/*
 addons/repository.xbmc.org/*
