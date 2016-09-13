@@ -1477,11 +1477,6 @@
             <dependency type="enable" setting="pvrplayback.trafficadvisory">true</dependency>
           </dependencies>
         </setting>
-        <setting id="pvrplayback.sendrdstrafficmsg" type="boolean" label="29986" help="29987">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
       </group>
     </category>
     <category id="pvrrecord" label="19043" help="36233">
