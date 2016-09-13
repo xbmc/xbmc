@@ -22,6 +22,7 @@
 #include "GUIWindowPVRRecordings.h"
 
 #include "Application.h"
+#include "addons/AddonManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -339,8 +340,14 @@ void CGUIWindowPVRBase::SetInvalid()
 
 bool CGUIWindowPVRBase::CanBeActivated() const
 {
-  // No activation if PVR is not (yet) available.
-  return g_PVRManager.IsStarted();
+  // check if there is at least one enabled PVR add-on
+  if (!ADDON::CAddonMgr::GetInstance().HasAddons(ADDON::ADDON_PVRDLL))
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{19296}, CVariant{19272}); // No PVR add-on enabled, You need a tuner, backend software...
+    return false;
+  }
+
+  return true;
 }
 
 bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)

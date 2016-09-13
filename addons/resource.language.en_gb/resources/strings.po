@@ -10354,7 +10354,13 @@ msgctxt "#19295"
 msgid "Delete timer rule"
 msgstr ""
 
-#empty strings from id 19296 to 19498
+#. Label if no pvr addons are enabled
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#19296"
+msgid "No PVR add-on enabled"
+msgstr ""
+
+#empty strings from id 19297 to 19498
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19499"

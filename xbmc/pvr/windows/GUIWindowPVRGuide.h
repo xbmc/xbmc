@@ -41,7 +41,6 @@ namespace PVR
     CGUIWindowPVRGuide(bool bRadio);
     virtual ~CGUIWindowPVRGuide(void);
 
-    virtual bool CanBeActivated() const override;
     virtual void OnInitWindow() override;
     virtual void OnDeinitWindow(int nextWindowID) override;
     virtual bool OnMessage(CGUIMessage& message) override;
