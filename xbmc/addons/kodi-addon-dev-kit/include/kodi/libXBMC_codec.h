@@ -31,8 +31,6 @@ extern "C"
 {
 namespace KodiAPI
 {
-namespace V1
-{
 namespace Codec
 {
 
@@ -42,7 +40,6 @@ typedef struct CB_CODEC
 } CB_CodecLib;
 
 } /* namespace Codec */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 } /* extern "C" */
 
@@ -72,7 +69,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::V1::Codec::CB_CODEC*)m_Handle->CodecLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (KodiAPI::Codec::CB_CODEC*)m_Handle->CodecLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libXBMC_codec-ERROR: CodecLib_RegisterMe can't get callback table from Kodi !!!\n");
 
@@ -91,5 +88,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::V1::Codec::CB_CODEC *m_Callbacks;
+  KodiAPI::Codec::CB_CODEC *m_Callbacks;
 };

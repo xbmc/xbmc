@@ -128,8 +128,6 @@ namespace ADDON
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace AddOn
 {
 typedef struct CB_AddOn
@@ -172,7 +170,6 @@ typedef struct CB_AddOn
 } CB_AddOnLib;
 
 } /* namespace AddOn */
-} /* namespace V1 */
 } /* namespace KodiAPI */
 
 namespace ADDON
@@ -198,7 +195,7 @@ namespace ADDON
     {
       m_Handle = static_cast<AddonCB*>(handle);
       if (m_Handle)
-        m_Callbacks = (KodiAPI::V1::AddOn::CB_AddOnLib*)m_Handle->AddOnLib_RegisterMe(m_Handle->addonData);
+        m_Callbacks = (KodiAPI::AddOn::CB_AddOnLib*)m_Handle->AddOnLib_RegisterMe(m_Handle->addonData);
       if (!m_Callbacks)
         fprintf(stderr, "libXBMC_addon-ERROR: AddOnLib_RegisterMe can't get callback table from Kodi !!!\n");
     
@@ -575,6 +572,6 @@ namespace ADDON
 
   private:
     AddonCB* m_Handle;
-    KodiAPI::V1::AddOn::CB_AddOnLib *m_Callbacks;
+    KodiAPI::AddOn::CB_AddOnLib *m_Callbacks;
   };
 };

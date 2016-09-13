@@ -26,8 +26,6 @@ class CGUIRenderingControl;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace GUI
 {
 
@@ -54,5 +52,4 @@ protected:
 };
 
 } /* namespace GUI */
-} /* namespace V1 */
 } /* namespace KodiAPI */

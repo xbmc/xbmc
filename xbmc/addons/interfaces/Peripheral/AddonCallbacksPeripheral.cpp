@@ -31,8 +31,6 @@ using namespace PERIPHERALS;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace Peripheral
 {
 
@@ -97,5 +95,4 @@ unsigned int CAddonCallbacksPeripheral::FeatureCount(void* addonData, const char
 }
 
 } /* namespace Peripheral */
-} /* namespace V1 */
 } /* namespace KodiAPI */

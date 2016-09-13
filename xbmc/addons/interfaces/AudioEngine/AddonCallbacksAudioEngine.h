@@ -25,8 +25,6 @@
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace AudioEngine
 {
 
@@ -208,5 +206,4 @@ private:
 };
 
 } /* namespace AudioEngine */
-} /* namespace V1 */
 } /* namespace KodiAPI */

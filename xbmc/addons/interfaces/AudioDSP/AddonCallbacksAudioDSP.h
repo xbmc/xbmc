@@ -34,8 +34,6 @@ namespace ADDON
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace AudioDSP
 {
 
@@ -161,5 +159,4 @@ private:
 };
 
 } /* namespace AudioDSP */
-} /* namespace V1 */
 } /* namespace KodiAPI */

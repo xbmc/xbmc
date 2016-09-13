@@ -30,8 +30,6 @@ namespace ADDON
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace GUI
 {
 
@@ -181,5 +179,4 @@ private:
 };
 
 } /* namespace GUI */
-} /* namespace V1 */
 } /* namespace KodiAPI */

@@ -25,8 +25,6 @@
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace Codec
 {
 
@@ -48,5 +46,4 @@ private:
 };
 
 } /* namespace Codec */
-} /* namespace V1 */
 } /* namespace KodiAPI */

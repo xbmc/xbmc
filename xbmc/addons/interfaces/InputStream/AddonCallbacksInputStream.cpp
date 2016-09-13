@@ -23,8 +23,6 @@
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace InputStream
 {
 
@@ -53,5 +51,4 @@ DemuxPacket* CAddonCallbacksInputStream::InputStreamAllocateDemuxPacket(void *ad
 }
 
 } /* namespace InputStream */
-} /* namespace V1 */
 } /* namespace KodiAPI */

@@ -26,8 +26,6 @@ namespace GAME { class CGameClient; }
 
 namespace KodiAPI
 {
-namespace V1
-{
 
 namespace Game
 {
@@ -69,5 +67,4 @@ private:
 
 } /* namespace Game */
 
-} /* namespace V1 */
 } /* namespace KoidAPI */

@@ -25,8 +25,6 @@
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace InputStream
 {
 
@@ -61,5 +59,4 @@ private:
 };
 
 } /* namespace InputStream */
-} /* namespace V1 */
 } /* namespace KodiAPI */

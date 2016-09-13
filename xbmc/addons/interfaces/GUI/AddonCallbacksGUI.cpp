@@ -55,8 +55,6 @@ using namespace ADDON;
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace GUI
 {
 
@@ -1919,5 +1917,4 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
 //@}
 
 } /* namespace GUI */
-} /* namespace V1 */
 } /* namespace KodiAPI */

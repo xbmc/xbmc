@@ -37,8 +37,6 @@ namespace ADDON
 
 namespace KodiAPI
 {
-namespace V1
-{
 namespace PVR
 {
 
@@ -199,5 +197,4 @@ private:
 };
 
 } /* namespace PVR */
-} /* namespace V1 */
-} /* namespace PVRLIB */
+} /* namespace KodiAPI */
