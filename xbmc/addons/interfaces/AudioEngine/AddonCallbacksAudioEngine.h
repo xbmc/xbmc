@@ -19,7 +19,7 @@
  *
  */
 
-#include "addons/binary/interfaces/AddonInterfaces.h"
+#include "addons/interfaces/AddonInterfaces.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"
 
