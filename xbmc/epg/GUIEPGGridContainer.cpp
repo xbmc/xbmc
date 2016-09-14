@@ -1067,10 +1067,16 @@ std::string CGUIEPGGridContainer::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label = StringUtils::Format("%u", (m_gridModel->ChannelItemsSize() + m_channelsPerPage - 1) / m_channelsPerPage);
+    if (m_channelsPerPage > 0)
+      label = StringUtils::Format("%u", (m_gridModel->ChannelItemsSize() + m_channelsPerPage - 1) / m_channelsPerPage);
+    else
+      label = StringUtils::Format("%u", 0);
     break;
   case CONTAINER_CURRENT_PAGE:
-    label = StringUtils::Format("%u", 1 + (m_channelCursor + m_channelOffset) / m_channelsPerPage );
+    if (m_channelsPerPage > 0)
+      label = StringUtils::Format("%u", 1 + (m_channelCursor + m_channelOffset) / m_channelsPerPage);
+    else
+      label = StringUtils::Format("%u", 1);
     break;
   case CONTAINER_POSITION:
     label = StringUtils::Format("%i", 1 + m_channelCursor + m_channelOffset);
