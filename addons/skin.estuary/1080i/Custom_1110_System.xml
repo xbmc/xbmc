@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window>
+<window id="1110">
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<controls>
 		<include>DefaultBackground</include>
@@ -94,50 +94,30 @@
 			</focusedlayout>
 			<content>
 				<item>
-					<label>$LOCALIZE[14200]</label>
-					<onclick>ActivateWindow(PlayerSettings)</onclick>
-					<icon>icons/settings/video.png</icon>
+					<label>$LOCALIZE[24001]</label>
+					<onclick>ActivateWindow(AddonBrowser)</onclick>
+					<icon>icons/settings/addons.png</icon>
 				</item>
 				<item>
-					<label>$LOCALIZE[14211]</label>
-					<onclick>ActivateWindow(MediaSettings)</onclick>
-					<icon>icons/settings/library.png</icon>
+					<label>$LOCALIZE[7]</label>
+					<onclick>ActivateWindow(filemanager)</onclick>
+					<icon>icons/settings/filemanager.png</icon>
 				</item>
 				<item>
-					<label>$LOCALIZE[14204]</label>
-					<onclick>ActivateWindow(PVRSettings)</onclick>
-					<icon>icons/settings/livetv.png</icon>
+					<label>$LOCALIZE[14114]</label>
+					<onclick>ActivateWindow(eventlog)</onclick>
+					<icon>icons/settings/filemanager.png</icon>
 				</item>
 				<item>
-					<label>$LOCALIZE[14036]</label>
-					<onclick>ActivateWindow(ServiceSettings)</onclick>
-					<icon>icons/settings/network.png</icon>
+					<label>$LOCALIZE[130]</label>
+					<onclick>ActivateWindow(10007)</onclick>
+					<icon>icons/settings/sysinfo.png</icon>
 				</item>
-				<item>
-					<label>$LOCALIZE[13000]</label>
-					<onclick>ActivateWindow(SystemSettings)</onclick>
-					<icon>icons/settings/system.png</icon>
-				</item>
-				<item>
-					<label>$LOCALIZE[14206]</label>
-					<onclick>ActivateWindow(InterfaceSettings)</onclick>
-					<icon>icons/settings/appearance.png</icon>
-				</item>
-				<item>
-					<label>$LOCALIZE[166]</label>
-					<onclick>ActivateWindow(SkinSettings)</onclick>
-					<icon>icons/settings/skin.png</icon>
-				</item>
-				<item>
-					<label>$LOCALIZE[13200]</label>
-					<onclick>ActivateWindow(Profiles)</onclick>
-					<icon>icons/settings/profiles.png</icon>
-				</item>
-			</content>
+				</content>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[5]" />
-			<param name="breadcrumbs_icon" value="icons/settings/settings.png" />
+			<param name="breadcrumbs_label" value="$LOCALIZE[13000]" />
+			<param name="breadcrumbs_icon" value="icons/settings/system.png"/>
 		</include>
 		<include>BottomBar</include>
 	</controls>
