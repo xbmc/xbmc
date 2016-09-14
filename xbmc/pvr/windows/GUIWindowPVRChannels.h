@@ -29,7 +29,6 @@ namespace PVR
     CGUIWindowPVRChannels(bool bRadio);
     virtual ~CGUIWindowPVRChannels(void) {};
 
-    virtual bool CanBeActivated() const override;
     virtual bool OnMessage(CGUIMessage& message) override;
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;

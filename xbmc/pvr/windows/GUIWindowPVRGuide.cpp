@@ -58,11 +58,6 @@ CGUIEPGGridContainer* CGUIWindowPVRGuide::GetGridControl()
   return dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
 }
 
-bool CGUIWindowPVRGuide::CanBeActivated() const
-{
-  return true;
-}
-
 void CGUIWindowPVRGuide::Init()
 {
   CGUIEPGGridContainer *epgGridContainer = GetGridControl();
