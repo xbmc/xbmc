@@ -35,7 +35,7 @@ namespace Peripheral
 {
 
 CAddonCallbacksPeripheral::CAddonCallbacksPeripheral(ADDON::CAddon* addon)
-  : ADDON::IAddonInterface(addon, 1, PERIPHERAL_API_VERSION),
+  : ADDON::IAddonInterface(addon, PERIPHERAL_API_VERSION),
     m_callbacks(new CB_PeripheralLib)
 {
   /* write Kodi peripheral specific add-on function addresses to callback table */

@@ -35,7 +35,7 @@ namespace AudioEngine
 {
 
 CAddonCallbacksAudioEngine::CAddonCallbacksAudioEngine(CAddon* addon)
-  : ADDON::IAddonInterface(addon, 1, KODI_AUDIOENGINE_API_VERSION),
+  : ADDON::IAddonInterface(addon, KODI_AUDIOENGINE_API_VERSION),
     m_callbacks(new CB_AudioEngineLib)
 {
   // write KODI audio DSP specific add-on function addresses to callback table
