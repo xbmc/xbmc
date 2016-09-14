@@ -19583,3 +19583,13 @@ msgstr ""
 msgctxt "#39007"
 msgid "This provides access to where picture sources can be added and otherwise managed."
 msgstr ""
+
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#39008"
+msgid "Zoom - 120% width"
+msgstr ""
+
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#39009"
+msgid "Zoom - 110% width"
+msgstr ""

@@ -428,7 +428,7 @@ void CBaseRenderer::ManageRenderArea()
 
 void CBaseRenderer::SetViewMode(int viewMode)
 {
-  if (viewMode < ViewModeNormal || viewMode > ViewModeStretch16x9Nonlin)
+  if (viewMode < ViewModeNormal || viewMode > ViewModeZoom110Width)
     viewMode = ViewModeNormal;
 
   CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = viewMode;
@@ -536,6 +536,18 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::GetInstance().SetPixelRatio(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio);
     CDisplaySettings::GetInstance().SetNonLinearStretched(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomNonLinStretch);
     CDisplaySettings::GetInstance().SetVerticalShift(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift);
+  }
+  else if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeZoom120Width)
+  {
+    float fitHeightZoom = sourceFrameRatio * screenHeight / (info.fPixelRatio * screenWidth);
+    CDisplaySettings::GetInstance().SetPixelRatio(1.0f);
+    CDisplaySettings::GetInstance().SetZoomAmount(fitHeightZoom < 1.0f ? 1.0f : (fitHeightZoom > 1.2f ? 1.2f : fitHeightZoom));
+  }
+  else if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeZoom110Width)
+  {
+    float fitHeightZoom = sourceFrameRatio * screenHeight / (info.fPixelRatio * screenWidth);
+    CDisplaySettings::GetInstance().SetPixelRatio(1.0f);
+    CDisplaySettings::GetInstance().SetZoomAmount(fitHeightZoom < 1.0f ? 1.0f : (fitHeightZoom > 1.1f ? 1.1f : fitHeightZoom));
   }
   else // if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeNormal)
   {

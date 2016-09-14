@@ -224,7 +224,9 @@ enum ViewMode {
   ViewModeStretch16x9,
   ViewModeOriginal,
   ViewModeCustom,
-  ViewModeStretch16x9Nonlin
+  ViewModeStretch16x9Nonlin,
+  ViewModeZoom120Width,
+  ViewModeZoom110Width
 };
 
 class IPlayer

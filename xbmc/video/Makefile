@@ -11,6 +11,7 @@ SRCS=Bookmark.cpp \
      VideoLibraryQueue.cpp \
      VideoReferenceClock.cpp \
      VideoThumbLoader.cpp \
+     ViewModeSettings.cpp \
      
 LIB=video.a
 
