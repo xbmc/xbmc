@@ -2779,7 +2779,6 @@
 		68AE5BA01C923E5300C4D527 /* kodi_vfs_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_vfs_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_vfs_utils.hpp"; sourceTree = "<group>"; };
 		68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPeripheral.cpp; path = addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.cpp; sourceTree = "<group>"; };
 		68AE5BA41C92412900C4D527 /* AddonCallbacksPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPeripheral.h; path = addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.h; sourceTree = "<group>"; };
-		68AE5BA71C92414B00C4D527 /* kodi_peripheral_callbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_callbacks.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_callbacks.h"; sourceTree = "<group>"; };
 		68AE5BA81C92414B00C4D527 /* kodi_peripheral_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_dll.h"; sourceTree = "<group>"; };
 		68AE5BA91C92414B00C4D527 /* kodi_peripheral_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"; sourceTree = "<group>"; };
 		68AE5BAA1C92414B00C4D527 /* kodi_peripheral_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_peripheral_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"; sourceTree = "<group>"; };
@@ -9155,7 +9154,6 @@
 				EDE8C7111C7F618500A86ECC /* kodi_audioengine_types.h */,
 				7CEE107B1C970BB800E0D426 /* kodi_inputstream_dll.h */,
 				7CEE107C1C970BB800E0D426 /* kodi_inputstream_types.h */,
-				68AE5BA71C92414B00C4D527 /* kodi_peripheral_callbacks.h */,
 				68AE5BA81C92414B00C4D527 /* kodi_peripheral_dll.h */,
 				68AE5BA91C92414B00C4D527 /* kodi_peripheral_types.h */,
 				68AE5BAA1C92414B00C4D527 /* kodi_peripheral_utils.hpp */,
