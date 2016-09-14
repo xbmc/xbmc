@@ -24,7 +24,7 @@
 class CJNIBitmap : public CJNIBase
 {
 public:
-  CJNIBitmap();
-  CJNIBitmap(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNIBitmap() {};
+  CJNIBitmap() {}
+  CJNIBitmap(const jni::jhobject &object) : CJNIBase(object) {}
+  ~CJNIBitmap() {}
 };
