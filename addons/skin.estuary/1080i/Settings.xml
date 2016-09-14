@@ -4,16 +4,16 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="panel" id="9000">
-			<left>92</left>
+			<left>260</left>
 			<top>140</top>
-			<width>1850</width>
+			<width>1736</width>
 			<height>819</height>
 			<onleft>9000</onleft>
 			<onright>9000</onright>
 			<onup>9000</onup>
 			<ondown>9000</ondown>
 			<include>OpenClose_Right</include>
-			<itemlayout height="270" width="440">
+			<itemlayout height="270" width="500">
 				<control type="image">
 					<width>400</width>
 					<height>250</height>
@@ -44,7 +44,7 @@
 					<align>center</align>
 				</control>
 			</itemlayout>
-			<focusedlayout height="270" width="440">
+			<focusedlayout height="270" width="500">
 				<control type="group">
 					<depth>DepthContentPopout</depth>
 					<animation type="Focus" reversible="false">
