@@ -280,7 +280,7 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_bPlaybackStarting = false;
   m_ePlayState = PLAY_STATE_NONE;
-  m_skinReverting = false;
+  m_confirmSkinChange = true;
 
 #ifdef HAS_GLX
   XInitThreads();
@@ -1164,12 +1164,19 @@ bool CApplication::Initialize()
     if (g_advancedSettings.m_splashImage)
       g_windowManager.ActivateWindow(WINDOW_SPLASH);
 
-    // Make sure we have at least the default skin
+    m_confirmSkinChange = false;
+    m_incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons();
+    m_confirmSkinChange = true;
+
     std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
-    if (!LoadSkin(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)) && !LoadSkin(defaultSkin))
+    if (!LoadSkin(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
     {
-      CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
-      return false;
+      CLog::Log(LOGERROR, "Failed to load skin '%s'", CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
+      if (!LoadSkin(defaultSkin))
+      {
+        CLog::Log(LOGFATAL, "Default skin '%s' could not be loaded! Terminating..", defaultSkin.c_str());
+        return false;
+      }
     }
 
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
@@ -1248,8 +1255,6 @@ bool CApplication::Initialize()
   CRepositoryUpdater::GetInstance().Start();
 
   CLog::Log(LOGNOTICE, "initialize done");
-
-  m_bInitializing = false;
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
@@ -1406,11 +1411,14 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     // reset the settings to ignore during changing skins
     m_skinReloadSettingIgnore.clear();
 
-    // now we can finally reload skins
-    std::string builtin("ReloadSkin");
-    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
-      builtin += "(confirm)";
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+    if (g_SkinInfo)
+    {
+      // now we can finally reload skins
+      std::string builtin("ReloadSkin");
+      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && m_confirmSkinChange)
+        builtin += "(confirm)";
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+    }
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
   {
@@ -1549,7 +1557,10 @@ bool CApplication::OnSettingsSaving() const
 
 void CApplication::ReloadSkin(bool confirm/*=false*/)
 {
-  std::string oldSkin = g_SkinInfo ? g_SkinInfo->ID() : "";
+  if (!g_SkinInfo || m_bInitializing)
+    return; // Don't allow reload before skin is loaded by system
+
+  std::string oldSkin = g_SkinInfo->ID();
 
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
   g_windowManager.SendMessage(msg);
@@ -1557,18 +1568,15 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
   std::string newSkin = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   if (LoadSkin(newSkin))
   {
-    /* The Reset() or SetString() below will cause recursion, so the m_skinReverting boolean is set so as to not prompt the
+    /* The Reset() or SetString() below will cause recursion, so the m_confirmSkinChange boolean is set so as to not prompt the
        user as to whether they want to keep the current skin. */
-    if (confirm && !m_skinReverting)
+    if (confirm && m_confirmSkinChange)
     {
       if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) != 
         DialogResponse::YES)
       {
-        m_skinReverting = true;
-        if (oldSkin.empty())
-          CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN)->Reset();
-        else
-          CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
+        m_confirmSkinChange = false;
+        CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
       }
     }
   }
@@ -1578,12 +1586,12 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
     std::string defaultSkin = ((CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
     if (newSkin != defaultSkin)
     {
-      m_skinReverting = true;
+      m_confirmSkinChange = false;
       CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN)->Reset();
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24102), g_localizeStrings.Get(24103));
     }
   }
-  m_skinReverting = false;
+  m_confirmSkinChange = true;
 }
 
 bool CApplication::Load(const TiXmlNode *settings)
@@ -1620,20 +1628,13 @@ bool CApplication::Save(TiXmlNode *settings) const
 
 bool CApplication::LoadSkin(const std::string& skinID)
 {
-  AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(skinID, addon, ADDON_SKIN))
+  SkinPtr skin;
   {
-    if (LoadSkin(std::dynamic_pointer_cast<ADDON::CSkinInfo>(addon)))
-      return true;
+    AddonPtr addon;
+    if (!CAddonMgr::GetInstance().GetAddon(skinID, addon, ADDON_SKIN))
+      return false;
+    skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
-  CLog::Log(LOGERROR, "failed to load requested skin '%s'", skinID.c_str());
-  return false;
-}
-
-bool CApplication::LoadSkin(const SkinPtr& skin)
-{
-  if (!skin)
-    return false;
 
   // start/prepare the skin
   skin->Start();
@@ -1643,7 +1644,10 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 
   // check if the skin has been properly loaded and if it has a Home.xml
   if (!skin->HasSkinFile("Home.xml"))
+  {
+    CLog::Log(LOGERROR, "failed to load requested skin '%s'", skin->ID().c_str());
     return false;
+  }
 
   bool bPreviousPlayingState=false;
   bool bPreviousRenderingState=false;
@@ -1675,7 +1679,6 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 
   CLog::Log(LOGINFO, "  load skin from: %s (version: %s)", skin->Path().c_str(), skin->Version().asString().c_str());
   g_SkinInfo = skin;
-  g_SkinInfo->Start();
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(skin->Path());
@@ -4159,8 +4162,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_fallbackLanguageLoaded)
           CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
 
+        if (!m_incompatibleAddons.empty())
+        {
+          auto addonList = StringUtils::Join(m_incompatibleAddons, ", ");
+          auto msg = StringUtils::Format(g_localizeStrings.Get(24149).c_str(), addonList.c_str());
+          CGUIDialogOK::ShowAndGetInput(CVariant{24148}, CVariant{std::move(msg)});
+          m_incompatibleAddons.clear();
+        }
+
         // show info dialog about moved configuration files if needed
         ShowAppMigrationMessage();
+
+        m_bInitializing = false;
       }
     }
     break;

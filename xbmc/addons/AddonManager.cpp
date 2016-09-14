@@ -257,7 +257,8 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
 
 CAddonMgr::CAddonMgr()
   : m_cp_context(nullptr),
-  m_cpluff(nullptr)
+  m_cpluff(nullptr),
+  m_serviceSystemStarted(false)
 { }
 
 CAddonMgr::~CAddonMgr()
@@ -608,89 +609,6 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
     m_cpluff->release_info(m_cp_context, cpaddon);
 
   return false;
-}
-
-//! @todo handle all 'default' cases here, not just scrapers & vizs
-bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
-{
-  std::string setting;
-  switch (type)
-  {
-  case ADDON_VIZ:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-    break;
-  case ADDON_SCREENSAVER:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE);
-    break;
-  case ADDON_SCRAPER_ALBUMS:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER);
-    break;
-  case ADDON_SCRAPER_ARTISTS:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER);
-    break;
-  case ADDON_SCRAPER_MOVIES:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT);
-    break;
-  case ADDON_SCRAPER_MUSICVIDEOS:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT);
-    break;
-  case ADDON_SCRAPER_TVSHOWS:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT);
-    break;
-  case ADDON_WEB_INTERFACE:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSKIN);
-    break;
-  case ADDON_RESOURCE_LANGUAGE:
-    setting = CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
-    break;
-  default:
-    return false;
-  }
-  return GetAddon(setting, addon, type);
-}
-
-bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
-{
-  switch (type)
-  {
-  case ADDON_VIZ:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
-    break;
-  case ADDON_SCREENSAVER:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE, addonID);
-    break;
-  case ADDON_SCRAPER_ALBUMS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, addonID);
-    break;
-  case ADDON_SCRAPER_ARTISTS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, addonID);
-    break;
-  case ADDON_SCRAPER_MOVIES:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT, addonID);
-    break;
-  case ADDON_SCRAPER_MUSICVIDEOS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT, addonID);
-    break;
-  case ADDON_SCRAPER_TVSHOWS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT, addonID);
-    break;
-  case ADDON_RESOURCE_LANGUAGE:
-    CSettings::GetInstance().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
-    break;
-  case ADDON_SCRIPT_WEATHER:
-     CSettings::GetInstance().SetString(CSettings::SETTING_WEATHER_ADDON, addonID);
-    break;
-  case ADDON_SKIN:
-    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, addonID);
-    break;
-  case ADDON_RESOURCE_UISOUNDS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN, addonID);
-    break;
-  default:
-    return false;
-  }
-
-  return true;
 }
 
 bool CAddonMgr::FindAddons()
@@ -1204,6 +1122,11 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
   return true;
 }
 
+bool CAddonMgr::ServicesHasStarted() const
+{
+  CSingleLock lock(m_critSection);
+  return m_serviceSystemStarted;
+}
 
 bool CAddonMgr::StartServices(const bool beforelogin)
 {
@@ -1224,6 +1147,9 @@ bool CAddonMgr::StartServices(const bool beforelogin)
         ret &= service->Start();
     }
   }
+
+  CSingleLock lock(m_critSection);
+  m_serviceSystemStarted = true;
 
   return ret;
 }
@@ -1246,6 +1172,31 @@ void CAddonMgr::StopServices(const bool onlylogin)
         service->Stop();
     }
   }
+}
+
+bool CAddonMgr::IsCompatible(const IAddon& addon)
+{
+  for (const auto& dependencyInfo : addon.GetDeps())
+  {
+    const auto& optional = dependencyInfo.second.second;
+    if (!optional)
+    {
+      const auto& dependencyId = dependencyInfo.first;
+      const auto& version = dependencyInfo.second.first;
+
+      // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
+      // not be missing anyway, unless addon was installed in an unsupported way.
+      if (StringUtils::StartsWith(dependencyId, "xbmc.") ||
+          StringUtils::StartsWith(dependencyId, "kodi."))
+      {
+        AddonPtr dependency;
+        bool haveAddon = GetAddon(dependencyId, dependency);
+        if (!haveAddon || !dependency->MeetsVersion(version))
+          return false;
+      }
+    }
+  }
+  return true;
 }
 
 int cp_to_clog(cp_log_severity_t lvl)

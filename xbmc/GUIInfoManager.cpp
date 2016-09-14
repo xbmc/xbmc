@@ -10561,11 +10561,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_ADDON_BROKEN:
     if (item->HasAddonInfo())
-    {
-      if (item->GetAddonInfo()->Broken() == "DEPSNOTMET")
-        return g_localizeStrings.Get(24044);
       return item->GetAddonInfo()->Broken();
-    }
     break;
   case LISTITEM_ADDON_TYPE:
     if (item->HasAddonInfo())

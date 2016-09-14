@@ -19,8 +19,9 @@
  *
  */
 
+#include "addons/IAddon.h"
 #include "settings/lib/ISettingCallback.h"
-
+#include <string>
 
 namespace ADDON
 {
@@ -35,6 +36,21 @@ public:
   static CAddonSystemSettings& GetInstance();
   void OnSettingAction(const CSetting* setting) override;
   void OnSettingChanged(const CSetting* setting) override;
+
+  bool GetActive(const TYPE& type, AddonPtr& addon);
+  bool SetActive(const TYPE& type, const std::string& addonID);
+  bool IsActive(const IAddon& addon);
+
+  /*!
+   * Attempt to unset addon as active. Returns true if addon is no longer active,
+   * false if it could not be unset (e.g. if the addon is the default)
+   */
+  bool UnsetActive(const AddonPtr& addon);
+
+  /*!
+   * Attempt to migrate installed addons. Returns a list of addons that was modified.
+   */
+  std::vector<std::string> MigrateAddons();
 
 private:
   CAddonSystemSettings() = default;

@@ -64,9 +64,10 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
     CLog::Log(LOGDEBUG, "CRepositoryUpdater: done.");
     m_doneEvent.Set();
 
+    VECADDONS updates = CAddonMgr::GetInstance().GetAvailableUpdates();
+
     if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NOTIFY)
     {
-      VECADDONS updates = CAddonMgr::GetInstance().GetAvailableUpdates();
       if (!updates.empty())
       {
         if (updates.size() == 1)
@@ -84,7 +85,13 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
     }
 
     if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
-      CAddonInstaller::GetInstance().InstallUpdates();
+    {
+      for (const auto& addon : updates)
+      {
+        if (!CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
+          CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
+      }
+    }
 
     ScheduleUpdate();
 

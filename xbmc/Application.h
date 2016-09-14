@@ -23,6 +23,7 @@
 #include "system.h" // for HAS_DVD_DRIVE et. al.
 #include "XBApplicationEx.h"
 
+#include "addons/AddonSystemSettings.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
@@ -145,7 +146,7 @@ public:
   virtual void FrameMove(bool processEvents, bool processGUI = true) override;
   virtual void Render() override;
   virtual void Preflight();
-  virtual bool Create() override;
+  bool Create();
   virtual bool Cleanup() override;
 
   bool CreateGUI();
@@ -416,8 +417,7 @@ protected:
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   bool LoadSkin(const std::string& skinID);
-  bool LoadSkin(const std::shared_ptr<ADDON::CSkinInfo>& skin);
-  
+
   /*!
    \brief Delegates the action to all registered action handlers.
    \param action The action
@@ -425,7 +425,7 @@ protected:
    */
   bool NotifyActionListeners(const CAction &action) const;
 
-  bool m_skinReverting;
+  bool m_confirmSkinChange;
   std::string m_skinReloadSettingIgnore;
 
   bool m_saveSkinOnUnloading;
@@ -522,7 +522,9 @@ protected:
   std::vector<IActionListener *> m_actionListeners;
 
   bool m_fallbackLanguageLoaded;
-  
+
+  std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
+
 private:
   CCriticalSection m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
 

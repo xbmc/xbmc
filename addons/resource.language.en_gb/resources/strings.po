@@ -14095,11 +14095,7 @@ msgctxt "#24043"
 msgid "Available updates"
 msgstr ""
 
-#: xbmc/addons/AddonInstaller.cpp
-#: xbmc/addons/AddonsDatabase.cpp
-msgctxt "#24044"
-msgid "Dependencies not met. Please contact add-on author."
-msgstr ""
+# empty string 24043
 
 #. Used as an event log description for add-ons failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
@@ -14122,10 +14118,7 @@ msgctxt "#24048"
 msgid "VideoPlayer InputStream"
 msgstr ""
 
-#: xbmc/filesystem/AddonsDirectory.cpp
-msgctxt "#24049"
-msgid "Incompatible"
-msgstr ""
+# empty string 24049
 
 #: unknown
 msgctxt "#24050"
@@ -14644,7 +14637,15 @@ msgctxt "#24147"
 msgid "Failed to scan %s: %s"
 msgstr ""
 
-#empty strings from id 24148 to 24990
+msgctxt "#24148"
+msgid "Incompatible add-ons"
+msgstr ""
+
+msgctxt "#24149"
+msgid "The following add-ons are incompatible with this version of Kodi and have been automatically disabled: %s."
+msgstr ""
+
+#empty strings from id 24150 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp

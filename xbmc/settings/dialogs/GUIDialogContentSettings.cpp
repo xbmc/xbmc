@@ -27,6 +27,7 @@
 #include <limits.h>
 
 #include "GUIDialogContentSettings.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "filesystem/AddonsDirectory.h"
@@ -239,7 +240,8 @@ void CGUIDialogContentSettings::OnSettingAction(const CSetting *setting)
       m_content = static_cast<CONTENT_TYPE>(selected.second);
 
       AddonPtr scraperAddon;
-      CAddonMgr::GetInstance().GetDefault(ADDON::ScraperTypeFromContent(m_content), scraperAddon);
+      CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content),
+          scraperAddon);
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
 
       SetupView();

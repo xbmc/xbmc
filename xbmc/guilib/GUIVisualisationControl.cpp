@@ -23,6 +23,7 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/Visualisation.h"
 #include "utils/log.h"
 #include "input/Key.h"
@@ -100,7 +101,7 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
     if (!m_addon && !m_bAttemptedLoad)
     {
       AddonPtr addon;
-      if (ADDON::CAddonMgr::GetInstance().GetDefault(ADDON_VIZ, addon))
+      if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON_VIZ, addon))
       {
         m_addon = std::dynamic_pointer_cast<CVisualisation>(addon);
         if (m_addon)

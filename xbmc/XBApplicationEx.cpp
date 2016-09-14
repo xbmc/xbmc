@@ -50,24 +50,6 @@ CXBApplicationEx::~CXBApplicationEx()
 {
 }
 
-/* Create the app */
-bool CXBApplicationEx::Create()
-{
-  // Variables to perform app timing
-  m_bStop = false;
-  m_AppFocused = true;
-  m_ExitCode = EXITCODE_QUIT;
-
-  // Initialize the app's device-dependent objects
-  if (!Initialize())
-  {
-    CLog::Log(LOGERROR, "XBAppEx: Call to Initialize() failed!" );
-    return false;
-  }
-
-  return true;
-}
-
 /* Destroy the app */
 VOID CXBApplicationEx::Destroy()
 {

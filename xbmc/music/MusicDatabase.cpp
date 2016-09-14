@@ -22,6 +22,7 @@
 
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
 #include "Album.h"
 #include "Application.h"
@@ -5689,7 +5690,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
       else
       { // use default scraper of the requested type
         ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonMgr::GetInstance().GetDefault(type, defaultScraper))
+        if (ADDON::CAddonSystemSettings::GetInstance().GetActive(type, defaultScraper))
         {
           info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
         }
@@ -5700,7 +5701,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
     if (!info)
     { // use default music scraper instead
       ADDON::AddonPtr addon;
-      if(ADDON::CAddonMgr::GetInstance().GetDefault(type, addon))
+      if(ADDON::CAddonSystemSettings::GetInstance().GetActive(type, addon))
       {
         info = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
         return info != NULL;

@@ -83,9 +83,6 @@ namespace ADDON
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
     void UnregisterAddonMgrCallback(TYPE type);
 
-    /* Addon access */
-    bool GetDefault(const TYPE &type, AddonPtr &addon);
-    bool SetDefault(const TYPE &type, const std::string &addonID);
     /*! \brief Retrieve a specific addon (of a specific type)
      \param id the id of the addon to retrieve.
      \param addon [out] the retrieved addon pointer - only use if the function returns true.
@@ -245,6 +242,10 @@ namespace ADDON
     */
     void StopServices(const bool onlylogin);
 
+    bool ServicesHasStarted() const;
+
+    bool IsCompatible(const IAddon& addon);
+
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
@@ -273,6 +274,7 @@ namespace ADDON
     CEventSource<AddonEvent> m_events;
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
+    bool m_serviceSystemStarted;
   };
 
 }; /* namespace ADDON */
