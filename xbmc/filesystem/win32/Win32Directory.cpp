@@ -201,6 +201,7 @@ bool CWin32Directory::RemoveRecursive(const CURL& url)
   if (hSearch == INVALID_HANDLE_VALUE)
     return GetLastError() == ERROR_FILE_NOT_FOUND ? Exists(url) : false; // return true if directory exist and empty
 
+  bool success = true;
   do
   {
     std::wstring itemNameW(findData.cFileName);
@@ -218,20 +219,29 @@ bool CWin32Directory::RemoveRecursive(const CURL& url)
       }
 
       if (!RemoveRecursive(CURL{ path }))
-        return false;
+      {
+        success = false;
+        break;
+      }
 
       if (FALSE == RemoveDirectoryW(pathW.c_str()))
-        return false;
+      {
+        success = false;
+        break;
+      }
     }
     else
     {
       if (FALSE == DeleteFileW(pathW.c_str()))
-        return false;
+      {
+        success = false;
+        break;
+      }
     }
   } while (FindNextFileW(hSearch, &findData));
 
   FindClose(hSearch);
 
-  return true;
+  return success;
 }
 #endif // TARGET_WINDOWS

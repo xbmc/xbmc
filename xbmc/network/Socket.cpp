@@ -81,6 +81,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
         if (!m_ipv6Socket)
         {
           CLog::Log(LOGWARNING, "UDP: Unable to bind to advertised ipv6, fallback to ipv4");
+          closesocket(testSocket);
           close(m_iSock);
           m_iSock = INVALID_SOCKET;
         }
