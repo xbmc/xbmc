@@ -261,29 +261,6 @@
 			</focusedlayout>
 		</control>
 	</include>
-	<include name="LeftRightAlignedInfoLine">
-		<control type="group">
-			<height>30</height>
-			<control type="label">
-				<left>0</left>
-				<width>250</width>
-				<height>40</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<label>$PARAM[label]:</label>
-				<font>font12</font>
-				<textcolor>button_focus</textcolor>
-			</control>
-			<control type="label">
-				<left>270</left>
-				<width>1000</width>
-				<height>40</height>
-				<aligny>center</aligny>
-				<label>$PARAM[value]</label>
-				<font>font12</font>
-			</control>
-		</control>
-	</include>
 	<include name="PicsInfoLine">
 		<control type="grouplist">
 			<visible>!String.IsEmpty($PARAM[value])</visible>
