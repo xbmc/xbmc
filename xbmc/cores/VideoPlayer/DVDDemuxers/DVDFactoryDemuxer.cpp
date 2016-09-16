@@ -99,6 +99,15 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
         else
           return nullptr;
       }
+      /* Used in case PVR addon opens an inputstream */
+      else if (pOtherStream->GetIDemux())
+      {
+        std::unique_ptr<CDVDDemuxClient> demuxer(new CDVDDemuxClient());
+        if(demuxer->Open(pOtherStream))
+          return demuxer.release();
+        else
+          return nullptr;
+      }
     }
   }
 

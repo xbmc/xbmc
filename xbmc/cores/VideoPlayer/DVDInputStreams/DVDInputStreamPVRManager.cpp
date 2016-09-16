@@ -26,6 +26,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "filesystem/PluginDirectory.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -157,7 +158,21 @@ bool CDVDInputStreamPVRManager::Open()
     m_isOtherStreamHack = true;
     
     m_item.SetPath(transFile);
-    m_item.SetMimeTypeForInternetFile();
+    if(transFile.substr(0, 9) == "plugin://")
+    {
+      // plugin://
+      // call a plugin to set path and properties
+      // enables live channels provided by inputstreamaddons 
+      if (!XFILE::CPluginDirectory::GetPluginResult(transFile, m_item))
+      {
+        CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - unable to create input stream from plugin [%s]", transFile.c_str());
+        return false;
+      }
+    }
+    else
+    {
+      m_item.SetMimeTypeForInternetFile();
+    }
 
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, m_item);
     if (!m_pOtherStream)
