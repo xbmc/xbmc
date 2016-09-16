@@ -51,6 +51,18 @@
 							<bordertexture border="20">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
+						<control type="textbox">
+							<left>51</left>
+							<top>252</top>
+							<width>214</width>
+							<height>100</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(poster)) + !Listitem.IsParentFolder</visible>
+						</control>
 						<control type="group">
 							<left>230</left>
 							<top>30</top>
@@ -69,6 +81,18 @@
 							<bordersize>20</bordersize>
 							<animation effect="fade" time="300" start="100" end="0">Focus</animation>
 							<visible>Control.IsVisible(20000)</visible>
+						</control>
+						<control type="textbox">
+							<left>51</left>
+							<top>252</top>
+							<width>214</width>
+							<height>100</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(poster)) + !Listitem.IsParentFolder</visible>
 						</control>
 						<control type="group">
 							<animation effect="fade" time="300" start="100" end="0">Focus</animation>
