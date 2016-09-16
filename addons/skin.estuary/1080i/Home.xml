@@ -565,6 +565,20 @@
 							<param name="item6_label" value="$LOCALIZE[137]" />
 							<param name="item7_vis" value="False" />
 							<param name="item8_vis" value="False" />
+							<param name="visible" value="System.HasPVRAddon"/>
+						</include>
+						<include content="ImageWidgetHeader">
+							<param name="widget_header" value="$LOCALIZE[19020]" />
+							<param name="visible" value="!System.HasPVRAddon"/>
+						</include>
+						<include content="ImageWidget">
+							<param name="image_path" value="special://skin/extras/home-images/tv.jpg"/>
+							<param name="text_label" value="$LOCALIZE[31143]" />
+							<param name="button_label" value="$LOCALIZE[31144]" />
+							<param name="button_onclick" value="ActivateWindow(addonbrowser,addons://user/xbmc.pvrclient,return)"/>
+							<param name="button_id" value="12400"/>
+							<param name="visible" value="!System.HasPVRAddon"/>
+							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoTVButton)"/>
 						</include>
 						<include content="WidgetListChannels">
 							<param name="content_path" value="pvr://channels/tv/*?view=lastplayed"/>
@@ -576,6 +590,7 @@
 							<param name="onup_id" value="12900"/>
 							<param name="ondown_id" value="12300"/>
 							<param name="height" value="550"/>
+							<param name="visible" value="System.HasPVRAddon"/>
 						</include>
 						<include content="WidgetListRecordings">
 							<param name="content_path" value="pvr://recordings/tv/active?view=flat"/>
@@ -587,6 +602,7 @@
 							<param name="onup_id" value="12200"/>
 							<param name="ondown_id" value="20001"/>
 							<param name="height" value="550"/>
+							<param name="visible" value="System.HasPVRAddon"/>
 						</include>
 						<control type="grouplist">
 							<height>218</height>
@@ -659,6 +675,20 @@
 							<param name="item6_label" value="$LOCALIZE[137]" />
 							<param name="item7_vis" value="False" />
 							<param name="item8_vis" value="False" />
+							<param name="visible" value="System.HasPVRAddon"/>
+						</include>
+						<include content="ImageWidgetHeader">
+							<param name="widget_header" value="$LOCALIZE[19021]" />
+							<param name="visible" value="!System.HasPVRAddon"/>
+						</include>
+						<include content="ImageWidget">
+							<param name="image_path" value="special://skin/extras/home-images/tv.jpg"/>
+							<param name="text_label" value="$LOCALIZE[31143]" />
+							<param name="button_label" value="$LOCALIZE[31144]" />
+							<param name="button_onclick" value="ActivateWindow(addonbrowser,addons://user/xbmc.pvrclient,return)"/>
+							<param name="button_id" value="13400"/>
+							<param name="visible" value="!System.HasPVRAddon"/>
+							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoRadioButton)"/>
 						</include>
 						<include content="WidgetListChannels">
 							<param name="content_path" value="pvr://channels/radio/*?view=lastplayed"/>
@@ -670,6 +700,7 @@
 							<param name="onup_id" value="13900"/>
 							<param name="ondown_id" value="13300"/>
 							<param name="height" value="550"/>
+							<param name="visible" value="System.HasPVRAddon"/>
 						</include>
 						<include content="WidgetListRecordings">
 							<param name="content_path" value="pvr://recordings/radio/active?view=flat"/>
@@ -681,6 +712,7 @@
 							<param name="onup_id" value="13200"/>
 							<param name="ondown_id" value="20001"/>
 							<param name="height" value="550"/>
+							<param name="visible" value="System.HasPVRAddon"/>
 						</include>
 						<control type="grouplist">
 							<height>218</height>
@@ -1105,14 +1137,14 @@
 								<onclick>ActivateWindow(TVChannels)</onclick>
 								<thumb>icons/home/livetv.png</thumb>
 								<property name="id">livetv</property>
-								<visible>PVR.HasTVChannels</visible>
+								<visible>!Skin.HasSetting(HomeMenuNoTVButton)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[19021]</label>
 								<onclick>ActivateWindow(RadioChannels)</onclick>
 								<thumb>icons/home/radio.png</thumb>
 								<property name="id">radio</property>
-								<visible>PVR.HasRadioChannels</visible>
+								<visible>!Skin.HasSetting(HomeMenuNoRadioButton)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[24001]</label>

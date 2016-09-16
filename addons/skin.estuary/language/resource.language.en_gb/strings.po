@@ -733,3 +733,14 @@ msgstr ""
 msgctxt "#31142"
 msgid "Play speed"
 msgstr ""
+
+#: /1080i/Home.xml
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr ""
+
+#: /1080i/Home.xml
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr ""
+

@@ -763,6 +763,11 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     Returns true if PVR is supported from Kodi
 ///     \note normally always true
 ///   }
+///   \table_row3{   <b>`System.HasPVRAddon(id)`</b>,
+///                  \anchor System_HasPVRAddon
+///                  _boolean_,
+///     Returns true if at least one pvr client addon is installed and enabled.
+///   }
 ///   \table_row3{   <b>`System.HasADSP`</b>,
 ///                  \anchor System_HasADSP
 ///                  _boolean_,
@@ -1190,7 +1195,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "startupwindow",    SYSTEM_STARTUP_WINDOW },
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
                                   { "hasadsp",          SYSTEM_HAS_ADSP },
-                                  { "hascms",           SYSTEM_HAS_CMS }};
+                                  { "hascms",           SYSTEM_HAS_CMS },
+                                  { "haspvraddon",      SYSTEM_HAS_PVR_ADDON }};
 
 /// \page modules__General__List_of_gui_access
 /// @{
@@ -6954,6 +6960,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_HAS_PVR)
     bReturn = true;
+  else if (condition == SYSTEM_HAS_PVR_ADDON)
+    bReturn = CAddonMgr::GetInstance().HasAddons(ADDON::ADDON_PVRDLL);
   else if (condition == SYSTEM_HAS_ADSP)
     bReturn = true;
   else if (condition == SYSTEM_HAS_CMS)

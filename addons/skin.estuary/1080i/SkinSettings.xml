@@ -196,6 +196,20 @@
 					<selected>!Skin.HasSetting(HomeMenuNoWeatherButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoWeatherButton)</onclick>
 				</control>
+				<control type="radiobutton" id="618">
+					<label>$LOCALIZE[19020]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoTVButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoTVButton)</onclick>
+				</control>
+				<control type="radiobutton" id="619">
+					<label>$LOCALIZE[19021]</label>
+					<width>1256</width>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoRadioButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoRadioButton)</onclick>
+				</control>
 			</control>
 			<control type="textbox" id="6">
 				<description>description area</description>
