@@ -1,25 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
-  <Identity Name="@APP_NAME@" ProcessorArchitecture="x86" Publisher="CN=@COMPANY_NAME@" Version="@VERSION_NUMBER@" />
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Package IgnorableNamespaces="uap" xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+  <Identity Name="XBMCFoundation.Kodi" ProcessorArchitecture="x86" Publisher="CN=C62BD90A-CDD8-477F-96C3-B25992247B97" Version="@VERSION_NUMBER@" />
   <Properties>
-    <DisplayName>@APP_NAME@</DisplayName>
-    <PublisherDisplayName>@COMPANY_NAME@</PublisherDisplayName>
-    <Description>@APP_NAME@ @APP_VERSION@</Description>
-    <Logo>media\icon120x120.png</Logo>
+    <DisplayName>Kodi</DisplayName>
+    <PublisherDisplayName>XBMC Foundation</PublisherDisplayName>
+    <Description>Kodi is an open source (GPL) software media center for playing videos, music, pictures, games, and more.</Description>
+    <Logo>media\icon256x256.png</Logo>
   </Properties>
-  <Resources>
-    <Resource Language="en-us" />
-  </Resources>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14342.0" MaxVersionTested="10.0.14379.0" />
-    <PackageDependency Name="Microsoft.VCLibs.140.00.UWPDesktop" MinVersion="14.0.24217.0" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
+    <PackageDependency Name="Microsoft.VCLibs.140.00" MinVersion="14.0.24123.0" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
   </Dependencies>
-  <Capabilities>
-    <rescap:Capability Name="runFullTrust" />
-  </Capabilities>
+  <Resources>
+    <Resource Language="EN-US" />
+  </Resources>
   <Applications>
-    <Application Id="@APP_NAME@" Executable="@APP_NAME@.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="@APP_NAME@" Description="@APP_NAME@" BackgroundColor="transparent" Square150x150Logo="media\icon256x256.png" Square44x44Logo="media\icon48x48.png" />
+    <Application Id="Kodi" Executable="Kodi.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="Kodi" Square150x150Logo="media\icon256x256.png" Square44x44Logo="media\icon48x48.png" Description="Kodi is an open source (GPL) software media center for playing videos, music, pictures, games, and more." BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="media\banner.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape" />
+          <uap:Rotation Preference="landscapeFlipped" />
+        </uap:InitialRotationPreference>
+      </uap:VisualElements>
     </Application>
   </Applications>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient" />
+  </Capabilities>
 </Package>
