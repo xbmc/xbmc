@@ -282,6 +282,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
       av_frame_set_channel_layout(m_pOutFrame, m_channelLayout);
       av_frame_set_sample_rate(m_pOutFrame, m_sampleRate);
       result = swr_convert_frame(m_pConvertCtx, m_pOutFrame, m_pConvertFrame);
+      av_frame_unref(m_pConvertFrame);
       if (result < 0)
       {
         CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - swr_convert_frame failed");
