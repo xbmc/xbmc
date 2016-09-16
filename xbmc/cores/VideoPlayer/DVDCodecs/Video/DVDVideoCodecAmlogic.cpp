@@ -216,6 +216,11 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       if (m_hints.width == 720 && m_hints.height == 576 && m_hints.aspect == 0.0f)
           m_hints.aspect = 1.8181818181818181;
 
+      // assume widescreen for "HD Lite" channels
+      // correct aspect ratio will be detected later anyway
+      if ((m_hints.width == 1440 || m_hints.width ==1280) && m_hints.height == 1080 && m_hints.aspect == 0.0f)
+          m_hints.aspect = 1.7777777777777778;
+
       break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
