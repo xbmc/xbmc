@@ -67,6 +67,7 @@ CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> p
   m_encoding = MMAL_ENCODING_UNKNOWN;
   m_aspect_ratio = 0.0f;
   m_rendered = false;
+  m_stills = false;
 }
 
 CMMALVideoBuffer::~CMMALVideoBuffer()
@@ -254,8 +255,6 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
         omvb->m_aligned_width = m_decoded_aligned_width;
         omvb->m_aligned_height = m_decoded_aligned_height;
         omvb->m_aspect_ratio = m_aspect_ratio;
-        if (m_hints.stills) // disable interlace in dvd stills mode
-          omvb->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED;
         omvb->m_encoding = m_dec_output->format->encoding;
         {
           CSingleLock lock(m_output_mutex);
@@ -828,6 +827,7 @@ bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           pDvdVideoPicture->iFlags, buffer->mmal_buffer->flags, pDvdVideoPicture->MMALBuffer, pDvdVideoPicture->MMALBuffer->mmal_buffer);
     assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
     buffer->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER3;
+    buffer->m_stills = m_hints.stills;
   }
   else
   {

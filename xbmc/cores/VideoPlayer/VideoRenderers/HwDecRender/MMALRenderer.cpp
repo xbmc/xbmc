@@ -525,6 +525,16 @@ void CMMALRenderer::Run()
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
+
+        // advanced deinterlace requires 3 frames of context so disable when showing stills
+        if (omvb->m_stills)
+        {
+          if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
+             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
+           if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
+             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB_HALF;
+        }
+
         // we don't keep up when running at 60fps in the background so switch to half rate
         if (!g_graphicsContext.IsFullScreenVideo())
         {

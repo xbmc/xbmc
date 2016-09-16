@@ -243,7 +243,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
 #ifdef HAS_MMAL
     if (*cur == AV_PIX_FMT_YUV420P)
     {
-      MMAL::CDecoder* dec = new MMAL::CDecoder(ctx->m_processInfo);
+      MMAL::CDecoder* dec = new MMAL::CDecoder(ctx->m_processInfo, ctx->m_hints);
       if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
       {
         ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
