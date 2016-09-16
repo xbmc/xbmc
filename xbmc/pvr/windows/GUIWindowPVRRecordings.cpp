@@ -48,22 +48,12 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS, "MyPVRRecordings.xml") ,
   m_bShowDeletedRecordings(false)
 {
-}
-
-void CGUIWindowPVRRecordings::RegisterObservers(void)
-{
-  CSingleLock lock(m_critSection);
-  g_PVRManager.RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
-  CGUIWindowPVRBase::RegisterObservers();
 }
 
-void CGUIWindowPVRRecordings::UnregisterObservers(void)
+CGUIWindowPVRRecordings::~CGUIWindowPVRRecordings()
 {
-  CSingleLock lock(m_critSection);
-  CGUIWindowPVRBase::UnregisterObservers();
   g_infoManager.UnregisterObserver(this);
-  g_PVRManager.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRRecordings::OnWindowLoaded()

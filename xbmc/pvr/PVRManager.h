@@ -677,7 +677,6 @@ private:
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     std::unique_ptr<CStopWatch>     m_parentalTimer;
-    static const int                m_pvrWindowIds[12];
 
     std::atomic_bool m_isChannelPreview;
     CEventSource<PVREvent> m_events;

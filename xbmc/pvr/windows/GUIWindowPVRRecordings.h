@@ -30,7 +30,7 @@ namespace PVR
   {
   public:
     CGUIWindowPVRRecordings(bool bRadio);
-    virtual ~CGUIWindowPVRRecordings(void) {};
+    virtual ~CGUIWindowPVRRecordings(void);
 
     static std::string GetResumeString(const CFileItem& item);
 
@@ -45,8 +45,6 @@ namespace PVR
   protected:
     virtual std::string GetDirectoryPath(void) override;
     virtual void OnPrepareFileItems(CFileItemList &items) override;
-    virtual void RegisterObservers(void) override;
-    virtual void UnregisterObservers(void) override;
 
   private:
     bool ActionDeleteRecording(CFileItem *item);

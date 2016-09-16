@@ -70,10 +70,13 @@ CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xml
 {
   m_selectedItemPaths[false] = "";
   m_selectedItemPaths[true] = "";
+
+  RegisterObservers();
 }
 
 CGUIWindowPVRBase::~CGUIWindowPVRBase(void)
 {
+  UnregisterObservers();
 }
 
 void CGUIWindowPVRBase::SetSelectedItemPath(bool bRadio, const std::string &path)
@@ -94,16 +97,10 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
   m_selectedItemPaths[m_bRadio] = m_viewControl.GetSelectedItemPath();
 }
 
-void CGUIWindowPVRBase::ResetObservers(void)
-{
-  UnregisterObservers();
-  if (IsActive())
-    RegisterObservers();
-}
-
 void CGUIWindowPVRBase::RegisterObservers(void)
 {
   CSingleLock lock(m_critSection);
+  g_PVRManager.RegisterObserver(this);
   if (m_channelGroup)
     m_channelGroup->RegisterObserver(this);
 };
@@ -113,12 +110,16 @@ void CGUIWindowPVRBase::UnregisterObservers(void)
   CSingleLock lock(m_critSection);
   if (m_channelGroup)
     m_channelGroup->UnregisterObserver(this);
+  g_PVRManager.UnregisterObserver(this);
 };
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
-  CApplicationMessenger::GetInstance().SendGUIMessage(m);
+  if (IsActive())
+  {
+    CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
+    CApplicationMessenger::GetInstance().SendGUIMessage(m);
+  }
 }
 
 bool CGUIWindowPVRBase::OnAction(const CAction &action)
@@ -155,16 +156,12 @@ void CGUIWindowPVRBase::OnInitWindow(void)
 {
   SetProperty("IsRadio", m_bRadio ? "true" : "");
 
-  g_PVRManager.RegisterObserver(this);
-
   if (InitChannelGroup())
   {
     CGUIMediaWindow::OnInitWindow();
 
     // mark item as selected by channel path
     m_viewControl.SetSelectedItem(GetSelectedItemPath(m_bRadio));
-
-    RegisterObservers();
   }
   else
   {
@@ -176,8 +173,6 @@ void CGUIWindowPVRBase::OnInitWindow(void)
 void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
 {
   g_PVRManager.HideProgressDialog();
-  g_PVRManager.UnregisterObserver(this);
-  UnregisterObservers();
   UpdateSelectedItemPath();
   CGUIMediaWindow::OnDeinitWindow(nextWindowID);
 }
