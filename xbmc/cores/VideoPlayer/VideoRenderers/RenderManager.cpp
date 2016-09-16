@@ -350,6 +350,9 @@ bool CRenderManager::HasFrame()
   if (!IsConfigured())
     return false;
 
+  if (m_format == RENDER_FMT_BYPASS)
+    return true;
+
   CSingleLock lock(m_presentlock);
   if (m_presentstep == PRESENT_READY ||
       m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
