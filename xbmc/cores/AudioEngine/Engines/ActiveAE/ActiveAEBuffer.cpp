@@ -737,12 +737,6 @@ bool CActiveAEBufferPoolAtempo::ProcessBuffers()
   }
   else if (m_procSample || !m_freeSamples.empty())
   {
-    int free_samples;
-    if (m_procSample)
-      free_samples = m_procSample->pkt->max_nb_samples - m_procSample->pkt->nb_samples;
-    else
-      free_samples = m_format.m_frames;
-
     bool skipInput = false;
 
     // avoid that bufferscr grows too large
