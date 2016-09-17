@@ -178,6 +178,11 @@ if(ENABLE_OPTICAL)
   core_require_dep(Cdio)
 endif()
 
+if(ENABLE_LIRC)
+  set(LIRC_DEVICE /dev/lircd CACHE STRING "LIRC device to use")
+  list(APPEND DEP_DEFINES -DLIRC_DEVICE="${LIRC_DEVICE}" -DHAVE_LIRC=1)
+endif()
+
 if(ENABLE_AIRTUNES)
   find_package(Shairplay)
   if(SHAIRPLAY_FOUND)
