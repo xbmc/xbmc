@@ -78,11 +78,7 @@ void CContextMenuManager::Init()
 void CContextMenuManager::ReloadAddonItems()
 {
   VECADDONS addons;
-  if (!m_addonMgr.GetAddons(addons, ADDON_CONTEXT_ITEM))
-  {
-    CLog::Log(LOGERROR, "ContextMenuManager: failed to load addons.");
-    return;
-  }
+  m_addonMgr.GetAddons(addons, ADDON_CONTEXT_ITEM);
 
   std::vector<CContextMenuItem> addonItems;
   for (const auto& addon : addons)
