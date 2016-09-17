@@ -35,6 +35,8 @@
 #define CONTROL_LABEL_HEADER1             29
 #define CONTROL_LABEL_HEADER2             30
 
+class CGUIDialogProgressBarHandle;
+
 namespace PVR
 {
   enum EpgGuideView
@@ -150,10 +152,23 @@ namespace PVR
      */
     static bool ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer);
 
+    /*!
+     * @brief Show or update the progress dialog.
+     * @param strText The current status.
+     * @param iProgress The current progress in %.
+     */
+    void ShowProgressDialog(const std::string &strText, int iProgress);
+
+    /*!
+     * @brief Hide the progress dialog if it's visible.
+     */
+    void HideProgressDialog(void);
+
     static bool DeleteTimer(CFileItem *item, bool bIsRecording, bool bDeleteRule);
     static bool AddTimer(CFileItem *item, bool bCreateRule, bool bShowTimerSettings);
 
     CPVRChannelGroupPtr m_channelGroup;
     XbmcThreads::EndTime m_refreshTimeout;
+    CGUIDialogProgressBarHandle *m_progressHandle; /*!< progress dialog that is displayed while the pvr manager is loading */
   };
 }

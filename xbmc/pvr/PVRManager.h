@@ -577,18 +577,6 @@ private:
      */
     void PublishEvent(PVREvent state);
 
-    /*!
-     * @brief Show or update the progress dialog.
-     * @param strText The current status.
-     * @param iProgress The current progress in %.
-     */
-    void ShowProgressDialog(const std::string &strText, int iProgress);
-
-    /*!
-     * @brief Hide the progress dialog if it's visible.
-     */
-    void HideProgressDialog(void);
-
   protected:
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -601,6 +589,18 @@ private:
     virtual void Process(void) override;
 
   private:
+    /*!
+     * @brief Show or update the progress dialog.
+     * @param strText The current status.
+     * @param iProgress The current progress in %.
+     */
+    void ShowProgressDialog(const std::string &strText, int iProgress);
+
+    /*!
+     * @brief Hide the progress dialog if it's visible.
+     */
+    void HideProgressDialog(void);
+
     /*!
      * @brief Load at least one client and load all other PVR data after loading the client.
      * If some clients failed to load here, the pvrmanager will retry to load them every second.

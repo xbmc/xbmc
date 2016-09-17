@@ -27,7 +27,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "epg/Epg.h"
@@ -66,7 +66,8 @@ std::string CGUIWindowPVRBase::m_selectedItemPaths[2];
 
 CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIMediaWindow(id, xmlFile.c_str()),
-  m_bRadio(bRadio)
+  m_bRadio(bRadio),
+  m_progressHandle(nullptr)
 {
   m_selectedItemPaths[false] = "";
   m_selectedItemPaths[true] = "";
@@ -175,13 +176,13 @@ void CGUIWindowPVRBase::OnInitWindow(void)
   else
   {
     CGUIWindow::OnInitWindow(); // do not call CGUIMediaWindow as it will do a Refresh which in no case works in this state (no cahnnelgroup!)
-    g_PVRManager.ShowProgressDialog(g_localizeStrings.Get(19235), 0); // PVR manager is starting up
+    ShowProgressDialog(g_localizeStrings.Get(19235), 0); // PVR manager is starting up
   }
 }
 
 void CGUIWindowPVRBase::OnDeinitWindow(int nextWindowID)
 {
-  g_PVRManager.HideProgressDialog();
+  HideProgressDialog();
   UpdateSelectedItemPath();
   CGUIMediaWindow::OnDeinitWindow(nextWindowID);
 }
@@ -210,6 +211,7 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
           // late init
           InitChannelGroup();
           RegisterObservers();
+          HideProgressDialog();
           Refresh(true);
           m_viewControl.SetFocused();
           break;
@@ -1050,4 +1052,30 @@ bool CGUIWindowPVRBase::ConfirmStopRecording(const CPVRTimerInfoTagPtr &timer)
                          CVariant{848}, // "Are you sure you want to stop this recording?"
                          CVariant{""},
                          CVariant{timer->Title()});
+}
+
+void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProgress)
+{
+  if (!m_progressHandle)
+  {
+    CGUIDialogExtendedProgressBar *loadingProgressDialog = dynamic_cast<CGUIDialogExtendedProgressBar *>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+    if (!loadingProgressDialog)
+    {
+      CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to get WINDOW_DIALOG_EXT_PROGRESS!", __FUNCTION__);
+      return;
+    }
+    m_progressHandle = loadingProgressDialog->GetHandle(g_localizeStrings.Get(19235)); // PVR manager is starting up
+  }
+
+  m_progressHandle->SetPercentage(static_cast<float>(iProgress));
+  m_progressHandle->SetText(strText);
+}
+
+void CGUIWindowPVRBase::HideProgressDialog(void)
+{
+  if (m_progressHandle)
+  {
+    m_progressHandle->MarkFinished();
+    m_progressHandle = nullptr;
+  }
 }
