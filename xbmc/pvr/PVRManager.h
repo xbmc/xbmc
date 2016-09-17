@@ -155,6 +155,11 @@ private:
     void Init(void);
 
     /*!
+     * @brief Reinit PVRManager.
+     */
+    void Reinit(void);
+
+    /*!
      * @brief Stop the PVRManager and destroy all objects it created.
      */
     void Stop(void);

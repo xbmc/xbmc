@@ -283,6 +283,13 @@ void CPVRManager::Init()
   CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
 }
 
+void CPVRManager::Reinit()
+{
+  // initial check for enabled addons
+  // if at least one pvr addon is enabled, PVRManager start up
+  CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
+}
+
 void CPVRManager::Start()
 {
   Stop();
@@ -346,37 +353,48 @@ CPVRManager::ManagerState CPVRManager::GetState(void) const
 
 void CPVRManager::SetState(CPVRManager::ManagerState state)
 {
-  CSingleLock lock(m_managerStateMutex);
-  if (m_managerState == state)
-    return;
+  ObservableMessage observableMsg(ObservableMessageNone);
 
-  m_managerState = state;
-
-  PVREvent event;
-  switch (state)
   {
-    case ManagerStateError:
-      event = ManagerError;
-      break;
-    case ManagerStateStopped:
-      event = ManagerStopped;
-      break;
-    case ManagerStateStarting:
-      event = ManagerStarting;
-      break;
-    case ManagerStateStopping:
-      event = ManagerStopped;
-      break;
-    case ManagerStateInterrupted:
-      event = ManagerInterrupted;
-      break;
-    case ManagerStateStarted:
-      event = ManagerStarted;
-      break;
-    default:
+    CSingleLock lock(m_managerStateMutex);
+    if (m_managerState == state)
       return;
+
+    m_managerState = state;
+
+    PVREvent event;
+    switch (state)
+    {
+      case ManagerStateError:
+        event = ManagerError;
+        break;
+      case ManagerStateStopped:
+        event = ManagerStopped;
+        observableMsg = ObservableMessageManagerStopped;
+        break;
+      case ManagerStateStarting:
+        event = ManagerStarting;
+        break;
+      case ManagerStateStopping:
+        event = ManagerStopped;
+        break;
+      case ManagerStateInterrupted:
+        event = ManagerInterrupted;
+        break;
+      case ManagerStateStarted:
+        event = ManagerStarted;
+        break;
+      default:
+        return;
+    }
+    m_events.Publish(event);
   }
-  m_events.Publish(event);
+
+  if (observableMsg != ObservableMessageNone)
+  {
+    SetChanged();
+    NotifyObservers(observableMsg);
+  }
 }
 
 void CPVRManager::PublishEvent(PVREvent event)

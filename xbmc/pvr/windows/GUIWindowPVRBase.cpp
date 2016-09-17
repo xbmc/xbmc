@@ -115,6 +115,9 @@ void CGUIWindowPVRBase::UnregisterObservers(void)
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
+  if (msg == ObservableMessageManagerStopped)
+    ClearData();
+
   if (IsActive())
   {
     CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
@@ -150,6 +153,12 @@ bool CGUIWindowPVRBase::OnBack(int actionID)
       return CGUIWindow::OnBack(actionID);
   }
   return CGUIMediaWindow::OnBack(actionID);
+}
+
+void CGUIWindowPVRBase::ClearData()
+{
+  CSingleLock lock(m_critSection);
+  m_channelGroup.reset();
 }
 
 void CGUIWindowPVRBase::OnInitWindow(void)

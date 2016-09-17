@@ -58,6 +58,8 @@ namespace PVR
     virtual std::string GetDirectoryPath(void) override { return ""; }
     virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
 
+    void ClearData() override;
+
   private:
     void Init();
 

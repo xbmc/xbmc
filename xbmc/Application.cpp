@@ -1327,6 +1327,12 @@ void CApplication::StopPVRManager()
   g_EpgContainer.Stop();
 }
 
+void CApplication::ReinitPVRManager()
+{
+  CLog::Log(LOGINFO, "restarting PVRManager");
+  g_PVRManager.Reinit();
+}
+
 void CApplication::StartServices()
 {
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)

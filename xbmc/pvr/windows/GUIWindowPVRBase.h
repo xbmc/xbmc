@@ -98,6 +98,8 @@ namespace PVR
 
     virtual std::string GetDirectoryPath(void) = 0;
 
+    virtual void ClearData();
+
     bool InitChannelGroup(void);
     virtual CPVRChannelGroupPtr GetChannelGroup(void);
     virtual void SetChannelGroup(const CPVRChannelGroupPtr &group);

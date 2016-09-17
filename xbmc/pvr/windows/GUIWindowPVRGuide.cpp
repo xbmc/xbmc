@@ -73,6 +73,17 @@ void CGUIWindowPVRGuide::Init()
   StartRefreshTimelineItemsThread();
 }
 
+void CGUIWindowPVRGuide::ClearData()
+{
+  {
+    CSingleLock lock(m_critSection);
+    m_cachedChannelGroup.reset(new CPVRChannelGroup);
+    m_newTimeline.reset();
+  }
+
+  CGUIWindowPVRBase::ClearData();
+}
+
 void CGUIWindowPVRGuide::OnInitWindow()
 {
   if (m_guiState.get())
