@@ -31,6 +31,23 @@
 namespace ADDON
 {
 
+CAddonSystemSettings::CAddonSystemSettings() :
+  m_activeSettings{
+      {ADDON_VIZ, CSettings::SETTING_MUSICPLAYER_VISUALISATION},
+      {ADDON_SCREENSAVER, CSettings::SETTING_SCREENSAVER_MODE},
+      {ADDON_SCRAPER_ALBUMS, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER},
+      {ADDON_SCRAPER_ARTISTS, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER},
+      {ADDON_SCRAPER_MOVIES, CSettings::SETTING_SCRAPERS_MOVIESDEFAULT},
+      {ADDON_SCRAPER_MUSICVIDEOS, CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT},
+      {ADDON_SCRAPER_TVSHOWS, CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT},
+      {ADDON_WEB_INTERFACE, CSettings::SETTING_SERVICES_WEBSKIN},
+      {ADDON_RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
+      {ADDON_SCRIPT_WEATHER, CSettings::SETTING_WEATHER_ADDON},
+      {ADDON_SKIN, CSettings::SETTING_LOOKANDFEEL_SKIN},
+      {ADDON_RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},
+  }
+{}
+
 CAddonSystemSettings& CAddonSystemSettings::GetInstance()
 {
   static CAddonSystemSettings inst;
@@ -63,25 +80,10 @@ void CAddonSystemSettings::OnSettingChanged(const CSetting* setting)
   }
 }
 
-static const std::map<ADDON::TYPE, std::string> settingMap = {
-    {ADDON_VIZ, CSettings::SETTING_MUSICPLAYER_VISUALISATION},
-    {ADDON_SCREENSAVER, CSettings::SETTING_SCREENSAVER_MODE},
-    {ADDON_SCRAPER_ALBUMS, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER},
-    {ADDON_SCRAPER_ARTISTS, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER},
-    {ADDON_SCRAPER_MOVIES, CSettings::SETTING_SCRAPERS_MOVIESDEFAULT},
-    {ADDON_SCRAPER_MUSICVIDEOS, CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT},
-    {ADDON_SCRAPER_TVSHOWS, CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT},
-    {ADDON_WEB_INTERFACE, CSettings::SETTING_SERVICES_WEBSKIN},
-    {ADDON_RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
-    {ADDON_SCRIPT_WEATHER, CSettings::SETTING_WEATHER_ADDON},
-    {ADDON_SKIN, CSettings::SETTING_LOOKANDFEEL_SKIN},
-    {ADDON_RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},
-};
-
 bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
 {
-  auto it = settingMap.find(type);
-  if (it != settingMap.end())
+  auto it = m_activeSettings.find(type);
+  if (it != m_activeSettings.end())
   {
     auto settingValue = CSettings::GetInstance().GetString(it->second);
     return CAddonMgr::GetInstance().GetAddon(settingValue, addon, type);
@@ -91,8 +93,8 @@ bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
 
 bool CAddonSystemSettings::SetActive(const TYPE& type, const std::string& addonID)
 {
-  auto it = settingMap.find(type);
-  if (it != settingMap.end())
+  auto it = m_activeSettings.find(type);
+  if (it != m_activeSettings.end())
   {
     CSettings::GetInstance().SetString(it->second, addonID);
     return true;
@@ -108,8 +110,8 @@ bool CAddonSystemSettings::IsActive(const IAddon& addon)
 
 bool CAddonSystemSettings::UnsetActive(const AddonPtr& addon)
 {
-  auto it = settingMap.find(addon->Type());
-  if (it == settingMap.end())
+  auto it = m_activeSettings.find(addon->Type());
+  if (it == m_activeSettings.end())
     return true;
 
   auto setting = static_cast<CSettingString*>(CSettings::GetInstance().GetSetting(it->second));
