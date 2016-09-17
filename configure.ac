@@ -762,6 +762,21 @@ if test "$host_vendor" = "apple" ; then
   # standard application paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
   if test "$use_arch" != "arm"; then
+    SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="-msse -msse2"
+    AC_COMPILE_IFELSE(
+      [AC_LANG_SOURCE([int foo;])],
+      [ HAVE_SSE=1
+        HAVE_SSE2=1
+        AC_DEFINE([HAVE_SSE],[1],[sse enabled])
+        AC_DEFINE([HAVE_SSE2],[1],[sse2 enabled])],
+      [ HAVE_SSE=0
+        HAVE_SSE2=0
+        AC_DEFINE([HAVE_SSE],[0],[sse enabled])
+        AC_DEFINE([HAVE_SSE2],[0],[sse2 enabled])
+      ])
+    CFLAGS="$SAVE_CFLAGS"
+
     LIBS="$LIBS -framework ApplicationServices"
     LIBS="$LIBS -framework AudioUnit"
     LIBS="$LIBS -framework AudioToolbox"
