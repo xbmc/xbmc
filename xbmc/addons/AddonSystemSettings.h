@@ -53,11 +53,13 @@ public:
   std::vector<std::string> MigrateAddons();
 
 private:
-  CAddonSystemSettings() = default;
+  CAddonSystemSettings();
   CAddonSystemSettings(const CAddonSystemSettings&) = default;
   CAddonSystemSettings& operator=(const CAddonSystemSettings&) = default;
   CAddonSystemSettings(CAddonSystemSettings&&);
   CAddonSystemSettings& operator=(CAddonSystemSettings&&);
   virtual ~CAddonSystemSettings() = default;
+
+  const std::map<ADDON::TYPE, std::string> m_activeSettings;
 };
 };
