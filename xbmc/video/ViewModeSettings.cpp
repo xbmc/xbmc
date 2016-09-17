@@ -47,7 +47,7 @@ static const ViewModeProperties viewModes[] =
   { 634,   ViewModeStretch16x9 },
   { 644,   ViewModeStretch16x9Nonlin, HIDE_ITEM, HIDE_ITEM },
   { 635,   ViewModeOriginal },
-  { 636,   ViewModeCustom, HIDE_ITEM, HIDE_ITEM }
+  { 636,   ViewModeCustom, HIDE_ITEM }
 };
 
 #define NUMBER_OF_VIEW_MODES (sizeof(viewModes) / sizeof(viewModes[0]))
