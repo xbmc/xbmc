@@ -36,6 +36,18 @@
 						<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 						<bordersize>4</bordersize>
 					</control>
+					<control type="label">
+						<left>30</left>
+						<top>20</top>
+						<width>700</width>
+						<height>145</height>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font35_title</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<visible>String.IsEmpty(ListItem.Art(banner)) + !Listitem.IsParentFolder</visible>
+					</control>
 					<control type="group">
 						<left>770</left>
 						<top>20</top>
@@ -55,6 +67,18 @@
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<top>20</top>
+							<width>700</width>
+							<height>145</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font35_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(banner)) + !Listitem.IsParentFolder</visible>
 						</control>
 						<control type="group">
 							<left>770</left>

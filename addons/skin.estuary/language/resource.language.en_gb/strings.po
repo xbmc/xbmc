@@ -329,11 +329,6 @@ msgctxt "#31061"
 msgid "Main menu items"
 msgstr ""
 
-#: /1080i/Custom_1103_SourcesDialog.xml:24
-msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr ""
-
 #: /1080i/Includes_MediaMenu.xml:74
 msgctxt "#31063"
 msgid "Sections"

@@ -120,6 +120,18 @@
 						<bordertexture border="20">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
+					<control type="textbox">
+						<left>20</left>
+						<top>220</top>
+						<width>209</width>
+						<height>100</height>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font12_title</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<visible>String.IsEmpty(ListItem.Art(poster)) + !Listitem.IsParentFolder</visible>
+					</control>
 					<control type="group">
 						<left>179</left>
 						<top>30</top>
@@ -138,6 +150,18 @@
 							<texture fallback="DefaultVideo.png" background="true">$VAR[ListPosterVar]</texture>
 							<bordertexture border="20">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
+						</control>
+						<control type="textbox">
+							<left>20</left>
+							<top>220</top>
+							<width>209</width>
+							<height>100</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(poster)) + !Listitem.IsParentFolder</visible>
 						</control>
 						<control type="group">
 							<left>179</left>
