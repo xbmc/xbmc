@@ -42,8 +42,6 @@
 #include FT_OUTLINE_H
 #include FT_STROKER_H
 
-#define USE_RELEASE_LIBS
-
 #ifdef TARGET_WINDOWS
 #ifdef NDEBUG
 #pragma comment(lib, "freetype.lib")
