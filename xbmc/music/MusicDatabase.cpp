@@ -3615,9 +3615,11 @@ bool CMusicDatabase::GetRolesNav(const std::string& strBaseDir, CFileItemList& i
       CFileItemPtr pItem(new CFileItem(labelValue));
       pItem->GetMusicInfoTag()->SetTitle(labelValue);
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("role.idRole").get_asInt(), "role");
-
-      std::string artistrolepath = StringUtils::Format("musicdb://artists/?roleid=%i", m_pDS->fv("role.idRole").get_asInt());
-      pItem->SetPath(artistrolepath);
+      CMusicDbUrl itemUrl = musicUrl;
+      std::string strDir = StringUtils::Format("%i/", m_pDS->fv("role.idRole").get_asInt());
+      itemUrl.AppendPath(strDir);
+      itemUrl.AddOption("roleid", m_pDS->fv("role.idRole").get_asInt());
+      pItem->SetPath(itemUrl.ToString());
 
       pItem->m_bIsFolder = true;
       items.Add(pItem);
@@ -5187,6 +5189,11 @@ std::string CMusicDatabase::GetArtistById(int id)
   return GetSingleValue("artist", "strArtist", PrepareSQL("idArtist=%i", id));
 }
 
+std::string CMusicDatabase::GetRoleById(int id)
+{
+  return GetSingleValue("role", "strRole", PrepareSQL("idRole=%i", id));
+}
+
 std::string CMusicDatabase::GetAlbumById(int id)
 {
   return GetSingleValue("album", "strAlbum", PrepareSQL("idAlbum=%i", id));
@@ -5777,6 +5784,8 @@ std::string CMusicDatabase::GetItemById(const std::string &itemType, int id)
     return GetArtistById(id);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumById(id);
+  else if (StringUtils::EqualsNoCase(itemType, "roles"))
+    return GetRoleById(id);
 
   return "";
 }
