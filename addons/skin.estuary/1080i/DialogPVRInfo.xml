@@ -90,6 +90,12 @@
 					<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
 				</include>
 				<include content="InfoDialogButton">
+					<param name="id" value="9" />
+					<param name="icon" value="icons/infodialogs/record.png" />
+					<param name="label" value="$LOCALIZE[19061]" />
+					<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
+				</include>
+				<include content="InfoDialogButton">
 					<param name="id" value="440" />
 					<param name="icon" value="icons/infodialogs/trailer.png" />
 					<param name="label" value="$LOCALIZE[31114]" />

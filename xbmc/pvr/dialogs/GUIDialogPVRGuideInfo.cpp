@@ -46,6 +46,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTN_RECORD              6
 #define CONTROL_BTN_OK                  7
 #define CONTROL_BTN_PLAY_RECORDING      8
+#define CONTROL_BTN_ADD_TIMER           9
 
 CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
@@ -77,6 +78,19 @@ bool CGUIDialogPVRGuideInfo::ActionCancelTimer(const CFileItemPtr &timer)
     bReturn = CGUIWindowPVRBase::StopRecordFile(timer.get());
   else
     bReturn = CGUIWindowPVRBase::DeleteTimer(timer.get());
+
+  if (bReturn)
+    Close();
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::ActionAddTimerRule(const CEpgInfoTagPtr &tag)
+{
+  bool bReturn = false;
+
+  const CFileItemPtr item(new CFileItem(tag));
+  bReturn = CGUIWindowPVRBase::AddTimerRule(item.get(), true);
 
   if (bReturn)
     Close();
@@ -118,6 +132,21 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
       ActionCancelTimer(CFileItemPtr(new CFileItem(timerTag)));
     else
       ActionStartTimer(m_progItem);
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_ADD_TIMER)
+  {
+    if (m_progItem && !m_progItem->Timer())
+      ActionAddTimerRule(m_progItem);
+
+    bReturn = true;
   }
 
   return bReturn;
@@ -189,7 +218,8 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
     return OnClickButtonOK(message) ||
            OnClickButtonRecord(message) ||
            OnClickButtonPlay(message) ||
-           OnClickButtonFind(message);
+           OnClickButtonFind(message) ||
+           OnClickButtonAddTimer(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -240,6 +270,9 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060); /* Delete timer */
       bHideRecord = false;
     }
+
+    /* already has a timer. hide the add timer button */
+    SET_CONTROL_HIDDEN(CONTROL_BTN_ADD_TIMER);
   }
   else if (m_progItem->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
