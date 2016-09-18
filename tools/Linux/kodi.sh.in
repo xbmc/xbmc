@@ -119,7 +119,10 @@ print_crash_report()
     # find in userdata dir
     single_stacktrace "$HOME" 5
     # try /proc/sys/kernel/core_pattern
-    [ -d $(dirname $(cat /proc/sys/kernel/core_pattern)) ] && single_stacktrace $(dirname $(cat /proc/sys/kernel/core_pattern)) 1
+    # Check if it does not contain a pipe to a program (see man 5 core)
+    if [ "$(cat /proc/sys/kernel/core_pattern | cut -c 1)" != "|" ]; then
+      [ -d "$(dirname $(cat /proc/sys/kernel/core_pattern))" ] && single_stacktrace "$(dirname $(cat /proc/sys/kernel/core_pattern))" 1
+    fi
   else
     echo "gdb not installed, can't get stack trace." >> $FILE
   fi
