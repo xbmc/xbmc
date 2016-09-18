@@ -245,6 +245,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     return false;
   }
   m_pool->SetDecoder(this);
+  m_pool->SetProcessInfo(&m_processInfo);
 
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);

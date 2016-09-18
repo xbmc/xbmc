@@ -73,6 +73,7 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
   m_mmal_pool = mmal_port_pool_create(port, port->buffer_num, port->buffer_size);
   m_closing = false;
   m_software = false;
+  m_processInfo = nullptr;
   m_mmal_format = 0;
   m_width = 0;
   m_height = 0;

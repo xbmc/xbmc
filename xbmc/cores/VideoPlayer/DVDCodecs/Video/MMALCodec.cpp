@@ -468,6 +468,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
   m_pool->SetDecoder(this);
+  m_pool->SetProcessInfo(&m_processInfo);
   m_dec = m_pool->GetComponent();
 
   m_dec->control->userdata = (struct MMAL_PORT_USERDATA_T *)this;
