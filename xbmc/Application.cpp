@@ -789,8 +789,7 @@ bool CApplication::CreateGUI()
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
 
-  if (g_advancedSettings.m_splashImage)
-    CSplash::GetInstance().Show();
+  CSplash::GetInstance().Show();
 
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
@@ -1128,7 +1127,9 @@ bool CApplication::Initialize()
   g_curlInterface.Unload();
 
   // initialize (and update as needed) our databases
+  CSplash::GetInstance().Show(g_localizeStrings.Get(24150));
   CDatabaseManager::GetInstance().Initialize();
+  CSplash::GetInstance().Show();
 
   StartServices();
 
@@ -1140,17 +1141,12 @@ bool CApplication::Initialize()
     CSettings::GetInstance().GetSetting(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF)->SetRequirementsMet(m_dpms->IsSupported());
 
     g_windowManager.CreateWindows();
-    /* window id's 3000 - 3100 are reserved for python */
 
-    // initialize splash window after splash screen disappears
-    // because we need a real window in the background which gets
-    // rendered while we load the main window or enter the master lock key
-    if (g_advancedSettings.m_splashImage)
-      g_windowManager.ActivateWindow(WINDOW_SPLASH);
-
+    CSplash::GetInstance().Show(g_localizeStrings.Get(24151));
     m_confirmSkinChange = false;
     m_incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons();
     m_confirmSkinChange = true;
+    CSplash::GetInstance().Show();
 
     std::string defaultSkin = ((const CSettingString*)CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->GetDefault();
     if (!LoadSkin(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
@@ -1162,6 +1158,12 @@ bool CApplication::Initialize()
         return false;
       }
     }
+
+    // initialize splash window after splash screen disappears
+    // because we need a real window in the background which gets
+    // rendered while we load the main window or enter the master lock key
+    if (g_advancedSettings.m_splashImage)
+      g_windowManager.ActivateWindow(WINDOW_SPLASH);
 
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&

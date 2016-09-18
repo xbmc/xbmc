@@ -24,19 +24,13 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIFontManager.h"
 #include "filesystem/File.h"
+#include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
-#include "log.h"
 
 using namespace XFILE;
 
 CSplash::CSplash()
-  : m_image(nullptr)
 {
-}
-
-CSplash::~CSplash()
-{
-  delete m_image;
 }
 
 CSplash& CSplash::GetInstance()
@@ -47,14 +41,23 @@ CSplash& CSplash::GetInstance()
 
 void CSplash::Show()
 {
-  if (!m_image)
-  {
-    std::string splashImage = "special://home/media/Splash.png";
-    if (!XFILE::CFile::Exists(splashImage))
-      splashImage = "special://xbmc/media/Splash.png";
+  Show("");
+}
 
-    m_image = new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(splashImage));
-    m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
+void CSplash::Show(const std::string& message)
+{
+  if (g_advancedSettings.m_splashImage)
+  {
+    if (!m_image)
+    {
+      std::string splashImage = "special://home/media/Splash.png";
+      if (!XFILE::CFile::Exists(splashImage))
+        splashImage = "special://xbmc/media/Splash.png";
+
+      m_image = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(),
+          g_graphicsContext.GetHeight(), CTextureInfo(splashImage)));
+      m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
+    }
   }
 
   g_graphicsContext.Lock();
@@ -66,9 +69,34 @@ void CSplash::Show()
   //render splash image
   g_Windowing.BeginRender();
 
-  m_image->AllocResources();
-  m_image->Render();
-  m_image->FreeResources();
+  if (m_image)
+  {
+    m_image->AllocResources();
+    m_image->Render();
+    m_image->FreeResources();
+  }
+
+  if (!message.empty())
+  {
+    if (!m_messageLayout)
+    {
+      auto messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
+      if (messageFont)
+        m_messageLayout = std::unique_ptr<CGUITextLayout>(new CGUITextLayout(messageFont, true, 0));
+    }
+
+    if (m_messageLayout)
+    {
+      m_messageLayout->Update(message, 1150, false, true);
+      float textWidth, textHeight;
+      m_messageLayout->GetTextExtent(textWidth, textHeight);
+
+      int width = g_graphicsContext.GetWidth();
+      int height = g_graphicsContext.GetHeight();
+      float y = height - textHeight - 30; // -30 for safe viewing area
+      m_messageLayout->RenderOutline(width/2, y, 0, 0xFF000000, XBFONT_CENTER_X, width);
+    }
+  }
 
   //show it on screen
   g_Windowing.EndRender();
