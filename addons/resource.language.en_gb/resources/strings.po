@@ -16264,12 +16264,12 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36007"
-msgid "Devices to power on during startup"
+msgid "Allowed devices to power on"
 msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36008"
-msgid "Devices to power off during shutdown"
+msgid "Allowed devices to power off"
 msgstr ""
 
 #: system/peripherals.xml
@@ -16321,7 +16321,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36020"
-msgid "Switch source to this device on startup"
+msgid "Switch source to this device on startup/media playback"
 msgstr ""
 
 #: system/peripherals.xml
@@ -16351,7 +16351,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36026"
-msgid "Devices to also put in standby mode"
+msgid "Put devices in standby mode when this system enters standby mode"
 msgstr ""
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
