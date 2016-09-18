@@ -1778,6 +1778,24 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 {
   if (!IsRunning())
     return false;
+
+  // when power off devices is set, toggle power status, otherwise toggle active/inactive source
+  if (mode == STATE_SWITCH_TOGGLE && !m_configuration.powerOffDevices.IsEmpty())
+  {
+    cec_logical_address deviceToToggle = m_configuration.powerOffDevices.IsSet(CECDEVICE_TV) ? CECDEVICE_TV : m_configuration.powerOffDevices.primary;
+    switch (m_cecAdapter->GetDevicePowerStatus(deviceToToggle))
+    {
+      case CEC_POWER_STATUS_IN_TRANSITION_STANDBY_TO_ON:
+        return true;
+      case CEC_POWER_STATUS_IN_TRANSITION_ON_TO_STANDBY:
+        return false;
+      case CEC_POWER_STATUS_ON:
+        mode = STATE_STANDBY;
+        break;
+      default:
+        mode = STATE_ACTIVATE_SOURCE;
+    }
+  }
   if (m_cecAdapter->IsLibCECActiveSource() && (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
   {
     CLog::Log(LOGDEBUG, "%s - putting CEC device on standby...", __FUNCTION__);
