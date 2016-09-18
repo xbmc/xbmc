@@ -32,6 +32,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/AdvancedSettings.h"
+#include "powermanagement/PowerManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -632,7 +633,32 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
       {
         adapter->m_bStarted = false;
         if (adapter->m_configuration.bPowerOffOnStandby == 1)
-          g_application.ExecuteXBMCAction("Suspend");
+        {
+          if (g_powerManager.CanSuspend())
+            g_application.ExecuteXBMCAction("Suspend" );
+          else
+          {
+            bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
+            CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
+
+            CLog::Log(LOGWARNING, "%s - 'suspend' not available on this system, fall back on source switch setting", __FUNCTION__);
+            if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_PAUSE)
+            {
+              adapter->m_bPlaybackPaused = true;
+              if (pSlideShow)
+                pSlideShow->OnAction(CAction(ACTION_PAUSE));
+              else
+                CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+            }
+            if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_STOP)
+            {
+              if (pSlideShow)
+                pSlideShow->OnAction(CAction(ACTION_STOP));
+              else
+                CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+            }
+          }
+        }
         else if (adapter->m_configuration.bShutdownOnStandby == 1)
           g_application.ExecuteXBMCAction("Shutdown");
       }
