@@ -203,7 +203,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
         bActivate = m_bActiveSourceBeforeStandby;
         m_bActiveSourceBeforeStandby = false;
       }
-      if (bActivate)
+      if (bActivate && m_configuration.bActivateSource == 1)
         ActivateSource();
     }
   }
