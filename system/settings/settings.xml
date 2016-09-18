@@ -3016,7 +3016,7 @@
   </section>
   <section id="interface" label="14206" help="38102">
     <category id="skin" label="166" help="36102">
-      <group id="1" label="16000">
+      <group id="1" label="24997">
         <setting id="lookandfeel.skin" type="addon" label="166" help="36103">
           <level>0</level>
           <default>skin.estuary</default>
@@ -3027,7 +3027,7 @@
             <show more="true" details="true">installed</show>
           </control>
         </setting>
-        <setting id="lookandfeel.skinsettings" type="action" parent="lookandfeel.skin" label="21417" help="36104">
+        <setting id="lookandfeel.skinsettings" type="action" parent="lookandfeel.skin" label="14261" help="36104">
           <level>0</level>
           <dependencies>
             <dependency type="enable" on="property" name="AddonHasSettings" setting="lookandfeel.skin" />
@@ -3046,7 +3046,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skincolors" type="string" parent="lookandfeel.skin" label="14078" help="36106">
-          <level>2</level>
+          <level>1</level>
           <default>SKINDEFAULT</default>
           <constraints>
             <options>skincolors</options>
@@ -3057,7 +3057,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.font" type="string" parent="lookandfeel.skin" label="13303" help="36107">
-          <level>2</level>
+          <level>1</level>
           <default>Default</default>
           <constraints>
             <options>skinfonts</options>
@@ -3068,7 +3068,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skinzoom" type="integer" parent="lookandfeel.skin" label="20109" help="36108">
-          <level>2</level>
+          <level>1</level>
           <default>0</default>
           <constraints>
             <minimum>-20</minimum>
