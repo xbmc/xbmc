@@ -66,6 +66,7 @@ public:
   bool m_rendered;
   bool m_stills;
   std::shared_ptr<CMMALPool> m_pool;
+  void SetVideoDeintMethod(std::string method);
   const char *GetStateName() {
     static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
     if ((size_t)m_state < vcos_countof(names))
