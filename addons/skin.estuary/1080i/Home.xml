@@ -809,7 +809,7 @@
 								<width>800</width>
 								<align>right</align>
 								<font>font14</font>
-								<label>$INFO[Weather.Conditions] - $INFO[Weather.Temperature]</label>
+								<label>$INFO[Weather.Conditions] ∙ $INFO[Weather.Temperature]</label>
 							</control>
 							<control type="label">
 								<left>990</left>
