@@ -26,7 +26,6 @@
     <!-- Advanced settings -->
     <setting key="use_tv_menu_language" type="bool" value="1" label="36018" order="13" />
     <setting key="physical_address" type="string" label="36021" value="0" order="14" />
-    <setting key="port" type="string" value="" label="36022" order="15" />
     <!-- Invisible advanced settings -->
     <setting key="tv_vendor" type="int" value="0" configurable="0" />
     <setting key="device_name" type="string" value="Kodi" configurable="0" />
