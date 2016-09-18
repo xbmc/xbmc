@@ -696,27 +696,6 @@ int  CApplicationPlayer::SeekChapter(int iChapter)
     return 0;
 }
 
-void CApplicationPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->OMXGetRenderFeatures(renderFeatures);
-}
-
-void CApplicationPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->OMXGetDeinterlaceMethods(deinterlaceMethods);
-}
-
-void CApplicationPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->OMXGetScalingMethods(scalingMethods);
-}
-
 void CApplicationPlayer::SetPlaySpeed(float speed)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
