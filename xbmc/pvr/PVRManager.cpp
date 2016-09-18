@@ -75,21 +75,6 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-const int CPVRManager::m_pvrWindowIds[12] = {
-    WINDOW_TV_CHANNELS,
-    WINDOW_TV_GUIDE,
-    WINDOW_TV_RECORDINGS,
-    WINDOW_TV_SEARCH,
-    WINDOW_TV_TIMERS,
-    WINDOW_TV_TIMER_RULES,
-    WINDOW_RADIO_CHANNELS,
-    WINDOW_RADIO_GUIDE,
-    WINDOW_RADIO_RECORDINGS,
-    WINDOW_RADIO_SEARCH,
-    WINDOW_RADIO_TIMERS,
-    WINDOW_RADIO_TIMER_RULES
-};
-
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_triggerEvent(true),
@@ -298,6 +283,13 @@ void CPVRManager::Init()
   CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
 }
 
+void CPVRManager::Reinit()
+{
+  // initial check for enabled addons
+  // if at least one pvr addon is enabled, PVRManager start up
+  CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
+}
+
 void CPVRManager::Start()
 {
   Stop();
@@ -361,37 +353,48 @@ CPVRManager::ManagerState CPVRManager::GetState(void) const
 
 void CPVRManager::SetState(CPVRManager::ManagerState state)
 {
-  CSingleLock lock(m_managerStateMutex);
-  if (m_managerState == state)
-    return;
+  ObservableMessage observableMsg(ObservableMessageNone);
 
-  m_managerState = state;
-
-  PVREvent event;
-  switch (state)
   {
-    case ManagerStateError:
-      event = ManagerError;
-      break;
-    case ManagerStateStopped:
-      event = ManagerStopped;
-      break;
-    case ManagerStateStarting:
-      event = ManagerStarting;
-      break;
-    case ManagerStateStopping:
-      event = ManagerStopped;
-      break;
-    case ManagerStateInterrupted:
-      event = ManagerInterrupted;
-      break;
-    case ManagerStateStarted:
-      event = ManagerStarted;
-      break;
-    default:
+    CSingleLock lock(m_managerStateMutex);
+    if (m_managerState == state)
       return;
+
+    m_managerState = state;
+
+    PVREvent event;
+    switch (state)
+    {
+      case ManagerStateError:
+        event = ManagerError;
+        break;
+      case ManagerStateStopped:
+        event = ManagerStopped;
+        observableMsg = ObservableMessageManagerStopped;
+        break;
+      case ManagerStateStarting:
+        event = ManagerStarting;
+        break;
+      case ManagerStateStopping:
+        event = ManagerStopped;
+        break;
+      case ManagerStateInterrupted:
+        event = ManagerInterrupted;
+        break;
+      case ManagerStateStarted:
+        event = ManagerStarted;
+        break;
+      default:
+        return;
+    }
+    m_events.Publish(event);
   }
-  m_events.Publish(event);
+
+  if (observableMsg != ObservableMessageNone)
+  {
+    SetChanged();
+    NotifyObservers(observableMsg);
+  }
 }
 
 void CPVRManager::PublishEvent(PVREvent event)
@@ -523,15 +526,6 @@ bool CPVRManager::Load(bool bShowProgress)
     return false;
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
-
-  /* reset observer for pvr windows */
-  for (std::size_t i = 0; i != ARRAY_SIZE(m_pvrWindowIds); i++)
-  {
-    CSingleExit exit(m_critSection);
-    CGUIWindowPVRBase *pWindow = (CGUIWindowPVRBase *) g_windowManager.GetWindow(m_pvrWindowIds[i]);
-    if (pWindow)
-      pWindow->ResetObservers();
-  }
 
   /* load all channels and groups */
   if (bShowProgress)

@@ -46,10 +46,12 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   m_cachedChannelGroup(new CPVRChannelGroup)
 {
   m_bRefreshTimelineItems = false;
+  g_EpgContainer.RegisterObserver(this);
 }
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 {
+  g_EpgContainer.UnregisterObserver(this);
   StopRefreshTimelineItemsThread();
 }
 
@@ -69,6 +71,17 @@ void CGUIWindowPVRGuide::Init()
 
   m_bRefreshTimelineItems = true;
   StartRefreshTimelineItemsThread();
+}
+
+void CGUIWindowPVRGuide::ClearData()
+{
+  {
+    CSingleLock lock(m_critSection);
+    m_cachedChannelGroup.reset(new CPVRChannelGroup);
+    m_newTimeline.reset();
+  }
+
+  CGUIWindowPVRBase::ClearData();
 }
 
 void CGUIWindowPVRGuide::OnInitWindow()
@@ -101,25 +114,10 @@ void CGUIWindowPVRGuide::StopRefreshTimelineItemsThread()
   m_refreshTimelineItemsThread->StopThread(false);
 }
 
-void CGUIWindowPVRGuide::RegisterObservers(void)
-{
-  CSingleLock lock(m_critSection);
-  g_EpgContainer.RegisterObserver(this);
-  g_PVRManager.RegisterObserver(this);
-  CGUIWindowPVRBase::RegisterObservers();
-}
-
-void CGUIWindowPVRGuide::UnregisterObservers(void)
-{
-  CSingleLock lock(m_critSection);
-  CGUIWindowPVRBase::UnregisterObservers();
-  g_PVRManager.UnregisterObserver(this);
-  g_EpgContainer.UnregisterObserver(this);
-}
-
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE &&
+  if (IsActive() &&
+      m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE &&
       (msg == ObservableMessageEpg ||
        msg == ObservableMessageEpgContainer ||
        msg == ObservableMessageChannelGroupReset ||

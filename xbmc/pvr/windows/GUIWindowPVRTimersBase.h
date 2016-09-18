@@ -32,17 +32,13 @@ namespace PVR
   {
   public:
     CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile);
-    virtual ~CGUIWindowPVRTimersBase(void) {};
+    virtual ~CGUIWindowPVRTimersBase(void);
 
     bool OnMessage(CGUIMessage& message);
     bool OnAction(const CAction &action);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     void UpdateButtons(void);
-
-  protected:
-    virtual void RegisterObservers(void);
-    virtual void UnregisterObservers(void);
 
   private:
     bool ActionDeleteTimer(CFileItem *item);

@@ -43,22 +43,12 @@ using namespace PVR;
 CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
-}
-
-void CGUIWindowPVRTimersBase::RegisterObservers(void)
-{
-  CSingleLock lock(m_critSection);
-  g_PVRManager.RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
-  CGUIWindowPVRBase::RegisterObservers();
 }
 
-void CGUIWindowPVRTimersBase::UnregisterObservers(void)
+CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase()
 {
-  CSingleLock lock(m_critSection);
-  CGUIWindowPVRBase::UnregisterObservers();
   g_infoManager.UnregisterObserver(this);
-  g_PVRManager.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRTimersBase::GetContextButtons(int itemNumber, CContextButtons &buttons)

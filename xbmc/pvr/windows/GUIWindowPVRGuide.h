@@ -57,8 +57,8 @@ namespace PVR
     virtual void UpdateSelectedItemPath() override;
     virtual std::string GetDirectoryPath(void) override { return ""; }
     virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
-    virtual void RegisterObservers(void) override;
-    virtual void UnregisterObservers(void) override;
+
+    void ClearData() override;
 
   private:
     void Init();

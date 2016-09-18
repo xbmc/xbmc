@@ -322,6 +322,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   JSONRPC::CJSONRPC::Initialize();
 #endif
 
+  // restart PVR services
+  g_application.ReinitPVRManager();
+
   // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);
 
