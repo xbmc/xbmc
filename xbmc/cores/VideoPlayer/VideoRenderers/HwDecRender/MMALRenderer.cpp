@@ -72,6 +72,7 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
 
   m_mmal_pool = mmal_port_pool_create(port, port->buffer_num, port->buffer_size);
   m_closing = false;
+  m_software = false;
   m_mmal_format = 0;
   m_width = 0;
   m_height = 0;
@@ -208,14 +209,14 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
     // ffmpeg requirements
     uint32_t aligned_width = m_aligned_width, aligned_height = m_aligned_height;
     AlignedSize(m_avctx, aligned_width, aligned_height);
-    if (m_dec)
+    if (!IsSoftware())
     {
-      CMMALVideoBuffer *vid = new CMMALVideoBuffer(m_dec, shared_from_this());
+      CMMALVideoBuffer *vid = new CMMALVideoBuffer(static_cast<CMMALVideo *>(m_dec), shared_from_this());
       omvb = vid;
     }
     else
     {
-      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
+      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(static_cast<MMAL::CDecoder *>(m_dec), shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
       if (yuv)
       {
         CGPUMEM *gmem = yuv->gmem;

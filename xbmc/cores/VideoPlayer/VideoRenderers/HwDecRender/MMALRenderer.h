@@ -62,13 +62,14 @@ public:
   void ReleaseBuffer(CGPUMEM *gmem);
   void Close();
   void Prime();
-  void SetDecoder(CMMALVideo *dec) { m_dec = dec; }
+  void SetDecoder(void *dec) { m_dec = dec; }
   void SetFormat(uint32_t mmal_format, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size, AVCodecContext *avctx)
-    { m_mmal_format = mmal_format; m_width = width; m_height = height; m_aligned_width = aligned_width; m_aligned_height = aligned_height; m_size = size, m_avctx = avctx; }
+    { m_mmal_format = mmal_format; m_width = width; m_height = height; m_aligned_width = aligned_width; m_aligned_height = aligned_height; m_size = size, m_avctx = avctx; m_software = true; }
+  bool IsSoftware() { return m_software; }
 protected:
   uint32_t m_mmal_format, m_width, m_height, m_aligned_width, m_aligned_height, m_size;
   AVCodecContext *m_avctx;
-  CMMALVideo *m_dec;
+  void *m_dec;
   MMALState m_state;
   bool m_input;
   MMAL_POOL_T *m_mmal_pool;
@@ -76,6 +77,7 @@ protected:
   CCriticalSection m_section;
   std::deque<CGPUMEM *> m_freeBuffers;
   bool m_closing;
+  bool m_software;
 };
 
 class CMMALRenderer : public CBaseRenderer, public CThread, public IRunnable
