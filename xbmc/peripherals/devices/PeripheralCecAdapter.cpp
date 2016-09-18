@@ -1534,7 +1534,7 @@ bool CPeripheralCecAdapterUpdateThread::UpdateConfiguration(libcec_configuration
 bool CPeripheralCecAdapterUpdateThread::WaitReady(void)
 {
   // don't wait if we're not powering up anything
-  if (m_configuration.wakeDevices.IsEmpty() && m_configuration.bActivateSource == 0)
+  if (m_configuration.bActivateSource == 0)
     return true;
 
   // wait for the TV if we're configured to become the active source.
@@ -1610,7 +1610,7 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   // devices to wake are set
   cec_logical_addresses tvOnly;
   tvOnly.Clear(); tvOnly.Set(CECDEVICE_TV);
-  if (!m_configuration.wakeDevices.IsEmpty() && (m_configuration.wakeDevices != tvOnly || m_configuration.bActivateSource == 0))
+  if (!m_configuration.wakeDevices.IsEmpty() && m_configuration.wakeDevices != tvOnly && m_configuration.bActivateSource == 1)
     m_adapter->m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
 
   // wait until devices are powered up
