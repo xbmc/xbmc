@@ -45,7 +45,6 @@ public:
 
   CGPUMEM *gmem;
 private:
-  std::shared_ptr<CMMALPool> m_pool;
 };
 
 class CDecoder

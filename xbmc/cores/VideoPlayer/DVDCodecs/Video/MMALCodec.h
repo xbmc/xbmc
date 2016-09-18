@@ -45,10 +45,15 @@
 
 enum MMALState { MMALStateNone, MMALStateHWDec, MMALStateFFDec, MMALStateDeint, };
 
+class CMMALVideo;
+class CMMALRenderer;
+class CMMALPool;
+
 // a mmal video frame
 class CMMALBuffer : public IDVDResourceCounted<CMMALBuffer>
 {
 public:
+  CMMALBuffer(std::shared_ptr<CMMALPool> pool) : m_pool(pool) {}
   virtual ~CMMALBuffer() {}
   MMAL_BUFFER_HEADER_T *mmal_buffer;
   unsigned int m_width;
@@ -60,6 +65,7 @@ public:
   MMALState m_state;
   bool m_rendered;
   bool m_stills;
+  std::shared_ptr<CMMALPool> m_pool;
   const char *GetStateName() {
     static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
     if ((size_t)m_state < vcos_countof(names))
@@ -69,10 +75,6 @@ public:
   }
 };
 
-class CMMALVideo;
-class CMMALRenderer;
-class CMMALPool;
-
 // a mmal video frame
 class CMMALVideoBuffer : public CMMALBuffer
 {
@@ -81,7 +83,6 @@ public:
   virtual ~CMMALVideoBuffer();
   CMMALVideo *m_omv;
 protected:
-  std::shared_ptr<CMMALPool> m_pool;
 };
 
 class CMMALVideo : public CDVDVideoCodec

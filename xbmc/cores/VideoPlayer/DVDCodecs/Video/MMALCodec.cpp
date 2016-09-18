@@ -55,7 +55,7 @@ using namespace KODI::MESSAGING;
 
 
 CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> pool)
-    : m_omv(omv), m_pool(pool)
+    : CMMALBuffer(pool), m_omv(omv)
 {
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
