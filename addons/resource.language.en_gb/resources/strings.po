@@ -7771,7 +7771,12 @@ msgctxt "#14260"
 msgid "Debug"
 msgstr ""
 
-#empty strings from id 14261 to 14269
+#: system/settings/settings.xml
+msgctxt "#14261"
+msgid "Configure skin..."
+msgstr ""
+
+#empty strings from id 14262 to 14269
 
 #: system/settings/settings.xml
 msgctxt "#14270"
@@ -14685,6 +14690,7 @@ msgid "Manage dependencies"
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
+#: system/settings/settings.xml
 msgctxt "#24997"
 msgid "Look and feel"
 msgstr ""
