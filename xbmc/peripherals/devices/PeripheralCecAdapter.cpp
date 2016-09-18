@@ -397,7 +397,7 @@ void CPeripheralCecAdapter::Process(void)
     bSendStandbyCommands = m_iExitCode != EXITCODE_REBOOT &&
                            m_iExitCode != EXITCODE_RESTARTAPP &&
                            !m_bDeviceRemoved &&
-                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby")) &&
+                           (!m_bGoingToStandby || m_configuration.bPowerOffDevicesOnStandby == 1) &&
                            GetSettingBool("enabled");
 
     if (m_bGoingToStandby)
@@ -1312,6 +1312,9 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   m_configuration.bSendInactiveSource = config.bSendInactiveSource;
   bChanged |= SetSetting("send_inactive_source", m_configuration.bSendInactiveSource == 1);
 
+  m_configuration.bPowerOffDevicesOnStandby = config.bPowerOffDevicesOnStandby;
+  bChanged |= SetSetting("standby_tv_on_pc_standby", m_configuration.bPowerOffDevicesOnStandby == 1);
+
   m_configuration.iFirmwareVersion = config.iFirmwareVersion;
   m_configuration.bShutdownOnStandby = config.bShutdownOnStandby;
 
@@ -1398,11 +1401,12 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     ReadLogicalAddresses(GetSettingInt("standby_devices"), m_configuration.powerOffDevices);
 
   // read the boolean settings
-  m_configuration.bUseTVMenuLanguage   = GetSettingBool("use_tv_menu_language") ? 1 : 0;
-  m_configuration.bActivateSource      = GetSettingBool("activate_source") ? 1 : 0;
-  m_configuration.bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
-  m_configuration.bPowerOnScreensaver  = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
-  m_configuration.bSendInactiveSource  = GetSettingBool("send_inactive_source") ? 1 : 0;
+  m_configuration.bUseTVMenuLanguage        = GetSettingBool("use_tv_menu_language") ? 1 : 0;
+  m_configuration.bActivateSource           = GetSettingBool("activate_source") ? 1 : 0;
+  m_configuration.bPowerOffScreensaver      = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
+  m_configuration.bPowerOnScreensaver       = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
+  m_configuration.bSendInactiveSource       = GetSettingBool("send_inactive_source") ? 1 : 0;
+  m_configuration.bPowerOffDevicesOnStandby = GetSettingBool("standby_tv_on_pc_standby") ? 1 : 0;
 
   // read the mutually exclusive boolean settings
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
