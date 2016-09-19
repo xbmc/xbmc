@@ -24,6 +24,7 @@
 
 #include "dbwrappers/dataset.h"
 #include "addons/PVRClient.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/PVRManager.h"
@@ -604,17 +605,15 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
 bool CPVRDatabase::Persist(CPVRChannel &channel)
 {
-  bool bReturn(false);
-
   /* invalid channel */
   if (channel.UniqueID() <= 0)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid channel uid: %d", __FUNCTION__, channel.UniqueID());
-    return bReturn;
+    return false;
   }
 
   std::string strQuery;
-  if (channel.ChannelID() <= 0)
+  if (!ChannelExists(channel.m_iClientId, channel.m_iUniqueId))
   {
     /* new channel */
     strQuery = PrepareSQL("INSERT INTO channels ("
@@ -625,31 +624,24 @@ bool CPVRDatabase::Persist(CPVRChannel &channel)
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.EpgID());
+
+    QueueInsertQuery(strQuery);
   }
   else
   {
     /* update channel */
-    strQuery = PrepareSQL("REPLACE INTO channels ("
-        "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
-        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idChannel, idEpg) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i)",
-        channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
-        channel.ChannelID(),
-        channel.EpgID());
+    strQuery = PrepareSQL("UPDATE channels SET "
+        "bIsRadio = %i, bIsHidden = %i, bIsUserSetIcon = %i, bIsUserSetName = %i, bIsLocked = %i, "
+        "sIconPath= %s, sChannelName = %s, bIsVirtual = %i, bEPGEnabled = %i, sEPGScraper = %s, iLastWatched = %u, "
+        "idChannel = %i, idEpg = %i WHERE iUniqueId = %i AND iClientId = %i",
+        (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
+        channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(),
+        channel.ChannelID(), channel.EpgID(), channel.UniqueID(), channel.ClientID());
+
+    ExecuteQuery(strQuery);
   }
 
-  if (QueueInsertQuery(strQuery))
-  {
-    /* update the channel ID for new channels */
-    if (channel.ChannelID() <= 0)
-      channel.SetChannelID((int)m_pDS->lastinsertid());
-
-    bReturn = true;
-  }
-
-  return bReturn;
+  return true;
 }
 
 bool CPVRDatabase::UpdateLastWatched(const CPVRChannel &channel)
@@ -662,8 +654,19 @@ bool CPVRDatabase::UpdateLastWatched(const CPVRChannel &channel)
 
 bool CPVRDatabase::UpdateLastWatched(const CPVRChannelGroup &group)
 {
-  std::string strQuery = PrepareSQL("UPDATE channelgroups SET iLastWatched = %d WHERE idGroup = %d",
+  const std::string strQuery = PrepareSQL("UPDATE channelgroups SET iLastWatched = %d WHERE idGroup = %d",
     group.LastWatched(), group.GroupID());
 
   return ExecuteQuery(strQuery);
+}
+
+bool CPVRDatabase::ChannelExists(int iClientId, int iUniqueId)
+{
+  std::string strQuery = PrepareSQL("SELECT idChannel FROM channels WHERE iClientId = %d AND iUniqueId = %d",
+                                    iClientId, iUniqueId);
+
+  if (ResultQuery(strQuery))
+    return !m_pDS->eof();
+
+  return false;
 }
