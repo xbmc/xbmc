@@ -3,14 +3,13 @@ SETLOCAL
 
 rem batch file to compile mingw libs via BuildSetup
 SET WORKDIR=%base_dir%
-rem set M$ env
-call "%VS140COMNTOOLS%\..\..\VC\bin\vcvars32.bat" || exit /b 1
 
 SET PROMPTLEVEL=prompt
 SET BUILDMODE=clean
 SET opt=mintty
 SET build32=yes
 SET build64=no
+SET vcarch=x86
 SET msys2=msys64
 SET tools=mingw
 FOR %%b in (%1, %2, %3) DO (
@@ -21,9 +20,12 @@ FOR %%b in (%1, %2, %3) DO (
   IF %%b==build64 ( 
     SET build64=yes 
     SET build32=no
+    SET vcarch=x64
     )
   IF %%b==msvc SET tools=msvc
 )
+rem set MSVC env
+call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" %vcarch% || exit /b 1
 
 IF "%WORKDIR%"=="" (
   SET WORKDIR=%~dp0\..\..\..
