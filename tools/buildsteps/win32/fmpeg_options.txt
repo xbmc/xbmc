@@ -18,3 +18,4 @@
 --enable-encoder=mjpeg
 --enable-protocol=http
 --enable-runtime-cpudetect
+--disable-dxva2
