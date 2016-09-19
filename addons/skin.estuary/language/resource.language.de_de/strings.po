@@ -78,7 +78,7 @@ msgstr "Ungespielte Alben"
 
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Zeletzt gemachte Aufnahmen"
+msgstr "Zuletzt gemachte Aufnahmen"
 
 msgctxt "#31016"
 msgid "Recently played channels"
