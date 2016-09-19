@@ -67,7 +67,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage &message)
     Close();
 
     if (m_recordItem)
-      CGUIWindowPVRBase::PlayRecording(m_recordItem.get(), false /* don't play minimized */, true /* check resume */);
+      CGUIWindowPVRBase::PlayRecording(m_recordItem.get(), true /* check resume */);
 
     bReturn = true;
   }

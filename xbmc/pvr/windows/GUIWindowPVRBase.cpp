@@ -441,14 +441,14 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
     return true;
   }
 
-  CMediaSettings::GetInstance().SetVideoStartWindowed(bPlayMinimized);
-
   if (item->HasPVRRecordingInfoTag())
   {
-    return PlayRecording(item, bPlayMinimized, bCheckResume);
+    return PlayRecording(item, bCheckResume);
   }
   else
   {
+    CMediaSettings::GetInstance().SetVideoStartWindowed(bPlayMinimized);
+
     bool bSwitchSuccessful(false);
     CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
@@ -469,7 +469,7 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
           if (pDialog->IsConfirmed())
           {
             CFileItem recordingItem(recording);
-            return PlayRecording(&recordingItem, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), bCheckResume);
+            return PlayRecording(&recordingItem, bCheckResume);
           }
         }
       }
@@ -735,7 +735,7 @@ bool CGUIWindowPVRBase::CheckResumeRecording(CFileItem *item)
   return bPlayIt;
 }
 
-bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = false */, bool bCheckResume /* = true */)
+bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bCheckResume /* = true */)
 {
   if (!item->HasPVRRecordingInfoTag())
     return false;

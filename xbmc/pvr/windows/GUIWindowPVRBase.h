@@ -93,7 +93,7 @@ namespace PVR
     static bool DeleteTimerRule(CFileItem *item);
     static bool StopRecordFile(CFileItem *item);
 
-    static bool PlayRecording(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
+    static bool PlayRecording(CFileItem *item, bool bCheckResume = true);
 
   protected:
     CGUIWindowPVRBase(bool bRadio, int id, const std::string &xmlFile);
