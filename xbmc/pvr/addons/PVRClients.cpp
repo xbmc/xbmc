@@ -1112,7 +1112,6 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
 void CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
-  PVR_CLIENT addon;
 
   CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_PVRDLL);
 
