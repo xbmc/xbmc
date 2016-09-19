@@ -762,15 +762,6 @@ void CApplicationPlayer::FrameMove()
     player->FrameMove();
 }
 
-bool CApplicationPlayer::HasFrame()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->HasFrame();
-  else
-    return false;
-}
-
 void CApplicationPlayer::Render(bool clear, uint32_t alpha, bool gui)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

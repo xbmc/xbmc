@@ -960,7 +960,8 @@ bool CRenderManager::IsGuiLayer()
     if (!m_pRenderer)
       return false;
 
-    if (m_pRenderer->IsGuiLayer() || m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
+    if ((m_pRenderer->IsGuiLayer() && HasFrame()) ||
+        m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
       return true;
 
     if (m_renderDebug && m_debugTimer.IsTimePast())

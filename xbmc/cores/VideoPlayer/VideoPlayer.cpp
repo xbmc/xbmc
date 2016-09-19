@@ -5039,11 +5039,6 @@ void CVideoPlayer::FrameMove()
   m_renderManager.FrameMove();
 }
 
-bool CVideoPlayer::HasFrame()
-{
-  return m_renderManager.HasFrame();
-}
-
 void CVideoPlayer::Render(bool clear, uint32_t alpha, bool gui)
 {
   m_renderManager.Render(clear, 0, alpha, gui);

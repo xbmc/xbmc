@@ -485,7 +485,7 @@ void CGUIWindowFullScreen::FrameMove()
 
 void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
 {
-  if (g_application.m_pPlayer->IsRenderingGuiLayer() && g_application.m_pPlayer->HasFrame())
+  if (g_application.m_pPlayer->IsRenderingGuiLayer())
     MarkDirtyRegion();
 
   CGUIWindow::Process(currentTime, dirtyregion);
