@@ -439,10 +439,9 @@ namespace PVR
 
     /*!
      * @brief Load the channels stored in the database.
-     * @param bCompress If true, compress the database after storing the channels.
      * @return The amount of channels that were added.
      */
-    virtual int LoadFromDb(bool bCompress = false);
+    virtual int LoadFromDb();
 
     /*!
      * @brief Update the current channel list with the given list.
@@ -461,10 +460,9 @@ namespace PVR
 
     /*!
      * @brief Create an EPG table for each channel.
-     * @brief bForce Create the tables, even if they already have been created before.
      * @return True if all tables were created successfully, false otherwise.
      */
-    virtual bool CreateChannelEpgs(bool bForce = false);
+    virtual bool CreateChannelEpgs();
 
     /*!
      * @brief Load the channels from the database.

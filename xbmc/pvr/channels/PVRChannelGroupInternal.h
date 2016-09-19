@@ -91,18 +91,16 @@ namespace PVR
 
     /*!
      * @brief Create an EPG table for each channel.
-     * @brief bForce Create the tables, even if they already have been created before.
      * @return True if all tables were created successfully, false otherwise.
      */
-    bool CreateChannelEpgs(bool bForce = false);
+    bool CreateChannelEpgs();
 
   protected:
     /*!
      * @brief Load all channels from the database.
-     * @param bCompress Compress the database after changing anything.
      * @return The amount of channels that were loaded.
      */
-    int LoadFromDb(bool bCompress = false);
+    int LoadFromDb();
 
     /*!
      * @brief Load all channels from the clients.
