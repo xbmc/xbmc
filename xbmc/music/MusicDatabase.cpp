@@ -2414,10 +2414,12 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     // Get data from album and album_artist tables to fully populate albums
     std::string strSQL = PrepareSQL("SELECT albumview.*, albumartistview.* FROM "
       "(SELECT idAlbum FROM albumview WHERE albumview.lastplayed IS NOT NULL "
+      "AND albumview.strReleaseType = '%s' "
       "ORDER BY albumview.lastplayed DESC LIMIT %u) as playedalbums "
       "JOIN albumview ON albumview.idAlbum = playedalbums.idAlbum "
       "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
-      "ORDER BY albumview.lastplayed DESC, albumartistview.iorder ", RECENTLY_PLAYED_LIMIT);
+      "ORDER BY albumview.lastplayed DESC, albumartistview.iorder ", 
+      CAlbum::ReleaseTypeToString(CAlbum::Album).c_str(), RECENTLY_PLAYED_LIMIT);
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL)) return false;
