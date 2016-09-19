@@ -659,6 +659,7 @@ long CDecoder::Release()
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG,"VAAPI::Release pre-cleanup");
 
+    CSingleLock lock1(g_graphicsContext);
     Message *reply;
     if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP,
                                                    &reply,
