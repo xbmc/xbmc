@@ -32,6 +32,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/AdvancedSettings.h"
+#include "powermanagement/PowerManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -166,8 +167,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       if (bIgnoreDeactivate)
         CLog::Log(LOGDEBUG, "%s - ignoring OnScreensaverDeactivated for power action", __FUNCTION__);
     }
-    if (m_configuration.bPowerOnScreensaver == 1 && !bIgnoreDeactivate &&
-        m_configuration.bActivateSource == 1)
+    if (m_configuration.bPowerOnScreensaver == 1 && !bIgnoreDeactivate)
     {
       ActivateSource();
     }
@@ -202,7 +202,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
         bActivate = m_bActiveSourceBeforeStandby;
         m_bActiveSourceBeforeStandby = false;
       }
-      if (bActivate)
+      if (bActivate && m_configuration.bActivateSource == 1)
         ActivateSource();
     }
   }
@@ -397,7 +397,7 @@ void CPeripheralCecAdapter::Process(void)
     bSendStandbyCommands = m_iExitCode != EXITCODE_REBOOT &&
                            m_iExitCode != EXITCODE_RESTARTAPP &&
                            !m_bDeviceRemoved &&
-                           (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby")) &&
+                           (!m_bGoingToStandby || m_configuration.bPowerOffDevicesOnStandby == 1) &&
                            GetSettingBool("enabled");
 
     if (m_bGoingToStandby)
@@ -632,7 +632,37 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
       {
         adapter->m_bStarted = false;
         if (adapter->m_configuration.bPowerOffOnStandby == 1)
-          g_application.ExecuteXBMCAction("Suspend");
+        {
+          if (g_powerManager.CanSuspend())
+            g_application.ExecuteXBMCAction("Suspend" );
+          else
+          {
+            CLog::Log(LOGWARNING, "%s - 'suspend' not available on this system, fall back on source switch setting", __FUNCTION__);
+            bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
+            CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
+
+            if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_PAUSE)
+            {
+              if (pSlideShow && pSlideShow->IsPlaying())
+              {
+                adapter->m_bPlaybackPaused = true;
+                pSlideShow->OnAction(CAction(ACTION_PAUSE));
+              }
+              else if (g_application.m_pPlayer->IsPlaying())
+              {
+                adapter->m_bPlaybackPaused = true;
+                CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+              }
+            }
+            if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_STOP)
+            {
+              if (pSlideShow)
+                pSlideShow->OnAction(CAction(ACTION_STOP));
+              else if (g_application.m_pPlayer->IsPlaying()) // only when playing as TMSG_MEDIA_STOP will wake the screensaver which is not desired and can wake the TV again
+                CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+            }
+          }
+        }
         else if (adapter->m_configuration.bShutdownOnStandby == 1)
           g_application.ExecuteXBMCAction("Shutdown");
       }
@@ -1167,7 +1197,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
     bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
     CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
     bool bPlayingAndDeactivated = activated == 0 && (
-        (pSlideShow && pSlideShow->IsPlaying()) || !g_application.m_pPlayer->IsPausedPlayback());
+        (pSlideShow && pSlideShow->IsPlaying()) || (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPausedPlayback()));
     bool bPausedAndActivated = activated == 1 && adapter->m_bPlaybackPaused && (
         (pSlideShow && pSlideShow->IsPaused()) || g_application.m_pPlayer->IsPausedPlayback());
     if (bPlayingAndDeactivated)
@@ -1185,12 +1215,11 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
         // pause/resume player
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
     }
-    else if (bPlayingAndDeactivated
-      && adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_STOP)
+    else if (activated == 0 && adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") == LOCALISED_ID_STOP)
     {
       if (pSlideShow)
         pSlideShow->OnAction(CAction(ACTION_STOP));
-      else
+      else if (g_application.m_pPlayer->IsPlaying()) // only when playing as TMSG_MEDIA_STOP will wake the screensaver which is not desired and can wake the TV again
         CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
     }
   }
@@ -1287,6 +1316,9 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   m_configuration.bSendInactiveSource = config.bSendInactiveSource;
   bChanged |= SetSetting("send_inactive_source", m_configuration.bSendInactiveSource == 1);
 
+  m_configuration.bPowerOffDevicesOnStandby = config.bPowerOffDevicesOnStandby;
+  bChanged |= SetSetting("standby_tv_on_pc_standby", m_configuration.bPowerOffDevicesOnStandby == 1);
+
   m_configuration.iFirmwareVersion = config.iFirmwareVersion;
   m_configuration.bShutdownOnStandby = config.bShutdownOnStandby;
 
@@ -1373,11 +1405,12 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     ReadLogicalAddresses(GetSettingInt("standby_devices"), m_configuration.powerOffDevices);
 
   // read the boolean settings
-  m_configuration.bUseTVMenuLanguage   = GetSettingBool("use_tv_menu_language") ? 1 : 0;
-  m_configuration.bActivateSource      = GetSettingBool("activate_source") ? 1 : 0;
-  m_configuration.bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
-  m_configuration.bPowerOnScreensaver  = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
-  m_configuration.bSendInactiveSource  = GetSettingBool("send_inactive_source") ? 1 : 0;
+  m_configuration.bUseTVMenuLanguage        = GetSettingBool("use_tv_menu_language") ? 1 : 0;
+  m_configuration.bActivateSource           = GetSettingBool("activate_source") ? 1 : 0;
+  m_configuration.bPowerOffScreensaver      = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
+  m_configuration.bPowerOnScreensaver       = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
+  m_configuration.bSendInactiveSource       = GetSettingBool("send_inactive_source") ? 1 : 0;
+  m_configuration.bPowerOffDevicesOnStandby = GetSettingBool("standby_tv_on_pc_standby") ? 1 : 0;
 
   // read the mutually exclusive boolean settings
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
@@ -1505,7 +1538,7 @@ bool CPeripheralCecAdapterUpdateThread::UpdateConfiguration(libcec_configuration
 bool CPeripheralCecAdapterUpdateThread::WaitReady(void)
 {
   // don't wait if we're not powering up anything
-  if (m_configuration.wakeDevices.IsEmpty() && m_configuration.bActivateSource == 0)
+  if (m_configuration.bActivateSource == 0)
     return true;
 
   // wait for the TV if we're configured to become the active source.
@@ -1581,7 +1614,7 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
   // devices to wake are set
   cec_logical_addresses tvOnly;
   tvOnly.Clear(); tvOnly.Set(CECDEVICE_TV);
-  if (!m_configuration.wakeDevices.IsEmpty() && (m_configuration.wakeDevices != tvOnly || m_configuration.bActivateSource == 0))
+  if (!m_configuration.wakeDevices.IsEmpty() && m_configuration.wakeDevices != tvOnly && m_configuration.bActivateSource == 1)
     m_adapter->m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
 
   // wait until devices are powered up
@@ -1778,6 +1811,24 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 {
   if (!IsRunning())
     return false;
+
+  // when power off devices is set, toggle power status, otherwise toggle active/inactive source
+  if (mode == STATE_SWITCH_TOGGLE && !m_configuration.powerOffDevices.IsEmpty())
+  {
+    cec_logical_address deviceToToggle = m_configuration.powerOffDevices.IsSet(CECDEVICE_TV) ? CECDEVICE_TV : m_configuration.powerOffDevices.primary;
+    switch (m_cecAdapter->GetDevicePowerStatus(deviceToToggle))
+    {
+      case CEC_POWER_STATUS_IN_TRANSITION_STANDBY_TO_ON:
+        return true;
+      case CEC_POWER_STATUS_IN_TRANSITION_ON_TO_STANDBY:
+        return false;
+      case CEC_POWER_STATUS_ON:
+        mode = STATE_STANDBY;
+        break;
+      default:
+        mode = STATE_ACTIVATE_SOURCE;
+    }
+  }
   if (m_cecAdapter->IsLibCECActiveSource() && (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
   {
     CLog::Log(LOGDEBUG, "%s - putting CEC device on standby...", __FUNCTION__);
