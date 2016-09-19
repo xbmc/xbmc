@@ -32,6 +32,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/AdvancedSettings.h"
+#include "powermanagement/PowerManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -632,7 +633,19 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
       {
         adapter->m_bStarted = false;
         if (adapter->m_configuration.bPowerOffOnStandby == 1)
-          g_application.ExecuteXBMCAction("Suspend");
+        {
+          if (g_powerManager.CanSuspend())
+            g_application.ExecuteXBMCAction("Suspend" );
+          else
+          {
+            CGUIWindowSlideShow *pSlideShow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) ?
+                (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
+            if (pSlideShow)
+              pSlideShow->OnAction(CAction(ACTION_STOP));
+            else if (g_application.m_pPlayer->IsPlaying())
+              CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+          }
+        }
         else if (adapter->m_configuration.bShutdownOnStandby == 1)
           g_application.ExecuteXBMCAction("Shutdown");
       }
@@ -1239,8 +1252,10 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   // hide the "connected device" and "hdmi port number" settings when the PA was autodetected
   bool bPAAutoDetected(config.bAutodetectAddress == 1);
 
+  // set visibilities
   SetSettingVisible("connected_device", !bPAAutoDetected);
   SetSettingVisible("cec_hdmi_port", !bPAAutoDetected);
+  SetSettingVisible("standby_tv_on_pc_standby", g_powerManager.CanSuspend());
 
   // set the connected device
   m_configuration.baseDevice = config.baseDevice;
@@ -1295,9 +1310,20 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   SetVersionInfo(m_configuration);
 
-  bChanged |= SetSetting("standby_pc_on_tv_standby",
-             m_configuration.bPowerOffOnStandby == 1 ? 13011 :
-             m_configuration.bShutdownOnStandby == 1 ? 13005 : 36028);
+  if (g_powerManager.CanSuspend())
+  {
+    bChanged |= SetSetting("standby_pc_on_tv_standby",
+               m_configuration.bPowerOffOnStandby == 1 ? 13011 :
+               m_configuration.bShutdownOnStandby == 1 ? 13005 : 36028);
+    SetSettingVisible("stop_on_tv_standby", false);
+  }
+  else
+  {
+    bChanged |= SetSetting("stop_on_tv_standby",
+               m_configuration.bPowerOffOnStandby == 1 ? 36044 :         // stop playback
+               m_configuration.bShutdownOnStandby == 1 ? 13005 : 36028); // shutdown or ignore
+    SetSettingVisible("standby_pc_on_tv_standby", false);
+  }
 
   if (bChanged)
     CLog::Log(LOGDEBUG, "SetConfigurationFromLibCEC - settings updated by libCEC");
@@ -1380,9 +1406,18 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bSendInactiveSource  = GetSettingBool("send_inactive_source") ? 1 : 0;
 
   // read the mutually exclusive boolean settings
-  int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
-  m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
-  m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0;
+  if (g_powerManager.CanSuspend())
+  {
+    int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
+    m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0; // suspend
+    m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0; // shutdown
+  }
+  else
+  {
+    int iStandbyAction(GetSettingInt("stop_on_tv_standby"));
+    m_configuration.bPowerOffOnStandby = iStandbyAction == 36044 ? 1 : 0; // stop playback
+    m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0; // shutdown
+  }
 
 #if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
   // double tap prevention timeout in ms. libCEC uses 50ms units for this in 2.2.0, so divide by 50
