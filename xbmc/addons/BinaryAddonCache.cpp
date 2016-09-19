@@ -32,7 +32,7 @@ CBinaryAddonCache::~CBinaryAddonCache()
 
 void CBinaryAddonCache::Init()
 {
-  m_addonsToCache = {ADDON_AUDIODECODER, ADDON_INPUTSTREAM};
+  m_addonsToCache = {ADDON_AUDIODECODER, ADDON_INPUTSTREAM, ADDON_PVRDLL};
   CAddonMgr::GetInstance().Events().Subscribe(this, &CBinaryAddonCache::OnEvent);
   Update();
 }
