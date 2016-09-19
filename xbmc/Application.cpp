@@ -336,14 +336,16 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
       break;
     case XBMC_VIDEORESIZE:
-      if (g_windowManager.Initialized() &&
-          !g_advancedSettings.m_fullScreen)
+      if (g_windowManager.Initialized())
       {
         g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
-        g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
-        CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
-        CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
-        CSettings::GetInstance().Save();
+        if (!g_advancedSettings.m_fullScreen)
+        {
+          g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
+          CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
+          CSettings::GetInstance().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
+          CSettings::GetInstance().Save();
+        }
       }
       break;
     case XBMC_VIDEOMOVE:
@@ -352,8 +354,8 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         // when fullscreen, remain fullscreen and resize to the dimensions of the new screen
         RESOLUTION newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
-        if (newRes != g_graphicsContext.GetVideoResolution())
-          CDisplaySettings::GetInstance().SetCurrentResolution(newRes, true);
+        CDisplaySettings::GetInstance().SetCurrentResolution(newRes, true);
+        g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
       }
       else
 #endif

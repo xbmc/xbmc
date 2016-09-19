@@ -558,7 +558,7 @@ bool CWinSystemWin32::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
 
 void CWinSystemWin32::UpdateResolutions()
 {
-
+  m_MonitorsInfo.clear();
   CWinSystemBase::UpdateResolutions();
 
   UpdateResolutionsInternal();
