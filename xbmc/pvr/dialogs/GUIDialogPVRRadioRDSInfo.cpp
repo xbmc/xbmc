@@ -35,7 +35,6 @@ using namespace PVR;
 #define CONTROL_BTN_OK    10
 #define SPIN_CONTROL_INFO 21
 #define TEXT_INFO         22
-#define CONTROL_NEXT_PAGE 60
 #define CONTROL_INFO_LIST 70
 
 #define INFO_NEWS         1

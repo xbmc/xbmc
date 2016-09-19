@@ -48,11 +48,6 @@ using namespace PVR;
 using namespace EPG;
 using namespace KODI::MESSAGING;
 
-/** number of iterations when scanning for add-ons. don't use a timer because the user may block in the dialog */
-#define PVR_CLIENT_AVAHI_SCAN_ITERATIONS   (20)
-/** sleep time in milliseconds when no auto-configured add-ons were found */
-#define PVR_CLIENT_AVAHI_SLEEP_TIME_MS     (250)
-
 CPVRClients::CPVRClients(void) :
     m_bChannelScanRunning(false),
     m_bIsSwitchingChannels(false),

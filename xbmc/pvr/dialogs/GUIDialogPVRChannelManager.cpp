@@ -49,7 +49,6 @@
 #define RADIOBUTTON_ACTIVE        7
 #define EDIT_NAME                 8
 #define BUTTON_CHANNEL_LOGO       9
-#define IMAGE_CHANNEL_LOGO        10
 #define RADIOBUTTON_USEEPG        12
 #define SPIN_EPGSOURCE_SELECTION  13
 #define RADIOBUTTON_PARENTAL_LOCK 14

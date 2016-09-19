@@ -64,7 +64,6 @@ using namespace PVR;
 
 #define TYPE_DEP_VISIBI_COND_ID_POSTFIX     "visibi.typedep"
 #define TYPE_DEP_ENABLE_COND_ID_POSTFIX     "enable.typedep"
-#define CHANNEL_DEP_VISIBI_COND_ID_POSTFIX  "visibi.channeldep"
 #define START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX  "visibi.startanytimedep"
 #define END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX    "visibi.endanytimedep"
 
