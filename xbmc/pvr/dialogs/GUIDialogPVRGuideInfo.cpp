@@ -58,7 +58,7 @@ CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void)
 
 bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
 {
-  bool bReturn = false;
+  bool bReturn;
 
   CFileItemPtr item(new CFileItem(tag));
   bReturn = CGUIWindowPVRBase::AddTimer(item.get());
@@ -71,7 +71,7 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
 
 bool CGUIDialogPVRGuideInfo::ActionCancelTimer(const CFileItemPtr &timer)
 {
-  bool bReturn = false;
+  bool bReturn;
 
   if (timer->GetPVRTimerInfoTag()->IsRecording())
     bReturn = CGUIWindowPVRBase::StopRecordFile(timer.get());

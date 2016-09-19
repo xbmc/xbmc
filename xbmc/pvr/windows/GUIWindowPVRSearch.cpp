@@ -123,7 +123,7 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowPVRSearch::OnContextButton(const CFileItem &item, CONTEXT_BUTTON button)
 {
-  bool bReturn = false;
+  bool bReturn;
 
   switch(button)
   {

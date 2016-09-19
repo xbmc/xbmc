@@ -270,7 +270,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
 {
   CSingleLock lock(m_critSection);
 
-  bool bGrouped = false;
+  bool bGrouped;
   const CURL url(strPath);
   if (url.HasOption("view"))
   {
