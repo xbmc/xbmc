@@ -429,7 +429,7 @@ ERenderFormat CDVDCodecUtils::EFormatFromPixfmt(int fmt)
   return RENDER_FMT_NONE;
 }
 
-int CDVDCodecUtils::PixfmtFromEFormat(ERenderFormat fmt)
+AVPixelFormat CDVDCodecUtils::PixfmtFromEFormat(ERenderFormat fmt)
 {
   for(const EFormatMap *p = g_format_map; p->pix_fmt != AV_PIX_FMT_NONE; ++p)
   {
