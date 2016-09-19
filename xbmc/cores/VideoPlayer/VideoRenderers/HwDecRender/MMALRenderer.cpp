@@ -386,6 +386,7 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
       Create();
     }
   }
+  SetVideoRect(m_cachedSourceRect, m_cachedDestRect);
   return true;
 }
 
@@ -414,6 +415,8 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_deint_height = 0;
   m_deint_aligned_width = 0;
   m_deint_aligned_height = 0;
+  m_cachedSourceRect.SetRect(0, 0, 0, 0);
+  m_cachedDestRect.SetRect(0, 0, 0, 0);
 
   m_queue_process = mmal_queue_create();
   m_processThread.Create();
@@ -750,15 +753,21 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (m_format == RENDER_FMT_MMAL)
     omvb = m_buffers[source];
 
+  if (g_graphicsContext.GetStereoView() != RENDER_STEREO_VIEW_RIGHT)
+  {
+    ManageRenderArea();
+    CRect view;
+    CBaseRenderer::GetVideoRect(m_cachedSourceRect, m_cachedDestRect, view);
+  }
+
   // we only want to upload frames once
   if (omvb && omvb->m_rendered)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x skipping", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
+    SetVideoRect(m_cachedSourceRect, m_cachedDestRect);
     goto exit;
   }
-
-  ManageRenderArea();
 
   if (m_format != RENDER_FMT_MMAL)
   {
@@ -766,7 +775,6 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       CLog::Log(LOGDEBUG, "%s::%s - bypass: clear:%d flags:%x alpha:%d source:%d format:%d", CLASSNAME, __func__, clear, flags, alpha, source, m_format);
     goto exit;
   }
-  SetVideoRect(m_sourceRect, m_destRect);
 
   if (omvb && omvb->mmal_buffer)
   {
@@ -951,7 +959,6 @@ bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect)
 {
   CSingleLock lock(m_sharedSection);
-  assert(g_graphicsContext.GetStereoView() != RENDER_STEREO_VIEW_RIGHT);
 
   if (!m_vout_input)
     return;

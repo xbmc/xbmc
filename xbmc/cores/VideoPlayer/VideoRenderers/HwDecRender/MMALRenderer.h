@@ -128,6 +128,8 @@ protected:
   unsigned int         m_extended_format;
   int                  m_neededBuffers;
 
+  CRect                     m_cachedSourceRect;
+  CRect                     m_cachedDestRect;
   CRect                     m_src_rect;
   CRect                     m_dst_rect;
   RENDER_STEREO_MODE        m_video_stereo_mode;
