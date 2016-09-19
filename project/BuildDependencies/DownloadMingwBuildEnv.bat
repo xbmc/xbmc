@@ -29,8 +29,8 @@ set build64=no
 set instdir=%CD%
 set msyspackages=autoconf automake libtool m4 make gettext patch pkg-config wget p7zip coreutils
 set mingwpackages=dlfcn gcc gcc-libs gettext libiconv libgpg-error libpng yasm nettle libtasn1 openssl
-set locals32=gnutls-3.4.9-static
-set locals64=gnutls-3.4.9-static
+set locals32=gnutls-3.4.14-static
+set locals64=gnutls-3.4.14-static
 set usemirror=yes
 set opt=mintty
 
