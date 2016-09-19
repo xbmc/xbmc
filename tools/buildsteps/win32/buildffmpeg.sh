@@ -7,6 +7,7 @@ FFMPEG_CONFIG_FILE=/xbmc/tools/buildsteps/win32/fmpeg_options.txt
 FFMPEG_VERSION_FILE=/xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION
 FFMPEG_BASE_OPTS="--disable-debug --disable-doc --enable-gpl --enable-gnutls --enable-w32threads"
 FFMPEG_DEFAULT_OPTS=""
+FFMPEG_TARGET_OS=mingw32
 
 do_loaddeps $FFMPEG_VERSION_FILE
 FFMPEGDESTDIR=/xbmc/lib/win32/$LIBNAME
@@ -20,10 +21,12 @@ do_getFFmpegConfig() {
 
   if [[ $BITS = "64bit" ]]; then
     arch=x86_64
+    FFMPEG_TARGET_OS=mingw64
     # perhaps it's not optimal
     do_addOption "--cpu=core2"
   else
     arch=x86
+    FFMPEG_TARGET_OS=mingw32
     do_addOption "--cpu=i686"
   fi
   export arch
@@ -85,15 +88,22 @@ if [[ "$tools" = "msvc" ]]; then
   do_addOption "--enable-debug"
   do_addOption "--toolchain=msvc"
 
-  PATH="/c/Program Files (x86)/Microsoft Visual Studio 12.0/VC/BIN/":$PATH
-  CFLAGS=""
-  CXXFLAGS="" 
-  LDFLAGS=""
-  export PATH CFLAGS CXXFLAGS LDFLAGS
+  # set path to MS cl.exe and link.exe first
+  if [[ $BITS = "64bit" ]]; then
+    FFMPEG_TARGET_OS=win64
+    VCTOOLSPATH="$VS140COMNTOOLS../../VC/BIN/amd64"
+  else
+    FFMPEG_TARGET_OS=win32
+    VCTOOLSPATH="$VS140COMNTOOLS../../VC/BIN/"
+  fi
+
+  export PATH="$VCTOOLSPATH":$PATH
+  export CFLAGS=""
+  export CXXFLAGS="" 
+  export LDFLAGS=""
 
   extra_cflags="-MDd -I$LOCALDESTDIR/include"
-  extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"/mingw32/lib\" /NODEFAULTLIB:libcmt"
-  TARGET_OS=win32
+  extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"$MINGW_PREFIX/lib\" /NODEFAULTLIB:libcmt"
 fi
 
 cd $LOCALBUILDDIR
@@ -133,7 +143,7 @@ do_print_status "$LIBNAME-$VERSION (${BITS})" "$blue_color" "Configuring"
 [[ -z "$extra_cflags" ]] && extra_cflags=-DPTW32_STATIC_LIB
 [[ -z "$extra_ldflags" ]] && extra_ldflags=-static-libgcc
 
-./configure --target-os=mingw32 --prefix=$FFMPEGDESTDIR --arch=$arch \
+./configure --target-os=$FFMPEG_TARGET_OS --prefix=$FFMPEGDESTDIR --arch=$arch \
   --disable-static --enable-shared $FFMPEG_OPTS_SHARED \
   --extra-cflags="$extra_cflags" --extra-ldflags="$extra_ldflags"
 
