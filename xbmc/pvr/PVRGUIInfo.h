@@ -231,8 +231,6 @@ namespace PVR
     TVTimerInfo    m_tvTimersInfo;
     RadioTimerInfo m_radioTimersInfo;
 
-    bool                            m_bHasTVRecordings;
-    bool                            m_bHasRadioRecordings;
     unsigned int                    m_iCurrentActiveClient;
     std::string                     m_strPlayingClientName;
     std::string                     m_strBackendName;

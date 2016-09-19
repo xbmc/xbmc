@@ -73,7 +73,6 @@ private:
   inline unsigned int DecodePS(uint8_t *msgElement);
   inline unsigned int DecodeDI(uint8_t *msgElement);
   inline unsigned int DecodeTA_TP(uint8_t *msgElement);
-  inline unsigned int DecodeMS(uint8_t *msgElement);
   inline unsigned int DecodePTY(uint8_t *msgElement);
   inline unsigned int DecodePTYN(uint8_t *msgElement);
   inline unsigned int DecodeRT(uint8_t *msgElement, unsigned int len);

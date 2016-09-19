@@ -130,18 +130,6 @@ namespace PVR
     bool IsEpgBasedOnetime() const { return IsEpgBased() && IsOnetime(); }
 
     /*!
-     * @brief Check whether this type is for manual timer rules.
-     * @return True if manual timer rule, false otherwise.
-     */
-    bool IsManualTimerRule() const { return IsManual() && IsTimerRule(); }
-
-    /*!
-     * @brief Check whether this type is for one time manual timers.
-     * @return True if one time manual, false otherwise.
-     */
-    bool IsManualOnetime() const { return IsManual() && IsOnetime(); }
-
-    /*!
      * @brief Check whether this type is readonly (must not be modified after initial creation).
      * @return True if readonly, false otherwise.
      */

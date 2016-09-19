@@ -75,7 +75,6 @@ public:
   void ResetSongInformation();
 
   /**! Basic RDS related information */
-  void SetSpeechActive(bool active);
   void SetLanguage(const std::string& strLanguage);
   const std::string& GetLanguage() const;
   void SetCountry(const std::string& strCountry);
@@ -167,8 +166,6 @@ protected:
    *  \return trimmed value, with spaces removed from left and right, as well as carriage returns from the right.
    */
   std::string Trim(const std::string &value) const;
-
-  bool m_RDS_SpeechActive;
 
   std::string m_strLanguage;
   std::string m_strCountry;

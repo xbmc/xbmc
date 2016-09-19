@@ -72,8 +72,7 @@ namespace PVR
   enum ContinueLastChannelOnStartup
   {
     CONTINUE_LAST_CHANNEL_OFF  = 0,
-    CONTINUE_LAST_CHANNEL_IN_BACKGROUND,
-    CONTINUE_LAST_CHANNEL_IN_FOREGROUND
+    CONTINUE_LAST_CHANNEL_IN_BACKGROUND
   };
 
   #define g_PVRManager       CPVRManager::GetInstance()

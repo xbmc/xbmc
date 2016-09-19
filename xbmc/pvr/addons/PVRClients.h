@@ -42,9 +42,7 @@ namespace PVR
 
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   typedef std::map< int, PVR_CLIENT >                 PVR_CLIENTMAP;
-  typedef std::map< int, PVR_CLIENT >::iterator       PVR_CLIENTMAP_ITR;
   typedef std::map< int, PVR_CLIENT >::const_iterator PVR_CLIENTMAP_CITR;
-  typedef std::map< int, PVR_STREAM_PROPERTIES >      STREAMPROPS;
 
   /**
    * Holds generic data about a backend (number of channels etc.)
