@@ -368,7 +368,6 @@ public:
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
 
   virtual void FrameMove();
-  virtual bool HasFrame();
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true);
   virtual void FlushRenderer();
   virtual void SetRenderViewMode(int mode);
