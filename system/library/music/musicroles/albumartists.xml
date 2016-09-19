@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<node order="10" type="folder">
+	<label>38043</label>
+	<icon>DefaultMusicArtists.png</icon>
+	<path>musicdb://artists/?albumartistsonly=true</path>
+</node>
