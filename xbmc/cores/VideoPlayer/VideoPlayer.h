@@ -406,6 +406,7 @@ protected:
   virtual void VideoParamsChange() override;
   virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
   virtual void UpdateClockSync(bool enabled) override;
+  virtual void UpdateRenderInfo(CRenderInfo &info) override;
 
   void CreatePlayers();
   void DestroyPlayers();

@@ -262,14 +262,11 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
   entries.push_back(std::make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
   entries.push_back(std::make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
-  entries.push_back(std::make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
   entries.push_back(std::make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
   entries.push_back(std::make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
   entries.push_back(std::make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
   entries.push_back(std::make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
   entries.push_back(std::make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
-  entries.push_back(std::make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
-  entries.push_back(std::make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
   entries.push_back(std::make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
   entries.push_back(std::make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
   entries.push_back(std::make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));

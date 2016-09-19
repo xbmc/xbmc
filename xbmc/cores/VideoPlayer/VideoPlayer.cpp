@@ -5140,6 +5140,11 @@ void CVideoPlayer::UpdateClockSync(bool enabled)
   m_processInfo->SetRenderClockSync(enabled);
 }
 
+void CVideoPlayer::UpdateRenderInfo(CRenderInfo &info)
+{
+  m_processInfo->UpdateRenderInfo(info);
+}
+
 // IDispResource interface
 void CVideoPlayer::OnLostDisplay()
 {
