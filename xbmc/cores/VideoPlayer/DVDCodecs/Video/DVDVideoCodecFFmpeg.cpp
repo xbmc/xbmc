@@ -310,9 +310,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_iOrientation = hints.orientation;
 
+  m_formats.clear();
   for(std::vector<ERenderFormat>::iterator it = options.m_formats.begin(); it != options.m_formats.end(); ++it)
   {
-    m_formats.push_back((AVPixelFormat)CDVDCodecUtils::PixfmtFromEFormat(*it));
+    AVPixelFormat pixFormat = CDVDCodecUtils::PixfmtFromEFormat(*it);
+    if (pixFormat != AV_PIX_FMT_NONE)
+      m_formats.push_back(pixFormat);
+
     if(*it == RENDER_FMT_YUV420P)
       m_formats.push_back(AV_PIX_FMT_YUVJ420P);
   }

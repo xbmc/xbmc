@@ -23,6 +23,10 @@
 #include "Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 
+extern "C" {
+#include "libavutil/pixfmt.h"
+}
+
 struct YV12Image;
 
 class CDVDCodecUtils
@@ -43,6 +47,6 @@ public:
   static double NormalizeFrameduration(double frameduration, bool *match = NULL);
 
   static ERenderFormat EFormatFromPixfmt(int fmt);
-  static int           PixfmtFromEFormat(ERenderFormat format);
+  static AVPixelFormat PixfmtFromEFormat(ERenderFormat format);
 };
 
