@@ -663,7 +663,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
 
   m_SkipCommercials = true;
 
-  m_processInfo = CProcessInfo::CreateInstance();
+  m_processInfo.reset(CProcessInfo::CreateInstance());
   CreatePlayers();
 
   m_displayLost = false;
