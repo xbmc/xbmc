@@ -1778,7 +1778,8 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 {
   if (!IsRunning())
     return false;
-  if (m_cecAdapter->IsLibCECActiveSource() && (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
+  if (m_cecAdapter->IsLibCECActiveSource() &&
+      ((mode == STATE_SWITCH_TOGGLE && m_cecAdapter->GetDevicePowerStatus(CECDEVICE_TV) == CEC_POWER_STATUS_ON) || mode == STATE_STANDBY))
   {
     CLog::Log(LOGDEBUG, "%s - putting CEC device on standby...", __FUNCTION__);
     StandbyDevices();
