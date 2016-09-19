@@ -21,6 +21,7 @@
  */
 
 #include <atomic>
+#include <memory>
 #include <utility>
 #include <vector>
 #include "cores/IPlayer.h"
@@ -502,7 +503,7 @@ protected:
   XbmcThreads::EndTime m_cachingTimer;
   CFileItem    m_item;
   XbmcThreads::EndTime m_ChannelEntryTimeOut;
-  CProcessInfo *m_processInfo;
+  std::unique_ptr<CProcessInfo> m_processInfo;
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
