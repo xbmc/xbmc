@@ -269,7 +269,7 @@ void CGUIDialogPVRChannelsOSD::CloseOrSelect(unsigned int iItem)
 void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 {
   /* Check file item is in list range and get his pointer */
-  if (item < 0 || item >= (int)m_vecItems->Size()) return;
+  if (item < 0 || item >= m_vecItems->Size()) return;
   CFileItemPtr pItem = m_vecItems->Get(item);
 
   if (pItem->GetPath() == g_application.CurrentFile())
@@ -302,7 +302,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
 {
   /* Check file item is in list range and get his pointer */
-  if (item < 0 || item >= (int)m_vecItems->Size()) return;
+  if (item < 0 || item >= m_vecItems->Size()) return;
 
   CFileItemPtr pItem = m_vecItems->Get(item);
   if (pItem && pItem->IsPVRChannel())
