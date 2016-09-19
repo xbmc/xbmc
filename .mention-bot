@@ -3,7 +3,7 @@
   "numFilesToCheck": 5, 
   "message": "@pullRequester, thank you for improving kodi! According to the last 5 commits, we found the potential reviewers: @reviewers . Final approval needs to be given by the componenent maintainer.",
   "findPotentialReviewers": true, 
-  "userBlacklist": [ "fernetmenta" ], 
+  "userBlacklist": [ "FernetMenta" ], 
   "userBlacklistForPR": [], 
   "requiredOrgs": [], 
   "actions": ["opened"], 
