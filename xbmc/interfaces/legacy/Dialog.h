@@ -265,7 +265,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().browse(type, heading, shares[, mask, useThumbs, treatAsFolder, sDefault, enableMultiple]) }
+      /// \python_func{ xbmcgui.Dialog().browse(type, heading, shares[, mask, useThumbs, treatAsFolder, defaultt, enableMultiple]) }
       ///------------------------------------------------------------------------
       ///
       /// **Browser dialog**
@@ -288,7 +288,7 @@ namespace XBMCAddon
       /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
       /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist.
       /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders.
-      /// @param sDefault       [opt] string - default path or file.
+      /// @param defaultt       [opt] string - default path or file.
       /// @param enableMultiple [opt] boolean - if True multiple file selection is enabled.
       ///
       /// @return If enableMultiple is False (default): returns filename and/or path as a string
@@ -320,7 +320,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().browseSingle(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) }
+      /// \python_func{ xbmcgui.Dialog().browseSingle(type, heading, shares[, mask, useThumbs, treatAsFolder, defaultt]) }
       ///------------------------------------------------------------------------
       ///
       /// **Browse single dialog**
@@ -343,7 +343,7 @@ namespace XBMCAddon
       /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
       /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).
       /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders (default=false).
-      /// @param default        [opt] string - default path or file.
+      /// @param defaultt       [opt] string - default path or file.
       ///
       /// @return Returns filename and/or path as a string to the location of the highlighted item,
       ///        if user pressed 'Ok' or a masked item was selected.
@@ -371,7 +371,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().browseMultiple(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) }
+      /// \python_func{ xbmcgui.Dialog().browseMultiple(type, heading, shares[, mask, useThumbs, treatAsFolder, defaultt]) }
       ///------------------------------------------------------------------------
       ///
       /// **Browser dialog**
@@ -392,7 +392,7 @@ namespace XBMCAddon
       /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
       /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).
       /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders (default=false).
-      /// @param default        [opt] string - default path or file.
+      /// @param defaultt       [opt] string - default path or file.
       /// @return Returns tuple of marked filenames as a string,"
       ///       if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.
       ///
@@ -418,7 +418,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().numeric(type, heading[, default]) }
+      /// \python_func{ xbmcgui.Dialog().numeric(type, heading[, defaultt]) }
       ///------------------------------------------------------------------------
       ///
       /// **Numeric dialog**
@@ -434,7 +434,7 @@ namespace XBMCAddon
       /// |  2    | ShowAndGetTime      | (default format: HH:MM)
       /// |  3    | ShowAndGetIPAddress | (default format: #.#.#.#)
       /// @param heading        string or unicode - dialog heading.
-      /// @param default        [opt] string - default value.
+      /// @param defaultt       [opt] string - default value.
       /// @return Returns the entered data as a string.
       ///         Returns the default value if dialog was canceled.
       ///
@@ -492,13 +492,13 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().input(heading[, default, type, option, autoclose]) }
+      /// \python_func{ xbmcgui.Dialog().input(heading[, defaultt, type, option, autoclose]) }
       ///------------------------------------------------------------------------
       ///
       /// Show an Input dialog.
       ///
       /// @param heading        string - dialog heading.
-      /// @param default        [opt] string - default value. (default=empty string)
+      /// @param defaultt       [opt] string - default value. (default=empty string)
       /// @param type           [opt] integer - the type of keyboard dialog. (default=xbmcgui.INPUT_ALPHANUM)
       /// | Parameter                        | Format                          |
       /// |---------------------------------:|:--------------------------------|
