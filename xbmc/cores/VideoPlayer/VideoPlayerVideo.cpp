@@ -291,8 +291,7 @@ void CVideoPlayerVideo::Process()
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if (!m_stalled)
       {
-        if(m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
-          CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
+        CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
         pts += frametime * 4;
       }
