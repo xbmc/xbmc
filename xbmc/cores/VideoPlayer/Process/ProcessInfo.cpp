@@ -59,6 +59,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
+  m_renderInfo.Reset();
 
   CServiceBroker::GetDataCacheCore().SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
   CServiceBroker::GetDataCacheCore().SetVideoDeintMethod(m_videoDeintMethod);
@@ -195,6 +196,12 @@ void CProcessInfo::UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &metho
 
   m_deintMethods = methods;
 
+  for (auto &deint : m_renderInfo.m_deintMethods)
+  {
+    if (!Supports(deint))
+      m_deintMethods.push_back(deint);
+  }
+
   if (!Supports(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE))
     m_deintMethods.push_front(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
 }
@@ -323,4 +330,17 @@ bool CProcessInfo::IsRenderClockSync()
   CSingleLock lock(m_renderSection);
 
   return m_isClockSync;
+}
+
+void CProcessInfo::UpdateRenderInfo(CRenderInfo &info)
+{
+  CSingleLock lock(m_renderSection);
+
+  m_renderInfo = info;
+
+  for (auto &deint : m_renderInfo.m_deintMethods)
+  {
+    if (!Supports(deint))
+      m_deintMethods.push_back(deint);
+  }
 }

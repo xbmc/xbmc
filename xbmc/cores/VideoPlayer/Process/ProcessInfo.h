@@ -20,6 +20,7 @@
 #pragma once
 
 #include "cores/IPlayer.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "threads/CriticalSection.h"
 #include <list>
 #include <string>
@@ -67,6 +68,7 @@ public:
   // render info
   void SetRenderClockSync(bool enabled);
   bool IsRenderClockSync();
+  void UpdateRenderInfo(CRenderInfo &info);
 
 protected:
   CProcessInfo();
@@ -94,4 +96,5 @@ protected:
   // render info
   CCriticalSection m_renderSection;
   bool m_isClockSync;
+  CRenderInfo m_renderInfo;
 };

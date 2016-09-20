@@ -298,6 +298,8 @@ bool CRenderManager::Configure()
     m_pRenderer->SetBufferSize(m_QueueSize);
     m_pRenderer->Update();
 
+    m_playerPort->UpdateRenderInfo(info);
+
     m_queued.clear();
     m_discard.clear();
     m_free.clear();
