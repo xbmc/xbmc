@@ -211,7 +211,7 @@
 				<content>
 					<item>
 						<label>13012</label>
-						<onclick>Quit</onclick>
+						<onclick>Shutdown</onclick>
 						<icon>icon_button_shutdown.png</icon>
 					</item>
 					<item>
