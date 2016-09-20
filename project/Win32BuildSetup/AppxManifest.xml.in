@@ -9,10 +9,10 @@
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
-    <PackageDependency Name="Microsoft.VCLibs.140.00" MinVersion="14.0.24123.0" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+    <PackageDependency Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" Name="Microsoft.VCLibs.140.00.UWPDesktop" MinVersion="14.0.23810.0"/>
   </Dependencies>
   <Resources>
-    <Resource Language="EN-US" />
+    <Resource Language="en-us"/>
   </Resources>
   <Applications>
     <Application Id="Kodi" Executable="Kodi.exe" EntryPoint="Windows.FullTrustApplication">
