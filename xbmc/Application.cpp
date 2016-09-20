@@ -548,21 +548,7 @@ bool CApplication::Create()
     CLog::Log(LOGNOTICE, "Running on %s, kernel: %s %s %d-bit version %s", g_sysinfo.GetOsPrettyNameWithVersion().c_str(),
               g_sysinfo.GetKernelName().c_str(), g_sysinfo.GetKernelCpuFamily().c_str(), g_sysinfo.GetKernelBitness(), g_sysinfo.GetKernelVersionFull().c_str());
 
-  //! @todo - move to CPlatformXXX ???
-#if defined(TARGET_LINUX)
-#if USE_STATIC_FFMPEG
-  CLog::Log(LOGNOTICE, "FFmpeg statically linked, version: %s", FFMPEG_VERSION);
-#else  // !USE_STATIC_FFMPEG
-  CLog::Log(LOGNOTICE, "FFmpeg version: %s", FFMPEG_VERSION);
-#endif // !USE_STATIC_FFMPEG
-  if (!strstr(FFMPEG_VERSION, FFMPEG_VER_SHA))
-  {
-    if (strstr(FFMPEG_VERSION, "kodi"))
-      CLog::Log(LOGNOTICE, "WARNING: unknown ffmpeg-kodi version detected");
-    else
-      CLog::Log(LOGNOTICE, "WARNING: unsupported ffmpeg version detected");
-  }
-#endif
+  CLog::Log(LOGNOTICE, "FFmpeg version/source: %s", av_version_info());
 
   std::string cpuModel(g_cpuInfo.getCPUModel());
   if (!cpuModel.empty())
