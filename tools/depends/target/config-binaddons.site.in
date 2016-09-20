@@ -74,14 +74,16 @@ if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
   # disable python support
   export PYTHON_VER=0.0
   # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
-  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+  # and issue with install_name_tool where larger updated load commands do not fit
+  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc -Wl,-headerpad_max_install_names"
 fi
 
 if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
   # disable python support
   export PYTHON_VER=0.0
   # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
-  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+  # and issue with install_name_tool where larger updated load commands do not fit
+  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc -Wl,-headerpad_max_install_names"
   # uses OPT instead of CFLAGS
   export OPT="${CFLAGS}"
   # various configure overrides
