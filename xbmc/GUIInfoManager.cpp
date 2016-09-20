@@ -90,6 +90,7 @@
 #include "pvr/recordings/PVRRecording.h"
 
 #include "addons/AddonManager.h"
+#include "addons/BinaryAddonCache.h"
 #include "interfaces/info/InfoBool.h"
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
@@ -6961,7 +6962,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_HAS_PVR)
     bReturn = true;
   else if (condition == SYSTEM_HAS_PVR_ADDON)
-    bReturn = CAddonMgr::GetInstance().HasAddons(ADDON::ADDON_PVRDLL);
+  {
+    VECADDONS pvrAddons;
+    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+    addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
+    bReturn = (pvrAddons.size() > 0);
+  }
   else if (condition == SYSTEM_HAS_ADSP)
     bReturn = true;
   else if (condition == SYSTEM_HAS_CMS)
