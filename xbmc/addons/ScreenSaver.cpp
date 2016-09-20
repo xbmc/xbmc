@@ -92,12 +92,6 @@ void CScreenSaver::Render()
   if (Initialized()) m_pStruct->Render();
 }
 
-void CScreenSaver::GetInfo(SCR_INFO *info)
-{
-  // get info from screensaver
-  if (Initialized()) m_pStruct->GetInfo(info);
-}
-
 void CScreenSaver::Destroy()
 {
 #ifdef HAS_PYTHON

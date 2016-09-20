@@ -39,7 +39,6 @@ public:
   bool CreateScreenSaver();
   void Start();
   void Render();
-  void GetInfo(SCR_INFO *info);
   void Destroy();
 };
 
