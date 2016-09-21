@@ -324,7 +324,7 @@ bool CCueDocument::Parse(CueReader& reader, const std::string& strFile)
         CLog::Log(LOGERROR, "Mangled Time in INDEX 0x tag in CUE file!");
         return false;
       }
-      if (totalTracks > 0) // Set the end time of the last track
+      if (totalTracks > 0 && m_tracks[totalTracks - 1].strFile == strCurrentFile) // Set the end time of the last track
         m_tracks[totalTracks - 1].iEndTime = time;
 
       if (totalTracks >= 0) // start time of the next track
