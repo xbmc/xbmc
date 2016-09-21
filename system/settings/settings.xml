@@ -3071,9 +3071,9 @@
           <level>1</level>
           <default>0</default>
           <constraints>
-            <minimum>-20</minimum>
+            <minimum>-30</minimum>
             <step>2</step>
-            <maximum>20</maximum>
+            <maximum>30</maximum>
           </constraints>
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
