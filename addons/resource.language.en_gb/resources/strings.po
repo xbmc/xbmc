@@ -19459,7 +19459,31 @@ msgctxt "#38042"
 msgid "[Missing]"
 msgstr ""
 
-#empty strings from id 38043 to 38099
+#. Title album artists node
+#: system/library/music/musicroles/albumartists.xml
+msgctxt "#38043"
+msgid "Album artists"
+msgstr ""
+
+#. Title all artists node
+#: system/library/music/musicroles/allartists.xml
+msgctxt "#38044"
+msgid "Song & album artists"
+msgstr ""
+
+#. Title all contributors node (any role)
+#: system/library/music/musicroles/allcontributors.xml
+msgctxt "#38045"
+msgid "All contributors"
+msgstr ""
+
+#. Title all roles node
+#: system/library/music/musicroles/allroles.xml
+msgctxt "#38046"
+msgid "All roles"
+msgstr ""
+
+#empty strings from id 38047 to 38099
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
