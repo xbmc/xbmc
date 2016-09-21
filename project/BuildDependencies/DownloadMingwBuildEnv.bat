@@ -24,8 +24,8 @@ title msys2
 
 set msysver=20160205
 set msys2=msys64
-set build32=yes
-set build64=no
+set build32=no
+set build64=yes
 set instdir=%CD%
 set msyspackages=autoconf automake libtool m4 make gettext patch pkg-config wget p7zip coreutils
 set mingwpackages=dlfcn gcc gcc-libs gettext libiconv libgpg-error libpng yasm nettle libtasn1 openssl

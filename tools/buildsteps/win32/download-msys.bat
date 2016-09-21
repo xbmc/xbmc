@@ -58,7 +58,7 @@ cd %CUR_PATH%
 rem insert call to vsvars32.bat in msys.bat
 cd %MSYS_INSTALL_PATH%
 Move msys.bat msys.bat_dist
-ECHO CALL "%VS140COMNTOOLS%\..\..\VC\bin\vcvars32.bat">>msys.bat
+ECHO CALL "%VS140COMNTOOLS%\..\..\VC\bin\amd64\vcvars64.bat">>msys.bat
 TYPE msys.bat_dist>>msys.bat
 
 cd %CUR_PATH%
