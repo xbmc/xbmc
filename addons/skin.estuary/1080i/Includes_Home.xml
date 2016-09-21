@@ -197,6 +197,18 @@
 							<bordertexture border="20">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
+						<control type="textbox">
+							<left>20</left>
+							<top>210</top>
+							<width>200</width>
+							<height>100</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(poster))</visible>
+						</control>
 					</control>
 				</itemlayout>
 				<focusedlayout width="277" height="400">
@@ -216,6 +228,20 @@
 							<texture fallback="DefaultVideo.png" background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture border="20">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
+						</control>
+						<control type="textbox">
+							<left>20</left>
+							<top>210</top>
+							<width>200</width>
+							<height>100</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(poster))</visible>
+							<animation effect="fade" start="0" end="100" time="200" reversible="true">Unfocus</animation>
+							<animation effect="fade" start="100" end="0" time="0" reversible="true">Focus</animation>
 						</control>
 						<control type="group">
 							<left>20</left>
@@ -886,7 +912,7 @@
 							<left>42</left>
 							<width>260</width>
 							<height>200</height>
-							<texture fallback="DefaultTVShowsSquare.png">$PARAM[icon]</texture>
+							<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="textbox">
@@ -938,7 +964,7 @@
 								<left>42</left>
 								<width>260</width>
 								<height>200</height>
-								<texture fallback="DefaultTVShowsSquare.png">$PARAM[icon]</texture>
+								<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="textbox">
@@ -1021,7 +1047,7 @@
 							<left>42</left>
 							<width>260</width>
 							<height>200</height>
-							<texture fallback="DefaultTVShowsSquare.png">$PARAM[icon]</texture>
+							<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="textbox">
@@ -1073,7 +1099,7 @@
 								<left>42</left>
 								<width>260</width>
 								<height>200</height>
-								<texture fallback="DefaultTVShowsSquare.png">$PARAM[icon]</texture>
+								<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="textbox">
@@ -1348,27 +1374,6 @@
 			</include>
 		</content>
 	</include>
-	<!-- <include content="WeatherDailyItem">
-	     <item id="$PARAM[item_index]">
-	     <label>$INFO[Window(weather).Property(Daily.$PARAM[item_index].LongDay)]</label>
-	     <label2>$INFO[Window(weather).Property(Daily.$PARAM[item_index].LongDate)]</label2>
-	     <property name="Humidity">$INFO[Window(weather).Property(Daily.$PARAM[item_index].Humidity)]</property>
-	     <property name="Pressure">$INFO[Window(weather).Property(Daily.$PARAM[item_index].Pressure)]</property>
-	     <property name="DewPoint">$INFO[Window(weather).Property(Daily.$PARAM[item_index].DewPoint)]</property>
-	     <property name="FeelsLike">$INFO[Window(weather).Property(Daily.$PARAM[item_index].FeelsLike)]</property>
-	     <property name="Rain">$INFO[Window(weather).Property(Daily.$PARAM[item_index].Rain)]</property>
-	     <property name="Snow">$INFO[Window(weather).Property(Daily.$PARAM[item_index].Snow)]</property>
-	     <property name="TempMorn">$INFO[Window(weather).Property(Daily.$PARAM[item_index].TempMorn)]</property>
-	     <property name="TempEve">$INFO[Window(weather).Property(Daily.$PARAM[item_index].TempEve)]</property>
-	     <property name="TempNight">$INFO[Window(weather).Property(Daily.$PARAM[item_index].TempNight)]</property>
-	     <property name="WindSpeed">$INFO[Window(weather).Property(Daily.$PARAM[item_index].WindSpeed)]</property>
-	     <property name="WindGust">$INFO[Window(weather).Property(Daily.$PARAM[item_index].WindGust)]</property>
-	     <property name="WindDirection">$INFO[Window(weather).Property(Daily.$PARAM[item_index].WindDirection)]</property>
-	     <property name="Precipitation">$INFO[Window(weather).Property(Daily.$PARAM[item_index].Precipitation)]</property>
-	     <onclick>SetProperty(FocusedItem,$PARAM[item_index])</onclick>
-	     <icon>$INFO[Window(weather).Property(Daily.$PARAM[item_index].OutlookIcon)]</icon>
-	     </item>
-	     </include> -->
 	<include name="WeatherHourlyItem">
 		<item>
 			<label>$INFO[Window(weather).Property(Hourly.$PARAM[item_index].Time)]</label>

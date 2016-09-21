@@ -337,7 +337,9 @@
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRChannelsVar]" />
 				<param name="breadcrumbs_icon" value="icons/settings/tvremote.png" />
 			</include>
-			<include>BottomBar</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
 		</control>
 		<control type="label" id="29">
 			<font></font>

@@ -225,6 +225,7 @@
 			</include>
 			<include content="BottomBar">
 				<param name="PageLabel" value="$INFO[Container.NumItems,$LOCALIZE[19019]: ]" />
+				<param name="info_visible" value="true" />
 			</include>
 		</control>
 		<control type="label" id="29">

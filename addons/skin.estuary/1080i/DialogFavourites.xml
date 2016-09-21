@@ -48,7 +48,7 @@
 					<width>320</width>
 					<height>320</height>
 					<aspectratio>scale</aspectratio>
-					<texture border="4" fallback="DefaultAddon.png">$INFO[ListItem.Art(thumb)]</texture>
+					<texture border="4" fallback="DefaultFavourites.png">$INFO[ListItem.Art(thumb)]</texture>
 					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 					<bordersize>4</bordersize>
 				</control>
@@ -77,7 +77,7 @@
 					<width>320</width>
 					<height>320</height>
 					<aspectratio>scale</aspectratio>
-					<texture border="4" fallback="DefaultAddon.png">$INFO[ListItem.Art(thumb)]</texture>
+					<texture border="4" fallback="DefaultFavourites.png">$INFO[ListItem.Art(thumb)]</texture>
 					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 					<bordersize>4</bordersize>
 				</control>

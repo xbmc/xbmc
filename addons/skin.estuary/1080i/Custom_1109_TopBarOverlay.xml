@@ -40,7 +40,7 @@
 				<left>85</left>
 				<shadowcolor>text_shadow</shadowcolor>
 				<height>100</height>
-				<width>auto</width>
+				<width>1400</width>
 			</control>
 			<control type="group">
 				<visible>!Window.IsVisible(extendedprogressdialog)</visible>

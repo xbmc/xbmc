@@ -276,7 +276,9 @@
 				<font></font>
 				<include>HiddenObject</include>
 			</control>
-			<include>BottomBar</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
 		</control>
 	</controls>
 </window>
