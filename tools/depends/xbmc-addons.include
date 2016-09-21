@@ -27,7 +27,7 @@ endif
 
 ifneq ($(PREFIX),)
   ifneq (darwin, $(findstring darwin, $(HOST)))
-    INSTALL_PREFIX = $(PREFIX)
+    INSTALL_PREFIX = $(PREFIX) -DOVERRIDE_PATHS=ON
   endif
 
   CMAKE_EXTRA += -DAUTOCONF_FILES="$(CONFIG_SUB) $(CONFIG_GUESS)"
@@ -67,7 +67,7 @@ endif
          done
 ifneq ($(CROSS_COMPILING),yes)
 	@[ -f $(ADDON_PROJECT_DIR)/.failure ] && echo "Following Addons failed to build:" $(shell cat $(ADDON_PROJECT_DIR)/.failure) || :
-	@[ -w $(INSTALL_PREFIX) ] || { cd $(PLATFORM); $(MAKE) need-sudo | grep -q TRUE && $(MAKE) sudo-install || $(MAKE) install ;}
+	@cd $(PLATFORM); $(MAKE) need-sudo | grep -q TRUE && $(MAKE) sudo-install || :
 endif
 	touch $@
 
