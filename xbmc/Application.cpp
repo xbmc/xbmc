@@ -1311,8 +1311,11 @@ void CApplication::StopPVRManager()
   CLog::Log(LOGINFO, "stopping PVRManager");
   if (g_PVRManager.IsPlaying())
     StopPlaying();
+  // stop pvr manager thread and clear all pvr data
   g_PVRManager.Stop();
+  // stop epg container thread and clear all epg data
   g_EpgContainer.Stop();
+  g_EpgContainer.Clear();
 }
 
 void CApplication::ReinitPVRManager()
