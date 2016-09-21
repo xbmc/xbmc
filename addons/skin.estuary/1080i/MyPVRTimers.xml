@@ -188,7 +188,9 @@
 			<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimersVar]" />
 			<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 		</include>
-		<include>BottomBar</include>
+		<include content="BottomBar">
+			<param name="info_visible" value="true" />
+		</include>
 		<control type="label" id="29">
 			<font>-</font>
 			<include>HiddenObject</include>

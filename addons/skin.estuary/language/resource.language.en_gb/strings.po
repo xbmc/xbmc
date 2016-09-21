@@ -329,6 +329,11 @@ msgctxt "#31061"
 msgid "Main menu items"
 msgstr ""
 
+#: /1080i/SkinSettings.xml
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr ""
+
 #: /1080i/Includes_MediaMenu.xml:74
 msgctxt "#31063"
 msgid "Sections"

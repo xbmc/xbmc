@@ -551,40 +551,47 @@
 		</definition>
 	</include>
 	<include name="AddonLauncherPanel">
-		<control type="panel" id="$PARAM[container_id]">
-			<left>520</left>
-			<top>175</top>
-			<width>1360</width>
-			<height>720</height>
-			<onleft>9000</onleft>
-			<onright>531</onright>
-			<include>Visible_Right_Delayed</include>
-			<visible>$PARAM[visible]</visible>
-			<onup>$PARAM[container_id]</onup>
-			<ondown>$PARAM[container_id]</ondown>
-			<preloaditems>1</preloaditems>
-			<pagecontrol>531</pagecontrol>
-			<scrolltime tween="cubic" easing="out">500</scrolltime>
-			<itemlayout height="360" width="320">
-				<include>InfoWallMusicLayout</include>
-			</itemlayout>
-			<focusedlayout height="360" width="320">
-				<control type="group">
-					<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180">Focus</animation>
-					<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180">UnFocus</animation>
-					<include>InfoWallMusicLayout</include>
-					<control type="image">
-						<left>15</left>
-						<top>5</top>
-						<width>288</width>
-						<height>348</height>
-						<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-						<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+		<param name="fallback_image">DefaultFolder.png</param>
+		<definition>
+			<control type="panel" id="$PARAM[container_id]">
+				<left>520</left>
+				<top>175</top>
+				<width>1360</width>
+				<height>720</height>
+				<onleft>9000</onleft>
+				<onright>531</onright>
+				<include>Visible_Right_Delayed</include>
+				<visible>$PARAM[visible]</visible>
+				<onup>$PARAM[container_id]</onup>
+				<ondown>$PARAM[container_id]</ondown>
+				<preloaditems>1</preloaditems>
+				<pagecontrol>531</pagecontrol>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<itemlayout height="360" width="320">
+					<include content="InfoWallMusicLayout">
+						<param name="fallback_image" value="DefaultAddon.png" />
+					</include>
+				</itemlayout>
+				<focusedlayout height="360" width="320">
+					<control type="group">
+						<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180">Focus</animation>
+						<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180">UnFocus</animation>
+						<include content="InfoWallMusicLayout">
+							<param name="fallback_image" value="DefaultAddon.png" />
+						</include>
+						<control type="image">
+							<left>15</left>
+							<top>5</top>
+							<width>288</width>
+							<height>348</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+						</control>
 					</control>
-				</control>
-			</focusedlayout>
-			<content sortby="lastused" sortorder="descending" target="$PARAM[container_target]">$PARAM[container_path]</content>
-		</control>
+				</focusedlayout>
+				<content sortby="lastused" sortorder="descending" target="$PARAM[container_target]">$PARAM[container_path]</content>
+			</control>
+		</definition>
 	</include>
 	<include name="LeftAlignedInfo">
 		<param name="id">33333</param>

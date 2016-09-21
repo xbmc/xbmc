@@ -260,7 +260,7 @@
 						<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 						<info>Player.Progress</info>
 						<action>seek</action>
-						<visible>!Control.HasFocus(87)</visible>
+						<visible>!Control.HasFocus(87) + Player.SeekEnabled</visible>
 					</control>
 					<control type="slider">
 						<left>30</left>
@@ -274,7 +274,7 @@
 						<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 						<info>Player.Progress</info>
 						<action>seek</action>
-						<visible>Control.HasFocus(87)</visible>
+						<visible>Control.HasFocus(87) + Player.SeekEnabled</visible>
 					</control>
 				</control>
 			</control>

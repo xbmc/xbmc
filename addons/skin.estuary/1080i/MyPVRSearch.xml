@@ -184,7 +184,9 @@
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRSearchVar]" />
 				<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
 			</include>
-			<include>BottomBar</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
 		</control>
 	</controls>
 </window>
