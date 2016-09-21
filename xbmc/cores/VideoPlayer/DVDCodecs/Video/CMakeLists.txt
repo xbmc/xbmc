@@ -46,7 +46,7 @@ if(APPLE)
                       VTB.h)
 endif()
 
-if(MMAL_FOUND)
+if(RPI_FOUND)
   list(APPEND SOURCES MMALCodec.cpp)
   list(APPEND HEADERS MMALCodec.h)
   list(APPEND SOURCES MMALFFmpeg.cpp)

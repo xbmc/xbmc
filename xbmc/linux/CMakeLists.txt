@@ -32,7 +32,7 @@ set(HEADERS ConvUtils.h
             XMemUtils.h
             XTimeUtils.h)
 
-if(OMXLIB_FOUND)
+if(RPI_FOUND)
   list(APPEND SOURCES OMXClock.cpp
                       OMXCore.cpp)
   list(APPEND HEADERS DllOMX.h
