@@ -2,7 +2,7 @@
 <window>
 	<defaultcontrol always="true">10</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
-	<views>10,11,12,13</views>
+	<views>10</views>
 	<menucontrol>9000</menucontrol>
 	<controls>
 		<include>DefaultBackground</include>
@@ -212,133 +212,6 @@
 						</control>
 					</control>
 				</control>
-			</control>
-			<include content="PVRGuideListViewtype">
-				<param name="container_id" value="11" />
-				<param name="container_name" value="19030" />
-			</include>
-			<include content="PVRGuideListViewtype">
-				<param name="container_id" value="12" />
-				<param name="container_name" value="19031" />
-			</include>
-			<control type="group">
-				<description>TV Guide Channel</description>
-				<visible>Control.IsVisible(13)</visible>
-				<include>Visible_Left</include>
-				<include>OpenClose_Left</include>
-				<top>30</top>
-				<control type="group">
-					<left>80</left>
-					<top>150</top>
-					<control type="image">
-						<left>-20</left>
-						<top>-20</top>
-						<width>1130</width>
-						<height>746</height>
-						<texture border="22">dialogs/dialog-bg.png</texture>
-					</control>
-					<control type="list" id="13">
-						<top>0</top>
-						<width>1740</width>
-						<height>700</height>
-						<onup>13</onup>
-						<ondown>13</ondown>
-						<onleft>9000</onleft>
-						<onright>75</onright>
-						<viewtype label="19029">list</viewtype>
-						<pagecontrol>75</pagecontrol>
-						<scrolltime>200</scrolltime>
-						<itemlayout height="58">
-							<control type="image">
-								<left>0</left>
-								<width>1090</width>
-								<height>58</height>
-								<texture border="10">lists/separator.png</texture>
-							</control>
-							<control type="label">
-								<left>20</left>
-								<width>350</width>
-								<height>58</height>
-								<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]</label>
-								<font>font12</font>
-								<aligny>center</aligny>
-							</control>
-							<control type="label">
-								<left>378</left>
-								<width>825</width>
-								<height>58</height>
-								<textcolor>button_focus</textcolor>
-								<aligny>center</aligny>
-								<label>$INFO[ListItem.Label]</label>
-							</control>
-							<control type="image">
-								<left>1000</left>
-								<top>15</top>
-								<width>35</width>
-								<height>35</height>
-								<texture>$VAR[PVRStatusImageVar]</texture>
-							</control>
-						</itemlayout>
-						<focusedlayout height="58">
-							<control type="image">
-								<left>0</left>
-								<width>1090</width>
-								<height>58</height>
-								<texture border="10">lists/separator.png</texture>
-								<visible>!Control.HasFocus(13)</visible>
-							</control>
-							<control type="image">
-								<left>0</left>
-								<width>1090</width>
-								<height>58</height>
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(13)</visible>
-							</control>
-							<control type="label">
-								<left>20</left>
-								<width>350</width>
-								<height>58</height>
-								<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]</label>
-								<aligny>center</aligny>
-								<font>font12</font>
-							</control>
-							<control type="label">
-								<left>378</left>
-								<width>825</width>
-								<height>58</height>
-								<aligny>center</aligny>
-								<label>$INFO[ListItem.Label]</label>
-							</control>
-							<control type="image">
-								<left>1000</left>
-								<top>15</top>
-								<width>35</width>
-								<height>35</height>
-								<texture>$VAR[PVRStatusImageVar]</texture>
-							</control>
-						</focusedlayout>
-					</control>
-					<control type="scrollbar" id="75">
-						<left>1095</left>
-						<top>5</top>
-						<width>12</width>
-						<height>700</height>
-						<onleft>13</onleft>
-						<onright>13</onright>
-					</control>
-				</control>
-			</control>
-			<control type="group">
-				<left>1220</left>
-				<top>150</top>
-				<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
-				<visible>Control.IsVisible(13)</visible>
-				<include>Visible_Right</include>
-				<include>OpenClose_Right</include>
-				<include content="PVRInfoPanel">
-					<param name="bottom_label1" value="$INFO[ListItem.NextTitle,[COLOR button_focus]$LOCALIZE[19031]:[/COLOR] ]" />
-					<param name="bottom_label2" value="$INFO[ListItem.NextStartTime]" />
-				</include>
 			</control>
 			<control type="group">
 				<include>MediaMenuCommon</include>

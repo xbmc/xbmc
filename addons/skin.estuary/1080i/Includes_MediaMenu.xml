@@ -162,13 +162,6 @@
 					<onclick>Container.SetSortDirection</onclick>
 					<visible>!Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
-				<control type="button" id="6051">
-					<include>MediaMenuItemsCommon</include>
-					<label>$LOCALIZE[456]</label>
-					<label2>[B]$INFO[Container.Viewmode][/B]</label2>
-					<onclick>Container.NextViewMode</onclick>
-					<visible>Window.IsActive(MyPVRGuide.xml)</visible>
-				</control>
 				<control type="label" id="300">
 					<label>$LOCALIZE[31021]</label>
 					<include>MediaMenuLabelCommon</include>
