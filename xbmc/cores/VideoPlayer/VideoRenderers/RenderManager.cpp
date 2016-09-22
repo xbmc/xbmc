@@ -740,9 +740,8 @@ void CRenderManager::ManageCaptures()
         //if rendering this capture continuously, and readout is async, render a new capture immediately
         if (capture->IsAsync() && !(capture->GetFlags() & CAPTUREFLAG_IMMEDIATELY))
           RenderCapture(capture);
-
-        ++it;
       }
+      ++it;
     }
     else
     {
