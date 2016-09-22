@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This file contains the mapping of touch gestures to actions within Kodi.             -->
+<!--                                                                                      -->
+<!-- The format is:                                                                       -->
+<!--  <window>                                                                            -->
+<!--    <device>                                                                          -->
+<!--      <gesture>action</gesture>                                                       -->
+<!--    </device>                                                                         -->
+<!--  </window>                                                                           -->
+<!--                                                                                      -->
+<!-- The <global> section is a fall through - they will only be used if the button is     -->
+<!-- not used in the current window's section.                                            -->
+<!--                                                                                      -->
+<!-- Actions can be built-in functions.                                                   -->
+<!--  eg <tap pointers="2">ActivateWindow(Music)</tap>                                    -->
+<!-- would automatically go to Music when two fingers tap the screen at once.             -->
+<!--                                                                                      -->
+<!--                                                                                      -->
+<!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
+<!-- This is different from a "noop" action, which disables a button.                     -->
+<!--                                                                                      -->
+<!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
 <keymap>
   <global>
     <touch>
@@ -28,7 +49,6 @@
       <swipe direction="right">StepForward</swipe>
       <swipe direction="up">ChapterOrBigStepForward</swipe>
       <swipe direction="down">ChapterOrBigStepBack</swipe>
-      <swipe direction="left" pointers="2">Seek(-7)</swipe>
       <swipe direction="up" pointers="2">SkipNext</swipe>
       <swipe direction="down" pointers="2">SkipPrevious</swipe>
       <tap pointers="2">Playlist</tap>

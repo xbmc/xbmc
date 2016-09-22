@@ -15,10 +15,6 @@
 <!--  eg <B>ActivateWindow(Music)</B>                                                     -->
 <!-- would automatically go to Music on the press of the B button.                        -->
 <!--                                                                                      -->
-<!--  Long presses                                                                        -->
-<!--   A limitation is that if a single press is mapped in a section, a global "longpress"-->
-<!--   will be ignored. The workaround is to duplicate the long mapping in the section.   -->
-<!--                                                                                      -->
 <!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
 <!-- This is different from a "noop" action, which disables a button.                     -->
 <!--                                                                                      -->
@@ -88,7 +84,7 @@
       <hash>ActivateWindow(Settings)</hash>
     </remote>
   </Home>
-  <MyTVRecordings>
+  <TVRecordings>
     <remote>
       <clear>Delete</clear>
       <red>Red</red>
@@ -96,8 +92,8 @@
       <yellow>Yellow</yellow>
       <blue>Blue</blue>
     </remote>
-  </MyTVRecordings>
-  <MyTVTimers>
+  </TVRecordings>
+  <TVTimers>
     <remote>
       <clear>Delete</clear>
       <red>Red</red>
@@ -105,8 +101,8 @@
       <yellow>Yellow</yellow>
       <blue>Blue</blue>
     </remote>
-  </MyTVTimers>
-  <MyRadioRecordings>
+  </TVTimers>
+  <TVTimerRules>
     <remote>
       <clear>Delete</clear>
       <red>Red</red>
@@ -114,8 +110,8 @@
       <yellow>Yellow</yellow>
       <blue>Blue</blue>
     </remote>
-  </MyRadioRecordings>
-  <MyRadioTimers>
+  </TVTimerRules>
+  <RadioRecordings>
     <remote>
       <clear>Delete</clear>
       <red>Red</red>
@@ -123,7 +119,25 @@
       <yellow>Yellow</yellow>
       <blue>Blue</blue>
     </remote>
-  </MyRadioTimers>
+  </RadioRecordings>
+  <RadioTimers>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </RadioTimers>
+  <RadioTimerRules>
+    <remote>
+      <clear>Delete</clear>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+    </remote>
+  </RadioTimerRules>
   <FileManager>
     <remote>
       <clear>Delete</clear>
@@ -132,28 +146,28 @@
       <hash>Rename</hash>
     </remote>
   </FileManager>
-  <MyMusicPlaylist>
+  <MusicPlaylist>
     <remote>
       <clear>Delete</clear>
       <zero>Delete</zero>
     </remote>
-  </MyMusicPlaylist>
-  <MyMusicPlaylistEditor>
+  </MusicPlaylist>
+  <MusicPlaylistEditor>
     <remote>
       <zero>Queue</zero>
     </remote>
-  </MyMusicPlaylistEditor>
+  </MusicPlaylistEditor>
   <Music>
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
     </remote>
   </Music>
-  <MyPictures>
+  <Pictures>
     <remote>
       <clear>Delete</clear>
     </remote>
-  </MyPictures>
+  </Pictures>
   <FullscreenVideo>
     <remote>
       <zero>Number0</zero>
@@ -341,12 +355,12 @@
       <clear>Delete</clear>
     </remote>
   </Videos>
-  <MyVideoPlaylist>
+  <VideoPlaylist>
     <remote>
       <clear>Delete</clear>
       <zero>Delete</zero>
     </remote>
-  </MyVideoPlaylist>
+  </VideoPlaylist>
   <VirtualKeyboard>
     <remote>
       <back>Back</back>
