@@ -147,8 +147,23 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
 
   if (inputType == INPUT_TYPE::DIGITAL)
   {
+    unsigned int holdTimeMs = 0;
+
     const bool bIsPressed = (magnitude >= ANALOG_DIGITAL_THRESHOLD);
-    m_handler->OnDigitalKey(keyId, bIsPressed, motionTimeMs);
+    if (bIsPressed)
+    {
+      const bool bIsHeld = (m_holdStartTimes.find(keyId) != m_holdStartTimes.end());
+      if (bIsHeld)
+        holdTimeMs = motionTimeMs - m_holdStartTimes[keyId];
+      else
+        m_holdStartTimes[keyId] = motionTimeMs;
+    }
+    else
+    {
+      m_holdStartTimes.erase(keyId);
+    }
+
+    m_handler->OnDigitalKey(keyId, bIsPressed, holdTimeMs);
     return true;
   }
   else if (inputType == INPUT_TYPE::ANALOG)

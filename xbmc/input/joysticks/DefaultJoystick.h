@@ -24,6 +24,7 @@
 #include "JoystickTypes.h"
 #include "RumbleGenerator.h"
 
+#include <map>
 #include <vector>
 
 #define DEFAULT_CONTROLLER_ID    "game.controller.default"
@@ -89,6 +90,8 @@ namespace JOYSTICK
     static const std::vector<ANALOG_STICK_DIRECTION>& GetDirections(void);
 
     IKeymapHandler* const  m_handler;
+
+    std::map<unsigned int, unsigned int> m_holdStartTimes; // Key ID -> hold start time (ms)
 
     CRumbleGenerator m_rumbleGenerator;
   };

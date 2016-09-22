@@ -96,7 +96,8 @@ void CKeymapHandler::ProcessButtonPress(unsigned int keyId, unsigned int holdTim
   {
     m_pressedButtons.push_back(keyId);
 
-    if (SendDigitalAction(keyId))
+    // Only dispatch action if button was pressed this frame
+    if (holdTimeMs == 0 && SendDigitalAction(keyId))
     {
       m_lastButtonPress = keyId;
       m_lastDigitalActionMs = holdTimeMs;
