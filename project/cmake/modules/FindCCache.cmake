@@ -7,7 +7,11 @@
 # See: https://crascit.com/2016/04/09/using-ccache-with-cmake/
 
 find_program(CCACHE_PROGRAM ccache)
-if(CCACHE_PROGRAM)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(CCACHE REQUIRED_VARS CCACHE_PROGRAM)
+
+if(CCACHE_FOUND)
   # Supports Unix Makefiles and Ninja
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
   set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
