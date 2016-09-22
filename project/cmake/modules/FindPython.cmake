@@ -5,7 +5,7 @@
 # PYTHON_INCLUDE_DIRS - the python include directory
 # PYTHON_LIBRARIES - The python libraries
 
-if(PKG_CONFIG_FOUND AND NOT CMAKE_CROSSCOMPILING)
+if(PKG_CONFIG_FOUND)
   pkg_check_modules(PYTHON python QUIET)
 endif()
 
