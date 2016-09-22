@@ -2009,7 +2009,6 @@
 		E499143E174E605900741B6D /* AlarmClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E230D25F9FD00618676 /* AlarmClock.cpp */; };
 		E499143F174E605900741B6D /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		E4991440174E605900741B6D /* Archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E250D25F9FD00618676 /* Archive.cpp */; };
-		E4991441174E605900741B6D /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 		E4991443174E605900741B6D /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52769A151BAEDA00B5B63B /* Base64.cpp */; };
 		E4991444174E605900741B6D /* BitstreamConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */; };
 		E4991445174E605900741B6D /* BitstreamStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E270D25F9FD00618676 /* BitstreamStats.cpp */; };
@@ -2303,7 +2302,6 @@
 		F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
-		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5067,8 +5065,6 @@
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1E60E427F6700A8E96F /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
 		F5F8E1E70E427F6700A8E96F /* md5.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
-		F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
-		F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -8794,8 +8790,6 @@
 				F5A9D3071097C9370050490F /* AliasShortcutUtils.h */,
 				E38E1E250D25F9FD00618676 /* Archive.cpp */,
 				E38E1E260D25F9FD00618676 /* Archive.h */,
-				F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */,
-				F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */,
 				7C908892196358A8003D0619 /* auto_buffer.cpp */,
 				7C908893196358A8003D0619 /* auto_buffer.h */,
 				DF52769A151BAEDA00B5B63B /* Base64.cpp */,
@@ -10141,7 +10135,6 @@
 				F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */,
 				DFEB902819E9337200728978 /* AEResampleFactory.cpp in Sources */,
 				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
-				F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */,
 				DF29BD021B5D913B00904347 /* EventsDirectory.cpp in Sources */,
 				E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */,
 				DF29BCEE1B5D911800904347 /* BaseEvent.cpp in Sources */,
@@ -11610,7 +11603,6 @@
 				DF4BF01E1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */,
 				E499143F174E605900741B6D /* AliasShortcutUtils.cpp in Sources */,
 				E4991440174E605900741B6D /* Archive.cpp in Sources */,
-				E4991441174E605900741B6D /* AsyncFileCopy.cpp in Sources */,
 				E4991443174E605900741B6D /* Base64.cpp in Sources */,
 				E4991444174E605900741B6D /* BitstreamConverter.cpp in Sources */,
 				E4991445174E605900741B6D /* BitstreamStats.cpp in Sources */,
