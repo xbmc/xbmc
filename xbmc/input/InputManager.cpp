@@ -780,7 +780,7 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
 void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
 {
   if (std::find(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler) == m_keyboardHandlers.end())
-    m_keyboardHandlers.push_back(handler);
+    m_keyboardHandlers.insert(m_keyboardHandlers.begin(), handler);
 }
 
 void CInputManager::UnregisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
