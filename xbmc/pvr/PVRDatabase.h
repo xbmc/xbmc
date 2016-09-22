@@ -26,8 +26,6 @@
 
 #include "pvr/PVRManager.h"
 
-class CVideoSettings;
-
 namespace PVR
 {
   class CPVRChannelGroup;

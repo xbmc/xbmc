@@ -247,10 +247,6 @@ using namespace XbmcThreads;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-// uncomment this if you want to use release libs in the debug build.
-// Atm this saves you 7 mb of memory
-#define USE_RELEASE_LIBS
-
 #define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
