@@ -23,16 +23,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
-#ifdef TARGET_WINDOWS
-#ifndef BUILDING_WITH_CMAKE
-#define TIXML_USE_STL
-#ifdef _DEBUG
-#pragma comment(lib, "tinyxmlSTLd.lib")
-#else
-#pragma comment(lib, "tinyxmlSTL.lib")
-#endif
-#endif
-#else
+#ifndef TARGET_WINDOWS
 //compile fix for TinyXml < 2.6.0
 #define DOCUMENT    TINYXML_DOCUMENT
 #define ELEMENT     TINYXML_ELEMENT
