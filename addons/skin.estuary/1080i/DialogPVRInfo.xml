@@ -91,7 +91,7 @@
 				</include>
 				<include content="InfoDialogButton">
 					<param name="id" value="9" />
-					<param name="icon" value="icons/infodialogs/record.png" />
+					<param name="icon" value="icons/infodialogs/timer.png" />
 					<param name="label" value="$LOCALIZE[19061]" />
 					<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
 				</include>
