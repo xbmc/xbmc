@@ -14643,7 +14643,19 @@ msgctxt "#24149"
 msgid "The following add-ons are incompatible with this version of Kodi and have been automatically disabled: %s."
 msgstr ""
 
-#empty strings from id 24150 to 24990
+#. Progress text on splash screen
+#: xbmc/Application.cpp
+msgctxt "#24150"
+msgid "Database migration in progress - please wait..."
+msgstr ""
+
+#. Progress text on splash screen
+#: xbmc/Application.cpp
+msgctxt "#24151"
+msgid "Add-on migration in progress - please wait..."
+msgstr ""
+
+#empty strings from id 24152 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
