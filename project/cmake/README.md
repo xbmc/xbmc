@@ -3,13 +3,12 @@
 This files describes Kodi's CMake based buildsystem. CMake is a cross-platform
 tool for generating makefiles as well as project files used by IDEs.
 
-The current version of the buildsystem is capable of building the main Kodi
-executable (but no packaging or dependency management yet) for the following
-platforms:
+The current version of the buildsystem is capable of building and packaging
+Kodi for the following platforms:
 
 - Linux (GNU Makefiles, Ninja)
 - Windows (NMake Makefiles, Visual Studio 14 (2015), Ninja)
-- OSX and IOS (GNU Makefiles, Xcode, Ninja)
+- macOS and iOS (GNU Makefiles, Xcode, Ninja)
 - Android (GNU Makefiles)
 - FreeBSD (GNU Makefiles)
 
@@ -45,12 +44,12 @@ are downloaded using `DownloadBuildDeps.bat` and `DownloadMingwBuildEnv.bat`
 and that the mingw libs (ffmpeg, libdvd and others) are built using
 `make-mingwlibs.bat`.
 
-### OSX
+### macOS
 
-For OSX the required dependencies can be found in
+For macOS the required dependencies can be found in
 [docs/README.osx](https://github.com/xbmc/xbmc/tree/master/docs/README.osx).
 
-On OSX it is necessary to build the dependencies in `tools/depends` using
+On macOS it is necessary to build the dependencies in `tools/depends` using
 `./bootstrap && ./configure --host=<PLATFORM> && make`. The other steps such
 as `make -C tools/depends/target/xbmc` and `make xcode_depends` are not needed
 as these steps are covered already by the CMake project.
@@ -113,6 +112,19 @@ cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KO
 cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
 
+### Windows with Visual Studio project files
+
+```
+cmake -G "Visual Studio 14" <KODI_SRC>/project/cmake/
+cmake --build . --config "Debug"  # or: Build solution with Visual Studio
+Debug\kodi.exe
+```
+
+#### Windows installer generation
+
+The script [project/Win32BuildSetup](https://github.com/xbmc/xbmc/blob/master/project/Win32BuildSetup/BuildSetup.bat)
+builds an installable package for Windows.
+
 ### Windows with NMake Makefiles
 
 ```
@@ -121,15 +133,7 @@ cmake --build .  # or: nmake
 kodi.exe
 ```
 
-### Windows with Visual Studio project files
-
-```
-cmake -G "Visual Studio 14" <KODI_SRC>/project/cmake/
-cmake --build . --config "Debug"  # or: Build solution with Visual Studio
-set KODI_HOME="%CD%" && Debug\kodi.exe
-```
-
-### OSX with GNU Makefiles
+### macOS with GNU Makefiles
 
 ```
 cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
@@ -137,12 +141,28 @@ cmake --build . -- VERBOSE=1 -j$(sysctl -n hw.ncpu)  # or: make VERBOSE=1 -j$(sy
 ./kodi.bin
 ```
 
-### OSX with Xcode project files
+### macOS with Xcode project files
 
 ```
 cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake -G "Xcode" <KODI_SRC>/project/cmake/
 cmake --build . --config "Release" -- -verbose -jobs $(sysctl -n hw.ncpu)  # or: Build solution with Xcode
-KODI_HOME=$(pwd) ./Release/kodi.bin
+./Release/kodi.bin
+```
+
+#### macOS installer generation
+
+Afterwards an installable DMG for macOS can be built with the following command:
+
+```
+cmake --build . --config "Release" --target "dmg"  # or: make dmg
+```
+
+#### iOS package generation
+
+Consequently an installable DEB for iOS can be built with the following command:
+
+```
+make deb
 ```
 
 ### Android with GNU Makefiles
@@ -151,6 +171,39 @@ KODI_HOME=$(pwd) ./Release/kodi.bin
 cmake -DCMAKE_TOOLCHAIN_FILE=<KODI_SRC>/tools/depends/target/Toolchain.cmake <KODI_SRC>/project/cmake/
 cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
+
+#### Android package generation
+
+An installable APK for Android can be built with the following command:
+
+```
+make apk
+```
+
+## Options
+
+Kodi supports a number of build options that can enable or disable certain
+functionality.i These options must be set when running CMake with
+`-DENABLE_<OPTION>=<ON|OFF|AUTO`. The default is `AUTO` which enables
+the option if a certain dependency is found. For example CEC support is
+enabled if libCEC is available. `ON` forcefully enables the dependency
+and the CMake run will fail if the related dependency is not available.
+This is mostly useful for packagers. `OFF` will disable the feature.
+
+Example for forcefully enabling VAAPI and disabling VDPAU:
+
+```
+cmake ... -DENABLE_VAAPI=ON -DENABLE_VDPAU=OFF ...
+```
+
+Example for building with external FFMPEG:
+
+```
+cmake ... -DFFMPEG_PATH=/opt/ffmpeg -DENABLE_INTERNAL_FFMPEG=OFF ...
+```
+
+For more information and an updated list of option, please check the
+main [project/cmake/CMakeLists.txt](https://github.com/xbmc/xbmc/tree/master/project/cmake/CMakeLists.txt).
 
 ## Tests
 
@@ -168,12 +221,47 @@ scanning them would take up an unreasonable amount of configure time.
 When using the makefile builds a few extra targets are defined:
 
 - `make check` builds and executes the test suite.
+- `make check-valgrind` builds and executes the test suite with valgrind memcheck.
 
 Code coverage (with Gcov, LCOV and Gcovr) can be built on Linux:
 
 - CMake has to be executed with `-DCMAKE_BUILD_TYPE=Coverage`
 - `make coverage` generates an HTML code coverage report.
 - `make coverage_xml` generates an XML code coverage report.
+
+## Building binary addons
+
+The CMake build system integrates with the addon build system if the GNU
+Makefile generator is used. This offers an easy way to build addons for
+packagers or Kodi developers who don't work on addons.
+
+```
+make binary-addons
+```
+
+Specific addons can be built with:
+
+```
+make binary-addons ADDONS="visualization.spectrum pvr.demo"
+```
+
+Addon developers can build single addons into the Kodi build directory
+so that the addon can be tested with self-compiled specific versions of Kodi.
+
+```
+mkdir pvr.demo-build && cd pvr.demo-build
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=<KODI_BUILD_DIR>/build -DCORE_BUILD_DIR=<KODI_BUILD_DIR> <pvr.demo-SRC>
+make
+```
+
+It is recommended to specify the directories as absolute paths. If relative
+paths are used, they are considered relative to the build directory in which
+`cmake` was executed (aka the current working working directory).
+
+Both methods work only for already existing addons. See this
+[forum thread](http://forum.kodi.tv/showthread.php?tid=219166&pid=1934922#pid1934922)
+and [addons/README.md](https://github.com/xbmc/xbmc/blob/master/project/cmake/addons/README.md)
+for addon development and detailed documentation about the addon build system.
 
 ## Sanitizers
 
