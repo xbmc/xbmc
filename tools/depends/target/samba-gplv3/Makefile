@@ -55,7 +55,7 @@ endif
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p0 < ../no_fork_and_exec.patch
 endif
-ifeq ($(OS),osx)
+ifeq (darwin, $(findstring darwin, $(HOST)))
 	sed -ie "s|ifndef HAVE_CLOCK_GETTIME|if !defined(HAVE_CLOCK_GETTIME) \&\& !defined(CLOCK_REALTIME)|" "$(PLATFORM)/lib/replace/system/time.h"
 endif
 	cd $(PLATFORM)/source3; $(CONFIGURE)
