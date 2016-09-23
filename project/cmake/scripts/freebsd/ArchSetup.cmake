@@ -14,6 +14,3 @@ else()
     message(WARNING "unknown CPU: ${CPU}")
   endif()
 endif()
-
-set(LIRC_DEVICE "\"/dev/lircd\"" CACHE STRING "LIRC device to use")
-set(DEP_DEFINES -DLIRC_DEVICE=${LIRC_DEVICE})
