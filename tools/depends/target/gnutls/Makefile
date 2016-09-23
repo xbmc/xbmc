@@ -33,6 +33,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../size-max.patch
 	cd $(PLATFORM); $(CONFIGURE)
+ifeq ($(OS),osx)
+	cd $(PLATFORM); sed -ie "s/HAVE_GETENTROPY/HAVE_GETENTROPY_NOPE/" config.h
+endif
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
