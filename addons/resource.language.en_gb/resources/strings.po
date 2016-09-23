@@ -5525,7 +5525,13 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr ""
 
-#empty strings from id 12396 to 12599
+#. Please don't translate this but simply use the english version!
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#12396"
+msgid "Hardware UUID"
+msgstr ""
+
+#empty strings from id 12397 to 12599
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12600"
