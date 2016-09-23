@@ -350,6 +350,7 @@ case $host in
           7.*);;
           8.*);;
           9.*);;
+          10.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;
