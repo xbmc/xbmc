@@ -38,8 +38,8 @@ BASE_URL=$(KODI_MIRROR)/build-deps/sources
 endif
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs -f -O
 ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
-CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.11/config.sub
-CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.11/config.guess
+CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.15/config.sub
+CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.15/config.guess
 
 RPL=@prefix@/@tool_dir@/bin/python @prefix@/@tool_dir@/bin/rpl
 

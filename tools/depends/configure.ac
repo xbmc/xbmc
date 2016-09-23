@@ -169,6 +169,18 @@ case $host in
       platform_os="linux"
     fi
   ;;
+  aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
+    if test "$use_platform" = "auto"; then
+      if test "x$use_cpu" = "xauto"; then
+        use_cpu=$host_cpu
+      fi
+      use_toolchain="${use_toolchain:-/usr}"
+      platform_cflags="-Os -fPIC -DPIC"
+      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+      platform_cxxflags="$platform_cflags"
+      platform_os="linux"
+    fi
+  ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
