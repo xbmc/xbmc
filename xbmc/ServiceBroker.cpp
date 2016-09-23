@@ -65,3 +65,8 @@ PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
 {
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
+
+CPlatform& CServiceBroker::GetPlatform()
+{
+  return g_application.m_ServiceManager->GetPlatform();
+}
