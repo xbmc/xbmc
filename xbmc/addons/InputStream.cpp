@@ -36,8 +36,22 @@ std::unique_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, cons
   std::string extensions = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
   std::string protocols = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@protocols");
   std::string name(ext->plugin->identifier);
+
+  bool matchAPIVersion(true);
+  for (unsigned int i(0); i < ext->plugin->num_imports; ++i)
+    if (strcmp(ext->plugin->imports[i].plugin_id, "kodi.inputstream") == 0 && strcmp(ext->plugin->imports[i].version, INPUTSTREAM_API_VERSION) != 0)
+    {
+      matchAPIVersion = false;
+      CLog::Log(LOGNOTICE, "CInputStream::FromExtension - %s (%s) not loaded due to API mismatch, has %s, wanted %s",
+        props.id.c_str(),
+        props.version.Upstream().c_str(),
+        ext->plugin->imports[i].version,
+        INPUTSTREAM_API_VERSION);
+      break;
+    }
+
   std::unique_ptr<CInputStream> istr(new CInputStream(props, name, listitemprops,
-                                                      extensions, protocols));
+                                                      extensions, protocols, matchAPIVersion));
   istr->CheckConfig();
   return istr;
 }
@@ -46,8 +60,10 @@ CInputStream::CInputStream(const AddonProps& props,
                            const std::string& name,
                            const std::string& listitemprops,
                            const std::string& extensions,
-                           const std::string& protocols)
+                           const std::string& protocols,
+                           bool matchAPIVersion)
 : InputStreamDll(std::move(props))
+, m_matchAPIVersion(matchAPIVersion)
 {
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)
@@ -71,6 +87,9 @@ CInputStream::CInputStream(const AddonProps& props,
 
 bool CInputStream::CheckAPIVersion()
 {
+  if (!m_matchAPIVersion)
+    return false;
+
   std::string dllVersion = m_pStruct->GetApiVersion();
   if (dllVersion.compare(INPUTSTREAM_API_VERSION) != 0)
   {
