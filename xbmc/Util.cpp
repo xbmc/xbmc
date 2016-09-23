@@ -196,6 +196,12 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
 }
 #endif
 #if defined(TARGET_DARWIN)
+bool IsDirectoryValidRoot(std::string path)
+{
+  path += "/system/settings/settings.xml";
+  return CFile::Exists(path);
+}
+
 std::string GetHomePath(const std::string& strTarget, std::string strPath)
 {
   if (strPath.empty())
@@ -219,6 +225,26 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
       strcat(given_path, "../Resources/");
       strcat(given_path, CCompileInfo::GetAppName());
       strcat(given_path, "/");
+      
+      // if this path doesn't exist we
+      // might not be started from the app bundle
+      // but from the debugger/xcode. Lets
+      // see if this assumption is valid
+      if (!CDirectory::Exists(given_path))
+      {
+        std::string given_path_stdstr = given_path;
+        // try to find the correct folder by going back
+        // in the executable path until settings.xml was found
+        bool validRoot = false;
+        do
+        {
+          given_path_stdstr = URIUtils::GetParentPath(given_path_stdstr);
+          validRoot = IsDirectoryValidRoot(given_path_stdstr);
+        }
+        while(given_path_stdstr.length() > 0 && !validRoot);
+        strncpy(given_path, given_path_stdstr.c_str(), sizeof(given_path)-1);
+      }
+      
 #endif
 
       // Convert to real path.
