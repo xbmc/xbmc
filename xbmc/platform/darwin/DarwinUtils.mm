@@ -87,7 +87,8 @@ enum iosPlatform
   iPhone5SGSM,
   iPhone5SGlobal,
   iPodTouch4G,
-  iPodTouch5G,  
+  iPodTouch5G,
+  iPodTouch6G,
   iPad3WIFI,
   iPad3GSMCDMA,
   iPad3,
@@ -96,14 +97,26 @@ enum iosPlatform
   iPad4GSMCDMA,
   iPadAirWifi,
   iPadAirCellular,
+  iPadAirTDLTE,
   iPadMini2Wifi,
   iPadMini2Cellular,
   iPhone6,
+  iPhone6s,
+  iPhoneSE,
+  iPhone7,
   iPadAir2Wifi,
   iPadAir2Cellular,
+  iPadPro9_7InchWifi,
+  iPadPro9_7InchCellular,
+  iPadPro12_9InchWifi,
+  iPadPro12_9InchCellular,
   iPadMini3Wifi,
   iPadMini3Cellular,
+  iPadMini4Wifi,
+  iPadMini4Cellular,
   iPhone6Plus,        //from here on list devices with retina support which have scale == 3.0
+  iPhone6sPlus,
+  iPhone7Plus,
 };
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
@@ -154,11 +167,19 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPhone6,2") eDev = iPhone5SGlobal;
     else if (devStr == "iPhone7,1") eDev = iPhone6Plus;
     else if (devStr == "iPhone7,2") eDev = iPhone6;
+    else if (devStr == "iPhone8,1") eDev = iPhone6s;
+    else if (devStr == "iPhone8,2") eDev = iPhone6sPlus;
+    else if (devStr == "iPhone8,4") eDev = iPhoneSE;
+    else if (devStr == "iPhone9,1") eDev = iPhone7;
+    else if (devStr == "iPhone9,2") eDev = iPhone7Plus;
+    else if (devStr == "iPhone9,3") eDev = iPhone7;
+    else if (devStr == "iPhone9,4") eDev = iPhone7Plus;
     else if (devStr == "iPod1,1") eDev = iPodTouch1G;
     else if (devStr == "iPod2,1") eDev = iPodTouch2G;
     else if (devStr == "iPod3,1") eDev = iPodTouch3G;
     else if (devStr == "iPod4,1") eDev = iPodTouch4G;
     else if (devStr == "iPod5,1") eDev = iPodTouch5G;
+    else if (devStr == "iPod7,1") eDev = iPodTouch6G;
     else if (devStr == "iPad1,1") eDev = iPad;
     else if (devStr == "iPad1,2") eDev = iPad;
     else if (devStr == "iPad2,1") eDev = iPad2WIFI;
@@ -176,13 +197,21 @@ enum iosPlatform getIosPlatform()
     else if (devStr == "iPad3,6") eDev = iPad4GSMCDMA;
     else if (devStr == "iPad4,1") eDev = iPadAirWifi;
     else if (devStr == "iPad4,2") eDev = iPadAirCellular;
+    else if (devStr == "iPad4,3") eDev = iPadAirTDLTE;
     else if (devStr == "iPad4,4") eDev = iPadMini2Wifi;
     else if (devStr == "iPad4,5") eDev = iPadMini2Cellular;
+    else if (devStr == "iPad4,6") eDev = iPadMini2Cellular;
     else if (devStr == "iPad4,7") eDev = iPadMini3Wifi;
     else if (devStr == "iPad4,8") eDev = iPadMini3Cellular;
     else if (devStr == "iPad4,9") eDev = iPadMini3Cellular;
+    else if (devStr == "iPad5,1") eDev = iPadMini4Wifi;
+    else if (devStr == "iPad5,2") eDev = iPadMini4Cellular;
     else if (devStr == "iPad5,3") eDev = iPadAir2Wifi;
     else if (devStr == "iPad5,4") eDev = iPadAir2Cellular;
+    else if (devStr == "iPad6,3") eDev = iPadPro9_7InchWifi;
+    else if (devStr == "iPad6,4") eDev = iPadPro9_7InchCellular;
+    else if (devStr == "iPad6,7") eDev = iPadPro12_9InchWifi;
+    else if (devStr == "iPad6,8") eDev = iPadPro12_9InchCellular;
     else if (devStr == "AppleTV2,1") eDev = AppleTV2;
   }
 #endif
