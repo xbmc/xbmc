@@ -49,11 +49,13 @@ namespace PVR
 
     bool ActionStartTimer(const EPG::CEpgInfoTagPtr &tag);
     bool ActionCancelTimer(const CFileItemPtr &timer);
+    bool ActionAddTimerRule(const EPG::CEpgInfoTagPtr &tag);
 
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);
     bool OnClickButtonPlay(CGUIMessage &message);
     bool OnClickButtonFind(CGUIMessage &message);
+    bool OnClickButtonAddTimer(CGUIMessage &message);
 
     EPG::CEpgInfoTagPtr m_progItem;
   };

@@ -9179,6 +9179,7 @@ msgstr ""
 #. Label for a context menu entry to open the timer settings dialog
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 #: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: addons/skin.estuary/1080i/DialogPVRInfo.xml
 msgctxt "#19061"
 msgid "Add timer"
 msgstr ""
