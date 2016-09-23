@@ -276,6 +276,7 @@ public:
 
   std::string GetArtistById(int id);
   int GetArtistByName(const std::string& strArtist);
+  std::string GetRoleById(int id);
 
   /////////////////////////////////////////////////
   // Cuesheets
