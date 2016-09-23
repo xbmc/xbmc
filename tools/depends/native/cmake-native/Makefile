@@ -3,7 +3,7 @@ PLATFORM=$(NATIVEPLATFORM)
 DEPS= ../../Makefile.include.in Makefile
 
 APPNAME=cmake
-VERSION=3.3.2
+VERSION=3.6.2
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -30,7 +30,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../darwin_enable_tbd_support.patch
 	cd $(PLATFORM); $(SETENV) $(CONFIGURE)
 
 $(APP): $(PLATFORM)
