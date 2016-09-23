@@ -30,6 +30,9 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq (osx, $(findstring osx, $(OS)))
 	cd $(PLATFORM); patch -p1 < ../0001-HTTP-reset-expected-DL-UL-sizes-on-redirects.patch
 endif
+ifeq (darwin, $(findstring darwin, $(HOST)))
+	cd $(PLATFORM); sed -ie "s/elif defined(HAVE_CLOCK_GETTIME_MONOTONIC)/#elif defined(HAVE_CLOCK_GETTIME_MONOTONIC_NOPE)/" lib/timeval.c
+endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
