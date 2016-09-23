@@ -56,6 +56,7 @@ if(UNIX)
   if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
     option(ENABLE_X11         "Enable X11 support?" ON)
     option(ENABLE_AML         "Enable AML?" OFF)
+    option(ENABLE_RPI         "Enable RaspberryPi support?" OFF)
   endif()
 endif()
 # System options
@@ -211,8 +212,11 @@ endif()
 
 if(CORE_SYSTEM_NAME STREQUAL android OR CORE_SYSTEM_NAME STREQUAL linux)
   core_optional_dep(AML)
-elseif(CORE_SYSTEM_NAME STREQUAL rbpi)
-  core_require_dep(MMAL)
+endif()
+
+if(ENABLE_RPI)
+  list(APPEND ARCH_DEFINES "-DTARGET_RASPBERRY_PI -D_ARMEL")
+  core_require_dep(RPI)
 endif()
 
 if(ENABLE_CCACHE)

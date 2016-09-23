@@ -1,4 +1,4 @@
-if(OPENGLES_FOUND OR AML_FOUND OR MMAL_FOUND)
+if(OPENGLES_FOUND OR AML_FOUND OR RPI_FOUND)
   set(SOURCES EGLWrapper.cpp)
 
   set(HEADERS EGLNativeType.h
@@ -25,7 +25,7 @@ if(AML_FOUND)
   list(APPEND HEADERS EGLNativeTypeAmlogic.h)
 endif()
 
-if(MMAL_FOUND)
+if(RPI_FOUND)
   list(APPEND SOURCES EGLNativeTypeRaspberryPI.cpp)
   list(APPEND HEADERS EGLNativeTypeRaspberryPI.h)
 endif()

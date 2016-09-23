@@ -23,7 +23,7 @@ if(CORE_SYSTEM_NAME STREQUAL ios)
   list(APPEND HEADERS RendererVTBGLES.h)
 endif()
 
-if(MMAL_FOUND)
+if(RPI_FOUND)
   list(APPEND SOURCES MMALRenderer.cpp)
   list(APPEND HEADERS MMALRenderer.h)
 endif()

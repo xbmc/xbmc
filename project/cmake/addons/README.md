@@ -18,7 +18,7 @@ where
 
 List of platforms to build an add-on for (or *all*). Negating platforms is supported using a leading exclamation mark, e.g. *!windows*.
 
-Available platforms are: linux, windows, osx, ios, android, rbpi and freebsd.
+Available platforms are: linux, windows, osx, ios, android and freebsd.
 
 #### Attention
 If no add-on definitions could be found, the buildsystem assumes that the bootstrapping of the add-on definition repositories hasn't been performed yet and automatically executes the add-on bootstrapping buildsystem located in the *bootstrap* sub-directory with the default settings (i.e. *all* add-ons from all pre-defined add-on definition repositories are bootstrapped into the directory pointed to by the *ADDONS_DEFINITION_DIR* option).

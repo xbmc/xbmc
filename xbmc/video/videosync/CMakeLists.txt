@@ -15,7 +15,7 @@ if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND HEADERS VideoSyncD3D.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL rbpi)
+if(RPI_FOUND)
   list(APPEND SOURCES VideoSyncPi.cpp)
   list(APPEND HEADERS VideoSyncPi.h)
 endif()
