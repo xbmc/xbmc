@@ -139,6 +139,14 @@ binaries from git that might cause problems.
 4.1 Using Xcode
 -----------------------------------------------------------------------------
 Start XCode and open the Kodi project (Kodi.xcodeproj) located in $HOME/Kodi.
+For development, Kodi is run from the $HOME/Kodi directory and needs to have
+the KODI_HOME environment variable set to know where that directory is located.
+To set KODI_HOME environment variable:
+
+Xcode 6 and later
+ Menu -> Product -> Edit Sheme -> "Run Kodi"/"Debug" -> Add KODI_HOME into
+ the List of "Environment Variables". Set the value to the path to the Kodi
+ root folder. For example, "/Users/bigdog/Documents/Kodi"
 
 There are two build targets "Kodi" and "Kodi.app" (each in 32Bit and 64Bit flavour)
 with debug and release settings. The "Kodi" target is used for rapid build and
@@ -158,8 +166,9 @@ and dynamic libraries that will need to be built. Once these are built,
 subsequent builds will be faster.
 
 After the build, you can ether run Kodi for Mac from Xcode or run it from
-the command-line. 
-To run the debug version:
+the command-line. If you run it from the command-line, make sure your set
+the KODI_HOME environment variable (export KODI_HOME=$HOME/Kodi). Then, to
+run the debug version:
 
     $ ./build/Debug/Kodi
 
@@ -187,12 +196,14 @@ below(normally unneeded - for advanced developers).
 
  a)
     $ cd $HOME/Kodi
+    $ export KODI_HOME=`pwd`
     $ make xcode_depends
     $ xcodebuild -sdk macosx10.9 -project Kodi.xcodeproj -target Kodi.app ONLY_ACTIVE_ARCH=YES \
       ARCHS=x86_64 VALID_ARCHS=x86_64  -configuration Release build
 
  b) Building via make:
     $ cd $HOME/Kodi
+    $ export KODI_HOME=`pwd`
     $ make
     $ ./Kodi.bin
 
