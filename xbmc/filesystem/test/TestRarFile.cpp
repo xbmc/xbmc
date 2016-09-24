@@ -179,7 +179,7 @@ TEST(TestRarFile, CorruptedFile)
   std::cout << "File contents:" << std::endl;
   while ((size = file->Read(buf, sizeof(buf))) > 0)
   {
-    str = StringUtils::Format("  %08X", count);
+    str = StringUtils::Format("  %08llX", count);
     std::cout << str << "  ";
     count += size;
     for (i = 0; i < size; i++)
