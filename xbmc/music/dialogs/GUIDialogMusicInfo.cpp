@@ -80,7 +80,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
         if (db.Open())
         {
           m_needsUpdate = true;
-          db.SetAlbumUserrating(m_albumItem->GetPath(), m_albumItem->GetMusicInfoTag()->GetUserrating());
+          db.SetAlbumUserrating(m_albumItem->GetMusicInfoTag()->GetAlbumId(), m_albumItem->GetMusicInfoTag()->GetUserrating());
           db.Close();
         }
       }

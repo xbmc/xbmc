@@ -2167,12 +2167,18 @@ int CMusicDatabase::GetAlbumIdByPath(const std::string& strPath)
 {
   try
   {
-    std::string strSQL=PrepareSQL("select distinct idAlbum from song join path on song.idPath = path.idPath where path.strPath='%s'", strPath.c_str());
-    m_pDS->query(strSQL);
-    if (m_pDS->eof())
-      return -1;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
 
-    int idAlbum = m_pDS->fv(0).get_asInt();
+    std::string strSQL = PrepareSQL("SELECT DISTINCT idAlbum FROM song JOIN path ON song.idPath = path.idPath WHERE path.strPath='%s'", strPath.c_str());
+    // run query
+    if (!m_pDS->query(strSQL)) return false;
+    int iRowsFound = m_pDS->num_rows();
+
+    int idAlbum = -1; // If no album is found, or more than one album is found then -1 is returned
+    if (iRowsFound == 1)
+      idAlbum = m_pDS->fv(0).get_asInt();
+    
     m_pDS->close();
 
     return idAlbum;
@@ -2182,7 +2188,7 @@ int CMusicDatabase::GetAlbumIdByPath(const std::string& strPath)
     CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strPath.c_str());
   }
 
-  return false;
+  return -1;
 }
 
 int CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle)
@@ -5497,24 +5503,22 @@ bool CMusicDatabase::SetSongUserrating(const std::string &filePath, int userrati
   return false;
 }
 
-bool CMusicDatabase::SetAlbumUserrating(const std::string &filePath, int userrating)
+bool CMusicDatabase::SetAlbumUserrating(const int idAlbum, int userrating)
 {
   try
   {
-    if (filePath.empty()) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    int albumID = GetAlbumIdByPath(filePath);
-    if (-1 == albumID) return false;
+    if (-1 == idAlbum) return false;
 
-    std::string sql = PrepareSQL("UPDATE album SET iUserrating='%i' WHERE idAlbum = %i", userrating, albumID);
+    std::string sql = PrepareSQL("UPDATE album SET iUserrating='%i' WHERE idAlbum = %i", userrating, idAlbum);
     m_pDS->exec(sql);
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s,%i) failed", __FUNCTION__, filePath.c_str(), userrating);
+    CLog::Log(LOGERROR, "%s (%i,%i) failed", __FUNCTION__, idAlbum, userrating);
   }
   return false;
 }
@@ -5531,28 +5535,6 @@ bool CMusicDatabase::SetSongVotes(const std::string &filePath, int votes)
     if (-1 == songID) return false;
 
     std::string sql = PrepareSQL("UPDATE song SET votes='%i' WHERE idSong = %i", votes, songID);
-    m_pDS->exec(sql);
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s,%i) failed", __FUNCTION__, filePath.c_str(), votes);
-  }
-  return false;
-}
-
-bool CMusicDatabase::SetAlbumVotes(const std::string &filePath, int votes)
-{
-  try
-  {
-    if (filePath.empty()) return false;
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    int albumID = GetAlbumIdByPath(filePath);
-    if (-1 == albumID) return false;
-
-    std::string sql = PrepareSQL("UPDATE album SET iVotes='%i' WHERE idAlbum = %i", votes, albumID);
     m_pDS->exec(sql);
     return true;
   }

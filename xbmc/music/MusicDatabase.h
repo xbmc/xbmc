@@ -194,9 +194,7 @@ public:
   bool Search(const std::string& search, CFileItemList &items);
   bool RemoveSongsFromPath(const std::string &path, MAPSONGS& songs, bool exact=true);
   bool SetSongUserrating(const std::string &filePath, int userrating);
-  bool SetAlbumUserrating(const std::string &filePath, int userrating);
   bool SetSongVotes(const std::string &filePath, int votes);
-  bool SetAlbumVotes(const std::string &filePath, int votes);
   int  GetSongByArtistAndAlbumAndTitle(const std::string& strArtist, const std::string& strAlbum, const std::string& strTitle);
 
   /////////////////////////////////////////////////
@@ -250,6 +248,7 @@ public:
   int  GetAlbumByName(const std::string& strAlbum, const std::string& strArtist="");
   int  GetAlbumByName(const std::string& strAlbum, const std::vector<std::string>& artist);
   std::string GetAlbumById(int id);
+  bool SetAlbumUserrating(const int idAlbum, int userrating);
 
   /////////////////////////////////////////////////
   // Artist CRUD
