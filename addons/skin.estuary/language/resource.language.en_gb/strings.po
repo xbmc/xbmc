@@ -676,7 +676,7 @@ msgstr ""
 
 #: /1080i/SkinSettings.xml:117
 msgctxt "#31131"
-msgid "Choose home fanart pack"
+msgid "Choose skin fanart pack"
 msgstr ""
 
 #: /1080i/MyVideoNav.xml:121 /1080i/View_502_FanArt.xml:213
