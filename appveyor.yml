@@ -19,7 +19,6 @@ init:
 install:
   - SET PATH=C:\Program Files (x86)\CMake\bin;C:\msys64\bin;C:\msys64\usr\bin;%PATH%
   - bash -lc "pacman --needed --noconfirm -Sy"
-  - bash -lc "pacman --needed --noconfirm -S curl"
   - mklink /j %APPVEYOR_BUILD_FOLDER%\project\BuildDependencies\msys64 C:\msys64
 
 build_script:
@@ -44,10 +43,10 @@ build_script:
         # Download precompiled mingw32 libraries
         # To run make-mingwlibs.bat on AppVeyor takes too long, 
         # we must use precompiled libs to speed up build
-        bash -c "curl http://repo.msys2.org/mingw/i686/mingw-w64-i686-ffmpeg-3.1.1-1-any.pkg.tar.xz | tar xJv"
-        bash -c "curl http://repo.msys2.org/mingw/i686/mingw-w64-i686-libdvdcss-1.4.0-1-any.pkg.tar.xz | tar xJv"
-        bash -c "curl http://repo.msys2.org/mingw/i686/mingw-w64-i686-libdvdnav-5.0.3-1-any.pkg.tar.xz | tar xJv"
-        bash -c "curl http://repo.msys2.org/mingw/i686/mingw-w64-i686-libdvdread-5.0.3-1-any.pkg.tar.xz | tar xJv"
+        bash -c "wget -O - http://repo.msys2.org/mingw/i686/mingw-w64-i686-ffmpeg-3.1.1-1-any.pkg.tar.xz | tar xJv"
+        bash -c "wget -O - http://repo.msys2.org/mingw/i686/mingw-w64-i686-libdvdcss-1.4.0-1-any.pkg.tar.xz | tar xJv"
+        bash -c "wget -O - http://repo.msys2.org/mingw/i686/mingw-w64-i686-libdvdnav-5.0.3-1-any.pkg.tar.xz | tar xJv"
+        bash -c "wget -O - http://repo.msys2.org/mingw/i686/mingw-w64-i686-libdvdread-5.0.3-1-any.pkg.tar.xz | tar xJv"
         # Rename all precompiled lib*.dll.a -> *.lib, so MSVC will find them
         Get-ChildItem mingw32\lib\lib*.dll.a | %{
           $new_name = $_.Name.SubString(3) -replace ".dll.a", ".lib"
