@@ -838,8 +838,8 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point, bool justGri
   if (!m_focusedProgrammeLayout || !m_programmeLayout || (justGrid && point.x < 0))
     return false;
 
-  int channel = MathUtils::round_int(point.y / m_channelHeight);
-  int block   = MathUtils::round_int(point.x / m_blockSize);
+  int channel = point.y / m_channelHeight;
+  int block   = point.x / m_blockSize;
 
   if (channel > m_channelsPerPage)
     channel = m_channelsPerPage - 1;
