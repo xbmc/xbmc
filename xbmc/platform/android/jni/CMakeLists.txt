@@ -45,6 +45,7 @@ set(SOURCES Activity.cpp
             PowerManager.cpp
             Resources.cpp
             ScanResult.cpp
+            SettingsSecure.cpp
             StatFs.cpp
             StorageManager.cpp
             StorageVolume.cpp
@@ -112,6 +113,7 @@ set(HEADERS Activity.h
             PowerManager.h
             Resources.h
             ScanResult.h
+            SettingsSecure.h
             StatFs.h
             Surface.h
             SurfaceTexture.h

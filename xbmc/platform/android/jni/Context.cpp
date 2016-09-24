@@ -48,6 +48,7 @@
 #include "DisplayMetrics.h"
 #include "Intent.h"
 #include "KeyEvent.h"
+#include "SettingsSecure.h"
 
 #include <android/native_activity.h>
 
@@ -91,6 +92,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIIntent::PopulateStaticFields();
   CJNIKeyEvent::PopulateStaticFields();
   CJNIViewInputDevice::PopulateStaticFields();
+  CJNISettingsSecure::PopulateStaticFields();
 }
 
 CJNIPackageManager CJNIContext::GetPackageManager()
