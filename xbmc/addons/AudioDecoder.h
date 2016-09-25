@@ -69,7 +69,6 @@ namespace ADDON
               MUSIC_INFO::CMusicInfoTag& tag,
               MUSIC_INFO::EmbeddedArt *art = NULL);
     int GetTrackCount(const std::string& strPath);
-    virtual CAEChannelInfo GetChannelInfo();
 
     const std::string& GetExtensions() const { return m_extension; }
     const std::string& GetMimetypes() const { return m_mimetype; }

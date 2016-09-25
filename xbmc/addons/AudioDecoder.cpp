@@ -132,11 +132,6 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
   return result;
 }
 
-CAEChannelInfo CAudioDecoder::GetChannelInfo()
-{
-  return m_format.m_channelLayout;
-}
-
 void CAudioDecoder::Destroy()
 {
   AudioDecoderDll::Destroy();
