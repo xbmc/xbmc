@@ -45,7 +45,6 @@ public:
   virtual int ReadRaw(uint8_t **pBuffer, int *bufferSize);
   virtual bool CanInit();
   virtual bool CanSeek();
-  virtual CAEChannelInfo GetChannelInfo() {return m_srcFormat.m_channelLayout;}
 
   AEAudioFormat GetFormat();
   void SetContentType(const std::string &strContent);
