@@ -26,10 +26,12 @@ class CPlatformDarwin : public CPlatform
 {
   public:
     /**\brief C'tor */
-    CPlatformDarwin();
+    CPlatformDarwin() = default;
   
     /**\brief D'tor */
-    virtual ~CPlatformDarwin();
+    virtual ~CPlatformDarwin() = default;
   
     void Init() override;
+  
+    void InitUniqueHardwareIdentifier() override;
 };
