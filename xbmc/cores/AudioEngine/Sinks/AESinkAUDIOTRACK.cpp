@@ -318,10 +318,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   if (m_encoding == CJNIAudioFormat::ENCODING_IEC61937)
     atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present() && m_passthrough)
+  if (aml_present() && m_passthrough && m_info.m_wantsIECPassthrough)
     atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
-#endif
 
   while (!m_at_jni)
   {
@@ -774,8 +772,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
     }
 
-#if defined(HAS_LIBAMCODEC)
-    if (aml_present())
+    if (aml_present() && CJNIAudioManager::GetSDKVersion() < 23)
     {
       // passthrough
       m_info.m_wantsIECPassthrough = true;
@@ -791,7 +788,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       }
     }
     else
-#endif
     {
       bool supports_192khz = false;
       int test_sample[] = { 32000, 44100, 48000, 96000, 192000 };
@@ -839,12 +835,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     }
     std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
   }
-
-// Take care for old AML devices when they run official API they do
-// really strange things as they define passthrough formats
-  if (aml_present() && CJNIAudioManager::GetSDKVersion() < 23)
-    m_info.m_wantsIECPassthrough = true;
-
   list.push_back(m_info);
 }
 
