@@ -18696,7 +18696,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> 3D LUT" with label #36564
 #: system/settings/settings.xml
 msgctxt "#36565"
-msgid "TODO: 3D LUT filename description"
+msgid "Select the 3DLUT file to be used by default. If you place multiple 3DLUT files in the same directory, then you can switch between them in the OSD menu during video playback. This allows for multiple display profiles to account for different viewing environments and source materials, for example gamma 2.2 for daytime viewing and 2.4 for nighttime."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18707,7 +18707,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> ICC display profile" with label #36566
 #: system/settings/settings.xml
 msgctxt "#36567"
-msgid "TODO: ICC display profile filename description"
+msgid "By providing a display profile, you can modify video parameters such as gamma, color primaries and whitepoint during playback. An ICC source profile is created based on the parameters and linked with the display ICC profile set here. This support is experimental and lacks near black adjustment towards display native black (causing raised black level) and white level scaling when a different whitepoint from display native is selected (as a workaround, adjust video brightness down to avoid clipping)."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18718,7 +18718,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Whitepoint" with label #36568
 #: system/settings/settings.xml
 msgctxt "#36569"
-msgid "TODO: Whitepoint selection description"
+msgid "Changing video whitepoint to D93 is mainly useful for older Japanese NTSC material which looks too red when played back on a D65 display. Adjust video brightness setting down to avoid clipping to display native whitepoint."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18729,7 +18729,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Primaries" with label #36570
 #: system/settings/settings.xml
 msgctxt "#36571"
-msgid "TODO: Primary coordinates description"
+msgid "Select the primary color coordinates according to source material. Older HD material may have been mastered on displays with BT.601 primaries."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18740,7 +18740,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Gamma mode" with label #36572
 #: system/settings/settings.xml
 msgctxt "#36573"
-msgid "TODO: Gamma mode description"
+msgid "Select the gamma curve formula. Use BT.1886 for gamma curve that accounts for display black and white levels and avoids perceptual clipping. Use input offset for a similar curve with a manually specified effective gamma. Output offset allows for perceptual clipping, but can be used to compensate for incorrect mastering monitor settings that lead to too bright dark details. Absolute gamma does not account for display black at all and will clip the lowest levels to display black on any display with higher than zero black level."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18751,7 +18751,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Gamma" with label #36574
 #: system/settings/settings.xml
 msgctxt "#36575"
-msgid "TODO: Gamma description"
+msgid "Gamma for selected gamma curve type. For input and output offset, the result at 50% will match an absolute gamma curve with this gamma value."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18762,7 +18762,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Lookup table size" with label #36576
 #: system/settings/settings.xml
 msgctxt "#36577"
-msgid "TODO: Lookup table size description"
+msgid "Specify the resolution for the 3D lookup table. Use a lower resolution for quick preview and higher resolution for more accurate picture. Using a high resolution may take seconds to prepare when parameters are changed or a new video is started."
 msgstr ""
 
 #empty strings from id 36578 to 36579
