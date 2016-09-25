@@ -457,6 +457,10 @@ namespace VIDEO
       }
       if (ret == INFO_CANCELLED || ret == INFO_ERROR)
       {
+        CLog::Log(LOGWARNING,
+                  "VideoInfoScanner: Error %s occurred while retrieving"
+                  "information for %s.", ret,
+                  CURL::GetRedacted(pItem->GetPath()).c_str());
         FoundSomeInfo = false;
         break;
       }
@@ -552,13 +556,21 @@ namespace VIDEO
 
     CScraperUrl url;
     int retVal = 0;
-    if (pURL)
+    if (pURL && !pURL->m_url.empty())
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
-    long lResult=-1;
-    if (GetDetails(pItem, url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    CLog::Log(LOGDEBUG,
+              "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
+              url.m_url[0].m_url.c_str(), info2->Name().c_str(),
+              TranslateContent(info2->Content()).c_str());
+
+    long lResult = -1;
+    if (GetDetails(pItem, url, info2,
+                   (result == CNfoFile::COMBINED_NFO
+                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   pDlgProgress))
     {
       if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
         return INFO_ERROR;
@@ -606,12 +618,20 @@ namespace VIDEO
 
     CScraperUrl url;
     int retVal = 0;
-    if (pURL)
+    if (pURL && !pURL->m_url.empty())
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
-    if (GetDetails(pItem, url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    CLog::Log(LOGDEBUG,
+              "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
+              url.m_url[0].m_url.c_str(), info2->Name().c_str(),
+              TranslateContent(info2->Content()).c_str());
+
+    if (GetDetails(pItem, url, info2,
+                   (result == CNfoFile::COMBINED_NFO
+                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
         return INFO_ERROR;
@@ -655,12 +675,20 @@ namespace VIDEO
 
     CScraperUrl url;
     int retVal = 0;
-    if (pURL)
+    if (pURL && !pURL->m_url.empty())
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
-    if (GetDetails(pItem, url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    CLog::Log(LOGDEBUG,
+              "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
+              url.m_url[0].m_url.c_str(), info2->Name().c_str(),
+              TranslateContent(info2->Content()).c_str());
+
+    if (GetDetails(pItem, url, info2,
+                   (result == CNfoFile::COMBINED_NFO
+                    || result == CNfoFile::PARTIAL_NFO) ? &m_nfoReader : NULL,
+                   pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
         return INFO_ERROR;
@@ -1999,16 +2027,19 @@ namespace VIDEO
       switch(result)
       {
         case CNfoFile::COMBINED_NFO:
-          type = "Mixed";
+          type = "mixed";
           break;
         case CNfoFile::FULL_NFO:
-          type = "Full";
+          type = "full";
           break;
         case CNfoFile::URL_NFO:
           type = "URL";
           break;
         case CNfoFile::NO_NFO:
           type = "";
+          break;
+        case CNfoFile::PARTIAL_NFO:
+          type = "partial";
           break;
         default:
           type = "malformed";
@@ -2022,14 +2053,14 @@ namespace VIDEO
       }
       else if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
       {
-        scrUrl = m_nfoReader.ScraperUrl();
-        info = m_nfoReader.GetScraperInfo();
+        if (result != CNfoFile::PARTIAL_NFO)
+        {
+          scrUrl = m_nfoReader.ScraperUrl();
+          StringUtils::RemoveCRLF(scrUrl.m_url[0].m_url);
+          info = m_nfoReader.GetScraperInfo();
+        }
 
-        StringUtils::RemoveCRLF(scrUrl.m_url[0].m_url);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
-          scrUrl.m_url[0].m_url.c_str(), info->Name().c_str(), TranslateContent(info->Content()).c_str());
-
-        if (result == CNfoFile::COMBINED_NFO)
+        if (result != CNfoFile::URL_NFO)
           m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       }
     }

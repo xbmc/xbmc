@@ -102,8 +102,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
 
       // if we are performing a forced refresh ask the user to choose between using a valid NFO and a valid scraper
-      if (needsRefresh && IsModal() && !scraper->IsNoop() &&
-         (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO))
+      if (needsRefresh && IsModal() && !scraper->IsNoop()
+          && nfoResult != CNfoFile::ERROR_NFO)
       {
         int heading = 20159;
         if (scraper->Content() == CONTENT_MOVIES)
@@ -292,7 +292,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     }
 
     // finally download the information for the item
-    if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name, scraper->Content(), !ignoreNfo, &scraperUrl, m_refreshAll, GetProgressDialog()))
+    if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
+                                   scraper->Content(), !ignoreNfo,
+                                   scraperUrl.m_url.empty() ? NULL : &scraperUrl,
+                                   m_refreshAll, GetProgressDialog()))
     {
       // something went wrong
       MarkFinished();
