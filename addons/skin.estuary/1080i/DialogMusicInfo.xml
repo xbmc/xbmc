@@ -76,7 +76,7 @@
 			<control type="group">
 				<visible>!Integer.IsEqual(Container(50).NumItems,0) | !String.IsEmpty(Control.GetLabel(400))</visible>
 				<top>454</top>
-				<control type="button" id="130">
+				<control type="button">
 					<onup>50</onup>
 					<ondown>9000</ondown>
 					<left>586</left>
