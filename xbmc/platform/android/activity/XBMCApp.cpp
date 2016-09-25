@@ -18,6 +18,8 @@
  *
  */
 
+#include "XBMCApp.h"
+
 #include <sstream>
 
 #include <unistd.h>

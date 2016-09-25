@@ -20,6 +20,8 @@
  *
  */
 
+#include "system.h"
+
 #include <queue>
 #include <vector>
 #include <memory>
@@ -64,7 +66,7 @@ public:
   // MediaCodec related
   void                ReleaseOutputBuffer(bool render);
   // SurfaceTexture released
-  int                 GetIndex() const;
+  ssize_t             GetIndex() const;
   int                 GetTextureID() const;
   void                GetTransformMatrix(float *textureMatrix);
   void                UpdateTexImage();

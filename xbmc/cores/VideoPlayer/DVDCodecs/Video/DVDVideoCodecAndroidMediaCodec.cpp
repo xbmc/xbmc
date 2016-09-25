@@ -235,7 +235,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
   }
 }
 
-int CDVDMediaCodecInfo::GetIndex() const
+ssize_t CDVDMediaCodecInfo::GetIndex() const
 {
   CSingleLock lock(m_section);
 

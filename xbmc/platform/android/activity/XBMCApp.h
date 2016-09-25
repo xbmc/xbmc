@@ -19,6 +19,8 @@
  *
  */
 
+#include "system.h"
+
 #include <math.h>
 #include <pthread.h>
 #include <string>
