@@ -1442,7 +1442,8 @@
                 "episodeguide", "uniqueid", "dateadded", "channel", "channeltype", "hidden",
                 "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
                 "specialsortepisode", "compilation", "releasetype", "albumreleasetype",
-                "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist" ]
+                "contributors", "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
+                "userrating" ]
     }
   },
   "List.Item.All": {
