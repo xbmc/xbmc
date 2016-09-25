@@ -1142,9 +1142,10 @@ bool CApplication::Initialize()
 
     g_windowManager.CreateWindows();
 
-    CSplash::GetInstance().Show(g_localizeStrings.Get(24151));
     m_confirmSkinChange = false;
-    m_incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons();
+    m_incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons([](){
+      CSplash::GetInstance().Show(g_localizeStrings.Get(24151));
+    });
     m_confirmSkinChange = true;
     CSplash::GetInstance().Show();
 
