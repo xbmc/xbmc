@@ -15,5 +15,5 @@ set(HEADERS MessagePrinter.h
 core_add_library(platform_common)
 
 if(OVERRIDES_CPP)
-  target_compile_definitions(${CORE_LIBRARY} PRIVATE -DPLATFORM_OVERRIDE)
+  target_compile_definitions(${CORE_LIBRARY} PRIVATE -DPLATFORM_OVERRIDE_CLASSPLATFORM)
 endif()

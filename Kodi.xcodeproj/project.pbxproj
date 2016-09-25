@@ -820,7 +820,7 @@
 		DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF033D361946612400BFC82E /* AEDeviceEnumerationOSX.cpp */; };
 		DF0ABB73183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
 		DF0ABB74183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
-		DF0D9F4D1D63931F006A7DBB /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F4B1D63931F006A7DBB /* Platform.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE"; }; };
+		DF0D9F4D1D63931F006A7DBB /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F4B1D63931F006A7DBB /* Platform.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE_CLASSPLATFORM"; }; };
 		DF0D9F511D63961B006A7DBB /* PlatformDarwinOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F501D63961B006A7DBB /* PlatformDarwinOSX.cpp */; };
 		DF0D9F551D639898006A7DBB /* PlatformDarwinIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F531D639893006A7DBB /* PlatformDarwinIOS.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
@@ -979,7 +979,7 @@
 		DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		DFACDB891D6CAC33003BBB92 /* PlatformDarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8E55951D5F1D7000FD2BA3 /* PlatformDarwin.cpp */; };
-		DFACDB8E1D6CAD06003BBB92 /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F4B1D63931F006A7DBB /* Platform.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE"; }; };
+		DFACDB8E1D6CAD06003BBB92 /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0D9F4B1D63931F006A7DBB /* Platform.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE_CLASSPLATFORM"; }; };
 		DFAF6A4F16EBAE3800D6AE12 /* RssManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAF6A4D16EBAE3800D6AE12 /* RssManager.cpp */; };
 		DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB02DE816629DBA00F37752 /* PyContext.cpp */; };
 		DFB0F472161B747500D744F4 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB0F470161B747500D744F4 /* AddonsOperations.cpp */; };

@@ -21,7 +21,7 @@
 #include "Platform.h"
 
 // Override for platform ports
-#if !defined(PLATFORM_OVERRIDE)
+#if !defined(PLATFORM_OVERRIDE_CLASSPLATFORM)
 
 CPlatform* CPlatform::CreateInstance()
 {
