@@ -18,6 +18,8 @@
  *
  */
 
+#include "system.h"
+
 #include <stdlib.h>
 #include <errno.h>
 #include <android_native_app_glue.h>
