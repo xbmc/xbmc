@@ -490,17 +490,14 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
 
 bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
 {
-  bool bReturn(true);
-
-  for (PVR_CHANNEL_GROUP_MEMBERS::iterator it = group.m_members.begin(); it != group.m_members.end(); ++it)
+  for (auto &member : group.m_members)
   {
-    if (it->second.channel->IsChanged() || it->second.channel->IsNew())
+    CPVRChannelPtr channel = member.second.channel;
+
+    if (channel->IsChanged() || channel->IsNew())
     {
-      if (Persist(*it->second.channel))
-      {
-        it->second.channel->Persisted();
-        bReturn = true;
-      }
+      if (Persist(*channel))
+        channel->Persisted();
     }
   }
 
