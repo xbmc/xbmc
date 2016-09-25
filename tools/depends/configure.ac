@@ -143,6 +143,23 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;
+  aarch64*-*linux-android*)
+    if test "x$use_cpu" = "xauto"; then
+      use_cpu="arm64-v8a"
+    fi
+    use_sdk="${use_sdk:-android-21}"
+    deps_dir="$use_host-$use_sdk"
+    platform_cflags="-DANDROID -Os -fexceptions"
+    if test "x$use_cpu" = "xarm64-v8a"; then
+      platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
+    fi
+    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_cxxflags="$platform_cflags -frtti"
+    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
+    platform_os="android"
+    #android builds are always cross
+    cross_compiling="yes"
+  ;;
   i*86*-linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
