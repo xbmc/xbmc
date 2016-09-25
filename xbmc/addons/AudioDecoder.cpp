@@ -46,6 +46,11 @@ CAudioDecoder::CAudioDecoder(AddonProps props, std::string extension, std::strin
   m_strExt = std::move(strExt);
 }
 
+CAudioDecoder::~CAudioDecoder()
+{
+  DeInit();
+}
+
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 {
   if (!Initialized())

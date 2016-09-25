@@ -56,7 +56,7 @@ namespace ADDON
     CAudioDecoder(AddonProps props, std::string extension, std::string mimetype, bool tags,
         bool tracks, std::string codecName, std::string strExt);
 
-    virtual ~CAudioDecoder() {}
+    virtual ~CAudioDecoder();
 
     // Things that MUST be supplied by the child classes
     bool Init(const CFileItem& file, unsigned int filecache) override;
