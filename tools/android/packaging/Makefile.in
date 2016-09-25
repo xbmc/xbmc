@@ -34,8 +34,10 @@ ARCH=x86
 CPU=x86
 endif
 ifeq ($(findstring arm,$(CPU)),arm)
-ARCH=arm
-CPU=armeabi-v7a
+  ifneq ($(findstring arm64,$(CPU)),arm64)
+    ARCH=arm
+    CPU=armeabi-v7a
+endif
 endif
 
 #older ndk x86
@@ -49,6 +51,10 @@ endif
 ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
 #vanilla ndk >= 8
 GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
+endif
+
+ifeq ($(ARCH),aarch64)
+GDBPATH=$(NDKROOT)/prebuilt/android-arm64/gdbserver/gdbserver
 endif
 
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM)/,$(PLATFORM_OBJS))
@@ -115,7 +121,7 @@ res:
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	rm -rf xbmc/lib/$(CPU) xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
 	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.7/lib/ xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
-	cp -fp $(SRCLIBS) xbmc/obj/local/$(CPU)/
+	cp -fpL $(SRCLIBS) xbmc/obj/local/$(CPU)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
