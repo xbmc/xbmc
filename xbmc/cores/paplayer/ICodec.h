@@ -56,11 +56,6 @@ public:
   // 3.  Fill in the m_TotalTime, m_SampleRate, m_BitsPerSample and m_Channels parameters.
   virtual bool Init(const CFileItem &file, unsigned int filecache)=0;
 
-  // DeInit()
-  // Should just cleanup anything as necessary.  No need to free buffers here if they
-  // are allocated and destroyed in the destructor.
-  virtual void DeInit()=0;
-
   virtual bool CanSeek() {return true;}
 
   // Seek()
