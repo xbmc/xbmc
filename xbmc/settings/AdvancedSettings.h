@@ -46,6 +46,7 @@ namespace ADDON
 class DatabaseSettings
 {
 public:
+  DatabaseSettings() { Reset(); }
   void Reset()
   {
     type.clear();
