@@ -805,17 +805,17 @@
 #define LISTITEM_ADDON_SIZE         (LISTITEM_START + 179)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
-#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1300)
+#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 2300)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
-#define MUSICPLAYER_PROPERTY_OFFSET       800  // 100 id's reserved for musicplayer props.
-#define LISTITEM_ART_OFFSET               900  // 100 id's reserved for listitem art.
-#define LISTITEM_RATING_OFFSET      1000 // 100 id's reserved for listitem ratings.
-#define LISTITEM_VOTES_OFFSET       1100 // 100 id's reserved for listitem votes.
-#define LISTITEM_RATING_AND_VOTES_OFFSET  1200 // 100 id's reserved for listitem ratingandvotes.
+#define MUSICPLAYER_PROPERTY_OFFSET       1200  // 200 id's reserved for musicplayer props.
+#define LISTITEM_ART_OFFSET               1400  // 200 id's reserved for listitem art.
+#define LISTITEM_RATING_OFFSET      1600 // 200 id's reserved for listitem ratings.
+#define LISTITEM_VOTES_OFFSET       1800 // 200 id's reserved for listitem votes.
+#define LISTITEM_RATING_AND_VOTES_OFFSET  2000 // 200 id's reserved for listitem ratingandvotes.
 
-#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36501
-#define CONDITIONAL_LABEL_END         37000
+#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 37501
+#define CONDITIONAL_LABEL_END         38000
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
