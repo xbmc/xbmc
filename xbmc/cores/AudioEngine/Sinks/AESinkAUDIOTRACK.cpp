@@ -537,13 +537,12 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   }
   uint64_t normHead_pos = m_headPos - m_offset;
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present() &&
+  // this makes EAC3 working even when AML is not enabled
+  if (aml_present() && m_info.m_wantsIECPassthrough &&
       (m_encoding == CJNIAudioFormat::ENCODING_DTS_HD ||
        m_encoding == CJNIAudioFormat::ENCODING_E_AC3 ||
        m_encoding == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD))
     normHead_pos /= m_sink_frameSize;  // AML wants sink in 48k but returns pos in 192k
-#endif
 
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
