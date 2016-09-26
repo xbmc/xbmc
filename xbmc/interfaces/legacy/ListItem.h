@@ -291,14 +291,14 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ setRating(type, rating, votes = 0, default = True) }
+      /// @brief \python_func{ setRating(type, rating, votes = 0, defaultt = False) }
       ///-----------------------------------------------------------------------
       /// Sets a listitem's rating. It needs at least type and rating param
       ///
       /// @param type       string - the type of the rating. Any string.
       /// @param rating     float - the value of the rating.
       /// @param votes      int - the number of votes. Default 0.
-      /// @param default    bool - is the default rating?. Default False.
+      /// @param defaultt   bool - is the default rating?. Default False.
       ///  - Some example type (any string possible):
       ///  | Label         | Type                                              |
       ///  |:-------------:|:--------------------------------------------------|
@@ -314,14 +314,14 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// # setRating(type, rating, votes, default))
+      /// # setRating(type, rating, votes, defaultt))
       /// self.list.getSelectedItem().setRating("imdb", 4.6, 8940, True)
       /// ...
       /// ~~~~~~~~~~~~~
       ///
       setRating(...);
 #else
-      void setRating(std::string type, float rating, int votes = 0, bool def = false);
+      void setRating(std::string type, float rating, int votes = 0, bool defaultt = false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
