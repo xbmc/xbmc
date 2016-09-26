@@ -63,9 +63,6 @@ void CPlatformWindows::InitUniqueHardwareIdentifier()
         uuid.erase(zeroPos); // remove any extra zero-terminations
       }
       m_uuid = uuid;
-#if defined(_DEBUG)
-      CLog::Log(LOGDEBUG, "HardwareUUID (nomd5): %s", m_uuid.c_str());
-#endif
     }
     RegCloseKey(hKey);
   }
@@ -78,6 +75,5 @@ void CPlatformWindows::InitUniqueHardwareIdentifier()
   else
   {
     m_uuid = XBMC::XBMC_MD5::GetMD5(m_uuid);
-    CLog::Log(LOGNOTICE, "HardwareUUID: %s", m_uuid.c_str());
   }
 }

@@ -47,9 +47,6 @@ void CPlatformLinux::InitUniqueHardwareIdentifier()
       if (fgets(line, sizeof line, f) != nullptr)
       {
           m_uuid = line;
-#if defined(_DEBUG)
-          CLog::Log(LOGDEBUG, "HardwareUUID (nomd5): %s", m_uuid.c_str());
-#endif
       }
       fclose(f);
   }
@@ -69,9 +66,6 @@ void CPlatformLinux::InitUniqueHardwareIdentifier()
           if (colon)
           {
             m_uuid = colon + 2;
-#if defined(_DEBUG)
-              CLog::Log(LOGDEBUG, "HardwareUUID (nomd5): %s", m_uuid.c_str());
-#endif
           }
         }
       }
@@ -87,6 +81,5 @@ void CPlatformLinux::InitUniqueHardwareIdentifier()
   else
   {
     m_uuid = XBMC::XBMC_MD5::GetMD5(m_uuid);
-    CLog::Log(LOGNOTICE, "HardwareUUID: %s", m_uuid.c_str());
   }
 }

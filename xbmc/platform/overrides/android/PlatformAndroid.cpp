@@ -41,10 +41,5 @@ void CPlatformAndroid::Init()
 void CPlatformAndroid::InitUniqueHardwareIdentifier()
 {
   m_uuid = jni::CJNISettingsSecure::getString(CJNIContext::getContentResolver(), jni::CJNISettingsSecure::ANDROID_ID);
-#if defined(_DEBUG)
-    CLog::Log(LOGDEBUG, "HardwareUUID (nomd5): %s", m_uuid.c_str());
-#endif
-
   m_uuid = XBMC::XBMC_MD5::GetMD5(m_uuid);
-  CLog::Log(LOGNOTICE, "HardwareUUID: %s", m_uuid.c_str());
 }
