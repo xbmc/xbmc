@@ -56,15 +56,4 @@ void CPlatformRbpi::InitUniqueHardwareIdentifier()
     }
     fclose(f);
   }
-
-  // fallback to base implementation if needed - paranoia
-  if (m_uuid == NoValidUUID)
-  {
-    CPlatform::InitUniqueHardwareIdentifier();
-  }
-  else
-  {
-    m_uuid = XBMC::XBMC_MD5::GetMD5(m_uuid);
-    CLog::Log(LOGNOTICE, "HardwareUUID: %s", m_uuid.c_str());
-  }
 }
