@@ -515,10 +515,28 @@ namespace PVR
                                             item->m_bIsFolder
                                               ? CVariant{19113} // "Delete all recordings in this folder?"
                                               : item->GetPVRRecordingInfoTag()->IsDeleted()
-                                                ? CVariant{19294}  // "Delete this recording permanently?"
+                                                ? CVariant{19294}  // "Remove this deleted recording from trash? This operation cannot be reverted."
                                                 : CVariant{19112}, // "Delete this recording?"
                                             CVariant{""},
                                             CVariant{item->GetLabel()});
+  }
+
+  bool CPVRGUIActions::DeleteAllRecordingsFromTrash() const
+  {
+    if (!ConfirmDeleteAllRecordingsFromTrash())
+      return false;
+
+    if (!g_PVRRecordings->DeleteAllRecordingsFromTrash())
+      return false;
+
+    g_PVRManager.TriggerRecordingsUpdate();
+    return true;
+  }
+
+  bool CPVRGUIActions::ConfirmDeleteAllRecordingsFromTrash() const
+  {
+    return CGUIDialogYesNo::ShowAndGetInput(CVariant{19292},  // "Delete all permanently"
+                                            CVariant{19293}); // "Remove all deleted recordings from trash? This operation cannot be reverted."
   }
 
   bool CPVRGUIActions::UndeleteRecording(const CFileItemPtr &item) const

@@ -10326,28 +10326,26 @@ msgctxt "#19290"
 msgid "Undelete"
 msgstr ""
 
-#. Used on recordings context menu
-#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
 msgctxt "#19291"
 msgid "Delete permanently"
 msgstr ""
 
-#. Used on recordings context menu
-#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#. "remove deleted recordings from trash" dialog header
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19292"
 msgid "Delete all permanently"
 msgstr ""
 
-#. Used on yes no dialog
-#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#. "remove deleted recordings from trash" dialog text
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19293"
-msgid "Delete all recordings permanently?"
+msgid "Remove all deleted recordings from trash? This operation cannot be reverted."
 msgstr ""
 
-#. Used on yes no dialog
-#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#. "remove deleted recording from trash" dialog text
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19294"
-msgid "Delete this recording permanently?"
+msgid "Remove this deleted recording from trash? This operation cannot be reverted."
 msgstr ""
 
 #. Label for context menu entry to delete a timer rule

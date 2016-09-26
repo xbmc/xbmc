@@ -156,6 +156,12 @@ namespace PVR
     bool DeleteRecording(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Delete all recordings from trash, always showing a confirmation dialog.
+     * @return true, if the recordings were permanently deleted successfully, false otherwise.
+     */
+    bool DeleteAllRecordingsFromTrash() const;
+
+    /*!
      * @brief Undelete a recording.
      * @param item containing a recording to undelete.
      * @return true, if the recording was undeleted successfully, false otherwise.
@@ -272,6 +278,12 @@ namespace PVR
      * @return true, to proceed with delete, false otherwise.
      */
     bool ConfirmDeleteRecording(const CFileItemPtr &item) const;
+
+    /*!
+     * @brief Open a dialog to confirm to permaantly remove all deleted recordings.
+     * @return true, to proceed with delete, false otherwise.
+     */
+    bool ConfirmDeleteAllRecordingsFromTrash() const;
 
     /*!
      * @brief Check whether resume play is possible for a given item, display "resume from ..."/"play from start" context menu in case.

@@ -19,7 +19,6 @@
  */
 
 #include "GUIInfoManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
@@ -27,14 +26,12 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
-#include "pvr/timers/PVRTimers.h"
 
 #include "GUIWindowPVRRecordings.h"
 
@@ -85,7 +82,7 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
     if (isDeletedRecording)
     {
       if (m_vecItems->GetObjectCount() > 1)
-        buttons.Add(CONTEXT_BUTTON_DELETE_ALL, 19292);  /* Delete all permanently */
+        buttons.Add(CONTEXT_BUTTON_DELETE_ALL, 19292); /* Delete all permanently */
     }
   }
 
@@ -304,35 +301,13 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
 
 bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button)
 {
-  bool bReturn = false;
-
-  if (button != CONTEXT_BUTTON_DELETE_ALL || !item->IsDeletedPVRRecording())
-    return bReturn;
-
-  /* show a confirmation dialog */
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (!pDialog)
-    return bReturn;
-
-
-  pDialog->SetHeading(CVariant{19292}); // Delete all permanently
-  pDialog->SetLine(0, CVariant{19293}); // Delete all recordings permanently?
-  pDialog->SetLine(1, CVariant{""});
-  pDialog->SetLine(2, CVariant{""});
-  pDialog->SetChoice(1, CVariant{117}); // Delete
-
-  /* prompt for the user's confirmation */
-  pDialog->Open();
-  if (!pDialog->IsConfirmed())
-    return bReturn;
-
-  /* undelete the recording */
-  if (g_PVRRecordings->DeleteAllRecordingsFromTrash())
+  if (button == CONTEXT_BUTTON_DELETE_ALL)
   {
-    g_PVRManager.TriggerRecordingsUpdate();
-    bReturn = true;
+    CPVRGUIActions::GetInstance().DeleteAllRecordingsFromTrash();
+    return true;
   }
-  return bReturn;
+
+  return false;
 }
 
 void CGUIWindowPVRRecordings::OnPrepareFileItems(CFileItemList& items)
