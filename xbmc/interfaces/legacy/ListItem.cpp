@@ -157,12 +157,12 @@ namespace XBMCAddon
         vtag.SetUniqueID(it->second, it->first);
     }
 
-    void ListItem::setRating(std::string type, float rating, int votes /* = 0 */, bool def /* = false */)
+    void ListItem::setRating(std::string type, float rating, int votes /* = 0 */, bool defaultt /* = false */)
     {
       if (!item) return;
 
       LOCKGUI;
-      item->GetVideoInfoTag()->SetRating(rating, votes, type, def);
+      item->GetVideoInfoTag()->SetRating(rating, votes, type, defaultt);
     }
 
     void ListItem::select(bool selected)
