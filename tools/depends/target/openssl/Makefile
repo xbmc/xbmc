@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=openssl
-VERSION=1.0.2i
+VERSION=1.0.2j
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
