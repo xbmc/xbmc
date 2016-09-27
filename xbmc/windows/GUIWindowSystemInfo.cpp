@@ -187,7 +187,7 @@ void CGUIWindowSystemInfo::FrameMove()
 
 void CGUIWindowSystemInfo::ResetLabels()
 {
-  for (int i = 2; i < 12; i++)
+  for (int i = 2; i < 13; i++)
   {
     SET_CONTROL_LABEL(i, "");
   }
