@@ -232,7 +232,7 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
       // see if this assumption is valid
       if (!CDirectory::Exists(given_path))
       {
-        std::string given_path_stdstr = given_path;
+        std::string given_path_stdstr = CUtil::ResolveExecutablePath();
         // try to find the correct folder by going back
         // in the executable path until settings.xml was found
         bool validRoot = false;
