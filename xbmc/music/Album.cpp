@@ -376,12 +376,12 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   if (rElement)
   {
     float rating = 0;
-    float max_rating = 5;
+    float max_rating = 10;
     XMLUtils::GetFloat(album, "rating", rating);
     if (rElement->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating>=1)
-      rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5 
-    if (rating > 5.f)
-      rating = 5.f;
+      rating *= (10.f / max_rating); // Normalise the Rating to between 0 and 10 
+    if (rating > 10.f)
+      rating = 10.f;
     fRating = rating;
   }
   const TiXmlElement* userrating = album->FirstChildElement("userrating");
