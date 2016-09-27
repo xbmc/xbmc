@@ -32,8 +32,8 @@ function(core_link_library lib wraplib)
   endif()
 
   get_filename_component(dir ${wraplib} PATH)
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
-                     COMMAND cmake -E make_directory ${dir}
+  add_custom_command(OUTPUT ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
+                     COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
                      COMMAND ${CMAKE_C_COMPILER}
                      ARGS    -Wl,--whole-archive
                              "${link_lib}" ${extra_libs}
@@ -43,7 +43,7 @@ function(core_link_library lib wraplib)
                      DEPENDS ${target} wrapper.def wrapper)
 
   get_filename_component(libname ${wraplib} NAME_WE)
-  add_custom_target(wrap_${libname} ALL DEPENDS ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX})
+  add_custom_target(wrap_${libname} ALL DEPENDS ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX})
   set_target_properties(wrap_${libname} PROPERTIES FOLDER lib/wrapped)
   add_dependencies(${APP_NAME_LC}-libraries wrap_${libname})
 
