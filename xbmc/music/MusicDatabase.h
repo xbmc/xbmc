@@ -222,13 +222,15 @@ public:
    \param strGenre the album genre(s)
    \param year the year
    \param strRecordLabel the recording lable
+   \param strType album type (Musicbrainz release type e.g. "Broadcast, Soundtrack, live"), 
    \param bCompilation if the album is a compilation
    \param releaseType "album" or "single"
    \return the id of the album
    */
   int  AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
                 const std::string& strArtist, const std::string& strGenre, int year, 
-                const std::string& strRecordLabel, bool bCompilation, CAlbum::ReleaseType releaseType);
+                const std::string& strRecordLabel, const std::string& strType,
+                bool bCompilation, CAlbum::ReleaseType releaseType);
   /*! \brief retrieve an album, optionally with all songs.
    \param idAlbum the database id of the album.
    \param album [out] the album to fill.

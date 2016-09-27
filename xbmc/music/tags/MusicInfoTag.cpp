@@ -587,6 +587,11 @@ const std::vector<std::string>& CMusicInfoTag::GetMusicBrainzAlbumArtistHints() 
     return m_musicBrainzAlbumArtistHints;
 }
 
+const std::string &CMusicInfoTag::GetMusicBrainzReleaseType() const
+{
+  return m_strMusicBrainzReleaseType;
+}
+
 void CMusicInfoTag::SetMusicBrainzTrackID(const std::string& strTrackID)
 {
   m_strMusicBrainzTrackID = strTrackID;
@@ -615,6 +620,11 @@ void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const std::vector<std::string>& 
 void CMusicInfoTag::SetMusicBrainzAlbumArtistHints(const std::vector<std::string>& musicBrainzAlbumArtistHints)
 {
     m_musicBrainzAlbumArtistHints = musicBrainzAlbumArtistHints;
+}
+
+void CMusicInfoTag::SetMusicBrainzReleaseType(const std::string& ReleaseType)
+{
+  m_strMusicBrainzReleaseType = ReleaseType;
 }
 
 void CMusicInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
@@ -665,6 +675,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetAlbum(album.strAlbum);
   SetTitle(album.strAlbum);
   SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
+  SetMusicBrainzReleaseType(album.strType);
   SetGenre(album.genre);
   SetMood(StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
   SetRecordLabel(album.strLabel);
@@ -851,6 +862,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_musicBrainzArtistID;
     ar << m_strMusicBrainzAlbumID;
     ar << m_musicBrainzAlbumArtistID;
+    ar << m_strMusicBrainzReleaseType;
     ar << m_lastPlayed;
     ar << m_dateAdded;
     ar << m_strComment;
@@ -896,6 +908,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_musicBrainzArtistID;
     ar >> m_strMusicBrainzAlbumID;
     ar >> m_musicBrainzAlbumArtistID;
+    ar >> m_strMusicBrainzReleaseType;
     ar >> m_lastPlayed;
     ar >> m_dateAdded;
     ar >> m_strComment;
@@ -947,6 +960,7 @@ void CMusicInfoTag::Clear()
   m_musicBrainzArtistID.clear();
   m_strMusicBrainzAlbumID.clear();
   m_musicBrainzAlbumArtistID.clear();
+  m_strMusicBrainzReleaseType.clear();
   m_musicRoles.clear();
   m_iDuration = 0;
   m_iTrack = 0;

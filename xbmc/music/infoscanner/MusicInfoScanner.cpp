@@ -746,6 +746,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         //       in addition, we may want to use year as discriminating for albums
         album.iYear = (*k)->iYear;
         album.strLabel = (*k)->strRecordLabel;
+        album.strType = (*k)->strAlbumType;
         album.songs.push_back(**k);
       }
       albums.push_back(album);

@@ -174,6 +174,7 @@ CAlbum::CAlbum(const CFileItem& item)
 
   iYear = stTime.wYear;
   strLabel = tag.GetRecordLabel();
+  strType = tag.GetMusicBrainzReleaseType();
   bCompilation = tag.GetCompilation();
   iTimesPlayed = 0;
   dateAdded.Reset();
