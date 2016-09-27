@@ -1206,9 +1206,9 @@
 					</include>
 					<include content="BottomMainMenuItem">
 						<param name="control_id" value="801" />
-						<param name="onclick" value="ActivateWindow(filemanager)" />
+						<param name="onclick" value="ActivateWindow(1110)" />
 						<param name="icon" value="icons/filemanager.png" />
-						<param name="label" value="$LOCALIZE[10003]" />
+						<param name="label" value="$LOCALIZE[13000]" />
 					</include>
 				</control>
 			</control>
