@@ -181,7 +181,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "WM/Mixer")
       AddArtistRole(tag, "mixer", GetASFStringList(it->second));
     else if (it->first == "WM/Publisher")
-    {} // Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.front().toString().to8Bit(true));
     else if (it->first == "WM/AlbumArtistSortOrder")
     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")
@@ -303,7 +303,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
     else if (it->first == "TPE3")   AddArtistRole(tag, "Conductor", GetID3v2StringList(it->second));
     else if (it->first == "TEXT")   AddArtistRole(tag, "Lyricist", GetID3v2StringList(it->second));
     else if (it->first == "TPE4")   AddArtistRole(tag, "Remixer", GetID3v2StringList(it->second));
-    else if (it->first == "TPUB")   {} // Publisher. Known unsupported, supress warnings
+    else if (it->first == "TPUB")   tag.SetRecordLabel(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TCOP")   {} // Copyright message
     else if (it->first == "TDRC")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
     else if (it->first == "TDRL")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
@@ -520,7 +520,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
       AddArtistInstrument(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "LABEL")   
-    {} // Publisher. Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.toString().to8Bit(true));
     else if (it->first == "COMPILATION")
       tag.SetCompilation(it->second.toString().toInt() == 1);
     else if (it->first == "LYRICS")
@@ -617,7 +617,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
       AddArtistInstrument(tag, StringListToVectorString(it->second));
     else if (it->first == "LABEL")
-    {} // Publisher. Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.front().to8Bit(true));
     else if (it->first == "COMPILATION")
       tag.SetCompilation(it->second.front().toInt() == 1);
     else if (it->first == "LYRICS")
@@ -776,7 +776,7 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       AddArtistRole(tag, "Mixer", StringListToVectorString(it->second.toStringList()));
     //No MP4 standard tag for musician credits
     else if (it->first == "----:com.apple.iTunes:LABEL")
-    {} // Publisher. Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "cpil")
       tag.SetCompilation(it->second.toBool());
     else if (it->first == "trkn")

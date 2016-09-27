@@ -202,7 +202,12 @@ public:
   /////////////////////////////////////////////////
   // Album
   /////////////////////////////////////////////////
+  /*! \brief Add an album and all its songs to the database
+  \param album the album to add
+  \return the id of the album
+  */
   bool AddAlbum(CAlbum& album);
+
   /*! \brief Update an album and all its nested entities (artists, songs, infoSongs, etc)
    \param album the album to update
    \param OverrideTagData whether or not to replace the artist and song data, defaults to true.
@@ -210,14 +215,20 @@ public:
    */
   bool UpdateAlbum(CAlbum& album, bool OverrideTagData = true);
 
-  /*! \brief Add an album and all its songs to the database
-   \param album the album to add
-   \param songIDs [out] the ids of the added songs
+  /*! \brief Add an album to the database
+   \param strAlbum the album title
+   \param strMusicBrainzAlbumID the Musicbrainz Id
+   \param strArtist the album artist name(s)
+   \param strGenre the album genre(s)
+   \param year the year
+   \param strRecordLabel the recording lable
+   \param bCompilation if the album is a compilation
+   \param releaseType "album" or "single"
    \return the id of the album
    */
   int  AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
-                const std::string& strArtist, const std::string& strGenre,
-                int year, bool bCompilation, CAlbum::ReleaseType releaseType);
+                const std::string& strArtist, const std::string& strGenre, int year, 
+                const std::string& strRecordLabel, bool bCompilation, CAlbum::ReleaseType releaseType);
   /*! \brief retrieve an album, optionally with all songs.
    \param idAlbum the database id of the album.
    \param album [out] the album to fill.
