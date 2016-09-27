@@ -25,9 +25,6 @@ ifneq ($(OS),ios)
   config += --with-libdvdcss
   EXTRA_CFLAGS += -DHAVE_DVDCSS_DVDCSS_H
 endif
-ifeq ($(OS),android)
-  EXTRA_CFLAGS +=  -D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64
-endif
 ifeq ($(OS),osx)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
