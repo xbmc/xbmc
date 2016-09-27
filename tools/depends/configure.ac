@@ -130,7 +130,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    use_sdk="${use_sdk:-android-17}"
+    use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
