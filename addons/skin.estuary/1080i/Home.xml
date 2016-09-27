@@ -1179,7 +1179,7 @@
 				</control>
 				<control type="grouplist" id="700">
 					<orientation>horizontal</orientation>
-					<itemgap>-16</itemgap>
+					<itemgap>-22</itemgap>
 					<left>33</left>
 					<top>878</top>
 					<onup>SetFocus(9000,99)</onup>
@@ -1203,12 +1203,6 @@
 						<param name="onclick" value="ActivateWindow(favourites)" />
 						<param name="icon" value="icons/favourites.png" />
 						<param name="label" value="$LOCALIZE[10134]" />
-					</include>
-					<include content="BottomMainMenuItem">
-						<param name="control_id" value="801" />
-						<param name="onclick" value="ActivateWindow(filemanager)" />
-						<param name="icon" value="icons/filemanager.png" />
-						<param name="label" value="$LOCALIZE[10003]" />
 					</include>
 				</control>
 			</control>
