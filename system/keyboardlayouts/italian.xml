@@ -7,9 +7,9 @@ Default font lacks support for all characters
   <layout language="Italian" layout="QWERTY">
     <keyboard>
       <row>1234567890'ì</row>
-      <row>qwertyuiopèù</row>
-      <row>asdfghjklòà</row>
-      <row>zxcvbnm</row>
+      <row>qwertyuiopè</row>
+      <row>asdfghjklòàù</row>
+      <row>zxcvbnm,.-</row>
     </keyboard>
     <keyboard modifiers="shift">
       <row>1234567890'</row>
