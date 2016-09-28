@@ -824,6 +824,7 @@
 							<control type="grouplist">
 								<top>215</top>
 								<left>540</left>
+								<width>1330</width>
 								<orientation>horizontal</orientation>
 								<align>justify</align>
 								<itemgap>-50</itemgap>
@@ -1062,7 +1063,7 @@
 								<font>font14</font>
 								<label>$INFO[ListItem.Label]</label>
 								<shadowcolor>text_shadow</shadowcolor>
-								<visible>IsEmpty(ListItem.Label2)</visible>
+								<visible>String.IsEmpty(ListItem.Label2)</visible>
 							</control>
 							<control type="label">
 								<left>74</left>
