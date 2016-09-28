@@ -583,7 +583,7 @@ CPVRChannelGroupPtr CPVRChannelGroup::GetPreviousGroup(void) const
 
 /********** private methods **********/
 
-int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
+int CPVRChannelGroup::LoadFromDb()
 {
   CPVRDatabase *database = GetPVRDatabase();
   if (!database)
@@ -1217,7 +1217,7 @@ void CPVRChannelGroup::SetSelectedGroup(bool bSetTo)
   m_bSelectedGroup = bSetTo;
 }
 
-bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
+bool CPVRChannelGroup::CreateChannelEpgs()
 {
   /* used only by internal channel groups */
   return true;

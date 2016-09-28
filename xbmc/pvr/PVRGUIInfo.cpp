@@ -57,8 +57,6 @@ void CPVRGUIInfo::ResetProperties(void)
   m_anyTimersInfo.ResetProperties();
   m_tvTimersInfo.ResetProperties();
   m_radioTimersInfo.ResetProperties();
-  m_bHasTVRecordings            = false;
-  m_bHasRadioRecordings         = false;
   m_iCurrentActiveClient        = 0;
   m_strPlayingClientName        .clear();
   m_strBackendName              .clear();
@@ -232,8 +230,6 @@ void CPVRGUIInfo::UpdateMisc(void)
   bool bStarted = g_PVRManager.IsStarted();
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   std::string strPlayingClientName     = bStarted ? g_PVRClients->GetPlayingClientName() : "";
-  bool       bHasTVRecordings          = bStarted && g_PVRRecordings->GetNumTVRecordings() > 0;
-  bool       bHasRadioRecordings       = bStarted && g_PVRRecordings->GetNumRadioRecordings() > 0;
   bool       bIsPlayingTV              = bStarted && g_PVRClients->IsPlayingTV();
   bool       bIsPlayingRadio           = bStarted && g_PVRClients->IsPlayingRadio();
   bool       bIsPlayingRecording       = bStarted && g_PVRClients->IsPlayingRecording();
@@ -244,8 +240,6 @@ void CPVRGUIInfo::UpdateMisc(void)
 
   CSingleLock lock(m_critSection);
   m_strPlayingClientName      = strPlayingClientName;
-  m_bHasTVRecordings          = bHasTVRecordings;
-  m_bHasRadioRecordings       = bHasRadioRecordings;
   m_bIsPlayingTV              = bIsPlayingTV;
   m_bIsPlayingRadio           = bIsPlayingRadio;
   m_bIsPlayingRecording       = bIsPlayingRecording;

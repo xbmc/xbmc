@@ -64,7 +64,6 @@ using namespace PVR;
 
 #define TYPE_DEP_VISIBI_COND_ID_POSTFIX     "visibi.typedep"
 #define TYPE_DEP_ENABLE_COND_ID_POSTFIX     "enable.typedep"
-#define CHANNEL_DEP_VISIBI_COND_ID_POSTFIX  "visibi.channeldep"
 #define START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX  "visibi.startanytimedep"
 #define END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX    "visibi.endanytimedep"
 
@@ -583,8 +582,8 @@ void CGUIDialogPVRTimerSettings::Save()
     m_timerInfoTag->m_bEndAnyTime = m_bEndAnyTime;
   else
     m_bEndAnyTime = false; // Assume end time change needs checking for
+
   // Begin and end time
-  const CDateTime now(CDateTime::GetCurrentDateTime());
   if (!m_bStartAnyTime && !m_bEndAnyTime)
   {
     if (m_timerType->SupportsStartTime() &&    // has start clock entry

@@ -345,7 +345,7 @@ bool CGUIWindowPVRTimersBase::ActionShowTimer(CFileItem *item)
     return false;
   }
 
-  bool bReturn = false;
+  bool bReturn;
 
   /* Check if "Add timer..." entry is pressed by OK, if yes
      create a new timer and open settings dialog, otherwise

@@ -218,7 +218,7 @@ int CGUIDialogPVRGuideSearch::GetSpinValue(int controlID)
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), controlID);
   OnMessage(msg);
-  return (int)msg.GetParam1();
+  return msg.GetParam1();
 }
 
 std::string CGUIDialogPVRGuideSearch::GetEditValue(int controlID)

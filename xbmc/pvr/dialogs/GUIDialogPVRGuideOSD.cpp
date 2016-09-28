@@ -123,7 +123,7 @@ void CGUIDialogPVRGuideOSD::Clear()
 void CGUIDialogPVRGuideOSD::ShowInfo(int item)
 {
   /* Check file item is in list range and get his pointer */
-  if (item < 0 || item >= (int)m_vecItems->Size()) return;
+  if (item < 0 || item >= m_vecItems->Size()) return;
 
   CFileItemPtr pItem = m_vecItems->Get(item);
 

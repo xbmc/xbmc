@@ -208,7 +208,6 @@ bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
   bool allDeleted = true;
 
   VECFILEITEMS itemList = items.GetList();
-  CFileItem item;
 
   for (const auto item : itemList)
     allDeleted &= Delete(*(item.get()));
@@ -271,7 +270,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
 {
   CSingleLock lock(m_critSection);
 
-  bool bGrouped = false;
+  bool bGrouped;
   const CURL url(strPath);
   if (url.HasOption("view"))
   {

@@ -819,7 +819,6 @@ void CDVDRadioRDSData::ProcessUECP(const unsigned char *data, unsigned int len)
               case UECP_RDS_PS:                 ret = DecodePS(msg);                  break;  //!< Program Service name (PS)
               case UECP_RDS_DI:                 ret = DecodeDI(msg);                  break;  //!< Decoder Identification and dynamic PTY indicator
               case UECP_RDS_TA_TP:              ret = DecodeTA_TP(msg);               break;  //!< Traffic Announcement and Traffic Programme bits.
-              case UECP_RDS_MS:                 ret = DecodeMS(msg);                  break;  //!< Music/Speech switch
               case UECP_RDS_PTY:                ret = DecodePTY(msg);                 break;  //!< Program Type
               case UECP_RDS_PTYN:               ret = DecodePTYN(msg);                break;  //!< Program Type Name
               case UECP_RDS_RT:                 ret = DecodeRT(msg, len);             break;  //!< RadioText
@@ -964,19 +963,6 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
     CVariant data(CVariant::VariantTypeObject);
     data["on"] = false;
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTA", data);
-  }
-
-  return 4;
-}
-
-unsigned int CDVDRadioRDSData::DecodeMS(uint8_t *msgElement)
-{
-  bool speechActive = msgElement[3] == 0;
-  if (m_MS_SpeechActive != speechActive)
-  {
-    m_currentInfoTag->SetSpeechActive(m_MS_SpeechActive);
-    CLog::Log(LOGDEBUG, "Radio UECP (RDS) Processor - %s - Stream changed over to %s", __FUNCTION__, speechActive ? "Speech" : "Music");
-    m_MS_SpeechActive = speechActive;
   }
 
   return 4;

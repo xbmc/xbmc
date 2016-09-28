@@ -35,12 +35,12 @@ namespace PVR
   public:
     CGUIDialogPVRChannelManager(void);
     virtual ~CGUIDialogPVRChannelManager(void);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual bool OnAction(const CAction& action);
-    virtual void OnWindowLoaded(void);
-    virtual void OnWindowUnload(void);
-    virtual bool HasListItems() const { return true; };
-    virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual bool OnAction(const CAction& action) override;
+    virtual void OnWindowLoaded(void) override;
+    virtual void OnWindowUnload(void) override;
+    virtual bool HasListItems() const override { return true; };
+    virtual CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
   protected:
     virtual void OnInitWindow();
@@ -86,7 +86,6 @@ namespace PVR
     CFileItemList* m_channelItems;
     CGUIViewControl m_viewControl;
 
-    typedef std::vector<PVR_CLIENT>::iterator PVR_CLIENT_ITR;
     std::vector<PVR_CLIENT> m_clientsWithSettingsList;
   };
 }

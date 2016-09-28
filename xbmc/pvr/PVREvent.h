@@ -27,7 +27,6 @@ namespace PVR
     ManagerError = 0,
     ManagerStopped,
     ManagerStarting,
-    ManagerStopping,
     ManagerInterrupted,
     ManagerStarted,
 

@@ -172,8 +172,6 @@ void CPVRRecordingsPath::AppendSegment(const std::string &strSegment)
   if (!m_bValid || strSegment.empty() || strSegment == "/")
     return;
 
-  std::string strVarSegment(TrimSlashes(strSegment));
-
   if (!m_directoryPath.empty() && m_directoryPath.back() != '/')
     m_directoryPath.push_back('/');
 

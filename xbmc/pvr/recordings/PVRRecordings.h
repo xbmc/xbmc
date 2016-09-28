@@ -41,7 +41,6 @@ namespace PVR
   {
   private:
     typedef std::map<CPVRRecordingUid, CPVRRecordingPtr> PVR_RECORDINGMAP;
-    typedef PVR_RECORDINGMAP::iterator             PVR_RECORDINGMAP_ITR;
     typedef PVR_RECORDINGMAP::const_iterator             PVR_RECORDINGMAP_CITR;
 
     CCriticalSection             m_critSection;

@@ -28,9 +28,9 @@ namespace PVR
   public:
     CGUIDialogPVRRadioRDSInfo(void);
     virtual ~CGUIDialogPVRRadioRDSInfo(void) {}
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual bool HasListItems() const { return true; };
-    virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual bool HasListItems() const override { return true; };
+    virtual CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
   protected:
     virtual void OnInitWindow();

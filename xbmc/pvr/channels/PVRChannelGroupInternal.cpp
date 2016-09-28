@@ -217,7 +217,7 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMemb
   return results.Size() - iOrigSize;
 }
 
-int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
+int CPVRChannelGroupInternal::LoadFromDb()
 {
   CPVRDatabase *database = GetPVRDatabase();
   if (!database)
@@ -225,12 +225,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 
   int iChannelCount = Size();
 
-  if (database->Get(*this) > 0)
-  {
-    if (bCompress)
-      database->Compress(true);
-  }
-  else
+  if (database->Get(*this) == 0)
   {
     CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - no channels in the database",
         __FUNCTION__);
@@ -329,7 +324,7 @@ void CPVRChannelGroupInternal::CreateChannelEpg(CPVRChannelPtr channel, bool bFo
   }
 }
 
-bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
+bool CPVRChannelGroupInternal::CreateChannelEpgs()
 {
   if (!g_EpgContainer.IsStarted())
     return false;

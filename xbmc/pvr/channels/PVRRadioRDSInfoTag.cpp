@@ -168,8 +168,6 @@ bool CPVRRadioRDSInfoTag::operator !=(const CPVRRadioRDSInfoTag& tag) const
 
 void CPVRRadioRDSInfoTag::Clear()
 {
-  m_RDS_SpeechActive = false;
-
   m_strLanguage.erase();
   m_strCountry.erase();
   m_strTitle.erase();
@@ -214,11 +212,6 @@ void CPVRRadioRDSInfoTag::ResetSongInformation()
   m_strConductor.erase();
   m_strAlbum.erase();
   m_iAlbumTracknumber = 0;
-}
-
-void CPVRRadioRDSInfoTag::SetSpeechActive(bool active)
-{
-  m_RDS_SpeechActive = active;
 }
 
 void CPVRRadioRDSInfoTag::SetLanguage(const std::string& strLanguage)
