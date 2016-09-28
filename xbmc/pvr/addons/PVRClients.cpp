@@ -1112,8 +1112,6 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
 void CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
-  PVR_CLIENT addon;
-
   CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_PVRDLL);
 
   if (addons.empty())
@@ -1142,7 +1140,7 @@ void CPVRClients::UpdateAddons(void)
         PVR_CLIENT pvrclient = std::dynamic_pointer_cast<CPVRClient>(addon);
         if (!pvrclient)
         {
-          CLog::Log(LOGERROR, "CPVRClients::UpdateAndInitialiseClients - severe error, incorrect add type");
+          CLog::Log(LOGERROR, "CPVRClients - %s - severe error, incorrect add-on type", __FUNCTION__);
           continue;
         }
         status = pvrclient.get()->Create(iClientId);
@@ -1164,9 +1162,10 @@ void CPVRClients::UpdateAddons(void)
         }
       }
     }
-    else if (!bEnabled && IsCreatedClient(addon))
+    else if (IsCreatedClient(addon))
     {
-      StopClient(addon, false);
+      // stop add-on if it's no longer enabled, restart add-on if it's still enabled
+      StopClient(addon, bEnabled);
     }
   }
 
