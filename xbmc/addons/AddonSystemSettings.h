@@ -21,6 +21,7 @@
 
 #include "addons/IAddon.h"
 #include "settings/lib/ISettingCallback.h"
+#include <functional>
 #include <string>
 
 namespace ADDON
@@ -48,9 +49,12 @@ public:
   bool UnsetActive(const AddonPtr& addon);
 
   /*!
-   * Attempt to migrate installed addons. Returns a list of addons that was modified.
+   * Check compatibility of installed addons and attempt to migrate.
+   *
+   * @param onMigrate Called when a long running migration task takes place.
+   * @return list of addons that was modified.
    */
-  std::vector<std::string> MigrateAddons();
+  std::vector<std::string> MigrateAddons(std::function<void(void)> onMigrate);
 
 private:
   CAddonSystemSettings();

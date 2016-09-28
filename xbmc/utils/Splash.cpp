@@ -46,18 +46,18 @@ void CSplash::Show()
 
 void CSplash::Show(const std::string& message)
 {
-  if (g_advancedSettings.m_splashImage)
-  {
-    if (!m_image)
-    {
-      std::string splashImage = "special://home/media/Splash.png";
-      if (!XFILE::CFile::Exists(splashImage))
-        splashImage = "special://xbmc/media/Splash.png";
+  if (!g_advancedSettings.m_splashImage)
+    return;
 
-      m_image = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(),
-          g_graphicsContext.GetHeight(), CTextureInfo(splashImage)));
-      m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
-    }
+  if (!m_image)
+  {
+    std::string splashImage = "special://home/media/Splash.png";
+    if (!XFILE::CFile::Exists(splashImage))
+      splashImage = "special://xbmc/media/Splash.png";
+
+    m_image = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(),
+        g_graphicsContext.GetHeight(), CTextureInfo(splashImage)));
+    m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
   }
 
   g_graphicsContext.Lock();
@@ -69,12 +69,9 @@ void CSplash::Show(const std::string& message)
   //render splash image
   g_Windowing.BeginRender();
 
-  if (m_image)
-  {
-    m_image->AllocResources();
-    m_image->Render();
-    m_image->FreeResources();
-  }
+  m_image->AllocResources();
+  m_image->Render();
+  m_image->FreeResources();
 
   if (!message.empty())
   {

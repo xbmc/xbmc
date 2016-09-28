@@ -126,7 +126,7 @@ bool CAddonSystemSettings::UnsetActive(const AddonPtr& addon)
 }
 
 
-std::vector<std::string> CAddonSystemSettings::MigrateAddons()
+std::vector<std::string> CAddonSystemSettings::MigrateAddons(std::function<void(void)> onMigrate)
 {
   auto getIncompatible = [](){
     VECADDONS incompatible;
@@ -141,6 +141,8 @@ std::vector<std::string> CAddonSystemSettings::MigrateAddons()
 
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
   {
+    onMigrate();
+
     if (CRepositoryUpdater::GetInstance().CheckForUpdates())
       CRepositoryUpdater::GetInstance().Await();
 
