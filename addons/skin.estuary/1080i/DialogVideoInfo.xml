@@ -28,7 +28,7 @@
 					<texture fallback="DefaultVideo.png">$VAR[InfoDialogPosterVar]</texture>
 				</control>
 				<control type="group">
-					<visible>String.IsEqual(ListItem.DBType,episode)</visible>
+					<visible>String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,video)</visible>
 					<visible>!String.IsEmpty(ListItem.Thumb) + !String.IsEqual(ListItem.Thumb,ListItem.Art(poster))</visible>
 					<control type="image">
 						<left>4</left>
@@ -261,7 +261,7 @@
 								<top>0</top>
 								<width>264</width>
 								<height>317</height>
-								<texture>DefaultActor.png</texture>
+								<texture>DefaultActorSolid.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 								<bordertexture border="20">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
@@ -271,7 +271,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture fallback="DefaultActorSolid.png" background="true">$INFO[ListItem.Thumb]</texture>
+								<texture background="true">$INFO[ListItem.Thumb]</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -323,7 +323,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture fallback="DefaultActorSolid.png" background="true">$INFO[ListItem.Thumb]</texture>
+								<texture background="true">$INFO[ListItem.Thumb]</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -411,7 +411,7 @@
 					</include>
 					<control type="group" id="400">
 						<width>262</width>
-						<visible>Control.IsEnabled(7) | !IsEmpty(ListItem.UserRating)</visible>
+						<visible>Control.IsEnabled(7) | !String.IsEmpty(ListItem.UserRating)</visible>
 						<control type="button" id="7">
 							<include content="VideoInfoButtonsCommon">
 								<param name="icon" value="" />
@@ -420,7 +420,7 @@
 							<onleft>440</onleft>
 							<onright>101</onright>
 							<onup>140</onup>
-							<enable>IsEmpty(Container.PluginName)</enable>
+							<enable>String.IsEmpty(Container.PluginName)</enable>
 							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,1)">SetFocus(50,0)</ondown>
 							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,2)">SetFocus(50,1)</ondown>
 							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,3)">SetFocus(50,2)</ondown>

@@ -698,35 +698,6 @@
 			</control>
 		</definition>
 	</include>
-	<include name="UpDownArrowsHome">
-		<control type="group">
-			<visible>Control.IsVisible($PARAM[container_id])</visible>
-			<animation effect="fade" start="0" end="100" delay="1000" time="200">Visible</animation>
-			<animation effect="fade" start="0" end="100" time="0">Hidden</animation>
-			<control type="image">
-				<left>1860</left>
-				<top>950</top>
-				<width>36</width>
-				<height>18</height>
-				<texture colordiffuse="button_focus">overlays/arrowdown.png</texture>
-				<animation effect="fade" time="200">VisibleChange</animation>
-				<animation effect="slide" start="150" end="0" delay="640" time="320" tween="cubic">WindowOpen</animation>
-				<animation effect="zoom" start="100,100" end="100,0" center="0,890" time="200">WindowClose</animation>
-				<visible>Container($PARAM[container_id]).HasNext</visible>
-			</control>
-			<control type="image">
-				<left>1860</left>
-				<top>94</top>
-				<width>36</width>
-				<height>18</height>
-				<texture colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texture>
-				<animation effect="fade" time="200">VisibleChange</animation>
-				<animation effect="slide" start="150" end="0" delay="640" time="320" tween="cubic">WindowOpen</animation>
-				<animation effect="zoom" start="100,100" end="100,0" center="0,180" time="200">WindowClose</animation>
-				<visible>Container($PARAM[container_id]).HasPrevious</visible>
-			</control>
-		</control>
-	</include>
 	<include name="LeftRightArrows">
 		<param name="left_posx">445</param>
 		<param name="right_posx">1843</param>

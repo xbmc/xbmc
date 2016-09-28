@@ -164,6 +164,7 @@
 					<onright>10</onright>
 					<orientation>vertical</orientation>
 					<texturesliderbackground colordiffuse="22FFFFFF">colors/white.png</texturesliderbackground>
+					<animation effect="fade" start="100" end="40" time="0" condition="!system.getbool(input.enablemouse)">Conditional</animation>
 				</control>
 				<control type="group">
 					<top>540</top>

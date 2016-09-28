@@ -92,56 +92,62 @@
 			<control type="grouplist">
 				<left>480</left>
 				<top>105</top>
+				<height>500</height>
 				<orientation>vertical</orientation>
 				<control type="label" id="2">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="3">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="4">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="5">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="6">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="7">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="8">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="9">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="10">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
 				</control>
 				<control type="label" id="11">
-					<height>45</height>
+					<height>41</height>
 					<width>1220</width>
-					<font>Mono30</font>
+					<font>Mono28</font>
+				</control>
+				<control type="label" id="12">
+					<height>41</height>
+					<width>1220</width>
+					<font>Mono28</font>
 				</control>
 			</control>
 			<control type="grouplist">
