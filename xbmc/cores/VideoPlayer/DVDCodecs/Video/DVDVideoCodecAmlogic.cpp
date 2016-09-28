@@ -185,11 +185,15 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         // 4K is supported only on Amlogic S802/S812 chip
         goto FAIL;
       }
-      m_h264_sequence_pts = 0;
-      m_h264_sequence = new h264_sequence;
-      m_h264_sequence->width  = m_hints.width;
-      m_h264_sequence->height = m_hints.height;
-      m_h264_sequence->ratio  = m_hints.aspect;
+
+      if (m_hints.aspect == 0.0f)
+      {
+        m_h264_sequence_pts = 0;
+        m_h264_sequence = new h264_sequence;
+        m_h264_sequence->width  = m_hints.width;
+        m_h264_sequence->height = m_hints.height;
+        m_h264_sequence->ratio  = m_hints.aspect;
+      }
 
       m_pFormatName = "am-h264";
       // convert h264-avcC to h264-annex-b as h264-avcC
