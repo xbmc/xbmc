@@ -2771,12 +2771,6 @@ void CVideoPlayer::HandleMessages()
           m_messenger.Put(new CDVDMsgPlayerSeek(iTime, m_playSpeed < 0, true, false, false, true));
         }
 
-        // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
-        // audioplayer, stops outputing audio to audiorendere, but still tries to
-        // sleep an correct amount for each packet
-        // videoplayer just plays faster after the clock speed has been increased
-        // 1. disable audio
-        // 2. skip frames and adjust their pts or the clock
         m_playSpeed = speed;
         m_newPlaySpeed = speed;
         m_caching = CACHESTATE_DONE;
