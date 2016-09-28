@@ -730,7 +730,7 @@ void CGUIDialogVideoInfo::OnGetArt()
       // which is probably the IMDb thumb.  These could be wrong, so allow the user
       // to delete the incorrect thumb
       CFileItemPtr item(new CFileItem("thumb://None", false));
-      item->SetIconImage("DefaultVideo.png");
+      item->SetIconImage("DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13515));
       items.Add(item);
     }
@@ -828,7 +828,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   else
   {
     CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-    itemNone->SetIconImage("DefaultVideo.png");
+    itemNone->SetIconImage("DefaultPicture.png");
     itemNone->SetLabel(g_localizeStrings.Get(20439));
     items.Add(itemNone);
   }
