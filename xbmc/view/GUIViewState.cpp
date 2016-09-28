@@ -346,7 +346,7 @@ bool CGUIViewState::ChooseSortMethod()
   if (!dialog)
     return false;
   dialog->Reset();
-  dialog->SetHeading(CVariant{ 32104 }); // Label "Sort by"
+  dialog->SetHeading(CVariant{ 39010 }); // Label "Sort by"
   for (auto &sortMethod : m_sortMethods)
     dialog->Add(g_localizeStrings.Get(sortMethod.m_buttonLabel));
   dialog->SetSelected(m_currentSortMethod);
