@@ -19625,3 +19625,8 @@ msgstr ""
 msgctxt "#39009"
 msgid "Zoom - 110% width"
 msgstr ""
+
+#: view/GUIViewState.cpp
+msgctxt "#39010"
+msgid "Select sort method"
+msgstr ""
