@@ -27,13 +27,16 @@ function(core_link_library lib wraplib)
     foreach(arg ${data_arg})
       list(APPEND export ${arg})
     endforeach()
+  elseif(check_arg STREQUAL archives)
+    set(extra_libs ${data_arg})
   endif()
+
   get_filename_component(dir ${wraplib} PATH)
   add_custom_command(OUTPUT ${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
                      COMMAND cmake -E make_directory ${dir}
                      COMMAND ${CMAKE_C_COMPILER}
                      ARGS    -Wl,--whole-archive
-                             "${link_lib}"
+                             "${link_lib}" ${extra_libs}
                              -Wl,--no-whole-archive -lm
                              -shared -o ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
                              ${export}
