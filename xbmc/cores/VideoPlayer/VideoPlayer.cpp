@@ -2722,16 +2722,18 @@ void CVideoPlayer::HandleMessages()
         int speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
         // correct our current clock, as it would start going wrong otherwise
-        if(m_State.timestamp > 0)
+        if (m_State.timestamp > 0)
         {
           double offset;
-          offset  = m_clock.GetAbsoluteClock() - m_State.timestamp;
+          offset = m_clock.GetAbsoluteClock() - m_State.timestamp;
           offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
-          offset  = DVD_TIME_TO_MSEC(offset);
-          if(offset >  1000) offset =  1000;
-          if(offset < -1000) offset = -1000;
-          m_State.time     += offset;
-          m_State.timestamp =  m_clock.GetAbsoluteClock();
+          offset = DVD_TIME_TO_MSEC(offset);
+          if (offset > 1000)
+            offset = 1000;
+          if (offset < -1000)
+            offset = -1000;
+          m_State.time += offset;
+          m_State.timestamp = m_clock.GetAbsoluteClock();
         }
 
         if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
