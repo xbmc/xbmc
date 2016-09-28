@@ -2744,6 +2744,19 @@ void CVideoPlayer::HandleMessages()
         }
 
         // do a seek after rewind, clock is not in sync with current pts
+        if ((speed == DVD_PLAYSPEED_NORMAL) &&
+            (m_playSpeed != DVD_PLAYSPEED_NORMAL) &&
+            (m_playSpeed != DVD_PLAYSPEED_PAUSE) &&
+            !m_omxplayer_mode)
+        {
+          int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
+          if (m_State.time != DVD_NOPTS_VALUE)
+            iTime = m_State.time;
+          m_messenger.Put(new CDVDMsgPlayerSeek(iTime, m_playSpeed < 0, true, false, false, true));
+        }
+
+        // !!! omx alterative code path !!!
+        // should be done differently
         if (m_omxplayer_mode)
         {
           // when switching from trickplay to normal, we may not have a full set of reference frames
@@ -2760,15 +2773,6 @@ void CVideoPlayer::HandleMessages()
 
           m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
           CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CVideoPlayer", __FUNCTION__, speed, static_cast<int>(m_playSpeed));
-        }
-        else if ((speed == DVD_PLAYSPEED_NORMAL) &&
-                 (m_playSpeed != DVD_PLAYSPEED_NORMAL) &&
-                 (m_playSpeed != DVD_PLAYSPEED_PAUSE))
-        {
-          int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
-          if (m_State.time != DVD_NOPTS_VALUE)
-            iTime = m_State.time;
-          m_messenger.Put(new CDVDMsgPlayerSeek(iTime, m_playSpeed < 0, true, false, false, true));
         }
 
         m_playSpeed = speed;
