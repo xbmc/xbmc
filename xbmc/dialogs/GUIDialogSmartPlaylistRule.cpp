@@ -379,9 +379,26 @@ void CGUIDialogSmartPlaylistRule::OnCancel()
 
 void CGUIDialogSmartPlaylistRule::OnField()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
-  OnMessage(msg);
-  m_rule.m_field = (Field)msg.GetParam1();
+
+  std::vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  dialog->Reset();
+  dialog->SetHeading(CVariant{20427});
+  int selected = -1;
+  for (unsigned int i = 0; i < fields.size(); i++)
+  {
+    dialog->Add(CSmartPlaylistRule::GetLocalizedField(fields[i]));
+    if (fields[i] == m_rule.m_field)
+      selected = i;
+  }
+  if (selected > -1)
+    dialog->SetSelected(selected);
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+  // check if selection has changed
+  if (!dialog->IsConfirmed() || newSelected < 0 || newSelected == selected)
+    return;
+  m_rule.m_field = fields[newSelected];
 
   UpdateButtons();
 }
@@ -402,12 +419,9 @@ std::pair<std::string, int> OperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op
 
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
 {
-  // update the field control
-  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_FIELD, m_rule.m_field);
-  CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_FIELD);
-  OnMessage(msg2);
-  m_rule.m_field = (Field)msg2.GetParam1();
-
+  if (m_rule.m_field == 0)
+    m_rule.m_field = CSmartPlaylistRule::GetFields(m_type)[0];
+  SET_CONTROL_LABEL2(CONTROL_FIELD, CSmartPlaylistRule::GetLocalizedField(m_rule.m_field));
   // and now update the operator set
   SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
 
@@ -506,14 +520,6 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
 void CGUIDialogSmartPlaylistRule::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
-
-  // add the fields to the field spincontrol
-  std::vector< std::pair<std::string, int> > labels;
-  std::vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
-  for (unsigned int i = 0; i < fields.size(); i++)
-    labels.emplace_back(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]);
-
-  SET_CONTROL_LABELS(CONTROL_FIELD, 0, &labels);
 
   UpdateButtons();
 
