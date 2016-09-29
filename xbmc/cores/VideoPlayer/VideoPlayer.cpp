@@ -2722,20 +2722,25 @@ void CVideoPlayer::HandleMessages()
         int speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
         // correct our current clock, as it would start going wrong otherwise
-        if(m_State.timestamp > 0)
+        if (m_State.timestamp > 0)
         {
           double offset;
-          offset  = m_clock.GetAbsoluteClock() - m_State.timestamp;
+          offset = m_clock.GetAbsoluteClock() - m_State.timestamp;
           offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
-          offset  = DVD_TIME_TO_MSEC(offset);
-          if(offset >  1000) offset =  1000;
-          if(offset < -1000) offset = -1000;
-          m_State.time     += offset;
-          m_State.timestamp =  m_clock.GetAbsoluteClock();
+          offset = DVD_TIME_TO_MSEC(offset);
+          if (offset > 1000)
+            offset = 1000;
+          if (offset < -1000)
+            offset = -1000;
+          m_State.time += offset;
+          m_State.timestamp = m_clock.GetAbsoluteClock();
         }
 
         if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
           m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
+
+        // notifiy GUI, skins may want to show the seekbar
+        g_infoManager.SetDisplayAfterSeek();
 
         if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && speed != m_playSpeed)
         {
@@ -2744,6 +2749,19 @@ void CVideoPlayer::HandleMessages()
         }
 
         // do a seek after rewind, clock is not in sync with current pts
+        if ((speed == DVD_PLAYSPEED_NORMAL) &&
+            (m_playSpeed != DVD_PLAYSPEED_NORMAL) &&
+            (m_playSpeed != DVD_PLAYSPEED_PAUSE) &&
+            !m_omxplayer_mode)
+        {
+          int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
+          if (m_State.time != DVD_NOPTS_VALUE)
+            iTime = m_State.time;
+          m_messenger.Put(new CDVDMsgPlayerSeek(iTime, m_playSpeed < 0, true, false, false, true));
+        }
+
+        // !!! omx alterative code path !!!
+        // should be done differently
         if (m_omxplayer_mode)
         {
           // when switching from trickplay to normal, we may not have a full set of reference frames
@@ -2761,22 +2779,7 @@ void CVideoPlayer::HandleMessages()
           m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
           CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CVideoPlayer", __FUNCTION__, speed, static_cast<int>(m_playSpeed));
         }
-        else if ((speed == DVD_PLAYSPEED_NORMAL) &&
-                 (m_playSpeed != DVD_PLAYSPEED_NORMAL) &&
-                 (m_playSpeed != DVD_PLAYSPEED_PAUSE))
-        {
-          int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
-          if (m_State.time != DVD_NOPTS_VALUE)
-            iTime = m_State.time;
-          m_messenger.Put(new CDVDMsgPlayerSeek(iTime, m_playSpeed < 0, true, false, false, true));
-        }
 
-        // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
-        // audioplayer, stops outputing audio to audiorendere, but still tries to
-        // sleep an correct amount for each packet
-        // videoplayer just plays faster after the clock speed has been increased
-        // 1. disable audio
-        // 2. skip frames and adjust their pts or the clock
         m_playSpeed = speed;
         m_newPlaySpeed = speed;
         m_caching = CACHESTATE_DONE;
