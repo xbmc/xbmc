@@ -26,6 +26,7 @@
 #include "filesystem/File.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogSmartPlaylistRule.h"
+#include "GUIDialogSelect.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -311,11 +312,22 @@ void CGUIDialogSmartPlaylistEditor::OnOrderDirection()
 
 void CGUIDialogSmartPlaylistEditor::OnGroupBy()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_GROUP_BY);
-  OnMessage(msg);
-  m_playlist.SetGroup(CSmartPlaylistRule::TranslateGroup((Field)msg.GetParam1()));
+  std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  dialog->Reset();
+  for (auto group : groups)
+    dialog->Add(CSmartPlaylistRule::GetLocalizedGroup(group));
+  dialog->SetHeading(CVariant{ 21458 });
+  dialog->SetSelected(CSmartPlaylistRule::GetLocalizedGroup(currentGroup));
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+   // check if selection has changed
+  if (!dialog->IsConfirmed() || newSelected < 0 || groups[newSelected] == currentGroup)
+    return;
+  m_playlist.SetGroup(CSmartPlaylistRule::TranslateGroup(groups[newSelected]));
 
-  if (m_playlist.IsGroupMixed() && !CSmartPlaylistRule::CanGroupMix((Field)msg.GetParam1()))
+  if (m_playlist.IsGroupMixed() && !CSmartPlaylistRule::CanGroupMix(currentGroup))
     m_playlist.SetGroupMixed(false);
 
   UpdateButtons();
@@ -382,13 +394,9 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   SET_CONTROL_LABELS(CONTROL_ORDER_FIELD, m_playlist.m_orderField, &labels);
 
   // setup groups
-  labels.clear();
   std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
   Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
-  for (unsigned int i = 0; i < groups.size(); i++)
-    labels.push_back(make_pair(CSmartPlaylistRule::GetLocalizedGroup(groups[i]), groups[i]));
-  SET_CONTROL_LABELS(CONTROL_GROUP_BY, currentGroup, &labels);
-
+  SET_CONTROL_LABEL2(CONTROL_GROUP_BY, CSmartPlaylistRule::GetLocalizedGroup(currentGroup));
   if (m_playlist.IsGroupMixed())
     CONTROL_SELECT(CONTROL_GROUP_MIXED);
   else
