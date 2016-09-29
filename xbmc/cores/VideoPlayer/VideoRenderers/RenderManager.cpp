@@ -362,6 +362,8 @@ bool CRenderManager::HasFrame()
 
 void CRenderManager::FrameMove()
 {
+  UpdateResolution();
+
   {
     CSingleLock lock(m_statelock);
 
@@ -421,7 +423,6 @@ void CRenderManager::FrameMove()
     m_bRenderGUI = true;
   }
 
-  UpdateResolution();
   ManageCaptures();
 }
 
