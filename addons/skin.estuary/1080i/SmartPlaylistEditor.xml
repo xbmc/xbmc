@@ -67,7 +67,7 @@
 					<label>$LOCALIZE[31032]: $LOCALIZE[21431]</label>
 					<altlabel>$LOCALIZE[31032]: $LOCALIZE[21430]</altlabel>
 				</control>
-				<control type="spincontrolex" id="23">
+				<control type="button" id="23">
 					<width>660</width>
 					<label>$LOCALIZE[21458]</label>
 					<include>SettingsItemCommon</include>
