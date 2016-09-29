@@ -20,13 +20,15 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include "AddonClass.h"
 #include "AddonString.h"
+#include "Alternative.h"
+#include "ListItem.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "Alternative.h"
 
 #define INPUT_ALPHANUM        0
 #define INPUT_NUMERIC         1
@@ -106,7 +108,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().select(heading, list[, autoclose,preselect]) }
+      /// \python_func{ xbmcgui.Dialog().select(heading, list[, autoclose, preselect, useDetails]) }
       ///------------------------------------------------------------------------
       ///
       /// **Select dialog**
@@ -114,14 +116,17 @@ namespace XBMCAddon
       /// Show of a dialog to select of an entry as a key
       ///
       /// @param heading        string or unicode - dialog heading.
-      /// @param list           string list - list of items.
+      /// @param list           list of strings / xbmcgui.ListItems - list of items shown in dialog.
       /// @param autoclose      [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
       /// @param preselect      [opt] integer - index of preselected item. (default=no preselected item)
+      /// @param useDetails     [opt] bool - use detailed list instead of a compact list. (default=false)
       /// @return Returns the position of the highlighted item as an integer.
       ///
       ///
       ///------------------------------------------------------------------------
       /// @python_v17 **preselect** option added.
+      /// @python_v17 Added new option **useDetails**.
+      /// @python_v17 Allow listitems for parameter **list**
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -133,7 +138,7 @@ namespace XBMCAddon
       ///
       select(...);
 #else
-      int select(const String& heading, const std::vector<String>& list, int autoclose=0, int preselect=-1);
+      int select(const String& heading, const std::vector<Alternative<String, const ListItem* > > & list, int autoclose=0, int preselect=-1, bool useDetails=false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -168,17 +173,18 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().multiselect(heading, options[, autoclose, preselect]) }
+      /// \python_func{ xbmcgui.Dialog().multiselect(heading, options[, autoclose, preselect, useDetails]) }
       ///------------------------------------------------------------------------
       ///
       /// Show a multi-select dialog.
       ///
       /// @param heading        string or unicode - dialog heading.
-      /// @param options        list of string - options to choose from.
+      /// @param options        list of strings / xbmcgui.ListItems - options to choose from.
       /// @param autoclose      [opt] integer - milliseconds to autoclose dialog.
       ///                       (default=do not autoclose)
       /// @param preselect      [opt] list of int - indexes of items to preselect
       ///                       in list (default: do not preselect any item)
+      /// @param useDetails     [opt] bool - use detailed list instead of a compact list. (default=false)
       /// @return               Returns the selected items as a list of indices,
       ///                       or None if cancelled.
       ///
@@ -186,6 +192,8 @@ namespace XBMCAddon
       ///------------------------------------------------------------------------
       /// @python_v16 New function added.
       /// @python_v17 Added new option **preselect**.
+      /// @python_v17 Added new option **useDetails**.
+      /// @python_v17 Allow listitems for parameter **options**
       ///
       /// **Example:**
       /// @code{.py}
@@ -197,7 +205,7 @@ namespace XBMCAddon
       ///
       multiselect(...);
 #else
-      std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<String>& options, int autoclose=0, const std::vector<int>& preselect = std::vector<int>());
+      std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<Alternative<String, const ListItem* > > & options, int autoclose=0, const std::vector<int>& preselect = std::vector<int>(), bool useDetails=false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
