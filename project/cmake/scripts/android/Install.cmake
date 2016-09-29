@@ -65,11 +65,11 @@ function(add_bundle_file file destination relative)
   get_filename_component(outdir ${outfile} DIRECTORY)
   file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake
        "file(COPY \"${file}\" DESTINATION \"${destination}/${outdir}\")\n")
-  if(file MATCHES "\.so\..+$")
+  if(file MATCHES "\\.so\\..+$")
     get_filename_component(srcfile "${file}" NAME)
-    string(REGEX REPLACE "\.so\..+$" "\.so" destfile ${srcfile})
+    string(REGEX REPLACE "\\.so\\..+$" "\.so" destfile ${srcfile})
     file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake
-         "file(RENAME \"${destination}/${outdir}/${srcfile}\" \"${destination}/${destfile}\")\n")
+         "file(RENAME \"${destination}/${outdir}/${srcfile}\" \"${destination}/${outdir}/${destfile}\")\n")
   endif()
 endfunction()
 
