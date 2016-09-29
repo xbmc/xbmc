@@ -27,7 +27,7 @@
 			<orientation>vertical</orientation>
 			<onup>9000</onup>
 			<ondown>9000</ondown>
-			<control type="spincontrolex" id="15">
+			<control type="button" id="15">
 				<description>Rule Field</description>
 				<include>SettingsItemCommon</include>
 				<width>900</width>
