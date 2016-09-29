@@ -109,32 +109,18 @@
 				<height>435</height>
 				<onleft>500</onleft>
 				<onright>500</onright>
-				<ondown>13</ondown>
+				<ondown>9001</ondown>
 				<onup>9001</onup>
 				<include content="DefaultSimpleListLayout">
 					<param name="width" value="600" />
 					<param name="list_id" value="10" />
 				</include>
 			</control>
-			<control type="button" id="13">
-				<description>Add rule Button</description>
-				<left>650</left>
-				<top>555</top>
-				<width>300</width>
-				<height>90</height>
-				<include>SettingsItemCommon</include>
-				<align>center</align>
-				<label>$LOCALIZE[15019]</label>
-				<onleft>500</onleft>
-				<onright>500</onright>
-				<ondown>9001</ondown>
-				<onup>10</onup>
-			</control>
 			<control type="textbox">
 				<left>680</left>
-				<top>640</top>
+				<top>570</top>
 				<width>540</width>
-				<height>188</height>
+				<height>248</height>
 				<aligny>top</aligny>
 				<label>$LOCALIZE[31043]</label>
 				<textcolor>grey</textcolor>
