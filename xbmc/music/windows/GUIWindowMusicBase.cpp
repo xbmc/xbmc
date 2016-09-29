@@ -1258,6 +1258,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 
       newPlaylist.reset(new CFileItem("newplaylist://", false));
       newPlaylist->SetLabel(g_localizeStrings.Get(525));
+      newPlaylist->SetIconImage("DefaultPlaylist.png");
       newPlaylist->SetLabelPreformated(true);
       newPlaylist->SetSpecialSort(SortSpecialOnBottom);
       newPlaylist->SetCanQueue(false);
@@ -1265,6 +1266,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 
       newPlaylist.reset(new CFileItem("newsmartplaylist://music", false));
       newPlaylist->SetLabel(g_localizeStrings.Get(21437));
+      newPlaylist->SetIconImage("DefaultPlaylist.png");
       newPlaylist->SetLabelPreformated(true);
       newPlaylist->SetSpecialSort(SortSpecialOnBottom);
       newPlaylist->SetCanQueue(false);
