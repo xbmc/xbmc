@@ -354,8 +354,8 @@
       <down>ChapterOrBigStepBack</down>
       <up mod="longpress">AudioNextLanguage</up>
       <down mod="longpress">NextSubtitle</down>
-      <left mod="ctrl">PlayerControl(tempodown)</left>
-      <right mod="ctrl">PlayerControl(tempoup)</right>
+      <left mod="alt">PlayerControl(tempodown)</left>
+      <right mod="alt">PlayerControl(tempoup)</right>
       <a>AudioDelay</a>
       <a mod="ctrl">AudioNextLanguage</a>
       <escape>Fullscreen</escape>
