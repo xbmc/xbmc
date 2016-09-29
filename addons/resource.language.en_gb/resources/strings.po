@@ -12419,7 +12419,9 @@ msgctxt "#20426"
 msgid "Export to a single file or separate files per entry?"
 msgstr ""
 
-#empty string with id 20427
+msgctxt "#20427"
+msgid "Choose rule type"
+msgstr ""
 
 msgctxt "#20428"
 msgid "Single file"
