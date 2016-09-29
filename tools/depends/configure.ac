@@ -59,7 +59,7 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [spcify sdk platform version (optional for android). default is android-17])],
+  [spcify sdk platform version (optional for android). default is android-21])],
   [use_sdk=$withval])
 
 AC_ARG_ENABLE([gplv3],
@@ -164,7 +164,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
-    use_sdk="${use_sdk:-android-17}"
+    use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
