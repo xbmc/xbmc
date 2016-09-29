@@ -1291,7 +1291,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iChannelLayout = pStream->codec->channel_layout;
         if (st->iBitsPerSample == 0)
           st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
-	
+  
         if(av_dict_get(pStream->metadata, "title", NULL, 0))
           st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
 
@@ -1399,10 +1399,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           stream = st;
-	    
+      
           if(av_dict_get(pStream->metadata, "title", NULL, 0))
             st->m_description = av_dict_get(pStream->metadata, "title", NULL, 0)->value;
-	
+  
           break;
         }
       }
