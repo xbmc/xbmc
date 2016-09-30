@@ -655,8 +655,7 @@ BuildObject(CFileItem&                    item,
 
             for (unsigned int i = 0; i < subtitles.size(); i++)
             {
-                ExternalStreamInfo info;
-                CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitles[i], info);
+                ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitles[i]);
 
                 if (preferredLanguageCode == info.language)
                 {

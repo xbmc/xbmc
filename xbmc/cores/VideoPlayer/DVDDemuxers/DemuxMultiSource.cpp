@@ -230,8 +230,7 @@ void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
   std::string fileName = demuxer->GetFileName();
   for (auto& stream : demuxer->GetStreams())
   {
-    ExternalStreamInfo info;
-    CUtil::GetExternalStreamDetailsFromFilename(baseFileName, fileName, info);
+    ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(baseFileName, fileName);
 
     if (stream->flags == CDemuxStream::FLAG_NONE)
     {
