@@ -111,7 +111,7 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_RULE_REMOVE)
         OnRuleRemove(GetSelectedItem());
       else if (iControl == CONTROL_NAME)
-        OnEditChanged(iControl, m_playlist.m_playlistName);
+        OnName();
       else if (iControl == CONTROL_OK)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
@@ -278,6 +278,16 @@ void CGUIDialogSmartPlaylistEditor::OnMatch()
   else
     m_playlist.m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationOr);
   UpdateButtons();
+}
+
+void CGUIDialogSmartPlaylistEditor::OnName()
+{
+  std::string name = m_playlist.m_playlistName;
+  if (CGUIKeyboardFactory::ShowAndGetInput(name, CVariant{g_localizeStrings.Get(16012)}, false))
+  {
+    m_playlist.m_playlistName = name;
+    UpdateButtons();
+  }
 }
 
 void CGUIDialogSmartPlaylistEditor::OnLimit()
@@ -463,13 +473,6 @@ void CGUIDialogSmartPlaylistEditor::UpdateRuleControlButtons()
                               iSize > 0 && // there is at least one item
                               iItem >= 0 && iItem < iSize && // and a valid item is selected
                               m_playlist.m_ruleCombination.m_rules[iItem]->m_field != FieldNone); // and it is not be empty
-}
-
-void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-
-  SendMessage(GUI_MSG_SET_TYPE, CONTROL_NAME, 0, 16012);
 }
 
 void CGUIDialogSmartPlaylistEditor::OnInitWindow()

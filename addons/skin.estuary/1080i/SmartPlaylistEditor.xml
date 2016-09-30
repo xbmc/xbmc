@@ -29,14 +29,9 @@
 					<include>SettingsItemCommon</include>
 					<label>$LOCALIZE[467]</label>
 				</control>
-				<control type="label" id="1100">
-					<description>Name Label</description>
-					<width>660</width>
-					<label>$LOCALIZE[21433]</label>
-					<include>SettingsLabelCommon</include>
-				</control>
-				<control type="edit" id="12">
+				<control type="button" id="12">
 					<description>Name Button</description>
+					<label>$LOCALIZE[21433]</label>
 					<width>660</width>
 					<include>SettingsItemCommon</include>
 				</control>

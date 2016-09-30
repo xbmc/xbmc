@@ -35,7 +35,6 @@ public:
   virtual ~CGUIDialogSmartPlaylistEditor(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnBack(int actionID);
-  virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
 
@@ -48,6 +47,7 @@ protected:
   void OnRuleRemove(int item);
   void OnMatch();
   void OnLimit();
+  void OnName();
   void OnType();
   void OnOrder();
   void OnOrderDirection();
