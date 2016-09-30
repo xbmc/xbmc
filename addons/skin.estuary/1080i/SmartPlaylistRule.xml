@@ -32,7 +32,7 @@
 				<include>SettingsItemCommon</include>
 				<width>900</width>
 			</control>
-			<control type="spincontrolex" id="16">
+			<control type="button" id="16">
 				<description>Rule operator</description>
 				<width>900</width>
 				<include>SettingsItemCommon</include>

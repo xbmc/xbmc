@@ -8453,7 +8453,10 @@ msgctxt "#16022"
 msgid "Bob - Inverted"
 msgstr ""
 
-#empty string with id 16023
+#: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+msgctxt "#16023"
+msgid "Choose operator"
+msgstr ""
 
 #: xbmc/dialogs/GUIDialogProgress.cpp
 msgctxt "#16024"

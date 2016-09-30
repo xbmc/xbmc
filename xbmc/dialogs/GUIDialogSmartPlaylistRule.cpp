@@ -403,33 +403,13 @@ void CGUIDialogSmartPlaylistRule::OnField()
   UpdateButtons();
 }
 
-void CGUIDialogSmartPlaylistRule::OnOperator()
-{
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
-  OnMessage(msg);
-  m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)msg.GetParam1();
-
-  UpdateButtons();
-}
-
 std::pair<std::string, int> OperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op)
 {
   return std::make_pair(CSmartPlaylistRule::GetLocalizedOperator(op), op);
 }
 
-void CGUIDialogSmartPlaylistRule::UpdateButtons()
+void CGUIDialogSmartPlaylistRule::OnOperator()
 {
-  if (m_rule.m_field == 0)
-    m_rule.m_field = CSmartPlaylistRule::GetFields(m_type)[0];
-  SET_CONTROL_LABEL2(CONTROL_FIELD, CSmartPlaylistRule::GetLocalizedField(m_rule.m_field));
-  // and now update the operator set
-  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
-
-  CONTROL_ENABLE(CONTROL_VALUE);
-  if (CSmartPlaylistRule::IsFieldBrowseable(m_rule.m_field))
-    CONTROL_ENABLE(CONTROL_BROWSE);
-  else
-    CONTROL_DISABLE(CONTROL_BROWSE);
 
   std::vector< std::pair<std::string, int> > labels;
   switch (m_rule.GetFieldType(m_rule.m_field))
@@ -479,13 +459,34 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
     break;
   }
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  dialog->Reset();
+  dialog->SetHeading(CVariant{ 16023 });
+  for (auto label : labels)
+    dialog->Add(std::get<0>(label));
+  dialog->SetSelected(CSmartPlaylistRule::GetLocalizedOperator(m_rule.m_operator));
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+  // check if selection has changed
+  if (!dialog->IsConfirmed() || newSelected < 0)
+    return;
+ 
+  m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)std::get<1>(labels[newSelected]);
+  UpdateButtons();
+}
 
-  SET_CONTROL_LABELS(CONTROL_OPERATOR, m_rule.m_operator, &labels);
+void CGUIDialogSmartPlaylistRule::UpdateButtons()
+{
+  if (m_rule.m_field == 0)
+    m_rule.m_field = CSmartPlaylistRule::GetFields(m_type)[0];
+  SET_CONTROL_LABEL2(CONTROL_FIELD, CSmartPlaylistRule::GetLocalizedField(m_rule.m_field));
 
-  // check our operator is valid, and update if not
-  CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_OPERATOR);
-  OnMessage(selected);
-  m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)selected.GetParam1();
+  CONTROL_ENABLE(CONTROL_VALUE);
+  if (CSmartPlaylistRule::IsFieldBrowseable(m_rule.m_field))
+    CONTROL_ENABLE(CONTROL_BROWSE);
+  else
+    CONTROL_DISABLE(CONTROL_BROWSE);
+  SET_CONTROL_LABEL2(CONTROL_OPERATOR, std::get<0>(OperatorLabel(m_rule.m_operator)));
 
   // update the parameter edit control appropriately
   SET_CONTROL_LABEL2(CONTROL_VALUE, m_rule.GetParameter());
