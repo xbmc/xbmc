@@ -405,7 +405,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_WEATHER);
     Delete(WINDOW_DIALOG_GAME_CONTROLLERS);
 
-    Remove(WINDOW_SETTINGS_SYSTEM);
     Remove(WINDOW_SETTINGS_SERVICE);
     Remove(WINDOW_SETTINGS_MYPVR);
     Remove(WINDOW_SETTINGS_PLAYER);
