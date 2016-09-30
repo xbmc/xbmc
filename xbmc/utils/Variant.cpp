@@ -129,6 +129,11 @@ double str2double(const std::wstring &str, double fallback /* = 0.0 */)
   return fallback;
 }
 
+CVariant::CVariant()
+  : m_type{VariantTypeNull}
+{
+}
+
 CVariant CVariant::ConstNullVariant = CVariant::VariantTypeConstNull;
 
 CVariant::CVariant(VariantType type)
