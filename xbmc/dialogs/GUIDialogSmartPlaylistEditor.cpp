@@ -271,9 +271,11 @@ void CGUIDialogSmartPlaylistEditor::OnCancel()
 
 void CGUIDialogSmartPlaylistEditor::OnMatch()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_MATCH);
-  OnMessage(msg);
-  m_playlist.m_ruleCombination.SetType(msg.GetParam1() == 0 ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
+  // toggle between AND and OR setting
+  if (m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationOr)
+    m_playlist.m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationAnd);
+  else
+    m_playlist.m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationOr);
   UpdateButtons();
 }
 
@@ -355,7 +357,12 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName);
   
   UpdateRuleControlButtons();
+  
 
+  if (m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationOr)
+    SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21426));
+  else
+    SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21425));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_MATCH, m_playlist.m_ruleCombination.m_rules.size() > 1);
 
   int currentItem = GetSelectedItem();
@@ -377,11 +384,11 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 
   if (m_playlist.m_orderDirection != SortOrderDescending)
   {
-    CONTROL_SELECT(CONTROL_ORDER_DIRECTION);
+    SET_CONTROL_LABEL2(CONTROL_ORDER_DIRECTION, g_localizeStrings.Get(21430));
   }
   else
   {
-    CONTROL_DESELECT(CONTROL_ORDER_DIRECTION);
+    SET_CONTROL_LABEL2(CONTROL_ORDER_DIRECTION, g_localizeStrings.Get(21431));
   }
 
   SET_CONTROL_LABEL2(CONTROL_ORDER_FIELD, g_localizeStrings.Get(SortUtils::GetSortLabel(m_playlist.m_orderField)));
@@ -430,14 +437,9 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_NAME, 0, 16012);
-  // setup the match spinner
-  std::vector< std::pair<std::string, int> > labels;
-  labels.push_back(make_pair(g_localizeStrings.Get(21425), 0));
-  labels.push_back(make_pair(g_localizeStrings.Get(21426), 1));
-  SET_CONTROL_LABELS(CONTROL_MATCH, m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? 0 : 1, &labels);
 
-  // and now the limit spinner
-  labels.clear();
+  // set up the limit spinner
+  std::vector< std::pair<std::string, int> > labels;
   labels.push_back(make_pair(g_localizeStrings.Get(21428), 0));
   const int limits[] = { 10, 25, 50, 100, 250, 500, 1000 };
   for (unsigned int i = 0; i < sizeof(limits) / sizeof(int); i++)

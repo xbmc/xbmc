@@ -46,7 +46,7 @@
 					<label>$LOCALIZE[31042]</label>
 					<include>SettingsLabelCommon</include>
 				</control>
-				<control type="spincontrolex" id="16">
+				<control type="button" id="16">
 					<width>660</width>
 					<label>$LOCALIZE[21424]</label>
 					<include>SettingsItemCommon</include>
@@ -61,11 +61,10 @@
 					<width>660</width>
 					<include>SettingsItemCommon</include>
 				</control>
-				<control type="togglebutton" id="19">
+				<control type="button" id="19">
 					<width>660</width>
 					<include>SettingsItemCommon</include>
-					<label>$LOCALIZE[31032]: $LOCALIZE[21431]</label>
-					<altlabel>$LOCALIZE[31032]: $LOCALIZE[21430]</altlabel>
+					<label>$LOCALIZE[31032]</label>
 				</control>
 				<control type="spincontrolex" id="23">
 					<width>660</width>
