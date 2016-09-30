@@ -23,7 +23,7 @@
 				<ondown>9001</ondown>
 				<onup>9001</onup>
 				<itemgap>-20</itemgap>
-				<control type="spincontrolex" id="22">
+				<control type="button" id="22">
 					<description>Set Playlist type</description>
 					<width>660</width>
 					<include>SettingsItemCommon</include>

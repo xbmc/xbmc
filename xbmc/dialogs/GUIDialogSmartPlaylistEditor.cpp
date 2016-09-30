@@ -290,9 +290,19 @@ void CGUIDialogSmartPlaylistEditor::OnLimit()
 
 void CGUIDialogSmartPlaylistEditor::OnType()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_TYPE);
-  OnMessage(msg);
-  m_playlist.SetType(ConvertType((PLAYLIST_TYPE)msg.GetParam1()));
+  std::vector<PLAYLIST_TYPE> allowedTypes = GetAllowedTypes(m_mode);
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  dialog->Reset();
+  for (auto allowedType: allowedTypes)
+    dialog->Add(GetLocalizedType(allowedType));
+  dialog->SetHeading(CVariant{ 564 });
+  dialog->SetSelected(GetLocalizedType(ConvertType(m_playlist.GetType())));
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+  if (!dialog->IsConfirmed() || newSelected < 0 || allowedTypes[newSelected] == ConvertType(m_playlist.GetType()))
+    return;
+ 
+  m_playlist.SetType(ConvertType(allowedTypes[newSelected]));
   UpdateButtons();
 }
 
@@ -399,6 +409,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   }
 
   SET_CONTROL_LABEL2(CONTROL_ORDER_FIELD, g_localizeStrings.Get(SortUtils::GetSortLabel(m_playlist.m_orderField)));
+  SET_CONTROL_LABEL2(CONTROL_TYPE, GetLocalizedType(ConvertType(m_playlist.GetType())));
 
   // setup groups
   std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
@@ -456,47 +467,16 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
-  std::vector<PLAYLIST_TYPE> allowedTypes;
-  if (m_mode == "partymusic")
-  {
-    allowedTypes.push_back(TYPE_SONGS);
-    allowedTypes.push_back(TYPE_MIXED);
-  }
-  else if (m_mode == "partyvideo")
-  {
-    allowedTypes.push_back(TYPE_MUSICVIDEOS);
-    allowedTypes.push_back(TYPE_MIXED);
-  }
-  else if (m_mode == "music")
-  { // music types + mixed
-    allowedTypes.push_back(TYPE_SONGS);
-    allowedTypes.push_back(TYPE_ALBUMS);
-    allowedTypes.push_back(TYPE_ARTISTS);
-    allowedTypes.push_back(TYPE_MIXED);
-  }
-  else if (m_mode == "video")
-  { // general category for videos
-    allowedTypes.push_back(TYPE_MOVIES);
-    allowedTypes.push_back(TYPE_TVSHOWS);
-    allowedTypes.push_back(TYPE_EPISODES);
-    allowedTypes.push_back(TYPE_MUSICVIDEOS);
-    allowedTypes.push_back(TYPE_MIXED);
-  }
-  // add to the spinner
-  std::vector< std::pair<std::string, int> > labels;
-  for (unsigned int i = 0; i < allowedTypes.size(); i++)
-    labels.push_back(make_pair(GetLocalizedType(allowedTypes[i]), allowedTypes[i]));
-  // check our playlist type is allowed
+  std::vector<PLAYLIST_TYPE> allowedTypes = GetAllowedTypes(m_mode);
+  // check if our playlist type is allowed
   PLAYLIST_TYPE type = ConvertType(m_playlist.GetType());
   bool allowed = false;
-  for (unsigned int i = 0; i < allowedTypes.size(); i++)
-    if (type == allowedTypes[i])
+  for (auto allowedType: allowedTypes)
+    if (type == allowedType)
       allowed = true;
   if (!allowed && allowedTypes.size())
-    type = allowedTypes[0];
+    m_playlist.SetType(ConvertType(allowedTypes[0]));
 
-  SET_CONTROL_LABELS(CONTROL_TYPE, type, &labels);
-  m_playlist.SetType(ConvertType(type));
   UpdateButtons();
 
   SET_CONTROL_LABEL(CONTROL_HEADING, 21432);
@@ -554,6 +534,37 @@ void CGUIDialogSmartPlaylistEditor::HighlightItem(int item)
     (*m_ruleLabels)[item]->Select(true);
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_RULE_LIST, item);
   OnMessage(msg);
+}
+
+std::vector<CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE> CGUIDialogSmartPlaylistEditor::GetAllowedTypes(std::string mode)
+{
+  std::vector<PLAYLIST_TYPE> allowedTypes;
+  if (mode == "partymusic")
+  {
+    allowedTypes.push_back(TYPE_SONGS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  else if (mode == "partyvideo")
+  {
+    allowedTypes.push_back(TYPE_MUSICVIDEOS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  else if (mode == "music")
+  { // music types + mixed
+    allowedTypes.push_back(TYPE_SONGS);
+    allowedTypes.push_back(TYPE_ALBUMS);
+    allowedTypes.push_back(TYPE_ARTISTS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  else if (mode == "video")
+  { // general category for videos
+    allowedTypes.push_back(TYPE_MOVIES);
+    allowedTypes.push_back(TYPE_TVSHOWS);
+    allowedTypes.push_back(TYPE_EPISODES);
+    allowedTypes.push_back(TYPE_MUSICVIDEOS);
+    allowedTypes.push_back(TYPE_MIXED);
+  }
+  return allowedTypes;
 }
 
 void CGUIDialogSmartPlaylistEditor::OnRuleRemove(int item)

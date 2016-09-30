@@ -60,6 +60,7 @@ protected:
   void UpdateRuleControlButtons();
   int GetSelectedItem();
   void HighlightItem(int item);
+  std::vector<PLAYLIST_TYPE> GetAllowedTypes(std::string mode);
   PLAYLIST_TYPE ConvertType(const std::string &type);
   std::string ConvertType(PLAYLIST_TYPE type);
   std::string GetLocalizedType(PLAYLIST_TYPE type);
