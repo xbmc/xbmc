@@ -30,14 +30,15 @@ ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(
 #prebuilt stuff follow different name shemes for
 #arm and x86
 ifeq ($(findstring i686,$(CPU)),i686)
-ARCH=x86
-CPU=x86
+  ARCH=x86
+  CPU=x86
 endif
-ifeq ($(findstring arm,$(CPU)),arm)
-  ifneq ($(findstring arm64,$(CPU)),arm64)
-    ARCH=arm
-    CPU=armeabi-v7a
-endif
+ifeq ($(findstring arm64,$(CPU)),arm64)
+  ARCH=arm64
+  CPU=arm64-v8a
+else ifeq ($(findstring arm,$(CPU)),arm)
+  ARCH=arm
+  CPU=armeabi-v7a
 endif
 
 #older ndk x86
