@@ -110,7 +110,7 @@ python: | xbmc/assets
 
 res:
 	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
-	@echo "native_arch=$(ARCH)" > xbmc/res/raw/xbmc.properties
+	@echo "native_arch=$(CPU)" > xbmc/res/raw/xbmc.properties
 	cp -fp $(CORE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable/splash.png
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
 	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
