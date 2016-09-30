@@ -282,9 +282,25 @@ void CGUIDialogSmartPlaylistEditor::OnMatch()
 
 void CGUIDialogSmartPlaylistEditor::OnLimit()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIMIT);
-  OnMessage(msg);
-  m_playlist.m_limit = msg.GetParam1();
+  const int limits[] = {0, 10, 25, 50, 100, 250, 500, 1000, -1 };
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  dialog->Reset();
+  int selected = -1;
+  for (unsigned int i = 0; limits[i] > -1; i++) {
+    if (limits[i] == m_playlist.m_limit)
+      selected = i;
+    if (limits[i] == 0)
+      dialog->Add(g_localizeStrings.Get(21428));
+    else
+      dialog->Add(StringUtils::Format(g_localizeStrings.Get(21436).c_str(), limits[i]));
+  }
+  dialog->SetHeading(CVariant{ 21427 });
+  dialog->SetSelected(selected);
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+  if (!dialog->IsConfirmed() || newSelected < 0 || limits[newSelected] == m_playlist.m_limit)
+    return;
+  m_playlist.m_limit = limits[newSelected];
   UpdateButtons();
 }
 
@@ -381,7 +397,10 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   else
     SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21425));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_MATCH, m_playlist.m_ruleCombination.m_rules.size() > 1);
-
+  if (m_playlist.m_limit == 0)
+    SET_CONTROL_LABEL2(CONTROL_LIMIT, g_localizeStrings.Get(21428));
+  else
+    SET_CONTROL_LABEL2(CONTROL_LIMIT, StringUtils::Format(g_localizeStrings.Get(21436).c_str(), m_playlist.m_limit));
   int currentItem = GetSelectedItem();
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
   OnMessage(msgReset);
@@ -451,21 +470,11 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_NAME, 0, 16012);
-
-  // set up the limit spinner
-  std::vector< std::pair<std::string, int> > labels;
-  labels.push_back(make_pair(g_localizeStrings.Get(21428), 0));
-  const int limits[] = { 10, 25, 50, 100, 250, 500, 1000 };
-  for (unsigned int i = 0; i < sizeof(limits) / sizeof(int); i++)
-    labels.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(21436).c_str(), limits[i]), limits[i]));
-  SET_CONTROL_LABELS(CONTROL_LIMIT, 0, &labels);
 }
 
 void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 {
   m_cancelled = false;
-
-  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
   std::vector<PLAYLIST_TYPE> allowedTypes = GetAllowedTypes(m_mode);
   // check if our playlist type is allowed
