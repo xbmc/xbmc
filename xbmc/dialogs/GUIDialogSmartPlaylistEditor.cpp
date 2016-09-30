@@ -26,6 +26,7 @@
 #include "filesystem/File.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogSmartPlaylistRule.h"
+#include "GUIDialogSelect.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -294,9 +295,18 @@ void CGUIDialogSmartPlaylistEditor::OnType()
 
 void CGUIDialogSmartPlaylistEditor::OnOrder()
 {
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ORDER_FIELD);
-  OnMessage(msg);
-  m_playlist.m_orderField = (SortBy)msg.GetParam1();
+  std::vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  dialog->Reset();
+  for (auto order: orders)
+    dialog->Add(g_localizeStrings.Get(SortUtils::GetSortLabel(order)));
+  dialog->SetHeading(CVariant{ 21429 });
+  dialog->SetSelected(g_localizeStrings.Get(SortUtils::GetSortLabel(m_playlist.m_orderField)));
+  dialog->Open();
+  int newSelected = dialog->GetSelectedItem();
+  if (!dialog->IsConfirmed() || newSelected < 0 || orders[newSelected] == m_playlist.m_orderField)
+    return;
+  m_playlist.m_orderField = orders[newSelected];
   UpdateButtons();
 }
 
@@ -374,15 +384,10 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     CONTROL_DESELECT(CONTROL_ORDER_DIRECTION);
   }
 
-  // sort out the order fields
-  std::vector< std::pair<std::string, int> > labels;
-  std::vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
-  for (unsigned int i = 0; i < orders.size(); i++)
-    labels.push_back(make_pair(g_localizeStrings.Get(SortUtils::GetSortLabel(orders[i])), orders[i]));
-  SET_CONTROL_LABELS(CONTROL_ORDER_FIELD, m_playlist.m_orderField, &labels);
+  SET_CONTROL_LABEL2(CONTROL_ORDER_FIELD, g_localizeStrings.Get(SortUtils::GetSortLabel(m_playlist.m_orderField)));
 
   // setup groups
-  labels.clear();
+  std::vector< std::pair<std::string, int> > labels;
   std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
   Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
   for (unsigned int i = 0; i < groups.size(); i++)
