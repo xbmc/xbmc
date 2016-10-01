@@ -127,8 +127,8 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     if (consumed != m_backlogSize)
     {
       memmove(m_backlogBuffer, m_backlogBuffer+consumed, m_backlogSize-consumed);
-      m_backlogSize -= consumed;
     }
+    m_backlogSize -= consumed;
   }
 
   // get rid of potential side data
