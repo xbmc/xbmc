@@ -211,11 +211,13 @@
 						<ondown>6056</ondown>
 						<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
 						<visible>!System.HasModalDialog</visible>
-						<include content="BottomMainMenuItem">
+						<include content="BottomMainMenuToggleItem">
 							<param name="control_id" value="14101" />
 							<param name="height" value="95" />
-							<param name="onclick" value="Pause" />
-							<param name="icon" value="icons/now-playing/pause.png" />
+							<param name="onclick" value="PlayerControl(Play)" />
+							<param name="icon_on" value="icons/now-playing/play.png" />
+							<param name="icon_off" value="icons/now-playing/pause.png" />
+							<param name="selected" value="Player.Paused" />
 						</include>
 						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14102" />
@@ -286,11 +288,13 @@
 			<onleft>14100</onleft>
 			<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
 			<visible>!System.HasModalDialog</visible>
-			<include content="BottomMainMenuItem">
+			<include content="BottomMainMenuToggleItem">
 				<param name="control_id" value="14101" />
 				<param name="height" value="95" />
-				<param name="onclick" value="Pause" />
-				<param name="icon" value="icons/now-playing/pause.png" />
+				<param name="onclick" value="PlayerControl(Play)" />
+				<param name="icon_on" value="icons/now-playing/play.png" />
+				<param name="icon_off" value="icons/now-playing/pause.png" />
+				<param name="selected" value="Player.Paused" />
 			</include>
 			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14102" />
