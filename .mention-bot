@@ -12,7 +12,7 @@
   "assignToReviewer": false, 
   "skipTitle": "", 
   "withLabel": "", 
-  "delayed": false, 
-  "delayedUntil": "3d", 
+  "delayed": true, 
+  "delayedUntil": "2h", 
   "skipCollaboratorPR": false
 }
