@@ -33,6 +33,16 @@
 
 //#define DEBUG_SPEW
 
+#ifdef __LP64__
+#define Elf_Ehdr Elf64_Ehdr
+#define Elf_Shdr Elf64_Shdr
+#define Elf_Dyn Elf64_Dyn
+#else
+#define Elf_Ehdr Elf32_Ehdr
+#define Elf_Shdr Elf32_Shdr
+#define Elf_Dyn Elf32_Dyn
+#endif
+
 std::list<recursivelib> CAndroidDyload::m_recursivelibs;
 solib CAndroidDyload::m_libs;
 
@@ -151,7 +161,7 @@ int CAndroidDyload::DecRef(const std::string &filename)
 
 void CAndroidDyload::GetDeps(std::string filename, strings *results)
 {
-  Elf32_Ehdr header;
+  Elf_Ehdr header;
   char *data = NULL;
   int fd, i;
 
@@ -173,16 +183,16 @@ void CAndroidDyload::GetDeps(std::string filename, strings *results)
 
   for(i = 0; i < header.e_shnum; i++)
   {
-    Elf32_Shdr sheader;
+    Elf_Shdr sheader;
 
     lseek(fd, header.e_shoff + (i * header.e_shentsize), SEEK_SET);
     read(fd, &sheader, sizeof(sheader));
 
     if(sheader.sh_type == SHT_DYNSYM)
     {
-      Elf32_Shdr symheader;
+      Elf_Shdr symheader;
       lseek(fd, header.e_shoff + (sheader.sh_link * header.e_shentsize), SEEK_SET);
-      read(fd, &symheader, sizeof(Elf32_Shdr));
+      read(fd, &symheader, sizeof(Elf_Shdr));
       lseek(fd, symheader.sh_offset, SEEK_SET);
       data = (char*)malloc(symheader.sh_size);
       read(fd, data, symheader.sh_size);
@@ -198,20 +208,20 @@ void CAndroidDyload::GetDeps(std::string filename, strings *results)
 
   for(i = 0; i < header.e_shnum; i++)
   {
-    Elf32_Shdr sheader;
+    Elf_Shdr sheader;
 
     lseek(fd, header.e_shoff + (i * header.e_shentsize), SEEK_SET);
-    read(fd, &sheader, sizeof(Elf32_Shdr));
+    read(fd, &sheader, sizeof(Elf_Shdr));
 
     if (sheader.sh_type == SHT_DYNAMIC)
     {
       unsigned int j;
 
       lseek(fd, sheader.sh_offset, SEEK_SET);
-      for(j = 0; j < sheader.sh_size / sizeof(Elf32_Dyn); j++)
+      for(j = 0; j < sheader.sh_size / sizeof(Elf_Dyn); j++)
       {
-        Elf32_Dyn cur;
-        read(fd, &cur, sizeof(Elf32_Dyn));
+        Elf_Dyn cur;
+        read(fd, &cur, sizeof(Elf_Dyn));
         if(cur.d_tag == DT_NEEDED)
         {
           char *final = data + cur.d_un.d_val;
