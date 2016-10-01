@@ -804,18 +804,19 @@
 #define LISTITEM_ADDON_NEWS         (LISTITEM_START + 178)
 #define LISTITEM_ADDON_SIZE         (LISTITEM_START + 179)
 
+//! @todo There are issues with the LISTITEM_PROPERTY range, breakage occurs when more than 200 properties are used in skins.
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
-#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1300)
+#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 2300)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
-#define MUSICPLAYER_PROPERTY_OFFSET       800  // 100 id's reserved for musicplayer props.
-#define LISTITEM_ART_OFFSET               900  // 100 id's reserved for listitem art.
-#define LISTITEM_RATING_OFFSET      1000 // 100 id's reserved for listitem ratings.
-#define LISTITEM_VOTES_OFFSET       1100 // 100 id's reserved for listitem votes.
-#define LISTITEM_RATING_AND_VOTES_OFFSET  1200 // 100 id's reserved for listitem ratingandvotes.
+#define MUSICPLAYER_PROPERTY_OFFSET       1300  // 200 id's reserved for musicplayer props.
+#define LISTITEM_ART_OFFSET               1500  // 200 id's reserved for listitem art.
+#define LISTITEM_RATING_OFFSET      1700 // 200 id's reserved for listitem ratings.
+#define LISTITEM_VOTES_OFFSET       1900 // 200 id's reserved for listitem votes.
+#define LISTITEM_RATING_AND_VOTES_OFFSET  2100 // 200 id's reserved for listitem ratingandvotes.
 
-#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36501
-#define CONDITIONAL_LABEL_END         37000
+#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 37501
+#define CONDITIONAL_LABEL_END         38500
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
