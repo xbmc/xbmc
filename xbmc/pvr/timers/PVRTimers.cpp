@@ -810,15 +810,18 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) 
           if (timersEntry->GetEpgInfoTag(false) == epgTag)
             return timersEntry;
 
-          if (timersEntry->m_iEpgUid != EPG_TAG_INVALID_UID &&
-              timersEntry->m_iEpgUid == epgTag->UniqueBroadcastID())
-            return timersEntry;
+          if (timersEntry->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID &&
+              timersEntry->m_iClientChannelUid == channel->UniqueID())
+          {
+            if (timersEntry->m_iEpgUid != EPG_TAG_INVALID_UID &&
+                timersEntry->m_iEpgUid == epgTag->UniqueBroadcastID())
+              return timersEntry;
 
-          if (timersEntry->m_iClientChannelUid == channel->UniqueID() &&
-              timersEntry->m_bIsRadio == channel->IsRadio() &&
-              timersEntry->StartAsUTC() <= epgTag->StartAsUTC() &&
-              timersEntry->EndAsUTC() >= epgTag->EndAsUTC())
-            return timersEntry;
+            if (timersEntry->m_bIsRadio == channel->IsRadio() &&
+                timersEntry->StartAsUTC() <= epgTag->StartAsUTC() &&
+                timersEntry->EndAsUTC() >= epgTag->EndAsUTC())
+              return timersEntry;
+          }
         }
       }
     }
