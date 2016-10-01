@@ -73,8 +73,10 @@ public:
   const std::string& GetMusicBrainzAlbumID() const;
   const std::vector<std::string>& GetMusicBrainzAlbumArtistID() const;
   const std::vector<std::string>& GetMusicBrainzAlbumArtistHints() const;
+  const std::string& GetMusicBrainzReleaseType() const;
   const std::string& GetComment() const;
   const std::string& GetMood() const;
+  const std::string& GetRecordLabel() const;
   const std::string& GetLyrics() const;
   const std::string& GetCueSheet() const;
   const CDateTime& GetLastPlayed() const;
@@ -118,8 +120,10 @@ public:
   void SetMusicBrainzAlbumID(const std::string& strAlbumID);
   void SetMusicBrainzAlbumArtistID(const std::vector<std::string>& musicBrainzAlbumArtistId);
   void SetMusicBrainzAlbumArtistHints(const std::vector<std::string>& musicBrainzAlbumArtistHints);
+  void SetMusicBrainzReleaseType(const std::string& ReleaseType);
   void SetComment(const std::string& comment);
   void SetMood(const std::string& mood);
+  void SetRecordLabel(const std::string& publisher);
   void SetLyrics(const std::string& lyrics);
   void SetCueSheet(const std::string& cueSheet);
   void SetRating(float rating);
@@ -192,9 +196,11 @@ protected:
   std::string m_strMusicBrainzAlbumID;
   std::vector<std::string> m_musicBrainzAlbumArtistID;
   std::vector<std::string> m_musicBrainzAlbumArtistHints;
+  std::string m_strMusicBrainzReleaseType;
   VECMUSICROLES m_musicRoles; //Artists contributing to the recording and role (from tags other than ARTIST or ALBUMARTIST)
   std::string m_strComment;
   std::string m_strMood;
+  std::string m_strRecordLabel;
   std::string m_strLyrics;
   std::string m_cuesheet;
   CDateTime m_lastPlayed;
