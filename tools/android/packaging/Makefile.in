@@ -104,6 +104,7 @@ res:
 	cp -fp media/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
 	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
+	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp xbmc/strings.xml xbmc/res/values/
 	cp xbmc/activity_main.xml xbmc/res/layout/
