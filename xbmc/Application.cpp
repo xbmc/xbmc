@@ -1383,8 +1383,8 @@ void CApplication::OnSettingChanged(const CSetting *setting)
         skinRelatedSetting->Reset();
       }
 
-      setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_FONT);
-      if (!setting->IsDefault())
+      skinRelatedSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_FONT);
+      if (!skinRelatedSetting->IsDefault())
       {
         m_skinReloadSettingIgnore = skinRelatedSetting->GetId();
         skinRelatedSetting->Reset();
