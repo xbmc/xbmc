@@ -1016,6 +1016,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.groupmoviesetsintags" type="boolean" label="40000" help="40001">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.groupsingleitemsets" type="boolean" parent="videolibrary.groupmoviesets" label="20470" help="36157">
           <level>1</level>
           <default>false</default>

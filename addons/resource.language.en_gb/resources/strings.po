@@ -19630,3 +19630,14 @@ msgstr ""
 msgctxt "#39010"
 msgid "Select sort method"
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#40000"
+msgid "Show movie sets in tags"
+msgstr ""
+
+#. Description of setting with label #40000 "Show movies sets in tags"
+#: system/settings/settings.xml
+msgctxt "#40001"
+msgid "When enabled, movies belonging to a \"Movie set\", when browsing a tag, are grouped together under one entry for the set in the tag library, this entry can then be opened to display the individual movies. When disabled, each movie will have it's own entry in the tag library even if it belongs to a set."
+msgstr ""
