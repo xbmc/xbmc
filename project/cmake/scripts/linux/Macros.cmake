@@ -38,6 +38,7 @@ function(core_link_library lib wraplib)
                      ARGS    -Wl,--whole-archive
                              "${link_lib}" ${extra_libs}
                              -Wl,--no-whole-archive -lm
+                             -Wl,-soname,${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
                              -shared -o ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
                              ${export}
                      DEPENDS ${target} wrapper.def wrapper)
