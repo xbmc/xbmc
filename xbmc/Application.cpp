@@ -262,6 +262,7 @@ CApplication::CApplication(void)
   , m_fallbackLanguageLoaded(false)
   , m_WaitingExternalCalls(0)
   , m_ProcessedExternalCalls(0)
+  , m_ignoreSkinSettingChanges(false)
 {
   m_network = NULL;
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -1350,21 +1351,19 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  // check if we should ignore this change event due to changing skins in which case we have to
-  // change several settings and each one of them could lead to a complete skin reload which would
-  // result in multiple skin reloads. Therefore we manually specify to ignore specific settings
-  // which are going to be changed.
-  if (settingId == m_skinReloadSettingIgnore)
-  {
-    m_skinReloadSettingIgnore.clear();
-    return;
-  }
 
   if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN ||
       settingId == CSettings::SETTING_LOOKANDFEEL_FONT ||
       settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME ||
       settingId == CSettings::SETTING_LOOKANDFEEL_SKINCOLORS)
   {
+    // check if we should ignore this change event due to changing skins in which case we have to
+    // change several settings and each one of them could lead to a complete skin reload which would
+    // result in multiple skin reloads. Therefore we manually specify to ignore specific settings
+    // which are going to be changed.
+    if (m_ignoreSkinSettingChanges)
+      return;
+
     // if the skin changes and the current color/theme/font is not the default one, reset
     // the it to the default value
     if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN)
@@ -1372,28 +1371,28 @@ void CApplication::OnSettingChanged(const CSetting *setting)
       CSetting* skinRelatedSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
       if (!skinRelatedSetting->IsDefault())
       {
-        m_skinReloadSettingIgnore = skinRelatedSetting->GetId();
+        m_ignoreSkinSettingChanges = true;
         skinRelatedSetting->Reset();
       }
 
       skinRelatedSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
       if (!skinRelatedSetting->IsDefault())
       {
-        m_skinReloadSettingIgnore = skinRelatedSetting->GetId();
+        m_ignoreSkinSettingChanges = true;
         skinRelatedSetting->Reset();
       }
 
       skinRelatedSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_FONT);
       if (!skinRelatedSetting->IsDefault())
       {
-        m_skinReloadSettingIgnore = skinRelatedSetting->GetId();
+        m_ignoreSkinSettingChanges = true;
         skinRelatedSetting->Reset();
       }
     }
     else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME)
     {
       CSettingString* skinColorsSetting = static_cast<CSettingString*>(CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
-      m_skinReloadSettingIgnore = skinColorsSetting->GetId();
+      m_ignoreSkinSettingChanges = true;
 
       // we also need to adjust the skin color setting
       std::string colorTheme = ((CSettingString*)setting)->GetValue();
@@ -1404,8 +1403,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
         skinColorsSetting->SetValue(colorTheme);
     }
 
-    // reset the settings to ignore during changing skins
-    m_skinReloadSettingIgnore.clear();
+    m_ignoreSkinSettingChanges = false;
 
     if (g_SkinInfo)
     {
