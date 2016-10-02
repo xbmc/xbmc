@@ -455,7 +455,7 @@ extern "C" {
     unsigned int    iWeekdays;                                 /*!< @brief (optional) week days, for repeating timers */
     unsigned int    iPreventDuplicateEpisodes;                 /*!< @brief (optional) 1 if backend should only record new episodes in case of a repeating epg-based timer, 0 if all episodes shall be recorded (no duplicate detection). Actual algorithm for
                                                                     duplicate detection is defined by the backend. Addons may define own values for different duplicate detection algorithms, thus this is not just a bool.*/
-    unsigned int    iEpgUid;                                   /*!< @brief (optional) EPG event id associated with this timer. Valid ids must be greater than EPG_TAG_INVALID_UID. */
+    unsigned int    iEpgUid;                                   /*!< @brief (optional) EPG event id associated with this timer. Event ids must be unique for a channel. Valid ids must be greater than EPG_TAG_INVALID_UID. */
     unsigned int    iMarginStart;                              /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int    iMarginEnd;                                /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
     int             iGenreType;                                /*!< @brief (optional) genre type */

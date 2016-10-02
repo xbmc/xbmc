@@ -790,31 +790,37 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) 
   if (epgTag)
   {
     // already a timer assigned to tag?
-    CPVRTimerInfoTagPtr timer(epgTag->Timer());
+    const CPVRTimerInfoTagPtr timer(epgTag->Timer());
     if (timer)
       return timer;
 
     // try to find a matching timer for the tag.
-    if (epgTag->ChannelTag())
+    const CPVRChannelPtr channel(epgTag->ChannelTag());
+    if (channel)
     {
-      const CPVRChannelPtr channel(epgTag->ChannelTag());
       CSingleLock lock(m_critSection);
 
-      for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
+      for (const auto &tagsEntry : m_tags)
       {
-        for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
+        for (const auto &timersEntry : *tagsEntry.second)
         {
-          timer = *timerIt;
+          if (timersEntry->IsTimerRule())
+            continue;
 
-          if (!timer->IsTimerRule() &&
-              (timer->GetEpgInfoTag(false) == epgTag ||
-               (timer->m_iEpgUid != EPG_TAG_INVALID_UID && timer->m_iEpgUid == epgTag->UniqueBroadcastID()) ||
-               (timer->m_iClientChannelUid == channel->UniqueID() &&
-                timer->m_bIsRadio == channel->IsRadio() &&
-                timer->StartAsUTC() <= epgTag->StartAsUTC() &&
-                timer->EndAsUTC() >= epgTag->EndAsUTC())))
+          if (timersEntry->GetEpgInfoTag(false) == epgTag)
+            return timersEntry;
+
+          if (timersEntry->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID &&
+              timersEntry->m_iClientChannelUid == channel->UniqueID())
           {
-            return timer;
+            if (timersEntry->m_iEpgUid != EPG_TAG_INVALID_UID &&
+                timersEntry->m_iEpgUid == epgTag->UniqueBroadcastID())
+              return timersEntry;
+
+            if (timersEntry->m_bIsRadio == channel->IsRadio() &&
+                timersEntry->StartAsUTC() <= epgTag->StartAsUTC() &&
+                timersEntry->EndAsUTC() >= epgTag->EndAsUTC())
+              return timersEntry;
           }
         }
       }
