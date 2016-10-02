@@ -208,14 +208,14 @@ void CGUIDialogSmartPlaylistEditor::OnPopupMenu(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 { 
+  if (item < 0 || item > static_cast<int>(m_playlist.m_ruleCombination.m_rules.size()))
+    return;
   if (item == static_cast<int>(m_playlist.m_ruleCombination.m_rules.size()))
     OnRuleAdd();
-  else if (item < 0 || item > static_cast<int>(m_playlist.m_ruleCombination.m_rules.size()))
-    return;
   else
   {
     CSmartPlaylistRule rule = *std::static_pointer_cast<CSmartPlaylistRule>(m_playlist.m_ruleCombination.m_rules[item]);
-    if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
+    if (CGUIDialogSmartPlaylistRule::EditRule(rule, m_playlist.GetType()))
       *m_playlist.m_ruleCombination.m_rules[item] = rule;
   }
   UpdateButtons();
@@ -283,7 +283,7 @@ void CGUIDialogSmartPlaylistEditor::OnMatch()
 void CGUIDialogSmartPlaylistEditor::OnName()
 {
   std::string name = m_playlist.m_playlistName;
-  if (CGUIKeyboardFactory::ShowAndGetInput(name, CVariant{g_localizeStrings.Get(16012)}, false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(name, CVariant{16012}, false))
   {
     m_playlist.m_playlistName = name;
     UpdateButtons();
@@ -292,23 +292,24 @@ void CGUIDialogSmartPlaylistEditor::OnName()
 
 void CGUIDialogSmartPlaylistEditor::OnLimit()
 {
-  const int limits[] = {0, 10, 25, 50, 100, 250, 500, 1000, -1 };
-  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  std::vector<int> limits = {0, 10, 25, 50, 100, 250, 500, 1000};
+  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
   dialog->Reset();
   int selected = -1;
-  for (unsigned int i = 0; limits[i] > -1; i++) {
-    if (limits[i] == m_playlist.m_limit)
-      selected = i;
-    if (limits[i] == 0)
+  for (auto limit = limits.begin(); limit != limits.end(); limit++)
+  {
+    if (*limit == static_cast<int>(m_playlist.m_limit))
+      selected = std::distance(limits.begin(), limit);
+    if (*limit == 0)
       dialog->Add(g_localizeStrings.Get(21428));
     else
-      dialog->Add(StringUtils::Format(g_localizeStrings.Get(21436).c_str(), limits[i]));
+      dialog->Add(StringUtils::Format(g_localizeStrings.Get(21436).c_str(), *limit));
   }
   dialog->SetHeading(CVariant{ 21427 });
   dialog->SetSelected(selected);
   dialog->Open();
   int newSelected = dialog->GetSelectedItem();
-  if (!dialog->IsConfirmed() || newSelected < 0 || limits[newSelected] == m_playlist.m_limit)
+  if (!dialog->IsConfirmed() || newSelected < 0 || limits[newSelected] == static_cast<int>(m_playlist.m_limit))
     return;
   m_playlist.m_limit = limits[newSelected];
   UpdateButtons();
@@ -317,7 +318,7 @@ void CGUIDialogSmartPlaylistEditor::OnLimit()
 void CGUIDialogSmartPlaylistEditor::OnType()
 {
   std::vector<PLAYLIST_TYPE> allowedTypes = GetAllowedTypes(m_mode);
-  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
   dialog->Reset();
   for (auto allowedType: allowedTypes)
     dialog->Add(GetLocalizedType(allowedType));
@@ -335,7 +336,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
 void CGUIDialogSmartPlaylistEditor::OnOrder()
 {
   std::vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
-  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
   dialog->Reset();
   for (auto order: orders)
     dialog->Add(g_localizeStrings.Get(SortUtils::GetSortLabel(order)));
@@ -362,7 +363,7 @@ void CGUIDialogSmartPlaylistEditor::OnGroupBy()
 {
   std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
   Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
-  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
   dialog->Reset();
   for (auto group : groups)
     dialog->Add(CSmartPlaylistRule::GetLocalizedGroup(group));
@@ -400,15 +401,14 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName);
   
   UpdateRuleControlButtons();
-  
 
   if (m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationOr)
-    SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21426));
+    SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21426)); // one or more of the rules
   else
-    SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21425));
+    SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21425)); // all of the rules
   CONTROL_ENABLE_ON_CONDITION(CONTROL_MATCH, m_playlist.m_ruleCombination.m_rules.size() > 1);
   if (m_playlist.m_limit == 0)
-    SET_CONTROL_LABEL2(CONTROL_LIMIT, g_localizeStrings.Get(21428));
+    SET_CONTROL_LABEL2(CONTROL_LIMIT, g_localizeStrings.Get(21428)); // no limit
   else
     SET_CONTROL_LABEL2(CONTROL_LIMIT, StringUtils::Format(g_localizeStrings.Get(21436).c_str(), m_playlist.m_limit));
   int currentItem = GetSelectedItem();
@@ -484,8 +484,10 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
   PLAYLIST_TYPE type = ConvertType(m_playlist.GetType());
   bool allowed = false;
   for (auto allowedType: allowedTypes)
+  {
     if (type == allowedType)
       allowed = true;
+  }
   if (!allowed && allowedTypes.size())
     m_playlist.SetType(ConvertType(allowedTypes[0]));
 
@@ -548,7 +550,7 @@ void CGUIDialogSmartPlaylistEditor::HighlightItem(int item)
   OnMessage(msg);
 }
 
-std::vector<CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE> CGUIDialogSmartPlaylistEditor::GetAllowedTypes(std::string mode)
+std::vector<CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE> CGUIDialogSmartPlaylistEditor::GetAllowedTypes(const std::string& mode)
 {
   std::vector<PLAYLIST_TYPE> allowedTypes;
   if (mode == "partymusic")

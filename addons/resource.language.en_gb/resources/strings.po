@@ -12422,6 +12422,7 @@ msgctxt "#20426"
 msgid "Export to a single file or separate files per entry?"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 msgctxt "#20427"
 msgid "Choose rule type"
 msgstr ""
@@ -13045,7 +13046,7 @@ msgstr ""
 
 #: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
 msgctxt "#21433"
-msgid "Name of the playlist"
+msgid "Playlist name"
 msgstr ""
 
 msgctxt "#21434"
