@@ -79,7 +79,6 @@
   </global>
   <Home>
     <remote>
-      <info>ActivateWindow(SystemInfo)</info>
       <clear>ActivateWindow(Weather)</clear>
       <hash>ActivateWindow(Settings)</hash>
     </remote>
