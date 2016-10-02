@@ -506,13 +506,8 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
-  // Enable cookie engine for current handle to re-use them in future requests
-  std::string strCookieFile;
-  std::string strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
-  strCookieFile = URIUtils::AddFileToFolder(strTempPath, "cookies.dat");
-
-  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, strCookieFile.c_str());
-  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEJAR, strCookieFile.c_str());
+  // Enable cookie engine for current handle
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, "");
 
   // Set custom cookie if requested
   if (!m_cookie.empty())
