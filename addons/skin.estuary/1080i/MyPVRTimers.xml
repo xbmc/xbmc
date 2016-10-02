@@ -53,7 +53,7 @@
 							<control type="label">
 								<left>30</left>
 								<top>10</top>
-								<width>680</width>
+								<width>630</width>
 								<height>100</height>
 								<aligny>top</aligny>
 								<label>$INFO[ListItem.ChannelName][COLOR button_focus]$INFO[ListItem.Label, - ][/COLOR]</label>
@@ -72,7 +72,7 @@
 								<top>13</top>
 								<width>260</width>
 								<height>70</height>
-								<font>font12</font>
+								<font>font10</font>
 								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Timertype]</label>
@@ -82,7 +82,7 @@
 								<top>13</top>
 								<width>120</width>
 								<height>75</height>
-								<font>font12</font>
+								<font>font10</font>
 								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Comment]</label>
@@ -121,7 +121,7 @@
 							<control type="label">
 								<left>30</left>
 								<top>10</top>
-								<width>680</width>
+								<width>630</width>
 								<height>100</height>
 								<aligny>top</aligny>
 								<label>$INFO[ListItem.ChannelName]$INFO[ListItem.Label, - ]</label>
@@ -140,7 +140,7 @@
 								<top>13</top>
 								<width>260</width>
 								<height>70</height>
-								<font>font12</font>
+								<font>font10</font>
 								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Timertype]</label>
@@ -150,7 +150,7 @@
 								<top>13</top>
 								<width>120</width>
 								<height>75</height>
-								<font>font12</font>
+								<font>font10</font>
 								<align>center</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Comment]</label>

@@ -377,14 +377,20 @@
 						<include content="SubMenu">
 							<param name="list_id" value="8900"/>
 							<param name="ondown_id" value="8100"/>
-							<param name="item1_onclick" value="ActivateWindow(addonbrowser,root)" />
-							<param name="item1_icon" value="add-ons.png" />
-							<param name="item1_label" value="$LOCALIZE[10040]" />
-							<param name="item2_onclick" value="ActivateWindow(systemsettings,addons)" />
-							<param name="item2_icon" value="settings.png" />
-							<param name="item2_label" value="$LOCALIZE[5]" />
-							<param name="item3_vis" value="False" />
-							<param name="item4_vis" value="False" />
+							<param name="item1_onclick" value="ActivateWindow(addonbrowser,addons://user/,return)" />
+							<param name="item1_icon" value="recordings.png" />
+							<param name="item1_label" value="$LOCALIZE[31146]" />
+							<param name="item2_onclick" value="ActivateWindow(addonbrowser,addons://repos/,return)" />
+							<param name="item2_icon" value="add-ons.png" />
+							<param name="item2_label" value="$LOCALIZE[31147]" />
+							<param name="item3_onclick" value="ActivateWindow(addonbrowser,addons://search/,return)" />
+							<param name="item3_icon" value="tv-search.png" />
+							<param name="item3_label" value="$LOCALIZE[137]" />
+							<param name="item3_vis" value="true" />
+							<param name="item4_onclick" value="ActivateWindow(systemsettings,addons)" />
+							<param name="item4_icon" value="settings.png" />
+							<param name="item4_label" value="$LOCALIZE[5]" />
+							<param name="item4_vis" value="true" />
 							<param name="item5_vis" value="False" />
 							<param name="item6_vis" value="False" />
 							<param name="item7_vis" value="False" />
@@ -454,6 +460,16 @@
 							<param name="single_label" value="$INFO[ListItem.Label]"/>
 							<param name="main_label" value=""/>
 							<param name="sub_label" value=""/>
+						</include>
+						<include content="ImageWidget">
+							<param name="image_path" value="special://skin/extras/home-images/add-ons.jpg"/>
+							<param name="text_label" value="$LOCALIZE[31119]" />
+							<param name="button_label" value="$LOCALIZE[31118]" />
+							<param name="button_onclick" value="ActivateWindow(addonbrowser)"/>
+							<param name="button_id" value="8600"/>
+							<param name="onup_id" value="8100"/>
+							<param name="visible" value="!Integer.IsGreater(Container(8100).NumItems,0) + !Integer.IsGreater(Container(8200).NumItems,0) + !Integer.IsGreater(Container(8300).NumItems,0) + !Integer.IsGreater(Container(8400).NumItems,0) + !Integer.IsGreater(Container(8500).NumItems,0)"/>
+							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoProgramsButton)"/>
 						</include>
 					</control>
 				</control>
@@ -1170,7 +1186,8 @@
 							</item>
 							<item>
 								<label>$LOCALIZE[8]</label>
-								<onclick>ActivateWindow(Weather)</onclick>
+								<onclick condition="!String.IsEmpty(Weather.Plugin)">ActivateWindow(Weather)</onclick>
+								<onclick condition="String.IsEmpty(Weather.Plugin)">ReplaceWindow(servicesettings,weather)</onclick>
 								<thumb>icons/home/weather.png</thumb>
 								<property name="id">weather</property>
 								<visible>!Skin.HasSetting(HomeMenuNoWeatherButton)</visible>

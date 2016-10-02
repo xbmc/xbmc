@@ -3,13 +3,13 @@
 	<defaultcontrol always="true">5000</defaultcontrol>
 	<coordinates>
 		<left>660</left>
-		<top>300</top>
+		<top>270</top>
 	</coordinates>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<include content="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="600" />
-			<param name="DialogBackgroundHeight" value="340" />
+			<param name="DialogBackgroundHeight" value="410" />
 			<param name="DialogHeaderLabel" value="$LOCALIZE[137]" />
 			<param name="DialogHeaderId" value="" />
 		</include>
@@ -33,6 +33,11 @@
 					<onclick>Dialog.Close(all)</onclick>
 					<onclick condition="System.hasAddon(script.globalsearch)">RunScript(script.globalsearch)</onclick>
 					<onclick condition="!System.hasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31145]</label>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick>ActivateWindow(addonbrowser,addons://search/,return)</onclick>
 				</item>
 				<item>
 					<label>$LOCALIZE[31114]</label>
