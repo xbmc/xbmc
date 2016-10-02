@@ -39,7 +39,7 @@
 					<progresstexture border="0,60,18,14" colordiffuse="button_focus">windows/pvr/epg_progress.png</progresstexture>
 					<rulerlayout height="45" width="1400">
 						<control type="label">
-							<width>500</width>
+							<width>365</width>
 							<height>45</height>
 							<font>font12</font>
 							<label>$INFO[ListItem.Label]</label>
@@ -47,7 +47,7 @@
 							<textcolor>button_focus</textcolor>
 						</control>
 					</rulerlayout>
-					<channellayout height="58" width="330">
+					<channellayout height="58" width="350">
 						<control type="label">
 							<left>2</left>
 							<top>-2</top>
@@ -69,7 +69,7 @@
 							<textoffsetx>10</textoffsetx>
 						</control>
 					</channellayout>
-					<focusedchannellayout height="58" width="330">
+					<focusedchannellayout height="58" width="350">
 						<control type="label">
 							<left>2</left>
 							<top>-2</top>
