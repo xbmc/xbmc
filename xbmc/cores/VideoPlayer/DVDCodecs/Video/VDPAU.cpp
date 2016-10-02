@@ -1502,7 +1502,7 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
           }
           else if (!m_outputSurfaces.empty() &&
                    m_config.stats->IsDraining() &&
-                   m_mixerInput.size() == 1)
+                   m_mixerInput.size() >= 1)
           {
             CVdpauDecodedPicture pic;
             pic.DVDPic = m_mixerInput[0].DVDPic;
