@@ -211,6 +211,14 @@ function(copy_file_to_buildtree file)
     file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake "# Export files to build tree\n")
   endif()
 
+  # Exclude autotools build artefacts and other blacklisted files in source tree.
+  if(file MATCHES "(Makefile|\.in|\.xbt|\.so|\.dylib|\.gitignore)$")
+    if(VERBOSE)
+      message(STATUS "copy_file_to_buildtree - ignoring file: ${file}")
+    endif()
+    return()
+  endif()
+
   if(NOT file STREQUAL ${CMAKE_BINARY_DIR}/${outfile})
     if(VERBOSE)
       message(STATUS "copy_file_to_buildtree - copying file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
