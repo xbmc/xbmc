@@ -1115,6 +1115,8 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
+
+  AfterRenderHook(renderBuffer);
 }
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
