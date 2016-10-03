@@ -68,6 +68,7 @@ static const translateField fields[] = {
   { "moods",             FieldMoods,                   CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 175 },
   { "styles",            FieldStyles,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 176 },
   { "type",              FieldAlbumType,               CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 564 },
+  { "compilation",       FieldCompilation,             CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 204 },
   { "label",             FieldMusicLabel,              CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21899 },
   { "title",             FieldTitle,                   CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  556 },
   { "sorttitle",         FieldSortTitle,               CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 171 },
@@ -326,6 +327,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldThemes);
     fields.push_back(FieldMoods);
     fields.push_back(FieldStyles);
+    fields.push_back(FieldCompilation);
     fields.push_back(FieldAlbumType);
     fields.push_back(FieldMusicLabel);
     fields.push_back(FieldRating);
@@ -727,6 +729,11 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
                             "(SELECT 1 FROM episode_view WHERE episode_view.idShow = " + GetField(FieldId, strType) + " AND episode_view.resumeTimeInSeconds > 0)"
                           ")"
                        ")";
+  }
+  if (strType == "albums")
+  {
+    if (m_field == FieldCompilation)
+      return negate + GetField(m_field, strType);
   }
   return "";
 }

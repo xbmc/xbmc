@@ -73,6 +73,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldReview) return "albumview.strReview";
     else if (field == FieldMusicLabel) return "albumview.strLabel";
     else if (field == FieldAlbumType) return "albumview.strType";
+    else if (field == FieldCompilation) return "albumview.bCompilation";
     else if (field == FieldRating) return "albumview.fRating";
     else if (field == FieldVotes) return "albumview.iVotes";
     else if (field == FieldUserRating) return "albumview.iUserrating";
