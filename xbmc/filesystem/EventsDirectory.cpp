@@ -64,13 +64,10 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
 CFileItemPtr CEventsDirectory::EventToFileItem(const EventPtr& eventItem)
 {
-  if (eventItem == NULL)
+  if (!eventItem)
     return CFileItemPtr();
 
-  CFileItemPtr item(new CFileItem(eventItem->GetLabel()));
-  item->m_dateTime = eventItem->GetDateTime();
-  if (!eventItem->GetIcon().empty())
-    item->SetIconImage(eventItem->GetIcon());
+  CFileItemPtr item(new CFileItem(eventItem));
 
   item->SetProperty(PROPERTY_EVENT_IDENTIFIER, eventItem->GetIdentifier());
   item->SetProperty(PROPERTY_EVENT_LEVEL, CEventLog::GetInstance().EventLevelToString(eventItem->GetLevel()));
