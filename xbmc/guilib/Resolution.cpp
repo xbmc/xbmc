@@ -317,7 +317,7 @@ float CResolutionUtils::RefreshWeight(float refresh, float fps)
   // punish when refreshrate > 60 hz to not have to switch
   // twice for 30i content
   if (refresh > 60 && round > 1)
-    weight += round / 1000.0;
+    weight += round / 10000.0;
 
   return weight;
 }
