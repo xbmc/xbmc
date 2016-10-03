@@ -47,6 +47,7 @@ bool aml_hw3d_present();
 bool aml_wired_present();
 bool aml_support_hevc();
 bool aml_support_hevc_4k2k();
+bool aml_support_hevc_10bit();
 bool aml_support_h264_4k2k();
 void aml_set_audio_passthrough(bool passthrough);
 bool aml_IsHdmiConnected();
