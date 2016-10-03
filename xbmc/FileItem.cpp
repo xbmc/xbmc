@@ -685,6 +685,9 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
         break;
     }
   }
+
+  if (m_eventLogEntry)
+    m_eventLogEntry->ToSortable(sortable, field);
 }
 
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
