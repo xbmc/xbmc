@@ -90,7 +90,7 @@ public:
   virtual void Flush() {};
   virtual void SetBufferSize(int numBuffers) { }
   virtual void ReleaseBuffer(int idx) { }
-  virtual bool NeedBufferForRef(int idx) { return false; }
+  virtual bool NeedBuffer(int idx) { return false; }
   virtual bool IsGuiLayer() { return true; }
   // Render info, can be called before configure
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
