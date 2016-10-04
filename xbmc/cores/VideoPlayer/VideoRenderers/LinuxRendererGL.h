@@ -87,7 +87,6 @@ enum RenderMethod
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
   RENDER_VAAPI=0x20,
-  RENDER_CVREF = 0x40,
 };
 
 enum RenderQuality
@@ -181,6 +180,7 @@ protected:
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; };
   virtual bool RenderHook(int idx) { return false; };
+  virtual void AfterRenderHook(int idx) {};
 
   struct
   {
