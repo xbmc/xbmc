@@ -126,6 +126,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       rating.SetAttribute("name", it.first.c_str());
       XMLUtils::SetFloat(&rating, "value", it.second.rating);
       XMLUtils::SetInt(&rating, "votes", it.second.votes);
+      rating.SetAttribute("max", 10);
       if (it.first == m_strDefaultRating)
         rating.SetAttribute("default", "true");
       ratings.InsertEndChild(rating);

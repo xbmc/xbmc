@@ -88,11 +88,11 @@ public:
    */
   static std::string GetAttribute(const TiXmlElement *element, const char *tag);
 
-  static void SetString(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);
+  static TiXmlNode* SetString(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);
   static void SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const std::string& strSeparator, const std::string& strValue);
   static void SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue);
-  static void SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
-  static void SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
+  static TiXmlNode* SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
+  static TiXmlNode* SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
   static void SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);

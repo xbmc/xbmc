@@ -288,7 +288,7 @@ void XMLUtils::SetStringArray(TiXmlNode* pRootNode, const char *strTag, const st
     SetString(pRootNode, strTag, arrayValue.at(i));
 }
 
-void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue)
+TiXmlNode* XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue)
 {
   TiXmlElement newElement(strTag);
   TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
@@ -297,12 +297,13 @@ void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const std::st
     TiXmlText value(strValue);
     pNewNode->InsertEndChild(value);
   }
+  return pNewNode;
 }
 
-void XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
+TiXmlNode* XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
 {
   std::string strValue = StringUtils::Format("%i", value);
-  SetString(pRootNode, strTag, strValue);
+  return SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
@@ -311,10 +312,10 @@ void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
   SetString(pRootNode, strTag, strValue);
 }
 
-void XMLUtils::SetFloat(TiXmlNode* pRootNode, const char *strTag, float value)
+TiXmlNode* XMLUtils::SetFloat(TiXmlNode* pRootNode, const char *strTag, float value)
 {
   std::string strValue = StringUtils::Format("%f", value);
-  SetString(pRootNode, strTag, strValue);
+  return SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
