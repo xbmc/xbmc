@@ -73,6 +73,9 @@ class CFileItemList;
 class CCueDocument;
 typedef std::shared_ptr<CCueDocument> CCueDocumentPtr;
 
+class IEvent;
+typedef std::shared_ptr<const IEvent> EventPtr;
+
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1)
 
@@ -120,6 +123,8 @@ public:
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
   CFileItem(const CMediaSource& share);
   CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
+  CFileItem(const EventPtr& eventLogEntry);
+
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
@@ -542,6 +547,7 @@ private:
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
+  EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
 
   CCueDocumentPtr m_cueDocument;

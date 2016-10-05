@@ -59,6 +59,7 @@
 #include "utils/Variant.h"
 #include "utils/Mime.h"
 #include "utils/Random.h"
+#include "events/IEvent.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -321,6 +322,17 @@ CFileItem::CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo) : m_addonIn
   Initialize();
 }
 
+CFileItem::CFileItem(const EventPtr& eventLogEntry)
+{
+  Initialize();
+
+  m_eventLogEntry = eventLogEntry;
+  SetLabel(eventLogEntry->GetLabel());
+  m_dateTime = eventLogEntry->GetDateTime();
+  if (!eventLogEntry->GetIcon().empty())
+    SetIconImage(eventLogEntry->GetIcon());
+}
+
 CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
@@ -392,6 +404,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
   m_pvrRadioRDSInfoTag = item.m_pvrRadioRDSInfoTag;
   m_addonInfo = item.m_addonInfo;
+  m_eventLogEntry = item.m_eventLogEntry;
 
   m_lStartOffset = item.m_lStartOffset;
   m_lStartPartNumber = item.m_lStartPartNumber;
@@ -466,6 +479,7 @@ void CFileItem::Reset()
   m_pictureInfoTag=NULL;
   m_extrainfo.clear();
   ClearProperties();
+  m_eventLogEntry.reset();
 
   Initialize();
   SetInvalid();
@@ -671,6 +685,9 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
         break;
     }
   }
+
+  if (m_eventLogEntry)
+    m_eventLogEntry->ToSortable(sortable, field);
 }
 
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
