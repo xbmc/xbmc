@@ -71,7 +71,7 @@ public:
   AEAudioFormat GetFormat();
   unsigned int GetChannels() { return GetFormat().m_channelLayout.Count(); }
   // Data management
-  unsigned int GetDataSize();
+  unsigned int GetDataSize(bool checkPktSize);
   void *GetData(unsigned int samples);
   uint8_t* GetRawData(int &size);
   ICodec *GetCodec() const { return m_codec; }

@@ -357,7 +357,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
   /* decode until there is data-available */
   si->m_decoder.Start();
-  while(si->m_decoder.GetDataSize() == 0)
+  while(si->m_decoder.GetDataSize(true) == 0)
   {
     int status = si->m_decoder.GetStatus();
     if (status == STATUS_ENDED   ||
@@ -839,7 +839,7 @@ bool PAPlayer::QueueData(StreamInfo *si)
 
   if (si->m_audioFormat.m_dataFormat != AE_FMT_RAW)
   {
-    unsigned int samples = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
+    unsigned int samples = std::min(si->m_decoder.GetDataSize(false), space / si->m_bytesPerSample);
     if (!samples)
       return true;
 
