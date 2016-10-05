@@ -33,22 +33,23 @@ public:
   virtual ~CRendererVAAPI();
 
   // Player functions
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
-  virtual void ReleaseBuffer(int idx);
-  virtual CRenderInfo GetRenderInfo();
+  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  virtual void ReleaseBuffer(int idx) override;
+  virtual CRenderInfo GetRenderInfo() override;
 
   // Feature support
-  virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(ESCALINGMETHOD method);
+  virtual bool Supports(ERENDERFEATURE feature) override;
+  virtual bool Supports(ESCALINGMETHOD method) override;
 
 protected:
-  virtual bool LoadShadersHook();
-  virtual bool RenderHook(int idx);
+  virtual bool LoadShadersHook() override;
+  virtual bool RenderHook(int idx) override;
+  virtual void AfterRenderHook(int idx) override;
 
   // textures
-  virtual bool UploadTexture(int index);
-  virtual void DeleteTexture(int index);
-  virtual bool CreateTexture(int index);
+  virtual bool UploadTexture(int index) override;
+  virtual void DeleteTexture(int index) override;
+  virtual bool CreateTexture(int index) override;
 };
 
 #endif
