@@ -663,6 +663,8 @@ extern "C" {
     long long (__cdecl* PositionRecordedStream)(void);
     long long (__cdecl* LengthRecordedStream)(void);
     PVR_ERROR (__cdecl* IsRecordable)(const EPG_TAG&, bool*);
+    bool (__cdecl* IsPlayable)(const EPG_TAG&);
+    int (__cdecl* GetEpgTagUrl)(const EPG_TAG&, char*, int);
     void (__cdecl* DemuxReset)(void);
     void (__cdecl* DemuxAbort)(void);
     void (__cdecl* DemuxFlush)(void);

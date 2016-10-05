@@ -682,6 +682,28 @@ PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool *isRe
   return retVal;
 }
 
+bool CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag)
+{
+  if (!m_bReadyToUse)
+    return false;
+
+  EPG_TAG pvrTag;
+  WriteEpgTag(tag, pvrTag);
+  return m_struct.toAddon.IsPlayable(pvrTag);
+}
+
+const std::string CPVRClient::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag)
+{
+  if (!m_bReadyToUse)
+    return nullptr;
+
+  EPG_TAG pvrTag;
+  WriteEpgTag(tag, pvrTag);
+  char url[4096];
+  m_struct.toAddon.GetEpgTagUrl(pvrTag, url, sizeof(url));
+  return url;
+}
+
 void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
 {
   if (!m_bReadyToUse)

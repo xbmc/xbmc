@@ -49,7 +49,8 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTN_OK                  7
 #define CONTROL_BTN_PLAY_RECORDING      8
 #define CONTROL_BTN_ADD_TIMER           9
-#define CONTROL_BTN_CHANNEL_GUIDE       10
+#define CONTROL_BTN_PLAY_TAG            10
+#define CONTROL_BTN_CHANNEL_GUIDE       11
 
 CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
@@ -152,13 +153,15 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
 {
   bool bReturn = false;
 
-  if (message.GetSenderId() == CONTROL_BTN_SWITCH || message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
+  if (message.GetSenderId() == CONTROL_BTN_SWITCH || message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING || message.GetSenderId() == CONTROL_BTN_PLAY_TAG)
   {
     Close();
 
     const CFileItemPtr item(new CFileItem(m_progItem));
     if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
       CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* bCheckResume */);
+    if (message.GetSenderId() == CONTROL_BTN_PLAY_TAG && m_progItem->IsPlayable())
+      CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(item, false /* bPlayMinimized */, true /* bCheckResume */);
     else
       CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, true /* bCheckResume */);
 
@@ -224,6 +227,10 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   {
     /* not recording. hide the play recording button */
     SET_CONTROL_HIDDEN(CONTROL_BTN_PLAY_RECORDING);
+  }
+
+  if (!m_progItem->IsPlayable()) {
+    SET_CONTROL_HIDDEN(CONTROL_BTN_PLAY_TAG);
   }
 
   bool bHideRecord(true);

@@ -628,6 +628,10 @@ namespace PVR
 
     bool IsRecordable(const CConstPVREpgInfoTagPtr &tag) const;
 
+    bool IsPlayable(const CConstPVREpgInfoTagPtr &tag);
+
+    const std::string GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag);
+
     bool IsRealTimeStream() const;
 
     void ConnectionStateChange(CPVRClient *client, std::string &strConnectionString, PVR_CONNECTION_STATE newState,

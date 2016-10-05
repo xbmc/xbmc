@@ -242,6 +242,16 @@ bool CPVREpgInfoTag::WasActive(void) const
   return (m_endTime < now);
 }
 
+bool CPVREpgInfoTag::IsPlayable(void) const
+{
+  return CServiceBroker::GetPVRManager().Clients()->IsPlayable(shared_from_this());
+}
+
+const std::string CPVREpgInfoTag::GetStreamUrl(void) const
+{
+  return CServiceBroker::GetPVRManager().Clients()->GetEpgTagUrl(shared_from_this());
+}
+
 bool CPVREpgInfoTag::IsRecordable(void) const
 {
   return CServiceBroker::GetPVRManager().Clients()->IsRecordable(shared_from_this());
@@ -513,6 +523,11 @@ std::string CPVREpgInfoTag::Icon(void) const
 std::string CPVREpgInfoTag::Path(void) const
 {
   return m_strFileNameAndPath;
+}
+
+void CPVREpgInfoTag::SetPath(const std::string &path)
+{
+  m_strFileNameAndPath = path;
 }
 
 bool CPVREpgInfoTag::HasTimer(void) const

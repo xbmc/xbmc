@@ -10367,7 +10367,9 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr ""
 
-#empty string with id 19240
+msgctxt "#19240"
+msgid "Replay"
+msgstr ""
 
 #. Label for context menu entry to open settings dialog for a timer (read-only)
 #: xbmc/pvr/PVRContextMenus.cpp

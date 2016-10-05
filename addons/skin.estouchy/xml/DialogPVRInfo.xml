@@ -198,6 +198,13 @@
 				<label>19165</label>
 				<visible>Window.IsActive(PVRGuideInfo)</visible>
 			</control>
+			<control type="button" id="10">
+				<description>Replay Program</description>
+				<width>230</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+				<label>19240</label>
+				<visible>Window.IsActive(PVRGuideInfo)</visible>
+			</control>
 			<control type="button" id="6">
 				<description>Record</description>
 				<width>230</width>

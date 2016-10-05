@@ -370,6 +370,24 @@ namespace PVR
      */
     PVR_ERROR IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool *isRecordable);
 
+    /*
+     * Check if the given EPG tag can be played.
+     * @param tag The EPG tag
+     * @return True if the EPG tag can be played
+     * @remarks Required, always return false if not supported by the addon
+     *
+     */
+    bool IsPlayable(const CConstPVREpgInfoTagPtr &tag);
+
+    /*
+     * Get the URL to play a given EPG tag
+     * @param tag The EPG tag
+     * @return The url to play for the EPG tag, empty string if it cannot be played
+     * @remarks Required, always return empty string if not supported by the addon
+     *
+     */
+    const std::string GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag);
+
     /*!
      * @return True if this add-on has menu hooks, false otherwise.
      */

@@ -1231,6 +1231,30 @@ bool CPVRClients::IsRecordable(const CConstPVREpgInfoTagPtr &tag) const
   return isRecordable;
 }
 
+bool CPVRClients::IsPlayable(const CConstPVREpgInfoTagPtr &tag)
+{
+  PVR_CLIENT client;
+
+  if (GetClient(tag->ChannelTag()->ClientID(), client))
+  {
+    return client->IsPlayable(tag);
+  }
+
+  return NULL;
+}
+
+const std::string CPVRClients::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag)
+{
+  PVR_CLIENT client;
+
+  if (GetClient(tag->ChannelTag()->ClientID(), client))
+  {
+    return client->GetEpgTagUrl(tag);
+  }
+
+  return "";
+}
+
 bool CPVRClients::IsTimeshifting(void) const
 {
   PVR_CLIENT client;
