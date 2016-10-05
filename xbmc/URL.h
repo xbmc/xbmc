@@ -189,6 +189,8 @@ public:
   std::string GetProtocolOption(const std::string &key) const;
   void SetProtocolOption(const std::string &key, const std::string &value);
   void RemoveProtocolOption(const std::string &key);
+  void SetCustomRequest(const std::string &request);
+  const std::string GetCustomRequest() const;
 
 protected:
   int m_iPort;
@@ -202,6 +204,7 @@ protected:
   std::string m_strFileType;
   std::string m_strOptions;
   std::string m_strProtocolOptions;
+  std::string m_strCustomRequest;
   CUrlOptions m_options;
   CUrlOptions m_protocolOptions;
 };

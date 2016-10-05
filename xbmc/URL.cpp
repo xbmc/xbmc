@@ -809,3 +809,13 @@ void CURL::RemoveProtocolOption(const std::string &key)
   m_protocolOptions.RemoveOption(key);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
 }
+
+void CURL::SetCustomRequest(const std::string &request)
+{
+  m_strCustomRequest = request;
+}
+
+const std::string CURL::GetCustomRequest() const
+{
+  return m_strCustomRequest;
+}
