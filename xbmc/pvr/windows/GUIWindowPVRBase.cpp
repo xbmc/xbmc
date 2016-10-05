@@ -69,6 +69,9 @@ CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string &xml
   m_bRadio(bRadio),
   m_progressHandle(nullptr)
 {
+  // prevent removable drives to appear in directory listing (base class default behavior).
+  m_rootDir.AllowNonLocalSources(false);
+
   m_selectedItemPaths[false] = "";
   m_selectedItemPaths[true] = "";
 
