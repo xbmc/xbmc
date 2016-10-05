@@ -202,5 +202,13 @@ bool CRendererVAAPI::UploadTexture(int index)
   return true;
 }
 
+void CRendererVAAPI::AfterRenderHook(int idx)
+{
+  YUVBUFFER &buf = m_buffers[idx];
+  if (buf.hwDec)
+  {
+    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Sync();
+  }
+}
 
 #endif
