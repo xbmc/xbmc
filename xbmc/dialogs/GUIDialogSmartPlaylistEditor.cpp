@@ -182,6 +182,11 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
       }
     }
     break;
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      m_playlist.Reset();
+    }
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
