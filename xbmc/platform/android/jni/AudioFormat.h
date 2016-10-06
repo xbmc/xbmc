@@ -19,8 +19,6 @@
  *
  */
 
-#define HAVE_INTTYPES_H 1
-
 #include "jutils/jutils-details.hpp"
 
 namespace jni
