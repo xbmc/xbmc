@@ -18,8 +18,6 @@
  *
  */
 
-#define HAVE_INTTYPES_H 1
-
 #include "AESinkAUDIOTRACK.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "platform/android/activity/XBMCApp.h"
