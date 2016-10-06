@@ -4,6 +4,8 @@
 ![Kodi logo](https://raw.githubusercontent.com/xbmc/xbmc-forum/master/xbmc/images/logo-sbs-black.png)
 # Kodi Home Theater Software
 
+[![Join the chat at https://gitter.im/xbmc/xbmc](https://badges.gitter.im/xbmc/xbmc.svg)](https://gitter.im/xbmc/xbmc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **Welcome to Kodi!**
 
 Kodi is an award-winning free and open source (GPL) software media player and
@@ -42,7 +44,7 @@ See [docs/README.xxx] (https://github.com/xbmc/xbmc/tree/master/docs) for specif
 
 * [Contributing] (https://github.com/xbmc/xbmc/blob/master/CONTRIBUTING.md)
 * [Submitting a patch] (http://kodi.wiki/view/HOW-TO_submit_a_patch)
-* [Code guidelines] (http://kodi.wiki/view/Official:Code_guidelines_and_formatting_conventions)
+* [Code guidelines] (https://codedocs.xyz/xbmc/xbmc/code_guidelines.html)
 * [Kodi development] (http://kodi.wiki/view/Development)
 
 ## Useful links
