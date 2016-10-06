@@ -1,4 +1,5 @@
-set(SOURCES MessagePrinter.cpp
+set(SOURCES CharsetConverter.cpp
+            MessagePrinter.cpp
             WinMain.cpp
             crts_caller.cpp
             dxerr.cpp
@@ -9,7 +10,8 @@ set(SOURCES MessagePrinter.cpp
             WIN32Util.cpp
             WindowHelper.cpp)
 
-set(HEADERS crts_caller.h
+set(HEADERS CharsetConverter.h
+            crts_caller.h
             dirent.h
             dxerr.h
             IMMNotificationClient.h
