@@ -791,7 +791,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       // set xbmc headers
       for (std::map<std::string,std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
       {
-        std::string name = it->first; StringUtils::ToLower(name);
+        std::string name = it->first;
+        StringUtils::ToLower(name);
         const std::string &value = it->second;
 
         if (name == "auth")
@@ -826,13 +827,19 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         }
         // other standard headers (see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
         else if (name == "accept" || name == "accept-language" || name == "accept-datetime" ||
-          name == "authorization" || name == "cache-control" || name == "connection" || name == "content-md5" || name == "content-type" || 
-          name == "date" || name == "expect" || name == "forwarded" || name == "from" || name == "if-match" || 
-          name == "if-modified-since" || name == "if-none-match" || name == "if-range" || name == "if-unmodified-since" || name == "max-forwards" || 
-          name == "origin" || name == "pragma" || name == "range" || name == "te" || name == "upgrade" || 
-          name == "via" || name == "warning" || name == "x-requested-with" || name == "dnt" || name == "x-forwarded-for" || name == "x-forwarded-host" || 
-          name == "x-forwarded-proto" || name == "front-end-https" || name == "x-http-method-override" || name == "x-att-deviceid" ||
-          name == "x-wap-profile" || name == "x-uidh" || name == "x-csrf-token" || name == "x-request-id" || name == "x-correlation-id")
+                 name == "authorization" || name == "cache-control" || name == "connection" ||
+                 name == "content-md5" || name == "content-type" || name == "date" ||
+                 name == "expect" || name == "forwarded" || name == "from" ||
+                 name == "if-match" || name == "if-modified-since" || name == "if-none-match" ||
+                 name == "if-range" || name == "if-unmodified-since" || name == "max-forwards" ||
+                 name == "origin" || name == "pragma" || name == "range" || name == "te" ||
+                 name == "upgrade" || name == "via" || name == "warning" ||
+                 name == "x-requested-with" || name == "dnt" || name == "x-forwarded-for" ||
+                 name == "x-forwarded-host" || name == "x-forwarded-proto" ||
+                 name == "front-end-https" || name == "x-http-method-override" ||
+                 name == "x-att-deviceid" || name == "x-wap-profile" || name == "x-uidh" ||
+                 name == "x-csrf-token" || name == "x-request-id" || name == "x-correlation-id" ||
+                 name == "icy-metadata")
         {
           SetRequestHeader(it->first, value);
           if (name == "authorization")
