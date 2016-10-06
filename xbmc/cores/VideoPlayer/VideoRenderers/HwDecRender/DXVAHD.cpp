@@ -613,7 +613,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   if (!frameProgressive && PCIV_ATI == g_Windowing.GetAIdentifier().VendorId)
   {
     // workaround for AMD/ATI cards which may disable deinterlacing for 
-    // not full set of past/feature frames and enable it only when format is changed. 
+    // not full set of past/future frames and enable it only when format is changed. 
     // here we just reset frag to progressive and later change it back to interlaced
     m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor, DEFAULT_STREAM_INDEX, D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE);
   }
