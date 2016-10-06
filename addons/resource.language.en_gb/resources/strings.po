@@ -8453,7 +8453,10 @@ msgctxt "#16022"
 msgid "Bob - Inverted"
 msgstr ""
 
-#empty string with id 16023
+#: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+msgctxt "#16023"
+msgid "Choose operator"
+msgstr ""
 
 #: xbmc/dialogs/GUIDialogProgress.cpp
 msgctxt "#16024"
@@ -12419,7 +12422,10 @@ msgctxt "#20426"
 msgid "Export to a single file or separate files per entry?"
 msgstr ""
 
-#empty string with id 20427
+#: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+msgctxt "#20427"
+msgid "Choose rule type"
+msgstr ""
 
 msgctxt "#20428"
 msgid "Single file"
@@ -13040,7 +13046,7 @@ msgstr ""
 
 #: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
 msgctxt "#21433"
-msgid "Name of the playlist"
+msgid "Playlist name"
 msgstr ""
 
 msgctxt "#21434"

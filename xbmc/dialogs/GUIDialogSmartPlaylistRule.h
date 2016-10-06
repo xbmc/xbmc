@@ -43,7 +43,7 @@ protected:
   void OnCancel();
   void UpdateButtons();
   void OnBrowse();
-
+  std::vector< std::pair<std::string, int> > GetValidOperators(const CSmartPlaylistRule& rule);
   CSmartPlaylistRule m_rule;
   bool m_cancelled;
   std::string m_type;
