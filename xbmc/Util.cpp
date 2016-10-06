@@ -1433,7 +1433,10 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
 {
   size_t iStrInputSize = StrInput.size();
   if(iStrInputSize <= 0 || iTextMaxLength >= iStrInputSize)
-    return false;
+  {
+    StrOutput = StrInput;
+    return true;
+  }
 
   char cDelim = '\0';
   size_t nGreaterDelim, nPos;
