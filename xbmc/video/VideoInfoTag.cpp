@@ -985,11 +985,14 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   const TiXmlElement* namedSeason = movie->FirstChildElement("namedseason");
   while (namedSeason != nullptr)
   {
-    int seasonNumber;
-    std::string seasonName = namedSeason->ValueStr();
-    if (!seasonName.empty() &&
-        namedSeason->Attribute("number", &seasonNumber) != nullptr)
-      m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
+    if (namedSeason->FirstChild() != nullptr)
+    {
+      int seasonNumber;
+      std::string seasonName = namedSeason->FirstChild()->ValueStr();
+      if (!seasonName.empty() &&
+          namedSeason->Attribute("number", &seasonNumber) != nullptr)
+        m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
+    }
 
     namedSeason = namedSeason->NextSiblingElement("namedseason");
   }
