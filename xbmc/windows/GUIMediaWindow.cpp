@@ -512,6 +512,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (message.GetParam2() == PLUGIN_REFRESH_DELAY)
       {
         Refresh();
+        SetInitialVisibility();
+        RestoreControlStates();
+        SetInitialVisibility();
         return true;
       }
     }
