@@ -8,11 +8,7 @@ else
   TARGET=apk-unsigned
 fi
 
-if [ "$CMAKE_BUILD" = true ]; then
-  cd $WORKSPACE/build;make -j$BUILDTHREADS $TARGET
-else
-  cd $WORKSPACE;make -j$BUILDTHREADS $TARGET
-fi
+cd $WORKSPACE/build;make -j$BUILDTHREADS $TARGET
 $RUN_SIGNSTEP
 
 cd $WORKSPACE

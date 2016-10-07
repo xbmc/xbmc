@@ -2,8 +2,4 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=rbpi
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-if [ "$CMAKE_BUILD" = true ]; then
-  cd $WORKSPACE/build;make -j$BUILDTHREADS || make
-else
-  cd $WORKSPACE;make -j$BUILDTHREADS || make
-fi
+cd $WORKSPACE/build;make -j$BUILDTHREADS || make

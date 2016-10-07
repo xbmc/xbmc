@@ -2,12 +2,8 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=osx64
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-if [ "$CMAKE_BUILD" = true ]; then
-  cd $WORKSPACE/build;make -j$BUILDTHREADS dmg
-  cd $WORKSPACE/build/tools/darwin/packaging/osx/
-else
-  cd $WORKSPACE/tools/darwin/packaging/osx/; sh ./mkdmg-osx.sh $Configuration
-fi
+cd $WORKSPACE/build;make -j$BUILDTHREADS dmg
+cd $WORKSPACE/build/tools/darwin/packaging/osx/
 
 #rename for upload
 #e.x. kodi-20130314-8c2fb31-Frodo-x86_64.dmg
