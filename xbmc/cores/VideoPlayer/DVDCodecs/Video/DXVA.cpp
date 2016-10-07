@@ -897,9 +897,11 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
 
   avctx->get_buffer2 = GetBufferS;
   avctx->hwaccel_context = m_context;
+  avctx->slice_flags = SLICE_FLAG_ALLOW_FIELD | SLICE_FLAG_CODED_ORDER;
 
   mainctx->get_buffer2 = GetBufferS;
   mainctx->hwaccel_context = m_context;
+  mainctx->slice_flags = SLICE_FLAG_ALLOW_FIELD | SLICE_FLAG_CODED_ORDER;
 
   m_avctx = mainctx;
   DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
