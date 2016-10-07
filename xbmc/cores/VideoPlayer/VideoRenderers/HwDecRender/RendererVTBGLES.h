@@ -33,17 +33,17 @@ public:
   CRendererVTB();
   virtual ~CRendererVTB();
 
-  // Player functions
+  // Feature support
   virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
-
-  // Feature support
+  virtual bool NeedBuffer(int idx) override;
   virtual CRenderInfo GetRenderInfo() override;
 
 protected:
   // hooks for hw dec renderer
   virtual bool LoadShadersHook() override;
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) override;
+  virtual void AfterRenderHook(int idx) override;
 
   // textures
   virtual bool UploadTexture(int index) override;
@@ -56,6 +56,7 @@ protected:
     CVOpenGLESTextureRef m_textureY;
     CVOpenGLESTextureRef m_textureUV;
     CVBufferRef m_videoBuffer;
+    GLsync m_fence;
   };
   CRenderBuffer m_vtbBuffers[NUM_BUFFERS];
 };
