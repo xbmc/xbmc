@@ -15274,6 +15274,12 @@ msgid "If traffic advisory is send from RDS, volume is increased"
 msgstr ""
 
 #. Music role category
+#: system/library/music/musicroles/Remixers.xml
+msgctxt "#29987"
+msgid "Remixers"
+msgstr ""
+
+#. Music role category
 #: system/library/music/musicroles/Arrangers.xml
 msgctxt "#29988"
 msgid "Arrangers"
