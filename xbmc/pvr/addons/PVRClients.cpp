@@ -1572,7 +1572,10 @@ void CPVRClients::ConnectionStateChange(int clientId, std::string &strConnection
     {
       CLog::Log(LOGERROR, "PVR - %s - error reading properties", __FUNCTION__);
     }
-    g_PVRManager.Start();
+
+    if (client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_UNKNOWN ||
+        client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_CONNECTING)
+      g_PVRManager.Start();
   }
 }
 
