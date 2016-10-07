@@ -214,7 +214,7 @@ if(NOT addons)
                   WORKING_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
 
   # now look for all the addons to be built again
-  file(GLOB_RECURSE addons ${ADDONS_DEFINITION_DIR}/*.txt)
+  file(GLOB_RECURSE addons ${BOOTSTRAP_BUILD_DIR}/binary-addons/src/binary-addons/*.txt)
 
   if(NOT addons)
     message(FATAL_ERROR "No addons available to be built")
