@@ -120,6 +120,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v17 **preselect** option added.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -148,6 +149,7 @@ namespace XBMCAddon
       ///
       ///
       ///--------------------------------------------------------------------------
+      /// @python_v17 New function added
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -181,6 +183,8 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v16 New function added.
+      /// @python_v17 Added new option **preselect**.
       ///
       /// **Example:**
       /// @code{.py}

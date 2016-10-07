@@ -199,7 +199,7 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setIconImage(iconImage) }
       ///-----------------------------------------------------------------------
-      /// @warning Deprecated. Use setArt
+      /// @python_v16 Deprecated. Use **setArt()**.
       ///
       setIconImage(...);
 #else
@@ -211,7 +211,7 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setThumbnailImage(thumbFilename) }
       ///-----------------------------------------------------------------------
-      /// @warning Deprecated. Use setArt
+      /// @python_v16 Deprecated. Use **setArt()**.
       ///
       setThumbnailImage(...);
 #else
@@ -345,8 +345,8 @@ namespace XBMCAddon
       ///  | icon          | string - image path
       ///
       ///
-      ///
       ///-----------------------------------------------------------------------
+      /// @python_v17 New function added.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -613,6 +613,9 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v17
+      /// Added labels **setid**, **set**, **imdbnumber**, **code** and **dbid**.
+      /// Expanded the possible infoLabels for the option **mediatype**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -683,7 +686,6 @@ namespace XBMCAddon
       /// @param items               list - [(label, action,)*] A list of tuples consisting of label and action pairs.
       ///   - label           string or unicode - item's label.
       ///   - action          string or unicode - any built-in function to perform.
-      /// @param replaceItems        [opt] bool - Deprecated!
       ///
       ///
       /// List of functions - http://kodi.wiki/view/List_of_Built_In_Functions
@@ -693,6 +695,7 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v17 Completely removed option **replaceItems**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -845,6 +848,8 @@ namespace XBMCAddon
       /// listitem.setSubtitles(['special://temp/example.srt', 'http://example.com/example.srt'])
       /// ...
       /// ~~~~~~~~~~~~~
+      ///-----------------------------------------------------------------------
+      /// @python_v14 New function added.
       ///
       setSubtitles(...);
 #else
@@ -856,7 +861,7 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getdescription() }
       ///-----------------------------------------------------------------------
-      /// @warning Deprecated.
+      /// @python_v17 Deprecated.
       ///
       ///
       getdescription();
@@ -869,7 +874,7 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getduration() }
       ///-----------------------------------------------------------------------
-      /// @warning Deprecated.
+      /// @python_v17 Deprecated. Use **InfoTagMusic**.
       ///
       ///
       getduration();
@@ -882,7 +887,7 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getfilename() }
       ///-----------------------------------------------------------------------
-      /// @warning Deprecated.
+      /// @python_v17 Deprecated.
       ///
       ///
       getfilename();
@@ -898,6 +903,9 @@ namespace XBMCAddon
       /// Returns the path of this listitem.
       ///
       /// @return [string] filename
+      ///-----------------------------------------------------------------------
+      /// @python_v17 New function added.
+      ///
       ///
       getPath();
 #else

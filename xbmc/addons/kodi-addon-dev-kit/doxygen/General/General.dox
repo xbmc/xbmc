@@ -16,3 +16,14 @@ Guideline for Kodi's developers to create documentation
 \subpage Doxygen_On_Addon
 
 */
+
+---------------------------------------------------------------------------------
+
+@subpage revisions "Revisions against older versions"
+*/
+
+/*!
+\page revisions Revisions
+
+\subpage python_revisions
+*/
