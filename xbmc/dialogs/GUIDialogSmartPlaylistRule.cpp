@@ -493,14 +493,14 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
 {
   if (m_rule.m_field == 0)
     m_rule.m_field = CSmartPlaylistRule::GetFields(m_type)[0];
-  SET_CONTROL_LABEL2(CONTROL_FIELD, CSmartPlaylistRule::GetLocalizedField(m_rule.m_field));
+  SET_CONTROL_LABEL(CONTROL_FIELD, CSmartPlaylistRule::GetLocalizedField(m_rule.m_field));
 
   CONTROL_ENABLE(CONTROL_VALUE);
   if (CSmartPlaylistRule::IsFieldBrowseable(m_rule.m_field))
     CONTROL_ENABLE(CONTROL_BROWSE);
   else
     CONTROL_DISABLE(CONTROL_BROWSE);
-  SET_CONTROL_LABEL2(CONTROL_OPERATOR, std::get<0>(OperatorLabel(m_rule.m_operator)));
+  SET_CONTROL_LABEL(CONTROL_OPERATOR, std::get<0>(OperatorLabel(m_rule.m_operator)));
 
   // update label2 appropriately
   SET_CONTROL_LABEL2(CONTROL_VALUE, m_rule.GetParameter());
