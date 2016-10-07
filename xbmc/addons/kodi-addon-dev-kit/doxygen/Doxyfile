@@ -248,7 +248,13 @@ ALIASES                = "table_start=<table width= 100% style= border bgcolor= 
                          "python_func_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Function: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
                          "python_class{1}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code></h4> \endhtmlonly" \
                          "python_class_with_rev{2}=\htmlonly <h4><code><span style=\"font-style: italic;\">Class: </span><span style=\"font-style: bold;\"><font color=31363b><big>\1</big></font></span></code><span style="float:right;"><small>\2</small></span></h4> \endhtmlonly" \
-                         "doc_header{1}=\htmlonly <h3><span style=\"text-decoration: underline;\"><span  style=\"font-style: italic;\"><span style=\"color: rgb(102, 102, 102);\">\1</span></span></span></h3> \endhtmlonly"
+                         "doc_header{1}=\htmlonly <h3><span style=\"text-decoration: underline;\"><span  style=\"font-style: italic;\"><span style=\"color: rgb(102, 102, 102);\">\1</span></span></span></h3> \endhtmlonly" \
+                         "python_v12=\xrefitem python_v12 \"v12 Python API changes\" \"\"" \
+                         "python_v13=\xrefitem python_v13 \"v13 Python API changes\" \"\"" \
+                         "python_v14=\xrefitem python_v14 \"v14 Python API changes\" \"\"" \
+                         "python_v15=\xrefitem python_v15 \"v15 Python API changes\" \"\"" \
+                         "python_v16=\xrefitem python_v16 \"v16 Python API changes\" \"\"" \
+                         "python_v17=\xrefitem python_v17 \"v17 Python API changes\" \"\""
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"

@@ -335,6 +335,7 @@ namespace XBMCAddon
       ///
       ///
       /// ------------------------------------------------------------------------
+      /// @python_v17 Changed function from **setProperty** to **setContainerProperty**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -348,16 +349,27 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL void setContainerProperty(const String &strProperty, const String &strValue);
 #endif
 
-      /**
-       * getCurrentContainerId() -- Get the id of the currently visible container
-       * 
-       * 
-       * example:\n
-       *   - container_id = self.getCurrentContainerId()
-       */
-
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ getCurrentContainerId() }
+      ///-----------------------------------------------------------------------
+      /// Get the id of the currently visible container.
+      ///
+      /// ------------------------------------------------------------------------
+      /// @python_v17 Added new function.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// container_id = self.getCurrentContainerId()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      getCurrentContainerId(...);
+#else
       SWIGHIDDENVIRTUAL int getCurrentContainerId();
-
+#endif
 
 #ifndef SWIG
       // CGUIWindow
