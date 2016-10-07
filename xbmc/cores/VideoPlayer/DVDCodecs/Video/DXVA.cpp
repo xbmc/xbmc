@@ -939,12 +939,11 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
   if(result)
     return result;
 
-  SAFE_RELEASE(m_presentPicture);
-
   if(frame)
   {
     if (m_surface_context->IsValid(reinterpret_cast<ID3D11View*>(frame->data[3])))
     {
+      SAFE_RELEASE(m_presentPicture);
       m_presentPicture = new CRenderPicture(m_surface_context);
       m_presentPicture->view = reinterpret_cast<ID3D11View*>(frame->data[3]);
       m_surface_context->MarkRender(m_presentPicture->view);
