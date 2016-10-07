@@ -115,7 +115,7 @@
 			<visible>Container(300).HasFocus(3)</visible>
 			<include>Visible_Right_Delayed</include>
 			<control type="image">
-				<left>90</left>
+				<left>80</left>
 				<top>138</top>
 				<width>1370</width>
 				<height>796</height>
@@ -306,7 +306,7 @@
 			<visible>Container(300).HasFocus(2)</visible>
 			<include>Visible_Right_Delayed</include>
 			<control type="image">
-				<left>90</left>
+				<left>80</left>
 				<top>138</top>
 				<width>1370</width>
 				<height>796</height>
@@ -562,7 +562,7 @@
 			<include>OpenClose_Right</include>
 			<visible>Container(300).HasFocus(4)</visible>
 			<include>Visible_Right_Delayed</include>
-			<left>520</left>
+			<left>480</left>
 			<top>120</top>
 			<control type="image">
 				<top>20</top>

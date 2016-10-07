@@ -50,17 +50,7 @@
 					<height>338</height>
 					<font>font13_title</font>
 					<label>$INFO[ListItem.Label]</label>
-					<visible>Control.IsVisible(54) | ListItem.IsCollection</visible>
-				</control>
-				<control type="textbox">
-					<right>130</right>
-					<top>245</top>
-					<width>429</width>
-					<height>338</height>
-					<font>font12</font>
-					<visible>Control.IsVisible(54)</visible>
-					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
+					<visible>ListItem.IsCollection</visible>
 				</control>
 				<control type="textbox">
 					<right>130</right>
@@ -68,7 +58,7 @@
 					<width>429</width>
 					<height>398</height>
 					<font>font12</font>
-					<visible>!Control.IsVisible(54)</visible>
+					<visible>!ListItem.IsCollection</visible>
 					<label>$INFO[ListItem.Tagline,[B],[/B][CR]]$INFO[ListItem.Plot]</label>
 					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 				</control>

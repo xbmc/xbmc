@@ -587,6 +587,35 @@
 							<param name="widget_header" value="$LOCALIZE[19020]" />
 							<param name="visible" value="!System.HasPVRAddon"/>
 						</include>
+						<control type="grouplist">
+							<height>218</height>
+							<left>478</left>
+							<top>36</top>
+							<orientation>horizontal</orientation>
+							<visible>PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer</visible>
+							<align>right</align>
+							<width>1360</width>
+							<control type="group">
+								<width>680</width>
+								<visible>PVR.IsRecordingTV</visible>
+								<include content="PVRWidget">
+									<param name="icon" value="$INFO[PVR.TVNowRecordingChannelIcon]" />
+									<param name="header" value="$LOCALIZE[19158]" />
+									<param name="label1" value="$INFO[PVR.TVNowRecordingDateTime,$LOCALIZE[19126] - ]" />
+									<param name="label2" value="$INFO[PVR.TVNowRecordingTitle][CR][COLOR=grey]$INFO[PVR.TVNowRecordingChannel][/COLOR]" />
+								</include>
+							</control>
+							<control type="group">
+								<visible>PVR.HasNonRecordingTVTimer</visible>
+								<width>680</width>
+								<include content="PVRWidget">
+									<param name="icon" value="$INFO[PVR.TVNextRecordingChannelIcon]" />
+									<param name="header" value="$LOCALIZE[19157]" />
+									<param name="label1" value="$INFO[PVR.TVNextRecordingDateTime,$LOCALIZE[19126] - ]" />
+									<param name="label2" value="$INFO[PVR.TVNextRecordingTitle][CR][COLOR=grey]$INFO[PVR.TVNextRecordingChannel][/COLOR]" />
+								</include>
+							</control>
+						</control>
 						<include content="ImageWidget">
 							<param name="image_path" value="special://skin/extras/home-images/tv.jpg"/>
 							<param name="text_label" value="$LOCALIZE[31143]" />
@@ -620,34 +649,6 @@
 							<param name="height" value="550"/>
 							<param name="visible" value="System.HasPVRAddon"/>
 						</include>
-						<control type="grouplist">
-							<height>218</height>
-							<left>478</left>
-							<top>36</top>
-							<orientation>horizontal</orientation>
-							<align>right</align>
-							<width>1360</width>
-							<control type="group">
-								<width>680</width>
-								<visible>PVR.IsRecordingTV</visible>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.TVNowRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19158]" />
-									<param name="label1" value="$INFO[PVR.TVNowRecordingDateTime,$LOCALIZE[19126] - ]" />
-									<param name="label2" value="$INFO[PVR.TVNowRecordingTitle][CR][COLOR=grey]$INFO[PVR.TVNowRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-							<control type="group">
-								<visible>PVR.HasNonRecordingTVTimer</visible>
-								<width>680</width>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.TVNextRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19157]" />
-									<param name="label1" value="$INFO[PVR.TVNextRecordingDateTime,$LOCALIZE[19126] - ]" />
-									<param name="label2" value="$INFO[PVR.TVNextRecordingTitle][CR][COLOR=grey]$INFO[PVR.TVNextRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-						</control>
 					</control>
 				</control>
 				<control type="group" id="13000">
@@ -697,6 +698,35 @@
 							<param name="widget_header" value="$LOCALIZE[19021]" />
 							<param name="visible" value="!System.HasPVRAddon"/>
 						</include>
+						<control type="grouplist">
+							<height>218</height>
+							<left>478</left>
+							<top>36</top>
+							<orientation>horizontal</orientation>
+							<align>right</align>
+							<width>1360</width>
+							<visible>PVR.IsRecordingRadio | PVR.HasNonRecordingRadioTimer</visible>
+							<control type="group">
+								<width>680</width>
+								<visible>PVR.IsRecordingRadio</visible>
+								<include content="PVRWidget">
+									<param name="icon" value="$INFO[PVR.RadioNowRecordingChannelIcon]" />
+									<param name="header" value="$LOCALIZE[19158]" />
+									<param name="label1" value="$INFO[PVR.RadioNowRecordingDateTime,$LOCALIZE[19126] - ]" />
+									<param name="label2" value="$INFO[PVR.RadioNowRecordingTitle][CR][COLOR=grey]$INFO[PVR.RadioNowRecordingChannel][/COLOR]" />
+								</include>
+							</control>
+							<control type="group">
+								<visible>PVR.HasNonRecordingRadioTimer</visible>
+								<width>680</width>
+								<include content="PVRWidget">
+									<param name="icon" value="$INFO[PVR.RadioNextRecordingChannelIcon]" />
+									<param name="header" value="$LOCALIZE[19157]" />
+									<param name="label1" value="$INFO[PVR.RadioNextRecordingDateTime,$LOCALIZE[19126] - ]" />
+									<param name="label2" value="$INFO[PVR.RadioNextRecordingTitle][CR][COLOR=grey]$INFO[PVR.RadioNextRecordingChannel][/COLOR]" />
+								</include>
+							</control>
+						</control>
 						<include content="ImageWidget">
 							<param name="image_path" value="special://skin/extras/home-images/tv.jpg"/>
 							<param name="text_label" value="$LOCALIZE[31143]" />
@@ -730,34 +760,6 @@
 							<param name="height" value="550"/>
 							<param name="visible" value="System.HasPVRAddon"/>
 						</include>
-						<control type="grouplist">
-							<height>218</height>
-							<left>478</left>
-							<top>36</top>
-							<orientation>horizontal</orientation>
-							<align>right</align>
-							<width>1360</width>
-							<control type="group">
-								<width>680</width>
-								<visible>PVR.IsRecordingRadio</visible>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.RadioNowRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19158]" />
-									<param name="label1" value="$INFO[PVR.RadioNowRecordingDateTime,$LOCALIZE[19126] - ]" />
-									<param name="label2" value="$INFO[PVR.RadioNowRecordingTitle][CR][COLOR=grey]$INFO[PVR.RadioNowRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-							<control type="group">
-								<visible>PVR.HasNonRecordingRadioTimer</visible>
-								<width>680</width>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.RadioNextRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19157]" />
-									<param name="label1" value="$INFO[PVR.RadioNextRecordingDateTime,$LOCALIZE[19126] - ]" />
-									<param name="label2" value="$INFO[PVR.RadioNextRecordingTitle][CR][COLOR=grey]$INFO[PVR.RadioNextRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-						</control>
 					</control>
 				</control>
 				<control type="group" id="15000">

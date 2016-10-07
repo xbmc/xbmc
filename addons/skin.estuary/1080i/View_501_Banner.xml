@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+	<include name="BannerInfoFlag">
+		<control type="group">
+			<top>$PARAM[posy]</top>
+			<control type="image">
+				<top>0</top>
+				<right>41</right>
+				<width>70</width>
+				<height>32</height>
+				<fadetime>300</fadetime>
+				<aspectratio align="center">keep</aspectratio>
+				<texture>$PARAM[icon]</texture>
+			</control>
+			<control type="label">
+				<right>41</right>
+				<top>35</top>
+				<width>70</width>
+				<height>32</height>
+				<align>center</align>
+				<font>font10</font>
+				<selectedcolor>white</selectedcolor>
+				<label fallback="">$INFO[$PARAM[infolabel]]</label>
+			</control>
+		</control>
+	</include>
 	<include name="View_501_Banner">
 		<include content="UpDownArrows">
 			<param name="container_id" value="501" />
@@ -156,12 +180,12 @@
 						<animation effect="fade" start="100" end="0" time="50">UnFocus</animation>
 						<top>13</top>
 						<right>0</right>
-						<include content="SmallThumbInfoFlag">
+						<include content="BannerInfoFlag">
 							<param name="icon" value="lists/rating.png" />
 							<param name="infolabel" value="ListItem.Rating" />
 							<param name="posy" value="5" />
 						</include>
-						<include content="SmallThumbInfoFlag">
+						<include content="BannerInfoFlag">
 							<param name="icon" value="lists/year.png" />
 							<param name="infolabel" value="ListItem.Year" />
 							<param name="posy" value="84" />
