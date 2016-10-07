@@ -45,14 +45,12 @@ void CPullupCorrection::Flush()
 {
   m_pattern.clear();
   m_ringpos       = 0;
-  m_ptscorrection = 0.0;
   m_prevpts       = DVD_NOPTS_VALUE;
   m_patternpos    = 0;
   m_ringfill      = 0;
   m_haspattern    = false;
   m_patternlength = 0;
   m_frameduration = DVD_NOPTS_VALUE;
-  m_trackingpts   = DVD_NOPTS_VALUE;
   memset(m_diffring, 0, sizeof(m_diffring));
 }
 
@@ -126,35 +124,7 @@ void CPullupCorrection::Add(double pts)
     }
   }
 
-  //calculate where we are in the pattern
-  double ptsinpattern = 0.0;
-  for (int i = 0; i < m_patternpos; i++)
-    ptsinpattern += m_pattern[m_pattern.size() - i - 1];
-
   m_frameduration = CalcFrameDuration();
-
-  //correct the last pts based on where we should be according to the frame duration
-  m_ptscorrection = (m_frameduration * m_patternpos) - ptsinpattern;
-
-  double corrpts = pts + m_ptscorrection;
-  if (m_trackingpts != DVD_NOPTS_VALUE)
-  {
-    //set the tracked pts a frame duration forward
-    m_trackingpts += m_frameduration;
-
-    //if the tracked pts differs too much from the corrected one,
-    //move the tracked pts slowly towards the corrected one
-    //this allows the timestamps to wobble slightly
-    if (fabs(m_trackingpts - corrpts) > MAXERR)
-      m_trackingpts += (corrpts - m_trackingpts) * 0.005;
-
-    //set m_ptscorrection so that pts + m_ptscorrection = m_trackingpts
-    m_ptscorrection = m_trackingpts - pts;
-  }
-  else
-  {
-    m_trackingpts = corrpts;
-  }
 }
 
 //gets a diff diffnr into the past
