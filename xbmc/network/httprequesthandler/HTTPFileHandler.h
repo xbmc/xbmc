@@ -22,6 +22,7 @@
 #include <string>
 
 #include "XBDateTime.h"
+#include "filesystem/File.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 
 class CHTTPFileHandler : public IHTTPRequestHandler
@@ -46,7 +47,7 @@ protected:
 
   void SetCanHandleRanges(bool canHandleRanges) { m_canHandleRanges = canHandleRanges; }
   void SetCanBeCached(bool canBeCached) { m_canBeCached = canBeCached; }
-  void SetLastModifiedDate(CDateTime lastModified) { m_lastModified = lastModified; }
+  void SetLastModifiedDate(const struct __stat64 *buffer);
 
 private:
   std::string m_url;
