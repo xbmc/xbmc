@@ -25,12 +25,13 @@ IF NOT [%TAG%] == [] (
 )
 
 rem ----Usage----
-rem BuildSetup [clean|noclean]
+rem BuildSetup [clean|noclean] [noprompt] [nomingwlibs] [nobinaryaddons] [sh]
 rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
 rem nomingwlibs to skip building all libs built with mingw
-rem cmake to build with cmake instead of VS solution
+rem nobinaryaddons to skip building binary addons
+rem sh to use sh shell instead rxvt
 CLS
 COLOR 1B
 TITLE %APP_NAME% for Windows Build Script
