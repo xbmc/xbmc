@@ -35,7 +35,6 @@ class CPullupCorrection
     void   Flush(); //flush the saved pattern and the ringbuffer
     void   ResetVFRDetection(void);
 
-    double GetCorrection()    { return m_ptscorrection;            }
     int    GetPatternLength() { return m_patternlength;            }
     double GetFrameDuration() { return m_frameduration;            }
     double GetMaxFrameDuration(void) { return m_maxframeduration;  }
@@ -66,8 +65,6 @@ class CPullupCorrection
 
     std::vector<double> m_pattern, m_lastPattern; //the last saved pattern
     int m_patternpos;              //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
-    double m_ptscorrection;        //the correction needed for the last added pts
-    double m_trackingpts;          //tracked pts for smoothing the timestamps
     double m_frameduration;        //frameduration exposed to VideoPlayer, used for calculating the fps
     double m_maxframeduration;     //Max value detected for frame duration (for VFR files case)
     double m_minframeduration;     //Min value detected for frame duration (for VFR files case)

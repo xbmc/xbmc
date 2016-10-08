@@ -799,14 +799,8 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   int result = 0;
 
-  //correct any pattern in the timestamps
-  if (picture.format != RENDER_FMT_BYPASS)
-  {
-    m_pullupCorrection.Add(pts);
-    pts += m_pullupCorrection.GetCorrection();
-  }
-
   //try to calculate the framerate
+  m_pullupCorrection.Add(pts);
   if (!m_stalled)
     CalcFrameRate();
 
