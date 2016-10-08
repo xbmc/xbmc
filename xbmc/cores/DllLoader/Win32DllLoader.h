@@ -34,7 +34,7 @@ public:
     DWORD function;
   };
 
-  Win32DllLoader(const std::string& dll);
+  Win32DllLoader(const std::string& dll, bool isSystemDll);
   ~Win32DllLoader();
 
   virtual bool Load();

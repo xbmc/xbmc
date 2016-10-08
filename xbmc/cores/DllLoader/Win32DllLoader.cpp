@@ -132,10 +132,11 @@ Export win32_exports[] =
   { NULL,                          -1, NULL,                                NULL }
 };
 
-Win32DllLoader::Win32DllLoader(const std::string& dll) : LibraryLoader(dll)
+Win32DllLoader::Win32DllLoader(const std::string& dll, bool isSystemDll)
+  : LibraryLoader(dll)
+  , bIsSystemDll(isSystemDll)
 {
   m_dllHandle = NULL;
-  bIsSystemDll = false;
   DllLoaderContainer::RegisterDll(this);
 }
 
@@ -180,8 +181,6 @@ bool Win32DllLoader::Load()
   // handle functions that the dll imports
   if (NeedsHooking(strFileName.c_str()))
     OverrideImports(strFileName);
-  else
-    bIsSystemDll = true;
 
   return true;
 }
