@@ -184,19 +184,21 @@
 		</definition>
 	</include>
 	<include name="BottomMainMenuItem">
-		<param name="height">110</param>
 		<definition>
 			<control type="radiobutton" id="$PARAM[control_id]">
-				<width>118</width>
+				<enable>$PARAM[enable]</enable>
+				<width>$PARAM[width]</width>
 				<height>$PARAM[height]</height>
-				<align>center</align>
+				<align>$PARAM[align]</align>
 				<aligny>center</aligny>
 				<onclick>$PARAM[onclick]</onclick>
 				<font></font>
 				<label>$PARAM[label]</label>
+				<textoffsetx>$PARAM[textoffsetx]</textoffsetx>
+				<textwidth>$PARAM[textwidth]</textwidth>
 				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-				<radioposx>38</radioposx>
+				<radioposx>$PARAM[radioposx]</radioposx>
 				<radioposy>0</radioposy>
 				<radiowidth>40</radiowidth>
 				<radioheight>40</radioheight>
@@ -204,6 +206,8 @@
 				<textureradioonnofocus>$PARAM[icon]</textureradioonnofocus>
 				<textureradioofffocus>$PARAM[icon]</textureradioofffocus>
 				<textureradiooffnofocus>$PARAM[icon]</textureradiooffnofocus>
+				<textureradioondisabled colordiffuse="disabled">$PARAM[icon]</textureradioondisabled>
+				<textureradiooffdisabled colordiffuse="disabled">$PARAM[icon]</textureradiooffdisabled>
 			</control>
 		</definition>
 	</include>

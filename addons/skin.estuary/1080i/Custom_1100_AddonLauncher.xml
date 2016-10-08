@@ -166,72 +166,40 @@
 				<include>OpenClose_Left</include>
 				<onright>400</onright>
 				<usecontrolcoords>true</usecontrolcoords>
-				<control type="radiobutton" id="801">
-					<width>157</width>
-					<height>110</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<onclick>ActivateWindow(addonbrowser,root)</onclick>
-					<font>font10</font>
-					<label></label>
-					<textoffsetx>40</textoffsetx>
-					<textwidth>230</textwidth>
-					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-					<radioposx>55</radioposx>
-					<radioposy>0</radioposy>
-					<radiowidth>40</radiowidth>
-					<radioheight>40</radioheight>
-					<textureradioonfocus>icons/submenu/add-ons.png</textureradioonfocus>
-					<textureradioonnofocus>icons/submenu/add-ons.png</textureradioonnofocus>
-					<textureradioofffocus>icons/submenu/add-ons.png</textureradioofffocus>
-					<textureradiooffnofocus>icons/submenu/add-ons.png</textureradiooffnofocus>
-				</control>
-				<control type="radiobutton" id="802">
-					<width>157</width>
-					<height>110</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<onclick>ActivateWindow(addonbrowser,addons://outdated/,return)</onclick>
-					<font>font10</font>
-					<label></label>
-					<textoffsetx>40</textoffsetx>
-					<textwidth>230</textwidth>
-					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-					<radioposx>35</radioposx>
-					<radioposy>0</radioposy>
-					<radiowidth>40</radiowidth>
-					<radioheight>40</radioheight>
-					<enable>Integer.IsGreater(Container(8000).NumItems,0)</enable>
-					<textureradioonfocus>icons/submenu/updatelibrary.png</textureradioonfocus>
-					<textureradioonnofocus>icons/submenu/updatelibrary.png</textureradioonnofocus>
-					<textureradioofffocus>icons/submenu/updatelibrary.png</textureradioofffocus>
-					<textureradiooffnofocus>icons/submenu/updatelibrary.png</textureradiooffnofocus>
-					<textureradioondisabled colordiffuse="disabled">icons/submenu/updatelibrary.png</textureradioondisabled>
-					<textureradiooffdisabled colordiffuse="disabled">icons/submenu/updatelibrary.png</textureradiooffdisabled>
-				</control>
-				<control type="radiobutton" id="803">
-					<width>157</width>
-					<height>110</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<onclick>ActivateWindow(systemsettings,addons)</onclick>
-					<font>font10</font>
-					<label></label>
-					<textoffsetx>40</textoffsetx>
-					<textwidth>230</textwidth>
-					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-					<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-					<radioposx>55</radioposx>
-					<radioposy>0</radioposy>
-					<radiowidth>40</radiowidth>
-					<radioheight>40</radioheight>
-					<textureradioonfocus>icons/settings.png</textureradioonfocus>
-					<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
-					<textureradioofffocus>icons/settings.png</textureradioofffocus>
-					<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
-				</control>
+				<include content="BottomMainMenuItem">
+					<param name="control_id" value="801" />
+					<param name="width" value="156" />
+					<param name="height" value="110" />
+					<param name="align" value="center" />
+					<param name="radioposx" value="56" />
+					<param name="onclick" value="ActivateWindow(addonbrowser,root)" />
+					<param name="textoffsetx" value="40" />
+					<param name="textwidth" value="230" />
+					<param name="icon" value="icons/submenu/add-ons.png" />
+				</include>
+				<include content="BottomMainMenuItem">
+					<param name="control_id" value="802" />
+					<param name="enable" value="Integer.IsGreater(Container(8000).NumItems,0)" />
+					<param name="width" value="156" />
+					<param name="height" value="110" />
+					<param name="align" value="left" />
+					<param name="radioposx" value="36" />
+					<param name="onclick" value="ActivateWindow(addonbrowser,addons://outdated/,return)" />
+					<param name="textoffsetx" value="40" />
+					<param name="textwidth" value="230" />
+					<param name="icon" value="icons/submenu/updatelibrary.png" />
+				</include>
+				<include content="BottomMainMenuItem">
+					<param name="control_id" value="803" />
+					<param name="width" value="156" />
+					<param name="height" value="110" />
+					<param name="align" value="center" />
+					<param name="radioposx" value="56" />
+					<param name="onclick" value="ActivateWindow(systemsettings,addons)" />
+					<param name="textoffsetx" value="40" />
+					<param name="textwidth" value="230" />
+					<param name="icon" value="icons/settings.png" />
+				</include>
 				<control type="label" id="804">
 					<left>-217</left>
 					<top>20</top>
