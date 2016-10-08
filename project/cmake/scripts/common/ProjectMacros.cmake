@@ -8,7 +8,7 @@
 #   xbt is added to ${XBT_FILES}
 function(pack_xbt input output)
   file(GLOB_RECURSE MEDIA_FILES ${input}/*)
-  get_filename_component(dir ${output} PATH)
+  get_filename_component(dir ${output} DIRECTORY)
   add_custom_command(OUTPUT  ${output}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
                      COMMAND TexturePacker::TexturePacker
