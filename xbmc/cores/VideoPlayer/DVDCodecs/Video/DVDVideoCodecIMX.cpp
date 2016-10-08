@@ -974,7 +974,7 @@ void CIMXCodec::Process()
         m_decInput.setquotasize(m_fps);
 
         bool getFrame = m_decOpenParam.CodecFormat != VPU_V_AVC || !m_converter;
-        getFrame     &= m_decOpenParam.CodecFormat != VPU_V_MPEG2;
+        getFrame     &= m_decOpenParam.CodecFormat != VPU_V_MPEG2 && m_decOpenParam.CodecFormat != VPU_V_XVID;
         if (getFrame || m_decRet & VPU_DEC_RESOLUTION_CHANGED)
         {
           SetDrainMode((VpuDecInputType)IN_DECODER_SET);
