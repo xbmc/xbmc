@@ -2485,10 +2485,11 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const std::string& strBaseDir, 
       return false;
 
     std::string strSQL = PrepareSQL("SELECT songview.*, songartistview.* FROM "
-      "(SELECT idAlbum FROM albumview WHERE albumview.lastplayed IS NOT NULL "
+      "(SELECT idAlbum, lastPlayed FROM albumview WHERE albumview.lastplayed IS NOT NULL "
       "ORDER BY albumview.lastplayed DESC LIMIT %u) as playedalbums "
       "JOIN songview ON songview.idAlbum = playedalbums.idAlbum "
-      "JOIN songartistview ON songview.idSong = songartistview.idSong ", 
+      "JOIN songartistview ON songview.idSong = songartistview.idSong "
+      "ORDER BY playedalbums.lastplayed DESC,songartistview.idsong, songartistview.idRole, songartistview.iOrder",
       g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL)) return false;
@@ -2623,7 +2624,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const std::string& strBaseDir, C
         "(SELECT idAlbum FROM album ORDER BY idAlbum DESC LIMIT %u) AS recentalbums " 
         "JOIN songview ON songview.idAlbum = recentalbums.idAlbum "
         "JOIN songartistview ON songview.idSong = songartistview.idSong "
-        "ORDER BY songview.idAlbum desc, songview.itrack, songartistview.iOrder ",
+        "ORDER BY songview.idAlbum DESC, songview.idSong, songartistview.idRole, songartistview.iOrder ",
         limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL)) return false;
@@ -4258,6 +4259,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     if (artistData)
     { // Get data from song and song_artist tables to fully populate songs with artists
       // All songs now have at least one artist so inner join sufficient
+      // Need guaranteed ordering for dataset processing to extract songs
       if (limited)
         //Apply where clause and limits to songview, then join as mutiple records in result set per song
         strSQL = "SELECT sv.*, songartistview.* "
@@ -4266,6 +4268,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
       else
         strSQL = "SELECT songview.*, songartistview.* "
           "FROM songview JOIN songartistview ON songartistview.idsong = songview.idsong " + strSQLExtra;
+      strSQL += " ORDER BY songartistview.idsong, songartistview.idRole, songartistview.iOrder";
     }
     else
       strSQL = "SELECT songview.* FROM songview " + strSQLExtra;
