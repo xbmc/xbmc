@@ -61,6 +61,7 @@ public:
 
   virtual bool Open(const CURL& url) = 0;
   virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false) { return false; };
+  virtual bool ReOpen(const CURL& url) { return false; };
   virtual bool Exists(const CURL& url) = 0;
   /**
    * Fills struct __stat64 with information about file specified by url.

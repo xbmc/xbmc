@@ -64,12 +64,25 @@ public:
   bool CURLAddOption(XFILE::CURLOPTIONTYPE type, const char* name, const char * value);
   bool CURLOpen(unsigned int flags);
 
+  /**
+  * Attempt to open an IFile instance.
+  * @param file reference to CCurl file description
+  * @param flags see IFileTypes.h
+  * @return true on success, false otherwise
+  *
+  * Remarks: Open can only be called once. Calling
+  * Open() on an already opened file will fail
+  * exept flag READ_REOPEN is set and the underlying
+  * file has an implementation of ReOpen().
+  */
   bool Open(const CURL& file, const unsigned int flags = 0);
+  bool Open(const std::string& strFileName, const unsigned int flags = 0);
+
   bool OpenForWrite(const CURL& file, bool bOverWrite = false);
+  bool OpenForWrite(const std::string& strFileName, bool bOverWrite = false);
+
   ssize_t LoadFile(const CURL &file, auto_buffer& outputBuffer);
 
-  bool Open(const std::string& strFileName, const unsigned int flags = 0);
-  bool OpenForWrite(const std::string& strFileName, bool bOverWrite = false);
   /**
    * Attempt to read bufSize bytes from currently opened file into buffer bufPtr.
    * @param bufPtr  pointer to buffer
