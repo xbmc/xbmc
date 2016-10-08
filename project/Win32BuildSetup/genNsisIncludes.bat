@@ -108,22 +108,6 @@ IF EXIST BUILD_WIN32\addons\visualization.* (
 )
 
 SET Counter=1
-IF EXIST BUILD_WIN32\addons\skin.* (
-  ECHO SectionGroup "Skin Add-ons" SecSkinAddons >> skin-addons.nsi
-  FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\addons\skin.*') DO (
-    FOR /f "delims=<" %%N in ('powershell.exe -ExecutionPolicy Unrestricted -command "& {[xml]$a = get-content BUILD_WIN32\addons\%%P\addon.xml;$a.addon.name}"') do (
-      ECHO Section "%%N" SecSkinAddons!Counter! >> skin-addons.nsi
-      ECHO SectionIn 1 >> skin-addons.nsi
-      ECHO SetOutPath "$INSTDIR\addons\%%P" >> skin-addons.nsi
-      ECHO File /r "${app_root}\addons\%%P\*.*" >> skin-addons.nsi
-      ECHO SectionEnd >> skin-addons.nsi
-      SET /A Counter = !Counter! + 1
-      )
-    )
-  ECHO SectionGroupEnd >> skin-addons.nsi
-)
-
-SET Counter=1
 IF EXIST BUILD_WIN32\addons\inputstream.* (
   ECHO SectionGroup "Inputstream Add-ons" SecInputstreamAddons >> inputstream-addons.nsi
   FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\addons\inputstream.*') DO (

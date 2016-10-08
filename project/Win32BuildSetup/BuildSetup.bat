@@ -152,9 +152,6 @@ set WORKSPACE=%CD%\..\..\kodi-build
   Echo userdata\database\>>exclude.txt
   Echo userdata\playlists\>>exclude.txt
   Echo userdata\thumbnails\>>exclude.txt
-  rem Exclude skins as they're copied by their own script
-  Echo addons\skin.estuary\>>exclude.txt
-  Echo addons\skin.estouchy\>>exclude.txt
 
   rem Exclude dlls from system to avoid duplicates
   Echo .dll>>exclude_dll.txt
@@ -196,17 +193,6 @@ set WORKSPACE=%CD%\..\..\kodi-build
     IF EXIST error.log del error.log > NUL
   )
 
-  ECHO ------------------------------------------------------------
-  ECHO Building Estuary Skin...
-  cd %WORKSPACE%\addons\skin.estuary
-  call build.bat > NUL
-  cd %build_path%
-
-  ECHO Building Estouchy Skin...
-  cd %WORKSPACE%\addons\skin.estouchy
-  call build.bat > NUL
-  cd %build_path%
-  
   rem restore color and title, some scripts mess these up
   COLOR 1B
   TITLE %APP_NAME% for Windows Build Script
