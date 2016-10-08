@@ -885,7 +885,7 @@ double CDVDVideoCodecAndroidMediaCodec::GetTimeSize(void)
 
 unsigned CDVDVideoCodecAndroidMediaCodec::GetAllowedReferences()
 {
-  return 3;
+  return 4;
 }
 
 void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
