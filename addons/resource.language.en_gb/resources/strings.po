@@ -7521,67 +7521,45 @@ msgctxt "#14200"
 msgid "Player"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14201"
-msgid "Player settings"
-msgstr ""
+#empty string id 14201
 
 #: system/settings/settings.xml
 msgctxt "#14202"
 msgid "Library"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14203"
-msgid "Library settings"
-msgstr ""
+#empty string id 14203
 
 #: system/settings/settings.xml
 msgctxt "#14204"
 msgid "TV"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14205"
-msgid "TV settings"
-msgstr ""
+#empty string id 14205
 
 #: system/settings/settings.xml
 msgctxt "#14206"
 msgid "Interface"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14207"
-msgid "Interface settings"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#14208"
-msgid "Service settings"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#14209"
-msgid "System settings"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#14210"
-msgid "Profile settings"
-msgstr ""
+#empty strings from id 14207 to id 14210
 
 #: system/settings/settings.xml
 msgctxt "#14211"
 msgid "Media"
 msgstr ""
 
+#empty string id 14212
+
 #: system/settings/settings.xml
-msgctxt "#14212"
-msgid "Media settings"
+msgctxt "#14213"
+msgid "About system"
 msgstr ""
 
-#empty strings from id 14213 to 14214
+#: system/settings/settings.xml
+msgctxt "#14214"
+msgid "Event log"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14215"

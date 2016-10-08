@@ -187,7 +187,7 @@
 		<param name="height">110</param>
 		<definition>
 			<control type="radiobutton" id="$PARAM[control_id]">
-				<width>118</width>
+				<width>156</width>
 				<height>$PARAM[height]</height>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -196,7 +196,7 @@
 				<label>$PARAM[label]</label>
 				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
-				<radioposx>38</radioposx>
+				<radioposx>55</radioposx>
 				<radioposy>0</radioposy>
 				<radiowidth>40</radiowidth>
 				<radioheight>40</radioheight>
