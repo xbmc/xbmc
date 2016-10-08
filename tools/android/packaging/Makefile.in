@@ -30,12 +30,15 @@ ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(
 #prebuilt stuff follow different name shemes for
 #arm and x86
 ifeq ($(findstring i686,$(CPU)),i686)
-ARCH=x86
-CPU=x86
+  ARCH=x86
+  CPU=x86
 endif
-ifeq ($(findstring arm,$(CPU)),arm)
-ARCH=arm
-CPU=armeabi-v7a
+ifeq ($(findstring arm64,$(CPU)),arm64)
+  ARCH=arm64
+  CPU=arm64-v8a
+else ifeq ($(findstring arm,$(CPU)),arm)
+  ARCH=arm
+  CPU=armeabi-v7a
 endif
 
 #older ndk x86
@@ -49,6 +52,16 @@ endif
 ifneq ($(shell test -f $(GDBPATH) && echo 1),1)
 #vanilla ndk >= 8
 GDBPATH=$(NDKROOT)/prebuilt/android-$(ARCH)/gdbserver/gdbserver
+endif
+
+ifeq ($(ARCH),aarch64)
+GDBPATH=$(NDKROOT)/prebuilt/android-arm64/gdbserver/gdbserver
+endif
+
+# check for java 1.8
+JAVA8=$(shell java -version 2>&1 | grep -q '1.8.[0-9]' && echo yes)
+ifeq ($(JAVA8),yes)
+  JAVAC_EXTRA_ARGS = -source 1.7 -target 1.7
 endif
 
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS)) $(addprefix $(PREFIX)/lib/$(SDK_PLATFORM)/,$(PLATFORM_OBJS))
@@ -97,7 +110,7 @@ python: | xbmc/assets
 
 res:
 	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
-	@echo "native_arch=$(ARCH)" > xbmc/res/raw/xbmc.properties
+	@echo "native_arch=$(CPU)" > xbmc/res/raw/xbmc.properties
 	cp -fp $(CORE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable/splash.png
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
 	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
@@ -115,7 +128,7 @@ res:
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	rm -rf xbmc/lib/$(CPU) xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
 	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.7/lib/ xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
-	cp -fp $(SRCLIBS) xbmc/obj/local/$(CPU)/
+	cp -fpL $(SRCLIBS) xbmc/obj/local/$(CPU)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
 	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
@@ -131,8 +144,8 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 
 xbmc/classes.dex: res
 	mkdir -p xbmc/obj
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java $(JAVAC_EXTRA_ARGS)
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java $(JAVAC_EXTRA_ARGS)
 	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
 
 package: libs python xbmc/classes.dex

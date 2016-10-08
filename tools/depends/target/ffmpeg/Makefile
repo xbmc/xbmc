@@ -29,10 +29,14 @@ ifeq ($(OS), linux)
   ffmpg_config += --enable-vdpau --enable-vaapi --enable-pic
 endif
 ifeq ($(OS), android)
-  ifeq ($(findstring arm, $(CPU)), arm)
-    ffmpg_config += --cpu=cortex-a9
+  ifeq ($(findstring arm64, $(CPU)), arm64)
+    ffmpg_config += --arch=aarch64 --cpu=cortex-a53
   else
-    ffmpg_config += --cpu=i686 --disable-mmx
+    ifeq ($(findstring arm, $(CPU)), arm)
+      ffmpg_config += --cpu=cortex-a9
+    else
+      ffmpg_config += --cpu=i686 --disable-mmx
+    endif
   endif
   ffmpg_config += --target-os=linux --extra-libs=-liconv
 endif
