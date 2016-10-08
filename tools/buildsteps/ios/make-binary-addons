@@ -16,11 +16,7 @@ then
     echo "building $addon"
     git clean -xffd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon
 
-    if [ "$CMAKE_BUILD" = true ]; then
-      INSTALL_PREFIX="../../../../../build/addons/"
-    else
-      INSTALL_PREFIX="../../../../../addons/"
-    fi
+    INSTALL_PREFIX="../../../../../build/addons/"
     cd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon;make -j $BUILDTHREADS V=99 VERBOSE=1 INSTALL_PREFIX="$INSTALL_PREFIX"  || ALL_BINARY_ADDONS_BUILT="0"
   done
 fi

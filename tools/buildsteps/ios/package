@@ -2,15 +2,8 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=ios
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-if [ "$CMAKE_BUILD" = true ]; then
-  cd $WORKSPACE/build;make -j$BUILDTHREADS deb
-  cd $WORKSPACE/build/tools/darwin/packaging/ios/
-else
-  #ensure that dpkg tools are used from our toolchain
-  export PATH=$XBMC_DEPENDS_ROOT/buildtools-native/bin/:$PATH
-
-  cd $WORKSPACE/tools/darwin/packaging/ios/;sh mkdeb-ios.sh $Configuration
-fi
+cd $WORKSPACE/build;make -j$BUILDTHREADS deb
+cd $WORKSPACE/build/tools/darwin/packaging/ios/
 
 #rename for upload
 #e.x. kodi-20130314-8c2fb31-Frodo-ios.deb
