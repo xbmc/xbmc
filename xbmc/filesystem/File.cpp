@@ -254,6 +254,19 @@ bool CFile::Open(const std::string& strFileName, const unsigned int flags)
 
 bool CFile::Open(const CURL& file, const unsigned int flags)
 {
+  if (m_pFile)
+  {
+    if ((flags & READ_REOPEN) == 0)
+    {
+      CLog::Log(LOGERROR, "File::Open - already open: %s", file.GetRedacted().c_str());
+      return false;      
+    }
+    else
+    {
+      return m_pFile->ReOpen(URIUtils::SubstitutePath(file));
+    }
+  }
+
   m_flags = flags;
   try
   {
@@ -280,6 +293,10 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       {
         // for internet stream, if it contains multiple stream, file cache need handle it specially.
         m_pFile = new CFileCache(m_flags);
+
+        if (!m_pFile)
+          return false;
+
         return m_pFile->Open(url);
       }
     }

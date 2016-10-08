@@ -1196,6 +1196,12 @@ bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)
   return (bool)((pLine - szLine) > 0);
 }
 
+bool CCurlFile::ReOpen(const CURL& url)
+{
+  Close();
+  return Open(url);
+}
+
 bool CCurlFile::Exists(const CURL& url)
 {
   // if file is already running, get info from it
