@@ -2689,6 +2689,16 @@ bool CActiveAE::IsSettingVisible(const std::string &settingId)
     if (m_sink.HasPassthroughDevice() && CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
       return true;
   }
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH)
+  {
+    AEAudioFormat format;
+    format.m_dataFormat = AE_FMT_RAW;
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTS_512;
+    format.m_sampleRate = 48000;
+    if (m_sink.SupportsFormat(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format) &&
+        CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) != AE_CONFIG_FIXED)
+      return true;
+  }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH)
   {
     AEAudioFormat format;
