@@ -77,7 +77,7 @@
 				<height>530</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
-			<control type="panel" id="10">
+			<control type="list" id="10">
 				<description>Rules List Control</description>
 				<left>740</left>
 				<top>115</top>
@@ -85,7 +85,6 @@
 				<height>480</height>
 				<onleft>500</onleft>
 				<onright>9001</onright>
-				<orientation>horizontal</orientation>
 				<include content="DefaultSimpleListLayout">
 					<param name="width" value="600" />
 					<param name="list_id" value="10" />
