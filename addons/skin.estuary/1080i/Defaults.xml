@@ -151,9 +151,10 @@
 		<aligny>center</aligny>
 		<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 		<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+		<orientation>horizontal</orientation>
 		<sliderwidth>150</sliderwidth>
 		<sliderheight>28</sliderheight>
-		<texturesliderbar>buttons/slider-back.png</texturesliderbar>
+		<texturesliderbar border="10">buttons/slider-back.png</texturesliderbar>
 		<textureslidernib>buttons/slider-nib.png</textureslidernib>
 		<textureslidernibfocus colordiffuse="button_focus">buttons/slider-nib.png</textureslidernibfocus>
 		<font>font13</font>
