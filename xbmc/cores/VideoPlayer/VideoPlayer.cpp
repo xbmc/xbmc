@@ -3049,15 +3049,17 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
     }
   }
 
-  int64_t seek;
+  int64_t seekTarget;
   if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2000*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+      seekTarget = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig :
+                           g_advancedSettings.m_videoTimeSeekBackwardBig;
     else
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
-    seek *= 1000;
-    seek += GetTime();
+      seekTarget = bPlus ? g_advancedSettings.m_videoTimeSeekForward :
+                           g_advancedSettings.m_videoTimeSeekBackward;
+    seekTarget *= 1000;
+    seekTarget += GetTime();
   }
   else
   {
@@ -3066,7 +3068,7 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
       percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
     else
       percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
-    seek = (int64_t)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
+    seekTarget = (int64_t)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
   bool restore = true;
@@ -3086,15 +3088,15 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
      * Small skip does not trigger this in case the start of the commercial break was in fact fine
      * but it skipped too far into the program. In that case small skip backwards behaves as normal.
      */
-    if (!bPlus && bLargeStep
-    &&  m_EdlAutoSkipMarkers.seek_to_start
-    &&  clock >= m_EdlAutoSkipMarkers.commbreak_end
-    &&  clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
+    if (!bPlus && bLargeStep &&
+        m_EdlAutoSkipMarkers.seek_to_start &&
+        clock >= m_EdlAutoSkipMarkers.commbreak_end &&
+        clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
     {
       CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as large backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
                 __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
                 CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
-      seek = m_EdlAutoSkipMarkers.commbreak_start;
+      seekTarget = m_EdlAutoSkipMarkers.commbreak_start;
       restore = false;
       m_EdlAutoSkipMarkers.seek_to_start = false; // So this will only happen within the 10 second grace period once.
     }
@@ -3105,32 +3107,33 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
      * correctly than the landing point for a standard big skip (ends seem to be flagged more
      * accurately than the start).
      */
-    else if (bPlus && bLargeStep
-    &&       clock >= m_EdlAutoSkipMarkers.commbreak_start
-    &&       clock <= m_EdlAutoSkipMarkers.commbreak_end)
+    else if (bPlus && bLargeStep &&
+             clock >= m_EdlAutoSkipMarkers.commbreak_start &&
+             clock <= m_EdlAutoSkipMarkers.commbreak_end)
     {
       CLog::Log(LOGDEBUG, "%s - Seeking to end of previously skipped commercial break [%s - %s] as big forwards skip activated within the break.",
                 __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
                 CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
-      seek = m_EdlAutoSkipMarkers.commbreak_end;
+      seekTarget = m_EdlAutoSkipMarkers.commbreak_end;
       restore = false;
     }
   }
 
   int64_t time = GetTime();
-  if(g_application.CurrentFileItem().IsStack()
-  && (seek > GetTotalTimeInMsec() || seek < 0))
+  if(g_application.CurrentFileItem().IsStack() &&
+     (seekTarget > GetTotalTimeInMsec() || seekTarget < 0))
   {
-    g_application.SeekTime((seek - time) * 0.001 + g_application.GetTime());
+    g_application.SeekTime((seekTarget - time) * 0.001 + g_application.GetTime());
     // warning, don't access any VideoPlayer variables here as
     // the VideoPlayer object may have been destroyed
     return;
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seekTarget, !bPlus, true, false, restore));
   SynchronizeDemuxer();
-  if (seek < 0) seek = 0;
-  m_callback.OnPlayBackSeek((int)seek, (int)(seek - time));
+  if (seekTarget < 0)
+    seekTarget = 0;
+  m_callback.OnPlayBackSeek((int)seekTarget, (int)(seekTarget - time));
 }
 
 bool CVideoPlayer::SeekScene(bool bPlus)
