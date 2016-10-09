@@ -136,9 +136,6 @@ bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints)
 
 void CDVDTeletextData::CloseStream(bool bWaitForBuffers)
 {
-  // wait until buffers are empty
-  if (bWaitForBuffers && m_speed > 0) m_messageQueue.WaitUntilEmpty();
-
   m_messageQueue.Abort();
 
   // wait for decode_video thread to end
