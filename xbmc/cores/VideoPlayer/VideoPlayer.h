@@ -109,9 +109,11 @@ struct SPlayerState
     cache_level = 0.0;
     cache_delay = 0.0;
     cache_offset = 0.0;
+    lastSeek = 0;
   }
 
   double timestamp;         // last time of update
+  double lastSeek;          // time of last seek
   double time_offset;       // difference between time and pts
 
   double time;              // current playback time

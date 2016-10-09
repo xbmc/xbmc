@@ -620,7 +620,9 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
 
       frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
-      if (m_syncState == IDVDStreamPlayer::SYNC_STARTING && !(m_picture.iFlags & DVP_FLAG_DROPPED))
+      if (m_syncState == IDVDStreamPlayer::SYNC_STARTING &&
+          !(iResult & EOS_DROPPED) &&
+          !(m_picture.iFlags & DVP_FLAG_DROPPED))
       {
         m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
         SStartMsg msg;
