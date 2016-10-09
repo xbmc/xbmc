@@ -30,7 +30,7 @@ foreach(ADDON_DEFINITION_FILE ${ADDON_DEFINITIONS})
     list(FIND ADDONS_TO_BUILD ${ADDON_ID} ADDONS_TO_BUILD_IDX)
     if(ADDONS_TO_BUILD_IDX GREATER -1 OR "${ADDONS_TO_BUILD}" STREQUAL "all")
       # get the path to the addon definition directory
-      get_filename_component(ADDON_DEFINITION_DIR ${ADDON_DEFINITION_FILE} PATH)
+      get_filename_component(ADDON_DEFINITION_DIR ${ADDON_DEFINITION_FILE} DIRECTORY)
 
       # install the addon definition
       message(STATUS "Bootstrapping ${ADDON_ID} addon...")

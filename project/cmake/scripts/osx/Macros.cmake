@@ -33,7 +33,7 @@ function(core_link_library lib wraplib)
   elseif(check_arg STREQUAL archives)
     set(extra_libs ${data_arg})
   endif()
-  get_filename_component(dir ${wraplib} PATH)
+  get_filename_component(dir ${wraplib} DIRECTORY)
 
   # We can't simply pass the linker flags to the args section of the custom command
   # because cmake will add quotes around it (and the linker will fail due to those).

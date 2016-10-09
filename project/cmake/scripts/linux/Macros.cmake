@@ -31,7 +31,7 @@ function(core_link_library lib wraplib)
     set(extra_libs ${data_arg})
   endif()
 
-  get_filename_component(dir ${wraplib} PATH)
+  get_filename_component(dir ${wraplib} DIRECTORY)
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
                      COMMAND ${CMAKE_C_COMPILER}
