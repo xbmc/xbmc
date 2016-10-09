@@ -62,10 +62,13 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
 
   XbmcThreads::EndTime timeout(milliseconds);
 
-  m_p->reached |= source & m_p->sources;
+  m_p->reached |= (source & m_p->sources);
+  if ((m_p->sources & SYNCSOURCE_ANY) && source)
+    m_p->reached |= SYNCSOURCE_ANY;
 
-  while (m_p->reached != m_p->sources ||
-         (m_p->sources == SYNCSOURCE_ANY && m_p->reached))
+  m_p->condition.notifyAll();
+
+  while (m_p->reached != m_p->sources)
   {
     milliseconds = std::min(m_p->timeout.MillisLeft(), timeout.MillisLeft());
     if (m_p->condition.wait(lock, milliseconds))
