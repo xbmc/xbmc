@@ -40,6 +40,8 @@ namespace PERIPHERALS
     CPeripheralBusAddon(CPeripherals *manager);
     virtual ~CPeripheralBusAddon(void);
 
+    void UpdateAddons(void);
+
     /*!
      * \brief Get peripheral add-on by ID
      */
@@ -93,7 +95,6 @@ namespace PERIPHERALS
     virtual void UnregisterRemovedDevices(const PeripheralScanResults &results) override;
 
   private:
-    void UpdateAddons(void);
     void OnEvent(const ADDON::AddonEvent& event);
 
     PeripheralAddonVector m_addons;
