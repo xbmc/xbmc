@@ -466,9 +466,7 @@ protected:
   void HandleMessages();
   void HandlePlaySpeed();
   bool IsInMenuInternal() const;
-
-  void SynchronizePlayers(unsigned int sources);
-  void SynchronizeDemuxer(unsigned int timeout);
+  void SynchronizeDemuxer();
   void CheckAutoSceneSkip();
   bool CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);

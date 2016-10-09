@@ -2387,36 +2387,16 @@ void CVideoPlayer::CheckAutoSceneSkip()
 }
 
 
-void CVideoPlayer::SynchronizeDemuxer(unsigned int timeout)
+void CVideoPlayer::SynchronizeDemuxer()
 {
   if(IsCurrentThread())
     return;
   if(!m_messenger.IsInited())
     return;
 
-  CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, 0);
+  CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(500, SYNCSOURCE_PLAYER);
   m_messenger.Put(message->Acquire());
   message->Wait(m_bStop, 0);
-  message->Release();
-}
-
-void CVideoPlayer::SynchronizePlayers(unsigned int sources)
-{
-  /* we need a big timeout as audio queue is about 8seconds for 2ch ac3 */
-  const int timeout = 10*1000; // in milliseconds
-
-  CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, sources);
-  if (m_CurrentAudio.id >= 0)
-    m_VideoPlayerAudio->SendMessage(message->Acquire());
-
-  if (m_CurrentVideo.id >= 0)
-    m_VideoPlayerVideo->SendMessage(message->Acquire());
-//! @todo we have to rewrite the sync class, to not require
-//!       all other players waiting for subtitle, should only
-//!       be the oposite way
-/*  if (m_CurrentSubtitle.id >= 0)
-    m_VideoPlayerSubtitle->SendMessage(message->Acquire());
-*/
   message->Release();
 }
 
@@ -2928,7 +2908,7 @@ void CVideoPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
       {
-        if (((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_OWNER))
+        if (((CDVDMsgGeneralSynchronize*)pMsg)->Wait(100, SYNCSOURCE_PLAYER))
           CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::GENERAL_SYNCHRONIZE");
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_AVCHANGE))
@@ -3148,7 +3128,7 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   }
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
-  SynchronizeDemuxer(100);
+  SynchronizeDemuxer();
   if (seek < 0) seek = 0;
   m_callback.OnPlayBackSeek((int)seek, (int)(seek - time));
 }
@@ -3173,7 +3153,7 @@ bool CVideoPlayer::SeekScene(bool bPlus)
      * Seeking is flushed and inaccurate, just like Seek()
      */
     m_messenger.Put(new CDVDMsgPlayerSeek(iScenemarker, !bPlus, true, false, false));
-    SynchronizeDemuxer(100);
+    SynchronizeDemuxer();
     return true;
   }
   return false;
@@ -3414,7 +3394,7 @@ int CVideoPlayer::GetAudioStream()
 void CVideoPlayer::SetAudioStream(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
-  SynchronizeDemuxer(100);
+  SynchronizeDemuxer();
 }
 
 int CVideoPlayer::GetVideoStreamCount() const
@@ -3430,7 +3410,7 @@ int CVideoPlayer::GetVideoStream() const
 void CVideoPlayer::SetVideoStream(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetVideoStream(iStream));
-  SynchronizeDemuxer(100);
+  SynchronizeDemuxer();
 }
 
 TextCacheStruct_t* CVideoPlayer::GetTeletextCache()
@@ -3461,7 +3441,7 @@ void CVideoPlayer::SeekTime(int64_t iTime)
 {
   int seekOffset = (int)(iTime - GetTime());
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
-  SynchronizeDemuxer(100);
+  SynchronizeDemuxer();
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
 
@@ -3469,7 +3449,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 {
   int64_t abstime = GetTime() + iTime;
   m_messenger.Put(new CDVDMsgPlayerSeek((int)abstime, (iTime < 0) ? true : false, true, false));
-  SynchronizeDemuxer(100);
+  SynchronizeDemuxer();
   m_callback.OnPlayBackSeek((int)abstime, iTime);
   return true;
 }
@@ -3935,7 +3915,11 @@ void CVideoPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool syn
     m_VideoPlayerTeletext->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_VideoPlayerRadioRDS->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
 
-    SynchronizePlayers(SYNCSOURCE_ALL);
+    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(10*1000, SYNCSOURCE_AUDIO | SYNCSOURCE_AUDIO);
+    m_VideoPlayerAudio->SendMessage(msg->Acquire(), 1);
+    m_VideoPlayerVideo->SendMessage(msg->Acquire(), 1);
+    msg->Wait(m_bStop, 0);
+    msg->Release();
   }
   else
   {
@@ -3952,7 +3936,7 @@ void CVideoPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool syn
     || m_playSpeed == DVD_PLAYSPEED_PAUSE)
     {
       // make sure players are properly flushed, should put them in stalled state
-      CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
+      CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, SYNCSOURCE_AUDIO | SYNCSOURCE_AUDIO);
       m_VideoPlayerAudio->SendMessage(msg->Acquire(), 1);
       m_VideoPlayerVideo->SendMessage(msg->Acquire(), 1);
       msg->Wait(m_bStop, 0);
@@ -4605,7 +4589,7 @@ int CVideoPlayer::SeekChapter(int iChapter)
 
     // Seek to the chapter.
     m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
-    SynchronizeDemuxer(100);
+    SynchronizeDemuxer();
   }
 
   return 0;
