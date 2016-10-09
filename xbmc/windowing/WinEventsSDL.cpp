@@ -220,7 +220,7 @@ bool CWinEventsSDL::MessagePump()
   SDL_Event event;
   bool ret = false;
 
-  while (SDL_PollEvent(&event))
+  while (!ret && SDL_PollEvent(&event))
   {
     switch(event.type)
     {

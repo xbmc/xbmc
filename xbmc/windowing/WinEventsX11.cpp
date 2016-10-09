@@ -316,7 +316,7 @@ bool CWinEventsX11Imp::MessagePump()
   XEvent xevent;
   unsigned long serial = 0;
 
-  while (WinEvents && XPending(WinEvents->m_display))
+  while (!ret && XPending(WinEvents->m_display))
   {
     memset(&xevent, 0, sizeof (XEvent));
     XNextEvent(WinEvents->m_display, &xevent);
