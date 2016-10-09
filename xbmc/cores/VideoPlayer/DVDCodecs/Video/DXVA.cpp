@@ -790,8 +790,25 @@ static bool HasVP3WidthBug(AVCodecContext *avctx)
   return false;
 }
 
+static bool HasATIMP2Bug(AVCodecContext *avctx)
+{
+  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  if (AIdentifier.VendorId != PCIV_ATI)
+    return false;
+
+  // AMD/ATI card doesn't like some SD MPEG2 content
+  // here are params of these videos
+  return avctx->height <= 576
+      && avctx->colorspace == AVCOL_SPC_BT470BG
+      && avctx->color_primaries == AVCOL_PRI_BT470BG 
+      && avctx->color_trc == AVCOL_TRC_GAMMA28;
+}
+
 static bool CheckCompatibility(AVCodecContext *avctx)
 {
+  if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && HasATIMP2Bug(avctx))
+    return false;
+
   // The incompatibilities are all for H264
   if(avctx->codec_id != AV_CODEC_ID_H264)
     return true;
