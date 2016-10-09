@@ -37,7 +37,7 @@ if(NOT WIN32)
 
       set(_linklibs ${DVDREAD_LIBRARY})
       if(ENABLE_DVDCSS)
-        list(APPEND _linklibs ${DVDCSS_LIBARY})
+        list(APPEND _linklibs ${DVDCSS_LIBRARY})
       endif()
       core_link_library(${DVDNAV_LIBRARY} system/players/VideoPlayer/libdvdnav dvdnav archives "${_linklibs}")
       set(LIBDVD_LIBRARIES ${DVDNAV_LIBRARY})
