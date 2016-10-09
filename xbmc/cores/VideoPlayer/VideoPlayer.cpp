@@ -2496,6 +2496,20 @@ void CVideoPlayer::HandleMessages()
         continue;
       }
 
+      // skip seeks if player has not finished the last seek
+      if (m_CurrentVideo.id >= 0 &&
+          m_CurrentVideo.syncState != IDVDStreamPlayer::SYNC_INSYNC)
+      {
+        double now = m_clock.GetAbsoluteClock();
+        if (m_playSpeed == DVD_PLAYSPEED_NORMAL &&
+            DVD_TIME_TO_MSEC(now - m_State.lastSeek) < 2000 &&
+            !msg.GetAccurate())
+        {
+          pMsg->Release();
+          continue;
+        }
+      }
+
       if (!msg.GetTrickPlay())
       {
         g_infoManager.SetDisplayAfterSeek(100000);
@@ -2530,6 +2544,7 @@ void CVideoPlayer::HandleMessages()
           start = DVD_MSEC_TO_TIME(time) - m_State.time_offset;
 
         m_State.dts = start;
+        m_State.lastSeek = m_clock.GetAbsoluteClock();
 
         FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate(), msg.GetSync());
       }
