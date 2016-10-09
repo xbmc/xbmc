@@ -133,12 +133,6 @@ bool CPeripheralBusAddon::GetAddonWithButtonMap(const CPeripheral* device, Perip
   return addon.get() != nullptr;
 }
 
-unsigned int CPeripheralBusAddon::GetAddonCount(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_addons.size();
-}
-
 bool CPeripheralBusAddon::PerformDeviceScan(PeripheralScanResults &results)
 {
   PeripheralAddonVector addons;

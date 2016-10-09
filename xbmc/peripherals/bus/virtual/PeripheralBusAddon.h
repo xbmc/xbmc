@@ -58,11 +58,6 @@ namespace PERIPHERALS
     bool GetAddonWithButtonMap(const CPeripheral* device, PeripheralAddonPtr &addon) const;
 
     /*!
-     * \brief Get the number of peripheral add-on libraries
-     */
-    unsigned int GetAddonCount(void) const;
-
-    /*!
      * \brief Set the rumble state of a rumble motor
      *
      * \param strLocation The location of the peripheral with the motor
