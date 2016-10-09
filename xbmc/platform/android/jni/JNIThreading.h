@@ -32,6 +32,7 @@
  */
 
 #pragma once
+
 #include <jni.h>
 
 int xbmc_jni_on_load(JavaVM *vm, JNIEnv *env);

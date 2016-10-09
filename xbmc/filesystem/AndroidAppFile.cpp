@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #if defined(TARGET_ANDROID)
 
 #include "AndroidAppFile.h"

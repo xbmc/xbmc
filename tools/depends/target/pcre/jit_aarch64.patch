@@ -1,0 +1,11 @@
+--- sljit/sljitConfigInternal.h.orig	2016-09-25 12:41:56.067863204 +0200
++++ sljit/sljitConfigInternal.h	2016-09-25 12:42:22.155862977 +0200
+@@ -310,7 +310,7 @@
+ #define SLJIT_CACHE_FLUSH(from, to) \
+ 	sys_icache_invalidate((char*)(from), (char*)(to) - (char*)(from))
+ 
+-#elif defined __ANDROID__
++#elif (defined __ANDROID__ && !defined SLJIT_CONFIG_ARM_64)
+ 
+ /* Android lacks __clear_cache; instead, cacheflush should be used. */
+ 
