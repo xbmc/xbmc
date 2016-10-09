@@ -18,6 +18,7 @@
 			<font></font>
 			<texturenofocus></texturenofocus>
 			<texturefocus></texturefocus>
+			<onclick>Dialog.Close(all)</onclick>
 			<onclick>ActivateWindow(Home)</onclick>
 		</control>
 		<control type="image">

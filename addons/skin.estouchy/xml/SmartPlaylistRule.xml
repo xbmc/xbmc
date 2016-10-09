@@ -55,7 +55,7 @@
 			<texture colordiffuse="40000000">panel.png</texture>
 		</control>
 		<control type="group" id="9001">
-			<control type="spincontrolex" id="15">
+			<control type="button" id="15">
 				<description>Rule Field</description>
 				<posx>0</posx>
 				<posy>100</posy>
@@ -85,7 +85,7 @@
 				<height>70</height>
 				<texture border="2">separator.png</texture>
 			</control>
-			<control type="spincontrolex" id="16">
+			<control type="button" id="16">
 				<description>Rule operator</description>
 				<posx>500</posx>
 				<posy>100</posy>
