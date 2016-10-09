@@ -68,6 +68,15 @@ namespace XBMCAddon
     /// @param thumbnailImage       __Deprecated. Use setArt__
     /// @param path                 [opt] string
     ///
+    ///
+    ///-----------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// listitem = xbmcgui.ListItem('Casino Royale')
+    /// ...
+    /// ~~~~~~~~~~~~~
     class ListItem : public AddonClass
     {
     public:
@@ -110,7 +119,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # getLabel()
-      /// label = self.list.getSelectedItem().getLabel()
+      /// label = listitem.getLabel()
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -135,7 +144,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # getLabel2()
-      /// label = self.list.getSelectedItem().getLabel2()
+      /// label = listitem.getLabel2()
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -160,7 +169,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # setLabel(label)
-      /// self.list.getSelectedItem().setLabel('Casino Royale')
+      /// listitem.setLabel('Casino Royale')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -185,7 +194,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # setLabel2(label)
-      /// self.list.getSelectedItem().setLabel2('Casino Royale')
+      /// listitem.setLabel2('Casino Royale')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -246,7 +255,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # setArt(values)
-      /// self.list.getSelectedItem().setArt({ 'poster': 'poster.png', 'banner' : 'banner.png' })
+      /// listitem.setArt({ 'poster': 'poster.png', 'banner' : 'banner.png' })
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -279,7 +288,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # setUniqueIDs(values)
-      /// self.list.getSelectedItem().setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493' })
+      /// listitem.setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493' })
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -315,7 +324,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # setRating(type, rating, votes, defaultt))
-      /// self.list.getSelectedItem().setRating("imdb", 4.6, 8940, True)
+      /// listitem.setRating("imdb", 4.6, 8940, True)
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -351,7 +360,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// poster = self.list.getSelectedItem().getArt('poster')
+      /// poster = listitem.getArt('poster')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -383,7 +392,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// uniqueID = self.list.getSelectedItem().getUniqueID('imdb')
+      /// uniqueID = listitem.getUniqueID('imdb')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -415,7 +424,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// rating = self.list.getSelectedItem().getRating('imdb')
+      /// rating = listitem.getRating('imdb')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -447,7 +456,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// votes = self.list.getSelectedItem().getVotes('imdb')
+      /// votes = listitem.getVotes('imdb')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -473,7 +482,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # select(selected)
-      /// self.list.getSelectedItem().select(True)
+      /// listitem.select(True)
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -499,7 +508,7 @@ namespace XBMCAddon
       /// ~~~~~~~~~~~~~{.py}
       /// ...
       /// # isSelected()
-      /// is = self.list.getSelectedItem().isSelected()
+      /// selected = listitem.isSelected()
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -620,7 +629,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// self.list.getSelectedItem().setInfo('video', { 'genre': 'Comedy' })
+      /// listitem.setInfo('video', { 'genre': 'Comedy' })
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -667,7 +676,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// self.list.getSelectedItem().addStreamInfo('video', { 'codec': 'h264', 'width' : 1280 })
+      /// listitem.addStreamInfo('video', { 'codec': 'h264', 'width' : 1280 })
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -733,8 +742,8 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')
-      /// self.list.getSelectedItem().setProperty('StartOffset', '256.4')
+      /// listitem.setProperty('AspectRatio', '1.85 : 1')
+      /// listitem.setProperty('StartOffset', '256.4')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -762,7 +771,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// AspectRatio = self.list.getSelectedItem().getProperty('AspectRatio')
+      /// AspectRatio = listitem.getProperty('AspectRatio')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
@@ -788,7 +797,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// self.list.getSelectedItem().setPath(path='/path/to/some/file.ext')
+      /// listitem.setPath(path='/path/to/some/file.ext')
       /// ...
       /// ~~~~~~~~~~~~~
       ///
