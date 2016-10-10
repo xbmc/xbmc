@@ -762,7 +762,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < (int)m_items.size())
       {
-        if (m_clickActions.HasAnyActions())
+        if (m_clickActions.HasActionsMeetingCondition())
           m_clickActions.ExecuteActions(0, GetParentID(), m_items[selected]);
         else
           m_listProvider->OnClick(m_items[selected]);
