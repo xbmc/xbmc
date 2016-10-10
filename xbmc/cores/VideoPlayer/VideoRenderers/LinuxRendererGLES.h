@@ -170,7 +170,7 @@ protected:
   bool CreateYV12Texture(int index);
   virtual bool SkipUploadYV12(int index) { return false; }
 
-  void UploadNV12Texture(int index);
+  bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 
@@ -183,7 +183,7 @@ protected:
   // renderers
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
-  
+
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; }
   virtual bool RenderHook(int idx) { return false; }
