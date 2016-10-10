@@ -1956,7 +1956,13 @@ void CVideoPlayer::HandlePlaySpeed()
           {
             CLog::Log(LOGDEBUG,"CVideoPlayer::HandlePlaySpeed - audio stream stalled, triggering re-sync");
             FlushBuffers(false);
-            m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), false, true, true, true, true));
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = (int)GetTime();
+            mode.backward = false;
+            mode.flush = true;
+            mode.accurate = true;
+            mode.sync = true;
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
           }
         }
       }
@@ -2141,7 +2147,15 @@ void CVideoPlayer::HandlePlaySpeed()
             m_SpeedState.lastseekpts = (int)DVD_TIME_TO_MSEC(m_clock.GetClock());
             int direction = (m_playSpeed > 0) ? 1 : -1;
             int iTime = DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 1000000.0 * direction);
-            m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true, false));
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = iTime;
+            mode.backward = (GetPlaySpeed() < 0);
+            mode.flush = true;
+            mode.accurate = false;
+            mode.restore = false;
+            mode.trickplay = true;
+            mode.sync = false;
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
           }
         }
       }
@@ -2354,7 +2368,15 @@ void CVideoPlayer::CheckAutoSceneSkip()
     int seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
 
     // Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
-    m_messenger.Put(new CDVDMsgPlayerSeek(seek, true, false, false, true, false, true));
+    CDVDMsgPlayerSeek::CMode mode;
+    mode.time = seek;
+    mode.backward = true;
+    mode.flush = false;
+    mode.accurate = false;
+    mode.restore = true;
+    mode.trickplay = false;
+    mode.sync = true;
+    m_messenger.Put(new CDVDMsgPlayerSeek(mode));
 
     // Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
     // if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -2374,7 +2396,15 @@ void CVideoPlayer::CheckAutoSceneSkip()
                 CEdl::MillisecondsToTimeString(clock).c_str());
 
       // Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
-      m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, false, true, false, true));
+      CDVDMsgPlayerSeek::CMode mode;
+      mode.time = cut.end + 1;
+      mode.backward = true;
+      mode.flush = false;
+      mode.accurate = false;
+      mode.restore = true;
+      mode.trickplay = false;
+      mode.sync = true;
+      m_messenger.Put(new CDVDMsgPlayerSeek(mode));
     }
 
     // Each commercial break is only skipped once so poorly detected commercial breaks can be
@@ -2620,7 +2650,14 @@ void CVideoPlayer::HandleMessages()
           {
             m_dvd.iSelectedAudioStream = -1;
             CloseStream(m_CurrentAudio, false);
-            m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = (int)GetTime();
+            mode.backward = true;
+            mode.flush = true;
+            mode.accurate = true;
+            mode.trickplay = true;
+            mode.sync = true;
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
           }
         }
         else
@@ -2629,7 +2666,14 @@ void CVideoPlayer::HandleMessages()
           OpenStream(m_CurrentAudio, st.demuxerId, st.id, st.source);
           AdaptForcedSubtitles();
 
-          m_messenger.Put(new CDVDMsgPlayerSeek((int) GetTime(), true, true, true, true, true));
+          CDVDMsgPlayerSeek::CMode mode;
+          mode.time = (int)GetTime();
+          mode.backward = true;
+          mode.flush = true;
+          mode.accurate = true;
+          mode.trickplay = true;
+          mode.sync = true;
+          m_messenger.Put(new CDVDMsgPlayerSeek(mode));
         }
       }
     }
@@ -2646,14 +2690,29 @@ void CVideoPlayer::HandleMessages()
           if (pStream->SetAngle(st.id))
           {
             m_dvd.iSelectedVideoStream = st.id;
-            m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
+
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = (int)GetTime();
+            mode.backward = true;
+            mode.flush = true;
+            mode.accurate = true;
+            mode.trickplay = true;
+            mode.sync = true;
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
           }
         }
         else
         {
           CloseStream(m_CurrentVideo, false);
           OpenStream(m_CurrentVideo, st.demuxerId, st.id, st.source);
-          m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime(), true, true, true, true, true));
+          CDVDMsgPlayerSeek::CMode mode;
+          mode.time = (int)GetTime();
+          mode.backward = true;
+          mode.flush = true;
+          mode.accurate = true;
+          mode.trickplay = true;
+          mode.sync = true;
+          m_messenger.Put(new CDVDMsgPlayerSeek(mode));
         }
       }
     }
@@ -2754,7 +2813,15 @@ void CVideoPlayer::HandleMessages()
         int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
         if (m_State.time != DVD_NOPTS_VALUE)
           iTime = m_State.time;
-        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, m_playSpeed < 0, true, false, false, true));
+
+        CDVDMsgPlayerSeek::CMode mode;
+        mode.time = iTime;
+        mode.backward = m_playSpeed < 0;
+        mode.flush = true;
+        mode.accurate = false;
+        mode.trickplay = true;
+        mode.sync = true;
+        m_messenger.Put(new CDVDMsgPlayerSeek(mode));
       }
 
       // !!! omx alterative code path !!!
@@ -2766,7 +2833,15 @@ void CVideoPlayer::HandleMessages()
         if ( (speed != DVD_PLAYSPEED_PAUSE && speed != DVD_PLAYSPEED_NORMAL) ||
             (m_playSpeed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_NORMAL) )
         {
-          m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), (speed < 0), true, true, false, true));
+          CDVDMsgPlayerSeek::CMode mode;
+          mode.time = (int)GetTime();
+          mode.backward = (speed < 0);
+          mode.flush = true;
+          mode.accurate = true;
+          mode.restore = false;
+          mode.trickplay = true;
+          mode.sync = true;
+          m_messenger.Put(new CDVDMsgPlayerSeek(mode));
         }
         else
         {
@@ -3147,7 +3222,16 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
     return;
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seekTarget, !bPlus, true, false, restore));
+  CDVDMsgPlayerSeek::CMode mode;
+  mode.time = (int)seekTarget;
+  mode.backward = !bPlus;
+  mode.flush = true;
+  mode.accurate = false;
+  mode.restore = restore;
+  mode.trickplay = false;
+  mode.sync = true;
+
+  m_messenger.Put(new CDVDMsgPlayerSeek(mode));
   SynchronizeDemuxer();
   if (seekTarget < 0)
     seekTarget = 0;
@@ -3173,7 +3257,16 @@ bool CVideoPlayer::SeekScene(bool bPlus)
     /*
      * Seeking is flushed and inaccurate, just like Seek()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(iScenemarker, !bPlus, true, false, false));
+    CDVDMsgPlayerSeek::CMode mode;
+    mode.time = iScenemarker;
+    mode.backward = !bPlus;
+    mode.flush = true;
+    mode.accurate = false;
+    mode.restore = false;
+    mode.trickplay = false;
+    mode.sync = true;
+
+    m_messenger.Put(new CDVDMsgPlayerSeek(mode));
     SynchronizeDemuxer();
     return true;
   }
@@ -3461,7 +3554,16 @@ std::string CVideoPlayer::GetRadioText(unsigned int line)
 void CVideoPlayer::SeekTime(int64_t iTime)
 {
   int seekOffset = (int)(iTime - GetTime());
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
+
+  CDVDMsgPlayerSeek::CMode mode;
+  mode.time = (int)iTime;
+  mode.backward = true;
+  mode.flush = true;
+  mode.accurate = true;
+  mode.trickplay = false;
+  mode.sync = true;
+
+  m_messenger.Put(new CDVDMsgPlayerSeek(mode));
   SynchronizeDemuxer();
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
@@ -3469,7 +3571,16 @@ void CVideoPlayer::SeekTime(int64_t iTime)
 bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 {
   int64_t abstime = GetTime() + iTime;
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)abstime, (iTime < 0) ? true : false, true, false));
+
+  CDVDMsgPlayerSeek::CMode mode;
+  mode.time = (int)abstime;
+  mode.backward = (iTime < 0) ? true : false;
+  mode.flush = true;
+  mode.accurate = false;
+  mode.trickplay = false;
+  mode.sync = true;
+
+  m_messenger.Put(new CDVDMsgPlayerSeek(mode));
   SynchronizeDemuxer();
   m_callback.OnPlayBackSeek((int)abstime, iTime);
   return true;
@@ -4429,7 +4540,16 @@ bool CVideoPlayer::OnAction(const CAction &action)
           CEdl::Cut cut;
           if (m_Edl.GetNearestCut(true, clock, &cut)) 
           {
-            m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, true, false, true, false, true));
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = cut.end + 1;
+            mode.backward = false;
+            mode.flush = true;
+            mode.accurate = false;
+            mode.restore = true;
+            mode.trickplay = false;
+            mode.sync = true;
+
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
             return true;
           }
         }
@@ -4460,13 +4580,31 @@ bool CVideoPlayer::OnAction(const CAction &action)
           CEdl::Cut cut;
           if (m_Edl.GetNearestCut(false, clock, &cut)) 
           {
-            m_messenger.Put(new CDVDMsgPlayerSeek(cut.start - 1, true, true, false, true, false, true));
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = cut.start - 1;
+            mode.backward = true;
+            mode.flush = true;
+            mode.accurate = false;
+            mode.restore = true;
+            mode.trickplay = false;
+            mode.sync = true;
+
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
             return true;
           }
           else
           {
             // Go back to beginning
-            m_messenger.Put(new CDVDMsgPlayerSeek(0, true, true, false, true, false, true));
+            CDVDMsgPlayerSeek::CMode mode;
+            mode.time = 0;
+            mode.backward = true;
+            mode.flush = true;
+            mode.accurate = false;
+            mode.restore = true;
+            mode.trickplay = false;
+            mode.sync = true;
+
+            m_messenger.Put(new CDVDMsgPlayerSeek(mode));
             return true;
           }
         }
