@@ -1364,7 +1364,15 @@ void CVideoPlayer::Process()
       CloseStream(m_CurrentVideo, false);
       OpenStream(m_CurrentVideo, m_CurrentVideo.demuxerId, m_CurrentVideo.id, m_CurrentVideo.source);
       if (m_State.canseek)
-        m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
+      {
+        CDVDMsgPlayerSeek::CMode mode;
+        mode.time = (int)GetTime();
+        mode.backward = true;
+        mode.flush = true;
+        mode.accurate = true;
+        mode.sync = true;
+        m_messenger.Put(new CDVDMsgPlayerSeek(mode));
+      }
     }
 #endif
 
@@ -2549,7 +2557,11 @@ void CVideoPlayer::HandleMessages()
 
       double start = DVD_NOPTS_VALUE;
 
-      int time = msg.GetRestore() ? m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
+      int time = msg.GetTime();
+      if (msg.GetRelative())
+        time = GetTime() + time;
+
+      time = msg.GetRestore() ? m_Edl.RestoreCutTime(time) : time;
 
       // if input stream doesn't support ISeekTime, convert back to pts
       //! @todo
@@ -3573,7 +3585,8 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
   int64_t abstime = GetTime() + iTime;
 
   CDVDMsgPlayerSeek::CMode mode;
-  mode.time = (int)abstime;
+  mode.time = (int)iTime;
+  mode.relative = true;
   mode.backward = (iTime < 0) ? true : false;
   mode.flush = true;
   mode.accurate = false;
@@ -3581,7 +3594,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
   mode.sync = true;
 
   m_messenger.Put(new CDVDMsgPlayerSeek(mode));
-  SynchronizeDemuxer();
+
   m_callback.OnPlayBackSeek((int)abstime, iTime);
   return true;
 }

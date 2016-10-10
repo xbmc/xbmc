@@ -219,6 +219,7 @@ public:
   struct CMode
   {
     int time = 0;
+    bool relative = false;
     bool backward = false;
     bool flush = true;
     bool accurate = true;
@@ -231,6 +232,7 @@ public:
     m_mode(mode)
   {}
   int GetTime() { return m_mode.time; }
+  bool GetRelative() { return m_mode.relative; }
   bool GetBackward() { return m_mode.backward; }
   bool GetFlush() { return m_mode.flush; }
   bool GetAccurate() { return m_mode.accurate; }
