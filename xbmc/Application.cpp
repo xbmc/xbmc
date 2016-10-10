@@ -469,11 +469,6 @@ bool CApplication::Create()
 #ifndef TARGET_POSIX
   //floating point precision to 24 bits (faster performance)
   _controlfp(_PC_24, _MCW_PC);
-
-  /* install win32 exception translator, win32 exceptions
-   * can now be caught using c++ try catch */
-  win32_exception::install_handler();
-
 #endif
 
   //! @todo - move to CPlatformXXX

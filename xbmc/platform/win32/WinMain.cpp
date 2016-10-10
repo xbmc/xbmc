@@ -59,8 +59,11 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
     sprintf_s(ver, "%d.%d Git:%s", CCompileInfo::GetMajor(),
     CCompileInfo::GetMinor(), CCompileInfo::GetSCMID());
 
-  win32_exception::set_version(std::string(ver));
-  SetUnhandledExceptionFilter(CreateMiniDump);
+  if (win32_exception::ShouldHook())
+  {
+    win32_exception::set_version(std::string(ver));
+    SetUnhandledExceptionFilter(CreateMiniDump);
+  }
 
   // check if Kodi is already running
   std::string appName = CCompileInfo::GetAppName();

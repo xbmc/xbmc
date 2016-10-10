@@ -19,15 +19,13 @@
  */
 
 #include "Win32Exception.h"
-#include <eh.h>
 #include <dbghelp.h>
+#include <VersionHelpers.h>
 #include "Util.h"
 #include "WIN32Util.h"
 #include "utils/StringUtils.h"
-#include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
-
-#define LOG if(logger) logger->Log
+#include "platform/win32/CharsetConverter.h"
 
 typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
                                         CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
@@ -65,52 +63,10 @@ typedef DWORD (__stdcall *tSGO)( VOID );
 // SymSetOptions()
 typedef DWORD (__stdcall *tSSO)( IN DWORD SymOptions );
 
+// GetCurrentPackageFullName
+typedef LONG (__stdcall *GCPFN)(UINT32*, PWSTR);
+
 std::string win32_exception::mVersion;
-
-void win32_exception::install_handler()
-{
-  _set_se_translator(win32_exception::translate);
-}
-
-void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info)
-{
-  switch (code)
-  {
-    case EXCEPTION_ACCESS_VIOLATION:
-      throw access_violation(info);
-      break;
-    default:
-      throw win32_exception(info);
-  }
-}
-
-win32_exception::win32_exception(EXCEPTION_POINTERS* info, const char* classname) :
-  XbmcCommons::UncheckedException(classname ? classname : "win32_exception"),
-  mWhat("Win32 exception"), mWhere(info->ExceptionRecord->ExceptionAddress), mCode(info->ExceptionRecord->ExceptionCode), mExceptionPointers(info)
-{
-  // Windows guarantees that *(info->ExceptionRecord) is valid
-  switch (info->ExceptionRecord->ExceptionCode)
-  {
-  case EXCEPTION_ACCESS_VIOLATION:
-    mWhat = "Access violation";
-    break;
-  case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-  case EXCEPTION_INT_DIVIDE_BY_ZERO:
-    mWhat = "Division by zero";
-    break;
-  }
-}
-
-void win32_exception::LogThrowMessage(const char *prefix)  const
-{
-  if( prefix )
-    LOG(LOGERROR, "Unhandled exception in %s : %s (code:0x%08x) at 0x%08x", prefix, (unsigned int) what(), code(), where());
-  else
-    LOG(LOGERROR, "Unhandled exception in %s (code:0x%08x) at 0x%08x", what(), code(), where());
-
-  write_stacktrace();
-  write_minidump();
-}
 
 bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
 {
@@ -128,12 +84,11 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
 
   dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), CUtil::MakeLegalFileName(dumpFileName)));
 
-  g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
+  dumpFileNameW = KODI::PLATFORM::WINDOWS::ToW(dumpFileName);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
 
   if (hDumpFile == INVALID_HANDLE_VALUE)
   {
-    LOG(LOGERROR, "CreateFile '%s' failed with error id %d", dumpFileName.c_str(), GetLastError());
     goto cleanup;
   }
 
@@ -141,14 +96,12 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
   if (!hDbgHelpDll)
   {
-    LOG(LOGERROR, "LoadLibrary 'DBGHELP.DLL' failed with error id %d", GetLastError());
     goto cleanup;
   }
 
   MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
   if (!pDump)
   {
-    LOG(LOGERROR, "Failed to locate MiniDumpWriteDump with error id %d", GetLastError());
     goto cleanup;
   }
 
@@ -164,7 +117,6 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   BOOL bMiniDumpSuccessful = pDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &mdei, 0, NULL);
   if( !bMiniDumpSuccessful )
   {
-    LOG(LOGERROR, "MiniDumpWriteDump failed with error id %d", GetLastError());
     goto cleanup;
   }
 
@@ -205,7 +157,6 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
   if (!hDbgHelpDll)
   {
-    LOG(LOGERROR, "LoadLibrary 'DBGHELP.DLL' failed with error id %d", GetLastError());
     goto cleanup;
   }
 
@@ -231,12 +182,11 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
 
   dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(), CUtil::MakeLegalFileName(dumpFileName)));
 
-  g_charsetConverter.utf8ToW(dumpFileName, dumpFileNameW, false);
+  dumpFileNameW = KODI::PLATFORM::WINDOWS::ToW(dumpFileName);
   hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
 
   if (hDumpFile == INVALID_HANDLE_VALUE)
   {
-    LOG(LOGERROR, "CreateFile '%s' failed with error id %d", dumpFileName.c_str(), GetLastError());
     goto cleanup;
   }
 
@@ -314,45 +264,26 @@ cleanup:
   return returncode;
 }
 
-access_violation::access_violation(EXCEPTION_POINTERS* info) :
-  win32_exception(info,"access_violation"), mAccessType(Invalid), mBadAddress(0)
+bool win32_exception::ShouldHook()
 {
-  switch(info->ExceptionRecord->ExceptionInformation[0])
+  if (!IsWindows8OrGreater())
+    return true;
+
+  bool result = true;
+
+  auto module = ::LoadLibrary("kernel32.dll");
+  if (module)
   {
-  case 0:
-    mAccessType = Read;
-    break;
-  case 1:
-    mAccessType = Write;
-    break;
-  case 8:
-    mAccessType = DEP;
-    break;
+    auto func = reinterpret_cast<GCPFN>(::GetProcAddress(module, "GetCurrentPackageFullName"));
+    if (func)
+    {
+      UINT32 length = 0;
+      auto r = func(&length, nullptr);
+      result = r == APPMODEL_ERROR_NO_PACKAGE;
+    }
+
+    ::FreeLibrary(module);
   }
-  mBadAddress = reinterpret_cast<win32_exception ::Address>(info->ExceptionRecord->ExceptionInformation[1]);
-}
-
-void access_violation::LogThrowMessage(const char *prefix) const
-{
-  if( prefix )
-    if( mAccessType == Write)
-      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: Writing location 0x%08x", prefix, what(), where(), address());
-    else if( mAccessType == Read)
-      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: Reading location 0x%08x", prefix, what(), where(), address());
-    else if( mAccessType == DEP)
-      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: DEP violation, location 0x%08x", prefix, what(), where(), address());
-    else
-      LOG(LOGERROR, "Unhandled exception in %s : %s at 0x%08x: unknown access type, location 0x%08x", prefix, what(), where(), address());
-  else
-    if( mAccessType == Write)
-      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: Writing location 0x%08x", what(), where(), address());
-    else if( mAccessType == Read)
-      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: Reading location 0x%08x", what(), where(), address());
-    else if( mAccessType == DEP)
-      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: DEP violation, location 0x%08x", what(), where(), address());
-    else
-      LOG(LOGERROR, "Unhandled exception in %s at 0x%08x: unknown access type, location 0x%08x", what(), where(), address());
-
-  write_stacktrace();
-  write_minidump();
+  
+  return result;
 }
