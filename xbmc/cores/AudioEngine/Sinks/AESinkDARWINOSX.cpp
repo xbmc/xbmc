@@ -137,6 +137,7 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
 CAESinkDARWINOSX::CAESinkDARWINOSX()
 : m_latentFrames(0),
   m_outputBufferIndex(0),
+  m_outputBitstream(false),
   m_planes(1),
   m_frameSizePerPlane(0),
   m_framesPerSecond(0),
@@ -261,6 +262,15 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   format.m_sampleRate    = outputFormat.mSampleRate;
   
   m_outputBufferIndex = requestedStreamIndex;
+  
+  // if we are in passthrough but didn't have a matching
+  // virtual format - enable bitstream which deals with
+  // backconverting from float to 16bit
+  if (passthrough && numOutputChannelsVirt == 0)
+  {
+    m_outputBitstream = true;
+    CLog::Log(LOGDEBUG, "%s: Bitstream passthrough with float -> int16 conversion enabled", __FUNCTION__);
+  }
 
   std::string formatString;
   CLog::Log(LOGDEBUG, "%s: Selected stream[%u] - id: 0x%04X, Physical Format: %s %s", __FUNCTION__, (unsigned int)m_outputBufferIndex, (unsigned int)outputStream, StreamDescriptionToString(outputFormat, formatString), passthrough ? "passthrough" : "");
@@ -352,6 +362,7 @@ void CAESinkDARWINOSX::Deinitialize()
     m_buffer = NULL;
   }
   m_outputBufferIndex = 0;
+  m_outputBitstream = false;
   m_planes = 1;
 
   m_started = false;
@@ -472,18 +483,45 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
     //planar always starts at outputbuffer/streamidx 0
     unsigned int startIdx = sink->m_buffer->NumPlanes() == 1 ? sink->m_outputBufferIndex : 0;
     unsigned int endIdx = startIdx + sink->m_buffer->NumPlanes();
-
-    /* buffers appear to come from CA already zero'd, so just copy what is wanted */
-    unsigned int wanted = outOutputData->mBuffers[0].mDataByteSize;
-    unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
-    for (unsigned int i = startIdx; i < endIdx; i++)
+    
+    /* NOTE: We assume that the buffers are all the same size... */
+    if (sink->m_outputBitstream)
     {
-      if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
-        sink->m_buffer->Read((unsigned char *)outOutputData->mBuffers[i].mData, bytes, i);
-      else
-        sink->m_buffer->Read(NULL, bytes, i);
+      /* HACK for bitstreaming AC3/DTS via PCM.
+       We reverse the float->S16LE conversion done in the stream or device */
+      static const float mul = 1.0f / (INT16_MAX + 1);
+
+      size_t wanted = outOutputData->mBuffers[0].mDataByteSize / sizeof(float) * sizeof(int16_t);
+      size_t bytes = std::min((size_t)sink->m_buffer->GetReadSize(), wanted);
+      for (unsigned int j = 0; j < bytes / sizeof(int16_t); j++)
+      {
+        for (unsigned int i = startIdx; i < endIdx; i++)
+        {
+          int16_t src;
+          sink->m_buffer->Read((unsigned char *)&src, sizeof(int16_t), i);
+          if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
+          {
+            float *dest = (float *)outOutputData->mBuffers[i].mData;
+            dest[j] = src * mul;
+          }
+        }
+      }
+      LogLevel(bytes, wanted);
     }
-    LogLevel(bytes, wanted);
+    else
+    {
+      /* buffers appear to come from CA already zero'd, so just copy what is wanted */
+      unsigned int wanted = outOutputData->mBuffers[0].mDataByteSize;
+      unsigned int bytes = std::min(sink->m_buffer->GetReadSize(), wanted);
+      for (unsigned int i = startIdx; i < endIdx; i++)
+      {
+        if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
+          sink->m_buffer->Read((unsigned char *)outOutputData->mBuffers[i].mData, bytes, i);
+        else
+          sink->m_buffer->Read(NULL, bytes, i);
+      }
+      LogLevel(bytes, wanted);
+    }
 
     // tell the sink we're good for more data
     condVar.notifyAll();
