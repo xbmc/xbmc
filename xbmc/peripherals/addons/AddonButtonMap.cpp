@@ -49,23 +49,29 @@ CAddonButtonMap::~CAddonButtonMap(void)
 
 bool CAddonButtonMap::Load(void)
 {
-  m_features.clear();
-  m_driverMap.clear();
+  FeatureMap features;
+  DriverMap driverMap;
 
   bool bSuccess = false;
   if (auto addon = m_addon.lock())
-    bSuccess = addon->GetFeatures(m_device, m_strControllerId, m_features);
+    bSuccess = addon->GetFeatures(m_device, m_strControllerId, features);
 
   // GetFeatures() was changed to always return false if no features were
   // retrieved. Check here, just in case its contract is changed or violated in
   // the future.
-  if (bSuccess && m_features.empty())
+  if (bSuccess && features.empty())
     bSuccess = false;
 
   if (bSuccess)
-    m_driverMap = CreateLookupTable(m_features);
+    driverMap = CreateLookupTable(features);
   else
     CLog::Log(LOGDEBUG, "Failed to load button map for \"%s\"", m_device->DeviceName().c_str());
+
+  {
+    CSingleLock lock(m_mutex);
+    m_features = std::move(features);
+    m_driverMap = std::move(driverMap);
+  }
 
   return true;
 }
@@ -78,6 +84,8 @@ void CAddonButtonMap::Reset(void)
 
 bool CAddonButtonMap::GetFeature(const CDriverPrimitive& primitive, FeatureName& feature)
 {
+  CSingleLock lock(m_mutex);
+
   DriverMap::const_iterator it = m_driverMap.find(primitive);
   if (it != m_driverMap.end())
   {
@@ -92,6 +100,8 @@ FEATURE_TYPE CAddonButtonMap::GetFeatureType(const FeatureName& feature)
 {
   FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN;
 
+  CSingleLock lock(m_mutex);
+
   FeatureMap::const_iterator it = m_features.find(feature);
   if (it != m_features.end())
     type = CPeripheralAddonTranslator::TranslateFeatureType(it->second.Type());
@@ -102,6 +112,8 @@ FEATURE_TYPE CAddonButtonMap::GetFeatureType(const FeatureName& feature)
 bool CAddonButtonMap::GetScalar(const FeatureName& feature, CDriverPrimitive& primitive)
 {
   bool retVal(false);
+
+  CSingleLock lock(m_mutex);
 
   FeatureMap::const_iterator it = m_features.find(feature);
   if (it != m_features.end())
@@ -136,6 +148,8 @@ bool CAddonButtonMap::GetAnalogStick(const FeatureName& feature,
 {
   bool retVal(false);
 
+  CSingleLock lock(m_mutex);
+
   FeatureMap::const_iterator it = m_features.find(feature);
   if (it != m_features.end())
   {
@@ -162,9 +176,12 @@ void CAddonButtonMap::AddAnalogStick(const FeatureName& feature,
 
   ADDON::JoystickFeature analogStick(feature, JOYSTICK_FEATURE_TYPE_ANALOG_STICK);
 
-  auto it = m_features.find(feature);
-  if (it != m_features.end())
-    analogStick = it->second;
+  {
+    CSingleLock lock(m_mutex);
+    auto it = m_features.find(feature);
+    if (it != m_features.end())
+      analogStick = it->second;
+  }
 
   const bool bModified = (primitive != CPeripheralAddonTranslator::TranslatePrimitive(analogStick.Primitive(primitiveIndex)));
   if (bModified)
@@ -183,6 +200,8 @@ bool CAddonButtonMap::GetAccelerometer(const FeatureName& feature,
                                                CDriverPrimitive& positiveZ)
 {
   bool retVal(false);
+
+  CSingleLock lock(m_mutex);
 
   FeatureMap::const_iterator it = m_features.find(feature);
   if (it != m_features.end())
@@ -213,8 +232,6 @@ void CAddonButtonMap::AddAccelerometer(const FeatureName& feature,
   accelerometer.SetPrimitive(JOYSTICK_ACCELEROMETER_POSITIVE_X, CPeripheralAddonTranslator::TranslatePrimitive(positiveX));
   accelerometer.SetPrimitive(JOYSTICK_ACCELEROMETER_POSITIVE_Y, CPeripheralAddonTranslator::TranslatePrimitive(positiveY));
   accelerometer.SetPrimitive(JOYSTICK_ACCELEROMETER_POSITIVE_Z, CPeripheralAddonTranslator::TranslatePrimitive(positiveZ));
-
-  m_features[feature] = accelerometer;
 
   if (auto addon = m_addon.lock())
     addon->MapFeature(m_device, m_strControllerId, accelerometer);
