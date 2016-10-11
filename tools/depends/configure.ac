@@ -59,7 +59,7 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [spcify sdk platform version (optional for android). default is android-17])],
+  [spcify sdk platform version (optional for android). default is android-21])],
   [use_sdk=$withval])
 
 AC_ARG_ENABLE([gplv3],
@@ -130,7 +130,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    use_sdk="${use_sdk:-android-17}"
+    use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
@@ -143,11 +143,28 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;
+  aarch64*-*linux-android*)
+    if test "x$use_cpu" = "xauto"; then
+      use_cpu="arm64-v8a"
+    fi
+    use_sdk="${use_sdk:-android-21}"
+    deps_dir="$use_host-$use_sdk"
+    platform_cflags="-DANDROID -Os -fexceptions"
+    if test "x$use_cpu" = "xarm64-v8a"; then
+      platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
+    fi
+    platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
+    platform_cxxflags="$platform_cflags -frtti"
+    platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
+    platform_os="android"
+    #android builds are always cross
+    cross_compiling="yes"
+  ;;
   i*86*-linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
-    use_sdk="${use_sdk:-android-17}"
+    use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
     platform_cflags="-DANDROID -Os -fexceptions"
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
@@ -158,6 +175,18 @@ case $host in
     cross_compiling="yes"
   ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+    if test "$use_platform" = "auto"; then
+      if test "x$use_cpu" = "xauto"; then
+        use_cpu=$host_cpu
+      fi
+      use_toolchain="${use_toolchain:-/usr}"
+      platform_cflags="-Os -fPIC -DPIC"
+      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+      platform_cxxflags="$platform_cflags"
+      platform_os="linux"
+    fi
+  ;;
+  aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
     if test "$use_platform" = "auto"; then
       if test "x$use_cpu" = "xauto"; then
         use_cpu=$host_cpu

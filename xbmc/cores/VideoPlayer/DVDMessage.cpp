@@ -31,22 +31,23 @@ class CDVDMsgGeneralSynchronizePriv
 {
 public:
   CDVDMsgGeneralSynchronizePriv(unsigned int timeout, unsigned int sources)
-    : sources(sources ? sources : SYNCSOURCE_ALL)
+    : sources(sources)
     , reached(0)
     , timeout(timeout)
   {}
-  unsigned int                   sources;
-  unsigned int                   reached;
-  CCriticalSection               section;
+  unsigned int sources;
+  unsigned int reached;
+  CCriticalSection section;
   XbmcThreads::ConditionVariable condition;
-  XbmcThreads::EndTime           timeout;
+  XbmcThreads::EndTime timeout;
 };
 
 /**
  * CDVDMsgGeneralSynchronize --- GENERAL_SYNCRONIZR
  */
-CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources) : CDVDMsg(GENERAL_SYNCHRONIZE)
-  , m_p(new CDVDMsgGeneralSynchronizePriv(timeout, sources))
+CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources) :
+  CDVDMsg(GENERAL_SYNCHRONIZE),
+  m_p(new CDVDMsgGeneralSynchronizePriv(timeout, sources))
 {
 }
 
@@ -57,28 +58,26 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
 
 bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int source)
 {
-  if (source == 0)
-    source = SYNCSOURCE_OWNER;
-
-  /* if we are not requested to wait on this object just return, reference count will be decremented */
-  if (!(m_p->sources & source))
-    return true;
-
   CSingleLock lock(m_p->section);
 
   XbmcThreads::EndTime timeout(milliseconds);
 
-  m_p->reached |= source & m_p->sources;
+  m_p->reached |= (source & m_p->sources);
+  if ((m_p->sources & SYNCSOURCE_ANY) && source)
+    m_p->reached |= SYNCSOURCE_ANY;
 
-  while ((long)MathUtils::bitcount(m_p->reached) < GetNrOfReferences())
+  m_p->condition.notifyAll();
+
+  while (m_p->reached != m_p->sources)
   {
     milliseconds = std::min(m_p->timeout.MillisLeft(), timeout.MillisLeft());
-    if(m_p->condition.wait(lock, milliseconds))
+    if (m_p->condition.wait(lock, milliseconds))
       continue;
+
     if (m_p->timeout.IsTimePast())
     {
       CLog::Log(LOGDEBUG, "CDVDMsgGeneralSynchronize - global timeout");
-      return true;  /* global timeout, we are done */
+      return true;  // global timeout, we are done
     }
     if (timeout.IsTimePast())
     {

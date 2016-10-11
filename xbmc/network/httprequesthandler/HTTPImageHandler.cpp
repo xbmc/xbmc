@@ -37,7 +37,15 @@ CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
     XFILE::CImageFile imageFile;
     const CURL pathToUrl(file);
     if (imageFile.Exists(pathToUrl))
+    {
       responseStatus = MHD_HTTP_OK;
+      struct __stat64 statBuffer;
+      if (imageFile.Stat(pathToUrl, &statBuffer) == 0)
+      {
+        SetLastModifiedDate(&statBuffer);
+        SetCanBeCached(true);
+      }
+    }
     else
       responseStatus = MHD_HTTP_NOT_FOUND;
   }

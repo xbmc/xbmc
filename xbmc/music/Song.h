@@ -163,6 +163,8 @@ public:
   int iStartOffset;
   int iEndOffset;
   bool bCompilation;
+  std::string strRecordLabel; // Record label from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
+  std::string strAlbumType; // (Musicbrainz) album release type from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
 
   ReplayGain replayGain;
 private:

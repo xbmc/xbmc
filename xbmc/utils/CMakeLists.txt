@@ -178,7 +178,7 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows)
                       GLUtils.h)
 endif()
 
-if(AML_FOUND)
+if(CORE_SYSTEM_NAME STREQUAL android OR AML_FOUND)
   list(APPEND SOURCES AMLUtils.cpp
                       ScreenshotAML.cpp)
   list(APPEND HEADERS AMLUtils.h

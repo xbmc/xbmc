@@ -8,7 +8,7 @@
 
 if(NOT WIN32)
   string(REPLACE ";" " " defines "${CMAKE_C_FLAGS} ${SYSTEM_DEFINES} -I${EXPAT_INCLUDE_DIR}")
-  get_filename_component(expat_dir ${EXPAT_LIBRARY} PATH)
+  get_filename_component(expat_dir ${EXPAT_LIBRARY} DIRECTORY)
   set(ldflags "-L${expat_dir}")
   ExternalProject_Add(libcpluff SOURCE_DIR ${CORE_SOURCE_DIR}/lib/cpluff
                       BUILD_IN_SOURCE 1

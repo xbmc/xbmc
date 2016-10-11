@@ -18,8 +18,11 @@
  *
  */
 
+#include <chrono>
+
 #include "BaseEvent.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, EventLevel level /* = EventLevel::Information */)
   : m_level(level),
@@ -29,6 +32,7 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_description(description),
     m_details(),
     m_executionLabel(),
+    m_timestamp(GetInternalTimestamp()),
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
 
@@ -40,6 +44,7 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_description(description),
     m_details(),
     m_executionLabel(),
+    m_timestamp(GetInternalTimestamp()),
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
 
@@ -51,6 +56,7 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_description(description),
     m_details(details),
     m_executionLabel(),
+    m_timestamp(GetInternalTimestamp()),
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
 
@@ -62,8 +68,14 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_description(description),
     m_details(details),
     m_executionLabel(executionLabel),
+    m_timestamp(GetInternalTimestamp()),
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
+
+uint64_t CBaseEvent::GetInternalTimestamp()
+{
+  return std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::steady_clock::now()).time_since_epoch().count();
+}
 
 std::string CBaseEvent::GetLabel() const
 {
@@ -96,4 +108,10 @@ std::string CBaseEvent::VariantToLocalizedString(const CVariant& variant)
     return g_localizeStrings.Get(static_cast<uint32_t>(variant.asUnsignedInteger()));
 
   return "";
+}
+
+void CBaseEvent::ToSortable(SortItem& sortable, Field field) const
+{
+  if (field == FieldDate)
+    sortable[FieldDate] = StringUtils::Format("%020llu", m_timestamp);
 }

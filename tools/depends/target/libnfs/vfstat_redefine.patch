@@ -1,0 +1,63 @@
+From 41c41aec0bfd2288afde4068e433e58513268668 Mon Sep 17 00:00:00 2001
+From: Jean-Baptiste Kempf <jb@videolan.org>
+Date: Fri, 11 Mar 2016 00:09:16 +0100
+Subject: [PATCH] Android: only redefine statvfs if it is not already defined
+
+It is defined with recent platforms version 21 and more recent
+---
+ lib/libnfs-sync.c | 8 ++++----
+ lib/libnfs.c      | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/lib/libnfs-sync.c b/lib/libnfs-sync.c
+index 664ccfc..69caee3 100644
+--- a/lib/libnfs-sync.c
++++ b/lib/libnfs-sync.c
+@@ -37,10 +37,6 @@
+ #include <net/if.h>
+ #endif
+ 
+-#ifdef __ANDROID__
+-#define statvfs statfs
+-#endif
+-
+ #ifdef HAVE_SYS_VFS_H
+ #include <sys/vfs.h>
+ #endif
+@@ -49,6 +45,10 @@
+ #include <sys/statvfs.h>
+ #endif
+ 
++#if defined(__ANDROID__) && !defined(HAVE_SYS_STATVFS_H)
++#define statvfs statfs
++#endif
++
+ #ifdef HAVE_SYS_IOCTL_H
+ #include <sys/ioctl.h>
+ #endif
+diff --git a/lib/libnfs.c b/lib/libnfs.c
+index 1f16e5f..36c1430 100644
+--- a/lib/libnfs.c
++++ b/lib/libnfs.c
+@@ -33,10 +33,6 @@
+ #include <utime.h>
+ #endif
+ 
+-#ifdef __ANDROID__
+-#define statvfs statfs
+-#endif
+-
+ #define _GNU_SOURCE
+ 
+ #ifdef HAVE_UNISTD_H
+@@ -51,6 +47,10 @@
+ #include <sys/statvfs.h>
+ #endif
+ 
++#if defined(__ANDROID__) && !defined(HAVE_SYS_STATVFS_H)
++#define statvfs statfs
++#endif
++
+ #ifdef HAVE_NETINET_IN_H
+ #include <netinet/in.h>
+ #endif

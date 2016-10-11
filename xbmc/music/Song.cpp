@@ -148,6 +148,8 @@ CSong::CSong(CFileItem& item)
   iYear = stTime.wYear;
   iTrack = tag.GetTrackAndDiscNumber();
   iDuration = tag.GetDuration();
+  strRecordLabel = tag.GetRecordLabel();
+  strAlbumType = tag.GetMusicBrainzReleaseType();
   bCompilation = tag.GetCompilation();
   embeddedArt = tag.GetCoverArtInfo();
   strFileName = tag.GetURL().empty() ? item.GetPath() : tag.GetURL();

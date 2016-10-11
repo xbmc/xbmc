@@ -127,8 +127,9 @@
 					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
 					<pulseonselect>false</pulseonselect>
 					<label>$LOCALIZE[31556]</label>
-					<onclick>Skin.ToggleSetting(ShowHomeButtonLiveTV)</onclick>
-					<selected>Skin.HasSetting(ShowHomeButtonLiveTV)</selected>
+					<onclick>Skin.ToggleSetting(HideHomeButtonLiveTV)</onclick>
+					<selected>!Skin.HasSetting(HideHomeButtonLiveTV)</selected>
+					<enable>System.HasPVRAddon</enable>
 					<textoffsetx>20</textoffsetx>
 				</control>
 				<control type="radiobutton" id="103">
@@ -142,8 +143,9 @@
 					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
 					<pulseonselect>false</pulseonselect>
 					<label>$LOCALIZE[19021]</label>
-					<onclick>Skin.ToggleSetting(ShowHomeButtonRadio)</onclick>
-					<selected>Skin.HasSetting(ShowHomeButtonRadio)</selected>
+					<onclick>Skin.ToggleSetting(HideHomeButtonRadio)</onclick>
+					<selected>!Skin.HasSetting(HideHomeButtonRadio)</selected>
+					<enable>System.HasPVRAddon</enable>
 					<textoffsetx>20</textoffsetx>
 				</control>
 				<control type="radiobutton" id="104">

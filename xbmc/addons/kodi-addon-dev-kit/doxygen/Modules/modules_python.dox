@@ -37,7 +37,7 @@ uses a handful of custom modules to expose Kodi functionality to Python.
 |------------------------------------:|:-----------------------------------------------------------|
 | \ref python_xbmc       "xbmc"       | Offers classes and functions that provide information about the media currently playing and that allow manipulation of the media player (such as starting a new song). You can also find system information using the functions available in this library.
 | \ref python_xbmcgui    "xbmcgui"    | Offers classes and functions that manipulate the Graphical User Interface through windows, dialogs, and various control widgets.
-| \ref python_xbmcplugin "xbmcplugin" |  Offers classes and functions that allow a developer to present information through Kodi's standard menu structure. While plugins don't have the same flexibility as scripts, they boast significantly quicker development time and a more consistent user experience.
+| \ref python_xbmcplugin "xbmcplugin" | Offers classes and functions that allow a developer to present information through Kodi's standard menu structure. While plugins don't have the same flexibility as scripts, they boast significantly quicker development time and a more consistent user experience.
 | \ref python_xbmcaddon  "xbmcaddon"  | Offers classes and functions that manipulate the add-on settings, information and localization.
 | \ref python_xbmcvfs    "xbmcvfs"    | Offers classes and functions offers access to the Virtual File Server (VFS) which you can use to manipulate files and folders.
 | \ref python_xbmcwsgi   "xbmcwsgi"   | The [<b>Web Server Gateway Interface (WSGI)</b>](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface) is a specification for simple and universal interface between web servers and web applications or frameworks for the Python programming language.
@@ -141,3 +141,35 @@ web applications or frameworks for the Python programming language.
 @}
 
 */
+
+/*!
+@page python_v12 Python API v12
+*/
+/*!
+@page python_v13 Python API v13
+*/
+/*!
+@page python_v14 Python API v14
+*/
+/*!
+@page python_v15 Python API v15
+*/
+/*!
+@page python_v16 Python API v16
+*/
+/*!
+@page python_v17 Python API v17
+*/
+
+/*!
+@page python_revisions Python API Changes
+@brief Overview of changes on Python API for Kodi
+
+- @subpage python_v12
+- @subpage python_v13
+- @subpage python_v14
+- @subpage python_v15
+- @subpage python_v16
+- @subpage python_v17
++*/
+  

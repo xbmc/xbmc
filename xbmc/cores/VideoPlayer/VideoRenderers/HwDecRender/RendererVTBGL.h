@@ -33,19 +33,19 @@ public:
   virtual ~CRendererVTB();
 
   // Player functions
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
-  virtual void ReleaseBuffer(int idx);
-
-  // Feature support
-  virtual bool Supports(EINTERLACEMETHOD method);
+  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  virtual void ReleaseBuffer(int idx) override;
+  virtual bool NeedBuffer(int idx) override;
+  virtual CRenderInfo GetRenderInfo() override;
 
 protected:
-  virtual bool LoadShadersHook();
+  virtual bool LoadShadersHook() override;
+  virtual void AfterRenderHook(int idx) override;
 
   // textures
-  virtual bool UploadTexture(int index);
-  virtual void DeleteTexture(int index);
-  virtual bool CreateTexture(int index);
+  virtual bool UploadTexture(int index) override;
+  virtual void DeleteTexture(int index) override;
+  virtual bool CreateTexture(int index) override;
 };
 
 #endif

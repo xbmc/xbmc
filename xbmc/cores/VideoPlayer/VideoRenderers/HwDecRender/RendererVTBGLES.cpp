@@ -48,6 +48,7 @@ CRendererVTB::CRendererVTB()
     buf.m_textureY = nullptr;
     buf.m_textureUV = nullptr;
     buf.m_videoBuffer = nullptr;
+    buf.m_fence = nullptr;
   }
 }
 
@@ -55,6 +56,11 @@ CRendererVTB::~CRendererVTB()
 {
   if (m_textureCache)
     CFRelease(m_textureCache);
+
+  for (int i = 0; i < NUM_BUFFERS; ++i)
+  {
+    DeleteTexture(i);
+  }
 }
 
 void CRendererVTB::AddVideoPictureHW(DVDVideoPicture &picture, int index)
@@ -73,6 +79,12 @@ void CRendererVTB::ReleaseBuffer(int idx)
   if (buf.m_videoBuffer)
     CVBufferRelease(buf.m_videoBuffer);
   buf.m_videoBuffer = nullptr;
+  
+  if (buf.m_fence && glIsSyncAPPLE(buf.m_fence))
+  {
+    glDeleteSyncAPPLE(buf.m_fence);
+    buf.m_fence = nullptr;
+  }
 }
 
 int CRendererVTB::GetImageHook(YV12Image *image, int source, bool readonly)
@@ -154,10 +166,6 @@ void CRendererVTB::DeleteTexture(int index)
 {
   CRenderBuffer &buf = m_vtbBuffers[index];
   
-  if (buf.m_videoBuffer)
-    CVBufferRelease(buf.m_videoBuffer);
-  buf.m_videoBuffer = nullptr;
-
   if (buf.m_textureY)
     CFRelease(buf.m_textureY);
   buf.m_textureY = nullptr;
@@ -165,6 +173,8 @@ void CRendererVTB::DeleteTexture(int index)
   if (buf.m_textureUV)
     CFRelease(buf.m_textureUV);
   buf.m_textureUV = nullptr;
+
+  ReleaseBuffer(index);
 
   YUVFIELDS &fields = m_buffers[index].fields;
   fields[FIELD_FULL][0].id = 0;
@@ -243,4 +253,27 @@ bool CRendererVTB::UploadTexture(int index)
   return true;
 }
 
+void CRendererVTB::AfterRenderHook(int idx)
+{
+  CRenderBuffer &buf = m_vtbBuffers[idx];
+  if (buf.m_fence && glIsSyncAPPLE(buf.m_fence))
+  {
+    glDeleteSyncAPPLE(buf.m_fence);
+  }
+  buf.m_fence = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
+}
+
+bool CRendererVTB::NeedBuffer(int idx)
+{
+  CRenderBuffer &buf = m_vtbBuffers[idx];
+  if (buf.m_fence && glIsSyncAPPLE(buf.m_fence))
+  {
+    int syncState = GL_UNSIGNALED_APPLE;
+    glGetSyncivAPPLE(buf.m_fence, GL_SYNC_STATUS_APPLE, 1, nullptr, &syncState);
+    if (syncState == GL_SIGNALED_APPLE)
+      return false;
+  }
+  
+  return true;
+}
 #endif

@@ -31,22 +31,43 @@
 #include <OpenGL/CGLIOSurface.h>
 #include "windowing/WindowingFactory.h"
 
+struct CVTBData
+{
+  struct __CVBuffer* m_vtbbuf;
+  GLuint m_fence;
+};
+
 CRendererVTB::CRendererVTB()
 {
-
 }
 
 CRendererVTB::~CRendererVTB()
 {
+  for (int i = 0; i < NUM_BUFFERS; ++i)
+  {
+    DeleteTexture(i);
+  }
+}
 
+CRenderInfo CRendererVTB::GetRenderInfo()
+{
+  CRenderInfo info;
+  info.formats = m_formats;
+  info.max_buffer_size = NUM_BUFFERS;
+  info.optimal_buffer_size = 5;
+  return info;
 }
 
 void CRendererVTB::AddVideoPictureHW(DVDVideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
-  if (buf.hwDec)
-    CVBufferRelease((struct __CVBuffer *)buf.hwDec);
-  buf.hwDec = picture.cvBufferRef;
+  CVTBData *vtbdata = (CVTBData*)buf.hwDec;
+  if (vtbdata->m_vtbbuf)
+  {
+    CVBufferRelease(vtbdata->m_vtbbuf);
+  }
+  vtbdata->m_vtbbuf = picture.cvBufferRef;
+
   // retain another reference, this way VideoPlayer and renderer can issue releases.
   CVBufferRetain(picture.cvBufferRef);
 }
@@ -55,20 +76,25 @@ void CRendererVTB::ReleaseBuffer(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
   if (buf.hwDec)
-    CVBufferRelease((struct __CVBuffer *)buf.hwDec);
-  buf.hwDec = NULL;
-}
+  {
+    CVTBData *vtbdata = (CVTBData*)buf.hwDec;
+    if (vtbdata->m_vtbbuf)
+    {
+      CVBufferRelease(vtbdata->m_vtbbuf);
+      vtbdata->m_vtbbuf = nullptr;
+    }
 
-
-bool CRendererVTB::Supports(EINTERLACEMETHOD method)
-{
-  return false;
+    if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
+    {
+      glDeleteFencesAPPLE(1, &vtbdata->m_fence);
+      vtbdata->m_fence = 0;
+    }
+  }
 }
 
 bool CRendererVTB::LoadShadersHook()
 {
   CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
-  m_renderMethod = RENDER_CVREF;
   m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
   return false;
 }
@@ -110,6 +136,11 @@ bool CRendererVTB::CreateTexture(int index)
   planes[2].id = planes[1].id;
   glDisable(m_textureTarget);
 
+  CVTBData *data = new CVTBData();
+  data->m_fence = 0;
+  data->m_vtbbuf = nullptr;
+  m_buffers[index].hwDec = data;
+
   return true;
 }
 
@@ -117,9 +148,9 @@ void CRendererVTB::DeleteTexture(int index)
 {
   YUVPLANES  &planes = m_buffers[index].fields[0];
 
-  if (m_buffers[index].hwDec)
-    CVBufferRelease((struct __CVBuffer *)m_buffers[index].hwDec);
-  m_buffers[index].hwDec = NULL;
+  ReleaseBuffer(index);
+  delete (CVTBData*)m_buffers[index].hwDec;
+  m_buffers[index].hwDec = nullptr;
 
   if (planes[0].id && glIsTexture(planes[0].id))
   {
@@ -139,8 +170,9 @@ bool CRendererVTB::UploadTexture(int index)
   YUVBUFFER &buf = m_buffers[index];
   YUVFIELDS &fields = buf.fields;
   YUVPLANES &planes = fields[0];
+  CVTBData *vtbdata = (CVTBData*)m_buffers[index].hwDec;
 
-  CVImageBufferRef cvBufferRef = (struct __CVBuffer *)m_buffers[index].hwDec;
+  CVImageBufferRef cvBufferRef = vtbdata->m_vtbbuf;
 
   glEnable(m_textureTarget);
 
@@ -192,8 +224,32 @@ bool CRendererVTB::UploadTexture(int index)
 
   CalculateTextureSourceRects(index, 3);
 
-
   return true;
 }
 
+void CRendererVTB::AfterRenderHook(int idx)
+{
+  CVTBData *vtbdata = (CVTBData*)m_buffers[idx].hwDec;
+  if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
+  {
+    glDeleteFencesAPPLE(1, &vtbdata->m_fence);
+  }
+  glGenFencesAPPLE(1, &vtbdata->m_fence);
+  glSetFenceAPPLE(vtbdata->m_fence);
+}
+
+bool CRendererVTB::NeedBuffer(int idx)
+{
+  CVTBData *vtbdata = (CVTBData*)m_buffers[idx].hwDec;
+  if (!vtbdata)
+    return false;
+
+  if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
+  {
+    if (glTestFenceAPPLE(vtbdata->m_fence))
+      return false;
+  }
+
+  return true;
+}
 #endif

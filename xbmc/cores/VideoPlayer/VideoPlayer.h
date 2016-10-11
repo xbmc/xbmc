@@ -109,9 +109,11 @@ struct SPlayerState
     cache_level = 0.0;
     cache_delay = 0.0;
     cache_offset = 0.0;
+    lastSeek = 0;
   }
 
   double timestamp;         // last time of update
+  double lastSeek;          // time of last seek
   double time_offset;       // difference between time and pts
 
   double time;              // current playback time
@@ -466,9 +468,7 @@ protected:
   void HandleMessages();
   void HandlePlaySpeed();
   bool IsInMenuInternal() const;
-
-  void SynchronizePlayers(unsigned int sources);
-  void SynchronizeDemuxer(unsigned int timeout);
+  void SynchronizeDemuxer();
   void CheckAutoSceneSkip();
   bool CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);

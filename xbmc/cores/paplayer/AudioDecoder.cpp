@@ -170,7 +170,7 @@ int64_t CAudioDecoder::TotalTime()
   return 0;
 }
 
-unsigned int CAudioDecoder::GetDataSize()
+unsigned int CAudioDecoder::GetDataSize(bool checkPktSize)
 {
   if (m_status == STATUS_QUEUING || m_status == STATUS_NO_FILE)
     return 0;
@@ -178,8 +178,13 @@ unsigned int CAudioDecoder::GetDataSize()
   if (m_codec->m_format.m_dataFormat != AE_FMT_RAW)
   {
     // check for end of file and end of buffer
-    if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
-      m_status = STATUS_ENDED;
+    if (m_status == STATUS_ENDING)
+    {
+      if (m_pcmBuffer.getMaxReadSize() == 0)
+        m_status = STATUS_ENDED;
+      else if (checkPktSize && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
+        m_status = STATUS_ENDED;
+    }
     return std::min(m_pcmBuffer.getMaxReadSize() / (m_codec->m_bitsPerSample >> 3), (unsigned int)OUTPUT_SAMPLES);
   }
   else

@@ -30,8 +30,10 @@ function(core_link_library lib wraplib)
     foreach(arg ${data_arg})
       list(APPEND export ${arg})
     endforeach()
+  elseif(check_arg STREQUAL archives)
+    set(extra_libs ${data_arg})
   endif()
-  get_filename_component(dir ${wraplib} PATH)
+  get_filename_component(dir ${wraplib} DIRECTORY)
 
   # We can't simply pass the linker flags to the args section of the custom command
   # because cmake will add quotes around it (and the linker will fail due to those).
@@ -41,7 +43,7 @@ function(core_link_library lib wraplib)
   add_custom_command(OUTPUT ${wraplib}-${ARCH}${extension}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
                      COMMAND ${CMAKE_C_COMPILER}
-                     ARGS    ${CUSTOM_COMMAND_ARGS_LDFLAGS} ${export} -Wl,-force_load ${link_lib}
+                     ARGS    ${CUSTOM_COMMAND_ARGS_LDFLAGS} ${export} -Wl,-force_load ${link_lib} ${extra_libs}
                              -o ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${extension}
                      DEPENDS ${target} wrapper.def wrapper
                      VERBATIM)

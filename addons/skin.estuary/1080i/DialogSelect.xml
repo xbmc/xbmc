@@ -115,6 +115,7 @@
 						<width>700</width>
 						<height>60</height>
 						<aligny>center</aligny>
+						<scroll>true</scroll>
 						<label>[B]$INFO[ListItem.Label][/B]</label>
 					</control>
 					<control type="textbox">

@@ -31,9 +31,7 @@
 #include "platform/android/jni/Build.h"
 #include "utils/TimeUtils.h"
 
-#if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
-#endif
 
 //#define DEBUG_VERBOSE 1
 
@@ -316,14 +314,12 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(m_format.m_channelLayout);
+  m_format.m_channelLayout  = AUDIOTRACKChannelMaskToAEChannelMap(atChannelMask);
   if (m_encoding == CJNIAudioFormat::ENCODING_IEC61937)
     atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
-  m_format.m_channelLayout  = AUDIOTRACKChannelMaskToAEChannelMap(atChannelMask);
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present() && m_passthrough)
+  if (aml_present() && m_passthrough && m_info.m_wantsIECPassthrough)
     atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
-#endif
 
   while (!m_at_jni)
   {
@@ -539,13 +535,12 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   }
   uint64_t normHead_pos = m_headPos - m_offset;
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_present() &&
+  // this makes EAC3 working even when AML is not enabled
+  if (aml_present() && m_info.m_wantsIECPassthrough &&
       (m_encoding == CJNIAudioFormat::ENCODING_DTS_HD ||
        m_encoding == CJNIAudioFormat::ENCODING_E_AC3 ||
        m_encoding == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD))
     normHead_pos /= m_sink_frameSize;  // AML wants sink in 48k but returns pos in 192k
-#endif
 
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
@@ -777,8 +772,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
     }
 
-#if defined(HAS_LIBAMCODEC)
-    if (aml_present())
+    if (aml_present() && CJNIAudioManager::GetSDKVersion() < 23)
     {
       // passthrough
       m_info.m_wantsIECPassthrough = true;
@@ -794,7 +788,6 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       }
     }
     else
-#endif
     {
       bool supports_192khz = false;
       int test_sample[] = { 32000, 44100, 48000, 96000, 192000 };
@@ -819,33 +812,29 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
         if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
           m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
       }
-      // Android v24 can do real IEC API
-      if (CJNIAudioManager::GetSDKVersion() >= 24)
+      // Android v24 and backports can do real IEC API
+      if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
       {
-        if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
-        {
-          m_info.m_wantsIECPassthrough = true;
-          m_info.m_streamTypes.clear();
-          m_info.m_dataFormats.push_back(AE_FMT_RAW);
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+        m_info.m_wantsIECPassthrough = true;
+        m_info.m_streamTypes.clear();
+        m_info.m_dataFormats.push_back(AE_FMT_RAW);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
 
-          if (supports_192khz)
-          {
-            m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-            // not working yet
-            // m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-            // m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
-          }
+        if (supports_192khz)
+        {
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+          // not working yet
+          // m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+          // m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
         }
       }
     }
     std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
   }
-
   list.push_back(m_info);
 }
 

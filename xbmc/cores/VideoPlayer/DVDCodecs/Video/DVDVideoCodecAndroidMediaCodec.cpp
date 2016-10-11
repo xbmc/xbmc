@@ -235,7 +235,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
   }
 }
 
-int CDVDMediaCodecInfo::GetIndex() const
+ssize_t CDVDMediaCodecInfo::GetIndex() const
 {
   CSingleLock lock(m_section);
 
@@ -885,7 +885,7 @@ double CDVDVideoCodecAndroidMediaCodec::GetTimeSize(void)
 
 unsigned CDVDVideoCodecAndroidMediaCodec::GetAllowedReferences()
 {
-  return 3;
+  return 4;
 }
 
 void CDVDVideoCodecAndroidMediaCodec::FlushInternal()

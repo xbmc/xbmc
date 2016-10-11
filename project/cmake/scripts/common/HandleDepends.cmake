@@ -21,7 +21,7 @@ function(add_addon_depends addon searchpath)
       file(STRINGS ${file} def)
       separate_arguments(def)
       list(LENGTH def deflength)
-      get_filename_component(dir ${file} PATH)
+      get_filename_component(dir ${file} DIRECTORY)
 
       # get the id of the dependency
       if(NOT "${def}" STREQUAL "")

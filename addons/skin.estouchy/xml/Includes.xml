@@ -1024,14 +1024,14 @@
 			<onclick>ActivateWindow(TVChannels)</onclick>
 			<icon>icon_menu_livetv.png</icon>
 			<thumb></thumb>
-			<visible>Skin.HasSetting(ShowHomeButtonLiveTV)</visible>
+			<visible>System.HasPVRAddon + !Skin.HasSetting(HideHomeButtonLiveTV)</visible>
 		</item>
 		<item id="2">
 			<label>19021</label>
 			<onclick>ActivateWindow(RadioChannels)</onclick>
 			<icon>icon_menu_radio.png</icon>
 			<thumb></thumb>
-			<visible>Skin.HasSetting(ShowHomeButtonRadio)</visible>
+			<visible>System.HasPVRAddon + !Skin.HasSetting(HideHomeButtonRadio)</visible>
 		</item>
 		<item id="3">
 			<label>20342</label>
@@ -1240,7 +1240,7 @@
 			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
 			<label>653</label>
 			<altlabel>13353</altlabel>
-			<usealttexture>library.isscanningmusic</usealttexture> 
+			<usealttexture>library.isscanningmusic</usealttexture>
 		</control>
 		<control type="radiobutton" id="16">
 			<description>PartyMode</description>
@@ -1496,7 +1496,7 @@
 			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
 			<label>653</label>
 			<altlabel>13353</altlabel>
-			<usealttexture>library.isscanningvideo</usealttexture> 
+			<usealttexture>library.isscanningvideo</usealttexture>
 		</control>
 		<control type="radiobutton" id="16">
 			<description>PartyMode</description>

@@ -39,6 +39,9 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include "platform/android/bionic_supplement/bionic_supplement.h"
+#include "platform/android/activity/XBMCApp.h"
+#include "platform/android/jni/ApplicationInfo.h"
+#include "CompileInfo.h"
 #endif
 #include <stdlib.h>
 #include <algorithm>
@@ -1433,7 +1436,10 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
 {
   size_t iStrInputSize = StrInput.size();
   if(iStrInputSize <= 0 || iTextMaxLength >= iStrInputSize)
-    return false;
+  {
+    StrOutput = StrInput;
+    return true;
+  }
 
   char cDelim = '\0';
   size_t nGreaterDelim, nPos;
@@ -1778,6 +1784,13 @@ std::string CUtil::ResolveExecutablePath()
     strExecutablePath = "";
   else
     strExecutablePath = buf;
+#elif defined(TARGET_ANDROID)
+  strExecutablePath = CXBMCApp::getApplicationInfo().nativeLibraryDir;
+
+  std::string appName = CCompileInfo::GetAppName();
+  std::string libName = "lib" + appName + ".so";
+  StringUtils::ToLower(libName);
+  strExecutablePath += "/" + libName;
 #else
   /* Get our PID and build the name of the link in /proc */
   pid_t pid = getpid();
@@ -2066,25 +2079,27 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   CLog::Log(LOGDEBUG, "%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
 }
 
-void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, const std::string& strStream, ExternalStreamInfo& info)
+ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string& videoPath, const std::string& associatedFile)
 {
-  std::string videoBaseName = URIUtils::GetFileName(strVideo);
+  ExternalStreamInfo info;
+
+  std::string videoBaseName = URIUtils::GetFileName(videoPath);
   URIUtils::RemoveExtension(videoBaseName);
 
-  std::string toParse = URIUtils::GetFileName(strStream);
+  std::string toParse = URIUtils::GetFileName(associatedFile);
   URIUtils::RemoveExtension(toParse);
 
   // we check left part - if it's same as video base name - strip it
   if (StringUtils::StartsWithNoCase(toParse, videoBaseName))
     toParse = toParse.substr(videoBaseName.length());
-  else if (URIUtils::GetExtension(strStream) == ".sub" && URIUtils::IsInArchive(strStream))
+  else if (URIUtils::GetExtension(associatedFile) == ".sub" && URIUtils::IsInArchive(associatedFile))
   {
-    // exclude parsing of vobsub file names that embedded in an archive
-    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, CURL::GetRedacted(strStream).c_str());
+    // exclude parsing of vobsub file names that are embedded in an archive
+    CLog::Log(LOGDEBUG, "%s - skipping archived vobsub filename parsing: %s", __FUNCTION__, CURL::GetRedacted(associatedFile).c_str());
     toParse.clear();
   }
 
-  // trim any non-alphanumeric char in the begining
+  // trim any non-alphanumeric char in the beginning
   std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), StringUtils::isasciialphanum);
 
   std::string name;
@@ -2139,7 +2154,9 @@ void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, co
     info.flag = CDemuxStream::FLAG_NONE;
 
   CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' / Flag = '%u' from %s",
-             __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, CURL::GetRedacted(strStream).c_str());
+             __FUNCTION__, info.language.c_str(), info.name.c_str(), info.flag, CURL::GetRedacted(associatedFile).c_str());
+
+  return info;
 }
 
 /*! \brief in a vector of subtitles finds the corresponding .sub file for a given .idx file

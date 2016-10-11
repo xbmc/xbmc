@@ -2538,6 +2538,7 @@ namespace XBMCAddon
     ///
     ///
     ///--------------------------------------------------------------------------
+    /// @python_v16 Deprecated **focusTexture** and **noFocusTexture**. Use **focusOnTexture** and **noFocusOnTexture**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -2763,6 +2764,7 @@ namespace XBMCAddon
     ///
     ///
     ///--------------------------------------------------------------------------
+    /// @python_v17 **orientation** option added.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}

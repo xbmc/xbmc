@@ -620,7 +620,9 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
 
       frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
-      if (m_syncState == IDVDStreamPlayer::SYNC_STARTING && !(m_picture.iFlags & DVP_FLAG_DROPPED))
+      if (m_syncState == IDVDStreamPlayer::SYNC_STARTING &&
+          !(iResult & EOS_DROPPED) &&
+          !(m_picture.iFlags & DVP_FLAG_DROPPED))
       {
         m_syncState = IDVDStreamPlayer::SYNC_WAITSYNC;
         SStartMsg msg;
@@ -799,14 +801,8 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   int result = 0;
 
-  //correct any pattern in the timestamps
-  if (picture.format != RENDER_FMT_BYPASS)
-  {
-    m_pullupCorrection.Add(pts);
-    pts += m_pullupCorrection.GetCorrection();
-  }
-
   //try to calculate the framerate
+  m_pullupCorrection.Add(pts);
   if (!m_stalled)
     CalcFrameRate();
 

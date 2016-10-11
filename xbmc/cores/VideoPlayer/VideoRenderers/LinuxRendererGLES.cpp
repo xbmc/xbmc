@@ -811,6 +811,8 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
       break;
     }
   }
+  
+  AfterRenderHook(index);
 }
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)

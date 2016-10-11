@@ -181,7 +181,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "WM/Mixer")
       AddArtistRole(tag, "mixer", GetASFStringList(it->second));
     else if (it->first == "WM/Publisher")
-    {} // Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.front().toString().to8Bit(true));
     else if (it->first == "WM/AlbumArtistSortOrder")
     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")
@@ -203,7 +203,7 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "MusicBrainz/Album Status")
     {}
     else if (it->first == "MusicBrainz/Album Type")
-    {}
+      SetReleaseType(tag, GetASFStringList(it->second));
     else if (it->first == "MusicIP/PUID")
     {}
     else if (it->first == "replaygain_track_gain")
@@ -303,7 +303,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
     else if (it->first == "TPE3")   AddArtistRole(tag, "Conductor", GetID3v2StringList(it->second));
     else if (it->first == "TEXT")   AddArtistRole(tag, "Lyricist", GetID3v2StringList(it->second));
     else if (it->first == "TPE4")   AddArtistRole(tag, "Remixer", GetID3v2StringList(it->second));
-    else if (it->first == "TPUB")   {} // Publisher. Known unsupported, supress warnings
+    else if (it->first == "TPUB")   tag.SetRecordLabel(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TCOP")   {} // Copyright message
     else if (it->first == "TDRC")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
     else if (it->first == "TDRL")   tag.SetYear(strtol(it->second.front()->toString().toCString(true), nullptr, 10));
@@ -346,6 +346,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
           tag.SetMusicBrainzAlbumArtistID(SplitMBID(StringListToVectorString(stringList)));
         else if (desc == "MUSICBRAINZ ALBUM ARTIST")
           SetAlbumArtist(tag, StringListToVectorString(stringList));
+        else if (desc == "MUSICBRAINZ ALBUM TYPE")
+          SetReleaseType(tag, StringListToVectorString(stringList));
         else if (desc == "REPLAYGAIN_TRACK_GAIN")
           replayGainInfo.ParseGain(ReplayGain::TRACK, stringList.front().toCString(true));
         else if (desc == "REPLAYGAIN_ALBUM_GAIN")
@@ -520,7 +522,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
       AddArtistInstrument(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "LABEL")   
-    {} // Publisher. Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.toString().to8Bit(true));
     else if (it->first == "COMPILATION")
       tag.SetCompilation(it->second.toString().toInt() == 1);
     else if (it->first == "LYRICS")
@@ -543,6 +545,8 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetMusicBrainzAlbumID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_TRACKID")
       tag.SetMusicBrainzTrackID(it->second.toString().to8Bit(true));
+    else if (it->first == "MUSICBRAINZ_ALBUMTYPE")
+      SetReleaseType(tag, StringListToVectorString(it->second.toStringList()));
     else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized APE tag: %s", it->first.toCString(true));
   }
@@ -617,7 +621,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
       AddArtistInstrument(tag, StringListToVectorString(it->second));
     else if (it->first == "LABEL")
-    {} // Publisher. Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.front().to8Bit(true));
     else if (it->first == "COMPILATION")
       tag.SetCompilation(it->second.front().toInt() == 1);
     else if (it->first == "LYRICS")
@@ -640,6 +644,8 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       tag.SetMusicBrainzAlbumID(it->second.front().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_TRACKID")
       tag.SetMusicBrainzTrackID(it->second.front().to8Bit(true));
+    else if (it->first == "RELEASETYPE")
+      SetReleaseType(tag, StringListToVectorString(it->second));
     else if (it->first == "RATING")
     {
       // Vorbis ratings are a mess because the standard forgot to mention anything about them.
@@ -776,7 +782,7 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       AddArtistRole(tag, "Mixer", StringListToVectorString(it->second.toStringList()));
     //No MP4 standard tag for musician credits
     else if (it->first == "----:com.apple.iTunes:LABEL")
-    {} // Publisher. Known unsupported, supress warnings
+      tag.SetRecordLabel(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "cpil")
       tag.SetCompilation(it->second.toBool());
     else if (it->first == "trkn")
@@ -803,6 +809,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetMusicBrainzAlbumID(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Track Id")
       tag.SetMusicBrainzTrackID(it->second.toStringList().front().to8Bit(true));
+    else if (it->first == "----:com.apple.iTunes:MusicBrainz Album Type")
+      SetReleaseType(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "covr")
     {
       MP4::CoverArtList coverArtList = it->second.toCoverArtList();
@@ -946,6 +954,14 @@ void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::strin
     tag.SetGenre(genres[0]);
   else
     tag.SetGenre(genres);
+}
+
+void CTagLoaderTagLib::SetReleaseType(CMusicInfoTag &tag, const std::vector<std::string> &values)
+{
+  if (values.size() == 1)
+    tag.SetMusicBrainzReleaseType(values[0]);
+  else
+    tag.SetMusicBrainzReleaseType(StringUtils::Join(values, g_advancedSettings.m_musicItemSeparator));
 }
 
 void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::string& strRole, const std::vector<std::string> &values)

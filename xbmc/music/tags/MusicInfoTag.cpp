@@ -119,6 +119,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_musicRoles = tag.m_musicRoles;
   m_strComment = tag.m_strComment;
   m_strMood = tag.m_strMood;
+  m_strMood = tag.m_strMood;
   m_strLyrics = tag.m_strLyrics;
   m_cuesheet = tag.m_cuesheet;
   m_lastPlayed = tag.m_lastPlayed;
@@ -267,6 +268,11 @@ const std::string &CMusicInfoTag::GetComment() const
 const std::string &CMusicInfoTag::GetMood() const
 {
   return m_strMood;
+}
+
+const std::string &CMusicInfoTag::GetRecordLabel() const
+{
+  return m_strRecordLabel;
 }
 
 const std::string &CMusicInfoTag::GetLyrics() const
@@ -468,6 +474,11 @@ void CMusicInfoTag::SetMood(const std::string& mood)
   m_strMood = mood;
 }
 
+void CMusicInfoTag::SetRecordLabel(const std::string& publisher)
+{
+  m_strRecordLabel = publisher;
+}
+
 void CMusicInfoTag::SetCueSheet(const std::string& cueSheet)
 {
   m_cuesheet = cueSheet;
@@ -576,6 +587,11 @@ const std::vector<std::string>& CMusicInfoTag::GetMusicBrainzAlbumArtistHints() 
     return m_musicBrainzAlbumArtistHints;
 }
 
+const std::string &CMusicInfoTag::GetMusicBrainzReleaseType() const
+{
+  return m_strMusicBrainzReleaseType;
+}
+
 void CMusicInfoTag::SetMusicBrainzTrackID(const std::string& strTrackID)
 {
   m_strMusicBrainzTrackID = strTrackID;
@@ -604,6 +620,11 @@ void CMusicInfoTag::SetMusicBrainzAlbumArtistID(const std::vector<std::string>& 
 void CMusicInfoTag::SetMusicBrainzAlbumArtistHints(const std::vector<std::string>& musicBrainzAlbumArtistHints)
 {
     m_musicBrainzAlbumArtistHints = musicBrainzAlbumArtistHints;
+}
+
+void CMusicInfoTag::SetMusicBrainzReleaseType(const std::string& ReleaseType)
+{
+  m_strMusicBrainzReleaseType = ReleaseType;
 }
 
 void CMusicInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
@@ -654,8 +675,10 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetAlbum(album.strAlbum);
   SetTitle(album.strAlbum);
   SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
+  SetMusicBrainzReleaseType(album.strType);
   SetGenre(album.genre);
   SetMood(StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
+  SetRecordLabel(album.strLabel);
   SetRating(album.fRating);
   SetUserrating(album.iUserrating);
   SetVotes(album.iVotes);
@@ -769,6 +792,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["displayorchestra"] = GetArtistStringForRole("orchestra");
   value["displaylyricist"] = GetArtistStringForRole("lyricist");   //TEXT
   value["mood"] = StringUtils::Split(m_strMood, g_advancedSettings.m_musicItemSeparator);
+  value["recordlabel"] = m_strRecordLabel;
   value["rating"] = m_Rating;
   value["userrating"] = m_Userrating;
   value["votes"] = m_Votes;
@@ -838,6 +862,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_musicBrainzArtistID;
     ar << m_strMusicBrainzAlbumID;
     ar << m_musicBrainzAlbumArtistID;
+    ar << m_strMusicBrainzReleaseType;
     ar << m_lastPlayed;
     ar << m_dateAdded;
     ar << m_strComment;
@@ -850,6 +875,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
       ar << credit->GetArtistId();
     }
     ar << m_strMood;
+    ar << m_strRecordLabel;
     ar << m_Rating;
     ar << m_Userrating;
     ar << m_Votes;
@@ -882,6 +908,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_musicBrainzArtistID;
     ar >> m_strMusicBrainzAlbumID;
     ar >> m_musicBrainzAlbumArtistID;
+    ar >> m_strMusicBrainzReleaseType;
     ar >> m_lastPlayed;
     ar >> m_dateAdded;
     ar >> m_strComment;
@@ -901,6 +928,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
       m_musicRoles.emplace_back(idRole, strRole, strArtist, idArtist);
     }
     ar >> m_strMood;
+    ar >> m_strRecordLabel;
     ar >> m_Rating;
     ar >> m_Userrating;
     ar >> m_Votes;
@@ -932,6 +960,7 @@ void CMusicInfoTag::Clear()
   m_musicBrainzArtistID.clear();
   m_strMusicBrainzAlbumID.clear();
   m_musicBrainzAlbumArtistID.clear();
+  m_strMusicBrainzReleaseType.clear();
   m_musicRoles.clear();
   m_iDuration = 0;
   m_iTrack = 0;
@@ -941,6 +970,7 @@ void CMusicInfoTag::Clear()
   m_bCompilation = false;
   m_strComment.clear();
   m_strMood.clear();
+  m_strRecordLabel.clear();
   m_cuesheet.clear();
   m_iDbId = -1;
   m_type.clear();

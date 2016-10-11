@@ -70,7 +70,8 @@ struct DialogYesNoMessage
   \sa CGUIDialogYesNo::ShowAndGetInput
   \sa DialogYesNoMessage
 */
-DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noLabel = "", CVariant yesLabel = "", uint32_t autoCloseTimeout = 0);
+DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noLabel = CVariant(),
+                                   CVariant yesLabel = CVariant(), uint32_t autoCloseTimeout = 0);
 
 /*!
   \brief This is a helper method to send a threadmessage to open a Yes/No dialog box
@@ -90,8 +91,9 @@ DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noL
   \sa CGUIDialogYesNo::ShowAndGetInput
   \sa DialogYesNoMessage
 */
-DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant line1 = "",
-  CVariant line2 = "", CVariant noLabel = "", CVariant yesLabel = "", uint32_t autoCloseTimeout = 0);
+DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant line1 = CVariant(),
+                                    CVariant line2 = CVariant(), CVariant noLabel = CVariant(),
+                                    CVariant yesLabel = CVariant(), uint32_t autoCloseTimeout = 0);
 
 }
 }

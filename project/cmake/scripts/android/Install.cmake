@@ -61,9 +61,16 @@ function(add_bundle_file file destination relative)
   endif()
 
   string(REPLACE "${relative}/" "" outfile ${file})
+  get_filename_component(file ${file} REALPATH)
   get_filename_component(outdir ${outfile} DIRECTORY)
   file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake
        "file(COPY \"${file}\" DESTINATION \"${destination}/${outdir}\")\n")
+  if(file MATCHES "\\.so\\..+$")
+    get_filename_component(srcfile "${file}" NAME)
+    string(REGEX REPLACE "\\.so\\..+$" "\.so" destfile ${srcfile})
+    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake
+         "file(RENAME \"${destination}/${outdir}/${srcfile}\" \"${destination}/${outdir}/${destfile}\")\n")
+  endif()
 endfunction()
 
 # Copy files into prefix

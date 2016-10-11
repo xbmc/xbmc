@@ -80,6 +80,7 @@ namespace XBMCAddon
     ///
     ///
     /// ------------------------------------------------------------------------
+    /// @python_v17 Default level changed from LOGNOTICE to LOGDEBUG
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}

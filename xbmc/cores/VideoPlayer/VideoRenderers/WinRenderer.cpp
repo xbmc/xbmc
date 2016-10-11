@@ -1103,7 +1103,7 @@ void CWinRenderer::ReleaseBuffer(int idx)
     SAFE_RELEASE(reinterpret_cast<DXVABuffer*>(m_VideoBuffers[idx])->pic);
 }
 
-bool CWinRenderer::NeedBufferForRef(int idx)
+bool CWinRenderer::NeedBuffer(int idx)
 {
   // check if processor wants to keep past frames
   if (m_renderMethod == RENDER_DXVA && m_processor)

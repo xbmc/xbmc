@@ -33,6 +33,7 @@ public:
   virtual bool CanHandleRequest(const HTTPRequest &request);
 
   virtual int GetPriority() const { return 5; }
+  virtual int GetMaximumAgeForCaching() const { return 60 * 60 * 24 * 7; }
 
 protected:
   explicit CHTTPImageHandler(const HTTPRequest &request);

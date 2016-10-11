@@ -245,7 +245,7 @@ foreach(addon ${addons})
       message(STATUS "\n-- ---- Configuring addon ${addon} ----")
       set(SUPPORTED_ADDON_FOUND TRUE)
 
-      get_filename_component(dir ${addon} PATH)
+      get_filename_component(dir ${addon} DIRECTORY)
 
       # check if the addon has a platforms.txt
       set(platform_found FALSE)

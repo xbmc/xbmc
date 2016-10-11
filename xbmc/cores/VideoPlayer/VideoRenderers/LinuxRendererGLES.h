@@ -187,6 +187,7 @@ protected:
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; }
   virtual bool RenderHook(int idx) { return false; }
+  virtual void AfterRenderHook(int idx) {};
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; }
   virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
   virtual bool RenderUpdateCheckForEmptyField() { return true; }

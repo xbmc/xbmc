@@ -13,6 +13,6 @@
   "skipTitle": "", 
   "withLabel": "", 
   "delayed": false, 
-  "delayedUntil": "3d", 
+  "delayedUntil": "2h", 
   "skipCollaboratorPR": false
 }

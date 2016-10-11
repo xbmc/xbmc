@@ -466,7 +466,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     if (tag.m_type == MediaTypeEpisode || tag.m_type == MediaTypeSeason)
     {
       // For episodes and seasons, we want to set fanart for that of the show
-      if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
+      if (!item.HasArt("tvshow.fanart") && tag.m_iIdShow >= 0)
       {
         ArtCache::const_iterator i = m_showArt.find(tag.m_iIdShow);
         if (i == m_showArt.end())

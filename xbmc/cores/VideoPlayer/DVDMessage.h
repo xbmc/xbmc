@@ -133,11 +133,10 @@ private:
 //////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define SYNCSOURCE_AUDIO  0x00000001
-#define SYNCSOURCE_VIDEO  0x00000002
-#define SYNCSOURCE_SUB    0x00000004
-#define SYNCSOURCE_OWNER  0x80000000 /* only allowed for the constructor of the object */
-#define SYNCSOURCE_ALL    (SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO | SYNCSOURCE_SUB | SYNCSOURCE_OWNER)
+#define SYNCSOURCE_AUDIO  0x01
+#define SYNCSOURCE_VIDEO  0x02
+#define SYNCSOURCE_PLAYER 0x04
+#define SYNCSOURCE_ANY    0x08
 
 class CDVDMsgGeneralSynchronizePriv;
 class CDVDMsgGeneralSynchronize : public CDVDMsg
@@ -149,8 +148,9 @@ public:
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
-  bool Wait(unsigned int ms         , unsigned int source);
+  bool Wait(unsigned int ms, unsigned int source);
   void Wait(std::atomic<bool>& abort, unsigned int source);
+
 private:
   class CDVDMsgGeneralSynchronizePriv* m_p;
 };

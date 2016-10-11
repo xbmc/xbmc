@@ -427,7 +427,7 @@ protected:
   bool NotifyActionListeners(const CAction &action) const;
 
   bool m_confirmSkinChange;
-  std::string m_skinReloadSettingIgnore;
+  bool m_ignoreSkinSettingChanges;
 
   bool m_saveSkinOnUnloading;
   bool m_autoExecScriptExecuted;

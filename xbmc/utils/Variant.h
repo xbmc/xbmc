@@ -48,7 +48,8 @@ public:
     VariantTypeConstNull
   };
 
-  CVariant(VariantType type = VariantTypeNull);
+  CVariant();
+  CVariant(VariantType type);
   CVariant(int integer);
   CVariant(int64_t integer);
   CVariant(unsigned int unsignedinteger);
