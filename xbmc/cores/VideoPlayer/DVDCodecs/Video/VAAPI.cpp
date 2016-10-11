@@ -465,6 +465,7 @@ CDecoder::~CDecoder()
 
 bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt, unsigned int surfaces)
 {
+#if !defined(HAS_RKVA)
   // don't support broken wrappers by default
   // nvidia cards with a vaapi to vdpau wrapper
   // fglrx cards with xvba-va-driver
@@ -482,6 +483,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       return false;
     }
   }
+#endif
 
   // check if user wants to decode this format with VAAPI
   std::map<AVCodecID, std::string> settings_map = {
@@ -1210,9 +1212,14 @@ bool CVaapiRenderPicture::GLMapSurface()
     return false;
   }
   memset(&glInterop.vBufInfo, 0, sizeof(glInterop.vBufInfo));
+#if !defined(HAS_RKVA)
   glInterop.vBufInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
+#else
+  glInterop.vBufInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_V4L2;
+#endif
   status = vaAcquireBufferHandle(glInterop.vadsp, glInterop.vaImage.buf,
                                  &glInterop.vBufInfo);
+
   if (status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
@@ -1230,7 +1237,11 @@ bool CVaapiRenderPicture::GLMapSurface()
     {
       attrib = attribs;
       *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+#if !defined(HAS_RKVA)
       *attrib++ = fourcc_code('R', '8', ' ', ' ');
+#else
+      *attrib++ = fourcc_code('C', '8', ' ', ' ');
+#endif
       *attrib++ = EGL_WIDTH;
       *attrib++ = glInterop.vaImage.width;
       *attrib++ = EGL_HEIGHT;
@@ -1254,7 +1265,11 @@ bool CVaapiRenderPicture::GLMapSurface()
 
       attrib = attribs;
       *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+#if !defined(HAS_RKVA)
       *attrib++ = fourcc_code('G', 'R', '8', '8');
+#else
+      *attrib++ = fourcc_code('A', 'R', '1', '2');
+#endif
       *attrib++ = EGL_WIDTH;
       *attrib++ = (glInterop.vaImage.width + 1) >> 1;
       *attrib++ = EGL_HEIGHT;
@@ -2369,6 +2384,7 @@ bool COutput::GLInit()
   }
 #endif
 
+#if !defined(HAS_RKVA)
   if (!g_Windowing.IsExtSupported("GL_ARB_texture_non_power_of_two") &&
        g_Windowing.IsExtSupported("GL_ARB_texture_rectangle"))
   {
@@ -2376,6 +2392,9 @@ bool COutput::GLInit()
   }
   else
     m_textureTarget = GL_TEXTURE_2D;
+#else
+  m_textureTarget = GL_TEXTURE_2D;
+#endif
 
   eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
   eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
@@ -2414,7 +2433,11 @@ bool COutput::CreateEGLContext()
     EGL_CONTEXT_CLIENT_VERSION, 2,
     EGL_NONE
   };
+#if !defined(HAS_RKVA)
   if (!eglBindAPI(EGL_OPENGL_API))
+#else
+  if (!eglBindAPI(EGL_OPENGL_ES_API))
+#endif
   {
     CLog::Log(LOGERROR, "VAAPI::COutput::CreateEGLContext -failed to bind egl API");
     return false;
