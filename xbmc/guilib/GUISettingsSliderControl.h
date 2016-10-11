@@ -46,6 +46,10 @@ public:
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
+  void OnUnFocus() override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const CMouseEvent& event) override;
+  void SetActive();
+  bool IsActive() const override { return m_active; };
   virtual void AllocResources();
   virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
@@ -70,5 +74,6 @@ protected:
 private:
   CGUIButtonControl m_buttonControl;
   CGUILabel m_label;
+  bool m_active; ///< Whether the slider has been activated by a click.
 };
 #endif

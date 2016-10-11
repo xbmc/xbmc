@@ -81,8 +81,6 @@ void CGUIDialogSlider::SetSlider(const std::string &label, float value, float mi
   m_callbackData = callbackData;
   if (slider)
   {
-    slider->SetActive();
-    slider->KeepActive();
     slider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
     slider->SetFloatRange(min, max);
     slider->SetFloatInterval(delta);
