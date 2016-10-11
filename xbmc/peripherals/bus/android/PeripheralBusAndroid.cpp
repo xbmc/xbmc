@@ -108,6 +108,12 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral* peripheral)
   return true;
 }
 
+void CPeripheralBusAndroid::Initialise(void)
+{
+  CPeripheralBus::Initialise();
+  TriggerDeviceScan();
+}
+
 void CPeripheralBusAndroid::ProcessEvents()
 {
   std::vector<ADDON::PeripheralEvent> events;
