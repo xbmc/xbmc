@@ -1,4 +1,5 @@
 addons/audioencoder.xbmc.builtin.aac/*
+addons/audioencoder.xbmc.builtin.wav/*
 addons/audioencoder.xbmc.builtin.wma/*
 addons/game.controller.default/*
 addons/kodi.adsp/*
@@ -31,15 +32,10 @@ addons/screensaver.xbmc.builtin.dim/*
 addons/screensaver.xbmc.builtin.black/*
 addons/script.module.pil/*
 addons/script.module.pysqlite/*
-addons/audioencoder.xbmc.builtin.aac/*
-addons/audioencoder.xbmc.builtin.wav/*
-addons/audioencoder.xbmc.builtin.wma/*
 addons/resource.language.en_gb/*
 addons/resource.uisounds.confluence/*
 addons/resource.images.weathericons.default/*
 addons/service.xbmc.versioncheck/*
-addons/skin.estuary/*
-addons/skin.estouchy/*
 addons/metadata.local/*
 addons/metadata.album.universal/*
 addons/metadata.artists.universal/*
