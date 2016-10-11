@@ -11,6 +11,7 @@ SRCS += MMALRenderer.cpp
 endif
 
 ifeq (@USE_OPENGLES@,1)
+SRCS += RendererRKVA.cpp
 SRCS += RendererVTBGLES.cpp
 SRCS += RendererIMX.cpp
 SRCS += RendererOpenMax.cpp
