@@ -43,6 +43,9 @@
 #endif
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
+#if defined(HAS_RKVA)
+#include "HwDecRender/RendererRKVA.h"
+#endif
 #if defined(HAS_MMAL)
 #include "HwDecRender/MMALRenderer.h"
 #endif
@@ -522,7 +525,9 @@ void CRenderManager::CreateRenderer()
   {
     if (m_format == RENDER_FMT_VAAPI || m_format == RENDER_FMT_VAAPINV12)
     {
-#if defined(HAVE_LIBVA)
+#if defined(HAS_RKVA)
+      m_pRenderer = new CRendererRKVA;
+#elif defined(HAVE_LIBVA)
       m_pRenderer = new CRendererVAAPI;
 #endif
     }
