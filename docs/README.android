@@ -13,7 +13,7 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-We currently recommend Ubuntu "Trusty Tahr" (14.04) 64Bit. This is what our continuous
+We currently recommend Ubuntu "Xenial Xerus" (16.04) 64Bit. This is what our continuous
 integration system "jenkins" is using.
 Additionally, building from OSX Snow Leopard or Mavericks (others on your own risk ;) ) is working (see 3.1).
 
@@ -76,8 +76,8 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
    example the hdd image is mounted on /Volumes/android-dev.
     $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                   --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
-                  --with-ndk=/Volumes/android-dev/android/android-ndk-r10e \
-                  --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-17 \
+                  --with-ndk=/Volumes/android-dev/android/android-ndk-r12b \
+                  --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 \
                   --prefix=/Volumes/android-dev/android/xbmc-depends
 
 --------------------------------------------------------------------
@@ -89,7 +89,7 @@ download the latest version for your operating system. The NDK
 can be downloaded from http://developer.android.com/tools/sdk/ndk/
 
 [NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision at least 10e. For the SDK just use the latest available.
+         Revision 12b. For the SDK just use the latest available.
          It will work.
 
 After downloading the SDK and NDK extract the files contained in the
@@ -97,13 +97,16 @@ archives to your harddisk. For our example we are extracting in the following
 directories (this matches the example from tools/depends/README as well):
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r10e
+/opt/android-ndk-r12b
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
-/opt/arm-linux-androideabi-4.8-vanilla/android-17
+/opt/arm-linux-androideabi-4.9-vanilla/android-21
+
+TOOLCHAIN (aarch64) (referenced as <android-toolchain-aarch64> from now on):
+/opt/android-linux-aarch64-4.9-vanilla/android-21
 
 TOOLCHAIN (x86) (referenced as <android-toolchain-x86> from now on):
-/opt/x86-linux-4.8-vanilla/android-17
+/opt/x86-linux-4.9-vanilla/android-21
 
 SDK (referenced as <android-sdk> from now on):
 /opt/android-sdk-linux
@@ -133,7 +136,7 @@ common scenario.
 The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
 specifies where the resulting toolchain should be installed (your choice).
 
-[NOTICE] Kodi uses the android API Version 17 and gcc version 4.8!
+[NOTICE] Kodi uses the android API Version 21 and gcc version 4.9!
 
 Building for arm architecture:
 
@@ -141,8 +144,17 @@ Building for arm architecture:
     $ ls platforms
     $ cd build/tools
     $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
-      --install-dir=<android-toolchain-arm>/android-17 --platform=android-17 \
-      --toolchain=arm-linux-androideabi-4.8
+      --install-dir=<android-toolchain-arm>/android-21 --platform=android-21 \
+      --toolchain=arm-linux-androideabi-4.9
+
+Building for aarch64 architecture:
+
+    $ cd <android-ndk>
+    $ ls platforms
+    $ cd build/tools
+    $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
+      --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
+      --toolchain=android-linux-aarch64-4.9
 
 Building for x86 architecture:
 
@@ -150,8 +162,8 @@ Building for x86 architecture:
     $ ls platforms
     $ cd build/tools
     $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
-      --install-dir=<android-toolchain-x86>/android-17 --platform=android-17 \
-      --toolchain=x86-4.8 --arch=x86 --system=linux-x86_64
+      --install-dir=<android-toolchain-x86>/android-21 --platform=android-21 \
+      --toolchain=x86-4.9 --arch=x86
 
 Make sure to pick a toolchain for your desired architecture. If an error about
 the used system is shown - please add proper --system parameter as mentioned
@@ -360,8 +372,8 @@ is 'tools/android/packaging' and that the proper sdk/ndk paths are set.
 -Kill a misbehaving Kodi
     $ adb shell ps | grep org.xbmc | awk '{print $2}' | xargs adb shell kill
 
--Filter logcat messages by a specific tag (e.g. "XBMC")
-    $ adb logcat -s XBMC:V
+-Filter logcat messages by a specific tag (e.g. "Kodi")
+    $ adb logcat -s Kodi:V
 
 -Enable CheckJNI (BEFORE starting the application)
     $ adb shell setprop debug.checkjni 1
