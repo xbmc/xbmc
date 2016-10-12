@@ -22,7 +22,6 @@ elseif(NOT CORE_SYSTEM_NAME STREQUAL windows)
 
   if(CORE_SYSTEM_NAME STREQUAL android)
     add_custom_command(TARGET wrapper.def COMMAND echo \"-L${DEPENDS_PATH}/lib/dummy-lib${APP_NAME_LC} -l${APP_NAME_LC}\" >> wrapper.def)
-    add_dependencies(wrapper.def ${APP_NAME_LC})
   endif()
 
   set_target_properties(wrapper PROPERTIES FOLDER "Build Utilities")
