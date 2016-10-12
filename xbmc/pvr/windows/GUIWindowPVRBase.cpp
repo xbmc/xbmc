@@ -622,7 +622,7 @@ bool CGUIWindowPVRBase::EditTimer(CFileItem *item)
   const CPVRTimerInfoTagPtr newTimer(new CPVRTimerInfoTag);
   newTimer->UpdateEntry(timer);
 
-  if (ShowTimerSettings(newTimer) && !timer->GetTimerType()->IsReadOnly())
+  if (ShowTimerSettings(newTimer) && (!timer->GetTimerType()->IsReadOnly() || timer->GetTimerType()->SupportsEnableDisable()))
   {
     if (newTimer->GetTimerType() == timer->GetTimerType())
     {
