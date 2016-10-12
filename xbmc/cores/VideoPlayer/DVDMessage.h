@@ -216,31 +216,32 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true, bool restore = true, bool trickplay = false, bool sync = true)
-    : CDVDMsg(PLAYER_SEEK)
-    , m_time(time)
-    , m_backward(backward)
-    , m_flush(flush)
-    , m_accurate(accurate)
-    , m_restore(restore)
-    , m_trickplay(trickplay)
-    , m_sync(sync)
+  struct CMode
+  {
+    int time = 0;
+    bool relative = false;
+    bool backward = false;
+    bool flush = true;
+    bool accurate = true;
+    bool sync = true;
+    bool restore = true;
+    bool trickplay = false;
+  };
+
+  CDVDMsgPlayerSeek(CDVDMsgPlayerSeek::CMode mode) : CDVDMsg(PLAYER_SEEK),
+    m_mode(mode)
   {}
-  int  GetTime()              { return m_time; }
-  bool GetBackward()          { return m_backward; }
-  bool GetFlush()             { return m_flush; }
-  bool GetAccurate()          { return m_accurate; }
-  bool GetRestore()           { return m_restore; }
-  bool GetTrickPlay()         { return m_trickplay; }
-  bool GetSync()              { return m_sync; }
+  int GetTime() { return m_mode.time; }
+  bool GetRelative() { return m_mode.relative; }
+  bool GetBackward() { return m_mode.backward; }
+  bool GetFlush() { return m_mode.flush; }
+  bool GetAccurate() { return m_mode.accurate; }
+  bool GetRestore() { return m_mode.restore; }
+  bool GetTrickPlay() { return m_mode.trickplay; }
+  bool GetSync() { return m_mode.sync; }
+
 private:
-  int  m_time;
-  bool m_backward;
-  bool m_flush;
-  bool m_accurate;
-  bool m_restore; // whether to restore any EDL cut time
-  bool m_trickplay;
-  bool m_sync;
+  CMode m_mode;
 };
 
 class CDVDMsgPlayerSeekChapter : public CDVDMsg
