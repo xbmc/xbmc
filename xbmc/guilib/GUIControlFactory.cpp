@@ -682,7 +682,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float spinWidth = 16;
   float spinHeight = 16;
   float spinPosX = 0, spinPosY = 0;
-  float checkWidth = 0, checkHeight = 0;
   std::string strSubType;
   int iType = SPIN_CONTROL_TYPE_TEXT;
   int iMin = 0;
@@ -886,8 +885,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetFloat(pControlNode, "spinposx", spinPosX);
   XMLUtils::GetFloat(pControlNode, "spinposy", spinPosY);
 
-  XMLUtils::GetFloat(pControlNode, "markwidth", checkWidth);
-  XMLUtils::GetFloat(pControlNode, "markheight", checkHeight);
   XMLUtils::GetFloat(pControlNode, "sliderwidth", sliderWidth);
   XMLUtils::GetFloat(pControlNode, "sliderheight", sliderHeight);
   if (!GetTexture(pControlNode, "textureradioonfocus", textureRadioOnFocus) || !GetTexture(pControlNode, "textureradioonnofocus", textureRadioOnNoFocus))

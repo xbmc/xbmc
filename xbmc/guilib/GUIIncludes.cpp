@@ -73,8 +73,6 @@ CGUIIncludes::CGUIIncludes()
   m_constantNodes.insert("radioposy");
   m_constantNodes.insert("radiowidth");
   m_constantNodes.insert("radioheight");
-  m_constantNodes.insert("markwidth");
-  m_constantNodes.insert("markheight");
   m_constantNodes.insert("sliderwidth");
   m_constantNodes.insert("sliderheight");
   m_constantNodes.insert("itemgap");
