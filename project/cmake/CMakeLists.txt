@@ -336,7 +336,7 @@ else()
   add_dependencies(${APP_NAME_LC} export-files pack-skins)
 endif()
 whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
-target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC})
 unset(_MAIN_LIBRARIES)
 
 if(WIN32)
