@@ -50,6 +50,7 @@ void CDVDMessageQueue::Init()
   m_bInitialized = true;
   m_TimeBack = DVD_NOPTS_VALUE;
   m_TimeFront = DVD_NOPTS_VALUE;
+  m_drain = false;
 }
 
 void CDVDMessageQueue::Flush(CDVDMsg::Message type)
@@ -171,7 +172,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
   {
     std::list<DVDMessageListItem> &msgs = (priority > 0 || !m_prioMessages.empty()) ? m_prioMessages : m_messages;
 
-    if (!msgs.empty() && msgs.back().priority >= priority)
+    if (!msgs.empty() && (msgs.back().priority >= priority || m_drain))
     {
       DVDMessageListItem& item(msgs.back());
       priority = item.priority;
@@ -243,11 +244,21 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 
 void CDVDMessageQueue::WaitUntilEmpty()
 {
+  {
+    CSingleLock lock(m_section);
+    m_drain = true;
+  }
+
   CLog::Log(LOGNOTICE, "CDVDMessageQueue(%s)::WaitUntilEmpty", m_owner.c_str());
   CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(40000, SYNCSOURCE_ANY);
   Put(msg->Acquire());
   msg->Wait(m_bAbortRequest, 0);
   msg->Release();
+
+  {
+    CSingleLock lock(m_section);
+    m_drain = false;
+  }
 }
 
 int CDVDMessageQueue::GetLevel() const
