@@ -59,7 +59,7 @@ namespace PERIPHERALS
     /*!
     * \brief Initialize the properties of a peripheral with a known location
     */
-    virtual bool InitializeProperties(CPeripheral* peripheral) { return true; }
+    virtual bool InitializeProperties(CPeripheral* peripheral);
 
     /*!
      * @brief Get the instance of the peripheral at the given location.
