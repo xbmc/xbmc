@@ -900,7 +900,10 @@ msgctxt "#203"
 msgid "Plot outline"
 msgstr ""
 
-#empty string with id 204
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#204"
+msgid "Compilation"
+msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#205"
