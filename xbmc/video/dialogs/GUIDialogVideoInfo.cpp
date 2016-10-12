@@ -458,12 +458,18 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(CVariant{283});
 
+    CVideoThumbLoader loader;
     for (int i = 0; i < (int)items.Size(); i++)
     {
-      CFileItemPtr pItem = items[i];
-      pDlgSelect->Add(pItem->GetLabel());
+      if (items[i]->HasVideoInfoTag() &&
+          items[i]->GetVideoInfoTag()->m_playCount > 0)
+        items[i]->SetLabel2(g_localizeStrings.Get(16102));
+
+      loader.LoadItem(items[i].get());
+      pDlgSelect->Add(*items[i]);
     }
 
+    pDlgSelect->SetUseDetails(true);
     pDlgSelect->Open();
 
     int iItem = pDlgSelect->GetSelectedItem();
