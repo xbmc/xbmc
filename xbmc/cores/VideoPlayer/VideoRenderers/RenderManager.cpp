@@ -151,6 +151,7 @@ CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) :
   m_lateframes(-1),
   m_presentpts(0.0),
   m_presentstep(PRESENT_IDLE),
+  m_forceNext(false),
   m_presentsource(0),
   m_dvdClock(clock),
   m_playerPort(player),
@@ -386,26 +387,22 @@ void CRenderManager::FrameMove()
   {
     CSingleLock lock2(m_presentlock);
 
-    if (m_presentstep == PRESENT_FRAME2)
+    if (m_queued.empty())
     {
-      if (!m_queued.empty())
-      {
-        m_presentstep = PRESENT_READY;
-        m_presentevent.notifyAll();
-      }
+      m_presentstep = PRESENT_IDLE;
     }
 
     if (m_presentstep == PRESENT_READY)
       PrepareNextRender();
 
-    if(m_presentstep == PRESENT_FLIP)
+    if (m_presentstep == PRESENT_FLIP)
     {
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
     }
 
-    /* release all previous */
+    // release all previous
     for (std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
     {
       // renderer may want to keep the frame for postprocessing
@@ -789,14 +786,15 @@ void CRenderManager::SetViewMode(int iViewMode)
   m_playerPort->VideoParamsChange();
 }
 
-void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts, EINTERLACEMETHOD deintMethod, EFIELDSYNC sync)
+void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts,
+                              EINTERLACEMETHOD deintMethod, EFIELDSYNC sync, bool wait)
 {
   { CSingleLock lock(m_statelock);
 
     if (bStop)
       return;
 
-    if(!m_pRenderer)
+    if (!m_pRenderer)
       return;
   }
 
@@ -833,22 +831,40 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts, EINT
 
   CSingleLock lock(m_presentlock);
 
-  if(m_free.empty())
+  if (m_free.empty())
     return;
 
   int source = m_free.front();
 
   SPresent& m = m_Queue[source];
-  m.presentfield  = sync;
+  m.presentfield = sync;
   m.presentmethod = presentmethod;
-  m.pts           = pts;
+  m.pts = pts;
   requeue(m_queued, m_free);
 
-  /* signal to any waiters to check state */
-  if(m_presentstep == PRESENT_IDLE)
+  // signal to any waiters to check state
+  if (m_presentstep == PRESENT_IDLE)
   {
     m_presentstep = PRESENT_READY;
     m_presentevent.notifyAll();
+  }
+
+  if (wait)
+  {
+    m_forceNext = true;
+    XbmcThreads::EndTime endtime(200);
+    while (m_presentstep == PRESENT_READY)
+    {
+      m_presentevent.wait(lock, 20);
+      if(endtime.IsTimePast() || bStop)
+      {
+        if (!bStop)
+        {
+          CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for render");
+        }
+      }
+    }
+    m_forceNext = false;
   }
 }
 
@@ -934,20 +950,20 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
   { CSingleLock lock(m_presentlock);
 
-    if(m_presentstep == PRESENT_FRAME)
+    if (m_presentstep == PRESENT_FRAME)
     {
-      if( m.presentmethod == PRESENT_METHOD_BOB
-         ||  m.presentmethod == PRESENT_METHOD_WEAVE)
+      if (m.presentmethod == PRESENT_METHOD_BOB ||
+          m.presentmethod == PRESENT_METHOD_WEAVE)
         m_presentstep = PRESENT_FRAME2;
       else
         m_presentstep = PRESENT_IDLE;
     }
-    else if(m_presentstep == PRESENT_FRAME2)
+    else if (m_presentstep == PRESENT_FRAME2)
       m_presentstep = PRESENT_IDLE;
 
-    if(m_presentstep == PRESENT_IDLE)
+    if (m_presentstep == PRESENT_IDLE)
     {
-      if(!m_queued.empty())
+      if (!m_queued.empty())
         m_presentstep = PRESENT_READY;
     }
 
@@ -1283,7 +1299,7 @@ void CRenderManager::PrepareNextRender()
     m_dvdClock.SetVsyncAdjust(0);
   }
 
-  if (renderPts >= nextFramePts)
+  if (renderPts >= nextFramePts || m_forceNext)
   {
     // see if any future queued frames are already due
     auto iter = m_queued.begin();
