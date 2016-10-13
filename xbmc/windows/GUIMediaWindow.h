@@ -58,6 +58,7 @@ public:
 
   const CFileItemList &CurrentDirectory() const;
   const CGUIViewState *GetViewState() const;
+  virtual bool UseFileDirectories() { return true; }
 
 protected:
   // specializations of CGUIControlGroup
