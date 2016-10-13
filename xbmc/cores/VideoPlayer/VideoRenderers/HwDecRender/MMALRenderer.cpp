@@ -1308,7 +1308,7 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
   if (m_deint_output && (sizeChanged || deinterlaceChanged || encodingChanged))
   {
     MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {{MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param)},
-          advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {3, 0, half_framerate, 1 }};
+          advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {5, 0, half_framerate, 1 }};
 
     status = mmal_port_parameter_set(m_deint_output, &imfx_param.hdr);
     if (status != MMAL_SUCCESS)
