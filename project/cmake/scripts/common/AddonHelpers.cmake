@@ -37,7 +37,7 @@ macro (build_addon target prefix libs)
   addon_version(${target} ${prefix})
   if(${prefix}_SOURCES)
     add_library(${target} ${${prefix}_SOURCES})
-    TARGET_link_libraries(${target} ${${libs}})
+    target_link_libraries(${target} ${${libs}})
     set_target_properties(${target} PROPERTIES VERSION ${${prefix}_VERSION}
                                                SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
                                                PREFIX "")
@@ -46,8 +46,6 @@ macro (build_addon target prefix libs)
     endif()
   elseif(${prefix}_CUSTOM_BINARY)
     add_custom_target(${target} ALL)
-    list(GET ${prefix}_CUSTOM_BINARY 2 dependency)
-    add_dependencies(${target} ${dependency})
   endif()
 
   # get the library's location
