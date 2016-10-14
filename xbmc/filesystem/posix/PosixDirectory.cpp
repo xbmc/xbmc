@@ -128,8 +128,9 @@ bool CPosixDirectory::Remove(const CURL& url)
 
   return !Exists(url);
 }
- bool CPosixDirectory::RemoveRecursive(const CURL& url)
- {
+
+bool CPosixDirectory::RemoveRecursive(const CURL& url)
+{
   std::string root = url.Get();
 
   if (IsAliasShortcut(root, true))
@@ -166,8 +167,6 @@ bool CPosixDirectory::Remove(const CURL& url)
     {
       if (!RemoveRecursive(CURL{ itemPath }))
         return false;
-      if (rmdir(itemPath.c_str()) != 0)
-        return false;
     }
     else
     {
@@ -175,9 +174,14 @@ bool CPosixDirectory::Remove(const CURL& url)
         return false;
     }
   }
+
   closedir(dir);
+
+  if (rmdir(root.c_str()) != 0)
+   return false;
+
   return true;
- }
+}
 
 bool CPosixDirectory::Exists(const CURL& url)
 {

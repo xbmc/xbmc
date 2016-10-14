@@ -223,12 +223,6 @@ bool CWin32Directory::RemoveRecursive(const CURL& url)
         success = false;
         break;
       }
-
-      if (FALSE == RemoveDirectoryW(pathW.c_str()))
-      {
-        success = false;
-        break;
-      }
     }
     else
     {
@@ -241,6 +235,12 @@ bool CWin32Directory::RemoveRecursive(const CURL& url)
   } while (FindNextFileW(hSearch, &findData));
 
   FindClose(hSearch);
+
+  if (success)
+  {
+    if (FALSE == RemoveDirectoryW(basePath.c_str()))
+      success = false;
+  }
 
   return success;
 }
