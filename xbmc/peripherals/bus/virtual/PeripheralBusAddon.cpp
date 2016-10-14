@@ -133,6 +133,9 @@ bool CPeripheralBusAddon::PerformDeviceScan(PeripheralScanResults &results)
 
 bool CPeripheralBusAddon::InitializeProperties(CPeripheral* peripheral)
 {
+  if (!CPeripheralBus::InitializeProperties(peripheral))
+    return false;
+
   bool bSuccess = false;
 
   PeripheralAddonPtr addon;

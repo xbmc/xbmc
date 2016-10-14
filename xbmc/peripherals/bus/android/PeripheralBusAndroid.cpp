@@ -62,6 +62,9 @@ CPeripheralBusAndroid::~CPeripheralBusAndroid()
 
 bool CPeripheralBusAndroid::InitializeProperties(CPeripheral* peripheral)
 {
+  if (!CPeripheralBus::InitializeProperties(peripheral))
+    return false;
+
   if (peripheral == nullptr || peripheral->Type() != PERIPHERAL_JOYSTICK)
   {
     CLog::Log(LOGWARNING, "CPeripheralBusAndroid: unknown peripheral");

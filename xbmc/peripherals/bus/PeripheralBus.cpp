@@ -43,6 +43,24 @@ CPeripheralBus::CPeripheralBus(const std::string &threadname, CPeripherals *mana
 {
 }
 
+bool CPeripheralBus::InitializeProperties(CPeripheral* peripheral)
+{
+  if (peripheral == nullptr)
+    return false;
+
+  if (peripheral->Type() == PERIPHERAL_JOYSTICK)
+  {
+    // Ensure an add-on is present to translate input
+    if (!g_peripherals.GetInstance().GetAddonWithButtonMap(peripheral))
+    {
+      CLog::Log(LOGWARNING, "Button mapping add-on not present for %s (%s), skipping", peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void CPeripheralBus::OnDeviceAdded(const std::string &strLocation)
 {
   ScanForDevices();
