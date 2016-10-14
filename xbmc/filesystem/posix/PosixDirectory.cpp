@@ -140,6 +140,7 @@ bool CPosixDirectory::RemoveRecursive(const CURL& url)
   if (!dir)
     return false;
 
+  bool success(true);
   struct dirent* entry;
   while ((entry = readdir(dir)) != NULL)
   {
@@ -166,21 +167,30 @@ bool CPosixDirectory::RemoveRecursive(const CURL& url)
     if (entry->d_type == DT_DIR || (bStat && S_ISDIR(buffer.st_mode)))
     {
       if (!RemoveRecursive(CURL{ itemPath }))
-        return false;
+      {
+        success = false;
+        break;
+      }
     }
     else
     {
       if (unlink(itemPath.c_str()) != 0)
-        return false;
+      {
+        success = false;
+        break;
+      }
     }
   }
 
   closedir(dir);
 
-  if (rmdir(root.c_str()) != 0)
-   return false;
+  if (success)
+  {
+    if (rmdir(root.c_str()) != 0)
+      success = false;
+  }
 
-  return true;
+  return success;
 }
 
 bool CPosixDirectory::Exists(const CURL& url)
