@@ -39,6 +39,7 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
@@ -427,6 +428,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   else if (!iformat || (strcmp(iformat->name, "mpegts") != 0))
   {
     m_streaminfo = true;
+  }
+
+  if (iformat && (strcmp(iformat->name, "mov,mp4,m4a,3gp,3g2,mj2") == 0))
+  {
+    if (URIUtils::IsRemote(strFile))
+      m_pFormatContext->iformat->flags |= AVFMT_NOGENSEARCH;
   }
 
   // we need to know if this is matroska or avi later
@@ -1093,9 +1100,17 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     CSingleLock lock(m_critSection);
     ret = av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
 
-    // demuxer will return failure, if you seek behind eof
-    if (ret < 0 && m_pFormatContext->duration && seek_pts >= (m_pFormatContext->duration + m_pFormatContext->start_time))
-      ret = 0;
+    // demuxer can return failure, if seeking behind eof
+    if (ret < 0 && m_pFormatContext->duration &&
+        seek_pts >= (m_pFormatContext->duration + m_pFormatContext->start_time))
+    {
+      // force eof
+      // files of realtime streams may grow
+      if (!m_pInput->IsRealtime())
+        m_pInput->Close();
+      else
+        ret = 0;
+    }
     else if (ret < 0 && m_pInput->IsEOF())
       ret = 0;
 
