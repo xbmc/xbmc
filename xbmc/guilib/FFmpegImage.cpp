@@ -364,6 +364,12 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   if (m_width == 0 || m_height == 0 || format != XB_FMT_A8R8G8B8)
     return false;
 
+  if (pixels == nullptr)
+  {
+    CLog::Log(LOGERROR, "%s - No valid buffer pointer (nullptr) passed", __FUNCTION__);
+    return false;
+  }
+
   if (!m_pFrame || !m_pFrame->data[0])
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "AVFrame member not allocated");
@@ -375,6 +381,12 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
 bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels)
 {
+  if (pixels == nullptr)
+  {
+    CLog::Log(LOGERROR, "%s - No valid buffer pointer (nullptr) passed", __FUNCTION__);
+    return false;
+  }
+
   AVFrame* pictureRGB = av_frame_alloc();
   if (!pictureRGB)
   {
