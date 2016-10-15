@@ -2530,6 +2530,7 @@ void CVideoPlayer::HandleMessages()
 
       if (!m_State.canseek)
       {
+        m_processInfo->SetStateSeeking(false);
         pMsg->Release();
         continue;
       }
@@ -2543,6 +2544,7 @@ void CVideoPlayer::HandleMessages()
             DVD_TIME_TO_MSEC(now - m_State.lastSeek) < 2000 &&
             !msg.GetAccurate())
         {
+          m_processInfo->SetStateSeeking(false);
           pMsg->Release();
           continue;
         }
@@ -2613,6 +2615,8 @@ void CVideoPlayer::HandleMessages()
       // dvd's will issue a HOP_CHANNEL that we need to skip
       if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         m_dvd.state = DVDSTATE_SEEK;
+
+      m_processInfo->SetStateSeeking(false);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER) &&
              m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK) == 0 &&
@@ -3594,6 +3598,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
   mode.sync = true;
 
   m_messenger.Put(new CDVDMsgPlayerSeek(mode));
+  m_processInfo->SetStateSeeking(true);
 
   m_callback.OnPlayBackSeek((int)abstime, iTime);
   return true;

@@ -220,3 +220,18 @@ bool CDataCacheCore::IsRenderClockSync()
 
   return m_renderInfo.m_isClockSync;
 }
+
+// player states
+void CDataCacheCore::SetStateSeeking(bool active)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_stateSeeking = active;
+}
+
+bool CDataCacheCore::CDataCacheCore::IsSeeking()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_stateSeeking;
+}
