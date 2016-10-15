@@ -11,6 +11,7 @@ SRCS=Addon.cpp \
      ContextMenuAddon.cpp \
      ContextMenus.cpp \
      AudioDecoder.cpp \
+     FilesystemInstaller.cpp \
      GUIDialogAddonInfo.cpp \
      GUIDialogAddonSettings.cpp \
      GUIViewStateAddonBrowser.cpp \
