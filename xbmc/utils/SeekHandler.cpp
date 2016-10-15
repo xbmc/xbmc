@@ -24,9 +24,11 @@
 #include <stdlib.h>
 
 #include "Application.h"
+#include "cores/DataCacheCore.h"
 #include "FileItem.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -204,7 +206,7 @@ int CSeekHandler::GetSeekSize() const
 
 bool CSeekHandler::InProgress() const
 {
-  return m_requireSeek;
+  return m_requireSeek || CServiceBroker::GetDataCacheCore().IsSeeking();
 }
 
 void CSeekHandler::Process()
