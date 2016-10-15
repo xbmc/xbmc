@@ -16016,7 +16016,7 @@ msgid "Game add-ons"
 msgstr ""
 
 #. Name of controller add-ons
-#: addons/skin.confluence/720p/DialogGameControllers.xml
+#: addons/skin.estuary/720p/DialogGameControllers.xml
 #: xbmc/addons/Addon.cpp
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
 msgctxt "#35050"
@@ -16056,13 +16056,13 @@ msgid "Controller configuration is disabled. Install the proper joystick support
 msgstr ""
 
 #. Title of controller configuration window
-#: addons/skin.confluence/720p/DialogGameControllers.xml
+#: addons/skin.estuary/720p/DialogGameControllers.xml
 msgctxt "#35058"
 msgid "Controller Configuration"
 msgstr ""
 
 #. Heading for controller buttons list in controller configuration window
-#: addons/skin.confluence/720p/DialogGameControllers.xml
+#: addons/skin.estuary/720p/DialogGameControllers.xml
 msgctxt "#35059"
 msgid "Buttons"
 msgstr ""

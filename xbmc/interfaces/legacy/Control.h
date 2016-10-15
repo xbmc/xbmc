@@ -58,7 +58,7 @@ namespace XBMCAddon
     /// Kodi is noted as having a very flexible and robust framework for its
     /// GUI, making theme-skinning and personal customization very accessible.
     /// Users can create their own skin (or modify an existing skin) and share
-    /// it with others. Confluence is the official skin.
+    /// it with others.
     ///
     /// Kodi includes a new GUI library written from scratch. This library
     /// allows you to skin/change everything you see in Kodi, from the images,
