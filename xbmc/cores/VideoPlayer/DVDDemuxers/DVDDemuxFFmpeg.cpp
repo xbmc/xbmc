@@ -55,6 +55,7 @@
 #endif
 
 extern "C" {
+#include "libavutil/dict.h"
 #include "libavutil/opt.h"
 }
 
@@ -1208,6 +1209,14 @@ int CDVDDemuxFFmpeg::GetNrOfStreams() const
 
 double CDVDDemuxFFmpeg::SelectAspect(AVStream* st, bool& forced)
 {
+  // for stereo modes, use codec aspect ratio
+  AVDictionaryEntry *entry = av_dict_get(st->metadata, "stereo_mode", NULL, 0);
+  if (entry)
+  {
+    forced = false;
+    return av_q2d(st->codecpar->sample_aspect_ratio);
+  }
+
   // trust matroshka container
   if (m_bMatroska && st->sample_aspect_ratio.num != 0)
   {
