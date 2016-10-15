@@ -60,12 +60,14 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
   m_renderInfo.Reset();
+  m_stateSeeking = false;
 
   CServiceBroker::GetDataCacheCore().SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
   CServiceBroker::GetDataCacheCore().SetVideoDeintMethod(m_videoDeintMethod);
   CServiceBroker::GetDataCacheCore().SetVideoPixelFormat(m_videoPixelFormat);
   CServiceBroker::GetDataCacheCore().SetVideoDimensions(m_videoWidth, m_videoHeight);
   CServiceBroker::GetDataCacheCore().SetVideoFps(m_videoFPS);
+  CServiceBroker::GetDataCacheCore().SetStateSeeking(m_stateSeeking);
 }
 
 void CProcessInfo::SetVideoDecoderName(std::string name, bool isHw)
@@ -343,4 +345,21 @@ void CProcessInfo::UpdateRenderInfo(CRenderInfo &info)
     if (!Supports(deint))
       m_deintMethods.push_back(deint);
   }
+}
+
+// player states
+void CProcessInfo::SetStateSeeking(bool active)
+{
+  CSingleLock lock(m_renderSection);
+
+  m_stateSeeking = active;
+
+  CServiceBroker::GetDataCacheCore().SetStateSeeking(active);
+}
+
+bool CProcessInfo::IsSeeking()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateSeeking;
 }

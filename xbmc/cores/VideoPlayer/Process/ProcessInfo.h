@@ -70,6 +70,10 @@ public:
   bool IsRenderClockSync();
   void UpdateRenderInfo(CRenderInfo &info);
 
+  // player states
+  void SetStateSeeking(bool active);
+  bool IsSeeking();
+
 protected:
   CProcessInfo();
 
@@ -97,4 +101,8 @@ protected:
   CCriticalSection m_renderSection;
   bool m_isClockSync;
   CRenderInfo m_renderInfo;
+
+  // player states
+  CCriticalSection m_stateSection;
+  bool m_stateSeeking;
 };
