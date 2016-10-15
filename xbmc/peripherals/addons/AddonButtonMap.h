@@ -25,6 +25,7 @@
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
+#include "threads/CriticalSection.h"
 
 namespace PERIPHERALS
 {
@@ -104,5 +105,6 @@ namespace PERIPHERALS
     const std::string   m_strControllerId;
     FeatureMap          m_features;
     DriverMap           m_driverMap;
+    CCriticalSection    m_mutex;
   };
 }
