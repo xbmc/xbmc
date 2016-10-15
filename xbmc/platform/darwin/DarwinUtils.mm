@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "CompileInfo.h"
+#include "platform/Platform.h"
 
 #undef BOOL
 
@@ -748,6 +749,45 @@ bool CDarwinUtils::CreateAliasShortcut(const std::string& fromPath, const std::s
   }
 #endif
   return ret;
+}
+
+std::string CDarwinUtils::GetHardwareUUID()
+{
+  static std::string uuid = CPlatform::NoValidUUID;
+  if (uuid == CPlatform::NoValidUUID)
+  {
+#if defined(TARGET_DARWIN_OSX)
+    io_registry_entry_t ioRegistryRoot = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/");
+    CFStringRef uuidCf = (CFStringRef) IORegistryEntryCreateCFProperty(ioRegistryRoot, CFSTR(kIOPlatformUUIDKey), kCFAllocatorDefault, 0);
+    IOObjectRelease(ioRegistryRoot);
+    CFStringRefToString(uuidCf, uuid);
+    CFRelease(uuidCf);
+#elif defined(TARGET_DARWIN_IOS)
+    NSString *nsuuid = nullptr;
+    // all info about identifiers can be found here:
+    // http://nshipster.com/uuid-udid-unique-identifier/
+    // apple doesn't want us to call uniqueIdentifier and deprecated it
+    // but as long as devices are responding to it - we will call it - because
+    // 1. we don't care about app store restrictions
+    // 2. the identifier is the better one and stays "more static"
+    if ([[UIDevice currentDevice] respondsToSelector:@selector(uniqueIdentifier)])
+    {
+      nsuuid = [[UIDevice currentDevice] performSelector:@selector(uniqueIdentifier)];
+
+    }// try the official way in case the inofficial way fails
+    else if([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)])
+    {
+      nsuuid = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+    }
+    
+    if (nsuuid != nullptr)
+    {
+      uuid = [nsuuid UTF8String];
+    }
+#endif
+  }
+
+  return uuid;
 }
 
 #endif

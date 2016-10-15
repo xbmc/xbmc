@@ -1188,6 +1188,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "profileautologin", SYSTEM_PROFILEAUTOLOGIN },
                                   { "progressbar",      SYSTEM_PROGRESS_BAR },
                                   { "batterylevel",     SYSTEM_BATTERY_LEVEL },
+                                  { "hardwareuuid",     SYSTEM_HARDWARE_UUID },
                                   { "friendlyname",     SYSTEM_FRIENDLY_NAME },
                                   { "alarmpos",         SYSTEM_ALARM_POS },
                                   { "isinhibit",        SYSTEM_ISINHIBIT },
@@ -6306,6 +6307,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_UPTIME:
   case SYSTEM_TOTALUPTIME:
   case SYSTEM_BATTERY_LEVEL:
+  case SYSTEM_HARDWARE_UUID:
     return g_sysinfo.GetInfo(info);
     break;
 

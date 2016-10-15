@@ -38,6 +38,7 @@
 #include "CPUInfo.h"
 #include "CompileInfo.h"
 #include "settings/Settings.h"
+#include "ServiceBroker.h"
 
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
@@ -257,6 +258,7 @@ bool CSysInfoJob::DoWork()
   m_info.osVersionInfo     = CSysInfo::GetOsPrettyNameWithVersion() + " (kernel: " + CSysInfo::GetKernelName() + " " + CSysInfo::GetKernelVersionFull() + ")";
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
+  m_info.HardwareUUID      = CServiceBroker::GetPlatform().GetUniqueHardwareIdentifier();
   return true;
 }
 
@@ -282,11 +284,9 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 
 std::string CSysInfoJob::GetMACAddress()
 {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
   if (iface)
     return iface->GetMacAddress();
-#endif
   return "";
 }
 
@@ -387,6 +387,8 @@ std::string CSysInfo::TranslateInfo(int info) const
       return g_localizeStrings.Get(13297);
   case SYSTEM_BATTERY_LEVEL:
     return m_info.batteryLevel;
+  case SYSTEM_HARDWARE_UUID:
+    return m_info.HardwareUUID;
   default:
     return "";
   }

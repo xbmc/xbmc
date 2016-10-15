@@ -21,18 +21,18 @@
 #include "PlatformDarwin.h"
 #include <stdlib.h>
 #include "filesystem/SpecialProtocol.h"
-
-CPlatformDarwin::CPlatformDarwin()
-{
-  
-}
-
-CPlatformDarwin::~CPlatformDarwin()
-{
-  
-}
+#include "platform/darwin/DarwinUtils.h"
+#include "utils/log.h"
+#include "utils/md5.h"
 
 void CPlatformDarwin::Init()
 {
-    setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
+  CPlatform::Init();
+  setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
+}
+
+void CPlatformDarwin::InitUniqueHardwareIdentifier()
+{
+  m_uuid = CDarwinUtils::GetHardwareUUID();
+  m_uuid = XBMC::XBMC_MD5::GetMD5(m_uuid);
 }

@@ -22,14 +22,14 @@
 
 #include "platform/Platform.h"
 
-class CPlatformDarwin : public CPlatform
+class CPlatformRbpi : public CPlatform
 {
   public:
     /**\brief C'tor */
-    CPlatformDarwin() = default;
+    CPlatformRbpi() = default;
   
     /**\brief D'tor */
-    virtual ~CPlatformDarwin() = default;
+    virtual ~CPlatformRbpi() = default;
   
     void Init() override;
   

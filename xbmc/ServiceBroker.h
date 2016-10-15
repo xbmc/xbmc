@@ -42,6 +42,7 @@ namespace PVR
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
+class CPlatform;
 
 class CServiceBroker
 {
@@ -54,4 +55,5 @@ public:
   static ActiveAE::CActiveAEDSP& GetADSP();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
+  static CPlatform& GetPlatform();
 };

@@ -20,6 +20,7 @@
  *
  */
 
+#include <string>
 
 /**\brief Class for the Platform object
  *
@@ -39,7 +40,7 @@ public:
   CPlatform();
   
   /**\brief D'tor */
-  virtual ~CPlatform();
+  virtual ~CPlatform() = default;
   
   /**\brief Called at an early stage of application startup
    *
@@ -47,5 +48,29 @@ public:
    * or initialisation (like setting environment variables for example)
    */
   virtual void Init();
+  
+
+  /**\brief Geter for the m_uuid member
+   *
+   *\return the m_uuid member
+   */
+  std::string GetUniqueHardwareIdentifier();
+
+  /**\brief Called for initing the m_uuid member.
+   *
+   * This method should set m_uuid to a string which identifies the hardware we
+   * are running on. The underlaying source for this information could
+   * be a network mac address, hw serial number or other uuid that is provided
+   * by the underlaying operating system.
+   * The best identifiers are those that never change (not even during operating system upgrades).
+   * m_uuid should be filled the the MD5 Hash of the unique identifier!
+   */
+  virtual void InitUniqueHardwareIdentifier();
+  
+  // constants
+  static const std::string NoValidUUID;
+  
+  protected:
+    std::string m_uuid;
   
 };

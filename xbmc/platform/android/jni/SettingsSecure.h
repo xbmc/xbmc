@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2016 Team Kodi
  *      http://kodi.tv
@@ -20,18 +19,22 @@
  *
  */
 
-#include "platform/Platform.h"
+#include "jutils/jutils-details.hpp"
+#include "ContentResolver.h"
+#include <string>
 
-class CPlatformDarwin : public CPlatform
+namespace jni
 {
-  public:
-    /**\brief C'tor */
-    CPlatformDarwin() = default;
-  
-    /**\brief D'tor */
-    virtual ~CPlatformDarwin() = default;
-  
-    void Init() override;
-  
-    void InitUniqueHardwareIdentifier() override;
+    
+    class CJNISettingsSecure
+    {
+    public:
+        static void PopulateStaticFields();
+        static std::string getString(CJNIContentResolver resolver, std::string name);
+      
+        static std::string ANDROID_ID;
+        
+    };
+    
 };
+

@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2016 Team Kodi
  *      http://kodi.tv
@@ -20,18 +18,19 @@
  *
  */
 
-#include "platform/Platform.h"
+#include "SettingsSecure.h"
 
-class CPlatformDarwin : public CPlatform
+using namespace jni;
+
+std::string CJNISettingsSecure::ANDROID_ID;
+
+void CJNISettingsSecure::PopulateStaticFields()
 {
-  public:
-    /**\brief C'tor */
-    CPlatformDarwin() = default;
-  
-    /**\brief D'tor */
-    virtual ~CPlatformDarwin() = default;
-  
-    void Init() override;
-  
-    void InitUniqueHardwareIdentifier() override;
-};
+  jhclass clazz = find_class("android/provider/Settings$Secure");
+  ANDROID_ID = (jcast<std::string>(get_static_field<jhstring>(clazz, "ANDROID_ID")));
+}
+                                  
+std::string CJNISettingsSecure::getString(CJNIContentResolver resolver, std::string name)
+{
+  return jcast<std::string>(call_static_method<jhstring>("android/provider/Settings$Secure", "getString", "(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;", resolver.get_raw(), jcast<jhstring>(name)));
+}

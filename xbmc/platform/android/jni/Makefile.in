@@ -62,6 +62,7 @@ SRCS      += DisplayMetrics.cpp
 SRCS      += KeyEvent.cpp
 SRCS      += InputManager.cpp
 SRCS      += Os.cpp
+SRCS      += SettingsSecure.cpp
 
 LIB        = jni.a
 

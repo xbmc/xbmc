@@ -54,6 +54,7 @@ public:
   std::string osVersionInfo;
   std::string macAddress;
   std::string batteryLevel;
+  std::string HardwareUUID;
 };
 
 class CSysInfoJob : public CJob

@@ -18,10 +18,17 @@
  *
  */
 
+#include "system.h"
 #include "Platform.h"
+#include "Application.h"
+#include "network/Network.h"
+#include "utils/log.h"
+#include "utils/md5.h"
+
+const std::string CPlatform::NoValidUUID = "NOUUID";
 
 // Override for platform ports
-#if !defined(PLATFORM_OVERRIDE)
+#if !defined(PLATFORM_OVERRIDE_CLASSPLATFORM)
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -34,16 +41,26 @@ CPlatform* CPlatform::CreateInstance()
 
 CPlatform::CPlatform()
 {
-  
-}
-
-CPlatform::~CPlatform()
-{
-  
+  m_uuid = NoValidUUID;
 }
 
 void CPlatform::Init()
 {
-  // nothing for now
+  InitUniqueHardwareIdentifier();
+}
+
+void CPlatform::InitUniqueHardwareIdentifier()
+{
+  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+  if (iface)
+  {
+    m_uuid = iface->GetMacAddress();
+    m_uuid = XBMC::XBMC_MD5::GetMD5(m_uuid);
+  }
+}
+
+std::string CPlatform::GetUniqueHardwareIdentifier()
+{
+  return m_uuid;
 }
 

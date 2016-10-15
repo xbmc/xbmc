@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2016 Team Kodi
  *      http://kodi.tv
@@ -20,18 +18,42 @@
  *
  */
 
-#include "platform/Platform.h"
+#include "PlatformRbpi.h"
+#include <stdlib.h>
+#include <string.h>
+#include "utils/log.h"
+#include "utils/md5.h"
 
-class CPlatformDarwin : public CPlatform
+CPlatform* CPlatform::CreateInstance()
 {
-  public:
-    /**\brief C'tor */
-    CPlatformDarwin() = default;
-  
-    /**\brief D'tor */
-    virtual ~CPlatformDarwin() = default;
-  
-    void Init() override;
-  
-    void InitUniqueHardwareIdentifier() override;
-};
+    return new CPlatformRbpi();
+}
+
+void CPlatformRbpi::Init()
+{
+  // call base init
+  CPlatform::Init();
+  // add platform specific init stuff here
+}
+
+void CPlatformRbpi::InitUniqueHardwareIdentifier()
+{
+  FILE *f = fopen("/proc/cpuinfo", "r");
+  if (f)
+  {
+    char line[256];
+    while (fgets(line, sizeof line, f))
+    {
+      if (strncmp(line, "Serial", 6) == 0)
+      {
+        char *colon = strchr(line, ':');
+        if (colon)
+        {
+          m_uuid = colon + 2;
+          m_uuid = XBMC::XBMC_MD5::GetMD5(m_uuid);
+        }
+      }
+    }
+    fclose(f);
+  }
+}
