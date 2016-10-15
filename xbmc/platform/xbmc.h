@@ -19,5 +19,8 @@
  */
 
 #pragma once
-extern "C" int XBMC_Run(bool renderGUI);
+
+class CFileItemList;
+
+extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist);
 

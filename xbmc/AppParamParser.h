@@ -25,13 +25,12 @@ class CAppParamParser
   public:
     CAppParamParser();
     void Parse(const char* argv[], int nArgs);
+    CFileItemList m_playlist;
 
   private:
     bool m_testmode;
-    CFileItemList m_playlist;
     void ParseArg(const std::string &arg);
     void DisplayHelp();
     void DisplayVersion();
     void EnableDebugMode();
-    void PlayPlaylist();
 };
