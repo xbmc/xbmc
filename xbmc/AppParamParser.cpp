@@ -21,7 +21,6 @@
 #include "AppParamParser.h"
 #include "PlayListPlayer.h"
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
@@ -77,7 +76,6 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
       }
     }
   }
-  PlayPlaylist();
 }
 
 void CAppParamParser::DisplayVersion()
@@ -149,13 +147,3 @@ void CAppParamParser::ParseArg(const std::string &arg)
   }
 }
 
-void CAppParamParser::PlayPlaylist()
-{
-  if (m_playlist.Size() > 0)
-  {
-    g_playlistPlayer.Add(0, m_playlist);
-    g_playlistPlayer.SetCurrentPlaylist(0);
-  }
-
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
-}

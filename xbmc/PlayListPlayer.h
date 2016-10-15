@@ -21,12 +21,15 @@
 
 #include "guilib/IMsgTargetCallback.h"
 #include "messaging/IMessageTarget.h"
+#include "ServiceBroker.h"
 #include <memory>
 
 #define PLAYLIST_NONE    -1
 #define PLAYLIST_MUSIC   0
 #define PLAYLIST_VIDEO   1
 #define PLAYLIST_PICTURE 2
+
+#define g_playlistPlayer CServiceBroker::GetPlaylistPlayer()
 
 class CAction;
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
@@ -205,9 +208,3 @@ protected:
 };
 
 }
-
-/*!
- \ingroup windows
- \brief Global instance of playlist player
- */
-extern PLAYLIST::CPlayListPlayer g_playlistPlayer;

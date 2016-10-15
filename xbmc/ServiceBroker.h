@@ -39,6 +39,11 @@ namespace PVR
   class CPVRManager;
 }
 
+namespace PLAYLIST
+{
+  class CPlayListPlayer;
+}
+
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
@@ -54,4 +59,5 @@ public:
   static ActiveAE::CActiveAEDSP& GetADSP();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
+  static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
 };

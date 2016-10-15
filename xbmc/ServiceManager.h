@@ -42,6 +42,11 @@ namespace PVR
 class CPVRManager;
 }
 
+namespace PLAYLIST
+{
+  class CPlayListPlayer;
+}
+
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
@@ -65,6 +70,8 @@ public:
    */
   CPlatform& GetPlatform();
 
+  PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
+
 protected:
   struct delete_dataCacheCore
   {
@@ -85,4 +92,5 @@ protected:
   std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
+  std::unique_ptr<PLAYLIST::CPlayListPlayer> m_playlistPlayer;
 };

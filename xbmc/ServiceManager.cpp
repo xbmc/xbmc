@@ -23,6 +23,7 @@
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/DataCacheCore.h"
+#include "PlayListPlayer.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -38,6 +39,8 @@ bool CServiceManager::Init1()
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
   
   m_Platform.reset(CPlatform::CreateInstance());
+
+  m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
   return true;
 }
@@ -129,6 +132,11 @@ CDataCacheCore& CServiceManager::GetDataCacheCore()
 CPlatform& CServiceManager::GetPlatform()
 {
   return *m_Platform;
+}
+
+PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
+{
+  return *m_playlistPlayer;
 }
 
 // deleters for unique_ptr

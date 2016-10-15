@@ -33,7 +33,7 @@
 #include "platform/MessagePrinter.h"
 
 
-extern "C" int XBMC_Run(bool renderGUI)
+extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
 {
   int status = -1;
 
@@ -86,7 +86,7 @@ extern "C" int XBMC_Run(bool renderGUI)
 
   try
   {
-    status = g_application.Run();
+    status = g_application.Run(playlist);
   }
 #ifdef TARGET_WINDOWS
   catch (const XbmcCommons::UncheckedException &e)

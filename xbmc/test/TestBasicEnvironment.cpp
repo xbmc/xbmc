@@ -30,6 +30,7 @@
 #include "settings/Settings.h"
 #include "Util.h"
 #include "Application.h"
+#include "PlayListPlayer.h"
 #include "interfaces/AnnouncementManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "interfaces/python/XBPython.h"

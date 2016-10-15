@@ -427,7 +427,8 @@ using namespace KODI::MESSAGING;
     try
     {
       CCocoaAutoPool innerpool;
-      g_application.Run();
+      CFileItemList playlist;
+      g_application.Run(playlist);
     }
     catch(...)
     {

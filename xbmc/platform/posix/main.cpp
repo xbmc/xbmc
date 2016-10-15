@@ -76,5 +76,5 @@ int main(int argc, char* argv[])
   CAppParamParser appParamParser;
   appParamParser.Parse(const_cast<const char**>(argv), argc);
   
-  return XBMC_Run(renderGUI);
+  return XBMC_Run(renderGUI, appParamParser.m_playlist);
 }

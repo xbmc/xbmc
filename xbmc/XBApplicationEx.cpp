@@ -19,6 +19,9 @@
  */
 
 #include "system.h"
+#include "FileItem.h"
+#include "messaging/ApplicationMessenger.h"
+#include "PlayListPlayer.h"
 #include "XBApplicationEx.h"
 #include "utils/log.h"
 #include "threads/SystemClock.h"
@@ -59,13 +62,20 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
-INT CXBApplicationEx::Run()
+INT CXBApplicationEx::Run(CFileItemList &playlist)
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
 
   unsigned int lastFrameTime = 0;
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
+
+  if (playlist.Size() > 0)
+  {
+    g_playlistPlayer.Add(0, playlist);
+    g_playlistPlayer.SetCurrentPlaylist(0);
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+  }
 
   // Run xbmc
   while (!m_bStop)
@@ -102,7 +112,11 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      if (!m_bStop) FrameMove(true, m_renderGUI);
+      if (!m_bStop)
+      {
+        FrameMove(true, m_renderGUI);
+      }
+
       //reset exception count
 #ifdef XBMC_TRACK_EXCEPTIONS
     }
@@ -123,7 +137,10 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      if (m_renderGUI && !m_bStop) Render();
+      if (m_renderGUI && !m_bStop)
+      {
+        Render();
+      }
       else if (!m_renderGUI)
       {
         frameTime = XbmcThreads::SystemClockMillis() - lastFrameTime;

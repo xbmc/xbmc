@@ -23,6 +23,8 @@
 
 #include "guilib/IWindowManagerCallback.h"
 
+class CFileItemList;
+
 // Do not change the numbering, external scripts depend on them
 enum {
   EXITCODE_QUIT      = 0,
@@ -49,7 +51,7 @@ public:
   virtual void SetRenderGUI(bool renderGUI) {};
 
 public:
-  INT Run();
+  INT Run(CFileItemList &playlist);
   VOID Destroy();
 
 private:
