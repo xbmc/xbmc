@@ -109,6 +109,22 @@ void CPeripheralAddon::ResetProperties(void)
   m_apiVersion = ADDON::AddonVersion("0.0.0");
 }
 
+void CPeripheralAddon::OnDisabled()
+{
+  CAddon::OnDisabled();
+  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+  if (addonBus)
+    addonBus->UpdateAddons();
+}
+
+void CPeripheralAddon::OnEnabled()
+{
+  CAddon::OnEnabled();
+  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+  if (addonBus)
+    addonBus->UpdateAddons();
+}
+
 ADDON::AddonPtr CPeripheralAddon::GetRunningInstance(void) const
 {
   PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
@@ -119,6 +135,22 @@ ADDON::AddonPtr CPeripheralAddon::GetRunningInstance(void) const
       return peripheralAddon;
   }
   return CAddon::GetRunningInstance();
+}
+
+void CPeripheralAddon::OnPostInstall(bool update, bool modal)
+{
+  CAddon::OnPostInstall(update, modal);
+  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+  if (addonBus)
+    addonBus->UpdateAddons();
+}
+
+void CPeripheralAddon::OnPostUnInstall()
+{
+  CAddon::OnPostUnInstall();
+  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
+  if (addonBus)
+    addonBus->UpdateAddons();
 }
 
 ADDON_STATUS CPeripheralAddon::CreateAddon(void)
