@@ -50,6 +50,7 @@ GCRY_THREAD_OPTION_PTHREAD_IMPL;
 
 /* ========================================================================= */
 /* openssl locking implementation for curl */
+#if defined(HAVE_OPENSSL) && OPENSSL_VERSION_NUMBER < 0x10100000L
 static CCriticalSection* getlock(int index)
 {
   return g_cryptThreadingInitializer.get_lock(index);
@@ -57,7 +58,7 @@ static CCriticalSection* getlock(int index)
 
 static void lock_callback(int mode, int type, const char* file, int line)
 {
-  if (mode & 0x01 /* CRYPTO_LOCK from openssl/crypto.h */ )
+  if (mode & CRYPTO_LOCK)
     getlock(type)->lock();
   else
     getlock(type)->unlock();
@@ -67,12 +68,13 @@ static unsigned long thread_id()
 {
   return (unsigned long)CThread::GetCurrentThreadId();
 }
+#endif
 /* ========================================================================= */
 
 CryptThreadingInitializer::CryptThreadingInitializer()
 {
   bool attemptedToSetSSLMTHook = false;
-#ifdef HAVE_OPENSSL
+#if defined(HAVE_OPENSSL) && OPENSSL_VERSION_NUMBER < 0x10100000L
   // set up OpenSSL
   numlocks = CRYPTO_num_locks();
   CRYPTO_set_id_callback(thread_id);
@@ -102,7 +104,7 @@ CryptThreadingInitializer::CryptThreadingInitializer()
 CryptThreadingInitializer::~CryptThreadingInitializer()
 {
   CSingleLock l(locksLock);
-#ifdef HAVE_OPENSSL
+#if defined(HAVE_OPENSSL) && OPENSSL_VERSION_NUMBER < 0x10100000L
   CRYPTO_set_locking_callback(NULL);
 #endif
 
