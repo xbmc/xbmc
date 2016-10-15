@@ -2,8 +2,8 @@ include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile
 
 # lib name, version
-LIBNAME=platform
-VERSION=1.0.10
+LIBNAME=p8-platform
+VERSION=2.0.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

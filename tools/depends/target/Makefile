@@ -14,7 +14,7 @@ DEPENDS = \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
-	libxslt ffmpeg platform crossguid \
+	libxslt ffmpeg p8-platform crossguid \
         libdvdread libdvdnav libdvdcss
 
 
@@ -101,7 +101,7 @@ pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
-libcec: platform
+libcec: p8-platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)
