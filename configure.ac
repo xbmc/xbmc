@@ -719,6 +719,7 @@ fi
 
 # platform debug flags
 if test "$use_debug" = "yes"; then
+  CMAKE_BUILD_TYPE="Debug"
   final_message="$final_message\n  Debugging:\tYes"
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
@@ -728,6 +729,7 @@ if test "$use_debug" = "yes"; then
     DEBUG_FLAGS="-g -D_DEBUG -Wall"
   fi
 else
+  CMAKE_BUILD_TYPE="Release"
   final_message="$final_message\n  Debugging:\tNo"
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
@@ -2268,6 +2270,8 @@ OUTPUT_FILES="$OUTPUT_FILES \
   .dummy"
 AC_SUBST(CORE_SYSTEM_NAME)
 AC_SUBST(CORE_SYSTEM_VARIANT)
+AC_SUBST(CROSS_COMPILING)
+AC_SUBST(CMAKE_BUILD_TYPE)
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
@@ -2321,7 +2325,6 @@ AC_SUBST(HAVE_SSE4)
 AC_SUBST(USE_MMAL)
 AC_SUBST(USE_X11)
 AC_SUBST(USE_OPTICAL_DRIVE)
-AC_SUBST(CROSS_COMPILING)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

@@ -135,7 +135,9 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
+ifeq (@CMAKE_BUILD_TYPE@,Release)
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
+endif
 	install -p $(GDBPATH) ./xbmc/libs/$(CPU)/gdbserver
 	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/libs/$(CPU)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \

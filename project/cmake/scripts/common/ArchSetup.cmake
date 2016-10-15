@@ -133,3 +133,8 @@ if(NOT DEFINED NEON OR NEON)
     add_options(CXX ALL_BUILDS "-mfpu=neon -mvectorize-with-neon-quad")
   endif()
 endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_options (ALL_LANGUAGES DEBUG "-g" "-D_DEBUG" "-Wall")
+endif()
+
