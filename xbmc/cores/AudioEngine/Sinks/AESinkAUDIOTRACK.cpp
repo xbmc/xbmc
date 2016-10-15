@@ -528,12 +528,16 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     m_offset = m_headPos;
   }
 
-  if (m_offset > m_headPos)
+  if (m_offset != -1 && (uint64_t) m_offset > m_headPos)
   {
-    CLog::Log(LOGDEBUG, "You did it wrong man - fully wrong! offset %lld head pos %u", m_offset, head_pos);
+    CLog::Log(LOGDEBUG, "You did it wrong man - fully wrong! offset %lld head pos %llu", m_offset, m_headPos);
     m_offset = 0;
   }
-  uint64_t normHead_pos = m_headPos - m_offset;
+
+  // we might not yet be running here, but we need m_offset to track first PT fillup
+  uint64_t normHead_pos = m_headPos;
+  if (m_offset > 0)
+    m_headPos -= m_offset;
 
   // this makes EAC3 working even when AML is not enabled
   if (aml_present() && m_info.m_wantsIECPassthrough &&
