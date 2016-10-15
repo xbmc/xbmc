@@ -496,13 +496,6 @@ MediaLibrary.prototype = {
     $("#togglePoster").removeClass('activeMode');
     $("#toggleLandscape").removeClass('activeMode');
     switch(view) {
-      case 'poster':
-        xbmc.core.setCookie('TVView','poster');
-        wthumblist='135px';
-        hthumblist='199px';
-        hthumbdetails='559px';
-        $("#togglePoster").addClass('activeMode');
-        break;
       case 'landscape':
         xbmc.core.setCookie('TVView','landscape');
         wthumblist='210px';
@@ -510,14 +503,21 @@ MediaLibrary.prototype = {
         hthumbdetails='213px';
         $("#toggleLandscape").addClass('activeMode');
         break;
-      default:
+      case 'banner':
         xbmc.core.setCookie('TVView','banner');
         wthumblist='379px';
         hthumblist='70px';
         hthumbdetails='70px';
         $("#toggleBanner").addClass('activeMode');
         break;
-    }
+      default:
+        xbmc.core.setCookie('TVView','poster');
+        wthumblist='135px';
+        hthumblist='199px';
+        hthumbdetails='559px';
+        $("#togglePoster").addClass('activeMode');
+        break;
+  }
     $(".floatableTVShowCover, .floatableTVShowCover div.imgWrapper, .floatableTVShowCover img, .floatableTVShowCover div.imgWrapper div.inner").css('width',wthumblist).css('height',hthumblist);
     $(".floatableTVShowCoverSeason div.imgWrapper, .floatableTVShowCoverSeason div.imgWrapper div.inner,.floatableTVShowCoverSeason img, .floatableTVShowCoverSeason").css('height',hthumbdetails);
   },
@@ -886,7 +886,11 @@ MediaLibrary.prototype = {
             'studio',
             'mpaa',
             'premiered'
-          ]
+          ],
+          'sort': {
+            'method': 'sorttitle',
+            'ignorearticle': true
+          }
         },
         'success': function (data) {
           if (data && data.result && data.result.tvshows) {
