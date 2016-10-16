@@ -187,6 +187,7 @@ namespace XBMCAddon
       /// \ingroup python_monitor
       /// @brief \python_func{ onDatabaseScanStarted(database) }
       ///-----------------------------------------------------------------------
+      /// @python_v13 New function added.
       /// @python_v14 Deprecated. Use **onScanStarted()**.
       ///
       onDatabaseScanStarted(...);
@@ -218,6 +219,8 @@ namespace XBMCAddon
       ///
       /// @note Will be called when library clean has ended and return video or
       /// music to indicate which library has been cleaned
+      ///-----------------------------------------------------------------------
+      /// @python_v14 New function added.
       ///
       onCleanStarted(...);
 #else
@@ -236,6 +239,8 @@ namespace XBMCAddon
       ///
       /// @note Will be called when library clean has ended and return video or
       /// music to indicate which library has been finished
+      ///-----------------------------------------------------------------------
+      /// @python_v14 New function added.
       ///
       onCleanFinished(...);
 #else
@@ -251,9 +256,6 @@ namespace XBMCAddon
       ///
       onAbortRequested();
 #else
-      /**
-       * onAbortRequested() -- Deprecated, use waitForAbort() to be notified about this event.\n
-       */
       virtual void    onAbortRequested() { XBMC_TRACE; }
 #endif
 
@@ -269,6 +271,8 @@ namespace XBMCAddon
       /// @param data                JSON-encoded data of the notification
       ///
       /// @note Will be called when Kodi receives or sends a notification
+      ///-----------------------------------------------------------------------
+      /// @python_v13 New function added.
       ///
       onNotification(...);
 #else
@@ -304,6 +308,8 @@ namespace XBMCAddon
       /// Returns True if abort has been requested.
       ///
       /// @return                        True if requested
+      ///-----------------------------------------------------------------------
+      /// @python_v14 New function added.
       ///
       abortRequested();
 #else

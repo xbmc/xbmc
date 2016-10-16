@@ -57,6 +57,8 @@ namespace XBMCAddon
     ///
     ///
     ///-------------------------------------------------------------------------
+    /// @python_v13
+    /// **id** is optional as it will be auto detected for this add-on instance.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -91,6 +93,8 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v13
+      /// **id** is optional as it will be auto detected for this add-on instance.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -117,6 +121,9 @@ namespace XBMCAddon
       ///
       ///
       ///-----------------------------------------------------------------------
+      /// @python_v13
+      /// **id** is optional as it will be auto detected for this add-on instance.
+      ///            
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
