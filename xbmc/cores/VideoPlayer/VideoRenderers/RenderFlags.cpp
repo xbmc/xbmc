@@ -123,8 +123,8 @@ namespace RenderManager {
       convert["row_interleaved_lr"]     = "row_interleaved_rl";
       convert["col_interleaved_rl"]     = "col_interleaved_lr";
       convert["col_interleaved_lr"]     = "col_interleaved_rl";
-      convert["block_lr"]               = "block_lr";
-      convert["block_rl"]               = "block_rl";
+      convert["block_lr"]               = "block_rl";
+      convert["block_rl"]               = "block_lr";
     }
     std::string res = convert[mode];
     if(res.empty())
