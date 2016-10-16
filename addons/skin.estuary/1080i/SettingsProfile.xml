@@ -170,7 +170,6 @@
 						<top>275</top>
 						<width>305</width>
 						<height>100</height>
-						<textcolor>grey</textcolor>
 						<font>font10</font>
 						<align>center</align>
 						<aligny>top</aligny>
@@ -182,7 +181,6 @@
 						<width>305</width>
 						<height>100</height>
 						<font>font10</font>
-						<textcolor>grey</textcolor>
 						<align>center</align>
 						<aligny>top</aligny>
 						<label fallback="13170">$INFO[ListItem.Label2]</label>
