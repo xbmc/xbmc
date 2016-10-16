@@ -101,7 +101,7 @@ namespace XBMCAddon
     }
 
 
-    int Dialog::select(const String& heading, const std::vector<String>& list, int autoclose, int preselect)
+    int Dialog::select(const String& heading, const std::vector<Alternative<String, const ListItem* > > & list, int autoclose, int preselect, bool useDetails)
     {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -111,18 +111,17 @@ namespace XBMCAddon
       pDialog->Reset();
       if (!heading.empty())
         pDialog->SetHeading(CVariant{heading});
-
-      String listLine;
-      for(unsigned int i = 0; i < list.size(); i++)
+      for (const auto& item : list)
       {
-        listLine = list[i];
-          pDialog->Add(listLine);
+        AddonClass::Ref<ListItem> ritem = item.which() == XBMCAddon::first ? ListItem::fromString(item.former()) : AddonClass::Ref<ListItem>(item.later());
+        CFileItemPtr& fileItem = ritem->item;
+        pDialog->Add(*fileItem);
       }
       if (preselect > -1)
         pDialog->SetSelected(preselect);
       if (autoclose > 0)
         pDialog->SetAutoClose(autoclose);
-
+      pDialog->SetUseDetails(useDetails);
       pDialog->Open();
 
       return pDialog->GetSelectedItem();
@@ -130,7 +129,7 @@ namespace XBMCAddon
 
 
     std::unique_ptr<std::vector<int>> Dialog::multiselect(const String& heading,
-        const std::vector<String>& options, int autoclose, const std::vector<int>& preselect)
+        const std::vector<Alternative<String, const ListItem* > > & options, int autoclose, const std::vector<int>& preselect, bool useDetails)
     {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -141,12 +140,15 @@ namespace XBMCAddon
       pDialog->SetMultiSelection(true);
       pDialog->SetHeading(CVariant{heading});
 
-      for (const auto& option : options)
-        pDialog->Add(option);
-
+      for (const auto& item : options)
+      {
+        AddonClass::Ref<ListItem> ritem = item.which() == XBMCAddon::first ? ListItem::fromString(item.former()) : AddonClass::Ref<ListItem>(item.later());
+        CFileItemPtr& fileItem = ritem->item;
+        pDialog->Add(*fileItem);
+      }
       if (autoclose > 0)
         pDialog->SetAutoClose(autoclose);
-
+      pDialog->SetUseDetails(useDetails);
       pDialog->SetSelected(preselect);
       pDialog->Open();
 
