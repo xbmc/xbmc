@@ -3828,6 +3828,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "dateadded",        LISTITEM_DATE_ADDED },
                                   { "dbtype",           LISTITEM_DBTYPE },
                                   { "dbid",             LISTITEM_DBID },
+                                  { "appearances",      LISTITEM_APPEARANCES },
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
@@ -10509,6 +10510,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         if (dbId > -1)
           return StringUtils::Format("%i", dbId);
       }
+    break;
+  case LISTITEM_APPEARANCES:
+    if (item->HasVideoInfoTag())
+    {
+      int appearances = item->GetVideoInfoTag()->m_relevance;
+      if (appearances > -1)
+        return StringUtils::Format("%i", appearances);
+    }
     break;
   case LISTITEM_STEREOSCOPIC_MODE:
     {
