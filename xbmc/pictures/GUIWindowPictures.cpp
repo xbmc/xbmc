@@ -467,7 +467,8 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
       {
         if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
         {
-          buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
+          if (item->IsPicture())
+            buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
           buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
         }
         if (item->m_bIsFolder)
