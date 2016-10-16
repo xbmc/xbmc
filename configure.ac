@@ -626,9 +626,13 @@ case $host in
      ARCH="aarch64"
      use_arch="aarch64"
      use_neon=yes
-     use_gles=yes
-     use_gl=no
-     use_wayland=no
+     # Check whether --enable-gl was given.
+     if test "${enable_gl+set}" = set; then :
+       enableval=$enable_gl; use_gl=$enableval
+     else
+       use_gl=no
+       use_gles=yes
+     fi
      USE_STATIC_FFMPEG=1
      ;;
   arm*-*linux-android*)
