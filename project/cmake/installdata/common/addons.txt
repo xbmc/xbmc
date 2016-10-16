@@ -33,7 +33,7 @@ addons/screensaver.xbmc.builtin.black/*
 addons/script.module.pil/*
 addons/script.module.pysqlite/*
 addons/resource.language.en_gb/*
-addons/resource.uisounds.confluence/*
+addons/resource.uisounds.kodi/*
 addons/resource.images.weathericons.default/*
 addons/service.xbmc.versioncheck/*
 addons/metadata.local/*

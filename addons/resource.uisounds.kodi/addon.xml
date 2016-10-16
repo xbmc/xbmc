@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="resource.uisounds.confluence" version="1.0.0" name="Confluence UI Sounds" provider-name="Team Kodi">
+<addon id="resource.uisounds.kodi" version="1.0.0" name="Kodi UI Sounds" provider-name="Team Kodi">
   <requires>
     <import addon="kodi.resource" version="1.0.0"/>
   </requires>
   <extension point="kodi.resource.uisounds"/>
   <extension point="kodi.addon.metadata">
-    <summary lang="en">Confluence GUI sounds</summary>
-    <description lang="en">Confluence GUI sounds</description>
+    <summary lang="en">Kodi GUI sounds</summary>
+    <description lang="en">Kodi GUI sounds</description>
     <platform>all</platform>
   </extension>
 </addon>
