@@ -109,6 +109,11 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   {
     size_t size = GetPitch() * GetRows();
     m_pixels = (unsigned char*) _aligned_malloc(size, 16);
+
+    if (m_pixels == nullptr)
+    {
+      CLog::Log(LOGERROR, "%s - Could not allocate %zu bytes. Out of memory.", __FUNCTION__, size);
+    }
   }
 }
 
@@ -121,6 +126,9 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
     return;
 
   Allocate(width, height, format);
+  
+  if (m_pixels == nullptr)
+    return;
 
   unsigned int srcPitch = pitch ? pitch : GetPitch(width);
   unsigned int srcRows = GetRows(height);
@@ -148,6 +156,9 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
 
 void CBaseTexture::ClampToEdge()
 {
+  if (m_pixels == nullptr)
+    return;
+
   unsigned int imagePitch = GetPitch(m_imageWidth);
   unsigned int imageRows = GetRows(m_imageHeight);
   unsigned int texturePitch = GetPitch(m_textureWidth);
@@ -302,7 +313,7 @@ bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned in
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {
       Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
-      if (pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
+      if (m_pixels != nullptr && pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
       {
         if (pImage->Orientation())
           m_orientation = pImage->Orientation() - 1;
