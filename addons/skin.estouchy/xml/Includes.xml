@@ -165,14 +165,14 @@
 			<posy>0</posy>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<visible>!Skin.HasSetting(HideVideoBackground) + Player.HasVideo + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels) + !Window.IsVisible(TVGuide) + !Window.IsVisible(RadioGuide) + !Window.IsVisible(TVSearch) + !Window.IsVisible(RadioSearch) + !Window.IsVisible(TVTimers) + !Window.IsVisible(RadioTimers) + !Window.IsVisible(TVTimerRules) + !Window.IsVisible(RadioTimerRules) + !Window.IsVisible(TVRecordings) + !Window.IsVisible(RadioRecordings)</visible>
+			<visible>!Skin.HasSetting(HideVideoBackground) + Player.HasVideo + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels) + !Window.IsVisible(TVGuide) + !Window.IsVisible(RadioGuide) + !Window.IsVisible(TVSearch) + !Window.IsVisible(RadioSearch) + !Window.IsVisible(TVTimers) + !Window.IsVisible(RadioTimers) + !Window.IsVisible(TVTimerRules) + !Window.IsVisible(RadioTimerRules) + !Window.IsVisible(TVRecordings) + !Window.IsVisible(RadioRecordings) + !SlideShow.IsActive</visible>
 		</control>
 		<control type="visualisation">
 			<posx>0</posx>
 			<posy>0</posy>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<visible>!Skin.HasSetting(HideVizBackground) + Player.HasAudio</visible>
+			<visible>!Skin.HasSetting(HideVizBackground) + Player.HasAudio + !SlideShow.IsActive</visible>
 		</control>
 		<control type="image">
 			<posx>0</posx>
