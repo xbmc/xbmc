@@ -634,11 +634,21 @@ void CGUIWindowSlideShow::Render()
 {
   g_graphicsContext.Clear(0xff000000);
 
-  if (m_Image[m_iCurrentPic].IsLoaded())
-    m_Image[m_iCurrentPic].Render();
+  if (m_slides.at(m_iCurrentSlide)->IsVideo())
+  {
+    g_graphicsContext.SetViewWindow(0, 0, m_coordsRes.iWidth, m_coordsRes.iHeight);
+    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+    g_application.m_pPlayer->Render(true, 255);
+    g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+  }
+  else
+  {
+    if (m_Image[m_iCurrentPic].IsLoaded())
+      m_Image[m_iCurrentPic].Render();
 
-  if (m_Image[m_iCurrentPic].DrawNextImage() && m_Image[1 - m_iCurrentPic].IsLoaded())
-    m_Image[1 - m_iCurrentPic].Render();
+    if (m_Image[m_iCurrentPic].DrawNextImage() && m_Image[1 - m_iCurrentPic].IsLoaded())
+      m_Image[1 - m_iCurrentPic].Render();
+  }
 
   RenderErrorMessage();
   CGUIWindow::Render();
