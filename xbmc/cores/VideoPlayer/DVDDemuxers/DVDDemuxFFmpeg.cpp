@@ -581,9 +581,12 @@ void CDVDDemuxFFmpeg::Reset()
 
 void CDVDDemuxFFmpeg::Flush()
 {
-  // naughty usage of an internal ffmpeg function
   if (m_pFormatContext)
+  {
+    if (m_pFormatContext->pb)
+      avio_flush(m_pFormatContext->pb);
     avformat_flush(m_pFormatContext);
+  }
 
   m_currentPts = DVD_NOPTS_VALUE;
 
@@ -1077,9 +1080,6 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
       *startpts = DVD_NOPTS_VALUE;
 
     Flush();
-
-    // also empty the internal ffmpeg buffer
-    m_ioContext->buf_ptr = m_ioContext->buf_end;
 
     return true;
   }
