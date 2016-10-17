@@ -314,10 +314,9 @@ void CGUIWindowSlideShow::ShowPrevious()
   m_bLoadNextPic = true;
 }
 
-
 void CGUIWindowSlideShow::Select(const std::string& strPicture)
 {
-  for (int i = 0; i < m_slides.size(); ++i)
+  for (size_t i = 0; i < m_slides.size(); ++i)
   {
     const CFileItemPtr item = m_slides.at(i);
     if (item->GetPath() == strPicture)
@@ -559,6 +558,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
     else if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
+      g_application.m_pPlayer->CloseFile();
+      m_bPlayingVideo = false;
+
       // first time render the next image, make sure using current display effect.
       if (!m_Image[1 - m_iCurrentPic].IsStarted())
       {
@@ -750,6 +752,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_STOP:
     if (m_slides.size())
       AnnouncePlayerStop(m_slides.at(m_iCurrentSlide));
+    g_application.m_pPlayer->CloseFile();
     Close();
     break;
 
@@ -955,13 +958,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_PLAYLISTPLAYER_STOPPED:
       {
-      }
-      break;
-
-    case GUI_MSG_PLAYBACK_STARTED:
-      {
-        if (m_bPlayingVideo)
-          g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
       }
       break;
 
