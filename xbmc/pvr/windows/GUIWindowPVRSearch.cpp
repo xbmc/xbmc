@@ -169,8 +169,6 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 
   if (m_bSearchConfirmed)
   {
-    m_bSearchConfirmed = false;
-
     bAddSpecialSearchItem = true;
 
     items.Clear();
