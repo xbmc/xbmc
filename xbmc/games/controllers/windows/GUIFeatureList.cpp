@@ -191,8 +191,8 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
   std::vector<std::string> groupNames;
   for (const CControllerFeature& feature : features)
   {
-    if (std::find(groupNames.begin(), groupNames.end(), feature.Group()) == groupNames.end())
-      groupNames.push_back(feature.Group());
+    if (std::find(groupNames.begin(), groupNames.end(), feature.CategoryLabel()) == groupNames.end())
+      groupNames.push_back(feature.CategoryLabel());
   }
 
   // Divide features into groups
@@ -201,7 +201,7 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
     FeatureGroup group = { groupName };
     for (const CControllerFeature& feature : features)
     {
-      if (feature.Group() == groupName)
+      if (feature.CategoryLabel() == groupName)
         group.features.push_back(feature);
     }
     groups.emplace_back(std::move(group));

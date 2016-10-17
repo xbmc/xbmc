@@ -97,32 +97,32 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     CLog::Log(LOGDEBUG, "<%s> tag has no \"%s\" attribute", LAYOUT_XML_ROOT, LAYOUT_XML_ATTR_LAYOUT_IMAGE);
 
   // Features
-  for (const TiXmlElement* pGroup = pElement->FirstChildElement(); pGroup != nullptr; pGroup = pGroup->NextSiblingElement())
+  for (const TiXmlElement* pCategory = pElement->FirstChildElement(); pCategory != nullptr; pCategory = pCategory->NextSiblingElement())
   {
-    if (pGroup->ValueStr() != LAYOUT_XML_ELM_GROUP)
+    if (pCategory->ValueStr() != LAYOUT_XML_ELM_CATEGORY)
     {
-      CLog::Log(LOGDEBUG, "<%s> tag is misnamed: <%s>", LAYOUT_XML_ELM_GROUP, pGroup->Value() ? pGroup->Value() : "");
+      CLog::Log(LOGERROR, "<%s> tag is misnamed: <%s>", LAYOUT_XML_ELM_CATEGORY, pCategory->Value() ? pCategory->Value() : "");
       continue;
     }
 
-    // Group
-    std::string strGroup;
+    // Category
+    std::string strCategoryLabel;
 
-    std::string strGroupLabel = XMLUtils::GetAttribute(pGroup, LAYOUT_XML_ATTR_GROUP_LABEL);
-    if (!strGroupLabel.empty())
+    std::string strCategoryLabelId = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_LABEL);
+    if (!strCategoryLabelId.empty())
     {
-      unsigned int categoryId;
-      std::istringstream(strGroupLabel) >> categoryId;
-      strGroup = g_localizeStrings.GetAddonString(controller->ID(), categoryId);
-      if (strGroup.empty())
-        strGroup = g_localizeStrings.Get(categoryId);
+      unsigned int categoryLabelId;
+      std::istringstream(strCategoryLabelId) >> categoryLabelId;
+      strCategoryLabel = g_localizeStrings.GetAddonString(controller->ID(), categoryLabelId);
+      if (strCategoryLabel.empty())
+        strCategoryLabel = g_localizeStrings.Get(categoryLabelId);
     }
 
-    for (const TiXmlElement* pFeature = pGroup->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
+    for (const TiXmlElement* pFeature = pCategory->FirstChildElement(); pFeature != nullptr; pFeature = pFeature->NextSiblingElement())
     {
       CControllerFeature feature;
 
-      if (!feature.Deserialize(pFeature, controller, strGroup))
+      if (!feature.Deserialize(pFeature, controller, strCategoryLabel))
         return false;
 
       m_features.push_back(feature);
