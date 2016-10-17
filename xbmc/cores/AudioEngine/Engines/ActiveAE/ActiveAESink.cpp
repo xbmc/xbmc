@@ -27,8 +27,6 @@
 #include "utils/EndianSwap.h"
 #include "ActiveAE.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
-
-#include "settings/Settings.h"
 #include "utils/log.h"
 
 #include <new> // for std::bad_alloc
@@ -50,6 +48,7 @@ CActiveAESink::CActiveAESink(CEvent *inMsgEvent) :
   m_stats = nullptr;
   m_volume = 0.0;
   m_packer = nullptr;
+  m_streamNoise = true;
 }
 
 void CActiveAESink::Start()
@@ -322,6 +321,14 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           m_extStreaming = *(bool*)msg->data;
           return;
 
+        case CSinkControlProtocol::SETSILENCETIMEOUT:
+          m_silenceTimeOut = *(int*)msg->data;
+          return;
+
+        case CSinkControlProtocol::SETNOISETYPE:
+          m_streamNoise = *(bool*)msg->data;
+          return;
+
         default:
           break;
         }
@@ -394,6 +401,17 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           m_volume = *(float*)msg->data;
           m_sink->SetVolume(m_volume);
           return;
+
+        case CSinkControlProtocol::SETNOISETYPE:
+        {
+          bool streamNoise = *(bool*)msg->data;
+          if (streamNoise != m_streamNoise)
+          {
+            m_streamNoise = streamNoise;
+            GenerateNoise();
+          }
+        }
+        return;
         default:
           break;
         }
@@ -1064,22 +1082,28 @@ void CActiveAESink::GenerateNoise()
 {
   int nb_floats = m_sampleOfSilence.pkt->max_nb_samples;
   nb_floats *= m_sampleOfSilence.pkt->config.channels;
+  size_t size = nb_floats*sizeof(float);
 
-  float *noise = (float*)_aligned_malloc(nb_floats*sizeof(float), 16);
+  float *noise = (float*)_aligned_malloc(size, 16);
   if (!noise)
     throw std::bad_alloc();
 
-  float R1, R2;
-  for(int i=0; i<nb_floats;i++)
+  if (!m_streamNoise)
+    memset(noise, 0, size);
+  else
   {
-    do
+    float R1, R2;
+    for(int i = 0; i < nb_floats; i++)
     {
-      R1 = (float) rand() / (float) RAND_MAX;
-      R2 = (float) rand() / (float) RAND_MAX;
+      do
+      {
+        R1 = (float) rand() / (float) RAND_MAX;
+        R2 = (float) rand() / (float) RAND_MAX;
+      }
+      while(R1 == 0.0f);
+
+      noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
     }
-    while(R1 == 0.0f);
-    
-    noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
   }
 
   SampleConfig config = m_sampleOfSilence.pkt->config;
@@ -1109,8 +1133,9 @@ void CActiveAESink::SetSilenceTimer()
   if (m_extStreaming)
     m_extSilenceTimeout = XbmcThreads::EndTime::InfiniteValue;
   else if (m_extAppFocused)
-    m_extSilenceTimeout = CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE) * 60000;
+    m_extSilenceTimeout = m_silenceTimeOut;
   else
     m_extSilenceTimeout = 0;
+
   m_extSilenceTimer.Set(m_extSilenceTimeout);
 }
