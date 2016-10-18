@@ -27,6 +27,7 @@
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 using namespace GAME;
@@ -44,6 +45,7 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_currentButton = nullptr;
   m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
+  m_startTimeMs = 0;
 }
 
 void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons)
@@ -92,6 +94,8 @@ void CGUIConfigurationWizard::Process(void)
 {
   CLog::Log(LOGDEBUG, "Starting configuration wizard");
 
+  m_startTimeMs = XbmcThreads::SystemClockMillis();
+
   InstallHooks();
 
   {
@@ -123,7 +127,9 @@ void CGUIConfigurationWizard::Process(void)
         break;
     }
 
+    // Finished mapping
     m_currentButton = nullptr;
+    m_startTimeMs = 0;
   }
 
   if (ButtonMapCallback())
@@ -192,6 +198,16 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
   }
   
   return bHandled;
+}
+
+int CGUIConfigurationWizard::MappingDurationMs(void) const
+{
+  CSingleLock lock(m_stateMutex);
+
+  if (m_startTimeMs != 0)
+    return XbmcThreads::SystemClockMillis() - m_startTimeMs;
+
+  return -1;
 }
 
 bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)

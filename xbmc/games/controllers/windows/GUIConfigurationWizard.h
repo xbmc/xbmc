@@ -53,6 +53,7 @@ namespace GAME
     // implementation of IButtonMapper
     virtual std::string ControllerID(void) const override { return m_strControllerId; }
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap, const JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual int MappingDurationMs(void) const override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;
@@ -79,6 +80,7 @@ namespace GAME
     IFeatureButton*                      m_currentButton;
     JOYSTICK::ANALOG_STICK_DIRECTION     m_currentDirection;
     std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
+    unsigned int                         m_startTimeMs; // The start time, or 0 if not currently mapping
     CCriticalSection                     m_stateMutex;
 
     // Synchronization event
