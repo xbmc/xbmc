@@ -70,7 +70,7 @@ msgstr ""
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#6"
-msgid "Kodi SVN"
+msgid "Kodi GIT"
 msgstr ""
 
 msgctxt "#7"
@@ -5174,8 +5174,8 @@ msgctxt "#12021"
 msgid "Start from beginning"
 msgstr ""
 
-#: xbmc\pvr\windows\GUIWindowPVRRecordings.cpp
-#: xbmc\video\windows\GUIWindowVideoBase.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
@@ -5190,61 +5190,61 @@ msgstr ""
 #empty strings from id 12024 to 12309
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12310"
 msgid "0"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12311"
 msgid "1"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12312"
 msgid "2"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12313"
 msgid "3"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12314"
 msgid "4"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12315"
 msgid "5"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12316"
 msgid "6"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12317"
 msgid "7"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12318"
 msgid "8"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogNumeric.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12319"
 msgid "9"
 msgstr ""
@@ -5265,7 +5265,7 @@ msgstr ""
 
 #empty strings from id 12323 to 12324
 
-#: xbmc\GUIPassword.cpp
+#: xbmc/GUIPassword.cpp
 msgctxt "#12325"
 msgid "Locked! Enter code..."
 msgstr ""
@@ -5322,17 +5322,17 @@ msgstr ""
 
 #empty string with id 12336
 
-#: xbmc\profiles\dialogs\GUIDialogLockSettings.cpp
+#: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
 msgctxt "#12337"
 msgid "Numeric password"
 msgstr ""
 
-#: xbmc\profiles\dialogs\GUIDialogLockSettings.cpp
+#: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
 msgctxt "#12338"
 msgid "Gamepad button combo"
 msgstr ""
 
-#: xbmc\profiles\dialogs\GUIDialogLockSettings.cpp
+#: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
 msgctxt "#12339"
 msgid "Full-text password"
 msgstr ""
@@ -5367,12 +5367,12 @@ msgctxt "#12344"
 msgid "Passwords entered did not match."
 msgstr ""
 
-#: xbmc\GUIPassword.cpp
+#: xbmc/GUIPassword.cpp
 msgctxt "#12345"
 msgid "Access denied"
 msgstr ""
 
-#: xbmc\GUIPassword.cpp
+#: xbmc/GUIPassword.cpp
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
 msgstr ""
@@ -5382,7 +5382,7 @@ msgctxt "#12347"
 msgid "The system will now power down."
 msgstr ""
 
-#: xbmc\GUIPassword.cpp
+#: xbmc/GUIPassword.cpp
 msgctxt "#12348"
 msgid "Item locked"
 msgstr ""
@@ -5415,8 +5415,8 @@ msgstr ""
 
 #empty string with id 12359
 
-#: xbmc\GUIPassword.cpp
-#: xbmc\profiles\dialogs\GUIDialogProfileSettings.cpp
+#: xbmc/GUIPassword.cpp
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
 msgctxt "#12360"
 msgid "Master lock"
 msgstr ""
@@ -5430,7 +5430,7 @@ msgstr ""
 
 #empty strings from id 12363 to 12366
 
-#: xbmc\GUIPassword.cpp
+#: xbmc/GUIPassword.cpp
 msgctxt "#12367"
 msgid "Master code is not valid. Please enter a valid master code."
 msgstr ""
@@ -5444,15 +5444,15 @@ msgstr ""
 
 #empty strings from id 12374 to 12375
 
-#: xbmc\settings\dialogs\GUIDialogAudioDSPSettings.cpp
-#: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
-#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+#: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#12376"
 msgid "Set as default for all media"
 msgstr ""
 
-#: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
-#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#12377"
 msgid "This will reset any previously saved values. Are you sure?"
 msgstr ""
@@ -5502,18 +5502,18 @@ msgctxt "#12390"
 msgid "System uptime"
 msgstr ""
 
-#: xbmc\utils\SystemInfo.cpp
+#: xbmc/utils/SystemInfo.cpp
 #: addons/skin.estuary/1080i/Variables.xml
 msgctxt "#12391"
 msgid "Minutes"
 msgstr ""
 
-#: xbmc\utils\SystemInfo.cpp
+#: xbmc/utils/SystemInfo.cpp
 msgctxt "#12392"
 msgid "Hours"
 msgstr ""
 
-#: xbmc\utils\SystemInfo.cpp
+#: xbmc/utils/SystemInfo.cpp
 msgctxt "#12393"
 msgid "Days"
 msgstr ""
@@ -5608,13 +5608,12 @@ msgid "Suspend"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogButtonMenu.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/Home.xml
 msgctxt "#13012"
 msgid "Exit"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogButtonMenu.xml
-#: skin.estouchy
 msgctxt "#13013"
 msgid "Reboot"
 msgstr ""
@@ -5630,7 +5629,6 @@ msgid "Power button action"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogButtonMenu.xml
-#: skin.estouchy
 msgctxt "#13016"
 msgid "Power off system"
 msgstr ""
@@ -5652,17 +5650,17 @@ msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr ""
 
-#: xbmc\storage\MediaManager.cpp
+#: xbmc/storage/MediaManager.cpp
 msgctxt "#13021"
 msgid "Mounted removable storage device"
 msgstr ""
 
-#: xbmc\storage\MediaManager.cpp
+#: xbmc/storage/MediaManager.cpp
 msgctxt "#13022"
 msgid "Unsafe storage device removal"
 msgstr ""
 
-#: xbmc\storage\MediaManager.cpp
+#: xbmc/storage/MediaManager.cpp
 msgctxt "#13023"
 msgid "Successfully removed storage device"
 msgstr ""
@@ -5732,14 +5730,14 @@ msgstr ""
 
 #empty strings from id 13037 to 13049
 
-#: xbmc\powermanagement\PowerManager.cpp
+#: xbmc/powermanagement/PowerManager.cpp
 msgctxt "#13050"
 msgid "Running low on battery"
 msgstr ""
 
 #empty strings from id 13051 to 13099
 
-#: xbmc\interfaces\legacy\Window.cpp
+#: xbmc/interfaces/legacy/Window.cpp
 msgctxt "#13100"
 msgid "Flicker filter"
 msgstr ""
@@ -5774,12 +5772,12 @@ msgctxt "#13109"
 msgid "Test & apply the resolution"
 msgstr ""
 
-#: xbmc\settings\DisplaySettings.cpp
+#: xbmc/settings/DisplaySettings.cpp
 msgctxt "#13110"
 msgid "Save this resolution?"
 msgstr ""
 
-#: xbmc\settings\DisplaySettings.cpp
+#: xbmc/settings/DisplaySettings.cpp
 msgctxt "#13111"
 msgid "Would you like to keep this change?"
 msgstr ""
@@ -5820,7 +5818,7 @@ msgctxt "#13119"
 msgid "Sinc"
 msgstr ""
 
-#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#13120"
 msgid "VDPAU"
 msgstr ""
@@ -5850,24 +5848,24 @@ msgstr ""
 
 #empty strings from id 13133 to 13139
 
-#: xbmc\network\NetworkServices.cpp
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#13140"
 msgid "Active connections detected!"
 msgstr ""
 
-#: xbmc\network\NetworkServices.cpp
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control this application any longer. Are you sure you want to stop the event server?"
 msgstr ""
 
 #empty strings from id 13142 to 13143
 
-#: xbmc\osx\XBMCHelper.cpp
+#: xbmc/osx/XBMCHelper.cpp
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
 msgstr ""
 
-#: xbmc\osx\XBMCHelper.cpp
+#: xbmc/osx/XBMCHelper.cpp
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control this application, changing this setting might affect your ability to continue controlling it. Do you want to proceed?"
 msgstr ""
@@ -5923,8 +5921,8 @@ msgstr ""
 
 #empty strings from id 13175 to 13199
 
-#: skin.estouchy
-#: xbmc\profiles\ProfilesManager.cpp
+#: addons/skin.estouchy/xml/SettingsProfile.xml
+#: xbmc/profiles/ProfilesManager.cpp
 #: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
 #: addons/skin.estuary/1080i/SettingsProfile.xml
 #: addons/skin.estuary/1080i/Includes.xml
@@ -5932,7 +5930,7 @@ msgctxt "#13200"
 msgid "Profiles"
 msgstr ""
 
-#: xbmc\profiles\ProfilesManager.cpp
+#: xbmc/profiles/ProfilesManager.cpp
 msgctxt "#13201"
 msgid "Delete profile '%s'?"
 msgstr ""
@@ -14140,7 +14138,7 @@ msgid "Version:"
 msgstr ""
 
 #: addons/skin.estuary/1080i/DialogAddonInfo.xml
-#: skin.estouchy
+#: addons/skin.estouchy/xml/DialogAddonInfo.xml
 msgctxt "#24052"
 msgid "Disclaimer"
 msgstr ""
@@ -14338,7 +14336,7 @@ msgctxt "#24090"
 msgid "Lock add-on manager"
 msgstr ""
 
-#: xbmc\addons\GUIDialogAddonInfo.cpp
+#: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24091"
 msgid "This add-on can't be disabled"
 msgstr ""
@@ -14574,7 +14572,7 @@ msgid "Audio DSP"
 msgstr ""
 
 #. To open dsp submenu
-#: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#24136"
 msgid "Audio DSP..."
 msgstr ""
@@ -14751,7 +14749,7 @@ msgctxt "#25005"
 msgid "Title: %d"
 msgstr ""
 
-#: xbmc\video\windows\GUIWindowVideoBase.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#25006"
 msgid "Select playback item"
 msgstr ""
@@ -15519,7 +15517,7 @@ msgctxt "#33053"
 msgid "Configure the"
 msgstr ""
 
-#: xbmc\filesystem\VideoDatabaseDirectory.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory.cpp
 #: xbmc/media/MediaTypes.cpp
 #: addons/skin.estuary/1080i/View_51_Poster.xml
 msgctxt "#33054"
@@ -15567,7 +15565,6 @@ msgid "Play the"
 msgstr ""
 
 #: addons/skin.estuary/1080i/Includes.xml
-#: skin.estouchy
 msgctxt "#33063"
 msgid "Options"
 msgstr ""
@@ -15866,24 +15863,24 @@ msgstr ""
 #empty strings from id 34129 to 34200
 #34129-34200 reserved for future use
 
-#: xbmc\PlayListPlayer.cpp
+#: xbmc/PlayListPlayer.cpp
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr ""
 
-#: xbmc\PlayListPlayer.cpp
+#: xbmc/PlayListPlayer.cpp
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
 msgstr ""
 
 #empty strings from id 34203 to 34299
 
-#: xbmc\network\windows\ZeroconfWIN.cpp
+#: xbmc/network/windows/ZeroconfWIN.cpp
 msgctxt "#34300"
 msgid "Failed to start Zeroconf"
 msgstr ""
 
-#: xbmc\network\windows\ZeroconfWIN.cpp
+#: xbmc/network/windows/ZeroconfWIN.cpp
 msgctxt "#34301"
 msgid "Is Apple's Bonjour service installed? Check the log for more information about this message."
 msgstr ""
@@ -15900,12 +15897,12 @@ msgstr ""
 
 #empty strings from id 34304 to 34399
 
-#: xbmc\cores\VideoRenderers\LinuxRendererGL.cpp
+#: xbmc/cores/VideoRenderers/LinuxRendererGL.cpp
 msgctxt "#34400"
 msgid "Video rendering"
 msgstr ""
 
-#: xbmc\cores\VideoRenderers\LinuxRendererGL.cpp
+#: xbmc/cores/VideoRenderers/LinuxRendererGL.cpp
 msgctxt "#34401"
 msgid "Failed to initialize video filters / scalers, falling back to bilinear scaling"
 msgstr ""
@@ -16016,7 +16013,7 @@ msgid "Game add-ons"
 msgstr ""
 
 #. Name of controller add-ons
-#: addons/skin.estuary/720p/DialogGameControllers.xml
+#: addons/skin.estuary/1080i/DialogGameControllers.xml
 #: xbmc/addons/Addon.cpp
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
 msgctxt "#35050"
@@ -16056,13 +16053,13 @@ msgid "Controller configuration is disabled. Install the proper joystick support
 msgstr ""
 
 #. Title of controller configuration window
-#: addons/skin.estuary/720p/DialogGameControllers.xml
+#: addons/skin.estuary/1080i/DialogGameControllers.xml
 msgctxt "#35058"
 msgid "Controller Configuration"
 msgstr ""
 
 #. Heading for controller buttons list in controller configuration window
-#: addons/skin.estuary/720p/DialogGameControllers.xml
+#: addons/skin.estuary/1080i/DialogGameControllers.xml
 msgctxt "#35059"
 msgid "Buttons"
 msgstr ""
@@ -19386,12 +19383,12 @@ msgctxt "#38023"
 msgid "Set my rating"
 msgstr ""
 
-#: \xbmc\settings\dialogs\GUIDialogContentSettings.cpp
+#: /xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#38024"
 msgid "Information provider selection"
 msgstr ""
 
-#: \xbmc\settings\dialogs\GUIDialogContentSettings.cpp
+#: /xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#38025"
 msgid "Choose information provider"
 msgstr ""
@@ -19424,13 +19421,13 @@ msgid "This option uses frame-packing to output full resolution for 3D through H
 msgstr ""
 
 #. Label for an option to select the video stream to play if current video has more than one video stream
-#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#38031"
 msgid "Video stream"
 msgstr ""
 
 #. Label for an option to select the angle to play if current disc has more than one angle
-#: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#38032"
 msgid "Angle"
 msgstr ""
