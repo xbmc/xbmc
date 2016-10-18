@@ -155,9 +155,12 @@ function(core_add_shared_library name)
     add_library(${name} SHARED ${SOURCES} ${HEADERS} ${OTHERS})
     set_target_properties(${name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
                                              RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
-                                             RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
-                                             RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
                                              OUTPUT_NAME ${OUTPUT_NAME} PREFIX "")
+    foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+      string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+      set_target_properties(${name} PROPERTIES  LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
+                                                RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY})
+    endforeach()
 
     set(LIBRARY_FILES ${LIBRARY_FILES} ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}/${OUTPUT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} CACHE STRING "" FORCE)
     add_dependencies(${APP_NAME_LC}-libraries ${name})
