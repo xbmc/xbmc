@@ -59,8 +59,6 @@ CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, fl
   m_iInfoCode = 0;
   m_dragging = false;
   m_action = NULL;
-  m_active = false;
-  m_keepactive = false;
 }
 
 CGUISliderControl::~CGUISliderControl(void)
@@ -87,7 +85,7 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
   dirty |= m_guiBackground.SetWidth(m_width);
   dirty |= m_guiBackground.Process(currentTime);
 
-  CGUITexture &nibLower = (m_active && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower) ? m_guiSelectorLowerFocus : m_guiSelectorLower;
+  CGUITexture &nibLower = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower) ? m_guiSelectorLowerFocus : m_guiSelectorLower;
   float fScale;
   if (m_orientation == HORIZONTAL)
     fScale = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
@@ -97,7 +95,7 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
   dirty |= ProcessSelector(nibLower, currentTime, fScale, RangeSelectorLower);
   if (m_rangeSelection)
   {
-    CGUITexture &nibUpper = (m_active && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper) ? m_guiSelectorUpperFocus : m_guiSelectorUpper;
+    CGUITexture &nibUpper = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper) ? m_guiSelectorUpperFocus : m_guiSelectorUpper;
     if (m_orientation == HORIZONTAL)
       fScale = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
     else
@@ -159,11 +157,11 @@ bool CGUISliderControl::ProcessSelector(CGUITexture &nib, unsigned int currentTi
 void CGUISliderControl::Render()
 {
   m_guiBackground.Render();
-  CGUITexture &nibLower = (m_active && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower) ? m_guiSelectorLowerFocus : m_guiSelectorLower;
+  CGUITexture &nibLower = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower) ? m_guiSelectorLowerFocus : m_guiSelectorLower;
   nibLower.Render();
   if (m_rangeSelection)
   {
-    CGUITexture &nibUpper = (m_active && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper) ? m_guiSelectorUpperFocus : m_guiSelectorUpper;
+    CGUITexture &nibUpper = (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorUpper) ? m_guiSelectorUpperFocus : m_guiSelectorUpper;
     nibUpper.Render();
   }
   CGUIControl::Render();
@@ -198,7 +196,7 @@ bool CGUISliderControl::OnAction(const CAction &action)
   switch ( action.GetID() )
   {
   case ACTION_MOVE_LEFT:
-    if (m_active && m_orientation == HORIZONTAL)
+    if (IsActive() && m_orientation == HORIZONTAL)
     {
       Move(-1);
       return true;
@@ -206,7 +204,7 @@ bool CGUISliderControl::OnAction(const CAction &action)
     break;
 
   case ACTION_MOVE_RIGHT:
-    if (m_active && m_orientation == HORIZONTAL)
+    if (IsActive() && m_orientation == HORIZONTAL)
     {
       Move(1);
       return true;
@@ -214,7 +212,7 @@ bool CGUISliderControl::OnAction(const CAction &action)
     break;
 
   case ACTION_MOVE_UP:
-    if (m_active && m_orientation == VERTICAL)
+    if (IsActive() && m_orientation == VERTICAL)
     {
       Move(1);
       return true;
@@ -222,7 +220,7 @@ bool CGUISliderControl::OnAction(const CAction &action)
     break;
 
   case ACTION_MOVE_DOWN:
-    if (m_active && m_orientation == VERTICAL)
+    if (IsActive() && m_orientation == VERTICAL)
     {
       Move(-1);
       return true;
@@ -230,29 +228,14 @@ bool CGUISliderControl::OnAction(const CAction &action)
     break;
 
   case ACTION_SELECT_ITEM:
-    if (!m_active)
-      m_active = true;
-    // switch between the two sliders
-    else if (m_rangeSelection && m_currentSelector == RangeSelectorLower)
+    if (m_rangeSelection)
       SwitchRangeSelector();
-    else
-    {
-      m_active = false;
-      if (m_rangeSelection)
-        SwitchRangeSelector();
-    }
-    return true;
+      return true;
 
   default:
     break;
   }
   return CGUIControl::OnAction(action);
-}
-
-void CGUISliderControl::OnUnFocus()
-{
-  if (!m_keepactive)
-    m_active = false;
 }
 
 void CGUISliderControl::Move(int iNumSteps)
@@ -505,17 +488,6 @@ void CGUISliderControl::SetFloatRange(float fStart, float fEnd)
   }
 }
 
-void CGUISliderControl::SetActive()
-{
-  m_active = true;
-}
-
-
-void CGUISliderControl::KeepActive()
-{
-  m_keepactive = true;
-}
-
 void CGUISliderControl::FreeResources(bool immediately)
 {
   CGUIControl::FreeResources(immediately);
@@ -613,7 +585,6 @@ void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector 
 
 EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  m_active = true;
   m_dragging = false;
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
