@@ -62,24 +62,25 @@ bool CIMX::Initialize()
   m_fddcic = open(DCIC_DEVICE, O_RDWR);
   if (m_fddcic < 0)
   {
-    m_frameTime = 0;
+    m_frameTime = (int) 1000 / 25;
     return false;
   }
 
   Create();
-
   return true;
 }
 
 void CIMX::Deinitialize()
 {
+  StopThread();
   CSingleLock lock(m_critSection);
 
-  StopThread();
-  m_VblankEvent.Set();
+  if (m_fddcic > 0)
+    ioctl(m_fddcic, DCIC_IOC_STOP_VSYNC, 0);
 
   if (m_fddcic > 0)
     close(m_fddcic);
+  m_fddcic = 0;
 }
 
 bool CIMX::UpdateDCIC()
@@ -129,6 +130,7 @@ void CIMX::Process()
       CLog::Log(LOGERROR, "CIMX::%s - Error occured. Exiting. Probably will need to reinitialize.", __FUNCTION__);
       break;
     }
+    std::this_thread::yield();
 
     read(m_fddcic, &m_counter, sizeof(unsigned long));
     m_VblankEvent.Set();
@@ -140,7 +142,7 @@ int CIMX::WaitVsync()
 {
   int diff;
 
-  if (!IsRunning())
+  if (m_fddcic < 1)
     Initialize();
 
   if (!m_VblankEvent.WaitMSec(m_frameTime))
@@ -154,6 +156,7 @@ int CIMX::WaitVsync()
 
 void CIMX::OnResetDisplay()
 {
+  CSingleLock lock(m_critSection);
   m_frameTime = (double)1300 / g_graphicsContext.GetFPS();
   m_change = true;
 }
