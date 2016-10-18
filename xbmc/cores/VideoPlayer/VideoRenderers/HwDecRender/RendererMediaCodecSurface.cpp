@@ -114,7 +114,7 @@ bool CRendererMediaCodecSurface::LoadShadersHook()
 bool CRendererMediaCodecSurface::RenderHook(int index)
 {
   CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[index].hwDec);
-  if (mci)
+  if (mci && !mci->IsReleased())
   {
     // this hack is needed to get the 2D mode of a 3D movie going
     RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
