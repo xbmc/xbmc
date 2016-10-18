@@ -33,6 +33,7 @@
 #include "epg/Epg.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "filesystem/StackDirectory.h"
+#include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -227,6 +228,21 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
         UpdateSelectedItemPath();
       }
       bReturn = true;
+    }
+    break;
+
+    case GUI_MSG_NOTIFY_ALL:
+    {
+      switch (message.GetParam1())
+      {
+        case GUI_MSG_UPDATE_SOURCES:
+        {
+          // removable drive connected/disconnected. base class triggers a window
+          // content refresh, which makes no sense for pvr windows.
+          bReturn = true;
+          break;
+        }
+      }
     }
     break;
   }
