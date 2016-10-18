@@ -10,6 +10,13 @@ if(NOT WIN32)
   string(REPLACE ";" " " defines "${CMAKE_C_FLAGS} ${SYSTEM_DEFINES} -I${EXPAT_INCLUDE_DIR}")
   get_filename_component(expat_dir ${EXPAT_LIBRARY} DIRECTORY)
   set(ldflags "-L${expat_dir}")
+
+  # iOS: Without specifying -arch, configure tries to use /bin/cpp as C-preprocessor
+  # http://stackoverflow.com/questions/38836754/cant-cross-compile-c-library-for-arm-ios
+  if(CORE_SYSTEM_NAME STREQUAL ios)
+    set(cppflags "-arch ${CPU}")
+  endif()
+
   ExternalProject_Add(libcpluff SOURCE_DIR ${CORE_SOURCE_DIR}/lib/cpluff
                       BUILD_IN_SOURCE 1
                       PREFIX ${CORE_BUILD_DIR}/cpluff
@@ -22,6 +29,7 @@ if(NOT WIN32)
                                         --libdir=<INSTALL_DIR>/lib
                                         --host=${ARCH}
                                         CFLAGS=${defines}
+                                        CPPFLAGS=${cppflags}
                                         LDFLAGS=${ldflags})
   ExternalProject_Add_Step(libcpluff autoreconf
                                      DEPENDEES download update patch

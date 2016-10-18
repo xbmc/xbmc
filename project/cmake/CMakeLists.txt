@@ -350,6 +350,9 @@ if(WIN32)
   target_sources(kodi PRIVATE ${CORE_SOURCE_DIR}/xbmc/platform/win32/app.manifest)
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
+elseif(CORE_SYSTEM_NAME STREQUAL ios)
+  set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
+                                                  MACOSX_BUNDLE_INFO_PLIST ${CORE_SOURCE_DIR}/xbmc/platform/darwin/ios/Info.plist.in)
 else()
   set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ".bin")
 endif()
