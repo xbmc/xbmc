@@ -650,6 +650,9 @@ void CPeripheralAddon::ResetButtonMap(const CPeripheral* device, const std::stri
 
   try { m_pStruct->ResetButtonMap(&joystickStruct, strControllerId.c_str()); }
   catch (std::exception &e) { LogException(e, "ResetButtonMap()"); return; }
+
+  // Notify observing button maps
+  RefreshButtonMaps(device->DeviceName());
 }
 
 void CPeripheralAddon::PowerOffJoystick(unsigned int index)
