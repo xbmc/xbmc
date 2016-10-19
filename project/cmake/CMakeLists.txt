@@ -115,7 +115,7 @@ else()
   list(APPEND required_deps D3DX11Effects)
 endif()
 if(CORE_SYSTEM_NAME STREQUAL android)
-  list(APPEND required_deps Zip)
+  list(APPEND required_deps Zip GMP)
 endif()
 
 # Optional dependencies
