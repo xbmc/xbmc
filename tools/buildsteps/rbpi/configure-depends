@@ -8,5 +8,5 @@ then
 
   PATH="$PATH:$JENKINS_RBPI_DEVENV/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin" \
   ./configure --with-platform=raspberry-pi --host=arm-linux-gnueabihf --prefix=$XBMC_DEPENDS_ROOT --with-tarballs=$TARBALLS \
-    --with-firmware=$JENKINS_RBPI_DEVENV/firmware --build=i686-linux
+    --with-firmware=$JENKINS_RBPI_DEVENV/firmware --build=i686-linux $DEBUG_SWITCH
 fi

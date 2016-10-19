@@ -17,5 +17,5 @@ then
     $(if [ "$SDK_VERSION" != "Default" ]; then echo --with-sdk=android-$SDK_VERSION;fi) \
     --with-toolchain=$TOOLCHAIN \
     --prefix=$XBMC_DEPENDS_ROOT \
-    --enable-neon
+    --enable-neon $DEBUG_SWITCH
 fi

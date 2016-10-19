@@ -73,6 +73,11 @@ then
   Configuration=$DEFAULT_CONFIGURATION
 fi
 
+if [ "$Configuration" == "Release" ]
+then
+  DEBUG_SWITCH='--disable-debug'
+fi
+
 #helper functions
 
 #hash a dir based on the git revision, SDK_PATH, NDK_PATH, NDK_VERSION, SDK_VERSION, TOOLCHAIN and XBMC_DEPENDS_ROOT
