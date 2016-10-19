@@ -5,9 +5,18 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
                  target/config-binaddons.site target/Toolchain_binaddons.cmake])
 AC_CANONICAL_HOST
+
+# save flags before autotools checks the compiler, since
+# it will automatically include -g in c/cxxflags
+passed_cflags="$CFLAGS"
+passed_ldflags="$LDFLAGS"
+passed_cxxflags="$CXXFLAGS"
+
 m4_include([../../m4/xbmc_arch.m4])
 m4_include([../../m4/ax_cxx_compile_stdcxx_11.m4])
-AX_CXX_COMPILE_STDCXX_11(,[optional])
+AX_CXX_COMPILE_STDCXX_11(,[mandatory])
+c11_flags="$CFLAGS"
+cxx11_flags="$CXXFLAGS"
 
 # check for not same cpu value
 AC_DEFUN([MC_CHECK_NOT_CPU],
@@ -21,6 +30,12 @@ AC_DEFUN([MC_CHECK_NOT_CPU],
       AC_MSG_RESULT([$1 is not $2])
   esac
 ])
+
+AC_ARG_ENABLE([debug],
+  [AS_HELP_STRING([--enable-debug],
+  [enable debugging information (default is yes)])],
+  [use_debug=$enableval],
+  [use_debug=yes])
 
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
@@ -101,9 +116,6 @@ deps_dir=$use_host
 tool_dir=$build_cpu-$build_os-native
 cross_compiling="yes"
 
-passed_cflags="$CFLAGS"
-passed_ldflags="$LDFLAGS"
-passed_cxxflags="$CXXFLAGS"
 platform_cc=gcc
 platform_cxx=g++
 
@@ -567,6 +579,15 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR(unable to create $prefix/$deps_dir/lib/$use_sdk. verify that the path and permissions are correct.)
   fi
 fi
+
+if test "$use_debug" = "yes"; then
+  DEBUG_FLAGS="-g -D_DEBUG"
+else
+  DEBUG_FLAGS="-DNDEBUG=1"
+fi
+platform_cflags+="$c11_flags $DEBUG_FLAGS"
+platform_cxxflags+="$cxx11_flags $DEBUG_FLAGS"
+
 
 if test "$platform_os" == "android"; then
 echo -e
