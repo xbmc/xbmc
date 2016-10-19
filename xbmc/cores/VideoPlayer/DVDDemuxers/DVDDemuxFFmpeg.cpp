@@ -1209,19 +1209,21 @@ int CDVDDemuxFFmpeg::GetNrOfStreams() const
 
 double CDVDDemuxFFmpeg::SelectAspect(AVStream* st, bool& forced)
 {
-  // for stereo modes, use codec aspect ratio
-  AVDictionaryEntry *entry = av_dict_get(st->metadata, "stereo_mode", NULL, 0);
-  if (entry)
-  {
-    forced = false;
-    return av_q2d(st->codecpar->sample_aspect_ratio);
-  }
-
   // trust matroshka container
   if (m_bMatroska && st->sample_aspect_ratio.num != 0)
   {
     forced = true;
-    return av_q2d(st->sample_aspect_ratio);
+    double dar = av_q2d(st->sample_aspect_ratio);
+    // for stereo modes, use codec aspect ratio
+    AVDictionaryEntry *entry = av_dict_get(st->metadata, "stereo_mode", NULL, 0);
+    if (entry)
+    {
+      if (strcmp(entry->value, "left_right") == 0 || strcmp(entry->value, "right_left") == 0)
+        dar /= 2;
+      else if (strcmp(entry->value, "top_bottom") == 0 || strcmp(entry->value, "bottom_top") == 0)
+        dar *= 2;
+    }
+    return dar;
   }
 
   forced = false;
