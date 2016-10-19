@@ -16,6 +16,7 @@ xbmc/epg                                        epg
 xbmc/guilib                                     guilib
 xbmc/input                                      input
 xbmc/input/joysticks                            input/joysticks
+xbmc/input/joysticks/dialogs                    input/joysticks/dialogs
 xbmc/input/joysticks/generic                    input/joysticks/generic
 xbmc/listproviders                              listproviders
 xbmc/media                                      media

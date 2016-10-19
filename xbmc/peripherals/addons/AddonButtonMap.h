@@ -45,6 +45,8 @@ namespace PERIPHERALS
 
     virtual void Reset(void) override;
 
+    virtual bool IsEmpty(void) const override;
+
     virtual bool GetFeature(
       const JOYSTICK::CDriverPrimitive& primitive,
       JOYSTICK::FeatureName& feature
