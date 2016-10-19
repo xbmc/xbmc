@@ -21,28 +21,33 @@
 #pragma once
 
 #include <vector>
-
+#include <map>
 #include "IListProvider.h"
-#include "guilib/GUIStaticItem.h"
+#include "threads/CriticalSection.h"
 
-class CStaticListProvider : public IListProvider
+typedef std::shared_ptr<IListProvider> IListProviderPtr;
+
+/*!
+ \ingroup listproviders
+ \brief A listprovider that handles multiple individual providers.
+ */
+class CMultiProvider : public IListProvider
 {
 public:
-  CStaticListProvider(const TiXmlElement *element, int parentID);
-  CStaticListProvider(const std::vector<CGUIStaticItemPtr> &items); // for python
-  virtual ~CStaticListProvider();
-
+  CMultiProvider(const TiXmlNode *first, int parentID);
+  
   virtual bool Update(bool forceRefresh) override;
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) override;
+  virtual bool IsUpdating() const override;
+  virtual void Reset() override;
   virtual bool OnClick(const CGUIListItemPtr &item) override;
-  bool OnInfo(const CGUIListItemPtr &item) override { return false; }
-  bool OnContextMenu(const CGUIListItemPtr &item) override { return false; }
-  virtual void SetDefaultItem(int item, bool always) override;
-  virtual int  GetDefaultItem() const override;
-  virtual bool AlwaysFocusDefaultItem() const override;
-private:
-  int                            m_defaultItem;
-  bool                           m_defaultAlways;
-  unsigned int                   m_updateTime;
-  std::vector<CGUIStaticItemPtr> m_items;
+  virtual bool OnInfo(const CGUIListItemPtr &item) override;
+  virtual bool OnContextMenu(const CGUIListItemPtr &item) override;
+  
+protected:
+  typedef size_t item_key_type;
+  static item_key_type GetItemKey(CGUIListItemPtr const &item);
+  std::vector<IListProviderPtr> m_providers;
+  std::map<item_key_type, IListProviderPtr> m_itemMap;
+  CCriticalSection m_section; // protects m_itemMap
 };
