@@ -108,7 +108,37 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().select(heading, list[, autoclose, preselect, useDetails]) }
+      /// \python_func{ xbmcgui.Dialog().info(listitem) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Info dialog**
+      ///
+      /// Show the corresponding info dialog for a given listitem
+      ///
+      /// @param listitem       xbmcgui.ListItem - ListItem to show info for.
+      /// @return Returns whether the dialog opened successfully.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v17 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.info(listitem)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      info(...);
+#else
+      bool info(const ListItem* item);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().select(heading, list[, autoclose,preselect]) }
       ///------------------------------------------------------------------------
       ///
       /// **Select dialog**

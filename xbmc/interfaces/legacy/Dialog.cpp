@@ -27,6 +27,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "settings/MediaSourceSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "ModuleXbmcgui.h"
@@ -36,6 +38,7 @@
 #include "WindowException.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Dialog.h"
+#include "ListItem.h"
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
@@ -83,6 +86,22 @@ namespace XBMCAddon
       pDialog->Open();
 
       return pDialog->IsConfirmed();
+    }
+
+    bool Dialog::info(const ListItem* item)
+    {
+      const AddonClass::Ref<xbmcgui::ListItem> listitem(item);
+      if (listitem->item->HasVideoInfoTag())
+      {
+        CGUIDialogVideoInfo::ShowFor(*listitem->item);
+        return true;
+      }
+      else if (listitem->item->HasMusicInfoTag())
+      {
+        CGUIDialogMusicInfo::ShowFor(*listitem->item);
+        return true;
+      }
+      return false;
     }
 
     int Dialog::contextmenu(const std::vector<String>& list)
