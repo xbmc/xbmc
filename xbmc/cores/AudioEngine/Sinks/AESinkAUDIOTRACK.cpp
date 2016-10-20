@@ -813,7 +813,8 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
           m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
       }
       // Android v24 and backports can do real IEC API
-      if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+      // use this API if no DTSHD is available, which currently only works with RAW API (including android 7.1)
+      if (CJNIAudioFormat::ENCODING_IEC61937 != -1 && (CJNIAudioFormat::ENCODING_DTS_HD == -1))
       {
         m_info.m_wantsIECPassthrough = true;
         m_info.m_streamTypes.clear();
