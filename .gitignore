@@ -146,38 +146,27 @@ cmake_install.cmake
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
+/lib/cpluff/Makefile
+/lib/cpluff/Makefile.in
 /lib/cpluff/aclocal.m4
-/lib/cpluff/autom4te.cache
-/lib/cpluff/auxliary
-/lib/cpluff/m4
+/lib/cpluff/autom4te.cache/
+/lib/cpluff/auxliary/
 /lib/cpluff/config.h
 /lib/cpluff/config.h.in
-/lib/cpluff/config.h.in~
-/lib/cpluff/configure
-/lib/cpluff/config.cache
 /lib/cpluff/config.log
 /lib/cpluff/config.status
-/lib/cpluff/Makefile.in
-/lib/cpluff/*/Makefile.in
-/lib/cpluff/*/*/Makefile.in
-/lib/cpluff/*/*/*/Makefile.in
-/lib/cpluff/*/*/*/*/Makefile.in
-/lib/cpluff/Makefile
-/lib/cpluff/*/Makefile
-/lib/cpluff/*/*/Makefile
-/lib/cpluff/*/*/*/Makefile
-/lib/cpluff/*/*/*/*/Makefile
-/lib/cpluff/po/*template
-/lib/cpluff/po/*header
-lib/cpluff/console/cpluff-console
-lib/cpluff/examples/cpfile/cpfile
-lib/cpluff/libcpluff/cpluffdef.h
-lib/cpluff/libcpluff/docsrc/Doxyfile-impl
-lib/cpluff/libcpluff/docsrc/Doxyfile-ref
-lib/cpluff/libtool
-lib/cpluff/loader/cpluff-loader
-lib/cpluff/po/POTFILES
-lib/cpluff/stamp-h1
+/lib/cpluff/configure
+/lib/cpluff/**/Makefile
+/lib/cpluff/**/Makefile.in
+/lib/cpluff/console/cpluff-console
+/lib/cpluff/examples/cpfile/cpfile
+/lib/cpluff/kazlib/.dirstamp
+/lib/cpluff/libcpluff/cpluffdef.h
+/lib/cpluff/libcpluff/docsrc/Doxyfile-*
+/lib/cpluff/libtool
+/lib/cpluff/loader/cpluff-loader
+/lib/cpluff/m4/
+/lib/cpluff/stamp-h1
 
 # /lib/gtest
 /lib/gtest/Makefile.in

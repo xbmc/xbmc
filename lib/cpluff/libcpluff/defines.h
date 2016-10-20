@@ -28,9 +28,6 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #endif

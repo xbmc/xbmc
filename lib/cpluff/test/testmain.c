@@ -98,7 +98,7 @@ CP_HIDDEN const char *plugindir(const char *plugin) {
 	if ((srcdir = getenv("srcdir")) == NULL) {
 		srcdir=".";
 	}
-	if ((plugindir_buffer = malloc((strlen(srcdir) + strlen("/plugins/") + strlen(plugin) + 1) * sizeof(char))) == NULL) {
+	if ((plugindir_buffer = malloc((strlen(srcdir) + 2 * strlen(CP_FNAMESEP_STR) + strlen("plugins") + strlen(plugin) + 1) * sizeof(char))) == NULL) {
 		fputs("testsuite: ERROR: Insufficient memory.\n", stderr);
 		exit(2);
 	}
