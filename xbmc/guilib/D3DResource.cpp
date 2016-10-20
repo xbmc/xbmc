@@ -436,7 +436,11 @@ unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const
 void CD3DTexture::GenerateMipmaps()
 {
   if (m_mipLevels == 0)
-    g_Windowing.Get3D11Context()->GenerateMips(GetShaderResource());
+  {
+    ID3D11ShaderResourceView* pSRView = GetShaderResource();
+    if (pSRView != nullptr)
+      g_Windowing.Get3D11Context()->GenerateMips(pSRView);
+  }
 }
 
 // static methods
@@ -805,22 +809,22 @@ void CD3DBuffer::OnDestroyDevice()
     trgDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
     trgDesc.BindFlags = 0;
 
-    if (FAILED(pDevice->CreateBuffer(&trgDesc, NULL, &buffer)))
-      return;
-
-    pContext->CopyResource(buffer, m_buffer);
+    if (SUCCEEDED(pDevice->CreateBuffer(&trgDesc, NULL, &buffer)))
+      pContext->CopyResource(buffer, m_buffer);
   }
   else
     buffer = m_buffer;
 
-  D3D11_MAPPED_SUBRESOURCE res;
-  if (SUCCEEDED(pContext->Map(buffer, 0, D3D11_MAP_READ, 0, &res)))
+  if (buffer != nullptr)
   {
-    m_data = new unsigned char[srcDesc.ByteWidth];
-    memcpy(m_data, res.pData, srcDesc.ByteWidth);
-    pContext->Unmap(buffer, 0);
+    D3D11_MAPPED_SUBRESOURCE res;
+    if (SUCCEEDED(pContext->Map(buffer, 0, D3D11_MAP_READ, 0, &res)))
+    {
+      m_data = new unsigned char[srcDesc.ByteWidth];
+      memcpy(m_data, res.pData, srcDesc.ByteWidth);
+      pContext->Unmap(buffer, 0);
+    }
   }
-
   if (buffer != m_buffer)
     SAFE_RELEASE(buffer);
   SAFE_RELEASE(m_buffer);
