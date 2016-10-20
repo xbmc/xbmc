@@ -436,7 +436,11 @@ unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const
 void CD3DTexture::GenerateMipmaps()
 {
   if (m_mipLevels == 0)
-    g_Windowing.Get3D11Context()->GenerateMips(GetShaderResource());
+  {
+    ID3D11ShaderResourceView* pSRView = GetShaderResource();
+    if (pSRView != nullptr)
+      g_Windowing.Get3D11Context()->GenerateMips(pSRView);
+  }
 }
 
 // static methods
