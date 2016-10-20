@@ -3104,12 +3104,10 @@ void CVideoPlayer::Pause()
   if (GetSpeed() == 0)
   {
     SetSpeed(1);
-    m_callback.OnPlayBackResumed();
   }
   else
   {
     SetSpeed(0);
-    m_callback.OnPlayBackPaused();
   }
 }
 
@@ -3646,6 +3644,13 @@ void CVideoPlayer::SetSpeed(float speed)
     return;
   
   m_newPlaySpeed = speed * DVD_PLAYSPEED_NORMAL;
+  if (m_newPlaySpeed != m_playSpeed)
+  {
+    if (m_newPlaySpeed == DVD_PLAYSPEED_NORMAL)
+      m_callback.OnPlayBackResumed();
+    else if (m_newPlaySpeed == DVD_PLAYSPEED_PAUSE)
+      m_callback.OnPlayBackPaused();
+  }
   SetPlaySpeed(speed * DVD_PLAYSPEED_NORMAL);
 }
 
