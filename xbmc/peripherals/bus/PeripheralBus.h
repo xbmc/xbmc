@@ -59,14 +59,14 @@ namespace PERIPHERALS
     /*!
     * \brief Initialize the properties of a peripheral with a known location
     */
-    virtual bool InitializeProperties(CPeripheral* peripheral);
+    virtual bool InitializeProperties(CPeripheral& peripheral);
 
     /*!
      * @brief Get the instance of the peripheral at the given location.
      * @param strLocation The location.
      * @return The peripheral or NULL if it wasn't found.
      */
-    virtual CPeripheral *GetPeripheral(const std::string &strLocation) const;
+    virtual PeripheralPtr GetPeripheral(const std::string &strLocation) const;
 
     /*!
      * @brief Check whether a peripheral is present at the given location.
@@ -81,7 +81,7 @@ namespace PERIPHERALS
      * @param feature The feature to search for.
      * @return The number of devices that have been found.
      */
-    virtual int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const;
+    virtual int GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const;
 
     virtual size_t GetNumberOfPeripherals() const;
     virtual size_t GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
@@ -144,13 +144,13 @@ namespace PERIPHERALS
      * @param strPath The path to the peripheral.
      * @return The peripheral or NULL if it wasn't found.
      */
-    virtual CPeripheral *GetByPath(const std::string &strPath) const;
+    virtual PeripheralPtr GetByPath(const std::string &strPath) const;
 
     /*!
      * @brief Register a new peripheral on this bus.
      * @param peripheral The peripheral to register.
      */
-    virtual void Register(CPeripheral *peripheral);
+    virtual void Register(const PeripheralPtr& peripheral);
 
     virtual bool FindComPort(std::string &strLocation) { return false; }
 
@@ -174,7 +174,7 @@ namespace PERIPHERALS
      */
     virtual bool PerformDeviceScan(PeripheralScanResults &results) = 0;
 
-    std::vector<CPeripheral *> m_peripherals;
+    PeripheralVector           m_peripherals;
     int                        m_iRescanTime;
     bool                       m_bInitialised;
     bool                       m_bIsStarted;

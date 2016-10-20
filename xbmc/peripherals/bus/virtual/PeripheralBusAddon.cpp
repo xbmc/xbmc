@@ -30,12 +30,13 @@
 #include <algorithm>
 #include <memory>
 
-using namespace ADDON;
 using namespace PERIPHERALS;
 
 CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
     CPeripheralBus("PeripBusAddon", manager, PERIPHERAL_BUS_ADDON)
 {
+  using namespace ADDON;
+
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_PERIPHERALDLL, this);
   CAddonMgr::GetInstance().Events().Subscribe(this, &CPeripheralBusAddon::OnEvent);
 
@@ -44,6 +45,8 @@ CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
 
 CPeripheralBusAddon::~CPeripheralBusAddon()
 {
+  using namespace ADDON;
+
   CAddonMgr::GetInstance().Events().Unsubscribe(this);
   CAddonMgr::GetInstance().UnregisterAddonMgrCallback(ADDON_PERIPHERALDLL);
 
@@ -55,7 +58,7 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
   m_addons.clear();
 }
 
-bool CPeripheralBusAddon::GetAddon(const std::string &strId, AddonPtr &addon) const
+bool CPeripheralBusAddon::GetAddon(const std::string &strId, ADDON::AddonPtr &addon) const
 {
   CSingleLock lock(m_critSection);
   for (const auto& addonIt : m_addons)
@@ -131,7 +134,7 @@ bool CPeripheralBusAddon::PerformDeviceScan(PeripheralScanResults &results)
   return true;
 }
 
-bool CPeripheralBusAddon::InitializeProperties(CPeripheral* peripheral)
+bool CPeripheralBusAddon::InitializeProperties(CPeripheral& peripheral)
 {
   if (!CPeripheralBus::InitializeProperties(peripheral))
     return false;
@@ -141,12 +144,12 @@ bool CPeripheralBusAddon::InitializeProperties(CPeripheral* peripheral)
   PeripheralAddonPtr addon;
   unsigned int index;
 
-  if (SplitLocation(peripheral->Location(), addon, index))
+  if (SplitLocation(peripheral.Location(), addon, index))
   {
-    switch (peripheral->Type())
+    switch (peripheral.Type())
     {
       case PERIPHERAL_JOYSTICK:
-        bSuccess = addon->GetJoystickProperties(index, *static_cast<CPeripheralJoystick*>(peripheral));
+        bSuccess = addon->GetJoystickProperties(index, static_cast<CPeripheralJoystick&>(peripheral));
         break;
 
       default:
@@ -186,19 +189,16 @@ void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &
 {
   CSingleLock lock(m_critSection);
 
-  std::vector<CPeripheral*> removedPeripherals;
+  PeripheralVector removedPeripherals;
 
   for (const auto& addon : m_addons)
     addon->UnregisterRemovedDevices(results, removedPeripherals);
 
   for (const auto& peripheral : removedPeripherals)
-  {
     m_manager->OnDeviceDeleted(*this, *peripheral);
-    delete peripheral;
-  }
 }
 
-void CPeripheralBusAddon::Register(CPeripheral* peripheral)
+void CPeripheralBusAddon::Register(const PeripheralPtr& peripheral)
 {
   if (!peripheral)
     return;
@@ -231,9 +231,9 @@ bool CPeripheralBusAddon::HasFeature(const PeripheralFeature feature) const
   return bReturn;
 }
 
-CPeripheral *CPeripheralBusAddon::GetPeripheral(const std::string &strLocation) const
+PeripheralPtr CPeripheralBusAddon::GetPeripheral(const std::string &strLocation) const
 {
-  CPeripheral*       peripheral(NULL);
+  PeripheralPtr      peripheral;
   PeripheralAddonPtr addon;
   unsigned int       peripheralIndex;
 
@@ -245,21 +245,26 @@ CPeripheral *CPeripheralBusAddon::GetPeripheral(const std::string &strLocation) 
   return peripheral;
 }
 
-CPeripheral *CPeripheralBusAddon::GetByPath(const std::string &strPath) const
+PeripheralPtr CPeripheralBusAddon::GetByPath(const std::string &strPath) const
 {
+  PeripheralPtr result;
+
   CSingleLock lock(m_critSection);
 
   for (const auto& addon : m_addons)
   {
-    CPeripheral* peripheral = addon->GetByPath(strPath);
+    PeripheralPtr peripheral = addon->GetByPath(strPath);
     if (peripheral)
-      return peripheral;
+    {
+      result = peripheral;
+      break;
+    }
   }
 
-  return NULL;
+  return result;
 }
 
-int CPeripheralBusAddon::GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const
+int CPeripheralBusAddon::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
@@ -368,6 +373,8 @@ bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation, Peripher
 
 void CPeripheralBusAddon::UpdateAddons(void)
 {
+  using namespace ADDON;
+
   auto GetPeripheralAddonID = [](const PeripheralAddonPtr& addon) { return addon->ID(); };
   auto GetAddonID = [](const AddonPtr& addon) { return addon->ID(); };
 

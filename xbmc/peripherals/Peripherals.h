@@ -72,7 +72,7 @@ namespace PERIPHERALS
      * @param busType The bus to query. Default (PERIPHERAL_BUS_UNKNOWN) searches all busses.
      * @return The peripheral or NULL if it wasn't found.
      */
-    CPeripheral *GetPeripheralAtLocation(const std::string &strLocation, PeripheralBusType busType = PERIPHERAL_BUS_UNKNOWN) const;
+    PeripheralPtr GetPeripheralAtLocation(const std::string &strLocation, PeripheralBusType busType = PERIPHERAL_BUS_UNKNOWN) const;
 
     /*!
      * @brief Check whether a peripheral is present at the given location.
@@ -96,7 +96,7 @@ namespace PERIPHERALS
      * @param busType The bus to query. Default (PERIPHERAL_BUS_UNKNOWN) searches all busses.
      * @return The number of devices that have been found.
      */
-    int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature, PeripheralBusType busType = PERIPHERAL_BUS_UNKNOWN) const;
+    int GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature, PeripheralBusType busType = PERIPHERAL_BUS_UNKNOWN) const;
 
     size_t GetNumberOfPeripherals() const;
 
@@ -128,7 +128,7 @@ namespace PERIPHERALS
      * @param result The scan result from the device scanning code.
      * @return The new peripheral or NULL if it could not be created.
      */
-    CPeripheral *CreatePeripheral(CPeripheralBus &bus, const PeripheralScanResult& result);
+    void CreatePeripheral(CPeripheralBus &bus, const PeripheralScanResult& result);
 
     /*!
      * @brief Add the settings that are defined in the mappings file to the peripheral (if there is anything defined).
@@ -160,7 +160,7 @@ namespace PERIPHERALS
      * @param strPath The path to the peripheral.
      * @return The peripheral or NULL if it wasn't found.
      */
-    CPeripheral *GetByPath(const std::string &strPath) const;
+    PeripheralPtr GetByPath(const std::string &strPath) const;
 
     /*!
      * @brief Try to let one of the peripherals handle an action.
@@ -184,10 +184,9 @@ namespace PERIPHERALS
     /*!
      * @brief Try to toggle the playing device state via a peripheral.
      * @param mode Whether to activate, put on standby or toggle the source.
-     * @param iPeripheral Optional CPeripheralCecAdapter pointer to a specific device, instead of iterating through all of them.
      * @return True when the playing device has been switched on, false otherwise.
      */
-    bool ToggleDeviceState(const CecStateChange mode = STATE_SWITCH_TOGGLE, const unsigned int iPeripheral = 0);
+    bool ToggleDeviceState(const CecStateChange mode = STATE_SWITCH_TOGGLE);
 
     /*!
      * @brief Try to mute the audio via a peripheral.
