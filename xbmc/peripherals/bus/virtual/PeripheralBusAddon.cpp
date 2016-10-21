@@ -329,7 +329,9 @@ bool CPeripheralBusAddon::RequestRemoval(ADDON::AddonPtr addon)
 
 void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
 {
-  if (typeid(event) == typeid(AddonEvents::InstalledChanged))
+  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+      typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
+      typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged))
     UpdateAddons();
 }
 

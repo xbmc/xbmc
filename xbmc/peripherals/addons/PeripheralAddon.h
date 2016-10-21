@@ -53,11 +53,7 @@ namespace PERIPHERALS
     virtual ~CPeripheralAddon(void);
 
     // implementation of IAddon
-    virtual void OnDisabled() override;
-    virtual void OnEnabled() override;
     virtual ADDON::AddonPtr GetRunningInstance(void) const override;
-    virtual void OnPostInstall(bool update, bool modal) override;
-    virtual void OnPostUnInstall() override;
 
     /*!
      * @brief Initialise the instance of this add-on
