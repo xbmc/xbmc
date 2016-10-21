@@ -797,8 +797,12 @@ void CMMALRenderer::Reset()
 
 void CMMALRenderer::Flush()
 {
-  m_iYV12RenderBuffer = 0;
+  CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  if (m_vout_input)
+    mmal_port_flush(m_vout_input);
+  ReleaseBuffers();
+  m_iYV12RenderBuffer = 0;
 }
 
 void CMMALRenderer::Update()
