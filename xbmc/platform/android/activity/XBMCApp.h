@@ -126,6 +126,7 @@ public:
   static void InitDirectories();
 
   static void SetRefreshRate(float rate);
+  static void SetDisplayMode(int mode);
   static int GetDPI();
 
   // Playback callbacks
@@ -168,6 +169,7 @@ private:
   void stop();
   void SetupEnv();
   static void SetRefreshRateCallback(CVariant *rate);
+  static void SetDisplayModeCallback(CVariant *mode);
   static ANativeActivity *m_activity;
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;

@@ -29,4 +29,6 @@ public:
 
   float getpreferredRefreshRate() const;
   void setpreferredRefreshRate(float rate);
+  int getpreferredDisplayModeId() const;
+  void setpreferredDisplayModeId(int modeid);
 };
