@@ -234,10 +234,10 @@
 		<value>$INFO[Container(9000).ListItem.Label2]</value>
 	</variable>
 	<variable name="VolumeIconVar">
+		<value condition="Player.Muted">dialogs/volume/mute.png</value>
 		<value condition="Integer.IsGreater(Control.GetLabel(20),66)">dialogs/volume/volume.png</value>
 		<value condition="Integer.IsGreater(Control.GetLabel(20),33)">dialogs/volume/volume2.png</value>
 		<value condition="player.passthrough">dialogs/volume/volume.png</value>
-		<value condition="Player.Muted">dialogs/volume/mute.png</value>
 		<value>dialogs/volume/volume1.png</value>
 	</variable>
 	<variable name="ListSubLabelVar">
