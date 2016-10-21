@@ -126,12 +126,13 @@ void CNfsConnection::clearMembers()
     // NOTE - DON'T CLEAR m_exportList HERE!
     // splitUrlIntoExportAndPath checks for m_exportList.empty()
     // and would query the server in an excessive unwanted fashion
+    // also don't clear m_KeepAliveTimeouts here because we
+    // would loose any "paused" file handles during export change
     m_exportPath.clear();
     m_hostName.clear();
     m_writeChunkSize = 0;
     m_readChunkSize = 0;  
     m_pNfsContext = NULL;
-    m_KeepAliveTimeouts.clear();
 }
 
 void CNfsConnection::destroyOpenContexts()
@@ -346,6 +347,8 @@ void CNfsConnection::Deinit()
     m_pLibNfs->Unload();    
   }        
   clearMembers();
+  // clear any keep alive timouts on deinit
+  m_KeepAliveTimeouts.clear();
 }
 
 /* This is called from CApplication::ProcessSlow() and is used to tell if nfs have been idle for too long */
@@ -402,7 +405,15 @@ void CNfsConnection::resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFi
 {
   CSingleLock lock(keepAliveLock);
   //refresh last access time of the context aswell
-  getContextFromMap(_exportPath, true);
+  struct nfs_context *pContext = getContextFromMap(_exportPath, true);
+  
+  // if we keep alive using m_pNfsContext we need to mark
+  // its last access time too here
+  if (m_pNfsContext == pContext)
+  {
+    m_lastAccessedTime = XbmcThreads::SystemClockMillis();
+  }
+  
   //adds new keys - refreshs existing ones
   m_KeepAliveTimeouts[_pFileHandle].exportPath = _exportPath;
   m_KeepAliveTimeouts[_pFileHandle].refreshCounter = KEEP_ALIVE_TIMEOUT;
