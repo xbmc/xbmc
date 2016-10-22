@@ -1625,19 +1625,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
 
-  // start/prepare the skin
-  skin->Start();
-
-  // migrate any skin-specific settings that are still stored in guisettings.xml
-  CSkinSettings::GetInstance().MigrateSettings(skin);
-
-  // check if the skin has been properly loaded and if it has a Home.xml
-  if (!skin->HasSkinFile("Home.xml"))
-  {
-    CLog::Log(LOGERROR, "failed to load requested skin '%s'", skin->ID().c_str());
-    return false;
-  }
-
   bool bPreviousPlayingState=false;
   bool bPreviousRenderingState=false;
   if (m_pPlayer->IsPlayingVideo())
@@ -1665,6 +1652,18 @@ bool CApplication::LoadSkin(const std::string& skinID)
   g_windowManager.GetActiveModelessWindows(currentModelessWindows);
 
   UnloadSkin();
+
+  skin->Start();
+
+  // migrate any skin-specific settings that are still stored in guisettings.xml
+  CSkinSettings::GetInstance().MigrateSettings(skin);
+
+  // check if the skin has been properly loaded and if it has a Home.xml
+  if (!skin->HasSkinFile("Home.xml"))
+  {
+    CLog::Log(LOGERROR, "failed to load requested skin '%s'", skin->ID().c_str());
+    return false;
+  }
 
   CLog::Log(LOGINFO, "  load skin from: %s (version: %s)", skin->Path().c_str(), skin->Version().asString().c_str());
   g_SkinInfo = skin;
