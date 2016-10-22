@@ -405,12 +405,6 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 
 bool CGUIWindowPVRBase::InitChannelGroup()
 {
-  {
-    CSingleLock lock(m_critSection);
-    if (m_channelGroup)
-      return true;
-  }
-
   const CPVRChannelGroupPtr group(g_PVRManager.GetPlayingGroup(m_bRadio));
   if (group)
   {
