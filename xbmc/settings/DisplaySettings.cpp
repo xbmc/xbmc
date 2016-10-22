@@ -293,7 +293,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     {
       if (!m_resolutionChangeAborted)
       {
-        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
+        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 15000) !=
           DialogResponse::YES)
         {
           m_resolutionChangeAborted = true;
