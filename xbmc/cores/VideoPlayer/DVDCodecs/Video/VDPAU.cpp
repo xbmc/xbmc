@@ -3032,6 +3032,7 @@ void COutput::Flush()
       pic = *((CVdpauRenderPicture**)msg->data);
       QueueReturnPicture(pic);
     }
+    msg->Release();
   }
 
   // reset used render flag which was cleared on mixer flush
