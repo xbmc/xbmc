@@ -50,10 +50,7 @@
 #define SETTING_AUDIO_CAT_MISC                    "audiodspmiscsettings"
 #define SETTING_AUDIO_CAT_PROC_INFO               "audiodspprocinfo"
 
-#define SETTING_AUDIO_MAIN_STREAMTYPE             "audiodsp.main.streamtype"
 #define SETTING_AUDIO_MAIN_MODETYPE               "audiodsp.main.modetype"
-#define SETTING_AUDIO_MAIN_VOLUME                 "audiodsp.main.volume"
-#define SETTING_AUDIO_MAIN_VOLUME_AMPLIFICATION   "audiodsp.main.volumeamplification"
 #define SETTING_AUDIO_MAIN_BUTTON_MASTER          "audiodsp.main.menumaster"
 #define SETTING_AUDIO_MAIN_BUTTON_OUTPUT          "audiodsp.main.menupostproc"
 #define SETTING_AUDIO_MAIN_BUTTON_RESAMPLE        "audiodsp.main.menuresample"
@@ -62,7 +59,6 @@
 #define SETTING_AUDIO_MAIN_BUTTON_INFO            "audiodsp.main.menuinfo"
 #define SETTING_AUDIO_MAIN_MAKE_DEFAULT           "audiodsp.main.makedefault"
 #define SETTING_AUDIO_MASTER_SETTINGS_MENUS       "audiodsp.master.menu_"
-#define SETTING_AUDIO_POST_PROC_AUDIO_DELAY       "audiodsp.postproc.delay"
 #define SETTING_AUDIO_PROC_SETTINGS_MENUS         "audiodsp.proc.menu_"
 
 #define SETTING_STREAM_INFO_INPUT_CHANNELS        "audiodsp.info.inputchannels"
@@ -215,18 +211,9 @@ bool CGUIDialogAudioDSPSettings::OnBack(int actionID)
 
 void CGUIDialogAudioDSPSettings::FrameMove()
 {
-  // update the volume setting if necessary
-  float newVolume = g_application.GetVolume(false);
-  if (newVolume != m_volume)
-    m_settingsManager->SetNumber(SETTING_AUDIO_MAIN_VOLUME, newVolume);
-
   if (g_application.m_pPlayer->HasPlayer())
   {
     const CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
-
-    // these settings can change on the fly
-    if (SupportsAudioFeature(IPC_AUD_OFFSET))
-      m_settingsManager->SetNumber(SETTING_AUDIO_POST_PROC_AUDIO_DELAY, videoSettings.m_AudioDelay);
 
     bool forceReload = false;
     unsigned int  streamId = CServiceBroker::GetADSP().GetActiveStreamId();
@@ -280,26 +267,6 @@ void CGUIDialogAudioDSPSettings::FrameMove()
   CGUIDialogSettingsManualBase::FrameMove();
 }
 
-std::string CGUIDialogAudioDSPSettings::FormatDelay(float value, float interval)
-{
-  if (fabs(value) < 0.5f * interval)
-    return StringUtils::Format(g_localizeStrings.Get(22003).c_str(), 0.0);
-  if (value < 0)
-    return StringUtils::Format(g_localizeStrings.Get(22004).c_str(), fabs(value));
-
-  return StringUtils::Format(g_localizeStrings.Get(22005).c_str(), value);
-}
-
-std::string CGUIDialogAudioDSPSettings::FormatDecibel(float value)
-{
-  return StringUtils::Format(g_localizeStrings.Get(14054).c_str(), value);
-}
-
-std::string CGUIDialogAudioDSPSettings::FormatPercentAsDecibel(float value)
-{
-  return StringUtils::Format(g_localizeStrings.Get(14054).c_str(), CAEUtil::PercentToGain(value));
-}
-
 void CGUIDialogAudioDSPSettings::OnSettingChanged(const CSetting *setting)
 {
   if (setting == NULL)
@@ -340,21 +307,6 @@ void CGUIDialogAudioDSPSettings::OnSettingChanged(const CSetting *setting)
     m_modeTypeUsed = static_cast<const CSettingInt*>(setting)->GetValue();
     if (m_ActiveStreamProcess->SetMasterMode(m_streamTypeUsed, m_modeTypeUsed))
       CMediaSettings::GetInstance().GetCurrentAudioSettings().m_MasterModes[m_streamTypeUsed][m_baseTypeUsed] = m_modeTypeUsed;
-  }
-  else if (settingId == SETTING_AUDIO_MAIN_VOLUME)
-  {
-    m_volume = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    g_application.SetVolume(m_volume, false); // false - value is not in percent
-  }
-  else if (settingId == SETTING_AUDIO_MAIN_VOLUME_AMPLIFICATION)
-  {
-    videoSettings.m_VolumeAmplification = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    g_application.m_pPlayer->SetDynamicRangeCompression((long)(videoSettings.m_VolumeAmplification * 100));
-  }
-  else if (settingId == SETTING_AUDIO_POST_PROC_AUDIO_DELAY)
-  {
-    videoSettings.m_AudioDelay = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    g_application.m_pPlayer->SetAVDelay(videoSettings.m_AudioDelay);
   }
 }
 
@@ -439,14 +391,6 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
     return;
   }
 
-  bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
-
-  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
-
-  m_audioCaps.clear();
-  if (g_application.m_pPlayer->HasPlayer())
-    g_application.m_pPlayer->GetAudioCapabilities(m_audioCaps);
-
   m_ActiveStreamId      = CServiceBroker::GetADSP().GetActiveStreamId();
   m_ActiveStreamProcess = CServiceBroker::GetADSP().GetDSPProcess(m_ActiveStreamId);
   if (m_ActiveStreamId == (unsigned int)-1 || !m_ActiveStreamProcess)
@@ -529,10 +473,6 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
     CSettingNumber *settingAudioVolume = AddSlider(groupAudioVolumeSel, SETTING_AUDIO_MAIN_VOLUME, 13376, 0, m_volume, 14054, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM);
     static_cast<CSettingControlSlider*>(settingAudioVolume->GetControl())->SetFormatter(SettingFormatterPercentAsDecibel);
   }
-
-  // audio volume amplification setting
-  if (SupportsAudioFeature(IPC_AUD_AMP))
-    AddSlider(groupAudioVolumeSel, SETTING_AUDIO_MAIN_VOLUME_AMPLIFICATION, 660, 0, videoSettings.m_VolumeAmplification, 14054, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f);
 
   ///-----------------------
 
@@ -625,12 +565,6 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
       return;
     }
 
-    // audio delay setting
-    if (SupportsAudioFeature(IPC_AUD_OFFSET))
-    {
-      CSettingNumber *settingAudioDelay = AddSlider(groupInternal, SETTING_AUDIO_POST_PROC_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
-      static_cast<CSettingControlSlider*>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);
-    }
     GetAudioDSPMenus(groupAddon, AE_DSP_MENUHOOK_POST_PROCESS);
   }
 
@@ -818,57 +752,6 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
       }
     }
   }
-}
-
-bool CGUIDialogAudioDSPSettings::SupportsAudioFeature(int feature)
-{
-  for (Features::iterator itr = m_audioCaps.begin(); itr != m_audioCaps.end(); ++itr)
-  {
-    if (*itr == feature || *itr == IPC_AUD_ALL)
-      return true;
-  }
-
-  return false;
-}
-
-void CGUIDialogAudioDSPSettings::AudioModeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
-{
-  CGUIDialogAudioDSPSettings *dialog  = (CGUIDialogAudioDSPSettings *)data;
-  list = dialog->m_ModeList;
-
-  if (list.empty())
-  {
-    list.push_back(make_pair(g_localizeStrings.Get(231), -1));
-    current = -1;
-  }
-}
-
-std::string CGUIDialogAudioDSPSettings::SettingFormatterDelay(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
-{
-  if (!value.isDouble())
-    return "";
-
-  float fValue = value.asFloat();
-  float fStep = step.asFloat();
-
-  if (fabs(fValue) < 0.5f * fStep)
-    return StringUtils::Format(g_localizeStrings.Get(22003).c_str(), 0.0);
-  if (fValue < 0)
-    return StringUtils::Format(g_localizeStrings.Get(22004).c_str(), fabs(fValue));
-
-  return StringUtils::Format(g_localizeStrings.Get(22005).c_str(), fValue);
-}
-
-std::string CGUIDialogAudioDSPSettings::SettingFormatterPercentAsDecibel(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
-{
-  if (control == NULL || !value.isDouble())
-    return "";
-
-  std::string formatString = control->GetFormatString();
-  if (control->GetFormatLabel() > -1)
-    formatString = g_localizeStrings.Get(control->GetFormatLabel());
-
-  return StringUtils::Format(formatString.c_str(), CAEUtil::PercentToGain(value.asFloat()));
 }
 
 bool CGUIDialogAudioDSPSettings::HaveActiveMenuHooks(AE_DSP_MENUHOOK_CAT category)
