@@ -27,6 +27,7 @@
 #include "utils/AMLUtils.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
+#include "utils/SysfsUtils.h"
 #include "threads/Atomics.h"
 #include "settings/Settings.h"
 
@@ -50,7 +51,8 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo) : CDVDVi
   m_mpeg2_sequence(NULL),
   m_bitparser(NULL),
   m_bitstream(NULL),
-  m_opened(false)
+  m_opened(false),
+  m_drop(false)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -349,6 +351,19 @@ bool CDVDVideoCodecAmlogic::ClearPicture(DVDVideoPicture *pDvdVideoPicture)
 
 void CDVDVideoCodecAmlogic::SetDropState(bool bDrop)
 {
+  if (bDrop == m_drop)
+    return;
+
+  m_drop = bDrop;
+  if (bDrop)
+    m_videobuffer.iFlags |=  DVP_FLAG_DROPPED;
+  else
+    m_videobuffer.iFlags &= ~DVP_FLAG_DROPPED;
+
+  // Freerun mode causes amvideo driver to ignore timing and process frames
+  // as quickly as they are coming from decoder. By enabling freerun mode we can
+  // skip rendering of the frames that are requested to be dropped by VideoPlayer.
+  SysfsUtils::SetInt("/sys/class/video/freerun_mode", bDrop ? 1 : 0);
 }
 
 void CDVDVideoCodecAmlogic::SetSpeed(int iSpeed)
