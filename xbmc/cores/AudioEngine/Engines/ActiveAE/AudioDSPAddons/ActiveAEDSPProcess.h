@@ -73,25 +73,16 @@ namespace ActiveAE
       AE_DSP_STREAM_ID GetStreamId() const;
 
       /*!>
+      * Get the currently used input stream format
+      * @note used to have a fallback to normal operation without dsp
+      */
+      AEAudioFormat GetOutputFormat();
+
+      /*!>
        * Get the currently used input stream format
        * @note used to have a fallback to normal operation without dsp
        */
       AEAudioFormat GetInputFormat();
-
-      /*!>
-       * Get the incoming channels amount for this class
-       */
-      unsigned int GetInputChannels();
-
-      /*!>
-       * Get the incoming sample rate for this class
-       */
-      unsigned int GetInputSamplerate();
-
-      /*!>
-       * Get the incoming channel names as string
-       */
-      std::string GetInputChannelNames();
 
       /*!>
        * Get the inside addons used samplerate for this class
@@ -99,42 +90,10 @@ namespace ActiveAE
       unsigned int GetProcessSamplerate();
 
       /*!>
-       * Get the outgoing channels amount for this class
-       */
-      unsigned int GetOutputChannels();
-
-      /*!>
-       * Get the outgoing channel names
-       */
-      std::string GetOutputChannelNames();
-
-      /*!>
-       * Get the used output samplerate for this class
-       */
-      unsigned int GetOutputSamplerate();
-
-      /*!>
-       * Get the used output frames for this class
-       */
-      unsigned int GetOutputFrames();
-
-      /*!>
        * Get the amount of percent what the cpu need to process complete dsp stream
        * @return The current cpu usage
        */
       float GetCPUUsage(void) const;
-
-      /*!>
-       * Get the channel layout which is passed out from it
-       * @return Channel information class
-       */
-      CAEChannelInfo GetChannelLayout();
-
-      /*!>
-       * Get the currently used output data fromat
-       * @note Is normally float
-       */
-      AEDataFormat GetDataFormat();
 
       /*!>
        * It returns the on input source detected stream type, not always the active one.

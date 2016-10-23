@@ -865,19 +865,9 @@ AE_DSP_STREAM_ID CActiveAEDSPProcess::GetStreamId() const
   return m_streamId;
 }
 
-unsigned int CActiveAEDSPProcess::GetInputChannels()
+AEAudioFormat ActiveAE::CActiveAEDSPProcess::GetOutputFormat()
 {
-  return m_inputFormat.m_channelLayout.Count();
-}
-
-std::string CActiveAEDSPProcess::GetInputChannelNames()
-{
-  return m_inputFormat.m_channelLayout;
-}
-
-unsigned int CActiveAEDSPProcess::GetInputSamplerate()
-{
-  return m_inputFormat.m_sampleRate;
+  return m_outputFormat;
 }
 
 unsigned int CActiveAEDSPProcess::GetProcessSamplerate()
@@ -885,39 +875,9 @@ unsigned int CActiveAEDSPProcess::GetProcessSamplerate()
   return m_addonSettings.iProcessSamplerate;
 }
 
-unsigned int CActiveAEDSPProcess::GetOutputChannels()
-{
-  return m_outputFormat.m_channelLayout.Count();
-}
-
-std::string CActiveAEDSPProcess::GetOutputChannelNames()
-{
-  return m_outputFormat.m_channelLayout;
-}
-
-unsigned int CActiveAEDSPProcess::GetOutputSamplerate()
-{
-  return m_outputSamplerate;
-}
-
-unsigned int CActiveAEDSPProcess::GetOutputFrames()
-{
-  return m_outputFrames;
-}
-
 float CActiveAEDSPProcess::GetCPUUsage(void) const
 {
   return m_fLastProcessUsage;
-}
-
-CAEChannelInfo CActiveAEDSPProcess::GetChannelLayout()
-{
-  return m_outputFormat.m_channelLayout;
-}
-
-AEDataFormat CActiveAEDSPProcess::GetDataFormat()
-{
-  return m_dataFormat;
 }
 
 AEAudioFormat CActiveAEDSPProcess::GetInputFormat()
