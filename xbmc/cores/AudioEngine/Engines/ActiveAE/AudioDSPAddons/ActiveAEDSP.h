@@ -127,7 +127,7 @@ namespace ActiveAE
   /*! @name addon installation callback methods */
   //@{
     /*!
-     * @brief Restart a single audio dsp addon add-on.
+     * @brief Restart a single audio dsp add-on.
      * @param addon The add-on to restart.
      * @param bDataChanged True if the addon's data changed, false otherwise (unused).
      * @return True if the audio dsp addon was found and restarted, false otherwise.
