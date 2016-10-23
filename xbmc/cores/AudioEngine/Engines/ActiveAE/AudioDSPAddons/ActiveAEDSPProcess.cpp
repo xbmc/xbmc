@@ -1644,6 +1644,7 @@ CActiveAEDSPModePtr CActiveAEDSPProcess::GetActiveMasterMode() const
 
 bool CActiveAEDSPProcess::SetMasterMode(AE_DSP_STREAMTYPE streamType, int iModeID, bool bSwitchStreamType)
 {
+  CSingleLock lockMasterModes(m_critSection);
   /*!
    * if the unique master mode id is already used a reinit is not needed
    */
