@@ -509,11 +509,11 @@ int CActiveAEDSP::CreateDSPs(int streamId, CActiveAEDSPProcessPtr &process, cons
   return streamId;
 }
 
-void CActiveAEDSP::DestroyDSPs(unsigned int streamId)
+void CActiveAEDSP::DestroyDSPs(int streamId)
 {
   CSingleLock lock(m_critSection);
 
-  if (streamId != (unsigned int)-1 && m_usedProcesses[streamId] != NULL)
+  if (0 <= streamId && streamId < AE_DSP_STREAM_MAX_STREAMS && m_usedProcesses[streamId] != NULL)
   {
     m_usedProcesses[streamId]->Destroy();
     m_usedProcesses[streamId] = CActiveAEDSPProcessPtr();
@@ -525,11 +525,11 @@ void CActiveAEDSP::DestroyDSPs(unsigned int streamId)
   }
 }
 
-CActiveAEDSPProcessPtr CActiveAEDSP::GetDSPProcess(unsigned int streamId)
+CActiveAEDSPProcessPtr CActiveAEDSP::GetDSPProcess(int streamId)
 {
   CSingleLock lock(m_critSection);
 
-  if (streamId != (unsigned int)-1 && m_usedProcesses[streamId])
+  if (0 <= streamId && streamId < AE_DSP_STREAM_MAX_STREAMS && m_usedProcesses[streamId])
     return m_usedProcesses[streamId];
   return CActiveAEDSPProcessPtr();
 }
@@ -540,7 +540,7 @@ unsigned int CActiveAEDSP::GetProcessingStreamsAmount(void)
   return m_usedProcessesCnt;
 }
 
-unsigned int CActiveAEDSP::GetActiveStreamId(void)
+int CActiveAEDSP::GetActiveStreamId(void)
 {
   CSingleLock lock(m_critSection);
 
