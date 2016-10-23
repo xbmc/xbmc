@@ -312,15 +312,20 @@ int CActiveAEDSP::GetAudioDSPAddonId(const AddonPtr &addon) const
 //@{
 bool CActiveAEDSP::TranslateBoolInfo(DWORD dwInfo) const
 {
-  bool bReturn(false);
+  bool bReturn = false;
 
   CSingleLock lock(m_critSection);
+
+  if (m_activeProcessId < 0)
+  {
+    return false;
+  }
 
   if (dwInfo == ADSP_HAS_MODES)
     return HasAvailableModes();
 
   if (!IsProcessing() || !m_usedProcesses[m_activeProcessId])
-    return bReturn;
+    return false;
 
   switch (dwInfo)
   {
@@ -354,9 +359,14 @@ bool CActiveAEDSP::TranslateBoolInfo(DWORD dwInfo) const
 
 bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
 {
-  bool bReturn(true);
+  bool bReturn = false;
 
   CSingleLock lock(m_critSection);
+
+  if (m_activeProcessId < 0)
+  {
+    return false;
+  }
 
   if (!IsProcessing() || !m_usedProcesses[m_activeProcessId])
     return false;
@@ -368,13 +378,16 @@ bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
   switch (dwInfo)
   {
   case ADSP_ACTIVE_STREAM_TYPE:
+    bReturn = true;
     strValue = g_localizeStrings.Get(GetStreamTypeName(m_usedProcesses[m_activeProcessId]->GetUsedStreamType()));
     break;
   case ADSP_DETECTED_STREAM_TYPE:
+    bReturn = true;
     strValue = g_localizeStrings.Get(GetStreamTypeName(m_usedProcesses[m_activeProcessId]->GetDetectedStreamType()));
     break;
   case ADSP_MASTER_NAME:
     {
+      bReturn = true;
       AE_DSP_ADDON addon;
       int modeId = activeMaster->ModeID();
       if (modeId == AE_DSP_MASTER_MODE_ID_PASSOVER || modeId >= AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES)
@@ -387,12 +400,15 @@ bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
     bReturn = m_usedProcesses[m_activeProcessId]->GetMasterModeStreamInfoString(strValue);
     break;
   case ADSP_MASTER_OWN_ICON:
+    bReturn = true;
     strValue = activeMaster->IconOwnModePath();
     break;
   case ADSP_MASTER_OVERRIDE_ICON:
+    bReturn = true;
     strValue = activeMaster->IconOverrideModePath();
     break;
   default:
+    bReturn = true;
     strValue.clear();
     bReturn = false;
     break;
@@ -560,6 +576,7 @@ const AE_DSP_MODELIST &CActiveAEDSP::GetAvailableModes(AE_DSP_MODE_TYPE modeType
   if (modeType < 0 || modeType >= AE_DSP_MODE_TYPE_MAX)
     return emptyArray;
 
+  /*! @todo this is very hacky, AudioDSP should never return a std::vector which is protected by a CSingleLock!*/
   CSingleLock lock(m_critSection);
   return m_modes[modeType];
 }
