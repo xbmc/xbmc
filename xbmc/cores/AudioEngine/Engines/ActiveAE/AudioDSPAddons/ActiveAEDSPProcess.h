@@ -293,8 +293,6 @@ namespace ActiveAE
       /*!>
        * Internal ffmpeg process data
        */
-      #define FFMPEG_PROC_ARRAY_IN  0
-      #define FFMPEG_PROC_ARRAY_OUT 1
       IAEResample                      *m_resamplerDSPProcessor;       /*!< ffmpeg resampler usage for down mix of input stream to required output channel alignment or internal processing*/
       float                            *m_ffMpegConvertArray[2][AE_DSP_CH_MAX]; /*!< the process array memory pointers for ffmpeg used for format convert. No own memory only addresses taken from m_processArray in correct ffmpeg channel alignment */
       float                            *m_ffMpegProcessArray[2][AE_DSP_CH_MAX]; /*!< the process array memory pointers for ffmpeg. No own memory only addresses taken from m_processArray in correct ffmpeg channel alignment */

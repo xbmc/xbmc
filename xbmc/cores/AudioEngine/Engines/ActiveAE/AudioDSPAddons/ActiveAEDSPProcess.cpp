@@ -40,6 +40,9 @@ using namespace ADDON;
 using namespace ActiveAE;
 
 #define MIN_DSP_ARRAY_SIZE 4096
+#define FFMPEG_PROC_ARRAY_IN  0
+#define FFMPEG_PROC_ARRAY_OUT 1
+
 
 CActiveAEDSPProcess::CActiveAEDSPProcess(AE_DSP_STREAM_ID streamId)
  : m_streamId(streamId)
@@ -73,11 +76,8 @@ CActiveAEDSPProcess::~CActiveAEDSPProcess()
 {
   ResetStreamFunctionsSelection();
 
-  if (m_resamplerDSPProcessor)
-  {
-    delete m_resamplerDSPProcessor;
-    m_resamplerDSPProcessor = NULL;
-  }
+  delete m_resamplerDSPProcessor;
+  m_resamplerDSPProcessor = NULL;
 
   /* Clear the buffer arrays */
   for (int i = 0; i < AE_DSP_CH_MAX; ++i)
@@ -183,7 +183,6 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
   /*!
    * Set general stream information about the processed stream
    */
-
   if (g_application.m_pPlayer->GetAudioStreamCount() > 0)
   {
     int identifier = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioStream;
@@ -621,11 +620,11 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
     CLog::Log(LOGDEBUG, "  | Frames               : %d", m_addonSettings.iProcessFrames);
     CLog::Log(LOGDEBUG, "  | Internal processing  : %s", m_resamplerDSPProcessor ? "yes" : "no");
     CLog::Log(LOGDEBUG, "  ----  Output format ----");
-    CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_outputSamplerate);
+    CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_outputFormat.m_sampleRate);
     CLog::Log(LOGDEBUG, "  | Sample Format        : %s", CAEUtil::DataFormatToStr(m_outputFormat.m_dataFormat));
     CLog::Log(LOGDEBUG, "  | Channel Count        : %d", m_outputFormat.m_channelLayout.Count());
     CLog::Log(LOGDEBUG, "  | Channel Layout       : %s", ((std::string)m_outputFormat.m_channelLayout).c_str());
-    CLog::Log(LOGDEBUG, "  | Frames               : %d", m_outputFrames);
+    CLog::Log(LOGDEBUG, "  | Frames               : %d", m_outputFormat.m_frames);
   }
 
   m_forceInit = true;
@@ -1090,6 +1089,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
   {
     m_channelLayoutIn = in->pkt->config.channel_layout;
 
+    memset(m_idx_in, -1, sizeof(m_idx_in));
     m_idx_in[AE_CH_FL]    = av_get_channel_layout_channel_index(m_channelLayoutIn, AV_CH_FRONT_LEFT);
     m_idx_in[AE_CH_FR]    = av_get_channel_layout_channel_index(m_channelLayoutIn, AV_CH_FRONT_RIGHT);
     m_idx_in[AE_CH_FC]    = av_get_channel_layout_channel_index(m_channelLayoutIn, AV_CH_FRONT_CENTER);
@@ -1119,6 +1119,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
   {
     m_channelLayoutOut = out->pkt->config.channel_layout;
 
+    memset(m_idx_out, -1, sizeof(m_idx_out));
     m_idx_out[AE_CH_FL]   = av_get_channel_layout_channel_index(m_channelLayoutOut, AV_CH_FRONT_LEFT);
     m_idx_out[AE_CH_FR]   = av_get_channel_layout_channel_index(m_channelLayoutOut, AV_CH_FRONT_RIGHT);
     m_idx_out[AE_CH_FC]   = av_get_channel_layout_channel_index(m_channelLayoutOut, AV_CH_FRONT_CENTER);
@@ -1225,7 +1226,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     /**
      * Setup ffmpeg convert array for input stream
      */
-    SetFFMpegDSPProcessorArray(m_ffMpegConvertArray, m_processArray[0], NULL);
+    SetFFMpegDSPProcessorArray(m_ffMpegConvertArray[FFMPEG_PROC_ARRAY_IN], m_processArray[0], m_idx_in, m_addonSettings.lInChannelPresentFlags);
   }
 
   int64_t startTime;
@@ -1235,7 +1236,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
   /**
    * Convert to required planar float format inside dsp system
    */
-  if (swr_convert(m_convertInput, (uint8_t **)m_ffMpegConvertArray[0], m_processArraySize, (const uint8_t **)in->pkt->data , frames) < 0)
+  if (swr_convert(m_convertInput, (uint8_t **)m_ffMpegConvertArray[FFMPEG_PROC_ARRAY_IN], m_processArraySize, (const uint8_t **)in->pkt->data, in->pkt->nb_samples) < 0)
   {
     CLog::Log(LOGERROR, "ActiveAE DSP - %s - input audio convert failed", __FUNCTION__);
     return false;
