@@ -239,352 +239,26 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
   m_addonSettings.bInputResamplingActive  = false;                                /*! Becomes true if input resampling is in use */
   m_addonSettings.iQualityLevel           = m_streamQuality;                      /*! Requested stream processing quality, is optional and can be from addon ignored */
 
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_FL))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FL;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_FR))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FR;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_FC))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_LFE))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_LFE;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_BL))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BL;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_BR))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BR;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_FLOC)) m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FLOC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_FROC)) m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FROC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_BC))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_SL))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_SL;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_SR))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_SR;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TFL))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TFL;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TFR))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TFR;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TFC))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TFC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TC))   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TBL))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TBR))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_TBC))  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_BLOC)) m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
-  if (m_inputFormat.m_channelLayout.HasChannel(AE_CH_BROC)) m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
-
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_FL))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FL;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_FR))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FR;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_FC))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_LFE))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_LFE;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_BL))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BL;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_BR))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BR;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_FLOC)) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FLOC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_FROC)) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FROC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_BC))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_SL))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_SL;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_SR))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_SR;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TFL))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TFL;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TFR))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TFR;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TFC))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TFC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TC))   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TBL))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TBR))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_TBC))  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_BLOC)) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
-  if (m_outputFormat.m_channelLayout.HasChannel(AE_CH_BROC)) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
-
-  /*!
-   * Setup off mode, used if dsp master processing is set off, required to have data
-   * for stream information functions.
+  /*! @warning If you change or add new channel enums to AEChannel in
+   * xbmc/cores/AudioEngine/Utils/AEChannelData.h you have to adapt this loop
    */
-  sDSPProcessHandle internalMode;
-  internalMode.Clear();
-  internalMode.iAddonModeNumber = AE_DSP_MASTER_MODE_ID_PASSOVER;
-  internalMode.pMode            = CActiveAEDSPModePtr(new CActiveAEDSPMode(internalMode.iAddonModeNumber, (AE_DSP_BASETYPE)m_addonStreamProperties.iBaseType));
-  internalMode.iLastTime        = 0;
-  m_addons_MasterProc.push_back(internalMode);
-  m_activeMode = AE_DSP_MASTER_MODE_ID_PASSOVER;
-
-  if (upmix && m_addonSettings.iInChannels <= 2)
+  for (int ii = 0; ii < AE_DSP_CH_MAX; ii++)
   {
-    internalMode.Clear();
-    internalMode.iAddonModeNumber = AE_DSP_MASTER_MODE_ID_INTERNAL_STEREO_UPMIX;
-    internalMode.pMode            = CActiveAEDSPModePtr(new CActiveAEDSPMode(internalMode.iAddonModeNumber, (AE_DSP_BASETYPE)m_addonStreamProperties.iBaseType));
-    internalMode.iLastTime        = 0;
-    m_addons_MasterProc.push_back(internalMode);
+    if (m_inputFormat.m_channelLayout.HasChannel((AEChannel)(ii + 1)))
+    {
+      m_addonSettings.lInChannelPresentFlags |= 1 << ii;
+    }
   }
 
-  /*!
-   * Load all selected processing types, stored in a database and available from addons
-   */
-  AE_DSP_ADDONMAP addonMap;
-  if (CServiceBroker::GetADSP().GetEnabledAudioDSPAddons(addonMap) > 0)
+  for (int ii = 0; ii < AE_DSP_CH_MAX; ii++)
   {
-    int foundInputResamplerId = -1; /*!< Used to prevent double call of StreamCreate if input stream resampling is together with outer processing types */
-
-    /*!
-     * First find input resample addon to become information about processing sample rate and
-     * load one allowed before master processing & final resample addon
-     */
-    CLog::Log(LOGDEBUG, "  ---- DSP input resample addon ---");
-    const AE_DSP_MODELIST listInputResample = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_INPUT_RESAMPLE);
-    if (listInputResample.empty())
-      CLog::Log(LOGDEBUG, "  | - no input resample addon present or enabled");
-    for (unsigned int i = 0; i < listInputResample.size(); ++i)
+    if (m_outputFormat.m_channelLayout.HasChannel((AEChannel)(ii + 1)))
     {
-      /// For resample only one call is allowed. Use first one and ignore everything else.
-      CActiveAEDSPModePtr pMode = listInputResample[i].first;
-      AE_DSP_ADDON        addon = listInputResample[i].second;
-      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsInputResample() && pMode->IsEnabled())
-      {
-        ADDON_HANDLE_STRUCT handle;
-        AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
-        if (err == AE_DSP_ERROR_NO_ERROR)
-        {
-          if (addon->StreamIsModeSupported(&handle, pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
-          {
-            int processSamplerate = addon->InputResampleSampleRate(&handle);
-            if (processSamplerate == (int)m_inputFormat.m_sampleRate)
-            {
-              CLog::Log(LOGDEBUG, "  | - input resample addon %s ignored, input sample rate %i the same as process rate", addon->GetFriendlyName().c_str(), m_inputFormat.m_sampleRate);
-            }
-            else if (processSamplerate > 0)
-            {
-              CLog::Log(LOGDEBUG, "  | - %s with resampling from %i to %i", addon->GetAudioDSPName().c_str(), m_inputFormat.m_sampleRate, processSamplerate);
-
-              m_outputSamplerate                      = processSamplerate;                  /*!< overwrite output sample rate with the new rate */
-              m_outputFrames                          = (int) ceil((1.0 * processSamplerate) / m_addonSettings.iInSamplerate * m_addonSettings.iInFrames);
-              m_addonSettings.iProcessSamplerate      = m_outputSamplerate;                 /*!< the processing sample rate required for all behind called processes */
-              m_addonSettings.iProcessFrames          = m_outputFrames;
-              m_addonSettings.bInputResamplingActive  = true;
-
-              m_addon_InputResample.iAddonModeNumber  = pMode->AddonModeNumber();
-              m_addon_InputResample.pMode             = pMode;
-              m_addon_InputResample.pAddon            = addon;
-              m_addon_InputResample.iLastTime         = 0;
-            }
-            else
-            {
-              CLog::Log(LOGERROR, "ActiveAE DSP - %s - input resample addon %s return invalid samplerate and becomes disabled", __FUNCTION__, addon->GetFriendlyName().c_str());
-            }
-
-            unsigned int id = addon->GetID();
-            m_addon_Handles[id]   = handle;
-            foundInputResamplerId = id;
-            m_usedMap.insert(std::make_pair(id, addon));
-          }
-        }
-        else if (err != AE_DSP_ERROR_IGNORE_ME)
-          CLog::Log(LOGERROR, "ActiveAE DSP - %s - input resample addon creation failed on %s with %s", __FUNCTION__, addon->GetAudioDSPName().c_str(), CActiveAEDSPAddon::ToString(err));
-        break;
-      }
-    }
-
-    /*!
-     * Now init all other dsp relavant addons
-     */
-    for (AE_DSP_ADDONMAP_ITR itr = addonMap.begin(); itr != addonMap.end(); ++itr)
-    {
-      AE_DSP_ADDON addon = itr->second;
-      int id = addon->GetID();
-      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && id != foundInputResamplerId)
-      {
-        ADDON_HANDLE_STRUCT handle;
-        AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
-        if (err == AE_DSP_ERROR_NO_ERROR)
-        {
-          m_addon_Handles[id] = handle;
-          m_usedMap.insert(std::make_pair(id, addon));
-        }
-        else if (err == AE_DSP_ERROR_IGNORE_ME)
-          continue;
-        else
-          CLog::Log(LOGERROR, "ActiveAE DSP - %s - addon creation failed on %s with %s", __FUNCTION__, addon->GetAudioDSPName().c_str(), CActiveAEDSPAddon::ToString(err));
-      }
-    }
-
-    for (AE_DSP_ADDONMAP_ITR itr = m_usedMap.begin(); itr != m_usedMap.end(); ++itr)
-    {
-      AE_DSP_ADDON addon = itr->second;
-      if (addon->SupportsInputInfoProcess())
-      {
-        sDSPProcessHandle modeHandle;
-        modeHandle.pAddon = addon;
-        modeHandle.handle = m_addon_Handles[addon->GetID()];
-        m_addons_InputProc.push_back(modeHandle);
-      }
-    }
-
-    /*!
-     * Load all required pre process dsp addon functions
-     */
-    CLog::Log(LOGDEBUG, "  ---- DSP active pre process modes ---");
-    const AE_DSP_MODELIST listPreProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_PRE_PROCESS);
-    for (unsigned int i = 0; i < listPreProcess.size(); ++i)
-    {
-      CActiveAEDSPModePtr pMode = listPreProcess[i].first;
-      AE_DSP_ADDON        addon = listPreProcess[i].second;
-      int                    id = addon->GetID();
-
-      if (m_usedMap.find(id) == m_usedMap.end())
-        continue;
-      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPreProcess() && pMode->IsEnabled() &&
-          addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
-      {
-        CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
-
-        sDSPProcessHandle modeHandle;
-        modeHandle.iAddonModeNumber = pMode->AddonModeNumber();
-        modeHandle.pMode            = pMode;
-        modeHandle.pAddon           = addon;
-        modeHandle.iLastTime        = 0;
-        modeHandle.handle           = m_addon_Handles[id];
-        m_addons_PreProc.push_back(modeHandle);
-      }
-    }
-    if (m_addons_PreProc.empty())
-      CLog::Log(LOGDEBUG, "  | - no pre processing addon's present or enabled");
-
-    /*!
-     * Load all available master modes from addons and put together with database
-     */
-    CLog::Log(LOGDEBUG, "  ---- DSP active master process modes ---");
-    const AE_DSP_MODELIST listMasterProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_MASTER_PROCESS);
-    for (unsigned int i = 0; i < listMasterProcess.size(); ++i)
-    {
-      CActiveAEDSPModePtr pMode = listMasterProcess[i].first;
-      AE_DSP_ADDON        addon = listMasterProcess[i].second;
-      int                    id = addon->GetID();
-
-      if (m_usedMap.find(id) == m_usedMap.end())
-        continue;
-      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsMasterProcess() && pMode->IsEnabled() &&
-          addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
-      {
-        CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
-
-        sDSPProcessHandle modeHandle;
-        modeHandle.iAddonModeNumber = pMode->AddonModeNumber();
-        modeHandle.pMode            = pMode;
-        modeHandle.pAddon           = addon;
-        modeHandle.iLastTime        = 0;
-        modeHandle.handle           = m_addon_Handles[id];
-        modeHandle.pMode->SetBaseType((AE_DSP_BASETYPE)m_addonStreamProperties.iBaseType);
-        m_addons_MasterProc.push_back(modeHandle);
-      }
-    }
-    if (m_addons_MasterProc.empty())
-      CLog::Log(LOGDEBUG, "  | - no master processing addon's present or enabled");
-
-    /*!
-     * Get selected source for current input
-     */
-    int modeID = CMediaSettings::GetInstance().GetCurrentAudioSettings().m_MasterModes[m_addonStreamProperties.iStreamType][m_addonStreamProperties.iBaseType];
-    if (modeID == AE_DSP_MASTER_MODE_ID_INVALID)
-      modeID = AE_DSP_MASTER_MODE_ID_PASSOVER;
-
-    for (unsigned int ptr = 0; ptr < m_addons_MasterProc.size(); ++ptr)
-    {
-      CActiveAEDSPModePtr mode = m_addons_MasterProc.at(ptr).pMode;
-      if (mode->ModeID() == modeID)
-      {
-        m_activeMode = (int)ptr;
-        CLog::Log(LOGDEBUG, "  | -- %s (selected)", mode->AddonModeName().c_str());
-        break;
-      }
-    }
-
-    /*!
-     * Setup the one allowed master processing addon and inform about selected mode
-     */
-    m_activeModeOutChannels = -1;
-    if (m_addons_MasterProc[m_activeMode].pAddon)
-    {
-      AE_DSP_ERROR err = m_addons_MasterProc[m_activeMode].pAddon->MasterProcessSetMode(&m_addons_MasterProc[m_activeMode].handle, m_addonStreamProperties.iStreamType, m_addons_MasterProc[m_activeMode].pMode->AddonModeNumber(), m_addons_MasterProc[m_activeMode].pMode->ModeID());
-      if (err != AE_DSP_ERROR_NO_ERROR)
-      {
-        CLog::Log(LOGERROR, "ActiveAE DSP - %s - addon master mode selection failed on %s with Mode '%s' with %s",
-                                __FUNCTION__,
-                                m_addons_MasterProc[m_activeMode].pAddon->GetAudioDSPName().c_str(),
-                                m_addons_MasterProc[m_activeMode].pMode->AddonModeName().c_str(),
-                                CActiveAEDSPAddon::ToString(err));
-        m_addons_MasterProc.erase(m_addons_MasterProc.begin()+m_activeMode);
-        m_activeMode = AE_DSP_MASTER_MODE_ID_PASSOVER;
-      }
-      else
-        m_activeModeOutChannels = m_addons_MasterProc[m_activeMode].pAddon->MasterProcessGetOutChannels(&m_addons_MasterProc[m_activeMode].handle, m_activeModeOutChannelsPresent);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "  | -- No master process selected!");
-    }
-
-    /*!
-     * Load all required post process dsp addon functions
-     */
-    CLog::Log(LOGDEBUG, "  ---- DSP active post process modes ---");
-    const AE_DSP_MODELIST listPostProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_POST_PROCESS);
-    for (unsigned int i = 0; i < listPostProcess.size(); ++i)
-    {
-      CActiveAEDSPModePtr pMode = listPostProcess[i].first;
-      AE_DSP_ADDON        addon = listPostProcess[i].second;
-      int                    id = addon->GetID();
-
-      if (m_usedMap.find(id) == m_usedMap.end())
-        continue;
-
-      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPostProcess() && pMode->IsEnabled() &&
-          addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
-      {
-        CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
-
-        sDSPProcessHandle modeHandle;
-        modeHandle.iAddonModeNumber = pMode->AddonModeNumber();
-        modeHandle.pMode            = pMode;
-        modeHandle.pAddon           = addon;
-        modeHandle.iLastTime        = 0;
-        modeHandle.handle           = m_addon_Handles[id];
-        m_addons_PostProc.push_back(modeHandle);
-      }
-    }
-    if (m_addons_PostProc.empty())
-      CLog::Log(LOGDEBUG, "  | - no post processing addon's present or enabled");
-
-    /*!
-     * Load one allowed addon for resampling after final post processing
-     */
-    CLog::Log(LOGDEBUG, "  ---- DSP post resample addon ---");
-    if (m_addonSettings.iProcessSamplerate != m_outputFormat.m_sampleRate)
-    {
-      const AE_DSP_MODELIST listOutputResample = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE);
-      if (listOutputResample.empty())
-        CLog::Log(LOGDEBUG, "  | - no final post resample addon present or enabled, becomes performed by KODI");
-      for (unsigned int i = 0; i < listOutputResample.size(); ++i)
-      {
-        /// For resample only one call is allowed. Use first one and ignore everything else.
-        CActiveAEDSPModePtr pMode = listOutputResample[i].first;
-        AE_DSP_ADDON        addon = listOutputResample[i].second;
-        int                    id = addon->GetID();
-
-        if (m_usedMap.find(id) != m_usedMap.end() &&
-            !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsOutputResample() && pMode->IsEnabled() &&
-            addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
-        {
-          int outSamplerate = addon->OutputResampleSampleRate(&m_addon_Handles[id]);
-          if (outSamplerate > 0)
-          {
-            CLog::Log(LOGDEBUG, "  | - %s with resampling to %i", addon->GetAudioDSPName().c_str(), outSamplerate);
-
-            m_outputSamplerate                      = outSamplerate;
-            m_outputFrames                          = (int) ceil((1.0 * outSamplerate) / m_addonSettings.iProcessSamplerate * m_addonSettings.iProcessFrames);
-
-            m_addon_OutputResample.iAddonModeNumber = pMode->AddonModeNumber();
-            m_addon_OutputResample.pMode            = pMode;
-            m_addon_OutputResample.pAddon           = addon;
-            m_addon_OutputResample.iLastTime        = 0;
-            m_addon_OutputResample.handle           = m_addon_Handles[id];
-          }
-          else
-          {
-            CLog::Log(LOGERROR, "ActiveAE DSP - %s - post resample addon %s return invalid samplerate and becomes disabled", __FUNCTION__, addon->GetFriendlyName().c_str());
-          }
-          break;
-        }
-      }
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "  | - no final resampling needed, process and final samplerate the same");
+      m_addonSettings.lOutChannelPresentFlags |= 1 << ii;
     }
   }
+
+  UpdateActiveModes();
 
   /*!
    * Initialize fallback matrix mixer
@@ -1146,50 +820,29 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
 
   if (needDSPAddonsReinit)
   {
+    /*! @warning If you change or add new channel enums to AEChannel in
+     * xbmc/cores/AudioEngine/Utils/AEChannelData.h you have to adapt this loop
+     */
     m_addonSettings.lInChannelPresentFlags = 0;
-    if (m_idx_in[AE_CH_FL] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FL;
-    if (m_idx_in[AE_CH_FR] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FR;
-    if (m_idx_in[AE_CH_FC] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FC;
-    if (m_idx_in[AE_CH_LFE] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_LFE;
-    if (m_idx_in[AE_CH_BL] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BL;
-    if (m_idx_in[AE_CH_BR] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BR;
-    if (m_idx_in[AE_CH_FLOC] >= 0)  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FLOC;
-    if (m_idx_in[AE_CH_FROC] >= 0)  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_FROC;
-    if (m_idx_in[AE_CH_BC] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BC;
-    if (m_idx_in[AE_CH_SL] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_SL;
-    if (m_idx_in[AE_CH_SR] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_SR;
-    if (m_idx_in[AE_CH_TFL] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TFL;
-    if (m_idx_in[AE_CH_TFR] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TFR;
-    if (m_idx_in[AE_CH_TFC] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TFC;
-    if (m_idx_in[AE_CH_TC] >= 0)    m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TC;
-    if (m_idx_in[AE_CH_TBL] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
-    if (m_idx_in[AE_CH_TBR] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
-    if (m_idx_in[AE_CH_TBC] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
-    if (m_idx_in[AE_CH_TBR] >= 0)   m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
-    if (m_idx_in[AE_CH_BLOC] >= 0)  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
-    if (m_idx_in[AE_CH_BROC] >= 0)  m_addonSettings.lInChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
+    for (int ii = 0; ii < AE_DSP_CH_MAX; ii++)
+    {
+      if (m_idx_in[ii+1] >= 0)
+      {
+        m_addonSettings.lInChannelPresentFlags |= 1 << ii;
+      }
+    }
 
+    /*! @warning If you change or add new channel enums to AEChannel in
+     * xbmc/cores/AudioEngine/Utils/AEChannelData.h you have to adapt this loop
+     */
     m_addonSettings.lOutChannelPresentFlags = 0;
-    if (m_idx_out[AE_CH_FL] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FL;
-    if (m_idx_out[AE_CH_FR] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FR;
-    if (m_idx_out[AE_CH_FC] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FC;
-    if (m_idx_out[AE_CH_LFE] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_LFE;
-    if (m_idx_out[AE_CH_BL] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BL;
-    if (m_idx_out[AE_CH_BR] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BR;
-    if (m_idx_out[AE_CH_FLOC] >= 0) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FLOC;
-    if (m_idx_out[AE_CH_FROC] >= 0) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_FROC;
-    if (m_idx_out[AE_CH_BC] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BC;
-    if (m_idx_out[AE_CH_SL] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_SL;
-    if (m_idx_out[AE_CH_SR] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_SR;
-    if (m_idx_out[AE_CH_TFL] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TFL;
-    if (m_idx_out[AE_CH_TFR] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TFR;
-    if (m_idx_out[AE_CH_TFC] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TFC;
-    if (m_idx_out[AE_CH_TC] >= 0)   m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TC;
-    if (m_idx_out[AE_CH_TBL] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBL;
-    if (m_idx_out[AE_CH_TBR] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBR;
-    if (m_idx_out[AE_CH_TBC] >= 0)  m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_TBC;
-    if (m_idx_out[AE_CH_BLOC] >= 0) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BLOC;
-    if (m_idx_out[AE_CH_BROC] >= 0) m_addonSettings.lOutChannelPresentFlags |= AE_DSP_PRSNT_CH_BROC;
+    for (int ii = 0; ii < AE_DSP_CH_MAX; ii++)
+    {
+      if (m_idx_out[ii + 1] >= 0)
+      {
+        m_addonSettings.lOutChannelPresentFlags |= 1 << ii;
+      }
+    }
 
     m_addonSettings.iStreamID           = m_streamId;
     m_addonSettings.iInChannels         = in->pkt->config.channels;
@@ -1213,6 +866,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
         CLog::Log(LOGERROR, "ActiveAE DSP - %s - addon initialize failed on %s with %s", __FUNCTION__, itr->second->GetAudioDSPName().c_str(), CActiveAEDSPAddon::ToString(err));
       }
     }
+    UpdateActiveModes();
 
     RecheckProcessArray(frames);
     ClearArray(m_processArray[0], m_processArraySize);
@@ -1536,54 +1190,17 @@ void CActiveAEDSPProcess::SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_D
    * already present channel memory storage.
    */
 
-  //! Initialize input channel alignmment for ffmpeg process array
-  if (array_in)
+  /*! @warning If you change or add new channel enums to AEChannel in 
+    * xbmc/cores/AudioEngine/Utils/AEChannelData.h you have to adapt this loop
+    */
+  memset(array_ffmpeg, 0, sizeof(float*)*AE_DSP_CH_MAX);
+  for (int ii = 0; ii < AE_DSP_CH_MAX; ii++)
   {
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FL)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FL]]    = array_in[AE_DSP_CH_FL];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FR)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FR]]    = array_in[AE_DSP_CH_FR];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FC)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FC]]    = array_in[AE_DSP_CH_FC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_LFE)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_LFE]]   = array_in[AE_DSP_CH_LFE];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BL)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BL]]    = array_in[AE_DSP_CH_BL];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BR)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BR]]    = array_in[AE_DSP_CH_BR];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FLOC]]  = array_in[AE_DSP_CH_FLOC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FROC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FROC]]  = array_in[AE_DSP_CH_FROC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BC)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BC]]    = array_in[AE_DSP_CH_BC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_SL)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_SL]]    = array_in[AE_DSP_CH_SL];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_SR)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_SR]]    = array_in[AE_DSP_CH_SR];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFL)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFL]]   = array_in[AE_DSP_CH_TFL];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFR)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFR]]   = array_in[AE_DSP_CH_TFR];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TFC)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TFC]]   = array_in[AE_DSP_CH_TFC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TC)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TC]]    = array_in[AE_DSP_CH_TC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBL)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBL]]   = array_in[AE_DSP_CH_TBL];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBR)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBR]]   = array_in[AE_DSP_CH_TBR];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_TBC)  array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_TBC]]   = array_in[AE_DSP_CH_TBC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BLOC]]  = array_in[AE_DSP_CH_BLOC];
-    if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BROC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BROC]]  = array_in[AE_DSP_CH_BROC];
-  }
+    if (ChannelFlags & 1 << ii)
+    {
+      array_ffmpeg[idx[ii + 1]] = array_dsp[ii];
+    }
 
-  //! Initialize output channel alignmment for ffmpeg process array
-  if (array_out)
-  {
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FL)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FL]]    = array_out[AE_DSP_CH_FL];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FR)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FR]]    = array_out[AE_DSP_CH_FR];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FC)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FC]]    = array_out[AE_DSP_CH_FC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_LFE)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_LFE]]   = array_out[AE_DSP_CH_LFE];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BL)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BL]]    = array_out[AE_DSP_CH_BL];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BR)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BR]]    = array_out[AE_DSP_CH_BR];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FLOC]]  = array_out[AE_DSP_CH_FLOC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FROC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FROC]]  = array_out[AE_DSP_CH_FROC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BC)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BC]]    = array_out[AE_DSP_CH_BC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_SL)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_SL]]    = array_out[AE_DSP_CH_SL];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_SR)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_SR]]    = array_out[AE_DSP_CH_SR];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFL)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFL]]   = array_out[AE_DSP_CH_TFL];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFR)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFR]]   = array_out[AE_DSP_CH_TFR];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TFC)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TFC]]   = array_out[AE_DSP_CH_TFC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TC)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TC]]    = array_out[AE_DSP_CH_TC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBL)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBL]]   = array_out[AE_DSP_CH_TBL];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBR)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBR]]   = array_out[AE_DSP_CH_TBR];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_TBC)  array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_TBC]]   = array_out[AE_DSP_CH_TBC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BLOC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BLOC]]  = array_out[AE_DSP_CH_BLOC];
-    if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_BROC) array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_BROC]]  = array_out[AE_DSP_CH_BROC];
   }
 }
 
@@ -1609,6 +1226,322 @@ float CActiveAEDSPProcess::GetDelay()
     delay += m_addon_OutputResample.pAddon->OutputResampleGetDelay(&m_addon_OutputResample.handle);
 
   return delay;
+}
+
+void CActiveAEDSPProcess::UpdateActiveModes()
+{
+  m_addon_InputResample.Clear();
+  m_addon_OutputResample.Clear();
+
+  m_addons_InputProc.clear();
+  m_addons_PreProc.clear();
+  m_addons_MasterProc.clear();
+  m_addons_PostProc.clear();
+
+  /*!
+  * Setup off mode, used if dsp master processing is set off, required to have data
+  * for stream information functions.
+  */
+  sDSPProcessHandle internalMode;
+  internalMode.Clear();
+  internalMode.iAddonModeNumber = AE_DSP_MASTER_MODE_ID_PASSOVER;
+  internalMode.pMode = CActiveAEDSPModePtr(new CActiveAEDSPMode(internalMode.iAddonModeNumber, (AE_DSP_BASETYPE)m_addonStreamProperties.iBaseType));
+  internalMode.iLastTime = 0;
+  m_addons_MasterProc.push_back(internalMode);
+  m_activeMode = AE_DSP_MASTER_MODE_ID_PASSOVER;
+
+  if (m_addonSettings.bStereoUpmix && m_addonSettings.iInChannels <= 2)
+  {
+    internalMode.Clear();
+    internalMode.iAddonModeNumber = AE_DSP_MASTER_MODE_ID_INTERNAL_STEREO_UPMIX;
+    internalMode.pMode = CActiveAEDSPModePtr(new CActiveAEDSPMode(internalMode.iAddonModeNumber, (AE_DSP_BASETYPE)m_addonStreamProperties.iBaseType));
+    internalMode.iLastTime = 0;
+    m_addons_MasterProc.push_back(internalMode);
+  }
+
+  /*!
+  * Load all selected processing types, stored in a database and available from addons
+  */
+  AE_DSP_ADDONMAP addonMap;
+  if (CServiceBroker::GetADSP().GetEnabledAudioDSPAddons(addonMap) > 0)
+  {
+    int foundInputResamplerId = -1; /*!< Used to prevent double call of StreamCreate if input stream resampling is together with outer processing types */
+
+                                    /*!
+                                    * First find input resample addon to become information about processing sample rate and
+                                    * load one allowed before master processing & final resample addon
+                                    */
+    CLog::Log(LOGDEBUG, "  ---- DSP input resample addon ---");
+    const AE_DSP_MODELIST listInputResample = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_INPUT_RESAMPLE);
+    if (listInputResample.empty())
+      CLog::Log(LOGDEBUG, "  | - no input resample addon present or enabled");
+    for (unsigned int i = 0; i < listInputResample.size(); ++i)
+    {
+      /// For resample only one call is allowed. Use first one and ignore everything else.
+      CActiveAEDSPModePtr pMode = listInputResample[i].first;
+      AE_DSP_ADDON        addon = listInputResample[i].second;
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsInputResample() && pMode->IsEnabled())
+      {
+        ADDON_HANDLE_STRUCT handle;
+        AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
+        if (err == AE_DSP_ERROR_NO_ERROR)
+        {
+          if (addon->StreamIsModeSupported(&handle, pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
+          {
+            int processSamplerate = addon->InputResampleSampleRate(&handle);
+            if (processSamplerate == (int)m_inputFormat.m_sampleRate)
+            {
+              CLog::Log(LOGDEBUG, "  | - input resample addon %s ignored, input sample rate %i the same as process rate", addon->GetFriendlyName().c_str(), m_inputFormat.m_sampleRate);
+            }
+            else if (processSamplerate > 0)
+            {
+              CLog::Log(LOGDEBUG, "  | - %s with resampling from %i to %i", addon->GetAudioDSPName().c_str(), m_inputFormat.m_sampleRate, processSamplerate);
+
+              m_outputFormat.m_sampleRate = processSamplerate;                  /*!< overwrite output sample rate with the new rate */
+              m_outputFormat.m_frames = (int)ceil((1.0 * processSamplerate) / m_addonSettings.iInSamplerate * m_addonSettings.iInFrames);
+              m_addonSettings.iProcessSamplerate = processSamplerate;                 /*!< the processing sample rate required for all behind called processes */
+              m_addonSettings.iProcessFrames = m_outputFormat.m_frames;
+              m_addonSettings.bInputResamplingActive = true;
+
+              m_addon_InputResample.iAddonModeNumber = pMode->AddonModeNumber();
+              m_addon_InputResample.pMode = pMode;
+              m_addon_InputResample.pAddon = addon;
+              m_addon_InputResample.iLastTime = 0;
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "ActiveAE DSP - %s - input resample addon %s return invalid samplerate and becomes disabled", __FUNCTION__, addon->GetFriendlyName().c_str());
+            }
+
+            unsigned int id = addon->GetID();
+            m_addon_Handles[id] = handle;
+            foundInputResamplerId = id;
+            m_usedMap.insert(std::make_pair(id, addon));
+          }
+        }
+        else if (err != AE_DSP_ERROR_IGNORE_ME)
+          CLog::Log(LOGERROR, "ActiveAE DSP - %s - input resample addon creation failed on %s with %s", __FUNCTION__, addon->GetAudioDSPName().c_str(), CActiveAEDSPAddon::ToString(err));
+        break;
+      }
+    }
+
+    /*!
+    * Now init all other dsp relavant addons
+    */
+    for (AE_DSP_ADDONMAP_ITR itr = addonMap.begin(); itr != addonMap.end(); ++itr)
+    {
+      AE_DSP_ADDON addon = itr->second;
+      int id = addon->GetID();
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && id != foundInputResamplerId)
+      {
+        ADDON_HANDLE_STRUCT handle;
+        AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
+        if (err == AE_DSP_ERROR_NO_ERROR)
+        {
+          m_addon_Handles[id] = handle;
+          m_usedMap.insert(std::make_pair(id, addon));
+        }
+        else if (err == AE_DSP_ERROR_IGNORE_ME)
+          continue;
+        else
+          CLog::Log(LOGERROR, "ActiveAE DSP - %s - addon creation failed on %s with %s", __FUNCTION__, addon->GetAudioDSPName().c_str(), CActiveAEDSPAddon::ToString(err));
+      }
+    }
+
+    for (AE_DSP_ADDONMAP_ITR itr = m_usedMap.begin(); itr != m_usedMap.end(); ++itr)
+    {
+      AE_DSP_ADDON addon = itr->second;
+      if (addon->SupportsInputInfoProcess())
+      {
+        sDSPProcessHandle modeHandle;
+        modeHandle.pAddon = addon;
+        modeHandle.handle = m_addon_Handles[addon->GetID()];
+        m_addons_InputProc.push_back(modeHandle);
+      }
+    }
+
+    /*!
+    * Load all required pre process dsp addon functions
+    */
+    CLog::Log(LOGDEBUG, "  ---- DSP active pre process modes ---");
+    const AE_DSP_MODELIST listPreProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_PRE_PROCESS);
+    for (unsigned int i = 0; i < listPreProcess.size(); ++i)
+    {
+      CActiveAEDSPModePtr pMode = listPreProcess[i].first;
+      AE_DSP_ADDON        addon = listPreProcess[i].second;
+      int                    id = addon->GetID();
+
+      if (m_usedMap.find(id) == m_usedMap.end())
+        continue;
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPreProcess() && pMode->IsEnabled() &&
+        addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
+      {
+        CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
+
+        sDSPProcessHandle modeHandle;
+        modeHandle.iAddonModeNumber = pMode->AddonModeNumber();
+        modeHandle.pMode = pMode;
+        modeHandle.pAddon = addon;
+        modeHandle.iLastTime = 0;
+        modeHandle.handle = m_addon_Handles[id];
+        m_addons_PreProc.push_back(modeHandle);
+      }
+    }
+    if (m_addons_PreProc.empty())
+      CLog::Log(LOGDEBUG, "  | - no pre processing addon's present or enabled");
+
+    /*!
+    * Load all available master modes from addons and put together with database
+    */
+    CLog::Log(LOGDEBUG, "  ---- DSP active master process modes ---");
+    const AE_DSP_MODELIST listMasterProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_MASTER_PROCESS);
+    for (unsigned int i = 0; i < listMasterProcess.size(); ++i)
+    {
+      CActiveAEDSPModePtr pMode = listMasterProcess[i].first;
+      AE_DSP_ADDON        addon = listMasterProcess[i].second;
+      int                    id = addon->GetID();
+
+      if (m_usedMap.find(id) == m_usedMap.end())
+        continue;
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsMasterProcess() && pMode->IsEnabled() &&
+        addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
+      {
+        CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
+
+        sDSPProcessHandle modeHandle;
+        modeHandle.iAddonModeNumber = pMode->AddonModeNumber();
+        modeHandle.pMode = pMode;
+        modeHandle.pAddon = addon;
+        modeHandle.iLastTime = 0;
+        modeHandle.handle = m_addon_Handles[id];
+        modeHandle.pMode->SetBaseType((AE_DSP_BASETYPE)m_addonStreamProperties.iBaseType);
+        m_addons_MasterProc.push_back(modeHandle);
+      }
+    }
+    if (m_addons_MasterProc.empty())
+      CLog::Log(LOGDEBUG, "  | - no master processing addon's present or enabled");
+
+    /*!
+    * Get selected source for current input
+    */
+    int modeID = CMediaSettings::GetInstance().GetCurrentAudioSettings().m_MasterModes[m_addonStreamProperties.iStreamType][m_addonStreamProperties.iBaseType];
+    if (modeID == AE_DSP_MASTER_MODE_ID_INVALID)
+      modeID = AE_DSP_MASTER_MODE_ID_PASSOVER;
+
+    for (unsigned int ptr = 0; ptr < m_addons_MasterProc.size(); ++ptr)
+    {
+      CActiveAEDSPModePtr mode = m_addons_MasterProc.at(ptr).pMode;
+      if (mode->ModeID() == modeID)
+      {
+        m_activeMode = (int)ptr;
+        CLog::Log(LOGDEBUG, "  | -- %s (selected)", mode->AddonModeName().c_str());
+        break;
+      }
+    }
+
+    /*!
+    * Setup the one allowed master processing addon and inform about selected mode
+    */
+    m_activeModeOutChannels = -1;
+    if (m_addons_MasterProc[m_activeMode].pAddon)
+    {
+      AE_DSP_ERROR err = m_addons_MasterProc[m_activeMode].pAddon->MasterProcessSetMode(&m_addons_MasterProc[m_activeMode].handle, m_addonStreamProperties.iStreamType, m_addons_MasterProc[m_activeMode].pMode->AddonModeNumber(), m_addons_MasterProc[m_activeMode].pMode->ModeID());
+      if (err != AE_DSP_ERROR_NO_ERROR)
+      {
+        CLog::Log(LOGERROR, "ActiveAE DSP - %s - addon master mode selection failed on %s with Mode '%s' with %s",
+          __FUNCTION__,
+          m_addons_MasterProc[m_activeMode].pAddon->GetAudioDSPName().c_str(),
+          m_addons_MasterProc[m_activeMode].pMode->AddonModeName().c_str(),
+          CActiveAEDSPAddon::ToString(err));
+        m_addons_MasterProc.erase(m_addons_MasterProc.begin() + m_activeMode);
+        m_activeMode = AE_DSP_MASTER_MODE_ID_PASSOVER;
+      }
+      else
+        m_activeModeOutChannels = m_addons_MasterProc[m_activeMode].pAddon->MasterProcessGetOutChannels(&m_addons_MasterProc[m_activeMode].handle, m_activeModeOutChannelsPresent);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "  | -- No master process selected!");
+    }
+
+    /*!
+    * Load all required post process dsp addon functions
+    */
+    CLog::Log(LOGDEBUG, "  ---- DSP active post process modes ---");
+    const AE_DSP_MODELIST listPostProcess = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_POST_PROCESS);
+    for (unsigned int i = 0; i < listPostProcess.size(); ++i)
+    {
+      CActiveAEDSPModePtr pMode = listPostProcess[i].first;
+      AE_DSP_ADDON        addon = listPostProcess[i].second;
+      int                    id = addon->GetID();
+
+      if (m_usedMap.find(id) == m_usedMap.end())
+        continue;
+
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPostProcess() && pMode->IsEnabled() &&
+        addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
+      {
+        CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
+
+        sDSPProcessHandle modeHandle;
+        modeHandle.iAddonModeNumber = pMode->AddonModeNumber();
+        modeHandle.pMode = pMode;
+        modeHandle.pAddon = addon;
+        modeHandle.iLastTime = 0;
+        modeHandle.handle = m_addon_Handles[id];
+        m_addons_PostProc.push_back(modeHandle);
+      }
+    }
+    if (m_addons_PostProc.empty())
+      CLog::Log(LOGDEBUG, "  | - no post processing addon's present or enabled");
+
+    /*!
+    * Load one allowed addon for resampling after final post processing
+    */
+    CLog::Log(LOGDEBUG, "  ---- DSP post resample addon ---");
+    if (m_addonSettings.iProcessSamplerate != m_outputFormat.m_sampleRate)
+    {
+      const AE_DSP_MODELIST listOutputResample = CServiceBroker::GetADSP().GetAvailableModes(AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE);
+      if (listOutputResample.empty())
+        CLog::Log(LOGDEBUG, "  | - no final post resample addon present or enabled, becomes performed by KODI");
+      for (unsigned int i = 0; i < listOutputResample.size(); ++i)
+      {
+        /// For resample only one call is allowed. Use first one and ignore everything else.
+        CActiveAEDSPModePtr pMode = listOutputResample[i].first;
+        AE_DSP_ADDON        addon = listOutputResample[i].second;
+        int                    id = addon->GetID();
+
+        if (m_usedMap.find(id) != m_usedMap.end() &&
+          !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsOutputResample() && pMode->IsEnabled() &&
+          addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
+        {
+          int outSamplerate = addon->OutputResampleSampleRate(&m_addon_Handles[id]);
+          if (outSamplerate > 0)
+          {
+            CLog::Log(LOGDEBUG, "  | - %s with resampling to %i", addon->GetAudioDSPName().c_str(), outSamplerate);
+
+            m_outputFormat.m_sampleRate = outSamplerate;
+            m_outputFormat.m_frames = (int)ceil((1.0 * outSamplerate) / m_addonSettings.iProcessSamplerate * m_addonSettings.iProcessFrames);
+
+            m_addon_OutputResample.iAddonModeNumber = pMode->AddonModeNumber();
+            m_addon_OutputResample.pMode = pMode;
+            m_addon_OutputResample.pAddon = addon;
+            m_addon_OutputResample.iLastTime = 0;
+            m_addon_OutputResample.handle = m_addon_Handles[id];
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "ActiveAE DSP - %s - post resample addon %s return invalid samplerate and becomes disabled", __FUNCTION__, addon->GetFriendlyName().c_str());
+          }
+          break;
+        }
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "  | - no final resampling needed, process and final samplerate the same");
+    }
+  }
 }
 
 bool CActiveAEDSPProcess::HasActiveModes(AE_DSP_MODE_TYPE type)

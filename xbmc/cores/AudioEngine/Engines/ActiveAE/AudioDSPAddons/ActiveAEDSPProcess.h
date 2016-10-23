@@ -32,7 +32,7 @@ namespace ActiveAE
 {
   class CSampleBuffer;
   class IAEResample;
-  class CActiveAEResample;
+  class CActiveAEBufferPoolADSP;
 
   //@{
   /*!
@@ -203,6 +203,11 @@ namespace ActiveAE
        * @return seconds
        */
       float GetDelay();
+
+      /*!>
+       * Update the state all AudioDSP modes.
+       */
+      void UpdateActiveModes();
     //@}
     private:
     //@{
