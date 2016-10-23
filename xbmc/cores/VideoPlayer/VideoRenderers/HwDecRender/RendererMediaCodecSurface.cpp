@@ -63,6 +63,11 @@ void CRendererMediaCodecSurface::AddVideoPictureHW(DVDVideoPicture &picture, int
 #endif
 }
 
+bool CRendererMediaCodecSurface::RenderUpdateCheckForEmptyField()
+{
+  return false;
+}
+
 void CRendererMediaCodecSurface::ReleaseBuffer(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
@@ -77,11 +82,6 @@ void CRendererMediaCodecSurface::ReleaseBuffer(int idx)
 int CRendererMediaCodecSurface::GetImageHook(YV12Image *image, int source, bool readonly)
 {
   return source;
-}
-
-bool CRendererMediaCodecSurface::IsGuiLayer()
-{
-  return false;
 }
 
 bool CRendererMediaCodecSurface::Supports(EINTERLACEMETHOD method)
@@ -113,13 +113,8 @@ bool CRendererMediaCodecSurface::LoadShadersHook()
 
 bool CRendererMediaCodecSurface::RenderHook(int index)
 {
-  return true; // nothing to be done
-}
-
-bool CRendererMediaCodecSurface::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
-{
-  CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[m_iYV12RenderBuffer].hwDec);
-  if (mci)
+  CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[index].hwDec);
+  if (mci && !mci->IsReleased())
   {
     // this hack is needed to get the 2D mode of a 3D movie going
     RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
@@ -151,8 +146,6 @@ bool CRendererMediaCodecSurface::RenderUpdateVideoHook(bool clear, DWORD flags, 
 
     mci->RenderUpdate(srcRect, dstRect);
   }
-
-  CXBMCApp::WaitVSync(1000.0 / g_graphicsContext.GetFPS());
   return true;
 }
 
