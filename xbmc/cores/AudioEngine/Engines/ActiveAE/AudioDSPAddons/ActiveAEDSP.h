@@ -262,12 +262,14 @@ namespace ActiveAE
      * @param inputFormat The used audio stream input format
      * @param outputFormat Audio output format which is needed to send to the sinks
      * @param quality The requested quality from settings
+     * @param upmix if true, the internal gets enabled
+     * @param bypassDSP it true, all active AudioDSP are skipped
      * @param wasActive if it is true a recreation of present stream control becomes performed (process class becomes not deleted)
      * @return True if the dsp processing becomes available
      */
-    bool CreateDSPs(unsigned int &streamId, CActiveAEDSPProcessPtr &process, const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat,
-                    bool upmix, AEQuality quality, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type,
-                    int profile, bool wasActive = false);
+    int CreateDSPs(int streamId, CActiveAEDSPProcessPtr &process, const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat,
+                   bool upmix, bool bypassDSP, AEQuality quality, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type,
+                   int profile);
 
     /*!>
      * Destroy all allocated dsp addons for this stream id and stops the processing.

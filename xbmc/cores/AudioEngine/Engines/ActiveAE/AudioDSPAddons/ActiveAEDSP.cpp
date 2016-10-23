@@ -450,19 +450,21 @@ CAEChannelInfo CActiveAEDSP::GetInternalChannelLayout(AEStdChLayout stdLayout)
   return CAEUtil::GetAEChannelLayout(channelLayoutOut);
 }
 
-bool CActiveAEDSP::CreateDSPs(unsigned int &streamId, CActiveAEDSPProcessPtr &process, const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix,
-                              AEQuality quality, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type,
-                              int profile, bool wasActive)
+int CActiveAEDSP::CreateDSPs(int streamId, CActiveAEDSPProcessPtr &process, const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix,
+                             bool bypassDSP, AEQuality quality, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type,
+                             int profile)
 {
   if (!IsActivated() || m_usedProcessesCnt >= AE_DSP_STREAM_MAX_STREAMS)
-    return false;
+    return -1;
 
   CSingleLock lock(m_critSection);
 
   AE_DSP_STREAMTYPE requestedStreamType = LoadCurrentAudioSettings();
 
+  bool wasActive = streamId != -1;
+
   CActiveAEDSPProcessPtr usedProc;
-  if (wasActive && streamId != (unsigned int)-1 && streamId < AE_DSP_STREAM_MAX_STREAMS)
+  if (0 <= streamId && streamId < AE_DSP_STREAM_MAX_STREAMS)
   {
     if (m_usedProcesses[streamId] != NULL)
     {
@@ -486,13 +488,14 @@ bool CActiveAEDSP::CreateDSPs(unsigned int &streamId, CActiveAEDSPProcessPtr &pr
   if (usedProc == NULL)
   {
     CLog::Log(LOGERROR, "ActiveAE DSP - %s - can't find active processing class", __FUNCTION__);
-    return false;
+    return -1;
   }
 
-  if (!usedProc->Create(inputFormat, outputFormat, upmix, quality, requestedStreamType, matrix_encoding, audio_service_type, profile))
+  if (!usedProc->Create(inputFormat, outputFormat, upmix, bypassDSP, quality, requestedStreamType, matrix_encoding, audio_service_type, profile))
   {
+    m_usedProcesses[streamId] = CActiveAEDSPProcessPtr();
     CLog::Log(LOGERROR, "ActiveAE DSP - %s - Creation of processing class failed", __FUNCTION__);
-    return false;
+    return -1;
   }
 
   if (!wasActive)
@@ -502,7 +505,8 @@ bool CActiveAEDSP::CreateDSPs(unsigned int &streamId, CActiveAEDSPProcessPtr &pr
     m_usedProcesses[streamId] = usedProc;
     m_usedProcessesCnt++;
   }
-  return true;
+
+  return streamId;
 }
 
 void CActiveAEDSP::DestroyDSPs(unsigned int streamId)
