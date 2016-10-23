@@ -2410,6 +2410,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="audiooutput.streamnoise" type="boolean" label="34112" help="34113">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="15108">
         <setting id="audiooutput.guisoundmode" type="integer" label="34120" help="36373">
