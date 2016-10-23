@@ -248,12 +248,6 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
 
   if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS)
   {
-    if (!IsActivated() || !HasAvailableModes())
-    {
-      CGUIDialogOK::ShowAndGetInput(14117, 0, 15065, 0);
-      return;
-    }
-
     CGUIDialogAudioDSPManager *dialog = (CGUIDialogAudioDSPManager *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
     if (dialog)
       dialog->Open();
@@ -596,7 +590,7 @@ void CActiveAEDSP::UpdateAddons()
   VECADDONS addons;
   AE_DSP_ADDON dspAddon;
 
-  CAddonMgr::GetInstance().GetAddons(addons, ADDON_ADSPDLL);
+  CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_ADSPDLL);
 
   if (addons.empty())
     return;
