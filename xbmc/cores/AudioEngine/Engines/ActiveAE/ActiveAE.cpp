@@ -294,6 +294,7 @@ CActiveAE::~CActiveAE()
 
 void CActiveAE::Dispose()
 {
+  CServiceBroker::GetADSP().Shutdown();
   g_Windowing.Unregister(this);
 
   m_bStop = true;
@@ -466,6 +467,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_extError = false;
           m_sink.EnumerateSinkList(false);
           LoadSettings();
+          CServiceBroker::GetADSP().Init();
           Configure();
           msg->Reply(CActiveAEControlProtocol::ACC);
           if (!m_extError)
@@ -540,6 +542,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           LoadSettings();
           ChangeResamplers();
+          ChangeADSP();
           if (!NeedReconfigureBuffers() && !NeedReconfigureSink())
             return;
           m_state = AE_TOP_RECONFIGURING;
@@ -794,6 +797,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_sink.EnumerateSinkList(true);
             LoadSettings();
           }
+          CServiceBroker::GetADSP().Init();
           Configure();
           if (!displayReset)
             msg->Reply(CActiveAEControlProtocol::ACC);
@@ -1570,6 +1574,13 @@ void CActiveAE::ChangeResamplers()
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
     (*it)->m_processingBuffers->ConfigureResampler(m_settings.normalizelevels, m_settings.dspaddonsenabled, m_settings.stereoupmix, m_settings.resampleQuality);
+
+void CActiveAE::ChangeADSP()
+{
+  std::list<CActiveAEStream*>::iterator it;
+  for (it = m_streams.begin(); it != m_streams.end(); ++it)
+  {
+    (*it)->m_processingBuffers->ConfigureADSP(m_settings.dspaddonsenabled, m_settings.stereoupmix, m_settings.resampleQuality);
   }
 }
 
@@ -2622,7 +2633,8 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
       setting == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH            ||
       setting == CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE             ||
       setting == CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME ||
-      setting == CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE)
+      setting == CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE           ||
+      setting == CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED)
   {
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
   }

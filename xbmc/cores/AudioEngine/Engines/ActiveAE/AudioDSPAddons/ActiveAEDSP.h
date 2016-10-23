@@ -72,21 +72,15 @@ namespace ActiveAE
      * @brief Stop the ActiveAEDSP and destroy all objects it created.
      */
     virtual ~CActiveAEDSP();
-
-    void Init(void);
   //@}
 
   /*! @name initialization and configuration methods */
   //@{
-    /*!
-     * @brief Activate the addon dsp processing.
-     */
-    void Activate(void);
-
+    void Init(void);
     /*!
      * @brief Stops dsp processing and the backend info update thread.
      */
-    void Deactivate(void);
+    void Shutdown(void);
 
     /*!
      * @brief Delete all objects and processing classes.
@@ -399,6 +393,7 @@ namespace ActiveAE
     static const int        m_StreamTypeNameTable[];                    /*!< Table for stream type strings related to type id */
     bool                    m_isActive;                                 /*!< set to true if all available dsp addons are loaded */
     AE_DSP_ADDONMAP         m_addonMap;                                 /*!< a map of all known audio dsp addons */
+    std::list<AE_DSP_ADDON> m_addonToDestroy;                           /*!< a map of all known audio dsp addons */
     CActiveAEDSPDatabase    m_databaseDSP;                              /*!< the database for all audio DSP related data */
     CCriticalSection        m_critSection;                              /*!< Critical lock for control functions */
     CCriticalSection        m_critUpdateSection;                        /*!< Critical lock for update thread related functions */
