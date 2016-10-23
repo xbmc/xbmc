@@ -751,6 +751,11 @@ void CActiveAEDSPProcess::ClearArray(float **array, unsigned int samples)
 
 bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
 {
+  if (!in || !out)
+  {
+    return false;
+  }
+
   CSingleLock lock(m_restartSection);
 
   bool needDSPAddonsReinit  = m_forceInit;
