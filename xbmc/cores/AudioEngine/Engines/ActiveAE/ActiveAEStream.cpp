@@ -102,7 +102,7 @@ void CActiveAEStream::InitRemapper()
 {
   // check if input format follows ffmpeg channel mask
   bool needRemap = false;
-  unsigned int avLast, avCur = 0;
+  uint64_t avLast, avCur = 0;
   for(unsigned int i=0; i<m_format.m_channelLayout.Count(); i++)
   {
     avLast = avCur;
@@ -582,14 +582,17 @@ void CActiveAEStream::RegisterSlave(IAEStream *slave)
 CActiveAEStreamBuffers::CActiveAEStreamBuffers(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality)
 {
   m_inputFormat = inputFormat;
+  m_outputFormat = outputFormat;
   m_resampleBuffers = new CActiveAEBufferPoolResample(inputFormat, outputFormat, quality);
   m_atempoBuffers = new CActiveAEBufferPoolAtempo(outputFormat);
+  m_adspBuffers = new CActiveAEBufferPoolADSP(inputFormat, outputFormat, quality);
 }
 
 CActiveAEStreamBuffers::~CActiveAEStreamBuffers()
 {
   delete m_resampleBuffers;
   delete m_atempoBuffers;
+  delete m_adspBuffers;
 }
 
 bool CActiveAEStreamBuffers::HasInputLevel(int level)
@@ -601,12 +604,17 @@ bool CActiveAEStreamBuffers::HasInputLevel(int level)
     return false;
 }
 
-bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize, bool useDSP)
-{
-  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize, useDSP))
+bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix,  bool normalize, bool useDSP, bool bypassDSP)
+{  
+  m_UseADSP = useDSP;
+
+  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize))
     return false;
 
   if (!m_atempoBuffers->Create(totaltime))
+    return false;
+
+  if (!m_adspBuffers->Create(totaltime, upmix, bypassDSP))
     return false;
 
   return true;
@@ -614,7 +622,7 @@ bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upm
 
 void CActiveAEStreamBuffers::SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
 {
-  m_resampleBuffers->SetExtraData(profile, matrix_encoding, audio_service_type);
+  m_adspBuffers->SetExtraData(profile, matrix_encoding, audio_service_type);
 }
 
 bool CActiveAEStreamBuffers::ProcessBuffers()
@@ -626,18 +634,39 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   {
     buf = m_inputSamples.front();
     m_inputSamples.pop_front();
-    m_resampleBuffers->m_inputSamples.push_back(buf);
+    if (!m_UseADSP)
+    {
+      m_resampleBuffers->m_inputSamples.push_back(buf);
+    }
+    else
+    {
+      m_adspBuffers->m_inputSamples.push_back(buf);
+    }
+
     busy = true;
   }
 
-  busy |= m_resampleBuffers->ResampleBuffers();
-
-  while (!m_resampleBuffers->m_outputSamples.empty())
+  if (!m_UseADSP)
   {
-    buf = m_resampleBuffers->m_outputSamples.front();
-    m_resampleBuffers->m_outputSamples.pop_front();
-    m_atempoBuffers->m_inputSamples.push_back(buf);
-    busy = true;
+    busy |= m_resampleBuffers->ResampleBuffers();
+    while (!m_resampleBuffers->m_outputSamples.empty())
+    {
+      buf = m_resampleBuffers->m_outputSamples.front();
+      m_resampleBuffers->m_outputSamples.pop_front();
+      m_atempoBuffers->m_inputSamples.push_back(buf);
+      busy = true;
+    }
+  }
+  else
+  {
+    busy |= m_adspBuffers->ProcessBuffers();
+    while (!m_adspBuffers->m_outputSamples.empty())
+    {
+      buf = m_adspBuffers->m_outputSamples.front();
+      m_adspBuffers->m_outputSamples.pop_front();
+      m_atempoBuffers->m_inputSamples.push_back(buf);
+      busy = true;
+    }
   }
 
   busy |= m_atempoBuffers->ProcessBuffers();
@@ -653,9 +682,16 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   return busy;
 }
 
-void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool dspenabled, bool stereoupmix, AEQuality quality)
+void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality)
 {
-  m_resampleBuffers->ConfigureResampler(normalizelevels, dspenabled, stereoupmix, quality);
+  m_resampleBuffers->ConfigureResampler(normalizelevels, stereoupmix, quality);
+}
+
+void ActiveAE::CActiveAEStreamBuffers::ConfigureADSP(bool useDSP, bool stereoupmix, AEQuality quality)
+{
+  /*! @todo pass bypass, quality, upmix to AudioDSP*/
+  m_UseADSP = useDSP;
+  m_adspBuffers->SetDSPConfig(stereoupmix, quality);
 }
 
 float CActiveAEStreamBuffers::GetDelay()
@@ -667,7 +703,14 @@ float CActiveAEStreamBuffers::GetDelay()
     delay += (float)buf->pkt->nb_samples / buf->pkt->config.sample_rate;
   }
 
-  delay += m_resampleBuffers->GetDelay();
+  if (!m_adspBuffers)
+  {
+    delay += m_resampleBuffers->GetDelay();
+  }
+  else
+  {
+    delay += m_adspBuffers->GetDelay();
+  }
   delay += m_atempoBuffers->GetDelay();
 
   for (auto &buf : m_outputSamples)
@@ -680,7 +723,14 @@ float CActiveAEStreamBuffers::GetDelay()
 
 void CActiveAEStreamBuffers::Flush()
 {
-  m_resampleBuffers->Flush();
+  if (!m_adspBuffers)
+  {
+    m_resampleBuffers->Flush();
+  }
+  else
+  {
+    m_adspBuffers->Flush();
+  }
   m_atempoBuffers->Flush();
 
   while (!m_inputSamples.empty())
@@ -697,21 +747,53 @@ void CActiveAEStreamBuffers::Flush()
 
 void CActiveAEStreamBuffers::SetDrain(bool drain)
 {
-  m_resampleBuffers->SetDrain(drain);
+  if (!m_adspBuffers)
+  {
+    m_resampleBuffers->SetDrain(drain);
+  }
+  else
+  {
+    m_adspBuffers->SetDrain(drain);
+  }
   m_atempoBuffers->SetDrain(drain);
 }
 
 bool CActiveAEStreamBuffers::IsDrained()
 {
-  if (m_resampleBuffers->m_inputSamples.empty() &&
-      m_resampleBuffers->m_outputSamples.empty() &&
-      m_atempoBuffers->m_inputSamples.empty() &&
-      m_atempoBuffers->m_outputSamples.empty() &&
-      m_inputSamples.empty() &&
-      m_outputSamples.empty())
-    return true;
+  if (!m_adspBuffers)
+  {
+    if (m_resampleBuffers->m_inputSamples.empty() &&
+        m_resampleBuffers->m_outputSamples.empty() &&
+        m_atempoBuffers->m_inputSamples.empty() &&
+        m_atempoBuffers->m_outputSamples.empty() &&
+        m_inputSamples.empty() &&
+        m_outputSamples.empty())
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
   else
-    return false;
+  {
+    if (m_adspBuffers->m_inputSamples.empty() &&
+        m_adspBuffers->m_outputSamples.empty() &&
+        m_atempoBuffers->m_inputSamples.empty() &&
+        m_atempoBuffers->m_outputSamples.empty() &&
+        m_inputSamples.empty() &&
+        m_outputSamples.empty())
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  
+  return false;
 }
 
 void CActiveAEStreamBuffers::SetRR(double rr, double atempoThreshold)
@@ -737,7 +819,14 @@ double CActiveAEStreamBuffers::GetRR()
 
 void CActiveAEStreamBuffers::FillBuffer()
 {
-  m_resampleBuffers->FillBuffer();
+  if (!m_adspBuffers)
+  {
+    m_resampleBuffers->FillBuffer();
+  }
+  else
+  {
+    m_adspBuffers->FillBuffer();
+  }
   m_atempoBuffers->FillBuffer();
 }
 
@@ -749,11 +838,6 @@ bool CActiveAEStreamBuffers::DoesNormalize()
 void CActiveAEStreamBuffers::ForceResampler(bool force)
 {
   m_resampleBuffers->ForceResampler(force);
-}
-
-void CActiveAEStreamBuffers::SetDSPConfig(bool usedsp, bool bypassdsp)
-{
-  m_resampleBuffers->SetDSPConfig(usedsp, bypassdsp);
 }
 
 CActiveAEBufferPool* CActiveAEStreamBuffers::GetResampleBuffers()
@@ -770,6 +854,13 @@ CActiveAEBufferPool* CActiveAEStreamBuffers::GetAtempoBuffers()
   return ret;
 }
 
+CActiveAEBufferPool * ActiveAE::CActiveAEStreamBuffers::GetADSPBuffers()
+{
+  CActiveAEBufferPoolADSP *ret = m_adspBuffers;
+  m_adspBuffers = nullptr;
+  return ret;
+}
+
 bool CActiveAEStreamBuffers::HasWork()
 {
   if (!m_inputSamples.empty())
@@ -783,6 +874,10 @@ bool CActiveAEStreamBuffers::HasWork()
   if (!m_atempoBuffers->m_inputSamples.empty())
     return true;
   if (!m_atempoBuffers->m_outputSamples.empty())
+    return true;
+  if (m_adspBuffers && !m_adspBuffers->m_inputSamples.empty())
+    return true;
+  if (m_adspBuffers && !m_adspBuffers->m_outputSamples.empty())
     return true;
 
   return false;
