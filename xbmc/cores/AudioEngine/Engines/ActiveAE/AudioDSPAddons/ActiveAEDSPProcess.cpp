@@ -106,19 +106,19 @@ void CActiveAEDSPProcess::ResetStreamFunctionsSelection()
   m_usedMap.clear();
 }
 
-bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE iStreamType,
+bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, bool bypassDSP, AEQuality quality, AE_DSP_STREAMTYPE iStreamType,
                                  enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type, int profile)
 {
   m_inputFormat       = inputFormat;                        /*!< Input format of processed stream */
   m_outputFormat      = outputFormat;                       /*!< Output format of required stream (set from ADSP system on startup, to have ffmpeg compatible format */
-  m_outputSamplerate  = m_inputFormat.m_sampleRate;         /*!< If no resampler addon is present output samplerate is the same as input */
-  m_outputFrames      = m_inputFormat.m_frames;
+  m_outputFormat.m_sampleRate = m_inputFormat.m_sampleRate; /*!< If no resampler addon is present output samplerate is the same as input */
+  m_outputFormat.m_frames = m_inputFormat.m_frames;
   m_streamQuality     = quality;                            /*!< from KODI on settings selected resample quality, also passed to addons to support different quality */
-  m_dataFormat        = AE_FMT_FLOAT;                       /*!< the base stream format, hard set to float */
   m_activeMode        = AE_DSP_MASTER_MODE_ID_PASSOVER;     /*!< Reset the pointer for m_MasterModes about active master process, set here during mode selection */
   m_ffMpegMatrixEncoding  = matrix_encoding;
   m_ffMpegAudioServiceType= audio_service_type;
   m_ffMpegProfile         = profile;
+  m_bypassDSP             = bypassDSP;
 
   CSingleLock lock(m_restartSection);
 
@@ -919,7 +919,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
    * Here a high quality resample can be performed.
    * Only one DSP addon is allowed todo this!
    */
-  if (m_addon_InputResample.pAddon)
+  if (m_addon_InputResample.pAddon && !m_bypassDSP)
   {
     startTime = CurrentHostCounter();
 
@@ -937,7 +937,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
    * DSP pre processing
    * All DSP addons allowed todo this and order of it set on settings.
    */
-  for (unsigned int i = 0; i < m_addons_PreProc.size(); ++i)
+  for (unsigned int i = 0; i < m_addons_PreProc.size() && !m_bypassDSP; ++i)
   {
     startTime = CurrentHostCounter();
 
@@ -956,7 +956,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
    * Here a channel upmix/downmix for stereo surround sound can be performed
    * Only one DSP addon is allowed todo this!
    */
-  if (m_addons_MasterProc[m_activeMode].pAddon)
+  if (m_addons_MasterProc[m_activeMode].pAddon && !m_bypassDSP)
   {
     startTime = CurrentHostCounter();
 
@@ -1001,7 +1001,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
    * or frequency/volume corrections, speaker distance handling, equalizer... .
    * All DSP addons allowed todo this and order of it set on settings.
    */
-  for (unsigned int i = 0; i < m_addons_PostProc.size(); ++i)
+  for (unsigned int i = 0; i < m_addons_PostProc.size() && !m_bypassDSP; ++i)
   {
     startTime = CurrentHostCounter();
 
@@ -1020,7 +1020,7 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
    * Here a high quality resample can be performed.
    * Only one DSP addon is allowed todo this!
    */
-  if (m_addon_OutputResample.pAddon)
+  if (m_addon_OutputResample.pAddon && !m_bypassDSP)
   {
     startTime = CurrentHostCounter();
 

@@ -54,7 +54,7 @@ namespace ActiveAE
        * @param streamType The input stream type to find allowed master process dsp addons for it, e.g. AE_DSP_ASTREAM_MUSIC
        * @return True if the dsp processing becomes available
        */
-      bool Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE streamType,
+      bool Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, bool bypassDSP, AEQuality quality, AE_DSP_STREAMTYPE streamType,
                   enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type, int profile);
 
       /*!>
@@ -187,7 +187,7 @@ namespace ActiveAE
       bool IsMenuHookModeActive(AE_DSP_MENUHOOK_CAT category, int iAddonId, unsigned int iModeNumber);
 
     protected:
-      friend class CActiveAEBufferPoolResample;
+      friend class CActiveAEBufferPoolADSP;
 
       /*!>
        * Master processing
@@ -237,11 +237,9 @@ namespace ActiveAE
       bool                              m_forceInit;                /*!< if set to true the process function perform a reinitialization of addons and data */
       AE_DSP_ADDONMAP                   m_usedMap;                  /*!< a map of all currently used audio dsp add-on's */
       AEAudioFormat                     m_inputFormat;              /*!< the used input stream format */
-      AEAudioFormat                     m_outputFormat;             /*!< the from XBMX requested output format */
-      unsigned int                      m_outputSamplerate;         /*!< the currently active output samplerate can be become changed from addon resamplers */
-      unsigned int                      m_outputFrames;             /*!< the maximum present output frames */
+      AEAudioFormat                     m_outputFormat;             /*!< the from Kodi requested output format */
       AEQuality                         m_streamQuality;            /*!< from KODI requested stream quality, based also to addons */
-      enum AEDataFormat                 m_dataFormat;               /*!< The inside addon system used data format, currently fixed to float */
+      bool                              m_bypassDSP;                /*!< if true, all AudioDSP modes are skipped */
       AE_DSP_SETTINGS                   m_addonSettings;            /*!< the current stream's settings passed to dsp add-ons */
       AE_DSP_STREAM_PROPERTIES          m_addonStreamProperties;    /*!< the current stream's properties (eg. stream type) passed to dsp add-ons */
       int                               m_NewMasterMode;            /*!< if master mode is changed it set here and handled by process function */
