@@ -178,11 +178,6 @@ private:
   bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo = ADDON::AddonPtr());
   bool DownloadPackage(const std::string &path, const std::string &dest);
 
-  /*! \brief Delete an addon following install failure
-   \param addonFolder - the folder to delete
-   */
-  bool DeleteAddon(const std::string &addonFolder);
-
   bool DoFileOperation(FileAction action, CFileItemList &items, const std::string &file, bool useSameJob = true);
 
   /*! \brief Queue a notification for addon installation/update failure
@@ -206,11 +201,6 @@ public:
   virtual bool DoWork();
 
 private:
-  /*! \brief Delete an addon following install failure
-   \param addonFolder - the folder to delete
-   */
-  bool DeleteAddon(const std::string &addonFolder);
-
   void ClearFavourites();
 
   ADDON::AddonPtr m_addon;

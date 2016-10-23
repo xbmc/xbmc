@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "FilesystemInstaller.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "utils/JobManager.h"
 #include "addons/AddonManager.h"
@@ -591,24 +592,23 @@ bool CAddonInstallJob::DoWork()
         db.AddPackage(m_addon->ID(), package, md5);
       }
 
-      // check the archive as well - should have just a single folder in the root
+      // check if the archive is valid
       CURL archive = URIUtils::CreateArchivePath("zip", CURL(package), "");
 
       CFileItemList archivedFiles;
-      CDirectory::GetDirectory(archive, archivedFiles);
-
-      if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
+      AddonPtr temp;
+      if (!CDirectory::GetDirectory(archive, archivedFiles) ||
+          archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder ||
+          !CAddonMgr::GetInstance().LoadAddonDescription(archivedFiles[0]->GetPath(), temp))
       {
-        // invalid package
+        CLog::Log(LOGERROR, "CAddonInstallJob[%s]: invalid package %s", m_addon->ID().c_str(), package.c_str());
         db.RemovePackage(package);
         CFile::Delete(package);
-
-        CLog::Log(LOGERROR, "CAddonInstallJob[%s]: invalid package %s", m_addon->ID().c_str(), package.c_str());
         ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
         return false;
       }
 
-      installFrom = archivedFiles[0]->GetPath();
+      installFrom = package;
     }
   }
 
@@ -697,15 +697,6 @@ bool CAddonInstallJob::DoFileOperation(FileAction action, CFileItemList &items, 
   return result;
 }
 
-bool CAddonInstallJob::DeleteAddon(const std::string &addonFolder)
-{
-  CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
-  list[0]->Select(true);
-
-  return DoFileOperation(CFileOperationJob::ActionDelete, list, "", false);
-}
-
 bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& repo)
 {
   SetText(g_localizeStrings.Get(24079));
@@ -787,29 +778,13 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
   SetText(g_localizeStrings.Get(24086));
   SetProgress(0);
 
-  // now that we have all our dependencies, we can install our add-on
+  CFilesystemInstaller fsInstaller;
+  if (!fsInstaller.InstallToFilesystem(installFrom, m_addon->ID()))
   {
-    std::string addonFolder = installFrom;
-    URIUtils::RemoveSlashAtEnd(addonFolder);
-    addonFolder = URIUtils::AddFileToFolder("special://home/addons/", URIUtils::GetFileName(addonFolder));
-
-    CFileItemList install;
-    install.Add(CFileItemPtr(new CFileItem(installFrom, true)));
-    install[0]->Select(true);
-
-    AddonPtr addon;
-    if (!DoFileOperation(CFileOperationJob::ActionReplace, install, "special://home/addons/", false) ||
-        !CAddonMgr::GetInstance().LoadAddonDescription(addonFolder, addon))
-    {
-      // failed extraction or failed to load addon description
-      DeleteAddon(addonFolder);
-
-      std::string addonID = URIUtils::GetFileName(addonFolder);
-      CLog::Log(LOGERROR, "CAddonInstallJob[%s]: could not read addon description of %s", addonID.c_str(), addonFolder.c_str());
-      ReportInstallError(addonID, addonID);
-      return false;
-    }
+    ReportInstallError(m_addon->ID(), m_addon->ID());
+    return false;
   }
+
   SetProgress(100);
 
   return true;
@@ -869,7 +844,8 @@ bool CAddonUnInstallJob::DoWork()
     return false;
   }
 
-  if (!DeleteAddon(m_addon->Path()))
+  CFilesystemInstaller fsInstaller;
+  if (!fsInstaller.UnInstallFromFilesystem(m_addon->Path()))
   {
     CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: could not delete addon data.", m_addon->ID().c_str());
     return false;
@@ -890,16 +866,6 @@ bool CAddonUnInstallJob::DoWork()
 
   ADDON::OnPostUnInstall(m_addon);
   return true;
-}
-
-bool CAddonUnInstallJob::DeleteAddon(const std::string &addonFolder)
-{
-  CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
-  list[0]->Select(true);
-
-  SetFileOperation(CFileOperationJob::ActionDelete, list, "");
-  return CFileOperationJob::DoWork();
 }
 
 void CAddonUnInstallJob::ClearFavourites()
