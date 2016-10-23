@@ -4847,9 +4847,6 @@ void CMusicDatabase::UpdateTables(int version)
       "SELECT idArtist, idAlbum, iOrder, strArtist FROM album_artist");
     m_pDS->exec("DROP TABLE album_artist");
     m_pDS->exec("ALTER TABLE album_artist_new RENAME TO album_artist");
-
-    CMediaSettings::GetInstance().SetMusicNeedsUpdate(58);
-    CSettings::GetInstance().Save();
   }
   if (version < 60)
   { 
@@ -4960,6 +4957,11 @@ void CMusicDatabase::UpdateTables(int version)
     //Remove temp indices, full analyics for database created later
     m_pDS->exec("DROP INDEX idxSongArtist1 ON song_artist");
     m_pDS->exec("DROP INDEX idxAlbumArtist1 ON album_artist");
+
+    // Prompt for rescan of library to read tags that were not processed by previous versions
+    // and accomodate changes to the way some tags are processed
+    CMediaSettings::GetInstance().SetMusicNeedsUpdate(60);
+    CSettings::GetInstance().Save();
   }
 }
 
