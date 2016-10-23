@@ -53,8 +53,6 @@ namespace ActiveAE
     // specialization of CGUIDialogSettingsManualBase
     virtual void InitializeSettings();
 
-    bool SupportsAudioFeature(int feature);
-
     static void AudioModeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
     std::string GetSettingsLabel(CSetting *pSetting);
@@ -79,7 +77,7 @@ namespace ActiveAE
     bool OpenAudioDSPMenu(unsigned int setupEntry);
     int FindCategoryIndex(const std::string &catId);
 
-    AE_DSP_STREAM_ID                            m_ActiveStreamId;                         /*!< The on dialog selectable stream identifier */
+    int                                         m_ActiveStreamId;                         /*!< The on dialog selectable stream identifier */
     ActiveAE::CActiveAEDSPProcessPtr            m_ActiveStreamProcess;                    /*!< On dialog adjustable dsp processing class */
     AE_DSP_STREAMTYPE                           m_streamTypeUsed;                         /*!< The currently available stream type */
     AE_DSP_BASETYPE                             m_baseTypeUsed;                           /*!< The currently detected and used base type */
@@ -90,19 +88,16 @@ namespace ActiveAE
     std::map<std::string, int>                  m_MenuPositions;                          /*!< The differnet menu selection positions */
     std::vector<int>                            m_MenuHierarchy;                          /*!< Menu selection flow hierachy */
     std::vector<MenuHookMember>                 m_Menus;                                  /*!< storage about present addon menus on currently selected submenu */
-    std::vector< std::pair<std::string, int> >  m_ModeList;                               /*!< currently present modes */
+    std::vector< std::pair<std::string, int> >  m_MasterModeList;                         /*!< currently present master modes */
     bool                                        m_GetCPUUsage;                            /*!< if true cpu usage detection is active */
     Features                                    m_audioCaps;                              /*!< the on current playback on KODI supported audio features */
     int                                         m_MenuName;                               /*!< current menu name, needed to get after the dialog was closed for addon */
 
     /*! Settings control selection and information data */
     std::string                                 m_InputChannels;
-    std::string                                 m_InputChannelNames;
     std::string                                 m_InputSamplerate;
     std::string                                 m_OutputChannels;
-    std::string                                 m_OutputChannelNames;
     std::string                                 m_OutputSamplerate;
     std::string                                 m_CPUUsage;
-    float                                       m_volume;
   };
 }
