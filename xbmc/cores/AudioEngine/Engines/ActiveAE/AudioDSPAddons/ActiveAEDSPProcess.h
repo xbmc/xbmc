@@ -225,7 +225,7 @@ namespace ActiveAE
       bool RecheckProcessArray(unsigned int inputFrames);
       bool ReallocProcessArray(unsigned int requestSize);
       void CalculateCPUUsage(uint64_t iTime);
-      void SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_DSP_CH_MAX], float **array_in, float **array_out);
+      void SetFFMpegDSPProcessorArray(float *array_ffmpeg[AE_DSP_CH_MAX], float *array_dsp[AE_DSP_CH_MAX], int idx[AE_CH_MAX], unsigned long ChannelFlags);
     //@}
     //@{
       /*!

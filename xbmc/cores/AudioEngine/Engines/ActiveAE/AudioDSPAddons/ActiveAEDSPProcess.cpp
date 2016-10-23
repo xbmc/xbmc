@@ -985,7 +985,11 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
     startTime = CurrentHostCounter();
 
     if (needDSPAddonsReinit)
-      SetFFMpegDSPProcessorArray(m_ffMpegProcessArray, lastOutArray, m_processArray[togglePtr]);
+    {
+      /*! @todo: test with an resampler add-on */
+      SetFFMpegDSPProcessorArray(m_ffMpegProcessArray[FFMPEG_PROC_ARRAY_IN], lastOutArray, m_idx_in, m_addonSettings.lInChannelPresentFlags);
+      SetFFMpegDSPProcessorArray(m_ffMpegProcessArray[FFMPEG_PROC_ARRAY_OUT], m_processArray[togglePtr], m_idx_out, m_addonSettings.lOutChannelPresentFlags);
+    }
 
     frames = m_resamplerDSPProcessor->Resample((uint8_t**)m_ffMpegProcessArray[FFMPEG_PROC_ARRAY_OUT], frames, (uint8_t**)m_ffMpegProcessArray[FFMPEG_PROC_ARRAY_IN], frames, 1.0);
     if (frames <= 0)
@@ -1043,17 +1047,18 @@ bool CActiveAEDSPProcess::Process(CSampleBuffer *in, CSampleBuffer *out)
    * Setup ffmpeg convert array for output stream, performed here to now last array
    */
   if (needDSPAddonsReinit)
-    SetFFMpegDSPProcessorArray(m_ffMpegConvertArray, NULL, lastOutArray);
+    SetFFMpegDSPProcessorArray(m_ffMpegConvertArray[FFMPEG_PROC_ARRAY_OUT], lastOutArray, m_idx_out, m_addonSettings.lOutChannelPresentFlags);
 
   /**
    * Convert back to required output format
    */
-  if (swr_convert(m_convertOutput, (uint8_t **)out->pkt->data, m_processArraySize, (const uint8_t **)m_ffMpegConvertArray[1], frames) < 0)
+  if (swr_convert(m_convertOutput, (uint8_t **)out->pkt->data, out->pkt->max_nb_samples, (const uint8_t **)m_ffMpegConvertArray[FFMPEG_PROC_ARRAY_OUT], frames) < 0)
   {
     CLog::Log(LOGERROR, "ActiveAE DSP - %s - output audio convert failed", __FUNCTION__);
     return false;
   }
   out->pkt->nb_samples = frames;
+  out->pkt_start_offset = out->pkt->nb_samples;
 
   /**
    * Update cpu process percent usage values for modes and total (every second)
@@ -1184,7 +1189,7 @@ void CActiveAEDSPProcess::CalculateCPUUsage(uint64_t iTime)
   m_iLastProcessTime  = iTime;
 }
 
-void CActiveAEDSPProcess::SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_DSP_CH_MAX], float **array_in, float **array_out)
+void CActiveAEDSPProcess::SetFFMpegDSPProcessorArray(float *array_ffmpeg[AE_DSP_CH_MAX], float *array_dsp[AE_DSP_CH_MAX], int idx[AE_CH_MAX], unsigned long ChannelFlags)
 {
   /*!
    * Setup ffmpeg resampler channel setup, this way is not my favorite but it works to become
