@@ -60,6 +60,7 @@ public:
   static bool StartServer(int port, bool nonlocal, bool usePassword, const std::string &password="");
   static void StopServer(bool bWait);
   static bool IsRunning();
+  bool IsRAOPRunningInternal();
   static void SetMetadataFromBuffer(const char *buffer, unsigned int size);
   static void SetCoverArtFromBuffer(const char *buffer, unsigned int size);
   static void SetupRemoteControl();

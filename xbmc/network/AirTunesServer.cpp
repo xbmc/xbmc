@@ -617,13 +617,23 @@ void CAirTunesServer::StopServer(bool bWait)
   }
 }
 
- bool CAirTunesServer::IsRunning()
- {
-   if (ServerInstance == NULL)
-     return false;
+bool CAirTunesServer::IsRunning()
+{
+  if (ServerInstance == NULL)
+    return false;
 
-   return ((CThread*)ServerInstance)->IsRunning();
- }
+  return ServerInstance->IsRAOPRunningInternal();
+}
+
+bool CAirTunesServer::IsRAOPRunningInternal()
+{
+  if (m_pLibShairplay != nullptr && m_pRaop != nullptr)
+  {
+    return m_pLibShairplay->raop_is_running(m_pRaop);
+  }
+  return false;
+}
+
 
 CAirTunesServer::CAirTunesServer(int port, bool nonlocal)
 : CThread("AirTunesActionThread"),
@@ -718,6 +728,7 @@ void CAirTunesServer::Deinitialize()
     m_pLibShairplay->raop_stop(m_pRaop);
     m_pLibShairplay->raop_destroy(m_pRaop);
     m_pLibShairplay->Unload();
+    m_pRaop = nullptr;
   }
 }
 
