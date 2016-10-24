@@ -58,7 +58,7 @@ FOR %%b in (%1, %2, %3, %4, %5, %6) DO (
   IF %%b==sh SET useshell=sh
 )
 
-SET buildconfig=Release
+SET buildconfig=RelWithDebInfo
 set WORKSPACE=%CD%\..\..\kodi-build
 
 
@@ -218,6 +218,7 @@ set WORKSPACE=%CD%\..\..\kodi-build
   CALL extract_git_rev.bat > NUL
   SET APP_SETUPFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%.exe
   SET APP_PDBFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%.pdb
+  SET APP_PDB_BUNDLE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%-PDB.7z
   ECHO Creating installer %APP_SETUPFILE%...
   IF EXIST %APP_SETUPFILE% del %APP_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
@@ -261,7 +262,12 @@ set WORKSPACE=%CD%\..\..\kodi-build
     set DIETEXT=Failed to create %APP_SETUPFILE%. NSIS installed?
     goto DIE
   )
-  copy %PDB% %APP_PDBFILE% > nul
+  REM copy %PDB% %APP_PDBFILE% > nul
+
+  rmdir /S /Q PDB > nul
+  md PDB > nul
+  powershell -ExecutionPolicy Unrestricted -File .\copy-pdb.ps1
+  tools\7z\7za.exe a -bd -r %APP_PDB_BUNDLE% PDB
   ECHO ------------------------------------------------------------
   ECHO Done!
   ECHO Setup is located at %CD%\%APP_SETUPFILE%

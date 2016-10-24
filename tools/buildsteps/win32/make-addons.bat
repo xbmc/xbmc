@@ -104,7 +104,7 @@ IF "%addon%" NEQ "" (
 
 rem execute cmake to generate makefiles processable by nmake
 cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
-      -DCMAKE_BUILD_TYPE=Release ^
+      -DCMAKE_BUILD_TYPE=RelWithDebInfo ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/CFlagOverrides.cmake" ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/CXXFlagOverrides.cmake" ^
       -DCMAKE_INSTALL_PREFIX=%ADDONS_INSTALL_PATH% ^
