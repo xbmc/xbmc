@@ -144,7 +144,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           OnMessage(msg);
           int start = msg.GetParam1();
-          if (start >= 0 && start < m_item->GetAddonInfo()->Screenshots().size())
+          if (start >= 0 && start < static_cast<int>(m_item->GetAddonInfo()->Screenshots().size()))
             CGUIWindowSlideShow::RunSlideShow(m_item->GetAddonInfo()->Screenshots(), start);
         }
       }
