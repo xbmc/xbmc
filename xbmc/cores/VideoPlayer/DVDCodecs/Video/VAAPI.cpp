@@ -1901,6 +1901,7 @@ void COutput::Flush()
       pic = *((CVaapiRenderPicture**)msg->data);
       QueueReturnPicture(pic);
     }
+    msg->Release();
   }
 
   for (unsigned int i = 0; i < m_bufferPool.decodedPics.size(); i++)
