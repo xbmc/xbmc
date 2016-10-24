@@ -14654,13 +14654,13 @@ msgstr ""
 #. Progress text on splash screen
 #: xbmc/Application.cpp
 msgctxt "#24150"
-msgid "Database migration in progress - please wait..."
+msgid "Database migration in progress - please wait"
 msgstr ""
 
 #. Progress text on splash screen
 #: xbmc/Application.cpp
 msgctxt "#24151"
-msgid "Add-on migration in progress - please wait..."
+msgid "Add-on migration in progress - please wait"
 msgstr ""
 
 #empty strings from id 24152 to 24990

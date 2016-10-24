@@ -39,14 +39,9 @@ CSplash& CSplash::GetInstance()
   return instance;
 }
 
-void CSplash::Show()
+void CSplash::Show(const std::string& message /* = "" */)
 {
-  Show("");
-}
-
-void CSplash::Show(const std::string& message)
-{
-  if (!g_advancedSettings.m_splashImage)
+  if (!g_advancedSettings.m_splashImage && !(m_image || !message.empty()))
     return;
 
   if (!m_image)
@@ -90,7 +85,7 @@ void CSplash::Show(const std::string& message)
 
       int width = g_graphicsContext.GetWidth();
       int height = g_graphicsContext.GetHeight();
-      float y = height - textHeight - 30; // -30 for safe viewing area
+      float y = height - textHeight - 100;
       m_messageLayout->RenderOutline(width/2, y, 0, 0xFF000000, XBFONT_CENTER_X, width);
     }
   }
