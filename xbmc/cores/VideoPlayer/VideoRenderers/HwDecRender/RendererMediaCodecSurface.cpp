@@ -113,6 +113,9 @@ bool CRendererMediaCodecSurface::LoadShadersHook()
 
 bool CRendererMediaCodecSurface::RenderHook(int index)
 {
+  glClearColor(0,0,0,0);
+  glClear(GL_COLOR_BUFFER_BIT);
+
   CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[index].hwDec);
   if (mci && !mci->IsReleased())
   {
