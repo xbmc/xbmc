@@ -426,6 +426,8 @@
 #define SYSTEM_CAN_HIBERNATE        752
 #define SYSTEM_CAN_REBOOT           753
 
+#define SYSTEM_INSTANCE_ID          754
+
 #define SLIDESHOW_ISPAUSED          800
 #define SLIDESHOW_ISRANDOM          801
 #define SLIDESHOW_ISACTIVE          802

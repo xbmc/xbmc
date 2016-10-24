@@ -20,6 +20,7 @@
  *
  */
 
+#include <string>
 
 /**\brief Class for the Platform object
  *
@@ -39,7 +40,7 @@ public:
   CPlatform();
   
   /**\brief D'tor */
-  virtual ~CPlatform();
+  virtual ~CPlatform() = default;
   
   /**\brief Called at an early stage of application startup
    *
@@ -47,5 +48,14 @@ public:
    * or initialisation (like setting environment variables for example)
    */
   virtual void Init();
+
+  const std::string& GetInstanceIdentifier() { return m_uuid; };
+
+  // constants
+  static const std::string NoValidUUID;
   
+private:
+  void InitInstanceIdentifier();
+
+  std::string m_uuid;
 };

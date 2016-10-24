@@ -164,6 +164,7 @@ void CGUIWindowSystemInfo::FrameMove()
     i++;  // empty line
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
+    SetControlLabel(i++, "%s: %s", 12396, SYSTEM_INSTANCE_ID);
   }
 
   else if (m_section == CONTROL_BT_PVR)
