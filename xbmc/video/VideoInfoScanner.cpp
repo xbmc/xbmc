@@ -458,7 +458,7 @@ namespace VIDEO
       if (ret == INFO_CANCELLED || ret == INFO_ERROR)
       {
         CLog::Log(LOGWARNING,
-                  "VideoInfoScanner: Error %s occurred while retrieving"
+                  "VideoInfoScanner: Error %u occurred while retrieving"
                   "information for %s.", ret,
                   CURL::GetRedacted(pItem->GetPath()).c_str());
         FoundSomeInfo = false;
