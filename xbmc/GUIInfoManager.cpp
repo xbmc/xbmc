@@ -620,6 +620,18 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///     used (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\,
 ///     (hh:mm:ss)\, (hh:mm:ss).
 ///   }
+///   \table_row3{   <b>`Player.SeekNumeric`</b>,
+///                  \anchor Player_SeekNumeric
+///                  _string_,
+///     Time to which the user is seeking via numeric keys. 
+///   }
+///   \table_row3{   <b>`Player.SeekNumeric(format)`</b>,
+///                  \anchor Player_SeekNumeric_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
+///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\,
+///     (hh:mm:ss).
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -632,7 +644,8 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "time",             PLAYER_TIME },
                                   { "duration",         PLAYER_DURATION },
                                   { "finishtime",       PLAYER_FINISH_TIME },
-                                  { "starttime",        PLAYER_START_TIME}};
+                                  { "starttime",        PLAYER_START_TIME },
+                                  { "seeknumeric",      PLAYER_SEEKNUMERIC } };
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_Weather Weather
@@ -8000,6 +8013,16 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
       return "-" + strSeekSize;
     if (seekSize > 0)
       return "+" + strSeekSize;
+  }
+  else if (info.m_info == PLAYER_SEEKNUMERIC)
+  {
+    if (!CSeekHandler::GetInstance().HasTimeCode())
+      return "";
+    int seekTimeCode = CSeekHandler::GetInstance().GetTimeCodeSeconds();
+    TIME_FORMAT format = (TIME_FORMAT)info.GetData1();
+    if (format == TIME_FORMAT_GUESS && seekTimeCode >= 3600)
+      format = TIME_FORMAT_HH_MM_SS;
+    return StringUtils::SecondsToTimeString(seekTimeCode, format);
   }
   else if (info.m_info == PLAYER_ITEM_ART)
   {
