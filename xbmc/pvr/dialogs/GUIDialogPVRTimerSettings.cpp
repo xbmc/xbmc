@@ -693,11 +693,11 @@ void CGUIDialogPVRTimerSettings::AddCondition(
   CSetting *setting, const std::string &identifier, SettingConditionCheck condition,
   SettingDependencyType depType, const std::string &settingId)
 {
-  m_settingsManager->AddCondition(identifier, condition, this);
-  CSettingDependency dep(depType, m_settingsManager);
+  GetSettingsManager()->AddCondition(identifier, condition, this);
+  CSettingDependency dep(depType, GetSettingsManager());
   dep.And()->Add(
     CSettingDependencyConditionPtr(
-      new CSettingDependencyCondition(identifier, "true", settingId, false, m_settingsManager)));
+      new CSettingDependencyCondition(identifier, "true", settingId, false, GetSettingsManager())));
   SettingDependencies deps(setting->GetDependencies());
   deps.push_back(dep);
   setting->SetDependencies(deps);

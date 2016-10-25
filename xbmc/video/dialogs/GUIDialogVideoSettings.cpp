@@ -104,10 +104,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     g_application.m_pPlayer->SetRenderViewMode(videoSettings.m_ViewMode);
 
     m_viewModeChanged = true;
-    m_settingsManager->SetNumber(SETTING_VIDEO_ZOOM, videoSettings.m_CustomZoomAmount);
-    m_settingsManager->SetNumber(SETTING_VIDEO_PIXEL_RATIO, videoSettings.m_CustomPixelRatio);
-    m_settingsManager->SetNumber(SETTING_VIDEO_VERTICAL_SHIFT, videoSettings.m_CustomVerticalShift);
-    m_settingsManager->SetBool(SETTING_VIDEO_NONLIN_STRETCH, videoSettings.m_CustomNonLinStretch);
+    GetSettingsManager()->SetNumber(SETTING_VIDEO_ZOOM, videoSettings.m_CustomZoomAmount);
+    GetSettingsManager()->SetNumber(SETTING_VIDEO_PIXEL_RATIO, videoSettings.m_CustomPixelRatio);
+    GetSettingsManager()->SetNumber(SETTING_VIDEO_VERTICAL_SHIFT, videoSettings.m_CustomVerticalShift);
+    GetSettingsManager()->SetBool(SETTING_VIDEO_NONLIN_STRETCH, videoSettings.m_CustomNonLinStretch);
     m_viewModeChanged = false;
   }
   else if (settingId == SETTING_VIDEO_ZOOM ||
@@ -128,8 +128,8 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     {
       // try changing the view mode to custom. If it already is set to custom
       // manually call the render manager
-      if (m_settingsManager->GetInt(SETTING_VIDEO_VIEW_MODE) != ViewModeCustom)
-        m_settingsManager->SetInt(SETTING_VIDEO_VIEW_MODE, ViewModeCustom);
+      if (GetSettingsManager()->GetInt(SETTING_VIDEO_VIEW_MODE) != ViewModeCustom)
+        GetSettingsManager()->SetInt(SETTING_VIDEO_VIEW_MODE, ViewModeCustom);
       else
         g_application.m_pPlayer->SetRenderViewMode(videoSettings.m_ViewMode);
     }

@@ -9,6 +9,7 @@ set(SOURCES AdvancedSettings.cpp
             SettingCreator.cpp
             SettingPath.cpp
             Settings.cpp
+            SettingsBase.cpp
             SettingUtils.cpp
             SkinSettings.cpp
             VideoSettings.cpp)
@@ -25,6 +26,7 @@ set(HEADERS AdvancedSettings.h
             SettingCreator.h
             SettingPath.h
             Settings.h
+            SettingsBase.h
             SettingUtils.h
             SkinSettings.h
             VideoSettings.h)
