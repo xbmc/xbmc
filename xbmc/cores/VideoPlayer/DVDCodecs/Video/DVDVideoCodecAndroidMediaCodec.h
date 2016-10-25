@@ -110,7 +110,8 @@ public:
   virtual double  GetTimeSize(void);
   virtual const char* GetName(void) { return m_formatname.c_str(); }
   virtual unsigned GetAllowedReferences();
-
+  virtual bool IsOpen() { return m_opened; };
+  virtual void Reopen();
 protected:
   void            Dispose();
   void            FlushInternal(void);

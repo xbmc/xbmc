@@ -311,6 +311,14 @@ public:
    */
   virtual void Reopen() {};
 
+  /**
+   * Requests if the decoder is Open().
+   *
+   */
+   virtual bool IsOpen() { return true; };
+
+
+
 protected:
   CProcessInfo &m_processInfo;
 };

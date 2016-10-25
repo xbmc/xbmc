@@ -38,6 +38,7 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 
 #include "platform/android/jni/ByteBuffer.h"
 #include "platform/android/jni/MediaCodec.h"
@@ -564,9 +565,19 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
   if (!m_codec)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec:: Failed to create Android MediaCodec");
     SAFE_DELETE(m_bitstream);
-    return false;
+    if ((m_hints.flags & CDemuxStream::FLAG_STREAMCHANGE) != 0)
+    {
+      //This is the call to prepare the decoder if VideoPlayer detects a streamchange.
+      // Let us return true - VideoPlayerVideo will call ReOpen() on time the current Decoder is freed 
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Failed to create Android MediaCodec - wait for Reopen()");
+      return true;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec:: Failed to create Android MediaCodec");
+      return false;
+    }
   }
 
   // blacklist of devices that cannot surface render.
@@ -617,6 +628,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_processInfo.SetVideoDeintMethod("hardware");
 
   return m_opened;
+}
+
+void CDVDVideoCodecAndroidMediaCodec::Reopen()
+{
+  Dispose();
+
+  CDVDCodecOptions options;
+  Open(m_hints, options);
 }
 
 void CDVDVideoCodecAndroidMediaCodec::Dispose()
