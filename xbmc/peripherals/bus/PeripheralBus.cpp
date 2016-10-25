@@ -50,7 +50,7 @@ bool CPeripheralBus::InitializeProperties(CPeripheral& peripheral)
     // Ensure an add-on is present to translate input
     if (!g_peripherals.GetInstance().GetAddonWithButtonMap(&peripheral))
     {
-      CLog::Log(LOGWARNING, "Button mapping add-on not present for %s (%s), skipping", peripheral.Location().c_str(), peripheral.DeviceName().c_str(), peripheral.VendorIdAsString(), peripheral.ProductIdAsString());
+      CLog::Log(LOGWARNING, "Button mapping add-on not present for %s (%s), skipping", peripheral.Location().c_str(), peripheral.DeviceName().c_str());
       return false;
     }
   }
