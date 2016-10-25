@@ -620,6 +620,18 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///     used (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\,
 ///     (hh:mm:ss)\, (hh:mm:ss).
 ///   }
+///   \table_row3{   <b>`Player.StartTime`</b>,
+///                  \anchor Player_StartTime
+///                  _string_,
+///     Time playing media began
+///   }
+///   \table_row3{   <b>`Player.StartTime(format)`</b>,
+///                  \anchor Player_StartTime_format
+///                  _string_,
+///     Shows hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is
+///     used (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\,
+///     (hh:mm:ss)\, (hh:mm:ss).
+///   }
 ///   \table_row3{   <b>`Player.SeekNumeric`</b>,
 ///                  \anchor Player_SeekNumeric
 ///                  _string_,
