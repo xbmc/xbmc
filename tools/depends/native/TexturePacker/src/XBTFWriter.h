@@ -27,7 +27,7 @@
 
 #include "guilib/XBTF.h"
 
-class CXBTFWriter : public CXBTFBase
+class CXBTFWriter
 {
 public:
   CXBTFWriter(const std::string& outputFile);
@@ -37,10 +37,15 @@ public:
   bool Close();
   bool AppendContent(unsigned char const* data, size_t length);
   bool UpdateHeader(const std::vector<unsigned int>& dupes);
+  void AddFile(const CXBTFFile& file);
+  void UpdateFile(const CXBTFFile& file);
+  std::vector<CXBTFFile> GetFiles() const;
 
 private:
   void Cleanup();
+  uint64_t GetHeaderSize() const;
 
+  std::map<std::string, CXBTFFile> m_files;
   std::string m_outputFile;
   FILE* m_file;
   unsigned char *m_data;

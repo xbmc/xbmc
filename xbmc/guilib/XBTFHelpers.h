@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -20,30 +19,16 @@
  *
  */
 
-#include <string>
 #include <vector>
-#include "TextureBundleXBT.h"
 
-class CTextureBundle
+class CXBTFFile;
+class CURL;
+
+namespace KODI
 {
-public:
-  CTextureBundle();
-  explicit CTextureBundle(bool useXBT);
-  ~CTextureBundle() = default;
-
-  void SetThemeBundle(bool themeBundle);
-  bool HasFile(const std::string& Filename);
-  void GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures);
-  static std::string Normalize(const std::string &name);
-
-  bool LoadTexture(const std::string& Filename, CBaseTexture** ppTexture, int &width, int &height);
-
-  int LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures, int &width, int &height, int& nLoops, int** ppDelays);
-
-private:
-  CTextureBundleXBT m_tbXBT;
-
-  bool m_useXBT;
-};
-
-
+namespace GUILIB
+{
+bool HasTextureFiles(const CURL& path);
+bool GetTextureFiles(const CURL& path, std::vector<CXBTFFile>& files);
+}
+}

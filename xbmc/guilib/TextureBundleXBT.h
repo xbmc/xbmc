@@ -25,39 +25,36 @@
 #include <string>
 #include <vector>
 
+#include "XBTFReader.h"
+
 class CBaseTexture;
-class CXBTFReader;
 class CXBTFFrame;
 
 class CTextureBundleXBT
 {
 public:
-  CTextureBundleXBT();
-  explicit CTextureBundleXBT(bool themeBundle);
-  ~CTextureBundleXBT();
+  bool Open();
+  void Close() const;
 
   void SetThemeBundle(bool themeBundle);
-  bool HasFile(const std::string& Filename);
-  void GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures);
+  bool HasFile(const std::string& Filename) const;
+  void GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures) const;
   static std::string Normalize(const std::string &name);
 
   bool LoadTexture(const std::string& Filename, CBaseTexture** ppTexture,
-                       int &width, int &height);
+                       int &width, int &height) const;
 
   int LoadAnim(const std::string& Filename, CBaseTexture*** ppTextures,
-                int &width, int &height, int& nLoops, int** ppDelays);
+                int &width, int &height, int& nLoops, int** ppDelays) const;
 
   static uint8_t* UnpackFrame(const CXBTFReader& reader, const CXBTFFrame& frame);
 
 private:
-  bool OpenBundle();
-  bool ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture);
+  bool ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture) const;
 
-  time_t m_TimeStamp;
-
-  bool m_themeBundle;
+  bool m_themeBundle{false};
   std::string m_path;
-  std::shared_ptr<CXBTFReader> m_XBTFReader;
+  std::unique_ptr<CXBTFReader> m_XBTFReader;
 };
 
 

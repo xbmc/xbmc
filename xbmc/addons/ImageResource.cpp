@@ -21,7 +21,6 @@
 #include "URL.h"
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
-#include "filesystem/XbtManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -41,12 +40,6 @@ CImageResource::CImageResource(AddonProps props, std::string type)
 
 void CImageResource::OnPreUnInstall()
 {
-  CURL xbtUrl;
-  if (!HasXbt(xbtUrl))
-    return;
-
-  // if there's an XBT we need to remove it from the XBT manager
-  XFILE::CXbtManager::GetInstance().Release(xbtUrl);
 }
 
 bool CImageResource::IsAllowed(const std::string &file) const

@@ -28,7 +28,8 @@
 #include <vector>
 #include <utility>
 
-#include "TextureBundle.h"
+#include "Texture.h"
+#include "TextureBundleXBT.h"
 #include "threads/CriticalSection.h"
 
 /************************************************************************/
@@ -131,7 +132,7 @@ protected:
   typedef std::vector<CTextureMap*>::iterator ivecTextures;
   typedef std::list<std::pair<CTextureMap*, unsigned int> >::iterator ilistUnused;
   // we have 2 texture bundles (one for the base textures, one for the theme)
-  CTextureBundle m_TexBundle[2];
+  CTextureBundleXBT m_TexBundle[2];
 
   std::vector<std::string> m_texturePaths;
   CCriticalSection m_section;

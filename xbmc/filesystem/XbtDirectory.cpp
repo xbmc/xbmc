@@ -18,14 +18,13 @@
  *
  */
 
-#include <stdio.h>
-
 #include "XbtDirectory.h"
+
 #include "FileItem.h"
 #include "URL.h"
 #include "filesystem/Directorization.h"
-#include "filesystem/XbtManager.h"
 #include "guilib/XBTF.h"
+#include "guilib/XBTFHelpers.h"
 
 namespace XFILE
 {
@@ -58,7 +57,7 @@ bool CXbtDirectory::GetDirectory(const CURL& urlOrig, CFileItemList& items)
   url.SetFileName(""); // delete filename too as our names later will contain it
 
   std::vector<CXBTFFile> files;
-  if (!CXbtManager::GetInstance().GetFiles(url, files))
+  if (!KODI::GUILIB::GetTextureFiles(url, files))
     return false;
 
   // prepare the files for directorization
@@ -74,7 +73,7 @@ bool CXbtDirectory::GetDirectory(const CURL& urlOrig, CFileItemList& items)
 
 bool CXbtDirectory::ContainsFiles(const CURL& url)
 {
-  return CXbtManager::GetInstance().HasFiles(url);
+  return KODI::GUILIB::HasTextureFiles(url);
 }
 
 }

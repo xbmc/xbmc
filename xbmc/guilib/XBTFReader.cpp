@@ -18,13 +18,14 @@
  *
  */
 
+#include "XBTFReader.h"
+
 #include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 
-#include "XBTFReader.h"
-#include "guilib/XBTF.h"
+#include "URL.h"
 #include "utils/EndianSwap.h"
 
 #ifdef TARGET_WINDOWS
@@ -65,34 +66,54 @@ static bool ReadUInt64(FILE* file, uint64_t& value)
   return true;
 }
 
-CXBTFReader::CXBTFReader()
-  : CXBTFBase(),
-    m_path(),
-    m_file(nullptr)
-{ }
-
-CXBTFReader::~CXBTFReader()
+bool CXBTFReader::Open(const CURL& url)
 {
-  Close();
-}
+  m_path = url.IsProtocol("xbt") ? url.GetHostName() : url.Get();
 
-bool CXBTFReader::Open(const std::string& path)
-{
-  if (path.empty())
+  if (m_path.empty())
     return false;
-
-  m_path = path;
 
 #ifdef TARGET_WINDOWS
   std::wstring strPathW;
   g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(m_path), strPathW, false);
-  m_file = _wfopen(strPathW.c_str(), L"rb");
+  m_file.attach(_wfopen(strPathW.c_str(), L"rb"));
 #else
-  m_file = fopen(m_path.c_str(), "rb");
+  m_file.attach(fopen(m_path.c_str(), "rb"));
 #endif
-  if (m_file == nullptr)
+  if (!m_file)
     return false;
 
+  if (!HasFiles())
+    return Init();
+
+  return true;
+}
+
+void CXBTFReader::Close()
+{
+  m_file.reset();
+}
+
+bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer) const
+{
+  if (!m_file)
+    return false;
+
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+  if (fseeko(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
+#else
+  if (fseeko64(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
+#endif
+    return false;
+
+  if (fread(buffer, 1, static_cast<size_t>(frame.GetPackedSize()), m_file) != frame.GetPackedSize())
+    return false;
+
+  return true;
+}
+
+bool CXBTFReader::Init()
+{
   // read the magic word
   char magic[4];
   if (!ReadString(m_file, magic, sizeof(magic)))
@@ -168,7 +189,7 @@ bool CXBTFReader::Open(const std::string& path)
       xbtfFile.GetFrames().push_back(frame);
     }
 
-    AddFile(xbtfFile);
+    m_files.insert(std::make_pair(xbtfFile.GetPath(), xbtfFile));
   }
 
   // Sanity check
@@ -179,49 +200,40 @@ bool CXBTFReader::Open(const std::string& path)
   return true;
 }
 
-bool CXBTFReader::IsOpen() const
+uint64_t CXBTFReader::GetHeaderSize() const
 {
-  return m_file != nullptr;
+  uint64_t result = XBTF_MAGIC.size() + XBTF_VERSION.size() +
+    sizeof(uint32_t) /* number of files */;
+
+  for (const auto& file : m_files)
+    result += file.second.GetHeaderSize();
+
+  return result;
 }
 
-void CXBTFReader::Close()
+bool CXBTFReader::Exists(const std::string& name) const
 {
-  if (m_file != nullptr)
-  {
-    fclose(m_file);
-    m_file = nullptr;
-  }
-
-  m_path.clear();
-  m_files.clear();
+  CXBTFFile dummy;
+  return Get(name, dummy);
 }
 
-time_t CXBTFReader::GetLastModificationTimestamp() const
+bool CXBTFReader::Get(const std::string& name, CXBTFFile& file) const
 {
-  if (m_file == nullptr)
-    return 0;
-
-  struct stat fileStat;
-  if (fstat(fileno(m_file), &fileStat) == -1)
-    return 0;
-
-  return fileStat.st_mtime;
-}
-
-bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer) const
-{
-  if (m_file == nullptr)
+  const auto& iter = m_files.find(name);
+  if (iter == m_files.end())
     return false;
 
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
-  if (fseeko(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
-#else
-  if (fseeko64(m_file, static_cast<off_t>(frame.GetOffset()), SEEK_SET) == -1)
-#endif
-    return false;
-
-  if (fread(buffer, 1, static_cast<size_t>(frame.GetPackedSize()), m_file) != frame.GetPackedSize())
-    return false;
-
+  file = iter->second;
   return true;
+}
+
+std::vector<CXBTFFile> CXBTFReader::GetFiles() const
+{
+  std::vector<CXBTFFile> files;
+  files.reserve(m_files.size());
+
+  for (const auto& file : m_files)
+    files.push_back(file.second);
+
+  return files;
 }

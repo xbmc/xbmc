@@ -64,12 +64,12 @@ set(SOURCES DDSImage.cpp
             Resolution.cpp
             Shader.cpp
             StereoscopicsManager.cpp
-            TextureBundle.cpp
             TextureBundleXBT.cpp
             Texture.cpp
             TextureManager.cpp
             VisibleEffect.cpp
             XBTF.cpp
+            XBTFHelpers.cpp
             XBTFReader.cpp)
 
 set(HEADERS DDSImage.h
@@ -152,7 +152,6 @@ set(HEADERS DDSImage.h
             Shader.h
             StereoscopicsManager.h
             Texture.h
-            TextureBundle.h
             TextureBundleXBT.h
             TextureManager.h
             TransformMatrix.h
@@ -160,6 +159,7 @@ set(HEADERS DDSImage.h
             VisibleEffect.h
             WindowIDs.h
             XBTF.h
+            XBTFHelpers.h
             XBTFReader.h)
 
 if(OPENGL_FOUND)

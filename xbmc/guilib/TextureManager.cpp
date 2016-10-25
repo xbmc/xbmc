@@ -20,6 +20,7 @@
 
 #include "TextureManager.h"
 
+#include <utility>
 #include <cassert>
 
 #include "addons/Skin.h"
@@ -34,6 +35,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/ScopeGuard.h"
 
 #ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
@@ -263,7 +265,7 @@ bool CGUITextureManager::HasTexture(const std::string &textureName, std::string 
     return false;
 
   // Check our loaded and bundled textures - we store in bundles using \\.
-  std::string bundledName = CTextureBundle::Normalize(textureName);
+  std::string bundledName = CTextureBundleXBT::Normalize(textureName);
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap = m_vecTextures[i];
@@ -296,6 +298,20 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   static CTextureArray emptyTexture;
   int bundle = -1;
   int size = 0;
+
+  // To avoid keeping Textures.xbt open and blocking skin updates we
+  // make sure that we never leave this method with an open file handle
+  auto deleter = [](CTextureBundleXBT* tex)
+  {
+    tex->Close();
+  };
+
+  using TextureGuard = KODI::UTILS::CScopeGuard<CTextureBundleXBT*, nullptr, void(CTextureBundleXBT*)>;
+  TextureGuard tg1(deleter, &m_TexBundle[0]);
+  TextureGuard tg2(deleter, &m_TexBundle[1]);
+
+  m_TexBundle[0].Open();
+  m_TexBundle[1].Open();
 
   if (strTextureName.empty())
     return emptyTexture;
@@ -471,7 +487,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   return pMap->GetTexture();
 }
 
-
 void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool immediately /*= false */)
 {
   CSingleLock lock(g_graphicsContext);
@@ -547,8 +562,9 @@ void CGUITextureManager::Cleanup()
     i = m_vecTextures.erase(i);
   }
 
-  m_TexBundle[0] = CTextureBundle(true);
-  m_TexBundle[1] = CTextureBundle();
+  m_TexBundle[0] = CTextureBundleXBT();
+  m_TexBundle[1] = CTextureBundleXBT();
+
   FreeUnusedTextures();
 }
 

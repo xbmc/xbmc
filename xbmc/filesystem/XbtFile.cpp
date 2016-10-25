@@ -18,23 +18,12 @@
  *
  */
 
-#include <algorithm>
-#include <string.h>
-
-#ifdef TARGET_WINDOWS
-#ifdef NDEBUG
-#pragma comment(lib,"lzo2.lib")
-#else
-#pragma comment(lib, "lzo2-no_idb.lib")
-#endif
-#endif
-
-#include <lzo/lzo1x.h>
-
 #include "XbtFile.h"
+
+#include <algorithm>
+
 #include "URL.h"
 #include "filesystem/File.h"
-#include "filesystem/XbtManager.h"
 #include "guilib/TextureBundleXBT.h"
 #include "guilib/XBTFReader.h"
 #include "utils/log.h"
@@ -358,17 +347,10 @@ bool CXbtFile::GetFirstFrame(CXBTFFrame& frame) const
   return true;
 }
 
-bool CXbtFile::GetReader(const CURL& url, CXBTFReaderPtr& reader)
-{
-  CURL xbtUrl(url);
-  xbtUrl.SetOptions("");
-
-  return CXbtManager::GetInstance().GetReader(xbtUrl, reader);
-}
-
 bool CXbtFile::GetReaderAndFile(const CURL& url, CXBTFReaderPtr& reader, CXBTFFile& file)
 {
-  if (!GetReader(url, reader))
+  reader = std::make_shared<CXBTFReader>();
+  if (!reader->Open(url))
     return false;
 
   CURL xbtUrl(url);

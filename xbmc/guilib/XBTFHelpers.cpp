@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -19,38 +18,34 @@
  *
  */
 
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
+#include "XBTFHelpers.h"
 
 #include "guilib/XBTF.h"
-#include "utils/ScopeGuard.h"
+#include "guilib/XBTFReader.h"
+#include "URL.h"
 
-class CURL;
-
-class CXBTFReader
+namespace KODI
 {
-public:
-  bool Open(const CURL& url);
-  void Close();
+namespace GUILIB
+{
+bool HasTextureFiles (const CURL& path)
+{
+  CXBTFReader reader;
+  if (!reader.Open(path))
+    return false;
 
-  bool HasFiles() const { return !m_files.empty(); }
-  bool Exists(const std::string& name) const;
-  bool Get(const std::string& name, CXBTFFile& file) const;
-  std::vector<CXBTFFile> GetFiles() const;
+  return reader.HasFiles();
+}
 
-  bool Load(const CXBTFFrame& frame, unsigned char* buffer) const;
+bool GetTextureFiles(const CURL& path, std::vector<CXBTFFile>& files)
+{
+  CXBTFReader reader;
+  if (!reader.Open(path))
+    return false;
 
-private:
-  bool Init();
-  uint64_t GetHeaderSize() const;
+  files = reader.GetFiles();
 
-  std::string m_path;
-  std::map<std::string, CXBTFFile> m_files;
-
-  using FileGuard = KODI::UTILS::CScopeGuard<FILE*, nullptr, decltype(fclose)>;
-  FileGuard m_file{fclose};
-};
-
-typedef std::shared_ptr<CXBTFReader> CXBTFReaderPtr;
+  return !files.empty();
+}
+}
+}
