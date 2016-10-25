@@ -201,15 +201,18 @@ namespace SOCKETS
       bool IsIp4vOnly() const { return m_ipv4Only; }
       void SetIpv4Only(bool ipv4Only) { m_ipv4Only = ipv4Only; }
 
+      bool IsBroadcast() const { return m_broadcast; }
+      void SetBroadcast(bool broadcast) { m_broadcast = broadcast; }
+
       // I/O functions
       virtual int SendTo(const CAddress& addr, const int bufferlength, const void* buffer) = 0;
 
       // read datagrams, return no. of bytes read or -1 or error
       virtual int Read(CAddress& addr, const int buffersize, void* buffer) = 0;
-      virtual bool Broadcast(const CAddress& addr, const int datasize, const void* data) = 0;
 
     protected:
       bool m_ipv4Only;
+      bool m_broadcast;
   };
 
   // Implementation specific classes
@@ -231,11 +234,6 @@ namespace SOCKETS
     bool Listen(int timeout);
     int SendTo(const CAddress& addr, const int datasize, const void* data) override;
     int Read(CAddress& addr, const int buffersize, void *buffer) override;
-    bool Broadcast(const CAddress& addr, const int datasize, const void* data) override
-    {
-      //! @todo implement
-      return false;
-    }
     SOCKET Socket() override { return m_iSock; }
     void Close() override;
 

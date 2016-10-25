@@ -90,6 +90,17 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
     CLog::Log(LOGWARNING, "UDP: %s", strerror(errno));
   }
 
+  // enable broadcasting support if necessary
+  if (m_broadcast)
+  {
+    if (setsockopt(m_iSock, SOL_SOCKET, SO_BROADCAST, &yes, sizeof(yes)) == -1)
+    {
+      CLog::Log(LOGERROR, "UDP: Unable to enable broadcasting");
+      Close();
+      return false;
+    }
+  }
+
   // bind to any address or localhost
   if (m_ipv6Socket)
   {
