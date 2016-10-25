@@ -64,6 +64,12 @@ namespace SOCKETS
       SetAddress(address);
     }
 
+    CAddress(const char* address, uint16_t port)
+    {
+      SetAddress(address);
+      SetPort(port);
+    }
+
     void SetAddress(const char *address)
     {
       in6_addr addr6;
@@ -116,6 +122,28 @@ namespace SOCKETS
       }
       else
         return (unsigned long)saddr.saddr4.sin_addr.s_addr;
+    }
+
+    void SetPort(uint16_t port)
+    {
+      if (saddr.saddr_generic.sa_family == AF_INET6)
+      {
+        saddr.saddr6.sin6_port = htons(port);
+        size = sizeof(saddr.saddr6);
+      }
+      else
+      {
+        saddr.saddr4.sin_port = htons(port);
+        size = sizeof(saddr.saddr4);
+      }
+    }
+
+    uint16_t Port() const
+    {
+      if (saddr.saddr_generic.sa_family == AF_INET6)
+        return ntohs(saddr.saddr6.sin6_port);
+      else
+        return ntohs(saddr.saddr4.sin_port);
     }
   };
 
