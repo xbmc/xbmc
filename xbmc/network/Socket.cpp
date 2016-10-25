@@ -33,7 +33,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
   // If we can, create a socket that works with IPv6 and IPv4.
   // If not, try an IPv4-only socket (we don't want to end up
   // with an IPv6-only socket).
-  if (!localOnly) // Only bind loopback to ipv4. TODO : Implement dual bindinds.
+  if (!localOnly && !m_ipv4Only) // Only bind loopback to ipv4. TODO : Implement dual bindinds.
   {
     m_ipv6Socket = CheckIPv6(port, range);
 

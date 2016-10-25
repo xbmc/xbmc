@@ -194,15 +194,22 @@ namespace SOCKETS
     CUDPSocket()
       {
         m_Type = ST_UDP;
+        m_ipv4Only = false;
+        m_broadcast = false;
       }
-    // I/O functions
-    virtual int SendTo(const CAddress& addr, const int bufferlength,
-                       const void* buffer) = 0;
 
-    // read datagrams, return no. of bytes read or -1 or error
-    virtual int Read(CAddress& addr, const int buffersize, void *buffer) = 0;
-    virtual bool Broadcast(const CAddress& addr, const int datasize,
-                           const void* data) = 0;
+      bool IsIp4vOnly() const { return m_ipv4Only; }
+      void SetIpv4Only(bool ipv4Only) { m_ipv4Only = ipv4Only; }
+
+      // I/O functions
+      virtual int SendTo(const CAddress& addr, const int bufferlength, const void* buffer) = 0;
+
+      // read datagrams, return no. of bytes read or -1 or error
+      virtual int Read(CAddress& addr, const int buffersize, void* buffer) = 0;
+      virtual bool Broadcast(const CAddress& addr, const int datasize, const void* data) = 0;
+
+    protected:
+      bool m_ipv4Only;
   };
 
   // Implementation specific classes
@@ -214,10 +221,10 @@ namespace SOCKETS
   {
   public:
     CPosixUDPSocket()
-      {
-        m_iSock = INVALID_SOCKET;
-        m_ipv6Socket = false;
-      }
+    {
+      m_iSock = INVALID_SOCKET;
+      m_ipv6Socket = false;
+    }
 
     bool Bind(bool localOnly, int port, int range=0) override;
     bool Connect() override { return false; }
