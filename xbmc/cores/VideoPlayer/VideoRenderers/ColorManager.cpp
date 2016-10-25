@@ -243,7 +243,7 @@ bool CColorManager::Probe3dLut(const std::string filename)
     return false;
   }
 
-  if (lutFile.Read(&header, sizeof(header)) < sizeof(header))
+  if (lutFile.Read(&header, sizeof(header)) < static_cast<ssize_t>(sizeof(header)))
   {
     CLog::Log(LOGERROR, "%s: Could not read 3DLUT header: %s", __FUNCTION__, filename.c_str());
     return false;
@@ -282,7 +282,7 @@ bool CColorManager::Load3dLut(const std::string filename, uint16_t **CLUT, int *
     return false;
   }
 
-  if (lutFile.Read(&header, sizeof(header)) < sizeof(header))
+  if (lutFile.Read(&header, sizeof(header)) < static_cast<ssize_t>(sizeof(header)))
   {
     CLog::Log(LOGERROR, "%s: Could not read 3DLUT header: %s", __FUNCTION__, filename.c_str());
     return false;
