@@ -56,22 +56,6 @@ bool CDVDInputStreamFFmpeg::IsEOF()
 
 bool CDVDInputStreamFFmpeg::Open()
 {
-  if (m_item.IsInternetStream() && (m_item.IsType(".m3u8") || m_item.GetMimeType() == "application/vnd.apple.mpegurl"))
-  {
-    // get the available bandwidth and  determine the most appropriate stream
-    int bandwidth = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
-    if(bandwidth <= 0)
-      bandwidth = INT_MAX;
-    const CURL playlist_url = m_item.GetURL();
-    const CURL selected = GetM3UBestBandwidthStream(playlist_url, bandwidth);
-    if (selected.Get() != playlist_url.Get())
-    {
-      CLog::Log(LOGINFO, "CDVDInputStreamFFmpeg: Auto-selecting %s based on configured bandwidth.",
-                selected.Get().c_str());
-      m_item.SetURL(selected);
-    }
-  }
-
   if (!CDVDInputStream::Open())
     return false;
 
@@ -152,95 +136,6 @@ std::string CDVDInputStreamFFmpeg::GetProxyPassword() const
 {
   return m_item.HasProperty("proxy.password") ?
     m_item.GetProperty("proxy.password").asString() : std::string();
-}
-
-CURL CDVDInputStreamFFmpeg::GetM3UBestBandwidthStream(const CURL &url, size_t bandwidth)
-{
-  typedef CPlayListM3U M3U;
-  using std::string;
-  using std::map;
-
-  // we may be passed a playlist that does not contain playlists of different
-  // bitrates (eg: this playlist is really the HLS video). So, default the
-  // return to the filename so it can be played
-  char szLine[4096];
-  string strLine;
-  size_t maxBandwidth = 0;
-
-  CCurlFile file;
-
-  // set the proxy configuration
-  const string host = GetProxyHost();
-  if (!host.empty())
-    file.SetProxy(GetProxyType(), host, GetProxyPort(),
-                  GetProxyUser(), GetProxyPassword());
-
-  // open the file, and if it fails, return
-  if (!file.Open(url))
-  {
-    file.Close();
-    return url;
-  }
-
-  // and set the fallback value
-  CURL subStreamUrl(url);
-
-  // determine the base
-  CURL basePlaylistUrl(URIUtils::GetParentPath(url.Get()));
-  basePlaylistUrl.SetOptions("");
-  basePlaylistUrl.SetProtocolOptions("");
-  const string basePart = basePlaylistUrl.Get();
-
-  // convert bandwidth specified in kbps to bps used by the m3u8
-  bandwidth *= 1000;
-
-  while (file.ReadString(szLine, 1024))
-  {
-    // read and trim a line
-    strLine = szLine;
-    StringUtils::Trim(strLine);
-
-    // skip the first line
-    if (strLine == M3U::StartMarker)
-        continue;
-    else if (StringUtils::StartsWith(strLine, M3U::StreamMarker))
-    {
-      // parse the line so we can pull out the bandwidth
-      const map< string, string > params = M3U::ParseStreamLine(strLine);
-      const map< string, string >::const_iterator it = params.find(M3U::BandwidthMarker);
-
-      if (it != params.end())
-      {
-        const size_t streamBandwidth = atoi(it->second.c_str());
-        if ((maxBandwidth < streamBandwidth) && (streamBandwidth <= bandwidth))
-        {
-          // read the next line
-          if (!file.ReadString(szLine, 1024))
-            continue;
-
-          strLine = szLine;
-          StringUtils::Trim(strLine);
-
-          // this line was empty
-          if (strLine.empty())
-            continue;
-
-          // store the max bandwidth
-          maxBandwidth = streamBandwidth;
-
-          // if the path is absolute just use it
-          if (CURL::IsFullPath(strLine))
-            subStreamUrl = CURL(strLine);
-          else
-            subStreamUrl = CURL(basePart + strLine);
-        }
-      }
-    }
-  }
-
-  // if any protocol options were set, restore them
-  subStreamUrl.SetProtocolOptions(url.GetProtocolOptions());
-  return subStreamUrl;
 }
 
 std::string CDVDInputStreamFFmpeg::GetFileName()

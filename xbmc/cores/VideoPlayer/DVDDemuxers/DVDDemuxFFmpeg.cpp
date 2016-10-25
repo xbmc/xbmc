@@ -230,7 +230,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   // try to abort after 30 seconds
   m_timeout.Set(30000);
 
-  if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
@@ -507,7 +507,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     unsigned int nProgram(~0);
     if (m_pFormatContext->nb_programs > 0)
     {
-      
       // select the corrrect program if requested
       CVariant programProp(pInput->GetProperty("program"));
       if (!programProp.isNull())
@@ -523,6 +522,29 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
           }
         }
       }
+      else if (m_pFormatContext->iformat && strcmp(m_pFormatContext->iformat->name, "hls,applehttp") == 0)
+      {
+        int bandwidth = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH) * 1000;
+        if (bandwidth <= 0)
+          bandwidth = INT_MAX;
+
+        int selectedBitrate = 0;
+        for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
+        {
+          int strBitrate = 0;
+          AVDictionaryEntry *tag = av_dict_get(m_pFormatContext->programs[i]->metadata, "variant_bitrate", NULL, 0);
+          if (tag)
+            strBitrate = atoi(tag->value);
+          else
+            continue;
+
+          if (selectedBitrate < strBitrate && strBitrate < bandwidth)
+          {
+            selectedBitrate = strBitrate;
+            nProgram = i;
+          }
+        }
+      }
     }
     CreateStreams(nProgram);
   }
@@ -534,6 +556,13 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
 
+  // seems to be a bug in ffmpeg, hls jumps back to start after a couple of seconds
+  // this cures the issue
+  if (m_pFormatContext->iformat && strcmp(m_pFormatContext->iformat->name, "hls,applehttp") == 0)
+  {
+    SeekTime(0);
+  }
+  
   return true;
 }
 
