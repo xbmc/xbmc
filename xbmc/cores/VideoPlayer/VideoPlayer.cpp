@@ -918,7 +918,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
 
   // open video stream
   valid   = false;
-  
+
   for (const auto &stream : m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority))
   {
     if(OpenStream(m_CurrentVideo, stream.demuxerId, stream.id, stream.source, reset))
@@ -3696,7 +3696,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
     stream = m_pSubtitleDemuxer->GetStream(demuxerId, iStream);
     if(!stream || stream->disabled)
       return false;
-    
+
     m_pSubtitleDemuxer->EnableStream(demuxerId, iStream, true);
 
     hint.Assign(*stream, true);
@@ -3739,6 +3739,9 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
 
     hint.Assign(*stream, false);
   }
+
+  if (!reset)
+    hint.flags |= CDemuxStream::FLAG_STREAMCHANGE;
 
   bool res;
   switch(current.type)
