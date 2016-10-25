@@ -252,60 +252,55 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
   : m_pPlayer(new CApplicationPlayer)
+  , m_iScreenSaveLock(0)
+  , m_bPlaybackStarting(false)
+  , m_ePlayState(PLAY_STATE_NONE)
+  , m_confirmSkinChange(true)
+  , m_ignoreSkinSettingChanges(false)
   , m_saveSkinOnUnloading(true)
   , m_autoExecScriptExecuted(false)
+  , m_bScreenSave(false)
+  , m_bInhibitIdleShutdown(false)
+  , m_dpms(nullptr)
+  , m_dpmsIsActive(false)
+  , m_dpmsIsManual(false)
   , m_itemCurrentFile(new CFileItem)
   , m_stackFileItemToUpdate(new CFileItem)
+  , m_threadID(0)
+  , m_bInitializing(true)
+  , m_bPlatformDirectories(true)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
+  , m_progressTrackingPlayCountUpdate(false)
+  , m_currentStackPosition(0)
+  , m_nextPlaylistItem(-1)
+  , m_lastRenderTime(0)
+  , m_skipGuiRender(false)
+  , m_bStandalone(false)
+  , m_bEnableLegacyRes(false)
+  , m_bTestMode(false)
+  , m_bSystemScreenSaverEnable(false)
   , m_musicInfoScanner(new CMusicInfoScanner)
+  , m_muted(false)
+  , m_volumeLevel(VOLUME_MAXIMUM)
+  , m_pInertialScrollingHandler(new CInertialScrollingHandler())
+  , m_network(nullptr)
   , m_fallbackLanguageLoaded(false)
   , m_WaitingExternalCalls(0)
   , m_ProcessedExternalCalls(0)
-  , m_ignoreSkinSettingChanges(false)
 {
-  m_network = NULL;
   TiXmlBase::SetCondenseWhiteSpace(false);
-  m_bInhibitIdleShutdown = false;
-  m_bScreenSave = false;
-  m_dpms = NULL;
-  m_dpmsIsActive = false;
-  m_dpmsIsManual = false;
-  m_iScreenSaveLock = 0;
-  m_bInitializing = true;
-  m_strPlayListFile = "";
-  m_nextPlaylistItem = -1;
-  m_bPlaybackStarting = false;
-  m_ePlayState = PLAY_STATE_NONE;
-  m_confirmSkinChange = true;
 
 #ifdef HAS_GLX
   XInitThreads();
 #endif
 
-
   /* for now always keep this around */
   m_currentStack = new CFileItemList;
 
-  m_bPlatformDirectories = true;
-
-  m_bStandalone = false;
-  m_bEnableLegacyRes = false;
-  m_bSystemScreenSaverEnable = false;
-  m_pInertialScrollingHandler = new CInertialScrollingHandler();
 #ifdef HAS_DVD_DRIVE
   m_Autorun = new CAutorun();
 #endif
-
-  m_threadID = 0;
-  m_progressTrackingPlayCountUpdate = false;
-  m_currentStackPosition = 0;
-  m_lastRenderTime = 0;
-  m_skipGuiRender = false;
-  m_bTestMode = false;
-
-  m_muted = false;
-  m_volumeLevel = VOLUME_MAXIMUM;
 }
 
 CApplication::~CApplication(void)
