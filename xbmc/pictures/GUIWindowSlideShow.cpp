@@ -340,13 +340,13 @@ void CGUIWindowSlideShow::Select(const std::string& strPicture)
 
 void CGUIWindowSlideShow::GetSlideShowContents(CFileItemList &list)
 {
-  for (int index = 0; index < m_slides.size(); index++)
+  for (size_t index = 0; index < m_slides.size(); index++)
     list.Add(CFileItemPtr(new CFileItem(*m_slides.at(index))));
 }
 
 std::shared_ptr<const CFileItem> CGUIWindowSlideShow::GetCurrentSlide()
 {
-  if (m_iCurrentSlide >= 0 && m_iCurrentSlide < m_slides.size())
+  if (m_iCurrentSlide >= 0 && m_iCurrentSlide < static_cast<int>(m_slides.size()))
     return m_slides.at(m_iCurrentSlide);
   return CFileItemPtr();
 }
@@ -389,9 +389,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (!HasProcessed())
     regions.push_back(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
 
-  if (m_iCurrentSlide < 0 || m_iCurrentSlide >= m_slides.size())
+  if (m_iCurrentSlide < 0 || m_iCurrentSlide >= static_cast<int>(m_slides.size()))
     m_iCurrentSlide = 0;
-  if (m_iNextSlide < 0 || m_iNextSlide >= m_slides.size())
+  if (m_iNextSlide < 0 || m_iNextSlide >= static_cast<int>(m_slides.size()))
     m_iNextSlide = GetNextSlide();
 
   // Create our background loader if necessary
@@ -1110,7 +1110,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::strin
   if (pTexture)
   {
     // set the pic's texture + size etc.
-    if (iSlideNumber >= m_slides.size() || GetPicturePath(m_slides.at(iSlideNumber).get()) != strFileName)
+    if (iSlideNumber >= static_cast<int>(m_slides.size()) || GetPicturePath(m_slides.at(iSlideNumber).get()) != strFileName)
     { // throw this away - we must have cleared the slideshow while we were still loading
       delete pTexture;
       return;
@@ -1131,9 +1131,12 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::strin
       }
     }
   }
-  else if (iSlideNumber >= m_slides.size() || GetPicturePath(m_slides.at(iSlideNumber).get()) != strFileName)
+  else if (iSlideNumber >= static_cast<int>(m_slides.size()) || GetPicturePath(m_slides.at(iSlideNumber).get()) != strFileName)
   { // Failed to load image. and not match values calling LoadPic, then something is changed, ignore.
-    CLog::Log(LOGDEBUG, "CGUIWindowSlideShow::OnLoadPic(%d, %d, %s) on failure not match current state (cur %d, next %d, curpic %d, pic[0, 1].slidenumber=%d, %d, %s)", iPic, iSlideNumber, strFileName.c_str(), m_iCurrentSlide, m_iNextSlide, m_iCurrentPic, m_Image[0].SlideNumber(), m_Image[1].SlideNumber(), iSlideNumber >= m_slides.size() ? "" : m_slides.at(iSlideNumber)->GetPath().c_str());
+    CLog::Log(LOGDEBUG, "CGUIWindowSlideShow::OnLoadPic(%d, %d, %s) on failure not match current state (cur %d, next %d, curpic %d, pic[0, 1].slidenumber=%d, %d, %s)",
+              iPic, iSlideNumber, strFileName.c_str(), m_iCurrentSlide,
+              m_iNextSlide, m_iCurrentPic, m_Image[0].SlideNumber(), m_Image[1].SlideNumber(),
+              iSlideNumber >= static_cast<int>(m_slides.size()) ? "" : m_slides.at(iSlideNumber)->GetPath().c_str());
   }
   else
   { // Failed to load image.  What should be done??
