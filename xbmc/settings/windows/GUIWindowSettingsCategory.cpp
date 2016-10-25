@@ -63,8 +63,6 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
       m_iSection(0),
       m_returningFromSkinLoad(false)
 {
-  m_settingsManager = m_settings.GetSettingsManager();
-
   // set the correct ID range...
   m_idRange.clear();
   m_idRange.push_back(WINDOW_SETTINGS_SYSTEM);
@@ -204,6 +202,11 @@ CSettingSection* CGUIWindowSettingsCategory::GetSection()
 void CGUIWindowSettingsCategory::Save()
 {
   m_settings.Save();
+}
+
+CSettingsManager* CGUIWindowSettingsCategory::GetSettingsManager() const
+{
+  return m_settings.GetSettingsManager();
 }
 
 void CGUIWindowSettingsCategory::FocusElement(const std::string& elementId)

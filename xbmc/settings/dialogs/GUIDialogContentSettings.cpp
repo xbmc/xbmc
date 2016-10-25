@@ -181,7 +181,7 @@ void CGUIDialogContentSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_SCAN_RECURSIVE)
   {
     m_scanRecursive = static_cast<const CSettingBool*>(setting)->GetValue();
-    m_settingsManager->SetBool(SETTING_CONTAINS_SINGLE_ITEM, false);
+    GetSettingsManager()->SetBool(SETTING_CONTAINS_SINGLE_ITEM, false);
   }
   else if (settingId == SETTING_EXCLUDE)
     m_exclude = static_cast<const CSettingBool*>(setting)->GetValue();
@@ -364,18 +364,18 @@ void CGUIDialogContentSettings::InitializeSettings()
       AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, 0, m_noUpdating, false, m_showScanSettings);
       
       // define an enable dependency with (m_useDirectoryNames && !m_containsSingleItem) || !m_useDirectoryNames
-      CSettingDependency dependencyScanRecursive(SettingDependencyTypeEnable, m_settingsManager);
+      CSettingDependency dependencyScanRecursive(SettingDependencyTypeEnable, GetSettingsManager());
       dependencyScanRecursive.Or()
-        ->Add(CSettingDependencyConditionCombinationPtr((new CSettingDependencyConditionCombination(BooleanLogicOperationAnd, m_settingsManager))                                     // m_useDirectoryNames && !m_containsSingleItem
-          ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperatorEquals, false, m_settingsManager)))      // m_useDirectoryNames
-          ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_CONTAINS_SINGLE_ITEM, "false", SettingDependencyOperatorEquals, false, m_settingsManager)))))  // !m_containsSingleItem
-        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "false", SettingDependencyOperatorEquals, false, m_settingsManager)));      // !m_useDirectoryNames
+        ->Add(CSettingDependencyConditionCombinationPtr((new CSettingDependencyConditionCombination(BooleanLogicOperationAnd, GetSettingsManager()))                                     // m_useDirectoryNames && !m_containsSingleItem
+          ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperatorEquals, false, GetSettingsManager())))      // m_useDirectoryNames
+          ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_CONTAINS_SINGLE_ITEM, "false", SettingDependencyOperatorEquals, false, GetSettingsManager())))))  // !m_containsSingleItem
+        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "false", SettingDependencyOperatorEquals, false, GetSettingsManager())));      // !m_useDirectoryNames
 
       // define an enable dependency with m_useDirectoryNames && !m_scanRecursive
-      CSettingDependency dependencyContainsSingleItem(SettingDependencyTypeEnable, m_settingsManager);
+      CSettingDependency dependencyContainsSingleItem(SettingDependencyTypeEnable, GetSettingsManager());
       dependencyContainsSingleItem.And()
-        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperatorEquals, false, m_settingsManager)))        // m_useDirectoryNames
-        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_SCAN_RECURSIVE, "false", SettingDependencyOperatorEquals, false, m_settingsManager)));           // !m_scanRecursive
+        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperatorEquals, false, GetSettingsManager())))        // m_useDirectoryNames
+        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_SCAN_RECURSIVE, "false", SettingDependencyOperatorEquals, false, GetSettingsManager())));           // !m_scanRecursive
 
       SettingDependencies deps;
       deps.push_back(dependencyScanRecursive);

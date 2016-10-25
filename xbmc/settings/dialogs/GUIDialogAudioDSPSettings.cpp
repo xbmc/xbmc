@@ -219,7 +219,7 @@ void CGUIDialogAudioDSPSettings::FrameMove()
   // update the volume setting if necessary
   float newVolume = g_application.GetVolume(false);
   if (newVolume != m_volume)
-    m_settingsManager->SetNumber(SETTING_AUDIO_MAIN_VOLUME, newVolume);
+    GetSettingsManager()->SetNumber(SETTING_AUDIO_MAIN_VOLUME, newVolume);
 
   if (g_application.m_pPlayer->HasPlayer())
   {
@@ -227,7 +227,7 @@ void CGUIDialogAudioDSPSettings::FrameMove()
 
     // these settings can change on the fly
     if (SupportsAudioFeature(IPC_AUD_OFFSET))
-      m_settingsManager->SetNumber(SETTING_AUDIO_POST_PROC_AUDIO_DELAY, videoSettings.m_AudioDelay);
+      GetSettingsManager()->SetNumber(SETTING_AUDIO_POST_PROC_AUDIO_DELAY, videoSettings.m_AudioDelay);
 
     bool forceReload = false;
     unsigned int  streamId = CServiceBroker::GetADSP().GetActiveStreamId();
@@ -261,19 +261,19 @@ void CGUIDialogAudioDSPSettings::FrameMove()
       CMediaSettings::GetInstance().GetCurrentAudioSettings().m_MasterStreamBase                          = usedBaseType;
       CMediaSettings::GetInstance().GetCurrentAudioSettings().m_MasterStreamType                          = streamTypeUsed;
 
-      m_settingsManager->SetInt(SETTING_AUDIO_MAIN_MODETYPE, modeUniqueId);
+      GetSettingsManager()->SetInt(SETTING_AUDIO_MAIN_MODETYPE, modeUniqueId);
     }
 
     // these settings can change on the fly
     if (m_GetCPUUsage)
     {
       m_CPUUsage = StringUtils::Format("%.02f %%", m_ActiveStreamProcess->GetCPUUsage());
-      m_settingsManager->SetString(SETTING_STREAM_INFO_CPU_USAGE, m_CPUUsage);
+      GetSettingsManager()->SetString(SETTING_STREAM_INFO_CPU_USAGE, m_CPUUsage);
       for (unsigned int i = 0; i < m_ActiveModes.size(); i++)
       {
         std::string settingId = StringUtils::Format("%s%i", SETTING_STREAM_INFO_MODE_CPU_USAGE, i);
         m_ActiveModesData[i].CPUUsage = StringUtils::Format("%.02f %%", m_ActiveModes[i]->CPUUsage());
-        m_settingsManager->SetString(settingId, m_ActiveModesData[i].CPUUsage);
+        GetSettingsManager()->SetString(settingId, m_ActiveModesData[i].CPUUsage);
       }
     }
   }

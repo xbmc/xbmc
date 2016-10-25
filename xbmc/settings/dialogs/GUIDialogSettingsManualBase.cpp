@@ -32,17 +32,19 @@
 #include "utils/Variant.h"
 
 CGUIDialogSettingsManualBase::CGUIDialogSettingsManualBase(int windowId, const std::string &xmlFile)
-    : CGUIDialogSettingsManagerBase(windowId, xmlFile),
-      m_section(NULL)
-{
-  m_settingsManager = new CSettingsManager();
-}
+  : CGUIDialogSettingsManagerBase(windowId, xmlFile)
+  , m_section(nullptr)
+  , m_settingsManager(nullptr)
+{ }
 
 CGUIDialogSettingsManualBase::~CGUIDialogSettingsManualBase()
 {
-  m_settingsManager->Clear();
-  m_section = NULL;
-  delete m_settingsManager;
+  if (GetSettingsManager() != nullptr)
+  {
+    GetSettingsManager()->Clear();
+    m_section = nullptr;
+    delete GetSettingsManager();
+  }
 }
 
 void CGUIDialogSettingsManualBase::OnOkay()
@@ -56,21 +58,35 @@ void CGUIDialogSettingsManualBase::SetupView()
 {
   InitializeSettings();
 
-  // add the created setting section to the settings manager and mark it as ready
-  m_settingsManager->AddSection(m_section);
-  m_settingsManager->SetInitialized();
-  m_settingsManager->SetLoaded();
+  if (GetSettingsManager() != nullptr)
+  {
+    // add the created setting section to the settings manager and mark it as ready
+    GetSettingsManager()->AddSection(m_section);
+    GetSettingsManager()->SetInitialized();
+    GetSettingsManager()->SetLoaded();
+  }
 
   CGUIDialogSettingsBase::SetupView();
 }
 
+CSettingsManager* CGUIDialogSettingsManualBase::GetSettingsManager() const
+{
+  if (m_settingsManager == nullptr)
+    m_settingsManager = new CSettingsManager();
+
+  return m_settingsManager;
+}
+
 void CGUIDialogSettingsManualBase::InitializeSettings()
 {
-  m_settingsManager->Clear();
-  m_section = NULL;
+  if (GetSettingsManager() != nullptr)
+  {
+    GetSettingsManager()->Clear();
+    m_section = NULL;
 
-  // create a new section
-  m_section = new CSettingSection(GetProperty("xmlfile").asString(), m_settingsManager);
+    // create a new section
+    m_section = new CSettingSection(GetProperty("xmlfile").asString(), GetSettingsManager());
+  }
 }
 
 CSettingCategory* CGUIDialogSettingsManualBase::AddCategory(const std::string &id, int label, int help /* = -1 */)
@@ -78,7 +94,7 @@ CSettingCategory* CGUIDialogSettingsManualBase::AddCategory(const std::string &i
   if (id.empty())
     return NULL;
 
-  CSettingCategory *category = new CSettingCategory(id, m_settingsManager);
+  CSettingCategory *category = new CSettingCategory(id, GetSettingsManager());
   if (category == NULL)
     return NULL;
 
@@ -97,7 +113,7 @@ CSettingGroup* CGUIDialogSettingsManualBase::AddGroup(CSettingCategory *category
 
   size_t groups = category->GetGroups().size();
 
-  CSettingGroup *group = new CSettingGroup(StringUtils::Format("{0}", groups + 1), m_settingsManager);
+  CSettingGroup *group = new CSettingGroup(StringUtils::Format("{0}", groups + 1), GetSettingsManager());
   if (group == NULL)
     return NULL;
 
@@ -118,7 +134,7 @@ CSettingBool* CGUIDialogSettingsManualBase::AddToggle(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingBool *setting = new CSettingBool(id, label, value, m_settingsManager);
+  CSettingBool *setting = new CSettingBool(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -137,7 +153,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddEdit(CSettingGroup *group, const s
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, minimum, step, maximum, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, minimum, step, maximum, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -157,7 +173,7 @@ CSettingNumber* CGUIDialogSettingsManualBase::AddEdit(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingNumber *setting = new CSettingNumber(id, label, value, minimum, step, maximum, m_settingsManager);
+  CSettingNumber *setting = new CSettingNumber(id, label, value, minimum, step, maximum, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -176,7 +192,7 @@ CSettingString* CGUIDialogSettingsManualBase::AddEdit(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingString *setting = new CSettingString(id, label, value, m_settingsManager);
+  CSettingString *setting = new CSettingString(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -196,7 +212,7 @@ CSettingString* CGUIDialogSettingsManualBase::AddIp(CSettingGroup *group, const 
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingString *setting = new CSettingString(id, label, value, m_settingsManager);
+  CSettingString *setting = new CSettingString(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -216,7 +232,7 @@ CSettingString* CGUIDialogSettingsManualBase::AddPasswordMd5(CSettingGroup *grou
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingString *setting = new CSettingString(id, label, value, m_settingsManager);
+  CSettingString *setting = new CSettingString(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -235,7 +251,7 @@ CSettingAction* CGUIDialogSettingsManualBase::AddButton(CSettingGroup *group, co
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingAction *setting = new CSettingAction(id, label, m_settingsManager);
+  CSettingAction *setting = new CSettingAction(id, label, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -253,7 +269,7 @@ CSettingString* CGUIDialogSettingsManualBase::AddInfoLabelButton(CSettingGroup *
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingString *setting = new CSettingString(id, label, info, m_settingsManager);
+  CSettingString *setting = new CSettingString(id, label, info, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -273,7 +289,7 @@ CSettingAddon* CGUIDialogSettingsManualBase::AddAddon(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingAddon *setting = new CSettingAddon(id, label, value, m_settingsManager);
+  CSettingAddon *setting = new CSettingAddon(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -295,7 +311,7 @@ CSettingPath* CGUIDialogSettingsManualBase::AddPath(CSettingGroup *group, const 
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingPath *setting = new CSettingPath(id, label, value, m_settingsManager);
+  CSettingPath *setting = new CSettingPath(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -317,7 +333,7 @@ CSettingString* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, c
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingString *setting = new CSettingString(id, label, value, m_settingsManager);
+  CSettingString *setting = new CSettingString(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -337,7 +353,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -359,7 +375,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -380,7 +396,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -399,7 +415,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -419,7 +435,7 @@ CSettingNumber* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, c
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingNumber *setting = new CSettingNumber(id, label, value, m_settingsManager);
+  CSettingNumber *setting = new CSettingNumber(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -441,7 +457,7 @@ CSettingNumber* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, c
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingNumber *setting = new CSettingNumber(id, label, value, m_settingsManager);
+  CSettingNumber *setting = new CSettingNumber(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -462,7 +478,7 @@ CSettingString* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, cons
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingString *setting = new CSettingString(id, label, value, m_settingsManager);
+  CSettingString *setting = new CSettingString(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -481,7 +497,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const s
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -500,7 +516,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const s
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -520,13 +536,13 @@ CSettingList* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const 
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingString *settingDefinition = new CSettingString(id, m_settingsManager);
+  CSettingString *settingDefinition = new CSettingString(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
   
   settingDefinition->SetOptionsFiller(filler, this);
 
-  CSettingList *setting = new CSettingList(id, settingDefinition, label, m_settingsManager);
+  CSettingList *setting = new CSettingList(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
   {
     delete settingDefinition;
@@ -563,13 +579,13 @@ CSettingList* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const 
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *settingDefinition = new CSettingInt(id, m_settingsManager);
+  CSettingInt *settingDefinition = new CSettingInt(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
   
   settingDefinition->SetOptions(entries);
 
-  CSettingList *setting = new CSettingList(id, settingDefinition, label, m_settingsManager);
+  CSettingList *setting = new CSettingList(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
   {
     delete settingDefinition;
@@ -606,13 +622,13 @@ CSettingList* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const 
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *settingDefinition = new CSettingInt(id, m_settingsManager);
+  CSettingInt *settingDefinition = new CSettingInt(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
   
   settingDefinition->SetOptionsFiller(filler, this);
 
-  CSettingList *setting = new CSettingList(id, settingDefinition, label, m_settingsManager);
+  CSettingList *setting = new CSettingList(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
   {
     delete settingDefinition;
@@ -649,7 +665,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddPercentageSlider(CSettingGroup *gr
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -671,7 +687,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddPercentageSlider(CSettingGroup *gr
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -693,7 +709,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddSlider(CSettingGroup *group, const
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -715,7 +731,7 @@ CSettingInt* CGUIDialogSettingsManualBase::AddSlider(CSettingGroup *group, const
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *setting = new CSettingInt(id, label, value, m_settingsManager);
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -737,7 +753,7 @@ CSettingNumber* CGUIDialogSettingsManualBase::AddSlider(CSettingGroup *group, co
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingNumber *setting = new CSettingNumber(id, label, value, m_settingsManager);
+  CSettingNumber *setting = new CSettingNumber(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -759,7 +775,7 @@ CSettingNumber* CGUIDialogSettingsManualBase::AddSlider(CSettingGroup *group, co
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingNumber *setting = new CSettingNumber(id, label, value, m_settingsManager);
+  CSettingNumber *setting = new CSettingNumber(id, label, value, GetSettingsManager());
   if (setting == NULL)
     return NULL;
 
@@ -851,7 +867,7 @@ CSettingList* CGUIDialogSettingsManualBase::AddRange(CSettingGroup *group, const
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingInt *settingDefinition = new CSettingInt(id, m_settingsManager);
+  CSettingInt *settingDefinition = new CSettingInt(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
   
@@ -859,7 +875,7 @@ CSettingList* CGUIDialogSettingsManualBase::AddRange(CSettingGroup *group, const
   settingDefinition->SetStep(step);
   settingDefinition->SetMaximum(maximum);
 
-  CSettingList *setting = new CSettingList(id, settingDefinition, label, m_settingsManager);
+  CSettingList *setting = new CSettingList(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
   {
     delete settingDefinition;
@@ -897,7 +913,7 @@ CSettingList* CGUIDialogSettingsManualBase::AddRange(CSettingGroup *group, const
       GetSetting(id) != NULL)
     return NULL;
 
-  CSettingNumber *settingDefinition = new CSettingNumber(id, m_settingsManager);
+  CSettingNumber *settingDefinition = new CSettingNumber(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
   
@@ -905,7 +921,7 @@ CSettingList* CGUIDialogSettingsManualBase::AddRange(CSettingGroup *group, const
   settingDefinition->SetStep(step);
   settingDefinition->SetMaximum(maximum);
 
-  CSettingList *setting = new CSettingList(id, settingDefinition, label, m_settingsManager);
+  CSettingList *setting = new CSettingList(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
   {
     delete settingDefinition;

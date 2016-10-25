@@ -25,46 +25,42 @@
 #include "settings/lib/SettingsManager.h"
 
 CGUIDialogSettingsManagerBase::CGUIDialogSettingsManagerBase(int windowId, const std::string &xmlFile)
-    : CGUIDialogSettingsBase(windowId, xmlFile),
-      m_settingsManager(NULL)
+    : CGUIDialogSettingsBase(windowId, xmlFile)
 { }
 
 CGUIDialogSettingsManagerBase::~CGUIDialogSettingsManagerBase()
-{
-  m_settingsManager = NULL;
-}
+{ }
 
 CSetting* CGUIDialogSettingsManagerBase::GetSetting(const std::string &settingId)
 {
-  assert(m_settingsManager != NULL);
+  assert(GetSettingsManager() != nullptr);
 
-  return m_settingsManager->GetSetting(settingId);
+  return GetSettingsManager()->GetSetting(settingId);
 }
 
 std::set<std::string> CGUIDialogSettingsManagerBase::CreateSettings()
 {
-  assert(m_settingsManager != NULL);
+  assert(GetSettingsManager() != nullptr);
 
   std::set<std::string> settings = CGUIDialogSettingsBase::CreateSettings();
 
   if (!settings.empty())
-    m_settingsManager->RegisterCallback(this, settings);
+    GetSettingsManager()->RegisterCallback(this, settings);
 
   return settings;
 }
 
 void CGUIDialogSettingsManagerBase::FreeSettingsControls()
 {
-  assert(m_settingsManager != NULL);
-
   CGUIDialogSettingsBase::FreeSettingsControls();
 
-  m_settingsManager->UnregisterCallback(this);
+  if (GetSettingsManager() != nullptr)
+    GetSettingsManager()->UnregisterCallback(this);
 }
 
 ISettingControl* CGUIDialogSettingsManagerBase::CreateControl(const std::string &controlType) const
 {
-  assert(m_settingsManager != NULL);
+  assert(GetSettingsManager() != nullptr);
 
-  return m_settingsManager->CreateControl(controlType);
+  return GetSettingsManager()->CreateControl(controlType);
 }

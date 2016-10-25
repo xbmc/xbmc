@@ -94,32 +94,32 @@ void CGUIDialogCMSSettings::InitializeSettings()
   StaticIntegerSettingOptions entries;
 
   // create "depsCmsEnabled" for settings depending on CMS being enabled
-  CSettingDependency dependencyCmsEnabled(SettingDependencyTypeEnable, m_settingsManager);
+  CSettingDependency dependencyCmsEnabled(SettingDependencyTypeEnable, GetSettingsManager());
   dependencyCmsEnabled.Or()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSENABLE, "true", SettingDependencyOperatorEquals, false, m_settingsManager)));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSENABLE, "true", SettingDependencyOperatorEquals, false, GetSettingsManager())));
   SettingDependencies depsCmsEnabled;
   depsCmsEnabled.push_back(dependencyCmsEnabled);
 
   // create "depsCms3dlut" for 3dlut settings
-  CSettingDependency dependencyCms3dlut(SettingDependencyTypeVisible, m_settingsManager);
+  CSettingDependency dependencyCms3dlut(SettingDependencyTypeVisible, GetSettingsManager());
   dependencyCms3dlut.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_3DLUT), SettingDependencyOperatorEquals, false, m_settingsManager)));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_3DLUT), SettingDependencyOperatorEquals, false, GetSettingsManager())));
   SettingDependencies depsCms3dlut;
   depsCms3dlut.push_back(dependencyCmsEnabled);
   depsCms3dlut.push_back(dependencyCms3dlut);
 
   // create "depsCmsIcc" for display settings with icc profile
-  CSettingDependency dependencyCmsIcc(SettingDependencyTypeVisible, m_settingsManager);
+  CSettingDependency dependencyCmsIcc(SettingDependencyTypeVisible, GetSettingsManager());
   dependencyCmsIcc.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_PROFILE), SettingDependencyOperatorEquals, false, m_settingsManager)));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_PROFILE), SettingDependencyOperatorEquals, false, GetSettingsManager())));
   SettingDependencies depsCmsIcc;
   depsCmsIcc.push_back(dependencyCmsEnabled);
   depsCmsIcc.push_back(dependencyCmsIcc);
 
   // create "depsCmsGamma" for effective gamma adjustment (not available with bt.1886)
-  CSettingDependency dependencyCmsGamma(SettingDependencyTypeVisible, m_settingsManager);
+  CSettingDependency dependencyCmsGamma(SettingDependencyTypeVisible, GetSettingsManager());
   dependencyCmsGamma.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSGAMMAMODE, std::to_string(CMS_TRC_BT1886), SettingDependencyOperatorEquals, true, m_settingsManager)));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSGAMMAMODE, std::to_string(CMS_TRC_BT1886), SettingDependencyOperatorEquals, true, GetSettingsManager())));
   SettingDependencies depsCmsGamma;
   depsCmsGamma.push_back(dependencyCmsEnabled);
   depsCmsGamma.push_back(dependencyCmsIcc);

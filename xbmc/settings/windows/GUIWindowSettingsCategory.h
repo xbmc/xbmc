@@ -47,6 +47,9 @@ protected:
   virtual CSettingSection* GetSection();
   virtual void Save();
 
+  // implementation of CGUIDialogSettingsManagerBase
+  virtual CSettingsManager* GetSettingsManager() const override;
+
   /*!
    * Set focus to a category or setting in this window. The setting/category must be active in the
    * current level.

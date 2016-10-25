@@ -21,6 +21,7 @@
  */
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -40,6 +41,7 @@ class CSettingNumber;
 class CSettingPath;
 class CSettingSection;
 class CSettingString;
+class CSettingsManager;
 
 class CGUIDialogSettingsManualBase : public CGUIDialogSettingsManagerBase
 {
@@ -52,6 +54,9 @@ protected:
   virtual CSettingSection* GetSection() { return m_section; }
   virtual void OnOkay();
   virtual void SetupView();
+
+  // implementation of CGUIDialogSettingsManagerBase
+  virtual CSettingsManager* GetSettingsManager() const override;
 
   virtual void InitializeSettings();
 
@@ -165,5 +170,6 @@ private:
 
   void setSettingDetails(CSetting *setting, int level, bool visible, int help);
 
+  mutable CSettingsManager *m_settingsManager;
   CSettingSection *m_section;
 };
