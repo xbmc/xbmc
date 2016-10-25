@@ -47,7 +47,7 @@ public:
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
   void SeekSeconds(int seconds);
-  void Process();
+  void FrameMove();
   void Reset();
   void Configure();
 

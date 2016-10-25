@@ -2727,7 +2727,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (processGUI && m_renderGUI)
     {
       m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
-      CSeekHandler::GetInstance().Process();
+      CSeekHandler::GetInstance().FrameMove();
     }
 
     // Open the door for external calls e.g python exactly here.

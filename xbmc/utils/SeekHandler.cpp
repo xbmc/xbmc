@@ -210,7 +210,7 @@ bool CSeekHandler::InProgress() const
   return m_requireSeek || CServiceBroker::GetDataCacheCore().IsSeeking();
 }
 
-void CSeekHandler::Process()
+void CSeekHandler::FrameMove()
 {
   if (m_timer.GetElapsedMilliseconds() >= m_seekDelay && m_requireSeek)
   {
