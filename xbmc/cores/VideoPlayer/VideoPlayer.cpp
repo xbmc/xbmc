@@ -790,13 +790,13 @@ bool CVideoPlayer::OpenInputStream()
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item, true);
   if(m_pInputStream == NULL)
   {
-    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - unable to create input stream for [%s]", m_item.GetPath().c_str());
+    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - unable to create input stream for [%s]", CURL::GetRedacted(m_item.GetPath()).c_str());
     return false;
   }
 
   if (!m_pInputStream->Open())
   {
-    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - error opening [%s]", m_item.GetPath().c_str());
+    CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - error opening [%s]", CURL::GetRedacted(m_item.GetPath()).c_str());
     return false;
   }
 
