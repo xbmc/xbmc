@@ -230,7 +230,7 @@ bool CGUISliderControl::OnAction(const CAction &action)
   case ACTION_SELECT_ITEM:
     if (m_rangeSelection)
       SwitchRangeSelector();
-      return true;
+    return true;
 
   default:
     break;
