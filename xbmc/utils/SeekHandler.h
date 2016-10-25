@@ -54,11 +54,16 @@ public:
   int GetSeekSize() const;
   bool InProgress() const;
 
+  bool HasTimeCode() const { return m_timeCodePosition > 0; }
+  int GetTimeCodeSeconds() const;
+
 protected:
   CSeekHandler();
   CSeekHandler(const CSeekHandler&);
   CSeekHandler& operator=(CSeekHandler const&);
   virtual ~CSeekHandler();
+  bool SeekTimeCode(const CAction &action);
+  void ChangeTimeCode(int remote);
 
 private:
   static const int analogSeekDelay = 500;
@@ -73,6 +78,9 @@ private:
   std::map<SeekType, std::vector<int> > m_forwardSeekSteps;
   std::map<SeekType, std::vector<int> > m_backwardSeekSteps;
   CStopWatch m_timer;
+  CStopWatch m_timerTimeCode;
+  int m_timeCodeStamp[6];
+  int m_timeCodePosition;
 
   CCriticalSection m_critSection;
 };

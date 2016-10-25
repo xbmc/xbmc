@@ -35,6 +35,7 @@
 #include "utils/Variant.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"
+#include "utils/SeekHandler.h"
 
 #include "windows/GUIWindowHome.h"
 #include "events/windows/GUIWindowEventLog.h"
@@ -1396,11 +1397,19 @@ int CGUIWindowManager::GetActiveWindowID()
     // check for LiveTV and switch to it's virtual window
     else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_LIVETV;
+    // special casing for numeric seek
+    else if (CSeekHandler::GetInstance().HasTimeCode())
+      iWin = WINDOW_VIDEO_TIME_SEEK;
   }
-  // special casing for PVR radio
-  if (iWin == WINDOW_VISUALISATION && g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-    iWin = WINDOW_FULLSCREEN_RADIO;
-
+  if (iWin == WINDOW_VISUALISATION)
+  {
+    // special casing for PVR radio
+    if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+      iWin = WINDOW_FULLSCREEN_RADIO;
+    // special casing for numeric seek
+    else if (CSeekHandler::GetInstance().HasTimeCode())
+      iWin = WINDOW_VIDEO_TIME_SEEK;
+  }
   // Return the window id
   return iWin;
 }
