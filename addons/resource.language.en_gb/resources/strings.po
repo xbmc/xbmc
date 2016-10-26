@@ -5495,7 +5495,12 @@ msgctxt "#12386"
 msgid "Month / Day"
 msgstr ""
 
-#empty strings from id 12387 to 12389
+#empty strings from id 12387 to 12388
+
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#12389"
+msgid "Privacy policy"
+msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#12390"

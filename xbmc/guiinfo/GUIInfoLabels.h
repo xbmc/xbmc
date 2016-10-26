@@ -365,6 +365,7 @@
 #define SKIN_HAS_THEME              606
 #define SKIN_ASPECT_RATIO           607
 
+#define SYSTEM_PRIVACY_POLICY       643
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645
 #define SYSTEM_USED_MEMORY_PERCENT  646
