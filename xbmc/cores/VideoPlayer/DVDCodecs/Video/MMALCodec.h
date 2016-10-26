@@ -96,7 +96,6 @@ public:
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual unsigned GetAllowedReferences() { return 4; }
-  virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return m_pFormatName ? m_pFormatName:"mmal-xxx"; }
   virtual bool GetCodecStats(double &pts, int &droppedPics);
   virtual void SetCodecControl(int flags);
@@ -140,7 +139,6 @@ protected:
   double            m_decoderPts;
   int               m_speed;
   int               m_codecControlFlags;
-  bool              m_dropState;
   bool              m_preroll;
   bool              m_got_eos;
   uint32_t          m_packet_num;
