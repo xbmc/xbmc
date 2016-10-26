@@ -51,5 +51,16 @@
 				<label></label>
 			</control>
 		</control>
+		<control type="label" id="1">
+			<description>seek label</description>
+			<posx>50</posx>
+			<posy>30</posy>
+			<width>1180</width>
+			<height>30</height>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>font16</font>
+			<label>$INFO[Player.SeekNumeric]</label>
+		</control>
 	</controls>
 </window>

@@ -10,7 +10,35 @@
 				<height>100</height>
 				<label></label>
 				<font>font12</font>
+				<shadowcolor>black</shadowcolor>
 			</control>
+			<control type="label" id="11">
+				<left>45</left>
+				<top>45</top>
+				<width>1770</width>
+				<height>100</height>
+				<label></label>
+				<font>font12</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label" id="12">
+				<left>45</left>
+				<top>75</top>
+				<width>1770</width>
+				<height>100</height>
+				<label></label>
+				<font>font12</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>
+		<control type="label" id="1">
+			<left>45</left>
+			<top>15</top>
+			<width>1770</width>
+			<height>100</height>
+			<label>$INFO[Player.SeekNumeric]</label>
+			<font>font12</font>
+			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="group" id="1">
 			<visible>Player.Caching</visible>
