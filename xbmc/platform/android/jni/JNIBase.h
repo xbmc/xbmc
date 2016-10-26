@@ -33,6 +33,7 @@ public:
   static int GetSDKVersion();
 
 protected:
+  CJNIBase() {}
   CJNIBase(jni::jhobject const& object);
   CJNIBase(std::string classname);
   ~CJNIBase();
