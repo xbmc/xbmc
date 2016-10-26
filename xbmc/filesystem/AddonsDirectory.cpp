@@ -164,7 +164,6 @@ static bool IsUserInstalled(const AddonPtr& addon)
       [&](TYPE type){ return addon->IsType(type); }) == dependencyTypes.end();
 }
 
-
 static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
 {
   if (CAddonMgr::GetInstance().IsSystemAddon(addon->ID()) || IsUserInstalled(addon))
@@ -178,7 +177,6 @@ static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
   }
   return true;
 }
-
 
 // Creates categories from addon types, if we have any addons with that type.
 static void GenerateTypeListing(const CURL& path, const std::set<TYPE>& types,
@@ -746,7 +744,6 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24004));
     return true;
-
   }
   else if (endpoint == "downloading")
   {
