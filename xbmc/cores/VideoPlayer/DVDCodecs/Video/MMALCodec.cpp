@@ -595,13 +595,6 @@ void CMMALVideo::Dispose()
   Reset();
 }
 
-void CMMALVideo::SetDropState(bool bDrop)
-{
-  if (bDrop != m_dropState)
-    CLog::Log(LOGDEBUG, "%s::%s - bDrop(%d)", CLASSNAME, __func__, bDrop);
-  m_dropState = bDrop;
-}
-
 int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 {
   CSingleLock lock(m_sharedSection);
@@ -644,7 +637,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
        buffer->length = (uint32_t)iSize > buffer->alloc_size ? buffer->alloc_size : (uint32_t)iSize;
        // set a flag so we can identify primary frames from generated frames (deinterlace)
        buffer->flags = 0;
-       if (m_dropState)
+       if (m_codecControlFlags & DVD_CODEC_CTRL_DROP_ANY)
          buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER3;
 
        if (pData)
@@ -761,7 +754,6 @@ void CMMALVideo::Reset(void)
   m_decoderPts = DVD_NOPTS_VALUE;
   m_demuxerPts = DVD_NOPTS_VALUE;
   m_codecControlFlags = 0;
-  m_dropState = false;
   m_num_decoded = 0;
   m_got_eos = false;
   m_packet_num = 0;
