@@ -25,8 +25,8 @@
 #include "linux/XMemUtils.h"
 #endif
 
-CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const std::string& mType):
-  m_sType(mType)
+CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg():
+  m_sType("")
 {
   m_pMode = m_pContext = NULL;
   m_pSource = m_pTarget = NULL;

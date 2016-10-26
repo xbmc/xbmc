@@ -24,6 +24,7 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
 #include "DVDResource.h"
+#include "DVDVideoPPFFmpeg.h"
 #include <string>
 #include <vector>
 
@@ -96,6 +97,8 @@ protected:
   AVFilterContext* m_pFilterOut;
   AVFrame*         m_pFilterFrame;
   bool m_filterEof;
+
+  CDVDVideoPPFFmpeg m_postProc;
 
   int m_iPictureWidth;
   int m_iPictureHeight;
