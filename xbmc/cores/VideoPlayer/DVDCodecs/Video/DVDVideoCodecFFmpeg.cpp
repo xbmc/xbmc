@@ -470,38 +470,6 @@ void CDVDVideoCodecFFmpeg::Dispose()
   FilterClose();
 }
 
-void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
-{
-  if( m_pCodecContext )
-  {
-    if (bDrop && m_pHardware && m_pHardware->CanSkipDeint())
-    {
-      m_requestSkipDeint = true;
-      bDrop = false;
-    }
-    else
-      m_requestSkipDeint = false;
-
-    // i don't know exactly how high this should be set
-    // couldn't find any good docs on it. think it varies
-    // from codec to codec on what it does
-
-    //  2 seem to be to high.. it causes video to be ruined on following images
-    if( bDrop )
-    {
-      m_pCodecContext->skip_frame = AVDISCARD_NONREF;
-      m_pCodecContext->skip_idct = AVDISCARD_NONREF;
-      m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
-    }
-    else
-    {
-      m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
-      m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
-      m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
-    }
-  }
-}
-
 void CDVDVideoCodecFFmpeg::SetFilters()
 {
   // ask codec to do deinterlacing if possible
@@ -1154,6 +1122,32 @@ bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &droppedFrames, int &s
 void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
 {
   m_codecControlFlags = flags;
+
+  if (m_pCodecContext)
+  {
+    bool bDrop = (flags & DVD_CODEC_CTRL_DROP_ANY);
+    if (bDrop && m_pHardware && m_pHardware->CanSkipDeint())
+    {
+      m_requestSkipDeint = true;
+      bDrop = false;
+    }
+    else
+      m_requestSkipDeint = false;
+
+    if (bDrop)
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_NONREF;
+      m_pCodecContext->skip_idct = AVDISCARD_NONREF;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+    }
+    else
+    {
+      m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
+    }
+  }
+
   if (m_pHardware)
     m_pHardware->SetCodecControl(flags);
 }

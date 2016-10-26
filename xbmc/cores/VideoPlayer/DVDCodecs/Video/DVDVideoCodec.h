@@ -140,12 +140,13 @@ struct DVDVideoUserData
 
 #define DVP_FLAG_DROPPED            0x00000010  //< indicate that this picture has been dropped in decoder stage, will have no data
 
-#define DVD_CODEC_CTRL_SKIPDEINT    0x01000000  //< indicate that this picture was requested to have been dropped in deint stage
+#define DVD_CODEC_CTRL_SKIPDEINT    0x01000000  //< request to skip a deinterlacing cycle, if possible
 #define DVD_CODEC_CTRL_NO_POSTPROC  0x02000000  //< see GetCodecStats
 #define DVD_CODEC_CTRL_HURRY        0x04000000  //< see GetCodecStats
-#define DVD_CODEC_CTRL_DROP         0x08000000  //< this frame is going to be dropped in output
-#define DVD_CODEC_CTRL_DRAIN        0x10000000  //< squeeze out pictured without feeding new packets
-#define DVD_CODEC_CTRL_ROTATE       0x20000000  //< rotate if renderer does not support it
+#define DVD_CODEC_CTRL_DROP         0x08000000  //< drop in decoder or set DVP_FLAG_DROPPED, no render of frame
+#define DVD_CODEC_CTRL_DROP_ANY     0x10000000  //< drop some non-reference frame
+#define DVD_CODEC_CTRL_DRAIN        0x20000000  //< squeeze out pictured without feeding new packets
+#define DVD_CODEC_CTRL_ROTATE       0x40000000  //< rotate if renderer does not support it
 
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 
@@ -218,12 +219,6 @@ public:
     pDvdVideoUserData->size = 0;
     return false;
   }
-
-  /**
-   * will be called by video player indicating if a frame will eventually be dropped
-   * codec can then skip actually decoding the data, just consume the data set picture headers
-   */
-  virtual void SetDropState(bool bDrop) = 0;
 
   /**
    * will be called by video player indicating the playback speed. see DVD_PLAYSPEED_NORMAL,
