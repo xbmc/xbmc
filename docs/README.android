@@ -103,7 +103,7 @@ TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
 /opt/arm-linux-androideabi-4.9-vanilla/android-21
 
 TOOLCHAIN (aarch64) (referenced as <android-toolchain-aarch64> from now on):
-/opt/android-linux-aarch64-4.9-vanilla/android-21
+/opt/aarch64-linux-android-4.9-vanilla/android-21
 
 TOOLCHAIN (x86) (referenced as <android-toolchain-x86> from now on):
 /opt/x86-linux-4.9-vanilla/android-21
@@ -154,7 +154,7 @@ Building for aarch64 architecture:
     $ cd build/tools
     $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
       --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
-      --toolchain=android-linux-aarch64-4.9
+      --toolchain=aarch64-linux-android-4.9
 
 Building for x86 architecture:
 
