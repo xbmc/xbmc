@@ -183,8 +183,25 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_DIRECTOR)
       {
-        std::string strDirector = StringUtils::Join(m_movieItem->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
-        OnSearch(strDirector);
+        auto directors = m_movieItem->GetVideoInfoTag()->m_director;
+        if (directors.size() == 0)
+          return true;
+        if (directors.size() == 1)
+          OnSearch(directors[0]);
+        else
+        {
+          auto pDlgSelect = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+          pDlgSelect->Reset();
+          pDlgSelect->SetHeading(CVariant{22080});
+          for (const auto &director: directors)
+            pDlgSelect->Add(director);
+          pDlgSelect->Open();
+
+          int iItem = pDlgSelect->GetSelectedItem();
+          if (iItem < 0)
+            return true;
+          OnSearch(directors[iItem]);
+        }
       }
       else if (iControl == CONTROL_LIST)
       {
