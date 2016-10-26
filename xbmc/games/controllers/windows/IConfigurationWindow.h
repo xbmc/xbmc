@@ -88,6 +88,12 @@ namespace GAME
     virtual void OnSelect(unsigned int controllerIndex) = 0;
 
     /*!
+     * \brief Get the index of the focused controller
+     * \return The index of the focused controller, or -1 if no controller has been focused yet
+     */
+    virtual int GetFocusedController() const = 0;
+
+    /*!
      * \brief Reset the focused controller
      */
     virtual void ResetController(void) = 0;
