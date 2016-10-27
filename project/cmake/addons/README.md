@@ -31,9 +31,9 @@ The buildsystem uses the following variables (which can be passed into it when e
 - `ADDONS_DEFINITION_DIR` points to the directory containing the definitions for the addons to be built
 - `ADDON_SRC_PREFIX` can be used to override the add-on repository location. It must point to the locally available parent directory of the add-on(s) to build. `<addon-id>` will be appended to this path automatically
 - `CMAKE_BUILD_TYPE` specifies the type of the build. This can be either *Debug* or *Release* (default is *Release*)
-- `CMAKE_INSTALL_PREFIX` points to the directory where the built add-ons and their additional files (addon.xml, resources, ...) will be installed to (defaults to `<DEPENDS_PATH>`)
+- `CMAKE_INSTALL_PREFIX` points to the directory where the built add-ons and their additional files (addon.xml, resources, ...) will be installed to (defaults to `<ADDON_DEPENDS_PATH>`)
 - `CMAKE_TOOLCHAIN_FILE` can be used to pass a toolchain file into the add-on builds
-- `DEPENDS_PATH` points to the directory containing the *include* and *lib* directories of the add-ons' dependencies.
+- `ADDON_DEPENDS_PATH` points to the directory containing the *include* and *lib* directories of the add-ons' dependencies.
 - `CORE_SOURCE_DIR` points to the root directory of the project (default is the absolute representation of ../../.. starting from this directory)
 - `BUILD_DIR` points to the directory where the add-ons and their dependencies will be downloaded and built
 - `PACKAGE_ZIP=ON` means that the add-ons will be 'packaged' into a common folder, rather than being placed in `<CMAKE_INSTALL_PREFIX>/lib/kodi/addons` and `<CMAKE_INSTALL_PREFIX>/share/kodi/addons`
@@ -61,5 +61,5 @@ cmake `<path>` [-G `<generator>`] \
       -DCMAKE_BUILD_TYPE=Release \  
       -DCORE_SOURCE_DIR="`<path-to-app-root>`" \  
       -DARCH_DEFINES="-DTARGET_LINUX" \  
-      -DDEPENDS_PATH=`<path-to-built-depends>` \  
+      -DADDON_DEPENDS_PATH=`<path-to-built-depends>` \  
       -DCMAKE_INSTALL_PREFIX="`<path-to-install-directory`"
