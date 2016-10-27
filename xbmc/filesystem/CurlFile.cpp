@@ -825,6 +825,10 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_postdata = Base64::Decode(value);
           m_postdataset = true;
         }
+        else if (name == "active-remote")// needed for DACP!
+        {
+          SetRequestHeader(it->first, value);
+        }
         // other standard headers (see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
         else if (name == "accept" || name == "accept-language" || name == "accept-datetime" ||
                  name == "authorization" || name == "cache-control" || name == "connection" ||
