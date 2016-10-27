@@ -40,7 +40,7 @@ CDatabaseManager &CDatabaseManager::GetInstance()
   return s_manager;
 }
 
-CDatabaseManager::CDatabaseManager()
+CDatabaseManager::CDatabaseManager(): m_bIsUpgrading(false)
 {
 }
 
@@ -66,6 +66,7 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
   { CActiveAEDSPDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseADSP); }
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
+  m_bIsUpgrading = false;
 }
 
 void CDatabaseManager::Deinitialize()
@@ -87,10 +88,129 @@ void CDatabaseManager::UpdateDatabase(CDatabase &db, DatabaseSettings *settings)
 {
   std::string name = db.GetBaseDBName();
   UpdateStatus(name, DB_UPDATING);
-  if (db.Update(settings ? *settings : DatabaseSettings()))
+  if (Update(db, settings ? *settings : DatabaseSettings()))
     UpdateStatus(name, DB_READY);
   else
     UpdateStatus(name, DB_FAILED);
+}
+
+bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
+{
+  DatabaseSettings dbSettings = settings;
+  db.InitSettings(dbSettings);
+
+  int version = db.GetSchemaVersion();
+  std::string latestDb = dbSettings.name;
+  latestDb += StringUtils::Format("%d", version);
+
+  while (version >= db.GetMinSchemaVersion())
+  {
+    std::string dbName = dbSettings.name;
+    if (version)
+      dbName += StringUtils::Format("%d", version);
+
+    if (db.Connect(dbName, dbSettings, false))
+    {
+      // Database exists, take a copy for our current version (if needed) and reopen that one
+      if (version < db.GetSchemaVersion())
+      {
+        CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, db.GetSchemaVersion());
+        m_bIsUpgrading = true;
+
+        bool copy_fail = false;
+
+        try
+        {
+          db.CopyDB(latestDb);
+        }
+        catch (...)
+        {
+          CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbName.c_str(), latestDb.c_str());
+          copy_fail = true;
+        }
+
+        db.Close();
+
+        if (copy_fail)
+          return false;
+
+        if (!db.Connect(latestDb, dbSettings, false))
+        {
+          CLog::Log(LOGERROR, "Unable to open freshly copied database %s", latestDb.c_str());
+          return false;
+        }
+      }
+
+      // yay - we have a copy of our db, now do our worst with it
+      if (UpdateVersion(db, latestDb))
+        return true;
+
+      // update failed - loop around and see if we have another one available
+      db.Close();
+    }
+
+    // drop back to the previous version and try that
+    version--;
+  }
+  // try creating a new one
+  if (db.Connect(latestDb, dbSettings, true))
+    return true;
+
+  // failed to update or open the database
+  db.Close();
+  CLog::Log(LOGERROR, "Unable to create new database");
+  return false;
+}
+
+bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
+{
+  int version = db.GetDBVersion();
+  bool bReturn = false;
+
+  if (version < db.GetMinSchemaVersion())
+  {
+    CLog::Log(LOGERROR, "Can't update database %s from version %i - it's too old", dbName.c_str(), version);
+    return false;
+  }
+  else if (version < db.GetSchemaVersion())
+  {
+    CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, db.GetSchemaVersion());
+    bool success = true;
+    db.BeginTransaction();
+    try
+    {
+      // drop old analytics, update table(s), recreate analytics, update version
+      db.DropAnalytics();
+      db.UpdateTables(version);
+      db.CreateAnalytics();
+      db.UpdateVersionNumber();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Exception updating database %s from version %i to %i", dbName.c_str(), version, db.GetSchemaVersion());
+      success = false;
+    }
+    if (!success)
+    {
+      CLog::Log(LOGERROR, "Error updating database %s from version %i to %i", dbName.c_str(), version, db.GetSchemaVersion());
+      db.RollbackTransaction();
+      return false;
+    }
+    bReturn = db.CommitTransaction();
+    CLog::Log(LOGINFO, "Update to version %i successful", db.GetSchemaVersion());
+  }
+  else if (version > db.GetSchemaVersion())
+  {
+    bReturn = false;
+    CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
+  }
+  else
+  {
+    bReturn = true;
+    CLog::Log(LOGNOTICE, "Running database version %s", dbName.c_str());
+  }
+
+  return bReturn;
 }
 
 void CDatabaseManager::UpdateStatus(const std::string &name, DB_STATUS status)

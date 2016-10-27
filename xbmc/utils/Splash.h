@@ -31,8 +31,7 @@ class CSplash
 public:
   static CSplash& GetInstance();
 
-  void Show();
-  void Show(const std::string& message);
+  void Show(const std::string& message = "");
 
 protected:
   CSplash();

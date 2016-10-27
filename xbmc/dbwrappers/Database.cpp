@@ -356,71 +356,14 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
     dbSettings.name = GetBaseDBName();
 }
 
-bool CDatabase::Update(const DatabaseSettings &settings)
+void CDatabase::CopyDB(const std::string& latestDb)
 {
-  DatabaseSettings dbSettings = settings;
-  InitSettings(dbSettings);
+  m_pDB->copy(latestDb.c_str());
+}
 
-  int version = GetSchemaVersion();
-  std::string latestDb = dbSettings.name;
-  latestDb += StringUtils::Format("%d", version);
-
-  while (version >= GetMinSchemaVersion())
-  {
-    std::string dbName = dbSettings.name;
-    if (version)
-      dbName += StringUtils::Format("%d", version);
-
-    if (Connect(dbName, dbSettings, false))
-    {
-      // Database exists, take a copy for our current version (if needed) and reopen that one
-      if (version < GetSchemaVersion())
-      {
-        CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, GetSchemaVersion());
-
-        bool copy_fail = false;
-
-        try
-        {
-          m_pDB->copy(latestDb.c_str());
-        }
-        catch(...)
-        {
-          CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbName.c_str(), latestDb.c_str());
-          copy_fail = true;
-        }
-
-        Close();
-
-        if ( copy_fail )
-          return false;
-
-        if (!Connect(latestDb, dbSettings, false))
-        {
-          CLog::Log(LOGERROR, "Unable to open freshly copied database %s", latestDb.c_str());
-          return false;
-        }
-      }
-
-      // yay - we have a copy of our db, now do our worst with it
-      if (UpdateVersion(latestDb))
-        return true;
-
-      // update failed - loop around and see if we have another one available
-      Close();
-    }
-
-    // drop back to the previous version and try that
-    version--;
-  }
-  // try creating a new one
-  if (Connect(latestDb, dbSettings, true))
-    return true;
-
-  // failed to update or open the database
-  Close();
-  CLog::Log(LOGERROR, "Unable to create new database");
-  return false;
+void CDatabase::DropAnalytics()
+{
+  m_pDB->drop_analytics();
 }
 
 bool CDatabase::Connect(const std::string &dbName, const DatabaseSettings &dbSettings, bool create)
@@ -518,57 +461,6 @@ int CDatabase::GetDBVersion()
   if (m_pDS->num_rows() > 0)
     return m_pDS->fv("idVersion").get_asInt();
   return 0;
-}
-
-bool CDatabase::UpdateVersion(const std::string &dbName)
-{
-  int version = GetDBVersion();
-  bool bReturn = false;
-
-  if (version < GetMinSchemaVersion())
-  {
-    CLog::Log(LOGERROR, "Can't update database %s from version %i - it's too old", dbName.c_str(), version);
-    return false;
-  }
-  else if (version < GetSchemaVersion())
-  {
-    CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetSchemaVersion());
-    bool success = true;
-    BeginTransaction();
-    try
-    {
-      // drop old analytics, update table(s), recreate analytics, update version
-      m_pDB->drop_analytics();
-      UpdateTables(version);
-      CreateAnalytics();
-      UpdateVersionNumber();
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "Exception updating database %s from version %i to %i", dbName.c_str(), version, GetSchemaVersion());
-      success = false;
-    }
-    if (!success)
-    {
-      CLog::Log(LOGERROR, "Error updating database %s from version %i to %i", dbName.c_str(), version, GetSchemaVersion());
-      RollbackTransaction();
-      return false;
-    }
-    bReturn = CommitTransaction();
-    CLog::Log(LOGINFO, "Update to version %i successful", GetSchemaVersion());
-  }
-  else if (version > GetSchemaVersion())
-  {
-    bReturn = false;
-    CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
-  }
-  else
-  {
-    bReturn = true;
-    CLog::Log(LOGNOTICE, "Running database version %s", dbName.c_str());
-  }
-
-  return bReturn;
 }
 
 bool CDatabase::IsOpen()
