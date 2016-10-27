@@ -549,7 +549,12 @@ void CMMALRenderer::Run()
       {
         EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
+        {
           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
+          // avoid advanced deinterlace when using software decode and HD resolution
+          if (omvb->m_state == MMALStateFFDec && omvb->m_width * omvb->m_height > 720*576)
+            interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
+        }
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
 
         // advanced deinterlace requires 3 frames of context so disable when showing stills
