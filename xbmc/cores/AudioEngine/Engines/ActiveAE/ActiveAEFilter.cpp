@@ -227,6 +227,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
                              src_buffer[0], src_bufsize, 16);
     if (result < 0)
     {
+      av_frame_free(&frame);
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - avcodec_fill_audio_frame failed");
       return -1;
     }
