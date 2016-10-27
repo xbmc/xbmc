@@ -25,6 +25,7 @@
 
 extern "C" {
 #include "libavfilter/avfilter.h"
+#include "libavcodec/avcodec.h"
 #include "libavfilter/buffersink.h"
 #include "libavfilter/buffersrc.h"
 #include "libswresample/swresample.h"
