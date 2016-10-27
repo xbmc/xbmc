@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<defaultcontrol />
 	<zorder>3</zorder>
 	<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -8,13 +9,13 @@
 			<depth>DepthBars</depth>
 			<left>1830</left>
 			<top>0</top>
-			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo)">conditional</animation>
 			<control type="image">
 				<left>-4</left>
 				<top>-11</top>
 				<width>100</width>
 				<height>100</height>
+				<aspectratio>keep</aspectratio>
 				<texture colordiffuse="button_focus">dialogs/extendedprogress/loading-back.png</texture>
 			</control>
 			<control type="group">
@@ -25,6 +26,7 @@
 					<top>-11</top>
 					<width>100</width>
 					<height>100</height>
+					<aspectratio>keep</aspectratio>
 					<texture>dialogs/volume/progress/p$INFO[Control.GetLabel(32)].png</texture>
 					<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
 				</control>
@@ -33,6 +35,7 @@
 					<top>-11</top>
 					<width>100</width>
 					<height>100</height>
+					<aspectratio>keep</aspectratio>
 					<texture>dialogs/extendedprogress/loading.png</texture>
 					<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
 				</control>
