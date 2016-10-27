@@ -515,6 +515,9 @@ bool CGUIWindowPVRGuide::RefreshTimelineItems()
     if (epgGridContainer)
     {
       const CPVRChannelGroupPtr group(GetChannelGroup());
+      if (!group)
+        return false;
+
       std::unique_ptr<CFileItemList> timeline(new CFileItemList);
 
       // can be very expensive. never call with lock acquired.
