@@ -40,6 +40,9 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
   auto newAddonData = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
   auto oldAddonData = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
 
+  if (!CDirectory::Create(newAddonData))
+    return false;
+
   if (!UnpackArchive(archive, newAddonData))
   {
     CLog::Log(LOGERROR, "Failed to unpack archive '%s' to '%s'", archive.c_str(), newAddonData.c_str());
