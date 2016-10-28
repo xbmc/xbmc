@@ -8861,10 +8861,10 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       return epgTag ? epgTag->PlotOutline() : "";
     case VIDEOPLAYER_NEXT_STARTTIME:
       epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : "";
     case VIDEOPLAYER_NEXT_ENDTIME:
       epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
+      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : "";
     case VIDEOPLAYER_NEXT_DURATION:
       {
         std::string duration;
@@ -10440,7 +10440,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->StartAsLocalTime().GetAsLocalizedTime("", false);
     }
-    return CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
   case LISTITEM_NEXT_ENDTIME:
     if (item->HasPVRChannelInfoTag())
     {
@@ -10448,7 +10447,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->EndAsLocalTime().GetAsLocalizedTime("", false);
     }
-    return CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
   case LISTITEM_NEXT_STARTDATE:
     if (item->HasPVRChannelInfoTag())
     {
@@ -10456,7 +10454,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->StartAsLocalTime().GetAsLocalizedDate(true);
     }
-    return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
   case LISTITEM_NEXT_ENDDATE:
     if (item->HasPVRChannelInfoTag())
     {
@@ -10464,7 +10461,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->EndAsLocalTime().GetAsLocalizedDate(true);
     }
-    return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
   case LISTITEM_NEXT_PLOT:
     if (item->HasPVRChannelInfoTag())
     {
