@@ -890,20 +890,26 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "path", value))
     SetPath(value);
 
-  if (XMLUtils::GetString(movie, "id", value))
-    SetUniqueID(value);
-
-  for (const TiXmlElement* uniqueid = movie->FirstChildElement("uniqueid"); uniqueid != nullptr; uniqueid = uniqueid->NextSiblingElement("uniqueid"))
+  const TiXmlElement* uniqueid = movie->FirstChildElement("uniqueid");
+  if (uniqueid == nullptr)
   {
-    if (uniqueid->FirstChild())
+    if (XMLUtils::GetString(movie, "id", value))
+      SetUniqueID(value);
+  }
+  else
+  {
+    for (; uniqueid != nullptr; uniqueid = uniqueid->NextSiblingElement("uniqueid"))
     {
-    if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
-      SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
-    else
-      SetUniqueID(uniqueid->FirstChild()->ValueStr());
-    bool isDefault;
-    if ((uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
-      m_strDefaultUniqueID = value;
+      if (uniqueid->FirstChild())
+      {
+      if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
+        SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
+      else
+        SetUniqueID(uniqueid->FirstChild()->ValueStr());
+      bool isDefault;
+      if ((uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
+        m_strDefaultUniqueID = value;
+      }
     }
   }
 
