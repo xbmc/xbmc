@@ -149,8 +149,6 @@ void CJNIAudioTrack::flush()
 void CJNIAudioTrack::release()
 {
   call_method<void>(m_object, "release", "()V");
-
-  JNIEnv* jenv  = xbmc_jnienv();
 }
 
 int CJNIAudioTrack::write(char* audioData, int offsetInBytes, int sizeInBytes)
@@ -174,17 +172,17 @@ int CJNIAudioTrack::write(char* audioData, int offsetInBytes, int sizeInBytes)
     else if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
     {
       if (CJNIBase::GetSDKVersion() >= 23)
-        written = call_method<int>(m_object, "write", "([SIII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)), CJNIAudioTrack::WRITE_BLOCKING);
+        written = call_method<int>(m_object, "write", "([SIII)I", m_buffer, (int)(offsetInBytes / sizeof(uint16_t)), (int)(sizeInBytes / sizeof(uint16_t)), CJNIAudioTrack::WRITE_BLOCKING);
       else
-       written = call_method<int>(m_object, "write", "([SII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)));
-      written *= sizeof(short);
+        written = call_method<int>(m_object, "write", "([SII)I", m_buffer, (int)(offsetInBytes / sizeof(uint16_t)), (int)(sizeInBytes / sizeof(uint16_t)));
+      written *= sizeof(uint16_t);
     }
     else
     {
       if (CJNIBase::GetSDKVersion() >= 23)
-        written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING);
+        written = call_method<int>(m_object, "write", "([BIII)I", m_buffer, offsetInBytes, sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING);
       else
-	written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes);
+        written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes);
     }
   }
 
