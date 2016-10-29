@@ -24,9 +24,15 @@ else()
   endif()
 endif()
 
-# Make sure we strip binaries in Release build
 if(CMAKE_BUILD_TYPE STREQUAL Release AND CMAKE_COMPILER_IS_GNUCXX)
+  # Make sure we strip binaries in Release build
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+
+  # moo. -O3 is not safe
+  # https://github.com/Kitware/CMake/blob/master/Modules/Compiler/GNU.cmake#L37
+  string(REPLACE "-O3" "-O2" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+  string(REPLACE "-O3" "-O2" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+  string(REPLACE "-O3" "-O2" CMAKE_ASM_FLAGS_RELEASE "${CMAKE_ASM_FLAGS_RELEASE}")
 endif()
 
 find_package(CXX11 REQUIRED)

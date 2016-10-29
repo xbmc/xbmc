@@ -24,6 +24,17 @@ else()
   endif()
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL Release AND CMAKE_COMPILER_IS_GNUCXX)
+  # Make sure we strip binaries in Release build
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+
+  # moo. -O3 is not safe
+  # https://github.com/Kitware/CMake/blob/master/Modules/Compiler/GNU.cmake#L37
+  string(REPLACE "-O3" "-Os" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+  string(REPLACE "-O3" "-Os" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+  string(REPLACE "-O3" "-Os" CMAKE_ASM_FLAGS_RELEASE "${CMAKE_ASM_FLAGS_RELEASE}")
+endif()
+
 set(FFMPEG_OPTS --enable-cross-compile --cpu=cortex-a9 --arch=arm --target-os=linux --enable-neon
                 --disable-vdpau --cc=${CMAKE_C_COMPILER} --host-cc=${CMAKE_C_COMPILER}
                 --strip=${CMAKE_STRIP})
