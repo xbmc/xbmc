@@ -19,32 +19,22 @@
  *
  */
 
-#include <string>
-#include <vector>
-
 #include "JNIBase.h"
-#include "URIPermission.h"
-#include "List.h"
 
-class CJNICursor;
 class CJNIURI;
 
-class CJNIContentResolver : public CJNIBase
+class CJNIDocumentsContract : public CJNIBase
 {
 public:
-  CJNIContentResolver(const jni::jhobject &object) : CJNIBase(object) {}
-
-  CJNICursor query(const CJNIURI &uri, const std::vector<std::string> &projection, const std::string &selection, const std::vector<std::string> &selectionArgs, const std::string &sortOrder);
-  void takePersistableUriPermission(const CJNIURI &uri, int modeFlags);
-  CJNIList<CJNIURIPermission> getPersistedUriPermissions();
-
   static void PopulateStaticFields();
-  static std::string SCHEME_CONTENT;
-  static std::string SCHEME_ANDROID_RESOURCE;
-  static std::string SCHEME_FILE;
-  static std::string CURSOR_ITEM_BASE_TYPE;
-  static std::string CURSOR_DIR_BASE_TYPE;
 
-private:
-  CJNIContentResolver();
+  static std::string getTreeDocumentId (const CJNIURI& documentUri);
+  static std::string getDocumentId (const CJNIURI& documentUri);
+  static CJNIURI buildChildDocumentsUriUsingTree (const CJNIURI& treeUri, const std::string& parentDocumentId);
+  static CJNIURI buildChildDocumentsUri (const std::string& authority, const std::string& parentDocumentId);
+  static CJNIURI buildDocumentUriUsingTree  (const CJNIURI& treeUri, const std::string& parentDocumentId);
+
+protected:
+  CJNIDocumentsContract();
+  ~CJNIDocumentsContract(){}
 };

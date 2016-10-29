@@ -19,32 +19,23 @@
  *
  */
 
-#include <string>
-#include <vector>
-
 #include "JNIBase.h"
-#include "URIPermission.h"
-#include "List.h"
 
-class CJNICursor;
 class CJNIURI;
 
-class CJNIContentResolver : public CJNIBase
+class CJNIDocument : public CJNIBase
 {
 public:
-  CJNIContentResolver(const jni::jhobject &object) : CJNIBase(object) {}
-
-  CJNICursor query(const CJNIURI &uri, const std::vector<std::string> &projection, const std::string &selection, const std::vector<std::string> &selectionArgs, const std::string &sortOrder);
-  void takePersistableUriPermission(const CJNIURI &uri, int modeFlags);
-  CJNIList<CJNIURIPermission> getPersistedUriPermissions();
-
   static void PopulateStaticFields();
-  static std::string SCHEME_CONTENT;
-  static std::string SCHEME_ANDROID_RESOURCE;
-  static std::string SCHEME_FILE;
-  static std::string CURSOR_ITEM_BASE_TYPE;
-  static std::string CURSOR_DIR_BASE_TYPE;
 
-private:
-  CJNIContentResolver();
+  static std::string COLUMN_DISPLAY_NAME;
+  static std::string COLUMN_MIME_TYPE;
+  static std::string COLUMN_DOCUMENT_ID;
+  static std::string COLUMN_SIZE;
+  static std::string COLUMN_FLAGS;
+  static std::string MIME_TYPE_DIR;
+
+protected:
+  CJNIDocument();
+  ~CJNIDocument(){}
 };

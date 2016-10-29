@@ -50,6 +50,7 @@
 #include "Intent.h"
 #include "KeyEvent.h"
 #include "Settings.h"
+#include "Document.h"
 #include "RecognizerIntent.h"
 #include "AudioDeviceInfo.h"
 #include "MediaSync.h"
@@ -102,6 +103,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIIntent::PopulateStaticFields();
   CJNIKeyEvent::PopulateStaticFields();
   CJNISettings::PopulateStaticFields();
+  CJNIDocument::PopulateStaticFields();
   CJNIRecognizerIntent::PopulateStaticFields();
   CJNIAudioDeviceInfo::PopulateStaticFields();
   CJNIViewInputDevice::PopulateStaticFields();
