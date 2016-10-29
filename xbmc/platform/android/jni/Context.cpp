@@ -49,6 +49,7 @@
 #include "Intent.h"
 #include "KeyEvent.h"
 #include "RecognizerIntent.h"
+#include "AudioDeviceInfo.h"
 
 #include <android/native_activity.h>
 
@@ -92,6 +93,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIIntent::PopulateStaticFields();
   CJNIKeyEvent::PopulateStaticFields();
   CJNIRecognizerIntent::PopulateStaticFields();
+  CJNIAudioDeviceInfo::PopulateStaticFields();
   CJNIViewInputDevice::PopulateStaticFields();
 }
 
