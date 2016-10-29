@@ -66,8 +66,7 @@
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "DialogSettings.xml"),
-    m_passthrough(false),
-    m_dspEnabled(false)
+    m_passthrough(false)
 { }
 
 CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings()
@@ -312,8 +311,6 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition("IsPlayingPassthrough", "", "", true, m_settingsManager)));
   SettingDependencies depsAudioOutputPassthroughDisabled;
   depsAudioOutputPassthroughDisabled.push_back(dependencyAudioOutputPassthroughDisabled);
-
-  m_dspEnabled = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
 
   // audio settings
   // audio volume setting
