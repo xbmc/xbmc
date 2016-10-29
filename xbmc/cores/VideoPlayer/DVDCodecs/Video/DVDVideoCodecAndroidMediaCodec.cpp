@@ -857,13 +857,9 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     FlushInternal();
 
     // now we can flush the actual MediaCodec object
-    if (m_state == MEDIACODEC_STATE_RUNNING)
-    {
-      m_codec->flush();
-      m_state = MEDIACODEC_STATE_FLUSHED;
-    }
-    else
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Reset Wrong state (%d)", m_state);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reset Current state (%d)", m_state);
+    m_codec->flush();
+    m_state = MEDIACODEC_STATE_FLUSHED;
     if (xbmc_jnienv()->ExceptionCheck())
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Reset ExceptionCheck");
@@ -875,8 +871,6 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     if (!m_render_sw)
       m_videobuffer.mediacodec = NULL;
   }
-  m_drop = false;
-  m_codecControlFlags = 0;
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::GetPicture(DVDVideoPicture* pDvdVideoPicture)
