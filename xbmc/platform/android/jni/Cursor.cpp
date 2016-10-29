@@ -149,35 +149,35 @@ std::string CJNICursor::getString(int columnIndex)
 short CJNICursor::getShort(int columnIndex)
 {
   return call_method<jshort>(m_object,
-    "getShort", "()S",
+    "getShort", "(I)S",
     columnIndex);
 }
 
 int CJNICursor::getInt(int columnIndex)
 {
   return call_method<jint>(m_object,
-    "getInt", "()I",
+    "getInt", "(I)I",
     columnIndex);
 }
 
 int64_t CJNICursor::getLong(int columnIndex)
 {
   return call_method<jlong>(m_object,
-    "getLong", "()J",
+    "getLong", "(I)J",
     columnIndex);
 }
 
 float CJNICursor::getFloat(int columnIndex)
 {
   return call_method<jfloat>(m_object,
-    "getFloat", "()F",
+    "getFloat", "(I)F",
     columnIndex);
 }
 
 double CJNICursor::getDouble(int columnIndex)
 {
   return call_method<jdouble>(m_object,
-    "getDouble", "()D",
+    "getDouble", "(I)D",
     columnIndex);
 }
 
