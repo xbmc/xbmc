@@ -151,6 +151,7 @@ protected:
   CBitstreamConverter *m_bitstream;
   DVDVideoPicture m_videobuffer;
 
+  int             m_dec_retcode;
   bool            m_render_sw;
   bool            m_render_surface;
   int             m_src_offset[4];

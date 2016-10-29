@@ -377,6 +377,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
   m_codecControlFlags = 0;
   m_hints = hints;
+  m_dec_retcode = VC_BUFFER;
 
   switch(m_hints.codec)
   {
@@ -679,7 +680,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   // Handle input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as VideoPlayerVideo has no concept of "try again".
   // we must return VC_BUFFER or VC_PICTURE, default to VC_BUFFER.
-  int rtn = (m_state == MEDIACODEC_STATE_BEFORE_ENDOFSTREAM || m_state == MEDIACODEC_STATE_ENDOFSTREAM) ? 0 : VC_BUFFER;
+  m_dec_retcode = (m_state == MEDIACODEC_STATE_BEFORE_ENDOFSTREAM || m_state == MEDIACODEC_STATE_ENDOFSTREAM) ? 0 : VC_BUFFER;
 
   if (!pData)
   {
@@ -698,13 +699,13 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   int retgp = GetOutputPicture();
   if (retgp > 0)
   {
-    rtn |= VC_PICTURE;
+    m_dec_retcode |= VC_PICTURE;
   }
   else if (retgp == -1)  // EOS
   {
     m_codec->flush();
     m_state = MEDIACODEC_STATE_FLUSHED;
-    rtn |= VC_BUFFER;
+    m_dec_retcode |= VC_BUFFER;
   }
 
   // If we push EOS, be sure to push a buffer (even empty) to move one
@@ -719,7 +720,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode ExceptionCheck");
       xbmc_jnienv()->ExceptionDescribe();
       xbmc_jnienv()->ExceptionClear();
-      rtn = VC_ERROR;
+      m_dec_retcode = VC_ERROR;
     }
     else if (index >= 0)
     {
@@ -821,11 +822,11 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         memcpy(m_demux_pkt.pData, pData, iSize);
       }
 
-      rtn &= ~VC_BUFFER;
+      m_dec_retcode &= ~VC_BUFFER;
     }
   }
 
-  return rtn;
+  return m_dec_retcode;
 }
 
 void CDVDVideoCodecAndroidMediaCodec::Reset()
