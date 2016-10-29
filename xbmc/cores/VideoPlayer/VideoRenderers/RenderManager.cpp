@@ -427,7 +427,7 @@ void CRenderManager::PreInit()
 {
   if (!g_application.IsCurrentThread())
   {
-    CLog::Log(LOGERROR, "CRenderManager::UnInit - not called from render thread");
+    CLog::Log(LOGERROR, "CRenderManager::PreInit - not called from render thread");
     return;
   }
 

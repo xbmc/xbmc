@@ -1301,7 +1301,7 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
 
   int i = 0;
   double value = static_cast<double>(bytes);
-  while (i < units.size() - 1 && value >= 999.5)
+  while (i < static_cast<int>(units.size()) - 1 && value >= 999.5)
   {
     ++i;
     value /= 1024.0;
