@@ -53,10 +53,13 @@ namespace XFILE
       int IoControl(EIoControl request, void* param) override;
       double GetDownloadSpeed() override;
 
+      using IFile::Delete;
+
       bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);
       bool Get(const std::string& strURL, std::string& strHTML);
       bool ReadData(std::string& strHTML);
       bool Download(const std::string& strURL, const std::string& strFileName, unsigned int* pdwSize = NULL);
+      bool Delete(const std::string& strURL, std::string& strHTML);
       bool IsInternet();
       void Cancel();
       void Reset();
@@ -186,6 +189,14 @@ namespace XFILE
       bool m_verifyPeer = true;
       bool m_failOnError = true;
       curl_slist* m_dnsCacheList = nullptr;
+
+      enum class RequestType
+      {
+        Get,
+        Post,
+        Delete
+      };
+      RequestType m_requestType;
 
       CRingBuffer m_buffer; // our ringhold buffer
       char* m_overflowBuffer; // in the rare case we would overflow the above buffer
