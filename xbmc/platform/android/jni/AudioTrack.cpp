@@ -76,9 +76,38 @@ CJNIAudioTrack::CJNIAudioTrack(int streamType, int sampleRateInHz, int channelCo
   }
 
   m_audioFormat = audioFormat;
-  if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
-    m_buffer = jharray(xbmc_jnienv()->NewShortArray(bufferSizeInBytes / sizeof(short)));
-  else if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+  if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+    m_buffer = jharray(xbmc_jnienv()->NewFloatArray(bufferSizeInBytes / sizeof(float)));
+  else if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
+    m_buffer = jharray(xbmc_jnienv()->NewShortArray(bufferSizeInBytes / sizeof(uint16_t)));
+  else
+    m_buffer = jharray(xbmc_jnienv()->NewByteArray(bufferSizeInBytes));
+
+  m_object.setGlobal();
+  m_buffer.setGlobal();
+}
+
+CJNIAudioTrack::CJNIAudioTrack(const CJNIAudioAttributes &attributes, const CJNIAudioFormat &format, int bufferSizeInBytes, int mode, int sessionId) throw(std::invalid_argument)
+  : CJNIBase("android/media/AudioTrack")
+{
+  m_object = new_object(GetClassName(), "<init>", "(Landroid/media/AudioAttributes;Landroid/media/AudioFormat;III)V",
+                        attributes.get_raw(), format.get_raw(), bufferSizeInBytes, mode, sessionId);
+
+  /* AudioTrack constructor may throw IllegalArgumentException, pass it to
+   * caller instead of getting us killed */
+  JNIEnv* jenv = xbmc_jnienv();
+  jthrowable exception = jenv->ExceptionOccurred();
+  if (exception)
+  {
+    jenv->ExceptionClear();
+    jhclass excClass = find_class(jenv, "java/lang/Throwable");
+    jmethodID toStrMethod = get_method_id(jenv, excClass, "toString", "()Ljava/lang/String;");
+    jhstring msg = call_method<jhstring>(exception, toStrMethod);
+    throw std::invalid_argument(jcast<std::string>(msg));
+  }
+
+  m_audioFormat = format.getEncoding();
+  if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
     m_buffer = jharray(xbmc_jnienv()->NewFloatArray(bufferSizeInBytes / sizeof(float)));
   else
     m_buffer = jharray(xbmc_jnienv()->NewByteArray(bufferSizeInBytes));
