@@ -32,6 +32,7 @@
  */
 
 #pragma once
+#define HAVE_INTTYPES_H 1
 
 #include <jni.h>
 
