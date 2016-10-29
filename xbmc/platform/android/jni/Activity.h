@@ -21,6 +21,7 @@
 
 #include "JNIBase.h"
 #include "Context.h"
+#include "Intent.h"
 
 class CVariant;
 struct ANativeActivity;
@@ -32,6 +33,7 @@ public:
   ~CJNIActivity();
 
   static bool moveTaskToBack(bool nonRoot);
+  static void startActivityForResult(const CJNIIntent &intent, int requestCode);
 
 private:
   CJNIActivity();

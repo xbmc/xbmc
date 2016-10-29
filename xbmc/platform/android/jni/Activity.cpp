@@ -41,3 +41,11 @@ bool CJNIActivity::moveTaskToBack(bool nonRoot)
     "moveTaskToBack", "(Z)Z",
     nonRoot);
 }
+
+void CJNIActivity::startActivityForResult(const CJNIIntent &intent, int requestCode)
+{
+  call_method<void>(jhobject(m_context),
+    "startActivityForResult", "(Landroid/content/Intent;I)V",
+    intent.get_raw(), requestCode);
+}
+
