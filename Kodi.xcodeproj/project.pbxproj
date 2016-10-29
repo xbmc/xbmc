@@ -1012,7 +1012,6 @@
 		DFB65FB515373AE7006B8FF1 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		DFB65FB715373AE7006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */; };
 		DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */; };
-		DFB65FCD15373AE7006B8FF1 /* AEBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */; };
 		DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */; };
 		DFB65FD015373AE7006B8FF1 /* AEPackIEC61937.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */; };
 		DFB65FD215373AE7006B8FF1 /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
@@ -1492,7 +1491,6 @@
 		E4991197174E5CEB00741B6D /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		E4991198174E5CF600741B6D /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */; };
 		E49911A6174E5CFE00741B6D /* AEBitstreamPacker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */; };
-		E49911A7174E5CFE00741B6D /* AEBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */; };
 		E49911A8174E5CFE00741B6D /* AEChannelInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */; };
 		E49911AA174E5CFE00741B6D /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		E49911AB174E5CFE00741B6D /* AELimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7CEAEF165629530059C9EB /* AELimiter.cpp */; };
@@ -3953,8 +3951,6 @@
 		DFB65F8F15373AE7006B8FF1 /* ThreadedAE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadedAE.h; sourceTree = "<group>"; };
 		DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEBitstreamPacker.cpp; sourceTree = "<group>"; };
 		DFB65FA415373AE7006B8FF1 /* AEBitstreamPacker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEBitstreamPacker.h; sourceTree = "<group>"; };
-		DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEBuffer.cpp; sourceTree = "<group>"; };
-		DFB65FA615373AE7006B8FF1 /* AEBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEBuffer.h; sourceTree = "<group>"; };
 		DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEChannelInfo.cpp; sourceTree = "<group>"; };
 		DFB65FA815373AE7006B8FF1 /* AEChannelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEChannelInfo.h; sourceTree = "<group>"; };
 		DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEPackIEC61937.cpp; sourceTree = "<group>"; };
@@ -7558,8 +7554,6 @@
 			children = (
 				DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */,
 				DFB65FA415373AE7006B8FF1 /* AEBitstreamPacker.h */,
-				DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */,
-				DFB65FA615373AE7006B8FF1 /* AEBuffer.h */,
 				DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */,
 				DFB65FA815373AE7006B8FF1 /* AEChannelInfo.h */,
 				7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */,
@@ -10482,7 +10476,6 @@
 				DFB65FB515373AE7006B8FF1 /* AEFactory.cpp in Sources */,
 				DFB65FB715373AE7006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */,
 				DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */,
-				DFB65FCD15373AE7006B8FF1 /* AEBuffer.cpp in Sources */,
 				DF29BCFD1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
 				DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */,
 				7CCA95CC1BC6E71D0091D308 /* GLSLOutput.cpp in Sources */,
@@ -10963,7 +10956,6 @@
 				E4991197174E5CEB00741B6D /* ilog.cpp in Sources */,
 				E4991198174E5CF600741B6D /* AEEncoderFFmpeg.cpp in Sources */,
 				E49911A6174E5CFE00741B6D /* AEBitstreamPacker.cpp in Sources */,
-				E49911A7174E5CFE00741B6D /* AEBuffer.cpp in Sources */,
 				E49911A8174E5CFE00741B6D /* AEChannelInfo.cpp in Sources */,
 				E49911AA174E5CFE00741B6D /* AEDeviceInfo.cpp in Sources */,
 				E49911AB174E5CFE00741B6D /* AELimiter.cpp in Sources */,

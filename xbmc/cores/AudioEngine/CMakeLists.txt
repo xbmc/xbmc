@@ -15,7 +15,6 @@ set(SOURCES AEFactory.cpp
             Engines/ActiveAE/ActiveAESound.cpp
             Utils/AEBitstreamPacker.cpp
             Utils/AEChannelInfo.cpp
-            Utils/AEBuffer.cpp
             Utils/AEDeviceInfo.cpp
             Utils/AELimiter.cpp
             Utils/AEPackIEC61937.cpp
@@ -49,7 +48,6 @@ set(HEADERS AEFactory.h
             Sinks/AESinkNULL.h
             Utils/AEAudioFormat.h
             Utils/AEBitstreamPacker.h
-            Utils/AEBuffer.h
             Utils/AEChannelData.h
             Utils/AEChannelInfo.h
             Utils/AEDeviceInfo.h

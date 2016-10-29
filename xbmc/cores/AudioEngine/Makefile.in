@@ -72,7 +72,6 @@ SRCS += Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPDatabase.cpp
 SRCS += Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPProcess.cpp
 
 SRCS += Utils/AEChannelInfo.cpp
-SRCS += Utils/AEBuffer.cpp
 SRCS += Utils/AEUtil.cpp
 SRCS += Utils/AEStreamInfo.cpp
 SRCS += Utils/AEPackIEC61937.cpp
