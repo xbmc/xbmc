@@ -59,5 +59,21 @@ protected:
     static void GetStaticValue(jhclass &c, int &field, char *value);
 };
 
+class CJNIAudioFormatBuilder : public CJNIBase
+{
+public:
+  CJNIAudioFormatBuilder();
+  CJNIAudioFormatBuilder(const jni::jhobject &object) : CJNIBase(object) {}
+
+  CJNIAudioFormat build();
+
+  CJNIAudioFormatBuilder setChannelIndexMask(int channelIndexMask);
+  CJNIAudioFormatBuilder setChannelMask(int channelMask);
+  CJNIAudioFormatBuilder setEncoding(int encoding);
+  CJNIAudioFormatBuilder setSampleRate(int sampleRate);
+
+protected:
+  static const char *m_classname;
 };
 
+}

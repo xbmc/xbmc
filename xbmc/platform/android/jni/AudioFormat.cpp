@@ -51,6 +51,8 @@ int CJNIAudioFormat::CHANNEL_OUT_BACK_RIGHT            = 0x00000080;
 
 int CJNIAudioFormat::CHANNEL_INVALID                   = 0x00000000;
 
+const char *CJNIAudioFormatBuilder::m_classname = "android/media/AudioFormat$Builder";
+
 void CJNIAudioFormat::GetStaticValue(jhclass& c, int& field, char* value)
 {
   jfieldID id = get_static_field_id<jclass>(c, value, "I");
@@ -116,3 +118,41 @@ void CJNIAudioFormat::PopulateStaticFields()
   }
 }
 
+
+
+CJNIAudioFormatBuilder::CJNIAudioFormatBuilder()
+  : CJNIBase(CJNIAudioFormatBuilder::m_classname)
+{
+  m_object = new_object(GetClassName());
+  m_object.setGlobal();
+}
+
+CJNIAudioFormat CJNIAudioFormatBuilder::build()
+{
+  return call_method<jhobject>(m_object,
+   "build", "()Landroid/media/AudioFormat;");
+}
+
+CJNIAudioFormatBuilder CJNIAudioFormatBuilder::setChannelIndexMask(int channelIndexMask)
+{
+  return call_method<jhobject>(m_object,
+   "setChannelIndexMask", "(I)Landroid/media/AudioFormat$Builder;", channelIndexMask);
+}
+
+CJNIAudioFormatBuilder CJNIAudioFormatBuilder::setChannelMask(int channelMask)
+{
+  return call_method<jhobject>(m_object,
+   "setChannelMask", "(I)Landroid/media/AudioFormat$Builder;", channelMask);
+}
+
+CJNIAudioFormatBuilder CJNIAudioFormatBuilder::setEncoding(int encoding)
+{
+  return call_method<jhobject>(m_object,
+   "setEncoding", "(I)Landroid/media/AudioFormat$Builder;", encoding);
+}
+
+CJNIAudioFormatBuilder CJNIAudioFormatBuilder::setSampleRate(int sampleRate)
+{
+  return call_method<jhobject>(m_object,
+   "setSampleRate", "(I)Landroid/media/AudioFormat$Builder;", sampleRate);
+}
