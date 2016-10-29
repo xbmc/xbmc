@@ -10440,6 +10440,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->StartAsLocalTime().GetAsLocalizedTime("", false);
     }
+    return "";
   case LISTITEM_NEXT_ENDTIME:
     if (item->HasPVRChannelInfoTag())
     {
@@ -10447,6 +10448,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->EndAsLocalTime().GetAsLocalizedTime("", false);
     }
+    return "";
   case LISTITEM_NEXT_STARTDATE:
     if (item->HasPVRChannelInfoTag())
     {
@@ -10454,6 +10456,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->StartAsLocalTime().GetAsLocalizedDate(true);
     }
+    return "";
   case LISTITEM_NEXT_ENDDATE:
     if (item->HasPVRChannelInfoTag())
     {
@@ -10461,6 +10464,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (tag)
         return tag->EndAsLocalTime().GetAsLocalizedDate(true);
     }
+    return "";
   case LISTITEM_NEXT_PLOT:
     if (item->HasPVRChannelInfoTag())
     {
