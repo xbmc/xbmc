@@ -1085,7 +1085,7 @@ void CActiveAESink::GenerateNoise()
   nb_floats *= m_sampleOfSilence.pkt->config.channels;
   size_t size = nb_floats*sizeof(float);
 
-  float *noise = (float*)_aligned_malloc(size, 16);
+  float *noise = (float*)_aligned_malloc(size, 32);
   if (!noise)
     throw std::bad_alloc();
 
