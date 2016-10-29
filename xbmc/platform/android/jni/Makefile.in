@@ -71,6 +71,12 @@ SRCS      += MediaTimestamp.cpp
 SRCS      += MediaSync.cpp
 SRCS      += AudioAttributes.cpp
 SRCS      += Image.cpp
+SRCS      += Network.cpp
+SRCS      += LinkProperties.cpp
+SRCS      += LinkAddress.cpp
+SRCS      += RouteInfo.cpp
+SRCS      += InetAddress.cpp
+SRCS      += NetworkInterface.cpp
 
 LIB        = jni.a
 
