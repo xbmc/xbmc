@@ -69,6 +69,7 @@ SRCS      += Os.cpp
 SRCS      += PlaybackParams.cpp
 SRCS      += MediaTimestamp.cpp
 SRCS      += MediaSync.cpp
+SRCS      += AudioAttributes.cpp
 
 LIB        = jni.a
 

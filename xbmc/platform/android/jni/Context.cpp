@@ -36,6 +36,7 @@
 #include "Cursor.h"
 #include "ConnectivityManager.h"
 #include "AudioFormat.h"
+#include "AudioAttributes.h"
 #include "AudioManager.h"
 #include "AudioTrack.h"
 #include "Surface.h"
@@ -81,6 +82,7 @@ void CJNIContext::PopulateStaticFields()
   CJNIContentResolver::PopulateStaticFields();
   CJNIConnectivityManager::PopulateStaticFields();
   CJNIAudioFormat::PopulateStaticFields();
+  CJNIAudioAttributes::PopulateStaticFields();
   CJNIAudioManager::PopulateStaticFields();
   CJNIAudioTrack::PopulateStaticFields();
   CJNISurface::PopulateStaticFields();
