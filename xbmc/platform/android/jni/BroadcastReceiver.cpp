@@ -25,17 +25,11 @@
 #include "ClassLoader.h"
 #include "jutils/jutils-details.hpp"
 
-#include "platform/android/activity/JNIMainActivity.h"
-
 using namespace jni;
 
 CJNIBroadcastReceiver *CJNIBroadcastReceiver::m_receiverInstance(NULL);
 CJNIBroadcastReceiver::CJNIBroadcastReceiver(const std::string &className) : CJNIBase(className)
 {
-  CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
-  if (!appInstance || className.empty())
-    return;
-
   // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
   std::string dotClassName = GetClassName();
   for (std::string::iterator it = dotClassName.begin(); it != dotClassName.end(); ++it)
@@ -43,7 +37,7 @@ CJNIBroadcastReceiver::CJNIBroadcastReceiver(const std::string &className) : CJN
     if (*it == '/')
       *it = '.';
   }
-  m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(dotClassName));
   m_receiverInstance = this;
   m_object.setGlobal();
 }
