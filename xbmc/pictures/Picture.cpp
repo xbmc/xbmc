@@ -40,6 +40,10 @@
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
+#ifdef TARGET_POSIX
+#include "linux/XMemUtils.h"
+#endif
+
 extern "C" {
 #include "libswscale/swscale.h"
 }
@@ -176,7 +180,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   // create a buffer large enough for the resulting image
   GetScale(width, height, dest_width, dest_height);
 
-  uint8_t *buffer = new uint8_t[dest_width * dest_height * sizeof(uint32_t)];
+  uint8_t *buffer = (uint8_t*) _aligned_malloc(dest_width * dest_height * sizeof(uint32_t), 32);
   if (buffer == NULL)
   {
     result = NULL;
@@ -186,14 +190,14 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
 
   if (!ScaleImage(pixels, width, height, pitch, buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), scalingAlgorithm))
   {
-    delete[] buffer;
+    _aligned_free(buffer);
     result = NULL;
     result_size = 0;
     return false;
   }
 
   bool success = GetThumbnailFromSurface(buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), image, result, result_size);
-  delete[] buffer;
+  _aligned_free(buffer);
 
   if (!success)
   {
@@ -245,7 +249,7 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
 
     // create a buffer large enough for the resulting image
     GetScale(width, height, dest_width, dest_height);
-    uint32_t *buffer = new uint32_t[dest_width * dest_height];
+    uint32_t *buffer = (uint32_t*) _aligned_malloc(dest_width * dest_height, 32);
     if (buffer)
     {
       if (ScaleImage(pixels, width, height, pitch,
@@ -257,7 +261,7 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
           success = CreateThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height, dest_width * 4, dest);
         }
       }
-      delete[] buffer;
+      _aligned_free(buffer);
     }
     return success;
   }
@@ -297,7 +301,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
-      uint32_t *scaled = new uint32_t[width * height];
+      uint32_t *scaled = (uint32_t*) _aligned_malloc(width * height, 32);
       if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
                      (uint8_t *)scaled, width, height, width * 4))
       {
@@ -317,7 +321,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
           }
         }
       }
-      delete[] scaled;
+      _aligned_free(scaled);
     }
     delete texture;
   }

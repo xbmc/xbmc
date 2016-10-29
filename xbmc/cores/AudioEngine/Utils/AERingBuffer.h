@@ -84,7 +84,7 @@ public:
     m_Buffer = new unsigned char*[planes];
     for (unsigned int i = 0; i < planes; i++)
     {
-      m_Buffer[i] = (unsigned char*)_aligned_malloc(size,16);
+      m_Buffer[i] = (unsigned char*)_aligned_malloc(size, 32);
       if (!m_Buffer[i])
         return false;
       memset(m_Buffer[i], 0, size);
@@ -216,7 +216,7 @@ public:
    */
   void Dump()
   {
-    unsigned char *bufferContents =  (unsigned char *)_aligned_malloc(m_iSize*m_planes + 1,16);
+    unsigned char *bufferContents =  (unsigned char *)_aligned_malloc(m_iSize*m_planes + 1, 32);
     unsigned char *dest = bufferContents;
     for (unsigned int j = 0; j < m_planes; j++)
     {

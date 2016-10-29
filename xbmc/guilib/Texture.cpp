@@ -108,7 +108,7 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   if (GetPitch() * GetRows() > 0)
   {
     size_t size = GetPitch() * GetRows();
-    m_pixels = (unsigned char*) _aligned_malloc(size, 16);
+    m_pixels = (unsigned char*) _aligned_malloc(size, 32);
 
     if (m_pixels == nullptr)
     {

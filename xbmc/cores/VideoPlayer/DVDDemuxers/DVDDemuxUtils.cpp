@@ -68,7 +68,7 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
         * Note, if the first 23 bits of the additional bytes are not 0 then damaged
         * MPEG bitstreams could cause overread and segfault
         */
-      pPacket->pData =(uint8_t*)_aligned_malloc(iDataSize + FF_INPUT_BUFFER_PADDING_SIZE, 16);
+      pPacket->pData =(uint8_t*)_aligned_malloc(iDataSize + FF_INPUT_BUFFER_PADDING_SIZE, 32);
       if (!pPacket->pData)
       {
         FreeDemuxPacket(pPacket);
