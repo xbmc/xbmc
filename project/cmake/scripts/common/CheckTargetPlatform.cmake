@@ -52,9 +52,13 @@ function(check_install_permissions install_dir have_perms)
                   ERROR_VARIABLE  output
                   )
 
+  message(STATUS "============ DEBUG ADDON PACKAGING  ======")
+  message(STATUS "check_install_permissions ${install_dir}: ${permtest}")
+  message(STATUS "${output}")
+  execute_process(COMMAND find ${install_dir})
+  execute_process(COMMAND ls -laR ${install_dir})
+
   if(${permtest} GREATER 0)
-    message(STATUS "check_install_permissions failed for ${install_dir}: ${permtest}")
-    message(STATUS "${output}")
     set(${have_perms} FALSE)
   endif()
   set(${have_perms} "${${have_perms}}" PARENT_SCOPE)
