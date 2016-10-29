@@ -1,7 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2016 Chris Browet
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,16 +20,15 @@
 
 #include "JNIBase.h"
 
-class CJNISystem
+class CJNIAudioTimestamp : public CJNIBase
 {
 public:
-  static std::string getProperty(  const std::string &property);
-  static std::string getProperty(  const std::string &property, const std::string &defaultValue);
-  static std::string setProperty(  const std::string &property, const std::string &defaultValue);
-  static std::string clearProperty(const std::string &property);
-  static int64_t nanoTime();
+  CJNIAudioTimestamp();
+  CJNIAudioTimestamp(const jni::jhobject &object);
+  ~CJNIAudioTimestamp() {};
+
+  int64_t get_framePosition();
+  int64_t get_nanoTime();
 
 private:
-  CJNISystem();
-  ~CJNISystem() {};
 };

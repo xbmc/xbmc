@@ -1,7 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2016 Chris Browet
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,18 +17,27 @@
  *
  */
 
-#include "JNIBase.h"
+#include "AudioTimestamp.h"
+#include "jutils/jutils-details.hpp"
 
-class CJNISystem
+using namespace jni;
+
+CJNIAudioTimestamp::CJNIAudioTimestamp() : CJNIBase("android.media.AudioTimestamp")
 {
-public:
-  static std::string getProperty(  const std::string &property);
-  static std::string getProperty(  const std::string &property, const std::string &defaultValue);
-  static std::string setProperty(  const std::string &property, const std::string &defaultValue);
-  static std::string clearProperty(const std::string &property);
-  static int64_t nanoTime();
+  m_object = new_object(GetClassName());
+  m_object.setGlobal();
+}
 
-private:
-  CJNISystem();
-  ~CJNISystem() {};
-};
+CJNIAudioTimestamp::CJNIAudioTimestamp(const jhobject &object) : CJNIBase(object)
+{
+}
+
+int64_t CJNIAudioTimestamp::get_framePosition()
+{
+  return get_field<jlong>(m_object, "framePosition");
+}
+
+int64_t CJNIAudioTimestamp::get_nanoTime()
+{
+  return get_field<jlong>(m_object, "nanoTime");
+}
