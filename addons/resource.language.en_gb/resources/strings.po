@@ -6020,7 +6020,7 @@ msgstr ""
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 #: addons/skin.estuary/1080i/SettingsSystemInfo.xml
 msgctxt "#13271"
-msgid "CPU usage:"
+msgid "System CPU usage:"
 msgstr ""
 
 #empty strings from id 13272 to 13273

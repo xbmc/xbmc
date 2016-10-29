@@ -179,7 +179,7 @@ msgstr ""
 #empty strings from id 31304 to 31308
 
 msgctxt "#31309"
-msgid "Memory Used:"
+msgid "System Memory Used:"
 msgstr ""
 
 #empty strings from id 31310 to 31319
