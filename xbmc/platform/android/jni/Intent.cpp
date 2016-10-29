@@ -21,6 +21,7 @@
 #include "Intent.h"
 #include "jutils/jutils-details.hpp"
 #include "URI.h"
+#include "ArrayList.h"
 
 using namespace jni;
 
@@ -101,10 +102,17 @@ bool CJNIIntent::hasCategory(const std::string &category) const
     jcast<jhstring>(category));
 }
 
+CJNIIntent CJNIIntent::putExtra(const std::string &name, const std::string &value)
+{
+  return (CJNIIntent)call_method<jhobject>(m_object,
+    "putExtra", "(Ljava/lang/String;Ljava/lang/String;)Landroid/content/Intent;",
+    jcast<jhstring>(name), jcast<jhstring>(value));
+}
+
 void CJNIIntent::addFlags(int flags)
 {
   call_method<jhobject>(m_object,
-    "addFlags", "(I;)Landroid/content/Intent;",
+    "addFlags", "(I)Landroid/content/Intent;",
     flags);
 }
 
@@ -168,4 +176,10 @@ CJNIURI CJNIIntent::getData() const
 {
   return (CJNIURI)call_method<jhobject>(m_object,
     "getData","()Landroid/net/Uri;");
+}
+
+CJNIArrayList<std::string> CJNIIntent::getStringArrayListExtra(const std::string &key) const
+{
+  return call_method<jhobject>(m_object,
+    "getStringArrayListExtra","(Ljava/lang/String;)Ljava/util/ArrayList;", jcast<jhstring>(key));
 }

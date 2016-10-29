@@ -61,6 +61,8 @@ SRCS      += PackageItemInfo.cpp
 SRCS      += DisplayMetrics.cpp
 SRCS      += KeyEvent.cpp
 SRCS      += AudioTimestamp.cpp
+SRCS      += ArrayList.cpp
+SRCS      += RecognizerIntent.cpp
 SRCS      += InputManager.cpp
 SRCS      += Os.cpp
 

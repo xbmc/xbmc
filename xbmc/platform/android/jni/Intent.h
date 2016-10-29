@@ -20,6 +20,7 @@
  */
 
 #include "JNIBase.h"
+#include "ArrayList.h"
 
 class CJNIURI;
 class CJNIIntent : public CJNIBase
@@ -41,6 +42,8 @@ public:
   bool hasExtra(const std::string &name) const;
   bool hasCategory(const std::string &category) const;
 
+  CJNIIntent putExtra(const std::string &name, const std::string &value);
+
   void addFlags(int flags);
   void addCategory(const std::string &category);
   void setFlags(int flags);
@@ -54,6 +57,7 @@ public:
   void setPackage(const std::string &packageName);
   void setType(const std::string &type);
   CJNIURI getData() const;
+  CJNIArrayList<std::string> getStringArrayListExtra(const std::string &key) const;
 
   static void PopulateStaticFields();
   static std::string EXTRA_KEY_EVENT;
