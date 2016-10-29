@@ -1052,6 +1052,12 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
   }
   if (index >= 0)
   {
+    int64_t pts= bufferInfo.presentationTimeUs();
+    m_videobuffer.dts = DVD_NOPTS_VALUE;
+    m_videobuffer.pts = DVD_NOPTS_VALUE;
+    if (pts != AV_NOPTS_VALUE)
+      m_videobuffer.pts = pts;
+
     int flags = bufferInfo.flags();
     if (flags & CJNIMediaCodec::BUFFER_FLAG_SYNC_FRAME)
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: BUFFER_FLAG_SYNC_FRAME");
@@ -1083,7 +1089,8 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         xbmc_jnienv()->ExceptionClear();
         return -2;
       }
-      return 0;
+      m_videobuffer.mediacodec = nullptr;
+      return 1;
     }
 
     if (!m_render_sw)
@@ -1144,12 +1151,6 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       }
       m_codec->releaseOutputBuffer(index, false);
     }
-
-    int64_t pts= bufferInfo.presentationTimeUs();
-    m_videobuffer.dts = DVD_NOPTS_VALUE;
-    m_videobuffer.pts = DVD_NOPTS_VALUE;
-    if (pts != AV_NOPTS_VALUE)
-      m_videobuffer.pts = pts;
 
 /*
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetOutputPicture "
