@@ -693,6 +693,14 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
       dts = m_demux_pkt.dts;
     }
   }
+  else if (m_state == MEDIACODEC_STATE_ENDOFSTREAM)
+  {
+    // VideoPlayer sends unasked buffer when going out of drain. Flush...
+    FlushInternal();
+    m_codec->flush();
+    m_state = MEDIACODEC_STATE_FLUSHED;
+    m_dec_retcode |= VC_BUFFER;
+  }
 
   // must check for an output picture 1st,
   // otherwise, mediacodec can stall on some devices.
