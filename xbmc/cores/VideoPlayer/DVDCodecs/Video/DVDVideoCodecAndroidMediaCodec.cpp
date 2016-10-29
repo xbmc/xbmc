@@ -670,6 +670,9 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   if (!m_opened)
     return VC_ERROR;
 
+  if (m_state != MEDIACODEC_STATE_RUNNING)
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Decode current state (%d)", m_state);
+
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
 
