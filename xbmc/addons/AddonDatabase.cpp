@@ -470,6 +470,54 @@ std::pair<AddonVersion, std::string> CAddonDatabase::GetAddonVersion(const std::
   return empty;
 }
 
+bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS& result)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string sql = PrepareSQL(
+        "SELECT addons.version, addons.name, addons.summary, addons.description, addons.metadata,"
+        "repo.addonID AS repoID FROM addons "
+        "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addons.id "
+        "JOIN repo ON repo.id=addonlinkrepo.idRepo "
+        "WHERE "
+        "repo.checksum IS NOT NULL AND repo.checksum != '' "
+        "AND EXISTS (SELECT * FROM installed WHERE installed.addonID=repoID AND installed.enabled=1) "
+        "AND addons.addonID='%s'", addonId.c_str());
+
+    VECADDONS addons;
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      CAddonBuilder builder;
+      builder.SetId(addonId);
+      builder.SetVersion(AddonVersion(m_pDS->fv(0).get_asString()));
+      builder.SetName(m_pDS->fv(1).get_asString());
+      builder.SetSummary(m_pDS->fv(2).get_asString());
+      builder.SetDescription(m_pDS->fv(3).get_asString());
+      DeserializeMetadata(m_pDS->fv(4).get_asString(), builder);
+      builder.SetOrigin(m_pDS->fv(5).get_asString());
+
+      auto addon = builder.Build();
+      if (addon)
+        addons.push_back(std::move(addon));
+      else
+        CLog::Log(LOGERROR, "CAddonDatabase: failed to build %s", addonId.c_str());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    result = std::move(addons);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonId.c_str());
+  }
+  return false;
+}
+
 bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
     std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo)
 {

@@ -170,7 +170,8 @@ public:
    *  \param hash Hash of the add-on
    *  \return True if the add-on and its hash were found, false otherwise.
    */
-  static bool GetAddonWithHash(const std::string& addonID, const std::string &repoID, ADDON::AddonPtr& addon, std::string& hash);
+  static bool GetAddonWithHash(const std::string& addonID, ADDON::RepositoryPtr& repo,
+      ADDON::AddonPtr& addon, std::string& hash);
 
 private:
   void OnPreInstall();
