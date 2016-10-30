@@ -1159,11 +1159,11 @@ bool CApplication::Initialize()
     event.Reset();
     std::atomic<bool> isMigratingAddons(false);
     CJobManager::GetInstance().Submit([&event, &incompatibleAddons, &isMigratingAddons]() {
-      incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons([&isMigratingAddons]() {
-        isMigratingAddons = true;
-      });
-      event.Set();
-    });
+        incompatibleAddons = CAddonSystemSettings::GetInstance().MigrateAddons([&isMigratingAddons]() {
+          isMigratingAddons = true;
+        });
+        event.Set();
+      }, CJob::PRIORITY_DEDICATED);
     localizedStr = g_localizeStrings.Get(24151);
     iDots = 1;
     while (!event.WaitMSec(1000))

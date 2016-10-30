@@ -243,7 +243,9 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo
   CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, hash);
   if (background)
   {
-    unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this);
+    // Workaround: because CAddonInstallJob is blocking waiting for other jobs, it needs to be run
+    // with priority dedicated.
+    unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this, CJob::PRIORITY_DEDICATED);
     m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
     m_idle.Reset();
     return true;
