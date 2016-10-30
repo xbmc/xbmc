@@ -47,10 +47,18 @@ function(check_install_permissions install_dir have_perms)
   execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/lib/kodi
                   COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/share/kodi
                   COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/lib/kodi/.cmake-inst-test ${install_dir}/share/kodi/.cmake-inst-test
-                  RESULT_VARIABLE permtest)
+                  RESULT_VARIABLE permtest
+                  OUTPUT_VARIABLE output
+                  ERROR_VARIABLE  output
+                  )
+
+  message(STATUS "============ DEBUG ADDON PACKAGING  ======")
+  message(STATUS "check_install_permissions ${install_dir}: ${permtest}")
+  message(STATUS "${output}")
+  execute_process(COMMAND find ${install_dir})
+  execute_process(COMMAND ls -laR ${install_dir})
 
   if(${permtest} GREATER 0)
-    message(STATUS "check_install_permissions: ${permtest}")
     set(${have_perms} FALSE)
   endif()
   set(${have_perms} "${${have_perms}}" PARENT_SCOPE)
