@@ -60,7 +60,7 @@
 			<align>left</align>
 			<aligny>center</aligny>
 			<font>font16</font>
-			<label>$INFO[Player.SeekNumeric]</label>
+			<label>$INFO[Player.SeekNumeric(hh:mm:ss)]</label>
 		</control>
 	</controls>
 </window>
