@@ -250,7 +250,7 @@ so that the addon can be tested with self-compiled specific versions of Kodi.
 
 ```
 mkdir pvr.demo-build && cd pvr.demo-build
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=<KODI_BUILD_DIR>/build -DCORE_BUILD_DIR=<KODI_BUILD_DIR> <pvr.demo-SRC>
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=<KODI_BUILD_DIR>/build -DKODI_BUILD_DIR=<KODI_BUILD_DIR> <pvr.demo-SRC>
 make
 ```
 
