@@ -34,6 +34,7 @@ public:
   CJNIPackageManager(const jni::jhobject &object) : CJNIBase(object) {};
   ~CJNIPackageManager() {};
 
+  bool              hasSystemFeature(const std::string &feature);
   CJNIIntent        getLaunchIntentForPackage(const std::string &package);
   CJNIIntent        getLeanbackLaunchIntentForPackage(const std::string &package);
   CJNIDrawable      getApplicationIcon(const std::string &package);

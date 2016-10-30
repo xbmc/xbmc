@@ -23,6 +23,9 @@
 
 #include "JNIBase.h"
 #include "ByteBuffer.h"
+#include "AudioTimestamp.h"
+#include "AudioFormat.h"
+#include "AudioAttributes.h"
 
 namespace jni
 {
@@ -34,6 +37,7 @@ class CJNIAudioTrack : public CJNIBase
 
   public:
     CJNIAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode) throw(std::invalid_argument);
+    CJNIAudioTrack (const CJNIAudioAttributes &attributes, const CJNIAudioFormat &format, int bufferSizeInBytes, int mode, int sessionId) throw(std::invalid_argument);
 
     void  play();
     void  pause();
@@ -41,9 +45,11 @@ class CJNIAudioTrack : public CJNIBase
     void  flush();
     void  release();
     int   write(char* audioData, int offsetInBytes, int sizeInBytes);
+    int   write(char *audioData, int sizeInBytes, int64_t timestamp);
     int   getState();
     int   getPlayState();
     int   getPlaybackHeadPosition();
+    bool  getTimestamp (CJNIAudioTimestamp &timestamp);
     int   getBufferSizeInFrames();
 
     static int  MODE_STREAM;

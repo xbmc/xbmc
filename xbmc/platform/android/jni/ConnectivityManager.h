@@ -24,7 +24,9 @@
 
 #include "JNIBase.h"
 
+class CJNINetwork;
 class CJNINetworkInfo;
+class CJNILinkProperties;
 
 class CJNIConnectivityManager : public CJNIBase
 {
@@ -34,8 +36,12 @@ public:
   bool isNetworkTypeValid(int);
   void setNetworkPreference(int);
   int  getNetworkPreference();
+  CJNINetwork getActiveNetwork();
   CJNINetworkInfo getActiveNetworkInfo();
   CJNINetworkInfo getNetworkInfo(int);
+  CJNINetworkInfo getNetworkInfo(const CJNINetwork& network);
+  CJNILinkProperties getLinkProperties(const CJNINetwork& network);
+  std::vector<CJNINetwork> getAllNetworks();
   std::vector<CJNINetworkInfo> getAllNetworkInfo();
   int  startUsingNetworkFeature(int, std::string);
   int  stopUsingNetworkFeature(int, std::string);

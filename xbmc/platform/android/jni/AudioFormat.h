@@ -19,45 +19,70 @@
  *
  */
 
-#include "jutils/jutils-details.hpp"
+#include "JNIBase.h"
 
 namespace jni
 {
 
-class CJNIAudioFormat
+class CJNIAudioFormat : public CJNIBase
 {
-  public:
-    static void PopulateStaticFields();
+public:
+  CJNIAudioFormat(const jni::jhobject &object) : CJNIBase(object) {}
 
-    static int ENCODING_PCM_16BIT;
-    static int ENCODING_PCM_FLOAT;
-    static int ENCODING_AC3;
-    static int ENCODING_E_AC3;
-    static int ENCODING_DTS;
-    static int ENCODING_DTS_HD;
-    static int ENCODING_DOLBY_TRUEHD;
-    static int ENCODING_IEC61937;
+  static void PopulateStaticFields();
 
-    static int CHANNEL_OUT_STEREO;
-    static int CHANNEL_OUT_5POINT1;
+  static int ENCODING_PCM_16BIT;
+  static int ENCODING_PCM_FLOAT;
+  static int ENCODING_AC3;
+  static int ENCODING_E_AC3;
+  static int ENCODING_DTS;
+  static int ENCODING_DTS_HD;
+  static int ENCODING_DOLBY_TRUEHD;
+  static int ENCODING_IEC61937;
 
-    static int CHANNEL_OUT_FRONT_LEFT;
-    static int CHANNEL_OUT_FRONT_LEFT_OF_CENTER;
-    static int CHANNEL_OUT_FRONT_CENTER;
-    static int CHANNEL_OUT_FRONT_RIGHT_OF_CENTER;
-    static int CHANNEL_OUT_FRONT_RIGHT;
-    static int CHANNEL_OUT_LOW_FREQUENCY;
-    static int CHANNEL_OUT_SIDE_LEFT;
-    static int CHANNEL_OUT_SIDE_RIGHT;
-    static int CHANNEL_OUT_BACK_LEFT;
-    static int CHANNEL_OUT_BACK_CENTER;
-    static int CHANNEL_OUT_BACK_RIGHT;
+  static int CHANNEL_OUT_STEREO;
+  static int CHANNEL_OUT_5POINT1;
 
-    static int CHANNEL_INVALID;
+  static int CHANNEL_OUT_FRONT_LEFT;
+  static int CHANNEL_OUT_FRONT_LEFT_OF_CENTER;
+  static int CHANNEL_OUT_FRONT_CENTER;
+  static int CHANNEL_OUT_FRONT_RIGHT_OF_CENTER;
+  static int CHANNEL_OUT_FRONT_RIGHT;
+  static int CHANNEL_OUT_LOW_FREQUENCY;
+  static int CHANNEL_OUT_SIDE_LEFT;
+  static int CHANNEL_OUT_SIDE_RIGHT;
+  static int CHANNEL_OUT_BACK_LEFT;
+  static int CHANNEL_OUT_BACK_CENTER;
+  static int CHANNEL_OUT_BACK_RIGHT;
+
+  static int CHANNEL_INVALID;
+
+  int getChannelCount() const;
+  int getChannelIndexMask() const;
+  int getChannelMask() const;
+  int getEncoding() const;
+  int getSampleRate() const;
 
 protected:
     static void GetStaticValue(jhclass &c, int &field, char *value);
+    static const char *m_classname;
 };
 
+class CJNIAudioFormatBuilder : public CJNIBase
+{
+public:
+  CJNIAudioFormatBuilder();
+  CJNIAudioFormatBuilder(const jni::jhobject &object) : CJNIBase(object) {}
+
+  CJNIAudioFormat build();
+
+  CJNIAudioFormatBuilder setChannelIndexMask(int channelIndexMask);
+  CJNIAudioFormatBuilder setChannelMask(int channelMask);
+  CJNIAudioFormatBuilder setEncoding(int encoding);
+  CJNIAudioFormatBuilder setSampleRate(int sampleRate);
+
+protected:
+  static const char *m_classname;
 };
 
+}

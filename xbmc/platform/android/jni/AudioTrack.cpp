@@ -21,6 +21,7 @@
 #include "AudioTrack.h"
 #include "jutils/jutils-details.hpp"
 #include "AudioFormat.h"
+#include "ByteBuffer.h"
 
 using namespace jni;
 
@@ -75,9 +76,38 @@ CJNIAudioTrack::CJNIAudioTrack(int streamType, int sampleRateInHz, int channelCo
   }
 
   m_audioFormat = audioFormat;
-  if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
-    m_buffer = jharray(xbmc_jnienv()->NewShortArray(bufferSizeInBytes / sizeof(short)));
-  else if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+  if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+    m_buffer = jharray(xbmc_jnienv()->NewFloatArray(bufferSizeInBytes / sizeof(float)));
+  else if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
+    m_buffer = jharray(xbmc_jnienv()->NewShortArray(bufferSizeInBytes / sizeof(uint16_t)));
+  else
+    m_buffer = jharray(xbmc_jnienv()->NewByteArray(bufferSizeInBytes));
+
+  m_object.setGlobal();
+  m_buffer.setGlobal();
+}
+
+CJNIAudioTrack::CJNIAudioTrack(const CJNIAudioAttributes &attributes, const CJNIAudioFormat &format, int bufferSizeInBytes, int mode, int sessionId) throw(std::invalid_argument)
+  : CJNIBase("android/media/AudioTrack")
+{
+  m_object = new_object(GetClassName(), "<init>", "(Landroid/media/AudioAttributes;Landroid/media/AudioFormat;III)V",
+                        attributes.get_raw(), format.get_raw(), bufferSizeInBytes, mode, sessionId);
+
+  /* AudioTrack constructor may throw IllegalArgumentException, pass it to
+   * caller instead of getting us killed */
+  JNIEnv* jenv = xbmc_jnienv();
+  jthrowable exception = jenv->ExceptionOccurred();
+  if (exception)
+  {
+    jenv->ExceptionClear();
+    jhclass excClass = find_class(jenv, "java/lang/Throwable");
+    jmethodID toStrMethod = get_method_id(jenv, excClass, "toString", "()Ljava/lang/String;");
+    jhstring msg = call_method<jhstring>(exception, toStrMethod);
+    throw std::invalid_argument(jcast<std::string>(msg));
+  }
+
+  m_audioFormat = format.getEncoding();
+  if (m_audioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
     m_buffer = jharray(xbmc_jnienv()->NewFloatArray(bufferSizeInBytes / sizeof(float)));
   else
     m_buffer = jharray(xbmc_jnienv()->NewByteArray(bufferSizeInBytes));
@@ -119,8 +149,6 @@ void CJNIAudioTrack::flush()
 void CJNIAudioTrack::release()
 {
   call_method<void>(m_object, "release", "()V");
-
-  JNIEnv* jenv  = xbmc_jnienv();
 }
 
 int CJNIAudioTrack::write(char* audioData, int offsetInBytes, int sizeInBytes)
@@ -144,18 +172,35 @@ int CJNIAudioTrack::write(char* audioData, int offsetInBytes, int sizeInBytes)
     else if (m_audioFormat == CJNIAudioFormat::ENCODING_IEC61937)
     {
       if (CJNIBase::GetSDKVersion() >= 23)
-        written = call_method<int>(m_object, "write", "([SIII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)), CJNIAudioTrack::WRITE_BLOCKING);
+        written = call_method<int>(m_object, "write", "([SIII)I", m_buffer, (int)(offsetInBytes / sizeof(uint16_t)), (int)(sizeInBytes / sizeof(uint16_t)), CJNIAudioTrack::WRITE_BLOCKING);
       else
-       written = call_method<int>(m_object, "write", "([SII)I", m_buffer, (int)(offsetInBytes / sizeof(short)), (int)(sizeInBytes / sizeof(short)));
-      written *= sizeof(short);
+        written = call_method<int>(m_object, "write", "([SII)I", m_buffer, (int)(offsetInBytes / sizeof(uint16_t)), (int)(sizeInBytes / sizeof(uint16_t)));
+      written *= sizeof(uint16_t);
     }
     else
     {
       if (CJNIBase::GetSDKVersion() >= 23)
-        written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING);
+        written = call_method<int>(m_object, "write", "([BIII)I", m_buffer, offsetInBytes, sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING);
       else
-	written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes);
+        written = call_method<int>(m_object, "write", "([BII)I", m_buffer, offsetInBytes, sizeInBytes);
     }
+  }
+
+  return written;
+}
+
+int CJNIAudioTrack::write(char* audioData, int sizeInBytes, int64_t timestamp)
+{
+  int     written = 0;
+  JNIEnv* jenv    = xbmc_jnienv();
+  char*   pArray;
+
+  if ((pArray = (char*)jenv->GetPrimitiveArrayCritical(m_buffer, NULL)))
+  {
+    memcpy(pArray, audioData, sizeInBytes);
+    jenv->ReleasePrimitiveArrayCritical(m_buffer, pArray, 0);
+    CJNIByteBuffer buf = CJNIByteBuffer::wrap(m_buffer);
+    written = call_method<int>(m_object, "write", "(Ljava/nio/ByteBuffer;IIJ)I", buf.get_raw(), sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING, timestamp);
   }
 
   return written;
@@ -174,6 +219,12 @@ int CJNIAudioTrack::getPlayState()
 int CJNIAudioTrack::getPlaybackHeadPosition()
 {
   return call_method<int>(m_object, "getPlaybackHeadPosition", "()I");
+}
+
+bool CJNIAudioTrack::getTimestamp(CJNIAudioTimestamp &timestamp)
+{
+  return call_method<jboolean>(m_object, "getTimestamp", "(Landroid/media/AudioTimestamp;)Z",
+                                    timestamp.get_raw());
 }
 
 // Can be used in v23 for comparing with the opened buffer amount

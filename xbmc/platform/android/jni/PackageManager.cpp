@@ -36,6 +36,13 @@ void CJNIPackageManager::PopulateStaticFields()
   GET_ACTIVITIES = (get_static_field<int>(clazz, "GET_ACTIVITIES"));
 }
 
+bool CJNIPackageManager::hasSystemFeature(const std::string &feature)
+{
+  return call_method<jboolean>(m_object,
+    "hasSystemFeature", "(Ljava/lang/String;)Z",
+    jcast<jhstring>(feature));
+}
+
 CJNIIntent CJNIPackageManager::getLaunchIntentForPackage(const std::string &package)
 {
   return call_method<jhobject>(m_object,

@@ -35,6 +35,8 @@
   were renamed to avoid collisions when linking against the originals.
 */
 
+#define HAVE_INTTYPES_H 1
+
 #include <jni.h>
 #include <pthread.h>
 #include <stdlib.h>

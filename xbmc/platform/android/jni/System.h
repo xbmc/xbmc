@@ -28,6 +28,7 @@ public:
   static std::string getProperty(  const std::string &property, const std::string &defaultValue);
   static std::string setProperty(  const std::string &property, const std::string &defaultValue);
   static std::string clearProperty(const std::string &property);
+  static int64_t nanoTime();
 
 private:
   CJNISystem();
