@@ -245,12 +245,19 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   int stream = CJNIAudioManager::STREAM_MUSIC;
   m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
 
-  // Get equal or lower supported sample rate
-  std::set<unsigned int>::iterator s = m_sink_sampleRates.upper_bound(m_format.m_sampleRate);
-  if (--s != m_sink_sampleRates.begin())
-    m_sink_sampleRate = *s;
-  else
-    m_sink_sampleRate = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
+  uint32_t distance = 192000; // max upper distance
+  for (auto& s : m_sink_sampleRates)
+  {
+     // prefer best match or alternatively something that divides nicely and
+     // is not too far away
+     uint32_t d = std::abs((int)m_format.m_sampleRate - (int)s) + 8 * (s > m_format.m_sampleRate ? (s % m_format.m_sampleRate) : (m_format.m_sampleRate % s));
+     if (d < distance)
+     {
+       m_sink_sampleRate = s;
+       distance = d;
+       CLog::Log(LOGDEBUG, "Updated SampleRate: %u Distance: %u", m_sink_sampleRate, d);
+     }
+  }
 
   if (m_format.m_dataFormat == AE_FMT_RAW && !CXBMCApp::IsHeadsetPlugged())
   {
