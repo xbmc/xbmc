@@ -162,8 +162,10 @@ static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
          | CJNIAudioFormat::CHANNEL_OUT_SIDE_RIGHT;
   else if (info.Count() > 2)
     return CJNIAudioFormat::CHANNEL_OUT_5POINT1;
-  else
+  else if (info.Count() == 2)
     return CJNIAudioFormat::CHANNEL_OUT_STEREO;
+  else
+    return CJNIAudioFormat::CHANNEL_OUT_MONO;
 #endif
 
   info.ResolveChannels(KnownChannels);
@@ -323,6 +325,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   while (!m_at_jni)
   {
+    CLog::Log(LOGNOTICE, "Trying to open: %u samplerate %d channelMask %d encoding", m_sink_sampleRate, atChannelMask, m_encoding);
     int min_buffer = CJNIAudioTrack::getMinBufferSize(m_sink_sampleRate,
                                                          atChannelMask,
                                                          m_encoding);

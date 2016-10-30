@@ -40,6 +40,7 @@ public:
   static int ENCODING_DOLBY_TRUEHD;
   static int ENCODING_IEC61937;
 
+  static int CHANNEL_OUT_MONO;
   static int CHANNEL_OUT_STEREO;
   static int CHANNEL_OUT_5POINT1;
 

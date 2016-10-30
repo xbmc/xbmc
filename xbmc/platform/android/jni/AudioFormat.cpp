@@ -34,6 +34,7 @@ int CJNIAudioFormat::ENCODING_DTS_HD                   = 0x00000008;
 int CJNIAudioFormat::ENCODING_DOLBY_TRUEHD             = 0x00000009;
 int CJNIAudioFormat::ENCODING_IEC61937                 = 0x0000000d;
 
+int CJNIAudioFormat::CHANNEL_OUT_MONO                  = 0x00000004;
 int CJNIAudioFormat::CHANNEL_OUT_STEREO                = 0x0000000c;
 int CJNIAudioFormat::CHANNEL_OUT_5POINT1               = 0x000000fc;
 
@@ -75,6 +76,7 @@ void CJNIAudioFormat::PopulateStaticFields()
     CJNIAudioFormat::ENCODING_PCM_16BIT = get_static_field<int>(c, "ENCODING_PCM_16BIT");
     if (sdk >= 5)
     {
+      CJNIAudioFormat::CHANNEL_OUT_MONO = get_static_field<int>(c, "CHANNEL_OUT_MONO");
       CJNIAudioFormat::CHANNEL_OUT_STEREO = get_static_field<int>(c, "CHANNEL_OUT_STEREO");
       CJNIAudioFormat::CHANNEL_OUT_5POINT1 = get_static_field<int>(c, "CHANNEL_OUT_5POINT1");
       CJNIAudioFormat::CHANNEL_OUT_FRONT_LEFT = get_static_field<int>(c, "CHANNEL_OUT_FRONT_LEFT");
