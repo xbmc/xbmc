@@ -68,11 +68,13 @@ void CVideoInfoTag::Reset()
   m_iTop250 = 0;
   m_iSeason = -1;
   m_iEpisode = -1;
+  m_iIdUniqueID = -1;
   m_uniqueIDs.clear();
   m_strDefaultUniqueID = "unknown";
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
   m_strDefaultRating = "default";
+  m_iIdRating = -1;
   m_ratings.clear();
   m_iUserRating = 0;
   m_iDbId = -1;
