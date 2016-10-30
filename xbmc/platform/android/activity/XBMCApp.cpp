@@ -547,21 +547,10 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleX = 1.0;
   float scaleY = 1.0;
 
-  CJNIWindow window = CXBMCApp::getWindow();
-  if (window)
-  {
-    CJNIView view(window.getDecorView());
-    if (view)
-    {
-      CJNIDisplay display = view.getDisplay();
-      if (display)
-      {
-        RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
-        scaleX = (double)display.getWidth() / renderRes.iWidth;
-        scaleY = (double)display.getHeight() / renderRes.iHeight;
-      }
-    }
-  }
+  CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
+  RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
+  scaleX = (double)r.width() / renderRes.iWidth;
+  scaleY = (double)r.height() / renderRes.iHeight;
 
   return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
 }
@@ -659,7 +648,7 @@ bool CXBMCApp::StartActivity(const std::string &package, const std::string &inte
     if (!jniURI)
       return false;
 
-    newIntent.setDataAndType(jniURI, dataType); 
+    newIntent.setDataAndType(jniURI, dataType);
   }
 
   newIntent.setPackage(package);
@@ -786,7 +775,7 @@ float CXBMCApp::GetSystemVolume()
   CJNIAudioManager audioManager(getSystemService("audio"));
   if (audioManager)
     return (float)audioManager.getStreamVolume() / GetMaxSystemVolume();
-  else 
+  else
   {
     android_printf("CXBMCApp::GetSystemVolume: Could not get Audio Manager");
     return 0;

@@ -123,6 +123,12 @@ void CJNIMainActivity::clearVideoView()
                     "clearVideoView", "()V");
 }
 
+CJNIRect CJNIMainActivity::getVideoViewSurfaceRect()
+{
+  return call_method<jhobject>(m_context,
+                               "getVideoViewSurfaceRect", "()Landroid/graphics/Rect;");
+}
+
 void CJNIMainActivity::setVideoViewSurfaceRect(int l, int t, int r, int b)
 {
   call_method<void>(m_context,
