@@ -242,9 +242,9 @@ public:
    \brief Add a function f to this job manager for asynchronously execution.
    */
   template<typename F>
-  void Submit(F&& f)
+  void Submit(F&& f, CJob::PRIORITY priority = CJob::PRIORITY_LOW)
   {
-    AddJob(new CLambdaJob<F>(std::forward<F>(f)), nullptr);
+    AddJob(new CLambdaJob<F>(std::forward<F>(f)), nullptr, priority);
   }
 
   /*!
