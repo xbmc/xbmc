@@ -695,6 +695,11 @@ CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuid
 
 void CPVRRefreshTimelineItemsThread::Process()
 {
+  static const int BOOSTED_SLEEPS_THRESHOLD = 4;
+
+  int iLastEpgItemsCount = 0;
+  int iUpdatesWithoutChange = 0;
+
   while (!m_bStop)
   {
     if (m_pGuideWindow->RefreshTimelineItems() && !m_bStop)
@@ -702,6 +707,25 @@ void CPVRRefreshTimelineItemsThread::Process()
       CGUIMessage m(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0, ObservableMessageEpg);
       KODI::MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(m);
     }
-    Sleep(5000);
+
+    // in order to fill the guide window asap, use a short update interval until we the
+    // same amount of epg events for BOOSTED_SLEEPS_THRESHOLD + 1 times in a row .
+    if (iUpdatesWithoutChange < BOOSTED_SLEEPS_THRESHOLD)
+    {
+      int iCurrentEpgItemsCount = m_pGuideWindow->CurrentDirectory().Size();
+
+      if (iCurrentEpgItemsCount == iLastEpgItemsCount)
+        iUpdatesWithoutChange++;
+      else
+        iUpdatesWithoutChange = 0; // reset
+
+      iLastEpgItemsCount = iCurrentEpgItemsCount;
+
+      Sleep(1000); // boosted update cycle
+    }
+    else
+    {
+      Sleep(5000); // normal update cycle
+    }
   }
 }
