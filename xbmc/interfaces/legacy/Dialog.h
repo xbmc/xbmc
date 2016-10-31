@@ -138,7 +138,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Dialog
-      /// \python_func{ xbmcgui.Dialog().select(heading, list[, autoclose,preselect]) }
+      /// \python_func{ xbmcgui.Dialog().select(heading, list[, autoclose, preselect, useDetails]) }
       ///------------------------------------------------------------------------
       ///
       /// **Select dialog**
