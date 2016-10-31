@@ -58,7 +58,7 @@ void CDVDVideoPPFFmpeg::Dispose()
     {
       if( m_FrameBuffer.data[i] )
       {
-        av_free(&(m_FrameBuffer.data[i]));
+        av_freep(&(m_FrameBuffer.data[i]));
         m_FrameBuffer.data[i] = NULL;
         m_FrameBuffer.iLineSize[i] = 0;
       }
