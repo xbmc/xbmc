@@ -93,6 +93,7 @@ public:
   const int GetYear() const;
   const bool HasPremiered() const;
   const CDateTime& GetPremiered() const;
+  const CDateTime& GetFirstAired() const;
   const std::string GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
