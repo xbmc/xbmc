@@ -132,6 +132,7 @@ protected:
   bool            m_drop;
   int             m_codecControlFlags;
   int             m_state;
+  int             m_noPictureLoop;
 
   CJNISurface    *m_surface;
   unsigned int    m_textureId;
