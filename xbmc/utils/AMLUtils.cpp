@@ -140,6 +140,14 @@ bool aml_permissions()
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/class/ppmgr/ppmgr_3d_mode");
     }
+    if (!SysfsUtils::HasRW("/sys/class/vfm/map"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/vfm/map");
+    }
+    if (!SysfsUtils::HasRW("/sys/class/tsync/enable"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/tsync/enable");
+    }
 #ifndef TARGET_ANDROID
     if (!SysfsUtils::HasRW("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq"))
     {
