@@ -82,6 +82,7 @@ SRCS      += LinkAddress.cpp
 SRCS      += RouteInfo.cpp
 SRCS      += InetAddress.cpp
 SRCS      += NetworkInterface.cpp
+SRCS      += Rect.cpp
 
 LIB        = jni.a
 

@@ -82,8 +82,8 @@ set(SOURCES Activity.cpp
             RouteInfo.cpp
             InetAddress.cpp
             NetworkInterface.cpp
+            Rect.cpp
             )
-
 
 set(HEADERS Activity.h
             ApplicationInfo.h
@@ -169,6 +169,7 @@ set(HEADERS Activity.h
             RouteInfo.h
             InetAddress.h
             NetworkInterface.h
+            Rect.h
             jutils/jutils.hpp
             jutils/jutils-details.hpp)
 
