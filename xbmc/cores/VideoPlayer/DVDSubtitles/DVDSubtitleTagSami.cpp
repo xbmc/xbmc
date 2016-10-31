@@ -180,7 +180,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
       pos = del_start;
       m_flag[FLAG_LANGUAGE] = false;
     }
-    else if (fullTag == "<br>" && !strUTF8.empty())
+    else if (StringUtils::StartsWith(fullTag, "<br") && !strUTF8.empty())
     {
       strUTF8.insert(pos, "\n");
       pos += 1;
