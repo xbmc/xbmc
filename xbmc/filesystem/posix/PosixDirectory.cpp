@@ -111,12 +111,27 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
 bool CPosixDirectory::Create(const CURL& url)
 {
-  if (mkdir(url.Get().c_str(), 0755) != 0)
+  if (!Create(url.Get()))
+    return Exists(url);
+  
+  return true;
+}
+
+bool CPosixDirectory::Create(std::string path)
+{
+  if (mkdir(path.c_str(), 0755) != 0)
   {
-    if (errno == EEXIST)
-      return Exists(url);
-    else
-      return false;
+    if (errno == ENOENT)
+    {
+      auto sep = path.rfind('/');
+      if (sep == std::string::npos)
+        return false;
+
+      if (Create(path.substr(0, sep)))
+        return Create(path);
+    }
+
+    return false;
   }
   return true;
 }
