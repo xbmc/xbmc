@@ -246,7 +246,7 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
 
     // create a buffer large enough for the resulting image
     GetScale(width, height, dest_width, dest_height);
-    uint32_t *buffer = (uint32_t*) av_malloc(dest_width * dest_height);
+    uint32_t *buffer = (uint32_t*) av_malloc(dest_width * dest_height * sizeof(uint32_t));
     if (buffer)
     {
       if (ScaleImage(pixels, width, height, pitch,
@@ -298,7 +298,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
-      uint32_t *scaled = (uint32_t*) av_malloc(width * height);
+      uint32_t *scaled = (uint32_t*) av_malloc(width * height * sizeof(uint32_t));
       if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
                      (uint8_t *)scaled, width, height, width * 4))
       {
