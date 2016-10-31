@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include "Application.h"
 #include "RarManager.h"
 #include "Util.h"
 #include "utils/CharsetConverter.h"
@@ -74,7 +75,7 @@ public:
   }
   ~progress_info()
   {
-    if (shown)
+    if (shown && g_application.IsCurrentThread())
     {
       // close progress dialog
       CGUIDialogProgress* dlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -88,7 +89,7 @@ public:
   bool progress(int progress, const char *text)
   {
     bool cont(true);
-    if (shown || showTime.IsTimePast())
+    if ((shown || showTime.IsTimePast()) && g_application.IsCurrentThread())
     {
       // grab the busy and show it
       CGUIDialogProgress* dlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
