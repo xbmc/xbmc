@@ -414,29 +414,33 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase /* = false */)
 {
   CEpgInfoTagPtr infoTag;
-  CSingleLock lock(m_critSection);
-  std::map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.find(tag->StartAsUTC());
-  bool bNewTag(false);
-  if (it != m_tags.end())
+
   {
-    infoTag = it->second;
-  }
-  else
-  {
-    infoTag.reset(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
-    infoTag->SetUniqueBroadcastID(tag->UniqueBroadcastID());
-    m_tags.insert(std::make_pair(tag->StartAsUTC(), infoTag));
-    bNewTag = true;
+    CSingleLock lock(m_critSection);
+    std::map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.find(tag->StartAsUTC());
+    bool bNewTag(false);
+    if (it != m_tags.end())
+    {
+      infoTag = it->second;
+    }
+    else
+    {
+      infoTag.reset(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
+      infoTag->SetUniqueBroadcastID(tag->UniqueBroadcastID());
+      m_tags.insert(std::make_pair(tag->StartAsUTC(), infoTag));
+      bNewTag = true;
+    }
+
+    infoTag->Update(*tag, bNewTag);
+    infoTag->SetEpg(this);
+    infoTag->SetPVRChannel(m_pvrChannel);
+
+    if (bUpdateDatabase)
+      m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
   }
 
-  infoTag->Update(*tag, bNewTag);
-  infoTag->SetEpg(this);
-  infoTag->SetPVRChannel(m_pvrChannel);
   infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
   infoTag->SetRecording(g_PVRRecordings->GetRecordingForEpgTag(infoTag));
-
-  if (bUpdateDatabase)
-    m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
 
   return true;
 }
