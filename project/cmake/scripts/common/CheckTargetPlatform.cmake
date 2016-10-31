@@ -46,7 +46,8 @@ function(check_install_permissions install_dir have_perms)
   set(${have_perms} TRUE)
   execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/lib/kodi
                   COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/share/kodi
-                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/lib/kodi/.cmake-inst-test ${install_dir}/share/kodi/.cmake-inst-test
+                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/lib/kodi/.cmake-inst-test
+                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/share/kodi/.cmake-inst-test
                   RESULT_VARIABLE permtest
                   OUTPUT_VARIABLE output
                   ERROR_VARIABLE  output
