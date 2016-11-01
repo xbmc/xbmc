@@ -2888,6 +2888,7 @@ bool CFileItem::SkipLocalArt() const
        || IsLibraryFolder()
        || IsParentFolder()
        || IsLiveTV()
+       || IsPVRRecording()
        || IsDVD());
 }
 
