@@ -677,6 +677,7 @@ namespace XBMCAddon
         }
         item->GetVideoInfoTag()->m_streamDetails.AddStream(subtitle);
       }
+      item->GetVideoInfoTag()->m_streamDetails.DetermineBestStreams();
     } // end ListItem::addStreamInfo
 
     void ListItem::addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems /* = false */)
