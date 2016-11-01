@@ -21,8 +21,6 @@ else()
   endif()
 endif()
 
-find_package(CXX11 REQUIRED)
-
 set(MMAL_FOUND 1 CACHE INTERNAL "MMAL")
 set(OMX_FOUND 1 CACHE INTERNAL "OMX")
 set(OMXLIB_FOUND 1 CACHE INTERNAL "OMX")
