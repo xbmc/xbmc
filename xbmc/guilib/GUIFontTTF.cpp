@@ -615,7 +615,7 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
   if (letter < 255)
   {
     character_t ch = (style << 8) | letter;
-    if (m_charquick[ch])
+    if (ch < LOOKUPTABLE_SIZE && m_charquick[ch])
       return m_charquick[ch];
   }
 
