@@ -504,7 +504,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   // in case of mpegts and we have not seen pat/pmt, defer creation of streams
   if (!skipCreateStreams || m_pFormatContext->nb_programs > 0)
   {
-    unsigned int nProgram(~0);
+    unsigned int nProgram = UINT_MAX;
     if (m_pFormatContext->nb_programs > 0)
     {
       // select the corrrect program if requested
@@ -524,26 +524,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       }
       else if (m_pFormatContext->iformat && strcmp(m_pFormatContext->iformat->name, "hls,applehttp") == 0)
       {
-        int bandwidth = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH) * 1000;
-        if (bandwidth <= 0)
-          bandwidth = INT_MAX;
-
-        int selectedBitrate = 0;
-        for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
-        {
-          int strBitrate = 0;
-          AVDictionaryEntry *tag = av_dict_get(m_pFormatContext->programs[i]->metadata, "variant_bitrate", NULL, 0);
-          if (tag)
-            strBitrate = atoi(tag->value);
-          else
-            continue;
-
-          if (selectedBitrate < strBitrate && strBitrate < bandwidth)
-          {
-            selectedBitrate = strBitrate;
-            nProgram = i;
-          }
-        }
+        nProgram = HLSSelectProgram();
       }
     }
     CreateStreams(nProgram);
@@ -1771,6 +1752,63 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
   }
   return false;
+}
+
+unsigned int CDVDDemuxFFmpeg::HLSSelectProgram()
+{
+  unsigned int prog = UINT_MAX;
+
+  int bandwidth = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH) * 1000;
+  if (bandwidth <= 0)
+    bandwidth = INT_MAX;
+
+  int selectedBitrate = 0;
+  int selectedRes = 0;
+  for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
+  {
+    int strBitrate = 0;
+    AVDictionaryEntry *tag = av_dict_get(m_pFormatContext->programs[i]->metadata, "variant_bitrate", NULL, 0);
+    if (tag)
+      strBitrate = atoi(tag->value);
+    else
+      continue;
+
+    int strRes = 0;
+    for (unsigned int j = 0; j < m_pFormatContext->programs[i]->nb_stream_indexes; j++)
+    {
+      int idx = m_pFormatContext->programs[i]->stream_index[j];
+      AVStream* pStream = m_pFormatContext->streams[idx];
+      if (pStream && pStream->codecpar &&
+          pStream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+      {
+        strRes = pStream->codecpar->width * pStream->codecpar->height;
+      }
+    }
+
+    if (strRes < selectedRes && selectedBitrate < bandwidth)
+      continue;
+
+    bool want = false;
+
+    if (strBitrate <= bandwidth)
+    {
+      if (strBitrate > selectedRes || strRes > selectedRes)
+        want = true;
+    }
+    else
+    {
+      if (strRes < selectedBitrate)
+        want = true;
+    }
+
+    if (want)
+    {
+      selectedRes = strRes;
+      selectedBitrate = strBitrate;
+      prog = i;
+    }
+  }
+  return prog;
 }
 
 std::string CDVDDemuxFFmpeg::GetStereoModeFromMetadata(AVDictionary *pMetadata)
