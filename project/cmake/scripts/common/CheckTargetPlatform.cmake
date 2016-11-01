@@ -43,28 +43,21 @@ function(check_install_permissions install_dir have_perms)
   # param[in] install_dir directory to check for write permissions
   # param[out] have_perms wether we have permissions to install to install_dir
 
-  set(${have_perms} TRUE)
-  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/lib/kodi
-                  COMMAND ${CMAKE_COMMAND} -E make_directory ${install_dir}/share/kodi
-                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/lib/kodi/.cmake-inst-test
-                  COMMAND ${CMAKE_COMMAND} -E touch ${install_dir}/share/kodi/.cmake-inst-test
-                  RESULT_VARIABLE permtest
-                  OUTPUT_VARIABLE output
-                  ERROR_VARIABLE  output
-                  )
+  set(testfile_lib ${install_dir}/lib/kodi/.cmake-inst-test)
+  set(testfile_share ${install_dir}/share/kodi/.cmake-inst-test)
+  get_filename_component(testdir_lib ${testfile_lib} DIRECTORY)
+  get_filename_component(testdir_share ${testfile_share} DIRECTORY)
 
-  message(STATUS "============ DEBUG ADDON PACKAGING  ======")
-  message(STATUS "check_install_permissions ${install_dir}: ${permtest}")
-  message(STATUS "${output}")
-  execute_process(COMMAND find ${install_dir})
-  execute_process(COMMAND ls -laR ${install_dir})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${testdir_lib})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${testdir_share})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E touch ${testfile_lib})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E touch ${testfile_share})
 
-  if(${permtest} GREATER 0)
-    set(${have_perms} FALSE)
+  if(EXISTS ${testfile_lib} AND EXISTS ${testfile_share})
+    set(${have_perms} True PARENT_SCOPE)
+  else()
+    message(STATUS "check_install_permissions ${install_dir}: failed to create files")
+    set(${have_perms} False PARENT_SCOPE)
   endif()
-  set(${have_perms} "${${have_perms}}" PARENT_SCOPE)
-
-  if(EXISTS ${install_dir}/lib/kodi/.cmake-inst-test OR EXISTS ${install_dir}/share/kodi/.cmake-inst-test)
-    file(REMOVE ${install_dir}/lib/kodi/.cmake-inst-test ${install_dir}/share/kodi/.cmake-inst-test)
-  endif()
+  file(REMOVE ${testfile_lib} ${testfile_share})
 endfunction()
