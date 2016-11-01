@@ -154,6 +154,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
         {
           CURL finalUrl(curlFile.GetURL());
           finalUrl.SetProtocolOptions(origUrl.GetProtocolOptions());
+          finalUrl.SetUserName(origUrl.GetUserName());
+          finalUrl.SetPassword(origUrl.GetPassWord());
           finalFileitem.SetPath(finalUrl.Get());
         }
         curlFile.Close();
