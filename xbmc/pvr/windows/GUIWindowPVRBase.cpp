@@ -888,8 +888,7 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
            ((*it)->HasEPGInfoTag() && (*it)->GetEPGInfoTag()->HasPVRChannel() && (*it)->GetEPGInfoTag()->PVRChannelNumber() == iChannelNumber))
         {
           // different handling for guide grid
-          if ((GetID() == WINDOW_TV_GUIDE || GetID() == WINDOW_RADIO_GUIDE) &&
-              m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE)
+          if (GetID() == WINDOW_TV_GUIDE || GetID() == WINDOW_RADIO_GUIDE)
           {
             CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
             if ((*it)->HasEPGInfoTag() && (*it)->GetEPGInfoTag()->HasPVRChannel())

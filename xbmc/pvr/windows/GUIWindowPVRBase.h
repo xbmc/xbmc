@@ -39,14 +39,6 @@ class CGUIDialogProgressBarHandle;
 
 namespace PVR
 {
-  enum EpgGuideView
-  {
-    GUIDE_VIEW_TIMELINE = 10,
-    GUIDE_VIEW_NOW      = 11,
-    GUIDE_VIEW_NEXT     = 12,
-    GUIDE_VIEW_CHANNEL  = 13
-  };
-
   enum EPGSelectAction
   {
     EPG_SELECT_ACTION_CONTEXT_MENU   = 0,
