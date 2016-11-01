@@ -558,7 +558,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
     else if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
-      g_application.m_pPlayer->CloseFile();
+      if (g_application.m_pPlayer->IsPlayingVideo())
+        g_application.m_pPlayer->CloseFile();
       m_bPlayingVideo = false;
 
       // first time render the next image, make sure using current display effect.
@@ -762,7 +763,8 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_STOP:
     if (m_slides.size())
       AnnouncePlayerStop(m_slides.at(m_iCurrentSlide));
-    g_application.m_pPlayer->CloseFile();
+    if (g_application.m_pPlayer->IsPlayingVideo())
+      g_application.m_pPlayer->CloseFile();
     Close();
     break;
 
