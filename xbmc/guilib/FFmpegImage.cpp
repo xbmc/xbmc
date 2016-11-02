@@ -686,6 +686,8 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   bufferoutSize = avpkt.size;
   bufferout = m_outputBuffer;
 
+  av_packet_unref(&avpkt);
+
   return true;
 }
 
