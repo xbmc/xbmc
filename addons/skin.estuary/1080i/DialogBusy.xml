@@ -50,6 +50,13 @@
 				<texture flipx="true" colordiffuse="button_focus">spinner.png</texture>
 				<animation effect="fade" end="100" time="300" delay="200">WindowOpen</animation>
 			</control>
+			<control type="progress" id="10">
+				<left>920</left>
+				<top>620</top>
+				<width>80</width>
+				<height>24</height>
+				<animation effect="fade" end="100" time="300" delay="200">WindowOpen</animation>
+			</control>
 		</control>
 	</controls>
 </window>

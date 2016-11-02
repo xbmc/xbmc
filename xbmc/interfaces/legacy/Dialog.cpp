@@ -512,6 +512,61 @@ namespace XBMCAddon
       return dlg->IsCanceled();
     }
 
+    DialogBusy::~DialogBusy() { XBMC_TRACE; deallocating(); }
+
+    void DialogBusy::deallocating()
+    {
+      XBMC_TRACE;
+
+      if (dlg && open)
+      {
+        DelayedCallGuard dg;
+        dlg->Close();
+      }
+    }
+
+    void DialogBusy::create()
+    {
+      DelayedCallGuard dcguard(languageHook);
+      CGUIDialogBusy* pDialog = static_cast<CGUIDialogBusy*>(g_windowManager.GetWindow(WINDOW_DIALOG_BUSY));
+
+      if (pDialog == nullptr)
+        throw WindowException("Error: Window is NULL, this is not possible :-)");
+
+      dlg = pDialog;
+      open = true;
+
+      pDialog->Open();
+    }
+
+    void DialogBusy::update(int percent) const
+    {
+      DelayedCallGuard dcguard(languageHook);
+
+      if (dlg == nullptr)
+        throw WindowException("Dialog not created.");
+
+      if (percent >= -1 && percent <= 100)
+        dlg->SetProgress(percent);
+
+    }
+
+    void DialogBusy::close()
+    {
+      DelayedCallGuard dcguard(languageHook);
+      if (dlg == nullptr)
+        throw WindowException("Dialog not created.");
+      dlg->Close();
+      open = false;
+    }
+
+    bool DialogBusy::iscanceled() const
+    {
+      if (dlg == nullptr)
+        throw WindowException("Dialog not created.");
+      return dlg->IsCanceled();
+    }
+
     DialogProgressBG::~DialogProgressBG() { XBMC_TRACE; deallocating(); }
 
     void DialogProgressBG::deallocating()

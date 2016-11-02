@@ -91,7 +91,7 @@ CGUIDialogBusy::CGUIDialogBusy(void)
 {
   m_loadType = LOAD_ON_GUI_INIT;
   m_bCanceled = false;
-  m_progress = 0;
+  m_progress = -1;
 }
 
 CGUIDialogBusy::~CGUIDialogBusy(void)
@@ -102,7 +102,7 @@ void CGUIDialogBusy::Open_Internal(const std::string &param /* = "" */)
 {
   m_bCanceled = false;
   m_bLastVisible = true;
-  m_progress = 0;
+  m_progress = -1;
 
   CGUIDialog::Open_Internal(false, param);
 }
@@ -121,7 +121,7 @@ void CGUIDialogBusy::DoProcess(unsigned int currentTime, CDirtyRegionList &dirty
   {
     CGUIProgressControl *progress = (CGUIProgressControl *)control;
     progress->SetPercentage(m_progress);
-    progress->SetVisible(m_progress > 0);
+    progress->SetVisible(m_progress > -1);
   }
 
   CGUIDialog::DoProcess(currentTime, dirtyregions);
