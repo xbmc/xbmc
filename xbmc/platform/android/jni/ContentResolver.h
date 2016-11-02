@@ -23,6 +23,8 @@
 #include <vector>
 
 #include "JNIBase.h"
+#include "URIPermission.h"
+#include "List.h"
 
 class CJNICursor;
 class CJNIURI;
@@ -30,9 +32,11 @@ class CJNIURI;
 class CJNIContentResolver : public CJNIBase
 {
 public:
-  CJNIContentResolver(const jni::jhobject &object) : CJNIBase(object) {};
+  CJNIContentResolver(const jni::jhobject &object) : CJNIBase(object) {}
 
   CJNICursor query(const CJNIURI &uri, const std::vector<std::string> &projection, const std::string &selection, const std::vector<std::string> &selectionArgs, const std::string &sortOrder);
+  void takePersistableUriPermission(const CJNIURI &uri, int modeFlags);
+  CJNIList<CJNIURIPermission> getPersistedUriPermissions();
 
   static void PopulateStaticFields();
   static std::string SCHEME_CONTENT;

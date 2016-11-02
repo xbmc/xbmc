@@ -36,7 +36,7 @@
 			<top>15</top>
 			<width>1770</width>
 			<height>100</height>
-			<label>$INFO[Player.SeekNumeric]</label>
+			<label>$INFO[Player.SeekNumeric(hh:mm:ss)]</label>
 			<font>font12</font>
 			<shadowcolor>black</shadowcolor>
 		</control>

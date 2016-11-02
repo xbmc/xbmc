@@ -24,7 +24,6 @@
 
 #include "jutils/jutils-details.hpp"
 
-#include "platform/android/activity/JNIMainActivity.h"
 #include <algorithm>
 
 using namespace jni;
@@ -33,17 +32,31 @@ int CJNIAudioManager::STREAM_MUSIC(3);
 
 int CJNIAudioManager::AUDIOFOCUS_GAIN(0x00000001);
 int CJNIAudioManager::AUDIOFOCUS_LOSS(0xffffffff);
+int CJNIAudioManager::AUDIOFOCUS_GAIN_TRANSIENT(0x00000002);
+int CJNIAudioManager::AUDIOFOCUS_LOSS_TRANSIENT(0xfffffffe);
 int CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED(0x00000001);
 int CJNIAudioManager::AUDIOFOCUS_REQUEST_FAILED(0x00000000);
+
+int CJNIAudioManager::GET_DEVICES_ALL(0x00000003);
+int CJNIAudioManager::GET_DEVICES_INPUTS(0x00000001);
+int CJNIAudioManager::GET_DEVICES_OUTPUTS(0x00000002);
 
 void CJNIAudioManager::PopulateStaticFields()
 {
   jhclass clazz = find_class("android/media/AudioManager");
-  STREAM_MUSIC  = (get_static_field<int>(clazz, "STREAM_MUSIC"));
-  AUDIOFOCUS_GAIN  = (get_static_field<int>(clazz, "AUDIOFOCUS_GAIN"));
-  AUDIOFOCUS_LOSS  = (get_static_field<int>(clazz, "AUDIOFOCUS_LOSS"));
-  AUDIOFOCUS_REQUEST_GRANTED  = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_GRANTED"));
-  AUDIOFOCUS_REQUEST_FAILED  = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_FAILED"));
+  STREAM_MUSIC = (get_static_field<int>(clazz, "STREAM_MUSIC"));
+  AUDIOFOCUS_GAIN = (get_static_field<int>(clazz, "AUDIOFOCUS_GAIN"));
+  AUDIOFOCUS_LOSS = (get_static_field<int>(clazz, "AUDIOFOCUS_LOSS"));
+  AUDIOFOCUS_REQUEST_GRANTED = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_GRANTED"));
+  AUDIOFOCUS_REQUEST_FAILED = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_FAILED"));
+
+  int sdk = CJNIBase::GetSDKVersion();
+  if (sdk >= 23)
+  {
+    GET_DEVICES_ALL = (get_static_field<int>(clazz, "GET_DEVICES_ALL"));
+    GET_DEVICES_INPUTS = (get_static_field<int>(clazz, "GET_DEVICES_INPUTS"));
+    GET_DEVICES_OUTPUTS = (get_static_field<int>(clazz, "GET_DEVICES_OUTPUTS"));
+  }
 }
 
 int CJNIAudioManager::getStreamMaxVolume()
@@ -95,6 +108,12 @@ bool CJNIAudioManager::isWiredHeadsetOn()
                                "()Z");
 }
 
+CJNIAudioDeviceInfos CJNIAudioManager::getDevices(int flags)
+{
+  return jcast<CJNIAudioDeviceInfos>(call_method<jhobjectArray>(m_object,
+                                "getDevices", "(I)[Landroid/media/AudioDeviceInfo;", flags));
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 CJNIAudioManagerAudioFocusChangeListener* CJNIAudioManagerAudioFocusChangeListener::m_listenerInstance(NULL);
@@ -102,14 +121,10 @@ CJNIAudioManagerAudioFocusChangeListener* CJNIAudioManagerAudioFocusChangeListen
 CJNIAudioManagerAudioFocusChangeListener::CJNIAudioManagerAudioFocusChangeListener()
 : CJNIBase(CJNIContext::getPackageName() + ".XBMCOnAudioFocusChangeListener")
 {
-  CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
-  if (!appInstance)
-    return;
-
   // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
   std::string dotClassName = GetClassName();
   std::replace(dotClassName.begin(), dotClassName.end(), '/', '.');
-  m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(dotClassName));
   m_object.setGlobal();
 
   m_listenerInstance = this;

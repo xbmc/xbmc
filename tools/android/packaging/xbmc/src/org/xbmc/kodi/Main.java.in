@@ -4,6 +4,7 @@ import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.hardware.input.InputManager;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,17 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public Surface getVideoViewSurface()
   {
     return mVideoView.getSurface();
+  }
+
+  public Rect getVideoViewSurfaceRect()
+  {
+    Rect ret = new Rect();
+    ret.top = 0;
+    ret.left = 0;
+    ret.right = mVideoView.mWidth;
+    ret.bottom = mVideoView.mHeight;
+
+    return ret;
   }
 
   public void setVideoViewSurfaceRect(final int left, final int top, final int right, final int bottom)

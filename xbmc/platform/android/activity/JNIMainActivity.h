@@ -22,6 +22,7 @@
 #include "platform/android/jni/Activity.h"
 #include "platform/android/jni/InputManager.h"
 #include "platform/android/jni/Surface.h"
+#include "platform/android/jni/Rect.h"
 
 class CJNIMainActivity : public CJNIActivity, public CJNIInputManagerInputDeviceListener
 {
@@ -46,6 +47,7 @@ public:
 
   CJNISurface getVideoViewSurface();
   void clearVideoView();
+  CJNIRect getVideoViewSurfaceRect();
   void setVideoViewSurfaceRect(int l, int t, int r, int b);
 
 private:

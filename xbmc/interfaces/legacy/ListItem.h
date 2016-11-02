@@ -647,6 +647,40 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setCast(actors) }
+      ///-----------------------------------------------------------------------
+      /// @brief Set cast including thumbnails
+      ///
+      /// @param actors            list of dictionaries (see below for relevant keys)
+      ///
+      /// - Keys:
+      /// | Label         | Description                                     |
+      /// |--------------:|:------------------------------------------------|
+      /// | name          | string (Michael C. Hall)
+      /// | role          | string (Dexter)
+      /// | thumbnail     | string (http://www.someurl.com/someimage.png)
+      /// | order         | integer (1)
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v17 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// actors = [{"name": "Actor 1", "role": "role 1"}, {"name": "Actor 2", "role": "role 2"}]
+      /// listitem.setCast(actors)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setCast(...);
+#else
+      void setCast(const std::vector<Properties>& actors);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addStreamInfo(type, values) }
       ///-----------------------------------------------------------------------
       /// @brief Add a stream with details.

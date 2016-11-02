@@ -42,6 +42,7 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 #endif
 
+constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
 // forward definition
 class CBaseTexture;
 
@@ -157,7 +158,7 @@ protected:
   color_t m_color;
 
   Character *m_char;                 // our characters
-  Character *m_charquick[256*7];     // ascii chars (7 styles) here
+  Character *m_charquick[LOOKUPTABLE_SIZE];     // ascii chars (7 styles) here
   int m_maxChars;                    // size of character array (can be incremented)
   int m_numChars;                    // the current number of cached characters
 

@@ -29,6 +29,7 @@
 #include "ListItem.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "dialogs/GUIDialogBusy.h"
 
 #define INPUT_ALPHANUM        0
 #define INPUT_NUMERIC         1
@@ -103,6 +104,36 @@ namespace XBMCAddon
                  const String& nolabel = emptyString,
                  const String& yeslabel = emptyString,
                  int autoclose = 0);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().info(listitem) }
+      ///------------------------------------------------------------------------
+      ///
+      /// **Info dialog**
+      ///
+      /// Show the corresponding info dialog for a given listitem
+      ///
+      /// @param listitem       xbmcgui.ListItem - ListItem to show info for.
+      /// @return Returns whether the dialog opened successfully.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v17 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.Dialog()
+      /// ret = dialog.info(listitem)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      info(...);
+#else
+      bool info(const ListItem* item);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -624,7 +655,6 @@ namespace XBMCAddon
       /// @param line3          [opt] string or unicode - line #3 text.
       ///
       /// @note It is preferred to only use line1 as it is actually a multi-line text. In this case line2 and line3 must be omitted.
-      /// @note If percent == 0, the progressbar will be hidden.
       ///
       ///
       ///------------------------------------------------------------------------
@@ -691,6 +721,116 @@ namespace XBMCAddon
       bool iscanceled();
 #endif
     };
+
+    //@}
+
+    ///
+    /// \defgroup python_DialogBusy DialogBusy
+    /// \ingroup python_xbmcgui
+    /// @{
+    /// @brief <b>Kodi's busy dialog class</b>
+    ///
+    ///-----------------------------------------------------------------------
+    /// @python_v17 New class added.
+    ///
+    class DialogBusy : public AddonClass
+    {
+      CGUIDialogBusy* dlg;
+      bool open;
+
+    protected:
+      virtual void deallocating();
+
+    public:
+
+      DialogBusy() : dlg(NULL), open(false) {}
+      virtual ~DialogBusy();
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogBusy
+      /// \python_func{ xbmcgui.DialogBusy().create() }
+      ///------------------------------------------------------------------------
+      ///
+      /// Create and show a busy dialog.
+      ///
+      /// @note Use update() to update the progressbar.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v17 New method added
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// dialog = xbmcgui.DialogBusy()
+      /// dialog.create()
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      create(...);
+#else
+      void create();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogBusy
+      /// \python_func{ xbmcgui.DialogBusy().update(percent) }
+      ///------------------------------------------------------------------------
+      ///
+      /// Updates the busy dialog.
+      ///
+      /// @param percent        integer - percent complete. (-1:100)
+      ///
+      /// @note If percent == -1 (default), the progressbar will be hidden.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v17 New method added
+      ///
+      update(...);
+#else
+      void update(int percent) const;
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogBusy
+      /// \python_func{ xbmcgui.DialogBusy().close() }
+      ///------------------------------------------------------------------------
+      ///
+      /// Close the progress dialog.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v17 New method added
+      ///
+      close(...);
+#else
+      void close();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_DialogBusy
+      /// \python_func{ xbmcgui.DialogBusy().iscanceled() }
+      ///------------------------------------------------------------------------
+      ///
+      /// Checks if busy dialog is canceled.
+      ///
+      /// @return True if the user pressed cancel.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v17 New method added
+      ///
+      iscanceled(...);
+#else
+      bool iscanceled() const;
+#endif
+    };
+
     //@}
 
     ///

@@ -21,15 +21,19 @@
 #include "Intent.h"
 #include "jutils/jutils-details.hpp"
 #include "URI.h"
+#include "ArrayList.h"
 
 using namespace jni;
 
 std::string CJNIIntent::EXTRA_KEY_EVENT;
+std::string CJNIIntent::ACTION_OPEN_DOCUMENT_TREE;
 
 void CJNIIntent::PopulateStaticFields()
 {
   jhclass clazz = find_class("android/content/Intent");
   EXTRA_KEY_EVENT  = jcast<std::string>(get_static_field<jhstring>(clazz,"EXTRA_KEY_EVENT"));
+  if (CJNIIntent::GetSDKVersion() >= 21)
+    ACTION_OPEN_DOCUMENT_TREE  = jcast<std::string>(get_static_field<jhstring>(clazz,"ACTION_OPEN_DOCUMENT_TREE"));
 }
 
 CJNIIntent::CJNIIntent(const std::string &action) : CJNIBase("android/content/Intent")
@@ -101,10 +105,17 @@ bool CJNIIntent::hasCategory(const std::string &category) const
     jcast<jhstring>(category));
 }
 
+CJNIIntent CJNIIntent::putExtra(const std::string &name, const std::string &value)
+{
+  return (CJNIIntent)call_method<jhobject>(m_object,
+    "putExtra", "(Ljava/lang/String;Ljava/lang/String;)Landroid/content/Intent;",
+    jcast<jhstring>(name), jcast<jhstring>(value));
+}
+
 void CJNIIntent::addFlags(int flags)
 {
   call_method<jhobject>(m_object,
-    "addFlags", "(I;)Landroid/content/Intent;",
+    "addFlags", "(I)Landroid/content/Intent;",
     flags);
 }
 
@@ -168,4 +179,10 @@ CJNIURI CJNIIntent::getData() const
 {
   return (CJNIURI)call_method<jhobject>(m_object,
     "getData","()Landroid/net/Uri;");
+}
+
+CJNIArrayList<std::string> CJNIIntent::getStringArrayListExtra(const std::string &key) const
+{
+  return call_method<jhobject>(m_object,
+    "getStringArrayListExtra","(Ljava/lang/String;)Ljava/util/ArrayList;", jcast<jhstring>(key));
 }

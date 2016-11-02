@@ -61,7 +61,29 @@ set(SOURCES Activity.cpp
             WifiManager.cpp
             WifiManagerMulticastLock.cpp
             Window.cpp
-            WindowManager.cpp)
+            WindowManager.cpp
+            Notification.cpp
+            Settings.cpp
+            URIPermission.cpp
+            DocumentsContract.cpp
+            Document.cpp
+            AudioTimestamp.cpp
+            ArrayList.cpp
+            RecognizerIntent.cpp
+            AudioDeviceInfo.cpp
+            PlaybackParams.cpp
+            MediaTimestamp.cpp
+            MediaSync.cpp
+            AudioAttributes.cpp
+            Image.cpp
+            Network.cpp
+            LinkProperties.cpp
+            LinkAddress.cpp
+            RouteInfo.cpp
+            InetAddress.cpp
+            NetworkInterface.cpp
+            Rect.cpp
+            )
 
 set(HEADERS Activity.h
             ApplicationInfo.h
@@ -127,6 +149,27 @@ set(HEADERS Activity.h
             WifiManagerMulticastLock.h
             Window.h
             WindowManager.h
+            Notification.h
+            Settings.h
+            URIPermission.h
+            DocumentsContract.h
+            Document.h
+            AudioTimestamp.h
+            ArrayList.h
+            RecognizerIntent.h
+            AudioDeviceInfo.h
+            PlaybackParams.h
+            MediaTimestamp.h
+            MediaSync.h
+            AudioAttributes.h
+            Image.h
+            Network.h
+            LinkProperties.h
+            LinkAddress.h
+            RouteInfo.h
+            InetAddress.h
+            NetworkInterface.h
+            Rect.h
             jutils/jutils.hpp
             jutils/jutils-details.hpp)
 

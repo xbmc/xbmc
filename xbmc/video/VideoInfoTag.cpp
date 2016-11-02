@@ -68,11 +68,13 @@ void CVideoInfoTag::Reset()
   m_iTop250 = 0;
   m_iSeason = -1;
   m_iEpisode = -1;
+  m_iIdUniqueID = -1;
   m_uniqueIDs.clear();
   m_strDefaultUniqueID = "unknown";
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
   m_strDefaultRating = "default";
+  m_iIdRating = -1;
   m_ratings.clear();
   m_iUserRating = 0;
   m_iDbId = -1;
@@ -718,11 +720,13 @@ const std::string& CVideoInfoTag::GetDefaultRating() const
 
 const bool CVideoInfoTag::HasYear() const
 {
-  return m_premiered.IsValid();
+  return m_firstAired.IsValid() || m_premiered.IsValid();
 }
 
 const int CVideoInfoTag::GetYear() const
 {
+  if (m_firstAired.IsValid())
+    return GetFirstAired().GetYear();
   if (m_premiered.IsValid())
     return GetPremiered().GetYear();
   return 0;
@@ -736,6 +740,11 @@ const bool CVideoInfoTag::HasPremiered() const
 const CDateTime& CVideoInfoTag::GetPremiered() const
 {
   return m_premiered;
+}
+
+const CDateTime& CVideoInfoTag::GetFirstAired() const
+{
+  return m_firstAired;
 }
 
 const std::string CVideoInfoTag::GetUniqueID(std::string type) const

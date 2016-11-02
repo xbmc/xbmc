@@ -23,7 +23,6 @@
 #include "InputManager.h"
 #include "ClassLoader.h"
 #include "Context.h"
-#include "platform/android/activity/JNIMainActivity.h"
 
 #include "jutils/jutils-details.hpp"
 
@@ -36,14 +35,10 @@ CJNIInputManagerInputDeviceListener* CJNIInputManagerInputDeviceListener::m_list
 CJNIInputManagerInputDeviceListener::CJNIInputManagerInputDeviceListener()
   : CJNIBase(CJNIContext::getPackageName() + ".XBMCInputDeviceListener")
 {
-  CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
-  if (!appInstance)
-    return;
-
   // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
   std::string dotClassName = GetClassName();
   std::replace(dotClassName.begin(), dotClassName.end(), '/', '.');
-  m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
+  m_object = new_object(CJNIContext::getClassLoader().loadClass(dotClassName));
   m_object.setGlobal();
 
   m_listenerInstance = this;

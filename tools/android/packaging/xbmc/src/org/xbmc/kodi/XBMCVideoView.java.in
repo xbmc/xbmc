@@ -16,12 +16,16 @@ import android.view.SurfaceView;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.view.View;
 
 public class XBMCVideoView extends SurfaceView implements
     SurfaceHolder.Callback
 {
   private static final String TAG = "XBMCVideoPlayView";
+
   public boolean mHasHolder = false;
+  public int mWidth = -1;
+  public int mHeight = -1;
 
   public XBMCVideoView(Context context)
   {
@@ -104,6 +108,10 @@ public class XBMCVideoView extends SurfaceView implements
   {
     Log.d(TAG, "Created");
     mHasHolder = true;
+
+    View v = getRootView();
+    mWidth = v.getWidth();
+    mHeight = v.getHeight();
   }
 
   @Override
@@ -112,6 +120,10 @@ public class XBMCVideoView extends SurfaceView implements
   {
     Log.d(TAG, "Changed, format:" + format + ", width:" + width
         + ", height:" + height);
+
+    View v = getRootView();
+    mWidth = v.getWidth();
+    mHeight = v.getHeight();
   }
 
   @Override

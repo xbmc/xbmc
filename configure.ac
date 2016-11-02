@@ -2408,3 +2408,8 @@ AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"
 echo -e "$final_message\n"
+echo "#------------------------------------ WARNING ----------------------------------------#"
+echo "The autotools based build system is deprecated and will be removed in the next version!"
+echo "Please switch to cmake, see project/cmake/README.md"
+echo "#-------------------------------------------------------------------------------------#"
+echo -e "\n\n"

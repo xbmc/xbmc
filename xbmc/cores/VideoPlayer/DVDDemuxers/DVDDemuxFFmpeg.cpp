@@ -798,7 +798,7 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
           {
             if (value[0] == "swfurl" || value[0] == "SWFPlayer")
               swfurl = value[1];
-            if (value[0] == "swfvfy" && value[1] == "true")
+            if (value[0] == "swfvfy" && (value[1] == "true" || value[1] == "1"))
               swfvfy = true;
             else
               av_dict_set(&options, it->second.c_str(), value[1].c_str(), 0);

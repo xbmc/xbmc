@@ -404,7 +404,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
 
   bool needsCopy = false;
   int pixelsSize = pitch * height;
-  bool aligned = (((uintptr_t)(const void *)(pixels)) % (16) == 0);
+  bool aligned = (((uintptr_t)(const void *)(pixels)) % (32) == 0);
   if (!aligned)
     CLog::Log(LOGDEBUG, "Alignment of external buffer is not suitable for ffmpeg intrinsics - please fix your malloc");
 
