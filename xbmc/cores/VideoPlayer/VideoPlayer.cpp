@@ -332,14 +332,14 @@ static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStr
   return false;
 }
 
-bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, SelectionStream& out)
+bool CSelectionStreams::Get(StreamType type, unsigned int flags, SelectionStream& out)
 {
   CSingleLock lock(m_section);
   for(size_t i=0;i<m_Streams.size();i++)
   {
     if(m_Streams[i].type != type)
       continue;
-    if((m_Streams[i].flags & flag) != flag)
+    if((m_Streams[i].flags & flags) != flags)
       continue;
     out = m_Streams[i];
     return true;
@@ -3857,7 +3857,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 
   SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, 0);
 
-  if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
+  if ((hint.flags & CDemuxStream::FLAG_DISP_ATTACHED_PIC) != 0)
     return false;
 
   // set desired refresh rate
@@ -4907,8 +4907,8 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (stream.language.empty())
         stream.language = info.language;
 
-      if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
-        stream.flags = static_cast<CDemuxStream::EFlags>(info.flag);
+      if (info.flag != CDemuxStream::FLAG_NONE)
+        stream.flags = info.flag;
     }
 
     return m_SelectionStreams.IndexOf(STREAM_SUBTITLE,
@@ -4929,8 +4929,8 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
   ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(m_item.GetPath(), filename);
   s.name = info.name;
   s.language = info.language;
-  if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
-    s.flags = static_cast<CDemuxStream::EFlags>(info.flag);
+  if (info.flag != CDemuxStream::FLAG_NONE)
+    s.flags = info.flag;
 
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.demuxerId, s.id);

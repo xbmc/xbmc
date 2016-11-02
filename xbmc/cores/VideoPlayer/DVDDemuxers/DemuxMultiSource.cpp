@@ -234,7 +234,7 @@ void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
 
     if (stream->flags == CDemuxStream::FLAG_NONE)
     {
-      stream->flags = static_cast<CDemuxStream::EFlags>(info.flag);
+      stream->flags = info.flag;
     }
     if (stream->language[0] == '\0')
     {

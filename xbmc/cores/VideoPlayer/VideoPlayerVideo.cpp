@@ -126,7 +126,7 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   info = m_renderManager.GetRenderInfo();
 
   m_pullupCorrection.ResetVFRDetection();
-  if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
+  if ((hint.flags & CDemuxStream::FLAG_DISP_ATTACHED_PIC) != 0)
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
