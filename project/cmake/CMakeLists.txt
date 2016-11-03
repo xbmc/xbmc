@@ -378,6 +378,16 @@ if(NOT CMAKE_CROSSCOMPILING)
   add_custom_target(check-commits ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/scripts/common/CheckCommits.cmake
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
   set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
+
+  # Documentation
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
+    add_custom_target(doc
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${CORE_SOURCE_DIR}/doxygen_resources/Doxyfile.doxy
+                      COMMAND ${CMAKE_COMMAND} -E echo "Documentation built to: file://${CORE_SOURCE_DIR}/docs/html/index.html"
+                      WORKING_DIRECTORY ${CORE_SOURCE_DIR}/doxygen_resources
+                      COMMENT "Generating Doxygen documentation" VERBATIM)
+  endif()
 endif()
 
 # code coverage
