@@ -619,8 +619,6 @@ bool CApplication::Create()
   if (!CSettings::GetInstance().Initialize())
     return false;
 
-  g_powerManager.SetDefaults();
-
   // load the actual values
   if (!CSettings::GetInstance().Load())
   {

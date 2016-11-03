@@ -839,6 +839,8 @@ void CSettings::InitializeDefaults()
 
   if (g_application.IsStandAlone())
     ((CSettingInt*)m_settingsManager->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
+
+  g_powerManager.SetDefaults();
 }
 
 void CSettings::InitializeOptionFillers()
