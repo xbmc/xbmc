@@ -571,107 +571,19 @@ void CSettings::Uninitialize()
     return;
 
   // unregister setting option fillers
-  m_settingsManager->UnregisterSettingOptionsFiller("audiocdactions");
-  m_settingsManager->UnregisterSettingOptionsFiller("audiocdencoders");
-  m_settingsManager->UnregisterSettingOptionsFiller("aequalitylevels");
-  m_settingsManager->UnregisterSettingOptionsFiller("audiodevices");
-  m_settingsManager->UnregisterSettingOptionsFiller("audiodevicespassthrough");
-  m_settingsManager->UnregisterSettingOptionsFiller("audiostreamsilence");
-  m_settingsManager->UnregisterSettingOptionsFiller("charsets");
-  m_settingsManager->UnregisterSettingOptionsFiller("fontheights");
-  m_settingsManager->UnregisterSettingOptionsFiller("fonts");
-  m_settingsManager->UnregisterSettingOptionsFiller("languagenames");
-  m_settingsManager->UnregisterSettingOptionsFiller("refreshchangedelays");
-  m_settingsManager->UnregisterSettingOptionsFiller("refreshrates");
-  m_settingsManager->UnregisterSettingOptionsFiller("regions");
-  m_settingsManager->UnregisterSettingOptionsFiller("shortdateformats");
-  m_settingsManager->UnregisterSettingOptionsFiller("longdateformats");
-  m_settingsManager->UnregisterSettingOptionsFiller("timeformats");
-  m_settingsManager->UnregisterSettingOptionsFiller("24hourclockformats");
-  m_settingsManager->UnregisterSettingOptionsFiller("speedunits");
-  m_settingsManager->UnregisterSettingOptionsFiller("temperatureunits");
-  m_settingsManager->UnregisterSettingOptionsFiller("rendermethods");
-  m_settingsManager->UnregisterSettingOptionsFiller("resolutions");
-  m_settingsManager->UnregisterSettingOptionsFiller("screens");
-  m_settingsManager->UnregisterSettingOptionsFiller("stereoscopicmodes");
-  m_settingsManager->UnregisterSettingOptionsFiller("preferedstereoscopicviewmodes");
-  m_settingsManager->UnregisterSettingOptionsFiller("monitors");
-  m_settingsManager->UnregisterSettingOptionsFiller("cmsmodes");
-  m_settingsManager->UnregisterSettingOptionsFiller("cmswhitepoints");
-  m_settingsManager->UnregisterSettingOptionsFiller("cmsprimaries");
-  m_settingsManager->UnregisterSettingOptionsFiller("cmsgammamodes");
-  m_settingsManager->UnregisterSettingOptionsFiller("videoseeksteps");
-  m_settingsManager->UnregisterSettingOptionsFiller("shutdownstates");
-  m_settingsManager->UnregisterSettingOptionsFiller("startupwindows");
-  m_settingsManager->UnregisterSettingOptionsFiller("audiostreamlanguages");
-  m_settingsManager->UnregisterSettingOptionsFiller("subtitlestreamlanguages");
-  m_settingsManager->UnregisterSettingOptionsFiller("subtitledownloadlanguages");
-  m_settingsManager->UnregisterSettingOptionsFiller("iso6391languages");
-  m_settingsManager->UnregisterSettingOptionsFiller("skincolors");
-  m_settingsManager->UnregisterSettingOptionsFiller("skinfonts");
-  m_settingsManager->UnregisterSettingOptionsFiller("skinthemes");
-#if defined(TARGET_LINUX)
-  m_settingsManager->UnregisterSettingOptionsFiller("timezonecountries");
-  m_settingsManager->UnregisterSettingOptionsFiller("timezones");
-#endif // defined(TARGET_LINUX)
-  m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
-  m_settingsManager->UnregisterSettingOptionsFiller("keyboardlayouts");
-  m_settingsManager->UnregisterSettingOptionsFiller("pvrrecordmargins");
+  UninitializeOptionFillers();
 
   // unregister ISettingCallback implementations
-  m_settingsManager->UnregisterCallback(&CEventLog::GetInstance());
-  m_settingsManager->UnregisterCallback(&g_advancedSettings);
-  m_settingsManager->UnregisterCallback(&CMediaSettings::GetInstance());
-  m_settingsManager->UnregisterCallback(&CDisplaySettings::GetInstance());
-  m_settingsManager->UnregisterCallback(&CSeekHandler::GetInstance());
-  m_settingsManager->UnregisterCallback(&CStereoscopicsManager::GetInstance());
-  m_settingsManager->UnregisterCallback(&g_application);
-  m_settingsManager->UnregisterCallback(&g_audioManager);
-  m_settingsManager->UnregisterCallback(&g_charsetConverter);
-  m_settingsManager->UnregisterCallback(&g_graphicsContext);
-  m_settingsManager->UnregisterCallback(&g_langInfo);
-  m_settingsManager->UnregisterCallback(&CInputManager::GetInstance());
-  m_settingsManager->UnregisterCallback(&CNetworkServices::GetInstance());
-  m_settingsManager->UnregisterCallback(&g_passwordManager);
-  m_settingsManager->UnregisterCallback(&CRssManager::GetInstance());
-  m_settingsManager->UnregisterCallback(&ADDON::CRepositoryUpdater::GetInstance());
-  m_settingsManager->UnregisterCallback(&GAME::CGameSettings::GetInstance());
-#if defined(TARGET_LINUX)
-  m_settingsManager->UnregisterCallback(&g_timezone);
-#endif // defined(TARGET_LINUX)
-  m_settingsManager->UnregisterCallback(&g_weatherManager);
-  m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::GetInstance());
-#if defined(TARGET_DARWIN_OSX)
-  m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
-#endif
-  m_settingsManager->UnregisterCallback(&CWakeOnAccess::GetInstance());
+  UninitializeISettingCallbacks();
 
   // cleanup the settings manager
   m_settingsManager->Clear();
 
   // unregister ISubSettings implementations
-  m_settingsManager->UnregisterSubSettings(&g_application);
-  m_settingsManager->UnregisterSubSettings(&CDisplaySettings::GetInstance());
-  m_settingsManager->UnregisterSubSettings(&CMediaSettings::GetInstance());
-  m_settingsManager->UnregisterSubSettings(&CSkinSettings::GetInstance());
-  m_settingsManager->UnregisterSubSettings(&g_sysinfo);
-  m_settingsManager->UnregisterSubSettings(&CViewStateSettings::GetInstance());
+  UninitializeISubSettings();
 
   // unregister ISettingsHandler implementations
-  m_settingsManager->UnregisterSettingsHandler(&g_advancedSettings);
-  m_settingsManager->UnregisterSettingsHandler(&CMediaSourceSettings::GetInstance());
-  m_settingsManager->UnregisterSettingsHandler(&CPlayerCoreFactory::GetInstance());
-  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::GetInstance());
-#ifdef HAS_UPNP
-  m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::GetInstance());
-#endif
-  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
-  m_settingsManager->UnregisterSettingsHandler(&CRssManager::GetInstance());
-  m_settingsManager->UnregisterSettingsHandler(&g_langInfo);
-  m_settingsManager->UnregisterSettingsHandler(&g_application);
-#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
-  m_settingsManager->UnregisterSettingsHandler(&g_timezone);
-#endif
+  UninitializeISettingsHandlers();
 
   m_initialized = false;
 }
@@ -980,6 +892,56 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("pvrrecordmargins", PVR::CPVRSettings::MarginTimeFiller);
 }
 
+void CSettings::UninitializeOptionFillers()
+{
+  m_settingsManager->UnregisterSettingOptionsFiller("audiocdactions");
+  m_settingsManager->UnregisterSettingOptionsFiller("audiocdencoders");
+  m_settingsManager->UnregisterSettingOptionsFiller("aequalitylevels");
+  m_settingsManager->UnregisterSettingOptionsFiller("audiodevices");
+  m_settingsManager->UnregisterSettingOptionsFiller("audiodevicespassthrough");
+  m_settingsManager->UnregisterSettingOptionsFiller("audiostreamsilence");
+  m_settingsManager->UnregisterSettingOptionsFiller("charsets");
+  m_settingsManager->UnregisterSettingOptionsFiller("fontheights");
+  m_settingsManager->UnregisterSettingOptionsFiller("fonts");
+  m_settingsManager->UnregisterSettingOptionsFiller("languagenames");
+  m_settingsManager->UnregisterSettingOptionsFiller("refreshchangedelays");
+  m_settingsManager->UnregisterSettingOptionsFiller("refreshrates");
+  m_settingsManager->UnregisterSettingOptionsFiller("regions");
+  m_settingsManager->UnregisterSettingOptionsFiller("shortdateformats");
+  m_settingsManager->UnregisterSettingOptionsFiller("longdateformats");
+  m_settingsManager->UnregisterSettingOptionsFiller("timeformats");
+  m_settingsManager->UnregisterSettingOptionsFiller("24hourclockformats");
+  m_settingsManager->UnregisterSettingOptionsFiller("speedunits");
+  m_settingsManager->UnregisterSettingOptionsFiller("temperatureunits");
+  m_settingsManager->UnregisterSettingOptionsFiller("rendermethods");
+  m_settingsManager->UnregisterSettingOptionsFiller("resolutions");
+  m_settingsManager->UnregisterSettingOptionsFiller("screens");
+  m_settingsManager->UnregisterSettingOptionsFiller("stereoscopicmodes");
+  m_settingsManager->UnregisterSettingOptionsFiller("preferedstereoscopicviewmodes");
+  m_settingsManager->UnregisterSettingOptionsFiller("monitors");
+  m_settingsManager->UnregisterSettingOptionsFiller("cmsmodes");
+  m_settingsManager->UnregisterSettingOptionsFiller("cmswhitepoints");
+  m_settingsManager->UnregisterSettingOptionsFiller("cmsprimaries");
+  m_settingsManager->UnregisterSettingOptionsFiller("cmsgammamodes");
+  m_settingsManager->UnregisterSettingOptionsFiller("videoseeksteps");
+  m_settingsManager->UnregisterSettingOptionsFiller("shutdownstates");
+  m_settingsManager->UnregisterSettingOptionsFiller("startupwindows");
+  m_settingsManager->UnregisterSettingOptionsFiller("audiostreamlanguages");
+  m_settingsManager->UnregisterSettingOptionsFiller("subtitlestreamlanguages");
+  m_settingsManager->UnregisterSettingOptionsFiller("subtitledownloadlanguages");
+  m_settingsManager->UnregisterSettingOptionsFiller("iso6391languages");
+  m_settingsManager->UnregisterSettingOptionsFiller("skincolors");
+  m_settingsManager->UnregisterSettingOptionsFiller("skinfonts");
+  m_settingsManager->UnregisterSettingOptionsFiller("skinthemes");
+#if defined(TARGET_LINUX)
+  m_settingsManager->UnregisterSettingOptionsFiller("timezonecountries");
+  m_settingsManager->UnregisterSettingOptionsFiller("timezones");
+#endif // defined(TARGET_LINUX)
+  m_settingsManager->UnregisterSettingOptionsFiller("verticalsyncs");
+  m_settingsManager->UnregisterSettingOptionsFiller("keyboardlayouts");
+  m_settingsManager->UnregisterSettingOptionsFiller("pvrrecordmargins");
+}
+
 void CSettings::InitializeConditions()
 {
   CSettingConditions::Initialize();
@@ -1016,6 +978,24 @@ void CSettings::InitializeISettingsHandlers()
   m_settingsManager->RegisterSettingsHandler(&CMediaSettings::GetInstance());
 }
 
+void CSettings::UninitializeISettingsHandlers()
+{
+  m_settingsManager->UnregisterSettingsHandler(&g_advancedSettings);
+  m_settingsManager->UnregisterSettingsHandler(&CMediaSourceSettings::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&CPlayerCoreFactory::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::GetInstance());
+#ifdef HAS_UPNP
+  m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::GetInstance());
+#endif
+  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&CRssManager::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&g_langInfo);
+  m_settingsManager->UnregisterSettingsHandler(&g_application);
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
+  m_settingsManager->UnregisterSettingsHandler(&g_timezone);
+#endif
+}
+
 void CSettings::InitializeISubSettings()
 {
   // register ISubSettings implementations
@@ -1025,6 +1005,16 @@ void CSettings::InitializeISubSettings()
   m_settingsManager->RegisterSubSettings(&CSkinSettings::GetInstance());
   m_settingsManager->RegisterSubSettings(&g_sysinfo);
   m_settingsManager->RegisterSubSettings(&CViewStateSettings::GetInstance());
+}
+
+void CSettings::UninitializeISubSettings()
+{
+  m_settingsManager->UnregisterSubSettings(&g_application);
+  m_settingsManager->UnregisterSubSettings(&CDisplaySettings::GetInstance());
+  m_settingsManager->UnregisterSubSettings(&CMediaSettings::GetInstance());
+  m_settingsManager->UnregisterSubSettings(&CSkinSettings::GetInstance());
+  m_settingsManager->UnregisterSubSettings(&g_sysinfo);
+  m_settingsManager->UnregisterSubSettings(&CViewStateSettings::GetInstance());
 }
 
 void CSettings::InitializeISettingCallbacks()
@@ -1233,6 +1223,36 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_GAMES_ENABLEREWIND);
   settingSet.insert(CSettings::SETTING_GAMES_REWINDTIME);
   m_settingsManager->RegisterCallback(&GAME::CGameSettings::GetInstance(), settingSet);
+}
+
+void CSettings::UninitializeISettingCallbacks()
+{
+  m_settingsManager->UnregisterCallback(&CEventLog::GetInstance());
+  m_settingsManager->UnregisterCallback(&g_advancedSettings);
+  m_settingsManager->UnregisterCallback(&CMediaSettings::GetInstance());
+  m_settingsManager->UnregisterCallback(&CDisplaySettings::GetInstance());
+  m_settingsManager->UnregisterCallback(&CSeekHandler::GetInstance());
+  m_settingsManager->UnregisterCallback(&CStereoscopicsManager::GetInstance());
+  m_settingsManager->UnregisterCallback(&g_application);
+  m_settingsManager->UnregisterCallback(&g_audioManager);
+  m_settingsManager->UnregisterCallback(&g_charsetConverter);
+  m_settingsManager->UnregisterCallback(&g_graphicsContext);
+  m_settingsManager->UnregisterCallback(&g_langInfo);
+  m_settingsManager->UnregisterCallback(&CInputManager::GetInstance());
+  m_settingsManager->UnregisterCallback(&CNetworkServices::GetInstance());
+  m_settingsManager->UnregisterCallback(&g_passwordManager);
+  m_settingsManager->UnregisterCallback(&CRssManager::GetInstance());
+  m_settingsManager->UnregisterCallback(&ADDON::CRepositoryUpdater::GetInstance());
+  m_settingsManager->UnregisterCallback(&GAME::CGameSettings::GetInstance());
+#if defined(TARGET_LINUX)
+  m_settingsManager->UnregisterCallback(&g_timezone);
+#endif // defined(TARGET_LINUX)
+  m_settingsManager->UnregisterCallback(&g_weatherManager);
+  m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::GetInstance());
+#if defined(TARGET_DARWIN_OSX)
+  m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
+#endif
+  m_settingsManager->UnregisterCallback(&CWakeOnAccess::GetInstance());
 }
 
 bool CSettings::Reset()

@@ -612,10 +612,14 @@ private:
   void InitializeVisibility();
   void InitializeDefaults();
   void InitializeOptionFillers();
+  void UninitializeOptionFillers();
   void InitializeConditions();
   void InitializeISettingsHandlers();
+  void UninitializeISettingsHandlers();
   void InitializeISubSettings();
+  void UninitializeISubSettings();
   void InitializeISettingCallbacks();
+  void UninitializeISettingCallbacks();
   bool Reset();
 
   bool m_initialized;
