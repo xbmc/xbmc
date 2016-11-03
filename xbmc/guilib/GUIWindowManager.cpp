@@ -1243,14 +1243,14 @@ void CGUIWindowManager::RemoveDialog(int id)
   }
 }
 
-bool CGUIWindowManager::HasModalDialog(const std::vector<DialogModalityType>& types) const
+bool CGUIWindowManager::HasModalDialog(const std::vector<DialogModalityType>& types, bool ignoreClosing /* = true */) const
 {
   CSingleLock lock(g_graphicsContext);
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     if ((*it)->IsDialog() &&
         (*it)->IsModalDialog() &&
-        !(*it)->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+        (!ignoreClosing || !(*it)->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
     {
       if (!types.empty())
       {
@@ -1266,6 +1266,11 @@ bool CGUIWindowManager::HasModalDialog(const std::vector<DialogModalityType>& ty
     }
   }
   return false;
+}
+
+bool CGUIWindowManager::HasVisibleModalDialog(const std::vector<DialogModalityType>& types) const
+{
+  return HasModalDialog(types, false);
 }
 
 bool CGUIWindowManager::HasDialogOnScreen() const
