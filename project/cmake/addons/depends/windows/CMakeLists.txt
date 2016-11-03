@@ -40,7 +40,7 @@ foreach(file ${download_input_files})
   if(NOT file MATCHES install.txt)
     file(STRINGS ${file} def)
     get_filename_component(dir ${file} DIRECTORY)
-    separate_arguments(def)
+    string(REPLACE " " ";" def ${def})
     list(GET def 0 id)
 
     list(FIND DEPENDS_TO_BUILD ${id} idx)

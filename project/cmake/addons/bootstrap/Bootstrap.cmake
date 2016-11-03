@@ -11,7 +11,7 @@ if(NOT ADDONS_TO_BUILD)
 else()
   string(STRIP "${ADDONS_TO_BUILD}" ADDONS_TO_BUILD)
   message(STATUS "Bootstrapping following addons: ${ADDONS_TO_BUILD}")
-  separate_arguments(ADDONS_TO_BUILD)
+  string(REPLACE " " ";" ADDONS_TO_BUILD ${ADDONS_TO_BUILD})
 endif()
 
 # find all addon definitions and go through them
@@ -21,7 +21,7 @@ foreach(ADDON_DEFINITION_FILE ${ADDON_DEFINITIONS})
   if(NOT (ADDON_DEFINITION_FILE MATCHES platforms.txt))
     # read the addon definition file
     file(STRINGS ${ADDON_DEFINITION_FILE} ADDON_DEFINITION)
-    separate_arguments(ADDON_DEFINITION)
+    string(REPLACE " " ";" ADDON_DEFINITION ${ADDON_DEFINITION})
 
     # extract the addon definition's identifier
     list(GET ADDON_DEFINITION 0 ADDON_ID)
