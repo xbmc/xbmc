@@ -33,45 +33,48 @@ extern "C" {
 class CDVDDemuxFFmpeg;
 class CURL;
 
-class CDemuxStreamVideoFFmpeg
-  : public CDemuxStreamVideo
+class CDemuxStreamVideoFFmpeg : public CDemuxStreamVideo
 {
-  AVStream*        m_stream;
 public:
-  CDemuxStreamVideoFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_stream(stream)
-  {}
-  std::string      m_description;
-
+  CDemuxStreamVideoFFmpeg(AVStream* stream) : m_stream(stream) {}
   virtual std::string GetStreamName() override;
+
+  std::string m_description;
+protected:
+  AVStream* m_stream = nullptr;
 };
 
-
-class CDemuxStreamAudioFFmpeg
-  : public CDemuxStreamAudio
+class CDemuxStreamAudioFFmpeg : public CDemuxStreamAudio
 {
-  AVStream*        m_stream;
 public:
-  CDemuxStreamAudioFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_stream(stream)
-  {}
-  std::string m_description;
-
+  CDemuxStreamAudioFFmpeg(AVStream* stream) : m_stream(stream) {}
   virtual std::string GetStreamName() override;
+
+  std::string m_description;
+protected:
+  CDVDDemuxFFmpeg *m_parent;
+  AVStream* m_stream  = nullptr;
 };
 
 class CDemuxStreamSubtitleFFmpeg
   : public CDemuxStreamSubtitle
 {
-  AVStream*        m_stream;
 public:
-  CDemuxStreamSubtitleFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_stream(stream)
-  {}
-  std::string m_description;
-
+  CDemuxStreamSubtitleFFmpeg(AVStream* stream) : m_stream(stream) {}
   virtual std::string GetStreamName() override;
 
+  std::string m_description;
+protected:
+  CDVDDemuxFFmpeg *m_parent;
+  AVStream* m_stream = nullptr;
+};
+
+class CDemuxParserFFmpeg
+{
+public:
+  ~CDemuxParserFFmpeg();
+  AVCodecParserContext* m_parserCtx = nullptr;
+  AVCodecContext* m_codecCtx = nullptr;
 };
 
 #define FFMPEG_DVDNAV_BUFFER_SIZE 2048  // for dvd's
@@ -101,11 +104,11 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
 
-  bool SeekChapter(int chapter, double* startpts = NULL);
-  int GetChapterCount();
-  int GetChapter();
-  void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
-  int64_t GetChapterPos(int chapterIdx=-1);
+  bool SeekChapter(int chapter, double* startpts = NULL) override;
+  int GetChapterCount() override;
+  int GetChapter() override;
+  void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
+  int64_t GetChapterPos(int chapterIdx=-1) override;
   virtual std::string GetStreamCodecName(int iStreamId) override;
 
   bool Aborted();
@@ -140,6 +143,7 @@ protected:
 
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
+  std::map<int, std::unique_ptr<CDemuxParserFFmpeg>> m_parsers;
 
   AVIOContext* m_ioContext;
 
