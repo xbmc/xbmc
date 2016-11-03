@@ -25,6 +25,7 @@
 
 #include "CurlFile.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -468,7 +469,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
   else if(FindMime(resources, "image/"))
     mime = "image/";
 
-  int maxrate = CSettings::GetInstance().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
+  int maxrate = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
   if(maxrate == 0)
     maxrate = INT_MAX;
 

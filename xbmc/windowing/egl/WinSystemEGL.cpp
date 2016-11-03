@@ -22,6 +22,7 @@
 #ifdef HAS_EGL
 
 #include "WinSystemEGL.h"
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
@@ -287,7 +288,7 @@ bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RE
     return true;
   }
 
-  int delay = CSettings::GetInstance().GetInt("videoscreen.delayrefreshchange");
+  int delay = CServiceBroker::GetSettings().GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;

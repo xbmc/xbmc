@@ -50,6 +50,7 @@ namespace PLAYLIST
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
+class CSettings;
 
 class CServiceManager
 {
@@ -72,6 +73,8 @@ public:
 
   PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
 
+  CSettings& GetSettings();
+
 protected:
   struct delete_dataCacheCore
   {
@@ -93,4 +96,5 @@ protected:
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
   std::unique_ptr<PLAYLIST::CPlayListPlayer> m_playlistPlayer;
+  std::unique_ptr<CSettings> m_settings;
 };

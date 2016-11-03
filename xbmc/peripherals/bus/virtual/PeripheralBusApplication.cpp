@@ -19,6 +19,7 @@
  */
 
 #include "PeripheralBusApplication.h"
+#include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -40,7 +41,7 @@ void CPeripheralBusApplication::Initialise(void)
 
 bool CPeripheralBusApplication::PerformDeviceScan(PeripheralScanResults& results)
 {
-  const unsigned int controllerCount = CSettings::GetInstance().GetInt(CSettings::SETTING_GAMES_KEYBOARD_PLAYERS);
+  const unsigned int controllerCount = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_GAMES_KEYBOARD_PLAYERS);
 
   for (unsigned int i = 1; i <= controllerCount; i++)
   {

@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "PasswordManager.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogOK.h"
@@ -91,11 +92,11 @@ CProfilesManager& CProfilesManager::GetInstance()
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
-  std::string strDir = CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  std::string strDir = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   if (strDir == "set default" || strDir.empty())
   {
     strDir = "special://profile/playlists/";
-    CSettings::GetInstance().SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
+    CServiceBroker::GetSettings().SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
   }
 
   CDirectory::Create(strDir);
@@ -249,25 +250,25 @@ bool CProfilesManager::LoadProfile(size_t index)
     g_SkinInfo->SaveSettings();
 
   // unload any old settings
-  CSettings::GetInstance().Unload();
+  CServiceBroker::GetSettings().Unload();
 
   SetCurrentProfileId(index);
   m_profileLoadedForLogin = false;
 
   // load the new settings
-  if (!CSettings::GetInstance().Load())
+  if (!CServiceBroker::GetSettings().Load())
   {
     CLog::Log(LOGFATAL, "CProfilesManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
     return false;
   }
-  CSettings::GetInstance().SetLoaded();
+  CServiceBroker::GetSettings().SetLoaded();
 
   CreateProfileFolders();
 
   CDatabaseManager::GetInstance().Initialize();
   CButtonTranslator::GetInstance().Load(true);
 
-  CInputManager::GetInstance().SetMouseEnabled(CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  CInputManager::GetInstance().SetMouseEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 
   g_infoManager.ResetCache();
   g_infoManager.ResetLibraryBools();
@@ -277,8 +278,8 @@ bool CProfilesManager::LoadProfile(size_t index)
     CXBMCTinyXML doc;
     if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(), "guisettings.xml")))
     {
-      CSettings::GetInstance().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);
-      CSettings::GetInstance().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_STARTUPLOCK);
+      CServiceBroker::GetSettings().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+      CServiceBroker::GetSettings().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_STARTUPLOCK);
     }
   }
 
@@ -332,7 +333,7 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (index == m_currentProfile)
   {
     LoadProfile(0);
-    CSettings::GetInstance().Save();
+    CServiceBroker::GetSettings().Save();
   }
 
   CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));

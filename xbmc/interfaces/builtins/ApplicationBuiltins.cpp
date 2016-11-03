@@ -21,6 +21,7 @@
 #include "ApplicationBuiltins.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
@@ -124,8 +125,8 @@ static int SetVolume(const std::vector<std::string>& params)
  */
 static int ToggleDebug(const std::vector<std::string>& params)
 {
-  bool debug = CSettings::GetInstance().GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-  CSettings::GetInstance().SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
+  bool debug = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+  CServiceBroker::GetSettings().SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
   g_advancedSettings.SetDebugMode(!debug);
 
   return 0;

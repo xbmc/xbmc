@@ -19,6 +19,7 @@
  */
 
 #include "PeripheralAddon.h"
+#include "ServiceBroker.h"
 #include "AddonButtonMap.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/AddonManager.h"
@@ -78,7 +79,7 @@ CPeripheralAddon::~CPeripheralAddon(void)
   // delete all peripherals provided by this addon
   for (const auto& peripheral : m_peripherals)
   {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
     {
       // shutdown the joystick if it is supported
       if (peripheral.second->Type() == PERIPHERAL_JOYSTICK)

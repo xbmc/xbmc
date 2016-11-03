@@ -20,6 +20,7 @@
 #include "system.h"
 #ifdef HAVE_LIBVA
 #include "VAAPI.h"
+#include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
@@ -2087,7 +2088,7 @@ void COutput::InitCycle()
     if (!m_pp)
     {
       m_config.stats->SetVpp(false);
-      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+      if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
         m_pp = new CFFmpegPostproc();
       else
       {
@@ -3389,7 +3390,7 @@ bool CFFmpegPostproc::Compatible(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else if (method == VS_INTERLACEMETHOD_NONE &&
-           !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+           !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
     return true;
 
   return false;

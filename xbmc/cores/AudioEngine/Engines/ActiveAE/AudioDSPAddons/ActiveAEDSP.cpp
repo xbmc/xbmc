@@ -32,6 +32,7 @@ extern "C" {
 #include "addons/AddonSystemSettings.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AEResample.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -76,7 +77,7 @@ CActiveAEDSP::~CActiveAEDSP()
 {
   Deactivate();
   CAddonMgr::GetInstance().UnregisterAddonMgrCallback(ADDON_ADSPDLL);
-  CSettings::GetInstance().UnregisterCallback(this);
+  CServiceBroker::GetSettings().UnregisterCallback(this);
   CLog::Log(LOGDEBUG, "ActiveAE DSP - destroyed");
 }
 
@@ -86,11 +87,11 @@ void CActiveAEDSP::Init(void)
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB);
-  CSettings::GetInstance().RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
 
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_ADSPDLL, this);
 
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
     Activate();
 }
 //@}

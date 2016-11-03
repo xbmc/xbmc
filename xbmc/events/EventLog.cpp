@@ -20,6 +20,7 @@
 
 #include "EventLog.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/EventsDirectory.h"
@@ -118,8 +119,8 @@ EventPtr CEventLog::Get(const std::string& eventPtrIdentifier) const
 void CEventLog::Add(const EventPtr& eventPtr)
 {
   if (eventPtr == nullptr || eventPtr->GetIdentifier().empty() ||
-      !CSettings::GetInstance().GetBool(CSettings::SETTING_EVENTLOG_ENABLED) ||
-     (eventPtr->GetLevel() == EventLevel::Information && !CSettings::GetInstance().GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
+      !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EVENTLOG_ENABLED) ||
+     (eventPtr->GetLevel() == EventLevel::Information && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
     return;
 
   CSingleLock lock(m_critical);

@@ -22,6 +22,7 @@
 
 #include <utility>
 
+#include "ServiceBroker.h"
 #include "dbwrappers/dataset.h"
 #include "addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
@@ -181,7 +182,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
   {
     try
     {
-      bool bIgnoreEpgDB = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+      bool bIgnoreEpgDB = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
       while (!m_pDS->eof())
       {
         CPVRChannelPtr channel = CPVRChannelPtr(new CPVRChannel());

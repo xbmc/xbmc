@@ -33,6 +33,7 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "filesystem/AddonsDirectory.h"
 #include "addons/AddonInstaller.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -91,15 +92,15 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_FOREIGNFILTER)
       {
-        CSettings::GetInstance().ToggleBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER);
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().ToggleBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER);
+        CServiceBroker::GetSettings().Save();
         Refresh();
         return true;
       }
       else if (iControl == CONTROL_BROKENFILTER)
       {
-        CSettings::GetInstance().ToggleBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER);
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().ToggleBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER);
+        CServiceBroker::GetSettings().Save();
         Refresh();
         return true;
       }
@@ -189,7 +190,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
   {
     using namespace KODI::MESSAGING::HELPERS;
 
-    if (!CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES))
+    if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES))
     {
       if (ShowYesNoDialogText(13106, 36617, 186, 10004) == DialogResponse::YES)
         g_windowManager.ActivateWindow(WINDOW_SETTINGS_SYSTEM, CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
@@ -241,8 +242,8 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
 
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
-  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER));
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER));
   CONTROL_ENABLE(CONTROL_CHECK_FOR_UPDATES);
   CONTROL_ENABLE(CONTROL_SETTINGS);
 
@@ -278,7 +279,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
 
   if (result && CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
   {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
     {
       int i = 0;
       while (i < items.Size())
@@ -290,7 +291,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
           ++i;
       }
     }
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
     {
       for (int i = items.Size() - 1; i >= 0; i--)
       {

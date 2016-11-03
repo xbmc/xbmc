@@ -39,6 +39,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
+#include "ServiceBroker.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -656,7 +657,7 @@ namespace PVR
         if (bPlayRecording)
         {
           const CFileItemPtr recordingItem(new CFileItem(recording));
-          return PlayRecording(recordingItem, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), bCheckResume);
+          return PlayRecording(recordingItem, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), bCheckResume);
         }
       }
 

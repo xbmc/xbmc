@@ -18,6 +18,7 @@
  *
  */
 #include "ScreenSaver.h"
+#include "ServiceBroker.h"
 #include "guilib/GraphicContext.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "settings/Settings.h"
@@ -39,7 +40,7 @@ CScreenSaver::CScreenSaver(const char *addonID)
 
 bool CScreenSaver::IsInUse() const
 {
-  return CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
+  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
 }
 
 bool CScreenSaver::CreateScreenSaver()

@@ -23,6 +23,7 @@
 
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include <string.h>
@@ -98,7 +99,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 {
   Reset();
 
-  bool ac3 = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
+  bool ac3 = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
 
   AVCodec *codec = NULL;
 

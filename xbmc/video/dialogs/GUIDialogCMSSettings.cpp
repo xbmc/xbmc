@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "GUIDialogCMSSettings.h"
 #include "GUIPassword.h"
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -128,9 +129,9 @@ void CGUIDialogCMSSettings::InitializeSettings()
   depsCmsGamma.push_back(dependencyCmsGamma);
 
   // color management settings
-  AddToggle(groupColorManagement, SETTING_VIDEO_CMSENABLE, 36560, 0, CSettings::GetInstance().GetBool(SETTING_VIDEO_CMSENABLE));
+  AddToggle(groupColorManagement, SETTING_VIDEO_CMSENABLE, 36560, 0, CServiceBroker::GetSettings().GetBool(SETTING_VIDEO_CMSENABLE));
 
-  int currentMode = CSettings::GetInstance().GetInt(SETTING_VIDEO_CMSMODE);
+  int currentMode = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSMODE);
   entries.clear();
   // entries.push_back(std::make_pair(16039, CMS_MODE_OFF)); // FIXME: get from CMS class
   entries.push_back(std::make_pair(36580, CMS_MODE_3DLUT));
@@ -140,19 +141,19 @@ void CGUIDialogCMSSettings::InitializeSettings()
   CSettingInt *settingCmsMode = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSMODE, 36562, 0, currentMode, entries);
   settingCmsMode->SetDependencies(depsCmsEnabled);
 
-  std::string current3dLUT = CSettings::GetInstance().GetString(SETTING_VIDEO_CMS3DLUT);
+  std::string current3dLUT = CServiceBroker::GetSettings().GetString(SETTING_VIDEO_CMS3DLUT);
   CSettingString *settingCms3dlut = AddList(groupColorManagement, SETTING_VIDEO_CMS3DLUT, 36564, 0, current3dLUT, Cms3dLutsFiller, 36564);
   settingCms3dlut->SetDependencies(depsCms3dlut);
 
   // display settings
-  int currentWhitepoint = CSettings::GetInstance().GetInt(SETTING_VIDEO_CMSWHITEPOINT);
+  int currentWhitepoint = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSWHITEPOINT);
   entries.clear();
   entries.push_back(std::make_pair(36586, CMS_WHITEPOINT_D65));
   entries.push_back(std::make_pair(36587, CMS_WHITEPOINT_D93));
   CSettingInt *settingCmsWhitepoint = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSWHITEPOINT, 36568, 0, currentWhitepoint, entries);
   settingCmsWhitepoint->SetDependencies(depsCmsIcc);
 
-  int currentPrimaries = CSettings::GetInstance().GetInt(SETTING_VIDEO_CMSPRIMARIES);
+  int currentPrimaries = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSPRIMARIES);
   entries.clear();
   entries.push_back(std::make_pair(36588, CMS_PRIMARIES_AUTO));
   entries.push_back(std::make_pair(36589, CMS_PRIMARIES_BT709));
@@ -163,7 +164,7 @@ void CGUIDialogCMSSettings::InitializeSettings()
   CSettingInt *settingCmsPrimaries = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSPRIMARIES, 36570, 0, currentPrimaries, entries);
   settingCmsPrimaries->SetDependencies(depsCmsIcc);
 
-  int currentGammaMode = CSettings::GetInstance().GetInt(SETTING_VIDEO_CMSGAMMAMODE);
+  int currentGammaMode = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSGAMMAMODE);
   entries.clear();
   entries.push_back(std::make_pair(36582, CMS_TRC_BT1886));
   entries.push_back(std::make_pair(36583, CMS_TRC_INPUT_OFFSET));
@@ -172,12 +173,12 @@ void CGUIDialogCMSSettings::InitializeSettings()
   CSettingInt *settingCmsGammaMode = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSGAMMAMODE, 36572, 0, currentGammaMode, entries);
   settingCmsGammaMode->SetDependencies(depsCmsIcc);
 
-  float currentGamma = CSettings::GetInstance().GetInt(SETTING_VIDEO_CMSGAMMA)/100.0f;
+  float currentGamma = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSGAMMA)/100.0f;
   if (currentGamma == 0.0) currentGamma = 2.20;
   CSettingNumber *settingCmsGamma = AddSlider(groupColorManagement, SETTING_VIDEO_CMSGAMMA, 36574, 0, currentGamma, 36597, 1.6, 0.05, 2.8, 36574, usePopup);
   settingCmsGamma->SetDependencies(depsCmsGamma);
 
-  int currentLutSize = CSettings::GetInstance().GetInt(SETTING_VIDEO_CMSLUTSIZE);
+  int currentLutSize = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSLUTSIZE);
   entries.clear();
   entries.push_back(std::make_pair(36594, 4));
   entries.push_back(std::make_pair(36595, 6));
@@ -195,21 +196,21 @@ void CGUIDialogCMSSettings::OnSettingChanged(const CSetting *setting)
 
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_VIDEO_CMSENABLE)
-    CSettings::GetInstance().SetBool(SETTING_VIDEO_CMSENABLE, (static_cast<const CSettingBool*>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetBool(SETTING_VIDEO_CMSENABLE, (static_cast<const CSettingBool*>(setting)->GetValue()));
   else if (settingId == SETTING_VIDEO_CMSMODE)
-    CSettings::GetInstance().SetInt(SETTING_VIDEO_CMSMODE, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSMODE, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
   else if (settingId == SETTING_VIDEO_CMS3DLUT)
-    CSettings::GetInstance().SetString(SETTING_VIDEO_CMS3DLUT, static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetString(SETTING_VIDEO_CMS3DLUT, static_cast<std::string>(static_cast<const CSettingString*>(setting)->GetValue()));
   else if (settingId == SETTING_VIDEO_CMSWHITEPOINT)
-    CSettings::GetInstance().SetInt(SETTING_VIDEO_CMSWHITEPOINT, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSWHITEPOINT, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
   else if (settingId == SETTING_VIDEO_CMSPRIMARIES)
-    CSettings::GetInstance().SetInt(SETTING_VIDEO_CMSPRIMARIES, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSPRIMARIES, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
   else if (settingId == SETTING_VIDEO_CMSGAMMAMODE)
-    CSettings::GetInstance().SetInt(SETTING_VIDEO_CMSGAMMAMODE, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSGAMMAMODE, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
   else if (settingId == SETTING_VIDEO_CMSGAMMA)
-    CSettings::GetInstance().SetInt(SETTING_VIDEO_CMSGAMMA, static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue())*100);
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSGAMMA, static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue())*100);
   else if (settingId == SETTING_VIDEO_CMSLUTSIZE)
-    CSettings::GetInstance().SetInt(SETTING_VIDEO_CMSLUTSIZE, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSLUTSIZE, static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue()));
 }
 
 bool CGUIDialogCMSSettings::OnBack(int actionID)
@@ -221,7 +222,7 @@ bool CGUIDialogCMSSettings::OnBack(int actionID)
 void CGUIDialogCMSSettings::Save()
 {
   CLog::Log(LOGINFO, "CGUIDialogCMSSettings: Save() called");
-  CSettings::GetInstance().Save();
+  CServiceBroker::GetSettings().Save();
 }
 
 void CGUIDialogCMSSettings::Cms3dLutsFiller(
@@ -234,7 +235,7 @@ void CGUIDialogCMSSettings::Cms3dLutsFiller(
   CFileItemList items;
 
   // list .3dlut files
-  std::string current3dlut = CSettings::GetInstance().GetString(SETTING_VIDEO_CMS3DLUT);
+  std::string current3dlut = CServiceBroker::GetSettings().GetString(SETTING_VIDEO_CMS3DLUT);
   if (!current3dlut.empty())
     current3dlut = URIUtils::GetDirectory(current3dlut);
   XFILE::CDirectory::GetDirectory(current3dlut, items, ".3dlut");

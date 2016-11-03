@@ -21,6 +21,7 @@
 
 #include <cassert>
 
+#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "system.h" //HAS_ZEROCONF define
 #include "threads/Atomics.h"
@@ -115,9 +116,9 @@ bool CZeroconf::Start()
   CSingleLock lock(*mp_crit_sec);
   if(!IsZCdaemonRunning())
   {
-    CSettings::GetInstance().SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
-      CSettings::GetInstance().SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
+    CServiceBroker::GetSettings().SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+      CServiceBroker::GetSettings().SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
     return false;
   }
   if(m_started)

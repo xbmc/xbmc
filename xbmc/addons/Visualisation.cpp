@@ -20,6 +20,7 @@
 #include "system.h"
 #include "Visualisation.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "Application.h"
 #include "guilib/GraphicContext.h"
@@ -474,5 +475,5 @@ std::string CVisualisation::GetPresetName()
 
 bool CVisualisation::IsInUse() const
 {
-  return CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION) == ID();
+  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION) == ID();
 }

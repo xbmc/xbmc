@@ -19,6 +19,7 @@
  */
 
 #include "CurlFile.h"
+#include "ServiceBroker.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
 #include "URL.h"
@@ -764,7 +765,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if( url2.IsProtocol("http")
        ||  url2.IsProtocol("https"))
   {
-    const CSettings &s = CSettings::GetInstance();
+    const CSettings &s = CServiceBroker::GetSettings();
     if (m_proxyhost.empty()
         && s.GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
         && !s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()

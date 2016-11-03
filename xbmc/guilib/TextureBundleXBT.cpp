@@ -20,6 +20,7 @@
 
 #include "TextureBundleXBT.h"
 
+#include "ServiceBroker.h"
 #include "system.h"
 #include "Texture.h"
 #include "GraphicContext.h"
@@ -71,14 +72,14 @@ bool CTextureBundleXBT::OpenBundle()
   {
     mediaDir = CSpecialProtocol::TranslatePath(
       URIUtils::AddFileToFolder("special://home/addons",
-        CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)));
+        CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)));
   }
 
   if (m_themeBundle)
   {
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
-    std::string theme = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+    std::string theme = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
     if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       std::string themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));

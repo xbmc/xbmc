@@ -19,6 +19,7 @@
  */
 
 #include "GameClientReversiblePlayback.h"
+#include "ServiceBroker.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/savestates/BasicMemoryStream.h"
 #include "games/addons/savestates/DeltaPairMemoryStream.h"
@@ -303,11 +304,11 @@ void CGameClientReversiblePlayback::UpdateMemoryStream()
   bool bRewindEnabled = false;
 
   if (m_gameClient->SerializeSize() > 0)
-    bRewindEnabled = CSettings::GetInstance().GetBool(CSettings::SETTING_GAMES_ENABLEREWIND);
+    bRewindEnabled = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_GAMES_ENABLEREWIND);
   
   if (bRewindEnabled)
   {
-    unsigned int rewindBufferSec = CSettings::GetInstance().GetInt(CSettings::SETTING_GAMES_REWINDTIME);
+    unsigned int rewindBufferSec = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_GAMES_REWINDTIME);
     if (rewindBufferSec < 10)
       rewindBufferSec = 10; // Sanity check
 

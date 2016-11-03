@@ -20,6 +20,7 @@
 
 #include "GUIViewStatePictures.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "view/ViewState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -73,7 +74,7 @@ std::string CGUIViewStateWindowPictures::GetLockType()
 std::string CGUIViewStateWindowPictures::GetExtensions()
 {
   std::string extensions = g_advancedSettings.m_pictureExtensions;
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PICTURES_SHOWVIDEOS))
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PICTURES_SHOWVIDEOS))
     extensions += "|" + g_advancedSettings.m_videoExtensions;
 
   return extensions;

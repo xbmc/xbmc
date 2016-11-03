@@ -29,6 +29,7 @@
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecOpenMax.h"
 #include "OpenMaxVideo.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 
@@ -55,7 +56,7 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     return false;
 
   // we always qualify even if DVDFactoryCodec does this too.
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hints.software)
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hints.software)
   {
     m_convert_bitstream = false;
 

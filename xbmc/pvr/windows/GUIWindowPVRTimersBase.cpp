@@ -19,6 +19,7 @@
  */
 
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
 #include "input/Key.h"
 #include "settings/Settings.h"
@@ -85,7 +86,7 @@ bool CGUIWindowPVRTimersBase::Update(const std::string &strDirectory, bool updat
 
 void CGUIWindowPVRTimersBase::UpdateButtons(void)
 {
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));
 
   CGUIWindowPVRBase::UpdateButtons();
 
@@ -145,8 +146,8 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNHIDEDISABLEDTIMERS)
       {
-        CSettings::GetInstance().ToggleBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().ToggleBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
+        CServiceBroker::GetSettings().Save();
         Update(GetDirectoryPath());
         bReturn = true;
       }

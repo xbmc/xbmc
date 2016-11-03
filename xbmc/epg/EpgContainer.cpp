@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "Epg.h"
 #include "EpgSearchFilter.h"
@@ -496,9 +497,9 @@ CEpgPtr CEpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
 
 bool CEpgContainer::LoadSettings(void)
 {
-  m_bIgnoreDbForClient = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
-  m_iUpdateTime        = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
-  m_iDisplayTime       = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
+  m_bIgnoreDbForClient = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+  m_iUpdateTime        = CServiceBroker::GetSettings().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
+  m_iDisplayTime       = CServiceBroker::GetSettings().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
 
   return true;
 }
@@ -581,7 +582,7 @@ bool CEpgContainer::InterruptUpdate(void) const
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
 
   return bReturn ||
-    (CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
+    (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
      g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying());
 }
 

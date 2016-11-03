@@ -33,6 +33,7 @@
 #include "freebsd/FreeBSDGNUReplacements.h"
 #endif
 
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "XBDateTime.h"
@@ -173,7 +174,7 @@ void CLinuxTimezone::OnSettingChanged(const CSetting *setting)
 
 void CLinuxTimezone::OnSettingsLoaded()
 {
-  SetTimezone(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TIMEZONE));
+  SetTimezone(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_TIMEZONE));
   CDateTime::ResetTimezoneBias();
 }
 
@@ -261,7 +262,7 @@ void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std:
 {
   current = ((const CSettingString*)setting)->GetValue();
   bool found = false;
-  std::vector<std::string> timezones = g_timezone.GetTimezonesByCountry(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
+  std::vector<std::string> timezones = g_timezone.GetTimezonesByCountry(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
   for (unsigned int i = 0; i < timezones.size(); i++)
   {
     if (!found && StringUtils::EqualsNoCase(timezones[i], current))

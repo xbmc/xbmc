@@ -22,6 +22,7 @@
 #include <EGL/egl.h>
 #include <math.h>
 #include "EGLNativeTypeRaspberryPI.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
 #include "linux/DllBCM.h"
@@ -241,7 +242,7 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
       /* inform TV of any 3D settings. Note this property just applies to next hdmi mode change, so no need to call for 2D modes */
       HDMI_PROPERTY_PARAM_T property;
       property.property = HDMI_PROPERTY_3D_STRUCTURE;
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC) && res.fRefreshRate <= 30.0f)
+      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC) && res.fRefreshRate <= 30.0f)
         property.param1 = HDMI_3D_FORMAT_FRAME_PACKING;
       else if (stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
         property.param1 = HDMI_3D_FORMAT_SBS_HALF;

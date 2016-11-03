@@ -22,6 +22,7 @@
 
 #ifdef HAVE_LIBVDPAU
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -74,7 +75,7 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
   if(feature == RENDERFEATURE_BRIGHTNESS ||
      feature == RENDERFEATURE_CONTRAST)
   {
-    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+    if ((m_renderMethod & RENDER_VDPAU) && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
     return (m_renderMethod & RENDER_GLSL)
@@ -123,7 +124,7 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
     float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CSettings::GetInstance().GetInt("videoplayer.hqscalers");
+    int minScale = CServiceBroker::GetSettings().GetInt("videoplayer.hqscalers");
     if (scaleX < minScale && scaleY < minScale)
       return false;
 
