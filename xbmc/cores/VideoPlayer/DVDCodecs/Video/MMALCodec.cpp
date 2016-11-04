@@ -53,9 +53,10 @@ using namespace KODI::MESSAGING;
 
 #define VERBOSE 0
 
+void CMMALBuffer::SetVideoDeintMethod(std::string method) { if (m_pool) m_pool->SetVideoDeintMethod(method); }
 
 CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> pool)
-    : m_omv(omv), m_pool(pool)
+    : CMMALBuffer(pool), m_omv(omv)
 {
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
@@ -367,8 +368,6 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || hints.software)
     return false;
 
-  m_processInfo.SetVideoDeintMethod("none");
-
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_ADVANCED);
@@ -468,6 +467,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
   m_pool->SetDecoder(this);
+  m_pool->SetProcessInfo(&m_processInfo);
   m_dec = m_pool->GetComponent();
 
   m_dec->control->userdata = (struct MMAL_PORT_USERDATA_T *)this;
