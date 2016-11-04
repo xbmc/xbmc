@@ -237,13 +237,13 @@ namespace PVR
      */
     std::string EpisodeName(void) const { return m_strShowTitle; };
 
-	/*!
-	* @brief Change the genre of this recording.
-	* @param iGenreType The genre type ID.
-	* @param iGenreSubType The genre subtype ID.
-	* @param strGenre custom genre.
-	*/
-	std::string SetGenre(int iGenreType, int iGenreSubType, const char* strGenre);
+    /*!
+    * @brief Change the genre of this recording.
+    * @param iGenreType The genre type ID.
+    * @param iGenreSubType The genre subtype ID.
+    * @param strGenre custom genre.
+    */
+    std::string SetGenre(int iGenreType, int iGenreSubType, const char* strGenre);
 
   private:
     CDateTime    m_recordingTime; /*!< start time of the recording */

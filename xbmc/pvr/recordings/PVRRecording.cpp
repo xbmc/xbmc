@@ -484,15 +484,15 @@ int CPVRRecording::ClientID(void) const
 
 std::string CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const char* strGenre)
 {
-	if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
-	{
-		/* Type and sub type are not given. No EPG color coding possible
-		* Use the provided genre description as backup. */
-		return std::string(strGenre);
-	}
-	else
-	{
-		/* Determine the genre description from the type and subtype IDs */
-		return CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType);
-	}
+  if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
+  {
+    /* Type and sub type are not given. No EPG color coding possible
+    * Use the provided genre description as backup. */
+    return std::string(strGenre);
+  }
+  else
+  {
+    /* Determine the genre description from the type and subtype IDs */
+    return CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType);
+  }
 }
