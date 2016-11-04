@@ -460,6 +460,7 @@ extern "C" {
     unsigned int    iMarginEnd;                                /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
     int             iGenreType;                                /*!< @brief (optional) genre type */
     int             iGenreSubType;                             /*!< @brief (optional) genre sub type */
+	const char *    strGenreDescription;					   /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
   } ATTRIBUTE_PACKED PVR_TIMER;
 
   /*!
@@ -487,6 +488,7 @@ extern "C" {
     int    iLifetime;                                     /*!< @brief (optional) life time in days of this recording */
     int    iGenreType;                                    /*!< @brief (optional) genre type */
     int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
+	const char *    strGenreDescription;                  /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */

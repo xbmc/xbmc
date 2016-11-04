@@ -94,7 +94,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline                 = recording.strPlotOutline;
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
-  m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  m_genre                          = StringUtils::Split(CPVRRecording::SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription), g_advancedSettings.m_videoItemSeparator);
   m_playCount                      = recording.iPlayCount;
   m_resumePoint.timeInSeconds      = recording.iLastPlayedPosition;
   m_resumePoint.totalTimeInSeconds = recording.iDuration;
@@ -480,4 +480,19 @@ int CPVRRecording::ChannelUid(void) const
 int CPVRRecording::ClientID(void) const
 {
   return m_iClientId;
+}
+
+std::string CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const char* strGenre)
+{
+	if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
+	{
+		/* Type and sub type are not given. No EPG color coding possible
+		* Use the provided genre description as backup. */
+		return std::string(strGenre);
+	}
+	else
+	{
+		/* Determine the genre description from the type and subtype IDs */
+		return CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType);
+	}
 }
