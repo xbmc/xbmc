@@ -45,7 +45,7 @@ public:
    */
   static CDatabaseManager &GetInstance();
 
-  /*! \brief Initalize the database manager
+  /*! \brief Initialize the database manager
    Checks that all databases are up to date, otherwise updates them.
    */
   void Initialize(bool addonsOnly = false);
@@ -67,7 +67,7 @@ public:
   std::atomic<bool> m_bIsUpgrading;
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CDatabaseManager();
   CDatabaseManager(const CDatabaseManager&);
   CDatabaseManager const& operator=(CDatabaseManager const&);

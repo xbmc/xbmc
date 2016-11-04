@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="Kodi Add-on repository"
-		version="2.5.6"
+		version="3.0.0"
 		provider-name="Team Kodi">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
   </requires>
 	<extension point="xbmc.addon.repository">
-		<info>http://mirrors.kodi.tv/addons/krypton/addons.xml.gz</info>
-		<checksum>http://mirrors.kodi.tv/addons/krypton/addons.xml.gz.md5</checksum>
-		<datadir>http://mirrors.kodi.tv/addons/krypton</datadir>
+		<info>http://mirrors.kodi.tv/addons/leia/addons.xml.gz</info>
+		<checksum>http://mirrors.kodi.tv/addons/leia/addons.xml.gz.md5</checksum>
+		<datadir>http://mirrors.kodi.tv/addons/leia</datadir>
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">

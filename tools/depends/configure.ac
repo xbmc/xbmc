@@ -12,8 +12,8 @@ passed_cflags="$CFLAGS"
 passed_ldflags="$LDFLAGS"
 passed_cxxflags="$CXXFLAGS"
 
-m4_include([../../m4/xbmc_arch.m4])
-m4_include([../../m4/ax_cxx_compile_stdcxx_11.m4])
+m4_include([m4/xbmc_arch.m4])
+m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
 AX_CXX_COMPILE_STDCXX_11(,[mandatory])
 c11_flags="$CFLAGS"
 cxx11_flags="$CXXFLAGS"
@@ -74,7 +74,7 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [spcify sdk platform version (optional for android). default is android-21])],
+  [specify sdk platform version (optional for android). default is android-21])],
   [use_sdk=$withval])
 
 AC_ARG_ENABLE([gplv3],
@@ -385,6 +385,7 @@ case $host in
     platform_includes="-isysroot $use_sdk_path"
     deps_dir=$sdk_name"_"$use_cpu-target
     tool_dir=buildtools-native;
+    AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
   ;;
   *)
     AC_MSG_ERROR(unsupported host ($use_host))
@@ -476,7 +477,6 @@ AC_PATH_PROG([OBJDUMP_FOR_BUILD], [objdump], objdump, $PATH_FOR_BUILD)
 AC_PATH_PROG([CC_FOR_BUILD],[gcc llvm-gcc $platform_cc], gcc, $PATH_FOR_BUILD)
 AC_PATH_PROG([CXX_FOR_BUILD],[g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
 
-AC_CHECK_LIB([z],   [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
 AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
 AC_TRY_LINK([#include <locale.h>],[struct lconv* test=localeconv();], has_localeconv=yes, AC_MSG_WARN("No localeconv support in toolchain. Using replacement."); has_localeconv=no)
 AC_CHECK_LIB([crystax],   [main], has_libcrystax=1, has_libcrystax=0)
@@ -597,6 +597,7 @@ echo -e
   AC_SUBST(build_tools_path)
 fi
 
+AC_SUBST(use_debug)
 AC_SUBST(use_host)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)

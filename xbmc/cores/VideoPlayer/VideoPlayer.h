@@ -164,7 +164,7 @@ public:
   int64_t demuxerId; // demuxer's id of current playing stream
   int id;     // id of current playing stream
   int source;
-  double dts;    // last dts from demuxer, used to find disncontinuities
+  double dts;    // last dts from demuxer, used to find discontinuities
   double dur;    // last frame expected duration
   int dispTime; // display time from input stream
   CDVDStreamInfo hint;   // stream hints, used to notice stream changes
@@ -409,6 +409,7 @@ protected:
   virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
   virtual void UpdateClockSync(bool enabled) override;
   virtual void UpdateRenderInfo(CRenderInfo &info) override;
+  virtual void UpdateRenderBuffers(int queued, int discard, int free) override;
 
   void CreatePlayers();
   void DestroyPlayers();

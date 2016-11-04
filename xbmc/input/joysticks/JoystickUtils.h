@@ -21,6 +21,9 @@
 
 #include "JoystickTypes.h"
 
+/// \ingroup joystick
+/// \{
+
 inline JOYSTICK::HAT_DIRECTION& operator|=(JOYSTICK::HAT_DIRECTION& lhs, JOYSTICK::HAT_DIRECTION rhs)
 {
   return lhs = static_cast<JOYSTICK::HAT_DIRECTION>(static_cast<int>(lhs) | static_cast<int>(rhs));
@@ -45,3 +48,5 @@ inline float operator*(float lhs, JOYSTICK::SEMIAXIS_DIRECTION rhs)
 {
   return lhs * static_cast<int>(rhs);
 }
+
+/// \}

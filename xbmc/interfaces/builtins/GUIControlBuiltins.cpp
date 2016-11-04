@@ -22,6 +22,7 @@
 
 #include "guilib/GUIWindowManager.h"
 #include "input/ButtonTranslator.h"
+#include "utils/StringUtils.h"
 
 /*! \brief Send a move event to a GUI control.
  *  \param params The parameters.
@@ -88,12 +89,16 @@ static int SendMessage(const std::vector<std::string>& params)
  *  \param params The parameters.
  *  \details params[0] = ID of control.
  *           params[1] = ID of subitem of control (optional).
+ *           params[2] = "absolute" to focus the absolute position instead of the relative one (optional).
  */
 static int SetFocus(const std::vector<std::string>& params)
 {
   int controlID = atol(params[0].c_str());
   int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
-  CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
+  int absID = 0;
+  if (params.size() > 2 && StringUtils::EqualsNoCase(params[2].c_str(), "absolute"))
+    absID = 1;
+  CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem, absID);
   g_windowManager.SendMessage(msg);
 
   return 0;
@@ -147,6 +152,7 @@ static int ShiftPage(const std::vector<std::string>& params)
 ///     Change current focus to a different control id
 ///     @param[in] controlId             ID of control.
 ///     @param[in] subitemId             ID of subitem of control (optional).
+///     @param[in] absolute              "absolute" to focus the absolute position instead of the relative one (optional).
 ///   }
 ///   \table_row2_l{
 ///     <b>`pagedown(controlId)`</b>
@@ -173,6 +179,7 @@ static int ShiftPage(const std::vector<std::string>& params)
 ///     Change current focus to a different control id
 ///     @param[in] controlId             ID of control.
 ///     @param[in] subitemId             ID of subitem of control (optional).
+///     @param[in] absolute              "absolute" to focus the absolute position instead of the relative one (optional).
 ///   }
 ///  \table_end
 ///

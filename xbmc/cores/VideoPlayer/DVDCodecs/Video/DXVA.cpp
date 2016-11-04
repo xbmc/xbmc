@@ -333,7 +333,7 @@ bool CDXVAContext::GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid
 {
   outFormat = DXGI_FORMAT_UNKNOWN;
 
-  // iterate through our predifined dxva modes and find the first matching for desired codec
+  // iterate through our predefined dxva modes and find the first matching for desired codec
   // once we found a mode, get a target we support in render_targets_dxgi DXGI_FORMAT_UNKNOWN
   for (const dxva2_mode_t* mode = dxva2_modes; mode->name && outFormat == DXGI_FORMAT_UNKNOWN; mode++)
   {
@@ -416,7 +416,7 @@ bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO
     // select first available
     if (config.ConfigBitstreamRaw == 0 && pConfig.ConfigBitstreamRaw != 0)
       config = pConfig;
-    // overide with preferred if found
+    // override with preferred if found
     if (config.ConfigBitstreamRaw != bitstream && pConfig.ConfigBitstreamRaw == bitstream)
       config = pConfig;
   }
@@ -981,6 +981,18 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
   picture->dxva = m_presentPicture;
   picture->format = RENDER_FMT_DXVA;
   picture->extended_format = (unsigned int)m_format.OutputFormat;
+
+  int queued, discard, free;
+  m_processInfo.GetRenderBuffers(queued, discard, free);
+  if (free > 1)
+  {
+    g_Windowing.RequestDecodingTime();
+  }
+  else
+  {
+    g_Windowing.ReleaseDecodingTime();
+  }
+
   return true;
 }
 
@@ -1043,7 +1055,7 @@ int CDecoder::Check(AVCodecContext* avctx)
     DXVA_Status_VC1  vc1;
   } status = {};
 
-  /* I'm not sure, but MSDN says nothing about extentions functions in D3D11, try to using with same way as in DX9 */
+  /* I'm not sure, but MSDN says nothing about extensions functions in D3D11, try to using with same way as in DX9 */
   data.Function = DXVA_STATUS_REPORTING_FUNCTION;
   data.pPrivateOutputData    = &status;
   data.PrivateOutputDataSize = avctx->codec_id == AV_CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);

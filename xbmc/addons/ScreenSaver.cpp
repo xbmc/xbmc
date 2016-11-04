@@ -18,10 +18,13 @@
  *
  */
 #include "ScreenSaver.h"
+#include "ServiceBroker.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "settings/Settings.h"
 #include "utils/AlarmClock.h"
+#include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
 
 // What sound does a python screensaver make?
@@ -32,14 +35,21 @@
 namespace ADDON
 {
 
-CScreenSaver::CScreenSaver(const char *addonID)
-    : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(AddonProps(addonID, ADDON_UNKNOWN))
+CScreenSaver::CScreenSaver(AddonProps props)
+ : ADDON::CAddonDll(std::move(props))
 {
+  memset(&m_struct, 0, sizeof(m_struct));
+}
+
+CScreenSaver::CScreenSaver(const char *addonID)
+ : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN))
+{
+  memset(&m_struct, 0, sizeof(m_struct));
 }
 
 bool CScreenSaver::IsInUse() const
 {
-  return CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
+  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
 }
 
 bool CScreenSaver::CreateScreenSaver()
@@ -53,27 +63,26 @@ bool CScreenSaver::CreateScreenSaver()
       CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CScreenSaver(*this)));
     return true;
   }
- // pass it the screen width,height
- // and the name of the screensaver
-  int iWidth = g_graphicsContext.GetWidth();
-  int iHeight = g_graphicsContext.GetHeight();
 
-  m_pInfo = new SCR_PROPS;
+  m_name = Name();
+  m_presets = CSpecialProtocol::TranslatePath(Path());
+  m_profile = CSpecialProtocol::TranslatePath(Profile());
+
 #ifdef HAS_DX
-  m_pInfo->device     = g_Windowing.Get3D11Context();
+  m_info.device = g_Windowing.Get3D11Context();
 #else
-  m_pInfo->device     = NULL;
+  m_info.device = nullptr;
 #endif
-  m_pInfo->x          = 0;
-  m_pInfo->y          = 0;
-  m_pInfo->width      = iWidth;
-  m_pInfo->height     = iHeight;
-  m_pInfo->pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
-  m_pInfo->name       = strdup(Name().c_str());
-  m_pInfo->presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
-  m_pInfo->profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
+  m_info.x = 0;
+  m_info.y = 0;
+  m_info.width = g_graphicsContext.GetWidth();
+  m_info.height = g_graphicsContext.GetHeight();
+  m_info.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
+  m_info.name = m_name.c_str();
+  m_info.presets = m_presets.c_str();
+  m_info.profile = m_profile.c_str();
 
-  if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create() == ADDON_STATUS_OK)
+  if (CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
     return true;
 
   return false;
@@ -82,24 +91,19 @@ bool CScreenSaver::CreateScreenSaver()
 void CScreenSaver::Start()
 {
   // notify screen saver that they should start
-  if (Initialized()) m_pStruct->Start();
+  if (m_struct.Start)
+    m_struct.Start();
 }
 
 void CScreenSaver::Render()
 {
   // ask screensaver to render itself
-  if (Initialized()) m_pStruct->Render();
-}
-
-void CScreenSaver::GetInfo(SCR_INFO *info)
-{
-  // get info from screensaver
-  if (Initialized()) m_pStruct->GetInfo(info);
+  if (m_struct.Render)
+    m_struct.Render();
 }
 
 void CScreenSaver::Destroy()
 {
-#ifdef HAS_PYTHON
   if (URIUtils::HasExtension(LibPath(), ".py"))
   {
     /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
@@ -109,20 +113,9 @@ void CScreenSaver::Destroy()
     g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
     return;
   }
-#endif
-  // Release what was allocated in method CScreenSaver::CreateScreenSaver.
-  if (m_pInfo)
-  {
-    free((void *) m_pInfo->name);
-    free((void *) m_pInfo->presets);
-    free((void *) m_pInfo->profile);
 
-    delete m_pInfo;
-    m_pInfo = NULL;
-  }
-
-  CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Destroy();
+  memset(&m_struct, 0, sizeof(m_struct));
+  CAddonDll::Destroy();
 }
 
-} /*namespace ADDON*/
-
+} /* namespace ADDON */

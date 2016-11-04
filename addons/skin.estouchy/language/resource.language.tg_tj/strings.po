@@ -96,10 +96,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Провайдери иттилоотӣ"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Ҳофизаи истифодашуда:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Воридшавии охирин"
@@ -123,6 +119,10 @@ msgstr "Дар асоси шрифти Arial"
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Барои ворид шудан ва идома додан[CR]профили корбари Kodi-ро интихоб кунед"
+
+msgctxt "#31550"
+msgid "Backgrounds"
+msgstr "Пасзаминаҳо"
 
 msgctxt "#31556"
 msgid "Live TV"

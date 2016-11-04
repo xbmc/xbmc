@@ -100,12 +100,6 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
-  /*! \brief Get the repository which hosts the most recent version of add-on
-   *  \param addonId The id of the add-on to find the repository for
-   *  \param repo [out] The hosting repository
-   */
-  static bool GetRepoForAddon(const std::string& addonId, ADDON::RepositoryPtr& repo);
-
   class CDownloadJob
   {
   public:
@@ -121,7 +115,7 @@ public:
   typedef std::map<std::string, CDownloadJob> JobMap;
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CAddonInstaller();
   CAddonInstaller(const CAddonInstaller&);
   CAddonInstaller const& operator=(CAddonInstaller const&);
@@ -170,7 +164,8 @@ public:
    *  \param hash Hash of the add-on
    *  \return True if the add-on and its hash were found, false otherwise.
    */
-  static bool GetAddonWithHash(const std::string& addonID, const std::string &repoID, ADDON::AddonPtr& addon, std::string& hash);
+  static bool GetAddonWithHash(const std::string& addonID, ADDON::RepositoryPtr& repo,
+      ADDON::AddonPtr& addon, std::string& hash);
 
 private:
   void OnPreInstall();
@@ -196,7 +191,7 @@ private:
 class CAddonUnInstallJob : public CFileOperationJob
 {
 public:
-  CAddonUnInstallJob(const ADDON::AddonPtr &addon);
+  CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
 
   virtual bool DoWork();
 
@@ -204,4 +199,5 @@ private:
   void ClearFavourites();
 
   ADDON::AddonPtr m_addon;
+  bool m_removeData;
 };

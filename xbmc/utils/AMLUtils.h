@@ -41,6 +41,14 @@ enum AML_DISPLAY_AXIS_PARAM
   AML_DISPLAY_AXIS_PARAM_HEIGHT
 };
 
+enum AML_SUPPORT_H264_4K2K
+{
+  AML_SUPPORT_H264_4K2K_UNINIT = -1,
+  AML_NO_H264_4K2K,
+  AML_HAS_H264_4K2K,
+  AML_HAS_H264_4K2K_SAME_PROFILE
+};
+
 bool aml_present();
 bool aml_permissions();
 bool aml_hw3d_present();
@@ -48,7 +56,7 @@ bool aml_wired_present();
 bool aml_support_hevc();
 bool aml_support_hevc_4k2k();
 bool aml_support_hevc_10bit();
-bool aml_support_h264_4k2k();
+AML_SUPPORT_H264_4K2K aml_support_h264_4k2k();
 void aml_set_audio_passthrough(bool passthrough);
 bool aml_IsHdmiConnected();
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res);

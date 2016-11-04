@@ -84,29 +84,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Indar aukerak"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albumaren info"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Letren gehigarria"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kate taldea"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadatuak"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Edukiaren eskaneatze aukerak"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Deskargatu azpitituluak"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -127,7 +107,3 @@ msgstr "Shift"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletestua"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Ezkutatu"

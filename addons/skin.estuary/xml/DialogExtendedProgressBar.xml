@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<zorder>3</zorder>
+	<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+	<controls>
+		<control type="group">
+			<depth>DepthBars</depth>
+			<right>20</right>
+			<width>80</width>
+			<top>0</top>
+			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
+			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo)">conditional</animation>
+			<control type="image">
+				<left>20</left>
+				<top>10</top>
+				<width>60</width>
+				<height>60</height>
+				<texture>dialogs/extendedprogress/loading-back.png</texture>
+			</control>
+			<control type="group">
+				<visible>!Window.IsActive(volumebar)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<control type="image">
+					<left>20</left>
+					<top>10</top>
+					<width>60</width>
+					<height>60</height>
+					<texture>$INFO[Control.GetLabel(32),dialogs/volume/progress/p,.png]</texture>
+					<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
+				</control>
+				<control type="image">
+					<left>20</left>
+					<top>10</top>
+					<width>60</width>
+					<height>60</height>
+					<texture>dialogs/extendedprogress/loading.png</texture>
+					<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
+				</control>
+			</control>
+			<control type="grouplist">
+				<left>-800</left>
+				<top>7</top>
+				<width>800</width>
+				<height>120</height>
+				<align>right</align>
+				<orientation>horizontal</orientation>
+				<control type="label" id="30">
+					<width min="0" max="680">auto</width>
+					<height>120</height>
+					<font>font12</font>
+				</control>
+				<control type="label">
+					<width min="0" max="120">auto</width>
+					<height>120</height>
+					<font>font12</font>
+					<label>$INFO[Control.GetLabel(32),: ,%]</label>
+				</control>
+			</control>
+			<control type="label" id="31">
+				<description>Title label</description>
+				<left>-750</left>
+				<top>33</top>
+				<width>750</width>
+				<height>120</height>
+				<font>font12</font>
+				<textcolor>80FFFFFF</textcolor>
+				<align>right</align>
+			</control>
+			<control type="progress" id="32">
+				<left>3000</left>
+				<height>15</height>
+			</control>
+		</control>
+	</controls>
+</window>

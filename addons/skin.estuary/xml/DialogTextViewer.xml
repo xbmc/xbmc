@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">1000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<left>13%</left>
+			<centertop>50%</centertop>
+			<height>770</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="84%" />
+				<param name="height" value="770" />
+				<param name="header_label" value="$LOCALIZE[13406]" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="textbox" id="5">
+				<left>1%</left>
+				<top>85</top>
+				<width>82%</width>
+				<height>647</height>
+				<shadowcolor>black</shadowcolor>
+				<pagecontrol>3000</pagecontrol>
+				<font>font14</font>
+			</control>
+			<control type="scrollbar" id="3000">
+				<include>HiddenObject</include>
+				<ondown>3000</ondown>
+				<onup>3000</onup>
+			</control>
+		</control>
+		<control type="button" id="1000">
+			<include>HiddenObject</include>
+			<onclick>Action(Close)</onclick>
+			<onup>PageUp(3000)</onup>
+			<ondown>PageDown(3000)</ondown>
+		</control>
+		<control type="button">
+			<centerleft>50%</centerleft>
+			<top>113</top>
+			<width>48</width>
+			<height>20</height>
+			<texturefocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturefocus>
+			<texturenofocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturenofocus>
+			<onclick>SetFocus(3000)</onclick>
+			<onclick>Up</onclick>
+			<visible>Control.IsVisible(3000) + Integer.IsGreater(Container(5).CurrentPage,1)</visible>
+			<animation effect="zoom" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
+		</control>
+		<control type="button">
+			<centerleft>50%</centerleft>
+			<top>940</top>
+			<width>48</width>
+			<height>20</height>
+			<onclick>SetFocus(3000)</onclick>
+			<onclick>Down</onclick>
+			<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
+			<texturenofocus colordiffuse="button_focus">overlays/arrowdown.png</texturenofocus>
+			<visible>Control.IsVisible(3000) + !String.IsEqual(Container(5).CurrentPage,Container(5).NumPages)</visible>
+			<animation effect="zoom" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
+		</control>
+		<control type="label">
+			<left>1310</left>
+			<top>880</top>
+			<width>330</width>
+			<height>35</height>
+			<font>font12</font>
+			<textcolor>grey</textcolor>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>$LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(5).CurrentPage]/$INFO[Container(5).NumPages][/COLOR]</label>
+			<wrapmultiline>true</wrapmultiline>
+			<visible>Integer.IsGreater(Container(5).NumPages,1)</visible>
+		</control>
+	</controls>
+</window>

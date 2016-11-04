@@ -28,7 +28,7 @@ class CPluginSource : public CAddon
 {
 public:
 
-  enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO };
+  enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO, GAME };
 
   static std::unique_ptr<CPluginSource> FromExtension(AddonProps props, const cp_extension_t* ext);
 

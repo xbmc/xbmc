@@ -59,7 +59,7 @@ build_script:
         # Build  
         mkdir $env:APPVEYOR_BUILD_FOLDER\kodi-build
         cd $env:APPVEYOR_BUILD_FOLDER\kodi-build
-        cmd /c 'cmake -G "Visual Studio 14" ..\project\cmake 2>&1'
+        cmd /c 'cmake -G "Visual Studio 14" .. 2>&1'
         cmd /c 'cmake --build . --target all_build --config RelWithDebInfo 2>&1'
       }
   
@@ -80,7 +80,7 @@ build_script:
               -G "NMake Makefiles" `
               -DCMAKE_BUILD_TYPE="$env:CONFIG" `
               -DCMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER"\addons `
-              $env:APPVEYOR_BUILD_FOLDER\project\cmake\addons
+              $env:APPVEYOR_BUILD_FOLDER\cmake\addons
         # Build selected addons one by one
         $addons_success=""
         $addons_failed=""

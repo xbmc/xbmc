@@ -12,7 +12,7 @@ the toggle button, the state will change, toggling the extra textures
 needed (pushed in and pushed out for instance).
 
 --------------------------------------------------------------------------------
-\section skin_Toogle_button_control_sect1 Example
+\section skin_Toggle_button_control_sect1 Example
 
 ~~~~~~~~~~~~~
 <control type="togglebutton" id="25">
@@ -51,7 +51,7 @@ needed (pushed in and pushed out for instance).
 
 
 --------------------------------------------------------------------------------
-\section skin_Toogle_button_control_sect2 Available tags
+\section skin_Toggle_button_control_sect2 Available tags
 
 In addition to the Default Control Tags the following tags are available. Note
 that each tag is lower case only. This is important, as xml tags are case-sensitive.
@@ -82,7 +82,7 @@ that each tag is lower case only. This is important, as xml tags are case-sensit
 
 
 --------------------------------------------------------------------------------
-\section skin_Toogle_button_control_sect3 See also
+\section skin_Toggle_button_control_sect3 See also
 #### Development:
 
 - [Add-on development](http://kodi.wiki/view/Add-on_development)

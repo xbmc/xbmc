@@ -81,7 +81,7 @@ axismap_sixaxis = {
 
 # to make sure all combination keys are checked first
 # we sort the keymap's button codes in reverse order
-# this guranties that any bit combined button code
+# this guarantees that any bit combined button code
 # will be processed first
 keymap_sixaxis_keys = keymap_sixaxis.keys()
 keymap_sixaxis_keys.sort()
@@ -205,9 +205,9 @@ class sixaxis():
     bytes.extend([0xFF, 0x72])
     bytes.extend([0x00, 0x00, 0x00, 0x00])
     bytes.extend([0x02]) # 0x02 LED1, 0x04 LED2 ... 0x10 LED4
-    # The following sections should set the blink frequncy of
+    # The following sections should set the blink frequency of
     # the leds on the controller, but i've not figured out how.
-    # These values where suggusted in a mailing list, but no explination
+    # These values where suggested in a mailing list, but no explanation
     # for how they should be combined to the 5 bytes per led
     #0xFF = 0.5Hz
     #0x80 = 1Hz

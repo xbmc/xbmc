@@ -236,7 +236,6 @@ private:
 
   bool           m_scrolling;
   OVER_FLOW      m_overflowType;
-  bool           m_selected;
   CScrollInfo    m_scrollInfo;
   CRect          m_renderRect;   ///< actual sizing of text
   CRect          m_maxRect;      ///< maximum sizing of text

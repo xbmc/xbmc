@@ -84,25 +84,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Krag Opsies"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Album info"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Lirieke byvoegsel"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanaal Groep"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Inhoud deursoek opsies"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Laai onderskrifte af"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -119,7 +103,3 @@ msgstr "Selekteer jou Kodi gebruikers profiel[CR]om in te teken en voort te gaan
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Versteek"

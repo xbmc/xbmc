@@ -126,7 +126,6 @@ namespace MUSIC_INFO
     XFILE::CFile  m_file;
     bool          m_bIsReadOnly;
     bool          m_bIsOpen;
-    int           m_bufferSize;
   };
 }
 

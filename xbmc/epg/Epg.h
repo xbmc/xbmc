@@ -26,19 +26,15 @@
 
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
+#include "EpgTypes.h"
 
-#include <memory>
-
-namespace PVR
-{
-  class CPVRChannel;
-}
+#include <map>
+#include <string>
+#include <vector>
 
 /** EPG container for CEpgInfoTag instances */
 namespace EPG
 {
-  class CEpg;
-  typedef std::shared_ptr<CEpg> CEpgPtr;
   typedef std::map<unsigned int, CEpgPtr> EPGMAP;
 
   class CEpg : public Observable
@@ -175,7 +171,7 @@ namespace EPG
     CEpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
 
     /*!
-     * Get all events occuring between the given begin and end time.
+     * Get all events occurring between the given begin and end time.
      * @param beginTime Minimum start time in UTC of the event.
      * @param endTime Maximum end time in UTC of the event.
      * @return The tags found or an empty vector if none was found.

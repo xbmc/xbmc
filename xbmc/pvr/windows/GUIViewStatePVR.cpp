@@ -19,6 +19,7 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
 
@@ -31,9 +32,9 @@ using namespace PVR;
 
 CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  AddSortMethod(SortByChannelNumber, 549, LABEL_MASKS("%L", "%I", "%L", ""));
-  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));
-  AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS( "%L", "%p", "%L", "%p")); // FileName, LastPlayed | Foldername, LastPlayed
+  AddSortMethod(SortByChannelNumber, 549, LABEL_MASKS("%L", "", "%L", ""));      // "Number"      : Filename, empty | Foldername, empty
+  AddSortMethod(SortByLabel,         551, LABEL_MASKS("%L", "", "%L", ""));      // "Name"        : Filename, empty | Foldername, empty
+  AddSortMethod(SortByLastPlayed,    568, LABEL_MASKS( "%L", "%p", "%L", "%p")); // "Last played" : Filename, LastPlayed | Foldername, LastPlayed
 
   // Default sorting
   SetSortMethod(SortByChannelNumber);
@@ -48,10 +49,13 @@ void CGUIViewStateWindowPVRChannels::SaveViewState(void)
 
 CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""), CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);  // FileName, Size | Foldername, empty
-  AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
-  AddSortMethod(SortByTime, 180, LABEL_MASKS("%T", "%D"));
-  AddSortMethod(SortByFile, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
+  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%d", "%L", ""),    // "Name"     : Filename, DateTime | Foldername, empty
+                CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                  ? SortAttributeIgnoreArticle
+                  : SortAttributeNone);
+  AddSortMethod(SortByDate,  552, LABEL_MASKS("%L", "%d", "%L", "%d")); // "Date"     : Filename, DateTime | Foldername, DateTime
+  AddSortMethod(SortByTime,  180, LABEL_MASKS("%L", "%D", "%L", ""));   // "Duration" : Filename, Duration | Foldername, empty
+  AddSortMethod(SortByFile,  561, LABEL_MASKS("%L", "%d", "%L", ""));   // "File"     : Filename, DateTime | Foldername, empty
 
   // Default sorting
   SetSortMethod(SortByDate);
@@ -81,10 +85,10 @@ void CGUIViewStateWindowPVRGuide::SaveViewState(void)
 
 CGUIViewStateWindowPVRTimers::CGUIViewStateWindowPVRTimers(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  int sortAttributes(CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  int sortAttributes(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
   sortAttributes |= SortAttributeIgnoreFolders;
-  AddSortMethod(SortByLabel, static_cast<SortAttribute>(sortAttributes), 551, LABEL_MASKS("%L", "%I", "%L", ""));   // FileName, Size | Foldername, empty
-  AddSortMethod(SortByDate, static_cast<SortAttribute>(sortAttributes), 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
+  AddSortMethod(SortByLabel, static_cast<SortAttribute>(sortAttributes), 551, LABEL_MASKS("%L", "", "%L", ""));     // "Name" : Filename, empty | Foldername, empty
+  AddSortMethod(SortByDate,  static_cast<SortAttribute>(sortAttributes), 552, LABEL_MASKS("%L", "%d", "%L", "%d")); // "Date" : Filename, DateTime | Foldername, DateTime
 
   // Default sorting
   SetSortMethod(SortByDate);
@@ -104,8 +108,8 @@ bool CGUIViewStateWindowPVRTimers::HideParentDirItems(void)
 
 CGUIViewStateWindowPVRSearch::CGUIViewStateWindowPVRSearch(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));   // FileName, Size | Foldername, empty
-  AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
+  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "", "%L", ""));     // "Name" : Filename, empty | Foldername, empty
+  AddSortMethod(SortByDate,  552, LABEL_MASKS("%L", "%d", "%L", "%d")); // "Date" : Filename, DateTime | Foldername, DateTime
 
   // Default sorting
   SetSortMethod(SortByDate);

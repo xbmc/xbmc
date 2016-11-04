@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Usette filmer"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Ingen fraskrivelse"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Nedlastingsikon"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Vurdert"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Mest avspilte kanaler"
+msgid "Recently played channels"
+msgstr "Nylige avspilte kanaler"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Visningstype"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Neste spor"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Ingen favoritter funnet. Du kan legge til artikler fra media listen til denne listen ved å bruke hurtigmenyen."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Gå til albumer"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Gå til sanger"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -135,10 +119,6 @@ msgstr "Vis fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Sist innlogget"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Minne brukt"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "Elementer"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Spilleliste"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Spol bakover"
@@ -175,10 +151,6 @@ msgstr "Spol bakover"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Spol framover"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Avbryt oppdatering"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Slett gruppe"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Les mer..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Tilgjengelig"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Trykk [B]Opp[/B] for å spole frem eller tilbake"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Trykk [B]Venstre[/B] for å spole tilbake, eller [B]Høyre[/B] for å spole fremover"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Undertekster nedlasting"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Gå til spilleliste"
@@ -252,29 +212,17 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatisk pålogging ved oppstart"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Oppdatering tilgjengelig"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minutter"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Hovedmeny elementer"
 
 msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Hurtigvalg til \"Filer\" av hver enkelt media type. Gå til for å legge til flere kilder i databasen."
+msgid "Choose weather fanart pack"
+msgstr "Velg vært fanart pakke"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Seksjoner"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "usett"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +244,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Sist oppdatert"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Legg til mediakilde"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "av"
@@ -308,29 +252,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Strømalternativer"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Titler"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Biblioteket"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Filmsamlinger"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Spill av plate"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Forrige plassering"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Neste plassering"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -339,10 +263,6 @@ msgstr "Rollerbesetning ikke tilgjengelig"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Slutter"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albuminformasjon"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -356,22 +276,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Visualiseringsinnstillinger"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanalgruppe"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadata"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Innstillinger for informasjonstilbydere"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Alternativer for innholdsskraper"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Tilgjengelige grupper"
@@ -380,10 +284,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Søk trailere"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Hent undertekster"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Videomeny"
@@ -391,10 +291,6 @@ msgstr "Videomeny"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Vis værinformasjon i toppmenyen"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Vis mediainformasjon til filmer / episoder / musikkvideoer"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +307,6 @@ msgstr "Kanal instillinger"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Velg din Kodi brukerprofil[CR]for å logge inn og fortsette"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Ikonvegg"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +339,6 @@ msgstr "Tekst-TV"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Bred Liste"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Aktiver egendefinert global bakgrunn"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Velg sti til bilder"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -541,17 +425,53 @@ msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Hovedmeny relaterte innstillinger. Tilpass hjemmeskjermen slik du ønsker."
 
 msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Velg fankunst for hjemmeskjermen"
+msgid "Choose skin fanart pack"
+msgstr "Velg skinn fanart pakke"
 
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Skjul"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Gjenstår"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Klikk her for å se siste endringer..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR informasjon"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Spiller prosess informasjon"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Video dekoder"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Piksel format"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Endringer for denne utgaven"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Avspillingshastighet"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Du har ikke satt opp PVR enda. For å bruke PVR, velg en PVR klient tillegg og konfigurer det. Vennligst besøk http://kodi.wiki/view/PVR for å finne ut mer."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Skriv inn utvidelsesleseren"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Søk tillegg"

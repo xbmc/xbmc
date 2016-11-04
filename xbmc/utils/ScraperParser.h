@@ -67,7 +67,7 @@ private:
    to a different type of XML document, ready to be output direct
    to the album loaders or similar
    \param input the input document
-   \param dest the output destation for the conversion
+   \param dest the output destination for the conversion
    \param element the current XML element
    \param bAppend append or clear the buffer
    */

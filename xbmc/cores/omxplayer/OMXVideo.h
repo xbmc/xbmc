@@ -91,10 +91,10 @@ protected:
   COMXCoreComponent *m_omx_clock;
   OMXClock           *m_av_clock;
 
-  COMXCoreTunel     m_omx_tunnel_decoder;
-  COMXCoreTunel     m_omx_tunnel_clock;
-  COMXCoreTunel     m_omx_tunnel_sched;
-  COMXCoreTunel     m_omx_tunnel_image_fx;
+  COMXCoreTunnel    m_omx_tunnel_decoder;
+  COMXCoreTunnel    m_omx_tunnel_clock;
+  COMXCoreTunnel    m_omx_tunnel_sched;
+  COMXCoreTunnel    m_omx_tunnel_image_fx;
   bool              m_is_open;
   bool              m_setStartTime;
 

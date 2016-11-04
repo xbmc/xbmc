@@ -18,14 +18,13 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#elif defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS)
 #include "system.h"
 #endif
 
 #include "MMALCodec.h"
 
+#include "ServiceBroker.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "windowing/WindowingFactory.h"
@@ -37,7 +36,6 @@
 #include "settings/MediaSettings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Application.h"
-#include "threads/Atomics.h"
 #include "guilib/GUIWindowManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "settings/DisplaySettings.h"
@@ -53,9 +51,10 @@ using namespace KODI::MESSAGING;
 
 #define VERBOSE 0
 
+void CMMALBuffer::SetVideoDeintMethod(std::string method) { if (m_pool) m_pool->SetVideoDeintMethod(method); }
 
 CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> pool)
-    : m_omv(omv), m_pool(pool)
+    : CMMALBuffer(pool), m_omv(omv)
 {
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
@@ -205,7 +204,7 @@ void CMMALVideo::dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buff
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p, len %d cmd:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd);
   mmal_buffer_header_release(buffer);
-  CSingleLock lock(m_output_mutex);
+  CSingleLock output_lock(m_output_mutex);
   m_output_cond.notifyAll();
 }
 
@@ -219,7 +218,7 @@ static void dec_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
 void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
   if (!(buffer->cmd == 0 && buffer->length > 0))
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p, len %d cmd:%x flags:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd, buffer->flags);
 
   bool kept = false;
@@ -257,7 +256,7 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
         omvb->m_aspect_ratio = m_aspect_ratio;
         omvb->m_encoding = m_dec_output->format->encoding;
         {
-          CSingleLock lock(m_output_mutex);
+          CSingleLock output_lock(m_output_mutex);
           m_output_ready.push(omvb);
           m_output_cond.notifyAll();
         }
@@ -266,7 +265,7 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
     }
     if (buffer->flags & MMAL_BUFFER_HEADER_FLAG_EOS)
     {
-      CSingleLock lock(m_output_mutex);
+      CSingleLock output_lock(m_output_mutex);
       m_got_eos = true;
       m_output_cond.notifyAll();
     }
@@ -361,13 +360,11 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   CSingleLock lock(m_sharedSection);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d software:%d %dx%d renderer:%p", CLASSNAME, __func__, CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.software, hints.width, hints.height, options.m_opaque_pointer);
+    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d software:%d %dx%d renderer:%p", CLASSNAME, __func__, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.software, hints.width, hints.height, options.m_opaque_pointer);
 
   // we always qualify even if DVDFactoryCodec does this too.
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || hints.software)
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || hints.software)
     return false;
-
-  m_processInfo.SetVideoDeintMethod("none");
 
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);
@@ -398,7 +395,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       // H.264
       m_codingType = MMAL_ENCODING_H264;
       m_pFormatName = "mmal-h264";
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
+      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
       {
         m_codingType = MMAL_ENCODING_MVC;
         m_pFormatName= "mmal-mvc";
@@ -468,6 +465,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
   m_pool->SetDecoder(this);
+  m_pool->SetProcessInfo(&m_processInfo);
   m_dec = m_pool->GetComponent();
 
   m_dec->control->userdata = (struct MMAL_PORT_USERDATA_T *)this;
@@ -599,7 +597,7 @@ void CMMALVideo::Dispose()
 
 void CMMALVideo::SetDropState(bool bDrop)
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (bDrop != m_dropState)
     CLog::Log(LOGDEBUG, "%s::%s - bDrop(%d)", CLASSNAME, __func__, bDrop);
   m_dropState = bDrop;
 }
@@ -694,6 +692,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   XbmcThreads::EndTime delay(500);
   while (!ret && !delay.IsTimePast())
   {
+    CSingleLock output_lock(m_output_mutex);
     unsigned int pics = m_output_ready.size();
     if (m_preroll && (pics >= GetAllowedReferences() || drain))
       m_preroll = false;
@@ -705,7 +704,6 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     {
       // otherwise we busy spin
       lock.Leave();
-      CSingleLock output_lock(m_output_mutex);
       m_output_cond.wait(output_lock, delay.MillisLeft());
       lock.Enter();
     }
@@ -739,7 +737,7 @@ void CMMALVideo::Reset(void)
   {
     CMMALVideoBuffer *buffer = NULL;
     {
-      CSingleLock lock(m_output_mutex);
+      CSingleLock output_lock(m_output_mutex);
       // fetch a output buffer and pop it off the ready list
       if (!m_output_ready.empty())
       {
@@ -782,16 +780,19 @@ void CMMALVideo::SetSpeed(int iSpeed)
 bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   CSingleLock lock(m_sharedSection);
-  if (!m_output_ready.empty())
+  CMMALVideoBuffer *buffer = nullptr;
   {
-    CMMALVideoBuffer *buffer;
-    // fetch a output buffer and pop it off the ready list
+    CSingleLock output_lock(m_output_mutex);
+    if (!m_output_ready.empty())
     {
-      CSingleLock lock(m_output_mutex);
+      // fetch a output buffer and pop it off the ready list
       buffer = m_output_ready.front();
       m_output_ready.pop();
       m_output_cond.notifyAll();
     }
+  }
+  if (buffer)
+  {
     assert(buffer->mmal_buffer);
     memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
     pDvdVideoPicture->format = RENDER_FMT_MMAL;

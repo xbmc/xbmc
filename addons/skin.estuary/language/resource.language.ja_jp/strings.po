@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "未視聴の映画"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "注意書きなし"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "ダウンロードアイコン"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "評価済"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "最も再生したチャンネル"
+msgid "Recently played channels"
+msgstr "最近再生したチャンネル"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "表示タイプ"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "次の曲"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "お気に入りは見つかりませんでした。メディアビューでコンテキストメニューを使用してこのリストにアイテムを追加できます。"
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "アルバムへ"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "曲へ"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -135,10 +119,6 @@ msgstr "ファンアートを見る"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "最終ログイン"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "メモリ使用量"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "アイテム"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "トラックリスト"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "巻き戻し"
@@ -175,10 +151,6 @@ msgstr "巻き戻し"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "早送り"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "アップデートをキャンセル"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "グループの削除"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "もっと読む..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "利用可能"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "[B]上[/B]を押して早戻しまたは早送り"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "[B]左[/B]を押して早戻し、または[B]右[/B]で早送り"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "字幕ダウンロード"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "プレイリストに移動"
@@ -252,29 +212,13 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "スタートアップ時に自動ログイン"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "アップデート利用可能"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "分"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "メインメニューアイテム"
 
-msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "各メディアタイプの”ファイル”へのショートカットです。データベースへソースを追加するために移動します。"
-
 msgctxt "#31063"
 msgid "Sections"
 msgstr "セクション"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "未視聴"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +240,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "最終更新時刻"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "メディアソースを追加"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "by"
@@ -308,29 +248,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "電源オプション"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "タイトル"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "ライブラリルート"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "ムービーセット"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "光学ディスクの再生"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "以前のロケーション"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "次のロケーション"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -338,11 +258,7 @@ msgstr "キャストは利用できません"
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "終了場所"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "アルバム情報"
+msgstr "終了時間"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -356,22 +272,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "ビジュアライザー設定"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "チャンネルグループ"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "メタデータ"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "プロバイダー設定"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "コンテントスキャンオプション"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "利用可能なグループ"
@@ -380,10 +280,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "予告編を検索"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "字幕をダウンロード"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "ビデオメニュー"
@@ -391,10 +287,6 @@ msgstr "ビデオメニュー"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "トップバーに天気予報を表示"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "映画/エピソード/ミュージックのメディアフラグを表示"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +303,6 @@ msgstr "チャンネルオプション"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Kodi ユーザープロファイルを選択して[CR]ログインしてください"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "アイコンウォール"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +335,6 @@ msgstr "文字多重放送"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "ワイドリスト"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "カスタムグローバル背景を使用"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "画像のパスを選択"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -540,18 +420,14 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "メインメニュー関連設定: 好きなようにホームスクリーンを設定できます。"
 
-msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "ホームファンアートパックを選択"
-
 msgctxt "#31132"
 msgid "min"
 msgstr "分"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "隠す"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "残り"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "アドオンブラウザー"

@@ -39,6 +39,7 @@ namespace EPG
 
 namespace PVR
 {
+  class CPVRRecording;
   class CPVRTimersPath;
 
   class CPVRTimers : public Observer
@@ -211,6 +212,13 @@ namespace PVR
      * @return The requested timer tag, or an empty fileitemptr if none was found.
      */
     CPVRTimerInfoTagPtr GetTimerForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const;
+
+    /*!
+     * @brief Check whether there is a timer currently recording the given recording.
+     * @param recording The recording to check.
+     * @return true if there is a timer currently recording the given recording, false otherwise.
+     */
+    bool HasRecordingTimerForRecording(const CPVRRecording &recording) const;
 
     /*!
      * Get the timer rule for a given timer tag

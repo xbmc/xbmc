@@ -22,6 +22,7 @@
 
 #include <memory>
 #include <utility>
+#include "ServiceBroker.h"
 #include "addons/GUIDialogAddonInfo.h"
 #include "ContextMenuManager.h"
 #include "FileItem.h"
@@ -187,7 +188,7 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
 
 CDirectoryProvider::~CDirectoryProvider()
 {
-  Reset(true);
+  Reset();
 }
 
 bool CDirectoryProvider::Update(bool forceRefresh)
@@ -227,8 +228,8 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 
 void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  // we are only interested in library and player changes
-  if ((flag & (VideoLibrary | AudioLibrary | Player)) == 0)
+  // we are only interested in library, player and GUI changes
+  if ((flag & (VideoLibrary | AudioLibrary | Player | GUI)) == 0)
     return;
 
   {
@@ -249,6 +250,14 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
         if (m_currentSort.sortBy == SortByLastPlayed ||
             m_currentSort.sortBy == SortByPlaycount ||
             m_currentSort.sortBy == SortByLastUsed)
+          m_updateState = INVALIDATED;
+      }
+    }
+    else if (flag & GUI)
+    {
+      if (strcmp(message, "OnFavouritesUpdated") == 0)
+      {
+        if (URIUtils::IsProtocol(m_currentUrl, "favourites"))
           m_updateState = INVALIDATED;
       }
     }
@@ -307,32 +316,27 @@ void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
   }
 }
 
-void CDirectoryProvider::Reset(bool immediately /* = false */)
+void CDirectoryProvider::Reset()
 {
-  // cancel any pending jobs
   CSingleLock lock(m_section);
   if (m_jobID)
     CJobManager::GetInstance().CancelJob(m_jobID);
   m_jobID = 0;
-  // reset only if this is going to be destructed
-  if (immediately)
-  {
-    m_items.clear();
-    m_currentTarget.clear();
-    m_currentUrl.clear();
-    m_itemTypes.clear();
-    m_currentSort.sortBy = SortByNone;
-    m_currentSort.sortOrder = SortOrderAscending;
-    m_currentLimit = 0;
-    m_updateState = OK;
+  m_items.clear();
+  m_currentTarget.clear();
+  m_currentUrl.clear();
+  m_itemTypes.clear();
+  m_currentSort.sortBy = SortByNone;
+  m_currentSort.sortOrder = SortOrderAscending;
+  m_currentLimit = 0;
+  m_updateState = OK;
 
-    if (m_isAnnounced)
-    {
-      m_isAnnounced = false;
-      CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
-      ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
-      g_PVRManager.Events().Unsubscribe(this);
-    }
+  if (m_isAnnounced)
+  {
+    m_isAnnounced = false;
+    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
+    g_PVRManager.Events().Unsubscribe(this);
   }
 }
 
@@ -355,7 +359,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
 
   if (fileItem.HasVideoInfoTag()
-      && CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
+      && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
       && OnInfo(item))
     return true;
 
@@ -394,8 +398,16 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   }
   else if (fileItem->HasVideoInfoTag())
   {
-    CGUIDialogVideoInfo::ShowFor(*fileItem.get());
-    return true;
+    auto mediaType = fileItem->GetVideoInfoTag()->m_type;
+    if (mediaType == MediaTypeMovie ||
+        mediaType == MediaTypeTvShow ||
+        mediaType == MediaTypeEpisode ||
+        mediaType == MediaTypeVideo ||
+        mediaType == MediaTypeMusicVideo)
+    {
+      CGUIDialogVideoInfo::ShowFor(*fileItem.get());
+      return true;
+    }
   }
   else if (fileItem->HasMusicInfoTag())
   {
@@ -463,7 +475,7 @@ bool CDirectoryProvider::UpdateSort()
   m_currentSort.sortOrder = sortOrder;
   m_currentSort.sortAttributes = SortAttributeIgnoreFolders;
 
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     m_currentSort.sortAttributes = static_cast<SortAttribute>(m_currentSort.sortAttributes | SortAttributeIgnoreArticle);
 
   return true;

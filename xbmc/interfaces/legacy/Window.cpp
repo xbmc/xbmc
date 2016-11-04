@@ -360,7 +360,7 @@ namespace XBMCAddon
       }
 
       if (!pControl)
-        // throw an exeption
+        // throw an exception
         throw WindowException("Unknown control type for python");
 
       // we have a valid control here, fill in all the 'Control' data
@@ -685,7 +685,7 @@ namespace XBMCAddon
 
         while (bModal && !g_application.m_bStop)
         {
-//! @todo garbear added this code to the pythin window.cpp class and
+//! @todo garbear added this code to the python window.cpp class and
 //!  commented in XBPyThread.cpp. I'm not sure how to handle this 
 //! in this native implementation.
 //          // Check if XBPyThread::stop() raised a SystemExit exception
@@ -749,7 +749,7 @@ namespace XBMCAddon
       pControl->pGUIControl->SetAction(ACTION_MOVE_LEFT,  pControl->iControlLeft);
       pControl->pGUIControl->SetAction(ACTION_MOVE_RIGHT, pControl->iControlRight);
 
-      // add control to list and allocate recources for the control
+      // add control to list and allocate resources for the control
       vecControls.push_back(AddonClass::Ref<Control>(pControl));
       pControl->pGUIControl->AllocResources();
 

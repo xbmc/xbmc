@@ -22,6 +22,7 @@
 
 #include <utility>
 
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
@@ -164,7 +165,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
   {
     // launch calibration window
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
-        g_passwordManager.CheckSettingLevelLock(CSettings::GetInstance().GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
+        g_passwordManager.CheckSettingLevelLock(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
       return;
     g_windowManager.ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
@@ -191,7 +192,7 @@ void CGUIDialogVideoSettings::Save()
     CMediaSettings::GetInstance().GetDefaultVideoSettings() = CMediaSettings::GetInstance().GetCurrentVideoSettings();
     CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
     CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
-    CSettings::GetInstance().Save();
+    CServiceBroker::GetSettings().Save();
   }
 }
 

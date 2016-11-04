@@ -20,6 +20,7 @@
 
 #include "Skin.h"
 #include "AddonManager.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "dialogs/GUIDialogKaiToast.h"
 // fallback for new skin resolution code
@@ -289,7 +290,7 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool
 
 int CSkinInfo::GetStartWindow() const
 {
-  int windowID = CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW);
+  int windowID = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW);
   assert(m_startupWindows.size());
   for (std::vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); ++it)
   {
@@ -359,7 +360,7 @@ int CSkinInfo::GetFirstWindow() const
 bool CSkinInfo::IsInUse() const
 {
   // Could extend this to prompt for reverting to the standard skin perhaps
-  return CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID();
+  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID();
 }
 
 const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string& name, int context)
@@ -385,10 +386,10 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
       toast->ResetTimer();
       toast->Close(true);
     }
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID())
+    if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID())
       CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     else
-      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, ID());
+      CServiceBroker::GetSettings().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, ID());
   }
 }
 
@@ -490,7 +491,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
 
 void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  // get the choosen theme and remove the extension from the current theme (backward compat)
+  // get the chosen theme and remove the extension from the current theme (backward compat)
   std::string settingValue = ((const CSettingString*)setting)->GetValue();
   URIUtils::RemoveExtension(settingValue);
   current = "SKINDEFAULT";
@@ -734,7 +735,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
     else if (setting->GetType() == "bool")
       m_bools.insert(std::pair<int, CSkinSettingBoolPtr>(number++, std::dynamic_pointer_cast<CSkinSettingBool>(setting)));
     else
-      CLog::Log(LOGWARNING, "CSkinInfo: ignoring setting of unknwon type \"%s\"", setting->GetType().c_str());
+      CLog::Log(LOGWARNING, "CSkinInfo: ignoring setting of unknown type \"%s\"", setting->GetType().c_str());
   }
 
   return true;

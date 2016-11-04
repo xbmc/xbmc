@@ -21,6 +21,7 @@
 #include <cstdlib>
 
 #include "LabelFormatter.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "RegExp.h"
@@ -101,7 +102,7 @@ using namespace MUSIC_INFO;
  *  %Y - Year
  *  %Z - tvshow title
  *  %a - Date Added
- *  %c - Relevance - Used for actors' appearences
+ *  %c - Relevance - Used for actors' appearances
  *  %d - Date and Time
  *  %p - Last Played
  *  %r - User Rating
@@ -116,7 +117,7 @@ CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mas
   AssembleMask(0, mask);
   AssembleMask(1, mask2);
   // save a bool for faster lookups
-  m_hideFileExtensions = !CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
+  m_hideFileExtensions = !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
 }
 
 std::string CLabelFormatter::GetContent(unsigned int label, const CFileItem *item) const
@@ -308,7 +309,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     if (music)
       value = StringUtils::Format("%i", music->GetPlayCount());
     if (movie)
-      value = StringUtils::Format("%i", movie->m_playCount);
+      value = StringUtils::Format("%i", movie->GetPlayCount());
     break;
   case 'X': // Bitrate
     if( !item->m_bIsFolder && item->m_dwSize != 0 )

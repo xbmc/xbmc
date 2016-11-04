@@ -25,7 +25,7 @@
 
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
-#include "addons/DllAudioDSP.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
 
 namespace ActiveAE
 {
@@ -41,7 +41,7 @@ namespace ActiveAE
    *
    * Also translates KODI's C++ structures to the addon's C structures.
    */
-  class CActiveAEDSPAddon : public ADDON::CAddonDll<DllAudioDSP, AudioDSP, AE_DSP_PROPERTIES>
+  class CActiveAEDSPAddon : public ADDON::CAddonDll
   {
   public:
     explicit CActiveAEDSPAddon(ADDON::AddonProps props);
@@ -404,10 +404,9 @@ namespace ActiveAE
     bool GetAddonProperties(void);
 
     bool LogError(const AE_DSP_ERROR error, const char *strMethod) const;
-    void LogUnhandledException(const char *strFunctionName) const;
 
     bool                      m_bReadyToUse;            /*!< true if this add-on is connected to the audio DSP, false otherwise */
-    bool                      m_isInUse;                /*!< true if this add-on currentyl processing data */
+    bool                      m_isInUse;                /*!< true if this add-on currently processing data */
     AE_DSP_MENUHOOKS          m_menuhooks;              /*!< the menu hooks for this add-on */
     int                       m_iClientId;              /*!< database ID of the audio DSP */
 
@@ -424,5 +423,7 @@ namespace ActiveAE
     CCriticalSection          m_critSection;
 
     ADDON::AddonVersion       m_apiVersion;
+    AE_DSP_PROPERTIES         m_info;
+    KodiToAddonFuncTable_AudioDSP m_struct;
   };
 }

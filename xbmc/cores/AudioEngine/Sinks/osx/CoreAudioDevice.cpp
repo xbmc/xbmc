@@ -419,7 +419,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
     {
       OSStatus ret = AudioObjectSetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, sizeof(m_HogPid), &m_HogPid);
 
-      // even if setting hogmode was successfull our PID might not get written
+      // even if setting hogmode was successful our PID might not get written
       // into m_HogPid (so it stays -1). Readback hogstatus for judging if we
       // had success on getting hog status
       // We do this only when AudioObjectSetPropertyData didn't set m_HogPid because

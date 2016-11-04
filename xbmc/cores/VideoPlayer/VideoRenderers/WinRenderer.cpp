@@ -21,6 +21,7 @@
 #ifdef HAS_DX
 
 #include "WinRenderer.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/FFmpeg.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -261,6 +262,7 @@ void CWinRenderer::AddVideoPictureHW(DVDVideoPicture &picture, int index)
     SAFE_RELEASE(buf->pic);
     buf->pic = m_processor->Convert(picture);
     buf->frameIdx = m_frameIdx;
+    buf->pictureFlags = picture.iFlags;
     m_frameIdx += 2;
   }
   else if (picture.format == RENDER_FMT_DXVA)
@@ -366,7 +368,7 @@ void CWinRenderer::PreInit()
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
 
-  m_iRequestedMethod = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+  m_iRequestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
   if (g_advancedSettings.m_DXVAForceProcessorRenderer
   ||  m_iRequestedMethod == RENDER_METHOD_DXVA)
@@ -912,8 +914,11 @@ void CWinRenderer::RenderHW(DWORD flags)
     bool stereoHack = g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
                    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL;
 
+    CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+    XMMATRIX w, v, p;
     if (stereoHack)
     {
+      pGUIShader->GetWVP(w, v, p);
       CRect bbSize = g_Windowing.GetBackBufferRect();
 
       g_Windowing.GetViewPort(oldViewPort);
@@ -926,7 +931,10 @@ void CWinRenderer::RenderHW(DWORD flags)
     CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
 
     if (stereoHack)
+    {
       g_Windowing.SetViewPort(oldViewPort);
+      pGUIShader->SetWVP(w, v, p);
+    }
   }
 }
 
@@ -1056,7 +1064,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         // if scaling is below level, avoid hq scaling
         float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
         float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-        int minScale = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+        int minScale = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
         if (scaleX < minScale && scaleY < minScale)
           return false;
         return true;
@@ -1111,7 +1119,8 @@ bool CWinRenderer::NeedBuffer(int idx)
     DXVABuffer** buffers = reinterpret_cast<DXVABuffer**>(m_VideoBuffers);
 
     int numPast = m_processor->PastRefs();
-    if (buffers[idx] && buffers[idx]->pic)
+    if (buffers[idx] && buffers[idx]->pic &&
+        (buffers[idx]->pictureFlags & DVP_FLAG_INTERLACED))
     {
       if (buffers[idx]->frameIdx + numPast*2 >= buffers[m_iYV12RenderBuffer]->frameIdx)
         return true;

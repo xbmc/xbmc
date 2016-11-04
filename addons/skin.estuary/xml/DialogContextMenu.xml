@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>996</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<coordinates>
+		<left>0</left>
+		<top>0</top>
+		<origin x="1055" y="400">Window.IsActive(Home) + String.IsEqual(Skin.AspectRatio,21:9)</origin>
+		<origin x="735" y="400">Window.IsActive(Home) + !String.IsEqual(Skin.AspectRatio,21:9)</origin>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<left>-1920</left>
+			<top>-1080</top>
+			<width>5760</width>
+			<height>3240</height>
+			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+			<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
+		</control>
+		<control type="button">
+			<left>-1920</left>
+			<top>-1080</top>
+			<width>5760</width>
+			<height>3240</height>
+			<texturefocus />
+			<texturenofocus />
+			<onclick>Action(close)</onclick>
+		</control>
+		<control type="image" id="999">
+			<description>background image</description>
+			<left>0</left>
+			<top>0</top>
+			<width>450</width>
+			<height>780</height>
+			<texture colordiffuse="dialog_tint">colors/white.png</texture>
+		</control>
+		<control type="grouplist" id="996">
+			<description>grouplist for context buttons</description>
+			<left>0</left>
+			<top>0</top>
+			<width>450</width>
+			<height max="780">auto</height>
+			<usecontrolcoords>true</usecontrolcoords>
+		</control>
+		<control type="button" id="1000">
+			<description>button template</description>
+			<left>0</left>
+			<top></top>
+			<width>450</width>
+			<height>65</height>
+			<align>center</align>
+			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+			<texturenofocus />
+		</control>
+		<include content="UpDownArrows">
+			<param name="container_id" value="996" />
+			<param name="posx" value="201" />
+			<param name="up_posy" value="-40" />
+			<param name="down_posy" value="798" />
+		</include>
+	</controls>
+</window>

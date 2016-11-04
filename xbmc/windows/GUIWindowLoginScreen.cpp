@@ -26,6 +26,7 @@
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
@@ -216,7 +217,7 @@ void CGUIWindowLoginScreen::Update()
     item->SetArt("thumb", profile->getThumb());
     if (profile->getThumb().empty() || profile->getThumb() == "-")
       item->SetArt("thumb", "DefaultUser.png");
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
@@ -242,7 +243,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (choice == 2)
   {
     if (g_passwordManager.CheckLock(CProfilesManager::GetInstance().GetMasterProfile().getLockMode(),CProfilesManager::GetInstance().GetMasterProfile().getLockCode(),20075))
-      g_passwordManager.iMasterLockRetriesLeft = CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+      g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
       CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
 
@@ -276,7 +277,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   ADDON::CAddonMgr::GetInstance().StopServices(true);
 
   // stop PVR related services
-  g_application.StopPVRManager();
+  CServiceBroker::GetPVRManager().Unload();
 
   // stop audio DSP services with a blocking message
   CServiceBroker::GetADSP().Deactivate();
@@ -323,7 +324,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #endif
 
   // restart PVR services
-  g_application.ReinitPVRManager();
+  CServiceBroker::GetPVRManager().Reinit();
 
   // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);

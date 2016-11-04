@@ -20,6 +20,7 @@
  */
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "epg/EpgTypes.h"
 #include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
@@ -27,14 +28,8 @@
 #include "utils/Observer.h"
 
 #include <atomic>
-#include <memory>
+#include <string>
 #include <vector>
-
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
 
 namespace PVR
 {

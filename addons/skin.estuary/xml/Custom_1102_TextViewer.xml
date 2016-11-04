@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1102">
+	<defaultcontrol always="true">1000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<left>13%</left>
+			<centertop>50%</centertop>
+			<height>770</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="84%" />
+				<param name="height" value="770" />
+				<param name="header_label" value="$INFO[Window(home).Property(TextViewer_Header)]" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="textbox" id="2000">
+				<left>1%</left>
+				<top>85</top>
+				<width>82%</width>
+				<height>675</height>
+				<shadowcolor>black</shadowcolor>
+				<pagecontrol>3000</pagecontrol>
+				<font>font37</font>
+				<label>$INFO[Window(home).Property(TextViewer_Text)]</label>
+			</control>
+			<control type="scrollbar" id="3000">
+				<include>HiddenObject</include>
+				<ondown>3000</ondown>
+				<onup>3000</onup>
+			</control>
+		</control>
+		<control type="button" id="1000">
+			<include>HiddenObject</include>
+			<onclick>Action(Close)</onclick>
+			<onup>PageUp(3000)</onup>
+			<ondown>PageDown(3000)</ondown>
+		</control>
+		<control type="button">
+			<centerleft>50%</centerleft>
+			<top>113</top>
+			<width>48</width>
+			<height>20</height>
+			<onclick>SetFocus(3000)</onclick>
+			<onclick>Up</onclick>
+			<texturefocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturefocus>
+			<texturenofocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturenofocus>
+			<visible>Control.IsVisible(3000) + Integer.IsGreater(Container(2000).CurrentPage,1)</visible>
+			<animation effect="zoom" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
+		</control>
+		<control type="button">
+			<centerleft>50%</centerleft>
+			<top>940</top>
+			<width>48</width>
+			<height>20</height>
+			<onclick>SetFocus(3000)</onclick>
+			<onclick>Down</onclick>
+			<texturefocus colordiffuse="button_focus">overlays/arrowdown.png</texturefocus>
+			<texturenofocus colordiffuse="button_focus">overlays/arrowdown.png</texturenofocus>
+			<visible>Control.IsVisible(3000) + !String.IsEqual(Container(2000).CurrentPage,Container(2000).NumPages)</visible>
+			<animation effect="zoom" start="100,0" end="100,100" center="auto" time="200" delay="10">VisibleChange</animation>
+		</control>
+	</controls>
+</window>

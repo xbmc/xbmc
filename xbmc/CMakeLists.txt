@@ -6,6 +6,7 @@ set(SOURCES Application.cpp
             BackgroundInfoLoader.cpp
             ContextMenuItem.cpp
             ContextMenuManager.cpp
+            ContextMenus.cpp
             CueDocument.cpp
             DatabaseManager.cpp
             DbUrl.cpp
@@ -45,6 +46,7 @@ set(HEADERS AppParamParser.h
             CompileInfo.h
             ContextMenuItem.h
             ContextMenuManager.h
+            ContextMenus.h
             CueDocument.h
             DatabaseManager.h
             DbUrl.h
@@ -83,3 +85,6 @@ set(HEADERS AppParamParser.h
             system_gl.h)
 
 core_add_library(xbmc)
+if(CAP_FOUND)
+  target_compile_definitions(${CORE_LIBRARY} PRIVATE -DHAVE_LIBCAP=1)
+endif()

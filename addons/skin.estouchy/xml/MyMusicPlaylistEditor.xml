@@ -29,11 +29,13 @@
 				<label>31058</label>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>40</posy>
-				<width>570</width>
-				<height>720</height>
-				<texture>panel.png</texture>
+				<posx>-5</posx>
+				<posy>35</posy>
+				<width>580</width>
+				<height>730</height>
+				<texture>back.png</texture>
+				<bordertexture border="6">panel_shadow.png</bordertexture>
+				<bordersize>5</bordersize>
 			</control>
 			<control type="panel" id="50">
 				<posx>0</posx>
@@ -48,13 +50,6 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="80" width="570">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>570</width>
-						<height>80</height>
-						<texture border="40,0,40,5">list_nofocus.png</texture>
-					</control>
 					<control type="image">
 						<posx>5</posx>
 						<posy>5</posy>
@@ -162,11 +157,13 @@
 				<label>31059</label>
 			</control>
 			<control type="image">
-				<posx>0</posx>
-				<posy>40</posy>
-				<width>570</width>
-				<height>720</height>
-				<texture>panel.png</texture>
+				<posx>-5</posx>
+				<posy>35</posy>
+				<width>580</width>
+				<height>730</height>
+				<texture>back.png</texture>
+				<bordertexture border="6">panel_shadow.png</bordertexture>
+				<bordersize>5</bordersize>
 			</control>
 			<control type="panel" id="100">
 				<posx>0</posx>
@@ -181,13 +178,6 @@
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="60" width="570">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>570</width>
-						<height>80</height>
-						<texture border="40,0,40,5">list_nofocus.png</texture>
-					</control>
 					<control type="image">
 						<posx>5</posx>
 						<posy>5</posy>

@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<node order="6" type="folder" visible="Library.HasContent(Role, DJMixer)">
-	<label>29991</label>
-	<icon>DefaultMusicGenres.png</icon>
-	<path>musicdb://artists/?role=DJMixer&albumartistsonly=false</path>
-</node>

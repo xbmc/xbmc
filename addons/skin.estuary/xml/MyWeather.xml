@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">15100</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<menucontrol>10000</menucontrol>
+	<controls>
+		<control type="button" id="20000">
+			<include>HiddenObject</include>
+			<animation effect="fade" time="300" start="100" end="0">Focus</animation>
+			<onfocus>SetFocus(2000)</onfocus>
+			<onclick>noop</onclick>
+			<visible allowhiddenfocus="true">Control.HasFocus(20000)</visible>
+		</control>
+		<control type="button" id="20001">
+			<include>HiddenObject</include>
+			<animation effect="fade" time="300" start="100" end="0">Focus</animation>
+			<onfocus>SetFocus(2000)</onfocus>
+			<onclick>noop</onclick>
+			<visible allowhiddenfocus="true">Control.HasFocus(20001)</visible>
+		</control>
+		<control type="button" id="10000">
+			<include>HiddenObject</include>
+			<onfocus>ActivateWindow(servicesettings,weather)</onfocus>
+			<onclick>noop</onclick>
+		</control>
+		<control type="videowindow">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<visible>Player.HasVideo</visible>
+		</control>
+		<control type="visualisation">
+			<include>FullScreenDimensions</include>
+			<visible>Player.HasAudio</visible>
+		</control>
+		<control type="group">
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="fade" start="100" end="bg_alpha" time="0" condition="Player.HasMedia">Conditional</animation>
+			<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(startup)">WindowOpen</animation>
+			<include>ColoredBackgroundImages</include>
+		</control>
+		<control type="multiimage">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<aspectratio>scale</aspectratio>
+			<fadetime>400</fadetime>
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+			<animation effect="fade" time="400">VisibleChange</animation>
+			<imagepath background="true" colordiffuse="bg_overlay">$VAR[WeatherFanartVar]</imagepath>
+			<visible>!Player.HasMedia</visible>
+		</control>
+		<control type="grouplist" id="2000">
+			<orientation>vertical</orientation>
+			<top>0</top>
+			<height>100%</height>
+			<left>0</left>
+			<ondown>20001</ondown>
+			<usecontrolcoords>true</usecontrolcoords>
+			<animation type="Conditional" condition="Control.IsVisible(20000)" reversible="false">
+				<effect type="slide" end="0,20" time="60" tween="sine" />
+				<effect type="slide" end="0,-20" time="180" tween="sine" delay="80" />
+			</animation>
+			<animation type="Conditional" condition="Control.IsVisible(20001)" reversible="false">
+				<effect type="slide" end="0,-20" time="60" tween="sine" />
+				<effect type="slide" end="0,20" time="180" tween="sine" delay="80" />
+			</animation>
+			<scrolltime tween="cubic" easing="out">500</scrolltime>
+			<include>OpenClose_Right</include>
+			<itemgap>-160</itemgap>
+			<control type="group" id="567">
+				<description>Weather info</description>
+				<height>410</height>
+				<left>22</left>
+				<control type="image">
+					<left>2.5%</left>
+					<top>100</top>
+					<width>95%</width>
+					<height>220</height>
+					<texture border="21">dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="label">
+					<top>310</top>
+					<left>10%</left>
+					<width>80%</width>
+					<align>center</align>
+					<height>44</height>
+					<shadowcolor>text_shadow</shadowcolor>
+					<label>$LOCALIZE[31154]</label>
+					<visible>Control.HasFocus(20)</visible>
+					<animation effect="fade" time="400">VisibleChange</animation>
+				</control>
+				<control type="button" id="20">
+					<left>2.5%</left>
+					<top>100</top>
+					<width>95%</width>
+					<height>220</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textoffsetx>40</textoffsetx>
+					<textoffsety>0</textoffsety>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+					<texturenofocus />
+					<onup>20000</onup>
+					<ondown>15100</ondown>
+					<font>font12</font>
+					<onclick>Weather.LocationNext</onclick>
+					<label></label>
+				</control>
+				<control type="label">
+					<right>100</right>
+					<top>194</top>
+					<aligny>center</aligny>
+					<height>24</height>
+					<width>500</width>
+					<align>right</align>
+					<font>WeatherTemp</font>
+					<label>$INFO[Weather.Temperature]</label>
+				</control>
+				<control type="label">
+					<right>400</right>
+					<top>164</top>
+					<align>right</align>
+					<label>[I]$LOCALIZE[402]: $INFO[Window(weather).Property(Current.FeelsLike)]$INFO[System.TemperatureUnits][/I][CR]$INFO[Weather.Conditions]</label>
+					<font>font14</font>
+					<width>630</width>
+				</control>
+				<control type="grouplist">
+					<top>154</top>
+					<left>90</left>
+					<right>800</right>
+					<align>justify</align>
+					<orientation>horizontal</orientation>
+					<include content="WeatherIcon">
+						<param name="label" value="Window(weather).Property(Current.Wind)" />
+						<param name="texture" value="icons/weather/wind.png" />
+						<param name="header" value="$LOCALIZE[404]" />
+					</include>
+					<include content="WeatherIcon">
+						<param name="label" value="Window(weather).Property(Current.Humidity)" />
+						<param name="texture" value="icons/weather/humidity.png" />
+						<param name="header" value="$LOCALIZE[406]" />
+					</include>
+					<include content="WeatherIcon">
+						<param name="label" value="Window(weather).Property(Current.Precipitation)" />
+						<param name="texture" value="icons/weather/rain.png" />
+						<param name="header" value="$LOCALIZE[33021]" />
+					</include>
+					<include content="WeatherIcon">
+						<param name="label" value="Window(weather).Property(Today.Sunrise)" />
+						<param name="texture" value="icons/weather/sunrise.png" />
+						<param name="header" value="$LOCALIZE[405]" />
+					</include>
+					<include content="WeatherIcon">
+						<param name="label" value="Window(weather).Property(Today.Sunset)" />
+						<param name="texture" value="icons/weather/sunset.png" />
+						<param name="header" value="$LOCALIZE[403]" />
+					</include>
+				</control>
+			</control>
+			<include content="WeatherWidget">
+				<param name="content_include" value="DailyItems" />
+				<param name="list_id" value="15100" />
+				<param name="widget_header" value="$LOCALIZE[31019]"/>
+				<param name="visible" value="!String.IsEmpty(Window(weather).Property(Daily.IsFetched))" />
+				<param name="width" value="258" />
+			</include>
+			<include content="WeatherWidget">
+				<param name="content_include" value="HourlyItems" />
+				<param name="list_id" value="15200" />
+				<param name="widget_header" value="$LOCALIZE[33036]"/>
+				<param name="visible" value="!String.IsEmpty(Window(weather).Property(Hourly.IsFetched))" />
+				<param name="width" value="258" />
+			</include>
+			<include content="WeatherMapItem">
+				<param name="item_id" value="1" />
+				<param name="onup_id" value="15100" />
+				<param name="ondown_id" value="70020" />
+			</include>
+			<include content="WeatherMapItem">
+				<param name="item_id" value="2" />
+				<param name="onup_id" value="70010" />
+				<param name="ondown_id" value="70030" />
+			</include>
+			<include content="WeatherMapItem">
+				<param name="item_id" value="3" />
+				<param name="onup_id" value="70020" />
+				<param name="ondown_id" value="70040" />
+			</include>
+			<include content="WeatherMapItem">
+				<param name="item_id" value="4" />
+				<param name="onup_id" value="70030" />
+				<param name="ondown_id" value="70050" />
+			</include>
+			<include content="WeatherMapItem">
+				<param name="item_id" value="5" />
+				<param name="onup_id" value="70040" />
+				<param name="ondown_id" value="20001" />
+			</include>
+		</control>
+		<include content="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[8]$INFO[Window(Weather).Property(Location), / ]" />
+			<param name="sublabel" value="$INFO[Window(weather).Property(WeatherProvider)]" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

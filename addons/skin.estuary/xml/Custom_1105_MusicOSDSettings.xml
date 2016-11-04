@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1105">
+	<defaultcontrol always="true">5000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<width>600</width>
+			<centertop>50%</centertop>
+			<height>700</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="600" />
+				<param name="height" value="80" />
+				<param name="header_label" value="$LOCALIZE[5]" />
+				<param name="header_id" value="" />
+			</include>
+			<control type="panel" id="5000">
+				<include>ButtonMenuList</include>
+				<content>
+					<item>
+						<label>$LOCALIZE[15047]</label>
+						<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
+						<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[15020]</label>
+						<onclick>ActivateWindow(AudioDSPManager)</onclick>
+						<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[250]$INFO[Visualisation.Name,: [COLOR button_focus],[/COLOR]]</label>
+						<onclick>Dialog.Close(all)</onclick>
+						<onclick>SendClick(500)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31084]</label>
+						<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31068]</label>
+						<onclick>ActivateWindow(visualisationpresetlist)</onclick>
+						<visible>Visualisation.HasPresets</visible>
+					</item>
+					<item>
+						<label>$LOCALIZE[31082]$INFO[Skin.String(LyricScript_Path),: [COLOR button_focus],[/COLOR]]</label>
+						<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31083]</label>
+						<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
+						<visible>!String.IsEmpty(Skin.String(LyricScript_Path))</visible>
+					</item>
+				</content>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,3 +1,0 @@
-LICENSE.gpl
-xbmc/platform/darwin/Credits.html
-tools/darwin/packaging/media/osx/icon.iconset/*

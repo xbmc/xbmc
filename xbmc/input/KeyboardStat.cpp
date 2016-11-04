@@ -60,13 +60,13 @@ void CKeyboardStat::Initialize()
 
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
-  std::vector<CPeripheral *> hidDevices;
+  PeripheralVector hidDevices;
   if (g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
   {
-    for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
+    for (auto& peripheral : hidDevices)
     {
-      CPeripheralHID *hidDevice = (CPeripheralHID *) hidDevices.at(iDevicePtr);
-      if (hidDevice && hidDevice->LookupSymAndUnicode(keysym, key, unicode))
+      std::shared_ptr<CPeripheralHID> hidDevice = std::static_pointer_cast<CPeripheralHID>(peripheral);
+      if (hidDevice->LookupSymAndUnicode(keysym, key, unicode))
         return true;
     }
   }
@@ -197,7 +197,7 @@ void CKeyboardStat::ProcessKeyUp(void)
 }
 
 // Return the key name given a key ID
-// Used to make the debug log more intelligable
+// Used to make the debug log more intelligible
 // The KeyID includes the flags for ctrl, alt etc
 
 std::string CKeyboardStat::GetKeyName(int KeyID)
@@ -232,7 +232,7 @@ std::string CKeyboardStat::GetKeyName(int KeyID)
     keyname += StringUtils::Format("%i", keyid);
   
   // in case this might be an universalremote keyid
-  // we also print the possile corresponding obc code
+  // we also print the possible corresponding obc code
   // so users can easily find it in their universalremote
   // map xml
   if (VKeyFound || keyid > 255)

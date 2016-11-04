@@ -28,11 +28,11 @@
 
 // maximum time between touch down and up (in nanoseconds)
 #define SWIPE_MAX_TIME            500000000
-// maxmium swipe distance between touch down and up (in multiples of screen DPI)
+// maximum swipe distance between touch down and up (in multiples of screen DPI)
 #define SWIPE_MIN_DISTANCE        0.5f
 // original maximum variance of the touch movement
 #define SWIPE_MAX_VARIANCE        0.2f
-// tangens of the maximum angle (20 degrees) the touch movement may vary in a
+// tangents of the maximum angle (20 degrees) the touch movement may vary in a
 // direction perpendicular to the swipe direction (in radians)
 // => tan(20 deg) = tan(20 * M_PI / 180)
 #define SWIPE_MAX_VARIANCE_ANGLE  0.36397023f
@@ -117,8 +117,8 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     return false;
   }
 
-  float deltaXabs = abs(pointer.current.x - pointer.down.x);
-  float deltaYabs = abs(pointer.current.y - pointer.down.y);
+  float deltaXabs = fabs(pointer.current.x - pointer.down.x);
+  float deltaYabs = fabs(pointer.current.y - pointer.down.y);
   float varXabs = deltaYabs * SWIPE_MAX_VARIANCE_ANGLE + (m_dpi * SWIPE_MAX_VARIANCE) / 2;
   float varYabs = deltaXabs * SWIPE_MAX_VARIANCE_ANGLE + (m_dpi * SWIPE_MAX_VARIANCE) / 2;
 

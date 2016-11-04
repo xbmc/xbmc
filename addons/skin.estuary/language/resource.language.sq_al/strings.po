@@ -36,14 +36,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opcionet e Energjisë"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Informacionet  e albumit"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grupi i kanaleve"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Subtitra lokal në dispozicion"
@@ -51,7 +43,3 @@ msgstr "Subtitra lokal në dispozicion"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Fsheh"

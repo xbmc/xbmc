@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libjpeg-turbo
-VERSION=1.4.2
+VERSION=1.5.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 # configuration settings

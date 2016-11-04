@@ -23,6 +23,9 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "peripherals/PeripheralTypes.h"
+
+#include <vector>
 
 namespace PERIPHERALS
 {
@@ -31,8 +34,14 @@ namespace PERIPHERALS
   public:
     static const char* TranslateError(PERIPHERAL_ERROR error);
 
+    static PeripheralType  TranslateType(PERIPHERAL_TYPE type);
+    static PERIPHERAL_TYPE TranslateType(PeripheralType type);
+
     static JOYSTICK::CDriverPrimitive TranslatePrimitive(const ADDON::DriverPrimitive& primitive);
     static ADDON::DriverPrimitive     TranslatePrimitive(const JOYSTICK::CDriverPrimitive& primitive);
+
+    static std::vector<JOYSTICK::CDriverPrimitive> TranslatePrimitives(const std::vector<ADDON::DriverPrimitive>& primitives);
+    static std::vector<ADDON::DriverPrimitive>     TranslatePrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives);
 
     static JOYSTICK::HAT_DIRECTION       TranslateHatDirection(JOYSTICK_DRIVER_HAT_DIRECTION dir);
     static JOYSTICK_DRIVER_HAT_DIRECTION TranslateHatDirection(JOYSTICK::HAT_DIRECTION dir);

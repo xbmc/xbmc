@@ -242,9 +242,9 @@ public:
    \brief Add a function f to this job manager for asynchronously execution.
    */
   template<typename F>
-  void Submit(F&& f)
+  void Submit(F&& f, CJob::PRIORITY priority = CJob::PRIORITY_LOW)
   {
-    AddJob(new CLambdaJob<F>(std::forward<F>(f)), nullptr);
+    AddJob(new CLambdaJob<F>(std::forward<F>(f)), nullptr, priority);
   }
 
   /*!
@@ -329,7 +329,7 @@ protected:
   bool  OnJobProgress(unsigned int progress, unsigned int total, const CJob *job) const;
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CJobManager();
   CJobManager(const CJobManager&);
   CJobManager const& operator=(CJobManager const&);
@@ -350,7 +350,7 @@ private:
   typedef std::vector<CWorkItem>   Processing;
   typedef std::vector<CJobWorker*> Workers;
 
-  JobQueue   m_jobQueue[CJob::PRIORITY_HIGH+1];
+  JobQueue   m_jobQueue[CJob::PRIORITY_DEDICATED + 1];
   bool       m_pauseJobs;
   Processing m_processing;
   Workers    m_workers;

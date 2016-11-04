@@ -40,6 +40,7 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:
   virtual void OnInitWindow();
+  void Update();
   bool DownloadThumbnail(const std::string &thumbFile);
   void OnGetThumb();
   void SetUserrating(int userrating);

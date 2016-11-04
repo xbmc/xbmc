@@ -251,6 +251,8 @@ bool CGUITextureManager::CanLoad(const std::string &texturePath)
 
 bool CGUITextureManager::HasTexture(const std::string &textureName, std::string *path, int *bundle, int *size)
 {
+  CSingleLock lock(m_section);
+
   // default values
   if (bundle) *bundle = -1;
   if (size) *size = 0;
@@ -646,7 +648,7 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
     }
   }
 
-  CLog::Log(LOGERROR, "CGUITextureManager::GetTexturePath: could not find texture '%s'", textureName.c_str());
+  CLog::Log(LOGDEBUG, "[Warning] CGUITextureManager::GetTexturePath: could not find texture '%s'", textureName.c_str());
   return "";
 }
 

@@ -61,4 +61,29 @@ bool CCheckForUpdates::Execute(const CFileItemPtr& item) const
   }
   return false;
 }
+
+
+bool CEnableAddon::IsVisible(const CFileItem& item) const
+{
+  return item.HasAddonInfo() &&
+      CAddonMgr::GetInstance().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
+      CAddonMgr::GetInstance().CanAddonBeEnabled(item.GetAddonInfo()->ID());
+}
+
+bool CEnableAddon::Execute(const CFileItemPtr& item) const
+{
+  return CAddonMgr::GetInstance().EnableAddon(item->GetAddonInfo()->ID());
+}
+
+bool CDisableAddon::IsVisible(const CFileItem& item) const
+{
+  return item.HasAddonInfo() &&
+      !CAddonMgr::GetInstance().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
+      CAddonMgr::GetInstance().CanAddonBeDisabled(item.GetAddonInfo()->ID());
+}
+
+bool CDisableAddon::Execute(const CFileItemPtr& item) const
+{
+  return CAddonMgr::GetInstance().DisableAddon(item->GetAddonInfo()->ID());
+}
 }

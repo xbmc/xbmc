@@ -121,7 +121,7 @@ public:
   /*!
    \brief Cancels the given job and removes it from the queue.
 
-   \param[in] job Video library job to be canceld and removed from the queue.
+   \param[in] job Video library job to be canceled and removed from the queue.
    */
   void CancelJob(CVideoLibraryJob *job);
 

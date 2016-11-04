@@ -32,8 +32,6 @@ namespace PVR
     CGUIWindowPVRRecordings(bool bRadio);
     virtual ~CGUIWindowPVRRecordings(void);
 
-    static std::string GetResumeString(const CFileItem& item);
-
     virtual void OnWindowLoaded() override;
     virtual bool OnMessage(CGUIMessage& message) override;
     virtual bool OnAction(const CAction &action) override;
@@ -47,14 +45,7 @@ namespace PVR
     virtual void OnPrepareFileItems(CFileItemList &items) override;
 
   private:
-    bool ActionDeleteRecording(CFileItem *item);
-    bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonUndelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;

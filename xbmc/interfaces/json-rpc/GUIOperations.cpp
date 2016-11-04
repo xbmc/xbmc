@@ -20,6 +20,7 @@
 
 #include "GUIOperations.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -139,7 +140,7 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
     result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentControl"));
   else if (property == "skin")
   {
-    std::string skinId = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+    std::string skinId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     AddonPtr addon;
     if (!CAddonMgr::GetInstance().GetAddon(skinId, addon, ADDON_SKIN))
       return InternalError;

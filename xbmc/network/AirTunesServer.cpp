@@ -31,6 +31,7 @@
 #include <utility>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
@@ -230,7 +231,7 @@ void CAirTunesServer::Process()
     if (m_streamStarted)
       SetupRemoteControl();// check for remote controls
 
-    m_processActions.WaitMSec(1000);// timeout for beeing able to stop
+    m_processActions.WaitMSec(1000);// timeout for being able to stop
     std::list<CAction> currentActions;
     {
       CSingleLock lock(m_actionQueueLock);// copy and clear the source queue
@@ -465,7 +466,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *s
 #ifdef HAS_AIRPLAY
   CAirPlayServer::backupVolume();
 #endif
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
     g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
 }
 

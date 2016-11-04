@@ -78,10 +78,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "5.2.0"
+#define XBMC_PVR_API_VERSION "5.2.1"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "5.2.0"
+#define XBMC_PVR_MIN_API_VERSION "5.2.1"
 
 #ifdef __cplusplus
 extern "C" {
@@ -122,7 +122,7 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_IS_READONLY                       = 0x00000004; /*!< @brief timers of this type must not be edited by Kodi */
   const unsigned int PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES             = 0x00000008; /*!< @brief timers of this type must not be created by Kodi. All other operations are allowed, though */
 
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE           = 0x00000010; /*!< @brief this type supports enabling/disabling of the timer (PVR_TIMER.state SCHEDULED|DISBALED) */
+  const unsigned int PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE           = 0x00000010; /*!< @brief this type supports enabling/disabling of the timer (PVR_TIMER.state SCHEDULED|DISABLED) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_CHANNELS                 = 0x00000020; /*!< @brief this type supports channels (PVR_TIMER.iClientChannelUid) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_TIME               = 0x00000040; /*!< @brief this type supports a recording start time (PVR_TIMER.startTime) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH          = 0x00000080; /*!< @brief this type supports matching epg episode title using PVR_TIMER.strEpgSearchString */
@@ -166,7 +166,7 @@ extern "C" {
   /*!
    * @brief special PVR_TIMER.iClientChannelUid and PVR_RECORDING.iChannelUid value to indicate that no channel uid is available.
    */
-  const int PVR_CHANNEL_INVALID_UID = -1; /*!< @brief denotes that no channel uid is avaliable. */
+  const int PVR_CHANNEL_INVALID_UID = -1; /*!< @brief denotes that no channel uid is available. */
 
   /*!
    * @brief PVR add-on error codes
@@ -254,7 +254,7 @@ extern "C" {
 
   /*!
    * @brief PVR add-on capabilities. All capabilities are set to "false" as default.
-   * If a capabilty is set to true, then the corresponding methods from xbmc_pvr_dll.h need to be implemented.
+   * If a capability is set to true, then the corresponding methods from xbmc_pvr_dll.h need to be implemented.
    */
   typedef struct PVR_ADDON_CAPABILITIES
   {
@@ -487,6 +487,7 @@ extern "C" {
     int    iLifetime;                                     /*!< @brief (optional) life time in days of this recording */
     int    iGenreType;                                    /*!< @brief (optional) genre type */
     int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
+    char   strGenreDescription[PVR_ADDON_DESC_STRING_LENGTH];/*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
@@ -500,7 +501,7 @@ extern "C" {
    */
   typedef enum
   {
-    PVR_EDL_TYPE_CUT      = 0, /*!< @brief cut (completly remove content) */
+    PVR_EDL_TYPE_CUT      = 0, /*!< @brief cut (completely remove content) */
     PVR_EDL_TYPE_MUTE     = 1, /*!< @brief mute audio */
     PVR_EDL_TYPE_SCENE    = 2, /*!< @brief scene markers (chapter seeking) */
     PVR_EDL_TYPE_COMBREAK = 3  /*!< @brief commercial breaks */
@@ -530,7 +531,7 @@ extern "C" {
   /*!
    * @brief Structure to transfer the methods from xbmc_pvr_dll.h to XBMC
    */
-  typedef struct PVRClient
+  typedef struct KodiToAddonFuncTable_PVR
   {
     const char*  (__cdecl* GetPVRAPIVersion)(void);
     const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
@@ -594,7 +595,7 @@ extern "C" {
     bool         (__cdecl* CanPauseStream)(void);
     void         (__cdecl* PauseStream)(bool);
     bool         (__cdecl* CanSeekStream)(void);
-    bool         (__cdecl* SeekTime)(int, bool, double*);
+    bool         (__cdecl* SeekTime)(double, bool, double*);
     void         (__cdecl* SetSpeed)(int);
     time_t       (__cdecl* GetPlayingTime)(void);
     time_t       (__cdecl* GetBufferTimeStart)(void);
@@ -607,7 +608,7 @@ extern "C" {
     void         (__cdecl* OnSystemWake)(void);
     void         (__cdecl* OnPowerSavingActivated)(void);
     void         (__cdecl* OnPowerSavingDeactivated)(void);
-  } PVRClient;
+  } KodiToAddonFuncTable_PVR;
 
 #ifdef __cplusplus
 }

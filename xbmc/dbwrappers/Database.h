@@ -57,6 +57,22 @@ public:
     std::string limit;
   };
 
+  class ExistsSubQuery
+  {
+  public:
+    ExistsSubQuery(const std::string &table) : tablename(table) {};
+    ExistsSubQuery(const std::string &table, const std::string &parameter) : tablename(table), param(parameter) {};
+    void AppendJoin(const std::string &strJoin);
+    void AppendWhere(const std::string &strWhere, bool combineWithAnd = true);
+    bool BuildSQL(std::string &strSQL);
+    
+    std::string tablename;
+    std::string param;
+    std::string join;
+    std::string where;
+  };
+
+
   CDatabase(void);
   virtual ~CDatabase(void);
   bool IsOpen();
@@ -157,6 +173,8 @@ public:
   virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl);
   virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
 
+  bool Connect(const std::string &dbName, const DatabaseSettings &db, bool create);
+
 protected:
   friend class CDatabaseManager;
 
@@ -206,7 +224,6 @@ protected:
 
 private:
   void InitSettings(DatabaseSettings &dbSettings);
-  bool Connect(const std::string &dbName, const DatabaseSettings &db, bool create);
   void UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */

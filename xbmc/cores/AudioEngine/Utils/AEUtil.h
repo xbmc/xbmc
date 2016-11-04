@@ -27,15 +27,6 @@ extern "C" {
 #include "libavutil/samplefmt.h"
 }
 
-#ifdef TARGET_WINDOWS
-#if _M_IX86_FP>0 && !defined(HAVE_SSE)
-#define HAVE_SSE
-#if _M_IX86_FP>1 && !defined(HAVE_SSE2)
-#define HAVE_SSE2
-#endif
-#endif
-#endif
-
 #if defined(HAVE_SSE) && defined(__SSE__)
 #include <xmmintrin.h>
 #else
@@ -216,14 +207,6 @@ public:
   static void SSEMulAddArray  (float *data, float *add, const float mul, uint32_t count);
   #endif
   static void ClampArray(float *data, uint32_t count);
-
-  /*
-    Rand implementations based on:
-    http://software.intel.com/en-us/articles/fast-random-number-generator-on-the-intel-pentiumr-4-processor/
-    This is NOT safe for crypto work, but perfectly fine for audio usage (dithering)
-  */
-  static float FloatRand1(const float min, const float max);
-  static void  FloatRand4(const float min, const float max, float result[4], __m128 *sseresult = NULL);
 
   static bool S16NeedsByteSwap(AEDataFormat in, AEDataFormat out);
 

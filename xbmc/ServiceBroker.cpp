@@ -36,10 +36,12 @@ ANNOUNCEMENT::CAnnouncementManager &CServiceBroker::GetAnnouncementManager()
   return g_application.m_ServiceManager->GetAnnouncementManager();
 }
 
+#ifdef HAS_PYTHON
 XBPython& CServiceBroker::GetXBPython()
 {
   return g_application.m_ServiceManager->GetXBPython();
 }
+#endif
 
 PVR::CPVRManager &CServiceBroker::GetPVRManager()
 {
@@ -64,4 +66,14 @@ CDataCacheCore &CServiceBroker::GetDataCacheCore()
 PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
 {
   return g_application.m_ServiceManager->GetPlaylistPlayer();
+}
+
+CSettings& CServiceBroker::GetSettings()
+{
+  return g_application.m_ServiceManager->GetSettings();
+}
+
+bool CServiceBroker::IsBinaryAddonCacheUp()
+{
+  return g_application.m_ServiceManager->init_level > 1;
 }

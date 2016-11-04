@@ -86,7 +86,7 @@
 typedef enum
 {
 	kHIDRemoteModeNone = 0L,
-	kHIDRemoteModeShared,		// Share the remote with others - let's you listen to the remote control events as long as noone has an exclusive lock on it
+	kHIDRemoteModeShared,		// Share the remote with others - let's you listen to the remote control events as long as no one has an exclusive lock on it
 					// (RECOMMENDED ONLY FOR SPECIAL PURPOSES)
 
 	kHIDRemoteModeExclusive,	// Try to acquire an exclusive lock on the remote (NOT RECOMMENDED)
@@ -194,9 +194,9 @@ typedef enum
 - (BOOL)hidRemote:(HIDRemote *)hidRemote				// Invoked when new hardware is inspected
 	inspectNewHardwareWithService:(io_service_t)service		// 
 	prematchResult:(BOOL)prematchResult;				// Return YES if HIDRemote should go on with this hardware and try
-									// to use it, or NO if it should not be persued further.
+									// to use it, or NO if it should not be pursued further.
 
-// Exlusive lock lending
+// Exclusive lock lending
 - (BOOL)hidRemote:(HIDRemote *)hidRemote
 	lendExclusiveLockToApplicationWithInfo:(NSDictionary *)applicationInfo;
 
@@ -328,7 +328,7 @@ typedef enum
 - (BOOL)_setupService:(io_object_t)service;
 - (void)_destructService:(io_object_t)service;
 
-#pragma mark -- PRIVATE: Distributed notifiations handling --
+#pragma mark -- PRIVATE: Distributed notifications handling --
 - (void)_postStatusWithAction:(NSString *)action;
 - (void)_handleNotifications:(NSNotification *)notification;
 - (void)_setSendStatusNotifications:(BOOL)doSend;

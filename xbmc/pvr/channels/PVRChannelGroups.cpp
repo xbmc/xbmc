@@ -22,10 +22,12 @@
 #include "PVRChannelGroupInternal.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
@@ -53,7 +55,7 @@ void CPVRChannelGroups::Clear(void)
 
 bool CPVRChannelGroups::GetGroupsFromClients(void)
 {
-  if (! CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS))
+  if (! CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS))
     return true;
 
   return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
@@ -173,7 +175,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetById(int iGroupId) const
   return empty;
 }
 
-std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetGroupsByChannel(const CPVRChannelPtr channel, bool bExcludeHidden /* = false */) const
+std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetGroupsByChannel(const CPVRChannelPtr &channel, bool bExcludeHidden /* = false */) const
 {
   std::vector<CPVRChannelGroupPtr> groups;
   for (CPVRChannelGroupPtr group : m_groups)
@@ -210,7 +212,7 @@ void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannelPtr &channel)
 
 bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 {
-  bool bUpdateAllGroups = !bChannelsOnly && CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
+  bool bUpdateAllGroups = !bChannelsOnly && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
   bool bReturn(true);
 
   // sync groups
@@ -218,13 +220,16 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     GetGroupsFromClients();
 
   // sync channels in groups
+  std::vector<CPVRChannelGroupPtr> groups;
   {
     CSingleLock lock(m_critSection);
-    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
-    {
-      if (bUpdateAllGroups || (*it)->IsInternalGroup())
-        bReturn = (*it)->Update() && bReturn;
-    }
+    groups = m_groups;
+  }
+
+  for (const auto &group : groups)
+  {
+    if (bUpdateAllGroups || group->IsInternalGroup())
+      bReturn = group->Update() && bReturn;
   }
 
   // persist changes
@@ -233,7 +238,7 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  bool bSyncWithBackends = CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
+  bool bSyncWithBackends = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
 
   CSingleLock lock(m_critSection);
 
@@ -279,7 +284,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
 bool CPVRChannelGroups::Load(void)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
   if (!database)
     return false;
 
@@ -468,7 +473,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetSelectedGroup(void) const
   return m_selectedGroup;
 }
 
-void CPVRChannelGroups::SetSelectedGroup(CPVRChannelGroupPtr group)
+void CPVRChannelGroups::SetSelectedGroup(const CPVRChannelGroupPtr &group)
 {
   // update the selected group
   {
@@ -518,6 +523,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   }
 
   bool bFound(false);
+  CPVRChannelGroupPtr playingGroup;
 
   // delete the group in this container
   {
@@ -529,7 +535,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
         // update the selected group in the gui if it's deleted
         CPVRChannelGroupPtr selectedGroup = GetSelectedGroup();
         if (selectedGroup && *selectedGroup == group)
-          g_PVRManager.SetPlayingGroup(GetGroupAll());
+          playingGroup = GetGroupAll();
 
         it = m_groups.erase(it);
         bFound = true;
@@ -541,10 +547,13 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     }
   }
 
+  if (playingGroup)
+    g_PVRManager.SetPlayingGroup(playingGroup);
+
   if (group.GroupID() > 0)
   {
     // delete the group from the database
-    CPVRDatabase *database = GetPVRDatabase();
+    const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
     return database ? database->Delete(group) : false;
   }
   return bFound;

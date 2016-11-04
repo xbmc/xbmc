@@ -60,14 +60,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Опции за напојување"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Податоци за албумот"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Група на канали"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Локален превод е достапен"
@@ -75,7 +67,3 @@ msgstr "Локален превод е достапен"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Сокриј"

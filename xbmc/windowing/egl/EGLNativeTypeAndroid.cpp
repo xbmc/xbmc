@@ -22,6 +22,7 @@
 #include "system.h"
 #include <EGL/egl.h>
 #include "EGLNativeTypeAndroid.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "guilib/gui3d.h"
@@ -146,7 +147,7 @@ void CEGLNativeTypeAndroid::Initialize()
   std::string displaySize;
   m_width = m_height = 0;
 
-  if (CJNIBuild::DEVICE != "foster")   // Buggy implementation of DisplayMode API on SATV
+  if (CJNIBuild::DEVICE != "foster" || CJNIBase::GetSDKVersion() >= 24)   // Buggy implementation of DisplayMode API on SATV
   {
     fetchDisplayModes();
     for (auto res : s_res_displayModes)
@@ -176,7 +177,7 @@ void CEGLNativeTypeAndroid::Initialize()
   }
 
   CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: maximum/current resolution: %dx%d", m_width, m_height);
-  int limit = CSettings::GetInstance().GetInt("videoscreen.limitgui");
+  int limit = CServiceBroker::GetSettings().GetInt("videoscreen.limitgui");
   switch (limit)
   {
     case 0: // auto

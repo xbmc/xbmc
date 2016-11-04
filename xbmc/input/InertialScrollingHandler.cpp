@@ -28,7 +28,7 @@
 
 #include <cmath>
 
-//time for reaching velocitiy 0 in secs
+//time for reaching velocity 0 in secs
 #define TIME_TO_ZERO_SPEED 1.0f
 //time for decreasing the deaccelleration (for doing a smooth stop) in secs
 #define TIME_FOR_DEACELLERATION_DECREASE 0.5f
@@ -53,7 +53,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 
   if(g_Windowing.HasInertialGestures())
   {
-    return ret;//no need for emulating inertial scrolling - windowing does support it nativly.
+    return ret;//no need for emulating inertial scrolling - windowing does support it natively.
   }
 
   //reset screensaver during pan
@@ -139,12 +139,12 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
     float yMovement = 0.0;
     float xMovement = 0.0;
 
-    //decrease based on negativ acceleration
+    //decrease based on negative acceleration
     //calc the overall inertial scrolling time in secs
-    float absolutInertialTime = (CTimeUtils::GetFrameTime() - m_inertialStartTime)/(float)1000;
+    float absoluteInertialTime = (CTimeUtils::GetFrameTime() - m_inertialStartTime)/(float)1000;
 
     //as long as we aren't over the overall inertial scroll time - do the deacceleration
-    if ( absolutInertialTime < TIME_TO_ZERO_SPEED + TIME_FOR_DEACELLERATION_DECREASE )
+    if ( absoluteInertialTime < TIME_TO_ZERO_SPEED + TIME_FOR_DEACELLERATION_DECREASE )
     {
       //v = s/t -> s = t * v
       yMovement = frameTime * m_iFlickVelocity.y;
@@ -155,7 +155,7 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
       m_iFlickVelocity.y = m_inertialDeacceleration.y * frameTime + m_iFlickVelocity.y;
       m_iFlickVelocity.x = m_inertialDeacceleration.x * frameTime + m_iFlickVelocity.x;      
 
-      //CLog::Log(LOGDEBUG,"velocity: %f dec: %f time: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y, absolutInertialTime);      
+      //CLog::Log(LOGDEBUG,"velocity: %f dec: %f time: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y, absoluteInertialTime);      
 
       //check if the signs are equal - which would mean we deaccelerated to long and reversed the direction
       if( (m_inertialDeacceleration.y < 0) == (m_iFlickVelocity.y < 0) )
@@ -168,8 +168,8 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
         m_iFlickVelocity.x = 0;
       }      
 
-      //did we scroll long enought for decrease the deacceleration?
-      if( absolutInertialTime > TIME_TO_ZERO_SPEED - TIME_FOR_DEACELLERATION_DECREASE )
+      //did we scroll long enough for decrease the deacceleration?
+      if( absoluteInertialTime > TIME_TO_ZERO_SPEED - TIME_FOR_DEACELLERATION_DECREASE )
       {
         //decrease deacceleration by deacceleration decrease factor
         m_inertialDeacceleration.y*=DEACELLERATION_DECREASE_FACTOR;

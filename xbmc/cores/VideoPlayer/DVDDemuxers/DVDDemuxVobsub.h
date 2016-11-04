@@ -39,7 +39,7 @@ public:
   virtual void          Abort() {};
   virtual void          Flush();
   virtual DemuxPacket*  Read();
-  virtual bool          SeekTime(int time, bool backwords, double* startpts = NULL);
+  virtual bool SeekTime(double time, bool backwards, double* startpts = NULL) override;
   virtual void          SetSpeed(int speed) {}
   virtual CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
   virtual std::vector<CDemuxStream*> GetStreams() const override;

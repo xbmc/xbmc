@@ -18,9 +18,6 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
 #ifdef TARGET_WINDOWS
 #include "system.h"
 #endif

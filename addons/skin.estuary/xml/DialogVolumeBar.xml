@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<zorder>4</zorder>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsActive(startup)</visible>
+			<centerleft>50%</centerleft>
+			<width>112</width>
+			<top>0</top>
+			<animation effect="fade" start="100" end="0" time="200" delay="1000" condition="Player.Muted">Conditional</animation>
+			<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			<control type="progress" id="29999">
+				<include>HiddenObject</include>
+				<info>Player.Volume</info>
+			</control>
+			<control type="image">
+				<left>12</left>
+				<top>5</top>
+				<width>88</width>
+				<height>88</height>
+				<texture>osd/buffer-bg.png</texture>
+				<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(slideshow)</visible>
+			</control>
+			<control type="image">
+				<left>22</left>
+				<top>15</top>
+				<width>68</width>
+				<height>68</height>
+				<texture>dialogs/extendedprogress/loading-back.png</texture>
+				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+			</control>
+			<control type="image">
+				<left>22</left>
+				<top>15</top>
+				<width>68</width>
+				<height>68</height>
+				<texture>$INFO[Control.GetLabel(29999),dialogs/volume/progress/p,.png]</texture>
+				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
+			</control>
+			<control type="image">
+				<left>36</left>
+				<top>29</top>
+				<width>40</width>
+				<height>40</height>
+				<texture colordiffuse="white">$VAR[VolumeIconVar]</texture>
+			</control>
+		</control>
+	</controls>
+</window>

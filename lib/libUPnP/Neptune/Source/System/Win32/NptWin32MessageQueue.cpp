@@ -81,7 +81,7 @@ NPT_Win32WindowMessageQueue::NPT_Win32WindowMessageQueue()
                                 // is incorrectly defined, so we'll get a C4244 warning
 #endif // _MSC_VER
     if (m_WindowHandle) {
-        SetWindowLongPtr(m_WindowHandle, GWL_USERDATA, NPT_POINTER_TO_LONG(this));
+        SetWindowLongPtr(m_WindowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
     }
 #if defined(_MSC_VER)
 #pragma warning( pop )
@@ -95,7 +95,7 @@ NPT_Win32WindowMessageQueue::NPT_Win32WindowMessageQueue()
 NPT_Win32WindowMessageQueue::~NPT_Win32WindowMessageQueue() 
 {
     // remove ourself as user data to ensure we're not called anymore
-    SetWindowLongPtr(m_WindowHandle, GWL_USERDATA, 0);
+    SetWindowLongPtr(m_WindowHandle, GWLP_USERDATA, 0);
 
     // destroy the hidden window
     DestroyWindow(m_WindowHandle);
@@ -124,7 +124,7 @@ NPT_Win32WindowMessageQueue::WindowProcedure(HWND   window,
 #pragma warning( disable: 4312) // we have to test for this because GetWindowLongPtr
                                 // is incorrectly defined, so we'll get a C4244 warning
 #endif // _MSC_VER
-    NPT_Win32WindowMessageQueue* queue = reinterpret_cast<NPT_Win32WindowMessageQueue *>(GetWindowLongPtr(window, GWL_USERDATA));
+    NPT_Win32WindowMessageQueue* queue = reinterpret_cast<NPT_Win32WindowMessageQueue *>(GetWindowLongPtr(window, GWLP_USERDATA));
 #if defined(_MSC_VER)
 #pragma warning( pop )  
 #endif // _MSC_VER

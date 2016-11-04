@@ -32,6 +32,7 @@ CProfile::CLock::CLock(LockType type, const std::string &password):
   music = false;
   settings = LOCK_LEVEL::NONE;
   addonManager = false;
+  games = false;
   mode = type;
 }
 
@@ -90,6 +91,7 @@ void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
   XMLUtils::GetBoolean(node, "lockvideo", m_locks.video);
   XMLUtils::GetBoolean(node, "lockpictures", m_locks.pictures);
   XMLUtils::GetBoolean(node, "lockprograms", m_locks.programs);
+  XMLUtils::GetBoolean(node, "lockgames", m_locks.games);
   
   int lockMode = m_locks.mode;
   XMLUtils::GetInt(node, "lockmode", lockMode);
@@ -121,6 +123,7 @@ void CProfile::Save(TiXmlNode *root) const
   XMLUtils::SetBoolean(node, "lockvideo", m_locks.video);
   XMLUtils::SetBoolean(node, "lockpictures", m_locks.pictures);
   XMLUtils::SetBoolean(node, "lockprograms", m_locks.programs);
+  XMLUtils::SetBoolean(node, "lockgames", m_locks.games);
 
   XMLUtils::SetInt(node, "lockmode", m_locks.mode);
   XMLUtils::SetString(node,"lockcode", m_locks.code);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="6" type="filter">
-  <label>20459</label>
-  <icon>DefaultTags.png</icon>
-  <content>tvshows</content>
-  <group>tags</group>
+	<label>20459</label>
+	<icon>DefaultTags.png</icon>
+	<content>tvshows</content>
+	<group>tags</group>
 </node>

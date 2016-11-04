@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
+	<onunload>ClearProperty(infobackground,home)</onunload>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<height>1080</height>
+			<centerleft>50%</centerleft>
+			<width>1920</width>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<top>158</top>
+				<left>40</left>
+				<control type="image">
+					<left>4</left>
+					<top>4</top>
+					<width>607</width>
+					<height>607</height>
+					<aspectratio>scale</aspectratio>
+					<texture>dialogs/dialog-bg-nobo.png</texture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+				</control>
+				<control type="image">
+					<depth>DepthContentPopout</depth>
+					<left>24</left>
+					<top>24</top>
+					<width>567</width>
+					<height>567</height>
+					<aspectratio aligny="top">scale</aspectratio>
+					<fadetime>300</fadetime>
+					<texture background="true" fallback="DefaultAudio.png">$INFO[ListItem.Art(thumb)]</texture>
+				</control>
+			</control>
+			<control type="group">
+				<include>OpenClose_Right</include>
+				<include>Visible_Right</include>
+				<left>80</left>
+				<visible>![Window.Is(songinformation) + Window.IsActive(musicinformation)]</visible>
+				<control type="group">
+					<visible>Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(Control.GetLabel(400))</visible>
+					<top>160</top>
+					<control type="button" id="130">
+						<left>586</left>
+						<width>1190</width>
+						<height>610</height>
+						<onup>50</onup>
+						<ondown>9000</ondown>
+						<label></label>
+					</control>
+					<control type="image">
+						<left>614</left>
+						<top>30</top>
+						<width>1130</width>
+						<height>550</height>
+						<aspectratio aligny="top">scale</aspectratio>
+						<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+						<visible>String.IsEmpty(Control.GetLabel(400))</visible>
+					</control>
+					<control type="group">
+						<visible>String.IsEmpty(Control.GetLabel(400)) + String.IsEmpty(ListItem.Art(fanart))</visible>
+						<control type="image">
+							<left>614</left>
+							<top>30</top>
+							<width>1130</width>
+							<height>550</height>
+							<aspectratio>scale</aspectratio>
+							<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+						</control>
+						<control type="textbox">
+							<left>614</left>
+							<top>30</top>
+							<width>1130</width>
+							<height>550</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<font>font45_title</font>
+							<label>$LOCALIZE[19055]</label>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>!Integer.IsEqual(Container(50).NumItems,0) | !String.IsEmpty(Control.GetLabel(400))</visible>
+					<top>454</top>
+					<control type="button">
+						<onup>50</onup>
+						<ondown>9000</ondown>
+						<left>586</left>
+						<top>-295</top>
+						<width>1190</width>
+						<height>320</height>
+						<label></label>
+						<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
+					</control>
+					<control type="button" id="130">
+						<onup>50</onup>
+						<ondown>9000</ondown>
+						<left>586</left>
+						<width>1190</width>
+						<height>320</height>
+						<label></label>
+						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
+						<onclick>SetProperty(TextViewer_Header,$LOCALIZE[21821],home)</onclick>
+						<onclick>SetProperty(TextViewer_Text,$ESCVAR[MusicInfoTextboxVar],home)</onclick>
+						<onclick>ActivateWindow(1102)</onclick>
+					</control>
+					<control type="group">
+						<animation effect="slide" start="0,0" end="0,-295" time="0" condition="Integer.IsEqual(Container(50).NumItems,0)">Conditional</animation>
+						<visible>[!Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(Control.GetLabel(400))] | [Integer.IsEqual(Container(50).NumItems,0) + !String.IsEmpty(Control.GetLabel(400))]</visible>
+						<control type="image">
+							<left>614</left>
+							<top>30</top>
+							<width>1130</width>
+							<height>260</height>
+							<aspectratio aligny="top">scale</aspectratio>
+							<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+						</control>
+						<control type="group">
+							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
+							<control type="image">
+								<left>614</left>
+								<top>30</top>
+								<width>1130</width>
+								<height>260</height>
+								<aspectratio>scale</aspectratio>
+								<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+							</control>
+							<control type="textbox">
+								<left>614</left>
+								<top>30</top>
+								<width>1130</width>
+								<height>260</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font45_title</font>
+								<label>$LOCALIZE[19055]</label>
+							</control>
+						</control>
+					</control>
+				</control>
+				<control type="label" id="400">
+					<left>630</left>
+					<top>490</top>
+					<width>1100</width>
+					<height>240</height>
+					<wrapmultiline>true</wrapmultiline>
+					<label>$VAR[MusicInfoTextboxVar]</label>
+					<textcolor>button_focus</textcolor>
+				</control>
+				<control type="panel" id="50">
+					<left>585</left>
+					<top>170</top>
+					<width>1190</width>
+					<height>360</height>
+					<ondown>130</ondown>
+					<onup>9000</onup>
+					<orientation>horizontal</orientation>
+					<itemlayout height="72.5" width="595" condition="Container.Content(songs)">
+						<control type="image">
+							<top>-10</top>
+							<width>595</width>
+							<height>100</height>
+							<texture border="21">buttons/button-nofo.png</texture>
+						</control>
+						<control type="label">
+							<left>40</left>
+							<top>10</top>
+							<width>546</width>
+							<height>60</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label,[COLOR grey], - [/COLOR]]$INFO[ListItem.Label2]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="72.5" width="595" condition="Container.Content(songs)">
+						<control type="image">
+							<top>-10</top>
+							<width>595</width>
+							<height>100</height>
+							<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
+						</control>
+						<control type="label">
+							<left>40</left>
+							<top>10</top>
+							<width>546</width>
+							<height>60</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label,[COLOR white], - [/COLOR]]$INFO[ListItem.Label2]</label>
+						</control>
+					</focusedlayout>
+					<itemlayout height="72.5" width="595" condition="Container.Content(albums)">
+						<control type="image">
+							<top>-10</top>
+							<width>595</width>
+							<height>100</height>
+							<texture border="21">buttons/button-nofo.png</texture>
+						</control>
+						<control type="label">
+							<left>40</left>
+							<top>10</top>
+							<width>546</width>
+							<height>60</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.TrackNumber,[COLOR grey], - [/COLOR]]$INFO[ListItem.Label]</label>
+						</control>
+						<control type="group">
+							<left>230</left>
+							<top>28</top>
+							<include>UserRatingCircle</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="72.5" width="595" condition="Container.Content(albums)">
+						<control type="group">
+							<control type="image">
+								<top>-10</top>
+								<width>595</width>
+								<height>100</height>
+								<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
+							</control>
+							<control type="label">
+								<left>40</left>
+								<top>10</top>
+								<width>546</width>
+								<height>60</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.TrackNumber,[COLOR white], - [/COLOR]]$INFO[ListItem.Label]</label>
+							</control>
+							<control type="group">
+								<left>230</left>
+								<top>28</top>
+								<include>UserRatingCircle</include>
+							</control>
+						</control>
+					</focusedlayout>
+					<itemlayout height="360" width="236" condition="Container.Content(artists)">
+						<control type="image">
+							<top>-10</top>
+							<width>250</width>
+							<height>312</height>
+							<texture border="21">buttons/button-nofo.png</texture>
+						</control>
+						<control type="image">
+							<left>30</left>
+							<top>21</top>
+							<width>190</width>
+							<height>190</height>
+							<texture border="2" fallback="DefaultAudio.png" background="true">$INFO[ListItem.Thumb]</texture>
+							<aspectratio>keep</aspectratio>
+							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordersize>4</bordersize>
+						</control>
+						<control type="textbox">
+							<left>28</left>
+							<top>212</top>
+							<width>196</width>
+							<height>62</height>
+							<font>font27_narrow</font>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label2,[COLOR button_focus], - [/COLOR]]$INFO[ListItem.Label]</label>
+						</control>
+						<control type="group">
+							<left>230</left>
+							<top>28</top>
+							<include>UserRatingCircle</include>
+						</control>
+					</itemlayout>
+					<focusedlayout height="360" width="236" condition="Container.Content(artists)">
+						<control type="group">
+							<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180">Focus</animation>
+							<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180">UnFocus</animation>
+							<control type="image">
+								<top>-10</top>
+								<width>250</width>
+								<height>312</height>
+								<texture border="21">buttons/button-nofo.png</texture>
+							</control>
+							<control type="image">
+								<left>30</left>
+								<top>21</top>
+								<width>190</width>
+								<height>190</height>
+								<texture border="2" fallback="DefaultAudio.png" background="true">$INFO[ListItem.Thumb]</texture>
+								<aspectratio>keep</aspectratio>
+								<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+								<bordersize>4</bordersize>
+							</control>
+							<control type="textbox">
+								<left>28</left>
+								<top>212</top>
+								<width>196</width>
+								<height>62</height>
+								<font>font27_narrow</font>
+								<align>center</align>
+								<aligny>center</aligny>
+								<autoscroll delay="1000" time="1000" repeat="1000">true</autoscroll>
+								<label>$INFO[ListItem.Label2,[COLOR button_focus], - [/COLOR]]$INFO[ListItem.Label]</label>
+							</control>
+							<control type="group">
+								<left>230</left>
+								<top>28</top>
+								<include>UserRatingCircle</include>
+							</control>
+							<control type="image">
+								<left>16</left>
+								<top>6</top>
+								<width>218</width>
+								<height>280</height>
+								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+								<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+							</control>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="grouplist" id="9000">
+					<left>10</left>
+					<top>820</top>
+					<width>1740</width>
+					<height>300</height>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>130</onup>
+					<ondown>50</ondown>
+					<align>center</align>
+					<itemgap>0</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="radiobutton" id="155">
+						<include content="VideoInfoButtonsCommon">
+							<param name="icon" value="icons/infodialogs/play.png" />
+						</include>
+						<label>$LOCALIZE[208]</label>
+						<onup>130</onup>
+						<onleft>12</onleft>
+						<onright>120</onright>
+						<onclick condition="System.HasAddon(script.playalbum) + String.IsEqual(ListItem.DBType,album)">RunScript(script.playalbum,albumid=$INFO[ListItem.DBID])</onclick>
+						<onclick condition="System.HasAddon(script.playalbum) + String.IsEqual(ListItem.DBType,song)">RunScript(script.playalbum,songid=$INFO[ListItem.DBID])</onclick>
+						<onclick condition="System.HasAddon(script.playalbum)">Action(close)</onclick>
+						<onclick condition="!System.HasAddon(script.playalbum)">InstallAddon(script.playalbum)</onclick>
+						<visible>[String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)] + !String.IsEmpty(ListItem.Dbid)</visible>
+					</control>
+					<control type="group" id="420">
+						<width>262</width>
+						<visible>String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)</visible>
+						<control type="button" id="7">
+							<include content="VideoInfoButtonsCommon">
+								<param name="icon" value="" />
+							</include>
+							<label>$LOCALIZE[31033]</label>
+							<onup>130</onup>
+							<onleft>12</onleft>
+							<onright>120</onright>
+							<onup condition="Integer.IsGreater(Container(5000).CurrentItem,3)">210</onup>
+							<onup condition="!Integer.IsGreater(Container(5000).CurrentItem,3)">138</onup>
+						</control>
+						<control type="label">
+							<label>$INFO[ListItem.UserRating]</label>
+							<font>font45_title</font>
+							<left>0</left>
+							<top>24</top>
+							<width>262</width>
+							<align>center</align>
+						</control>
+						<control type="image">
+							<texture>icons/infodialogs/rating.png</texture>
+							<left>107</left>
+							<top>30</top>
+							<width>48</width>
+							<height>48</height>
+							<align>center</align>
+							<visible>String.IsEmpty(ListItem.UserRating)</visible>
+						</control>
+					</control>
+					<control type="radiobutton" id="120">
+						<include content="VideoInfoButtonsCommon">
+							<param name="icon" value="icons/infodialogs/image.png" />
+						</include>
+						<label>$LOCALIZE[31028]</label>
+						<enable>!String.IsEmpty(ListItem.Art(fanart))</enable>
+						<onclick>SetProperty(fanart,$ESCINFO[ListItem.Art(fanart)],home)</onclick>
+						<onclick>ActivateWindow(1104)</onclick>
+						<visible>String.IsEqual(ListItem.DBType,artist) | String.IsEqual(ListItem.DBType,album)</visible>
+					</control>
+					<control type="radiobutton" id="440">
+						<label>$LOCALIZE[31114]</label>
+						<include content="VideoInfoButtonsCommon">
+							<param name="icon" value="icons/infodialogs/youtube.png" />
+						</include>
+						<onclick>Action(close)</onclick>
+						<visible>System.hasAddon(script.extendedinfo)</visible>
+						<onclick condition="!String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Album])</onclick>
+						<onclick condition="String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
+					</control>
+					<include content="InfoDialogButton">
+						<param name="id" value="6" />
+						<param name="icon" value="icons/infodialogs/update.png" />
+						<param name="label" value="$LOCALIZE[184]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="10" />
+						<param name="icon" value="icons/infodialogs/choose_image.png" />
+						<param name="label" value="$LOCALIZE[13405]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="12" />
+						<param name="icon" value="icons/infodialogs/info.png" />
+						<param name="label" value="$LOCALIZE[20413]" />
+					</include>
+				</control>
+				<include content="LeftRightArrows">
+					<param name="list_id" value="50" />
+					<param name="left_posx" value="562" />
+					<param name="right_posx" value="1780" />
+					<param name="posy" value="300" />
+					<param name="visible" value="true" />
+				</include>
+			</control>
+			<control type="group">
+				<visible>String.IsEqual(ListItem.DBType,artist)</visible>
+				<include content="InfoDialogTopBarInfo">
+					<param name="main_label" value="$INFO[ListItem.Artist]" />
+					<param name="sub_label" value="$INFO[ListItem.Genre]" />
+					<param name="id" value="33333" />
+				</include>
+			</control>
+			<control type="group">
+				<visible>String.IsEqual(ListItem.DBType,album)</visible>
+				<include content="InfoDialogTopBarInfo">
+					<param name="main_label" value="$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]" />
+					<param name="sub_label" value="$INFO[ListItem.Artist]" />
+					<param name="id" value="33334" />
+				</include>
+			</control>
+			<control type="group">
+				<visible>String.IsEqual(ListItem.DBType,song) + !Window.IsActive(musicinformation)</visible>
+				<include content="InfoDialogTopBarInfo">
+					<param name="main_label" value="[COLOR button_focus]$INFO[ListItem.TrackNumber]. [/COLOR]$INFO[ListItem.Title]" />
+					<param name="sub_label" value="$INFO[ListItem.Artist,, - ]$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]" />
+					<param name="id" value="33335" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

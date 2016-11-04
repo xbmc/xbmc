@@ -4,9 +4,127 @@
 	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>
+		<control type="group">
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<posx>0</posx>
+			<posy>0</posy>
+			<control type="image">
+				<description>Menu Panel</description>
+				<posx>-5</posx>
+				<posy>-5</posy>
+				<width>400</width>
+				<height>970</height>
+				<texture>panel.png</texture>
+				<bordertexture border="6">panel_shadow.png</bordertexture>
+				<bordersize>5</bordersize>
+			</control>
+			<control type="grouplist" id="3">
+				<description>button area</description>
+				<posx>0</posx>
+				<posy>130</posy>
+				<width>390</width>
+				<height>720</height>
+				<itemgap>-1</itemgap>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+			</control>
+			<include content="SettingsContent" condition="String.IsEqual(Skin.AspectRatio,16:9)">
+				<param name="panel-width">1316</param>
+				<param name="textbox-width">1286</param>
+			</include>
+			<include content="SettingsContent" condition="String.IsEqual(Skin.AspectRatio,4:3)">
+				<param name="panel-width">890</param>
+				<param name="textbox-width">860</param>
+			</include>
+		</control>
+		<control type="button" id="10">
+			<description>Default Category Button</description>
+			<width>390</width>
+			<height>80</height>
+			<aligny>center</aligny>
+			<font>font24_title</font>
+			<textcolor>white</textcolor>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus></texturenofocus>
+			<pulseonselect>false</pulseonselect>
+			<textoffsetx>20</textoffsetx>
+		</control>
+		<control type="button" id="7">
+			<description>Default Button</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>80</height>
+			<font>font24_title</font>
+			<textcolor>white</textcolor>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus></texturenofocus>
+			<textoffsetx>20</textoffsetx>
+		</control>
+		<control type="label" id="14">
+			<description>Default Label</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>80</height>
+			<font>font24_title</font>
+			<textcolor>white</textcolor>
+			<align>center</align>
+			<textoffsetx>20</textoffsetx>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>80</height>
+			<font>font24_title</font>
+			<textcolor>white</textcolor>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus></texturenofocus>
+			<textoffsetx>20</textoffsetx>
+		</control>
+		<control type="spincontrolex" id="9">
+			<description>Default SpinControlex</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>80</height>
+			<font>font24_title</font>
+			<textcolor>white</textcolor>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus></texturenofocus>
+			<aligny>center</aligny>
+			<reverse>yes</reverse>
+			<textoffsetx>20</textoffsetx>
+		</control>
+		<control type="sliderex" id="13">
+			<description>Default SpinControlex</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>80</height>
+			<font>font24_title</font>
+			<textcolor>white</textcolor>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus></texturenofocus>
+			<aligny>center</aligny>
+			<textoffsetx>20</textoffsetx>
+		</control>
+		<control type="image" id="11">
+			<description>separator image</description>
+			<posy>-2</posy>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>Fake Label so we can pass it on</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>0</width>
+			<height>0</height>
+			<font></font>
+			<visible>false</visible>
+		</control>
 		<include>Header</include>
 		<include>CommonNowPlaying</include>
-		<include>ScrollBarCommons</include>
 		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
@@ -34,153 +152,6 @@
 					<icon>icon_button_settings.png</icon>
 				</item>
 			</content>
-		</control>
-		<control type="group">
-			<include>Window_OpenClose_Animation_Zoom</include>
-			<include>16x9_xPos_Relocation</include>
-			<posx>30</posx>
-			<posy>140</posy>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>290</width>
-				<height>720</height>
-				<texture>panel.png</texture>
-			</control>
-			<control type="grouplist" id="3">
-				<description>button area</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>290</width>
-				<height>720</height>
-				<itemgap>-1</itemgap>
-				<onleft>5</onleft>
-				<onright>5</onright>
-				<onup>3</onup>
-				<ondown>3</ondown>
-			</control>
-			<control type="image">
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>720</height>
-				<texture>panel.png</texture>
-			</control>
-			<control type="grouplist" id="5">
-				<description>control area</description>
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>580</height>
-				<pagecontrol>60</pagecontrol>
-				<itemgap>-1</itemgap>
-				<onleft>3</onleft>
-				<onright>3</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-			</control>
-			<control type="image">
-				<posx>310</posx>
-				<posy>600</posy>
-				<width>880</width>
-				<height>2</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>blue</colordiffuse>
-			</control>
-			<control type="textbox" id="6">
-				<description>Settings Description</description>
-				<posx>320</posx>
-				<posy>620</posy>
-				<width>840</width>
-				<height>80</height>
-				<font>font22</font>
-				<textcolor>blue</textcolor>
-				<align>left</align>
-			</control>
-		</control>
-		<control type="button" id="10">
-			<description>Default Category Button</description>
-			<width>290</width>
-			<height>80</height>
-			<aligny>center</aligny>
-			<font>font24_title</font>
-			<textcolor>white</textcolor>
-			<texturefocus>list_focus.png</texturefocus>
-			<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-			<pulseonselect>false</pulseonselect>
-			<textoffsetx>20</textoffsetx>
-		</control>
-		<control type="button" id="7">
-			<description>Default Button</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>80</height>
-			<font>font24_title</font>
-			<textcolor>white</textcolor>
-			<texturefocus>list_focus.png</texturefocus>
-			<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-			<textoffsetx>20</textoffsetx>
-		</control>
-		<control type="label" id="14">
-			<description>Default Label</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>80</height>
-			<font>font24_title</font>
-			<textcolor>white</textcolor>
-			<align>center</align>
-			<textoffsetx>20</textoffsetx>
-		</control>
-		<control type="radiobutton" id="8">
-			<description>Default RadioButton</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>80</height>
-			<font>font24_title</font>
-			<textcolor>white</textcolor>
-			<texturefocus>list_focus.png</texturefocus>
-			<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-			<textoffsetx>20</textoffsetx>
-		</control>
-		<control type="spincontrolex" id="9">
-			<description>Default SpinControlex</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>80</height>
-			<font>font24_title</font>
-			<textcolor>white</textcolor>
-			<texturefocus>list_focus.png</texturefocus>
-			<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-			<aligny>center</aligny>
-			<reverse>yes</reverse>
-			<textoffsetx>20</textoffsetx>
-		</control>
-		<control type="sliderex" id="13">
-			<description>Default SpinControlex</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>80</height>
-			<font>font24_title</font>
-			<textcolor>white</textcolor>
-			<texturefocus>list_focus.png</texturefocus>
-			<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-			<aligny>center</aligny>
-			<textoffsetx>20</textoffsetx>
-		</control>
-		<control type="image" id="11">
-			<description>separator image</description>
-			<posy>-2</posy>
-			<height>2</height>
-			<texture border="2">separator.png</texture>
-		</control>
-		<control type="label" id="2">
-			<description>Fake Label so we can pass it on</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>0</width>
-			<height>0</height>
-			<font></font>
-			<visible>false</visible>
 		</control>
 		<include content="PopupMenu">
 			<param name="panel-posy">400</param>

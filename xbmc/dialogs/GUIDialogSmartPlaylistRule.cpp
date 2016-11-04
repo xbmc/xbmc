@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogSmartPlaylistRule.h"
+#include "ServiceBroker.h"
 #include "GUIDialogFileBrowser.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
@@ -283,7 +284,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     {
       CFileItemPtr item = items[i];
       CSmartPlaylist playlist;
-      // don't list unloadable smartplaylists or any referencable smartplaylists
+      // don't list unloadable smartplaylists or any referenceable smartplaylists
       // which do not match the type of the current smartplaylist
       if (!playlist.Load(item->GetPath()) ||
          (m_rule.m_field == FieldPlaylist &&
@@ -347,7 +348,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
 
   // sort the items
-  items.Sort(SortByLabel, SortOrderAscending, CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();

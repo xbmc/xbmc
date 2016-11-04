@@ -67,7 +67,7 @@ namespace PVR
     virtual bool OnClickButtonGroupManager(CGUIMessage &message);
     virtual bool OnClickButtonNewChannel();
 
-    virtual bool PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber);
+    virtual bool PersistChannel(const CFileItemPtr &pItem, const CPVRChannelGroupPtr &group, unsigned int *iChannelNumber);
     virtual void SetItemsUnchanged(void);
 
   private:
@@ -76,7 +76,7 @@ namespace PVR
     void SaveList(void);
     void Renumber(void);
     void SetData(int iItem);
-    void RenameChannel(CFileItemPtr pItem);
+    void RenameChannel(const CFileItemPtr &pItem);
     bool m_bIsRadio;
     bool m_bMovingMode;
     bool m_bContainsChanges;

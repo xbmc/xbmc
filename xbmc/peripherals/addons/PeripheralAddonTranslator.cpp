@@ -21,6 +21,9 @@
 #include "PeripheralAddonTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 
+#include <algorithm>
+#include <iterator>
+
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
@@ -53,6 +56,34 @@ const char* CPeripheralAddonTranslator::TranslateError(const PERIPHERAL_ERROR er
     default:
       return "unknown error";
   }
+}
+
+PeripheralType CPeripheralAddonTranslator::TranslateType(PERIPHERAL_TYPE type)
+{
+  switch (type)
+  {
+    case PERIPHERAL_TYPE_JOYSTICK:
+      return PERIPHERAL_JOYSTICK;
+    case PERIPHERAL_TYPE_KEYBOARD:
+      return PERIPHERAL_JOYSTICK_EMULATION;
+    default:
+      break;
+  }
+  return PERIPHERAL_UNKNOWN;
+}
+
+PERIPHERAL_TYPE CPeripheralAddonTranslator::TranslateType(PeripheralType type)
+{
+  switch (type)
+  {
+    case PERIPHERAL_JOYSTICK:
+      return PERIPHERAL_TYPE_JOYSTICK;
+    case PERIPHERAL_JOYSTICK_EMULATION:
+      return PERIPHERAL_TYPE_KEYBOARD;
+    default:
+      break;
+  }
+  return PERIPHERAL_TYPE_UNKNOWN;
 }
 
 CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const ADDON::DriverPrimitive& primitive)
@@ -119,6 +150,28 @@ ADDON::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const CDri
   }
 
   return retVal;
+}
+
+std::vector<JOYSTICK::CDriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<ADDON::DriverPrimitive>& primitives)
+{
+  std::vector<JOYSTICK::CDriverPrimitive> ret;
+  std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
+    [](const ADDON::DriverPrimitive& primitive)
+    {
+      return CPeripheralAddonTranslator::TranslatePrimitive(primitive);
+    });
+  return ret;
+}
+
+std::vector<ADDON::DriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives)
+{
+  std::vector<ADDON::DriverPrimitive> ret;
+  std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
+    [](const JOYSTICK::CDriverPrimitive& primitive)
+    {
+      return CPeripheralAddonTranslator::TranslatePrimitive(primitive);
+    });
+  return ret;
 }
 
 HAT_DIRECTION CPeripheralAddonTranslator::TranslateHatDirection(JOYSTICK_DRIVER_HAT_DIRECTION dir)

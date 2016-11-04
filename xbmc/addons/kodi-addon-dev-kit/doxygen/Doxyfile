@@ -254,7 +254,8 @@ ALIASES                = "table_start=<table width= 100% style= border bgcolor= 
                          "python_v14=\xrefitem python_v14 \"v14 Python API changes\" \"\"" \
                          "python_v15=\xrefitem python_v15 \"v15 Python API changes\" \"\"" \
                          "python_v16=\xrefitem python_v16 \"v16 Python API changes\" \"\"" \
-                         "python_v17=\xrefitem python_v17 \"v17 Python API changes\" \"\""
+                         "python_v17=\xrefitem python_v17 \"v17 Python API changes\" \"\"" \
+                         "python_v18=\xrefitem python_v18 \"v18 Python API changes\" \"\""
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"
@@ -1571,7 +1572,7 @@ EXT_LINKS_IN_WINDOW    = NO
 
 FORMULA_FONTSIZE       = 10
 
-# Use the FORMULA_TRANPARENT tag to determine whether or not the images
+# Use the FORMULA_TRANSPARENT tag to determine whether or not the images
 # generated for formulas are transparent PNGs. Transparent PNGs are not
 # supported properly for IE 6.0, but are supported on all modern browsers.
 #

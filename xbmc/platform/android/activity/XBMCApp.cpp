@@ -44,6 +44,8 @@
 #include "platform/xbmc.h"
 #include "windowing/WinEvents.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GraphicContext.h"
+#include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
@@ -77,9 +79,6 @@
 #include "platform/android/jni/MediaStore.h"
 #include "platform/android/jni/Build.h"
 #include "filesystem/SpecialProtocol.h"
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
 #include "platform/android/jni/Window.h"
 #include "platform/android/jni/WindowManager.h"
 #include "platform/android/jni/KeyEvent.h"
@@ -143,16 +142,6 @@ void CXBMCApp::onStart()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_permissions())
-  {
-    // non-aml boxes will ignore this intent broadcast.
-    // setup aml scalers to play video as is, unscaled.
-    CJNIIntent intent_aml_video_on = CJNIIntent("android.intent.action.REALVIDEO_ON");
-    sendBroadcast(intent_aml_video_on);
-  }
-#endif
-
   if (!m_firstrun)
   {
     android_printf("%s: Already running, ignoring request to start", __PRETTY_FUNCTION__);
@@ -204,15 +193,6 @@ void CXBMCApp::onPause()
     else
       registerMediaButtonEventReceiver();
   }
-
-#if defined(HAS_LIBAMCODEC)
-  if (aml_permissions())
-  {
-    // non-aml boxes will ignore this intent broadcast.
-    CJNIIntent intent_aml_video_off = CJNIIntent("android.intent.action.REALVIDEO_OFF");
-    sendBroadcast(intent_aml_video_off);
-  }
-#endif
 
   EnableWakeLock(false);
 }
@@ -548,7 +528,7 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleY = 1.0;
 
   CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
-  RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
+  RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
   scaleX = (double)r.width() / renderRes.iWidth;
   scaleY = (double)r.height() / renderRes.iHeight;
 
@@ -859,13 +839,13 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   if (action == "android.intent.action.VIEW")
   {
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(
-                                         new CFileItem(GetFilenameFromIntent(intent))));
+                                                 new CFileItem(GetFilenameFromIntent(intent), false)));
   }
 }
 
 void CXBMCApp::onVolumeChanged(int volume)
 {
-  // System volume was used; Reset Kodi volume to 100% if it'not, already
+  // System volume was used; Reset Kodi volume to 100% if it isn't, already
   if (g_application.GetVolume(false) != 1.0)
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
                                                  new CAction(ACTION_VOLUME_SET, static_cast<float>(CXBMCApp::GetMaxSystemVolume()))));

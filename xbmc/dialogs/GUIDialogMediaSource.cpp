@@ -20,6 +20,7 @@
  */
 
 #include "GUIDialogMediaSource.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIDialogFileBrowser.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -267,7 +268,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
 
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH) != "")
+    if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH) != "")
     {
       share1.strPath = "special://recordings/";
       share1.strName = g_localizeStrings.Get(21883);
@@ -334,12 +335,16 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 #endif
 
     share1.m_ignore = true;
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH) != "")
+    if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH) != "")
     {
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);
       extraShares.push_back(share1);
     }
+  }
+  else if (m_type == "games")
+  {
+    // nothing to add
   }
   else if (m_type == "programs")
   {
@@ -476,6 +481,8 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNot
       heading = g_localizeStrings.Get(10054);
     else if (type == "pictures")
       heading = g_localizeStrings.Get(10055);
+    else if (type == "games")
+      heading = g_localizeStrings.Get(35252); // "Edit game source"
     else if (type == "programs")
       heading = g_localizeStrings.Get(10056);
     else
@@ -489,6 +496,8 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNot
       heading = g_localizeStrings.Get(10049);
     else if (type == "pictures")
       heading = g_localizeStrings.Get(10050);
+    else if (type == "games")
+      heading = g_localizeStrings.Get(35251); // "Add game source"
     else if (type == "programs")
       heading = g_localizeStrings.Get(10051);
     else

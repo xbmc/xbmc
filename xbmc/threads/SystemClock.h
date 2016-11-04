@@ -38,7 +38,7 @@ namespace XbmcThreads
    * DO NOT compare the results from SystemClockMillis() to an expected end time
    *  that was calculated by adding a number of milliseconds to some start time.
    *  The reason is because the SystemClockMillis could wrap. Instead use this
-   *  class which uses differences (which are safe accross a wrap).
+   *  class which uses differences (which are safe across a wrap).
    */
   class EndTime
   {

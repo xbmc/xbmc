@@ -72,7 +72,7 @@ private:
 };
 
 
-//typedef is here, as is seems that I can't put it into iterface declaration
+//typedef is here, as is seems that I can't put it into interface declaration
 //CPacketBUTTON is a pointer, as I'm not sure how well it's copy constructor is implemented
 typedef std::map<eATVClientEvent, CPacketBUTTON*> tEventMap;
 typedef std::map<XBMCClientEventSequence, CPacketBUTTON*> tSequenceMap;

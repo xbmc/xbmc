@@ -102,6 +102,7 @@
 #define PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER      NPT_UINT64_C(0x0001000000000000)
 #define PLT_FILTER_MASK_XBMC_COUNTRY                NPT_UINT64_C(0x0002000000000000)
 #define PLT_FILTER_MASK_XBMC_USERRATING             NPT_UINT64_C(0x0004000000000000)
+#define PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE        NPT_UINT64_C(0x0008000000000000)
 
 #define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
@@ -147,6 +148,7 @@
 #define PLT_FILTER_FIELD_EPISODE_COUNT              "upnp:episodeCount"
 #define PLT_FILTER_FIELD_EPISODE_SEASON             "upnp:episodeSeason"
 
+#define PLT_FILTER_FIELD_XBMC_LASTPLAYERSTATE       "xbmc:lastPlayerState"
 #define PLT_FILTER_FIELD_XBMC_DATEADDED             "xbmc:dateadded"
 #define PLT_FILTER_FIELD_XBMC_RATING                "xbmc:rating"
 #define PLT_FILTER_FIELD_XBMC_VOTES                 "xbmc:votes"

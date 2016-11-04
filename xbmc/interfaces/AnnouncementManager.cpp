@@ -130,7 +130,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender,
 
   CSingleLock lock (m_critSection);
 
-  // Make a copy of announers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!
+  // Make a copy of announcers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!
   std::vector<IAnnouncer *> announcers(m_announcers);
   for (unsigned int i = 0; i < announcers.size(); i++)
     announcers[i]->Announce(flag, sender, message, data);
@@ -161,7 +161,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag, const char *sender,
     if (data.isMember("player") && data["player"].isMember("playerid"))
       object["player"]["playerid"] = channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
   }
-  else if (item->HasVideoInfoTag())
+  else if (item->HasVideoInfoTag() && !item->HasPVRRecordingInfoTag())
   {
     id = item->GetVideoInfoTag()->m_iDbId;
 

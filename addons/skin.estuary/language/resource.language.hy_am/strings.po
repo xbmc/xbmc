@@ -47,11 +47,3 @@ msgstr "Վերջին թարմացումներ"
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Անջատման տարբերակներ"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Ալիքների խումբ"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Թաքցնել"

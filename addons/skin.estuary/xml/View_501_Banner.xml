@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_501_Banner">
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>80</left>
+			<top>0</top>
+			<visible>Control.IsVisible(501)</visible>
+			<include>Visible_Right</include>
+			<control type="panel" id="501">
+				<right>20</right>
+				<top>0</top>
+				<width>1840</width>
+				<height>100%</height>
+				<onleft>9000</onleft>
+				<onright>531</onright>
+				<onup>501</onup>
+				<ondown>501</ondown>
+				<viewtype label="20020">wide</viewtype>
+				<preloaditems>2</preloaditems>
+				<pagecontrol>531</pagecontrol>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<visible>Container.Content(tvshows)</visible>
+				<itemlayout height="220" width="900">
+					<control type="group">
+						<posy>100</posy>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>860</width>
+							<height>195</height>
+							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordersize>20</bordersize>
+						</control>
+						<control type="label">
+							<left>70</left>
+							<top>20</top>
+							<width>700</width>
+							<height>145</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(banner)) + !Listitem.IsParentFolder</visible>
+						</control>
+						<control type="group">
+							<left>405</left>
+							<include>UserRatingCircle</include>
+						</control>
+					</control>
+				</itemlayout>
+				<focusedlayout height="220" width="900">
+					<control type="group">
+						<depth>DepthContentPopout</depth>
+						<animation type="Focus">
+							<effect type="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="450,180" />
+						</animation>
+						<animation type="Unfocus">
+							<effect type="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="450,180" />
+						</animation>
+						<posy>100</posy>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>860</width>
+							<height>195</height>
+							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordersize>20</bordersize>
+						</control>
+						<control type="label">
+							<left>70</left>
+							<top>20</top>
+							<width>700</width>
+							<height>145</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font52_title</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<aligny>center</aligny>
+							<visible>String.IsEmpty(ListItem.Art(banner)) + !Listitem.IsParentFolder</visible>
+						</control>
+						<control type="group">
+							<include>Animation_FocusTextureFade</include>
+							<control type="image">
+								<left>18</left>
+								<top>18</top>
+								<width>824</width>
+								<height>160</height>
+								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							</control>
+							<control type="image">
+								<left>22</left>
+								<top>115</top>
+								<width>816</width>
+								<height>60</height>
+								<texture>overlays/overlayfade.png</texture>
+								<animation effect="fade" start="0" end="80" time="50">Focus</animation>
+								<visible>!Listitem.IsParentFolder</visible>
+							</control>
+							<control type="image">
+								<left>35</left>
+								<top>138</top>
+								<width>32</width>
+								<height>32</height>
+								<texture>$VAR[ListWatchedIconVar]</texture>
+							</control>
+							<control type="label">
+								<left>80</left>
+								<top>142</top>
+								<width>800</width>
+								<height>20</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label]</label>
+								<visible>!Listitem.IsParentFolder</visible>
+							</control>
+							<control type="image">
+								<right>220</right>
+								<top>143</top>
+								<width>22</width>
+								<height>22</height>
+								<texture>lists/rating.png</texture>
+								<visible>!String.IsEmpty(ListItem.Rating)</visible>
+							</control>
+							<control type="label">
+								<right>258</right>
+								<top>144</top>
+								<width>800</width>
+								<height>20</height>
+								<font>font12</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Rating]</label>
+								<visible>!String.IsEmpty(ListItem.Rating)</visible>
+							</control>
+							<control type="image">
+								<right>73</right>
+								<top>143</top>
+								<width>22</width>
+								<height>22</height>
+								<texture>lists/played-total.png</texture>
+								<visible>String.IsEqual(Listitem.dbtype,tvshow) + !String.IsEmpty(ListItem.Property(TotalEpisodes))</visible>
+							</control>
+							<control type="label">
+								<right>103</right>
+								<top>144</top>
+								<width>800</width>
+								<height>20</height>
+								<font>font12</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<label>$VAR[BannerLabel2Var]</label>
+							</control>
+						</control>
+						<control type="group">
+							<left>405</left>
+							<include>UserRatingCircle</include>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+</includes>

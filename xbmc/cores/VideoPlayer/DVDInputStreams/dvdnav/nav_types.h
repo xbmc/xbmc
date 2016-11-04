@@ -97,7 +97,7 @@ typedef struct {
  * 1XXb: pan&scan buttons
  */
 typedef struct {
-  uint16_t hli_ss; /**< status, only low 2 bits 0: no buttons, 1: different 2: equal 3: eual except for button cmds */
+  uint16_t hli_ss; /**< status, only low 2 bits 0: no buttons, 1: different 2: equal 3: equal except for button cmds */
   uint32_t hli_s_ptm;              /**< start ptm of hli */
   uint32_t hli_e_ptm;              /**< end ptm of hli */
   uint32_t btn_se_e_ptm;           /**< end ptm of button select */
@@ -120,7 +120,7 @@ typedef struct {
 
 /** 
  * Button Color Information Table 
- * Each entry beeing a 32bit word that contains the color indexs and alpha
+ * Each entry being a 32bit word that contains the color indexs and alpha
  * values to use.  They are all represented by 4 bit number and stored
  * like this [Ci3, Ci2, Ci1, Ci0, A3, A2, A1, A0].   The actual palette
  * that the indexes reference is in the PGC.

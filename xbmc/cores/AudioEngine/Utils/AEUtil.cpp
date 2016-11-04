@@ -21,10 +21,6 @@
   #define __STDC_LIMIT_MACROS
 #endif
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-#include "config.h"
-#endif
-
 #include "AEUtil.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -448,90 +444,6 @@ void CAEUtil::ClampArray(float *data, uint32_t count)
     }
   }
 #endif
-}
-
-/*
-  Rand implementations based on:
-  http://software.intel.com/en-us/articles/fast-random-number-generator-on-the-intel-pentiumr-4-processor/
-  This is NOT safe for crypto work, but perfectly fine for audio usage (dithering)
-*/
-float CAEUtil::FloatRand1(const float min, const float max)
-{
-  const float delta  = (max - min) / 2;
-  const float factor = delta / (float)INT32_MAX;
-  return ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;
-}
-
-void CAEUtil::FloatRand4(const float min, const float max, float result[4], __m128 *sseresult/* = NULL */)
-{
-  #if defined(HAVE_SSE2) && defined(__SSE2__)
-    /*
-      this method may be called from other SSE code, we need
-      to calculate the delta & factor using SSE as the FPU
-      state is unknown and _mm_clear() is expensive.
-    */
-    MEMALIGN(16, static const __m128 point5  ) = _mm_set_ps1(0.5f);
-    MEMALIGN(16, static const __m128 int32max) = _mm_set_ps1((const float)INT32_MAX);
-    MEMALIGN(16, __m128 f) = _mm_div_ps(
-      _mm_mul_ps(
-        _mm_sub_ps(
-          _mm_set_ps1(max),
-          _mm_set_ps1(min)
-        ),
-        point5
-      ),
-      int32max
-    );
-
-    MEMALIGN(16, __m128i cur_seed_split);
-    MEMALIGN(16, __m128i multiplier);
-    MEMALIGN(16, __m128i adder);
-    MEMALIGN(16, __m128i mod_mask);
-    MEMALIGN(16, __m128 res);
-    MEMALIGN(16, static const unsigned int mult  [4]) = {214013, 17405, 214013, 69069};
-    MEMALIGN(16, static const unsigned int gadd  [4]) = {2531011, 10395331, 13737667, 1};
-    MEMALIGN(16, static const unsigned int mask  [4]) = {0xFFFFFFFF, 0, 0xFFFFFFFF, 0};
-
-    adder          = _mm_load_si128((__m128i*)gadd);
-    multiplier     = _mm_load_si128((__m128i*)mult);
-    mod_mask       = _mm_load_si128((__m128i*)mask);
-    cur_seed_split = _mm_shuffle_epi32(m_sseSeed, _MM_SHUFFLE(2, 3, 0, 1));
-
-    m_sseSeed      = _mm_mul_epu32(m_sseSeed, multiplier);
-    multiplier     = _mm_shuffle_epi32(multiplier, _MM_SHUFFLE(2, 3, 0, 1));
-    cur_seed_split = _mm_mul_epu32(cur_seed_split, multiplier);
-
-    m_sseSeed      = _mm_and_si128(m_sseSeed, mod_mask);
-    cur_seed_split = _mm_and_si128(cur_seed_split, mod_mask);
-    cur_seed_split = _mm_shuffle_epi32(cur_seed_split, _MM_SHUFFLE(2, 3, 0, 1));
-    m_sseSeed      = _mm_or_si128(m_sseSeed, cur_seed_split);
-    m_sseSeed      = _mm_add_epi32(m_sseSeed, adder);
-
-    /* adjust the value to the range requested */
-    res = _mm_cvtepi32_ps(m_sseSeed);
-    if (sseresult)
-      *sseresult = _mm_mul_ps(res, f);
-    else
-    {
-      res = _mm_mul_ps(res, f);
-      _mm_storeu_ps(result, res);
-
-      /* returning a float array, so cleanup */
-      _mm_empty();
-    }
-
-  #else
-    const float delta  = (max - min) / 2.0f;
-    const float factor = delta / (float)INT32_MAX;
-
-    /* cant return sseresult if we are not using SSE intrinsics */
-    assert(result && !sseresult);
-
-    result[0] = ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;
-    result[1] = ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;
-    result[2] = ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;
-    result[3] = ((float)(m_seed = (214013 * m_seed + 2531011)) * factor) - delta;
-  #endif
 }
 
 bool CAEUtil::S16NeedsByteSwap(AEDataFormat in, AEDataFormat out)

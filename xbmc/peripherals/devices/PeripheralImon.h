@@ -21,6 +21,8 @@
 
 #include "PeripheralHID.h"
 
+#include <atomic>
+
 class CSetting;
 
 namespace PERIPHERALS
@@ -42,6 +44,6 @@ namespace PERIPHERALS
 
   private:
     bool m_bImonConflictsWithDInput;
-    static volatile long m_lCountOfImonsConflictWithDInput;
+    static std::atomic<long> m_lCountOfImonsConflictWithDInput;
   };
 }

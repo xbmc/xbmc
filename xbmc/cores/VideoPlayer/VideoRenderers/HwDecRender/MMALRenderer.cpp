@@ -19,8 +19,8 @@
  */
 
 #include "Util.h"
-#include "threads/Atomics.h"
 #include "MMALRenderer.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
@@ -72,6 +72,8 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
 
   m_mmal_pool = mmal_port_pool_create(port, port->buffer_num, port->buffer_size);
   m_closing = false;
+  m_software = false;
+  m_processInfo = nullptr;
   m_mmal_format = 0;
   m_width = 0;
   m_height = 0;
@@ -208,14 +210,14 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
     // ffmpeg requirements
     uint32_t aligned_width = m_aligned_width, aligned_height = m_aligned_height;
     AlignedSize(m_avctx, aligned_width, aligned_height);
-    if (m_dec)
+    if (!IsSoftware())
     {
-      CMMALVideoBuffer *vid = new CMMALVideoBuffer(m_dec, shared_from_this());
+      CMMALVideoBuffer *vid = new CMMALVideoBuffer(static_cast<CMMALVideo *>(m_dec), shared_from_this());
       omvb = vid;
     }
     else
     {
-      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
+      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(static_cast<MMAL::CDecoder *>(m_dec), shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
       if (yuv)
       {
         CGPUMEM *gmem = yuv->gmem;
@@ -381,7 +383,7 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
       return false;
     }
 
-    if (!m_queue_render && !CSettings::GetInstance().GetBool("videoplayer.usedisplayasclock"))
+    if (!m_queue_render && !CServiceBroker::GetSettings().GetBool("videoplayer.usedisplayasclock"))
     {
       m_queue_render = mmal_queue_create();
       Create();
@@ -547,6 +549,7 @@ void CMMALRenderer::Run()
     {
       if (buffer->length > 0)
       {
+        EINTERLACEMETHOD last_interlace_method = m_interlace_method;
         EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
         {
@@ -583,6 +586,22 @@ void CMMALRenderer::Run()
         else if (m_deint_input || interlace)
           CheckConfigurationDeint(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding, interlace_method);
 
+        if (!m_deint_input)
+          m_interlace_method = VS_INTERLACEMETHOD_NONE;
+
+        if (last_interlace_method == m_interlace_method)
+          ;
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
+          omvb->SetVideoDeintMethod("adv(x2)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
+          omvb->SetVideoDeintMethod("adv(x1)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_BOB)
+          omvb->SetVideoDeintMethod("bob(x2)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF)
+          omvb->SetVideoDeintMethod("bob(x1)");
+        else
+          omvb->SetVideoDeintMethod("none");
+
         if (m_deint_input)
         {
           MMAL_STATUS_T status = mmal_port_send_buffer(m_deint_input, omvb->mmal_buffer);
@@ -618,7 +637,8 @@ void CMMALRenderer::Run()
         if (m_queue_render)
         {
           mmal_queue_put(m_queue_render, buffer);
-          CLog::Log(LOGDEBUG, "%s::%s send %p to m_queue_render", CLASSNAME, __func__, omvb);
+          if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+            CLog::Log(LOGDEBUG, "%s::%s send %p to m_queue_render", CLASSNAME, __func__, omvb);
           kept = true;
         }
         else
@@ -626,7 +646,8 @@ void CMMALRenderer::Run()
           CheckConfigurationVout(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding);
           if (m_vout_input)
           {
-            CLog::Log(LOGDEBUG, "%s::%s send %p to m_vout_input", CLASSNAME, __func__, omvb);
+            if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+              CLog::Log(LOGDEBUG, "%s::%s send %p to m_vout_input", CLASSNAME, __func__, omvb);
             MMAL_STATUS_T status = mmal_port_send_buffer(m_vout_input, buffer);
             if (status != MMAL_SUCCESS)
               CLog::Log(LOGERROR, "%s::%s - Failed to send buffer %p to %s (status=0%x %s)", CLASSNAME, __func__, buffer, m_vout_input->name, status, mmal_status_to_string(status));
@@ -745,7 +766,7 @@ int CMMALRenderer::GetImage(YV12Image *image, int source, bool readonly)
       CLog::Log(LOGDEBUG, "%s::%s - invalid: format:%d image:%p source:%d ro:%d", CLASSNAME, __func__, m_format, image, source, readonly);
     return -1;
   }
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: image:%p source:%d ro:%d", CLASSNAME, __func__, image, source, readonly);
   return source;
 }
@@ -778,8 +799,12 @@ void CMMALRenderer::Reset()
 
 void CMMALRenderer::Flush()
 {
-  m_iYV12RenderBuffer = 0;
+  CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  if (m_vout_input)
+    mmal_port_flush(m_vout_input);
+  ReleaseBuffers();
+  m_iYV12RenderBuffer = 0;
 }
 
 void CMMALRenderer::Update()
@@ -1197,7 +1222,7 @@ void CMMALRenderer::DestroyDeinterlace()
       CLog::Log(LOGERROR, "%s::%s Failed to disable deinterlace output port(status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
   }
   m_deint_output = nullptr;
-  m_interlace_method = VS_INTERLACEMETHOD_NONE;
+  m_interlace_method = VS_INTERLACEMETHOD_MAX;
   m_deint_width = 0;
   m_deint_height = 0;
   m_deint_aligned_width = 0;

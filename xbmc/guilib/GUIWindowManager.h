@@ -165,7 +165,8 @@ public:
   int GetActiveWindow() const;
   int GetActiveWindowID();
   int GetFocusedWindow() const;
-  bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
+  bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>(), bool ignoreClosing = true) const;
+  bool HasVisibleModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
   bool HasDialogOnScreen() const;
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;

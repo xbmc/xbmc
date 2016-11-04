@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1103">
+	<defaultcontrol>11</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD+</depth>
+	<controls>
+		<control type="button">
+			<description>background close area</description>
+			<left>0</left>
+			<top>0</top>
+			<width>100%</width>
+			<bottom>0</bottom>
+			<texturefocus />
+			<texturenofocus />
+			<onclick>Action(close)</onclick>
+		</control>
+		<control type="group">
+			<bottom>0</bottom>
+			<height>250</height>
+			<left>30</left>
+			<width>840</width>
+			<control type="image">
+				<left>-20</left>
+				<top>0</top>
+				<width>525</width>
+				<height>152</height>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
+				<bordertexture border="21">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+			</control>
+			<control type="progress">
+				<left>40</left>
+				<top>20</top>
+				<width>400</width>
+				<height>112</height>
+				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+				<info>Player.Volume</info>
+			</control>
+			<control type="slider">
+				<left>40</left>
+				<top>55</top>
+				<width>400</width>
+				<height>40</height>
+				<texturesliderbar></texturesliderbar>
+				<textureslidernib></textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
+				<info>Player.Volume</info>
+				<action>Volume</action>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>65</top>
+				<width>28</width>
+				<height>28</height>
+				<texture flipx="true" colordiffuse="button_focus">overlays/arrowright.png</texture>
+				<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
+				<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+			</control>
+			<control type="image">
+				<left>455</left>
+				<top>65</top>
+				<width>28</width>
+				<height>28</height>
+				<texture colordiffuse="button_focus">overlays/arrowright.png</texture>
+				<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
+				<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+			</control>
+		</control>
+	</controls>
+</window>

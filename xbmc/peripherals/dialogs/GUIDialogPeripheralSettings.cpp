@@ -91,8 +91,8 @@ void CGUIDialogPeripheralSettings::Save()
   if (m_item == NULL || m_initialising)
     return;
 
-  CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
-  if (peripheral == NULL)
+  PeripheralPtr peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  if (!peripheral)
     return;
 
   peripheral->PersistSettings();
@@ -103,8 +103,8 @@ void CGUIDialogPeripheralSettings::OnResetSettings()
   if (m_item == NULL)
     return;
 
-  CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
-  if (peripheral == NULL)
+  PeripheralPtr peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  if (!peripheral)
     return;
 
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
@@ -138,8 +138,8 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
   m_initialising = true;
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-  CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
-  if (peripheral == NULL)
+  PeripheralPtr peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  if (!peripheral)
   {
     CLog::Log(LOGDEBUG, "%s - no peripheral", __FUNCTION__);
     m_initialising = false;

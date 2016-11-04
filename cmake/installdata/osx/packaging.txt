@@ -1,0 +1,4 @@
+LICENSE.gpl
+privacy-policy.txt
+xbmc/platform/darwin/Credits.html
+tools/darwin/packaging/media/osx/icon.iconset/*

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1109">
+	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
+	<visible>Window.IsActive(seekbar) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrosdguide)</visible>
+	<depth>DepthOSD</depth>
+	<include>Animation_TopSlide</include>
+	<zorder>0</zorder>
+	<controls>
+		<control type="group">
+			<animation effect="slide" end="0,-90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
+			<depth>DepthBars</depth>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>100%</width>
+				<height>170</height>
+				<texture>frame/osdfade.png</texture>
+			</control>
+			<control type="image">
+				<left>10</left>
+				<top>0</top>
+				<width>500</width>
+				<height>160</height>
+				<texture>$INFO[Player.Art(clearlogo)]</texture>
+				<aspectratio aligny="top" align="left">keep</aspectratio>
+			</control>
+			<control type="group">
+				<visible>!Window.IsActive(pvrosdchannels) + !Window.IsActive(pvrosdguide)</visible>
+				<visible>String.IsEmpty(Player.Art(clearlogo))</visible>
+				<animation effect="fade" time="150">VisibleChange</animation>
+				<left>30</left>
+				<right>400</right>
+				<control type="label">
+					<label>$VAR[NowPlayingBreadcrumbsVar]</label>
+					<font>font45</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<top>7</top>
+					<height>100</height>
+					<left>0</left>
+					<right>0</right>
+				</control>
+				<control type="label">
+					<top>60</top>
+					<label>$VAR[OSDSubLabelVar]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+					<height>100</height>
+					<left>0</left>
+					<right>0</right>
+				</control>
+			</control>
+			<control type="group">
+				<visible>!Window.IsVisible(extendedprogressdialog)</visible>
+				<animation effect="fade" time="150">VisibleChange</animation>
+				<control type="label">
+					<font>font_clock</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<top>0</top>
+					<right>20</right>
+					<height>200</height>
+					<width>600</width>
+					<align>right</align>
+					<label>$INFO[System.Time]</label>
+				</control>
+				<control type="grouplist">
+					<right>24</right>
+					<top>74</top>
+					<width>800</width>
+					<height>100</height>
+					<align>right</align>
+					<itemgap>5</itemgap>
+					<orientation>horizontal</orientation>
+					<usecontrolcoords>true</usecontrolcoords>
+					<control type="label">
+						<label>$INFO[Player.FinishTime,$LOCALIZE[31080]: ]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+						<height>100</height>
+						<width>auto</width>
+						<visible>!String.isempty(Player.Duration)</visible>
+						<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasEpg</visible>
+					</control>
+					<control type="image">
+						<top>2</top>
+						<left>0</left>
+						<width>60</width>
+						<height>40</height>
+						<fadetime>300</fadetime>
+						<aspectratio aligny="center" align="right">keep</aspectratio>
+						<texture>dialogs/volume/mute.png</texture>
+						<visible>Player.Muted</visible>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

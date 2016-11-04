@@ -16,6 +16,10 @@ msgstr ""
 "Language: lv_LV\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Pašreiz atskaņo"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Meklē..."
@@ -28,6 +32,54 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Skatīties 2D"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Nejaušas filmas"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Neskatītās filmas"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Lejupielādē ikonas"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Notiek filmas"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Visvairāk atskaņotie albumi"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Nejauši albumi"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Nejauši izpildītāji"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Neatskaņotie albumi"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Nesenie ieraksti"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Nesen atskaņotie kanāli"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Novērtēts"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Nesen atskaņotie kanāli"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Prognoze"
@@ -36,38 +88,178 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "Darbības"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Dažādas opcijas"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Kārtot pēc"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Skata veids"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Rādīt fanumākslu"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Pēdējoreiz pieslēdzies"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Versijas info"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Kārtība"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Tavs vērtējums"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Lapas"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "ieraksti"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Attīt atpakaļ"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Patīt uz priekšu"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Kameras ražotājs"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Spēļsaraksta opcijas"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Pievienot grupu"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Pārsaukt grupu"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Dzēst grupu"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Pieejams"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrēts"
 
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Balstīts uz Arial"
 
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Iet uz spēļsarakstu"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Rādīt pieteikšanās logu uzsākot"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automatiski pieteikties uzsākot"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Galvenās izvēlnes ieraksti"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Video spēļsaraksts"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Pēdējie jaunumi"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "veidoja"
 
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Enerģijas opcijas"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albuma info"
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmu kopumi"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanāla grupa"
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Video izvēlne"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Izmantot slīdes animāciju"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Pieejami lokālie subtitri"
 
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanāla opcijas"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Atlasiet savu Kodi lietotāja profilu,[CR]lai pieslēgtos un turpinātu"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Slēpt"
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "InfoSiena"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Siena"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teleteksts"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Meklēt YouTube"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR info"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Video dekoders"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Pikseļu formāts"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Atskaņošanas ātrums"

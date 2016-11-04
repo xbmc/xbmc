@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">10</defaultcontrol>
-	<views>10,11,12,13</views>
+	<views>10</views>
 	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>
@@ -27,42 +27,6 @@
 			</include>
 			<include content="PVREPG" condition="String.IsEqual(Skin.AspectRatio,4:3)"> <!-- view id = 10 -->
 				<param name="panel-width" value="1090"/>
-			</include>
-			<include content="PVRBack" condition="String.IsEqual(Skin.AspectRatio,16:9)">
-				<param name="panel-width" value="1530"/>
-			</include>
-			<include content="PVRBack" condition="String.IsEqual(Skin.AspectRatio,4:3)">
-				<param name="panel-width" value="1090"/>
-			</include>
-			<include content="PVRList" condition="String.IsEqual(Skin.AspectRatio,16:9)"> <!-- view id = 11 -->
-				<param name="panel-id" value="11"/>
-				<param name="panel-width" value="1530"/>
-				<param name="label-width" value="1400"/>
-			</include>
-			<include content="PVRList" condition="String.IsEqual(Skin.AspectRatio,4:3)"> <!-- view id = 11 -->
-				<param name="panel-id" value="11"/>
-				<param name="panel-width" value="1090"/>
-				<param name="label-width" value="960"/>
-			</include>
-			<include content="PVRList" condition="String.IsEqual(Skin.AspectRatio,16:9)"> <!-- view id = 12 -->
-				<param name="panel-id" value="12"/>
-				<param name="panel-width" value="1530"/>
-				<param name="label-width" value="1400"/>
-			</include>
-			<include content="PVRList" condition="String.IsEqual(Skin.AspectRatio,4:3)"> <!-- view id = 12 -->
-				<param name="panel-id" value="12"/>
-				<param name="panel-width" value="1090"/>
-				<param name="label-width" value="960"/>
-			</include>
-			<include content="PVRList" condition="String.IsEqual(Skin.AspectRatio,16:9)"> <!-- view id = 13 -->
-				<param name="panel-id" value="13"/>
-				<param name="panel-width" value="1530"/>
-				<param name="label-width" value="1400"/>
-			</include>
-			<include content="PVRList" condition="String.IsEqual(Skin.AspectRatio,4:3)"> <!-- view id = 13 -->
-				<param name="panel-id" value="13"/>
-				<param name="panel-width" value="1090"/>
-				<param name="label-width" value="960"/>
 			</include>
 			<include content="PVRInfo" condition="String.IsEqual(Skin.AspectRatio,16:9)">
 				<param name="panel-width" value="1530"/>

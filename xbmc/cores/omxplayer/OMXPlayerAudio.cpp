@@ -18,9 +18,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#elif defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS)
 #include "system.h"
 #endif
 
@@ -492,7 +490,7 @@ void OMXPlayerAudio::WaitForBuffers()
   m_messageQueue.WaitUntilEmpty();
 
   // make sure almost all has been rendered
-  // leave 500ms to avound buffer underruns
+  // leave 500ms to avoid buffer underruns
   double delay = GetCacheTime();
   if(delay > 0.5)
     Sleep((int)(1000 * (delay - 0.5)));

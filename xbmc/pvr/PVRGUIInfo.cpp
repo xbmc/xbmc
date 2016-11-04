@@ -19,6 +19,7 @@
  */
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "GUIInfoManager.h"
 #include "epg/EpgInfoTag.h"
 #include "guiinfo/GUIInfoLabels.h"
@@ -218,7 +219,7 @@ void CPVRGUIInfo::UpdateQualityData(void)
   ClearQualityInfo(qualityInfo);
 
   PVR_CLIENT client;
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY) &&
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY) &&
       g_PVRClients->GetPlayingClient(client))
   {
     client->SignalQuality(qualityInfo);

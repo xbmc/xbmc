@@ -32,10 +32,6 @@ class CDVDInputStream;
 #pragma warning(disable:4244)
 #endif
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
-
 extern "C" {
 #include "libavcodec/avcodec.h"
 }
@@ -168,7 +164,7 @@ public:
   bool bVFR;  // variable framerate
   bool bPTSInvalid; // pts cannot be trusted (avi's).
   bool bForcedAspect; // aspect is forced from container
-  int iOrientation; // orientation of the video in degress counter clockwise
+  int iOrientation; // orientation of the video in degrees counter clockwise
   int iBitsPerPixel;
   std::string stereo_mode; // expected stereo mode
 };
@@ -259,7 +255,7 @@ public:
   /*
    * Seek, time in msec calculated from stream start
    */
-  virtual bool SeekTime(int time, bool backwords = false, double* startpts = NULL) = 0;
+  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) = 0;
 
   /*
    * Seek to a specified chapter.

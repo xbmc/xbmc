@@ -22,6 +22,9 @@
 
 #include "interfaces/IActionListener.h"
 
+namespace PVR
+{
+
 class CPVRActionListener : public IActionListener
 {
 public:
@@ -36,3 +39,5 @@ private:
   CPVRActionListener& operator=(const CPVRActionListener&);
   ~CPVRActionListener() {};
 };
+
+} // namespace PVR

@@ -56,9 +56,9 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr ""
 
-#: /1080i/DialogAddonInfo.xml
+#: /xml/SkinSettings.xml
 msgctxt "#31008"
-msgid "No disclaimer"
+msgid "Enable category widgets"
 msgstr ""
 
 #: /1080i/MyVideoNav.xml
@@ -139,25 +139,14 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr ""
 
-#: /1080i/MusicVisualisation.xml
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr ""
+#empty string with id 31024
 
 #: /1080i/DialogFavourites.xml
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr ""
 
-#: /1080i/DialogAlbumInfo.xml
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr ""
-
-#: /1080i/DialogAlbumInfo.xml
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr ""
+#empty strings from id 31026 to 31027
 
 #: /1080i/DialogAlbumInfo.xml /1080i/DialogVideoInfo.xml
 msgctxt "#31028"
@@ -171,7 +160,7 @@ msgstr ""
 
 #: /1080i/SettingsSystemInfo.xml
 msgctxt "#31030"
-msgid "System memory used"
+msgid "System memory usage"
 msgstr ""
 
 #: /1080i/SettingsSystemInfo.xml
@@ -204,10 +193,7 @@ msgctxt "#31036"
 msgid "items"
 msgstr ""
 
-#: /1080i/Variables.xml
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr ""
+#empty string with id 31037
 
 #: /1080i/Variables.xml
 msgctxt "#31038"
@@ -219,10 +205,7 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr ""
 
-#: /1080i/Variables.xml
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr ""
+#empty string with id 31040
 
 #: /1080i/Variables.xml /1080i/MyPics.xml
 msgctxt "#31041"
@@ -254,20 +237,14 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr ""
 
-#: /1080i/View_50_List.xml
-msgctxt "#31047"
-msgid "Read more..."
-msgstr ""
+#empty string with id 31047
 
 #: /1080i/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#: /1080i/Variables.xml
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr ""
+#empty string with id 31049
 
 #: /1080i/Variables.xml
 msgctxt "#31050"
@@ -294,10 +271,7 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr ""
 
-#: /1080i/Variables.xml
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr ""
+#empty string with id 31055
 
 #: /1080i/MyMusicNav.xml /1080i/MyVideoNav.xml
 msgctxt "#31056"
@@ -314,15 +288,7 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr ""
 
-#: /1080i/Includes.xml
-msgctxt "#31059"
-msgid "Updates available"
-msgstr ""
-
-#: /1080i/Variables.xml /1080i/DialogVideoInfo.xml
-msgctxt "#31060"
-msgid "minutes"
-msgstr ""
+#empty strings from id 31059 to 31060
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31061"
@@ -339,10 +305,7 @@ msgctxt "#31063"
 msgid "Sections"
 msgstr ""
 
-#: /1080i/Variables.xml
-msgctxt "#31064"
-msgid "unwatched"
-msgstr ""
+#empty string with id 31064
 
 #: /1080i/MyVideoPlaylist.xml
 msgctxt "#31065"
@@ -369,10 +332,7 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr ""
 
-#: /1080i/Custom_1103_SourcesDialog.xml
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr ""
+#empty string with id 31070
 
 #: /1080i/DialogAddonInfo.xml
 msgctxt "#31071"
@@ -384,35 +344,14 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr ""
 
-#: /1080i/Home.xml
-msgctxt "#31073"
-msgid "Titles"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31074"
-msgid "Library root"
-msgstr ""
+#empty strings from id 31073 to 31074
 
 #: /1080i/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr ""
 
-#: /1080i/Home.xml
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31077"
-msgid "Previous location"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31078"
-msgid "Next location"
-msgstr ""
+#empty strings from id 31076 to 31078
 
 #: /1080i/DialogVideoInfo.xml
 msgctxt "#31079"
@@ -424,10 +363,7 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr ""
 
-#: /1080i/DialogSongInfo.xml
-msgctxt "#31081"
-msgid "Album info"
-msgstr ""
+#empty string with id 31081
 
 #: /1080i/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
@@ -444,25 +380,7 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr ""
 
-#: /1080i/DialogFullScreenInfo.xml
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr ""
-
-#: /1080i/DialogFullScreenInfo.xml
-msgctxt "#31086"
-msgid "Metadata"
-msgstr ""
-
-#: /1080i/DialogContentSettings.xml
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr ""
-
-#: /1080i/DialogContentSettings.xml
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr ""
+#empty strings from id 31085 to 31088
 
 #: /1080i/DialogPVRGroupManager.xml
 msgctxt "#31089"
@@ -474,10 +392,7 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr ""
 
-#: /1080i/VideoOSD.xml
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr ""
+#empty string with id 31091
 
 #: /1080i/VideoOSD.xml /1080i/Variables.xml
 msgctxt "#31092"
@@ -489,10 +404,7 @@ msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr ""
 
-#: /1080i/SkinSettings.xml
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr ""
+#empty string with id 31094
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31095"
@@ -514,22 +426,26 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_52_IconWall.xml
 msgctxt "#31099"
-msgid "Icon Wall"
+msgid "IconWall"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr ""
 
-#: /1080i/View_500_SmallThumb.xml
+#. viewtype name
+#: /1080i/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
 msgstr ""
@@ -554,20 +470,13 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
 msgstr ""
 
-#: /1080i/SkinSettings.xml
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr ""
+#empty strings from id 31108 to 31109
 
 #: /1080i/Home.xml
 msgctxt "#31110"
@@ -679,25 +588,14 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr ""
 
-#: /1080i/MyVideoNav.xml /1080i/View_502_FanArt.xml
-msgctxt "#31132"
-msgid "min"
-msgstr ""
-
-#: /1080i/DialogKeyboard.xml
-msgctxt "#31133"
-msgid "Hide"
-msgstr ""
+#empty strings from id 31132 to 31133
 
 #: /1080i/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr ""
 
-#: /1080i/DialogAddonInfo.xml
-msgctxt "#31135"
-msgid "Installed from"
-msgstr ""
+#empty string with id 31135
 
 #: /1080i/DialogAddonInfo.xml
 msgctxt "#31136"
@@ -749,12 +647,79 @@ msgctxt "#31145"
 msgid "Search add-ons"
 msgstr ""
 
+#empty strings from id 31146 to 31147
+
 #: /1080i/Home.xml
-msgctxt "#31146"
-msgid "Manage add-ons"
+msgctxt "#31148"
+msgid "Categories"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr ""
+
+#: /1080i/DialogAddonInfo.xml
+msgctxt "#31150"
+msgid "Repository"
 msgstr ""
 
 #: /1080i/Home.xml
-msgctxt "#31147"
-msgid "Download add-ons"
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr ""
+
+#: /1080i/Home.xml
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr ""
+
+#: /1080i/Includes.xml
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr ""
+
+#: /1080i/MyWeather.xml
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr ""
+
+#: /1080i/VideoOSDBookmarks.xml
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31159"
+msgid "Artwork"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr ""
+
+#: /xml/DialogNumeric.xml
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
 msgstr ""

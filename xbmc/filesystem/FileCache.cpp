@@ -517,7 +517,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
       return -1;
     }
 
-    /* wait for any remainin data */
+    /* wait for any remaining data */
     if(m_seekPos < iTarget)
     {
       CLog::Log(LOGDEBUG,"%s - waiting for position %" PRId64".", __FUNCTION__, iTarget);

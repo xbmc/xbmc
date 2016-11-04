@@ -64,8 +64,8 @@ void CSeekHandler::Configure()
   Reset();
 
   m_seekDelays.clear();
-  m_seekDelays.insert(std::make_pair(SEEK_TYPE_VIDEO, CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY)));
-  m_seekDelays.insert(std::make_pair(SEEK_TYPE_MUSIC, CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_SEEKDELAY)));
+  m_seekDelays.insert(std::make_pair(SEEK_TYPE_VIDEO, CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY)));
+  m_seekDelays.insert(std::make_pair(SEEK_TYPE_MUSIC, CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_SEEKDELAY)));
 
   m_forwardSeekSteps.clear();
   m_backwardSeekSteps.clear();
@@ -79,7 +79,7 @@ void CSeekHandler::Configure()
     std::vector<int> forwardSeekSteps;
     std::vector<int> backwardSeekSteps;
 
-    std::vector<CVariant> seekSteps = CSettings::GetInstance().GetList(it->second);
+    std::vector<CVariant> seekSteps = CServiceBroker::GetSettings().GetList(it->second);
     for (std::vector<CVariant>::iterator it = seekSteps.begin(); it != seekSteps.end(); ++it)
     {
       int stepSeconds = static_cast<int>((*it).asInteger());

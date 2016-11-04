@@ -20,6 +20,7 @@
 
 #include "PictureThumbLoader.h"
 #include "Picture.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "TextureCache.h"
@@ -91,7 +92,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
       {
         thumb = thumbURL;
       }
-      else if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) && CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+      else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
       {
         CFileItem item(*pItem);
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumbURL);

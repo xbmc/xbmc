@@ -20,11 +20,11 @@
 #pragma once
 
 #include "addons/AddonDll.h"
-#include "addons/DllPeripheral.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
+#include "threads/CriticalSection.h"
 
 #include <map>
 #include <memory>
@@ -41,9 +41,10 @@ namespace PERIPHERALS
   class CPeripheral;
   class CPeripheralJoystick;
 
+  typedef std::vector<ADDON::DriverPrimitive> PrimitiveVector;
   typedef std::map<JOYSTICK::FeatureName, ADDON::JoystickFeature> FeatureMap;
 
-  class CPeripheralAddon : public ADDON::CAddonDll<DllPeripheral, PeripheralAddon, PERIPHERAL_PROPERTIES>
+  class CPeripheralAddon : public ADDON::CAddonDll
   {
   public:
     static std::unique_ptr<CPeripheralAddon> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
@@ -60,13 +61,13 @@ namespace PERIPHERALS
      */
     ADDON_STATUS CreateAddon(void);
 
-    bool         Register(unsigned int peripheralIndex, CPeripheral* peripheral);
-    void         UnregisterRemovedDevices(const PeripheralScanResults &results, std::vector<CPeripheral*>& removedPeripherals);
+    bool         Register(unsigned int peripheralIndex, const PeripheralPtr& peripheral);
+    void         UnregisterRemovedDevices(const PeripheralScanResults &results, PeripheralVector& removedPeripherals);
     void         GetFeatures(std::vector<PeripheralFeature> &features) const;
     bool         HasFeature(const PeripheralFeature feature) const;
-    CPeripheral* GetPeripheral(unsigned int index) const;
-    CPeripheral* GetByPath(const std::string &strPath) const;
-    int          GetPeripheralsWithFeature(std::vector<CPeripheral*> &results, const PeripheralFeature feature) const;
+    PeripheralPtr GetPeripheral(unsigned int index) const;
+    PeripheralPtr GetByPath(const std::string &strPath) const;
+    int          GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const;
     size_t       GetNumberOfPeripherals(void) const;
     size_t       GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
     void         GetDirectory(const std::string &strPath, CFileItemList &items) const;
@@ -84,7 +85,10 @@ namespace PERIPHERALS
     bool HasButtonMaps(void) const { return m_bProvidesButtonMaps; }
     bool GetFeatures(const CPeripheral* device, const std::string& strControllerId, FeatureMap& features);
     bool MapFeature(const CPeripheral* device, const std::string& strControllerId, const ADDON::JoystickFeature& feature);
+    bool GetIgnoredPrimitives(const CPeripheral* device, PrimitiveVector& primitives);
+    bool SetIgnoredPrimitives(const CPeripheral* device, const PrimitiveVector& primitives);
     void SaveButtonMap(const CPeripheral* device);
+    void RevertButtonMap(const CPeripheral* device);
     void ResetButtonMap(const CPeripheral* device, const std::string& strControllerId);
     void PowerOffJoystick(unsigned int index);
     //@}
@@ -102,6 +106,8 @@ namespace PERIPHERALS
     virtual bool CheckAPIVersion(void) override;
 
   private:
+    void UnregisterButtonMap(CPeripheral* device);
+
     /*!
      * @brief Helper functions
      */
@@ -129,7 +135,6 @@ namespace PERIPHERALS
     static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
 
     bool LogError(const PERIPHERAL_ERROR error, const char *strMethod) const;
-    void LogException(const std::exception &e, const char *strFunctionName) const;
 
     /* @brief Cache for const char* members in PERIPHERAL_PROPERTIES */
     std::string         m_strUserPath;    /*!< @brief translated path to the user profile */
@@ -141,12 +146,16 @@ namespace PERIPHERALS
     bool                m_bProvidesButtonMaps;
 
     /* @brief Map of peripherals belonging to the add-on */
-    std::map<unsigned int, CPeripheral*>  m_peripherals;
+    std::map<unsigned int, PeripheralPtr>  m_peripherals;
 
     /* @brief Button map observers */
     std::vector<std::pair<CPeripheral*, JOYSTICK::IButtonMap*> > m_buttonMaps;
+    CCriticalSection m_buttonMapMutex;
 
     /* @brief Thread synchronization */
     CCriticalSection    m_critSection;
+    
+    PERIPHERAL_PROPERTIES m_info;
+    KodiToAddonFuncTable_Peripheral m_struct;
   };
 }

@@ -27,10 +27,12 @@
 
 namespace JOYSTICK
 {
+  class IActionMap;
   class IButtonMap;
   class IButtonMapper;
 
-  /*
+  /*!
+   * \ingroup joystick
    * \brief Generic implementation of a class that provides button mapping by
    *        translating driver events to button mapping commands
    *
@@ -43,13 +45,13 @@ namespace JOYSTICK
                          public IButtonMapCallback
   {
   public:
-    /*
+    /*!
      * \brief Constructor for CButtonMapping
      *
      * \param buttonMapper Carries out button-mapping commands using <buttonMap>
      * \param buttonMap The button map given to <buttonMapper> on each command
      */
-    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap);
+    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap);
 
     virtual ~CButtonMapping(void) { }
 
@@ -61,16 +63,37 @@ namespace JOYSTICK
 
     // implementation of IButtonMapCallback
     virtual void SaveButtonMap() override;
+    virtual void ResetIgnoredPrimitives() override;
+    virtual void RevertButtonMap() override;
 
   private:
-    void MapPrimitive(const CDriverPrimitive& primitive);
+    /*!
+     * \brief Process the primitive mapping command
+     *
+     * First, this function checks if the input should be dropped. This can
+     * happen if the input is ignored or the cooldown period is active. If the
+     * input is dropped, this returns true with no effect, effectively absorbing
+     * the input. Otherwise, the mapping command is sent to m_buttonMapper.
+     *
+     * \param primitive The primitive being mapped
+     * \return True if the mapping command was handled, false otherwise
+     */
+    bool MapPrimitive(const CDriverPrimitive& primitive);
 
-    void Activate(const CDriverPrimitive& semiAxis);
-    void Deactivate(const CDriverPrimitive& semiAxis);
-    bool IsActive(const CDriverPrimitive& semiAxis);
+    // Motion functions
+    void OnMotion(const CDriverPrimitive& semiaxis);
+    void OnMotionless(const CDriverPrimitive& semiaxis);
+    bool IsMoving() const;
 
+    // Action functions
+    void Activate(const CDriverPrimitive& semiaxis);
+    void Deactivate(const CDriverPrimitive& semiaxis);
+    bool IsActive(const CDriverPrimitive& semiaxis) const;
+
+    // Construction parameters
     IButtonMapper* const m_buttonMapper;
     IButtonMap* const    m_buttonMap;
+    IActionMap* const    m_actionMap;
 
     struct ActivatedAxis
     {
@@ -78,6 +101,7 @@ namespace JOYSTICK
       bool             bEmitted; // true if this axis has emited a button-mapping command
     };
 
+    std::vector<CDriverPrimitive> m_movingAxes;
     std::vector<ActivatedAxis> m_activatedAxes;
     unsigned int               m_lastAction;
   };

@@ -21,12 +21,13 @@
  */
 
 #include "system.h" // until we get sane int types used here
-#include <memory>
 #include <vector>
+#include <string>
+
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
-#include <string>
+#include "pvr/PVRTypes.h"
 
 #define CURRENT_STREAM -1
 #define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
@@ -37,12 +38,6 @@ struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
 class CAction;
-
-namespace PVR
-{
-  class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-}
 
 class CPlayerOptions
 {
@@ -243,6 +238,7 @@ public:
   virtual void Pause() = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
+  virtual bool HasGame() const { return false; }
   virtual bool HasRDS() const { return false; }
   virtual bool IsPassthrough() const { return false;}
   virtual bool CanSeek() {return true;}
@@ -336,7 +332,7 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
-  //Returns true if not playback (paused or stopped beeing filled)
+  //Returns true if not playback (paused or stopped being filled)
   virtual bool IsCaching() const {return false;};
   //Cache filled in Percent
   virtual int GetCacheLevel() const {return -1;};
@@ -362,7 +358,7 @@ public:
   virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
 
   /*!
-   \breif hook into render loop of render thread
+   \brief hook into render loop of render thread
    */
   virtual void FrameMove() {};
 

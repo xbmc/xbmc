@@ -26,6 +26,7 @@
 #include "addons/Scraper.h"
 #include "Album.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "Artist.h"
 #include "CueInfoLoader.h"
 #include "dbwrappers/dataset.h"
@@ -1063,7 +1064,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
         }
 
         int idSongArtistRole = record->at(songArtistOffset + artistCredit_idRole).get_asInt();
-        //By query order song is the last one appened to the album song vector.                
+        //By query order song is the last one appended to the album song vector.                
         if (idSongArtistRole == ROLE_ARTIST)
           album.songs.back().artistCredits.emplace_back(GetArtistCreditFromDataset(record, songArtistOffset));
         else 
@@ -1233,7 +1234,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       }
 
     // 2) No MusicBrainz - search for any artist (MB ID or non) with the same name.
-    //    With MusicBrainz IDs this could return multiple artists and is non-determinstic
+    //    With MusicBrainz IDs this could return multiple artists and is non-deterministic
     //    Always pick the first artist ID returned by the DB to return.
     }
     else
@@ -3085,7 +3086,7 @@ bool CMusicDatabase::CleanupRoles()
   try
   {
     // Cleanup orphaned roles (ie those that don't belong to a song entry)
-    // Must be executed AFTER the song, and song_srtist tables have been cleaned.
+    // Must be executed AFTER the song, and song_artist tables have been cleaned.
     // Do not remove default role (ROLE_ARTIST)
     std::string strSQL = "DELETE FROM role WHERE idRole > 1 AND idRole NOT IN (SELECT idRole FROM song_artist)";
     m_pDS->exec(strSQL);
@@ -3232,7 +3233,7 @@ error:
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
 #ifdef HAS_DVD_DRIVE
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOCDS_USECDDB))
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOCDS_USECDDB))
     return false;
 
   // check network connectivity
@@ -3784,7 +3785,7 @@ bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir, CFileItemList&
       musicUrl.AddOption("songid", idSong);
 
     // Override albumArtistsOnly parameter (usually externally set to SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS)
-    // when local option already present in muscic URL thus allowing it to be an option in custom nodes
+    // when local option already present in music URL thus allowing it to be an option in custom nodes
     if (!musicUrl.HasOption("albumartistsonly"))
       musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
 
@@ -4140,7 +4141,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     // Get data from album, album_artist and artist tables to fully populate albums with album artists
     // All albums have at least one artist so inner join sufficient
     if (limited)
-      //Apply where clause and limits to albumview, then join as mutiple records in result set per album
+      //Apply where clause and limits to albumview, then join as multiple records in result set per album
       strSQL = "SELECT av.*, albumartistview.* "
                "FROM (SELECT albumview.* FROM albumview " + strSQLExtra + ") AS av "
                "JOIN albumartistview ON albumartistview.idalbum = av.idalbum ";
@@ -4261,7 +4262,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
       // All songs now have at least one artist so inner join sufficient
       // Need guaranteed ordering for dataset processing to extract songs
       if (limited)
-        //Apply where clause and limits to songview, then join as mutiple records in result set per song
+        //Apply where clause and limits to songview, then join as multiple records in result set per song
         strSQL = "SELECT sv.*, songartistview.* "
           "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
           "JOIN songartistview ON songartistview.idsong = sv.idsong ";
@@ -4662,7 +4663,7 @@ void CMusicDatabase::UpdateTables(int version)
   {
     m_pDS->exec("ALTER TABLE song ADD dateAdded text");
     CMediaSettings::GetInstance().SetMusicNeedsUpdate(53);
-    CSettings::GetInstance().Save();
+    CServiceBroker::GetSettings().Save();
   }
   if (version < 54)
   {
@@ -4847,9 +4848,6 @@ void CMusicDatabase::UpdateTables(int version)
       "SELECT idArtist, idAlbum, iOrder, strArtist FROM album_artist");
     m_pDS->exec("DROP TABLE album_artist");
     m_pDS->exec("ALTER TABLE album_artist_new RENAME TO album_artist");
-
-    CMediaSettings::GetInstance().SetMusicNeedsUpdate(58);
-    CSettings::GetInstance().Save();
   }
   if (version < 60)
   { 
@@ -4957,9 +4955,14 @@ void CMusicDatabase::UpdateTables(int version)
         CLog::Log(LOGERROR, "Setting artist missing for albums without an artist has failed");
       }
     }
-    //Remove temp indices, full analyics for database created later
+    //Remove temp indices, full analytics for database created later
     m_pDS->exec("DROP INDEX idxSongArtist1 ON song_artist");
     m_pDS->exec("DROP INDEX idxAlbumArtist1 ON album_artist");
+
+    // Prompt for rescan of library to read tags that were not processed by previous versions
+    // and accomodate changes to the way some tags are processed
+    CMediaSettings::GetInstance().SetMusicNeedsUpdate(60);
+    CServiceBroker::GetSettings().Save();
   }
 }
 
@@ -5255,17 +5258,15 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // We don't use PrepareSQL here, as the WHERE clause is already formatted
-    std::string strSQL = PrepareSQL("select %s from songview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    // Get a random song that matches filter criteria (which may exclude some songs)
+    // We don't use PrepareSQL here, as the WHERE clause is already formatted but must
+    // use songview as that is what the WHERE clause has as reference table
+    std::string strSQL = "SELECT idSong FROM songview ";
     Filter extFilter = filter;
     extFilter.AppendOrder(PrepareSQL("RANDOM()"));
     extFilter.limit = "1";
-
     if (!CDatabase::BuildSQL(strSQL, extFilter, strSQL))
       return false;
-
-    CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
-    // run query
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5274,10 +5275,19 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
       m_pDS->close();
       return false;
     }
-    GetFileItemFromDataset(item, CMusicDbUrl());
     idSong = m_pDS->fv("songview.idSong").get_asInt();
     m_pDS->close();
-    return true;
+
+    // Fetch the full song details, including contributors
+    std::string baseDir = StringUtils::Format("musicdb://songs/?songid=%d", idSong);
+    CFileItemList items;
+    GetSongsFullByWhere(baseDir, Filter(), items, SortDescription(), true);
+    if (items.Size() > 0)
+    {
+      *item = *items[0];      
+      return true;
+    }
+    return false;
   }
   catch(...)
   {
@@ -5762,7 +5772,7 @@ bool CMusicDatabase::GetItems(const std::string &strBaseDir, const std::string &
   else if (StringUtils::EqualsNoCase(itemType, "roles"))
     return GetRolesNav(strBaseDir, items, filter);
   else if (StringUtils::EqualsNoCase(itemType, "artists"))
-    return GetArtistsNav(strBaseDir, items, !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1, -1, -1, filter, sortDescription);
+    return GetArtistsNav(strBaseDir, items, !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1, -1, -1, filter, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "songs"))
@@ -6309,7 +6319,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       if (xsp.GetOrder() != SortByNone)
         sorting.sortBy = xsp.GetOrder();
       sorting.sortOrder = xsp.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
         sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
   }
@@ -6318,13 +6328,13 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   int idRole = 1; // Default restrict song_artist to "artists" only, no other roles.
   option = options.find("roleid");
   if (option != options.end())
-    idRole = (int)option->second.asInteger();
+    idRole = static_cast<int>(option->second.asInteger());
   else
   {
     option = options.find("role");
     if (option != options.end())
     {
-      if (option->second.asString() == "all")
+      if (option->second.asString() == "all" || option->second.asString() == "%")
         idRole = -1000; //All roles
       else
         idRole = GetRoleByName(option->second.asString());
@@ -6340,104 +6350,130 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   std::string strRoleSQL; //Role < 0 means all roles, otherwise filter by role
   if(idRole > 0) strRoleSQL = PrepareSQL(" AND song_artist.idRole = %i ", idRole);  
 
+  int idArtist = -1, idGenre = -1, idAlbum = -1, idSong = -1;
+  bool albumArtistsOnly = false;
+  std::string artistname;
+
+  // Process albumartistsonly option
+  option = options.find("albumartistsonly");
+  if (option != options.end())
+    albumArtistsOnly = option->second.asBoolean();
+
+  // Process genre option
+  option = options.find("genreid");
+  if (option != options.end())
+    idGenre = static_cast<int>(option->second.asInteger());
+  else
+  {
+    option = options.find("genre");
+    if (option != options.end())
+      idGenre = GetGenreByName(option->second.asString());
+  }
+
+  // Process album option
+  option = options.find("albumid");
+  if (option != options.end())
+    idAlbum = static_cast<int>(option->second.asInteger());
+  else
+  {
+    option = options.find("album");
+    if (option != options.end())
+      idAlbum = GetAlbumByName(option->second.asString());
+  }
+
+  // Process artist option
+  option = options.find("artistid");
+  if (option != options.end())
+    idArtist = static_cast<int>(option->second.asInteger());
+  else
+  {
+    option = options.find("artist");
+    if (option != options.end())
+    {
+      idArtist = GetArtistByName(option->second.asString());
+      if (idArtist == -1)
+      {// not found with that name, or more than one found as artist name is not unique
+        artistname = option->second.asString();
+      }
+    }
+  }
+
+  //  Process song option
+  option = options.find("songid");
+  if (option != options.end())
+    idSong = static_cast<int>(option->second.asInteger());
+
   if (type == "artists")
   {
-    int idArtist = -1, idGenre = -1, idAlbum = -1, idSong = -1;
-    bool albumArtistsOnly = false;
-
-    option = options.find("artistid");
-    if (option != options.end())
-      idArtist = (int)option->second.asInteger();
-
-    option = options.find("genreid");
-    if (option != options.end())
-      idGenre = (int)option->second.asInteger();
-    else
-    {
-      option = options.find("genre");
-      if (option != options.end())
-        idGenre = GetGenreByName(option->second.asString());
-    }
-
-    option = options.find("albumid");
-    if (option != options.end())
-      idAlbum = (int)option->second.asInteger();
-    else
-    {
-      option = options.find("album");
-      if (option != options.end())
-        idAlbum = GetAlbumByName(option->second.asString());
-    }
-
-    option = options.find("songid");
-    if (option != options.end())
-      idSong = (int)option->second.asInteger();
-
-    option = options.find("albumartistsonly");
-    if (option != options.end())
-      albumArtistsOnly = option->second.asBoolean();
-
-    std::string strSQL = "artistview.idArtist IN ";
-    if (idArtist > 0)
-      strSQL += PrepareSQL("(%d)", idArtist);
-    else if (idAlbum > 0)
-      strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist" 
-                           " WHERE album_artist.idAlbum = %i)", idAlbum);
-    else if (idSong > 0)
-    {
-      strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist"
-                           " WHERE song_artist.idSong = %i %s)", idSong, strRoleSQL.c_str());
-    }
-    else if (idGenre > 0)
-    { // same statements as below, but limit to the specified genre
-      if (albumArtistsOnly || idRole == 1)  //Album artists only or no specific role, check album_artist table
-        strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist" // All album artists linked to extra genres
-        " JOIN album_genre ON album_artist.idAlbum = album_genre.idAlbum"
-        " WHERE album_genre.idGenre = %i)", idGenre);
-      if (albumArtistsOnly && idRole > 1)  //Album artists only with role, check AND in song_artist
-        strSQL += " AND artistview.idArtist IN ";
-      if (!albumArtistsOnly && idRole == 1) //Song and album artists no specific role, check OR in song_artist
-        strSQL += " OR artistview.idArtist IN ";
-      if (!albumArtistsOnly || idRole > 1)  //Song and album artists or album artists with specific role, check song_artist
-        strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist" // All artists linked to extra genres
-        " JOIN song_genre ON song_artist.idSong = song_genre.idSong"
-        " WHERE song_genre.idGenre = %i AND song_artist.idRole = %i )", idGenre, idRole);
-
-      if (idRole < -1) //All artists contributing to songs, all roles.
-        strSQL = PrepareSQL("artistview.idArtist IN (SELECT song_artist.idArtist FROM song_artist"
-        " JOIN song_genre ON song_artist.idSong = song_genre.idSong"
-        " WHERE song_genre.idGenre = %i)"
-        " OR artistview.idArtist IN"
-        " (SELECT album_artist.idArtist FROM album_artist" // All album artists linked to extra genres
-        " JOIN album_genre ON album_artist.idAlbum = album_genre.idAlbum"
-        " WHERE album_genre.idGenre = %i)",
-        idGenre, idGenre);
-    }
-    else
-    { // Artists can be only album artists, so for all artists (with linked albums or songs) 
-      // we need to check both album_artist and song_artist tables.
-      // Role is determined from song_artist table, so even if looking for album artists only
-      // we can check those that have a specific role e.g. which album artist is a composer
-      // (but not neccessarily of songs in that album), from entries in the song_artist table.
-      // Role < -1 is used to indicate that all roles are wanted.
-      // When not album artists only and a specific role wanted then only the song_artist table is checked.
-      // When album artists only and role = 1 (an "artist") then only the album_artist table is checked.
-      if (albumArtistsOnly || idRole == 1)  //Album artists only or no specific role, check album_artist table
-        strSQL += "(SELECT album_artist.idArtist FROM album_artist )"; // Includes compliation albums hence "Various artists"
-      if (albumArtistsOnly && idRole > 1)  //Album artists only with role, check AND in song_artist
-        strSQL += " AND artistview.idArtist IN ";
-      if (!albumArtistsOnly && idRole == 1) //Song and album artists no specific role, check OR in song_artist
-        strSQL += " OR artistview.idArtist IN ";
-      if (!albumArtistsOnly || idRole > 1)  //Song and album artists or album artists with specific role, check song_artist
-        strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist WHERE song_artist.idRole = %i)", idRole);
-
-      if (idRole < 0) //All artists contributing to songs, all roles.
-        strSQL = "artistview.idArtist IN (SELECT song_artist.idArtist FROM song_artist) OR "
-                 "artistview.idArtist IN (SELECT album_artist.idArtist FROM album_artist)";
-    }
     if (!hasRoleRules)
-      filter.AppendWhere(strSQL);
-
+    { // Not an "artists" smart playlist with roles rules, so get filter from options
+      if (idArtist > 0)
+        filter.AppendWhere(PrepareSQL("artistview.idArtist = %d", idArtist));
+      else if (idAlbum > 0)
+        filter.AppendWhere(PrepareSQL("artistview.idArtist IN (SELECT album_artist.idArtist FROM album_artist "
+          "WHERE album_artist.idAlbum = %i)", idAlbum));
+      else if (idSong > 0)
+      {
+        filter.AppendWhere(PrepareSQL("artistview.idArtist IN (SELECT song_artist.idArtist FROM song_artist "
+          "WHERE song_artist.idSong = %i %s)", idSong, strRoleSQL.c_str()));
+      }
+      else
+      { // Artists can be only album artists, so for all artists (with linked albums or songs) 
+        // we need to check both album_artist and song_artist tables.
+        // Role is determined from song_artist table, so even if looking for album artists only
+        // we can check those that have a specific role e.g. which album artist is a composer
+        // of songs in that album, from entries in the song_artist table.
+        // Role < -1 is used to indicate that all roles are wanted.
+        // When not album artists only and a specific role wanted then only the song_artist table is checked.
+        // When album artists only and role = 1 (an "artist") then only the album_artist table is checked.
+        std::string albumArtistSQL, songArtistSQL;
+        ExistsSubQuery albumArtistSub("album_artist", "album_artist.idArtist = artistview.idArtist");
+        ExistsSubQuery songArtistSub("song_artist", "song_artist.idArtist = artistview.idArtist");
+        if (idRole > 0)
+          songArtistSub.AppendWhere(PrepareSQL("song_artist.idRole = %i", idRole));
+        if (idGenre > 0)
+        {
+          songArtistSub.AppendJoin("JOIN song_genre ON song_genre.idSong = song_artist.idSong");
+          songArtistSub.AppendWhere(PrepareSQL("song_genre.idGenre = %i", idGenre));
+        }
+        if (idRole <= 1 && idGenre > 0)
+        {// Check genre of songs of album using nested subquery
+          std::string strGenre = PrepareSQL("EXISTS(SELECT 1 FROM song JOIN song_genre ON song_genre.idSong = song.idSong "
+            "WHERE song.idAlbum = album_artist.idAlbum AND song_genre.idGenre = %i)", idGenre);
+          albumArtistSub.AppendWhere(strGenre);
+        }
+        if (idRole > 1 && albumArtistsOnly)
+        { // Album artists only with role, check AND in album_artist for album of song
+          // using nested subquery correlated with album_artist
+          songArtistSub.AppendJoin("JOIN song ON song.idSong = song_artist.idSong");
+          songArtistSub.param = "song_artist.idArtist = album_artist.idArtist";
+          songArtistSub.AppendWhere("song.idAlbum = album_artist.idAlbum");
+          songArtistSub.BuildSQL(songArtistSQL);
+          albumArtistSub.AppendWhere(songArtistSQL);
+          albumArtistSub.BuildSQL(albumArtistSQL);
+          filter.AppendWhere(albumArtistSQL);
+        }
+        else
+        {
+          songArtistSub.BuildSQL(songArtistSQL);
+          albumArtistSub.BuildSQL(albumArtistSQL);
+          if (idRole < 0 || (idRole == 1 && !albumArtistsOnly))
+          { // Artist contributing to songs, any role, check OR album artist too
+            // as artists can be just album artists but not song artists
+            filter.AppendWhere(songArtistSQL + " OR " + albumArtistSQL);
+          }
+          else if (idRole > 1)
+          {
+            // Artist contributes that role (not albmartistsonly as already handled)
+            filter.AppendWhere(songArtistSQL);
+          }
+          else // idRole = 1 and albumArtistsOnly
+          { // Only look at album artists, not albums where artist features on songs
+            filter.AppendWhere(albumArtistSQL);
+          }
+        }
+      }
+    }
     // remove the null string
     filter.AppendWhere("artistview.strArtist != ''");
 
@@ -6452,50 +6488,93 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   {
     option = options.find("year");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.iYear = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("albumview.iYear = %i", static_cast<int>(option->second.asInteger())));
     
     option = options.find("compilation");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("albumview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
 
-    option = options.find("genreid");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
+    // Process artist, role and genre options together as song subquery to filter those
+    // albums that have songs with both that artist and genre
+    std::string albumArtistSQL, songArtistSQL, genreSQL;
+    ExistsSubQuery genreSub("song", "song.idAlbum = album_artist.idAlbum");
+    genreSub.AppendJoin("JOIN song_genre ON song_genre.idSong = song.idSong");
+    genreSub.AppendWhere(PrepareSQL("song_genre.idGenre = %i", idGenre));
+    ExistsSubQuery albumArtistSub("album_artist", "album_artist.idAlbum = albumview.idAlbum");
+    ExistsSubQuery songArtistSub("song_artist", "song.idAlbum = albumview.idAlbum");
+    songArtistSub.AppendJoin("JOIN song ON song.idSong = song_artist.idSong");
 
-    option = options.find("genre");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL("albumview.idAlbum IN (SELECT song.idAlbum FROM song JOIN song_genre ON song.idSong = song_genre.idSong JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
-
-    option = options.find("artistid");
-    if (option != options.end())
+    if (idArtist > 0)
     {
-      int idArtist = (int)option->second.asInteger();
-      filter.AppendWhere(PrepareSQL(
-      "(EXISTS (SELECT 1 FROM song JOIN song_artist ON song.idSong = song_artist.idSong"
-      " WHERE song.idAlbum = albumview.idAlbum AND song_artist.idArtist = %i %s) OR "
-      "EXISTS (SELECT 1 FROM album_artist"
-      " WHERE album_artist.idAlbum = albumview.idAlbum AND album_artist.idArtist = %i))",
-      idArtist, strRoleSQL.c_str(), idArtist));
+      songArtistSub.AppendWhere(PrepareSQL("song_artist.idArtist = %i", idArtist));
+      albumArtistSub.AppendWhere(PrepareSQL("album_artist.idArtist = %i", idArtist));
     }
-    else
+    else if (!artistname.empty())
+    { // Artist name is not unique, so could get albums or songs from more than one.
+      songArtistSub.AppendJoin("JOIN artist ON artist.idArtist = song_artist.idArtist");
+      songArtistSub.AppendWhere(PrepareSQL("artist.strArtist like '%s'", artistname.c_str()));
+      
+      albumArtistSub.AppendJoin("JOIN artist ON artist.idArtist = song_artist.idArtist");
+      albumArtistSub.AppendWhere(PrepareSQL("artist.strArtist like '%s'", artistname.c_str()));
+    }
+    if (idRole > 0)
+      songArtistSub.AppendWhere(PrepareSQL("song_artist.idRole = %i", idRole));
+    if (idGenre > 0)
     {
-      option = options.find("artist");
-      if (option != options.end())
-        filter.AppendWhere(PrepareSQL(
-          "albumview.idAlbum IN (SELECT song.idAlbum FROM song JOIN song_artist ON song.idSong = song_artist.idSong "
-          "JOIN artist ON artist.idArtist = song_artist.idArtist "
-          "WHERE artist.strArtist like '%s' %s) OR " // All albums linked to this artist via songs
-          "albumview.idAlbum IN (SELECT album_artist.idAlbum FROM album_artist "
-          "JOIN artist ON artist.idArtist = album_artist.idArtist "
-          "WHERE artist.strArtist like '%s')", // All albums where album artists fit
-          option->second.asString().c_str(), strRoleSQL.c_str(), option->second.asString().c_str()));
-      // no artist given, so exclude any single albums (aka empty tagged albums)
+      songArtistSub.AppendJoin("JOIN song_genre ON song_genre.idSong = song.idSong");
+      songArtistSub.AppendWhere(PrepareSQL("song_genre.idGenre = %i", idGenre));
+    }
+
+    if (idArtist > 0 || !artistname.empty())
+    {
+      if (idRole <= 1 && idGenre > 0)
+      { // Check genre of songs of album using nested subquery
+        genreSub.BuildSQL(genreSQL);
+        albumArtistSub.AppendWhere(genreSQL);
+      }
+      if (idRole > 1 && albumArtistsOnly)
+      {  // Album artists only with role, check AND in album_artist for same song
+         // using nested subquery correlated with album_artist
+         songArtistSub.param = "song.idAlbum = album_artist.idAlbum";
+         songArtistSub.BuildSQL(songArtistSQL);
+         albumArtistSub.AppendWhere(songArtistSQL);
+         albumArtistSub.BuildSQL(albumArtistSQL);
+         filter.AppendWhere(albumArtistSQL);    
+      }
       else
       {
-        option = options.find("show_singles");
-        if (option == options.end() || !option->second.asBoolean())
-          filter.AppendWhere(PrepareSQL("albumview.strReleaseType = '%s'", CAlbum::ReleaseTypeToString(CAlbum::Album).c_str()));
+        songArtistSub.BuildSQL(songArtistSQL);
+        albumArtistSub.BuildSQL(albumArtistSQL);
+        if (idRole < 0 || (idRole == 1 && !albumArtistsOnly))  
+        { // Artist contributing to songs, any role, check OR album artist too
+          // as artists can be just album artists but not song artists
+          filter.AppendWhere(songArtistSQL + " OR " + albumArtistSQL);
+        }
+        else if (idRole > 1)
+        { // Albums with songs where artist contributes that role (not albmartistsonly as already handled)
+          filter.AppendWhere(songArtistSQL);
+        }
+        else // idRole = 1 and albumArtistsOnly
+        { // Only look at album artists, not albums where artist features on songs
+          // This may want to be a separate option so you can choose to see all the albums where that artist 
+          // appears on one or more songs without having to list all song artists in the artists node.
+          filter.AppendWhere(albumArtistSQL);
+        }
       }
+    }
+    else
+    { // No artist given 
+      if (idGenre > 0)
+      { // Have genre option but not artist
+        genreSub.param = "song.idAlbum = albumview.idAlbum";
+        genreSub.BuildSQL(genreSQL);
+        filter.AppendWhere(genreSQL);
+      }
+      // Exclude any single albums (aka empty tagged albums)
+      // This causes "albums"  media filter artist selection to only offer album artists       
+      option = options.find("show_singles");
+      if (option == options.end() || !option->second.asBoolean())
+        filter.AppendWhere(PrepareSQL("albumview.strReleaseType = '%s'", CAlbum::ReleaseTypeToString(CAlbum::Album).c_str()));
     }
   }
   else if (type == "songs" || type == "singles")
@@ -6508,45 +6587,61 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
 
     option = options.find("year");
     if (option != options.end())
-      filter.AppendWhere(PrepareSQL("songview.iYear = %i", (int)option->second.asInteger()));
+      filter.AppendWhere(PrepareSQL("songview.iYear = %i", static_cast<int>(option->second.asInteger())));
     
     option = options.find("compilation");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("songview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
-
-    option = options.find("albumid");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL("songview.idAlbum = %i", (int)option->second.asInteger()));
     
-    option = options.find("album");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL("songview.strAlbum like '%s'", option->second.asString().c_str()));
+    if (idSong > 0)
+      filter.AppendWhere(PrepareSQL("songview.idSong = %i", idSong));
 
-    option = options.find("genreid");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_genre.idSong FROM song_genre WHERE song_genre.idGenre = %i)", (int)option->second.asInteger()));
+    if (idAlbum > 0)
+      filter.AppendWhere(PrepareSQL("songview.idAlbum = %i", idAlbum));
 
-    option = options.find("genre");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_genre.idSong FROM song_genre JOIN genre ON genre.idGenre = song_genre.idGenre WHERE genre.strGenre like '%s')", option->second.asString().c_str()));
+    if (idGenre > 0)
+      filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_genre.idSong FROM song_genre WHERE song_genre.idGenre = %i)", idGenre));
 
-    option = options.find("artistid");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL(
-        "songview.idSong IN (SELECT song_artist.idSong FROM song_artist "
-        "WHERE song_artist.idArtist = %i %s) OR " // song artists   
-        "songview.idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum "
-        "WHERE album_artist.idArtist = %i)", // album artists
-        (int)option->second.asInteger(), strRoleSQL.c_str(), (int)option->second.asInteger()));
-  
-    option = options.find("artist");
-    if (option != options.end())
-      filter.AppendWhere(PrepareSQL(
-        "songview.idSong IN (SELECT song_artist.idSong FROM song_artist JOIN artist ON artist.idArtist = song_artist.idArtist "
-        "WHERE artist.strArtist like '%s' %s) OR " // song artists
-        "songview.idSong IN (SELECT song.idSong FROM song JOIN album_artist ON song.idAlbum=album_artist.idAlbum "
-        "JOIN artist ON artist.idArtist = album_artist.idArtist WHERE artist.strArtist like '%s')", // album artists
-        option->second.asString().c_str(), strRoleSQL.c_str(), option->second.asString().c_str()));
+    std::string songArtistClause, albumArtistClause;
+    if (idArtist > 0)
+    {
+      songArtistClause = PrepareSQL("EXISTS (SELECT 1 FROM song_artist "
+        "WHERE song_artist.idSong = songview.idSong AND song_artist.idArtist = %i %s)",
+        idArtist, strRoleSQL.c_str());
+      albumArtistClause = PrepareSQL("EXISTS (SELECT 1 FROM album_artist "
+        "WHERE album_artist.idAlbum = songview.idAlbum AND album_artist.idArtist = %i)",
+        idArtist);
+    }
+    else if (!artistname.empty())
+    {  // Artist name is not unique, so could get songs from more than one.
+      songArtistClause = PrepareSQL("EXISTS (SELECT 1 FROM song_artist JOIN artist ON artist.idArtist = song_artist.idArtist "
+        "WHERE song_artist.idSong = songview.idSong AND artist.strArtist like '%s' %s)",
+        artistname.c_str(), strRoleSQL.c_str());
+      albumArtistClause = PrepareSQL("EXISTS (SELECT 1 FROM album_artist JOIN artist ON artist.idArtist = album_artist.idArtist "
+        "WHERE album_artist.idAlbum = songview.idAlbum AND artist.strArtist like '%s')",
+        artistname.c_str());
+    }
+
+    // Process artist name or id option
+    if (!songArtistClause.empty())
+    {
+      if (idRole < 0) // Artist contributes to songs, any roles OR is album artist
+        filter.AppendWhere("(" + songArtistClause + " OR " + albumArtistClause + ")");
+      else if (idRole > 1)
+      {
+        if (albumArtistsOnly)  //Album artists only with role, check AND in album_artist for same song
+          filter.AppendWhere("(" + songArtistClause + " AND " + albumArtistClause + ")");
+        else // songs where artist contributes that role.
+          filter.AppendWhere(songArtistClause);
+      }
+      else
+      {
+        if (albumArtistsOnly) // Only look at album artists, not where artist features on songs            
+          filter.AppendWhere(albumArtistClause);
+        else // Artist is song artist or album artist
+          filter.AppendWhere("(" + songArtistClause + " OR " + albumArtistClause + ")");
+      }
+    }
   }
 
   option = options.find("filter");
@@ -6581,7 +6676,7 @@ void CMusicDatabase::UpdateFileDateAdded(int songId, const std::string& strFileN
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    // 1 prefering to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+    // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
     if (g_advancedSettings.m_iMusicLibraryDateAdded == 1)
       dateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
     //2 using the newer datetime of the file's mtime and ctime

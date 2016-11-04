@@ -22,11 +22,6 @@
 
 extern "C"
 {
-  struct SCR_INFO
-  {
-    int dummy;
-  };
-
   struct SCR_PROPS
   {
     void *device;
@@ -40,11 +35,10 @@ extern "C"
     const char *profile;
   };
 
-  struct ScreenSaver
+  typedef struct KodiToAddonFuncTable_Screensaver
   {
     void (__cdecl* Start) ();
     void (__cdecl* Render) ();
-    void (__cdecl* GetInfo)(SCR_INFO *info);
-  };
+  } KodiToAddonFuncTable_Screensaver;
 }
 

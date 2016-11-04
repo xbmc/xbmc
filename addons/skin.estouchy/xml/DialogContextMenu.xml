@@ -53,7 +53,7 @@
 			<font>font25</font>
 			<align>center</align>
 			<texturefocus>list_focus.png</texturefocus>
-			<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+			<texturenofocus></texturenofocus>
 		</control>
 	</controls>
 </window>

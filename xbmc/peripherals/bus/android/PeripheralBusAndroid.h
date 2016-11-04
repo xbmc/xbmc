@@ -42,7 +42,7 @@ namespace PERIPHERALS
     virtual ~CPeripheralBusAndroid();
 
     // specialisation of CPeripheralBus
-    bool InitializeProperties(CPeripheral* peripheral) override;
+    bool InitializeProperties(CPeripheral& peripheral) override;
     void Initialise(void) override;
     void ProcessEvents() override;
 

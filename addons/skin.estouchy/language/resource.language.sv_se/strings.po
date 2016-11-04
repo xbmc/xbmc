@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "SPOLA BAKÅT"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Uppspelningshastighet"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Sluttid"
@@ -140,10 +144,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Dataleverantör"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Använt minne:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Sist inloggad"
@@ -180,25 +180,21 @@ msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
 msgstr "Konfigurera & hantera delningstjänster för media · Konfigurera & hantera väderlekstjänsten"
 
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Ställ in skärmen · Ställ in ljud · Ställ in internetåtkomst · Ställ in strömsparning· Ställ in loggning"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Hantera dina installerade tillägg · Bläddra efter och installera tillägg från kodi.tv · Ställ in tilläggsinställningar"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Hemskärmskategoriknappar"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Hemskärmens tilläggssnabblänkar"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Diverse val"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Hemskärmens väderinfo och knapp"
+msgid "Backgrounds"
+msgstr "Bakgrunder"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

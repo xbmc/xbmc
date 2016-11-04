@@ -18,25 +18,20 @@
  *
  */
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "epg/EpgContainer.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/Settings.h"
-#include "utils/StringUtils.h"
 #include "view/ViewState.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
 
 #include "GUIDialogPVRChannelsOSD.h"
-#include "GUIDialogPVRGuideInfo.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -47,7 +42,8 @@ using namespace KODI::MESSAGING;
 #define CONTROL_LIST                  11
 
 CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD() :
-    CGUIDialog(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")
+    CGUIDialog(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml"),
+    CPVRChannelNumberInputHandler(1000)
 {
   m_vecItems = new CFileItemList;
 }
@@ -165,6 +161,20 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
       RestoreControlStates();
       return true;
     }
+    case REMOTE_0:
+    case REMOTE_1:
+    case REMOTE_2:
+    case REMOTE_3:
+    case REMOTE_4:
+    case REMOTE_5:
+    case REMOTE_6:
+    case REMOTE_7:
+    case REMOTE_8:
+    case REMOTE_9:
+    {
+      AppendChannelNumberDigit(action.GetID() - REMOTE_0);
+      return true;
+    }
   }
 
   return CGUIDialog::OnAction(action);
@@ -254,79 +264,22 @@ void CGUIDialogPVRChannelsOSD::Clear()
   m_vecItems->Clear();
 }
 
-void CGUIDialogPVRChannelsOSD::CloseOrSelect(unsigned int iItem)
-{
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
-  {
-    if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
-      g_PVRManager.ShowPlayerInfo(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
-    Close();
-  }
-  else
-    m_viewControl.SetSelectedItem(iItem);
-}
-
 void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 {
-  /* Check file item is in list range and get his pointer */
-  if (item < 0 || item >= (int)m_vecItems->Size()) return;
-  CFileItemPtr pItem = m_vecItems->Get(item);
-
-  if (pItem->GetPath() == g_application.CurrentFile())
-  {
-    CloseOrSelect(item);
+  if (item < 0 || item >= (int)m_vecItems->Size())
     return;
-  }
 
-  if (g_PVRManager.IsPlaying() && pItem->HasPVRChannelInfoTag() && g_application.m_pPlayer->HasPlayer())
-  {
-    CPVRChannelPtr channel = pItem->GetPVRChannelInfoTag();
-    if (!g_PVRManager.CheckParentalLock(channel) ||
-        !g_application.m_pPlayer->SwitchChannel(channel))
-    {
-      std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str()); // CHANNELNAME could not be played. Check the log for details.
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-              g_localizeStrings.Get(19166), // PVR information
-              msg);
-      return;
-    }
-  }
-  else
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pItem)));
-
+  Close();
+  CPVRGUIActions::GetInstance().SwitchToChannel(m_vecItems->Get(item), true /* bCheckResume */);
   m_group = GetPlayingGroup();
-
-  CloseOrSelect(item);
 }
 
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
 {
-  /* Check file item is in list range and get his pointer */
-  if (item < 0 || item >= (int)m_vecItems->Size()) return;
+  if (item < 0 || item >= (int)m_vecItems->Size())
+    return;
 
-  CFileItemPtr pItem = m_vecItems->Get(item);
-  if (pItem && pItem->IsPVRChannel())
-  {
-    CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
-    if (!g_PVRManager.CheckParentalLock(channel))
-      return;
-
-    /* Get the current running show on this channel from the EPG storage */
-    CEpgInfoTagPtr epgnow(channel->GetEPGNow());
-    if (!epgnow)
-      return;
-
-    /* Load programme info dialog */
-    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-    if (!pDlgInfo)
-      return;
-
-    /* inform dialog about the file item and open dialog window */
-    pDlgInfo->SetProgInfo(epgnow);
-    pDlgInfo->Open();
-  }
-
-  return;
+  CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(item));
 }
 
 void CGUIDialogPVRChannelsOSD::OnWindowLoaded()
@@ -368,4 +321,22 @@ std::string CGUIDialogPVRChannelsOSD::GetLastSelectedItemPath(int iGroupID) cons
   if (it != m_groupSelectedItemPaths.end())
     return it->second;
   return "";
+}
+
+void CGUIDialogPVRChannelsOSD::OnInputDone()
+{
+  const int iChannelNumber = GetChannelNumber();
+  if (iChannelNumber >= 0)
+  {
+    int itemIndex = 0;
+    for (const CFileItemPtr channel : m_vecItems->GetList())
+    {
+      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == iChannelNumber)
+      {
+        m_viewControl.SetSelectedItem(itemIndex);
+        return;
+      }
+      ++itemIndex;
+    }
+  }
 }

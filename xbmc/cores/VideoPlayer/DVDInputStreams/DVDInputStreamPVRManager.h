@@ -101,13 +101,13 @@ public:
   virtual std::vector<CDemuxStream*> GetStreams() const override;
   virtual int GetNrOfStreams() const override;
   virtual void SetSpeed(int iSpeed) override;
-  virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
+  virtual bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
   virtual void AbortDemux() override;
   virtual void FlushDemux() override;
   virtual void EnableStream(int iStreamId, bool enable) override {};
 
 protected:
-  bool CloseAndOpen(const char* strFile);
+  bool CloseAndOpen(const std::string& strFile);
   void UpdateStreamMap();
   std::string ThisIsAHack(const std::string& pathFile);
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);

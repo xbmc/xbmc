@@ -28,10 +28,12 @@
 #include "DVDVideoCodecAndroidMediaCodec.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "DVDClock.h"
-#include "threads/Atomics.h"
 #include "utils/BitstreamConverter.h"
+#include "utils/BitstreamWriter.h"
+
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
@@ -63,14 +65,13 @@ enum MEDIACODEC_STATES
   MEDIACODEC_STATE_CONFIGURED,
   MEDIACODEC_STATE_FLUSHED,
   MEDIACODEC_STATE_RUNNING,
-  MEDIACODEC_STATE_BEFORE_ENDOFSTREAM,
   MEDIACODEC_STATE_ENDOFSTREAM,
   MEDIACODEC_STATE_ERROR
 };
 
 static bool CanSurfaceRenderBlackList(const std::string &name)
 {
-  // All devices 'should' be capiable of surface rendering
+  // All devices 'should' be capable of surface rendering
   // but that seems to be hit or miss as most odd name devices
   // cannot surface render.
   static const char *cannotsurfacerender_decoders[] = {
@@ -196,7 +197,7 @@ CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
 
 CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 {
-  AtomicIncrement(&m_refs);
+  ++m_refs;
   m_isReleased = false;
 
   return this;
@@ -204,7 +205,7 @@ CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 
 long CDVDMediaCodecInfo::Release()
 {
-  long count = AtomicDecrement(&m_refs);
+  long count = --m_refs;
   if (count == 1)
     ReleaseOutputBuffer(false);
   if (count == 0)
@@ -233,7 +234,7 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
     return;
 
   // release OutputBuffer and render if indicated
-  // then wait for rendered frame to become avaliable.
+  // then wait for rendered frame to become available.
 
   if (render)
     if (m_frameready)
@@ -289,7 +290,7 @@ void CDVDMediaCodecInfo::UpdateTexImage()
   // this is key, after calling releaseOutputBuffer, we must
   // wait a little for MediaCodec to render to the surface.
   // Then we can updateTexImage without delay. If we do not
-  // wait, then video playback gets jerky. To optomize this,
+  // wait, then video playback gets jerky. To optimize this,
   // we hook the SurfaceTexture OnFrameAvailable callback
   // using CJNISurfaceTextureOnFrameAvailableListener and wait
   // on a CEvent to fire. 50ms seems to be a good max fallback.
@@ -366,15 +367,24 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
     return false;
   }
-  else if (hints.stills)
+  else if (hints.stills || hints.dvd)
+  {
+    // Won't work reliably
     return false;
-  else if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
-           !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+  }
+  else if (hints.orientation && m_render_surface && CJNIMediaFormat::GetSDKVersion() < 23)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "Surface does not support orientation before API 23");
+    return false;
+  }
+  else if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
+           !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     return false;
 
-  m_render_surface = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
+  m_render_surface = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   m_drop = false;
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
+  m_noPictureLoop = 0;
   m_codecControlFlags = 0;
   m_hints = hints;
   m_dec_retcode = VC_BUFFER;
@@ -619,6 +629,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_processInfo.SetVideoPixelFormat(m_render_surface ? "Surface" : (m_render_sw ? "YUV" : "EGL"));
   m_processInfo.SetVideoDimensions(m_hints.width, m_hints.height);
   m_processInfo.SetVideoDeintMethod("hardware");
+  m_processInfo.SetVideoDAR(m_hints.aspect);
 
   return m_opened;
 }
@@ -676,14 +687,12 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
 
-  bool drain = (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) ? true : false;
-  if (drain && (m_state == MEDIACODEC_STATE_RUNNING || m_state == MEDIACODEC_STATE_FLUSHED))
-    m_state = MEDIACODEC_STATE_BEFORE_ENDOFSTREAM;
 
   // Handle input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as VideoPlayerVideo has no concept of "try again".
   // we must return VC_BUFFER or VC_PICTURE, default to VC_BUFFER.
-  m_dec_retcode = (m_state == MEDIACODEC_STATE_BEFORE_ENDOFSTREAM || m_state == MEDIACODEC_STATE_ENDOFSTREAM) ? 0 : VC_BUFFER;
+  bool drain = (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) ? true : false;
+  m_dec_retcode = (drain) ? 0 : VC_BUFFER;
 
   if (!pData)
   {
@@ -698,7 +707,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   }
   else if (m_state == MEDIACODEC_STATE_ENDOFSTREAM)
   {
-    // VideoPlayer sends unasked buffer when going out of drain. Flush...
+    // We received a packet but already reached EOS. Flush...
     FlushInternal();
     m_codec->flush();
     m_state = MEDIACODEC_STATE_FLUSHED;
@@ -711,17 +720,16 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
   if (retgp > 0)
   {
     m_dec_retcode |= VC_PICTURE;
+    m_noPictureLoop = 0;
   }
-  else if (retgp == -1)  // EOS
+  else if (retgp == -1 || (drain && ++m_noPictureLoop == 10))  // EOS
   {
-    m_codec->flush();
-    m_state = MEDIACODEC_STATE_FLUSHED;
+    m_state = MEDIACODEC_STATE_ENDOFSTREAM;
     m_dec_retcode |= VC_BUFFER;
+    m_noPictureLoop = 0;
   }
 
-  // If we push EOS, be sure to push a buffer (even empty) to move one
-  // If we are flushed, be sure to push a buffer (even empty) to go back to Running state
-  if (pData || m_state == MEDIACODEC_STATE_BEFORE_ENDOFSTREAM || m_state == MEDIACODEC_STATE_FLUSHED)
+  if (pData)
   {
     // try to fetch an input buffer
     int64_t timeout_us = 5000;
@@ -737,7 +745,7 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
     {
       if (m_state == MEDIACODEC_STATE_FLUSHED)
         m_state = MEDIACODEC_STATE_RUNNING;
-      if (!(m_state == MEDIACODEC_STATE_FLUSHED || m_state == MEDIACODEC_STATE_RUNNING  || m_state == MEDIACODEC_STATE_BEFORE_ENDOFSTREAM))
+      if (!(m_state == MEDIACODEC_STATE_FLUSHED || m_state == MEDIACODEC_STATE_RUNNING))
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode Dequeue: Wrong state (%d)", m_state);
 
       // we have an input buffer, fill it.
@@ -800,11 +808,6 @@ int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dt
         presentationTimeUs, pts_dtoi(presentationTimeUs), iSize, GetDataSize(), loop_cnt);
 */
       int flags = 0;
-      if (m_state == MEDIACODEC_STATE_BEFORE_ENDOFSTREAM)
-      {
-        flags |= CJNIMediaCodec::BUFFER_FLAG_END_OF_STREAM;
-        m_state = MEDIACODEC_STATE_ENDOFSTREAM;
-      }
       int offset = 0;
       m_codec->queueInputBuffer(index, offset, iSize, presentationTimeUs, flags);
       // clear any jni exceptions, jni gets upset if we do not.
@@ -967,6 +970,13 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     m_mime.c_str(), m_hints.width, m_hints.height);
   // some android devices forget to default the demux input max size
   mediaformat.setInteger(CJNIMediaFormat::KEY_MAX_INPUT_SIZE, 0);
+
+  if (CJNIBase::GetSDKVersion() >= 23 && m_render_surface)
+  {
+    // Handle rotation
+    mediaformat.setInteger(CJNIMediaFormat::KEY_ROTATION, m_hints.orientation);
+  }
+
 
   // handle codec extradata
   if (m_hints.extrasize)
@@ -1414,7 +1424,7 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
   // We MUST create the GLES texture on the main thread
   // to match where the valid GLES context is located.
   // It would be nice to move this out of here, we would need
-  // to create/fetch/create from g_RenderMananger. But g_RenderMananger
+  // to create/fetch/create from g_RenderManager. But g_RenderManager
   // does not know we are using MediaCodec until Configure and we
   // we need m_surfaceTexture valid before then. Chicken, meet Egg.
   if (g_application.IsCurrentThread())

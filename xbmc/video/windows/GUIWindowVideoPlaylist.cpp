@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
+#include "ServiceBroker.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "guilib/GUIWindowManager.h"
@@ -129,7 +130,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         {
           g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, !(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO)));
           CMediaSettings::GetInstance().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO));
-          CSettings::GetInstance().Save();
+          CServiceBroker::GetSettings().Save();
           UpdateButtons();
           Refresh();
         }
@@ -172,7 +173,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
         // save settings
         CMediaSettings::GetInstance().SetVideoPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO) == PLAYLIST::REPEAT_ALL);
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().Save();
 
         UpdateButtons();
       }
@@ -338,7 +339,7 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem, const std::string &player)
       CFileItemPtr pPlaylistItem = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO)[iItem];
       pPlaylistItem->m_lStartOffset = pItem->m_lStartOffset;
       if (pPlaylistItem->HasVideoInfoTag() && pItem->HasVideoInfoTag())
-        pPlaylistItem->GetVideoInfoTag()->m_resumePoint = pItem->GetVideoInfoTag()->m_resumePoint;
+        pPlaylistItem->GetVideoInfoTag()->SetResumePoint(pItem->GetVideoInfoTag()->GetResumePoint());
     }
     // now play item
     g_playlistPlayer.Play(iItem, player);
@@ -379,7 +380,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     std::string strPath = URIUtils::AddFileToFolder(
-      CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
+      CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
       "video",
       strNewFileName);
 

@@ -22,7 +22,7 @@ module.function.each { functionNode ->
                  lvalue:${SwigTypeParser.SwigType_lstr(param.@type)}
                  rvalue:${SwigTypeParser.SwigType_str(param.@type)}
     code to handle parameter ${index} {
-      // declare and set the value that came in from the scripting languge
+      // declare and set the value that came in from the scripting language
       ScriptingLanguageType sl_${param.@name} = /* set the value from the scripting language */;
       // declare and set the variable that will contain the api parameter
       ${SwigTypeParser.SwigType_lstr(param.@type)} p_${param.@name};

@@ -19,19 +19,11 @@
  *
  */
 
+#include "epg/EpgTypes.h"
 #include "guilib/GUIDialog.h"
-#include <memory>
-
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
 
 namespace PVR
 {
-  class CPVRTimerInfoTag;
-
   class CGUIDialogPVRGuideInfo : public CGUIDialog
   {
   public:
@@ -46,10 +38,6 @@ namespace PVR
 
   protected:
     virtual void OnInitWindow() override;
-
-    bool ActionStartTimer(const EPG::CEpgInfoTagPtr &tag);
-    bool ActionCancelTimer(const CFileItemPtr &timer);
-    bool ActionAddTimerRule(const EPG::CEpgInfoTagPtr &tag);
 
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);

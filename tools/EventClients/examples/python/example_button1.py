@@ -51,7 +51,7 @@ def main():
     # Every valid packet sent to XBMC acts as a ping, however if no valid
     # packets NEED to be sent (eg. the user hasn't pressed a key in 50 seconds)
     # then you can use the PacketPING class to send a ping packet (which is
-    # basically just an emppty packet). See below.
+    # basically just an empty packet). See below.
 
     # Once a client times out, it will need to reissue the HELO packet.
     # Currently, since this is a unidirectional protocol, there is no way

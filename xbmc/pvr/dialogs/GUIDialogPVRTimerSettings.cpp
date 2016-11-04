@@ -36,6 +36,7 @@
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace PVR;
 

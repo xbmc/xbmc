@@ -42,8 +42,10 @@ using namespace MMAL;
 
 #define CLASSNAME "CMMALYUVBuffer"
 
-CMMALYUVBuffer::CMMALYUVBuffer(std::shared_ptr<CMMALPool> pool, uint32_t mmal_encoding, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size)
-  : m_pool(pool)
+#define VERBOSE 0
+
+CMMALYUVBuffer::CMMALYUVBuffer(CDecoder *omv, std::shared_ptr<CMMALPool> pool, uint32_t mmal_encoding, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size)
+: CMMALBuffer(pool), m_omv(omv)
 {
   uint32_t size_pic = 0;
   m_width = width;
@@ -72,13 +74,13 @@ CMMALYUVBuffer::CMMALYUVBuffer(std::shared_ptr<CMMALPool> pool, uint32_t mmal_en
   gmem = m_pool->AllocateBuffer(size_pic);
   if (gmem)
     gmem->m_opaque = (void *)this;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p mmal:%p %dx%d (%dx%d) size:%d %.4s", CLASSNAME, __FUNCTION__, this, gmem, mmal_buffer, m_width, m_height, m_aligned_width, m_aligned_height, gmem->m_numbytes, (char *)&m_encoding);
 }
 
 CMMALYUVBuffer::~CMMALYUVBuffer()
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p mmal:%p %dx%d (%dx%d) size:%d %.4s", CLASSNAME, __FUNCTION__, this, gmem, mmal_buffer, m_width, m_height, m_aligned_width, m_aligned_height, gmem->m_numbytes, (char *)&m_encoding);
   if (gmem)
     m_pool->ReleaseBuffer(gmem);
@@ -113,7 +115,7 @@ CDecoder::~CDecoder()
 long CDecoder::Release()
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - m_refs:%ld", CLASSNAME, __FUNCTION__, m_refs);
+    CLog::Log(LOGDEBUG, "%s::%s - m_refs:%ld", CLASSNAME, __FUNCTION__, m_refs.load());
   return IHardwareDecoder::Release();
 }
 
@@ -244,6 +246,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder output", CLASSNAME, __func__);
     return false;
   }
+  m_pool->SetDecoder(this);
+  m_pool->SetProcessInfo(&m_processInfo);
 
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);

@@ -70,9 +70,9 @@ namespace XBMCAddon
       CLog::Log(LOGERROR,"NEWADDON REFCNT Releasing dead class %s 0x%lx", 
                 GetClassname(), (long)(((void*)this)));
 
-    long ct = AtomicDecrement((long*)&refs);
+    long ct = --refs;
 #ifdef LOG_LIFECYCLE_EVENTS
-    CLog::Log(LOGDEBUG,"NEWADDON REFCNT decrementing to %ld on %s 0x%lx", refs, GetClassname(), (long)(((void*)this)));
+    CLog::Log(LOGDEBUG,"NEWADDON REFCNT decrementing to %ld on %s 0x%lx", refs.load(), GetClassname(), (long)(((void*)this)));
 #endif
     if(ct == 0)
     {
@@ -90,9 +90,9 @@ namespace XBMCAddon
 
 #ifdef LOG_LIFECYCLE_EVENTS
     CLog::Log(LOGDEBUG,"NEWADDON REFCNT incrementing to %ld on %s 0x%lx", 
-              AtomicIncrement((long*)&refs),GetClassname(), (long)(((void*)this)));
+              ++refs, GetClassname(), (long)(((void*)this)));
 #else
-    AtomicIncrement((long*)&refs);
+    ++refs;
 #endif
   }
 #endif

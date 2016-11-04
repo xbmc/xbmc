@@ -187,7 +187,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(*doc.RootElement());
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
-  XMLUtils::SetInt(movie, "playcount", m_playCount);
+  XMLUtils::SetInt(movie, "playcount", GetPlayCount());
   XMLUtils::SetDate(movie, "lastplayed", m_lastPlayed);
   if (savePathInfo)
   {
@@ -300,6 +300,14 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   TiXmlElement resume("resume");
   XMLUtils::SetFloat(&resume, "position", (float)m_resumePoint.timeInSeconds);
   XMLUtils::SetFloat(&resume, "total", (float)m_resumePoint.totalTimeInSeconds);
+  if (!m_resumePoint.playerState.empty())
+  {
+    TiXmlElement playerstate("playerstate");
+    CXBMCTinyXML doc;
+    doc.Parse(m_resumePoint.playerState);
+    playerstate.InsertEndChild(*doc.RootElement());
+    resume.InsertEndChild(playerstate);
+  }
   movie->InsertEndChild(resume);
 
   XMLUtils::SetDateTime(movie, "dateadded", m_dateAdded);
@@ -367,7 +375,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strShowTitle;
     ar << m_strAlbum;
     ar << m_artist;
-    ar << m_playCount;
+    ar << GetPlayCount();
     ar << m_lastPlayed;
     ar << m_iTop250;
     ar << m_iSeason;
@@ -408,6 +416,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_parentPathID;
     ar << m_resumePoint.timeInSeconds;
     ar << m_resumePoint.totalTimeInSeconds;
+    ar << m_resumePoint.playerState;
     ar << m_iIdShow;
     ar << m_dateAdded.GetAsDBDateTime();
     ar << m_type;
@@ -524,6 +533,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_parentPathID;
     ar >> m_resumePoint.timeInSeconds;
     ar >> m_resumePoint.totalTimeInSeconds;
+    ar >> m_resumePoint.playerState;
     ar >> m_iIdShow;
 
     std::string dateAdded;
@@ -578,7 +588,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["showtitle"] = m_strShowTitle;
   value["album"] = m_strAlbum;
   value["artist"] = m_artist;
-  value["playcount"] = m_playCount;
+  value["playcount"] = GetPlayCount();
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
   value["top250"] = m_iTop250;
   value["year"] = m_premiered.GetYear();
@@ -666,7 +676,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldTvShowTitle:              sortable[FieldTvShowTitle] = m_strShowTitle; break;
   case FieldAlbum:                    sortable[FieldAlbum] = m_strAlbum; break;
   case FieldArtist:                   sortable[FieldArtist] = m_artist; break;
-  case FieldPlaycount:                sortable[FieldPlaycount] = m_playCount; break;
+  case FieldPlaycount:                sortable[FieldPlaycount] = GetPlayCount(); break;
   case FieldLastPlayed:               sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldTop250:                   sortable[FieldTop250] = m_iTop250; break;
   case FieldYear:                     sortable[FieldYear] = m_premiered.GetYear(); break;
@@ -816,7 +826,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       if (child->QueryStringAttribute("name", &name) != TIXML_SUCCESS)
         name = "default";
       XMLUtils::GetFloat(child, "value", r.rating);
-      XMLUtils::GetInt(child, "votes", r.votes);
+      if (XMLUtils::GetString(child, "votes", value))
+        r.votes = StringUtils::ReturnDigits(value);
       int max_value = 10;
       if ((child->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
         r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
@@ -1186,6 +1197,13 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   {
     XMLUtils::GetDouble(resume, "position", m_resumePoint.timeInSeconds);
     XMLUtils::GetDouble(resume, "total", m_resumePoint.totalTimeInSeconds);
+    const TiXmlElement *playerstate = resume->FirstChildElement("playerstate");
+    if (playerstate)
+    {
+      const TiXmlElement *value = playerstate->FirstChildElement();
+      if (value)
+        m_resumePoint.playerState << *value;
+    }
   }
 
   XMLUtils::GetDateTime(movie, "dateadded", m_dateAdded);
@@ -1203,6 +1221,11 @@ bool CVideoInfoTag::IsEmpty() const
           m_strPath.empty());
 }
 
+void CVideoInfoTag::SetDuration(int duration)
+{
+  m_duration = duration;
+}
+
 unsigned int CVideoInfoTag::GetDuration() const
 {
   /*
@@ -1213,6 +1236,11 @@ unsigned int CVideoInfoTag::GetDuration() const
   if (duration > m_duration * 0.6)
     return duration;
 
+  return m_duration;
+}
+
+unsigned int CVideoInfoTag::GetStaticDuration() const
+{
   return m_duration;
 }
 
@@ -1503,4 +1531,44 @@ std::vector<std::string> CVideoInfoTag::Trim(std::vector<std::string>&& items)
     str = StringUtils::Trim(str);
   });
   return items;
+}
+
+int CVideoInfoTag::GetPlayCount() const
+{
+  return m_playCount;
+}
+
+bool CVideoInfoTag::SetPlayCount(int count)
+{
+  m_playCount = count;
+  return true;
+}
+
+bool CVideoInfoTag::IncrementPlayCount()
+{
+  m_playCount++;
+  return true;
+}
+
+CBookmark CVideoInfoTag::GetResumePoint() const
+{
+  return m_resumePoint;
+}
+
+bool CVideoInfoTag::SetResumePoint(const CBookmark &resumePoint)
+{
+  m_resumePoint = resumePoint;
+  return true;
+}
+
+bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState /* = "" */)
+{
+  CBookmark resumePoint;
+  resumePoint.timeInSeconds = timeInSeconds;
+  resumePoint.totalTimeInSeconds = totalTimeInSeconds;
+  resumePoint.playerState = playerState;
+  resumePoint.type = CBookmark::RESUME;
+
+  m_resumePoint = resumePoint;
+  return true;
 }

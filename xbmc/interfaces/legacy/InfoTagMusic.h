@@ -67,6 +67,24 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getDbId() }
+      ///-----------------------------------------------------------------------
+      /// Get identification number of tag in database.
+      ///
+      /// @return [integer] database id.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v17 New function added.
+      ///
+      getDbId();
+#else
+      int getDbId();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ getURL() }
       ///-----------------------------------------------------------------------
       /// Returns url of source as string from music info tag.
@@ -98,6 +116,30 @@ namespace XBMCAddon
       getTitle();
 #else
       String getTitle();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getMediaType() }
+      ///-----------------------------------------------------------------------
+      /// Get the media type of the music item.
+      ///
+      /// @return [string] media type
+      ///
+      /// Available strings about media type for music:
+      /// | String         | Description                                       |
+      /// |---------------:|:--------------------------------------------------|
+      /// | artist         | If it is defined as an artist
+      /// | album          | If it is defined as an album
+      /// | song           | If it is defined as a song
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      getMediaType();
+#else
+      String getMediaType();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

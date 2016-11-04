@@ -589,7 +589,7 @@ extern "C"
    * @return True if the seek operation was possible
    * @remarks Optional, and only used if addon has its own demuxer. Return False if this add-on won't provide this function.
    */
-  bool SeekTime(int time, bool backwards, double *startpts);
+  bool SeekTime(double time, bool backwards, double *startpts);
 
   /*!
    * Notify the pvr addon/demuxer that XBMC wishes to change playback speed
@@ -657,10 +657,12 @@ extern "C"
 
   /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
-   * @param pClient The struct to assign the function pointers to.
+   * @param ptr The struct to assign the function pointers to.
    */
-  void __declspec(dllexport) get_addon(struct PVRClient* pClient)
+  void __declspec(dllexport) get_addon(void* ptr)
   {
+    KodiToAddonFuncTable_PVR* pClient = static_cast<KodiToAddonFuncTable_PVR*>(ptr);
+    
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
     pClient->GetMininumPVRAPIVersion        = GetMininumPVRAPIVersion;
     pClient->GetGUIAPIVersion               = GetGUIAPIVersion;

@@ -22,22 +22,20 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"
 #include "cdrip/IEncoder.h"
 
-typedef DllAddon<AudioEncoder, AUDIOENC_PROPS> DllAudioEncoder;
 namespace ADDON
 {
-  typedef CAddonDll<DllAudioEncoder,
-                    AudioEncoder, AUDIOENC_PROPS> AudioEncoderDll;
 
-  class CAudioEncoder : public AudioEncoderDll, public IEncoder
+  class CAudioEncoder : public CAddonDll, public IEncoder
   {
   public:
     static std::unique_ptr<CAudioEncoder> FromExtension(AddonProps, const cp_extension_t* ext);
 
-    explicit CAudioEncoder(AddonProps props) : AudioEncoderDll(std::move(props)), m_context{nullptr} {};
+    explicit CAudioEncoder(AddonProps props) : CAddonDll(std::move(props)), m_context{nullptr} {};
     CAudioEncoder(AddonProps props, std::string extension);
     virtual ~CAudioEncoder() {}
 
     // Things that MUST be supplied by the child classes
+    bool Create();
     bool Init(audioenc_callbacks &callbacks);
     int Encode(int nNumBytesRead, uint8_t* pbtStream);
     bool Close();
@@ -47,6 +45,8 @@ namespace ADDON
 
   private:
     void *m_context; ///< audio encoder context
+    AUDIOENC_PROPS m_info;
+    KodiToAddonFuncTable_AudioEncoder m_struct;
   };
 
 } /*namespace ADDON*/

@@ -48,7 +48,7 @@ class CZeroconfBrowserDummy : public CZeroconfBrowser
 };
 #endif
 
-long CZeroconfBrowser::sm_singleton_guard = 0;
+std::atomic_flag CZeroconfBrowser::sm_singleton_guard = ATOMIC_FLAG_INIT;
 CZeroconfBrowser* CZeroconfBrowser::smp_instance = 0;
 
 CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started(false)

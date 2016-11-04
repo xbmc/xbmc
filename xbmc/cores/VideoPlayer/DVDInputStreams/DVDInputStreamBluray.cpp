@@ -28,6 +28,7 @@
 #include "DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "settings/Settings.h"
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
@@ -365,7 +366,7 @@ bool CDVDInputStreamBluray::Open()
     return false;
   }
 
-  int mode = CSettings::GetInstance().GetInt(CSettings::SETTING_DISC_PLAYBACK);
+  int mode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_DISC_PLAYBACK);
 
   if (URIUtils::HasExtension(filename, ".mpls"))
   {
@@ -431,7 +432,7 @@ bool CDVDInputStreamBluray::Open()
   return true;
 }
 
-// close file and reset everyting
+// close file and reset everything
 void CDVDInputStreamBluray::Close()
 {
   if (!m_dll)
@@ -1134,7 +1135,7 @@ bool CDVDInputStreamBluray::HasMenu()
 
 void CDVDInputStreamBluray::SetupPlayerSettings()
 {
-  int region = CSettings::GetInstance().GetInt(CSettings::SETTING_BLURAY_PLAYERREGION);
+  int region = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_BLURAY_PLAYERREGION);
   if ( region != BLURAY_REGION_A
     && region != BLURAY_REGION_B
     && region != BLURAY_REGION_C)
@@ -1161,8 +1162,8 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 
 #ifdef HAVE_LIBBLURAY_BDJ
   std::string cacheDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/cache");
-  std::string persitentDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/persistent");
-  m_dll->bd_set_player_setting_str(m_bd, 400, persitentDir.c_str());
+  std::string persistentDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/persistent");
+  m_dll->bd_set_player_setting_str(m_bd, 400, persistentDir.c_str());
   m_dll->bd_set_player_setting_str(m_bd, 401, cacheDir.c_str());
 #endif
 }

@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Penyedia data"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Memori Digunakan:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Login terakhir"
@@ -168,17 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Pilih profil pengguna Kodi Anda [CR]untuk login dan meneruskan"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Halaman utama pilihan lain link cepat"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Pilihan lain-lain"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Layar Utama Info Cuaca dan tombol"
+msgid "Backgrounds"
+msgstr "Latar belakang"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

@@ -84,29 +84,13 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Налаштування живлення"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Відомості про альбом"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Надбудова \"Тексти\""
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Група каналів"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Параметри сканування вмісту"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Доступні групи"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Завантажити субтитри"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -123,7 +107,3 @@ msgstr "Виберіть профіль користувача Kodi,[CR]щоб �
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Приховати"

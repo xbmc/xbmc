@@ -48,10 +48,6 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Zadnja prijava"
 
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Uporabljen pomnilnik"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Nazaj"
@@ -88,29 +84,13 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Zapusti"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Info o albumu"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Dodatek besedil pesmi"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Skupina programa"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Možnosti pregledovanja vsebin"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Skupine na voljo"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Prenesi podnapise"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -127,7 +107,3 @@ msgstr "Izberite svoj Kodi uporabniški profil[CR]za prijavo in nadaljevanje"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Skrij"

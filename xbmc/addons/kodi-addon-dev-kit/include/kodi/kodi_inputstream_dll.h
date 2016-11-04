@@ -122,7 +122,7 @@ extern "C"
    * @return True if the seek operation was possible
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  bool DemuxSeekTime(int time, bool backwards, double *startpts);
+  bool DemuxSeekTime(double time, bool backwards, double *startpts);
 
   /*!
    * Notify the InputStream addon/demuxer that XBMC wishes to change playback speed
@@ -224,8 +224,10 @@ extern "C"
   * Called by XBMC to assign the function pointers of this add-on to pClient.
   * @param pClient The struct to assign the function pointers to.
   */
-  void __declspec(dllexport) get_addon(struct InputStreamAddonFunctions* pClient)
+  void __declspec(dllexport) get_addon(void* ptr)
   {
+    KodiToAddonFuncTable_InputStream* pClient = static_cast<KodiToAddonFuncTable_InputStream*>(ptr);
+
     pClient->Open = Open;
     pClient->Close = Close;
     pClient->GetPathList = GetPathList;

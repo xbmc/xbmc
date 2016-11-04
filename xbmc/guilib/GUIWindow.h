@@ -184,7 +184,7 @@ public:
    */
   void SetProperty(const std::string &key, const CVariant &value);
 
-  /*! \brief Retreive a property
+  /*! \brief Retrieve a property
    \param key name of the property to retrieve
    \return value of the property, empty if it doesn't exist
    */

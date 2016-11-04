@@ -47,6 +47,7 @@
 #include <algorithm>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/PVRDirectory.h"
 #include "filesystem/Directory.h"
@@ -378,7 +379,7 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = URIUtils::GetFileName(url.GetHostName());
 
   // now remove the extension if needed
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS) && !bIsFolder)
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS) && !bIsFolder)
   {
     URIUtils::RemoveExtension(strFilename);
     return strFilename;
@@ -1034,7 +1035,7 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
 
 bool CUtil::IsUsingTTFSubtitles()
 {
-  return URIUtils::HasExtension(CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_FONT), ".ttf");
+  return URIUtils::HasExtension(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_FONT), ".ttf");
 }
 
 void CUtil::SplitExecFunction(const std::string &execString, std::string &function, std::vector<std::string> &parameters)
@@ -1094,7 +1095,7 @@ void CUtil::SplitParams(const std::string &paramString, std::vector<std::string>
         inFunction++;
       }
       if (!inFunction && ch == ',')
-      { // not in a function, so a comma signfies the end of this parameter
+      { // not in a function, so a comma signifies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.substr(0, whiteSpacePos);
         // trim off start and end quotes
@@ -1261,7 +1262,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
         {
-          // if the path EXACTLY matches an item in a concatentated path
+          // if the path EXACTLY matches an item in a concatenated path
           // set source name to true to load the full virtualpath
           bIsSourceName = false;
           if (vecPaths.size() > 1)
@@ -1321,7 +1322,7 @@ std::string CUtil::TranslateSpecialSource(const std::string &strSpecial)
       return URIUtils::AddFileToFolder("special://cdrips/", strSpecial.substr(7));
     // this one will be removed post 2.0
     else if (StringUtils::StartsWithNoCase(strSpecial, "$playlists"))
-      return URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), strSpecial.substr(10));
+      return URIUtils::AddFileToFolder(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), strSpecial.substr(10));
   }
   return strSpecial;
 }
@@ -1329,16 +1330,16 @@ std::string CUtil::TranslateSpecialSource(const std::string &strSpecial)
 std::string CUtil::MusicPlaylistsLocation()
 {
   std::vector<std::string> vec;
-  vec.push_back(URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "music"));
-  vec.push_back(URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "mixed"));
+  vec.push_back(URIUtils::AddFileToFolder(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "music"));
+  vec.push_back(URIUtils::AddFileToFolder(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
 }
 
 std::string CUtil::VideoPlaylistsLocation()
 {
   std::vector<std::string> vec;
-  vec.push_back(URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "video"));
-  vec.push_back(URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "mixed"));
+  vec.push_back(URIUtils::AddFileToFolder(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "video"));
+  vec.push_back(URIUtils::AddFileToFolder(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
 }
 
@@ -2010,16 +2011,16 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
   GetItemsToScan(strBasePath, g_advancedSettings.m_subtitlesExtensions, common_sub_dirs, items);
 
-  if (!CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() && !CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty()) // to avoid checking non-existent directories (network) every time..
+  if (!CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() && !CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty()) // to avoid checking non-existent directories (network) every time..
   {
-    if (!g_application.getNetwork().IsAvailable() && !URIUtils::IsHD(CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)))
+    if (!g_application.getNetwork().IsAvailable() && !URIUtils::IsHD(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)))
     {
-      CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
+      CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's inaccessible");
       CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(-1); // disabled
     }
-    else if (!CDirectory::Exists(CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)))
+    else if (!CDirectory::Exists(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)))
     {
-      CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
+      CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistent");
       CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(-1); // disabled
     }
 
@@ -2030,7 +2031,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
   if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() == 1)
   {
-    std::string strPath2 = CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH);
+    std::string strPath2 = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH);
     URIUtils::AddSlashAtEnd(strPath2);
     strLookInPaths.push_back(strPath2);
   }
@@ -2055,11 +2056,11 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     if (URIUtils::HasExtension(vecSubtitles[i], ".smi"))
     {
       //Cache multi-language sami subtitle
-      CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
-      if (pStream->Open(vecSubtitles[i]))
+      CDVDSubtitleStream stream;
+      if (stream.Open(vecSubtitles[i]))
       {
         CDVDSubtitleTagSami TagConv;
-        TagConv.LoadHead(pStream);
+        TagConv.LoadHead(&stream);
         if (TagConv.m_Langclass.size() >= 2)
         {
           for (unsigned int k = 0; k < TagConv.m_Langclass.size(); k++)
@@ -2073,7 +2074,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
           }
         }
       }
-      delete pStream;
     }
   }
   CLog::Log(LOGDEBUG, "%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));

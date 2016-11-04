@@ -2,6 +2,7 @@ set(SOURCES Addon.cpp
             AddonBuilder.cpp
             BinaryAddonCache.cpp
             AddonDatabase.cpp
+            AddonDll.cpp
             AddonInstaller.cpp
             AddonManager.cpp
             AddonStatusHandler.cpp
@@ -12,6 +13,7 @@ set(SOURCES Addon.cpp
             ContextMenuAddon.cpp
             ContextMenus.cpp
             FilesystemInstaller.cpp
+            GameResource.cpp
             GUIDialogAddonInfo.cpp
             GUIDialogAddonSettings.cpp
             GUIViewStateAddonBrowser.cpp
@@ -28,6 +30,7 @@ set(SOURCES Addon.cpp
             Service.cpp
             Skin.cpp
             UISoundsResource.cpp
+            VFSEntry.cpp
             Visualisation.cpp
             Webinterface.cpp)
 
@@ -47,10 +50,9 @@ set(HEADERS Addon.h
             ContextMenuAddon.h
             ContextMenus.h
             DllAddon.h
-            DllAudioDSP.h
             DllLibCPluff.h
-            DllPVRClient.h
             FilesystemInstaller.h
+            GameResource.h
             GUIDialogAddonInfo.h
             GUIDialogAddonSettings.h
             GUIViewStateAddonBrowser.h
@@ -69,6 +71,7 @@ set(HEADERS Addon.h
             Service.h
             Skin.h
             UISoundsResource.h
+            VFSEntry.h
             Visualisation.h
             Webinterface.h)
 

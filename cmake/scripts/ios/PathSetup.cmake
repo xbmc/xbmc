@@ -1,0 +1,1 @@
+../osx/PathSetup.cmake

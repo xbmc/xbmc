@@ -45,7 +45,7 @@ private:
   void PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size);
   void PackEAC3(CAEStreamInfo &info, uint8_t* data, int size);
 
-  /* we keep the trueHD and dtsHD buffers seperate so that we can handle a fast stream switch */
+  /* we keep the trueHD and dtsHD buffers separate so that we can handle a fast stream switch */
   uint8_t      *m_trueHD;
   unsigned int  m_trueHDPos;
 

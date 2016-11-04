@@ -316,6 +316,11 @@ inline bool CFileOperationJob::CanBeRenamed(const std::string &strFileA, const s
 #else
   if (URIUtils::IsHD(strFileA) && URIUtils::IsHD(strFileB))
     return true;
+  else if (URIUtils::IsSmb(strFileA) && URIUtils::IsSmb(strFileB)) {
+    CURL smbFileA(strFileA), smbFileB(strFileB);
+    return smbFileA.GetHostName() == smbFileB.GetHostName() &&
+           smbFileA.GetShareName() == smbFileB.GetShareName();
+  }
 #endif
   return false;
 }

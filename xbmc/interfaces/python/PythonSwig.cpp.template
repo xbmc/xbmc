@@ -193,7 +193,7 @@ void doMethod(Node method, MethodType methodType)
     try
     {
 <%
-    // now do the input converstion if any are necessary
+    // now do the input conversion if any are necessary
     params.findAll({ !PythonTools.parameterCanBeUsedDirectly(it) || doAsMappingIndex }).each { %>      ${Helper.getInConversion(it.@type, it.@name, 'py' + it.@name, method)} <% println() }
 %>
 <%
@@ -201,7 +201,7 @@ void doMethod(Node method, MethodType methodType)
     boolean isDirectorCall = Helper.isDirector(method)
     if (isDirectorCall)
     {
-%>      // This is a director call comming from python so it explcitly calls the base class method.
+%>      // This is a director call coming from python so it explicitly calls the base class method.
 <%
     }
     // now do the method call itself
@@ -430,14 +430,14 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
 %>
   //=========================================================================
   // This section contains the initialization for the
-  // Python extention for the Api class ${fullClassName}
+  // Python extension for the Api class ${fullClassName}
   //=========================================================================
   // All of the methods on this class
   static PyMethodDef ${classNameAsVariable}_methods[] = { <%
     normalMethods.each {  %>
     {(char*)"${it.@sym_name}", (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(it,MethodType.method)}, METH_VARARGS|METH_KEYWORDS, ${Helper.hasDoc(it) ? PythonTools.getPyMethodName(it,MethodType.method) + '__doc__' : 'NULL'} }, <% }
 
-    // now do all of the explcit feature:python:method's that may be in this class
+    // now do all of the explicit feature:python:method's that may be in this class
     List tmpl = []
     tmpl.addAll(clazz.attributes().keySet())
     List newMethodKeys = tmpl.findAll { it.startsWith('feature_python_method_') }

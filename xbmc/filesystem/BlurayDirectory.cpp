@@ -34,7 +34,7 @@
 namespace XFILE
 {
 
-#define MAIN_TITLE_LENGTH_PERCENT 70 /** Minumum length of main titles, based on longest title */
+#define MAIN_TITLE_LENGTH_PERCENT 70 /** Minimum length of main titles, based on longest title */
 
 CBlurayDirectory::CBlurayDirectory()
   : m_dll(NULL)
@@ -68,7 +68,7 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const st
   path.SetFileName(buf);
   item->SetPath(path.Get());
   int duration = (int)(title->duration / 90000);
-  item->GetVideoInfoTag()->m_duration = duration;
+  item->GetVideoInfoTag()->SetDuration(duration);
   item->GetVideoInfoTag()->m_iTrack = title->playlist;
   buf = StringUtils::Format(label.c_str(), title->playlist);
   item->m_strTitle = buf;

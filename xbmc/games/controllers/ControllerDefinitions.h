@@ -27,6 +27,7 @@
 #define LAYOUT_XML_ELM_ANALOG_STICK        "analogstick"
 #define LAYOUT_XML_ELM_ACCELEROMETER       "accelerometer"
 #define LAYOUT_XML_ELM_MOTOR               "motor"
+#define LAYOUT_XML_ELM_RELPOINTER          "relpointer"
 
 #define LAYOUT_XML_ATTR_LAYOUT_LABEL       "label"
 #define LAYOUT_XML_ATTR_LAYOUT_IMAGE       "image"

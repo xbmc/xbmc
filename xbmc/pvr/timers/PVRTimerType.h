@@ -19,7 +19,8 @@
  *
  */
 
-#include <memory>
+#include "pvr/PVRTypes.h"
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -28,9 +29,6 @@ struct PVR_TIMER_TYPE;
 
 namespace PVR
 {
-  class CPVRTimerType;
-  typedef std::shared_ptr<CPVRTimerType> CPVRTimerTypePtr;
-
   class CPVRTimerType
   {
   public:
@@ -288,7 +286,7 @@ namespace PVR
 
     /*!
      * @brief Obtain a list with all possible values for the lifetime attribute.
-     * @param list out, the list with the values or an empty list, if liftime is not supported by this type.
+     * @param list out, the list with the values or an empty list, if lifetime is not supported by this type.
      */
     void GetLifetimeValues(std::vector< std::pair<std::string, int> > &list) const;
 

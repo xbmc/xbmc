@@ -164,13 +164,6 @@
 					<scrolltime>200</scrolltime>
 					<itemlayout height="100" width="580">
 						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>579</width>
-							<height>100</height>
-							<texture border="40,0,40,5">list_nofocus.png</texture>
-						</control>
-						<control type="image">
 							<posx>5</posx>
 							<posy>5</posy>
 							<width>90</width>
@@ -202,14 +195,6 @@
 						</control>
 					</itemlayout>
 					<focusedlayout height="100" width="580">
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>579</width>
-							<height>100</height>
-							<texture border="40,0,40,5">list_nofocus.png</texture>
-							<visible>!Control.HasFocus(20)</visible>
-						</control>
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -290,13 +275,6 @@
 					<scrolltime>200</scrolltime>
 					<itemlayout height="100" width="580">
 						<control type="image">
-							<posx>1</posx>
-							<posy>0</posy>
-							<width>579</width>
-							<height>100</height>
-							<texture border="40,0,40,5">list_nofocus.png</texture>
-						</control>
-						<control type="image">
 							<posx>5</posx>
 							<posy>5</posy>
 							<width>90</width>
@@ -328,14 +306,6 @@
 						</control>
 					</itemlayout>
 					<focusedlayout height="100" width="580">
-						<control type="image">
-							<posx>1</posx>
-							<posy>0</posy>
-							<width>579</width>
-							<height>100</height>
-							<texture border="40,0,40,5">list_nofocus.png</texture>
-							<visible>!Control.HasFocus(21)</visible>
-						</control>
 						<control type="image">
 							<posx>1</posx>
 							<posy>0</posy>

@@ -48,14 +48,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Имконоти барқ"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Иттилооти албом"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Гурӯҳи шабакавӣ"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Зерунвонҳои маҳаллӣ дастрасанд"
@@ -63,7 +55,3 @@ msgstr "Зерунвонҳои маҳаллӣ дастрасанд"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Пинҳон кардан"

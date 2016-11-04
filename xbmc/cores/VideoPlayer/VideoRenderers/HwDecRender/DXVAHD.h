@@ -108,6 +108,7 @@ protected:
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
   D3D11_TEXTURE2D_DESC m_texDesc;
   PROCESSOR_VIEW_TYPE m_eViewType;
+  std::vector<ERenderFormat> m_formats;
 };
 
 };

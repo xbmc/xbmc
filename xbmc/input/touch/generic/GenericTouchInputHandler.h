@@ -55,7 +55,7 @@ public:
   virtual bool UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size = 0.0f);
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CGenericTouchInputHandler();
   CGenericTouchInputHandler(const CGenericTouchInputHandler&);
   CGenericTouchInputHandler const& operator=(CGenericTouchInputHandler const&);

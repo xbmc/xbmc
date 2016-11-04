@@ -101,6 +101,54 @@ void CDatabase::Filter::AppendGroup(const std::string &strGroup)
     group += ", " + strGroup;
 }
 
+void CDatabase::ExistsSubQuery::AppendJoin(const std::string &strJoin)
+{
+  if (strJoin.empty())
+    return;
+
+  if (join.empty())
+    join = strJoin;
+  else
+    join += " " + strJoin;
+}
+
+void CDatabase::ExistsSubQuery::AppendWhere(const std::string &strWhere, bool combineWithAnd /* = true */)
+{
+  if (strWhere.empty())
+    return;
+
+  if (where.empty())
+    where = strWhere;
+  else
+  {
+    where += combineWithAnd ? " AND " : " OR ";
+    where += strWhere;
+  }
+}
+
+bool CDatabase::ExistsSubQuery::BuildSQL(std::string & strSQL)
+{
+  if (tablename.empty())
+    return false;
+  strSQL = "EXISTS (SELECT 1 FROM " + tablename;
+  if (!join.empty())
+    strSQL += " " + join;
+  std::string strWhere;
+  if (!param.empty())
+    strWhere = param;
+  if (!where.empty())
+  {
+    if (!strWhere.empty())
+      strWhere += " AND ";
+    strWhere += where;
+  }
+  if (!strWhere.empty())      
+    strSQL += " WHERE " + strWhere;
+
+  strSQL += ")";
+  return true;
+}
+
 CDatabase::CDatabase(void)
 {
   m_openCount = 0;

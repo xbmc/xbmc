@@ -67,6 +67,7 @@ private:
   VECSOURCES m_fileSources;
   VECSOURCES m_musicSources;
   VECSOURCES m_videoSources;
+  VECSOURCES m_gameSources;
 
   std::string m_defaultProgramSource;
   std::string m_defaultMusicSource;

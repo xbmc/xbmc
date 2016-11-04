@@ -20,6 +20,7 @@
 
 #include "GUIMediaWindow.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "ContextMenuManager.h"
 #include "FileItemListModification.h"
@@ -78,9 +79,6 @@
 
 #define CONTROL_LABELFILES          12
 
-#define CONTROL_VIEW_START          50
-#define CONTROL_VIEW_END            59
-
 #define PROPERTY_PATH_DB            "path.db"
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
@@ -125,17 +123,6 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
       int controlID = atol(i->c_str());
       CGUIControl *control = GetControl(controlID);
       if (control && control->IsContainer())
-        m_viewControl.AddView(control);
-    }
-  }
-  else
-  { // backward compatibility
-    std::vector<CGUIControl *> controls;
-    GetContainers(controls);
-    for (ciControls it = controls.begin(); it != controls.end(); it++)
-    {
-      CGUIControl *control = *it;
-      if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
         m_viewControl.AddView(control);
     }
   }
@@ -511,7 +498,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       if (message.GetParam2() == PLUGIN_REFRESH_DELAY)
       {
-        Refresh();
+        Refresh(true);
         SetInitialVisibility();
         RestoreControlStates();
         SetInitialVisibility();
@@ -590,7 +577,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
       {
         sorting.sortBy = sortBy;
         sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
-        sorting.sortAttributes = CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone;
+        sorting.sortAttributes = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
         // in CGUIViewState::AddPlaylistOrder that SortByPlaylistOrder is ascending.
@@ -612,7 +599,7 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
   {
     CFileItemPtr pItem=items[i];
 
-    if (pItem->IsLabelPreformated())
+    if (pItem->IsLabelPreformatted())
       continue;
 
     if (pItem->m_bIsFolder)
@@ -792,6 +779,8 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
       showLabel = 997;
     else if (iWindow == WINDOW_FILES)
       showLabel = 1026;
+    else if (iWindow == WINDOW_GAMES)
+      showLabel = 35250; // "Add games..."
   }
   if (m_vecItems->IsPath("sources://video/"))
     showLabel = 999;
@@ -801,6 +790,8 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     showLabel = 997;
   else if (m_vecItems->IsPath("sources://files/"))
     showLabel = 1026;
+  else if (m_vecItems->IsPath("sources://games/"))
+    showLabel = 35250; // "Add games..."
   if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
     std::string strLabel = g_localizeStrings.Get(showLabel);
@@ -808,7 +799,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     pItem->SetPath("add");
     pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
-    pItem->SetLabelPreformated(true);
+    pItem->SetLabelPreformatted(true);
     pItem->m_bIsFolder = true;
     pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems->Add(pItem);
@@ -1097,7 +1088,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
   CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{idMessageText});
 }
 
-// \brief The functon goes up one level in the directory tree
+// \brief The function goes up one level in the directory tree
 bool CGUIMediaWindow::GoParentFolder()
 {
   if (m_vecItems->IsVirtualDirectoryRoot())
@@ -1195,10 +1186,10 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
 {
   if (pItem->m_bIsShareOrDrive)
   {
-    // We are in the virual directory
+    // We are in the virtual directory
 
     // History string of the DVD drive
-    // must be handel separately
+    // must be handled separately
     if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
       // Remove disc label from item label
@@ -1219,7 +1210,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
     }
     else
     {
-      // Other items in virual directory
+      // Other items in virtual directory
       std::string strPath = pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strPath);
 
@@ -1402,7 +1393,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
   return true;
 }
 
-// \brief Synchonize the fileitems with the playlistplayer
+// \brief Synchronize the fileitems with the playlistplayer
 // It recreated the playlist of the playlistplayer based
 // on the fileitems of the window
 void CGUIMediaWindow::UpdateFileList()

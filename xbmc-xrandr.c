@@ -181,7 +181,7 @@ warning (const char *format, ...)
     va_end (ap);
 }
 
-/* Because fmin requires C99 suppport */
+/* Because fmin requires C99 support */
 static inline double dmin (double x, double y)
 {
     return x < y ? x : y;
@@ -2859,7 +2859,7 @@ main (int argc, char **argv)
 		    nelements = 1;
 		    format = 32;
 		}
-		else if ((type == XA_ATOM))
+		else if (type == XA_ATOM)
 		{
 		    ulong_value = XInternAtom (dpy, prop->value, False);
 		    data = (unsigned char *) &ulong_value;

@@ -82,11 +82,7 @@ bool CSaveFileStateJob::DoWork()
 
             // consider this item as played
             videodatabase.IncrementPlayCount(m_item);
-            m_item.GetVideoInfoTag()->m_playCount++;
-
-            // PVR: Set recording's play count on the backend (if supported)
-            if (m_item.HasPVRRecordingInfoTag())
-              m_item.GetPVRRecordingInfoTag()->IncrementPlayCount();
+            m_item.GetVideoInfoTag()->IncrementPlayCount();
 
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
@@ -102,22 +98,14 @@ bool CSaveFileStateJob::DoWork()
           else
             videodatabase.UpdateLastPlayed(m_item);
 
-          if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
+          if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != m_bookmark.timeInSeconds)
           {
             if (m_bookmark.timeInSeconds <= 0.0f)
               videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
             else
               videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
             if (m_item.HasVideoInfoTag())
-              m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
-
-            // PVR: Set/clear recording's resume bookmark on the backend (if supported)
-            if (m_item.HasPVRRecordingInfoTag())
-            {
-              PVR::CPVRRecordingPtr recording = m_item.GetPVRRecordingInfoTag();
-              recording->SetLastPlayedPosition(m_bookmark.timeInSeconds <= 0.0f ? 0 : (int)m_bookmark.timeInSeconds);
-              recording->m_resumePoint = m_bookmark;
-            }
+              m_item.GetVideoInfoTag()->SetResumePoint(m_bookmark);
 
             // UPnP announce resume point changes to clients
             // however not if playcount is modified as that already announces

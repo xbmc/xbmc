@@ -1,2 +1,0 @@
-LICENSE.gpl
-xbmc/platform/darwin/Credits.html

@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "回退"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "播放速度"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "结束时间"
@@ -141,8 +145,8 @@ msgid "Data provider"
 msgstr "数据来源"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "内存使用："
+msgid "System Memory Used:"
+msgstr "已用系统内存："
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -192,6 +196,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "设置播放时使用的动作 · 设置媒体内容播放方式"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "设置资料库源 · 显示媒体列表显示内容 · 设置资料库列表导航方式"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "设置皮肤 · 设置区域 · 设置控制 ·设置屏幕保护 · 设置管理员锁定"
@@ -208,21 +216,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "选择您的用户配置文件[CR]登录并继续"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "主菜单按钮"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "主界面插件快速链接"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "其他选项"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "主界面天气信息和按钮"
+msgid "Backgrounds"
+msgstr "背景"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

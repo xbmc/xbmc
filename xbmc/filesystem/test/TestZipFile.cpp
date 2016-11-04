@@ -18,6 +18,7 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
@@ -41,12 +42,12 @@ protected:
      */
     //! @todo implement
     /*
-    CSettingsCategory *loc = CSettings::GetInstance().AddCategory(7, "locale", 14090);
-    CSettings::GetInstance().AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
+    CSettingsCategory *loc = CServiceBroker::GetSettings().AddCategory(7, "locale", 14090);
+    CServiceBroker::GetSettings().AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
                             SPIN_CONTROL_TEXT);
-    CSettings::GetInstance().AddString(loc, CSettings::SETTING_LOCALE_COUNTRY, 20026, "USA",
+    CServiceBroker::GetSettings().AddString(loc, CSettings::SETTING_LOCALE_COUNTRY, 20026, "USA",
                             SPIN_CONTROL_TEXT);
-    CSettings::GetInstance().AddString(loc, CSettings::SETTING_LOCALE_CHARSET, 14091, "DEFAULT",
+    CServiceBroker::GetSettings().AddString(loc, CSettings::SETTING_LOCALE_CHARSET, 14091, "DEFAULT",
                             SPIN_CONTROL_TEXT); // charset is set by the
                                                 // language file
     */
@@ -54,7 +55,7 @@ protected:
 
   ~TestZipFile()
   {
-    CSettings::GetInstance().Unload();
+    CServiceBroker::GetSettings().Unload();
   }
 };
 

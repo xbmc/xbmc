@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Niet-bekeken films"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Geen vrijwaringsclosule"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Download pictogrammen"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Rated"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Meest afgespeelde kanalen"
+msgid "Recently played channels"
+msgstr "Onlangs afgespeelde kanalen"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Viewtype"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Volgende nummers"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Geen favorieten gevonden. U kunt elk item uit media-weergaven toevoegen aan deze lijst met het contextmenu."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Ga naar albums"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Ga naar liedjes"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -135,10 +119,6 @@ msgstr "Toon fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Laatst ingelogd op"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Geheugen gebruikt"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "items"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Nummerlijst"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Terugspoelen"
@@ -175,10 +151,6 @@ msgstr "Terugspoelen"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Vooruitspoelen"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Annuleer update"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Verwijder groep"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Lees meer..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Beschikbaar"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Kies [B]Up[/B] voor terugspoelen of snel vooruit"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Druk [B]Links[/B] om terug te spoelen of [B]Rechts[/B] voor snel vooruit"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Download ondertitel"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Ga naar afspeellijst"
@@ -252,29 +212,17 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatisch inloggen tijdens opstarten"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Updates beschikbaar"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minuten"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Hoofdmenu items"
 
 msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Snelkoppeling naar de \"Bestanden\"-sectie van elk mediatype. Ga daarheen om extra bronnen toe te voegen aan uw databases."
+msgid "Choose weather fanart pack"
+msgstr "Kies weer fanartpakket"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Secties"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "niet bekeken"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +244,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Laatst bijgewerkt"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Voeg media locaties toe"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "door"
@@ -308,29 +252,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energiebeheer"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Titels"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Bibliotheek beginpunt"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Filmsets"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Speel optische schijf af"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Vorige locatie"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Volgende locatie"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -339,10 +263,6 @@ msgstr "Uitzending niet beschikbaar"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Eindigt om"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albuminformatie"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -354,23 +274,7 @@ msgstr "Songtekst add-on instellingen"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "Visualisatie instellingen"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanaalgroep"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadata"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Providerinstellingen"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Opties inhoudsscanner"
+msgstr "Visualisatie-instellingen"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -380,10 +284,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Zoek trailer"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Download ondertitels"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Videomenu"
@@ -391,10 +291,6 @@ msgstr "Videomenu"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Toon weerbericht in bovenbalk"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Toon mediamarkering voor films / afleveringen / muziekvideo's"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +307,6 @@ msgstr "Kanaalopties"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecteer jouw Kodi Gebruikersprofiel[CR]om in te loggen en door te gaan"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Ikoonmuur"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +339,6 @@ msgstr "Teletekst"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Brede lijst"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Gebruik aangepaste globale achtergrond"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Kies afbeelding locatie"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -541,17 +425,53 @@ msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Hoofdmenu gerelateerde instellingen: Configureer het homescreen naar wens."
 
 msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Kies home fanartpakket"
+msgid "Choose skin fanart pack"
+msgstr "Kies skin fanartpakket"
 
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Verbergen"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Resterend"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Klik hier om de laatste veranderingen te zien..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR info"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Voortgangsinfo speler"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Videodecoder"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Pixelformaat"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Veranderingen in versie"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Afspeelsnelheid"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "U heeft nog geen PVR ingesteld. Om gebruikt te kinen maken van PVR, kieze een PVR cliënt addon en configureer deze. Bezoek http://kodi.wiki/view/PVR om meer te weten tekomen."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Ga naar add-on verkenner"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Zoek add-ons"

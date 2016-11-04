@@ -21,9 +21,6 @@
 //#define DEBUG_VERBOSE 1
 
 #include "system.h"
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
 
 #if HAS_GLES == 2
 #include "system_gl.h"
@@ -31,6 +28,7 @@
 #include <locale.h>
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
+#include "ServiceBroker.h"
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
@@ -249,7 +247,7 @@ void CLinuxRendererGLES::ReleaseImage(int source, bool preserve)
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
-  /* if image should be preserved reserve it so it's not auto seleceted */
+  /* if image should be preserved reserve it so it's not auto selected */
 
   if( preserve )
     im.flags |= IMAGE_FLAG_RESERVED;
@@ -535,7 +533,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
   if(!Supports(m_scalingMethod))
   {
-    CLog::Log(LOGWARNING, "CLinuxRendererGLES::UpdateVideoFilter - choosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
+    CLog::Log(LOGWARNING, "CLinuxRendererGLES::UpdateVideoFilter - chosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
@@ -593,7 +591,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
 {
   if (!LoadShadersHook())
   {
-    int requestedMethod = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+    int requestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
     CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
     ReleaseShaders();

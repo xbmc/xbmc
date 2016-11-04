@@ -107,6 +107,7 @@ bool CMediaSourceSettings::Load(const std::string &file)
   GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
   GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
   GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
+  GetSources(pRootElement, "games", m_gameSources, dummy);
 
   return true;
 }
@@ -131,6 +132,7 @@ bool CMediaSourceSettings::Save(const std::string &file) const
   SetSources(pRoot, "music", m_musicSources, m_defaultMusicSource);
   SetSources(pRoot, "pictures", m_pictureSources, m_defaultPictureSource);
   SetSources(pRoot, "files", m_fileSources, m_defaultFileSource);
+  SetSources(pRoot, "games", m_gameSources, "");
 
   CWakeOnAccess::GetInstance().QueueMACDiscoveryForAllRemotes();
 
@@ -144,6 +146,7 @@ void CMediaSourceSettings::Clear()
   m_fileSources.clear();
   m_musicSources.clear();
   m_videoSources.clear();
+  m_gameSources.clear();
 }
 
 VECSOURCES* CMediaSourceSettings::GetSources(const std::string &type)
@@ -158,6 +161,8 @@ VECSOURCES* CMediaSourceSettings::GetSources(const std::string &type)
     return &m_videoSources;
   else if (type == "pictures")
     return &m_pictureSources;
+  else if (type == "games")
+    return &m_gameSources;
 
   return NULL;
 }

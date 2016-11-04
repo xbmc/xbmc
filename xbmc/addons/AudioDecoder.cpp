@@ -39,7 +39,7 @@ std::unique_ptr<CAudioDecoder> CAudioDecoder::FromExtension(AddonProps props, co
 
 CAudioDecoder::CAudioDecoder(AddonProps props, std::string extension, std::string mimetype,
     bool tags, bool tracks, std::string codecName, std::string strExt)
-    : AudioDecoderDll(std::move(props)), m_extension(extension), m_mimetype(mimetype),
+    : CAddonDll(std::move(props)), m_extension(extension), m_mimetype(mimetype),
       m_context(nullptr), m_tags(tags), m_tracks(tracks), m_channel(nullptr)
 {
   m_CodecName = std::move(codecName);
@@ -49,6 +49,11 @@ CAudioDecoder::CAudioDecoder(AddonProps props, std::string extension, std::strin
 CAudioDecoder::~CAudioDecoder()
 {
   DeInit();
+}
+
+bool CAudioDecoder::Create()
+{
+  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
 }
 
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
@@ -63,7 +68,7 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   int channels;
   int sampleRate;
 
-  m_context = m_pStruct->Init(file.GetPath().c_str(), filecache,
+  m_context = m_struct.Init(file.GetPath().c_str(), filecache,
                               &channels, &sampleRate,
                               &m_bitsPerSample, &m_TotalTime,
                               &m_bitRate, &m_format.m_dataFormat, &m_channel);
@@ -82,7 +87,7 @@ int CAudioDecoder::ReadPCM(uint8_t* buffer, int size, int* actualsize)
   if (!Initialized())
     return 0;
 
-  return m_pStruct->ReadPCM(m_context, buffer, size, actualsize);
+  return m_struct.ReadPCM(m_context, buffer, size, actualsize);
 }
 
 bool CAudioDecoder::Seek(int64_t time)
@@ -90,7 +95,7 @@ bool CAudioDecoder::Seek(int64_t time)
   if (!Initialized())
     return false;
 
-  m_pStruct->Seek(m_context, time);
+  m_struct.Seek(m_context, time);
   return true;
 }
 
@@ -99,7 +104,7 @@ void CAudioDecoder::DeInit()
   if (!Initialized())
     return;
 
-  m_pStruct->DeInit(m_context);
+  m_struct.DeInit(m_context);
 }
 
 bool CAudioDecoder::Load(const std::string& fileName,
@@ -112,7 +117,7 @@ bool CAudioDecoder::Load(const std::string& fileName,
   char title[256];
   char artist[256];
   int length;
-  if (m_pStruct->ReadTag(fileName.c_str(), title, artist, &length))
+  if (m_struct.ReadTag(fileName.c_str(), title, artist, &length))
   {
     tag.SetTitle(title);
     tag.SetArtist(artist);
@@ -128,7 +133,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
   if (!Initialized())
     return 0;
 
-  int result = m_pStruct->TrackCount(strPath.c_str());
+  int result = m_struct.TrackCount(strPath.c_str());
 
   if (result > 1 && !Load(strPath, XFILE::CMusicFileDirectory::m_tag, NULL))
     return 0;
@@ -139,7 +144,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
 
 void CAudioDecoder::Destroy()
 {
-  AudioDecoderDll::Destroy();
+  CAddonDll::Destroy();
 }
 
 } /*namespace ADDON*/

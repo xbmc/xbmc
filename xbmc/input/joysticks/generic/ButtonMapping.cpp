@@ -37,9 +37,10 @@ using namespace XbmcThreads;
 #define MAPPING_COOLDOWN_MS  50    // Guard against repeated input
 #define AXIS_THRESHOLD       0.75f // Axis must exceed this value to be mapped
 
-CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap)
+CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap)
   : m_buttonMapper(buttonMapper),
     m_buttonMap(buttonMap),
+    m_actionMap(actionMap),
     m_lastAction(0)
 {
   assert(m_buttonMapper != NULL);
@@ -53,8 +54,7 @@ bool CButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
     CDriverPrimitive buttonPrimitive(PRIMITIVE_TYPE::BUTTON, buttonIndex);
     if (buttonPrimitive.IsValid())
     {
-      MapPrimitive(buttonPrimitive);
-      return true;
+      return MapPrimitive(buttonPrimitive);
     }
   }
 
@@ -75,24 +75,35 @@ bool CButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 
 bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
 {
-  SEMIAXIS_DIRECTION dir = CJoystickTranslator::PositionToSemiAxisDirection(position);
+  const bool bInMotion = (position != 0.0f);
+  const bool bIsActive = (std::abs(position) >= AXIS_THRESHOLD);
 
-  CDriverPrimitive axis(axisIndex, dir);
-  CDriverPrimitive oppositeAxis(axisIndex, dir * -1);
-
-  if (position == 0.0f)
+  if (!bInMotion)
   {
+    CDriverPrimitive axis(axisIndex, SEMIAXIS_DIRECTION::POSITIVE);
+    CDriverPrimitive oppositeAxis(axisIndex, SEMIAXIS_DIRECTION::NEGATIVE);
+
+    OnMotionless(axis);
+    OnMotionless(oppositeAxis);
+
     Deactivate(axis);
     Deactivate(oppositeAxis);
   }
   else
   {
-    Deactivate(oppositeAxis);
+    SEMIAXIS_DIRECTION dir = CJoystickTranslator::PositionToSemiAxisDirection(position);
 
-    if (std::abs(position) >= AXIS_THRESHOLD)
+    CDriverPrimitive axis(axisIndex, dir);
+    CDriverPrimitive oppositeAxis(axisIndex, dir * -1);
+
+    // OnMotion() occurs within ProcessAxisMotions()
+    OnMotionless(oppositeAxis);
+
+    if (bIsActive)
       Activate(axis);
     else
       Deactivate(axis);
+    Deactivate(oppositeAxis);
   }
 
   return true;
@@ -100,6 +111,7 @@ bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
 
 void CButtonMapping::ProcessAxisMotions(void)
 {
+  // Process newly-activated axes
   for (std::vector<ActivatedAxis>::iterator it = m_activatedAxes.begin(); it != m_activatedAxes.end(); ++it)
   {
     ActivatedAxis& semiaxis = *it;
@@ -108,9 +120,12 @@ void CButtonMapping::ProcessAxisMotions(void)
     if (!semiaxis.bEmitted)
     {
       semiaxis.bEmitted = true;
-      MapPrimitive(semiaxis.driverPrimitive);
+      if (MapPrimitive(semiaxis.driverPrimitive))
+        OnMotion(semiaxis.driverPrimitive);
     }
   }
+
+  m_buttonMapper->OnEventFrame(m_buttonMap, IsMoving());
 }
 
 void CButtonMapping::SaveButtonMap()
@@ -118,22 +133,64 @@ void CButtonMapping::SaveButtonMap()
   m_buttonMap->SaveButtonMap();
 }
 
-void CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
+void CButtonMapping::ResetIgnoredPrimitives()
 {
+  std::vector<CDriverPrimitive> empty;
+  m_buttonMap->SetIgnoredPrimitives(empty);
+}
+
+void CButtonMapping::RevertButtonMap()
+{
+  m_buttonMap->RevertButtonMap();
+}
+
+bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
+{
+  bool bHandled = false;
+
   const unsigned int now = SystemClockMillis();
 
-  bool bTimeoutElapsed = (now >= m_lastAction + MAPPING_COOLDOWN_MS);
+  bool bTimeoutElapsed = true;
+
+  if (m_buttonMapper->NeedsCooldown())
+    bTimeoutElapsed = (now >= m_lastAction + MAPPING_COOLDOWN_MS);
+
   if (bTimeoutElapsed)
   {
-    m_lastAction = SystemClockMillis();
-    m_buttonMapper->MapPrimitive(m_buttonMap, primitive);
+    bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_actionMap, primitive);
+
+    if (bHandled)
+      m_lastAction = SystemClockMillis();
+  }
+  else if (m_buttonMap->IsIgnored(primitive))
+  {
+    bHandled = true;
   }
   else
   {
     const unsigned int elapsed = now - m_lastAction;
     CLog::Log(LOGDEBUG, "Button mapping: rapid input after %ums dropped for profile \"%s\"",
               elapsed, m_buttonMapper->ControllerID().c_str());
+    bHandled = true;
   }
+
+  return bHandled;
+}
+
+void CButtonMapping::OnMotion(const CDriverPrimitive& semiaxis)
+{
+  if (std::find(m_movingAxes.begin(), m_movingAxes.end(), semiaxis) == m_movingAxes.end())
+    m_movingAxes.push_back(semiaxis);
+}
+
+void CButtonMapping::OnMotionless(const CDriverPrimitive& semiaxis)
+{
+  m_movingAxes.erase(std::remove(m_movingAxes.begin(), m_movingAxes.end(), semiaxis), m_movingAxes.end());
+}
+
+bool CButtonMapping::IsMoving() const
+{
+  return !m_movingAxes.empty();
 }
 
 void CButtonMapping::Activate(const CDriverPrimitive& semiaxis)
@@ -151,7 +208,7 @@ void CButtonMapping::Deactivate(const CDriverPrimitive& semiaxis)
     }), m_activatedAxes.end());
 }
 
-bool CButtonMapping::IsActive(const CDriverPrimitive& semiaxis)
+bool CButtonMapping::IsActive(const CDriverPrimitive& semiaxis) const
 {
   return std::find_if(m_activatedAxes.begin(), m_activatedAxes.end(),
     [&semiaxis](const ActivatedAxis& axis)

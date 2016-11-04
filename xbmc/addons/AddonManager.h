@@ -117,6 +117,9 @@ namespace ADDON
 
     bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
 
+    /*! Get the installable addon with the highest version. */
+    bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
+
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
@@ -162,6 +165,8 @@ namespace ADDON
      \sa DisableAddon
      */
     bool CanAddonBeDisabled(const std::string& ID);
+
+    bool CanAddonBeEnabled(const std::string& id);
 
     /* \brief Checks whether an addon is installed.
      \param ID id of the addon

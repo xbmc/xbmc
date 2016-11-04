@@ -1,0 +1,129 @@
+From 12839cbecd96ac0980e7a75a6e1e841688514b18 Mon Sep 17 00:00:00 2001
+From: phate89 <phates89@gmail.com>
+Date: Mon, 12 Dec 2016 17:40:10 +0100
+Subject: [PATCH 1/1] platinum: add resume playerstate
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp    |  2 ++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h      |  2 ++
+ .../Platinum/Source/Devices/MediaServer/PltMediaItem.cpp       | 10 ++++++++++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h |  1 +
+ .../Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h  |  2 +-
+ xbmc/network/upnp/UPnP.cpp                                     |  7 ++++++-
+ 6 files changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+index b1ba66f..37d36dd 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -163,6 +163,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
+             mask |= PLT_FILTER_MASK_EPISODE_COUNT;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE_SEASON, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_EPISODE_SEASON;
++        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_LASTPLAYERSTATE, len, true) == 0) {
++            mask |= PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_DATEADDED, len, true) == 0) {
+             mask |= PLT_FILTER_MASK_XBMC_DATEADDED;
+         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_RATING, len, true) == 0) {
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+index 1705f9c..b74ed0f 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+@@ -102,6 +102,7 @@
+ #define PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER      NPT_UINT64_C(0x0001000000000000)
+ #define PLT_FILTER_MASK_XBMC_COUNTRY                NPT_UINT64_C(0x0002000000000000)
+ #define PLT_FILTER_MASK_XBMC_USERRATING             NPT_UINT64_C(0x0004000000000000)
++#define PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE        NPT_UINT64_C(0x0008000000000000)
+ 
+ #define PLT_FILTER_FIELD_TITLE                      "dc:title"
+ #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+@@ -147,6 +148,7 @@
+ #define PLT_FILTER_FIELD_EPISODE_COUNT              "upnp:episodeCount"
+ #define PLT_FILTER_FIELD_EPISODE_SEASON             "upnp:episodeSeason"
+ 
++#define PLT_FILTER_FIELD_XBMC_LASTPLAYERSTATE       "xbmc:lastPlayerState"
+ #define PLT_FILTER_FIELD_XBMC_DATEADDED             "xbmc:dateadded"
+ #define PLT_FILTER_FIELD_XBMC_RATING                "xbmc:rating"
+ #define PLT_FILTER_FIELD_XBMC_VOTES                 "xbmc:votes"
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index 96839e4..5324dcb 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -256,6 +256,7 @@ PLT_MediaObject::Reset()
+ 
+     m_Resources.Clear();
+ 
++    m_XbmcInfo.last_playerstate = "";
+     m_XbmcInfo.date_added = "";
+     m_XbmcInfo.rating = 0.0f;
+     m_XbmcInfo.votes = 0;
+@@ -625,6 +626,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
+       didl += "</xbmc:userrating>";
+     }
+ 
++    // xbmc last playback state
++    if (mask & PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE && !m_XbmcInfo.last_playerstate.IsEmpty()) {
++      didl += "<xbmc:lastPlayerState>";
++      PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.last_playerstate);
++      didl += "</xbmc:lastPlayerState>";
++    }
++
+     // class is required
+     didl += "<upnp:class";
+ 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
+@@ -825,6 +833,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+         m_Resources.Add(resource);
+     }
+ 
++    PLT_XmlHelper::GetChildText(entry, "lastPlayerState", m_XbmcInfo.last_playerstate, didl_namespace_xbmc, 2048);
++
+     PLT_XmlHelper::GetChildText(entry, "dateadded", m_XbmcInfo.date_added, didl_namespace_xbmc, 256);
+     // parse date and make sure it's valid
+     for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+index 5712b9a..6502297 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -165,6 +165,7 @@ public:
+ };
+ 
+ typedef struct {
++  NPT_String last_playerstate;
+   NPT_String date_added;
+   NPT_Float rating;
+   NPT_Int32 votes;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+index e52fb5a..1493a50 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -70,7 +70,7 @@ typedef struct PLT_CapabilitiesData {
+ typedef NPT_Reference<PLT_CapabilitiesData> PLT_CapabilitiesDataReference;
+ 
+ // explicitely specify res otherwise WMP won't return a URL!
+-#define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork,xbmc:uniqueidentifier,xbmc:country,xbmc:userrating"
++#define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:lastPlayerState,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork,xbmc:uniqueidentifier,xbmc:country,xbmc:userrating"
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_MediaContainerListener
+diff --git a/xbmc/network/upnp/UPnP.cpp b/xbmc/network/upnp/UPnP.cpp
+index fc19147..efbb216 100644
+--- a/xbmc/network/upnp/UPnP.cpp
++++ b/xbmc/network/upnp/UPnP.cpp
+@@ -249,8 +249,13 @@ public:
+             if (time < 0) time = 0;
+             curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
+                                                  (long)item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));
++            curr_value += "<xbmc:lastPlayerState>";
++            PLT_Didl::AppendXmlEscape(curr_value, item.GetVideoInfoTag()->m_resumePoint.playerState.c_str());
++            curr_value += "</xbmc:lastPlayerState>";
+             new_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
+-            new_value.Append(NPT_String::Format("<xbmc:lastPlayerState>%s</xbmc:lastPlayerState>", bookmark.playerState.c_str()));
++            new_value += "<xbmc:lastPlayerState>";
++            PLT_Didl::AppendXmlEscape(new_value, bookmark.playerState.c_str());
++            new_value += "</xbmc:lastPlayerState>";
+         }
+         if (updatePlayCount) {
+             CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", path.c_str());
+-- 
+2.10.2.windows.1
+

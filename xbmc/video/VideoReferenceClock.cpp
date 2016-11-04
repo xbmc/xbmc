@@ -18,6 +18,7 @@
  *
  */
 #include "VideoReferenceClock.h"
+#include "ServiceBroker.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -82,7 +83,7 @@ CVideoReferenceClock::~CVideoReferenceClock()
 void CVideoReferenceClock::Start()
 {
   m_ClockOffset = CurrentHostCounter();
-  if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
+  if(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
     Create();
 }
 

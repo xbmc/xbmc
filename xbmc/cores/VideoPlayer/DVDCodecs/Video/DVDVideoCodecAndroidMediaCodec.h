@@ -61,7 +61,7 @@ public:
   CDVDMediaCodecInfo* Retain();
   long                Release();
 
-  // meat and potatos
+  // meat and potatoes
   void                Validate(bool state);
   bool                WaitForFrame(int millis);
   // MediaCodec related
@@ -132,6 +132,7 @@ protected:
   bool            m_drop;
   int             m_codecControlFlags;
   int             m_state;
+  int             m_noPictureLoop;
 
   CJNISurface    *m_surface;
   unsigned int    m_textureId;

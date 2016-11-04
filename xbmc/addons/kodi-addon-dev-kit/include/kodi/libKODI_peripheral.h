@@ -20,7 +20,7 @@
 #pragma once
 
 #include "libXBMC_addon.h"
-#include "kodi_peripheral_callbacks.h"
+#include "kodi_peripheral_types.h"
 
 #include <string>
 #include <stdio.h>
@@ -29,15 +29,23 @@
   #include <sys/stat.h>
 #endif
 
-#ifdef _WIN32
-  #define PERIPHERAL_HELPER_DLL "\\library.kodi.peripheral\\libKODI_peripheral" ADDON_HELPER_EXT
-#else
-  #define PERIPHERAL_HELPER_DLL_NAME "libKODI_peripheral-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
-  #define PERIPHERAL_HELPER_DLL "/library.kodi.peripheral/" PERIPHERAL_HELPER_DLL_NAME
-#endif
+extern "C"
+{
+namespace KodiAPI
+{
+namespace Peripheral
+{
 
-#define PERIPHERAL_REGISTER_SYMBOL(dll, functionPtr) \
-  CHelper_libKODI_peripheral::RegisterSymbol(dll, functionPtr, #functionPtr)
+typedef struct CB_PeripheralLib
+{
+  void (*TriggerScan)(void* addonData);
+  void (*RefreshButtonMaps)(void* addonData, const char* deviceName, const char* controllerId);
+  unsigned int (*FeatureCount)(void* addonData, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
+} CB_PeripheralLib;
+
+} /* namespace Peripheral */
+} /* namespace KodiAPI */
+} /* extern "C" */
 
 namespace ADDON
 {
@@ -47,29 +55,16 @@ class CHelper_libKODI_peripheral
 public:
   CHelper_libKODI_peripheral(void)
   {
-    m_handle       = NULL;
-    m_callbacks    = NULL;
-    m_libKODI_peripheral = NULL;
+    m_Handle = nullptr;
+    m_Callbacks = nullptr;
   }
 
   ~CHelper_libKODI_peripheral(void)
   {
-    if (m_libKODI_peripheral)
+    if (m_Handle && m_Callbacks)
     {
-      PERIPHERAL_unregister_me(m_handle, m_callbacks);
-      dlclose(m_libKODI_peripheral);
+      m_Handle->PeripheralLib_UnRegisterMe(m_Handle->addonData, m_Callbacks);
     }
-  }
-
-  template <typename T>
-  static bool RegisterSymbol(void* dll, T& functionPtr, const char* strFunctionPtr)
-  {
-    if ((functionPtr = (T)dlsym(dll, strFunctionPtr)) == NULL)
-    {
-      fprintf(stderr, "ERROR: Unable to assign function %s: %s\n", strFunctionPtr, dlerror());
-      return false;
-    }
-    return true;
   }
 
   /*!
@@ -79,69 +74,52 @@ public:
     */
   bool RegisterMe(void* handle)
   {
-    m_handle = handle;
+    m_Handle = static_cast<AddonCB*>(handle);
+    if (m_Handle)
+      m_Callbacks = (KodiAPI::Peripheral::CB_PeripheralLib*)m_Handle->PeripheralLib_RegisterMe(m_Handle->addonData);
+    if (!m_Callbacks)
+      fprintf(stderr, "libXBMC_peripheral-ERROR: PeripheralLib_register_me can't get callback table from Kodi !!!\n");
 
-    std::string libBasePath;
-    libBasePath  = ((cb_array*)m_handle)->libPath;
-    libBasePath += PERIPHERAL_HELPER_DLL;
-
-#if defined(ANDROID)
-      struct stat st;
-      if (stat(libBasePath.c_str(),&st) != 0)
-      {
-        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-        libBasePath = tempbin + "/" + PERIPHERAL_HELPER_DLL_NAME;
-      }
-#endif
-
-    m_libKODI_peripheral = dlopen(libBasePath.c_str(), RTLD_LAZY);
-    if (m_libKODI_peripheral == NULL)
-    {
-      fprintf(stderr, "Unable to load %s\n", dlerror());
-      return false;
-    }
-
-    if (!PERIPHERAL_REGISTER_SYMBOL(m_libKODI_peripheral, PERIPHERAL_register_me)) return false;
-    if (!PERIPHERAL_REGISTER_SYMBOL(m_libKODI_peripheral, PERIPHERAL_unregister_me)) return false;
-    if (!PERIPHERAL_REGISTER_SYMBOL(m_libKODI_peripheral, PERIPHERAL_trigger_scan)) return false;
-    if (!PERIPHERAL_REGISTER_SYMBOL(m_libKODI_peripheral, PERIPHERAL_refresh_button_maps)) return false;
-    if (!PERIPHERAL_REGISTER_SYMBOL(m_libKODI_peripheral, PERIPHERAL_feature_count)) return false;
-
-    m_callbacks = PERIPHERAL_register_me(m_handle);
-    return m_callbacks != NULL;
+    return m_Callbacks != nullptr;
   }
 
+  /*!
+   * @brief Trigger a scan for peripherals
+   *
+   * The add-on calls this if a change in hardware is detected.
+   */
   void TriggerScan(void)
   {
-    return PERIPHERAL_trigger_scan(m_handle, m_callbacks);
+    return m_Callbacks->TriggerScan(m_Handle->addonData);
   }
 
+  /*!
+   * @brief Notify the frontend that button maps have changed
+   *
+   * @param[optional] deviceName The name of the device to refresh, or empty/null for all devices
+   * @param[optional] controllerId The controller ID to refresh, or empty/null for all controllers
+   */
   void RefreshButtonMaps(const std::string& strDeviceName = "", const std::string& strControllerId = "")
   {
-    return PERIPHERAL_refresh_button_maps(m_handle, m_callbacks, strDeviceName.c_str(), strControllerId.c_str());
+    return m_Callbacks->RefreshButtonMaps(m_Handle->addonData, strDeviceName.c_str(), strControllerId.c_str());
   }
 
+  /*!
+   * @brief Return the number of features belonging to the specified controller
+   *
+   * @param controllerId    The controller ID to enumerate
+   * @param type[optional]  Type to filter by, or JOYSTICK_FEATURE_TYPE_UNKNOWN for all features
+   *
+   * @return The number of features matching the request parameters
+   */
   unsigned int FeatureCount(const std::string& strControllerId, JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN)
   {
-    return PERIPHERAL_feature_count(m_handle, m_callbacks, strControllerId.c_str(), type);
+    return m_Callbacks->FeatureCount(m_Handle->addonData, strControllerId.c_str(), type);
   }
 
-protected:
-    CB_PeripheralLib* (*PERIPHERAL_register_me)(void* handle);
-    void (*PERIPHERAL_unregister_me)(void* handle, CB_PeripheralLib* cb);
-    void (*PERIPHERAL_trigger_scan)(void* handle, CB_PeripheralLib* cb);
-    void (*PERIPHERAL_refresh_button_maps)(void* handle, CB_PeripheralLib* cb, const char* deviceName, const char* controllerId);
-    unsigned int (*PERIPHERAL_feature_count)(void* handle, CB_PeripheralLib* cb, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
-
 private:
-  void*             m_handle;
-  CB_PeripheralLib* m_callbacks;
-  void*             m_libKODI_peripheral;
-
-  struct cb_array
-  {
-    const char* libPath;
-  };
+  AddonCB* m_Handle;
+  KodiAPI::Peripheral::CB_PeripheralLib* m_Callbacks;
 };
 
-}
+} /* namespace ADDON */

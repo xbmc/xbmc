@@ -31,6 +31,7 @@ namespace XFILE
       CDirectoryNodeEpisodes(const std::string& strEntryName, CDirectoryNode* pParent);
     protected:
       virtual bool GetContent(CFileItemList& items) const;
+      NODE_TYPE GetChildType() const override;
     };
   }
 }

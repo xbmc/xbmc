@@ -1,0 +1,3 @@
+LICENSE.gpl
+privacy-policy.txt
+xbmc/platform/darwin/Credits.html

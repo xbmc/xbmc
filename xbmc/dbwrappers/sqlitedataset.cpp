@@ -34,10 +34,6 @@
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
 #include "utils/URIUtils.h"
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "sqlite3.lib")
-#endif
-
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
@@ -45,7 +41,7 @@
 namespace dbiplus {
 //************* Callback function ***************************
 
-int callback(void* res_ptr,int ncol, char** reslt,char** cols)
+int callback(void* res_ptr,int ncol, char** result,char** cols)
 {
   result_set* r = (result_set*)res_ptr;
 
@@ -59,21 +55,21 @@ int callback(void* res_ptr,int ncol, char** reslt,char** cols)
     }
   }
 
-  if (reslt != NULL)
+  if (result != NULL)
   {
     sql_record *rec = new sql_record;
     rec->resize(ncol);
     for (int i=0; i<ncol; i++)
     { 
       field_value &v = rec->at(i);
-      if (reslt[i] == NULL)
+      if (result[i] == NULL)
       {
         v.set_asString("");
         v.set_isNull();
       }
       else
       {
-        v.set_asString(reslt[i]);
+        v.set_asString(result[i]);
       }
     }
     r->records.push_back(rec);

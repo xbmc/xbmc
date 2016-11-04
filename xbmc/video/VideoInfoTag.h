@@ -105,10 +105,20 @@ public:
     return m_strFileNameAndPath;
   };
 
+  /*! \brief set the duration in seconds
+   \param duration the duration to set
+   */
+  void SetDuration(int duration);
+
   /*! \brief retrieve the duration in seconds.
    Prefers the duration from stream details if available.
    */
   unsigned int GetDuration() const;
+
+  /*! \brief retrieve the duration in seconds.
+   Ignores the duration from stream details even if available.
+   */
+  unsigned int GetStaticDuration() const;
 
   /*! \brief get the duration in seconds from a minute string
    \param runtime the runtime string from a scraper or similar
@@ -159,6 +169,47 @@ public:
   void SetNamedSeasons(std::map<int, std::string> namedSeasons);
   void SetUserrating(int userrating);
 
+  /*!
+   * @brief Get this videos's play count.
+   * @return the play count.
+   */
+  virtual int GetPlayCount() const;
+
+  /*!
+   * @brief Set this videos's play count.
+   * @param count play count.
+   * @return True if play count was set successfully, false otherwise.
+   */
+  virtual bool SetPlayCount(int count);
+
+  /*!
+   * @brief Increment this videos's play count.
+   * @return True if play count was increased successfully, false otherwise.
+   */
+  virtual bool IncrementPlayCount();
+
+  /*!
+   * @brief Get this videos's resume point.
+   * @return the resume point.
+   */
+  virtual CBookmark GetResumePoint() const;
+
+  /*!
+   * @brief Set this videos's resume point.
+   * @param resumePoint resume point.
+   * @return True if resume point was set successfully, false otherwise.
+   */
+  virtual bool SetResumePoint(const CBookmark &resumePoint);
+
+  /*!
+   * @brief Set this videos's resume point.
+   * @param timeInSeconds the time of the resume point
+   * @param totalTimeInSeconds the total time of the video
+   * @param playerState the player state
+   * @return True if resume point was set successfully, false otherwise.
+   */
+  virtual bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState = "");
+
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   std::vector<std::string> m_director;
@@ -196,7 +247,6 @@ public:
   CDateTime m_lastPlayed;
   std::vector<std::string> m_showLink;
   std::map<int, std::string> m_namedSeasons;
-  int m_playCount;
   int m_iTop250;
   int m_iSeason;
   int m_iEpisode;
@@ -215,12 +265,13 @@ public:
   int m_iIdSeason;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
-  CBookmark m_resumePoint;
   CDateTime m_dateAdded;
   MediaType m_type;
-  int m_duration; ///< duration in seconds
   int m_relevance; // Used for actors' number of appearances
   int m_parsedDetails;
+
+  // TODO: cannot be private, because of 'struct SDbTableOffsets'
+  unsigned int m_duration; ///< duration in seconds
 
 private:
   /* \brief Parse our native XML format for video info.
@@ -237,6 +288,9 @@ private:
   std::map<std::string, std::string> m_uniqueIDs;
   std::string Trim(std::string &&value);
   std::vector<std::string> Trim(std::vector<std::string> &&items);
+
+  int m_playCount;
+  CBookmark m_resumePoint;
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

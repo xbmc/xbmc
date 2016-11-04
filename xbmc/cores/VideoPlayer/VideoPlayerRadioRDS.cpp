@@ -36,6 +36,7 @@
 #include "DVDStreamInfo.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
@@ -179,7 +180,7 @@ using namespace KODI::MESSAGING;
  * RDS and RBDS relevant
  */
 
-/// RDS Programm type id's
+/// RDS Program type id's
 enum {
   RDS_PTY_NONE = 0,
   RDS_PTY_NEWS,
@@ -215,7 +216,7 @@ enum {
   RDS_PTY_ALARM
 };
 
-/// RBDS Programm type id's
+/// RBDS Program type id's
 enum {
   RBDS_PTY_NONE = 0,
   RBDS_PTY_NEWS,
@@ -490,7 +491,7 @@ static char *rds_entitychar(char *text)
 static unsigned short crc16_ccitt(const unsigned char *data, int len, bool skipfirst)
 {
   // CRC16-CCITT: x^16 + x^12 + x^5 + 1
-  // with start 0xffff and result invers
+  // with start 0xffff and result inverse
   unsigned short crc = 0xffff;
 
   if (skipfirst)
@@ -942,12 +943,12 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
   bool traffic_announcement = msgElement[3] & 1;
   bool traffic_programme    = msgElement[3] & 2;
 
-  if (traffic_announcement && !m_TA_TP_TrafficAdvisory && traffic_programme && dsn == 0 && CSettings::GetInstance().GetBool("pvrplayback.trafficadvisory"))
+  if (traffic_announcement && !m_TA_TP_TrafficAdvisory && traffic_programme && dsn == 0 && CServiceBroker::GetSettings().GetBool("pvrplayback.trafficadvisory"))
   {
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(19021), g_localizeStrings.Get(29930));
     m_TA_TP_TrafficAdvisory = true;
     m_TA_TP_TrafficVolume = g_application.GetVolume();
-    float trafAdvVol = (float)CSettings::GetInstance().GetInt("pvrplayback.trafficadvisoryvolume");
+    float trafAdvVol = (float)CServiceBroker::GetSettings().GetInt("pvrplayback.trafficadvisoryvolume");
     if (trafAdvVol)
       g_application.SetVolume(m_TA_TP_TrafficVolume+trafAdvVol);
 
@@ -956,7 +957,7 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTA", data);
   }
 
-  if (!traffic_announcement && m_TA_TP_TrafficAdvisory && CSettings::GetInstance().GetBool("pvrplayback.trafficadvisory"))
+  if (!traffic_announcement && m_TA_TP_TrafficAdvisory && CServiceBroker::GetSettings().GetBool("pvrplayback.trafficadvisory"))
   {
     m_TA_TP_TrafficAdvisory = false;
     g_application.SetVolume(m_TA_TP_TrafficVolume);
@@ -1106,11 +1107,11 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
   }
   else
   {
-  //  bool flagToogle = msgElement[UECP_ME_DATA] & 0x01 ? true : false;
+  //  bool flagToggle = msgElement[UECP_ME_DATA] & 0x01 ? true : false;
   //  int txQty = (msgElement[UECP_ME_DATA] >> 1) & 0x0F;
   //  int bufConf = (msgElement[UECP_ME_DATA] >> 5) & 0x03;
 
-    //! byte 4 = RT-Status bitcodet (0=AB-flagcontrol, 1-4=Transmission-Number, 5+6=Buffer-Config, ingnored, always 0x01 ?)
+    //! byte 4 = RT-Status bitcodet (0=AB-flagcontrol, 1-4=Transmission-Number, 5+6=Buffer-Config, ignored, always 0x01 ?)
     char temptext[RT_MEL];
     memset(temptext, 0x0, RT_MEL);
     for (unsigned int i = 1, ii = 0; i < msgLength; ++i)

@@ -52,18 +52,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "የሀይል ምርጫዎች"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "የአልበም መረጃ "
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "የ ጣቢያ ቡድን"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "የ አካባቢ ንዑስ አርእስት ዝግጁ ነው"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "መደበቂያ"

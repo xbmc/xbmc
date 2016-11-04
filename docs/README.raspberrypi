@@ -19,7 +19,7 @@ image which includes Linux.
 The following steps were tested with Ubuntu 14.04 x64. (Note that building on
 a 32 bit machine requires slightly different setting).
 
-The following commands build for newer Rapberry Pi 2 generation. In order to
+The following commands build for newer Raspberry Pi 2 generation. In order to
 build for the first Raspberry Pi, the commands have to be adapted to use
 `--with-platform=raspberry-pi` instead of `--with-platform=raspberry-pi2`.
 
@@ -39,7 +39,7 @@ build for the first Raspberry Pi, the commands have to be adapted to use
 
     $ cd xbmc/tools/depends
     $ ./bootstrap
-    PATH="$PATH:/opt/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin" \
+    $ PATH="$PATH:/opt/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin" \
        ./configure --host=arm-linux-gnueabihf \
        --prefix=/opt/xbmc-bcm/xbmc-dbg \
        --with-toolchain=/usr/local/bcm-gcc/arm-bcm2708hardfp-linux-gnueabi/sysroot \
@@ -56,7 +56,7 @@ build for the first Raspberry Pi, the commands have to be adapted to use
        --disable-optical-drive --disable-dvdcss --disable-joystick \
        --disable-crystalhd --disable-vtbdecoder --disable-vaapi \
        --disable-vdpau --enable-alsa" \
-    $ make -C tools/depends/target/xbmc
+       make -C tools/depends/target/xbmc
 
     $ make
     $ sudo make install

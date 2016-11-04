@@ -126,7 +126,7 @@ TEST_F(TestSystemInfo, GetOsName)
 #endif // TARGET_DARWIN
 }
 
-TEST_F(TestSystemInfo, GetOsVersion)
+TEST_F(TestSystemInfo, DISABLED_GetOsVersion)
 {
   EXPECT_FALSE(g_sysinfo.GetOsVersion().empty()) << "'GetOsVersion()' must not return empty string";
   EXPECT_STRNE("0.0.0", g_sysinfo.GetOsVersion().c_str()) << "'GetOsVersion()' must not return '0.0.0'";

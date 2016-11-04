@@ -32,6 +32,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/DataCacheCore.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
@@ -75,6 +76,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_newForcedTotalTime (-1)
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
+  m_processInfo.reset(CProcessInfo::CreateInstance());
 }
 
 PAPlayer::~PAPlayer()
@@ -240,7 +242,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  m_defaultCrossfadeMS = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
+  m_defaultCrossfadeMS = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
 
   if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
@@ -287,16 +289,16 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
 void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 {
-  // we explicitely disable crossfading for audio cds
+  // we explicitly disable crossfading for audio cds
   if(file.IsCDDA())
    m_upcomingCrossfadeMS = 0;
   else
-    m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CSettings::GetInstance().GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
+    m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
   if (m_upcomingCrossfadeMS)
   {
     if (m_streams.empty() ||
          (
-            file.HasMusicInfoTag() && !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS) &&
+            file.HasMusicInfoTag() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS) &&
             m_FileItem->HasMusicInfoTag() &&
             (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
             (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
@@ -343,7 +345,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
   }
 
   StreamInfo *si = new StreamInfo();
-  if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
+  if (!si->m_decoder.Create(file, (static_cast<int64_t>(file.m_lStartOffset) * 1000) / 75))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
 
@@ -384,8 +386,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
   /* init the streaminfo struct */
   si->m_audioFormat = si->m_decoder.GetFormat();
-  si->m_startOffset = file.m_lStartOffset * 1000 / 75;
-  si->m_endOffset = file.m_lEndOffset   * 1000 / 75;
+  si->m_startOffset = static_cast<int64_t>(file.m_lStartOffset) * 1000 / 75;
+  si->m_endOffset = static_cast<int64_t>(file.m_lEndOffset) * 1000 / 75;
   si->m_bytesPerSample = CAEUtil::DataFormatToBits(si->m_audioFormat.m_dataFormat) >> 3;
   si->m_bytesPerFrame = si->m_bytesPerSample * si->m_audioFormat.m_channelLayout.Count();
   si->m_started = false;
@@ -484,7 +486,12 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   }
 
   si->m_stream->SetVolume    (si->m_volume);
-  si->m_stream->SetReplayGain(si->m_decoder.GetReplayGain());
+  float peak = 1.0;
+  float gain = si->m_decoder.GetReplayGain(peak);
+  if (peak == 1.0)
+    si->m_stream->SetReplayGain(gain);
+  else
+    si->m_stream->SetAmplification(gain);
 
   /* if its not the first stream and crossfade is not enabled */
   if (m_currentStream && m_currentStream != si && !m_upcomingCrossfadeMS)
@@ -775,9 +782,9 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     if (si == m_currentStream && m_continueStream)
     {
       // update current stream with info of next track
-      si->m_startOffset = m_FileItem->m_lStartOffset * 1000 / 75;
+      si->m_startOffset = static_cast<int64_t>(m_FileItem->m_lStartOffset) * 1000 / 75;
       if (m_FileItem->m_lEndOffset)
-        si->m_endOffset = m_FileItem->m_lEndOffset * 1000 / 75;
+        si->m_endOffset = static_cast<int64_t>(m_FileItem->m_lEndOffset) * 1000 / 75;
       else
         si->m_endOffset = 0;
       si->m_framesSent = 0;
@@ -919,15 +926,11 @@ void PAPlayer::Pause()
 {
   if (m_isPaused)
   {
-    m_isPaused = false;
-    SoftStart();
-    m_callback.OnPlayBackResumed();
+    SetSpeed(1);
   }
   else
   {
-    m_isPaused = true;    
-    SoftStop(true, false);
-    m_callback.OnPlayBackPaused();
+    SetSpeed(0);
   }
 }
 
@@ -948,11 +951,13 @@ void PAPlayer::SetSpeed(float speed)
   {
     m_isPaused = false;
     SoftStart();
+    m_callback.OnPlayBackResumed();
   }
   else if (m_playbackSpeed == 0 && !m_isPaused)
   {
     m_isPaused = true;
     SoftStop(true, false);
+    m_callback.OnPlayBackPaused();
   }
   m_signalSpeedChange = true;
 }

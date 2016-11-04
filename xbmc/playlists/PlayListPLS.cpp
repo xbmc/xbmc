@@ -39,7 +39,7 @@
 using namespace XFILE;
 using namespace PLAYLIST;
 
-#define START_PLAYLIST_MARKER "[playlist]" // may be case-insentive (equivalent to .ini file on win32)
+#define START_PLAYLIST_MARKER "[playlist]" // may be case-insensitive (equivalent to .ini file on win32)
 #define PLAYLIST_NAME     "PlaylistName"
 
 /*----------------------------------------------------------------------
@@ -364,7 +364,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
           title = pTitle->FirstChild()->ValueStr();
 
         while (pRef)
-        { // multiple references may apear for one entry
+        { // multiple references may appear for one entry
           // duration may exist on this level too
           value = XMLUtils::GetAttribute(pRef, "href");
           if (!value.empty())

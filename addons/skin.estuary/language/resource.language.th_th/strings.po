@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "ค้นหา..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "แสดงแฟนอาร์ตของสื่อเป็นพื้นหลัง"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "โหมดโรงภาพยนตร์"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "เปลี่ยนโหมด"
@@ -31,6 +39,54 @@ msgstr "เปลี่ยนโหมด"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "ชมแบบ 2 มิติ"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "สุ่มภาพยนตร์"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "ภาพยนตร์ที่ยังไม่ได้ดู"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "ดาวน์โหลดไอคอน"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "ภาพยนตร์ที่ดำเนินการอยู่"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "อัลบั้มที่เล่นบ่อยสุด"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "สุ่มอัลบั้ม"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "สุ่มศิลปิน"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "อัลบั้มที่ยังไม่ได้เล่น"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "การบันทึกล่าสุด"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "ช่องรายการที่เล่นล่าสุด"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "เรต"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "ช่องรายการที่เล่นล่าสุด"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -44,9 +100,49 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "ตัวเลือกอื่นๆ"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "เรียงโดย"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "แบบมุมมอง"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "ไม่พบรายการที่ชื่นชอบ คุณสามารถเพิ่มรายการใด ๆ จากมุมมองสื่อมายังรายการนี้ โดยใช้เมนูตามเนื้อหา"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "แสดงแฟนอาร์ต"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "เข้าระบบล่าสุด"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "ข้อมูลเวอร์ชั่น"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "ลำดับ"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "เรตติ้งของคุณ"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "ข้อมูลเพิ่มเติม"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "หน้า"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "รายการ"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -56,9 +152,17 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "ไปหน้าแบบเร็ว"
 
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "ผู้ผลิตกล้อง"
+
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "ตัวเลือกของรายการเล่น"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "กำหนดประเภทและเพิ่มกฎเพื่อสร้างรายการเล่นอัจฉริยะ รายการเล่นเหล่านี้จะเป็นแบบไดนามิกและรวมทุกรายการสื่อจากฐานข้อมูลของคุณ ที่ถูกนำมาใช้โดยกฎที่คุณเลือก"
 
 msgctxt "#31044"
 msgid "Add group"
@@ -72,9 +176,49 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "ลบกลุ่ม"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "ที่มีอยู่"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "กด [B]ตกลง[/B] เพื่อหยุด"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "สลับภาษา"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "ที่กรองแล้ว"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "ใช้ฟ้อนท์ Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "กด [B]ซ้าย[/B] เพื่อกรอกลับ, or [B]ซ้าย[/B] เพื่อไปข้างหน้าอย่างเร็ว"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "ไปยังรายการเล่น"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "แสดงหน้าจอลงชื่อเข้าใช้เมื่อเริ่มต้น"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "เข้าใช้โดยอัตโนมัติเมื่อเริ่มต้น"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "รายการเมนูหลัก"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "เลือกแพ็คแฟนอาร์ตสภาพอากาศ"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -84,29 +228,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "ตัวเลือก ด้านพลังงาน"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "ข้อมูลอัลบั้ม"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "ส่วนเสริมเนื้อเพลง"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "กลุ่มช่องสัญญาณ"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "ข้อมูลเมต้า"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "ตัวเลือกการสืบค้นเนื้อหา"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "ดาวน์โหลดคำบรรยาย"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -127,7 +251,3 @@ msgstr "Shift"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "ซ่อน"

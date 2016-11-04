@@ -28,6 +28,7 @@
 
 #include "threads/CriticalSection.h"
 #include "guilib/IMsgTargetCallback.h"
+#include "guilib/GUIControl.h"
 #include "messaging/IMessageTarget.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
@@ -37,20 +38,17 @@
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
 #include "FileItem.h"
+#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
 
-#include <memory>
-#include <list>
+#include <atomic>
 #include <map>
+#include <string>
 #include <vector>
 
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
-}
-namespace PVR
-{
-  class CPVRRadioRDSInfoTag;
-  typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 }
 class CVideoInfoTag;
 class CFileItem;
@@ -63,13 +61,6 @@ namespace INFO
 
 // forward
 class CGUIWindow;
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
-
-
 
 // structure to hold multiple integer data
 // for storage referenced from a single integer
@@ -171,6 +162,7 @@ public:
   void SetCurrentSlide(CFileItem &item);
   const CFileItem &GetCurrentSlide() const;
   void ResetCurrentSlide();
+  void SetCurrentGame(CFileItem &item);
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
@@ -269,6 +261,7 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
+  CGUIControl * GetActiveContainer(int containerId, int contextWindow) const;
   std::string GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const std::string &info) const;
@@ -348,7 +341,7 @@ protected:
   int m_libraryHasCompilations;
   
   //Count of artists in music library contributing to song by role e.g. composers, conductors etc.
-  //For checking visibiliy of custom nodes for a role.
+  //For checking visibility of custom nodes for a role.
   std::vector<std::pair<std::string, int>> m_libraryRoleCounts; 
 
   SPlayerVideoStreamInfo m_videoInfo;

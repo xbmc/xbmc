@@ -29,15 +29,17 @@
 #include "storage/MediaManager.h"
 #include "guiinfo/GUIInfoLabels.h"
 
+#define CONTROL_TB_POLICY   30
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95
 #define CONTROL_BT_NETWORK  96
 #define CONTROL_BT_VIDEO    97
 #define CONTROL_BT_HARDWARE 98
 #define CONTROL_BT_PVR      99
+#define CONTROL_BT_POLICY   100
 
 #define CONTROL_START       CONTROL_BT_STORAGE
-#define CONTROL_END         CONTROL_BT_PVR
+#define CONTROL_END         CONTROL_BT_POLICY
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void) :
     CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
@@ -80,6 +82,13 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       {
         ResetLabels();
         m_section = focusedControl;
+      }
+      if (m_section >= CONTROL_BT_STORAGE && m_section <= CONTROL_BT_PVR)
+        SET_CONTROL_HIDDEN(CONTROL_TB_POLICY);
+      else if (m_section == CONTROL_BT_POLICY)
+      {
+        SET_CONTROL_LABEL(CONTROL_TB_POLICY, g_infoManager.GetLabel(SYSTEM_PRIVACY_POLICY));
+        SET_CONTROL_VISIBLE(CONTROL_TB_POLICY);
       }
       return true;
     }
@@ -182,6 +191,11 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s: %s", 19168, PVR_BACKEND_DELETED_RECORDINGS);  // Deleted and recoverable recordings
     SetControlLabel(i++, "%s: %s", 19025, PVR_BACKEND_TIMERS);
   }
+
+  else if (m_section == CONTROL_BT_POLICY)
+  {
+    SET_CONTROL_LABEL(40, g_localizeStrings.Get(12389));
+  }
   CGUIWindow::FrameMove();
 }
 
@@ -191,6 +205,7 @@ void CGUIWindowSystemInfo::ResetLabels()
   {
     SET_CONTROL_LABEL(i, "");
   }
+  SET_CONTROL_LABEL(CONTROL_TB_POLICY, "");
 }
 
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
