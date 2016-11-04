@@ -128,6 +128,8 @@ protected:
   unsigned int         m_extended_format;
   int                  m_neededBuffers;
 
+  CRect                     m_cachedSourceRect;
+  CRect                     m_cachedDestRect;
   CRect                     m_src_rect;
   CRect                     m_dst_rect;
   RENDER_STEREO_MODE        m_video_stereo_mode;
@@ -142,7 +144,9 @@ protected:
   CThread m_processThread;
   MMAL_BUFFER_HEADER_T m_quitpacket;
   double m_error;
-
+  double m_lastPts;
+  double m_frameInterval;
+  double m_frameIntervalDiff;
   uint32_t m_vout_width, m_vout_height, m_vout_aligned_width, m_vout_aligned_height;
   // deinterlace
   MMAL_COMPONENT_T *m_deint;
@@ -160,5 +164,6 @@ protected:
   uint32_t m_vsync_count;
   void ReleaseBuffers();
   void UnInitMMAL();
+  void UpdateFramerateStats(double pts);
   virtual void Run() override;
 };

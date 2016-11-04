@@ -59,6 +59,7 @@ public:
   float m_aspect_ratio;
   MMALState m_state;
   bool m_rendered;
+  bool m_stills;
   const char *GetStateName() {
     static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
     if ((size_t)m_state < vcos_countof(names))
