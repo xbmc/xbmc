@@ -25,6 +25,7 @@
 #include "utils/GLUtils.h"
 #include "guilib/TextureManager.h"
 #include "settings/AdvancedSettings.h"
+#include "ServiceBroker.h"
 #ifdef TARGET_POSIX
 #include "linux/XMemUtils.h"
 #endif
@@ -53,7 +54,7 @@ void CGLTexture::CreateTextureObject()
 void CGLTexture::DestroyTextureObject()
 {
   if (m_texture)
-    g_TextureManager.ReleaseHwTexture(m_texture);
+    CServiceBroker::GetTextureManager().ReleaseHwTexture(m_texture);
 }
 
 void CGLTexture::LoadToGPU()
