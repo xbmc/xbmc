@@ -555,26 +555,38 @@ bool CGUIWindowPVRGuide::RefreshTimelineItems()
 
 void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
 {
-  CSingleLock lock(m_critSection);
+  bool bRefresh = false;
 
-  // group change detected reset grid coordinates and refresh grid items
-  if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetChannelGroup())
   {
-    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-    if (!epgGridContainer)
-      return;
+    CSingleLock lock(m_critSection);
 
-    epgGridContainer->ResetCoordinates();
-    m_bRefreshTimelineItems = true;
-    RefreshTimelineItems();
+    // group change detected reset grid coordinates and refresh grid items
+    if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetChannelGroup())
+    {
+      CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+      if (!epgGridContainer)
+        return;
+
+      epgGridContainer->ResetCoordinates();
+      m_bRefreshTimelineItems = true;
+      bRefresh = true;
+    }
   }
 
-  // Note: no need to do anything if no new data available. items always contains previous data.
-  if (m_newTimeline)
+  // never call RefreshTimelineItems with locked mutex!
+  if (bRefresh)
+    RefreshTimelineItems();
+
   {
-    items.RemoveDiscCache(GetID());
-    items.Assign(*m_newTimeline, false);
-    m_newTimeline.reset();
+    CSingleLock lock(m_critSection);
+
+    // Note: no need to do anything if no new data available. items always contains previous data.
+    if (m_newTimeline)
+    {
+      items.RemoveDiscCache(GetID());
+      items.Assign(*m_newTimeline, false);
+      m_newTimeline.reset();
+    }
   }
 }
 
