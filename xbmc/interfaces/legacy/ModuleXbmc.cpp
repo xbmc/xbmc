@@ -54,6 +54,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "AddonUtils.h"
+#include "ServiceBroker.h"
 
 #include "LanguageHook.h"
 

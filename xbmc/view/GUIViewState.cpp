@@ -45,6 +45,7 @@
 #include "FileItem.h"
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/TextureManager.h"
+#include "ServiceBroker.h"
 
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"

@@ -28,6 +28,7 @@
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
+#include "ServiceBroker.h"
 
 using namespace XFILE;
 
