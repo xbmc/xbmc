@@ -603,7 +603,7 @@ bool CActiveAEStreamBuffers::HasInputLevel(int level)
 
 bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize, bool useDSP)
 {
-  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize, useDSP))
+  if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize))
     return false;
 
   if (!m_atempoBuffers->Create(totaltime))
@@ -614,7 +614,7 @@ bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upm
 
 void CActiveAEStreamBuffers::SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
 {
-  m_resampleBuffers->SetExtraData(profile, matrix_encoding, audio_service_type);
+  /*! @todo Implement set dsp config with new AudioDSP buffer implementation */
 }
 
 bool CActiveAEStreamBuffers::ProcessBuffers()
@@ -655,7 +655,7 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
 
 void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool dspenabled, bool stereoupmix, AEQuality quality)
 {
-  m_resampleBuffers->ConfigureResampler(normalizelevels, dspenabled, stereoupmix, quality);
+  m_resampleBuffers->ConfigureResampler(normalizelevels, stereoupmix, quality);
 }
 
 float CActiveAEStreamBuffers::GetDelay()
@@ -753,7 +753,7 @@ void CActiveAEStreamBuffers::ForceResampler(bool force)
 
 void CActiveAEStreamBuffers::SetDSPConfig(bool usedsp, bool bypassdsp)
 {
-  m_resampleBuffers->SetDSPConfig(usedsp, bypassdsp);
+ /*! @todo Implement set dsp config with new AudioDSP buffer implementation */
 }
 
 CActiveAEBufferPool* CActiveAEStreamBuffers::GetResampleBuffers()
