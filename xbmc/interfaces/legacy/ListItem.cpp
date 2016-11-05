@@ -479,6 +479,8 @@ namespace XBMCAddon
             else
               CLog::Log(LOGWARNING, "Invalid media type \"%s\"", value.c_str());
           }
+          else
+            CLog::Log(LOGERROR,"NEWADDON Unknown Video Info Key \"%s\"", key.c_str());
         }
       }
       else if (strcmpi(type, "music") == 0)
