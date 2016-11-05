@@ -78,9 +78,7 @@ function(add_addon_depends addon searchpath)
 
         # prepare patchfile. ensure we have a clean file after reconfiguring
         set(PATCH_FILE ${BUILD_DIR}/${id}/tmp/patch.cmake)
-        if(EXISTS ${PATCH_FILE})
-          file(REMOVE ${PATCH_FILE})
-        endif()
+        file(REMOVE ${PATCH_FILE})
 
         # if there's a CMakeLists.txt use it to prepare the build
         if(EXISTS ${dir}/CMakeLists.txt)

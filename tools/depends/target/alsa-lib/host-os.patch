@@ -1,0 +1,11 @@
+--- configure.in	2010-04-16 12:11:05.000000000 +0100
++++ configure.in	2016-11-01 15:15:21.645908396 +0000
+@@ -31,7 +31,7 @@
+ 
+   which ${program_prefix}gcc >/dev/null 2>&1 && CC=${program_prefix}gcc
+   which ${host_cpu}-${host_os}-gcc >/dev/null 2>&1 \
+-  && CC=${host_cpu}-${host-os}-gcc
++  && CC=${host_cpu}-${host_os}-gcc
+   which ${host_cpu}-${host_vendor}-${host_os}-gcc >/dev/null 2>&1 \
+   && CC=${host_cpu}-${host_vendor}-${host_os}-gcc
+ 

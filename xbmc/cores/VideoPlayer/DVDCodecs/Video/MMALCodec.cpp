@@ -53,9 +53,10 @@ using namespace KODI::MESSAGING;
 
 #define VERBOSE 0
 
+void CMMALBuffer::SetVideoDeintMethod(std::string method) { if (m_pool) m_pool->SetVideoDeintMethod(method); }
 
 CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> pool)
-    : m_omv(omv), m_pool(pool)
+    : CMMALBuffer(pool), m_omv(omv)
 {
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
@@ -67,6 +68,7 @@ CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> p
   m_encoding = MMAL_ENCODING_UNKNOWN;
   m_aspect_ratio = 0.0f;
   m_rendered = false;
+  m_stills = false;
 }
 
 CMMALVideoBuffer::~CMMALVideoBuffer()
@@ -254,8 +256,6 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
         omvb->m_aligned_width = m_decoded_aligned_width;
         omvb->m_aligned_height = m_decoded_aligned_height;
         omvb->m_aspect_ratio = m_aspect_ratio;
-        if (m_hints.stills) // disable interlace in dvd stills mode
-          omvb->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED;
         omvb->m_encoding = m_dec_output->format->encoding;
         {
           CSingleLock lock(m_output_mutex);
@@ -368,8 +368,6 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || hints.software)
     return false;
 
-  m_processInfo.SetVideoDeintMethod("none");
-
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_MMAL_ADVANCED);
@@ -469,6 +467,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
   }
   m_pool->SetDecoder(this);
+  m_pool->SetProcessInfo(&m_processInfo);
   m_dec = m_pool->GetComponent();
 
   m_dec->control->userdata = (struct MMAL_PORT_USERDATA_T *)this;
@@ -585,6 +584,8 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   m_processInfo.SetVideoDecoderName(m_pFormatName, true);
+  m_processInfo.SetVideoDimensions(m_decoded_width, m_decoded_height);
+  m_processInfo.SetVideoDAR(m_aspect_ratio);
 
   return true;
 }
@@ -826,6 +827,7 @@ bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           pDvdVideoPicture->iFlags, buffer->mmal_buffer->flags, pDvdVideoPicture->MMALBuffer, pDvdVideoPicture->MMALBuffer->mmal_buffer);
     assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
     buffer->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER3;
+    buffer->m_stills = m_hints.stills;
   }
   else
   {

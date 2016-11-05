@@ -317,6 +317,14 @@ bool CSeekHandler::OnAction(const CAction &action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
+    case ACTION_JUMP_SMS2:
+    case ACTION_JUMP_SMS3:
+    case ACTION_JUMP_SMS4:
+    case ACTION_JUMP_SMS5:
+    case ACTION_JUMP_SMS6:
+    case ACTION_JUMP_SMS7:
+    case ACTION_JUMP_SMS8:
+    case ACTION_JUMP_SMS9:
     {
       if (!g_application.CurrentFileItem().IsLiveTV())
       {
@@ -372,6 +380,11 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
 
 void CSeekHandler::ChangeTimeCode(int remote)
 {
+  if (remote >= ACTION_JUMP_SMS2 && remote <= ACTION_JUMP_SMS9)
+  {
+    // cast to REMOTE_X
+    remote -= (ACTION_JUMP_SMS2 - REMOTE_2);
+  }
   if (remote >= REMOTE_0 && remote <= REMOTE_9)
   {
     m_timerTimeCode.StartZero();

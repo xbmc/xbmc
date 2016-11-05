@@ -34,6 +34,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 #include "xbmc/Application.h"
 #include "linux/RBP.h"
+#include "cores/VideoPlayer/DVDClock.h"
 
 extern "C" {
 #include "libavutil/imgutils.h"
@@ -71,6 +72,8 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
 
   m_mmal_pool = mmal_port_pool_create(port, port->buffer_num, port->buffer_size);
   m_closing = false;
+  m_software = false;
+  m_processInfo = nullptr;
   m_mmal_format = 0;
   m_width = 0;
   m_height = 0;
@@ -207,14 +210,14 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
     // ffmpeg requirements
     uint32_t aligned_width = m_aligned_width, aligned_height = m_aligned_height;
     AlignedSize(m_avctx, aligned_width, aligned_height);
-    if (m_dec)
+    if (!IsSoftware())
     {
-      CMMALVideoBuffer *vid = new CMMALVideoBuffer(m_dec, shared_from_this());
+      CMMALVideoBuffer *vid = new CMMALVideoBuffer(static_cast<CMMALVideo *>(m_dec), shared_from_this());
       omvb = vid;
     }
     else
     {
-      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
+      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(static_cast<MMAL::CDecoder *>(m_dec), shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
       if (yuv)
       {
         CGPUMEM *gmem = yuv->gmem;
@@ -386,6 +389,7 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
       Create();
     }
   }
+  SetVideoRect(m_cachedSourceRect, m_cachedDestRect);
   return true;
 }
 
@@ -402,6 +406,10 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_queue_render = nullptr;
   m_queue_process = nullptr;
   m_error = 0.0;
+  m_fps = 0.0;
+  m_lastPts = DVD_NOPTS_VALUE;
+  m_frameInterval = 0.0;
+  m_frameIntervalDiff = 1e5;
   m_vsync_count = ~0U;
   m_vout_width = 0;
   m_vout_height = 0;
@@ -414,6 +422,8 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_deint_height = 0;
   m_deint_aligned_width = 0;
   m_deint_aligned_height = 0;
+  m_cachedSourceRect.SetRect(0, 0, 0, 0);
+  m_cachedDestRect.SetRect(0, 0, 0, 0);
 
   m_queue_process = mmal_queue_create();
   m_processThread.Create();
@@ -446,14 +456,32 @@ void CMMALRenderer::Process()
   CLog::Log(LOGDEBUG, "%s::%s - starting", CLASSNAME, __func__);
   while (!bStop)
   {
-    g_RBP.WaitVsync();
     double dfps = g_graphicsContext.GetFPS();
-    if (dfps <= 0.0)
-      dfps = m_fps;
+    double fps = 0.0;
+    double inc = 1.0;
+    g_RBP.WaitVsync();
+
+    CSingleLock lock(m_sharedSection);
+    // if good enough framerate measure then use it
+    if (dfps > 0.0 && m_frameInterval > 0.0 && m_frameIntervalDiff * 1e-6 < 1e-3)
+    {
+      fps = 1e6 / m_frameInterval;
+      inc = fps / dfps;
+      if (fabs(inc - 1.0) < 1e-2)
+        inc = 1.0;
+      else if (fabs(inc - 0.5) < 1e-2)
+        inc = 0.5;
+      else if (fabs(inc - 24.0/60.0) < 1e-2)
+        inc = 24.0/60.0;
+      if (m_deint)
+        inc *= 2.0;
+    }
     // This algorithm is basically making the decision according to Bresenham's line algorithm.  Imagine drawing a line where x-axis is display frames, and y-axis is video frames
-    m_error += m_fps / dfps;
+    m_error += inc;
+    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+      CLog::Log(LOGDEBUG, "%s::%s - debug vsync:%d queue:%d fps:%.2f/%.2f/%.2f inc:%f diff:%f", CLASSNAME, __func__, g_RBP.LastVsync(), mmal_queue_length(m_queue_render), fps, m_fps, dfps, inc, m_error);
     // we may need to discard frames if queue length gets too high or video frame rate is above display frame rate
-    while (mmal_queue_length(m_queue_render) > 2 || m_error > 1.0)
+    while (mmal_queue_length(m_queue_render) > 2 || (mmal_queue_length(m_queue_render) > 1 && m_error > 1.0))
     {
       if (m_error > 1.0)
         m_error -= 1.0;
@@ -521,10 +549,26 @@ void CMMALRenderer::Run()
     {
       if (buffer->length > 0)
       {
+        EINTERLACEMETHOD last_interlace_method = m_interlace_method;
         EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
+        {
           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
+          // avoid advanced deinterlace when using software decode and HD resolution
+          if (omvb->m_state == MMALStateFFDec && omvb->m_width * omvb->m_height > 720*576)
+            interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
+        }
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
+
+        // advanced deinterlace requires 3 frames of context so disable when showing stills
+        if (omvb->m_stills)
+        {
+          if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
+             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
+           if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
+             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB_HALF;
+        }
+
         // we don't keep up when running at 60fps in the background so switch to half rate
         if (!g_graphicsContext.IsFullScreenVideo())
         {
@@ -541,6 +585,22 @@ void CMMALRenderer::Run()
         }
         else if (m_deint_input || interlace)
           CheckConfigurationDeint(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding, interlace_method);
+
+        if (!m_deint_input)
+          m_interlace_method = VS_INTERLACEMETHOD_NONE;
+
+        if (last_interlace_method == m_interlace_method)
+          ;
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
+          omvb->SetVideoDeintMethod("adv(x2)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
+          omvb->SetVideoDeintMethod("adv(x1)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_BOB)
+          omvb->SetVideoDeintMethod("bob(x2)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF)
+          omvb->SetVideoDeintMethod("bob(x1)");
+        else
+          omvb->SetVideoDeintMethod("none");
 
         if (m_deint_input)
         {
@@ -622,6 +682,26 @@ void CMMALRenderer::Run()
   CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
 }
 
+void CMMALRenderer::UpdateFramerateStats(double pts)
+{
+  double diff = 0.0;
+  if (m_lastPts != DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE && pts - m_lastPts > 0.0 && pts - m_lastPts < DVD_SEC_TO_TIME(1./20.0))
+  {
+    diff = pts - m_lastPts;
+    if (m_frameInterval == 0.0)
+      m_frameInterval = diff;
+    else if (diff > 0.0)
+    {
+      m_frameIntervalDiff = m_frameIntervalDiff * 0.9 + 0.1 * fabs(m_frameInterval - diff);
+      m_frameInterval = m_frameInterval * 0.9 + diff * 0.1;
+    }
+  }
+  if (pts != DVD_NOPTS_VALUE)
+    m_lastPts = pts;
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s pts:%.3f diff:%.3f m_frameInterval:%.6f m_frameIntervalDiff:%.6f", CLASSNAME, __func__, pts*1e-6, diff * 1e-6 , m_frameInterval * 1e-6, m_frameIntervalDiff *1e-6);
+}
+
 void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
 {
   if (m_format != RENDER_FMT_MMAL)
@@ -636,6 +716,7 @@ void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
     CLog::Log(LOGDEBUG, "%s::%s MMAL - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
 
   m_buffers[index] = buffer->Acquire();
+  UpdateFramerateStats(pic.pts);
 }
 
 bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
@@ -649,6 +730,10 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
 
   m_fps = fps;
   m_iFlags = flags;
+  m_error = 0.0;
+  m_lastPts = DVD_NOPTS_VALUE;
+  m_frameInterval = 0.0;
+  m_frameIntervalDiff = 1e5;
 
   // cause SetVideoRect to trigger - needed after a hdmi mode change
   m_src_rect.SetRect(0, 0, 0, 0);
@@ -740,15 +825,21 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (m_format == RENDER_FMT_MMAL)
     omvb = m_buffers[source];
 
+  if (g_graphicsContext.GetStereoView() != RENDER_STEREO_VIEW_RIGHT)
+  {
+    ManageRenderArea();
+    CRect view;
+    CBaseRenderer::GetVideoRect(m_cachedSourceRect, m_cachedDestRect, view);
+  }
+
   // we only want to upload frames once
   if (omvb && omvb->m_rendered)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x skipping", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
+    SetVideoRect(m_cachedSourceRect, m_cachedDestRect);
     goto exit;
   }
-
-  ManageRenderArea();
 
   if (m_format != RENDER_FMT_MMAL)
   {
@@ -756,7 +847,6 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       CLog::Log(LOGDEBUG, "%s::%s - bypass: clear:%d flags:%x alpha:%d source:%d format:%d", CLASSNAME, __func__, clear, flags, alpha, source, m_format);
     goto exit;
   }
-  SetVideoRect(m_sourceRect, m_destRect);
 
   if (omvb && omvb->mmal_buffer)
   {
@@ -941,7 +1031,6 @@ bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect)
 {
   CSingleLock lock(m_sharedSection);
-  assert(g_graphicsContext.GetStereoView() != RENDER_STEREO_VIEW_RIGHT);
 
   if (!m_vout_input)
     return;
@@ -1127,7 +1216,7 @@ void CMMALRenderer::DestroyDeinterlace()
       CLog::Log(LOGERROR, "%s::%s Failed to disable deinterlace output port(status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
   }
   m_deint_output = nullptr;
-  m_interlace_method = VS_INTERLACEMETHOD_NONE;
+  m_interlace_method = VS_INTERLACEMETHOD_MAX;
   m_deint_width = 0;
   m_deint_height = 0;
   m_deint_aligned_width = 0;
@@ -1243,7 +1332,7 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
   if (m_deint_output && (sizeChanged || deinterlaceChanged || encodingChanged))
   {
     MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {{MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param)},
-          advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {3, 0, half_framerate, 1 }};
+          advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {5, 0, half_framerate, 1 }};
 
     status = mmal_port_parameter_set(m_deint_output, &imfx_param.hdr);
     if (status != MMAL_SUCCESS)

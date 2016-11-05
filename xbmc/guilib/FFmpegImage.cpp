@@ -249,6 +249,12 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
     return false;
   }
 
+  if (m_fctx->nb_streams <= 0)
+  {
+    avformat_close_input(&m_fctx);
+    FreeIOCtx(&m_ioctx);
+    return false;
+  }
   AVCodecContext* codec_ctx = m_fctx->streams[0]->codec;
   AVCodec* codec = avcodec_find_decoder(codec_ctx->codec_id);
   if (avcodec_open2(codec_ctx, codec, NULL) < 0)
@@ -679,6 +685,8 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
 
   bufferoutSize = avpkt.size;
   bufferout = m_outputBuffer;
+
+  av_packet_unref(&avpkt);
 
   return true;
 }
