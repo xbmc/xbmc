@@ -15,6 +15,7 @@ testMain
 *~
 # CLion
 /.idea
+.vscode/
 
 # generated files etc
 config.cache
@@ -54,6 +55,7 @@ config.log
 *.idb
 *ReSharper*
 *.idb
+*.diagsession
 
 # osx specifics
 /build/
@@ -380,6 +382,10 @@ lib/cpluff/stamp-h1
 /tools/TexturePacker/TexturePacker*
 /tools/TexturePacker/Makefile
 /tools/TexturePacker/*.dll
+
+# /tools/buildsteps/win32
+/tools/buildsteps/win32/1
+/tools/buildsteps/win32/4
 
 # /userdata/
 /userdata/Database
