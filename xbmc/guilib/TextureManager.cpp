@@ -261,8 +261,6 @@ void CGUITextureManager::LoadAll(CTextureBundleXBT& bundle)
     auto textureName = CTextureBundleXBT::Normalize(file.GetPath());
     auto path = GetTexturePath(textureName);
 
-    CLog::Log(LOGDEBUG, "%s: Loading texture %s from path %s", __FUNCTION__, textureName.c_str(), path.c_str());
-
     auto iter = m_vecTextures.find(textureName);
     if (iter != m_vecTextures.end())
       continue;
@@ -345,7 +343,7 @@ const CTextureArray* CGUITextureManager::GetTextureGif(CTextureBundleXBT& bundle
   delete[] pTextures;
   delete[] Delay;
 
-  m_vecTextures.insert(std::make_pair(strTextureName, pMap));
+  m_vecTextures.insert(std::make_pair(strTextureName, std::unique_ptr<CTextureMap>(pMap)));
   return &pMap->GetTexture();
 }
 
@@ -405,7 +403,7 @@ const CTextureArray* CGUITextureManager::GetTextureGifOrPng(CTextureBundleXBT& b
 
   file.Close();
 
-  m_vecTextures.insert(std::make_pair(strTextureName, pMap));
+  m_vecTextures.insert(std::make_pair(strTextureName, std::unique_ptr<CTextureMap>(pMap)));
   return &pMap->GetTexture();
 }
 
@@ -429,7 +427,7 @@ const CTextureArray* CGUITextureManager::GetTexture(CTextureBundleXBT& bundle, c
 
   auto pMap = new CTextureMap(strTextureName, width, height, 0);
   pMap->Add(pTexture, 100);
-  m_vecTextures.insert(std::make_pair(strTextureName, pMap));
+  m_vecTextures.insert(std::make_pair(strTextureName, std::unique_ptr<CTextureMap>(pMap)));
 
 #ifdef _DEBUG_TEXTURES
   int64_t end, freq;
@@ -474,18 +472,13 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   {
     auto iter = m_vecTextures.find(strTextureName);
     if (iter == m_vecTextures.end())
-    {
-      CLog::Log(LOGERROR, "%s: Could not find texture %s at path %s", __FUNCTION__, strTextureName.c_str(), strPath.c_str());
       return emptyTexture;
-    }
+
     return iter->second->GetTexture();
   }
 
   if (checkBundleOnly && bundle == -1)
-  {
-    CLog::Log(LOGERROR, "%s: Could not find texture %s at path %s", __FUNCTION__, strTextureName.c_str(), strPath.c_str());
     return emptyTexture;
-  }
   
   if (bundle == -1)
   {
@@ -518,7 +511,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   if (iter != m_vecTextures.end())
     return iter->second->GetTexture();
 
-  CLog::Log(LOGERROR, "%s: Could not find texture %s at path %s", __FUNCTION__, strTextureName.c_str(), strPath.c_str());
   return emptyTexture;
 }
 
@@ -549,6 +541,9 @@ void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
 void CGUITextureManager::Cleanup()
 {
   CSingleLock lock(g_graphicsContext);
+
+  m_vecTextures.clear();
+  m_initialized = false;
 
   m_TexBundle[0] = CTextureBundleXBT();
   m_TexBundle[1] = CTextureBundleXBT();
@@ -639,7 +634,6 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
 
 void CGUITextureManager::GetBundledTexturesFromPath(const std::string& texturePath, std::vector<std::string> &items) const
 {
-  CLog::Log(LOGDEBUG, "%s: Loading textures from %s", __FUNCTION__, texturePath.c_str());
   m_TexBundle[0].GetTexturesFromPath(texturePath, items);
   if (items.empty())
     m_TexBundle[1].GetTexturesFromPath(texturePath, items);

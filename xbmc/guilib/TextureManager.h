@@ -110,8 +110,6 @@ public:
 
   bool HasTexture(const std::string &textureName, std::string *path = nullptr, int *bundle = nullptr, int *size = nullptr);
   static bool CanLoad(const std::string &texturePath);
-  const CTextureArray* LoadInternal(CTextureBundleXBT& bundle, std::string textureName, std::string path);
-  void LoadAll(CTextureBundleXBT& bundle);
   ///< Returns true if the texture manager can load this texture
   const CTextureArray& Load(const std::string& strTextureName, bool checkBundleOnly = false);
   void ReleaseTexture(const std::string& strTextureName, bool immediately = false);
@@ -132,6 +130,8 @@ protected:
   const CTextureArray* GetTextureGif(CTextureBundleXBT& bundle, const std::string& strTextureName);
   const CTextureArray* GetTextureGifOrPng(CTextureBundleXBT& bundle, const std::string& strTextureName, std::string strPath);
   const CTextureArray* GetTexture(CTextureBundleXBT& bundle, const std::string& strTextureName, std::string strPath);
+  const CTextureArray* LoadInternal(CTextureBundleXBT& bundle, std::string textureName, std::string path);
+  void LoadAll(CTextureBundleXBT& bundle);
 
   std::unordered_map<std::string, std::unique_ptr<CTextureMap>> m_vecTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
