@@ -357,8 +357,8 @@ if(WIN32)
   add_precompiled_header(${APP_NAME_LC}-test pch.h ${CORE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
 endif()
 
-# make test and make check (cannot be executed when cross compiling)
-if(NOT CMAKE_CROSSCOMPILING)
+# Enable unit-test related targets
+if(CORE_HOST_IS_TARGET)
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
   add_custom_target(check ${CMAKE_CTEST_COMMAND} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
@@ -379,6 +379,15 @@ if(NOT CMAKE_CROSSCOMPILING)
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
   set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
 
+  # code coverage
+  if(CMAKE_BUILD_TYPE STREQUAL Coverage)
+    if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+      include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
+    else()
+      message(FATAL_ERROR "Code coverage not (yet) implemented for platform ${CORE_SYSTEM_NAME}")
+    endif()
+  endif()
+
   # Documentation
   find_package(Doxygen)
   if(DOXYGEN_FOUND)
@@ -387,15 +396,6 @@ if(NOT CMAKE_CROSSCOMPILING)
                       COMMAND ${CMAKE_COMMAND} -E echo "Documentation built to: file://${CORE_SOURCE_DIR}/docs/html/index.html"
                       WORKING_DIRECTORY ${CORE_SOURCE_DIR}/doxygen_resources
                       COMMENT "Generating Doxygen documentation" VERBATIM)
-  endif()
-endif()
-
-# code coverage
-if(CMAKE_BUILD_TYPE STREQUAL Coverage)
-  if(EXISTS ${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
-    include(${PROJECT_SOURCE_DIR}/scripts/${CORE_SYSTEM_NAME}/CodeCoverage.cmake)
-  else()
-    message(FATAL_ERROR "Code coverage not (yet) implemented for platform ${CORE_SYSTEM_NAME}")
   endif()
 endif()
 
