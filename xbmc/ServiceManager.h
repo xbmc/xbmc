@@ -50,6 +50,7 @@ namespace PLAYLIST
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
+class CGUITextureManager;
 
 class CServiceManager
 {
@@ -58,6 +59,7 @@ public:
   bool Init2();
   bool Init3();
   void Deinit();
+  CGUITextureManager& GetTextureManager();
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
   ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
@@ -83,6 +85,7 @@ protected:
     void operator()(CContextMenuManager *p) const;
   };
 
+  std::unique_ptr<CGUITextureManager> m_textureManager;
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
   std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;

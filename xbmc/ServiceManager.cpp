@@ -29,6 +29,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
+#include "guilib/TextureManager.h"
 
 bool CServiceManager::Init1()
 {
@@ -41,6 +42,8 @@ bool CServiceManager::Init1()
   m_Platform.reset(CPlatform::CreateInstance());
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
+
+  m_textureManager.reset(new CGUITextureManager());
 
   return true;
 }
@@ -79,6 +82,7 @@ bool CServiceManager::Init3()
 
 void CServiceManager::Deinit()
 {
+  m_textureManager.reset();
   m_contextMenuManager.reset();
   m_binaryAddonCache.reset();
   m_PVRManager.reset();
@@ -87,6 +91,11 @@ void CServiceManager::Deinit()
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
   m_announcementManager.reset();
+}
+
+CGUITextureManager& CServiceManager::GetTextureManager()
+{
+  return *m_textureManager;
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()

@@ -39,6 +39,7 @@ public:
   bool Exists(const std::string& name) const;
   bool Get(const std::string& name, CXBTFFile& file) const;
   std::vector<CXBTFFile> GetFiles() const;
+  size_t GetFileCount() const;
 
   bool Load(const CXBTFFrame& frame, unsigned char* buffer) const;
 

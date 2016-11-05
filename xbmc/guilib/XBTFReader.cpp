@@ -237,3 +237,8 @@ std::vector<CXBTFFile> CXBTFReader::GetFiles() const
 
   return files;
 }
+
+size_t CXBTFReader::GetFileCount() const
+{
+  return m_files.size();
+}

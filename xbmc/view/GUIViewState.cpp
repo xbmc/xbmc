@@ -451,7 +451,7 @@ void CGUIViewState::AddAddonsSource(const std::string &content, const std::strin
     CMediaSource source;
     source.strPath = "addons://sources/" + content + "/";    
     source.strName = label;
-    if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
+    if (!thumb.empty() && CServiceBroker::GetTextureManager().HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;

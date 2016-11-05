@@ -96,6 +96,22 @@ bool CTextureBundleXBT::HasFile(const std::string& filename) const
   return m_XBTFReader->Exists(Normalize(filename));
 }
 
+size_t CTextureBundleXBT::GetFileCount() const
+{
+  if (!m_XBTFReader)
+    return 0;
+
+  return m_XBTFReader->GetFileCount();
+}
+
+std::vector<CXBTFFile> CTextureBundleXBT::GetFiles() const
+{
+  if (!m_XBTFReader)
+    return std::vector<CXBTFFile>();
+
+  return m_XBTFReader->GetFiles();
+}
+
 void CTextureBundleXBT::GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures) const
 {
   if (path.size() > 1 && path[1] == ':')
@@ -120,6 +136,9 @@ bool CTextureBundleXBT::LoadTexture(const std::string& filename, CBaseTexture** 
                                      int &width, int &height) const
 {
   CXBTFFile file;
+  if (!m_XBTFReader)
+    return false;
+
   if (!m_XBTFReader->Get(Normalize(filename), file))
     return false;
 
@@ -142,6 +161,9 @@ int CTextureBundleXBT::LoadAnim(const std::string& filename, CBaseTexture*** ppT
                               int &width, int &height, int& nLoops, int** ppDelays) const
 {
   CXBTFFile file;
+  if (!m_XBTFReader)
+    return false;
+
   if (!m_XBTFReader->Get(Normalize(filename), file))
     return false;
 

@@ -29,6 +29,7 @@
 #include "utils/StringUtils.h"
 #include "addons/Addon.h"
 #include "WindowException.h"
+#include "ServiceBroker.h"
 
 // These #defs are for WindowXML
 #define CONTROL_BTNVIEWASICONS  2
@@ -414,9 +415,9 @@ namespace XBMCAddon
       m_mediaDir = fallbackMediaPath;
 
       //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
-      g_TextureManager.AddTexturePath(m_mediaDir);
+      CServiceBroker::GetTextureManager().AddTexturePath(m_mediaDir);
       ref(window)->AllocResources(forceLoad);
-      g_TextureManager.RemoveTexturePath(m_mediaDir);
+      CServiceBroker::GetTextureManager().RemoveTexturePath(m_mediaDir);
     }
 
     void WindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
@@ -429,9 +430,9 @@ namespace XBMCAddon
     void WindowXML::Process(unsigned int currentTime, CDirtyRegionList &regions)
     {
       XBMC_TRACE;
-      g_TextureManager.AddTexturePath(m_mediaDir);
+      CServiceBroker::GetTextureManager().AddTexturePath(m_mediaDir);
       ref(window)->Process(currentTime, regions);
-      g_TextureManager.RemoveTexturePath(m_mediaDir);
+      CServiceBroker::GetTextureManager().RemoveTexturePath(m_mediaDir);
     }
 
     bool WindowXML::OnClick(int iItem) 

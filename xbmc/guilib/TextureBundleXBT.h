@@ -38,6 +38,8 @@ public:
 
   void SetThemeBundle(bool themeBundle);
   bool HasFile(const std::string& Filename) const;
+  size_t GetFileCount() const;
+  std::vector<CXBTFFile> GetFiles() const;
   void GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures) const;
   static std::string Normalize(const std::string &name);
 

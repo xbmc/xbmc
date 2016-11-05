@@ -24,8 +24,8 @@
 */
 #pragma once
 
-#include <list>
 #include <vector>
+#include <unordered_map>
 #include <utility>
 
 #include "Texture.h"
@@ -109,7 +109,10 @@ public:
   ~CGUITextureManager();
 
   bool HasTexture(const std::string &textureName, std::string *path = nullptr, int *bundle = nullptr, int *size = nullptr);
-  static bool CanLoad(const std::string &texturePath); ///< Returns true if the texture manager can load this texture
+  static bool CanLoad(const std::string &texturePath);
+  const CTextureArray* LoadInternal(CTextureBundleXBT& bundle, std::string textureName, std::string path);
+  void LoadAll(CTextureBundleXBT& bundle);
+  ///< Returns true if the texture manager can load this texture
   const CTextureArray& Load(const std::string& strTextureName, bool checkBundleOnly = false);
   void ReleaseTexture(const std::string& strTextureName, bool immediately = false);
   void Cleanup();
@@ -126,21 +129,16 @@ public:
   void FreeUnusedTextures(unsigned int timeDelay = 0); ///< Free textures (called from app thread only)
   void ReleaseHwTexture(unsigned int texture);
 protected:
-  const CTextureArray& GetTextureGif(const std::string& strTextureName, CTextureArray& emptyTexture, int bundle);
-  const CTextureArray& GetTextureGifOrPng(const std::string& strTextureName, std::string strPath, CTextureArray& emptyTexture);
-  const CTextureArray& GetTexture(const std::string& strTextureName, std::string strPath, CTextureArray& emptyTexture, int bundle);
-  std::vector<CTextureMap*> m_vecTextures;
-  std::list<std::pair<CTextureMap*, unsigned int> > m_unusedTextures;
+  const CTextureArray* GetTextureGif(CTextureBundleXBT& bundle, const std::string& strTextureName);
+  const CTextureArray* GetTextureGifOrPng(CTextureBundleXBT& bundle, const std::string& strTextureName, std::string strPath);
+  const CTextureArray* GetTexture(CTextureBundleXBT& bundle, const std::string& strTextureName, std::string strPath);
+
+  std::unordered_map<std::string, std::unique_ptr<CTextureMap>> m_vecTextures;
   std::vector<unsigned int> m_unusedHwTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundleXBT m_TexBundle[2];
+  bool m_initialized{ false };
 
   std::vector<std::string> m_texturePaths;
   CCriticalSection m_section;
 };
-
-/*!
- \ingroup textures
- \brief
- */
-extern CGUITextureManager g_TextureManager;

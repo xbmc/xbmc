@@ -18,8 +18,8 @@
  *
  */
 
-#include "threads/SystemClock.h"
 #include "GUILargeTextureManager.h"
+#include "threads/SystemClock.h"
 #include "settings/Settings.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
@@ -30,6 +30,7 @@
 #include "TextureCache.h"
 
 #include <cassert>
+#include "ServiceBroker.h"
 
 CImageLoader::CImageLoader(const std::string &path, const bool useCache):
   m_path(path)
@@ -48,7 +49,7 @@ bool CImageLoader::DoWork()
   bool needsChecking = false;
   std::string loadPath;
 
-  std::string texturePath = g_TextureManager.GetTexturePath(m_path);
+  std::string texturePath = CServiceBroker::GetTextureManager().GetTexturePath(m_path);
   if (texturePath.empty())
     return false;
 

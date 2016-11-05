@@ -475,7 +475,7 @@ namespace XBMCAddon
     bool skinHasImage(const char* image)
     {
       XBMC_TRACE;
-      return g_TextureManager.HasTexture(image);
+      return CServiceBroker::GetTextureManager().HasTexture(image);
     }
 
 

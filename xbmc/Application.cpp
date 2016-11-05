@@ -1794,7 +1794,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
-  g_TextureManager.Cleanup();
+  CServiceBroker::GetTextureManager().Cleanup();
   g_largeTextureManager.CleanupUnusedImages(true);
 
   g_fontManager.Clear();
@@ -4560,7 +4560,7 @@ void CApplication::ProcessSlow()
 
   g_largeTextureManager.CleanupUnusedImages();
 
-  g_TextureManager.FreeUnusedTextures(5000);
+  CServiceBroker::GetTextureManager().FreeUnusedTextures(5000);
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)

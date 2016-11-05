@@ -33,6 +33,7 @@
 #include "URL.h"
 #include "GUIInfoManager.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 using namespace XFILE;
 
@@ -132,7 +133,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       CFileItemPtr item(new CFileItem(URIUtils::AddFileToFolder(basePath, folder), true));
 
       item->SetLabel(label);
-      if (!icon.empty() && g_TextureManager.HasTexture(icon))
+      if (!icon.empty() && CServiceBroker::GetTextureManager().HasTexture(icon))
         item->SetIconImage(icon);
       item->m_iprogramCount = order;
       items.Add(item);

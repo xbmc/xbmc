@@ -21,6 +21,11 @@
 #include "ServiceBroker.h"
 #include "Application.h"
 
+CGUITextureManager& CServiceBroker::GetTextureManager()
+{
+  return g_application.m_ServiceManager->GetTextureManager();
+}
+
 ADDON::CAddonMgr &CServiceBroker::GetAddonMgr()
 {
   return g_application.m_ServiceManager->GetAddonMgr();

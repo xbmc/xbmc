@@ -98,6 +98,7 @@
 #endif
 
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
+#include "ServiceBroker.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -1521,7 +1522,7 @@ bool CUtil::SupportsReadFileOperations(const std::string& strPath)
 
 std::string CUtil::GetDefaultFolderThumb(const std::string &folderThumb)
 {
-  if (g_TextureManager.HasTexture(folderThumb))
+  if (CServiceBroker::GetTextureManager().HasTexture(folderThumb))
     return folderThumb;
   return "";
 }
