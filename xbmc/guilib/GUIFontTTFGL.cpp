@@ -53,6 +53,7 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
   // destructed before the CGUIFontTTFGL goes out of scope, because
   // our virtual methods won't be accessible after this point
   m_dynamicCache.Flush();
+  DeleteHardwareTexture();
 }
 
 bool CGUIFontTTFGL::FirstBegin()
