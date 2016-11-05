@@ -534,7 +534,6 @@ void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
     if (!g_Windowing.IsBackgrounded() || glIsTexture(texture))
 #endif
       glDeleteTextures(1, (GLuint*) &texture);
-  }
 #endif
 }
 
