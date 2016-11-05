@@ -134,7 +134,6 @@ protected:
   const CTextureArray* GetTexture(CTextureBundleXBT& bundle, const std::string& strTextureName, std::string strPath);
 
   std::unordered_map<std::string, std::unique_ptr<CTextureMap>> m_vecTextures;
-  std::vector<unsigned int> m_unusedHwTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundleXBT m_TexBundle[2];
   bool m_initialized{ false };

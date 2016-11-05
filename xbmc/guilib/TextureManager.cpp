@@ -529,29 +529,21 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
 
 void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 {
-  auto currFrameTime = XbmcThreads::SystemClockMillis();
-
-  CSingleLock lock(g_graphicsContext);
-
-#if defined(HAS_GL) || defined(HAS_GLES)
-  for (unsigned int i = 0; i < m_unusedHwTextures.size(); ++i)
-  {
-  // on ios the hw textures might be deleted from the os
-  // when XBMC is backgrounded (e.x. for backgrounded music playback)
-  // sanity check before delete in that case.
-#if defined(TARGET_DARWIN_IOS)
-    if (!g_Windowing.IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
-#endif
-      glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
-  }
-#endif
-  m_unusedHwTextures.clear();
 }
 
 void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
 {
   CSingleLock lock(g_graphicsContext);
-  m_unusedHwTextures.push_back(texture);
+#if defined(HAS_GL) || defined(HAS_GLES)
+  // on ios the hw textures might be deleted from the os
+  // when XBMC is backgrounded (e.x. for backgrounded music playback)
+  // sanity check before delete in that case.
+#if defined(TARGET_DARWIN_IOS)
+    if (!g_Windowing.IsBackgrounded() || glIsTexture(texture))
+#endif
+      glDeleteTextures(1, (GLuint*) &texture);
+  }
+#endif
 }
 
 void CGUITextureManager::Cleanup()
