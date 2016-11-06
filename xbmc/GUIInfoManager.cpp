@@ -9730,12 +9730,13 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_PLAYCOUNT:
     {
-      std::string strPlayCount;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
-        strPlayCount = StringUtils::Format("%i", item->GetVideoInfoTag()->m_playCount);
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
-        strPlayCount = StringUtils::Format("%i", item->GetMusicInfoTag()->GetPlayCount());
-      return strPlayCount;
+        return StringUtils::Format("%i", item->GetVideoInfoTag()->m_playCount);
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
+        return StringUtils::Format("%i", item->GetMusicInfoTag()->GetPlayCount());
+      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_playCount > 0)
+        return StringUtils::Format("%i", item->GetPVRRecordingInfoTag()->m_playCount);
+      break;
     }
   case LISTITEM_LASTPLAYED:
     {
