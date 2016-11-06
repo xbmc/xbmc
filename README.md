@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/xbmc/xbmc.svg?branch=master)](https://travis-ci.org/xbmc/xbmc)
+* Tarvis-CI for OS X, iOS, Linux [![Build Status](https://travis-ci.org/AchimTuran/kodi-agile.svg?branch=AudioDSP/V2/usability_core_fixes)](https://travis-ci.org/AchimTuran/kodi-agile)
+* AppVeyor for Windows [![Build status](https://ci.appveyor.com/api/projects/status/yj28c984cj2qe78q?svg=true)](https://ci.appveyor.com/project/AchimTuran/kodi-agile)
+
 [![Documentation](https://codedocs.xyz/xbmc/xbmc.svg)](https://codedocs.xyz/xbmc/xbmc/)
 
 ![Kodi logo](https://raw.githubusercontent.com/xbmc/xbmc-forum/master/xbmc/images/logo-sbs-black.png)
