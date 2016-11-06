@@ -526,7 +526,7 @@ case $host in
      use_x11=no
      build_shared_lib=yes
      ;;
-  i*86*-linux-gnu*|i*86*-*-linux-uclibc*)
+  i*86*-linux-gnu*|i*86*-*-linux-uclibc*|i*86*-*-linux-musl*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
      ARCH="i486-linux"
@@ -549,7 +549,7 @@ case $host in
        fi
      fi
      ;;
-  x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
+  x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*|x86_64-*-linux-musl*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
      ARCH="x86_64-linux"
@@ -601,17 +601,17 @@ case $host in
      DEPENDS_ROOT_FOR_XCODE=$(echo ${prefix%/*})
      AC_SUBST([DEPENDS_ROOT_FOR_XCODE])
      ;;
-  powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*)
+  powerpc-*-linux-gnu*|powerpc-*-linux-uclibc*|powerpc-*-linux-musl*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
      ARCH="powerpc-linux"
      ;;
-  powerpc64*-*-linux-gnu*|powerpc64*-*-linux-uclibc*)
+  powerpc64*-*-linux-gnu*|powerpc64*-*-linux-uclibc*|powerpc64*-*-linux-musl*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
      ARCH="powerpc64-linux"
      ;;
-  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*|arm*-*-linux-musl*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
      ARCH="arm"
@@ -621,7 +621,7 @@ case $host in
      use_gl=no
      USE_STATIC_FFMPEG=1
      ;;
-  aarch64*-*-linux-gnu*|aarch64*-*-linux-uclibc*)
+  aarch64*-*-linux-gnu*|aarch64*-*-linux-uclibc*|aarch64*-*-linux-musl*)
      target_platform=target_linux
      ARCH="aarch64"
      use_arch="aarch64"
