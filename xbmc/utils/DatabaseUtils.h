@@ -74,6 +74,7 @@ typedef enum {
   FieldAlbumArtist,
   FieldTitle,
   FieldSortTitle,
+  FieldOriginalTitle,
   FieldYear,
   FieldTime,
   FieldTrackNumber,
@@ -160,7 +161,7 @@ public:
   static int GetField(Field field, const MediaType &mediaType);
   static int GetFieldIndex(Field field, const MediaType &mediaType);
   static bool GetSelectFields(const Fields &fields, const MediaType &mediaType, FieldList &selectFields);
-  
+
   static bool GetFieldValue(const dbiplus::field_value &fieldValue, CVariant &variantValue);
   static bool GetDatabaseResults(const MediaType &mediaType, const FieldList &fields, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
 
