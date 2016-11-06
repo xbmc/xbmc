@@ -172,6 +172,20 @@ function(add_addon_depends addon searchpath)
                                 GIT_REPOSITORY ${url}
                                 GIT_TAG ${revision}
                                 "${EXTERNALPROJECT_SETUP}")
+
+            # For patchfiles to work, disable (users globally set) autocrlf=true
+            if(CMAKE_MINIMUM_REQUIRED_VERSION VERSION_GREATER 3.7)
+              message(AUTHOR_WARNING "Make use of GIT_CONFIG")
+            endif()
+            if(WIN32 AND patches)
+              externalproject_add_step(${id} gitconfig
+                                       COMMAND git config core.autocrlf false
+                                       COMMAND git rm -rf --cached .
+                                       COMMAND git reset --hard HEAD
+                                       COMMENT "Performing gitconfig step: Disabling autocrlf to enable patching for '${id}'"
+                                       DEPENDERS patch
+                                       WORKING_DIRECTORY <SOURCE_DIR>)
+            endif()
           else()
             set(CONFIGURE_COMMAND "")
             if(NOT WIN32)
