@@ -50,3 +50,4 @@ config.site.native
 /tools/depends/target/config-binaddons.site
 /target/libfmt/fmt-*.tar.gz
 /target/rapidjson/rapidjson-*.tar.gz
+/target/libspdlog/spdlog-*.tar.gz

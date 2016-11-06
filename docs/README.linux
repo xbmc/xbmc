@@ -74,6 +74,11 @@ We supply a Makefile in tools/depends/target/libfmt
 to make it easy to install into /usr/local.
     $ make -C tools/depends/target/libfmt PREFIX=/usr/local
 
+[NOTICE] libspdlog / libspdlog-dev all Linux distributions.
+Kodi now requires libspdlog which is available in Ubuntu repositories but very outdated and not compatible.
+We supply a Makefile in tools/depends/target/libspdlog to make it easy to install into /usr/local.
+1.  $ make -C tools/depends/target/libspdlog PREFIX=/usr/local
+
 [NOTICE] wayland-protocols all Linux distributions.
 Building Kodi with Wayland requires a recent version of wayland-protocols (at least 1.7)
 which is not available in the Ubuntu LTS repostiories at this time.

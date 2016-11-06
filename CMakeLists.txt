@@ -116,6 +116,7 @@ set(required_deps Cdio
                   Lzo2
                   PCRE
                   RapidJSON
+                  Spdlog
                   Sqlite3
                   TagLib
                   TinyXML
