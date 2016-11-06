@@ -80,15 +80,6 @@ public:
   inline StackThreadLocal() : Runnable(threadLocal) {}
 };
 
-class HeapThreadLocal : public Runnable
-{
-public:
-  ThreadLocal<Thinggy>* hthreadLocal;
-  inline HeapThreadLocal() : Runnable(*(new ThreadLocal<Thinggy>)) { hthreadLocal = &threadLocal; }
-  inline ~HeapThreadLocal() { delete hthreadLocal; }
-};
-
-
 TEST(TestThreadLocal, Simple)
 {
   GlobalThreadLocal runnable;
@@ -124,45 +115,3 @@ TEST(TestThreadLocal, Stack)
   EXPECT_TRUE(destructorCalled);
   cleanup();
 }
-
-TEST(TestThreadLocal, Heap)
-{
-  HeapThreadLocal runnable;
-  thread t(runnable);
-
-  gate.Wait();
-  EXPECT_TRUE(runnable.waiting);
-  EXPECT_TRUE(staticThinggy != NULL);
-  EXPECT_TRUE(runnable.threadLocal.get() == NULL);
-  waiter.Set();
-  gate.Wait();
-  EXPECT_TRUE(runnable.threadLocalHadValue);
-  EXPECT_TRUE(!destructorCalled);
-  delete staticThinggy;
-  EXPECT_TRUE(destructorCalled);
-  cleanup();
-}
-
-TEST(TestThreadLocal, HeapDestroyed)
-{
-  {
-    HeapThreadLocal runnable;
-    thread t(runnable);
-
-    gate.Wait();
-    EXPECT_TRUE(runnable.waiting);
-    EXPECT_TRUE(staticThinggy != NULL);
-    EXPECT_TRUE(runnable.threadLocal.get() == NULL);
-    waiter.Set();
-    gate.Wait();
-    EXPECT_TRUE(runnable.threadLocalHadValue);
-    EXPECT_TRUE(!destructorCalled);
-  } // runnable goes out of scope
-
-  // even though the threadlocal is gone ...
-  EXPECT_TRUE(!destructorCalled);
-  delete staticThinggy;
-  EXPECT_TRUE(destructorCalled);
-  cleanup();
-}
-
