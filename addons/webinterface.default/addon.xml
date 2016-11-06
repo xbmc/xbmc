@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="webinterface.default"
+  version="2.3.1"
+  name="Kodi web interface - Chorus2"
+  provider-name="jez500">
+  <requires>
+    <import addon="xbmc.json" version="6.0.0" />
+  </requires>
+  <extension point="xbmc.webinterface"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Kodi web interface - Chorus2</summary>
+    <description lang="en">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
+    <platform>all</platform>
+    <language>en</language>
+    <source>https://github.com/jez500/chorus2</source>
+    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
+  </extension>
+</addon>

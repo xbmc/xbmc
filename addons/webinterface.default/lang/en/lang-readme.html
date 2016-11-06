@@ -1,0 +1,50 @@
+<h1 id="translations">Translations</h1>
+<p>To update the language files you just need to know a bit of GIT. This page should help
+with the structure of language files.</p>
+<h2 id="where-are-the-language-files-">Where are the language files?</h2>
+<p>There are two places where language override files are stored. The LANG_CODE is the two
+letter code for that language. Eg: en, fr, de</p>
+<h3 id="strings">Strings</h3>
+<p><code>src/lang/_strings/LANG_CODE.po</code></p>
+<ul>
+<li>This is strings used throughout the application. In general, only update <code>msgstr</code>.</li>
+<li>If there is no <code>msgstr</code> for the string, then copy from en.po and update, Eg de.po.<pre><code>msgctxt <span class="hljs-string">""</span>
+msgid <span class="hljs-string">"Select a filter"</span>
+msgstr <span class="hljs-string">"Filter wählen"</span>
+</code></pre></li>
+</ul>
+<h3 id="pages">Pages</h3>
+<p><code>src/lang/LANG_CODE/PAGE.md</code></p>
+<ul>
+<li>These are full pages that can be overridden with a different language.</li>
+<li>The pages are in <a href="https://en.wikipedia.org/wiki/Markdown">markdown</a>.</li>
+<li>If there is no <em>PAGE</em>.md for yor language then copy from the en folder and edit.</li>
+<li>Only create a <em>PAGE</em>.md for a full translation</li>
+</ul>
+<h2 id="adding-a-new-language">Adding a new language</h2>
+<p><strong>Example:</strong> If your new language is <code>French</code> it would have a <em>LANG_KEY</em> of <code>fr</code>.</p>
+<h3 id="tell-the-app-about-it">Tell the app about it</h3>
+<p>You also need to tell the application to have it as an option. So you edit this file:
+<code>/src/js/helpers/translate.js.coffee</code> and add <code>fr: &quot;French&quot;</code> to the languages in <code>getLanguages</code></p>
+<h3 id="duplicate-the-folder-file-structure-of-en">Duplicate the folder/file structure of en</h3>
+<p>Copy the files you want to override with the new language:</p>
+<ul>
+<li><strong>Strings:</strong> copy <code>/src/_strings/en.po</code> to <code>/src/_strings/fr.po</code></li>
+<li><strong>Pages:</strong> copy <code>/src/en/readme.md</code> to <code>/src/fr/readme.md</code></li>
+</ul>
+<h2 id="testing">Testing</h2>
+<p>To test you need to do a build, however if you follow the existing structure you shouldn&#39;t need to.</p>
+<p>If <strong>do</strong> you want to test your language in the app with a build, you can:</p>
+<ol>
+<li>Ensure <code>nodejs</code>, <code>npm</code> are installed</li>
+<li><code>cd /chorus/folder</code></li>
+<li><code>npm install</code> (only the first time)</li>
+<li><code>grunt lang</code> (this will rebuild only the languages in the <code>dist/lang</code> folder)</li>
+<li>Refresh Chorus</li>
+</ol>
+<h2 id="fallback">Fallback</h2>
+<p>Translations should fallback to English unless the <code>msgid</code> is set in a <code>LANG_CODE.po</code> file. 
+Or if a page <code>LANG_CODE/PAGE.md</code> exists.</p>
+<h2 id="submitting-an-update">Submitting an update</h2>
+<p>Send a pull request through <a href="https://github.com/jez500/chorus2">GitHub</a> on a new branch is the best way.
+Would consider updates via other methods.</p>

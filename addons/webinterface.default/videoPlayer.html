@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Chorus video</title>
+
+    <link href="//vjs.zencdn.net/5.11.7/video-js.css" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <script>
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        var src = getParameterByName('src'),
+          player = getParameterByName('player'),
+          yt = getParameterByName('yt'),
+          bg = getParameterByName('bg'),
+          $player = $('<div>'),
+          width = '100%',
+          height = '90%',
+          id = "videoplayer";
+
+        // do we have something to play?
+        if(src != ''){
+
+            // Make the html5 player
+            if(player == 'html5'){
+                $player = $('<video>', {
+                    "id": id,
+                    "class": "video-js vjs-default-skin",
+                    "controls": "controls",
+                    "preload": "auto",
+                    "autoplay": "autoplay",
+                    "data-setup": JSON.stringify({}),
+                    "poster": bg
+                });
+                $player.append($('<source>', {
+                    "type": 'video/mp4',
+                    "src": src
+                }));
+                $player.attr('width', width).attr('height', height);
+            }
+
+            // Make the VLC player
+            if(player == 'vlc'){
+                $player = $('<embed>', {
+                    "type": "application/x-vlc-plugin",
+                    "pluginspage": "http://www.videolan.org",
+                    "version": "VideoLAN.VLCPlugin.2",
+                    "width": width,
+                    "height": height,
+                    "target": '/' + src,
+                    "id": id
+                });
+            }
+
+            // Make the divX player
+            if(player == 'divx'){
+                $player = $('<object>', {
+                    "id": id,
+                    "classid": "clsid:67DABFBF-D0AB-41fa-9C46-CC0F21721616",
+                    "width": width,
+                    "height": height,
+                    "codebase": "http://go.divx.com/plugin/DivXBrowserPlugin.cab"
+                });
+                $player.append($('<param>', {name: 'custommode', value: 'none'}));
+                $player.append($('<param>', {name: 'previewImage', value: ''}));
+                $player.append($('<param>', {name: 'autoPlay', value: 'true'}));
+                $player.append($('<param>', {name: 'src', value: '/' + src}));
+                $player.append($('<embed>', {
+                    type: 'video/divx',
+                    src: '/' + src,
+                    custommode: 'none',
+                    width: width,
+                    height: height,
+                    autoplay: "true",
+                    previewImage: '',
+                    pluginspage: 'http://go.divx.com/plugin/download/'
+                }));
+            }
+
+
+            // Dom ready actions
+            $(document).ready(function(){
+
+                // update download link
+                $('#download').attr('href', src);
+
+                // Switch player
+                $('#switch-player')
+                  .val(player)
+                  .on('change', function(e){
+                    var url = 'videoPlayer.html?player=' + $(this).val() + '&src=' + src;
+                    window.location = url;
+                  });
+
+            });
+        }
+        else if (yt != '') {
+            $player = $('<iframe>', {
+                width: width,
+                height: height,
+                src: 'https://www.youtube.com/embed/' + yt  + '?rel=0&amp;showinfo=0&amp;autoplay=1&iv_load_policy=3',
+                frameborder: 0,
+                allowfullscreen: 'allowfullscreen'
+            });
+            $(document).ready(function(){
+               $('switch-player').empty();
+               $('download').empty();
+            });
+        }
+    </script>
+    <style type="text/css">
+        body, html {
+            height: 100%;
+        }
+        body {
+            margin: 0; background: #000; padding: 0; overflow: hidden;
+        }
+        #player {
+            margin: 0px 10px 0;
+            height: 98%;
+            margin-top: 1%;
+        }
+        #switch-player,
+        #download {
+            display: block;
+            color: #333;
+            font: 12px Arial, Helvetica, "Nimbus Sans L", sans-serif;
+            margin: 1px 0 0;
+            padding: 5px 10px 0 0;
+            float: right;
+            text-decoration: none;
+        }
+        #switch-player {
+            float: left;
+            padding: 5px 0 0 10px;
+        }
+        select:hover,
+        #download:hover {
+            color: #aaa;
+        }
+        #videoplayer {
+            min-height: 300px;
+        }
+        select {
+            float: right;
+            background: #000;
+            border: none;
+            color: #333;
+        }
+        select:focus {
+            color: #aaa;
+        }
+        #player {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            padding-top: 25px;
+            height: 0;
+        }
+        #player iframe,
+        #player .video-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<div class="player-wrapper">
+    <div id="player">
+    </div>
+    <div id="player-actions">
+        <a href="" id="download" download>Download video</a>
+        <select id="switch-player">
+            <option value="html5">html5</option>
+            <option value="vlc">VLC Web player</option>
+            <option value="divx">DivX Webplayer</option>
+        </select>
+    </div>
+</div>
+<script> $('#player').prepend($player);</script>
+<script src="//vjs.zencdn.net/5.11.7/video.js"></script>
+</body>
+</html>
