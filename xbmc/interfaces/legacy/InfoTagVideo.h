@@ -546,6 +546,24 @@ namespace XBMCAddon
 #else
       String getFirstAired();
 #endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getTrailer() }
+      ///-----------------------------------------------------------------------
+      /// To get the path where the trailer is stored.
+      ///
+      /// @return [string] Trailer path
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v17 New function added.
+      ///
+      getTrailer();
+#else
+      String getTrailer();
+#endif
     };
   }
 }

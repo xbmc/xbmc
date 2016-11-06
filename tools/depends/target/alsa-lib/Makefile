@@ -39,6 +39,7 @@ ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../removeshm-3.patch
 	cd $(PLATFORM); patch -p0 < ../timeval.patch
 endif
+	cd $(PLATFORM); patch -p0 < ../host-os.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

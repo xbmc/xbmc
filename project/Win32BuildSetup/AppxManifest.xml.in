@@ -8,7 +8,7 @@
     <Logo>media\icon256x256.png</Logo>
   </Properties>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.351" MaxVersionTested="10.0.14393.351"/>
     <PackageDependency Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" Name="Microsoft.VCLibs.140.00.UWPDesktop" MinVersion="14.0.23810.0"/>
   </Dependencies>
   <Resources>

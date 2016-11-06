@@ -240,7 +240,7 @@ AC_ARG_WITH([platform],
 
 AC_ARG_ENABLE([optimizations],
   [AS_HELP_STRING([--enable-optimizations],
-  [enable optimization (default is yes)])],
+  [enable passing -O2 to CFLAGS (default is yes)])],
   [use_optimizations=$enableval],
   [use_optimizations=yes])
 
