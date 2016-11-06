@@ -2621,6 +2621,59 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
+        <setting id="input.rumblenotify" type="boolean" label="35080" help="35081">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="input.rumbleduration" type="number" label="35082" help="35083">
+          <level>2</level>
+          <default>0.5</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>0.1</step>
+            <maximum>1</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="input.rumblenotify" operator="is">true</dependency>
+          </dependencies>
+          <control type="slider" format="number">
+            <popup>true</popup>
+            <formatlabel>35084</formatlabel>
+          </control>
+        </setting>
+        <setting id="input.strongmotor" type="integer" label="35085" help="35087">
+          <level>2</level>
+          <default>100</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>10</step>
+            <maximum>100</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="input.rumblenotify" operator="is">true</dependency>
+          </dependencies>
+          <control type="slider" format="integer">
+            <popup>true</popup>
+            <formatlabel>14047</formatlabel>
+          </control>
+        </setting>
+        <setting id="input.weakmotor" type="integer" label="35086" help="35087">
+          <level>2</level>
+          <default>100</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>10</step>
+            <maximum>100</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="input.rumblenotify" operator="is">true</dependency>
+          </dependencies>
+          <control type="slider" format="integer">
+            <popup>true</popup>
+            <formatlabel>14047</formatlabel>
+          </control>
+        </setting>
         <setting id="input.testrumble" type="action" label="35051" help="35052">
           <level>2</level>
           <dependencies>

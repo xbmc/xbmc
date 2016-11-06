@@ -16140,7 +16140,52 @@ msgctxt "#35079"
 msgid "Right stick deadzone"
 msgstr ""
 
-#empty strings from id 35080 to 35087
+#. Setting to enable rumble for notifications
+#: system/settings/settings.xml
+msgctxt "#35080"
+msgid "Rumble on notification"
+msgstr ""
+
+#. Description of setting to enable rumble for notifications
+#: system/settings/settings.xml
+msgctxt "#35081"
+msgid "If supported, this will vibrate the controller when a notification occurs."
+msgstr ""
+
+#. Name of the setting for how long controllers rumble on notification
+#: system/settings/settings.xml
+msgctxt "#35082"
+msgid "Rumble duration"
+msgstr ""
+
+#. Description for the controller window setting
+#: system/settings/settings.xml
+msgctxt "#35083"
+msgid "When a notification is shown, controllers will rumble for this duration."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#35084"
+msgid "%.1f sec"
+msgstr ""
+
+#. Name of the setting for how intense to rumble the strong motor on notification
+#: system/settings/settings.xml
+msgctxt "#35085"
+msgid "Strong motor stength"
+msgstr ""
+
+#. Name of the setting for how intense to rumble the weak motor on notification
+#: system/settings/settings.xml
+msgctxt "#35086"
+msgid "Weak motor strength"
+msgstr ""
+
+#. Description for the strong and weak motor strength settings
+#: system/settings/settings.xml
+msgctxt "#35087"
+msgid "Most controllers have a strong and a weak motor, allowing for a mix of different rumble effects."
+msgstr ""
 
 #. Name of the setting that enables/disables powering off controllers on exit
 #: system/settings/settings.xml

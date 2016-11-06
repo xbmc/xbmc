@@ -331,6 +331,10 @@ public:
   static const std::string SETTING_INPUT_PERIPHERALS;
   static const std::string SETTING_INPUT_ENABLEMOUSE;
   static const std::string SETTING_INPUT_CONTROLLERCONFIG;
+  static const std::string SETTING_INPUT_RUMBLE_NOTIFY;
+  static const std::string SETTING_INPUT_RUMBLE_DURATION;
+  static const std::string SETTING_INPUT_RUMBLE_STRONG;
+  static const std::string SETTING_INPUT_RUMBLE_WEAK;
   static const std::string SETTING_INPUT_TESTRUMBLE;
   static const std::string SETTING_INPUT_CONTROLLERPOWEROFF;
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;
