@@ -25,6 +25,7 @@
 #include "threads/SystemClock.h"
 #include <map>
 #include <vector>
+#include <memory>
 
 extern "C" {
 #include "libavformat/avformat.h"
