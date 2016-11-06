@@ -39,35 +39,45 @@ namespace PVR
 {
   namespace CONTEXTMENUITEM
   {
-    #define DECL_CONTEXTMENUITEM(i) \
-    struct i : IContextMenuItem \
+    #define DECL_STATICCONTEXTMENUITEM(clazz) \
+    class clazz : public CStaticContextMenuAction \
     { \
+    public: \
+      clazz(uint32_t label) : CStaticContextMenuAction(label) {} \
+      bool IsVisible(const CFileItem &item) const override; \
+      bool Execute(const CFileItemPtr &item) const override; \
+    };
+
+    #define DECL_CONTEXTMENUITEM(clazz) \
+    class clazz : public IContextMenuItem \
+    { \
+    public: \
       std::string GetLabel(const CFileItem &item) const override; \
       bool IsVisible(const CFileItem &item) const override; \
       bool Execute(const CFileItemPtr &item) const override; \
-    }
+    };
 
     DECL_CONTEXTMENUITEM(ShowInformation);
-    DECL_CONTEXTMENUITEM(FindSimilar);
-    DECL_CONTEXTMENUITEM(StartRecording);
-    DECL_CONTEXTMENUITEM(StopRecording);
-    DECL_CONTEXTMENUITEM(AddTimerRule);
-    DECL_CONTEXTMENUITEM(EditTimerRule);
-    DECL_CONTEXTMENUITEM(DeleteTimerRule);
+    DECL_STATICCONTEXTMENUITEM(FindSimilar);
+    DECL_STATICCONTEXTMENUITEM(StartRecording);
+    DECL_STATICCONTEXTMENUITEM(StopRecording);
+    DECL_STATICCONTEXTMENUITEM(AddTimerRule);
+    DECL_STATICCONTEXTMENUITEM(EditTimerRule);
+    DECL_STATICCONTEXTMENUITEM(DeleteTimerRule);
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
     DECL_CONTEXTMENUITEM(PlayChannel);
     DECL_CONTEXTMENUITEM(ResumePlayRecording);
     DECL_CONTEXTMENUITEM(PlayRecording);
-    DECL_CONTEXTMENUITEM(MarkWatched);
-    DECL_CONTEXTMENUITEM(MarkUnwatched);
-    DECL_CONTEXTMENUITEM(RenameRecording);
+    DECL_STATICCONTEXTMENUITEM(MarkWatched);
+    DECL_STATICCONTEXTMENUITEM(MarkUnwatched);
+    DECL_STATICCONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
-    DECL_CONTEXTMENUITEM(UndeleteRecording);
+    DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
     DECL_CONTEXTMENUITEM(ToggleTimerState);
-    DECL_CONTEXTMENUITEM(RenameTimer);
-    DECL_CONTEXTMENUITEM(ShowAudioDSPSettings);
-    DECL_CONTEXTMENUITEM(PVRClientMenuHook);
+    DECL_STATICCONTEXTMENUITEM(RenameTimer);
+    DECL_STATICCONTEXTMENUITEM(ShowAudioDSPSettings);
+    DECL_STATICCONTEXTMENUITEM(PVRClientMenuHook);
 
     ///////////////////////////////////////////////////////////////////////////////
     // Show information (epg, recording)
@@ -109,11 +119,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // Find similar
-
-    std::string FindSimilar::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(19003); /* Find similar */
-    }
 
     bool FindSimilar::IsVisible(const CFileItem &item) const
     {
@@ -238,11 +243,6 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Mark watched
 
-    std::string MarkWatched::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(16103); /* Mark as watched */
-    }
-
     bool MarkWatched::IsVisible(const CFileItem &item) const
     {
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
@@ -272,11 +272,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // Mark unwatched
-
-    std::string MarkUnwatched::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(16104); /* Mark as unwatched */
-    }
 
     bool MarkUnwatched::IsVisible(const CFileItem &item) const
     {
@@ -308,11 +303,6 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Start recording
 
-    std::string StartRecording::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(264); /* Record */
-    }
-
     bool StartRecording::IsVisible(const CFileItem &item) const
     {
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
@@ -333,11 +323,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // Stop recording
-
-    std::string StopRecording::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(19059); /* Stop recording */
-    }
 
     bool StopRecording::IsVisible(const CFileItem &item) const
     {
@@ -367,11 +352,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // Rename recording
-
-    std::string RenameRecording::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(118); /* Rename */
-    }
 
     bool RenameRecording::IsVisible(const CFileItem &item) const
     {
@@ -414,11 +394,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // Undelete recording
-
-    std::string UndeleteRecording::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(19290); /* Undelete */
-    }
 
     bool UndeleteRecording::IsVisible(const CFileItem &item) const
     {
@@ -464,11 +439,6 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Add timer rule
 
-    std::string AddTimerRule::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(19061); /* Add timer */
-    }
-
     bool AddTimerRule::IsVisible(const CFileItem &item) const
     {
       const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
@@ -485,11 +455,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // Edit timer rule
-
-    std::string EditTimerRule::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(19243); /* Edit timer rule */
-    }
 
     bool EditTimerRule::IsVisible(const CFileItem &item) const
     {
@@ -515,11 +480,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // Delete timer rule
-
-    std::string DeleteTimerRule::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(19295); /* Delete timer rule */
-    }
 
     bool DeleteTimerRule::IsVisible(const CFileItem &item) const
     {
@@ -604,11 +564,6 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Rename timer
 
-    std::string RenameTimer::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(118); /* Rename */
-    }
-
     bool RenameTimer::IsVisible(const CFileItem &item) const
     {
       const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
@@ -670,11 +625,6 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Show Audio DSP settings
 
-    std::string ShowAudioDSPSettings::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(15047); /* Audio DSP settings */
-    }
-
     bool ShowAudioDSPSettings::IsVisible(const CFileItem &item) const
     {
       if (item.GetPVRChannelInfoTag() || item.GetPVRRecordingInfoTag())
@@ -691,11 +641,6 @@ namespace PVR
 
     ///////////////////////////////////////////////////////////////////////////////
     // PVR Client menu hook
-
-    std::string PVRClientMenuHook::GetLabel(const CFileItem &item) const
-    {
-      return g_localizeStrings.Get(19195); /* PVR client specific action */
-    }
 
     bool PVRClientMenuHook::IsVisible(const CFileItem &item) const
     {
@@ -756,26 +701,26 @@ namespace PVR
     m_items =
     {
       std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
-      std::make_shared<CONTEXTMENUITEM::FindSimilar>(),
+      std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
       std::make_shared<CONTEXTMENUITEM::PlayChannel>(),
       std::make_shared<CONTEXTMENUITEM::ResumePlayRecording>(),
       std::make_shared<CONTEXTMENUITEM::PlayRecording>(),
-      std::make_shared<CONTEXTMENUITEM::MarkWatched>(),
-      std::make_shared<CONTEXTMENUITEM::MarkUnwatched>(),
+      std::make_shared<CONTEXTMENUITEM::MarkWatched>(16103), /* Mark as watched */
+      std::make_shared<CONTEXTMENUITEM::MarkUnwatched>(16104), /* Mark as unwatched */
       std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
-      std::make_shared<CONTEXTMENUITEM::AddTimerRule>(),
-      std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
-      std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(),
+      std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
+      std::make_shared<CONTEXTMENUITEM::EditTimerRule>(19243), /* Edit timer rule */
+      std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(19295), /* Delete timer rule */
       std::make_shared<CONTEXTMENUITEM::EditTimer>(),
-      std::make_shared<CONTEXTMENUITEM::RenameTimer>(),
+      std::make_shared<CONTEXTMENUITEM::RenameTimer>(118), /* Rename */
       std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
-      std::make_shared<CONTEXTMENUITEM::StartRecording>(),
-      std::make_shared<CONTEXTMENUITEM::StopRecording>(),
-      std::make_shared<CONTEXTMENUITEM::RenameRecording>(),
+      std::make_shared<CONTEXTMENUITEM::StartRecording>(264), /* Record */
+      std::make_shared<CONTEXTMENUITEM::StopRecording>(19059), /* Stop recording */
+      std::make_shared<CONTEXTMENUITEM::RenameRecording>(118), /* Rename */
       std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
-      std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(),
-      std::make_shared<CONTEXTMENUITEM::ShowAudioDSPSettings>(),
-      std::make_shared<CONTEXTMENUITEM::PVRClientMenuHook>(),
+      std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
+      std::make_shared<CONTEXTMENUITEM::ShowAudioDSPSettings>(15047), /* Audio DSP settings */
+      std::make_shared<CONTEXTMENUITEM::PVRClientMenuHook>(19195), /* PVR client specific action */
     };
   }
 
