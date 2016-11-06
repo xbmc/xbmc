@@ -70,7 +70,7 @@ install:
       gettext git-core gperf libasound2-dev libass-dev libbluray-dev libbz2-dev libcap-dev libcdio-dev libcec4-dev libcrossguid-dev libcurl3
       libcurl4-openssl-dev libdbus-1-dev libegl1-mesa-dev libfmt3-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libfstrcmp-dev libgif-dev libgl1-mesa-dev
       libglu1-mesa-dev libiso9660-dev libjpeg-dev liblcms2-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmysqlclient-dev libnfs-dev
-      libpcre3-dev libplist-dev libpng-dev libpulse-dev libsmbclient-dev libsqlite3-dev
+      libpcre3-dev libplist-dev libpng-dev libpulse-dev libsmbclient-dev libspdlog-dev libsqlite3-dev
       libssl-dev libtag1-dev libtinyxml-dev libtool libudev-dev libusb-dev libva-dev libvdpau-dev
       libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev mesa-utils
       nasm ninja-build pmount python-dev python-imaging python-pip3 python-sqlite rapidjson-dev swig unzip uuid-dev yasm zip zlib1g-dev;
