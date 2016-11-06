@@ -238,26 +238,26 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
 int CTagLoaderTagLib::POPMtoXBMC(int popm)
 {
   // Ratings:
-  // FROM: http://thiagoarrais.com/repos/banshee/src/Core/Banshee.Core/Banshee.Streaming/StreamRatingTagger.cs
+  // FROM: http://www.mediamonkey.com/forum/viewtopic.php?f=7&t=40532&start=30#p391067
   // The following schemes are used by the other POPM-compatible players:
   // WMP/Vista: "Windows Media Player 9 Series" ratings:
   //   1 = 1, 2 = 64, 3=128, 4=196 (not 192), 5=255
-  // MediaMonkey: "no@email" ratings:
-  //   0.5=26, 1=51, 1.5=76, 2=102, 2.5=128,
-  //   3=153, 3.5=178, 4=204, 4.5=230, 5=255
-  // Quod Libet: "quodlibet@lists.sacredchao.net" ratings
-  //   (but that email can be changed):
-  //   arbitrary scale from 0-255
+  // MediaMonkey (v4.2.1): "no@email" ratings:
+  //   0.5=13, 1=1, 1.5=54, 2=64, 2.5=118,
+  //   3=128, 3.5=186, 4=196, 4.5=242, 5=255
+  //   Note 1 star written as 1 while half a star is 13, a higher value
+  // Accommodate these mapped values in a scale from 0-255
   if (popm == 0) return 0;
-  if (popm < 0x19) return 1;
-  if (popm < 0x32) return 2;
-  if (popm < 0x4b) return 3;
-  if (popm < 0x64) return 4;
-  if (popm < 0x7d) return 5;
-  if (popm < 0x96) return 6;
-  if (popm < 0xaf) return 7;
-  if (popm < 0xc8) return 8;
-  if (popm < 0xe1) return 9;
+  if (popm == 1) return 2;
+  if (popm < 23) return 1;
+  if (popm < 32) return 2;
+  if (popm < 64) return 3;
+  if (popm < 96) return 4;
+  if (popm < 128) return 5;
+  if (popm < 160) return 6;
+  if (popm < 196) return 7;
+  if (popm < 224) return 8;
+  if (popm < 255) return 9;
   else return 10;
 }
 
