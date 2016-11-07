@@ -144,6 +144,7 @@ public:
   static std::string GetBuildTargetCpuFamily(void);
 
   static std::string GetUsedCompilerNameAndVer(void);
+  std::string GetPrivacyPolicy();
 
 protected:
   virtual CJob *GetJob() const override;
@@ -152,6 +153,7 @@ protected:
 
 private:
   CSysData m_info;
+  std::string m_privacyPolicy;
   static WindowsVersion m_WinVer;
   int m_iSystemTimeTotalUp; // Uptime in minutes!
   void Reset();

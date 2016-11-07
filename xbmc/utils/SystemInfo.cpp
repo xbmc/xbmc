@@ -31,6 +31,7 @@
 #endif
 #include "guiinfo/GUIInfoLabels.h"
 #include "filesystem/CurlFile.h"
+#include "filesystem/File.h"
 #include "network/Network.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
@@ -79,6 +80,8 @@
 /* Expand macro before stringify */
 #define STR_MACRO(x) #x
 #define XSTR_MACRO(x) STR_MACRO(x)
+
+using namespace XFILE;
 
 #ifdef TARGET_WINDOWS
 static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
@@ -1407,6 +1410,22 @@ std::string CSysInfo::GetUsedCompilerNameAndVer(void)
 #endif
 }
 
+std::string CSysInfo::GetPrivacyPolicy()
+{
+  if (m_privacyPolicy.empty())
+  {
+    CFile file;
+    XFILE::auto_buffer buf;
+    if (file.LoadFile("special://xbmc/privacy-policy.txt", buf) > 0)
+    {
+      std::string strBuf(buf.get(), buf.length());
+      m_privacyPolicy = strBuf;
+    }
+    else
+      m_privacyPolicy = g_localizeStrings.Get(19055);
+  }
+  return m_privacyPolicy;
+}
 
 CJob *CSysInfo::GetJob() const
 {

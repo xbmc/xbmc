@@ -1155,6 +1155,11 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///                  _string_,
 ///     Returns the version of the addon with the given id
 ///   }
+///   \table_row3{   <b>`System.PrivacyPolicy`</b>,
+///                  \anchor System_PrivacyPolicy
+///                  _string_,
+///     Returns the official Kodi privacy policy
+///   }
 /// \table_end
 /// @}
 const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACTIVE },
@@ -1222,6 +1227,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
                                   { "hasadsp",          SYSTEM_HAS_ADSP },
                                   { "hascms",           SYSTEM_HAS_CMS },
+                                  { "privacypolicy",    SYSTEM_PRIVACY_POLICY },
                                   { "haspvraddon",      SYSTEM_HAS_PVR_ADDON }};
 
 /// \page modules__General__List_of_gui_access
@@ -6337,6 +6343,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_TOTALUPTIME:
   case SYSTEM_BATTERY_LEVEL:
     return g_sysinfo.GetInfo(info);
+    break;
+
+
+  case SYSTEM_PRIVACY_POLICY:
+    return g_sysinfo.GetPrivacyPolicy();
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:

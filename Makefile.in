@@ -522,7 +522,9 @@ install-scripts:
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@install -d $(DESTDIR)$(docdir)
-	@install -m 0644 docs/README.linux LICENSE.GPL *.txt $(DESTDIR)$(docdir)
+	@install -m 0644 docs/README.linux LICENSE.GPL copying.txt version.txt $(DESTDIR)$(docdir)
+	@install -d $(DESTDIR)/$(datarootdir)/@APP_NAME_LC@
+	@install -m 0644 privacy-policy.txt $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/@APP_NAME_LC@"
 	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@

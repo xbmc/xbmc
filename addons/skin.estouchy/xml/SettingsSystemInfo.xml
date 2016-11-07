@@ -46,6 +46,7 @@
 				<height>598</height>
 				<itemgap>-1</itemgap>
 				<onleft>5</onleft>
+				<onright>60</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<control type="button" id="95">
@@ -119,6 +120,18 @@
 					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
 					<pulseonselect>false</pulseonselect>
 					<label>31556</label>
+					<textoffsetx>20</textoffsetx>
+				</control>
+				<control type="button" id="100">
+					<width>290</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<texturefocus>list_focus.png</texturefocus>
+					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>12389</label>
 					<textoffsetx>20</textoffsetx>
 				</control>
 			</control>
@@ -324,6 +337,31 @@
 					<label></label>
 					<font>font22</font>
 				</control>
+			</control>
+			<control type="textbox" id="30">
+				<posx>340</posx>
+				<posy>25</posy>
+				<width>800</width>
+				<height>550</height>
+				<pagecontrol>60</pagecontrol>
+				<autoscroll delay="5000" repeat="7500" time="5000">true</autoscroll>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>1200</posx>
+				<posy>0</posy>
+				<width>26</width>
+				<height>602</height>
+				<texturesliderbackground colordiffuse="30FFFFFF">white.png</texturesliderbackground>
+				<texturesliderbar colordiffuse="grey">white.png</texturesliderbar>
+				<texturesliderbarfocus colordiffuse="blue">white.png</texturesliderbarfocus>
+				<textureslidernib>blank.png</textureslidernib>
+				<textureslidernibfocus>blank.png</textureslidernibfocus>
+				<onleft>9000</onleft>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<animation effect="fade" time="150">Visible</animation>
+				<animation effect="fade" time="150">Hidden</animation>
+				<visible>Control.IsVisible(30)</visible>
 			</control>
 			<control type="group">
 				<posx>60</posx>
