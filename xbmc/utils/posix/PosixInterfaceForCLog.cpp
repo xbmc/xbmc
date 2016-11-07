@@ -21,6 +21,7 @@
 #include "PosixInterfaceForCLog.h"
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>
 
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/DarwinUtils.h"
@@ -94,16 +95,21 @@ void CPosixInterfaceForCLog::PrintDebugString(const std::string &debugString)
 #endif // _DEBUG
 }
 
-void CPosixInterfaceForCLog::GetCurrentLocalTime(int &hour, int &minute, int &second)
+void CPosixInterfaceForCLog::GetCurrentLocalTime(int &hour, int &minute, int &second, double &milliseconds)
 {
-  time_t curTime;
   struct tm localTime;
-  if (time(&curTime) != -1 && localtime_r(&curTime, &localTime) != NULL)
+  struct timeval tv;
+
+  if (gettimeofday(&tv, nullptr) != -1 && localtime_r(&tv.tv_sec, &localTime) != NULL)
   {
     hour   = localTime.tm_hour;
     minute = localTime.tm_min;
     second = localTime.tm_sec;
+    milliseconds = static_cast<double>(tv.tv_usec) / 1000;
   }
   else
+  {
     hour = minute = second = 0;
+    milliseconds = 0.0;
+  }
 }
