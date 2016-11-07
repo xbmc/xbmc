@@ -85,17 +85,17 @@ bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs)
 }
 
 CGUIDialogVideoInfo::CGUIDialogVideoInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_VIDEO_INFO, "DialogVideoInfo.xml")
-    , m_movieItem(new CFileItem)
+  : CGUIDialog(WINDOW_DIALOG_VIDEO_INFO, "DialogVideoInfo.xml"),
+  m_movieItem(new CFileItem),
+  m_castList(new CFileItemList),
+  m_bViewReview(false),
+  m_bRefresh(false),
+  m_bRefreshAll(true),
+  m_hasUpdatedThumb(false),
+  m_hasUpdatedUserrating(false),
+  m_startUserrating(-1)
 {
-  m_bRefreshAll = true;
-  m_bRefresh = false;
-  m_hasUpdatedThumb = false;
-  m_hasUpdatedUserrating = false;
-  m_bViewReview = false;
-  m_castList = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
-  m_startUserrating = -1;
 }
 
 CGUIDialogVideoInfo::~CGUIDialogVideoInfo(void)
