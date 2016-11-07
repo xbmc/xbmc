@@ -30,6 +30,7 @@
 #include "ServiceBroker.h"
 
 #include <iterator>
+#include "ContextMenus.h"
 
 using namespace ADDON;
 
@@ -71,6 +72,8 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CSongInfo>(),
       std::make_shared<CONTEXTMENU::CMarkWatched>(),
       std::make_shared<CONTEXTMENU::CMarkUnWatched>(),
+      std::make_shared<CONTEXTMENU::CEjectDisk>(),
+      std::make_shared<CONTEXTMENU::CEjectDrive>(),
   };
   ReloadAddonItems();
 }
