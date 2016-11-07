@@ -921,15 +921,11 @@ void PAPlayer::Pause()
 {
   if (m_isPaused)
   {
-    m_isPaused = false;
-    SoftStart();
-    m_callback.OnPlayBackResumed();
+    SetSpeed(1);
   }
   else
   {
-    m_isPaused = true;    
-    SoftStop(true, false);
-    m_callback.OnPlayBackPaused();
+    SetSpeed(0);
   }
 }
 
@@ -950,11 +946,13 @@ void PAPlayer::SetSpeed(float speed)
   {
     m_isPaused = false;
     SoftStart();
+    m_callback.OnPlayBackResumed();
   }
   else if (m_playbackSpeed == 0 && !m_isPaused)
   {
     m_isPaused = true;
     SoftStop(true, false);
+    m_callback.OnPlayBackPaused();
   }
   m_signalSpeedChange = true;
 }
