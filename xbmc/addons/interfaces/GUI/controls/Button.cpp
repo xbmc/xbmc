@@ -57,7 +57,7 @@ void Interface_GUIControlButton::set_visible(void* kodiBase, void* handle, bool 
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -71,7 +71,7 @@ void Interface_GUIControlButton::set_enabled(void* kodiBase, void* handle, bool 
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -85,7 +85,7 @@ void Interface_GUIControlButton::set_label(void* kodiBase, void* handle, const c
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlButton::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), static_cast<const void*>(label), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -99,7 +99,7 @@ char* Interface_GUIControlButton::get_label(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -113,7 +113,7 @@ void Interface_GUIControlButton::set_label2(void* kodiBase, void* handle, const 
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlButton::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), static_cast<const void*>(label), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -127,7 +127,7 @@ char* Interface_GUIControlButton::get_label2(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 

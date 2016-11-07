@@ -348,7 +348,7 @@ void DX::DeviceResources::CreateDeviceResources()
   DXGI_ADAPTER_DESC aDesc;
   m_adapter->GetDesc(&aDesc);
 
-  CLog::LogF(LOGDEBUG, "device is created on adapter '%S' with feature level %04x.", aDesc.Description, m_d3dFeatureLevel);
+  CLog::LogF(LOGDEBUG, L"device is created on adapter '%S' with feature level %04x.", aDesc.Description, m_d3dFeatureLevel);
 
   m_bDeviceCreated = true;
 }
@@ -862,7 +862,7 @@ void DX::DeviceResources::SetMonitor(HMONITOR monitor) const
         if (currentDesc.AdapterLuid.HighPart != foundDesc.AdapterLuid.HighPart
           || currentDesc.AdapterLuid.LowPart != foundDesc.AdapterLuid.LowPart)
         {
-          CLog::LogF(LOGDEBUG, "selected %S adapter. ", foundDesc.Description);
+          CLog::LogF(LOGDEBUG, L"selected %S adapter. ", foundDesc.Description);
 
           // adapter is changed, (re)init hooks into new driver
           g_Windowing.InitHooks(output.Get());

@@ -55,7 +55,7 @@ void Interface_GUIControlTextBox::set_visible(void* kodiBase, void* handle, bool
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -69,7 +69,7 @@ void Interface_GUIControlTextBox::reset(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -84,7 +84,7 @@ void Interface_GUIControlTextBox::set_text(void* kodiBase, void* handle, const c
   if (!addon || !control || !text)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p', text='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, text, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), static_cast<const void*>(text), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -100,7 +100,7 @@ char* Interface_GUIControlTextBox::get_text(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -114,7 +114,7 @@ void Interface_GUIControlTextBox::scroll(void* kodiBase, void* handle, unsigned 
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -128,7 +128,7 @@ void Interface_GUIControlTextBox::set_auto_scrolling(void* kodiBase, void* handl
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlTextBox::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 

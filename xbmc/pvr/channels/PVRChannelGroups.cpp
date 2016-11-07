@@ -321,7 +321,7 @@ bool CPVRChannelGroups::Load(void)
   CPVRChannelGroupPtr lastPlayedGroup = GetLastPlayedGroup();
   SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalGroup);
 
-  CLog::Log(LOGDEBUG, "CPVRChannelGroups - {0} - {1} %s channel groups loaded", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
+  CLog::Log(LOGDEBUG, "CPVRChannelGroups - {0} - {1} {2} channel groups loaded", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
 
   // need at least 1 group
   return m_groups.size() > 0;

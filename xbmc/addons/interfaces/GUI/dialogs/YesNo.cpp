@@ -66,7 +66,8 @@ bool Interface_GUIDialogYesNo::show_and_get_input_single_text(void* kodiBase,
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogYesNo::%s - invalid handler data (heading='%p', text='%p', "
                         "canceled='%p', noLabel='%p', yesLabel='%p') on addon '%s'", __FUNCTION__,
-                            heading, text, canceled, noLabel, yesLabel, addon->ID().c_str());
+                        static_cast<const void*>(heading), static_cast<const void*>(text), static_cast<void*>(canceled),
+                        static_cast<const void*>(noLabel), static_cast<const void*>(yesLabel), addon->ID().c_str());
     return false;
   }
 
@@ -94,7 +95,9 @@ bool Interface_GUIDialogYesNo::show_and_get_input_line_text(void* kodiBase,
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogYesNo::%s - invalid handler data (heading='%p', line0='%p', line1='%p', line2='%p', "
                         "noLabel='%p', yesLabel='%p') on addon '%s'", __FUNCTION__,
-                            heading, line0, line1, line2, noLabel, yesLabel, addon->ID().c_str());
+                        static_cast<const void*>(heading), static_cast<const void*>(line0), static_cast<const void*>(line1),
+                        static_cast<const void*>(line2), static_cast<const void*>(noLabel), static_cast<const void*>(yesLabel),
+                        addon->ID().c_str());
     return false;
   }
 
@@ -122,7 +125,9 @@ bool Interface_GUIDialogYesNo::show_and_get_input_line_button_text(void* kodiBas
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogYesNo::%s - invalid handler data (heading='%p', line0='%p', line1='%p', line2='%p', "
                         "canceled='%p', noLabel='%p', yesLabel='%p') on addon '%s'", __FUNCTION__,
-                            heading, line0, line1, line2, canceled, noLabel, yesLabel, addon->ID().c_str());
+                        static_cast<const void*>(heading), static_cast<const void*>(line0), static_cast<const void*>(line1),
+                        static_cast<const void*>(line2), static_cast<void*>(canceled), static_cast<const void*>(noLabel),
+                        static_cast<const void*>(yesLabel), addon->ID().c_str());
     return false;
   }
 

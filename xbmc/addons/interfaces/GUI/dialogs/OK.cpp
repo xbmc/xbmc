@@ -51,7 +51,7 @@ void Interface_GUIDialogOK::show_and_get_input_single_text(void* kodiBase, const
   if (!addon || !heading || !text)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogOK:%s - invalid data (addon='%p', heading='%p', text='%p')",
-                                        __FUNCTION__, addon, heading, text);
+                                        __FUNCTION__, static_cast<void*>(addon), static_cast<const void*>(heading), static_cast<const void*>(text));
     return;
   }
 
@@ -64,7 +64,8 @@ void Interface_GUIDialogOK::show_and_get_input_line_text(void* kodiBase, const c
   if (!addon || !heading || !line0 || !line1 || !line2)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogOK::%s - invalid data (addon='%p', heading='%p', line0='%p', line1='%p', line2='%p')",
-                                        __FUNCTION__, addon, heading, line0, line1, line2);
+                        __FUNCTION__, static_cast<void*>(addon), static_cast<const void*>(heading), static_cast<const void*>(line0),
+                        static_cast<const void*>(line1), static_cast<const void*>(line2));
     return;
   }
   HELPERS::ShowOKDialogLines(CVariant{ heading }, CVariant{ line0 }, CVariant{ line1 }, CVariant{ line2 });

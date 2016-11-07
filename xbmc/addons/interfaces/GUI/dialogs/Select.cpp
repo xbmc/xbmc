@@ -58,7 +58,7 @@ int Interface_GUIDialogSelect::open(void* kodiBase, const char *heading, const c
   if (!heading || !entries || !dialog)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogSelect::%s - invalid handler data (heading='%p', entries='%p', dialog='%p') on addon '%s'", __FUNCTION__, 
-                            heading, entries, dialog, addon->ID().c_str());
+                            static_cast<const void*>(heading), static_cast<void*>(entries), static_cast<void*>(dialog), addon->ID().c_str());
     return -1;
   }
 
@@ -92,7 +92,7 @@ bool Interface_GUIDialogSelect::open_multi_select(void* kodiBase, const char *he
   if (!heading || !entryIDs || !entryNames || !entriesSelected || !dialog)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogMultiSelect::%s - invalid handler data (heading='%p', entryIDs='%p', entryNames='%p', entriesSelected='%p', dialog='%p') on addon '%s'", __FUNCTION__,
-                            heading, entryIDs, entryNames, entriesSelected, dialog, addon->ID().c_str());
+                            heading, static_cast<void*>(entryIDs), static_cast<void*>(entryNames), static_cast<void*>(entriesSelected), static_cast<void*>(dialog), addon->ID().c_str());
     return false;
   }
 

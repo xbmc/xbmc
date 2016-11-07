@@ -22,7 +22,7 @@
 #include "guilib/GraphicContext.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "utils/SystemInfo.h"
-#include "utils/win32/Win32Log.h"
+#include "utils/log.h"
 #include "WinSystemWin32DX.h"
 
 #ifndef _M_X64
@@ -214,7 +214,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
   if (!deviceFound)
     return;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Hooking into UserModeDriver on device %S. ", displayDevice.DeviceKey);
+  CLog::Log(LOGDEBUG, __FUNCTION__ L": Hooking into UserModeDriver on device %S. ", displayDevice.DeviceKey);
   wchar_t* keyName =
 #ifndef _M_X64
   // on x64 system and x32 build use UserModeDriverNameWow key

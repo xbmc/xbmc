@@ -186,7 +186,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   else
     tmp_hWnd = g_hWnd;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Using Window handle: %p", tmp_hWnd);
+  CLog::Log(LOGDEBUG, __FUNCTION__": Using Window handle: %p", static_cast<void*>(tmp_hWnd));
 
   hr = m_pDSound->SetCooperativeLevel(tmp_hWnd, DSSCL_PRIORITY);
 

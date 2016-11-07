@@ -597,7 +597,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAINSERTED:
               if (GetDriveType(drivePath) != DRIVE_CDROM)
               {
-                CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", drivePath);
+                CLog::LogF(LOGDEBUG, L"Drive %s Media has arrived.", drivePath);
                 CWin32StorageProvider::SetEvent();
               }
               break;
@@ -606,7 +606,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAREMOVED:
               if (GetDriveType(drivePath) != DRIVE_CDROM)
               {
-                CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", drivePath);
+                CLog::LogF(LOGDEBUG, L"Drive %s Media was removed.", drivePath);
                 CWin32StorageProvider::SetEvent();
               }
               break;

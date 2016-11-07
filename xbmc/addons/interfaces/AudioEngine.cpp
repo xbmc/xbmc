@@ -81,7 +81,7 @@ AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase, A
 {
   if (!kodiBase || !streamFormat)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamFormat='%p')", __FUNCTION__, kodiBase, streamFormat);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamFormat='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamFormat));
     return nullptr;
   }
 
@@ -108,7 +108,7 @@ void Interface_AudioEngine::audioengine_free_stream(void* kodiBase, AEStreamHand
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 
@@ -119,7 +119,7 @@ bool Interface_AudioEngine::audioengine_get_current_sink_format(void* kodiBase, 
 {
   if (!kodiBase || !format)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', format='%p')", __FUNCTION__, kodiBase, format);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', format='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(format));
     return false;
   }
 
@@ -148,7 +148,7 @@ unsigned int Interface_AudioEngine::aestream_get_space(void* kodiBase, AEStreamH
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return 0;
   }
 
@@ -160,7 +160,7 @@ unsigned int Interface_AudioEngine::aestream_add_data(void* kodiBase, AEStreamHa
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return 0;
   }
 
@@ -171,7 +171,7 @@ double Interface_AudioEngine::aestream_get_delay(void* kodiBase, AEStreamHandle*
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return -1.0;
   }
 
@@ -182,7 +182,7 @@ bool Interface_AudioEngine::aestream_is_buffering(void* kodiBase, AEStreamHandle
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return false;
   }
 
@@ -193,7 +193,7 @@ double Interface_AudioEngine::aestream_get_cache_time(void* kodiBase, AEStreamHa
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return -1.0;
   }
 
@@ -204,7 +204,7 @@ double Interface_AudioEngine::aestream_get_cache_total(void* kodiBase, AEStreamH
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return -1.0;
   }
 
@@ -215,7 +215,7 @@ void Interface_AudioEngine::aestream_pause(void* kodiBase, AEStreamHandle* strea
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 
@@ -226,7 +226,7 @@ void Interface_AudioEngine::aestream_resume(void* kodiBase, AEStreamHandle* stre
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 
@@ -237,7 +237,7 @@ void Interface_AudioEngine::aestream_drain(void* kodiBase, AEStreamHandle* strea
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 
@@ -248,7 +248,7 @@ bool Interface_AudioEngine::aestream_is_draining(void* kodiBase, AEStreamHandle*
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return false;
   }
 
@@ -259,7 +259,7 @@ bool Interface_AudioEngine::aestream_is_drained(void* kodiBase, AEStreamHandle* 
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return false;
   }
 
@@ -270,7 +270,7 @@ void Interface_AudioEngine::aestream_flush(void* kodiBase, AEStreamHandle* strea
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 
@@ -281,7 +281,7 @@ float Interface_AudioEngine::aestream_get_volume(void* kodiBase, AEStreamHandle*
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return -1.0f;
   }
 
@@ -292,7 +292,7 @@ void  Interface_AudioEngine::aestream_set_volume(void* kodiBase, AEStreamHandle*
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 
@@ -303,7 +303,7 @@ float Interface_AudioEngine::aestream_get_amplification(void* kodiBase, AEStream
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return -1.0f;
   }
 
@@ -314,7 +314,7 @@ void Interface_AudioEngine::aestream_set_amplification(void* kodiBase, AEStreamH
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 
@@ -325,7 +325,7 @@ unsigned int Interface_AudioEngine::aestream_get_frame_size(void* kodiBase, AESt
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return 0;
   }
 
@@ -336,7 +336,7 @@ unsigned int Interface_AudioEngine::aestream_get_channel_count(void* kodiBase, A
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return 0;
   }
 
@@ -347,7 +347,7 @@ unsigned int Interface_AudioEngine::aestream_get_sample_rate(void* kodiBase, AES
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return 0;
   }
 
@@ -358,7 +358,7 @@ AEDataFormat Interface_AudioEngine::aestream_get_data_format(void* kodiBase, AES
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return AE_FMT_INVALID;
   }
 
@@ -369,7 +369,7 @@ double Interface_AudioEngine::aestream_get_resample_ratio(void* kodiBase, AEStre
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return -1.0f;
   }
 
@@ -380,7 +380,7 @@ void Interface_AudioEngine::aestream_set_resample_ratio(void* kodiBase, AEStream
 {
   if (!kodiBase || !streamHandle)
   {
-    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', streamHandle='%p')", __FUNCTION__, kodiBase, streamHandle);
+    CLog::Log(LOGERROR, "Interface_AudioEngine::%s - invalid stream data (kodiBase='%p', static_cast<void*>(streamHandle)='%p')", __FUNCTION__, static_cast<void*>(kodiBase), static_cast<void*>(streamHandle));
     return;
   }
 

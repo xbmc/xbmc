@@ -171,7 +171,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   {
     if( dll->ResolveOrdinal(LOW_WORD(function), &address) )
     {
-      CLog::Log(LOGDEBUG, "%s(%p(%s), %d) => %p", __FUNCTION__, hModule, dll->GetName(), LOW_WORD(function), address);
+      CLog::Log(LOGDEBUG, "%s(%p(%s), %d) => %p", __FUNCTION__, static_cast<void*>(hModule), dll->GetName(), LOW_WORD(function), address);
     }
     else if( dll->IsSystemDll() )
     {
@@ -189,14 +189,14 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
     else
     {
       address = NULL;
-      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , hModule, dll->GetName(), function, address);
+      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , static_cast<void*>(hModule), dll->GetName(), function, address);
     }
   }
   else
   {
     if( dll->ResolveExport(function, &address) )
     {
-      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , hModule, dll->GetName(), function, address);
+      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , static_cast<void*>(hModule), dll->GetName(), function, address);
     }
     else
     {
@@ -213,7 +213,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
       else
       {
         address = NULL;
-        CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p", __FUNCTION__, hModule, dll->GetName(), function, address);
+        CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p", __FUNCTION__, static_cast<void*>(hModule), dll->GetName(), function, address);
       }
     }
   }
@@ -250,6 +250,6 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
     return (HMODULE)p->GetHModule();
   }
 
-  CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
+  CLog::Log(LOGDEBUG, L"GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
 }

@@ -66,7 +66,8 @@ void* Interface_GUIDialogExtendedProgress::new_dialog(void* kodiBase, const char
   CGUIDialogExtendedProgressBar* dialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
   if (!title || !dialog)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid handler data (title='%p', dialog='%p') on addon '%s'", __FUNCTION__, title, dialog, addon->ID().c_str());
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid handler data (title='%p', dialog='%p') on addon '%s'",
+      __FUNCTION__, static_cast<const void*>(title), static_cast<void*>(dialog), addon->ID().c_str());
     return nullptr;
   }
 
@@ -121,7 +122,8 @@ void Interface_GUIDialogExtendedProgress::set_title(void* kodiBase, void* handle
 
   if (!handle || !title)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p', title='%p') on addon '%s'", __FUNCTION__, handle, title, addon->ID().c_str());
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p', title='%p') on addon '%s'",
+      __FUNCTION__, handle, static_cast<const void*>(title), addon->ID().c_str());
     return;
   }
 
@@ -157,7 +159,8 @@ void Interface_GUIDialogExtendedProgress::set_text(void* kodiBase, void* handle,
 
   if (!handle || !text)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p', text='%p') on addon '%s'", __FUNCTION__, handle, text, addon->ID().c_str());
+    CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::%s - invalid handler data (handle='%p', text='%p') on addon '%s'",
+      __FUNCTION__, handle, static_cast<const void*>(text), addon->ID().c_str());
     return;
   }
 

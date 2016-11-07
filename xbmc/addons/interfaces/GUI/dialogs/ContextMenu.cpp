@@ -57,7 +57,7 @@ int Interface_GUIDialogContextMenu::open(void* kodiBase, const char *heading, co
   if (!heading || !entries || !dialog)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogContextMenu::%s - invalid handler data (heading='%p', entries='%p', dialog='%p') on addon '%s'",
-                          __FUNCTION__, heading, entries, dialog, addon->ID().c_str());
+                          __FUNCTION__, static_cast<const void*>(heading), static_cast<const void*>(entries), static_cast<void*>(dialog), addon->ID().c_str());
     return -1;
   }
 

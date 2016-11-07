@@ -106,7 +106,7 @@ char* Interface_GUIListItem::get_label(void* kodiBase, void* handle)
   if (!addon || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -130,7 +130,7 @@ void Interface_GUIListItem::set_label(void* kodiBase, void* handle, const char *
   if (!addon || !item || !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), label, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -152,7 +152,7 @@ char* Interface_GUIListItem::get_label2(void* kodiBase, void* handle)
   if (!addon || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -176,7 +176,7 @@ void Interface_GUIListItem::set_label2(void* kodiBase, void* handle, const char 
   if (!addon || !item || !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), label, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -198,7 +198,7 @@ char* Interface_GUIListItem::get_icon_image(void* kodiBase, void* handle)
   if (!addon || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -222,7 +222,7 @@ void Interface_GUIListItem::set_icon_image(void* kodiBase, void* handle, const c
   if (!addon || !item || !image)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', image='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, image, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), image, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -244,7 +244,7 @@ char* Interface_GUIListItem::get_art(void* kodiBase, void* handle, const char* t
   if (!addon || !item || !type)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', type='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, type, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), type, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -268,7 +268,7 @@ void Interface_GUIListItem::set_art(void* kodiBase, void* handle, const char* ty
   if (!addon || !item || !type | !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', type= '%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, type, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), type, label, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -290,7 +290,7 @@ char* Interface_GUIListItem::get_path(void* kodiBase, void* handle)
   if (!addon || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -315,7 +315,7 @@ void Interface_GUIListItem::set_path(void* kodiBase, void* handle, const char* p
   if (!addon || !item || !path)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', path='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, path, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), path, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -337,7 +337,7 @@ void Interface_GUIListItem::set_property(void* kodiBase, void* handle, const cha
   if (!addon || !item || !key || !value)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p', value='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, key, value, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), key, value, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -362,7 +362,7 @@ char* Interface_GUIListItem::get_property(void* kodiBase, void* handle, const ch
   if (!addon || !item || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), key, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -389,7 +389,7 @@ void Interface_GUIListItem::select(void* kodiBase, void* handle, bool select)
   if (!addon || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -411,7 +411,7 @@ bool Interface_GUIListItem::is_selected(void* kodiBase, void* handle)
   if (!addon || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(item), addon ? addon->ID().c_str() : "unknown");
     return false;
   }
 

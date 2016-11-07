@@ -112,7 +112,7 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
 {
   LOGTIMEINIT("x");
 
-  CLog::Log(LOGINFO, "%s::%s remap:%p chan:%d->%d rate:%d->%d format:%d->%d bits:%d->%d dither:%d->%d norm:%d upmix:%d", CLASSNAME, __func__, remapLayout, src_channels, dst_channels, src_rate, dst_rate, src_fmt, dst_fmt, src_bits, dst_bits, src_dither, dst_dither, normalize, upmix);
+  CLog::Log(LOGINFO, "%s::%s remap:%p chan:%d->%d rate:%d->%d format:%d->%d bits:%d->%d dither:%d->%d norm:%d upmix:%d", CLASSNAME, __func__, static_cast<void*>(remapLayout), src_channels, dst_channels, src_rate, dst_rate, src_fmt, dst_fmt, src_bits, dst_bits, src_dither, dst_dither, normalize, upmix);
 
   m_dst_chan_layout = dst_chan_layout;
   m_dst_channels = dst_channels;

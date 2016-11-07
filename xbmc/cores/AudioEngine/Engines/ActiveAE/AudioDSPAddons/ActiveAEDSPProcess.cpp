@@ -267,7 +267,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
   if (CLog::GetLogLevel() == LOGDEBUG) // Speed improve
   {
     CLog::Log(LOGDEBUG, "  ----  Input stream  ----");
-    CLog::Log(LOGDEBUG, "  | Identifier           : %d", m_addonStreamProperties.iIdentifier);
+    CLog::Log(LOGDEBUG, "  | Identifier           : %d", const_cast<const int&>(m_addonStreamProperties.iIdentifier));
     CLog::Log(LOGDEBUG, "  | Stream Type          : %s", m_addonStreamProperties.iStreamType == AE_DSP_ASTREAM_BASIC   ? "Basic"   :
                                                          m_addonStreamProperties.iStreamType == AE_DSP_ASTREAM_MUSIC   ? "Music"   :
                                                          m_addonStreamProperties.iStreamType == AE_DSP_ASTREAM_MOVIE   ? "Movie"   :
@@ -276,21 +276,21 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
                                                          m_addonStreamProperties.iStreamType == AE_DSP_ASTREAM_PHONE   ? "Phone"   :
                                                          m_addonStreamProperties.iStreamType == AE_DSP_ASTREAM_MESSAGE ? "Message" :
                                                          "Unknown");
-    CLog::Log(LOGDEBUG, "  | Name                 : %s", m_addonStreamProperties.strName);
-    CLog::Log(LOGDEBUG, "  | Language             : %s", m_addonStreamProperties.strLanguage);
-    CLog::Log(LOGDEBUG, "  | Codec                : %s", m_addonStreamProperties.strCodecId);
-    CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_addonStreamProperties.iSampleRate);
-    CLog::Log(LOGDEBUG, "  | Channels             : %d", m_addonStreamProperties.iChannels);
+    CLog::Log(LOGDEBUG, "  | Name                 : %s", std::string(m_addonStreamProperties.strName));
+    CLog::Log(LOGDEBUG, "  | Language             : %s", std::string(m_addonStreamProperties.strLanguage));
+    CLog::Log(LOGDEBUG, "  | Codec                : %s", std::string(m_addonStreamProperties.strCodecId));
+    CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", const_cast<const int&>(m_addonStreamProperties.iSampleRate));
+    CLog::Log(LOGDEBUG, "  | Channels             : %d", const_cast<const int&>(m_addonStreamProperties.iChannels));
     CLog::Log(LOGDEBUG, "  ----  Input format  ----");
-    CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_addonSettings.iInSamplerate);
+    CLog::Log(LOGDEBUG, "  | Sample Rate          : %u", const_cast<const unsigned int&>(m_addonSettings.iInSamplerate));
     CLog::Log(LOGDEBUG, "  | Sample Format        : %s", CAEUtil::DataFormatToStr(m_inputFormat.m_dataFormat));
     CLog::Log(LOGDEBUG, "  | Channel Count        : %d", m_inputFormat.m_channelLayout.Count());
     CLog::Log(LOGDEBUG, "  | Channel Layout       : %s", ((std::string)m_inputFormat.m_channelLayout).c_str());
-    CLog::Log(LOGDEBUG, "  | Frames               : %d", m_addonSettings.iInFrames);
+    CLog::Log(LOGDEBUG, "  | Frames               : %d", const_cast<const int&>(m_addonSettings.iInFrames));
     CLog::Log(LOGDEBUG, "  ----  Process format ----");
-    CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_addonSettings.iProcessSamplerate);
+    CLog::Log(LOGDEBUG, "  | Sample Rate          : %u", const_cast<const unsigned int&>(m_addonSettings.iProcessSamplerate));
     CLog::Log(LOGDEBUG, "  | Sample Format        : %s", "AE_FMT_FLOATP");
-    CLog::Log(LOGDEBUG, "  | Frames               : %d", m_addonSettings.iProcessFrames);
+    CLog::Log(LOGDEBUG, "  | Frames               : %d", const_cast<const int&>(m_addonSettings.iProcessFrames));
     CLog::Log(LOGDEBUG, "  | Internal processing  : %s", m_resamplerDSPProcessor ? "yes" : "no");
     CLog::Log(LOGDEBUG, "  ----  Output format ----");
     CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_outputFormat.m_sampleRate);

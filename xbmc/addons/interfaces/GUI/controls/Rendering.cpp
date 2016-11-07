@@ -54,7 +54,7 @@ void Interface_GUIControlAddonRendering::set_callbacks(
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -77,7 +77,7 @@ void Interface_GUIControlAddonRendering::destroy(void* kodiBase, void* handle)
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlAddonRendering::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 

@@ -96,7 +96,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
     m_details.file = m_cachePath + ".jpg";
     if (out_texture)
       *out_texture = LoadImage(CTextureCache::GetCachedPath(m_details.file), width, height, "" /* already flipped */);
-    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.empty() ? "Caching" : "Recaching", CURL::GetRedacted(image).c_str(), m_details.file.c_str(), out_texture);
+    CLog::Log(LOGDEBUG, "Fast %s image '%s' to '%s': %p", m_oldHash.empty() ? "Caching" : "Recaching", CURL::GetRedacted(image).c_str(), m_details.file.c_str(), static_cast<void*>(out_texture));
     return true;
   }
 #endif

@@ -355,7 +355,7 @@ bool Interface_GUIWindow::set_focus_id(void* kodiBase, void* handle, int control
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), addon ? addon->ID().c_str() : "unknown");
     return false;
   }
 
@@ -380,7 +380,7 @@ int Interface_GUIWindow::get_focus_id(void* kodiBase, void* handle)
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), addon ? addon->ID().c_str() : "unknown");
     return -1;
   }
 
@@ -401,7 +401,7 @@ void Interface_GUIWindow::set_control_label(void* kodiBase, void* handle, int co
   if (!addon || !pAddonWindow || !label)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, label, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), label, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -424,7 +424,7 @@ void Interface_GUIWindow::set_property(void* kodiBase, void* handle, const char 
   if (!addon || !pAddonWindow || !key || !value)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p', value='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, value, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, value, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -443,7 +443,7 @@ void Interface_GUIWindow::set_property_int(void* kodiBase, void* handle, const c
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -462,7 +462,7 @@ void Interface_GUIWindow::set_property_bool(void* kodiBase, void* handle, const 
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -481,7 +481,7 @@ void Interface_GUIWindow::set_property_double(void* kodiBase, void* handle, cons
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -500,7 +500,7 @@ char* Interface_GUIWindow::get_property(void* kodiBase, void* handle, const char
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -521,7 +521,7 @@ int Interface_GUIWindow::get_property_int(void* kodiBase, void* handle, const ch
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return -1;
   }
 
@@ -542,7 +542,7 @@ bool Interface_GUIWindow::get_property_bool(void* kodiBase, void* handle, const 
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return false;
   }
 
@@ -563,7 +563,7 @@ double Interface_GUIWindow::get_property_double(void* kodiBase, void* handle, co
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return 0.0;
   }
 
@@ -584,7 +584,7 @@ void Interface_GUIWindow::clear_properties(void* kodiBase, void* handle)
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -600,7 +600,7 @@ void Interface_GUIWindow::clear_property(void* kodiBase, void* handle, const cha
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, key, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), key, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -624,7 +624,7 @@ void Interface_GUIWindow::clear_item_list(void* kodiBase, void* handle)
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -640,7 +640,7 @@ void Interface_GUIWindow::add_list_item(void* kodiBase, void* handle, void* item
   if (!addon || !pAddonWindow || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', item='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), item, addon ? addon->ID().c_str() : "unknown");
     return;
   }
   
@@ -663,7 +663,7 @@ void Interface_GUIWindow::remove_list_item_from_position(void* kodiBase, void* h
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -679,7 +679,7 @@ void Interface_GUIWindow::remove_list_item(void* kodiBase, void* handle, void* i
   if (!addon || !pAddonWindow || !item)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', item='%p') on addon '%s'",
-                          __FUNCTION__, addon, pAddonWindow, item, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(pAddonWindow), item, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -702,7 +702,7 @@ void* Interface_GUIWindow::get_list_item(void* kodiBase, void* handle, int list_
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -730,7 +730,7 @@ void Interface_GUIWindow::set_current_list_position(void* kodiBase, void* handle
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -746,7 +746,7 @@ int Interface_GUIWindow::get_current_list_position(void* kodiBase, void* handle)
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return -1;
   }
 
@@ -764,7 +764,7 @@ int Interface_GUIWindow::get_list_size(void* kodiBase, void* handle)
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return -1;
   }
 
@@ -782,7 +782,7 @@ void Interface_GUIWindow::set_container_property(void* kodiBase, void* handle, c
   if (!addon || !pAddonWindow || !key || !value)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p', value='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, key, value, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, key, value, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -798,7 +798,7 @@ void Interface_GUIWindow::set_container_content(void* kodiBase, void* handle, co
   if (!addon || !pAddonWindow || !value)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', value='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, value, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, value, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -814,7 +814,7 @@ int Interface_GUIWindow::get_current_container_id(void* kodiBase, void* handle)
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return -1;
   }
 
@@ -837,7 +837,7 @@ void Interface_GUIWindow::mark_dirty_region(void* kodiBase, void* handle)
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -923,7 +923,7 @@ void* Interface_GUIWindow::GetControl(void* kodiBase, void* handle, int control_
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          function, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          function, static_cast<void*>(addon), handle, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 

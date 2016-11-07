@@ -51,7 +51,7 @@ void Interface_GUIControlImage::set_visible(void* kodiBase, void* handle, bool v
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlImage::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -65,7 +65,7 @@ void Interface_GUIControlImage::set_filename(void* kodiBase, void* handle, const
   if (!addon || !control || !filename)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlImage::%s - invalid handler data (kodiBase='%p', handle='%p', filename='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, filename, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), static_cast<const void*>(filename), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -79,7 +79,7 @@ void Interface_GUIControlImage::set_color_diffuse(void* kodiBase, void* handle, 
   if (!addon || !control)
   {
     CLog::Log(LOGERROR, "Interface_GUIControlImage::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+                          __FUNCTION__, static_cast<void*>(addon), static_cast<void*>(control), addon ? addon->ID().c_str() : "unknown");
     return;
   }
 

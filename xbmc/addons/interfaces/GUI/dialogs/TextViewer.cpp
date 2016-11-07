@@ -56,7 +56,7 @@ void Interface_GUIDialogTextViewer::open(void* kodiBase, const char *heading, co
   if (!heading || !text || !dialog)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogTextViewer::%s - invalid handler data (heading='%p', text='%p', dialog='%p') on addon '%s'", __FUNCTION__,
-                            heading, text, dialog, addon->ID().c_str());
+                        static_cast<const void*>(heading), static_cast<const void*>(text), static_cast<void*>(dialog), addon->ID().c_str());
     return;
   }
 

@@ -170,7 +170,7 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
 
 bool CRenderSystemGLES::DestroyRenderSystem()
 {
-  CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
+  CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", static_cast<void*>(m_pGUIshader));
 
   if (m_pGUIshader)
   {
@@ -537,7 +537,7 @@ void CRenderSystemGLES::InitialiseGUIShader()
       }
       else
       {
-        CLog::Log(LOGDEBUG, "GUI Shader [%s]- Initialise successful : %p", ShaderNames[i], m_pGUIshader[i]);
+        CLog::Log(LOGDEBUG, "GUI Shader [%s]- Initialise successful : %p", ShaderNames[i], static_cast<void*>(m_pGUIshader[i]));
       }
     }
   }

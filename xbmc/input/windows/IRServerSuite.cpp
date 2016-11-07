@@ -117,7 +117,7 @@ bool CRemoteControl::Connect(bool logMessages)
   if(res)
   {
     if (logMessages)
-      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - getaddrinfo failed: %s", gai_strerror(res));
+      CLog::Log(LOGDEBUG, L"CRemoteControl::Connect - getaddrinfo failed: %ls", gai_strerror(res));
     return false;
   }
 

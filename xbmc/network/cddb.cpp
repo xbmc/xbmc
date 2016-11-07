@@ -77,7 +77,7 @@ bool Xcddb::openSocket()
   res = getaddrinfo(m_cddb_ip_address.c_str(), service, &hints, &result);
   if(res)
   {
-    CLog::Log(LOGERROR, "Xcddb::openSocket - failed to lookup %s with error %s", m_cddb_ip_address.c_str(), gai_strerror(res));
+    CLog::Log(LOGERROR, _T("Xcddb::openSocket - failed to lookup %s with error %s"), m_cddb_ip_address.c_str(), gai_strerror(res));
     res = getaddrinfo("130.179.31.49", service, &hints, &result);
     if(res)
       return false;
