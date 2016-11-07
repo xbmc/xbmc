@@ -76,6 +76,10 @@ namespace PERIPHERALS
     PERIPHERAL_JOYSTICK,
   };
 
+  class CPeripheral;
+  typedef std::shared_ptr<CPeripheral> PeripheralPtr;
+  typedef std::vector<PeripheralPtr>   PeripheralVector;
+
   class CPeripheralAddon;
   typedef std::shared_ptr<CPeripheralAddon> PeripheralAddonPtr;
   typedef std::vector<PeripheralAddonPtr>   PeripheralAddonVector;

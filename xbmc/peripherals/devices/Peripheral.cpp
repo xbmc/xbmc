@@ -84,8 +84,6 @@ CPeripheral::~CPeripheral(void)
 {
   PersistSettings(true);
 
-  for (unsigned int iSubdevicePtr = 0; iSubdevicePtr < m_subDevices.size(); iSubdevicePtr++)
-    delete m_subDevices.at(iSubdevicePtr);
   m_subDevices.clear();
 
   ClearSettings();
@@ -200,10 +198,9 @@ bool CPeripheral::Initialise(void)
   return bReturn;
 }
 
-void CPeripheral::GetSubdevices(std::vector<CPeripheral *> &subDevices) const
+void CPeripheral::GetSubdevices(PeripheralVector &subDevices) const
 {
-  for (unsigned int iSubdevicePtr = 0; iSubdevicePtr < m_subDevices.size(); iSubdevicePtr++)
-    subDevices.push_back(m_subDevices.at(iSubdevicePtr));
+  subDevices = m_subDevices;
 }
 
 bool CPeripheral::IsMultiFunctional(void) const

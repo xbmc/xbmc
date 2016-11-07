@@ -60,13 +60,13 @@ namespace PERIPHERALS
      */
     ADDON_STATUS CreateAddon(void);
 
-    bool         Register(unsigned int peripheralIndex, CPeripheral* peripheral);
-    void         UnregisterRemovedDevices(const PeripheralScanResults &results, std::vector<CPeripheral*>& removedPeripherals);
+    bool         Register(unsigned int peripheralIndex, const PeripheralPtr& peripheral);
+    void         UnregisterRemovedDevices(const PeripheralScanResults &results, PeripheralVector& removedPeripherals);
     void         GetFeatures(std::vector<PeripheralFeature> &features) const;
     bool         HasFeature(const PeripheralFeature feature) const;
-    CPeripheral* GetPeripheral(unsigned int index) const;
-    CPeripheral* GetByPath(const std::string &strPath) const;
-    int          GetPeripheralsWithFeature(std::vector<CPeripheral*> &results, const PeripheralFeature feature) const;
+    PeripheralPtr GetPeripheral(unsigned int index) const;
+    PeripheralPtr GetByPath(const std::string &strPath) const;
+    int          GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const;
     size_t       GetNumberOfPeripherals(void) const;
     size_t       GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
     void         GetDirectory(const std::string &strPath, CFileItemList &items) const;
@@ -141,7 +141,7 @@ namespace PERIPHERALS
     bool                m_bProvidesButtonMaps;
 
     /* @brief Map of peripherals belonging to the add-on */
-    std::map<unsigned int, CPeripheral*>  m_peripherals;
+    std::map<unsigned int, PeripheralPtr>  m_peripherals;
 
     /* @brief Button map observers */
     std::vector<std::pair<CPeripheral*, JOYSTICK::IButtonMap*> > m_buttonMaps;

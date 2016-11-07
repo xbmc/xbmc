@@ -133,7 +133,7 @@ namespace PERIPHERALS
      * @brief Get all subdevices if this device is multifunctional.
      * @param subDevices The subdevices.
      */
-    virtual void GetSubdevices(std::vector<CPeripheral *> &subDevices) const;
+    virtual void GetSubdevices(PeripheralVector &subDevices) const;
 
     /*!
      * @return True when this device is multifunctional, false otherwise.
@@ -221,7 +221,7 @@ namespace PERIPHERALS
     bool                             m_bHidden;
     bool                             m_bError;
     std::vector<PeripheralFeature>   m_features;
-    std::vector<CPeripheral *>       m_subDevices;
+    PeripheralVector                 m_subDevices;
     std::map<std::string, PeripheralDeviceSetting> m_settings;
     std::set<std::string>             m_changedSettings;
     CPeripheralBus*                  m_bus;
