@@ -34,6 +34,7 @@ namespace JOYSTICK
 
     // implementation of IKeymapHandler
     virtual INPUT_TYPE GetInputType(unsigned int keyId) const override;
+    virtual int GetActionID(unsigned int keyId) const override;
     virtual void OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs = 0) override;
     virtual void OnAnalogKey(unsigned int keyId, float magnitude) override;
 

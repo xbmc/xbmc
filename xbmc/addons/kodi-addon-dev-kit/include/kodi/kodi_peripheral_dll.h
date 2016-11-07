@@ -166,10 +166,49 @@ extern "C"
                                unsigned int feature_count, const JOYSTICK_FEATURE* features);
 
   /*!
+   * @brief Get the driver primitives that should be ignored while mapping the device
+   * @param joystick        The device's joystick properties; unknown values may be left at their default
+   * @param primitive_count The number of features allocated for the primitives array
+   * @param primitives      The array of allocated driver primitives to be ignored
+   * @return PERIPHERAL_NO_ERROR if successful; array must be freed using
+   *         FreePrimitives() in this case
+   */
+  PERIPHERAL_ERROR GetIgnoredPrimitives(const JOYSTICK_INFO* joystick,
+                                        unsigned int* primitive_count,
+                                        JOYSTICK_DRIVER_PRIMITIVE** primitives);
+
+  /*!
+   * @brief Free the memory allocated in GetIgnoredPrimitives()
+   *
+   * Must be called if GetIgnoredPrimitives() returns PERIPHERAL_NO_ERROR.
+   *
+   * @param primitive_count  The number of driver primitives allocated for the primitives array
+   * @param primitives       The array of allocated driver primitives
+   */
+  void FreePrimitives(unsigned int primitive_count, JOYSTICK_DRIVER_PRIMITIVE* primitives);
+
+  /*!
+   * @brief Set the list of driver primitives that are ignored for the device
+   * @param joystick         The device's joystick properties; unknown values may be left at their default
+   * @param primitive_count  The number of driver features in the primitives array
+   * @param primitives       The array of driver primitives to ignore
+   * @return PERIPHERAL_NO_ERROR if successful
+   */
+  PERIPHERAL_ERROR SetIgnoredPrimitives(const JOYSTICK_INFO* joystick,
+                                        unsigned int primitive_count,
+                                        const JOYSTICK_DRIVER_PRIMITIVE* primitives);
+
+  /*!
    * @brief Save the button map for the given joystick
    * @param joystick      The device's joystick properties
    */
   void SaveButtonMap(const JOYSTICK_INFO* joystick);
+
+  /*!
+  * @brief Revert the button map to the last time it was loaded or committed to disk
+  * @param joystick      The device's joystick properties
+  */
+  void RevertButtonMap(const JOYSTICK_INFO* joystick);
 
   /*!
    * @brief Reset the button map for the given joystick and controller profile ID
@@ -208,7 +247,11 @@ extern "C"
     pClient->GetFeatures                    = GetFeatures;
     pClient->FreeFeatures                   = FreeFeatures;
     pClient->MapFeatures                    = MapFeatures;
+    pClient->GetIgnoredPrimitives           = GetIgnoredPrimitives;
+    pClient->FreePrimitives                 = FreePrimitives;
+    pClient->SetIgnoredPrimitives           = SetIgnoredPrimitives;
     pClient->SaveButtonMap                  = SaveButtonMap;
+    pClient->RevertButtonMap                = RevertButtonMap;
     pClient->ResetButtonMap                 = ResetButtonMap;
     pClient->PowerOffJoystick               = PowerOffJoystick;
 #endif

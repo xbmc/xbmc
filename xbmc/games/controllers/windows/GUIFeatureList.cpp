@@ -30,7 +30,9 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUILabelControl.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
+#include "messaging/ApplicationMessenger.h"
 
 using namespace GAME;
 
@@ -145,7 +147,12 @@ void CGUIFeatureList::OnSelect(unsigned int index)
       buttons.push_back(control);
   }
 
-  m_wizard->Run(m_controller->ID(), buttons);
+  m_wizard->Run(m_controller->ID(), buttons, this);
+}
+
+void CGUIFeatureList::OnSkipDetected()
+{
+  //! @todo
 }
 
 IFeatureButton* CGUIFeatureList::GetButtonControl(unsigned int featureIndex)

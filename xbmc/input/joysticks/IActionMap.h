@@ -19,37 +19,29 @@
  */
 #pragma once
 
+#include "JoystickTypes.h"
+#include "input/Key.h"
+
 namespace JOYSTICK
 {
+  class CDriverPrimitive;
+
   /*!
-   * \brief Interface for handling button maps
+   * \brief Interface for translating features to action IDs
    */
-  class IButtonMapCallback
+  class IActionMap
   {
   public:
-    virtual ~IButtonMapCallback() = default;
+    virtual ~IActionMap() = default;
 
     /*!
-     * \brief Save the button map
-     */
-    virtual void SaveButtonMap() = 0;
-
-    /*!
-     * \brief Clear the list of ignored driver primitives
+     * \brief Get the action ID mapped to the specified feature
      *
-     * Called if the user begins capturing primitives to be ignored, and
-     * no primitives are captured before the dialog is accepted by the user.
+     * \param feature  The feature to look up
      *
-     * In this case, the button mapper won't have been given access to the
-     * button map, so a callback is needed to indicate that no primitives were
-     * captured and the user accepted this.
+     * \return The action ID from Key.h, or ACTION_NONE if no action is mapped
+     *         to the specified key
      */
-    virtual void ResetIgnoredPrimitives() = 0;
-
-    /*!
-     * \brief Revert changes to the button map since the last time it was loaded
-     *        or commited to disk
-     */
-    virtual void RevertButtonMap() = 0;
+    virtual int GetActionID(const FeatureName& feature) = 0;
   };
 }

@@ -32,6 +32,7 @@
 using namespace GAME;
 
 #define ESC_KEY_CODE  27
+#define SKIPPING_DETECTION_MS  200
 
 CGUIConfigurationWizard::CGUIConfigurationWizard() :
   CThread("GUIConfigurationWizard")
@@ -44,9 +45,10 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_currentButton = nullptr;
   m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
+  m_lastMappingActionMs = 0;
 }
 
-void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons)
+void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons, IConfigurationWizardCallback* callback)
 {
   Abort();
 
@@ -56,6 +58,7 @@ void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std:
     // Set Run() parameters
     m_strControllerId = strControllerId;
     m_buttons = buttons;
+    m_callback = callback;
 
     // Initialize state variables
     InitializeState();
@@ -92,6 +95,8 @@ void CGUIConfigurationWizard::Process(void)
 {
   CLog::Log(LOGDEBUG, "Starting configuration wizard");
 
+  m_lastMappingActionMs = XbmcThreads::SystemClockMillis();
+
   InstallHooks();
 
   {
@@ -123,7 +128,8 @@ void CGUIConfigurationWizard::Process(void)
         break;
     }
 
-    m_currentButton = nullptr;
+    // Finished mapping
+    InitializeState();
   }
 
   if (ButtonMapCallback())
@@ -134,7 +140,9 @@ void CGUIConfigurationWizard::Process(void)
   CLog::Log(LOGDEBUG, "Configuration wizard ended");
 }
 
-bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, const JOYSTICK::CDriverPrimitive& primitive)
+bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                                           JOYSTICK::IActionMap* actionMap,
+                                           const JOYSTICK::CDriverPrimitive& primitive)
 {
   using namespace JOYSTICK;
 
@@ -151,6 +159,10 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
     // Primitive has already been mapped this round, ignore it
     bHandled = true;
   }
+  else if (buttonMap->IsIgnored(primitive))
+  {
+    bHandled = true;
+  }
   else
   {
     // Get the current state of the thread
@@ -165,6 +177,10 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
     if (currentButton)
     {
       const CControllerFeature& feature = currentButton->Feature();
+
+      CLog::Log(LOGDEBUG, "%s: mapping feature \"%s\" for device %s",
+        m_strControllerId.c_str(), feature.Name().c_str(), buttonMap->DeviceName().c_str());
+
       switch (feature.Type())
       {
         case FEATURE_TYPE::SCALAR:
@@ -186,6 +202,17 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap, cons
       if (bHandled)
       {
         m_history.insert(primitive);
+
+        // Detect button skipping
+        unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_lastMappingActionMs;
+        if (elapsed <= SKIPPING_DETECTION_MS)
+        {
+          CLog::Log(LOGDEBUG, "%s: Possible skip detected after %ums", m_strControllerId.c_str(), elapsed);
+          if (m_callback)
+            m_callback->OnSkipDetected();
+        }
+        m_lastMappingActionMs = XbmcThreads::SystemClockMillis();
+
         m_inputEvent.Set();
       }
     }

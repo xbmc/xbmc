@@ -9,6 +9,7 @@ set(SOURCES DeadzoneFilter.cpp
 set(HEADERS DeadzoneFilter.h
             DefaultJoystick.h
             DriverPrimitive.h
+            IActionMap.h
             IButtonMap.h
             IButtonMapCallback.h
             IButtonMapper.h

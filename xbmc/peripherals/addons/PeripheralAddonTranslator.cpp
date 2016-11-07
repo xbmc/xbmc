@@ -21,6 +21,9 @@
 #include "PeripheralAddonTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 
+#include <algorithm>
+#include <iterator>
+
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
@@ -119,6 +122,28 @@ ADDON::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const CDri
   }
 
   return retVal;
+}
+
+std::vector<JOYSTICK::CDriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<ADDON::DriverPrimitive>& primitives)
+{
+  std::vector<JOYSTICK::CDriverPrimitive> ret;
+  std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
+    [](const ADDON::DriverPrimitive& primitive)
+    {
+      return CPeripheralAddonTranslator::TranslatePrimitive(primitive);
+    });
+  return ret;
+}
+
+std::vector<ADDON::DriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives)
+{
+  std::vector<ADDON::DriverPrimitive> ret;
+  std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
+    [](const JOYSTICK::CDriverPrimitive& primitive)
+    {
+      return CPeripheralAddonTranslator::TranslatePrimitive(primitive);
+    });
+  return ret;
 }
 
 HAT_DIRECTION CPeripheralAddonTranslator::TranslateHatDirection(JOYSTICK_DRIVER_HAT_DIRECTION dir)

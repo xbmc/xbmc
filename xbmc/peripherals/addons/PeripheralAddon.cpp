@@ -585,11 +585,84 @@ bool CPeripheralAddon::MapFeature(const CPeripheral* device,
                                                  1, &addonFeature), "MapFeatures()"); }
   catch (std::exception &e) { LogException(e, "MapFeatures()"); return false;  }
 
+  return retVal == PERIPHERAL_NO_ERROR;
+}
+
+bool CPeripheralAddon::GetIgnoredPrimitives(const CPeripheral* device, PrimitiveVector& primitives)
+{
+  if (!m_bProvidesButtonMaps)
+    return false;
+
+  PERIPHERAL_ERROR retVal;
+
+  ADDON::Joystick joystickInfo;
+  GetJoystickInfo(device, joystickInfo);
+
+  JOYSTICK_INFO joystickStruct;
+  joystickInfo.ToStruct(joystickStruct);
+
+  unsigned int primitiveCount = 0;
+  JOYSTICK_DRIVER_PRIMITIVE* pPrimitives = nullptr;
+
+  try
+  {
+    LogError(retVal = m_pStruct->GetIgnoredPrimitives(&joystickStruct, &primitiveCount,
+                                                      &pPrimitives), "GetIgnoredPrimitives()");
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, "GetIgnoredPrimitives()");
+    return false; 
+  }
+
   if (retVal == PERIPHERAL_NO_ERROR)
   {
-    // Notify observing button maps
-    RefreshButtonMaps(device->DeviceName());
+    for (unsigned int i = 0; i < primitiveCount; i++)
+      primitives.emplace_back(pPrimitives[i]);
+
+    try
+    {
+      m_pStruct->FreePrimitives(primitiveCount, pPrimitives);
+    }
+    catch (std::exception &e)
+    {
+      LogException(e, "FreePrimitives()");
+    }
+
+    return true;
   }
+
+  return false;
+
+}
+
+bool CPeripheralAddon::SetIgnoredPrimitives(const CPeripheral* device, const PrimitiveVector& primitives)
+{
+  if (!m_bProvidesButtonMaps)
+    return false;
+
+  PERIPHERAL_ERROR retVal;
+
+  ADDON::Joystick joystickInfo;
+  GetJoystickInfo(device, joystickInfo);
+
+  JOYSTICK_INFO joystickStruct;
+  joystickInfo.ToStruct(joystickStruct);
+
+  JOYSTICK_DRIVER_PRIMITIVE* addonPrimitives = nullptr;
+  ADDON::DriverPrimitives::ToStructs(primitives, &addonPrimitives);
+
+  try
+  {
+    LogError(retVal = m_pStruct->SetIgnoredPrimitives(&joystickStruct,
+        primitives.size(), addonPrimitives), "SetIgnoredPrimitives()");
+  }
+  catch (std::exception &e)
+  {
+    LogException(e, "SetIgnoredPrimitives()"); return false;
+  }
+
+  ADDON::DriverPrimitives::FreeStructs(primitives.size(), addonPrimitives);
 
   return retVal == PERIPHERAL_NO_ERROR;
 }
@@ -607,6 +680,24 @@ void CPeripheralAddon::SaveButtonMap(const CPeripheral* device)
 
   try { m_pStruct->SaveButtonMap(&joystickStruct); }
   catch (std::exception &e) { LogException(e, "SaveMap()"); return; }
+
+  // Notify observing button maps
+  RefreshButtonMaps(device->DeviceName());
+}
+
+void CPeripheralAddon::RevertButtonMap(const CPeripheral* device)
+{
+  if (!m_bProvidesButtonMaps)
+    return;
+
+  ADDON::Joystick joystickInfo;
+  GetJoystickInfo(device, joystickInfo);
+
+  JOYSTICK_INFO joystickStruct;
+  joystickInfo.ToStruct(joystickStruct);
+
+  try { m_pStruct->RevertButtonMap(&joystickStruct); }
+  catch (std::exception &e) { LogException(e, "RevertMap()"); return; }
 }
 
 void CPeripheralAddon::ResetButtonMap(const CPeripheral* device, const std::string& strControllerId)

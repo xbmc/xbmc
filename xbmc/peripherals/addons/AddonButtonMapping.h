@@ -51,6 +51,8 @@ namespace PERIPHERALS
 
     // implementation of IButtonMapCallback
     virtual void SaveButtonMap() override;
+    virtual void ResetIgnoredPrimitives() override;
+    virtual void RevertButtonMap() override;
 
   private:
     std::unique_ptr<JOYSTICK::CButtonMapping> m_buttonMapping;
