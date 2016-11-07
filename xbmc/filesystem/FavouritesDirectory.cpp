@@ -22,6 +22,7 @@
 #include "File.h"
 #include "Directory.h"
 #include "Util.h"
+#include "interfaces/AnnouncementManager.h"
 #include "profiles/ProfilesManager.h"
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
@@ -54,7 +55,7 @@ bool CFavouritesDirectory::Exists(const CURL& url)
     return XFILE::CFile::Exists("special://xbmc/system/favourites.xml") 
         || XFILE::CFile::Exists(URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetProfileUserDataFolder(), "favourites.xml"));
   }
-  return XFILE::CDirectory::Exists(url); //directly load the given file
+  return XFILE::CDirectory::Exists(url);
 }
 
 bool CFavouritesDirectory::Load(CFileItemList &items)
@@ -136,7 +137,12 @@ bool CFavouritesDirectory::Save(const CFileItemList &items)
   }
 
   favourites = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetProfileUserDataFolder(), "favourites.xml");
-  return doc.SaveFile(favourites);
+
+  bool bRet = doc.SaveFile(favourites);
+  if (bRet)
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::GUI, "xbmc", "OnFavouritesUpdated");
+
+  return bRet;
 }
 
 bool CFavouritesDirectory::AddOrRemove(CFileItem *item, int contextWindow)
