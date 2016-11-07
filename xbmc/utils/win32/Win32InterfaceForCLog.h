@@ -32,7 +32,7 @@ public:
   void CloseLogFile(void);
   bool WriteStringToLog(const std::string& logString);
   void PrintDebugString(const std::string& debugString);
-  static void GetCurrentLocalTime(int& hour, int& minute, int& second);
+  static void GetCurrentLocalTime(int& hour, int& minute, int& second, double& millisecond);
 private:
   HANDLE m_hFile;
 };
