@@ -94,7 +94,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline                 = recording.strPlotOutline;
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
-  m_genre                          = StringUtils::Split(CPVRRecording::SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription), g_advancedSettings.m_videoItemSeparator);
   m_playCount                      = recording.iPlayCount;
   m_resumePoint.timeInSeconds      = recording.iLastPlayedPosition;
   m_resumePoint.totalTimeInSeconds = recording.iDuration;
@@ -104,6 +103,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
   m_iChannelUid                    = recording.iChannelUid;
+  SetGenre(recording.iGenreType, recording.iGenreSubType, *recording.strGenreDescription);
 
   //  As the channel a recording was done on (probably long time ago) might no longer be
   //  available today prefer addon-supplied channel type (tv/radio) over channel attribute.
@@ -482,17 +482,17 @@ int CPVRRecording::ClientID(void) const
   return m_iClientId;
 }
 
-std::string CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const char* strGenre)
+void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, char strGenre)
 {
-  if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
+  if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (sizeof(strGenre) > 0))
   {
-    /* Type and sub type are not given. No EPG color coding possible
+    /* Type and sub type are not given.
     * Use the provided genre description as backup. */
-    return std::string(strGenre);
+    m_genre = StringUtils::Split(std::string(strGenre, PVR_ADDON_DESC_STRING_LENGTH), g_advancedSettings.m_videoItemSeparator);
   }
   else
   {
     /* Determine the genre description from the type and subtype IDs */
-    return CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType);
+    m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   }
 }
