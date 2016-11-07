@@ -238,13 +238,12 @@ namespace PVR
     std::string EpisodeName(void) const { return m_strShowTitle; };
 
     /*!
-    * @brief Set m_genre to plugin proved sting when iGenreType = EPG_GENRE_USE_STRING
-    * @fallback Atempts to convert a genre id and subid to a human readable name
-    * @param iGenreType The genre type ID
+    * @brief set the genre for this recording.
+    * @param iGenreType The genre type ID. If set to EPG_GENRE_USE_STRING, set genre to the value provided with strGenre. Otherwise, compile the genre string from the values given by iGenreType and iGenreSubType
     * @param iGenreSubType The genre subtype ID
-    * @param strGenre custom genre
+    * @param strGenre The genre
     */
-    void SetGenre( int iGenreType, int iGenreSubType, char strGenre);
+    void SetGenre( int iGenreType, int iGenreSubType, const std::string &strGenre);
 
   private:
     CDateTime    m_recordingTime; /*!< start time of the recording */

@@ -103,7 +103,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
   m_iChannelUid                    = recording.iChannelUid;
-  SetGenre(recording.iGenreType, recording.iGenreSubType, *recording.strGenreDescription);
+  SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
 
   //  As the channel a recording was done on (probably long time ago) might no longer be
   //  available today prefer addon-supplied channel type (tv/radio) over channel attribute.
@@ -482,13 +482,13 @@ int CPVRRecording::ClientID(void) const
   return m_iClientId;
 }
 
-void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, char strGenre)
+void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre)
 {
-  if ((iGenreType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (sizeof(strGenre) > 0))
+  if ((iGenreType == EPG_GENRE_USE_STRING) && !strGenre.empty())
   {
     /* Type and sub type are not given.
-    * Use the provided genre description as backup. */
-    m_genre = StringUtils::Split(std::string(strGenre, PVR_ADDON_DESC_STRING_LENGTH), g_advancedSettings.m_videoItemSeparator);
+    * Use the provided genre description if available. */
+    m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
   }
   else
   {
