@@ -133,6 +133,7 @@
   \sa HELPERS::DialogYesNoMessage
 */
 #define TMSG_GUI_DIALOG_YESNO             TMSG_MASK_WINDOWMANAGER + 8
+#define TMSG_GUI_DIALOG_OK                TMSG_MASK_WINDOWMANAGER + 9
 
 /*!
   \def TMSG_GUI_PREVIOUS_WINDOW
@@ -141,7 +142,7 @@
   This is an alternative to TMSG_GUI_ACTIVATE_WINDOW, but it keeps
   all configured parameters, like startup directory.
 */
-#define TMSG_GUI_PREVIOUS_WINDOW          TMSG_MASK_WINDOWMANAGER + 9
+#define TMSG_GUI_PREVIOUS_WINDOW          TMSG_MASK_WINDOWMANAGER + 10
 
 
 #define TMSG_CALLBACK                     800

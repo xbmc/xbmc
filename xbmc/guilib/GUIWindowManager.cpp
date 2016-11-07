@@ -956,6 +956,8 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_GUI_DIALOG_YESNO:
+  {
+
     if (!pMsg->lpVoid && pMsg->param1 < 0 && pMsg->param2 < 0)
       return;
 
@@ -973,7 +975,31 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
       pMsg->SetResult(dialog->ShowAndGetInput(options));
     }
 
-    break;
+  }
+  break;
+
+  case TMSG_GUI_DIALOG_OK:
+  {
+
+    if (!pMsg->lpVoid && pMsg->param1 < 0 && pMsg->param2 < 0)
+      return;
+
+    auto dialogOK = static_cast<CGUIDialogOK*>(GetWindow(WINDOW_DIALOG_OK));
+    if (!dialogOK)
+      return;
+
+    if (pMsg->lpVoid)
+      dialogOK->ShowAndGetInput(*static_cast<HELPERS::DialogOKMessage*>(pMsg->lpVoid));
+    else
+    {
+      HELPERS::DialogOKMessage options;
+      options.heading = pMsg->param1;
+      options.text = pMsg->param2;
+      dialogOK->ShowAndGetInput(options);
+    }
+    pMsg->SetResult(static_cast<int>(dialogOK->IsConfirmed()));
+  }
+  break;
   }
 }
 

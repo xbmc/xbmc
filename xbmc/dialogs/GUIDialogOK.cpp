@@ -71,6 +71,22 @@ bool CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant line0, CVariant li
   return dialog->IsConfirmed();
 }
 
+bool CGUIDialogOK::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogOKMessage & options)
+{
+  if (!options.heading.isNull())
+    SetHeading(options.heading);
+  if (!options.text.isNull())
+    SetText(options.text);
+
+  for (size_t i = 0; i < 3; ++i)
+  {
+    if (!options.lines[i].isNull())
+      SetLine(i, options.lines[i]);
+  }
+  Open();
+  return IsConfirmed();
+}
+
 void CGUIDialogOK::OnInitWindow()
 {
   SET_CONTROL_HIDDEN(CONTROL_NO_BUTTON);
