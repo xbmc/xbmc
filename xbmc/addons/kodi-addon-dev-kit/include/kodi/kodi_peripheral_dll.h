@@ -163,7 +163,7 @@ extern "C"
    * @return PERIPHERAL_NO_ERROR if successful
    */
   PERIPHERAL_ERROR MapFeatures(const JOYSTICK_INFO* joystick, const char* controller_id,
-                               unsigned int feature_count, JOYSTICK_FEATURE* features);
+                               unsigned int feature_count, const JOYSTICK_FEATURE* features);
 
   /*!
    * @brief Save the button map for the given joystick

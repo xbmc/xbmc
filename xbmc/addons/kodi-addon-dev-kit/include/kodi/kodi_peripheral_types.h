@@ -304,7 +304,7 @@ extern "C"
     void             (__cdecl* FreeJoystickInfo)(JOYSTICK_INFO*);
     PERIPHERAL_ERROR (__cdecl* GetFeatures)(const JOYSTICK_INFO*, const char*, unsigned int*, JOYSTICK_FEATURE**);
     void             (__cdecl* FreeFeatures)(unsigned int, JOYSTICK_FEATURE*);
-    PERIPHERAL_ERROR (__cdecl* MapFeatures)(const JOYSTICK_INFO*, const char*, unsigned int, JOYSTICK_FEATURE*);
+    PERIPHERAL_ERROR (__cdecl* MapFeatures)(const JOYSTICK_INFO*, const char*, unsigned int, const JOYSTICK_FEATURE*);
     void             (__cdecl* SaveButtonMap)(const JOYSTICK_INFO*);
     void             (__cdecl* ResetButtonMap)(const JOYSTICK_INFO*, const char*);
     void             (__cdecl* PowerOffJoystick)(unsigned int);
