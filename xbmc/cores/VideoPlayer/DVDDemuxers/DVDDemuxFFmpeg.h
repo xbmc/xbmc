@@ -24,6 +24,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include <map>
+#include <memory>
 #include <vector>
 
 extern "C" {
