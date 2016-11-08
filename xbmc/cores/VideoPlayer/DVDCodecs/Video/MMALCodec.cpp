@@ -220,7 +220,7 @@ static void dec_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
 void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
   if (!(buffer->cmd == 0 && buffer->length > 0))
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p, len %d cmd:%x flags:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd, buffer->flags);
 
   bool kept = false;
@@ -599,7 +599,7 @@ void CMMALVideo::Dispose()
 
 void CMMALVideo::SetDropState(bool bDrop)
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (bDrop != m_dropState)
     CLog::Log(LOGDEBUG, "%s::%s - bDrop(%d)", CLASSNAME, __func__, bDrop);
   m_dropState = bDrop;
 }
