@@ -71,12 +71,10 @@ endif()
 
 # Build static libraries per directory
 if(NOT CMAKE_GENERATOR MATCHES "Visual Studio" AND NOT CMAKE_GENERATOR STREQUAL Xcode)
-  set(STATIC_LIBS_DEFAULT ON)
+  set(ENABLE_STATIC_LIBS TRUE)
 else()
-  set(STATIC_LIBS_DEFAULT OFF)
+  set(ENABLE_STATIC_LIBS FALSE)
 endif()
-option(ENABLE_STATIC_LIBS "Build static libraries per directory" ${STATIC_LIBS_DEFAULT})
-unset(STATIC_LIBS_DEFAULT)
 
 core_find_git_rev(APP_SCMID FULL)
 core_find_versions()
