@@ -26,6 +26,7 @@
 
 namespace JOYSTICK
 {
+  class CButtonMapping;
   class IButtonMap;
   class IButtonMapper;
 }
@@ -52,7 +53,7 @@ namespace PERIPHERALS
     virtual void SaveButtonMap() override;
 
   private:
-    std::unique_ptr<JOYSTICK::IDriverHandler> m_driverHandler;
+    std::unique_ptr<JOYSTICK::CButtonMapping> m_buttonMapping;
     std::unique_ptr<JOYSTICK::IButtonMap>     m_buttonMap;
   };
 }
