@@ -802,10 +802,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
           if (players.size() >= 1)
             buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
         }
-        if (item->IsSmartPlayList())
-        {
-            buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
-        }
         if (item->IsAudioBook())
         {
           int bookmark;
@@ -908,10 +904,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         OnClick(itemNumber, player);
       return true;
     }
-
-  case CONTEXT_BUTTON_PLAY_PARTYMODE:
-    g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, item->GetPath());
-    return true;
 
   case CONTEXT_BUTTON_RIP_CD:
     OnRipCD();

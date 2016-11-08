@@ -218,43 +218,6 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-std::string CGUIWindowMusicNav::GetQuickpathName(const std::string& strPath) const
-{
-  std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
-  StringUtils::ToLower(path);
-  if (path == "musicdb://genres/")
-    return "Genres";
-  else if (path == "musicdb://artists/")
-    return "Artists";
-  else if (path == "musicdb://albums/")
-    return "Albums";
-  else if (path == "musicdb://songs/")
-    return "Songs";
-  else if (path == "musicdb://top100/")
-    return "Top100";
-  else if (path == "musicdb://top100/songs/")
-    return "Top100Songs";
-  else if (path == "musicdb://top100/albums/")
-    return "Top100Albums";
-  else if (path == "musicdb://recentlyaddedalbums/")
-    return "RecentlyAddedAlbums";
-  else if (path == "musicdb://recentlyplayedalbums/")
-    return "RecentlyPlayedAlbums";
-  else if (path == "musicdb://compilations/")
-    return "Compilations";
-  else if (path == "musicdb://years/")
-    return "Years";
-  else if (path == "musicdb://singles/")
-    return "Singles";
-  else if (path == "special://musicplaylists/")
-    return "Playlists";
-  else
-  {
-    CLog::Log(LOGERROR, "  CGUIWindowMusicNav::GetQuickpathName: Unknown parameter (%s)", strPath.c_str());
-    return strPath;
-  }
-}
-
 bool CGUIWindowMusicNav::OnClick(int iItem, const std::string &player /* = "" */)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return false;
@@ -522,18 +485,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      //Set default or clear default
       NODE_TYPE nodetype = dir.GetDirectoryType(item->GetPath());
-      if (!item->IsParentFolder() && !inPlaylists &&
-         (nodetype == NODE_TYPE_ROOT ||
-          nodetype == NODE_TYPE_OVERVIEW ||
-          nodetype == NODE_TYPE_TOP100))
-      {
-        if (!item->IsPath(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)))
-          buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-        if (!CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty())
-          buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
-      }
       NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
       if (childtype == NODE_TYPE_ALBUM ||
           childtype == NODE_TYPE_ARTIST ||
@@ -646,16 +598,6 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_INFO_ALL:
     OnItemInfoAll(itemNumber);
-    return true;
-
-  case CONTEXT_BUTTON_SET_DEFAULT:
-    CServiceBroker::GetSettings().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
-    CServiceBroker::GetSettings().Save();
-    return true;
-
-  case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    CServiceBroker::GetSettings().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, "");
-    CServiceBroker::GetSettings().Save();
     return true;
 
   case CONTEXT_BUTTON_GO_TO_ARTIST:
