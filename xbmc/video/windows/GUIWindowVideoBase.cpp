@@ -1525,9 +1525,7 @@ void CGUIWindowVideoBase::OnSearch()
     if (iItem < 0)
       return;
 
-    CFileItemPtr pSelItem = items[iItem];
-
-    OnSearchItemFound(pSelItem.get());
+    OnSearchItemFound(items[iItem].get());
   }
   else
   {

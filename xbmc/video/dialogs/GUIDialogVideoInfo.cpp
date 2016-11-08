@@ -199,7 +199,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
               pDlgSelect->Add(director);
             pDlgSelect->Open();
 
-          int iItem = pDlgSelect->GetSelectedItem();
+            int iItem = pDlgSelect->GetSelectedItem();
             if (iItem < 0)
               return true;
             OnSearch(directors[iItem]);
@@ -497,11 +497,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
       if (iItem < 0)
         return;
 
-      CFileItem* pSelItem = new CFileItem(*items[iItem]);
-
-      OnSearchItemFound(pSelItem);
-
-      delete pSelItem;
+      OnSearchItemFound(items[iItem].get());
     }
   }
   else
