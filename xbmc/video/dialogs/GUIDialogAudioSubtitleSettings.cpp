@@ -86,11 +86,9 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
     
     // these settings can change on the fly
     //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_AUDIO_STREAM, g_application.m_pPlayer->GetAudioStream());
-    if (!m_dspEnabled) //< The follow settings are on enabled DSP system separated to them and need no update here.
-    {
-      m_settingsManager->SetNumber(SETTING_AUDIO_DELAY, videoSettings.m_AudioDelay);
-      m_settingsManager->SetBool(SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, videoSettings.m_OutputToAllSpeakers);
-    }
+    m_settingsManager->SetNumber(SETTING_AUDIO_DELAY, videoSettings.m_AudioDelay);
+    m_settingsManager->SetBool(SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, videoSettings.m_OutputToAllSpeakers);
+
     m_settingsManager->SetBool(SETTING_AUDIO_PASSTHROUGH, CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
 
     //! @todo m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.m_pPlayer->GetSubtitleVisible());
@@ -191,11 +189,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
   
   const std::string &settingId = setting->GetId();
-  if (settingId == SETTING_AUDIO_DSP)
-  {
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
-  }
-  else if (settingId == SETTING_SUBTITLE_BROWSER)
+  if (settingId == SETTING_SUBTITLE_BROWSER)
   {
     std::string strPath;
     if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
@@ -328,18 +322,15 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   settingAudioVolume->SetDependencies(depsAudioOutputPassthroughDisabled);
   static_cast<CSettingControlSlider*>(settingAudioVolume->GetControl())->SetFormatter(SettingFormatterPercentAsDecibel);
 
-  if (m_dspEnabled)
-    AddButton(groupAudio, SETTING_AUDIO_DSP, 24136, 0);
-
   // audio volume amplification setting
-  if (SupportsAudioFeature(IPC_AUD_AMP) && !m_dspEnabled)
+  if (SupportsAudioFeature(IPC_AUD_AMP))
   {
     CSettingNumber *settingAudioVolumeAmplification = AddSlider(groupAudio, SETTING_AUDIO_VOLUME_AMPLIFICATION, 660, 0, videoSettings.m_VolumeAmplification, 14054, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f);
     settingAudioVolumeAmplification->SetDependencies(depsAudioOutputPassthroughDisabled);
   }
 
   // audio delay setting
-  if (SupportsAudioFeature(IPC_AUD_OFFSET) && !m_dspEnabled)
+  if (SupportsAudioFeature(IPC_AUD_OFFSET))
   {
     CSettingNumber *settingAudioDelay = AddSlider(groupAudio, SETTING_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
     static_cast<CSettingControlSlider*>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);
@@ -350,8 +341,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     AddAudioStreams(groupAudio, SETTING_AUDIO_STREAM);
 
   // audio output to all speakers setting
-  //! @todo remove this setting
-  if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO) && !m_dspEnabled)
+  if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO))
     AddToggle(groupAudio, SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, 252, 0, videoSettings.m_OutputToAllSpeakers);
 
   // audio digital/analog setting
