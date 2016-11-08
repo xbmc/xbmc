@@ -24,7 +24,7 @@
 #include "threads/SingleLock.h"
 
 // Override for platform ports
-#if !defined(PLATFORM_OVERRIDE)
+#if !defined(PLATFORM_OVERRIDE_VP_PROCESSINFO)
 
 CProcessInfo* CProcessInfo::CreateInstance()
 {
