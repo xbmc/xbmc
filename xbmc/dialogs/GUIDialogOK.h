@@ -32,8 +32,8 @@ public:
   CGUIDialogOK(void);
   virtual ~CGUIDialogOK(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static void ShowAndGetInput(CVariant heading, CVariant text);
-  static void ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2);
+  static bool ShowAndGetInput(CVariant heading, CVariant text);
+  static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2);
 protected:
   virtual void OnInitWindow();
   virtual int GetDefaultLabelID(int controlId) const;
