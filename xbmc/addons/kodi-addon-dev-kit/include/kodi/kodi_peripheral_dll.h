@@ -158,7 +158,7 @@ extern "C"
    * @brief Add or update joystick features
    * @param joystick      The device's joystick properties; unknown values may be left at their default
    * @param controller_id The game controller profile being updated
-   * @param feature_count The number of features int the features array
+   * @param feature_count The number of features in the features array
    * @param features      The array of features
    * @return PERIPHERAL_NO_ERROR if successful
    */
