@@ -26,6 +26,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <memory>
 
 extern "C" {
 #include "libavformat/avformat.h"
