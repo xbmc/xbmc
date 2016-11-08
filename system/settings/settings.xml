@@ -2614,6 +2614,12 @@
           <control type="toggle" />
           <default>true</default>
         </setting>
+        <setting id="input.asknewcontrollers" type="boolean">
+          <level>0</level>
+          <control type="toggle" />
+          <default>true</default>
+          <visible>false</visible>
+        </setting>
         <setting id="input.controllerconfig" type="action" label="35063" help="35064">
           <level>0</level>
           <dependencies>

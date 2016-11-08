@@ -60,6 +60,13 @@ namespace JOYSTICK
     virtual void Reset(void) = 0;
 
     /*!
+     * \brief Check if the button map is empty
+     *
+     * \return True if the button map is empty, false if it has features
+     */
+    virtual bool IsEmpty(void) const = 0;
+
+    /*!
      * \brief Get the feature associated with a driver primitive
      *
      * Multiple primitives can be mapped to the same feature. For example,

@@ -323,6 +323,8 @@
 		68AE5C341C9243A000C4D527 /* ControllerTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5C2A1C9243A000C4D527 /* ControllerTranslator.cpp */; };
 		68B7E5E81D5FA9B300A5AEC0 /* GUIFeatureControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68B7E5E61D5FA9B300A5AEC0 /* GUIFeatureControls.cpp */; };
 		68B7E5E91D5FA9B300A5AEC0 /* GUIFeatureControls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68B7E5E61D5FA9B300A5AEC0 /* GUIFeatureControls.cpp */; };
+		68D9167A1DD0430E00058B06 /* GUIDialogNewJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D916781DD0430E00058B06 /* GUIDialogNewJoystick.cpp */; };
+		68D9167B1DD0430E00058B06 /* GUIDialogNewJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D916781DD0430E00058B06 /* GUIDialogNewJoystick.cpp */; };
 		761170901C8B85F8006C6366 /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */; };
 		761170911C8B85F8006C6366 /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */; };
 		76AEFB361C8F79BD00EF2EC0 /* AddonInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */; };
@@ -2849,6 +2851,8 @@
 		68AE5C2C1C9243A000C4D527 /* ControllerTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ControllerTypes.h; path = games/controllers/ControllerTypes.h; sourceTree = "<group>"; };
 		68B7E5E61D5FA9B300A5AEC0 /* GUIFeatureControls.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIFeatureControls.cpp; path = games/controllers/guicontrols/GUIFeatureControls.cpp; sourceTree = "<group>"; };
 		68B7E5E71D5FA9B300A5AEC0 /* GUIFeatureControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIFeatureControls.h; path = games/controllers/guicontrols/GUIFeatureControls.h; sourceTree = "<group>"; };
+		68D916781DD0430E00058B06 /* GUIDialogNewJoystick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogNewJoystick.cpp; path = joysticks/dialogs/GUIDialogNewJoystick.cpp; sourceTree = "<group>"; };
+		68D916791DD0430E00058B06 /* GUIDialogNewJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogNewJoystick.h; path = joysticks/dialogs/GUIDialogNewJoystick.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
 		6E97BDC10DA2B620003A2A89 /* EventServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventServer.h; sourceTree = "<group>"; };
@@ -6157,6 +6161,7 @@
 		68AE5BAB1C92419500C4D527 /* joysticks */ = {
 			isa = PBXGroup;
 			children = (
+				68D916771DD0430300058B06 /* dialogs */,
 				68AE5BC71C9241E200C4D527 /* generic */,
 				6838CF7F1D6665510057F17B /* DeadzoneFilter.cpp */,
 				6838CF801D6665510057F17B /* DeadzoneFilter.h */,
@@ -6279,6 +6284,15 @@
 				68AE5C061C92437900C4D527 /* IConfigurationWindow.h */,
 			);
 			name = windows;
+			sourceTree = "<group>";
+		};
+		68D916771DD0430300058B06 /* dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				68D916781DD0430E00058B06 /* GUIDialogNewJoystick.cpp */,
+				68D916791DD0430E00058B06 /* GUIDialogNewJoystick.h */,
+			);
+			name = dialogs;
 			sourceTree = "<group>";
 		};
 		76EC19BB1D15510D00D4AF19 /* AudioDSPAddons */ = {
@@ -10288,6 +10302,7 @@
 				2AB491701CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */,
 				18B7C7D01294222E009E7A26 /* GUIMoverControl.cpp in Sources */,
 				18B7C7D11294222E009E7A26 /* GUIMultiImage.cpp in Sources */,
+				68D9167A1DD0430E00058B06 /* GUIDialogNewJoystick.cpp in Sources */,
 				18B7C7D31294222E009E7A26 /* GUIPanelContainer.cpp in Sources */,
 				18B7C7D41294222E009E7A26 /* GUIProgressControl.cpp in Sources */,
 				DF1D2DF01B6E85EE002BB9DB /* XbtFile.cpp in Sources */,
@@ -10894,6 +10909,7 @@
 				68AE5BCF1C9241F800C4D527 /* ButtonMapping.cpp in Sources */,
 				E4991159174E5CC300741B6D /* filcreat.cpp in Sources */,
 				E499115A174E5CC300741B6D /* file.cpp in Sources */,
+				68D9167B1DD0430E00058B06 /* GUIDialogNewJoystick.cpp in Sources */,
 				E499115B174E5CC300741B6D /* filefn.cpp in Sources */,
 				E499115C174E5CC300741B6D /* filestr.cpp in Sources */,
 				E499115D174E5CC300741B6D /* find.cpp in Sources */,

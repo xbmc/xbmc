@@ -82,6 +82,13 @@ void CAddonButtonMap::Reset(void)
     addon->ResetButtonMap(m_device, m_strControllerId);
 }
 
+bool CAddonButtonMap::IsEmpty(void) const
+{
+  CSingleLock lock(m_mutex);
+
+  return m_driverMap.empty();
+}
+
 bool CAddonButtonMap::GetFeature(const CDriverPrimitive& primitive, FeatureName& feature)
 {
   CSingleLock lock(m_mutex);
