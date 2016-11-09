@@ -9741,12 +9741,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_PLAYCOUNT:
     {
-      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
+      if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_playCount > 0)
+        return StringUtils::Format("%i", item->GetPVRRecordingInfoTag()->m_playCount);
+      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
         return StringUtils::Format("%i", item->GetVideoInfoTag()->m_playCount);
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
         return StringUtils::Format("%i", item->GetMusicInfoTag()->GetPlayCount());
-      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_playCount > 0)
-        return StringUtils::Format("%i", item->GetPVRRecordingInfoTag()->m_playCount);
       break;
     }
   case LISTITEM_LASTPLAYED:
@@ -10719,7 +10719,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   {
     if (item->IsFileItem())
     {
-      const CFileItem *pItem = (const CFileItem *)item;
+      const CFileItem *pItem = static_cast<const CFileItem *>(item);
       return pItem->IsParentFolder();
     }
   }
@@ -10727,10 +10727,11 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   {
     if (item->IsFileItem())
     {
-      if (((const CFileItem *)item)->HasVideoInfoTag())
-        return ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0;
-      else if (((const CFileItem *)item)->HasPVRRecordingInfoTag())
-        return ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds > 0;
+      const CFileItem *pItem = static_cast<const CFileItem *>(item);
+      if (pItem->HasPVRRecordingInfoTag())
+        return pItem->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds > 0;
+      else if (pItem->HasVideoInfoTag())
+        return pItem->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0;
     }
   }
   else if (item->IsFileItem())
