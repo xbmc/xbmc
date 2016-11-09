@@ -29,6 +29,7 @@
 #include "utils/Variant.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
@@ -258,6 +259,8 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   }
 
   bool bHideRecord(true);
+  bool bHideAddTimer(true);
+
   if (m_progItem->HasTimer())
   {
     if (m_progItem->Timer()->IsRecording())
@@ -270,16 +273,17 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060); /* Delete timer */
       bHideRecord = false;
     }
-
-    /* already has a timer. hide the add timer button */
-    SET_CONTROL_HIDDEN(CONTROL_BTN_ADD_TIMER);
   }
-  else if (m_progItem->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+  else if (g_PVRClients->SupportsTimers() && m_progItem->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
     SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);     /* Record */
     bHideRecord = false;
+    bHideAddTimer = false;
   }
 
   if (bHideRecord)
     SET_CONTROL_HIDDEN(CONTROL_BTN_RECORD);
+
+  if (bHideAddTimer)
+    SET_CONTROL_HIDDEN(CONTROL_BTN_ADD_TIMER);
 }
