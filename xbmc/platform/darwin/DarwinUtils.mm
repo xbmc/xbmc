@@ -504,6 +504,13 @@ bool CDarwinUtils::IsIosSandboxed(void)
       {
         ret = 1;
       }
+      
+      // Some time after ios8, Apple decided to change this yet again
+      if (strlen("/var/containers/Bundle/") < path_size &&
+        strncmp(given_path, "/var/containers/Bundle/", strlen("/var/containers/Bundle/")) == 0)
+      {
+        ret = 1;
+      }
     }
   }
   return ret == 1;
