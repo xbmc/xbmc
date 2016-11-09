@@ -60,7 +60,7 @@ set(REPOSITORY_TO_BUILD_FOUND OFF)
 file(GLOB repos repositories/*.txt)
 foreach(repo ${repos})
   file(STRINGS ${repo} repo_definition)
-  separate_arguments(repo_definition)
+  string(REPLACE " " ";" repo_definition ${repo_definition})
   list(GET repo_definition 0 repo_id)
 
   list(FIND REPOSITORY_TO_BUILD ${repo_id} idx)

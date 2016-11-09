@@ -66,7 +66,7 @@ endif()
 
 # check for autoconf stuff to pass on
 if(AUTOCONF_FILES)
-  separate_arguments(AUTOCONF_FILES)
+  string(REPLACE " " ";" AUTOCONF_FILES ${AUTOCONF_FILES})
   set(CROSS_AUTOCONF "yes")
 endif()
 
@@ -120,7 +120,7 @@ if(NOT ADDONS_TO_BUILD)
 else()
   string(STRIP "${ADDONS_TO_BUILD}" ADDONS_TO_BUILD)
   message(STATUS "Building following addons: ${ADDONS_TO_BUILD}")
-  separate_arguments(ADDONS_TO_BUILD)
+  string(REPLACE " " ";" ADDONS_TO_BUILD ${ADDONS_TO_BUILD})
 endif()
 
 if(NOT ADDONS_DEFINITION_DIR)
@@ -228,7 +228,7 @@ set(SUPPORTED_ADDON_FOUND FALSE)
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
-    separate_arguments(def)
+    string(REPLACE " " ";" def ${def})
     list(GET def 0 id)
 
     set(ADDON_FOUND FALSE)
