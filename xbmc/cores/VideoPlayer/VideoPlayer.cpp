@@ -192,6 +192,8 @@ public:
       if (g_LangCodeExpander.CompareISO639Codes(subtitle_language, ss.language))
         return false;
     }
+    else if (ss.flags & CDemuxStream::FLAG_DEFAULT)
+      return false;
 
     return true;
   }
