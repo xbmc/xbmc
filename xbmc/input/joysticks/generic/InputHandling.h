@@ -33,6 +33,7 @@ namespace JOYSTICK
   class IButtonMap;
 
   /*!
+   * \ingroup joystick
    * \brief Class to translate input from the driver into higher-level features
    *
    * Raw driver input arrives for three elements: buttons, hats and axes. When

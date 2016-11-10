@@ -22,6 +22,7 @@
 namespace JOYSTICK
 {
   /*!
+   * \ingroup joystick
    * \brief Interface for sending input events to joystick drivers
    */
   class IDriverReceiver

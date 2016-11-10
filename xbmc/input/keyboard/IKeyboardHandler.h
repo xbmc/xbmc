@@ -24,7 +24,7 @@ class CKey;
 namespace KEYBOARD
 {
   /*!
-   * \ingroup input
+   * \ingroup keyboard
    * \brief Interface for handling keyboard events
    */
   class IKeyboardHandler

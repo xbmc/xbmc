@@ -24,6 +24,7 @@
 namespace JOYSTICK
 {
   /*!
+   * \ingroup joystick
    * \brief Interface for handling keymap keys
    *
    * Keys can be mapped to analog actions (e.g. "AnalogSeekForward") or digital

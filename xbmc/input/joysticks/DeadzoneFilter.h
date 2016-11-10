@@ -29,6 +29,7 @@ namespace JOYSTICK
   class IButtonMap;
 
   /*!
+   * \ingroup joystick
    * \brief Analog axis deadzone filtering
    *
    * Axis is scaled appropriately, so position is continuous

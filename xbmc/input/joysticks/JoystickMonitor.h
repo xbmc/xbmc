@@ -24,6 +24,7 @@
 namespace JOYSTICK
 {
   /*!
+   * \ingroup joystick
    * \brief Monitors joystick input and resets screensaver/shutdown timers
    *        whenever motion occurs.
    */
