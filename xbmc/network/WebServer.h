@@ -28,6 +28,11 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "threads/CriticalSection.h"
 
+namespace spdlog
+{
+  class logger;
+}
+
 namespace XFILE
 {
   class CFile;
@@ -149,5 +154,7 @@ private:
   std::string m_authenticationPassword;
   CCriticalSection m_critSection;
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
+
+  std::shared_ptr<spdlog::logger> m_logger;
 };
 #endif

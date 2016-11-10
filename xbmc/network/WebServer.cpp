@@ -63,6 +63,8 @@
 
 #define HEADER_NEWLINE        "\r\n"
 
+static CLog::Logger Logger;
+
 typedef struct {
   std::shared_ptr<XFILE::CFile> file;
   CHttpRanges ranges;
@@ -83,7 +85,8 @@ CWebServer::CWebServer()
     m_thread_stacksize(0),
     m_authenticationRequired(false),
     m_authenticationUsername("kodi"),
-    m_authenticationPassword("")
+    m_authenticationPassword(""),
+    m_logger(CLog::Get("CWebServer"))
 {
 #if defined(TARGET_DARWIN)
   void *stack_addr;
@@ -95,8 +98,11 @@ CWebServer::CWebServer()
   // but it stoped crashing using Kodi iOS remote -> play video.
   // non-darwin will pass a value of zero which means 'system default'
   m_thread_stacksize *= 2;
-  CLog::Log(LOGDEBUG, "CWebServer: increasing thread stack to %zu", m_thread_stacksize);
+  m_logger->debug("increasing thread stack to {}", m_thread_stacksize);
 #endif
+
+  if (Logger == nullptr)
+    Logger = CLog::Get("CWebServer");
 }
 
 static MHD_Response* create_response(size_t size, void* data, int free, int copy)
@@ -118,14 +124,14 @@ int CWebServer::AskForAuthentication(const HTTPRequest& request) const
   struct MHD_Response *response = create_response(0, nullptr, MHD_NO, MHD_NO);
   if (!response)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: unable to create HTTP Unauthorized response", m_port);
+    m_logger->error("unable to create HTTP Unauthorized response");
     return MHD_NO;
   }
 
   int ret = AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: unable to prepare HTTP Unauthorized response", m_port);
+    m_logger->error("unable to prepare HTTP Unauthorized response");
     MHD_destroy_response(response);
     return MHD_NO;
   }
@@ -176,14 +182,14 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 {
   if (cls == nullptr || con_cls == nullptr || *con_cls == nullptr)
   {
-    CLog::Log(LOGERROR, "CWebServer[unknown]: invalid request received");
+    Logger->error("invalid request received");
     return MHD_NO;
   }
 
   CWebServer *webServer = reinterpret_cast<CWebServer*>(cls);
   if (webServer == nullptr)
   {
-    CLog::Log(LOGERROR, "CWebServer[unknown]: invalid request received");
+    Logger->error("invalid request received");
     return MHD_NO;
   }
 
@@ -243,7 +249,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
               struct MHD_Response *response = create_response(0, nullptr, MHD_NO, MHD_NO);
               if (response == nullptr)
               {
-                CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP 304 response", m_port);
+                m_logger->error("failed to create a HTTP 304 response");
                 return MHD_NO;
               }
 
@@ -306,7 +312,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
       return HandleRequest(requestHandler);
   }
 
-  CLog::Log(LOGERROR, "CWebServer[%hu]: couldn't find any request handler for %s", m_port, request.pathUrl.c_str());
+  m_logger->error("couldn't find any request handler for {}", request.pathUrl);
   return SendErrorResponse(request, MHD_HTTP_NOT_FOUND, request.method);
 }
 
@@ -327,7 +333,7 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
   if (conHandler == nullptr || conHandler->requestHandler == nullptr ||
       key == nullptr || data == nullptr || size == 0)
   {
-    CLog::Log(LOGERROR, "CWebServer: unable to handle HTTP POST field");
+    Logger->error("unable to handle HTTP POST field");
     return MHD_NO;
   }
 
@@ -344,7 +350,7 @@ int CWebServer::HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handle
   int ret = handler->HandleRequest();
   if (ret == MHD_NO)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: failed to handle HTTP request for %s", m_port, request.pathUrl.c_str());
+    m_logger->error("failed to handle HTTP request for {}", request.pathUrl);
     return SendErrorResponse(request, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
@@ -353,7 +359,7 @@ int CWebServer::HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handle
   switch (responseDetails.type)
   {
     case HTTPNone:
-      CLog::Log(LOGERROR, "CWebServer[%hu]: HTTP request handler didn't process %s", m_port, request.pathUrl.c_str());
+      m_logger->error("HTTP request handler didn't process {}", request.pathUrl);
       return MHD_NO;
 
     case HTTPRedirect:
@@ -376,13 +382,13 @@ int CWebServer::HandleRequest(const std::shared_ptr<IHTTPRequestHandler>& handle
       break;
 
     default:
-      CLog::Log(LOGERROR, "CWebServer[%hu]: internal error while HTTP request handler processed %s", m_port, request.pathUrl.c_str());
+      m_logger->error("internal error while HTTP request handler processed %s", request.pathUrl);
       return SendErrorResponse(request, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
   if (ret == MHD_NO)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create HTTP response for %s", m_port, request.pathUrl.c_str());
+    m_logger->error("failed to create HTTP response for %s", request.pathUrl);
     return SendErrorResponse(request, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
@@ -546,7 +552,7 @@ void CWebServer::SetupPostDataProcessing(const HTTPRequest& request, ConnectionH
   // MHD doesn't seem to be able to handle this post request
   if (connectionHandler->postprocessor == nullptr)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: unable to create HTTP POST processor for %s", m_port, request.pathUrl.c_str());
+    m_logger->error("unable to create HTTP POST processor for {}", request.pathUrl);
     connectionHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
   }
 }
@@ -555,7 +561,7 @@ bool CWebServer::ProcessPostData(const HTTPRequest& request, ConnectionHandler *
 {
   if (connectionHandler->requestHandler == nullptr)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: cannot handle partial HTTP POST for %s request because there is no valid request handler available", m_port, request.pathUrl.c_str());
+    m_logger->error("cannot handle partial HTTP POST for {} request because there is no valid request handler available", request.pathUrl);
     connectionHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
   }
 
@@ -580,7 +586,7 @@ bool CWebServer::ProcessPostData(const HTTPRequest& request, ConnectionHandler *
     // abort if the received POST data couldn't be handled
     if (!postDataHandled)
     {
-      CLog::Log(LOGERROR, "CWebServer[%hu]: failed to handle HTTP POST data for %s", m_port, request.pathUrl.c_str());
+      m_logger->error("failed to handle HTTP POST data for {}", request.pathUrl);
 #if (MHD_VERSION >= 0x00095213)
       connectionHandler->errorStatus = MHD_HTTP_PAYLOAD_TOO_LARGE;
 #else
@@ -620,7 +626,7 @@ int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestH
   if ((request.ranges.IsEmpty() && responseRanges.size() > 1) ||
      (!request.ranges.IsEmpty() && responseRanges.size() > request.ranges.Size()))
   {
-    CLog::Log(LOGWARNING, "CWebServer[%hu]: response contains more ranges (%d) than the request asked for (%d)", m_port, (int)responseRanges.size(), (int)request.ranges.Size());
+    m_logger->warn("response contains more ranges ({}) than the request asked for ({})", static_cast<int>(responseRanges.size()), static_cast<int>(request.ranges.Size()));
     return SendErrorResponse(request, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
@@ -632,7 +638,7 @@ int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestH
     // check if the range is valid
     if (!responseRange.IsValid())
     {
-      CLog::Log(LOGWARNING, "CWebServer[%hu]: invalid response data with range start at %" PRId64 " and end at %" PRId64, m_port, responseRange.GetFirstPosition(), responseRange.GetLastPosition());
+      m_logger->warn("invalid response data with range start at {} and end at {}", responseRange.GetFirstPosition(), responseRange.GetLastPosition());
       return SendErrorResponse(request, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
     }
 
@@ -746,7 +752,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const std::str
   response = create_response(0, nullptr, MHD_NO, MHD_NO);
   if (response == nullptr)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create HTTP redirect response to %s", m_port, strURL.c_str());
+    m_logger->error("failed to create HTTP redirect response to {}", strURL);
     return MHD_NO;
   }
 
@@ -768,7 +774,7 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
 
   if (!file->Open(filePath, XFILE::READ_NO_CACHE))
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: Failed to open %s", m_port, filePath.c_str());
+    m_logger->error("Failed to open {}", filePath);
     return SendErrorResponse(request, MHD_HTTP_NOT_FOUND, request.method);
   }
 
@@ -858,7 +864,7 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
                                                   &CWebServer::ContentReaderFreeCallback);
     if (response == nullptr)
     {
-      CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP response for %s to be filled from %s", m_port, request.pathUrl.c_str(), filePath.c_str());
+      m_logger->error("failed to create a HTTP response for {} to be filled from{}", request.pathUrl, filePath);
       return MHD_NO;
     }
 
@@ -873,7 +879,7 @@ int CWebServer::CreateFileDownloadResponse(const std::shared_ptr<IHTTPRequestHan
     response = create_response(0, nullptr, MHD_NO, MHD_NO);
     if (response == nullptr)
     {
-      CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP HEAD response for %s", m_port, request.pathUrl.c_str());
+      m_logger->error("failed to create a HTTP HEAD response for {}", request.pathUrl);
       return MHD_NO;
     }
 
@@ -911,7 +917,7 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
   response = create_response(payloadSize, payload, MHD_NO, MHD_NO);
   if (response == nullptr)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP %d error response", m_port, responseType);
+    m_logger->error("failed to create a HTTP {} error response", responseType);
     return MHD_NO;
   }
 
@@ -923,7 +929,7 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
   response = create_response(size, const_cast<void*>(data), free ? MHD_YES : MHD_NO, copy ? MHD_YES : MHD_NO);
   if (response == nullptr)
   {
-    CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP download response", m_port);
+    m_logger->error("failed to create a HTTP download response");
     return MHD_NO;
   }
 
@@ -956,7 +962,7 @@ void* CWebServer::UriRequestLogger(void *cls, const char *uri)
 
   // log the full URI
   if (webServer == nullptr)
-    CLog::Log(LOGDEBUG, "CWebServer[unknown]: request received for %s", uri);
+    Logger->debug("request received for {}", uri);
   else
     webServer->LogRequest(uri);
 
@@ -969,7 +975,7 @@ void CWebServer::LogRequest(const char* uri) const
   if (uri == nullptr)
     return;
 
-  CLog::Log(LOGDEBUG, "CWebServer[%hu]: request received for %s", m_port, uri);
+  m_logger->debug("request received for {}", uri);
 }
 
 #if (MHD_VERSION >= 0x00090200)
@@ -984,11 +990,8 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   if (context == nullptr || context->file == nullptr)
     return -1;
 
-#if (MHD_VERSION >= 0x00090200)
-  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] write maximum %zu bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
-#else
-  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
-#endif
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    Logger->debug("[OUT] write maximum {} bytes from {} ({})", max, context->writePosition, pos);
 
   // check if we need to add the end-boundary
   if (context->rangeCountTotal > 1 && context->ranges.IsEmpty())
@@ -1057,7 +1060,8 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
   // add the number of read bytes to the number of written bytes
   written += res;
 
-  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] wrote %d bytes from %" PRIu64 " in range (%" PRIu64 " - %" PRIu64 ")", written, context->writePosition, start, end);
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    Logger->debug("[OUT] wrote %d bytes from {} in range ({} - {})", written, context->writePosition, start, end);
 
   // update the current write position
   context->writePosition += res;
@@ -1078,13 +1082,14 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
   HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
   delete context;
 
-  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] done");
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    Logger->debug("[OUT] done");
 }
 
 // local helper
 static void panicHandlerForMHD(void* unused, const char* file, unsigned int line, const char *reason)
 {
-  CLog::Log(LOGSEVERE, "CWebServer: MHD serious error: reason \"%s\" in file \"%s\" at line %ui", reason ? reason : "",
+  Logger->critical("MHD serious error: reason \"%s\" in file \"%s\" at line %ui", reason ? reason : "",
             file ? file : "", line);
   throw std::runtime_error("MHD serious error"); // FIXME: better solution?
 }
@@ -1093,19 +1098,19 @@ static void panicHandlerForMHD(void* unused, const char* file, unsigned int line
 static void logFromMHD(void* unused, const char* fmt, va_list ap)
 {
   if (fmt == nullptr || fmt[0] == 0)
-    CLog::Log(LOGERROR, "CWebServer: MHD reported error with empty string");
+    Logger->error("MHD reported error with empty string");
   else
   {
     std::string errDsc = StringUtils::FormatV(fmt, ap);
     if (errDsc.empty())
-      CLog::Log(LOGERROR, "CWebServer: MHD reported error with unprintable string \"%s\"", fmt);
+      Logger->error("MHD reported error with unprintable string \"{}\"", fmt);
     else
     {
       if (errDsc.at(errDsc.length() - 1) == '\n')
         errDsc.erase(errDsc.length() - 1);
       
-      // Most common error is "aborted connection", so log it at LOGDEBUG level
-      CLog::Log(LOGDEBUG, "CWebServer [MHD]: %s", errDsc.c_str());
+      // Most common error is "aborted connection", so log it at spdlog::level::debug level
+      Logger->debug("[MHD]: {}", errDsc);
     }
   }
 }
@@ -1160,6 +1165,9 @@ bool CWebServer::Start(uint16_t port, const std::string &username, const std::st
   SetCredentials(username, password);
   if (!m_running)
   {
+    // use a new logger containing the port in the name
+    m_logger = CLog::Get(StringUtils::Format("CWebserver[{}]", port));
+
     int v6testSock;
     if ((v6testSock = socket(AF_INET6, SOCK_STREAM, 0)) >= 0)
     {
@@ -1173,10 +1181,10 @@ bool CWebServer::Start(uint16_t port, const std::string &username, const std::st
     if (m_running)
     {
       m_port = port;
-      CLog::Log(LOGNOTICE, "CWebServer[%hu]: Started", m_port);
+      m_logger->info("Started");
     }
     else
-      CLog::Log(LOGERROR, "CWebServer[%hu]: Failed to start", port);
+      m_logger->error("Failed to start");
   }
 
   return m_running;
@@ -1194,7 +1202,7 @@ bool CWebServer::Stop()
     MHD_stop_daemon(m_daemon_ip4);
     
   m_running = false;
-  CLog::Log(LOGNOTICE, "CWebServer[%hu]: Stopped", m_port);
+  m_logger->info("Stopped");
   m_port = 0;
 
   return true;
@@ -1246,7 +1254,7 @@ void CWebServer::LogRequest(const HTTPRequest& request) const
   std::multimap<std::string, std::string> getValues;
   HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, getValues);
 
-  CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] %s %s %s", m_port, request.version.c_str(), GetHTTPMethod(request.method).c_str(), request.pathUrlFull.c_str());
+  m_logger->debug(" [IN] {} {} {}", request.version, GetHTTPMethod(request.method), request.pathUrlFull);
 
   if (!getValues.empty())
   {
@@ -1254,11 +1262,11 @@ void CWebServer::LogRequest(const HTTPRequest& request) const
     for (const auto get : getValues)
       values.push_back(get.first + " = " + get.second);
 
-    CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] Query arguments: %s", m_port, StringUtils::Join(values, "; ").c_str());
+    m_logger->debug(" [IN] Query arguments: {}", StringUtils::Join(values, "; "));
   }
 
   for (const auto header : headerValues)
-    CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] %s: %s", m_port, header.first.c_str(), header.second.c_str());
+    m_logger->debug(" [IN] {}: {}", header.first, header.second);
 }
 
 void CWebServer::LogResponse(const HTTPRequest& request, int responseStatus) const
@@ -1269,10 +1277,10 @@ void CWebServer::LogResponse(const HTTPRequest& request, int responseStatus) con
   std::multimap<std::string, std::string> headerValues;
   HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_HEADER_KIND, headerValues);
 
-  CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s %d %s", m_port, request.version.c_str(), responseStatus, request.pathUrlFull.c_str());
+  m_logger->debug("[OUT] {} {} {}", request.version, responseStatus, request.pathUrlFull);
 
   for (const auto header : headerValues)
-    CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s: %s", m_port, header.first.c_str(), header.second.c_str());
+    m_logger->debug("[OUT] {}: {}", header.first, header.second);
 }
 
 std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
@@ -1290,7 +1298,8 @@ int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name
   if (response == nullptr || name.empty())
     return 0;
 
-  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer[%hu] [OUT] %s: %s", m_port, name.c_str(), value.c_str());
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    m_logger->debug("[OUT] {}: {}", name, value);
 
   return MHD_add_response_header(response, name.c_str(), value.c_str());
 }
