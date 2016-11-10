@@ -42,7 +42,7 @@ namespace JOYSTICK
    *
    * \sa IInputHandler
    */
-  class CDefaultJoystick : public JOYSTICK::IInputHandler,
+  class CDefaultJoystick : public IInputHandler,
                            public IActionMap
   {
   public:
