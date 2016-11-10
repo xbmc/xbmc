@@ -8,8 +8,8 @@ xbmc/peripherals/bus/android            peripherals/bus/android
 xbmc/powermanagement/android            powermanagement/android
 xbmc/storage/android                    storage/android
 xbmc/filesystem/posix                   filesystem/posix
-xbmc/utils/posix                        utils_posix
 xbmc/windowing/android                  windowing/android
 xbmc/platform/posix                     posix
 xbmc/platform/android/activity          android_activity
 xbmc/platform/android/bionic_supplement android_bionicsupplement
+xbmc/platform/android/utils             android_utils

@@ -8,6 +8,5 @@ xbmc/peripherals/bus/linux peripherals/bus/linux
 xbmc/powermanagement/linux powermanagement/linux
 xbmc/storage/linux         storage/linux
 xbmc/filesystem/posix      filesystem/posix
-xbmc/utils/posix           utils_posix
 xbmc/platform/posix        posix
 xbmc/freebsd               freebsdsupport

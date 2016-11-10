@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2014 Team XBMC
+ *      Copyright (C) 2016 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,21 +17,22 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+ 
+#import <Foundation/Foundation.h>
 
-#include <string>
+#include "DarwinInterfaceForCLog.h"
 
-struct FILEWRAP; // forward declaration, wrapper for FILE
-
-class CPosixInterfaceForCLog
+void CDarwinInterfaceForCLog::AddSinks(std::shared_ptr<spdlog::sinks::dist_sink_mt> distributionSink) const
 {
-public:
-  CPosixInterfaceForCLog();
-  ~CPosixInterfaceForCLog();
-  bool OpenLogFile(const std::string& logFilename, const std::string& backupOldLogToFilename);
-  void CloseLogFile(void);
-  bool WriteStringToLog(const std::string& logString);
-  void PrintDebugString(const std::string& debugString);
-  static void GetCurrentLocalTime(int& hour, int& minute, int& second, double& millisecond);
-private:
-  FILEWRAP* m_file;
-};
+  distributionSink->add_sink(std::make_shared<CDarwinInterfaceForCLog>());
+}
+
+void CDarwinInterfaceForCLog::log(const spdlog::details::log_msg& msg)
+{
+  NSLog(@"%s", msg.formatted.str().c_str());
+}
+
+void CDarwinInterfaceForCLog::flush()
+{
+  fflush(stderr);
+}

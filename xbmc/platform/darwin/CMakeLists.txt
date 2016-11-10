@@ -1,4 +1,5 @@
 set(SOURCES AutoPool.mm
+            DarwinInterfaceForCLog.mm
             DarwinUtils.mm
             DarwinNSUserDefaults.mm
             DictionaryUtils.mm
@@ -6,6 +7,7 @@ set(SOURCES AutoPool.mm
             PlatformDarwin.cpp)
 
 set(HEADERS AutoPool.h
+            DarwinInterfaceForCLog.h
             DarwinNSUserDefaults.h
             DarwinUtils.h
             DictionaryUtils.h

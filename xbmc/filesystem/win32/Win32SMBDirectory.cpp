@@ -23,6 +23,7 @@
 #include "Win32SMBDirectory.h"
 #include "FileItem.h"
 #include "platform/win32/WIN32Util.h"
+#include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "utils/CharsetConverter.h"
 #include "URL.h"

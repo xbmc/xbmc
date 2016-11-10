@@ -1,5 +1,4 @@
 #pragma once
-
 /*
 *      Copyright (C) 2014 Team XBMC
 *      http://xbmc.org
@@ -20,21 +19,21 @@
 *
 */
 
-#include "utils/log.h"
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
+#error This file is for win32 platforms only
+#endif  // !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 
-#ifndef TARGET_WINDOWS
-#error This file is for Win32 platform only
-#endif // TARGET_WINDOWS
+#include <string>
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/dist_sink.h>
 
-// CLog version for Win32 with additional widestring logging capabilities
-class CWin32Log : public CLog
+class CWin32InterfaceForCLog
 {
 public:
-  static void LogW(int loglevel, PRINTF_FORMAT_STRING const wchar_t *format, ...);
-  static void LogFunctionW(int loglevel, IN_OPT_STRING const char* functionName, PRINTF_FORMAT_STRING const wchar_t* format, ...);
-#define LogFW(loglevel,format,...) LogFunctionW((loglevel),__FUNCTION__,(format),##__VA_ARGS__)
-};
+  CWin32InterfaceForCLog() = default;
+  ~CWin32InterfaceForCLog() = default;
 
-// substitute CWin32Log instead of CLog for Win32
-#define CLog CWin32Log
+  const spdlog::filename_t GetLogFilename(const std::string& filename) const;
+  void AddSinks(std::shared_ptr<spdlog::sinks::dist_sink_mt> distributionSink) const;
+};

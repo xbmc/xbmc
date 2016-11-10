@@ -140,7 +140,7 @@ protected:
   TestRegExpLog() = default;
   ~TestRegExpLog() override
   {
-    CLog::Close();
+    CLog::Uninitialize();
   }
 };
 
@@ -155,13 +155,13 @@ TEST_F(TestRegExpLog, DumpOvector)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  EXPECT_TRUE(CLog::Init(CSpecialProtocol::TranslatePath("special://temp/").c_str()));
+  CLog::Initialize(CSpecialProtocol::TranslatePath("special://temp/").c_str());
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));
   EXPECT_EQ(0, regex.RegFind("Test string."));
   regex.DumpOvector(LOGDEBUG);
-  CLog::Close();
+  CLog::Uninitialize();
 
   EXPECT_TRUE(file.Open(logfile));
   while ((bytesread = file.Read(buf, sizeof(buf) - 1)) > 0)

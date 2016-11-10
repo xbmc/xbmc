@@ -1,4 +1,3 @@
-#pragma once
 /*
 *      Copyright (C) 2014 Team XBMC
 *      http://xbmc.org
@@ -19,20 +18,21 @@
 *
 */
 
-#include <string>
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
+#error This file is for win32 platforms only
+#endif  // !defined(TARGET_WINDOWS) && !defined(TARGET_WIN10)
 
-typedef void* HANDLE; // forward declaration, to avoid inclusion of whole Windows.h
+#include <spdlog/sinks/msvc_sink.h>
 
-class CWin32InterfaceForCLog 
+#include "Win32InterfaceForCLog.h"
+#include "platform/win32/WIN32Util.h"
+
+const spdlog::filename_t CWin32InterfaceForCLog::GetLogFilename(const std::string& filename) const
 {
-public:
-  CWin32InterfaceForCLog();
-  ~CWin32InterfaceForCLog();
-  bool OpenLogFile(const std::string& logFilename, const std::string& backupOldLogToFilename);
-  void CloseLogFile(void);
-  bool WriteStringToLog(const std::string& logString);
-  void PrintDebugString(const std::string& debugString);
-  static void GetCurrentLocalTime(int& hour, int& minute, int& second, double& millisecond);
-private:
-  HANDLE m_hFile;
-};
+  return CWIN32Util::ConvertPathToWin32Form(CWIN32Util::SmbToUnc(filename));
+}
+
+void CWin32InterfaceForCLog::AddSinks(std::shared_ptr<spdlog::sinks::dist_sink_mt> distributionSink) const
+{
+  distributionSink->add_sink(std::make_shared<spdlog::sinks::msvc_sink_mt>());
+}

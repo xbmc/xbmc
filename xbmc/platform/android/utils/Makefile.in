@@ -1,0 +1,5 @@
+SRCS     = AndroidInterfaceForCLog.cpp
+LIB      = android_utils.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

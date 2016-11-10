@@ -8,7 +8,6 @@ xbmc/platform/posix          posix
 xbmc/platform/darwin         platform_darwin
 xbmc/platform/darwin/osx     platform_osx
 xbmc/filesystem/posix        filesystem/posix
-xbmc/utils/posix             utils_posix
 xbmc/windowing/osx           windowing/osx
 xbmc/cores/RetroPlayer/process/osx cores/RetroPlayer/process/osx
 xbmc/cores/VideoPlayer/Process/osx cores/VideoPlayer/Process/osx

@@ -7,6 +7,7 @@ set(SOURCES CharsetConverter.cpp
             stat_utf8.cpp
             stdio_utf8.cpp
             strverscmp.cpp
+            Win32InterfaceForCLog.cpp
             WIN32Util.cpp
             WindowHelper.cpp)
 
@@ -23,6 +24,7 @@ set(HEADERS CharsetConverter.h
             PlatformInclude.h
             resource.h
             unistd.h
+            Win32InterfaceForCLog.h
             WIN32Util.h
             WindowHelper.h)
 

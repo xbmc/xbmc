@@ -19,226 +19,118 @@
  */
 
 #include "log.h"
-#include "settings/AdvancedSettings.h"
-#include "system.h"
-#include "threads/SingleLock.h"
-#include "threads/Thread.h"
-#include "utils/StringUtils.h"
+
+#include <spdlog/sinks/dist_sink.h>
+#include <spdlog/sinks/file_sinks.h>
+
 #include "CompileInfo.h"
+#include "filesystem/File.h"
+#include "utils/URIUtils.h"
 
-static const char* const levelNames[] =
-{"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
+static const std::string LogFileExtension = ".log";
 
-// add 1 to level number to get index of name
-static const char* const logLevelNames[] =
-{ "LOG_LEVEL_NONE" /*-1*/, "LOG_LEVEL_NORMAL" /*0*/, "LOG_LEVEL_DEBUG" /*1*/, "LOG_LEVEL_DEBUG_FREEMEM" /*2*/ };
+spdlog::sink_ptr CLog::m_fileSink = nullptr;
+CLog::Logger CLog::m_defaultLogger = nullptr;
+PlatformInterfaceForCLog CLog::m_platform;
 
-// s_globals is used as static global with CLog global variables
-#define s_globals XBMC_GLOBAL_USE(CLog).m_globalInstance
+int CLog::m_logLevel = LOG_LEVEL_NORMAL;
+int CLog::m_extraLogLevels = 0;
 
-CLog::CLog() = default;
-
-CLog::~CLog() = default;
-
-void CLog::Close()
+void CLog::Initialize(const std::string& path)
 {
-  CSingleLock waitLock(s_globals.critSec);
-  s_globals.m_platform.CloseLogFile();
-  s_globals.m_repeatLine.clear();
-}
+  if (m_fileSink != nullptr)
+    return;
 
-void CLog::Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...)
-{
-  if (IsLogLevelLogged(loglevel))
+  // create the default sink(s)
+  auto distSink = std::make_shared<spdlog::sinks::dist_sink_mt>();
+
+  if (!path.empty())
   {
-    va_list va;
-    va_start(va, format);
-    LogString(loglevel, StringUtils::FormatV(format, va));
-    va_end(va);
+    // put together the path to the log file(s)
+    std::string appName = CCompileInfo::GetAppName();
+    StringUtils::ToLower(appName);
+    const std::string filePathBase = URIUtils::AddFileToFolder(path, appName);
+    const std::string filePath = filePathBase + LogFileExtension;
+    const std::string oldFilePath = filePathBase + ".old" + LogFileExtension;
+
+    // handle old.log by deleting an existing old.log and renaming the last log to old.log
+    XFILE::CFile::Delete(oldFilePath);
+    XFILE::CFile::Rename(filePath, oldFilePath);
+
+    // add the file sink logger
+    distSink->add_sink(std::make_shared<spdlog::sinks::simple_file_sink_mt>(m_platform.GetLogFilename(filePath), true));
   }
+
+  // add platform-specific debug sinks
+  m_platform.AddSinks(distSink);
+  m_fileSink = distSink;
+
+  // create the default logger
+  m_defaultLogger = spdlog::create("root", m_fileSink);
+  m_defaultLogger->flush_on(spdlog::level::debug);
+
+  // set the default formatting
+  spdlog::set_pattern("%T.%f T:%t %l %n: %v");
+  // set special pattern for the default logger (which doesn't have a proper logger name)
+  m_defaultLogger->set_pattern("%T.%f T:%t %l: %v");
 }
 
-void CLog::Log(int loglevel, int component, PRINTF_FORMAT_STRING const char *format, ...)
+void CLog::Uninitialize()
 {
-  if (g_advancedSettings.CanLogComponent(component) && IsLogLevelLogged(loglevel))
-  {
-    va_list va;
-    va_start(va, format);
-    LogString(loglevel, StringUtils::FormatV(format, va));
-    va_end(va);
-  }
-}
-
-void CLog::LogFunction(int loglevel, const char* functionName, const char* format, ...)
-{
-  if (IsLogLevelLogged(loglevel))
-  {
-    std::string fNameStr;
-    if (functionName && functionName[0])
-      fNameStr.assign(functionName).append(": ");
-    va_list va;
-    va_start(va, format);
-    LogString(loglevel, fNameStr + StringUtils::FormatV(format, va));
-    va_end(va);
-  }
-}
-
-void CLog::LogFunction(int loglevel, const char* functionName, int component, const char* format, ...)
-{
-  if (g_advancedSettings.CanLogComponent(component))
-  {
-    va_list va;
-    va_start(va, format);
-    #if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wformat-security"
-    #endif
-    LogFunction(loglevel, functionName, StringUtils::FormatV(format, va).c_str());
-    #if defined(__GNUC__)
-    #pragma GCC diagnostic pop
-    #endif
-    va_end(va);
-  }
-}
-
-void CLog::LogString(int logLevel, const std::string& logString)
-{
-  CSingleLock waitLock(s_globals.critSec);
-  std::string strData(logString);
-  StringUtils::TrimRight(strData);
-  if (!strData.empty())
-  {
-    if (s_globals.m_repeatLogLevel == logLevel && s_globals.m_repeatLine == strData)
+  // flush all loggers
+  spdlog::apply_all(
+    [](std::shared_ptr<spdlog::logger> logger)
     {
-      s_globals.m_repeatCount++;
-      return;
-    }
-    else if (s_globals.m_repeatCount)
-    {
-      std::string strData2 = StringUtils::Format("Previous line repeats %d times.",
-                                                s_globals.m_repeatCount);
-      PrintDebugString(strData2);
-      WriteLogString(s_globals.m_repeatLogLevel, strData2);
-      s_globals.m_repeatCount = 0;
-    }
+      logger->flush();
+    });
 
-    s_globals.m_repeatLine = strData;
-    s_globals.m_repeatLogLevel = logLevel;
-
-    PrintDebugString(strData);
-
-    WriteLogString(logLevel, strData);
-  }
-}
-
-bool CLog::Init(const std::string& path)
-{
-  CSingleLock waitLock(s_globals.critSec);
-
-  // the log folder location is initialized in the CAdvancedSettings
-  // constructor and changed in CApplication::Create()
-
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  return s_globals.m_platform.OpenLogFile(path + appName + ".log", path + appName + ".old.log");
-}
-
-void CLog::MemDump(char *pData, int length)
-{
-  Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
-  for (int i = 0; i < length; i+=16)
+  // flush the file sink
+  if (m_fileSink != nullptr)
   {
-    std::string strLine = StringUtils::Format("MEM_DUMP: %04x ", i);
-    char *alpha = pData;
-    for (int k=0; k < 4 && i + 4*k < length; k++)
-    {
-      for (int j=0; j < 4 && i + 4*k + j < length; j++)
-      {
-        std::string strFormat = StringUtils::Format(" %02x", (unsigned char)*pData++);
-        strLine += strFormat;
-      }
-      strLine += " ";
-    }
-    // pad with spaces
-    while (strLine.size() < 13*4 + 16)
-      strLine += " ";
-    for (int j=0; j < 16 && i + j < length; j++)
-    {
-      if (*alpha > 31)
-        strLine += *alpha;
-      else
-        strLine += '.';
-      alpha++;
-    }
-    Log(LOGDEBUG, "%s", strLine.c_str());
+    m_fileSink->flush();
+    m_fileSink.reset();
   }
+
+  // drop all other loggers
+  spdlog::drop_all();
 }
 
 void CLog::SetLogLevel(int level)
 {
-  CSingleLock waitLock(s_globals.critSec);
-  if (level >= LOG_LEVEL_NONE && level <= LOG_LEVEL_MAX)
-  {
-    s_globals.m_logLevel = level;
-    CLog::Log(LOGNOTICE, "Log level changed to \"%s\"", logLevelNames[s_globals.m_logLevel + 1]);
-  }
+  if (level < LOG_LEVEL_NONE || level > LOG_LEVEL_MAX)
+    return;
+
+  m_logLevel = level;
+
+  auto spdLevel = spdlog::level::info;
+#if defined(_DEBUG) || defined(PROFILE)
+  spdLevel = spdlog::level::trace;
+#else
+  if (level <= LOG_LEVEL_NONE)
+    spdLevel = spdlog::level::off;
+  else if (level >= LOG_LEVEL_DEBUG)
+    spdLevel = spdlog::level::trace;
   else
-    CLog::Log(LOGERROR, "%s: Invalid log level requested: %d", __FUNCTION__, level);
-}
+    spdLevel = spdlog::level::info;
+#endif
 
-int CLog::GetLogLevel()
-{
-  return s_globals.m_logLevel;
-}
+  if (m_defaultLogger != nullptr && m_defaultLogger->level() == spdLevel)
+    return;
 
-void CLog::SetExtraLogLevels(int level)
-{
-  CSingleLock waitLock(s_globals.critSec);
-  s_globals.m_extraLogLevels = level;
+  spdlog::set_level(spdLevel);
+  Log(spdlog::level::info, "Log level changed to \"%s\"", spdlog::level::to_str(spdLevel));
 }
 
 bool CLog::IsLogLevelLogged(int loglevel)
 {
   const int extras = (loglevel & ~LOGMASK);
-  if (extras != 0 && (s_globals.m_extraLogLevels & extras) == 0)
+  if (extras != 0 && (m_extraLogLevels & extras) == 0)
     return false;
 
-  if (s_globals.m_logLevel >= LOG_LEVEL_DEBUG)
+  if (m_logLevel >= LOG_LEVEL_DEBUG)
     return true;
-  if (s_globals.m_logLevel <= LOG_LEVEL_NONE)
+  if (m_logLevel <= LOG_LEVEL_NONE)
     return false;
 
-  // "m_logLevel" is "LOG_LEVEL_NORMAL"
   return (loglevel & LOGMASK) >= LOGNOTICE;
-}
-
-
-void CLog::PrintDebugString(const std::string& line)
-{
-#if defined(_DEBUG) || defined(PROFILE)
-  s_globals.m_platform.PrintDebugString(line);
-#endif // defined(_DEBUG) || defined(PROFILE)
-}
-
-bool CLog::WriteLogString(int logLevel, const std::string& logString)
-{
-  static const char* prefixFormat = "%02d:%02d:%02d.%03d T:%" PRIu64" %7s: ";
-
-  std::string strData(logString);
-  /* fixup newline alignment, number of spaces should equal prefix length */
-  StringUtils::Replace(strData, "\n", "\n                                            ");
-
-  int hour, minute, second;
-  double millisecond;
-  s_globals.m_platform.GetCurrentLocalTime(hour, minute, second, millisecond);
-
-  strData = StringUtils::Format(prefixFormat,
-                                  hour,
-                                  minute,
-                                  second,
-                                  static_cast<int>(millisecond),
-                                  (uint64_t)CThread::GetCurrentThreadId(),
-                                  levelNames[logLevel]) + strData;
-
-  return s_globals.m_platform.WriteStringToLog(strData);
 }
