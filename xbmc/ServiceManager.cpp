@@ -29,6 +29,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 
 bool CServiceManager::Init1()
 {
@@ -66,6 +67,35 @@ bool CServiceManager::Init2()
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
   return true;
+}
+
+bool CServiceManager::CreateAudioEngine()
+{
+  m_ActiveAE.reset(new ActiveAE::CActiveAE());
+
+  return true;
+}
+
+bool CServiceManager::DestroyAudioEngine()
+{
+  if (m_ActiveAE)
+  {
+    m_ActiveAE->Shutdown();
+    m_ActiveAE.reset();
+  }
+
+  return true;
+}
+
+bool CServiceManager::StartAudioEngine()
+{
+  if (!m_ActiveAE)
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::StartAudioEngine: Unable to start ActiveAE");
+    return false;
+  }
+
+  return m_ActiveAE->Initialize();
 }
 
 bool CServiceManager::Init3()
@@ -117,6 +147,11 @@ PVR::CPVRManager& CServiceManager::GetPVRManager()
 ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
 {
   return *m_ADSPManager;
+}
+
+ActiveAE::CActiveAE& CServiceManager::GetActiveAE()
+{
+  return *m_ActiveAE;
 }
 
 CContextMenuManager& CServiceManager::GetContextMenuManager()
