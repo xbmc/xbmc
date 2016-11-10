@@ -78,6 +78,12 @@ int CTextureBundle::LoadAnim(const std::string& Filename, CBaseTexture*** ppText
   return 0;
 }
 
+void CTextureBundle::Close()
+{
+  if (m_useXBT)
+    m_tbXBT.CloseBundle();
+}
+
 void CTextureBundle::SetThemeBundle(bool themeBundle)
 {
   m_tbXBT.SetThemeBundle(themeBundle);
