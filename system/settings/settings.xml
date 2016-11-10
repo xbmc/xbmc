@@ -2622,9 +2622,6 @@
         </setting>
         <setting id="input.controllerconfig" type="action" label="35063" help="35064">
           <level>0</level>
-          <dependencies>
-            <dependency type="enable" on="property" name="SupportsPeripheralControllers" />
-          </dependencies>
           <control type="button" format="action" />
         </setting>
         <setting id="input.testrumble" type="action" label="35051" help="35052">
@@ -2637,9 +2634,6 @@
         <setting id="input.controllerpoweroff" type="boolean" label="35088" help="35089">
           <level>0</level>
           <default>false</default>
-          <dependencies>
-            <dependency type="enable" on="property" name="SupportsPeripheralControllers" />
-          </dependencies>
           <control type="toggle" />
         </setting>
       </group>
