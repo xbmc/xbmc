@@ -24,6 +24,10 @@
 class CAEEncoderFFmpegAndroid: public CAEEncoderFFmpeg
 {
 public:
+  CAEEncoderFFmpeg* CreateInstance()
+  {
+    return new CAEEncoderFFmpegAndroid();
+  }
   virtual CAEEncoderFFmpegAndroid() {};
   virtual ~CAEEncoderFFmpegAndroid() {};
 protected:
