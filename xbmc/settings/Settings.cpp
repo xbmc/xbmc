@@ -29,6 +29,7 @@
 #include "addons/AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/Skin.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
@@ -828,8 +829,8 @@ void CSettings::InitializeDefaults()
 #endif
 
 #if !defined(TARGET_WINDOWS)
-  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(ActiveAE::CActiveAESettings::GetDefaultDevice(false));
-  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(ActiveAE::CActiveAESettings::GetDefaultDevice(true));
+  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(false));
+  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(true));
 #endif
 
   if (g_application.IsStandAlone())
