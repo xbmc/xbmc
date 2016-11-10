@@ -10,6 +10,7 @@
 
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "threads/CriticalSection.h"
+#include "utils/logtypes.h"
 
 #include <memory>
 #include <vector>
@@ -123,4 +124,7 @@ private:
   std::string m_cert;
   mutable CCriticalSection m_critSection;
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
+
+  Logger m_logger;
+  static Logger s_logger;
 };
