@@ -45,6 +45,7 @@ public:
   virtual int Encode(uint8_t *in, int in_size, uint8_t *out, int out_size);
   virtual int GetData(uint8_t **data);
   virtual double GetDelay(unsigned int bufferSize);
+  static CAEEncoderFFmpeg* CreateInstance();
 protected:
   unsigned int BuildChannelLayout(const int64_t ffmap, CAEChannelInfo& layout);
   unsigned int GetAC3Bitrate() { return 640000; };

@@ -1192,7 +1192,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       // setup encoder
       if (!m_encoder)
       {
-        m_encoder = new CAEEncoderFFmpeg();
+        m_encoder = CAEEncoderFFmpeg::CreateInstance();
         m_encoder->Initialize(outputFormat, true);
         m_encoderFormat = outputFormat;
       }

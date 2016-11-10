@@ -27,6 +27,16 @@
 #include <string.h>
 #include <cassert>
 
+// Override for platform ports
+#if !defined(PLATFORM_OVERRIDE)
+
+CAEEncoderFFmpeg* CAEEncoderFFmpeg::CreateInstance()
+{
+  return new CAEEncoderFFmpeg();
+}
+
+#endif
+
 CAEEncoderFFmpeg::CAEEncoderFFmpeg():
   m_BitRate       (0    ),
   m_CodecCtx      (NULL ),
