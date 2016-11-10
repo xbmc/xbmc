@@ -27,8 +27,7 @@ foreach(ADDON_DEFINITION_FILE ${ADDON_DEFINITIONS})
     list(GET ADDON_DEFINITION 0 ADDON_ID)
 
     # check if the addon definition should be built
-    list(FIND ADDONS_TO_BUILD ${ADDON_ID} ADDONS_TO_BUILD_IDX)
-    if(ADDONS_TO_BUILD_IDX GREATER -1 OR "${ADDONS_TO_BUILD}" STREQUAL "all")
+    if(ADDON_ID MATCHES "^${ADDONS_TO_BUILD}" OR ADDONS_TO_BUILD STREQUAL all)
       # get the path to the addon definition directory
       get_filename_component(ADDON_DEFINITION_DIR ${ADDON_DEFINITION_FILE} DIRECTORY)
 
