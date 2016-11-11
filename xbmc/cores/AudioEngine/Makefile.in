@@ -17,7 +17,7 @@ ifneq (0,${OSSLIBDIR})
 endif
 
 CXXFLAGS += -D__STDC_LIMIT_MACROS
-OVERRIDES = $(wildcard overrides/@CORE_SYSTEM_NAME@/*.cpp) $(wildcard overrides/@CORE_SYSTEM_VARIANT@/*.cpp)
+OVERRIDES = $(wildcard Encoders/overrides/@CORE_SYSTEM_NAME@/*.cpp) $(wildcard Encoders/overrides/@CORE_SYSTEM_VARIANT@/*.cpp)
 ifneq ($(strip $(OVERRIDES)),)
   CXXFLAGS += -DPLATFORM_OVERRIDE_AE_ENCODERS
 endif
