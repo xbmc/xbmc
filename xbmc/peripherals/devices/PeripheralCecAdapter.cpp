@@ -1384,6 +1384,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_bPowerOffScreensaver               = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
   m_bPowerOnScreensaver                = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
   m_bSendInactiveSource                = GetSettingBool("send_inactive_source") ? 1 : 0;
+  m_configuration.bAutoWakeAVR         = GetSettingBool("power_avr_on_as") ? 1 : 0;
 
   // read the mutually exclusive boolean settings
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
