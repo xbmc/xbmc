@@ -15,7 +15,7 @@ DEPENDS = \
 	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
-        libdvdread libdvdnav libdvdcss
+        libdvdread libdvdnav libdvdcss p8-platform
 
 
 FFMPEG_DEPENDS = gnutls
@@ -101,7 +101,8 @@ pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
-libcec: platform
+platform: p8-platform
+libcec: p8-platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)

@@ -16376,11 +16376,6 @@ msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
 msgstr ""
 
-#: system/peripherals.xml
-msgctxt "#36022"
-msgid "COM port (leave empty unless needed)"
-msgstr ""
-
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36023"
 msgid "Configuration updated"

@@ -24,7 +24,6 @@
     <setting key="connected_device" type="enum" label="36019" value="36037" lvalues="36037|36038" order="12" />
     <setting key="cec_hdmi_port" type="int" value="1" min="1" max="15" label="36015" order="13" />
     <setting key="physical_address" type="string" label="36021" value="0" order="14" />
-    <setting key="port" type="string" value="" label="36022" order="15" />
 
     <setting key="tv_vendor" type="int" value="0" configurable="0" />
     <setting key="device_name" type="string" value="Kodi" configurable="0" />
