@@ -28,8 +28,6 @@ public:
   {
     return new CAEEncoderFFmpegAndroid();
   }
-  virtual CAEEncoderFFmpegAndroid() {};
-  virtual ~CAEEncoderFFmpegAndroid() {};
 protected:
   unsigned int GetAC3Bitrate() { return 384000; };
 };
