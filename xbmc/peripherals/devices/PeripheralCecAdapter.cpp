@@ -55,6 +55,10 @@ using namespace CEC;
 #define LOCALISED_ID_TV_AVR       36039
 #define LOCALISED_ID_STOP         36044
 #define LOCALISED_ID_PAUSE        36045
+#define LOCALISED_ID_POWEROFF     13005
+#define LOCALISED_ID_SUSPEND      13011
+#define LOCALISED_ID_QUIT         13009
+#define LOCALISED_ID_IGNORE       36028
 
 #define LOCALISED_ID_NONE         231
 
@@ -619,6 +623,35 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
     CLog::Log(LOGWARNING, "%s - TV menu language set to unknown value '%s'", __FUNCTION__, strLanguage);
 }
 
+void CPeripheralCecAdapter::OnTvStandby(void)
+{
+  int iActionOnTvStandby = GetSettingInt("standby_pc_on_tv_standby");
+  switch (iActionOnTvStandby)
+  {
+  case LOCALISED_ID_POWEROFF:
+    m_bStarted = false;
+    g_application.ExecuteXBMCAction("Shutdown");
+    break;
+  case LOCALISED_ID_SUSPEND:
+    m_bStarted = false;
+    g_application.ExecuteXBMCAction("Suspend");
+    break;
+  case LOCALISED_ID_QUIT:
+    m_bStarted = false;
+    g_application.ExecuteXBMCAction("Quit");
+    break;
+  case LOCALISED_ID_PAUSE:
+    g_application.OnAction(CAction(ACTION_PAUSE));
+    break;
+  case LOCALISED_ID_STOP:
+    g_application.StopPlaying();
+    break;
+  default:
+    CLog::Log(LOGERROR, "%s - Unexpected [standby_pc_on_tv_standby] setting value", __FUNCTION__);
+    break;
+  }
+}
+
 void CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command* command)
 {
   CPeripheralCecAdapter *adapter = static_cast<CPeripheralCecAdapter *>(cbParam);
@@ -630,16 +663,10 @@ void CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command* command
     switch (command->opcode)
     {
     case CEC_OPCODE_STANDBY:
-      /* a device was put in standby mode */
       if (command->initiator == CECDEVICE_TV &&
-          (adapter->m_configuration.bPowerOffOnStandby == 1 || adapter->m_bShutdownOnStandby) &&
           (!adapter->m_standbySent.IsValid() || CDateTime::GetCurrentDateTime() - adapter->m_standbySent > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT)))
       {
-        adapter->m_bStarted = false;
-        if (adapter->m_configuration.bPowerOffOnStandby == 1)
-          g_application.ExecuteXBMCAction("Suspend");
-        else if (adapter->m_bShutdownOnStandby)
-          g_application.ExecuteXBMCAction("Shutdown");
+        adapter->OnTvStandby();
       }
       break;
     case CEC_OPCODE_SET_MENU_LANGUAGE:
@@ -1360,8 +1387,8 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // read the mutually exclusive boolean settings
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
-  m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
-  m_bShutdownOnStandby = iStandbyAction == 13005;
+  m_configuration.bPowerOffOnStandby = iStandbyAction == LOCALISED_ID_SUSPEND ? 1 : 0;
+  m_bShutdownOnStandby = iStandbyAction == LOCALISED_ID_POWEROFF;
 
 #if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
   // double tap prevention timeout in ms. libCEC uses 50ms units for this in 2.2.0, so divide by 50
@@ -1373,7 +1400,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   if (GetSettingBool("pause_playback_on_deactivate"))
   {
-    SetSetting("pause_or_stop_playback_on_deactivate", 36045);
+    SetSetting("pause_or_stop_playback_on_deactivate", LOCALISED_ID_PAUSE);
     SetSetting("pause_playback_on_deactivate", false);
   }
 }

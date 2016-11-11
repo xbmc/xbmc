@@ -144,6 +144,7 @@ namespace PERIPHERALS
 
     void SetAudioSystemConnected(bool bSetTo);
     void SetMenuLanguage(const char *strLanguage);
+    void OnTvStandby(void);
 
     // callbacks from libCEC
     static void CecLogMessage(void *cbParam, const CEC::cec_log_message* message);
