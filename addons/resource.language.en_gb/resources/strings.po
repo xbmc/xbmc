@@ -16376,11 +16376,6 @@ msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
 msgstr ""
 
-#: system/peripherals.xml
-msgctxt "#36022"
-msgid "COM port (leave empty unless needed)"
-msgstr ""
-
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36023"
 msgid "Configuration updated"
@@ -16513,7 +16508,12 @@ msgctxt "#36045"
 msgid "Pause Playback"
 msgstr ""
 
-#empty strings from id 36046 to 36098
+#: system/peripherals.xml
+msgctxt "#36046"
+msgid "Force AVR to wake up when Kodi is activated"
+msgstr ""
+
+#empty strings from id 36047 to 36098
 
 #: system/settings/settings.xml
 msgctxt "#36099"
