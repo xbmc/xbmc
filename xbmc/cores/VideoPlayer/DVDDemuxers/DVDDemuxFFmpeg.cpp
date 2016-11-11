@@ -1278,12 +1278,19 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
       if(i != m_program)
         m_pFormatContext->programs[i]->discard = AVDISCARD_ALL;
     }
-    if(m_program != UINT_MAX)
+    if (m_program != UINT_MAX)
     {
       // add streams from selected program
       for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
       {
         AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
+      }
+
+      // discard all unneeded streams
+      for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+      {
+        if (GetStream(i) == nullptr)
+          m_pFormatContext->streams[i]->discard = AVDISCARD_ALL;
       }
     }
   }
