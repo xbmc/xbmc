@@ -7541,12 +7541,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14204"
-msgid "TV"
+msgid "PVR & Live TV"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14205"
-msgid "TV settings"
+msgid "PVR & Live TV settings"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17117,12 +17117,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36201"
-msgid "Settings for PVR / Live TV."
+msgid "Settings for PVR & Live TV."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36202"
-msgid "This category contains the general settings for the PVR / Live TV."
+msgid "This category contains the general settings for the PVR & Live TV."
 msgstr ""
 
 #: system/settings/settings.xml
