@@ -59,6 +59,14 @@ namespace JOYSTICK
      */
     virtual bool MapPrimitive(IButtonMap* buttonMap, const CDriverPrimitive& primitive) = 0;
 
+    /*!
+     * \brief Get the duration for which this mapper has been accepting input
+     *        for mapping buttons
+     *
+     * \return The duration, in ms, or -1 if this mapper is not mapping buttons
+     */
+    virtual int MappingDurationMs(void) const = 0;
+
     // Button map callback interface
     void SetButtonMapCallback(IButtonMapCallback* callback) { m_callback = callback; }
     void ResetButtonMapCallback(void) { m_callback = nullptr; }
