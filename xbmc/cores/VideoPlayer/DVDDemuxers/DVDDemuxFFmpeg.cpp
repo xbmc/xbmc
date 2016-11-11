@@ -1792,12 +1792,12 @@ unsigned int CDVDDemuxFFmpeg::HLSSelectProgram()
 
     if (strBitrate <= bandwidth)
     {
-      if (strBitrate > selectedRes || strRes > selectedRes)
+      if (strBitrate > selectedBitrate || strRes > selectedRes)
         want = true;
     }
     else
     {
-      if (strRes < selectedBitrate)
+      if (strBitrate < selectedBitrate)
         want = true;
     }
 
