@@ -238,6 +238,19 @@ namespace PERIPHERALS
     // implementation of IEventScannerCallback
     virtual void ProcessEvents(void) override;
 
+    /*!
+     * \brief Initialize button mapping
+     *
+     * This command enables button mapping on all busses. Button maps allow
+     * connect events from the driver to the higher-level features used by
+     * controller profiles.
+     *
+     * If user input is required, a blocking dialog may be shown.
+     *
+     * \return True if button mapping is enabled for at least one bus
+     */
+    bool EnableButtonMapping();
+
     PeripheralAddonPtr GetAddonWithButtonMap(const CPeripheral* device);
 
     void ResetButtonMaps(const std::string& controllerId);

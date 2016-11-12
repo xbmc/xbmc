@@ -16056,7 +16056,19 @@ msgctxt "#35016"
 msgid "Axis %d"
 msgstr ""
 
-#empty strings from id 35017 to 35048
+#. Error dialog title when the controller dialog is opened but peripheral add-ons are disabled
+#: xbmc/peripherals/bus/virtual/PeripheralBusAddon.cpp
+msgctxt "#35017"
+msgid "Unable to configure controllers"
+msgstr ""
+
+#. Error dialog text when the controller dialog is opened but peripheral add-ons are disabled
+#: xbmc/peripherals/bus/virtual/PeripheralBusAddon.cpp
+msgctxt "#35018"
+msgid "Controller configuration depends on a disabled add-on. Would you like to enable it?"
+msgstr ""
+
+#empty strings from id 35019 to 35048
 
 #. Name of game add-ons category
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -16092,17 +16104,7 @@ msgctxt "#35055"
 msgid "Use the keyboard or remote to select a controller profile. When prompted, press the button on your game controller that best matches what you see on the screen. If you make a mistake you can repeat the process."
 msgstr ""
 
-#. Title of error dialog shown when no joystick add-ons provide button mapping
-#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
-msgctxt "#35056"
-msgid "Joystick support not found"
-msgstr ""
-
-#. Text of error dialog shown when no joystick add-ons provide button mapping
-#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
-msgctxt "#35057"
-msgid "Controller configuration is disabled. Install the proper joystick support add-on."
-msgstr ""
+#empty strings from id 35056 to 35057
 
 #. Title of controller configuration window
 #: addons/skin.estuary/1080i/DialogGameControllers.xml
