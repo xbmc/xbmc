@@ -53,6 +53,11 @@ ActiveAE::CActiveAEDSP &CServiceBroker::GetADSP()
   return g_application.m_ServiceManager->GetADSPManager();
 }
 
+ActiveAE::CActiveAE& CServiceBroker::GetActiveAE()
+{
+  return g_application.m_ServiceManager->GetActiveAE();
+}
+
 CContextMenuManager& CServiceBroker::GetContextMenuManager()
 {
   return g_application.m_ServiceManager->GetContextMenuManager();

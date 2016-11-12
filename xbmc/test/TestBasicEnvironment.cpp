@@ -22,6 +22,7 @@
 #include "TestUtils.h"
 #include "cores/DataCacheCore.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"

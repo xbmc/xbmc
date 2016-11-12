@@ -25,7 +25,7 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
@@ -86,7 +86,7 @@ void CPowerManager::Initialize()
   std::unique_ptr<IPowerSyscall> currPowerManager;
   int bestCount = -1;
   int currCount = -1;
-  
+
   std::list< std::pair< std::function<bool()>,
                         std::function<IPowerSyscall*()> > > powerManagers =
   {
@@ -263,7 +263,7 @@ void CPowerManager::OnSleep()
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
   g_application.CloseNetworkShares();
-  CAEFactory::Suspend();
+  CServiceBroker::GetActiveAE().Suspend();
 }
 
 void CPowerManager::OnWake()
@@ -296,7 +296,7 @@ void CPowerManager::OnWake()
   CBuiltins::GetInstance().Execute("LIRC.Start");
 #endif
 
-  CAEFactory::Resume();
+  CServiceBroker::GetActiveAE().Resume();
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 

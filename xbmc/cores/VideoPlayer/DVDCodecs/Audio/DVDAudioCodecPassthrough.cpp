@@ -24,8 +24,8 @@
 #include "utils/log.h"
 
 #include <algorithm>
-
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -82,13 +82,13 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
   }
 
-  bool ret = CAEFactory::SupportsRaw(format);
+  bool ret = CServiceBroker::GetActiveAE().SupportsRaw(format);
 
   m_parser.SetCoreOnly(false);
   if (!ret && hints.codec == AV_CODEC_ID_DTS)
   {
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
-    ret = CAEFactory::SupportsRaw(format);
+    ret = CServiceBroker::GetActiveAE().SupportsRaw(format);
 
     // only get the dts core from the parser if we don't support dtsHD
     m_parser.SetCoreOnly(true);

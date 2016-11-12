@@ -1,5 +1,4 @@
-set(SOURCES AEFactory.cpp
-            AEResampleFactory.cpp
+set(SOURCES AEResampleFactory.cpp
             AESinkFactory.cpp
             Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.cpp
             Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPAddon.cpp
@@ -13,6 +12,7 @@ set(SOURCES AEFactory.cpp
             Engines/ActiveAE/ActiveAESink.cpp
             Engines/ActiveAE/ActiveAEStream.cpp
             Engines/ActiveAE/ActiveAESound.cpp
+            Engines/ActiveAE/ActiveAESettings.cpp
             Utils/AEBitstreamPacker.cpp
             Utils/AEChannelInfo.cpp
             Utils/AEDeviceInfo.cpp
@@ -22,8 +22,7 @@ set(SOURCES AEFactory.cpp
             Utils/AEUtil.cpp
             Sinks/AESinkNULL.cpp)
 
-set(HEADERS AEFactory.h
-            AEResampleFactory.h
+set(HEADERS AEResampleFactory.h
             AESinkFactory.h
             Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h
             Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPAddon.h
@@ -37,6 +36,7 @@ set(HEADERS AEFactory.h
             Engines/ActiveAE/ActiveAESink.h
             Engines/ActiveAE/ActiveAESound.h
             Engines/ActiveAE/ActiveAEStream.h
+            Engines/ActiveAE/ActiveAESettings.h
             Interfaces/AE.h
             Interfaces/AEEncoder.h
             Interfaces/AEResample.h
