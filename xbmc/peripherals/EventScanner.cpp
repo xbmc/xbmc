@@ -49,16 +49,16 @@ void CEventScanner::Stop(void)
   StopThread(true);
 }
 
-EventRateHandle CEventScanner::SetRate(float rateHz)
+EventRateHandle CEventScanner::SetRate(double rateHz)
 {
   CSingleLock lock(m_mutex);
 
-  const float oldRate = GetRateHz();
+  const double oldRate = GetRateHz();
 
   EventRateHandle handle = EventRateHandle(new CEventRateHandle(rateHz, this));
   m_handles.push_back(handle);
 
-  const float newRate = GetRateHz();
+  const double newRate = GetRateHz();
 
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event sampling rate set from %.2f to %.2f", oldRate, newRate);
 
@@ -69,7 +69,7 @@ void CEventScanner::Release(CEventRateHandle* handle)
 {
   CSingleLock lock(m_mutex);
 
-  const float oldRate = GetRateHz();
+  const double oldRate = GetRateHz();
 
   m_handles.erase(std::remove_if(m_handles.begin(), m_handles.end(),
     [handle](const EventRateHandle& myHandle)
@@ -77,14 +77,14 @@ void CEventScanner::Release(CEventRateHandle* handle)
       return handle == myHandle.get();
     }), m_handles.end());
 
-  const float newRate = GetRateHz();
+  const double newRate = GetRateHz();
 
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event sampling rate set from %.2f to %.2f", oldRate, newRate);
 }
 
 void CEventScanner::Process(void)
 {
-  float nextScanMs = static_cast<float>(SystemClockMillis());
+  double nextScanMs = static_cast<double>(SystemClockMillis());
 
   while (!m_bStop)
   {
@@ -92,8 +92,8 @@ void CEventScanner::Process(void)
 
     m_callback->ProcessEvents();
 
-    const float nowMs = static_cast<float>(SystemClockMillis());
-    const float scanIntervalMs = GetScanIntervalMs();
+    const double nowMs = static_cast<double>(SystemClockMillis());
+    const double scanIntervalMs = GetScanIntervalMs();
 
     while (nextScanMs <= nowMs)
       nextScanMs += scanIntervalMs;
@@ -105,11 +105,11 @@ void CEventScanner::Process(void)
   }
 }
 
-float CEventScanner::GetRateHz(void) const
+double CEventScanner::GetRateHz(void) const
 {
   CSingleLock lock(m_mutex);
 
-  float scanRateHz = 0.0f;
+  double scanRateHz = 0.0;
 
   for (const EventRateHandle& handle : m_handles)
   {
@@ -117,7 +117,7 @@ float CEventScanner::GetRateHz(void) const
       scanRateHz = handle->GetRateHz();
   }
 
-  if (scanRateHz == 0.0f)
+  if (scanRateHz == 0.0)
     scanRateHz = DEFAULT_SCAN_RATE_HZ;
 
   return scanRateHz;

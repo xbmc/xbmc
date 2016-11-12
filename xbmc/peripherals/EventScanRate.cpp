@@ -24,7 +24,7 @@
 
 using namespace PERIPHERALS;
 
-CEventRateHandle::CEventRateHandle(float RateHz, IEventRateCallback* callback) :
+CEventRateHandle::CEventRateHandle(double RateHz, IEventRateCallback* callback) :
   m_rateHz(RateHz),
   m_callback(callback)
 {

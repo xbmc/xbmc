@@ -57,7 +57,7 @@ namespace PERIPHERALS
     void Start(void);
     void Stop(void);
 
-    EventRateHandle SetRate(float rateHz);
+    EventRateHandle SetRate(double rateHz);
 
     // implementation of IEventRateCallback
     virtual void Release(CEventRateHandle* handle) override;
@@ -67,8 +67,8 @@ namespace PERIPHERALS
     virtual void Process(void) override;
 
   private:
-    float GetRateHz(void) const;
-    float GetScanIntervalMs(void) const { return 1000.0f / GetRateHz(); }
+    double GetRateHz(void) const;
+    double GetScanIntervalMs(void) const { return 1000.0 / GetRateHz(); }
 
     IEventScannerCallback* const m_callback;
     std::vector<EventRateHandle> m_handles;
