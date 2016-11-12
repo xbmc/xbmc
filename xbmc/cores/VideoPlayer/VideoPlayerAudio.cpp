@@ -26,7 +26,8 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"
@@ -160,7 +161,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 
 void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
-  bool bWait = bWaitForBuffers && m_speed > 0 && !CAEFactory::IsSuspended();
+  bool bWait = bWaitForBuffers && m_speed > 0 && !CServiceBroker::GetActiveAE().IsSuspended();
 
   // wait until buffers are empty
   if (bWait)

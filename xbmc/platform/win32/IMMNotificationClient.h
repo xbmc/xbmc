@@ -22,7 +22,8 @@
 #include <mmdeviceapi.h>
 #include "system.h" // for SAFE_RELEASE
 #include "utils/log.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "powermanagement/windows/Win32PowerSyscall.h"
 
 class CMMNotificationClient : public IMMNotificationClient
@@ -83,7 +84,7 @@ public:
   HRESULT STDMETHODCALLTYPE OnDefaultDeviceChanged(EDataFlow flow, ERole role, LPCWSTR pwstrDeviceId)
   {
     // if the default device changes this function is called four times.
-    // therefore we call CAEFactory::DeviceChange() only for one role.
+    // therefore we call CServiceBroker::GetActiveAE().DeviceChange() only for one role.
     char  *pszFlow = "?????";
     char  *pszRole = "?????";
 
@@ -168,6 +169,6 @@ public:
   void STDMETHODCALLTYPE NotifyAE()
   {
     if(!CWin32PowerSyscall::IsSuspending())
-      CAEFactory::DeviceChange();
+      CServiceBroker::GetActiveAE().DeviceChange();
   }
 };

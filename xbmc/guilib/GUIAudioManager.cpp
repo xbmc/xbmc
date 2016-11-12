@@ -29,7 +29,8 @@
 #include "filesystem/Directory.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 
 CGUIAudioManager g_audioManager;
@@ -342,7 +343,7 @@ IAESound* CGUIAudioManager::LoadSound(const std::string &filename)
     return it->second.sound;
   }
 
-  IAESound *sound = CAEFactory::MakeSound(filename);
+  IAESound *sound = CServiceBroker::GetActiveAE().MakeSound(filename);
   if (!sound)
     return NULL;
 
@@ -360,7 +361,7 @@ void CGUIAudioManager::FreeSound(IAESound *sound)
   for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it) {
     if (it->second.sound == sound) {
       if (--it->second.usage == 0) {     
-        CAEFactory::FreeSound(sound);
+        CServiceBroker::GetActiveAE().FreeSound(sound);
         m_soundCache.erase(it);
       }
       return;
@@ -373,7 +374,7 @@ void CGUIAudioManager::FreeSoundAllUsage(IAESound *sound)
   CSingleLock lock(m_cs);
   for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it) {
     if (it->second.sound == sound) {   
-      CAEFactory::FreeSound(sound);
+      CServiceBroker::GetActiveAE().FreeSound(sound);
       m_soundCache.erase(it);
       return;
     }

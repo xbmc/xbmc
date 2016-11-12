@@ -48,7 +48,8 @@
 #include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "storage/MediaManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
@@ -488,12 +489,12 @@ namespace XBMCAddon
 
     void audioSuspend()
     {  
-      CAEFactory::Suspend();
+      CServiceBroker::GetActiveAE().Suspend();
     }
 
     void audioResume()
     { 
-      CAEFactory::Resume();
+      CServiceBroker::GetActiveAE().Resume();
     }
 
     String convertLanguage(const char* language, int format)
