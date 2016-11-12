@@ -60,19 +60,20 @@ void CGUIDialogButtonCapture::Show()
 
     m_captureEvent.Set();
 
-    if (ButtonMapCallback())
+    for (auto& callback : ButtonMapCallbacks())
     {
       if (bAccepted)
       {
         // See documentation of IButtonMapCallback::ResetIgnoredPrimitives()
         // for why this call is needed
-        if (m_capturedPrimitives.empty())
-          ButtonMapCallback()->ResetIgnoredPrimitives();
+        if (m_deviceName.empty())
+          callback.second->ResetIgnoredPrimitives();
 
-        ButtonMapCallback()->SaveButtonMap();
+        if (m_deviceName.empty() || m_deviceName == callback.first)
+          callback.second->SaveButtonMap();
       }
       else
-        ButtonMapCallback()->RevertButtonMap();
+        callback.second->RevertButtonMap();
     }
 
     RemoveHooks();

@@ -132,8 +132,8 @@ void CGUIConfigurationWizard::Process(void)
     InitializeState();
   }
 
-  if (ButtonMapCallback())
-    ButtonMapCallback()->SaveButtonMap();
+  for (auto callback : ButtonMapCallbacks())
+    callback.second->SaveButtonMap();
 
   RemoveHooks();
 

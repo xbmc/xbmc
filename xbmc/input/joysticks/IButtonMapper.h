@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include <map>
 #include <string>
 
 namespace JOYSTICK
@@ -39,7 +40,7 @@ namespace JOYSTICK
   class IButtonMapper
   {
   public:
-    IButtonMapper() : m_callback(nullptr) { }
+    IButtonMapper() = default;
 
     virtual ~IButtonMapper(void) { }
 
@@ -71,11 +72,11 @@ namespace JOYSTICK
     virtual bool MapPrimitive(IButtonMap* buttonMap, IActionMap* actionMap, const CDriverPrimitive& primitive) = 0;
 
     // Button map callback interface
-    void SetButtonMapCallback(IButtonMapCallback* callback) { m_callback = callback; }
-    void ResetButtonMapCallback(void) { m_callback = nullptr; }
-    IButtonMapCallback* ButtonMapCallback(void) { return m_callback; }
+    void SetButtonMapCallback(const std::string& deviceName, IButtonMapCallback* callback) { m_callbacks[deviceName] = callback; }
+    void ResetButtonMapCallbacks(void) { m_callbacks.clear(); }
+    std::map<std::string, IButtonMapCallback*>& ButtonMapCallbacks(void) { return m_callbacks; }
 
   private:
-    IButtonMapCallback* m_callback;
+    std::map<std::string, IButtonMapCallback*> m_callbacks;
   };
 }
