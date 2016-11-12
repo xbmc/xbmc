@@ -56,6 +56,10 @@
 #include <cstdlib>
 #include <memory>
 
+extern "C" {
+#include "libavformat/avformat.h"
+}
+
 bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
 {
   std::unique_ptr<CDVDInputStream> input;
@@ -232,20 +236,23 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
             continue;
           }
 
-          iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
+          iDecoderState = pVideoCodec->AddData(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
           CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 
           if (iDecoderState & VC_ERROR)
             break;
 
-          if (iDecoderState & VC_PICTURE)
+          int result = 0;
+          while (result == 0)
           {
             memset(&picture, 0, sizeof(DVDVideoPicture));
-            if (pVideoCodec->GetPicture(&picture))
-            {
-              if(!(picture.iFlags & DVP_FLAG_DROPPED))
-                break;
-            }
+            result = pVideoCodec->GetPicture(&picture);
+          }
+
+          if (result & VC_PICTURE)
+          {
+            if(!(picture.iFlags & DVP_FLAG_DROPPED))
+              break;
           }
 
         } while (abort_index--);

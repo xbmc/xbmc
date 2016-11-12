@@ -938,7 +938,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   return ret;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
   CSingleLock lock(m_DecoderSection);
 

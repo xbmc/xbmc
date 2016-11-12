@@ -36,7 +36,7 @@ public:
  ~CDecoder();
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
   virtual int Decode(AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
+  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture);
   virtual int Check(AVCodecContext* avctx);
   virtual void Close();
   virtual const std::string Name() { return "vtb"; }
@@ -46,6 +46,7 @@ protected:
   unsigned m_renderbuffers_count;
   AVCodecContext *m_avctx;
   CProcessInfo& m_processInfo;
+  struct __CVBuffer *m_renderPicture;
 };
 
 }

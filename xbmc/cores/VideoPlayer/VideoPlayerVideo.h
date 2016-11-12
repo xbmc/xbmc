@@ -100,7 +100,7 @@ protected:
 
   virtual void OnExit();
   virtual void Process();
-  bool ProcessDecoderOutput(int &decoderState, double &frametime, double &pts);
+  bool ProcessDecoderOutput(double &frametime, double &pts);
 
   int OutputPicture(const DVDVideoPicture* src, double pts);
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
