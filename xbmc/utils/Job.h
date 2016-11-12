@@ -109,7 +109,8 @@ public:
     PRIORITY_LOW_PAUSABLE = 0,
     PRIORITY_LOW,
     PRIORITY_NORMAL,
-    PRIORITY_HIGH
+    PRIORITY_HIGH,
+    PRIORITY_DEDICATED, // will create a new worker if no worker is available at queue time
   };
   CJob() { m_callback = NULL; };
 
