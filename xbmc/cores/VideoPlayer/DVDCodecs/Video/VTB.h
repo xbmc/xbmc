@@ -34,13 +34,15 @@ class CDecoder
 public:
   CDecoder(CProcessInfo& processInfo);
  ~CDecoder();
-  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
-  virtual int Decode(AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture);
-  virtual int Check(AVCodecContext* avctx);
-  virtual void Close();
-  virtual const std::string Name() { return "vtb"; }
-  virtual unsigned GetAllowedReferences();
+  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx,
+                    const enum AVPixelFormat, unsigned int surfaces = 0) override;
+  virtual int Decode(AVCodecContext* avctx, AVFrame* frame) override;
+  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) override;
+  virtual int Check(AVCodecContext* avctx) override;
+  virtual const std::string Name() override { return "vtb"; }
+  virtual unsigned GetAllowedReferences() override ;
+
+  void Close();
 
 protected:
   unsigned m_renderbuffers_count;
