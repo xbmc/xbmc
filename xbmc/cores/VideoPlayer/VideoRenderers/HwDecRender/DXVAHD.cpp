@@ -73,7 +73,7 @@ void CProcessorHD::UnInit()
   CSingleLock lock(m_section);
   Close();
   SAFE_RELEASE(m_pVideoDevice);
-  SAFE_RELEASE(m_pVideoContext);
+  m_formats.clear();
 }
 
 void CProcessorHD::Close()
@@ -82,6 +82,7 @@ void CProcessorHD::Close()
   SAFE_RELEASE(m_pEnumerator);
   SAFE_RELEASE(m_pVideoProcessor);
   SAFE_RELEASE(m_context);
+  SAFE_RELEASE(m_pVideoContext);
   m_eViewType = PROCESSOR_VIEW_TYPE_UNKNOWN;
 }
 
@@ -93,12 +94,10 @@ bool CProcessorHD::UpdateSize(const DXVA2_VideoDesc& dsc)
 bool CProcessorHD::PreInit()
 {
   SAFE_RELEASE(m_pVideoDevice);
-  SAFE_RELEASE(m_pVideoContext);
 
-  if ( FAILED(g_Windowing.Get3D11Device()->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_pVideoDevice)))
-    || FAILED(g_Windowing.GetImmediateContext()->QueryInterface(__uuidof(ID3D11VideoContext), reinterpret_cast<void**>(&m_pVideoContext))))
+  if (FAILED(g_Windowing.Get3D11Device()->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_pVideoDevice))))
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - failed to get video devices.");
+    CLog::Log(LOGWARNING, __FUNCTION__" - failed to get video device.");
     return false;
   }
 
@@ -119,21 +118,32 @@ bool CProcessorHD::PreInit()
   }
 
   memset(&m_texDesc, 0, sizeof(D3D11_TEXTURE2D_DESC));
+
+  if (IsFormatSupported(DXGI_FORMAT_P010, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
+    m_formats.push_back(RENDER_FMT_YUV420P10);
+
+  if (IsFormatSupported(DXGI_FORMAT_P016, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
+    m_formats.push_back(RENDER_FMT_YUV420P16);
+
+  SAFE_RELEASE(m_pEnumerator);
   return true;
 }
 
 void CProcessorHD::ApplySupportedFormats(std::vector<ERenderFormat> *formats)
 {
-  if (IsFormatSupported(DXGI_FORMAT_P010, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-    formats->push_back(RENDER_FMT_YUV420P10);
-
-  if (IsFormatSupported(DXGI_FORMAT_P016, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-    formats->push_back(RENDER_FMT_YUV420P16);
+  formats->insert(formats->end(), m_formats.begin(), m_formats.end());
 }
 
 bool CProcessorHD::InitProcessor()
 {
   SAFE_RELEASE(m_pEnumerator);
+  SAFE_RELEASE(m_pVideoContext);
+
+  if (FAILED(g_Windowing.GetImmediateContext()->QueryInterface(__uuidof(ID3D11VideoContext), reinterpret_cast<void**>(&m_pVideoContext))))
+  {
+    CLog::Log(LOGWARNING, "%s: Context initialization is failed.", __FUNCTION__);
+    return false;
+  }
 
   CLog::Log(LOGDEBUG, "%s - Initing Video Enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
 
@@ -148,7 +158,7 @@ bool CProcessorHD::InitProcessor()
 
   if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&contentDesc, &m_pEnumerator)))
   {
-    CLog::Log(LOGWARNING, "%s - failed to reinit Video Enumerator with new params.", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s - failed to init video enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
     return false;
   }
 
@@ -299,7 +309,7 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
 bool CProcessorHD::ReInit()
 {
   CSingleLock lock(m_section);
-  Close();
+  UnInit();
 
   if (!PreInit())
     return false;
