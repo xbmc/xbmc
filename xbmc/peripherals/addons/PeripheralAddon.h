@@ -25,6 +25,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
+#include "threads/CriticalSection.h"
 
 #include <map>
 #include <memory>
@@ -106,6 +107,8 @@ namespace PERIPHERALS
     virtual bool CheckAPIVersion(void) override;
 
   private:
+    void UnregisterButtonMap(CPeripheral* device);
+
     /*!
      * @brief Helper functions
      */
@@ -149,6 +152,7 @@ namespace PERIPHERALS
 
     /* @brief Button map observers */
     std::vector<std::pair<CPeripheral*, JOYSTICK::IButtonMap*> > m_buttonMaps;
+    CCriticalSection m_buttonMapMutex;
 
     /* @brief Thread synchronization */
     CCriticalSection    m_critSection;
