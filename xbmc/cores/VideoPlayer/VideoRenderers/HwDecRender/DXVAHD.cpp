@@ -44,7 +44,7 @@ do { \
   HRESULT res = a; \
   if(FAILED(res)) \
   { \
-    CLog::Log(LOGERROR, "%s - failed executing "#a" at line %d with error %x", __FUNCTION__, __LINE__, res); \
+    CLog::Log(LOGERROR, "%s: failed executing "#a" at line %d with error %x", __FUNCTION__, __LINE__, res); \
   } \
 } while(0);
 
@@ -97,7 +97,7 @@ bool CProcessorHD::PreInit()
 
   if (FAILED(g_Windowing.Get3D11Device()->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_pVideoDevice))))
   {
-    CLog::Log(LOGWARNING, __FUNCTION__" - failed to get video device.");
+    CLog::Log(LOGWARNING, "%s: failed to get video device.", __FUNCTION__);
     return false;
   }
 
@@ -113,7 +113,7 @@ bool CProcessorHD::PreInit()
   // try to create video enum
   if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&desc1, &m_pEnumerator)))
   {
-    CLog::Log(LOGWARNING, "%s - failed to create Video Enumerator.", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s: failed to create Video Enumerator.", __FUNCTION__);
     return false;
   }
 
@@ -145,7 +145,7 @@ bool CProcessorHD::InitProcessor()
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "%s - Initing Video Enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
+  CLog::Log(LOGDEBUG, "%s: Initing Video Enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
 
   D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc;
   ZeroMemory(&contentDesc, sizeof(contentDesc));
@@ -158,7 +158,7 @@ bool CProcessorHD::InitProcessor()
 
   if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&contentDesc, &m_pEnumerator)))
   {
-    CLog::Log(LOGWARNING, "%s - failed to init video enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
+    CLog::Log(LOGWARNING, "%s: failed to init video enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
     return false;
   }
 
@@ -168,15 +168,15 @@ bool CProcessorHD::InitProcessor()
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "%s - Video processor has %d rate conversion.", __FUNCTION__, m_vcaps.RateConversionCapsCount);
-  CLog::Log(LOGDEBUG, "%s - Video processor has %#x feature caps.", __FUNCTION__, m_vcaps.FeatureCaps);
-  CLog::Log(LOGDEBUG, "%s - Video processor has %#x device caps.", __FUNCTION__, m_vcaps.DeviceCaps);
-  CLog::Log(LOGDEBUG, "%s - Video processor has %#x input format caps.", __FUNCTION__, m_vcaps.InputFormatCaps);
-  CLog::Log(LOGDEBUG, "%s - Video processor has %d max input streams.", __FUNCTION__, m_vcaps.MaxInputStreams);
-  CLog::Log(LOGDEBUG, "%s - Video processor has %d max stream states.", __FUNCTION__, m_vcaps.MaxStreamStates);
+  CLog::Log(LOGDEBUG, "%s: Video processor has %d rate conversion.", __FUNCTION__, m_vcaps.RateConversionCapsCount);
+  CLog::Log(LOGDEBUG, "%s: Video processor has %#x feature caps.", __FUNCTION__, m_vcaps.FeatureCaps);
+  CLog::Log(LOGDEBUG, "%s: Video processor has %#x device caps.", __FUNCTION__, m_vcaps.DeviceCaps);
+  CLog::Log(LOGDEBUG, "%s: Video processor has %#x input format caps.", __FUNCTION__, m_vcaps.InputFormatCaps);
+  CLog::Log(LOGDEBUG, "%s: Video processor has %d max input streams.", __FUNCTION__, m_vcaps.MaxInputStreams);
+  CLog::Log(LOGDEBUG, "%s: Video processor has %d max stream states.", __FUNCTION__, m_vcaps.MaxStreamStates);
 
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
-    CLog::Log(LOGWARNING, "%s - The video driver does not support full video processing capabilities.", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s: The video driver does not support full video processing capabilities.", __FUNCTION__);
 
   m_max_back_refs = 0;
   m_max_fwd_refs = 0;
@@ -197,20 +197,20 @@ bool CProcessorHD::InitProcessor()
     }
   }
 
-  CLog::Log(LOGDEBUG, "%s - Selected video processor index: %d.", __FUNCTION__, m_procIndex);
+  CLog::Log(LOGDEBUG, "%s: Selected video processor index: %d.", __FUNCTION__, m_procIndex);
 
   LOGIFERROR(m_pEnumerator->GetVideoProcessorRateConversionCaps(m_procIndex, &m_rateCaps))
   m_max_fwd_refs = m_rateCaps.FutureFrames;
   m_max_back_refs = m_rateCaps.PastFrames;
 
-  CLog::Log(LOGNOTICE, "%s - Supported deinterlace methods: Blend:%s, Bob:%s, Adaptive:%s, MoComp:%s.", __FUNCTION__,
+  CLog::Log(LOGNOTICE, "%s: Supported deinterlace methods: Blend:%s, Bob:%s, Adaptive:%s, MoComp:%s.", __FUNCTION__,
     (m_rateCaps.ProcessorCaps & 0x1) != 0 ? "yes" : "no", // BLEND
     (m_rateCaps.ProcessorCaps & 0x2) != 0 ? "yes" : "no", // BOB
     (m_rateCaps.ProcessorCaps & 0x4) != 0 ? "yes" : "no", // ADAPTIVE
     (m_rateCaps.ProcessorCaps & 0x8) != 0 ? "yes" : "no"  // MOTION_COMPENSATION
     );
 
-  CLog::Log(LOGDEBUG, "%s - Selected video processor allows %d future frames and %d past frames.", __FUNCTION__, m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
+  CLog::Log(LOGDEBUG, "%s: Selected video processor allows %d future frames and %d past frames.", __FUNCTION__, m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
 
   m_size = m_max_back_refs + 1 + m_max_fwd_refs + 2;  // refs + 1 display + 2 safety frames
 
@@ -226,12 +226,12 @@ bool CProcessorHD::InitProcessor()
         continue;
       }
       m_Filters[i].bSupported = true;
-      CLog::Log(LOGDEBUG, "%s - Filter %d has following params - max: %d, min: %d, default: %d", __FUNCTION__,
+      CLog::Log(LOGDEBUG, "%s: Filter %d has following params - max: %d, min: %d, default: %d", __FUNCTION__,
         PROCAMP_FILTERS[i], m_Filters[i].Range.Maximum, m_Filters[i].Range.Minimum, m_Filters[i].Range.Default);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - Filter %d not supported by processor.", __FUNCTION__, PROCAMP_FILTERS[i]);
+      CLog::Log(LOGDEBUG, "%s: Filter %d not supported by processor.", __FUNCTION__, PROCAMP_FILTERS[i]);
 
       m_Filters[i].bSupported = false;
     }
@@ -249,7 +249,7 @@ bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCE
       return true;
   }
 
-  CLog::Log(LOGERROR, "%s - Unsupported format %d for %d.", __FUNCTION__, format, support);
+  CLog::Log(LOGERROR, "%s: Unsupported format %d for %d.", __FUNCTION__, format, support);
   return false;
 }
 
@@ -332,14 +332,14 @@ bool CProcessorHD::OpenProcessor()
     return false;
 
   SAFE_RELEASE(m_pVideoProcessor);
-  CLog::Log(LOGDEBUG, "%s - Creating processor with input format: (%d).", __FUNCTION__, m_textureFormat);
+  CLog::Log(LOGDEBUG, "%s: Creating processor with input format: (%d).", __FUNCTION__, m_textureFormat);
 
   // create processor
   // There is a MSFT bug when creating processor it might throw first-chance exception
   HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator, m_procIndex, &m_pVideoProcessor);
   if (FAILED(hr))
   {
-    CLog::Log(LOGDEBUG, "%s - Failed creating video processor with error %x.", __FUNCTION__, hr);
+    CLog::Log(LOGDEBUG, "%s: Failed creating video processor with error %x.", __FUNCTION__, hr);
     return false;
   }
 
@@ -394,7 +394,7 @@ bool CProcessorHD::CreateSurfaces()
   if (idx != m_size)
   {
     // something goes wrong
-    CLog::Log(LOGERROR, "%s - Failed to create processor surfaces.", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s: Failed to create processor surfaces.", __FUNCTION__);
     for (unsigned idx = 0; idx < m_size; idx++)
     {
       SAFE_RELEASE(views[idx]);
@@ -419,7 +419,7 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
     && picture.format != RENDER_FMT_YUV420P16
     && picture.format != RENDER_FMT_DXVA)
   {
-    CLog::Log(LOGERROR, "%s - colorspace not supported by processor, skipping frame.", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s: colorspace not supported by processor, skipping frame.", __FUNCTION__);
     return nullptr;
   }
 
@@ -429,7 +429,7 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
   ID3D11View *pView = m_context->GetFree(nullptr);
   if (!pView)
   {
-    CLog::Log(LOGERROR, "%s - no free video surface", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s: no free video surface", __FUNCTION__);
     return nullptr;
   }
 
@@ -441,7 +441,7 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
 
   if (FAILED(pContext->Map(pResource, 0, D3D11_MAP_WRITE_DISCARD, 0, &rectangle)))
   {
-    CLog::Log(LOGERROR, "%s - could not lock rect", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s: could not lock rect", __FUNCTION__);
     m_context->ClearReference(pView);
     return nullptr;
   }
@@ -508,7 +508,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view)
     ID3D11VideoDecoderOutputView* decoderView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view);
     if (!decoderView)
     {
-      CLog::Log(LOGERROR, "%s - cannot get view.", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s: cannot get view.", __FUNCTION__);
       return nullptr;
     }
 
@@ -524,7 +524,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view)
     vpivd.Texture2D.MipSlice = 0;
 
     if (FAILED(m_pVideoDevice->CreateVideoProcessorInputView(resource, m_pEnumerator, &vpivd, &inputView)))
-      CLog::Log(LOGERROR, "%s - cannot create processor view.", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s: cannot create processor view.", __FUNCTION__);
 
     resource->Release();
   }
@@ -668,14 +668,14 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   ID3D11VideoProcessorOutputView* pOutputView;
   hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator, &OutputViewDesc, &pOutputView);
   if (S_OK != hr)
-    CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, __FUNCTION__" - Device returns result '%x' while creating processor output.", hr);
+    CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, "%s: Device returns result '%x' while creating processor output.", __FUNCTION__, hr);
 
   if (SUCCEEDED(hr))
   {
     hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor, pOutputView, frameIdx, 1, &stream_data);
     if (S_OK != hr)
     {
-      CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, __FUNCTION__" - Device returns result '%x' while VideoProcessorBlt execution.", hr);
+      CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, "%s: Device returns result '%x' while VideoProcessorBlt execution.", __FUNCTION__, hr);
     }
   }
 
