@@ -1189,7 +1189,7 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   return retval;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
   CSingleLock lock(m_DecoderSection);
 

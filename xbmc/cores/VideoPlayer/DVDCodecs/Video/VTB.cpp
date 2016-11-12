@@ -104,17 +104,20 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     return status;
 
   if(frame)
+  {
+    m_renderPicture = (CVPixelBufferRef)frame->data[3];
     return VC_BUFFER | VC_PICTURE;
+  }
   else
     return VC_BUFFER;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
   ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
 
   picture->format = RENDER_FMT_CVBREF;
-  picture->cvBufferRef = (CVPixelBufferRef)frame->data[3];
+  picture->cvBufferRef = m_renderPicture;
   return true;
 }
 

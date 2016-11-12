@@ -168,6 +168,7 @@ class CDVDCodecOptions;
 #define VC_DROPPED                  0x00000020  //< needed to identify if a picture was dropped
 #define VC_NOBUFFER                 0x00000040  //< last FFmpeg GetBuffer failed
 #define VC_REOPEN                   0x00000080  //< decoder request to re-open
+#define VC_EOF                      0x00000100  //< EOF
 
 class CDVDVideoCodec
 {
@@ -182,9 +183,8 @@ public:
 
   /**
    * returns one or a combination of VC_ messages
-   * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts) = 0;
+  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) = 0;
 
   /**
    * Reset the decoder.
@@ -193,10 +193,10 @@ public:
   virtual void Reset() = 0;
 
   /**
-   * returns true if successfull
-   * the data is valid until the next Decode call
+   * returns one or a combination of VC_ messages
+   * the data is valid until the next GetPicture call
    */
-  virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
+  virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
 
   /**
    * returns true if successfull

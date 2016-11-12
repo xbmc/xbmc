@@ -49,7 +49,7 @@ public:
     virtual ~IHardwareDecoder() {};
     virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
     virtual int  Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
-    virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
+    virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) = 0;
     virtual int  Check(AVCodecContext* avctx) = 0;
     virtual void Reset() {}
     virtual unsigned GetAllowedReferences() { return 0; }
@@ -61,11 +61,11 @@ public:
   CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts) override;
+  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) override;
   virtual void Reset() override;
   virtual void Reopen() override;
   bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
-  virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
+  virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
   virtual const char* GetName() override { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount() override;
   virtual unsigned GetAllowedReferences() override;
@@ -95,7 +95,8 @@ protected:
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
   AVFrame*         m_pFilterFrame;
-  bool m_filterEof = false;
+  bool m_filterEof;
+  bool m_eof;
 
   CDVDVideoPPFFmpeg m_postProc;
 
