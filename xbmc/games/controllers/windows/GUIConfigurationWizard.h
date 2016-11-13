@@ -46,13 +46,16 @@ namespace GAME
     virtual ~CGUIConfigurationWizard(void) { }
 
     // implementation of IConfigurationWizard
-    virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) override;
+    virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons, IConfigurationWizardCallback* callback) override;
     virtual void OnUnfocus(IFeatureButton* button) override;
     virtual bool Abort(bool bWait = true) override;
 
     // implementation of IButtonMapper
     virtual std::string ControllerID(void) const override { return m_strControllerId; }
-    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap, const JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual bool NeedsCooldown(void) const override { return true; }
+    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                              JOYSTICK::IActionMap* actionMap,
+                              const JOYSTICK::CDriverPrimitive& primitive) override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;
@@ -74,11 +77,13 @@ namespace GAME
     // Run() parameters
     std::string                          m_strControllerId;
     std::vector<IFeatureButton*>         m_buttons;
+    IConfigurationWizardCallback*        m_callback;
 
     // State variables and mutex
     IFeatureButton*                      m_currentButton;
     JOYSTICK::ANALOG_STICK_DIRECTION     m_currentDirection;
     std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
+    unsigned int                         m_lastMappingActionMs; // The last mapping action, or 0 if not currently mapping
     CCriticalSection                     m_stateMutex;
 
     // Synchronization event

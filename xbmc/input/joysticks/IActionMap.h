@@ -19,24 +19,29 @@
  */
 #pragma once
 
+#include "JoystickTypes.h"
+#include "input/Key.h"
+
 namespace JOYSTICK
 {
+  class CDriverPrimitive;
+
   /*!
-   * \brief Interface for sending input events to joystick drivers
+   * \brief Interface for translating features to action IDs
    */
-  class IDriverReceiver
+  class IActionMap
   {
   public:
-    virtual ~IDriverReceiver(void) { }
+    virtual ~IActionMap() = default;
 
     /*!
-     * \brief Set the value of a rumble motor
+     * \brief Get the action ID mapped to the specified feature
      *
-     * \param motorIndex   The driver index of the motor to rumble
-     * \param magnitude    The motor's new magnitude of vibration in the closed interval [0, 1]
+     * \param feature  The feature to look up
      *
-     * \return True if the event was handled otherwise false
+     * \return The action ID from Key.h, or ACTION_NONE if no action is mapped
+     *         to the specified key
      */
-    virtual bool SetMotorState(unsigned int motorIndex, float magnitude) = 0;
+    virtual int GetActionID(const FeatureName& feature) = 0;
   };
 }

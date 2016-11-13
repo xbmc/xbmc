@@ -30,6 +30,7 @@ class CSetting;
 
 namespace JOYSTICK
 {
+  class IActionMap;
   class IButtonMapper;
   class IDriverHandler;
   class IDriverReceiver;
@@ -201,6 +202,8 @@ namespace PERIPHERALS
     virtual void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
 
     virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
+
+    virtual JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
 
   protected:
     virtual void ClearSettings(void);

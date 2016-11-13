@@ -27,6 +27,7 @@
 
 namespace JOYSTICK
 {
+  class IActionMap;
   class IButtonMap;
   class IButtonMapper;
 
@@ -49,7 +50,7 @@ namespace JOYSTICK
      * \param buttonMapper Carries out button-mapping commands using <buttonMap>
      * \param buttonMap The button map given to <buttonMapper> on each command
      */
-    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap);
+    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap);
 
     virtual ~CButtonMapping(void) { }
 
@@ -61,9 +62,11 @@ namespace JOYSTICK
 
     // implementation of IButtonMapCallback
     virtual void SaveButtonMap() override;
+    virtual void ResetIgnoredPrimitives() override;
+    virtual void RevertButtonMap() override;
 
   private:
-    void MapPrimitive(const CDriverPrimitive& primitive);
+    bool MapPrimitive(const CDriverPrimitive& primitive);
 
     void Activate(const CDriverPrimitive& semiAxis);
     void Deactivate(const CDriverPrimitive& semiAxis);
@@ -71,6 +74,7 @@ namespace JOYSTICK
 
     IButtonMapper* const m_buttonMapper;
     IButtonMap* const    m_buttonMap;
+    IActionMap* const    m_actionMap;
 
     struct ActivatedAxis
     {

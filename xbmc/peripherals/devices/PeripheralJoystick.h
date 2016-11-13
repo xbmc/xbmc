@@ -57,6 +57,7 @@ namespace PERIPHERALS
     virtual void RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous) override;
     virtual void UnregisterJoystickDriverHandler(IDriverHandler* handler) override;
     virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
+    virtual JOYSTICK::IActionMap* GetActionMap() override { return &m_defaultInputHandler; }
 
     // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;

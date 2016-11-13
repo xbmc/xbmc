@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "IActionMap.h"
 #include "IInputHandler.h"
 #include "JoystickTypes.h"
 #include "RumbleGenerator.h"
@@ -40,7 +41,8 @@ namespace JOYSTICK
    *
    * \sa IInputHandler
    */
-  class CDefaultJoystick : public JOYSTICK::IInputHandler
+  class CDefaultJoystick : public JOYSTICK::IInputHandler,
+                           public IActionMap
   {
   public:
     CDefaultJoystick(void);
@@ -57,6 +59,9 @@ namespace JOYSTICK
     virtual bool OnButtonMotion(const FeatureName& feature, float magnitude) override;
     virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs = 0) override;
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
+
+    // implementation of IActionMap
+    virtual int GetActionID(const FeatureName& feature) override;
 
     // Forward rumble commands to rumble generator
     void NotifyUser(void) { m_rumbleGenerator.NotifyUser(InputReceiver()); }

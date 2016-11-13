@@ -37,9 +37,10 @@ using namespace XbmcThreads;
 #define MAPPING_COOLDOWN_MS  50    // Guard against repeated input
 #define AXIS_THRESHOLD       0.75f // Axis must exceed this value to be mapped
 
-CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap)
+CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap)
   : m_buttonMapper(buttonMapper),
     m_buttonMap(buttonMap),
+    m_actionMap(actionMap),
     m_lastAction(0)
 {
   assert(m_buttonMapper != NULL);
@@ -53,8 +54,7 @@ bool CButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
     CDriverPrimitive buttonPrimitive(PRIMITIVE_TYPE::BUTTON, buttonIndex);
     if (buttonPrimitive.IsValid())
     {
-      MapPrimitive(buttonPrimitive);
-      return true;
+      return MapPrimitive(buttonPrimitive);
     }
   }
 
@@ -118,22 +118,48 @@ void CButtonMapping::SaveButtonMap()
   m_buttonMap->SaveButtonMap();
 }
 
-void CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
+void CButtonMapping::ResetIgnoredPrimitives()
 {
+  std::vector<CDriverPrimitive> empty;
+  m_buttonMap->SetIgnoredPrimitives(empty);
+}
+
+void CButtonMapping::RevertButtonMap()
+{
+  m_buttonMap->RevertButtonMap();
+}
+
+bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
+{
+  bool bHandled = false;
+
   const unsigned int now = SystemClockMillis();
 
-  bool bTimeoutElapsed = (now >= m_lastAction + MAPPING_COOLDOWN_MS);
+  bool bTimeoutElapsed = true;
+
+  if (m_buttonMapper->NeedsCooldown())
+    bTimeoutElapsed = (now >= m_lastAction + MAPPING_COOLDOWN_MS);
+
   if (bTimeoutElapsed)
   {
-    m_lastAction = SystemClockMillis();
-    m_buttonMapper->MapPrimitive(m_buttonMap, primitive);
+    bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_actionMap, primitive);
+
+    if (bHandled)
+      m_lastAction = SystemClockMillis();
+  }
+  else if (m_buttonMap->IsIgnored(primitive))
+  {
+    bHandled = true;
   }
   else
   {
     const unsigned int elapsed = now - m_lastAction;
     CLog::Log(LOGDEBUG, "Button mapping: rapid input after %ums dropped for profile \"%s\"",
               elapsed, m_buttonMapper->ControllerID().c_str());
+    bHandled = true;
   }
+
+  return bHandled;
 }
 
 void CButtonMapping::Activate(const CDriverPrimitive& semiaxis)

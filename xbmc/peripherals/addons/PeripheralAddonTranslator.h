@@ -24,6 +24,8 @@
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickTypes.h"
 
+#include <vector>
+
 namespace PERIPHERALS
 {
   class CPeripheralAddonTranslator
@@ -33,6 +35,9 @@ namespace PERIPHERALS
 
     static JOYSTICK::CDriverPrimitive TranslatePrimitive(const ADDON::DriverPrimitive& primitive);
     static ADDON::DriverPrimitive     TranslatePrimitive(const JOYSTICK::CDriverPrimitive& primitive);
+
+    static std::vector<JOYSTICK::CDriverPrimitive> TranslatePrimitives(const std::vector<ADDON::DriverPrimitive>& primitives);
+    static std::vector<ADDON::DriverPrimitive>     TranslatePrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives);
 
     static JOYSTICK::HAT_DIRECTION       TranslateHatDirection(JOYSTICK_DRIVER_HAT_DIRECTION dir);
     static JOYSTICK_DRIVER_HAT_DIRECTION TranslateHatDirection(JOYSTICK::HAT_DIRECTION dir);

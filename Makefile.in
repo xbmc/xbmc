@@ -54,6 +54,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
                    xbmc/games/controllers/controllers.a \
+                   xbmc/games/controllers/dialogs/controllerdialogs.a \
                    xbmc/games/controllers/guicontrols/controllerguicontrols.a \
                    xbmc/games/controllers/windows/controllerwindows.a \
                    xbmc/guilib/guilib.a \

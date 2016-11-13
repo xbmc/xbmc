@@ -24,6 +24,7 @@
 #include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <vector>
 
@@ -47,14 +48,23 @@ CAddonButtonMap::~CAddonButtonMap(void)
     addon->UnregisterButtonMap(this);
 }
 
+std::string CAddonButtonMap::DeviceName(void) const
+{
+  return m_device->DeviceName();
+}
+
 bool CAddonButtonMap::Load(void)
 {
   FeatureMap features;
   DriverMap driverMap;
+  PrimitiveVector ignoredPrimitives;
 
   bool bSuccess = false;
   if (auto addon = m_addon.lock())
-    bSuccess = addon->GetFeatures(m_device, m_strControllerId, features);
+  {
+    bSuccess |= addon->GetFeatures(m_device, m_strControllerId, features);
+    bSuccess |= addon->GetIgnoredPrimitives(m_device, ignoredPrimitives);
+  }
 
   // GetFeatures() was changed to always return false if no features were
   // retrieved. Check here, just in case its contract is changed or violated in
@@ -71,6 +81,7 @@ bool CAddonButtonMap::Load(void)
     CSingleLock lock(m_mutex);
     m_features = std::move(features);
     m_driverMap = std::move(driverMap);
+    m_ignoredPrimitives = std::move(CPeripheralAddonTranslator::TranslatePrimitives(ignoredPrimitives));
   }
 
   return true;
@@ -197,6 +208,8 @@ void CAddonButtonMap::AddAnalogStick(const FeatureName& feature,
   if (auto addon = m_addon.lock())
     addon->MapFeature(m_device, m_strControllerId, analogStick);
 
+  // Because each direction is mapped individually, we need to refresh the
+  // feature each time a new direction is mapped.
   if (bModified)
     Load();
 }
@@ -242,14 +255,29 @@ void CAddonButtonMap::AddAccelerometer(const FeatureName& feature,
 
   if (auto addon = m_addon.lock())
     addon->MapFeature(m_device, m_strControllerId, accelerometer);
+}
 
-  Load();
+void CAddonButtonMap::SetIgnoredPrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives)
+{
+  if (auto addon = m_addon.lock())
+    addon->SetIgnoredPrimitives(m_device, CPeripheralAddonTranslator::TranslatePrimitives(primitives));
+}
+
+bool CAddonButtonMap::IsIgnored(const JOYSTICK::CDriverPrimitive& primitive)
+{
+  return std::find(m_ignoredPrimitives.begin(), m_ignoredPrimitives.end(), primitive) != m_ignoredPrimitives.end();
 }
 
 void CAddonButtonMap::SaveButtonMap()
 {
   if (auto addon = m_addon.lock())
     addon->SaveButtonMap(m_device);
+}
+
+void CAddonButtonMap::RevertButtonMap()
+{
+  if (auto addon = m_addon.lock())
+    addon->RevertButtonMap(m_device);
 }
 
 CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& features)

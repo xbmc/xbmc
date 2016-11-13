@@ -63,6 +63,16 @@ INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
   return INPUT_TYPE::UNKNOWN;
 }
 
+int CKeymapHandler::GetActionID(unsigned int keyId) const
+{
+  CAction action(ACTION_NONE);
+
+  if (keyId != 0)
+    action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId));
+
+  return action.GetID();
+}
+
 void CKeymapHandler::OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs /* = 0 */)
 {
   if (keyId != 0)
