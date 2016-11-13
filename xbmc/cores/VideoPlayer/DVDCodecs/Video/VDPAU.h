@@ -563,7 +563,7 @@ public:
 
   virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
+  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture);
   virtual void Reset();
   virtual void Close();
   virtual long Release();
