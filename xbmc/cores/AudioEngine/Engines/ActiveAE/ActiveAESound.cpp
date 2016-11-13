@@ -20,7 +20,7 @@
 
 #include "cores/AudioEngine/Interfaces/AESound.h"
 
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
 #include "ActiveAE.h"
 #include "ActiveAESound.h"
 #include "utils/log.h"
@@ -31,9 +31,6 @@ extern "C" {
 
 using namespace ActiveAE;
 using namespace XFILE;
-
-/* typecast AE to CActiveAE */
-#define AE (*((CActiveAE*)CAEFactory::GetEngine()))
 
 CActiveAESound::CActiveAESound(const std::string &filename) :
   IAESound         (filename),
@@ -58,12 +55,12 @@ CActiveAESound::~CActiveAESound()
 
 void CActiveAESound::Play()
 {
-  AE.PlaySound(this);
+  CServiceBroker::GetActiveAE().PlaySound(this);
 }
 
 void CActiveAESound::Stop()
 {
-  AE.StopSound(this);
+  CServiceBroker::GetActiveAE().StopSound(this);
 }
 
 bool CActiveAESound::IsPlaying()

@@ -28,7 +28,8 @@
 #include "utils/log.h"
 #include "utils/JobManager.h"
 
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/DataCacheCore.h"
@@ -165,7 +166,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     lock.Enter();
 
     /* be sure they have faded out */
-    while(wait && !CAEFactory::IsSuspended() && !timer.IsTimePast())
+    while(wait && !CServiceBroker::GetActiveAE().IsSuspended() && !timer.IsTimePast())
     {
       wait = false;
       for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
@@ -206,7 +207,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        CAEFactory::FreeStream(si->m_stream);
+        CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -221,7 +222,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
       if (si->m_stream)
       {
-        CAEFactory::FreeStream(si->m_stream);
+        CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -252,7 +253,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   // if audio engine is suspended i.e. by a DisplayLost event (HDMI), MakeStream
   // waits until the engine is resumed. if we block the main thread here, it can't
   // resume the engine after a DisplayReset event
-  if (CAEFactory::IsSuspended())
+  if (CServiceBroker::GetActiveAE().IsSuspended())
   {
     if (!QueueNextFile(file))
       return false;
@@ -472,7 +473,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 
   /* get a paused stream */
   AEAudioFormat format = si->m_audioFormat;
-  si->m_stream = CAEFactory::MakeStream(
+  si->m_stream = CServiceBroker::GetActiveAE().MakeStream(
     format,
     AESTREAM_PAUSED
   );
@@ -521,7 +522,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 bool PAPlayer::CloseFile(bool reopen)
 {
   if (reopen)
-    CAEFactory::KeepConfiguration(3000);
+    CServiceBroker::GetActiveAE().KeepConfiguration(3000);
 
   if (!m_isPaused)
     SoftStop(true, true);
@@ -609,7 +610,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
     if (si->m_stream->IsDrained())
     {      
       itt = m_finishing.erase(itt);
-      CAEFactory::FreeStream(si->m_stream);
+      CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
       delete si;
       CLog::Log(LOGDEBUG, "PAPlayer::ProcessStreams - Stream Freed");
     }

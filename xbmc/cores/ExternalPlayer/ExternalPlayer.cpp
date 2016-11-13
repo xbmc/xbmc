@@ -36,7 +36,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "input/InputManager.h"
 #if defined(TARGET_WINDOWS)
   #include "utils/CharsetConverter.h"
@@ -304,10 +305,10 @@ void CExternalPlayer::Process()
 
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
   /* don't block external player's access to audio device  */
-  CAEFactory::Suspend();
+  CServiceBroker::GetActiveAE().Suspend();
   // wait for AE has completed suspended
   XbmcThreads::EndTime timer(2000);
-  while (!timer.IsTimePast() && !CAEFactory::IsSuspended())
+  while (!timer.IsTimePast() && !CServiceBroker::GetActiveAE().IsSuspended())
   {
     Sleep(50);
   }
@@ -384,7 +385,7 @@ void CExternalPlayer::Process()
 #endif
 
   /* Resume AE processing of XBMC native audio */
-  if (!CAEFactory::Resume())
+  if (!CServiceBroker::GetActiveAE().Resume())
   {
     CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player",__FUNCTION__);
   }

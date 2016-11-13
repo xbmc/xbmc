@@ -30,6 +30,7 @@ class CBinaryAddonCache;
 
 namespace ActiveAE {
 class CActiveAEDSP;
+class CActiveAE;
 }
 
 namespace ANNOUNCEMENT
@@ -56,6 +57,9 @@ class CServiceManager
 public:
   bool Init1();
   bool Init2();
+  bool CreateAudioEngine();
+  bool DestroyAudioEngine();
+  bool StartAudioEngine();
   bool Init3();
   void Deinit();
   ADDON::CAddonMgr& GetAddonMgr();
@@ -64,6 +68,7 @@ public:
   XBPython& GetXBPython();
   PVR::CPVRManager& GetPVRManager();
   ActiveAE::CActiveAEDSP& GetADSPManager();
+  ActiveAE::CActiveAE& GetActiveAE();
   CContextMenuManager& GetContextMenuManager();
   CDataCacheCore& GetDataCacheCore();
   /**\brief Get the platform object. This is save to be called after Init1() was called
@@ -89,6 +94,7 @@ protected:
   std::unique_ptr<XBPython> m_XBPython;
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
+  std::unique_ptr<ActiveAE::CActiveAE> m_ActiveAE;
   std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
