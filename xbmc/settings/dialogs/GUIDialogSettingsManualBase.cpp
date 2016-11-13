@@ -47,13 +47,6 @@ CGUIDialogSettingsManualBase::~CGUIDialogSettingsManualBase()
   }
 }
 
-void CGUIDialogSettingsManualBase::OnOkay()
-{
-  Save();
-
-  CGUIDialogSettingsBase::OnOkay();
-}
-
 void CGUIDialogSettingsManualBase::SetupView()
 {
   InitializeSettings();

@@ -100,7 +100,6 @@ protected:
   virtual int GetSettingLevel() const { return 0; }
   virtual CSettingSection* GetSection() = 0;
   virtual CSetting* GetSetting(const std::string &settingId) = 0;
-  virtual void Save() = 0;
   virtual unsigned int GetDelayMs() const { return 1500; }
   virtual std::string GetLocalizedString(uint32_t labelId) const;
   

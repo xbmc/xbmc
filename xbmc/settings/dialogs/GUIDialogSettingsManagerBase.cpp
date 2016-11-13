@@ -38,6 +38,13 @@ CSetting* CGUIDialogSettingsManagerBase::GetSetting(const std::string &settingId
   return GetSettingsManager()->GetSetting(settingId);
 }
 
+void CGUIDialogSettingsManagerBase::OnOkay()
+{
+  Save();
+
+  CGUIDialogSettingsBase::OnOkay();
+}
+
 std::set<std::string> CGUIDialogSettingsManagerBase::CreateSettings()
 {
   assert(GetSettingsManager() != nullptr);

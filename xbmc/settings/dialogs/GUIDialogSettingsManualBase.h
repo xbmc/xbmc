@@ -52,7 +52,6 @@ public:
 protected:
   // implementation of CGUIDialogSettingsBase
   virtual CSettingSection* GetSection() { return m_section; }
-  virtual void OnOkay();
   virtual void SetupView();
 
   // implementation of CGUIDialogSettingsManagerBase

@@ -30,10 +30,12 @@ public:
   virtual ~CGUIDialogSettingsManagerBase();
 
 protected:
+  virtual void Save() = 0;
   virtual CSettingsManager* GetSettingsManager() const = 0;
 
   // implementation of CGUIDialogSettingsBase
   virtual CSetting* GetSetting(const std::string &settingId) override;
+  virtual void OnOkay() override;
 
   virtual std::set<std::string> CreateSettings() override;
   virtual void FreeSettingsControls() override;
