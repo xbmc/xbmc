@@ -253,7 +253,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
   
-  StaticIntegerSettingOptions entries;
+  TranslatableIntegerSettingOptions entries;
 
   entries.clear();
   entries.push_back(std::make_pair(16039, VS_INTERLACEMETHOD_NONE));
@@ -281,7 +281,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(16320, VS_INTERLACEMETHOD_DXVA_AUTO));
 
   /* remove unsupported methods */
-  for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  for (TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
   {
     if (g_application.m_pPlayer->Supports((EINTERLACEMETHOD)it->second))
       ++it;
@@ -317,7 +317,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.push_back(std::make_pair(16316, VS_SCALINGMETHOD_AUTO));
 
   /* remove unsupported methods */
-  for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  for(TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
   {
     if (g_application.m_pPlayer->Supports((ESCALINGMETHOD)it->second))
       ++it;

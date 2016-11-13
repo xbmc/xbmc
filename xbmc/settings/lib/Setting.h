@@ -62,6 +62,7 @@ typedef enum {
 
 typedef enum {
   SettingOptionsTypeNone = 0,
+  SettingOptionsTypeStaticTranslatable,
   SettingOptionsTypeStatic,
   SettingOptionsTypeDynamic
 } SettingOptionsType;
@@ -247,7 +248,7 @@ public:
   CSettingInt(const std::string &id, const CSettingInt &setting);
   CSettingInt(const std::string &id, int label, int value, CSettingsManager *settingsManager = NULL);
   CSettingInt(const std::string &id, int label, int value, int minimum, int step, int maximum, CSettingsManager *settingsManager = NULL);
-  CSettingInt(const std::string &id, int label, int value, const StaticIntegerSettingOptions &options, CSettingsManager *settingsManager = NULL);
+  CSettingInt(const std::string &id, int label, int value, const TranslatableIntegerSettingOptions &options, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingInt() { }
 
   virtual CSetting* Clone(const std::string &id) const override;
@@ -275,8 +276,10 @@ public:
   void SetMaximum(int maximum) { m_max = maximum; }
 
   SettingOptionsType GetOptionsType() const;
-  const StaticIntegerSettingOptions& GetOptions() const { return m_options; }
-  void SetOptions(const StaticIntegerSettingOptions &options) { m_options = options; }
+  const TranslatableIntegerSettingOptions& GetTranslatableOptions() const { return m_translatableOptions; }
+  void SetTranslatableOptions(const TranslatableIntegerSettingOptions &options) { m_translatableOptions = options; }
+  const IntegerSettingOptions& GetOptions() const { return m_options; }
+  void SetOptions(const IntegerSettingOptions &options) { m_options = options; }
   const std::string& GetOptionsFillerName() const { return m_optionsFillerName; }
   void SetOptionsFillerName(const std::string &optionsFillerName, void *data = NULL)
   {
@@ -288,7 +291,7 @@ public:
     m_optionsFiller = optionsFiller;
     m_optionsFillerData = data;
   }
-  DynamicIntegerSettingOptions UpdateDynamicOptions();
+  IntegerSettingOptions UpdateDynamicOptions();
 
 private:
   void copy(const CSettingInt &setting);
@@ -299,11 +302,12 @@ private:
   int m_min;
   int m_step;
   int m_max;
-  StaticIntegerSettingOptions m_options;
+  TranslatableIntegerSettingOptions m_translatableOptions;
+  IntegerSettingOptions m_options;
   std::string m_optionsFillerName;
   IntegerSettingOptionsFiller m_optionsFiller;
   void *m_optionsFillerData;
-  DynamicIntegerSettingOptions m_dynamicOptions;
+  IntegerSettingOptions m_dynamicOptions;
 };
 
 /*!
@@ -388,6 +392,10 @@ public:
   void SetAllowEmpty(bool allowEmpty) { m_allowEmpty = allowEmpty; }
 
   SettingOptionsType GetOptionsType() const;
+  const TranslatableStringSettingOptions& GetTranslatableOptions() const { return m_translatableOptions; }
+  void SetTranslatableOptions(const TranslatableStringSettingOptions &options) { m_translatableOptions = options; }
+  const StringSettingOptions& GetOptions() const { return m_options; }
+  void SetOptions(const StringSettingOptions &options) { m_options = options; }
   const std::string& GetOptionsFillerName() const { return m_optionsFillerName; }
   void SetOptionsFillerName(const std::string &optionsFillerName, void *data = NULL)
   {
@@ -399,7 +407,7 @@ public:
     m_optionsFiller = optionsFiller;
     m_optionsFillerData = data;
   }
-  DynamicStringSettingOptions UpdateDynamicOptions();
+  StringSettingOptions UpdateDynamicOptions();
 
 protected:
   virtual void copy(const CSettingString &setting);
@@ -407,10 +415,12 @@ protected:
   std::string m_value;
   std::string m_default;
   bool m_allowEmpty;
+  TranslatableStringSettingOptions m_translatableOptions;
+  StringSettingOptions m_options;
   std::string m_optionsFillerName;
   StringSettingOptionsFiller m_optionsFiller;
   void *m_optionsFillerData;
-  DynamicStringSettingOptions m_dynamicOptions;
+  StringSettingOptions m_dynamicOptions;
 };
 
 /*!

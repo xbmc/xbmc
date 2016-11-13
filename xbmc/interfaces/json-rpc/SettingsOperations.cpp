@@ -492,11 +492,11 @@ bool CSettingsOperations::SerializeSettingInt(const CSettingInt* setting, CVaria
 
   switch (setting->GetOptionsType())
   {
-    case SettingOptionsTypeStatic:
+    case SettingOptionsTypeStaticTranslatable:
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
-      const StaticIntegerSettingOptions& options = setting->GetOptions();
-      for (StaticIntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      const TranslatableIntegerSettingOptions& options = setting->GetTranslatableOptions();
+      for (TranslatableIntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
       {
         CVariant varOption(CVariant::VariantTypeObject);
         varOption["label"] = g_localizeStrings.Get(itOption->first);
@@ -506,11 +506,25 @@ bool CSettingsOperations::SerializeSettingInt(const CSettingInt* setting, CVaria
       break;
     }
 
+    case SettingOptionsTypeStatic:
+    {
+      obj["options"] = CVariant(CVariant::VariantTypeArray);
+      const IntegerSettingOptions& options = setting->GetOptions();
+      for (IntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      {
+        CVariant varOption(CVariant::VariantTypeObject);
+        varOption["label"] = itOption->first;
+        varOption["value"] = itOption->second;
+        obj["options"].push_back(varOption);
+      }
+      break;
+    }
+
     case SettingOptionsTypeDynamic:
     {
       obj["options"] = CVariant(CVariant::VariantTypeArray);
-      DynamicIntegerSettingOptions options = const_cast<CSettingInt*>(setting)->UpdateDynamicOptions();
-      for (DynamicIntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      IntegerSettingOptions options = const_cast<CSettingInt*>(setting)->UpdateDynamicOptions();
+      for (IntegerSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
       {
         CVariant varOption(CVariant::VariantTypeObject);
         varOption["label"] = itOption->first;
@@ -556,17 +570,53 @@ bool CSettingsOperations::SerializeSettingString(const CSettingString* setting, 
 
   obj["allowempty"] = setting->AllowEmpty();
 
-  if (setting->GetOptionsType() == SettingOptionsTypeDynamic)
+  switch (setting->GetOptionsType())
   {
-    obj["options"] = CVariant(CVariant::VariantTypeArray);
-    DynamicStringSettingOptions options = const_cast<CSettingString*>(setting)->UpdateDynamicOptions();
-    for (DynamicStringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+    case SettingOptionsTypeStaticTranslatable:
     {
-      CVariant varOption(CVariant::VariantTypeObject);
-      varOption["label"] = itOption->first;
-      varOption["value"] = itOption->second;
-      obj["options"].push_back(varOption);
+      obj["options"] = CVariant(CVariant::VariantTypeArray);
+      const TranslatableStringSettingOptions& options = setting->GetTranslatableOptions();
+      for (TranslatableStringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      {
+        CVariant varOption(CVariant::VariantTypeObject);
+        varOption["label"] = g_localizeStrings.Get(itOption->first);
+        varOption["value"] = itOption->second;
+        obj["options"].push_back(varOption);
+      }
+      break;
     }
+
+    case SettingOptionsTypeStatic:
+    {
+      obj["options"] = CVariant(CVariant::VariantTypeArray);
+      const StringSettingOptions& options = setting->GetOptions();
+      for (StringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      {
+        CVariant varOption(CVariant::VariantTypeObject);
+        varOption["label"] = itOption->first;
+        varOption["value"] = itOption->second;
+        obj["options"].push_back(varOption);
+      }
+      break;
+    }
+
+    case SettingOptionsTypeDynamic:
+    {
+      obj["options"] = CVariant(CVariant::VariantTypeArray);
+      StringSettingOptions options = const_cast<CSettingString*>(setting)->UpdateDynamicOptions();
+      for (StringSettingOptions::const_iterator itOption = options.begin(); itOption != options.end(); ++itOption)
+      {
+        CVariant varOption(CVariant::VariantTypeObject);
+        varOption["label"] = itOption->first;
+        varOption["value"] = itOption->second;
+        obj["options"].push_back(varOption);
+      }
+      break;
+    }
+
+    case SettingOptionsTypeNone:
+    default:
+      break;
   }
 
   const ISettingControl* control = setting->GetControl();

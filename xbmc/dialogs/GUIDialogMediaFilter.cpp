@@ -427,7 +427,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       if (filter.rule != NULL)
         value = filter.rule->m_operator == CDatabaseQueryRule::OPERATOR_TRUE ? CHECK_YES : CHECK_NO;
 
-      StaticIntegerSettingOptions entries;
+      TranslatableIntegerSettingOptions entries;
       entries.push_back(std::pair<int, int>(CHECK_LABEL_ALL, CHECK_ALL));
       entries.push_back(std::pair<int, int>(CHECK_LABEL_NO,  CHECK_NO));
       entries.push_back(std::pair<int, int>(CHECK_LABEL_YES, CHECK_YES));

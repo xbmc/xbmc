@@ -66,13 +66,15 @@
 #define SETTING_XML_ATTR_BEFORE       "before"
 #define SETTING_XML_ATTR_AFTER        "after"
 
-typedef std::pair<int, int> StaticIntegerSettingOption;
-typedef std::vector<StaticIntegerSettingOption> StaticIntegerSettingOptions;
-typedef std::pair<std::string, int> DynamicIntegerSettingOption;
-typedef std::vector<DynamicIntegerSettingOption> DynamicIntegerSettingOptions;
-typedef std::pair<std::string, std::string> DynamicStringSettingOption;
-typedef std::vector<DynamicStringSettingOption> DynamicStringSettingOptions;
+typedef std::pair<int, int> TranslatableIntegerSettingOption;
+typedef std::vector<TranslatableIntegerSettingOption> TranslatableIntegerSettingOptions;
+typedef std::pair<std::string, int> IntegerSettingOption;
+typedef std::vector<IntegerSettingOption> IntegerSettingOptions;
+typedef std::pair<int, std::string> TranslatableStringSettingOption;
+typedef std::vector<TranslatableStringSettingOption> TranslatableStringSettingOptions;
+typedef std::pair<std::string, std::string> StringSettingOption;
+typedef std::vector<StringSettingOption> StringSettingOptions;
 
 class CSetting;
-typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
-typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, IntegerSettingOptions &list, int &current, void *data);
+typedef void (*StringSettingOptionsFiller)(const CSetting *setting, StringSettingOptions &list, std::string &current, void *data);

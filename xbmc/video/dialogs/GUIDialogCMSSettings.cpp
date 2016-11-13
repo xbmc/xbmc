@@ -91,7 +91,7 @@ void CGUIDialogCMSSettings::InitializeSettings()
 
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-  StaticIntegerSettingOptions entries;
+  TranslatableIntegerSettingOptions entries;
 
   // create "depsCmsEnabled" for settings depending on CMS being enabled
   CSettingDependency dependencyCmsEnabled(SettingDependencyTypeEnable, GetSettingsManager());

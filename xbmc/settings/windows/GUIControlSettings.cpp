@@ -71,7 +71,7 @@ static CFileItemPtr GetFileItem(const std::string& label, const TValueType& valu
   return item;
 }
 
-static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOptions& options, std::set<int>& selectedOptions, ILocalizer* localizer)
+static bool GetIntegerOptions(const CSetting* setting, IntegerSettingOptions& options, std::set<int>& selectedOptions, ILocalizer* localizer)
 {
   const CSettingInt *pSettingInt = NULL;
   if (setting->GetType() == SettingTypeInteger)
@@ -99,19 +99,25 @@ static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOpti
 
   switch (pSettingInt->GetOptionsType())
   {
-    case SettingOptionsTypeStatic:
+    case SettingOptionsTypeStaticTranslatable:
     {
-      const StaticIntegerSettingOptions& settingOptions = pSettingInt->GetOptions();
+      const TranslatableIntegerSettingOptions& settingOptions = pSettingInt->GetTranslatableOptions();
       for (const auto& option : settingOptions)
         options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
       break;
     }
 
+    case SettingOptionsTypeStatic:
+    {
+      const IntegerSettingOptions& settingOptions = pSettingInt->GetOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+      break;
+    }
+
     case SettingOptionsTypeDynamic:
     {
-      DynamicIntegerSettingOptions settingOptions = const_cast<CSettingInt*>(pSettingInt)->UpdateDynamicOptions();
-      for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(option.first, option.second));
+      IntegerSettingOptions settingOptions = const_cast<CSettingInt*>(pSettingInt)->UpdateDynamicOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
       break;
     }
 
@@ -139,7 +145,7 @@ static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOpti
   return true;
 }
 
-static bool GetStringOptions(const CSetting* setting, DynamicStringSettingOptions& options, std::set<std::string>& selectedOptions)
+static bool GetStringOptions(const CSetting* setting, StringSettingOptions& options, std::set<std::string>& selectedOptions)
 {
   const CSettingString *pSettingString = NULL;
   if (setting->GetType() == SettingTypeString)
@@ -165,13 +171,34 @@ static bool GetStringOptions(const CSetting* setting, DynamicStringSettingOption
   else
     return false;
 
-  if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
+  switch (pSettingString->GetOptionsType())
   {
-    DynamicStringSettingOptions settingOptions = const_cast<CSettingString*>(pSettingString)->UpdateDynamicOptions();
-    options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+    case SettingOptionsTypeStaticTranslatable:
+    {
+      const TranslatableStringSettingOptions& settingOptions = pSettingString->GetTranslatableOptions();
+      for (const auto& option : settingOptions)
+        options.push_back(std::make_pair(g_localizeStrings.Get(option.first), option.second));
+      break;
+    }
+
+    case SettingOptionsTypeStatic:
+    {
+      const StringSettingOptions& settingOptions = pSettingString->GetOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+      break;
+    }
+
+    case SettingOptionsTypeDynamic:
+    {
+      StringSettingOptions settingOptions = const_cast<CSettingString*>(pSettingString)->UpdateDynamicOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+      break;
+    }
+
+    case SettingOptionsTypeNone:
+    default:
+      return false;
   }
-  else
-    return false;
 
   return true;
 }
@@ -324,7 +351,7 @@ void CGUIControlSpinExSetting::FillControl()
       FillIntegerSettingControl();
     else if (m_pSetting->GetType() == SettingTypeString)
     {
-      DynamicStringSettingOptions options;
+      StringSettingOptions options;
       std::set<std::string> selectedValues;
       // get the string options
       if (!GetStringOptions(m_pSetting, options, selectedValues) || selectedValues.size() != 1)
@@ -342,7 +369,7 @@ void CGUIControlSpinExSetting::FillControl()
 
 void CGUIControlSpinExSetting::FillIntegerSettingControl()
 {
-  DynamicIntegerSettingOptions options;
+  IntegerSettingOptions options;
   std::set<int> selectedValues;
   // get the integer options
   if (!GetIntegerOptions(m_pSetting, options, selectedValues, m_localizer) || selectedValues.size() != 1)
@@ -502,7 +529,7 @@ bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &it
 
 bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemList &items) const
 {
-  DynamicIntegerSettingOptions options;
+  IntegerSettingOptions options;
   std::set<int> selectedValues;
   // get the integer options
   if (!GetIntegerOptions(setting, options, selectedValues, m_localizer))
@@ -517,7 +544,7 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
 
 bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemList &items)
 {
-  DynamicStringSettingOptions options;
+  StringSettingOptions options;
   std::set<std::string> selectedValues;
   // get the string options
   if (!GetStringOptions(setting, options, selectedValues))

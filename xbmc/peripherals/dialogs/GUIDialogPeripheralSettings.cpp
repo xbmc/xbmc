@@ -194,7 +194,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
       case SettingTypeInteger:
       {
         CSettingInt *settingInt = new CSettingInt(setting->GetId(), *static_cast<CSettingInt*>(setting));
-        if (settingInt->GetOptions().empty())
+        if (settingInt->GetTranslatableOptions().empty())
           settingInt->SetControl(GetSliderControl("integer", false, -1, usePopup, -1, "%i"));
         else
           settingInt->SetControl(GetSpinnerControl("string"));

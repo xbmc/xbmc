@@ -350,7 +350,7 @@ void CGUIDialogProfileSettings::InitializeSettings()
       return;
     }
 
-    StaticIntegerSettingOptions entries;
+    TranslatableIntegerSettingOptions entries;
     entries.push_back(std::make_pair(20062, 0));
     entries.push_back(std::make_pair(20063, 1));
     entries.push_back(std::make_pair(20061, 2));

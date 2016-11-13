@@ -471,7 +471,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
   if (modesAvailable > 0)
   {
     /* about size() > 1, it is always the fallback (ignore of master processing) present. */
-    StaticIntegerSettingOptions modeEntries;
+    TranslatableIntegerSettingOptions modeEntries;
     if (m_MasterModes[AE_DSP_ASTREAM_BASIC].size() > 1)
       modeEntries.push_back(std::pair<int, int>(CServiceBroker::GetADSP().GetStreamTypeName(AE_DSP_ASTREAM_BASIC),   AE_DSP_ASTREAM_BASIC));
     if (m_MasterModes[AE_DSP_ASTREAM_MUSIC].size() > 1)

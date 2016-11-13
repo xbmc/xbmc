@@ -91,7 +91,9 @@ protected:
                           int minimumLabel = -1, bool delayed = false, bool visible = true, int help = -1);
   CSettingInt* AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, int minimum, int step, int maximum, const std::string &formatString,
                           int minimumLabel = -1, bool delayed = false, bool visible = true, int help = -1);
-  CSettingInt* AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, const StaticIntegerSettingOptions &entries,
+  CSettingInt* AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, const TranslatableIntegerSettingOptions &entries,
+                          bool delayed = false, bool visible = true, int help = -1);
+  CSettingInt* AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, const IntegerSettingOptions &entries,
                           bool delayed = false, bool visible = true, int help = -1);
   CSettingInt* AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, IntegerSettingOptionsFiller filler,
                           bool delayed = false, bool visible = true, int help = -1);
@@ -103,13 +105,17 @@ protected:
   // list controls
   CSettingString* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::string value, StringSettingOptionsFiller filler,
                           int heading, bool visible = true, int help = -1);
-  CSettingInt* AddList(CSettingGroup *group, const std::string &id, int label, int level, int value, const StaticIntegerSettingOptions &entries,
+  CSettingInt* AddList(CSettingGroup *group, const std::string &id, int label, int level, int value, const TranslatableIntegerSettingOptions &entries,
+                       int heading, bool visible = true, int help = -1);
+  CSettingInt* AddList(CSettingGroup *group, const std::string &id, int label, int level, int value, const IntegerSettingOptions &entries,
                        int heading, bool visible = true, int help = -1);
   CSettingInt* AddList(CSettingGroup *group, const std::string &id, int label, int level, int value, IntegerSettingOptionsFiller filler,
                        int heading, bool visible = true, int help = -1);
   CSettingList* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<std::string> values, StringSettingOptionsFiller filler,
                         int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1);
-  CSettingList* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values, const StaticIntegerSettingOptions &entries,
+  CSettingList* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values, const TranslatableIntegerSettingOptions &entries,
+                        int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1);
+  CSettingList* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values, const IntegerSettingOptions &entries,
                         int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1);
   CSettingList* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values, IntegerSettingOptionsFiller filler,
                         int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1, SettingControlListValueFormatter formatter = NULL);

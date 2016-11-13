@@ -382,7 +382,26 @@ CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, cons
   return setting;
 }
 
-CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, const StaticIntegerSettingOptions &entries,
+CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, const TranslatableIntegerSettingOptions &entries,
+                                                      bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
+{
+  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != NULL)
+    return NULL;
+
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
+  if (setting == NULL)
+    return NULL;
+
+  setting->SetControl(GetSpinnerControl("string", delayed));
+  setting->SetTranslatableOptions(entries);
+  setSettingDetails(setting, level, visible, help);
+
+  group->AddSetting(setting);
+  return setting;
+}
+
+CSettingInt* CGUIDialogSettingsManualBase::AddSpinner(CSettingGroup *group, const std::string &id, int label, int level, int value, const IntegerSettingOptions &entries,
                                                       bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
@@ -483,7 +502,26 @@ CSettingString* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, cons
   return setting;
 }
 
-CSettingInt* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const std::string &id, int label, int level, int value, const StaticIntegerSettingOptions &entries,
+CSettingInt* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const std::string &id, int label, int level, int value, const TranslatableIntegerSettingOptions &entries,
+                                                  int heading, bool visible /* = true */, int help /* = -1 */)
+{
+  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != NULL)
+    return NULL;
+
+  CSettingInt *setting = new CSettingInt(id, label, value, GetSettingsManager());
+  if (setting == NULL)
+    return NULL;
+
+  setting->SetControl(GetListControl("integer", false, heading, false));
+  setting->SetTranslatableOptions(entries);
+  setSettingDetails(setting, level, visible, help);
+
+  group->AddSetting(setting);
+  return setting;
+}
+
+CSettingInt* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const std::string &id, int label, int level, int value, const IntegerSettingOptions &entries,
                                                   int heading, bool visible /* = true */, int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
@@ -565,7 +603,50 @@ CSettingList* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const 
 }
 
 CSettingList* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values,
-                                                    const StaticIntegerSettingOptions &entries, int heading, int minimumItems /* = 0 */, int maximumItems /* = -1 */,
+                                                    const TranslatableIntegerSettingOptions &entries, int heading, int minimumItems /* = 0 */, int maximumItems /* = -1 */,
+                                                    bool visible /* = true */, int help /* = -1 */)
+{
+  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != NULL)
+    return NULL;
+
+  CSettingInt *settingDefinition = new CSettingInt(id, GetSettingsManager());
+  if (settingDefinition == NULL)
+    return NULL;
+  
+  settingDefinition->SetTranslatableOptions(entries);
+
+  CSettingList *setting = new CSettingList(id, settingDefinition, label, GetSettingsManager());
+  if (setting == NULL)
+  {
+    delete settingDefinition;
+    return NULL;
+  }
+
+  std::vector<CVariant> valueList;
+  for (std::vector<int>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
+    valueList.push_back(CVariant(*itValue));
+  SettingPtrList settingValues;
+  if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
+  {
+    delete settingDefinition;
+    delete setting;
+    return NULL;
+  }
+  // setting the default will also set the actual value on an unchanged setting
+  setting->SetDefault(settingValues);
+
+  setting->SetControl(GetListControl("integer", false, heading, true));
+  setting->SetMinimumItems(minimumItems);
+  setting->SetMaximumItems(maximumItems);
+  setSettingDetails(setting, level, visible, help);
+
+  group->AddSetting(setting);
+  return setting;
+}
+
+CSettingList* CGUIDialogSettingsManualBase::AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values,
+                                                    const IntegerSettingOptions &entries, int heading, int minimumItems /* = 0 */, int maximumItems /* = -1 */,
                                                     bool visible /* = true */, int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||

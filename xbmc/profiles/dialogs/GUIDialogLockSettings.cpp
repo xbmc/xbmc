@@ -279,7 +279,7 @@ void CGUIDialogLockSettings::InitializeSettings()
     AddToggle(groupDetails, SETTING_LOCK_PROGRAMS, 20041, 0, m_locks.programs);
     AddToggle(groupDetails, SETTING_LOCK_FILEMANAGER, 20042, 0, m_locks.files);
 
-    StaticIntegerSettingOptions settingsLevelOptions;
+    TranslatableIntegerSettingOptions settingsLevelOptions;
     settingsLevelOptions.push_back(std::make_pair(106,    LOCK_LEVEL::NONE));
     settingsLevelOptions.push_back(std::make_pair(593,    LOCK_LEVEL::ALL));
     settingsLevelOptions.push_back(std::make_pair(10037,  LOCK_LEVEL::STANDARD));

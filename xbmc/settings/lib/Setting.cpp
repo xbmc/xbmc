@@ -28,6 +28,18 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+template<typename TKey, typename TValue>
+bool CheckSettingOptionsValidity(const TValue& value, const std::vector<std::pair<TKey, TValue>>& options)
+{
+  for (auto it = std::begin(options); it !=std::end(options); ++it)
+  {
+    if (it->second == value)
+      return true;
+  }
+
+  return false;
+}
+
 CSetting::CSetting(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : ISetting(id, settingsManager),
     m_callback(NULL),
@@ -745,11 +757,11 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, int minimu
   m_label = label;
 }
 
-CSettingInt::CSettingInt(const std::string &id, int label, int value, const StaticIntegerSettingOptions &options, CSettingsManager *settingsManager /* = NULL */)
+CSettingInt::CSettingInt(const std::string &id, int label, int value, const TranslatableIntegerSettingOptions &options, CSettingsManager *settingsManager /* = NULL */)
   : CSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_min(0), m_step(1), m_max(0),
-    m_options(options),
+    m_translatableOptions(options),
     m_optionsFiller(NULL),
     m_optionsFillerData(NULL)
 {
@@ -797,7 +809,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
       }
       else
       {
-        m_options.clear();
+        m_translatableOptions.clear();
         const TiXmlElement *optionElement = options->FirstChildElement(SETTING_XML_ELM_OPTION);
         while (optionElement != NULL)
         {
@@ -805,7 +817,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
           if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.first) == TIXML_SUCCESS && entry.first > 0)
           {
             entry.second = strtol(optionElement->FirstChild()->Value(), NULL, 10);
-            m_options.push_back(entry);
+            m_translatableOptions.push_back(entry);
           }
 
           optionElement = optionElement->NextSiblingElement(SETTING_XML_ELM_OPTION);
@@ -858,20 +870,14 @@ bool CSettingInt::CheckValidity(const std::string &value) const
 
 bool CSettingInt::CheckValidity(int value) const
 {
-  if (!m_options.empty())
+  if (!m_translatableOptions.empty())
   {
-    //if the setting is an std::map, check if we got a valid value before assigning it
-    bool ok = false;
-    for (StaticIntegerSettingOptions::const_iterator it = m_options.begin(); it != m_options.end(); ++it)
-    {
-      if (it->second == value)
-      {
-        ok = true;
-        break;
-      }
-    }
-
-    if (!ok)
+    if (!CheckSettingOptionsValidity(value, m_translatableOptions))
+      return false;
+  }
+  else if (!m_options.empty())
+  {
+    if (!CheckSettingOptionsValidity(value, m_options))
       return false;
   }
   else if (m_optionsFillerName.empty() && m_optionsFiller == NULL &&
@@ -923,6 +929,8 @@ void CSettingInt::SetDefault(int value)
 SettingOptionsType CSettingInt::GetOptionsType() const
 {
   CSharedLock lock(m_critical);
+  if (!m_translatableOptions.empty())
+    return SettingOptionsTypeStaticTranslatable;
   if (!m_options.empty())
     return SettingOptionsTypeStatic;
   if (!m_optionsFillerName.empty() || m_optionsFiller != NULL)
@@ -931,10 +939,10 @@ SettingOptionsType CSettingInt::GetOptionsType() const
   return SettingOptionsTypeNone;
 }
 
-DynamicIntegerSettingOptions CSettingInt::UpdateDynamicOptions()
+IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
 {
   CExclusiveLock lock(m_critical);
-  DynamicIntegerSettingOptions options;
+  IntegerSettingOptions options;
   if (m_optionsFiller == NULL &&
      (m_optionsFillerName.empty() || m_settingsManager == NULL))
     return options;
@@ -986,6 +994,7 @@ void CSettingInt::copy(const CSettingInt &setting)
   m_min = setting.m_min;
   m_step = setting.m_step;
   m_max = setting.m_max;
+  m_translatableOptions = setting.m_translatableOptions;
   m_options = setting.m_options;
   m_optionsFillerName = setting.m_optionsFillerName;
   m_optionsFiller = setting.m_optionsFiller;
@@ -1222,15 +1231,33 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
 
     // get the entries
     const TiXmlNode *options = constraints->FirstChild(SETTING_XML_ELM_OPTIONS);
-    if (options != NULL && options->FirstChild() != NULL &&
-        options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+    if (options != NULL && options->FirstChild() != NULL)
     {
-      m_optionsFillerName = options->FirstChild()->ValueStr();
-      if (!m_optionsFillerName.empty())
+      if (options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
       {
-        m_optionsFiller = (StringSettingOptionsFiller)m_settingsManager->GetSettingOptionsFiller(this);
-        if (m_optionsFiller == NULL)
-          CLog::Log(LOGWARNING, "CSettingString: unknown options filler \"%s\" of \"%s\"", m_optionsFillerName.c_str(), m_id.c_str());
+        m_optionsFillerName = options->FirstChild()->ValueStr();
+        if (!m_optionsFillerName.empty())
+        {
+          m_optionsFiller = (StringSettingOptionsFiller)m_settingsManager->GetSettingOptionsFiller(this);
+          if (m_optionsFiller == NULL)
+            CLog::Log(LOGWARNING, "CSettingString: unknown options filler \"%s\" of \"%s\"", m_optionsFillerName.c_str(), m_id.c_str());
+        }
+      }
+      else
+      {
+        m_translatableOptions.clear();
+        const TiXmlElement *optionElement = options->FirstChildElement(SETTING_XML_ELM_OPTION);
+        while (optionElement != NULL)
+        {
+          TranslatableStringSettingOption entry;
+          if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.first) == TIXML_SUCCESS && entry.first > 0)
+          {
+            entry.second = optionElement->FirstChild()->Value();
+            m_translatableOptions.push_back(entry);
+          }
+
+          optionElement = optionElement->NextSiblingElement(SETTING_XML_ELM_OPTION);
+        }
       }
     }
   }
@@ -1254,6 +1281,17 @@ bool CSettingString::CheckValidity(const std::string &value) const
   CSharedLock lock(m_critical);
   if (!m_allowEmpty && value.empty())
     return false;
+
+  if (!m_translatableOptions.empty())
+  {
+    if (!CheckSettingOptionsValidity(value, m_translatableOptions))
+      return false;
+  }
+  else if (!m_options.empty())
+  {
+    if (!CheckSettingOptionsValidity(value, m_options))
+      return false;
+  }
 
   return true;
 }
@@ -1300,16 +1338,20 @@ void CSettingString::SetDefault(const std::string &value)
 SettingOptionsType CSettingString::GetOptionsType() const
 {
   CSharedLock lock(m_critical);
+  if (!m_translatableOptions.empty())
+    return SettingOptionsTypeStaticTranslatable;
+  if (!m_options.empty())
+    return SettingOptionsTypeStatic;
   if (!m_optionsFillerName.empty() || m_optionsFiller != NULL)
     return SettingOptionsTypeDynamic;
 
   return SettingOptionsTypeNone;
 }
 
-DynamicStringSettingOptions CSettingString::UpdateDynamicOptions()
+StringSettingOptions CSettingString::UpdateDynamicOptions()
 {
   CExclusiveLock lock(m_critical);
-  DynamicStringSettingOptions options;
+  StringSettingOptions options;
   if (m_optionsFiller == NULL &&
      (m_optionsFillerName.empty() || m_settingsManager == NULL))
     return options;
@@ -1359,6 +1401,8 @@ void CSettingString::copy(const CSettingString &setting)
   m_value = setting.m_value;
   m_default = setting.m_default;
   m_allowEmpty = setting.m_allowEmpty;
+  m_translatableOptions = setting.m_translatableOptions;
+  m_options = setting.m_options;
   m_optionsFillerName = setting.m_optionsFillerName;
   m_optionsFiller = setting.m_optionsFiller;
   m_optionsFillerData = setting.m_optionsFillerData;

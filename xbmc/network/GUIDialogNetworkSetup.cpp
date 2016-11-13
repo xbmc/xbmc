@@ -191,7 +191,7 @@ void CGUIDialogNetworkSetup::InitializeSettings()
   }
 
   // Add our protocols
-  StaticIntegerSettingOptions labels;
+  TranslatableIntegerSettingOptions labels;
 #ifdef HAS_FILESYSTEM_SMB
   labels.push_back(std::make_pair(20171, NET_PROTOCOL_SMB));
 #endif
