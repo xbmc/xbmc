@@ -15,8 +15,8 @@ passed_cxxflags="$CXXFLAGS"
 m4_include([m4/xbmc_arch.m4])
 m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
 AX_CXX_COMPILE_STDCXX_11(,[mandatory])
-c11_flags="$CFLAGS"
-cxx11_flags="$CXXFLAGS"
+c11_flags=$(echo "$CFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
+cxx11_flags=$(echo "$CXXFLAGS" | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ //g')
 
 # check for not same cpu value
 AC_DEFUN([MC_CHECK_NOT_CPU],
@@ -156,7 +156,8 @@ case $host in
     fi
     use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions"
+    platform_cflags="-DANDROID -fexceptions"
+    optimize_flags="-Os"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
       platform_cflags+=" -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
     fi
@@ -173,7 +174,8 @@ case $host in
     fi
     use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions"
+    platform_cflags="-DANDROID -fexceptions"
+    optimize_flags="-Os"
     if test "x$use_cpu" = "xarm64-v8a"; then
       platform_cflags+=" -march=armv8-a -mtune=cortex-a53"
     fi
@@ -190,7 +192,8 @@ case $host in
     fi
     use_sdk="${use_sdk:-android-21}"
     deps_dir="$use_host-$use_sdk"
-    platform_cflags="-DANDROID -Os -fexceptions"
+    platform_cflags="-DANDROID -fexceptions"
+    optimize_flags="-Os"
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
@@ -204,7 +207,8 @@ case $host in
         use_cpu=$host_cpu
       fi
       use_toolchain="${use_toolchain:-/usr}"
-      platform_cflags="-Os -fPIC -DPIC"
+      platform_cflags="-fPIC -DPIC"
+      optimize_flags="-Os"
       platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
       platform_cxxflags="$platform_cflags"
       platform_os="linux"
@@ -216,7 +220,8 @@ case $host in
         use_cpu=$host_cpu
       fi
       use_toolchain="${use_toolchain:-/usr}"
-      platform_cflags="-Os -fPIC -DPIC"
+      platform_cflags="-fPIC -DPIC"
+      optimize_flags="-Os"
       platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
       platform_cxxflags="$platform_cflags"
       platform_os="linux"
@@ -225,12 +230,16 @@ case $host in
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
+    platform_cflags="-fPIC -DPIC"
+    optimize_flags="-O2"
+    platform_cxxflags="$platform_cflags"
     platform_os="linux"
   ;;
   x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
+    optimize_flags="-O2"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
   ;;
@@ -384,9 +393,10 @@ case $host in
           platform_cflags+=" -mcpu=cortex-a8 -mfpu=neon"
           platform_ldflags+=" -Wl,-segalign,4000"
         fi
-        platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -O3"
+        platform_cflags+=" -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings"
         platform_cflags+=" -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
         platform_cflags+=" -Wno-error=implicit-function-declaration"
+        optimize_flags="-O3"
         platform_ldflags+=" -L$use_sdk_path/usr/lib/system"
         platform_cxxflags+=" $cpu_flags"
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
@@ -411,6 +421,7 @@ case $use_platform in
      use_cpu=arm1176jzf-s
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
      platform_cxxflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
+     optimize_flags="-Os"
      platform_ldflags=""
      ;;
   raspberry-pi2)
@@ -419,6 +430,7 @@ case $use_platform in
      use_cpu=cortex-a7
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
      platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
+     optimize_flags="-Os"
      platform_ldflags="-lpthread"
      ;;
 esac
@@ -452,9 +464,6 @@ fi
 
 XBMC_SETUP_ARCH_DEFINES()
 
-platform_cflags+=" $passed_cflags"
-platform_ldflags+=" $passed_ldflags $LIBS"
-platform_cxxflags+=" $passed_cxxflags"
 
 if test -n $use_build_toolchain; then
   PATH_FOR_HOST=$use_toolchain:$use_toolchain/usr/bin:$use_toolchain/bin:$PATH
@@ -597,14 +606,31 @@ if test "$platform_os" == "android"; then
   fi
 fi
 
-if test "$use_debug" = "yes"; then
-  DEBUG_FLAGS="-g -D_DEBUG"
-else
-  DEBUG_FLAGS="-DNDEBUG=1"
-fi
-platform_cflags+="$c11_flags $DEBUG_FLAGS"
-platform_cxxflags+="$cxx11_flags $DEBUG_FLAGS"
+# remove unwanted optimization flags
+tmp_cflags=$(echo $c11_flags $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
+tmp_cxxflags=$(echo $cxx11_flags $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
 
+release_cflags="-DNDEBUG=1"
+CFLAGS="$tmp_cflags -Og -g -D_DEBUG"
+AC_COMPILE_IFELSE(
+  [AC_LANG_SOURCE([int foo;])],
+  [debug_cflags="-Og -g -D_DEBUG"],
+  [debug_cflags="-g -D_DEBUG"])
+
+# add user supplied flags to the end, so they override our defaults
+platform_cflags_release="$tmp_cflags $relase_cflags $optimize_flags $passed_cflags"
+platform_cxxflags_release="$tmp_cxxflags $relase_cflags $optimize_flags $passed_cxxflags"
+platform_cflags_debug="$tmp_cflags $debug_cflags $passed_cflags"
+platform_cxxflags_debug="$tmp_cxxflags $debug_cflags $passed_cxxflags"
+platform_ldflags+=" $passed_ldflags $LIBS"
+
+if test "$use_debug" = "yes"; then
+  platform_cflags="$platform_cflags_debug"
+  platform_cxxflags="$platform_cxxflags_debug"
+else
+  platform_cflags="$platform_cflags_release"
+  platform_cxxflags="$platform_cxxflags_release"
+fi
 
 if test "$platform_os" == "android"; then
 echo -e
@@ -627,6 +653,10 @@ AC_SUBST(use_firmware)
 AC_SUBST(cross_compiling)
 AC_SUBST(platform_cflags)
 AC_SUBST(platform_cxxflags)
+AC_SUBST(platform_cflags_release)
+AC_SUBST(platform_cxxflags_release)
+AC_SUBST(platform_cflags_debug)
+AC_SUBST(platform_cxxflags_debug)
 AC_SUBST(platform_ldflags)
 AC_SUBST(platform_includes)
 AC_SUBST(platform_os)
@@ -668,3 +698,18 @@ cp -vf target/config-binaddons.site $prefix/$tool_dir/share
 cp -vf target/Toolchain.cmake $prefix/$deps_dir/share
 cp -vf target/Toolchain_binaddons.cmake $prefix/$deps_dir/share
 cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
+
+
+echo -e "\n\n#------- configuration -------#"
+echo -e "build type:\t $build_type"
+echo -e "toolchain:\t $use_toolchain"
+echo -e "cpu:\t\t $use_cpu"
+echo -e "host:\t\t $use_host"
+echo -e "cflags:\t\t $platform_cflags"
+echo -e "cxxflags:\t $platform_cxxflags"
+echo -e "ldflags:\t $platform_ldflags"
+if test "$platform_os" == "android"; then
+  echo -e "sdk-platform:\t $use_sdk"
+  echo -e "build-tools:\t $build_tools_path"
+fi
+
