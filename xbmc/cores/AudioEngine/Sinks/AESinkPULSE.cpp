@@ -25,6 +25,8 @@
 #include "utils/TimeUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "ServiceBroker.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {
@@ -245,12 +247,12 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
     if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_NEW)
     {
        CLog::Log(LOGDEBUG, "Sink appeared");
-       CAEFactory::DeviceChange();
+       CServiceBroker::GetActiveAE().DeviceChange();
     }
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE)
     {
       CLog::Log(LOGDEBUG, "Sink removed");
-      CAEFactory::DeviceChange();
+      CServiceBroker::GetActiveAE().DeviceChange();
     }
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
     {

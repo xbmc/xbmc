@@ -22,10 +22,11 @@
 
 #include <libudev.h>
 
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "ALSADeviceMonitor.h"
-#include "AEFactory.h"
 #include "linux/FDEventMonitor.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 CALSADeviceMonitor::CALSADeviceMonitor() :
   m_fdMonitorId(0),
@@ -133,7 +134,7 @@ void CALSADeviceMonitor::FDEventCallback(int id, int fd, short revents, void *da
 
   if (audioDevicesChanged)
   {
-    CAEFactory::DeviceChange();
+    CServiceBroker::GetActiveAE().DeviceChange();
   }
 }
 
