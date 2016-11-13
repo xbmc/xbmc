@@ -328,7 +328,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
   return RET_SLEEP; // nothing to do
 }
 
-float CAudioDecoder::GetReplayGain()
+float CAudioDecoder::GetReplayGain(float &peakVal)
 {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
   const ReplayGainSettings &replayGainSettings = g_application.GetReplayGainSettings();
@@ -337,45 +337,44 @@ float CAudioDecoder::GetReplayGain()
 
   // Compute amount of gain
   float replaydB = (float)replayGainSettings.iNoGainPreAmp;
-  float peak = 0.0f;
+  float peak = 1.0f;
   const ReplayGain& rgInfo = m_codec->m_tag.GetReplayGain();
   if (replayGainSettings.iType == ReplayGain::ALBUM)
   {
-    if (rgInfo.Get(ReplayGain::ALBUM).Valid())
+    if (rgInfo.Get(ReplayGain::ALBUM).HasGain())
     {
       replaydB = (float)replayGainSettings.iPreAmp + rgInfo.Get(ReplayGain::ALBUM).Gain();
-      peak = rgInfo.Get(ReplayGain::ALBUM).Peak();
+      if (rgInfo.Get(ReplayGain::ALBUM).HasPeak())
+        peak = rgInfo.Get(ReplayGain::ALBUM).Peak();
     }
-    else if (rgInfo.Get(ReplayGain::TRACK).Valid())
+    else if (rgInfo.Get(ReplayGain::TRACK).HasGain())
     {
       replaydB = (float)replayGainSettings.iPreAmp + rgInfo.Get(ReplayGain::TRACK).Gain();
-      peak = rgInfo.Get(ReplayGain::TRACK).Peak();
+      if (rgInfo.Get(ReplayGain::TRACK).HasPeak())
+        peak = rgInfo.Get(ReplayGain::TRACK).Peak();
     }
   }
   else if (replayGainSettings.iType == ReplayGain::TRACK)
   {
-    if (rgInfo.Get(ReplayGain::TRACK).Valid())
+    if (rgInfo.Get(ReplayGain::TRACK).HasGain())
     {
       replaydB = (float)replayGainSettings.iPreAmp + rgInfo.Get(ReplayGain::TRACK).Gain();
-      peak = rgInfo.Get(ReplayGain::TRACK).Peak();
+      if (rgInfo.Get(ReplayGain::TRACK).HasPeak())
+        peak = rgInfo.Get(ReplayGain::TRACK).Peak();
     }
-    else if (rgInfo.Get(ReplayGain::ALBUM).Valid())
+    else if (rgInfo.Get(ReplayGain::ALBUM).HasGain())
     {
       replaydB = (float)replayGainSettings.iPreAmp + rgInfo.Get(ReplayGain::ALBUM).Gain();
-      peak = rgInfo.Get(ReplayGain::ALBUM).Peak();
+      if (rgInfo.Get(ReplayGain::ALBUM).HasPeak())
+        peak = rgInfo.Get(ReplayGain::ALBUM).Peak();
     }
   }
   // convert to a gain type
   float replaygain = pow(10.0f, (replaydB - REPLAY_GAIN_DEFAULT_LEVEL)* 0.05f);
-  // check peaks
-  if (replayGainSettings.bAvoidClipping)
-  {
-    if (fabs(peak * replaygain) > 1.0f)
-      replaygain = 1.0f / fabs(peak);
-  }
 
   CLog::Log(LOGDEBUG, "AudioDecoder::GetReplayGain - Final Replaygain applied: %f, Track/Album Gain %f, Peak %f", replaygain, replaydB, peak);
 
+  peakVal = peak;
   return replaygain;
 }
 
