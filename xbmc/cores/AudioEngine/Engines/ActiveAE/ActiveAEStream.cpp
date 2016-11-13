@@ -22,7 +22,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 
@@ -30,9 +30,6 @@
 #include "ActiveAEStream.h"
 
 using namespace ActiveAE;
-
-/* typecast AE to CActiveAE */
-#define AE (*((CActiveAE*)CAEFactory::GetEngine()))
 
 
 CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid)
@@ -344,14 +341,14 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
 double CActiveAEStream::GetDelay()
 {
   AEDelayStatus status;
-  AE.GetDelay(status, this);
+  CServiceBroker::GetActiveAE().GetDelay(status, this);
   return status.GetDelay();
 }
 
 CAESyncInfo CActiveAEStream::GetSyncInfo()
 {
   CAESyncInfo info;
-  AE.GetSyncInfo(info, this);
+  CServiceBroker::GetActiveAE().GetSyncInfo(info, this);
   return info;
 }
 
@@ -363,22 +360,22 @@ bool CActiveAEStream::IsBuffering()
 
 double CActiveAEStream::GetCacheTime()
 {
-  return AE.GetCacheTime(this);
+  return CServiceBroker::GetActiveAE().GetCacheTime(this);
 }
 
 double CActiveAEStream::GetCacheTotal()
 {
-  return AE.GetCacheTotal(this);
+  return CServiceBroker::GetActiveAE().GetCacheTotal(this);
 }
 
 void CActiveAEStream::Pause()
 {
-  AE.PauseStream(this, true);
+  CServiceBroker::GetActiveAE().PauseStream(this, true);
 }
 
 void CActiveAEStream::Resume()
 {
-  AE.PauseStream(this, false);
+  CServiceBroker::GetActiveAE().PauseStream(this, false);
 }
 
 void CActiveAEStream::Drain(bool wait)
@@ -458,7 +455,7 @@ void CActiveAEStream::Flush()
   {
     m_currentBuffer = NULL;
     m_leftoverBytes = 0;
-    AE.FlushStream(this);
+    CServiceBroker::GetActiveAE().FlushStream(this);
     ResetFreeBuffers();
     m_streamIsFlushed = true;
   }
@@ -472,7 +469,7 @@ float CActiveAEStream::GetAmplification()
 void CActiveAEStream::SetAmplification(float amplify)
 {
   m_streamAmplify = amplify;
-  AE.SetStreamAmplification(this, m_streamAmplify);
+  CServiceBroker::GetActiveAE().SetStreamAmplification(this, m_streamAmplify);
 }
 
 float CActiveAEStream::GetReplayGain()
@@ -483,7 +480,7 @@ float CActiveAEStream::GetReplayGain()
 void CActiveAEStream::SetReplayGain(float factor)
 {
   m_streamRgain = std::max( 0.0f, factor);
-  AE.SetStreamReplaygain(this, m_streamRgain);
+  CServiceBroker::GetActiveAE().SetStreamReplaygain(this, m_streamRgain);
 }
 
 float CActiveAEStream::GetVolume()
@@ -494,7 +491,7 @@ float CActiveAEStream::GetVolume()
 void CActiveAEStream::SetVolume(float volume)
 {
   m_streamVolume = std::max( 0.0f, std::min(1.0f, volume));
-  AE.SetStreamVolume(this, m_streamVolume);
+  CServiceBroker::GetActiveAE().SetStreamVolume(this, m_streamVolume);
 }
 
 double CActiveAEStream::GetResampleRatio()
@@ -505,20 +502,20 @@ double CActiveAEStream::GetResampleRatio()
 void CActiveAEStream::SetResampleRatio(double ratio)
 {
   if (ratio != m_streamResampleRatio)
-    AE.SetStreamResampleRatio(this, ratio);
+    CServiceBroker::GetActiveAE().SetStreamResampleRatio(this, ratio);
   m_streamResampleRatio = ratio;
 }
 
 void CActiveAEStream::SetResampleMode(int mode)
 {
   if (mode != m_streamResampleMode)
-    AE.SetStreamResampleMode(this, mode);
+    CServiceBroker::GetActiveAE().SetStreamResampleMode(this, mode);
   m_streamResampleMode = mode;
 }
 
 void CActiveAEStream::SetFFmpegInfo(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
 {
-  AE.SetStreamFFmpegInfo(this, profile, matrix_encoding, audio_service_type);
+  CServiceBroker::GetActiveAE().SetStreamFFmpegInfo(this, profile, matrix_encoding, audio_service_type);
 }
 
 void CActiveAEStream::FadeVolume(float from, float target, unsigned int time)
@@ -527,7 +524,7 @@ void CActiveAEStream::FadeVolume(float from, float target, unsigned int time)
     return;
 
   m_streamFading = true;
-  AE.SetStreamFade(this, from, target, time);
+  CServiceBroker::GetActiveAE().SetStreamFade(this, from, target, time);
 }
 
 bool CActiveAEStream::IsFading()
@@ -538,7 +535,7 @@ bool CActiveAEStream::IsFading()
 
 bool CActiveAEStream::HasDSP()
 {
-  return AE.HasDSP();
+  return CServiceBroker::GetActiveAE().HasDSP();
 }
 
 const unsigned int CActiveAEStream::GetFrameSize() const

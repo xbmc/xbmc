@@ -29,7 +29,6 @@
 #include "ActiveAESink.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
-#include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 
 #include "guilib/DispResource.h"
@@ -44,6 +43,7 @@ extern "C" {
 
 class IAESink;
 class IAEEncoder;
+class CServiceManager;
 
 namespace ActiveAE
 {
@@ -226,16 +226,17 @@ protected:
 class CActiveAE : public IAE, public IDispResource, private CThread
 {
 protected:
-  friend class ::CAEFactory;
+  friend class ::CServiceManager;
   friend class CActiveAESound;
   friend class CActiveAEStream;
   friend class CSoundPacket;
   friend class CActiveAEBufferPoolResample;
-  CActiveAE();
-  virtual ~CActiveAE();
+
   virtual bool  Initialize();
 
 public:
+  CActiveAE();
+  virtual ~CActiveAE();
   virtual void   Shutdown();
   virtual bool   Suspend();
   virtual bool   Resume();
@@ -269,7 +270,7 @@ public:
   virtual void KeepConfiguration(unsigned int millis);
   virtual void DeviceChange();
   virtual bool HasDSP();
-  virtual AEAudioFormat GetCurrentSinkFormat();
+  virtual bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat);
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback(IAudioCallback* pCallback);
