@@ -94,6 +94,7 @@ shared:
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 	mkdir -p assets/system/certs
 	cp $(CORE_SOURCE_DIR)/tools/depends/target/openssl/cacert.pem assets/system/certs
+	cp $(CORE_SOURCE_DIR)/privacy-policy.txt assets
 
 sharedapk: shared | xbmc/assets
 	cp -rfp assets/* ./xbmc/assets

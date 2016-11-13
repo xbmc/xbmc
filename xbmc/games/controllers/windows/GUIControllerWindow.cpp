@@ -125,6 +125,10 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
         ShowHelp();
         return true;
       }
+      else if (controlId == CONTROL_FIX_SKIPPING)
+      {
+        ShowButtonCaptureDialog();
+      }
       else if (CONTROL_CONTROLLER_BUTTONS_START <= controlId && controlId < CONTROL_CONTROLLER_BUTTONS_END)
       {
         OnControllerSelected(controlId - CONTROL_CONTROLLER_BUTTONS_START);
@@ -321,4 +325,10 @@ void CGUIControllerWindow::ShowHelp(void)
   // "Help"
   // <help text>
   CGUIDialogOK::ShowAndGetInput(CVariant{10043}, CVariant{35055});
+}
+
+void CGUIControllerWindow::ShowButtonCaptureDialog(void)
+{
+  if (m_controllerList)
+    m_controllerList->ShowButtonCaptureDialog();
 }

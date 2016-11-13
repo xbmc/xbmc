@@ -34,8 +34,9 @@
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 
 class IAEStream;
-
 class CFileItem;
+class CProcessInfo;
+
 class PAPlayer : public IPlayer, public CThread, public IJobCallback
 {
 friend class CQueueNextFileJob;
@@ -146,6 +147,7 @@ private:
   bool                m_continueStream;
   int64_t             m_newForcedPlayerTime;
   int64_t             m_newForcedTotalTime;
+  std::unique_ptr<CProcessInfo> m_processInfo;
 
   bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true, bool job = false);
   void SoftStart(bool wait = false);

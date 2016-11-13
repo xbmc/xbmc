@@ -1,5 +1,6 @@
 SRCS=	\
   TestAddonBuilder.cpp \
+  TestAddonDatabase.cpp \
   TestAddonFactory.cpp \
   TestAddonVersion.cpp
 

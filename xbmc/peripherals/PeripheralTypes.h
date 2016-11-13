@@ -45,6 +45,7 @@ namespace PERIPHERALS
 #ifdef TARGET_ANDROID
     PERIPHERAL_BUS_ANDROID,
 #endif
+    PERIPHERAL_BUS_IMX,
   };
 
   enum PeripheralFeature
@@ -75,6 +76,10 @@ namespace PERIPHERALS
     PERIPHERAL_IMON,
     PERIPHERAL_JOYSTICK,
   };
+
+  class CPeripheral;
+  typedef std::shared_ptr<CPeripheral> PeripheralPtr;
+  typedef std::vector<PeripheralPtr>   PeripheralVector;
 
   class CPeripheralAddon;
   typedef std::shared_ptr<CPeripheralAddon> PeripheralAddonPtr;
@@ -169,6 +174,8 @@ namespace PERIPHERALS
         return "pci";
       case PERIPHERAL_BUS_RPI:
         return "rpi";
+      case PERIPHERAL_BUS_IMX:
+        return "imx";
       case PERIPHERAL_BUS_CEC:
         return "cec";
       case PERIPHERAL_BUS_ADDON:
@@ -193,6 +200,8 @@ namespace PERIPHERALS
         return PERIPHERAL_BUS_PCI;
       else if (strTypeLowerCase == "rpi")
         return PERIPHERAL_BUS_RPI;
+      else if (strTypeLowerCase == "imx")
+        return PERIPHERAL_BUS_IMX;
       else if (strTypeLowerCase == "cec")
         return PERIPHERAL_BUS_CEC;
       else if (strTypeLowerCase == "addon")

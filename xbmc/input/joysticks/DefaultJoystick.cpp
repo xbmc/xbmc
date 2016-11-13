@@ -129,6 +129,16 @@ bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x
   return false; //! @todo implement
 }
 
+int CDefaultJoystick::GetActionID(const FeatureName& feature)
+{
+  const unsigned int keyId = GetKeyID(feature);
+
+  if (keyId > 0)
+    return m_handler->GetActionID(keyId);
+
+  return ACTION_NONE;
+}
+
 bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs)
 {
   // Calculate the button key ID and input type for the analog stick's direction

@@ -36,6 +36,7 @@
 #define CONTROL_CLOSE_BUTTON                18
 #define CONTROL_RESET_BUTTON                19
 #define CONTROL_GET_MORE                    20
+#define CONTROL_FIX_SKIPPING                21
 #define CONTROL_GAME_CONTROLLER             31
 
 #define MAX_CONTROLLER_COUNT  100 // large enough

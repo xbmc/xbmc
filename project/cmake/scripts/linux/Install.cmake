@@ -132,6 +132,10 @@ install(FILES ${CORE_SOURCE_DIR}/copying.txt
         DESTINATION ${datarootdir}/doc/${APP_NAME_LC}
         COMPONENT kodi)
 
+install(FILES ${CORE_SOURCE_DIR}/privacy-policy.txt
+        DESTINATION ${datarootdir}/${APP_NAME_LC}
+        COMPONENT kodi)
+
 # Install kodi-tools-texturepacker
 install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/texturepacker/TexturePacker
         DESTINATION ${bindir}

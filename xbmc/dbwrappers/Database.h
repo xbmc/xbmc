@@ -157,6 +157,8 @@ public:
   virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl);
   virtual bool BuildSQL(const std::string &strBaseDir, const std::string &strQuery, Filter &filter, std::string &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
 
+  bool Connect(const std::string &dbName, const DatabaseSettings &db, bool create);
+
 protected:
   friend class CDatabaseManager;
 
@@ -206,7 +208,6 @@ protected:
 
 private:
   void InitSettings(DatabaseSettings &dbSettings);
-  bool Connect(const std::string &dbName, const DatabaseSettings &db, bool create);
   void UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */

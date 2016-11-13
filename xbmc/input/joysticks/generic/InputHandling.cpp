@@ -19,11 +19,15 @@
  */
 
 #include "InputHandling.h"
+#include "input/joysticks/dialogs/GUIDialogNewJoystick.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/JoystickUtils.h"
+#include "utils/log.h"
 
 using namespace JOYSTICK;
+
+CGUIDialogNewJoystick* const CInputHandling::m_dialog = new CGUIDialogNewJoystick;
 
 CInputHandling::CInputHandling(IInputHandler* handler, IButtonMap* buttonMap)
  : m_handler(handler),
@@ -85,6 +89,16 @@ bool CInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
 
     if (feature)
       bHandled = feature->OnDigitalMotion(source, bPressed);
+  }
+  else if (bPressed)
+  {
+    // If button didn't resolve to a feature, check if the button map is empty
+    // and ask the user if they would like to start mapping the controller
+    if (m_buttonMap->IsEmpty())
+    {
+      CLog::Log(LOGDEBUG, "Empty button map detected for %s", m_buttonMap->ControllerID().c_str());
+      m_dialog->ShowAsync();
+    }
   }
 
   return bHandled;

@@ -816,7 +816,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       if (child->QueryStringAttribute("name", &name) != TIXML_SUCCESS)
         name = "default";
       XMLUtils::GetFloat(child, "value", r.rating);
-      XMLUtils::GetInt(child, "votes", r.votes);
+      if (XMLUtils::GetString(child, "votes", value))
+        r.votes = StringUtils::ReturnDigits(value);
       int max_value = 10;
       if ((child->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
         r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10

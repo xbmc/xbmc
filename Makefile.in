@@ -54,6 +54,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
                    xbmc/games/controllers/controllers.a \
+                   xbmc/games/controllers/dialogs/controllerdialogs.a \
                    xbmc/games/controllers/guicontrols/controllerguicontrols.a \
                    xbmc/games/controllers/windows/controllerwindows.a \
                    xbmc/guilib/guilib.a \
@@ -148,6 +149,7 @@ endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
 DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
@@ -163,6 +165,7 @@ INSTALL_FILTER += .*repository\.pvr-win32\.xbmc\.org.*
 INSTALL_FILTER += .*repository\.pvr-osx.*\.xbmc\.org.*
 ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
@@ -173,6 +176,7 @@ DIRECTORY_ARCHIVES += xbmc/storage/android/storage_android.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 else
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
+DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
@@ -522,7 +526,9 @@ install-scripts:
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@install -d $(DESTDIR)$(docdir)
-	@install -m 0644 docs/README.linux LICENSE.GPL *.txt $(DESTDIR)$(docdir)
+	@install -m 0644 docs/README.linux LICENSE.GPL copying.txt version.txt $(DESTDIR)$(docdir)
+	@install -d $(DESTDIR)/$(datarootdir)/@APP_NAME_LC@
+	@install -m 0644 privacy-policy.txt $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/@APP_NAME_LC@"
 	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@

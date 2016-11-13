@@ -87,14 +87,14 @@ bool SupportsPeripheralControllers(const std::string &condition, const std::stri
   using namespace PERIPHERALS;
 
   PeripheralBusAddonPtr bus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
-  return bus != nullptr && bus->HasFeature(FEATURE_JOYSTICK);
+  return bus && bus->HasFeature(FEATURE_JOYSTICK);
 }
 
 bool HasRumbleFeature(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   using namespace PERIPHERALS;
 
-  std::vector<CPeripheral*> results;
+  PeripheralVector results;
   g_peripherals.GetPeripheralsWithFeature(results, FEATURE_RUMBLE);
   return !results.empty();
 }

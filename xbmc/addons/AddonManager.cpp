@@ -538,6 +538,20 @@ bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
   return true;
 }
 
+bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result)
+{
+  VECADDONS versions;
+  {
+    CSingleLock lock(m_critSection);
+    if (!m_database.FindByAddonId(addonId, versions) || versions.empty())
+      return false;
+  }
+
+  result = *std::max_element(versions.begin(), versions.end(),
+      [](const AddonPtr& a, const AddonPtr& b) { return a->Version() < b->Version(); });
+  return true;
+}
+
 bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly)
 {
   CSingleLock lock(m_critSection);

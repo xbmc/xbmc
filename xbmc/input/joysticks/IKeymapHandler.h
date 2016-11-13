@@ -45,6 +45,16 @@ namespace JOYSTICK
     virtual INPUT_TYPE GetInputType(unsigned int keyId) const = 0;
 
     /*!
+     * \brief Get the action ID mapped to the specified key ID
+     *
+     * \param keyId  The key ID from Key.h
+     *
+     * \return The action ID, or ACTION_NONE if no action is mapped to the
+     *         specified key
+     */
+    virtual int GetActionID(unsigned int keyId) const = 0;
+
+    /*!
      * \brief A key mapped to a digital action has been pressed or released
      *
      * \param keyId      The key ID from Key.h

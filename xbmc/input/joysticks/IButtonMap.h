@@ -23,6 +23,7 @@
 #include "JoystickTypes.h"
 
 #include <string>
+#include <vector>
 
 namespace JOYSTICK
 {
@@ -48,6 +49,13 @@ namespace JOYSTICK
     virtual std::string ControllerID(void) const = 0;
 
     /*!
+     * \brief The name of the peripheral associated with this button map
+     *
+     * \return The peripheral's name
+     */
+    virtual std::string DeviceName(void) const = 0;
+
+    /*!
      * \brief Load the button map into memory
      *
      * \return True if button map is ready to start translating buttons, false otherwise
@@ -58,6 +66,13 @@ namespace JOYSTICK
      * \brief Reset the button map to its defaults, or clear button map if no defaults
      */
     virtual void Reset(void) = 0;
+
+    /*!
+     * \brief Check if the button map is empty
+     *
+     * \return True if the button map is empty, false if it has features
+     */
+    virtual bool IsEmpty(void) const = 0;
 
     /*!
      * \brief Get the feature associated with a driver primitive
@@ -190,8 +205,34 @@ namespace JOYSTICK
     ) = 0;
 
     /*!
+     * \brief Set a list of driver primitives to be ignored
+     *
+     * This is necessary to prevent features from interfering with the button
+     * mapping process. This includes accelerometers, as well as PS4 triggers
+     * which send both a button press and an analog value.
+     *
+     * \param primitives      The driver primitives to be ignored
+     */
+    virtual void SetIgnoredPrimitives(const std::vector<CDriverPrimitive>& primitives) = 0;
+
+    /*!
+     * \brief Check if a primitive is in the list of primitives to be ignored
+     *
+     * \param primitive      The primitive to check
+     *
+     * \return True if the primitive should be ignored in the mapping process
+     */
+    virtual bool IsIgnored(const CDriverPrimitive& primitive) = 0;
+
+    /*!
      * \brief Save the button map
      */
     virtual void SaveButtonMap() = 0;
+
+    /*!
+    * \brief Revert changes to the button map since the last time it was loaded
+    *        or commited to disk
+    */
+    virtual void RevertButtonMap() = 0;
   };
 }

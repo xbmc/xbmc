@@ -62,7 +62,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   {
     if (feature == FEATURE_JOYSTICK)
     {
-      if (m_bus->InitializeProperties(this))
+      if (m_bus->InitializeProperties(*this))
         bSuccess = true;
       else
         CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());

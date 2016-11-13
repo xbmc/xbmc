@@ -567,6 +567,8 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
           m_database.SetPlayCount(*pItem, count);
       }
     }
+
+    g_PVRManager.PublishEvent(RecordingsInvalidated);
   }
 
   return bResult;

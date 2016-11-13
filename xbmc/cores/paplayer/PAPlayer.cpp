@@ -33,6 +33,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/DataCacheCore.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
@@ -76,6 +77,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_newForcedTotalTime (-1)
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
+  m_processInfo.reset(CProcessInfo::CreateInstance());
 }
 
 PAPlayer::~PAPlayer()
@@ -920,15 +922,11 @@ void PAPlayer::Pause()
 {
   if (m_isPaused)
   {
-    m_isPaused = false;
-    SoftStart();
-    m_callback.OnPlayBackResumed();
+    SetSpeed(1);
   }
   else
   {
-    m_isPaused = true;    
-    SoftStop(true, false);
-    m_callback.OnPlayBackPaused();
+    SetSpeed(0);
   }
 }
 
@@ -949,11 +947,13 @@ void PAPlayer::SetSpeed(float speed)
   {
     m_isPaused = false;
     SoftStart();
+    m_callback.OnPlayBackResumed();
   }
   else if (m_playbackSpeed == 0 && !m_isPaused)
   {
     m_isPaused = true;
     SoftStop(true, false);
+    m_callback.OnPlayBackPaused();
   }
   m_signalSpeedChange = true;
 }

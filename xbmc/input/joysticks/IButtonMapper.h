@@ -24,6 +24,7 @@
 namespace JOYSTICK
 {
   class CDriverPrimitive;
+  class IActionMap;
   class IButtonMap;
   class IButtonMapCallback;
 
@@ -50,14 +51,24 @@ namespace JOYSTICK
     virtual std::string ControllerID(void) const = 0;
 
     /*!
+    * \brief Return true if the button mapper wants a cooldown between button
+    *        mapping commands
+    *
+    * \return True to only send button mapping commands that occur after a small
+    *         timeout from the previous command.
+    */
+    virtual bool NeedsCooldown(void) const = 0;
+
+    /*!
      * \brief Handle button/hat press or axis threshold
      *
      * \param buttonMap  The button map being manipulated
-     * \param primitive  The source of the action
+     * \param actionMap  An interface capable of translating driver primitives to Kodi actions
+     * \param primitive  The driver primitive
      *
-     * \return True if action was mapped to a feature
+     * \return True if driver primitive was mapped to a feature
      */
-    virtual bool MapPrimitive(IButtonMap* buttonMap, const CDriverPrimitive& primitive) = 0;
+    virtual bool MapPrimitive(IButtonMap* buttonMap, IActionMap* actionMap, const CDriverPrimitive& primitive) = 0;
 
     // Button map callback interface
     void SetButtonMapCallback(IButtonMapCallback* callback) { m_callback = callback; }

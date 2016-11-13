@@ -1304,16 +1304,21 @@ bool CGUIWindowMusicBase::CanContainFilter(const std::string &strDirectory) cons
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
-  if (CMediaSettings::GetInstance().GetMusicNeedsUpdate() == 53)
+  // Prompt for rescan of library to read music file tags that were not processed by previous versions
+  // and accomodate any changes to the way some tags are processed
+  if (CMediaSettings::GetInstance().GetMusicNeedsUpdate() != 0)
   {
     if (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) && !g_application.IsMusicScanning())
     {
       // rescan of music library required
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{800}))
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{38060}))
       {
         int flags = CMusicInfoScanner::SCAN_RESCAN;
+        // When set to fetch information on update enquire about scraping that as well
+        // It may take some time, so the user may want to do it later by "Query Info For All"
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO))
-          flags |= CMusicInfoScanner::SCAN_ONLINE;
+          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{38061}))
+            flags |= CMusicInfoScanner::SCAN_ONLINE;
         if (CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
           flags |= CMusicInfoScanner::SCAN_BACKGROUND;
         g_application.StartMusicScan("", true, flags);

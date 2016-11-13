@@ -222,6 +222,7 @@ When using the makefile builds a few extra targets are defined:
 
 - `make check` builds and executes the test suite.
 - `make check-valgrind` builds and executes the test suite with valgrind memcheck.
+- `make doc` builds the Doxygen documentation.
 
 Code coverage (with Gcov, LCOV and Gcovr) can be built on Linux:
 

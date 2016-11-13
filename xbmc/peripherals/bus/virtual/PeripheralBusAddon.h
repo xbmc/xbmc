@@ -71,13 +71,13 @@ namespace PERIPHERALS
     bool SendRumbleEvent(const std::string& strLocation, unsigned int motorIndex, float magnitude);
 
     // Inherited from CPeripheralBus
-    virtual bool         InitializeProperties(CPeripheral* peripheral) override;
-    virtual void         Register(CPeripheral *peripheral) override;
+    virtual bool         InitializeProperties(CPeripheral& peripheral) override;
+    virtual void         Register(const PeripheralPtr& peripheral) override;
     virtual void         GetFeatures(std::vector<PeripheralFeature> &features) const override;
     virtual bool         HasFeature(const PeripheralFeature feature) const override;
-    virtual CPeripheral* GetPeripheral(const std::string &strLocation) const override;
-    virtual CPeripheral* GetByPath(const std::string &strPath) const override;
-    virtual int          GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const override;
+    virtual PeripheralPtr GetPeripheral(const std::string &strLocation) const override;
+    virtual PeripheralPtr GetByPath(const std::string &strPath) const override;
+    virtual int          GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const override;
     virtual size_t       GetNumberOfPeripherals(void) const override;
     virtual size_t       GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const override;
     virtual void         GetDirectory(const std::string &strPath, CFileItemList &items) const override;

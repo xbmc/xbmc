@@ -28,6 +28,7 @@
 namespace JOYSTICK
 {
   class CDriverPrimitive;
+  class CGUIDialogNewJoystick;
   class IInputHandler;
   class IButtonMap;
 
@@ -66,5 +67,7 @@ namespace JOYSTICK
     IButtonMap* const    m_buttonMap;
 
     std::map<FeatureName, FeaturePtr> m_features;
+
+    static CGUIDialogNewJoystick* const m_dialog;
   };
 }

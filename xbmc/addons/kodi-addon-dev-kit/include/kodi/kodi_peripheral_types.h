@@ -51,10 +51,10 @@
 #endif
 
 /* current Peripheral API version */
-#define PERIPHERAL_API_VERSION "1.1.0"
+#define PERIPHERAL_API_VERSION "1.2.0"
 
 /* min. Peripheral API version */
-#define PERIPHERAL_MIN_API_VERSION "1.1.0"
+#define PERIPHERAL_MIN_API_VERSION "1.2.0"
 
 /* indicates a joystick has no preference for port number */
 #define NO_PORT_REQUESTED     (-1)
@@ -304,8 +304,12 @@ extern "C"
     void             (__cdecl* FreeJoystickInfo)(JOYSTICK_INFO*);
     PERIPHERAL_ERROR (__cdecl* GetFeatures)(const JOYSTICK_INFO*, const char*, unsigned int*, JOYSTICK_FEATURE**);
     void             (__cdecl* FreeFeatures)(unsigned int, JOYSTICK_FEATURE*);
-    PERIPHERAL_ERROR (__cdecl* MapFeatures)(const JOYSTICK_INFO*, const char*, unsigned int, JOYSTICK_FEATURE*);
+    PERIPHERAL_ERROR (__cdecl* MapFeatures)(const JOYSTICK_INFO*, const char*, unsigned int, const JOYSTICK_FEATURE*);
+    PERIPHERAL_ERROR (__cdecl* GetIgnoredPrimitives)(const JOYSTICK_INFO*, unsigned int*, JOYSTICK_DRIVER_PRIMITIVE**);
+    void             (__cdecl* FreePrimitives)(unsigned int, JOYSTICK_DRIVER_PRIMITIVE*);
+    PERIPHERAL_ERROR (__cdecl* SetIgnoredPrimitives)(const JOYSTICK_INFO*, unsigned int, const JOYSTICK_DRIVER_PRIMITIVE*);
     void             (__cdecl* SaveButtonMap)(const JOYSTICK_INFO*);
+    void             (__cdecl* RevertButtonMap)(const JOYSTICK_INFO*);
     void             (__cdecl* ResetButtonMap)(const JOYSTICK_INFO*, const char*);
     void             (__cdecl* PowerOffJoystick)(unsigned int);
     ///}
