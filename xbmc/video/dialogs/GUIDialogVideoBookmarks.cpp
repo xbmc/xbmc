@@ -55,7 +55,6 @@ using namespace KODI::MESSAGING;
 #define CONTROL_CLEAR_BOOKMARKS        3
 #define CONTROL_ADD_EPISODE_BOOKMARK   4
 
-#define CONTROL_LIST                  10
 #define CONTROL_THUMBS                11
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
