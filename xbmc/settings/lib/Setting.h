@@ -167,6 +167,7 @@ public:
   virtual void Reset() override;
   
   int GetElementType() const;
+  CSetting* GetDefinition() { return m_definition; }
   const CSetting* GetDefinition() const { return m_definition; }
   void SetDefinition(CSetting *definition) { m_definition = definition; }
 
