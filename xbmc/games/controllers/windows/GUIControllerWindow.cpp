@@ -94,6 +94,9 @@ void CGUIControllerWindow::DoProcess(unsigned int currentTime, CDirtyRegionList 
 
 bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
 {
+  // Set to true to block the call to the super class
+  bool bHandled = false;
+
   switch (message.GetMessage())
   {
     case GUI_MSG_WINDOW_INIT:
@@ -109,22 +112,22 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
       if (controlId == CONTROL_CLOSE_BUTTON)
       {
         Close();
-        return true;
+        bHandled = true;
       }
       else if (controlId == CONTROL_GET_MORE)
       {
         GetMoreControllers();
-        return true;
+        bHandled = true;
       }
       else if (controlId == CONTROL_RESET_BUTTON)
       {
         ResetController();
-        return true;
+        bHandled = true;
       }
       else if (controlId == CONTROL_HELP_BUTTON)
       {
         ShowHelp();
-        return true;
+        bHandled = true;
       }
       else if (controlId == CONTROL_FIX_SKIPPING)
       {
@@ -133,12 +136,12 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
       else if (CONTROL_CONTROLLER_BUTTONS_START <= controlId && controlId < CONTROL_CONTROLLER_BUTTONS_END)
       {
         OnControllerSelected(controlId - CONTROL_CONTROLLER_BUTTONS_START);
-        return true;
+        bHandled = true;
       }
       else if (CONTROL_FEATURE_BUTTONS_START <= controlId && controlId < CONTROL_FEATURE_BUTTONS_END)
       {
         OnFeatureSelected(controlId - CONTROL_FEATURE_BUTTONS_START);
-        return true;
+        bHandled = true;
       }
       break;
     }
@@ -179,7 +182,7 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
         if (m_controllerList && m_controllerList->Refresh())
         {
           CGUIDialog::OnMessage(message);
-          return true;
+          bHandled = true;
         }
       }
       break;
@@ -188,7 +191,10 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
       break;
   }
 
-  return CGUIDialog::OnMessage(message);
+  if (!bHandled)
+    bHandled = CGUIDialog::OnMessage(message);
+
+  return bHandled;
 }
 
 void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
