@@ -21,6 +21,7 @@
 #include "PeripheralBusAddon.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "peripherals/devices/PeripheralJoystick.h"
@@ -77,6 +78,25 @@ bool CPeripheralBusAddon::GetAddon(const std::string &strId, ADDON::AddonPtr &ad
       return true;
     }
   }
+  return false;
+}
+
+bool CPeripheralBusAddon::GetAddonWithButtonMap(PeripheralAddonPtr &addon) const
+{
+  CSingleLock lock(m_critSection);
+
+  auto it = std::find_if(m_addons.begin(), m_addons.end(),
+    [](const PeripheralAddonPtr& addon)
+    {
+      return addon->HasButtonMaps();
+    });
+
+  if (it != m_addons.end())
+  {
+    addon = *it;
+    return  true;
+  }
+
   return false;
 }
 
@@ -183,6 +203,28 @@ void CPeripheralBusAddon::ProcessEvents(void)
 
   for (const auto& addon : addons)
     addon->ProcessEvents();
+}
+
+bool CPeripheralBusAddon::EnableButtonMapping()
+{
+  using namespace ADDON;
+
+  bool bEnabled = false;
+
+  CSingleLock lock(m_critSection);
+
+  PeripheralAddonPtr dummy;
+
+  if (GetAddonWithButtonMap(dummy))
+    bEnabled = true;
+  else
+  {
+    VECADDONS disabledAddons;
+    if (CAddonMgr::GetInstance().GetDisabledAddons(disabledAddons, ADDON_PERIPHERALDLL))
+      bEnabled = PromptEnableAddons(disabledAddons);
+  }
+
+  return bEnabled;
 }
 
 void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &results)
@@ -453,4 +495,35 @@ void CPeripheralBusAddon::UpdateAddons(void)
       erased->Destroy();
     }
   }
+}
+
+bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::VECADDONS& disabledAddons)
+{
+  using namespace ADDON;
+  using namespace KODI::MESSAGING::HELPERS;
+
+  // True if the user confirms enabling the disabled peripheral add-on
+  bool bAccepted = false;
+
+  auto itAddon = std::find_if(disabledAddons.begin(), disabledAddons.end(),
+    [](const AddonPtr& addon)
+  {
+    return std::static_pointer_cast<CPeripheralAddon>(addon)->HasButtonMaps();
+  });
+
+  if (itAddon != disabledAddons.end())
+  {
+    // "Unable to configure controllers"
+    // "Controller configuration depends on a disabled add-on. Would you like to enable it?"
+    bAccepted = (ShowYesNoDialogLines(CVariant{ 35017 }, CVariant{ 35018 }) == DialogResponse::YES);
+  }
+
+  if (bAccepted)
+  {
+    for (const AddonPtr& addon : disabledAddons)
+      CAddonMgr::GetInstance().EnableAddon(addon->ID());
+  }
+
+  PeripheralAddonPtr dummy;
+  return GetAddonWithButtonMap(dummy);
 }

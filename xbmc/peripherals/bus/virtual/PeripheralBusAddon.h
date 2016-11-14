@@ -48,6 +48,11 @@ namespace PERIPHERALS
     bool GetAddon(const std::string &strId, ADDON::AddonPtr &addon) const;
 
     /*!
+    * \brief Get peripheral add-on that can provide button maps
+    */
+    bool GetAddonWithButtonMap(PeripheralAddonPtr &addon) const;
+
+    /*!
      * \brief Get peripheral add-on that can provide button maps for the given device
      */
     bool GetAddonWithButtonMap(const CPeripheral* device, PeripheralAddonPtr &addon) const;
@@ -82,6 +87,7 @@ namespace PERIPHERALS
     virtual size_t       GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const override;
     virtual void         GetDirectory(const std::string &strPath, CFileItemList &items) const override;
     virtual void         ProcessEvents(void) override;
+    virtual bool         EnableButtonMapping() override;
 
     // implementation of IAddonMgrCallback
     bool RequestRestart(ADDON::AddonPtr addon, bool datachanged) override;
@@ -96,6 +102,8 @@ namespace PERIPHERALS
 
   private:
     void OnEvent(const ADDON::AddonEvent& event);
+
+    bool PromptEnableAddons(const ADDON::VECADDONS& disabledAddons);
 
     PeripheralAddonVector m_addons;
     PeripheralAddonVector m_failedAddons;

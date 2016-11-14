@@ -767,6 +767,22 @@ void CPeripherals::ProcessEvents(void)
     bus->ProcessEvents();
 }
 
+bool CPeripherals::EnableButtonMapping()
+{
+  bool bEnabled = false;
+
+  std::vector<PeripheralBusPtr> busses;
+  {
+    CSingleLock lock(m_critSectionBusses);
+    busses = m_busses;
+  }
+
+  for (PeripheralBusPtr& bus : busses)
+    bEnabled |= bus->EnableButtonMapping();
+
+  return bEnabled;
+}
+
 PeripheralAddonPtr CPeripherals::GetAddonWithButtonMap(const CPeripheral* device)
 {
   PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(GetBusByType(PERIPHERAL_BUS_ADDON));
