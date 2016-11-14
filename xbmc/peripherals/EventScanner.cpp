@@ -95,6 +95,10 @@ void CEventScanner::Process(void)
     const double nowMs = static_cast<double>(SystemClockMillis());
     const double scanIntervalMs = GetScanIntervalMs();
 
+    // Handle wrap-around
+    if (nowMs < nextScanMs)
+      nextScanMs = nowMs;
+
     while (nextScanMs <= nowMs)
       nextScanMs += scanIntervalMs;
 
