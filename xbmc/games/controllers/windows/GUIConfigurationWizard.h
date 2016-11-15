@@ -56,6 +56,7 @@ namespace GAME
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
                               JOYSTICK::IActionMap* actionMap,
                               const JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;
@@ -74,6 +75,9 @@ namespace GAME
     void InstallHooks(void);
     void RemoveHooks(void);
 
+    void OnMotion(const JOYSTICK::IButtonMap* buttonMap);
+    void OnMotionless(const JOYSTICK::IButtonMap* buttonMap);
+
     // Run() parameters
     std::string                          m_strControllerId;
     std::vector<IFeatureButton*>         m_buttons;
@@ -86,7 +90,10 @@ namespace GAME
     unsigned int                         m_lastMappingActionMs; // The last mapping action, or 0 if not currently mapping
     CCriticalSection                     m_stateMutex;
 
-    // Synchronization event
+    // Synchronization events
     CEvent                               m_inputEvent;
+    CEvent                               m_motionlessEvent;
+    CCriticalSection                     m_motionMutex;
+    std::set<const JOYSTICK::IButtonMap*> m_bInMotion;
   };
 }
