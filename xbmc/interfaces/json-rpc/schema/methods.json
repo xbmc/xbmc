@@ -2071,7 +2071,7 @@
     "transport": "Response",
     "permission": "ControlPVR",
     "params": [
-      { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the broadcast id of the item to toggle a onetime timer or time rule for" }
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the broadcast id of the item to toggle a onetime timer or time rule for" },
       { "name": "timerrule", "type": "boolean", "default": false, "description": "controls whether to create / delete a timer rule or a onetime timer" }
     ],
     "returns":  "string"
