@@ -131,7 +131,7 @@
 					<top>1022</top>
 					<width>256</width>
 					<height>65</height>
-					<texture>flags/starrating/$INFO[MusicPlayer.UserRating].png</texture>
+					<texture>$INFO[MusicPlayer.UserRating,flags/starrating/,.png]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 			</control>

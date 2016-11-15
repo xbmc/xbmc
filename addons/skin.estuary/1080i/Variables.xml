@@ -50,7 +50,7 @@
 	</variable>
 	<variable name="GlobalFanartVar">
 		<value condition="Skin.HasSetting(use_custom_bg) + !String.IsEmpty(Skin.String(custom_background))">$INFO[Skin.String(custom_background)]</value>
-		<value>special://skin/extras/backgrounds/$INFO[Skin.CurrentColourTheme].jpg</value>
+		<value>$INFO[Skin.CurrentColourTheme,special://skin/extras/backgrounds/,.jpg]</value>
 	</variable>
 	<variable name="FullScreenInfoTextBoxVar">
 		<value condition="Control.HasFocus(5552)">$INFO[VideoPlayer.Duration,$LOCALIZE[180]: [B],[/B][CR]]</value>

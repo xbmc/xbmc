@@ -25,7 +25,7 @@
 					<top>-11</top>
 					<width>100</width>
 					<height>100</height>
-					<texture>dialogs/volume/progress/p$INFO[Control.GetLabel(32)].png</texture>
+					<texture>$INFO[Control.GetLabel(32),dialogs/volume/progress/p,.png]</texture>
 					<animation effect="fade" end="50" time="0" condition="true">Conditional</animation>
 				</control>
 				<control type="image">
