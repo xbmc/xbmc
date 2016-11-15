@@ -45,7 +45,7 @@ namespace JOYSTICK
    *
    *   - Negative in the interval [-1.0, -deadzone)
    *   - Zero in the interval [-deadzone, deadzone]
-   *   - Positive in the interval (deadzone, 1.0)
+   *   - Positive in the interval (deadzone, 1.0]
    */
   class CDeadzoneFilter
   {
@@ -55,7 +55,7 @@ namespace JOYSTICK
     /*!
      * \brief Apply deadzone filtering to an axis
      * \param axisIndex The axis index
-     * \param axisValud The axis value\
+     * \param axisValud The axis value
      * \return The value after applying deadzone filtering
      */
     float FilterAxis(unsigned int axisIndex, float axisValue);
