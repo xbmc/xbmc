@@ -175,6 +175,9 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
 
     if (finalFileitem.GetMimeType() == "application/vnd.apple.mpegurl")
       return new CDVDInputStreamFFmpeg(finalFileitem);
+
+    if (URIUtils::IsProtocol(finalFileitem.GetPath(), "udp"))
+      return CreateInputStream(pPlayer, finalFileitem, scanforextaudio);
   }
 
   // our file interface handles all these types of streams
