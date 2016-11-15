@@ -846,15 +846,15 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if (pPicture->iFlags & DVP_FLAG_INTERLACED)
   {
     deintMethod = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
-    if (m_processInfo.Supports(deintMethod))
+    if (!m_processInfo.Supports(deintMethod))
+      deintMethod = m_processInfo.GetDeinterlacingMethodDefault();
+    if (deintMethod != EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE)
     {
       if (pPicture->iFlags & DVP_FLAG_TOP_FIELD_FIRST)
         mDisplayField = FS_TOP;
       else
         mDisplayField = FS_BOT;
     }
-    else
-      deintMethod = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
   }
 
   int timeToDisplay = DVD_TIME_TO_MSEC(pts - iPlayingClock);
