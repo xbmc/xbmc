@@ -515,7 +515,10 @@ bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::VECADDONS& disabledAdd
   if (bAccepted)
   {
     for (const AddonPtr& addon : disabledAddons)
-      CAddonMgr::GetInstance().EnableAddon(addon->ID());
+    {
+      if (std::static_pointer_cast<CPeripheralAddon>(addon)->HasButtonMaps())
+        CAddonMgr::GetInstance().EnableAddon(addon->ID());
+    }
   }
 
   PeripheralAddonPtr dummy;
