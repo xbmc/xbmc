@@ -245,7 +245,7 @@ void CGUIWindowPVRRecordings::UpdateButtons(void)
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, m_bShowDeletedRecordings ? g_localizeStrings.Get(19179) : ""); /* Deleted recordings trash */
 
   const CPVRRecordingsPath path(m_vecItems->GetPath());
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, bGroupRecordings && path.IsValid() ? path.GetDirectoryPath() : "");
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, bGroupRecordings && path.IsValid() ? path.GetUnescapedDirectoryPath() : "");
 }
 
 bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)

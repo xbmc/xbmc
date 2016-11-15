@@ -22,6 +22,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 
 #include "PVRRecordingsPath.h"
 
@@ -98,7 +99,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
     strDirectoryN = StringUtils::Format("%s/", strDirectoryN.c_str());
 
   std::string strTitleN(strTitle);
-  StringUtils::Replace(strTitleN, '/', ' ');
+  strTitleN = CURL::Encode(strTitleN);
 
   std::string strSeasonEpisodeN;
   if ((iSeason > -1 && iEpisode > -1 && (iSeason > 0 || iEpisode > 0)))
@@ -112,14 +113,14 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
   if (!strSubtitle.empty())
   {
     strSubtitleN = StringUtils::Format(" %s", strSubtitle.c_str());
-    StringUtils::Replace(strSubtitleN, '/', ' ');
+    strSubtitleN = CURL::Encode(strSubtitleN);
   }
 
   std::string strChannelNameN;
   if (!strChannelName.empty())
   {
     strChannelNameN = StringUtils::Format(" (%s)", strChannelName.c_str());
-    StringUtils::Replace(strChannelNameN, '/', ' ');
+    strChannelNameN = CURL::Encode(strChannelNameN);
   }
 
   m_directoryPath = StringUtils::Format("%s%s%s%s%s",
@@ -129,7 +130,12 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
   m_path   = StringUtils::Format("pvr://recordings/%s/%s/%s%s", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active", m_directoryPath.c_str(), m_params.c_str());
 }
 
-std::string CPVRRecordingsPath::GetSubDirectoryPath(const std::string &strPath) const
+std::string CPVRRecordingsPath::GetUnescapedDirectoryPath() const
+{
+  return CURL::Decode(m_directoryPath);
+}
+
+std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string &strPath) const
 {
   std::string strReturn;
   std::string strUsePath(TrimSlashes(strPath));
@@ -149,7 +155,7 @@ std::string CPVRRecordingsPath::GetSubDirectoryPath(const std::string &strPath) 
   else
     strReturn = strUsePath.substr(0, iDelimiter);
 
-  return strReturn;
+  return CURL::Decode(strReturn);
 }
 
 const std::string CPVRRecordingsPath::GetTitle() const
@@ -173,11 +179,12 @@ void CPVRRecordingsPath::AppendSegment(const std::string &strSegment)
     return;
 
   std::string strVarSegment(TrimSlashes(strSegment));
+  strVarSegment = CURL::Encode(strVarSegment);
 
   if (!m_directoryPath.empty() && m_directoryPath.back() != '/')
     m_directoryPath.push_back('/');
 
-  m_directoryPath += strSegment;
+  m_directoryPath += strVarSegment;
 
   size_t paramStart = m_path.find(", TV");
   if (paramStart == std::string::npos)
@@ -186,7 +193,7 @@ void CPVRRecordingsPath::AppendSegment(const std::string &strSegment)
       m_path.push_back('/');
 
     // append the segment
-    m_path += strSegment;
+    m_path += strVarSegment;
   }
   else
   {
@@ -194,7 +201,7 @@ void CPVRRecordingsPath::AppendSegment(const std::string &strSegment)
       m_path.insert(paramStart, "/");
 
     // insert the segment between end of current directory path and parameters
-    m_path.insert(paramStart, strSegment);
+    m_path.insert(paramStart, strVarSegment);
   }
 
   m_bRoot = false;
