@@ -75,7 +75,7 @@ public:
   void *GetData(unsigned int samples);
   uint8_t* GetRawData(int &size);
   ICodec *GetCodec() const { return m_codec; }
-  float GetReplayGain();
+  float GetReplayGain(float &peakVal);
 
 private:
   // pcm buffer

@@ -486,7 +486,12 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   }
 
   si->m_stream->SetVolume    (si->m_volume);
-  si->m_stream->SetReplayGain(si->m_decoder.GetReplayGain());
+  float peak = 1.0;
+  float gain = si->m_decoder.GetReplayGain(peak);
+  if (peak == 1.0)
+    si->m_stream->SetReplayGain(gain);
+  else
+    si->m_stream->SetAmplification(gain);
 
   /* if its not the first stream and crossfade is not enabled */
   if (m_currentStream && m_currentStream != si && !m_upcomingCrossfadeMS)
