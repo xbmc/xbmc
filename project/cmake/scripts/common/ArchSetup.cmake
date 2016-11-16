@@ -71,6 +71,15 @@ if(CMAKE_TOOLCHAIN_FILE)
   endif()
 endif()
 
+# While CMAKE_CROSSCOMPILING is set unconditionally if there's a toolchain file,
+# this variable is set if we can execute build artefacts on the host system (for example unit tests).
+if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL CMAKE_SYSTEM_PROCESSOR AND
+   CMAKE_HOST_SYSTEM_NAME STREQUAL CMAKE_SYSTEM_NAME)
+  set(CORE_HOST_IS_TARGET TRUE)
+else()
+  set(CORE_HOST_IS_TARGET FALSE)
+endif()
+
 # Main cpp
 set(CORE_MAIN_SOURCE ${CORE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
 
@@ -88,6 +97,7 @@ message(STATUS "Core system type: ${CORE_SYSTEM_NAME}")
 message(STATUS "Platform: ${PLATFORM}")
 message(STATUS "CPU: ${CPU}, ARCH: ${ARCH}")
 message(STATUS "Cross-Compiling: ${CMAKE_CROSSCOMPILING}")
+message(STATUS "Execute build artefacts on host: ${CORE_HOST_IS_TARGET}")
 
 check_type(string std::u16string HAVE_STD__U16_STRING)
 check_type(string std::u32string HAVE_STD__U32_STRING)
