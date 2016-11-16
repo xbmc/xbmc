@@ -102,8 +102,6 @@
 #define HAS_FILESYSTEM_SMB
 #define HAS_ZEROCONF
 #define HAS_MDNS
-#define HAS_AIRTUNES
-#define HAS_UPNP
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
