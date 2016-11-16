@@ -177,7 +177,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
       return new CDVDInputStreamFFmpeg(finalFileitem);
 
     if (URIUtils::IsProtocol(finalFileitem.GetPath(), "udp"))
-      return CreateInputStream(pPlayer, finalFileitem, scanforextaudio);
+      return new CDVDInputStreamFFmpeg(finalFileitem);
   }
 
   // our file interface handles all these types of streams
