@@ -35,7 +35,8 @@ using namespace GAME;
 #define SKIPPING_DETECTION_MS  200
 
 CGUIConfigurationWizard::CGUIConfigurationWizard() :
-  CThread("GUIConfigurationWizard")
+  CThread("GUIConfigurationWizard"),
+  m_callback(nullptr)
 {
   InitializeState();
 }
