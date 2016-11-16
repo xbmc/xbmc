@@ -37,12 +37,14 @@ void CWin32StorageProvider::Initialize()
   else
     CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
 
+#ifdef HAS_DVD_DRIVE
   // Can be removed once the StorageHandler supports optical media
   VECSOURCES::const_iterator it;
   for(it=vShare.begin();it!=vShare.end();++it)
     if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
       CJobManager::GetInstance().AddJob(new CDetectDisc(it->strPath, false), NULL);
   // remove end
+#endif
 }
 
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
@@ -95,6 +97,7 @@ CDetectDisc::CDetectDisc(const std::string &strPath, const bool bautorun)
 
 bool CDetectDisc::DoWork()
 {
+#ifdef HAS_DVD_DRIVE
   CLog::Log(LOGDEBUG, "%s: Optical media found in drive %s", __FUNCTION__, m_strPath.c_str());
   CMediaSource share;
   share.strPath = m_strPath;
@@ -108,5 +111,6 @@ bool CDetectDisc::DoWork()
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   g_mediaManager.AddAutoSource(share, m_bautorun);
+#endif
   return true;
 }
