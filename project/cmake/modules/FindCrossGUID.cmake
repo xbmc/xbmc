@@ -7,8 +7,13 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
-  if(NOT EXISTS ${CROSSGUID_URL})
+  if(CROSSGUID_URL)
+    get_filename_component(CROSSGUID_URL "${CROSSGUID_URL}" ABSOLUTE)
+  else()
     set(CROSSGUID_URL http://mirrors.kodi.tv/build-deps/sources/crossguid-${CGUID_VER}.tar.gz)
+  endif()
+  if(VERBOSE)
+    message(STATUS "CROSSGUID_URL: ${CROSSGUID_URL}")
   endif()
 
   set(CROSSGUID_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libcrossguid.a)
