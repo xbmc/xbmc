@@ -402,8 +402,16 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   }
   else if (fileItem->HasVideoInfoTag())
   {
-    CGUIDialogVideoInfo::ShowFor(*fileItem.get());
-    return true;
+    auto mediaType = fileItem->GetVideoInfoTag()->m_type;
+    if (mediaType == MediaTypeMovie ||
+        mediaType == MediaTypeTvShow ||
+        mediaType == MediaTypeEpisode ||
+        mediaType == MediaTypeVideo ||
+        mediaType == MediaTypeMusicVideo)
+    {
+      CGUIDialogVideoInfo::ShowFor(*fileItem.get());
+      return true;
+    }
   }
   else if (fileItem->HasMusicInfoTag())
   {
