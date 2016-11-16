@@ -4,17 +4,23 @@ MAKEFLAGS="$1"
 BGPROCESSFILE="$2"
 tools="$3"
 
-cpuCount=1
-if [ $NUMBER_OF_PROCESSORS > 1 ]; then
-  if [ $NUMBER_OF_PROCESSORS > 4 ]; then
-    cpuCount=6
-  else
-    cpuCount=`expr $NUMBER_OF_PROCESSORS + $NUMBER_OF_PROCESSORS / 2`
+if [[ -z $BUILDTHREADS ]]; then
+  cpuCount=1
+  if [ $NUMBER_OF_PROCESSORS > 1 ]; then
+    if [ $NUMBER_OF_PROCESSORS > 4 ]; then
+      cpuCount=6
+    else
+      cpuCount=`expr $NUMBER_OF_PROCESSORS + $NUMBER_OF_PROCESSORS / 2`
+    fi
   fi
+  if [[ ! $cpuCount =~ ^[0-9]+$ ]]; then
+    cpuCount="$(($(nproc)/2))"
+  fi
+else
+  cpuCount=$BUILDTHREADS
 fi
-if [[ ! $cpuCount =~ ^[0-9]+$ ]]; then
-  cpuCount="$(($(nproc)/2))"
-fi
+
+echo "Amount of cpu build jobs $([[ -z $BUILDTHREADS ]] && echo "calculated by system check" || echo "defined by global variable"): '$cpuCount'"
 
 if which tput >/dev/null 2>&1; then
     ncolors=$(tput colors)
