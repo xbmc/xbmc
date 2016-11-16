@@ -136,11 +136,11 @@ do_loaddeps() {
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
   GNUTLS_VER=$(grep "GNUTLS_VER=" $file | sed 's/GNUTLS_VER=//g;s/#.*$//g;/^$/d')
   GITREV=$(git ls-remote $BASE_URL $VERSION | awk '{print $1}')
+  BASE_URL=$BASE_URL/archive
   if [[ -z "$GITREV" ]]; then
     ARCHIVE=$LIBNAME-$(echo "${VERSION}" | sed 's/\//-/g').tar.gz
   else
     ARCHIVE=$LIBNAME-$GITREV.tar.gz
-    BASE_URL=$BASE_URL/archive
   fi
 }
 
