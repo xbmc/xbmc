@@ -206,7 +206,7 @@ void CMMALVideo::dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buff
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p, len %d cmd:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd);
   mmal_buffer_header_release(buffer);
-  CSingleLock lock(m_output_mutex);
+  CSingleLock output_lock(m_output_mutex);
   m_output_cond.notifyAll();
 }
 
@@ -258,7 +258,7 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
         omvb->m_aspect_ratio = m_aspect_ratio;
         omvb->m_encoding = m_dec_output->format->encoding;
         {
-          CSingleLock lock(m_output_mutex);
+          CSingleLock output_lock(m_output_mutex);
           m_output_ready.push(omvb);
           m_output_cond.notifyAll();
         }
@@ -267,7 +267,7 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
     }
     if (buffer->flags & MMAL_BUFFER_HEADER_FLAG_EOS)
     {
-      CSingleLock lock(m_output_mutex);
+      CSingleLock output_lock(m_output_mutex);
       m_got_eos = true;
       m_output_cond.notifyAll();
     }
@@ -694,6 +694,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   XbmcThreads::EndTime delay(500);
   while (!ret && !delay.IsTimePast())
   {
+    CSingleLock output_lock(m_output_mutex);
     unsigned int pics = m_output_ready.size();
     if (m_preroll && (pics >= GetAllowedReferences() || drain))
       m_preroll = false;
@@ -705,7 +706,6 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     {
       // otherwise we busy spin
       lock.Leave();
-      CSingleLock output_lock(m_output_mutex);
       m_output_cond.wait(output_lock, delay.MillisLeft());
       lock.Enter();
     }
@@ -739,7 +739,7 @@ void CMMALVideo::Reset(void)
   {
     CMMALVideoBuffer *buffer = NULL;
     {
-      CSingleLock lock(m_output_mutex);
+      CSingleLock output_lock(m_output_mutex);
       // fetch a output buffer and pop it off the ready list
       if (!m_output_ready.empty())
       {
@@ -782,16 +782,19 @@ void CMMALVideo::SetSpeed(int iSpeed)
 bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   CSingleLock lock(m_sharedSection);
-  if (!m_output_ready.empty())
+  CMMALVideoBuffer *buffer = nullptr;
   {
-    CMMALVideoBuffer *buffer;
-    // fetch a output buffer and pop it off the ready list
+    CSingleLock output_lock(m_output_mutex);
+    if (!m_output_ready.empty())
     {
-      CSingleLock lock(m_output_mutex);
+      // fetch a output buffer and pop it off the ready list
       buffer = m_output_ready.front();
       m_output_ready.pop();
       m_output_cond.notifyAll();
     }
+  }
+  if (buffer)
+  {
     assert(buffer->mmal_buffer);
     memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
     pDvdVideoPicture->format = RENDER_FMT_MMAL;
