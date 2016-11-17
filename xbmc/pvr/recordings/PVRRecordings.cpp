@@ -104,7 +104,7 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
     if (current->IsRadio() != bRadio)
       continue;
 
-    const std::string strCurrent = recParentPath.GetSubDirectoryPath(current->m_strDirectory);
+    const std::string strCurrent(recParentPath.GetUnescapedSubDirectoryPath(current->m_strDirectory));
     if (strCurrent.empty())
       continue;
 
@@ -296,7 +296,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
   {
     // Get the directory structure if in non-flatten mode
     // Deleted view is always flatten. So only for an active view
-    std::string strDirectory(recPath.GetDirectoryPath());
+    std::string strDirectory(recPath.GetUnescapedDirectoryPath());
     if (!recPath.IsDeleted() && bGrouped)
       GetSubDirectories(recPath, &items);
 

@@ -251,7 +251,7 @@
 						<top>60</top>
 						<visible>ListItem.IsFolder + !ListItem.IsParentFolder</visible>
 						<include content="InfoList">
-							<param name="path" value="$INFO[ListItem.Path]/$INFO[ListItem.Label]" />
+							<param name="path" value="$INFO[ListItem.FilenameAndPath]" />
 							<param name="height" value="362" />
 							<param name="width" value="560" />
 							<param name="font" value="font12" />

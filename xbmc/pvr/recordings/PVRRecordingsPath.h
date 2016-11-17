@@ -52,8 +52,8 @@ namespace PVR
     bool IsDeleted() const { return !IsActive(); }
     bool IsRadio() const { return m_bRadio; }
     bool IsTV() const { return !IsRadio(); }
-    std::string GetDirectoryPath() const { return m_directoryPath; }
-    std::string GetSubDirectoryPath(const std::string &strPath) const;
+    std::string GetUnescapedDirectoryPath() const;
+    std::string GetUnescapedSubDirectoryPath(const std::string &strPath) const;
 
     const std::string GetTitle() const;
     void AppendSegment(const std::string &strSegment);

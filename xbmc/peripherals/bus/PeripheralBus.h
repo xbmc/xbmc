@@ -161,6 +161,12 @@ namespace PERIPHERALS
      */
     virtual void ProcessEvents(void) { }
 
+    /*!
+    * \brief Initialize button mapping
+    * \return True if button mapping is enabled for this bus
+    */
+    virtual bool EnableButtonMapping() { return false; }
+
   protected:
     virtual void Process(void);
     virtual bool ScanForDevices(void);
@@ -185,4 +191,5 @@ namespace PERIPHERALS
     CEvent                     m_triggerEvent;
   };
   using PeripheralBusPtr = std::shared_ptr<CPeripheralBus>;
+  using PeripheralBusVector = std::vector<PeripheralBusPtr>;
 }

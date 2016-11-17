@@ -138,7 +138,7 @@ public:
   std::string GetSkinPath(const std::string& file, RESOLUTION_INFO *res = NULL, const std::string& baseDir = "") const;
 
   /*! \brief Return whether skin debugging is enabled
-   \return true if skin debugging (set via <debugging>true</debugging> in skin.xml) is enabled.
+   \return true if skin debugging (set via <debugging>true</debugging> in addon.xml) is enabled.
    */
   bool IsDebugging() const { return m_debugging; };
 

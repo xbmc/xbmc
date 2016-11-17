@@ -531,7 +531,6 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
   XMLUtils::SetString(album,        "type", strType);
   XMLUtils::SetString(album, "releasedate", m_strDateOfRelease);
   XMLUtils::SetString(album,       "label", strLabel);
-  XMLUtils::SetString(album,        "type", strType);
   if (!thumbURL.m_xml.empty())
   {
     CXBMCTinyXML doc;

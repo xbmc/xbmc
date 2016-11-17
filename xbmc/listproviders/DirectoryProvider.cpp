@@ -322,6 +322,8 @@ void CDirectoryProvider::Reset(bool immediately /* = false */)
   if (m_jobID)
     CJobManager::GetInstance().CancelJob(m_jobID);
   m_jobID = 0;
+  // Make sure job is always fired on start
+  m_updateState = INVALIDATED;
   // reset only if this is going to be destructed
   if (immediately)
   {

@@ -108,7 +108,6 @@ struct ReplayGainSettings
   int iPreAmp;
   int iNoGainPreAmp;
   int iType;
-  bool bAvoidClipping;
 };
 
 class CBackgroundPlayer : public CThread
