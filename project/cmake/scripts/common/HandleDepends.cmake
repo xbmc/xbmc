@@ -4,7 +4,8 @@ include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/CheckTargetPlatform.cmak
 function(add_addon_depends addon searchpath)
   # input: string addon string searchpath
 
-  set(OUTPUT_DIR ${DEPENDS_PATH})
+  set(OUTPUT_DIR ${ADDON_DEPENDS_PATH})
+  # look for platform-specific dependencies
   file(GLOB_RECURSE cmake_input_files ${searchpath}/${CORE_SYSTEM_NAME}/*.txt)
   file(GLOB_RECURSE cmake_input_files2 ${searchpath}/common/*.txt)
   list(APPEND cmake_input_files ${cmake_input_files2})

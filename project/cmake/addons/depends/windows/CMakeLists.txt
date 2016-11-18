@@ -9,13 +9,13 @@ endif()
 
 include(ExternalProject)
 
-if(NOT DEPENDS_PATH)
-  message(FATAL_ERROR "DEPENDS_PATH (${DEPENDS_PATH}) is not a valid target directory.")
+if(NOT ADDON_DEPENDS_PATH)
+  message(FATAL_ERROR "ADDON_DEPENDS_PATH (${ADDON_DEPENDS_PATH}) is not a valid target directory.")
 else()
-  file(TO_CMAKE_PATH "${DEPENDS_PATH}" DEPENDS_PATH)
+  file(TO_CMAKE_PATH "${ADDON_DEPENDS_PATH}" ADDON_DEPENDS_PATH)
 endif()
-get_filename_component(DEPENDS_PATH "${DEPENDS_PATH}" ABSOLUTE)
-list(APPEND CMAKE_PREFIX_PATH ${DEPENDS_PATH})
+get_filename_component(ADDON_DEPENDS_PATH "${ADDON_DEPENDS_PATH}" ABSOLUTE)
+list(APPEND CMAKE_PREFIX_PATH ${ADDON_DEPENDS_PATH})
 
 if(NOT DEPENDS_TO_BUILD)
   set(DEPENDS_TO_BUILD "all")
@@ -30,7 +30,7 @@ function(add_internal id url inputfile)
                       INSTALL_COMMAND ${CMAKE_COMMAND}
                                       -DINPUTDIR=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
                                       -DINPUTFILE=${inputfile}
-                                      -DDESTDIR=${DEPENDS_PATH}
+                                      -DDESTDIR=${ADDON_DEPENDS_PATH}
                                       -P ${PROJECT_SOURCE_DIR}/Install.cmake
                      )
 endfunction()

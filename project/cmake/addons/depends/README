@@ -36,7 +36,7 @@ specific paths:
     lower-case (defaults to lowercase(CMAKE_SYSTEM_NAME)).
   * CORE_SOURCE_DIR points to the root directory of the project (default is the
     absolute representation of ../../.. starting from this directory).
-  * DEPENDS_PATH points to the directory where the built dependencies
+  * ADDON_DEPENDS_PATH points to the directory where the built dependencies
     (their include and library file) will be installed to.
   * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
     (defaults to empty).
