@@ -1827,7 +1827,7 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     m_last_pts = m_cur_pts;
     m_cur_pts = decode_pts;
   }
-  if ((rtn & VC_PICTURE)==0 || timesize < 1.0)
+  if (((rtn & VC_PICTURE)==0 && timesize < 2.0) || timesize < 1.0)
    rtn |= VC_BUFFER;
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
