@@ -46,14 +46,14 @@ namespace PERIPHERALS
   class CEventRateHandle
   {
   public:
-    CEventRateHandle(float rateHz, IEventRateCallback* callback);
+    CEventRateHandle(double rateHz, IEventRateCallback* callback);
 
     ~CEventRateHandle(void) { }
 
     /*!
      * \brief Get the rate this handle represents
      */
-    float GetRateHz(void) const { return m_rateHz; }
+    double GetRateHz(void) const { return m_rateHz; }
 
     /*!
      * \brief Release the handle
@@ -61,7 +61,7 @@ namespace PERIPHERALS
     void Release(void);
 
   private:
-    const float               m_rateHz;
+    const double              m_rateHz;
     IEventRateCallback* const m_callback;
   };
 }
