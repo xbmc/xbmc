@@ -62,7 +62,7 @@ public:
 private:
 
   int m_iRenderBuffer;
-  static const int m_numRenderBuffers = 3;
+  static const int m_numRenderBuffers = 4;
 
   struct BUFFER
   {
