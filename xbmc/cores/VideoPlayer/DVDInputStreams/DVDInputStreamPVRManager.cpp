@@ -234,7 +234,6 @@ void CDVDInputStreamPVRManager::Close()
 
   CDVDInputStream::Close();
 
-  m_pPlayer         = NULL;
   m_pOtherStream    = NULL;
   m_eof             = true;
 
