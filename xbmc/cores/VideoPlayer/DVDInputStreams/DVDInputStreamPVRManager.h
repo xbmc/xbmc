@@ -107,7 +107,7 @@ public:
   virtual void EnableStream(int iStreamId, bool enable) override {};
 
 protected:
-  bool CloseAndOpen(const char* strFile);
+  bool CloseAndOpen(const std::string& strFile);
   void UpdateStreamMap();
   std::string ThisIsAHack(const std::string& pathFile);
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);

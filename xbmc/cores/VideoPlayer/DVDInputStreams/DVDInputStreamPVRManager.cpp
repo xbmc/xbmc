@@ -317,7 +317,7 @@ bool CDVDInputStreamPVRManager::NextChannel(bool preview/* = false*/)
     CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
     CFileItemPtr item(g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelUp(channel));
     if (item)
-      return CloseAndOpen(item->GetPath().c_str());
+      return CloseAndOpen(item->GetPath());
   }
   else if (!m_isRecording)
     return g_PVRManager.ChannelUp(&newchannel, preview);
@@ -333,7 +333,7 @@ bool CDVDInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
     CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
     CFileItemPtr item(g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelDown(channel));
     if (item)
-      return CloseAndOpen(item->GetPath().c_str());
+      return CloseAndOpen(item->GetPath());
   }
   else if (!m_isRecording)
     return g_PVRManager.ChannelDown(&newchannel, preview);
@@ -350,7 +350,7 @@ bool CDVDInputStreamPVRManager::SelectChannelByNumber(unsigned int iChannelNumbe
 
   if (IsOtherStreamHack())
   {
-    return CloseAndOpen(item->GetPath().c_str());
+    return CloseAndOpen(item->GetPath());
   }
   else if (!m_isRecording)
   {
@@ -369,7 +369,7 @@ bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannelPtr &channel)
   if (IsOtherStreamHack())
   {
     CFileItem item(channel);
-    return CloseAndOpen(item.GetPath().c_str());
+    return CloseAndOpen(item.GetPath());
   }
   else if (!m_isRecording)
   {
@@ -445,7 +445,7 @@ std::string CDVDInputStreamPVRManager::GetInputFormat()
   return "";
 }
 
-bool CDVDInputStreamPVRManager::CloseAndOpen(const char* strFile)
+bool CDVDInputStreamPVRManager::CloseAndOpen(const std::string& strFile)
 {
   Close();
 
