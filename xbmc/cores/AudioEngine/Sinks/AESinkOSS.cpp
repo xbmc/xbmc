@@ -479,17 +479,12 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     ||  info.m_displayName.find("DisplayPort") != std::string::npos)
     {
       info.m_deviceType = AE_DEVTYPE_HDMI;
-      info.m_dataFormats.push_back(AE_FMT_AC3);
-      info.m_dataFormats.push_back(AE_FMT_DTS);
-      info.m_dataFormats.push_back(AE_FMT_EAC3);
-      info.m_dataFormats.push_back(AE_FMT_TRUEHD);
-      info.m_dataFormats.push_back(AE_FMT_DTSHD);
+      info.m_dataFormats.push_back(AE_FMT_RAW);
     }
     else if (info.m_displayName.find("Digital") != std::string::npos)
     {
       info.m_deviceType = AE_DEVTYPE_IEC958;
-      info.m_dataFormats.push_back(AE_FMT_AC3);
-      info.m_dataFormats.push_back(AE_FMT_DTS);
+      info.m_dataFormats.push_back(AE_FMT_RAW);
     }
     else
     {
