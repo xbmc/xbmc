@@ -638,6 +638,20 @@ int CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     else
       return ret;
   }
+  else if (m_pFilterGraph && !m_filterEof)
+  {
+    int ret = FilterProcess(nullptr);
+    if (ret & VC_PICTURE)
+    {
+      if (!SetPictureParams(pDvdVideoPicture))
+        return VC_ERROR;
+      return VC_PICTURE;
+    }
+    else if (ret & VC_BUFFER)
+      ;
+    else
+      return ret;
+  }
 
   // process ffmpeg
   if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
@@ -662,128 +676,6 @@ int CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (ret == AVERROR_EOF)
   {
     // next drain hw accel or filter
-    av_frame_unref(m_pDecodedFrame);
-  }
-  else if (ret == AVERROR(EAGAIN))
-  {
-    return VC_BUFFER;
-  }
-  else if (ret)
-  {
-    CLog::Log(LOGERROR, "%s - avcodec_receive_frame returned failure", __FUNCTION__);
-    return VC_ERROR;
-  }
-
-  // here we got a frame
-  if (m_pDecodedFrame->buf[0])
-  {
-    int64_t framePTS = av_frame_get_best_effort_timestamp(m_pDecodedFrame);
-
-    if (m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
-    {
-      if (m_dropCtrl.m_state == CDropControl::VALID &&
-          m_dropCtrl.m_lastPTS != AV_NOPTS_VALUE &&
-          framePTS != AV_NOPTS_VALUE &&
-          framePTS > (m_dropCtrl.m_lastPTS + m_dropCtrl.m_diffPTS * 1.5))
-      {
-        m_droppedFrames++;
-        if (m_interlaced)
-          m_droppedFrames++;
-      }
-    }
-    m_dropCtrl.Process(framePTS, m_pCodecContext->skip_frame > AVDISCARD_DEFAULT);
-
-    if (m_pDecodedFrame->key_frame)
-    {
-      m_started = true;
-      m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
-    }
-    if (m_pDecodedFrame->interlaced_frame)
-      m_interlaced = true;
-    else
-      m_interlaced = false;
-
-    if (!m_started)
-    {
-      av_frame_unref(m_pDecodedFrame);
-      return VC_BUFFER;
-    }
-
-    // put a limit on convergence count to avoid huge mem usage on streams without keyframes
-    if (m_iLastKeyframe > 300)
-      m_iLastKeyframe = 300;
-
-    // push the frame to hw decoder for further processing
-    if (m_pHardware)
-    {
-      av_frame_unref(m_pFrame);
-      av_frame_move_ref(m_pFrame, m_pDecodedFrame);
-      int ret = m_pHardware->Decode(m_pCodecContext, m_pFrame);
-      if (ret & VC_FLUSHED)
-      {
-        Reset();
-        return ret;
-      }
-      else if (ret & VC_PICTURE)
-      {
-        if (m_pHardware->GetPicture(m_pCodecContext, pDvdVideoPicture))
-          return VC_PICTURE;
-        else
-          return VC_ERROR;
-      }
-
-      ret &= ~VC_PICTURE;
-      return ret;
-    }
-    // process filters for sw decoding
-    else
-    {
-      SetFilters();
-
-      bool need_scale = std::find( m_formats.begin(),
-                                  m_formats.end(),
-                                  m_pCodecContext->pix_fmt) == m_formats.end();
-
-      bool need_reopen = false;
-      if (m_filters != m_filters_next)
-        need_reopen = true;
-
-      if (!m_filters_next.empty() && m_filterEof)
-        need_reopen = true;
-
-      if (m_pFilterIn)
-      {
-        if (m_pFilterIn->outputs[0]->format != m_pCodecContext->pix_fmt ||
-            m_pFilterIn->outputs[0]->w != m_pCodecContext->width ||
-            m_pFilterIn->outputs[0]->h != m_pCodecContext->height)
-          need_reopen = true;
-      }
-
-      // try to setup new filters
-      if (need_reopen || (need_scale && m_pFilterGraph == nullptr))
-      {
-        m_filters = m_filters_next;
-
-        if (FilterOpen(m_filters, need_scale) < 0)
-          FilterClose();
-      }
-
-      if (m_pFilterGraph && !m_filterEof)
-      {
-        int ret = FilterProcess(m_pDecodedFrame);
-        if (!(ret & VC_PICTURE))
-          return ret;
-      }
-      else
-      {
-        av_frame_unref(m_pFrame);
-        av_frame_move_ref(m_pFrame, m_pDecodedFrame);
-      }
-    }
-  }
-  // drain hw accelerators and filters
-  else
-  {
     if (m_pHardware)
     {
       int flags = m_codecControlFlags;
@@ -802,7 +694,14 @@ int CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     else if (m_pFilterGraph && !m_filterEof)
     {
       int ret = FilterProcess(nullptr);
-      if (!(ret & VC_PICTURE))
+      if (ret & VC_PICTURE)
+      {
+        if (!SetPictureParams(pDvdVideoPicture))
+          return VC_ERROR;
+        else
+          return VC_PICTURE;
+      }
+      else
       {
         m_eof = true;
         CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::GetPicture - eof filter");
@@ -816,7 +715,131 @@ int CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       return VC_EOF;
     }
   }
+  else if (ret == AVERROR(EAGAIN))
+  {
+    return VC_BUFFER;
+  }
+  else if (ret)
+  {
+    CLog::Log(LOGERROR, "%s - avcodec_receive_frame returned failure", __FUNCTION__);
+    return VC_ERROR;
+  }
 
+  // here we got a frame
+  int64_t framePTS = av_frame_get_best_effort_timestamp(m_pDecodedFrame);
+
+  if (m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
+  {
+    if (m_dropCtrl.m_state == CDropControl::VALID &&
+        m_dropCtrl.m_lastPTS != AV_NOPTS_VALUE &&
+        framePTS != AV_NOPTS_VALUE &&
+        framePTS > (m_dropCtrl.m_lastPTS + m_dropCtrl.m_diffPTS * 1.5))
+    {
+      m_droppedFrames++;
+      if (m_interlaced)
+        m_droppedFrames++;
+    }
+  }
+  m_dropCtrl.Process(framePTS, m_pCodecContext->skip_frame > AVDISCARD_DEFAULT);
+
+  if (m_pDecodedFrame->key_frame)
+  {
+    m_started = true;
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
+  }
+  if (m_pDecodedFrame->interlaced_frame)
+    m_interlaced = true;
+  else
+    m_interlaced = false;
+
+  if (!m_started)
+  {
+    av_frame_unref(m_pDecodedFrame);
+    return VC_BUFFER;
+  }
+
+  // put a limit on convergence count to avoid huge mem usage on streams without keyframes
+  if (m_iLastKeyframe > 300)
+    m_iLastKeyframe = 300;
+
+  // push the frame to hw decoder for further processing
+  if (m_pHardware)
+  {
+    av_frame_unref(m_pFrame);
+    av_frame_move_ref(m_pFrame, m_pDecodedFrame);
+    int ret = m_pHardware->Decode(m_pCodecContext, m_pFrame);
+    if (ret & VC_FLUSHED)
+    {
+      Reset();
+      return ret;
+    }
+    else if (ret & VC_PICTURE)
+    {
+      if (m_pHardware->GetPicture(m_pCodecContext, pDvdVideoPicture))
+        return VC_PICTURE;
+      else
+        return VC_ERROR;
+    }
+
+    ret &= ~VC_PICTURE;
+    return ret;
+  }
+  // process filters for sw decoding
+  else
+  {
+    SetFilters();
+
+    bool need_scale = std::find( m_formats.begin(),
+                                m_formats.end(),
+                                m_pCodecContext->pix_fmt) == m_formats.end();
+
+    bool need_reopen = false;
+    if (m_filters != m_filters_next)
+      need_reopen = true;
+
+    if (!m_filters_next.empty() && m_filterEof)
+      need_reopen = true;
+
+    if (m_pFilterIn)
+    {
+      if (m_pFilterIn->outputs[0]->format != m_pCodecContext->pix_fmt ||
+          m_pFilterIn->outputs[0]->w != m_pCodecContext->width ||
+          m_pFilterIn->outputs[0]->h != m_pCodecContext->height)
+        need_reopen = true;
+    }
+
+    // try to setup new filters
+    if (need_reopen || (need_scale && m_pFilterGraph == nullptr))
+    {
+      m_filters = m_filters_next;
+
+      if (FilterOpen(m_filters, need_scale) < 0)
+        FilterClose();
+    }
+
+    if (m_pFilterGraph && !m_filterEof)
+    {
+      int ret = FilterProcess(m_pDecodedFrame);
+      if (!(ret & VC_PICTURE))
+        return ret;
+    }
+    else
+    {
+      av_frame_unref(m_pFrame);
+      av_frame_move_ref(m_pFrame, m_pDecodedFrame);
+    }
+
+    if (!SetPictureParams(pDvdVideoPicture))
+      return VC_ERROR;
+    else
+      return VC_PICTURE;
+  }
+
+  return 0;
+}
+
+bool CDVDVideoCodecFFmpeg::SetPictureParams(DVDVideoPicture* pDvdVideoPicture)
+{
   if (!GetPictureCommon(pDvdVideoPicture))
     return false;
 
@@ -840,7 +863,7 @@ int CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       m_postProc.GetPicture(pDvdVideoPicture);
   }
 
-  return VC_PICTURE;
+  return true;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()

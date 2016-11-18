@@ -540,8 +540,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
   {
     bool hasTimestamp = true;
 
-    if (m_picture.iDuration == 0.0)
-      m_picture.iDuration = frametime;
+    m_picture.iDuration = frametime;
 
     // validate picture timing,
     // if both dts/pts invalid, use pts calulated from picture.iDuration
