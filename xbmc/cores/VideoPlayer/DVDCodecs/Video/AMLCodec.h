@@ -24,8 +24,6 @@
 #include "cores/IPlayer.h"
 #include "guilib/Geometry.h"
 #include "rendering/RenderSystem.h"
-#include "threads/Thread.h"
-#include <deque>
 
 typedef struct am_private_t am_private_t;
 
@@ -34,7 +32,7 @@ class DllLibAmCodec;
 class PosixFile;
 typedef std::shared_ptr<PosixFile> PosixFilePtr;
 
-class CAMLCodec : public CThread
+class CAMLCodec
 {
 public:
   CAMLCodec();
@@ -51,11 +49,13 @@ public:
   int           GetDataSize();
   double        GetTimeSize();
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
+  void          SetVideoRate(int videoRate);
   int64_t       GetCurPts() const { return m_cur_pts; }
   int       	GetOMXPts() const { return static_cast<int>(m_cur_pts - m_start_pts); }
-
-protected:
-  virtual void  Process();
+  static float  OMXPtsToSeconds(int omxpts);
+  static int    OMXDurationToNs(int duration);
+  int           GetAmlDuration() const;
+  int           PollFrame();
 
 private:
   void          ShowMainVideo(const bool show);
@@ -73,16 +73,15 @@ private:
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;
+  bool             m_ptsIs64us;
   am_private_t    *am_private;
   CDVDStreamInfo   m_hints;
   volatile int     m_speed;
-  volatile int64_t m_1st_pts;
   volatile int64_t m_cur_pts;
-  volatile double  m_timesize;
   volatile int64_t m_vbufsize;
   int64_t          m_start_dts;
   int64_t          m_start_pts;
-  CEvent           m_ready_event;
+  int64_t          m_last_pts;
 
   CRect            m_dst_rect;
   CRect            m_display_rect;
@@ -94,8 +93,15 @@ private:
   int              m_contrast;
   int              m_brightness;
 
+  enum PREFILLSTATE
+  {
+    PREFILL_STATE_FILLING,
+    PREFILL_STATE_FILLED
+  };
+  PREFILLSTATE     m_prefill_state;
+
+
   PosixFilePtr     m_amlVideoFile;
   std::string      m_defaultVfmMap;
-  std::deque<int64_t>  m_ptsQueue;
   CCriticalSection m_ptsQueueMutex;
 };
