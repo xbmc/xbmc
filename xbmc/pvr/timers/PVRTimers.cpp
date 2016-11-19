@@ -830,6 +830,29 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) 
   return CPVRTimerInfoTagPtr();
 }
 
+bool CPVRTimers::HasRecordingTimerForRecording(const CPVRRecording &recording) const
+{
+  CSingleLock lock(m_critSection);
+
+  for (const auto &tagsEntry : m_tags)
+  {
+    for (const auto &timersEntry : *tagsEntry.second)
+    {
+      if (timersEntry->IsRecording() &&
+          !timersEntry->IsTimerRule() &&
+          timersEntry->m_iClientId == recording.ClientID() &&
+          timersEntry->ChannelTag()->UniqueID() == recording.ChannelUid() &&
+          timersEntry->StartAsUTC() <= recording.RecordingTimeAsUTC() &&
+          timersEntry->EndAsUTC() >= (recording.RecordingTimeAsUTC() + recording.m_duration))
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 CPVRTimerInfoTagPtr CPVRTimers::GetTimerRule(const CPVRTimerInfoTagPtr &timer) const
 {
   if (timer)

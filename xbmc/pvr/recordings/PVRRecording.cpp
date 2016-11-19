@@ -486,24 +486,8 @@ int CPVRRecording::ClientID(void) const
 bool CPVRRecording::IsInProgress() const
 {
   // Note: It is not enough to only check recording time and duration against 'now'.
-  //       This can only be a first cheap quick check. Only the state of the related
-  //       timer is a safe indicator that the backend actually is recording this.
+  //       Only the state of the related timer is a safe indicator that the backend
+  //       actually is recording this.
 
-  const CDateTime now(CDateTime::GetUTCDateTime());
-  if (m_recordingTime <= now && m_recordingTime + m_duration >= now)
-  {
-    const std::vector<CFileItemPtr> timers(g_PVRTimers->GetActiveRecordings());
-    for (const auto& timerItem : timers)
-    {
-      const CPVRTimerInfoTagPtr timer(timerItem->GetPVRTimerInfoTag());
-      if (timer->m_iClientId == m_iClientId &&
-          timer->ChannelTag()->UniqueID() == m_iChannelUid &&
-          timer->StartAsUTC() <= m_recordingTime &&
-          timer->EndAsUTC() >= m_recordingTime + m_duration)
-      {
-        return true;
-      }
-    }
-  }
-  return false;
+  return g_PVRTimers->HasRecordingTimerForRecording(*this);
 }
