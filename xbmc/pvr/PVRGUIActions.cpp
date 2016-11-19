@@ -34,6 +34,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
@@ -60,29 +61,11 @@ namespace PVR
 
   bool CPVRGUIActions::ShowEPGInfo(const CFileItemPtr &item) const
   {
-    CEpgInfoTagPtr epgTag;
-    CPVRChannelPtr channel;
-
-    if (item->IsEPG())
-    {
-      epgTag  = item->GetEPGInfoTag();
-      channel = epgTag->ChannelTag();
-    }
-    else if (item->IsPVRChannel())
-    {
-      channel = item->GetPVRChannelInfoTag();
-      epgTag  = channel->GetEPGNow();
-    }
-    else if (item->IsPVRTimer())
-    {
-      epgTag = item->GetPVRTimerInfoTag()->GetEpgInfoTag();
-      if (epgTag && epgTag->HasPVRChannel())
-        channel = epgTag->ChannelTag();
-    }
-
+    const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
     if (channel && !g_PVRManager.CheckParentalLock(channel))
       return false;
 
+    const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
     if (!epgTag)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no epg tag!", __FUNCTION__);
@@ -123,21 +106,7 @@ namespace PVR
 
   bool CPVRGUIActions::FindSimilar(const CFileItemPtr &item, CGUIWindow *windowToClose /* = nullptr */) const
   {
-    bool bRadio(false);
-
-    if (item->IsPVRChannel())
-    {
-      bRadio = item->GetPVRChannelInfoTag()->IsRadio();
-    }
-    else if (item->IsEPG())
-    {
-      const CPVRChannelPtr channel(item->GetEPGInfoTag()->ChannelTag());
-      bRadio = channel && channel->IsRadio();
-    }
-    else if (item->IsPVRRecording())
-    {
-      bRadio = item->GetPVRRecordingInfoTag()->IsRadio();
-    }
+    const bool bRadio(CPVRItem(item).IsRadio());
 
     int windowSearchId = bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
     CGUIWindowPVRSearch *windowSearch = dynamic_cast<CGUIWindowPVRSearch*>(g_windowManager.GetWindow(windowSearchId));
@@ -192,20 +161,7 @@ namespace PVR
 
   bool CPVRGUIActions::AddTimer(const CFileItemPtr &item, bool bCreateRule, bool bShowTimerSettings) const
   {
-    CEpgInfoTagPtr epgTag;
-    CPVRChannelPtr channel;
-
-    if (item->IsEPG())
-    {
-      epgTag  = item->GetEPGInfoTag();
-      channel = epgTag->ChannelTag();
-    }
-    else if (item->IsPVRChannel())
-    {
-      channel = item->GetPVRChannelInfoTag();
-      epgTag  = channel->GetEPGNow();
-    }
-
+    const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
     if (!channel)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no channel!", __FUNCTION__);
@@ -215,6 +171,7 @@ namespace PVR
     if (!g_PVRManager.CheckParentalLock(channel))
       return false;
 
+    const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
     if (!epgTag && bCreateRule)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no epg tag!", __FUNCTION__);
@@ -253,7 +210,7 @@ namespace PVR
     if (!item->HasEPGInfoTag())
       return false;
 
-    CPVRTimerInfoTagPtr timer(item->GetEPGInfoTag()->Timer());
+    const CPVRTimerInfoTagPtr timer(CPVRItem(item).GetTimerInfoTag());
     if (timer)
     {
       if (timer->IsRecording())
@@ -270,7 +227,7 @@ namespace PVR
     if (!item->HasPVRTimerInfoTag())
       return false;
 
-    CPVRTimerInfoTagPtr timer(item->GetPVRTimerInfoTag());
+    const CPVRTimerInfoTagPtr timer(item->GetPVRTimerInfoTag());
     if (timer->m_state == PVR_TIMER_STATE_DISABLED)
       timer->m_state = PVR_TIMER_STATE_SCHEDULED;
     else
@@ -281,17 +238,7 @@ namespace PVR
 
   bool CPVRGUIActions::EditTimer(const CFileItemPtr &item) const
   {
-    CPVRTimerInfoTagPtr timer;
-
-    if (item->IsPVRTimer())
-    {
-      timer = item->GetPVRTimerInfoTag();
-    }
-    else if (item->IsEPG())
-    {
-      timer = item->GetEPGInfoTag()->Timer();
-    }
-
+    const CPVRTimerInfoTagPtr timer(CPVRItem(item).GetTimerInfoTag());
     if (!timer)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no timer!", __FUNCTION__);
@@ -373,26 +320,7 @@ namespace PVR
 
   bool CPVRGUIActions::DeleteTimer(const CFileItemPtr &item, bool bIsRecording, bool bDeleteRule) const
   {
-    CPVRTimerInfoTagPtr timer;
-
-    if (item->IsPVRTimer())
-    {
-      timer = item->GetPVRTimerInfoTag();
-    }
-    else if (item->IsEPG())
-    {
-      timer = item->GetEPGInfoTag()->Timer();
-    }
-    else if (item->IsPVRChannel())
-    {
-      const CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
-      if (epgTag)
-        timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asychrounously
-
-      if (!timer)
-        timer = g_PVRTimers->GetActiveTimerForChannel(item->GetPVRChannelInfoTag()); // more expensive, but reliable and works even for channels with no epg data
-    }
-
+    CPVRTimerInfoTagPtr timer(CPVRItem(item).GetTimerInfoTag());
     if (!timer)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no timer!", __FUNCTION__);
@@ -556,14 +484,7 @@ namespace PVR
   {
     std::string resumeString;
 
-    CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-    if (!recording)
-    {
-      const CEpgInfoTagPtr epgTag(item.GetEPGInfoTag());
-      if (epgTag)
-        recording = epgTag->Recording();
-    }
-
+    const CPVRRecordingPtr recording(CPVRItem(CFileItemPtr(new CFileItem(item))).GetRecording());
     if (recording && !recording->IsDeleted())
     {
       // First try to find the resume position on the back-end, if that fails use video database
@@ -628,13 +549,9 @@ namespace PVR
 
   bool CPVRGUIActions::PlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const
   {
-    CPVRRecordingPtr recording(item->GetPVRRecordingInfoTag());
+    const CPVRRecordingPtr recording(CPVRItem(item).GetRecording());
     if (!recording)
-    {
-      const CEpgInfoTagPtr epgTag(item->GetEPGInfoTag());
-      if (epgTag)
-        recording = epgTag->Recording();
-    }
+      return false;
 
     std::string stream = recording->m_strStreamURL;
     if (stream.empty())
@@ -705,14 +622,7 @@ namespace PVR
     if (item->m_bIsFolder)
       return false;
 
-    CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
-    if (!channel)
-    {
-      const CEpgInfoTagPtr epgTag(item->GetEPGInfoTag());
-      if (epgTag)
-        channel = epgTag->ChannelTag();
-    }
-
+    const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
     if ((channel && g_PVRManager.IsPlayingChannel(channel)) ||
         (channel && channel->HasRecording() && g_PVRManager.IsPlayingRecording(channel->GetRecording())))
     {

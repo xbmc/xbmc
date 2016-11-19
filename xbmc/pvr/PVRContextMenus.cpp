@@ -79,6 +79,20 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(ShowAudioDSPSettings);
     DECL_STATICCONTEXTMENUITEM(PVRClientMenuHook);
 
+    CPVRTimerInfoTagPtr GetTimerInfoTagFromItem(const CFileItem &item)
+    {
+      CPVRTimerInfoTagPtr timer;
+
+      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      if (epg)
+        timer = epg->Timer();
+
+      if (!timer)
+        timer = item.GetPVRTimerInfoTag();
+
+      return timer;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////
     // Show information (epg, recording)
 
@@ -326,19 +340,11 @@ namespace PVR
 
     bool StopRecording::IsVisible(const CFileItem &item) const
     {
-      CPVRTimerInfoTagPtr timer;
-
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
         return channel->IsRecording();
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        timer = epg->Timer();
-
-      if (!timer)
-        timer = item.GetPVRTimerInfoTag();
-
+      const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
         return timer->IsRecording();
 
@@ -458,15 +464,7 @@ namespace PVR
 
     bool EditTimerRule::IsVisible(const CFileItem &item) const
     {
-      CPVRTimerInfoTagPtr timer;
-
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        timer = epg->Timer();
-
-      if (!timer)
-        timer = item.GetPVRTimerInfoTag();
-
+      const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
         return timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
 
@@ -483,15 +481,7 @@ namespace PVR
 
     bool DeleteTimerRule::IsVisible(const CFileItem &item) const
     {
-      CPVRTimerInfoTagPtr timer;
-
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        timer = epg->Timer();
-
-      if (!timer)
-        timer = item.GetPVRTimerInfoTag();
-
+      const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
         return timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
 
@@ -512,20 +502,13 @@ namespace PVR
 
     std::string EditTimer::GetLabel(const CFileItem &item) const
     {
-      CPVRTimerInfoTagPtr timer;
-
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        timer = epg->Timer();
-
-      if (!timer)
-        timer = item.GetPVRTimerInfoTag();
-
+      const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
       if (timer)
       {
         const CPVRTimerTypePtr timerType(timer->GetTimerType());
         if (timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
         {
+          const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
           if (epg)
             return g_localizeStrings.Get(19242); /* Edit timer */
           else
@@ -538,16 +521,8 @@ namespace PVR
 
     bool EditTimer::IsVisible(const CFileItem &item) const
     {
-      CPVRTimerInfoTagPtr timer;
-
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        timer = epg->Timer();
-
-      if (!timer)
-        timer = item.GetPVRTimerInfoTag();
-
-      if (timer && (!epg || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)))
+      const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
+      if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)))
       {
         const CPVRTimerTypePtr timerType(timer->GetTimerType());
         return timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT;
@@ -599,16 +574,8 @@ namespace PVR
 
     bool DeleteTimer::IsVisible(const CFileItem &item) const
     {
-      CPVRTimerInfoTagPtr timer;
-
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        timer = epg->Timer();
-
-      if (!timer)
-        timer = item.GetPVRTimerInfoTag();
-
-      if (timer && (!epg || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording())
+      const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
+      if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording())
       {
         const CPVRTimerTypePtr timerType(timer->GetTimerType());
         return  timerType && !timerType->IsReadOnly();

@@ -148,6 +148,7 @@
 		2AC7EB601C34893700BDAA95 /* PVRRecordingsPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB5F1C34893700BDAA95 /* PVRRecordingsPath.cpp */; };
 		2AC7EB611C34893700BDAA95 /* PVRRecordingsPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7EB5F1C34893700BDAA95 /* PVRRecordingsPath.cpp */; };
 		2AE16B841D60DBC4005C20EB /* PVRContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AE16B821D60DBC4005C20EB /* PVRContextMenus.cpp */; };
+		2AF0B0971DE1025E005CA6BA /* PVRItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AF0B0951DE1025E005CA6BA /* PVRItem.cpp */; };
 		2AFBB94C1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */; };
 		2AFBB94D1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */; };
 		2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2F4564D31970129A00396109 /* GUIFontCache.cpp */; };
@@ -2697,6 +2698,8 @@
 		2AC7EB5F1C34893700BDAA95 /* PVRRecordingsPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRRecordingsPath.cpp; sourceTree = "<group>"; };
 		2AE16B821D60DBC4005C20EB /* PVRContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRContextMenus.cpp; sourceTree = "<group>"; };
 		2AE16B831D60DBC4005C20EB /* PVRContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRContextMenus.h; sourceTree = "<group>"; };
+		2AF0B0951DE1025E005CA6BA /* PVRItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRItem.cpp; sourceTree = "<group>"; };
+		2AF0B0961DE1025E005CA6BA /* PVRItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRItem.h; sourceTree = "<group>"; };
 		2AFB819A1D81D1A2002B82A2 /* PVREvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVREvent.h; sourceTree = "<group>"; };
 		2AFBB94A1CC6088000BAB340 /* GUIEPGGridContainerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIEPGGridContainerModel.h; sourceTree = "<group>"; };
 		2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIEPGGridContainerModel.cpp; sourceTree = "<group>"; };
@@ -7427,6 +7430,8 @@
 				2ABCFF7C1D998AA70067B4A1 /* PVRGUIActions.h */,
 				C848289D156CFCD8005A996F /* PVRGUIInfo.cpp */,
 				C848289E156CFCD8005A996F /* PVRGUIInfo.h */,
+				2AF0B0951DE1025E005CA6BA /* PVRItem.cpp */,
+				2AF0B0961DE1025E005CA6BA /* PVRItem.h */,
 				C848289F156CFCD8005A996F /* PVRManager.cpp */,
 				C84828A0156CFCD8005A996F /* PVRManager.h */,
 				2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */,
@@ -10813,6 +10818,7 @@
 				433219D812E4C6A500CD7486 /* udf25.cpp in Sources */,
 				433219D912E4C6A500CD7486 /* UDFDirectory.cpp in Sources */,
 				7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
+				2AF0B0971DE1025E005CA6BA /* PVRItem.cpp in Sources */,
 				18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
 				F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */,
 				6815C1411CC7BADB000DB91A /* RumbleGenerator.cpp in Sources */,
