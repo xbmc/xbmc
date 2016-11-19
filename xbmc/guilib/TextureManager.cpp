@@ -251,6 +251,8 @@ bool CGUITextureManager::CanLoad(const std::string &texturePath)
 
 bool CGUITextureManager::HasTexture(const std::string &textureName, std::string *path, int *bundle, int *size)
 {
+  CSingleLock lock(m_section);
+
   // default values
   if (bundle) *bundle = -1;
   if (size) *size = 0;
