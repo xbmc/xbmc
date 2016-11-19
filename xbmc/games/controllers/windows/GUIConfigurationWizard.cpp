@@ -35,7 +35,8 @@ using namespace GAME;
 #define SKIPPING_DETECTION_MS  200
 
 CGUIConfigurationWizard::CGUIConfigurationWizard() :
-  CThread("GUIConfigurationWizard")
+  CThread("GUIConfigurationWizard"),
+  m_callback(nullptr)
 {
   InitializeState();
 }
@@ -114,6 +115,9 @@ void CGUIConfigurationWizard::Process(void)
         // Wait for input
         {
           CSingleExit exit(m_stateMutex);
+
+          CLog::Log(LOGDEBUG, "%s: Waiting for input for feature \"%s\"", m_strControllerId.c_str(), button->Feature().Name().c_str());
+
           if (!button->PromptForInput(m_inputEvent))
             Abort(false);
         }
@@ -132,8 +136,8 @@ void CGUIConfigurationWizard::Process(void)
     InitializeState();
   }
 
-  if (ButtonMapCallback())
-    ButtonMapCallback()->SaveButtonMap();
+  for (auto callback : ButtonMapCallbacks())
+    callback.second->SaveButtonMap();
 
   RemoveHooks();
 

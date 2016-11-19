@@ -825,7 +825,7 @@ void CPeripherals::RegisterJoystickButtonMapper(IButtonMapper* mapper)
 
 void CPeripherals::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
 {
-  mapper->ResetButtonMapCallback();
+  mapper->ResetButtonMapCallbacks();
 
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);

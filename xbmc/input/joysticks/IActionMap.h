@@ -35,6 +35,16 @@ namespace JOYSTICK
     virtual ~IActionMap() = default;
 
     /*!
+     * \brief The add-on ID of the game controller associated with this action map
+     *
+     * The controller ID provided by the implementation serves as the context
+     * for the feature names below.
+     *
+     * \return The ID of this action map's game controller add-on
+     */
+    virtual std::string ControllerID(void) const = 0;
+
+    /*!
      * \brief Get the action ID mapped to the specified feature
      *
      * \param feature  The feature to look up

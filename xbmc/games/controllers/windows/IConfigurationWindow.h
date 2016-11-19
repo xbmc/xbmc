@@ -97,11 +97,6 @@ namespace GAME
      * \brief Reset the focused controller
      */
     virtual void ResetController(void) = 0;
-
-    /*!
-     * \brief Show a dialog for capturing input interfering with the button mapping process
-     */
-    virtual void ShowButtonCaptureDialog() = 0;
   };
 
   /*!

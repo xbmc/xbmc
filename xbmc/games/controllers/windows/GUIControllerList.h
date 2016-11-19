@@ -49,7 +49,6 @@ namespace GAME
     virtual void OnSelect(unsigned int controllerIndex) override;
     virtual int GetFocusedController() const override { return m_focusedController; }
     virtual void ResetController(void) override;
-    virtual void ShowButtonCaptureDialog() override;
 
   private:
     bool RefreshControllers(void);
