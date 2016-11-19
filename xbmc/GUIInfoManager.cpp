@@ -10758,6 +10758,10 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         if (timer)
           return timer->IsRecording();
       }
+      else if (pItem->HasPVRRecordingInfoTag())
+      {
+        return pItem->GetPVRRecordingInfoTag()->IsInProgress();
+      }
     }
     else if (condition == LISTITEM_INPROGRESS)
     {
