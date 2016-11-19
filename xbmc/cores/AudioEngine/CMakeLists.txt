@@ -62,12 +62,10 @@ if(ALSA_FOUND)
   list(APPEND SOURCES Sinks/AESinkALSA.cpp
                       Sinks/alsa/ALSADeviceMonitor.cpp
                       Sinks/alsa/ALSAHControlMonitor.cpp
-                      Sinks/AESinkOSS.cpp
                       Utils/AEELDParser.cpp)
   list(APPEND HEADERS Sinks/AESinkALSA.h
                       Sinks/alsa/ALSADeviceMonitor.h
                       Sinks/alsa/ALSAHControlMonitor.h
-                      Sinks/AESinkOSS.h
                       Utils/AEELDParser.h)
 endif()
 
