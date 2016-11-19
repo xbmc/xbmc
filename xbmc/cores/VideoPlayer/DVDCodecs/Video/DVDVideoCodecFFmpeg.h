@@ -84,6 +84,7 @@ protected:
   int  FilterProcess(AVFrame* frame);
   void SetFilters();
   void UpdateName();
+  bool SetPictureParams(DVDVideoPicture* pDvdVideoPicture);
 
   AVFrame* m_pFrame;
   AVFrame* m_pDecodedFrame;
