@@ -1817,6 +1817,8 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     }
     if (m_prefill_state == PREFILL_STATE_FILLING && timesize >= 1.0)
       m_prefill_state = PREFILL_STATE_FILLED;
+    else if (m_prefill_state == PREFILL_STATE_FILLING)
+      Sleep(1);
   }
 
   int rtn(0);
@@ -1830,13 +1832,24 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   if (((rtn & VC_PICTURE)==0 && timesize < 2.0) || timesize < 1.0)
    rtn |= VC_BUFFER;
 
+  vframe_states_t vfs;
+  int fd(open("/dev/amvideo", RD_ONLY);
+  if(fd)
+  {
+    ioctl(fd, AMSTREAM_IOC_VF_STATUS, &vfs);
+    close(fd);
+  }
+  else
+    memset(&vfs, 0, sizeof(vfs));
+
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "CAMLCodec::Decode: ret: %d dts_in: %0.6f, pts_in: %0.6f, ptsOut:%0.6f, amlpts:%d timesize:%0.2f",
+    CLog::Log(LOGDEBUG, "CAMLCodec::Decode: ret: %d dts_in: %0.6f, pts_in: %0.6f, ptsOut:%0.6f, amlpts:%d vfs:[%d-%d-%d-%d] timesize:%0.2f",
       rtn,
       static_cast<float>(dts)/DVD_TIME_BASE,
       static_cast<float>(pts)/DVD_TIME_BASE,
       static_cast<float>(m_cur_pts)/PTS_FREQ,
       static_cast<int>(m_cur_pts),
+      vfs.vf_pool_size, vfs.buf_free_num,vfs.buf_recycle_num,vfs.buf_avail_num,
       timesize
     );
 
