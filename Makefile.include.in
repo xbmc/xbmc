@@ -44,7 +44,6 @@ INCLUDES+=-I@abs_top_srcdir@/xbmc/addons/kodi-addon-dev-kit/include
 INCLUDES+=-I@abs_top_srcdir@/addons/library.kodi.guilib
 INCLUDES+=-I@abs_top_srcdir@/addons/library.xbmc.addon
 INCLUDES+=-I@abs_top_srcdir@/addons/library.kodi.audioengine
-INCLUDES+=-I@abs_top_srcdir@/addons/library.xbmc.codec
 INCLUDES+=$(sort @INCLUDES@)
 INCLUDES+=-I@abs_top_srcdir@/xbmc/linux
 INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/VideoPlayer

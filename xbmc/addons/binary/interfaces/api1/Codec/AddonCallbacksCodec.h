@@ -30,13 +30,6 @@ namespace V1
 namespace Codec
 {
 
-typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);
-
-typedef struct CB_CODEC
-{
-  CODECGetCodecByName   GetCodecByName;
-} CB_CodecLib;
-
 class CAddonCallbacksCodec : public ADDON::IAddonInterface
 {
 public:
