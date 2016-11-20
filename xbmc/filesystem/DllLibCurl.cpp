@@ -152,12 +152,12 @@ void DllLibCurlGlobal::CheckIdle()
     {
       CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
 
-      // It's important to clean up multi *before* cleaning up easy, because the multi cleanup
-      // code accesses stuff in the easy's structure.
-      if(it->m_multi)
-        multi_cleanup(it->m_multi);
+      if(it->m_multi && it->m_easy)
+        multi_remove_handle(it->m_multi, it->m_easy);
       if(it->m_easy)
         easy_cleanup(it->m_easy);
+      if(it->m_multi)
+        multi_cleanup(it->m_multi);
 
       Unload();
 
