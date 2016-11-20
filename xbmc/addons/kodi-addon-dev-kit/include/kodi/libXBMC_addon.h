@@ -41,60 +41,6 @@ struct __stat64;
 typedef intptr_t      ssize_t;
 #define _SSIZE_T_DEFINED
 #endif // !_SSIZE_T_DEFINED
-
-#if defined(BUILD_KODI_ADDON)
-#include "p8-platform/windows/dlfcn-win32.h"
-#else
-#include "dlfcn-win32.h"
-#endif
-
-#define ADDON_HELPER_EXT        ".dll"
-#define ADDON_HELPER_PATHSEP    "\\"
-#define ADDON_HELPER_ARCHSEP    ""
-#define ADDON_HELPER_ARCH       ""
-
-#else // windows
-#define ADDON_HELPER_PATHSEP    "/"
-#define ADDON_HELPER_ARCHSEP    "-"
-// the ADDON_HELPER_ARCH is the platform dependend name which is used
-// as part of the name of dynamic addon libraries. It has to match the 
-// strings which are set in configure.ac for the "ARCH" variable.
-#if defined(__APPLE__)          // osx
-#if defined(__arm__) || defined(__aarch64__)
-#define ADDON_HELPER_ARCH       "arm-osx"
-#else
-#define ADDON_HELPER_ARCH       "x86-osx"
-#endif
-#define ADDON_HELPER_EXT        ".dylib"
-#else                           // linux
-#if defined(__x86_64__)
-#define ADDON_HELPER_ARCH       "x86_64-linux"
-#elif defined(_POWERPC)
-#define ADDON_HELPER_ARCH       "powerpc-linux"
-#elif defined(_POWERPC64)
-#define ADDON_HELPER_ARCH       "powerpc64-linux"
-#elif defined(__ARMEL__)
-#define ADDON_HELPER_ARCH       "arm"
-#elif defined(__aarch64__)
-#define ADDON_HELPER_ARCH       "aarch64"
-#elif defined(__mips__)
-#define ADDON_HELPER_ARCH       "mips"
-#else
-#define ADDON_HELPER_ARCH       "i486-linux"
-#endif
-#define ADDON_HELPER_EXT        ".so"
-#endif
-#include <dlfcn.h>              // linux+osx
-#endif
-
-#define KODI_DLL_NAME(name) "libKODI_" name ADDON_HELPER_ARCHSEP ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#define XBMC_DLL_NAME(name) "libXBMC_" name ADDON_HELPER_ARCHSEP ADDON_HELPER_ARCH ADDON_HELPER_EXT
-#if defined(ANDROID)
-#define KODI_DLL(name) ADDON_HELPER_PATHSEP KODI_DLL_NAME(name)
-#define XBMC_DLL(name) ADDON_HELPER_PATHSEP XBMC_DLL_NAME(name)
-#else
-#define KODI_DLL(name) ADDON_HELPER_PATHSEP "library.kodi." name ADDON_HELPER_PATHSEP KODI_DLL_NAME(name)
-#define XBMC_DLL(name) ADDON_HELPER_PATHSEP "library.xbmc." name ADDON_HELPER_PATHSEP XBMC_DLL_NAME(name)
 #endif
 
 #ifdef LOG_DEBUG
