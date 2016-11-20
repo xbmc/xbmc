@@ -1,1 +1,0 @@
-lib/addons/library.xbmc.addon       XBMC_addon

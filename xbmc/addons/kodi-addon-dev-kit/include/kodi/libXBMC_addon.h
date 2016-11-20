@@ -97,9 +97,6 @@ typedef intptr_t      ssize_t;
 #define XBMC_DLL(name) ADDON_HELPER_PATHSEP "library.xbmc." name ADDON_HELPER_PATHSEP XBMC_DLL_NAME(name)
 #endif
 
-#define ADDON_DLL_NAME XBMC_DLL_NAME("addon")
-#define ADDON_DLL XBMC_DLL("addon")
-
 #ifdef LOG_DEBUG
 #undef LOG_DEBUG
 #endif
@@ -171,186 +168,85 @@ namespace ADDON
     QUEUE_WARNING,
     QUEUE_ERROR
   } queue_msg_t;
+}
 
+namespace KodiAPI
+{
+namespace V1
+{
+namespace AddOn
+{
+typedef struct CB_AddOn
+{
+  void (*Log)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
+  void (*QueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
+  bool (*WakeOnLan)(const char* mac);
+  bool (*GetSetting)(void *addonData, const char *settingName, void *settingValue);
+  char* (*TranslateSpecialProtocol)(const char *strSource);
+  char* (*UnknownToUTF8)(const char *sourceDest);
+  char* (*GetLocalizedString)(const void* addonData, long dwCode);
+  char* (*GetDVDMenuLanguage)(const void* addonData);
+  void (*FreeString)(const void* addonData, char* str);
+
+  void* (*OpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
+  void* (*OpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
+  ssize_t (*ReadFile)(const void* addonData, void* file, void* lpBuf, size_t uiBufSize);
+  bool (*ReadFileString)(const void* addonData, void* file, char *szLine, int iLineLength);
+  ssize_t (*WriteFile)(const void* addonData, void* file, const void* lpBuf, size_t uiBufSize);
+  void (*FlushFile)(const void* addonData, void* file);
+  int64_t (*SeekFile)(const void* addonData, void* file, int64_t iFilePosition, int iWhence);
+  int (*TruncateFile)(const void* addonData, void* file, int64_t iSize);
+  int64_t (*GetFilePosition)(const void* addonData, void* file);
+  int64_t (*GetFileLength)(const void* addonData, void* file);
+  double (*GetFileDownloadSpeed)(const void* addonData, void* file);
+  void (*CloseFile)(const void* addonData, void* file);
+  int (*GetFileChunkSize)(const void* addonData, void* file);
+  bool (*FileExists)(const void* addonData, const char *strFileName, bool bUseCache);
+  int (*StatFile)(const void* addonData, const char *strFileName, struct __stat64* buffer);
+  bool (*DeleteFile)(const void* addonData, const char *strFileName);
+  bool (*CanOpenDirectory)(const void* addonData, const char* strURL);
+  bool (*CreateDirectory)(const void* addonData, const char *strPath);
+  bool (*DirectoryExists)(const void* addonData, const char *strPath);
+  bool (*RemoveDirectory)(const void* addonData, const char *strPath);
+  bool (*GetDirectory)(const void* addonData, const char *strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items);
+  void (*FreeDirectory)(const void* addonData, VFSDirEntry* items, unsigned int num_items);
+  void* (*CURLCreate)(const void* addonData, const char* strURL);
+  bool (*CURLAddOption)(const void* addonData, void* file, XFILE::CURLOPTIONTYPE type, const char* name, const char * value);
+  bool (*CURLOpen)(const void* addonData, void* file, unsigned int flags);
+} CB_AddOnLib;
+
+} /* namespace AddOn */
+} /* namespace V1 */
+} /* namespace KodiAPI */
+
+namespace ADDON
+{
   class CHelper_libXBMC_addon
   {
   public:
     CHelper_libXBMC_addon()
     {
-      m_libXBMC_addon = NULL;
-      m_Handle        = NULL;
+      m_Handle = nullptr;
+      m_Callbacks = nullptr;
     }
 
     ~CHelper_libXBMC_addon()
     {
-      if (m_libXBMC_addon)
+      if (m_Handle && m_Callbacks)
       {
-        XBMC_unregister_me(m_Handle, m_Callbacks);
-        dlclose(m_libXBMC_addon);
+        m_Handle->AddOnLib_UnRegisterMe(m_Handle->addonData, m_Callbacks);
       }
     }
 
-    bool RegisterMe(void *Handle)
+    bool RegisterMe(void *handle)
     {
-      m_Handle = Handle;
-
-      std::string libBasePath;
-      libBasePath  = ((cb_array*)m_Handle)->libPath;
-      libBasePath += ADDON_DLL;
-
-      m_libXBMC_addon = dlopen(libBasePath.c_str(), RTLD_LAZY);
-      if (m_libXBMC_addon == NULL)
-      {
-        fprintf(stderr, "Unable to load %s\n", dlerror());
-        return false;
-      }
-
-      XBMC_register_me = (void* (*)(void *HANDLE))
-        dlsym(m_libXBMC_addon, "XBMC_register_me");
-      if (XBMC_register_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_unregister_me = (void (*)(void* HANDLE, void* CB))
-        dlsym(m_libXBMC_addon, "XBMC_unregister_me");
-      if (XBMC_unregister_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_log = (void (*)(void* HANDLE, void* CB, const addon_log_t loglevel, const char *msg))
-        dlsym(m_libXBMC_addon, "XBMC_log");
-      if (XBMC_log == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_setting = (bool (*)(void* HANDLE, void* CB, const char* settingName, void *settingValue))
-        dlsym(m_libXBMC_addon, "XBMC_get_setting");
-      if (XBMC_get_setting == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_translate_special = (char* (*)(void* HANDLE, void* CB, const char* source))
-        dlsym(m_libXBMC_addon, "XBMC_translate_special");
-      if (XBMC_translate_special == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_queue_notification = (void (*)(void* HANDLE, void* CB, const queue_msg_t loglevel, const char *msg))
-        dlsym(m_libXBMC_addon, "XBMC_queue_notification");
-      if (XBMC_queue_notification == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_wake_on_lan = (bool (*)(void* HANDLE, void *CB, const char *mac))
-        dlsym(m_libXBMC_addon, "XBMC_wake_on_lan");
-      if (XBMC_wake_on_lan == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_unknown_to_utf8 = (char* (*)(void* HANDLE, void* CB, const char* str))
-        dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
-      if (XBMC_unknown_to_utf8 == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_localized_string = (char* (*)(void* HANDLE, void* CB, int dwCode))
-        dlsym(m_libXBMC_addon, "XBMC_get_localized_string");
-      if (XBMC_get_localized_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_free_string = (void (*)(void* HANDLE, void* CB, char* str))
-        dlsym(m_libXBMC_addon, "XBMC_free_string");
-      if (XBMC_free_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_dvd_menu_language = (char* (*)(void* HANDLE, void* CB))
-        dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
-      if (XBMC_get_dvd_menu_language == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_open_file = (void* (*)(void* HANDLE, void* CB, const char* strFileName, unsigned int flags))
-        dlsym(m_libXBMC_addon, "XBMC_open_file");
-      if (XBMC_open_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_open_file_for_write = (void* (*)(void* HANDLE, void* CB, const char* strFileName, bool bOverWrite))
-        dlsym(m_libXBMC_addon, "XBMC_open_file_for_write");
-      if (XBMC_open_file_for_write == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_read_file = (ssize_t (*)(void* HANDLE, void* CB, void* file, void* lpBuf, size_t uiBufSize))
-        dlsym(m_libXBMC_addon, "XBMC_read_file");
-      if (XBMC_read_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_read_file_string = (bool (*)(void* HANDLE, void* CB, void* file, char *szLine, int iLineLength))
-        dlsym(m_libXBMC_addon, "XBMC_read_file_string");
-      if (XBMC_read_file_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_write_file = (ssize_t (*)(void* HANDLE, void* CB, void* file, const void* lpBuf, size_t uiBufSize))
-        dlsym(m_libXBMC_addon, "XBMC_write_file");
-      if (XBMC_write_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_flush_file = (void (*)(void* HANDLE, void* CB, void* file))
-        dlsym(m_libXBMC_addon, "XBMC_flush_file");
-      if (XBMC_flush_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_seek_file = (int64_t (*)(void* HANDLE, void* CB, void* file, int64_t iFilePosition, int iWhence))
-        dlsym(m_libXBMC_addon, "XBMC_seek_file");
-      if (XBMC_seek_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_truncate_file = (int (*)(void* HANDLE, void* CB, void* file, int64_t iSize))
-        dlsym(m_libXBMC_addon, "XBMC_truncate_file");
-      if (XBMC_truncate_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_file_position = (int64_t (*)(void* HANDLE, void* CB, void* file))
-        dlsym(m_libXBMC_addon, "XBMC_get_file_position");
-      if (XBMC_get_file_position == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_file_length = (int64_t (*)(void* HANDLE, void* CB, void* file))
-        dlsym(m_libXBMC_addon, "XBMC_get_file_length");
-      if (XBMC_get_file_length == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_file_download_speed = (double(*)(void* HANDLE, void* CB, void* file))
-        dlsym(m_libXBMC_addon, "XBMC_get_file_download_speed");
-      if (XBMC_get_file_download_speed == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_close_file = (void (*)(void* HANDLE, void* CB, void* file))
-        dlsym(m_libXBMC_addon, "XBMC_close_file");
-      if (XBMC_close_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_file_chunk_size = (int (*)(void* HANDLE, void* CB, void* file))
-        dlsym(m_libXBMC_addon, "XBMC_get_file_chunk_size");
-      if (XBMC_get_file_chunk_size == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_file_exists = (bool (*)(void* HANDLE, void* CB, const char *strFileName, bool bUseCache))
-        dlsym(m_libXBMC_addon, "XBMC_file_exists");
-      if (XBMC_file_exists == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_stat_file = (int (*)(void* HANDLE, void* CB, const char *strFileName, struct __stat64* buffer))
-        dlsym(m_libXBMC_addon, "XBMC_stat_file");
-      if (XBMC_stat_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_delete_file = (bool (*)(void* HANDLE, void* CB, const char *strFileName))
-        dlsym(m_libXBMC_addon, "XBMC_delete_file");
-      if (XBMC_delete_file == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_can_open_directory = (bool (*)(void* HANDLE, void* CB, const char* strURL))
-        dlsym(m_libXBMC_addon, "XBMC_can_open_directory");
-      if (XBMC_can_open_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_create_directory = (bool (*)(void* HANDLE, void* CB, const char* strPath))
-        dlsym(m_libXBMC_addon, "XBMC_create_directory");
-      if (XBMC_create_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_directory_exists = (bool (*)(void* HANDLE, void* CB, const char* strPath))
-        dlsym(m_libXBMC_addon, "XBMC_directory_exists");
-      if (XBMC_directory_exists == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_remove_directory = (bool (*)(void* HANDLE, void* CB, const char* strPath))
-        dlsym(m_libXBMC_addon, "XBMC_remove_directory");
-      if (XBMC_remove_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_get_directory = (bool (*)(void* HANDLE, void* CB, const char* strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items))
-        dlsym(m_libXBMC_addon, "XBMC_get_directory");
-      if (XBMC_get_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_free_directory = (void (*)(void* HANDLE, void* CB, VFSDirEntry* items, unsigned int num_items))
-        dlsym(m_libXBMC_addon, "XBMC_free_directory");
-      if (XBMC_free_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_curl_create = (void* (*)(void *HANDLE, void* CB, const char* strURL))
-        dlsym(m_libXBMC_addon, "XBMC_curl_create");
-      if (XBMC_curl_create == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_curl_add_option = (bool (*)(void *HANDLE, void* CB, void *file, XFILE::CURLOPTIONTYPE type, const char* name, const char *value))
-        dlsym(m_libXBMC_addon, "XBMC_curl_add_option");
-      if (XBMC_curl_add_option == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      XBMC_curl_open = (bool (*)(void *HANDLE, void* CB, void *file, unsigned int flags))
-        dlsym(m_libXBMC_addon, "XBMC_curl_open");
-      if (XBMC_curl_open == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-      m_Callbacks = XBMC_register_me(m_Handle);
-      return m_Callbacks != NULL;
+      m_Handle = static_cast<AddonCB*>(handle);
+      if (m_Handle)
+        m_Callbacks = (KodiAPI::V1::AddOn::CB_AddOnLib*)m_Handle->AddOnLib_RegisterMe(m_Handle->addonData);
+      if (!m_Callbacks)
+        fprintf(stderr, "libXBMC_addon-ERROR: AddOnLib_RegisterMe can't get callback table from Kodi !!!\n");
+    
+      return m_Callbacks != nullptr;
     }
 
     /*!
@@ -365,7 +261,7 @@ namespace ADDON
       va_start (args, format);
       vsprintf (buffer, format, args);
       va_end (args);
-      return XBMC_log(m_Handle, m_Callbacks, loglevel, buffer);
+      m_Callbacks->Log(m_Handle->addonData, loglevel, buffer);
     }
 
     /*!
@@ -376,7 +272,7 @@ namespace ADDON
      */
     bool GetSetting(const char* settingName, void *settingValue)
     {
-      return XBMC_get_setting(m_Handle, m_Callbacks, settingName, settingValue);
+      return m_Callbacks->GetSetting(m_Handle->addonData, settingName, settingValue);
     }
 
     /*!
@@ -386,7 +282,7 @@ namespace ADDON
     */
     char *TranslateSpecialProtocol(const char *source)
     {
-      return XBMC_translate_special(m_Handle, m_Callbacks, source);
+      return m_Callbacks->TranslateSpecialProtocol(source);
     }
 
     /*!
@@ -401,7 +297,7 @@ namespace ADDON
       va_start (args, format);
       vsprintf (buffer, format, args);
       va_end (args);
-      return XBMC_queue_notification(m_Handle, m_Callbacks, type, buffer);
+      m_Callbacks->QueueNotification(m_Handle->addonData, type, buffer);
     }
 
     /*!
@@ -411,7 +307,7 @@ namespace ADDON
      */
     bool WakeOnLan(const char* mac)
     {
-      return XBMC_wake_on_lan(m_Handle, m_Callbacks, mac);
+      return m_Callbacks->WakeOnLan(mac);
     }
 
     /*!
@@ -421,7 +317,7 @@ namespace ADDON
      */
     char* UnknownToUTF8(const char* str)
     {
-      return XBMC_unknown_to_utf8(m_Handle, m_Callbacks, str);
+      return m_Callbacks->UnknownToUTF8(str);
     }
 
     /*!
@@ -431,9 +327,8 @@ namespace ADDON
      */
     char* GetLocalizedString(int dwCode)
     {
-      return XBMC_get_localized_string(m_Handle, m_Callbacks, dwCode);
+      return m_Callbacks->GetLocalizedString(m_Handle->addonData, dwCode);
     }
-
 
     /*!
      * @brief Get the DVD menu language.
@@ -441,7 +336,7 @@ namespace ADDON
      */
     char* GetDVDMenuLanguage()
     {
-      return XBMC_get_dvd_menu_language(m_Handle, m_Callbacks);
+      return m_Callbacks->GetDVDMenuLanguage(m_Handle->addonData);
     }
 
     /*!
@@ -450,7 +345,7 @@ namespace ADDON
      */
     void FreeString(char* str)
     {
-      return XBMC_free_string(m_Handle, m_Callbacks, str);
+      m_Callbacks->FreeString(m_Handle->addonData, str);
     }
 
     /*!
@@ -461,7 +356,7 @@ namespace ADDON
      */
     void* OpenFile(const char* strFileName, unsigned int flags)
     {
-      return XBMC_open_file(m_Handle, m_Callbacks, strFileName, flags);
+      return m_Callbacks->OpenFile(m_Handle->addonData, strFileName, flags);
     }
 
     /*!
@@ -472,7 +367,7 @@ namespace ADDON
      */
     void* OpenFileForWrite(const char* strFileName, bool bOverWrite)
     {
-      return XBMC_open_file_for_write(m_Handle, m_Callbacks, strFileName, bOverWrite);
+      return m_Callbacks->OpenFileForWrite(m_Handle->addonData, strFileName, bOverWrite);
     }
 
     /*!
@@ -486,7 +381,7 @@ namespace ADDON
      */
     ssize_t ReadFile(void* file, void* lpBuf, size_t uiBufSize)
     {
-      return XBMC_read_file(m_Handle, m_Callbacks, file, lpBuf, uiBufSize);
+      return m_Callbacks->ReadFile(m_Handle->addonData, file, lpBuf, uiBufSize);
     }
 
     /*!
@@ -498,7 +393,7 @@ namespace ADDON
      */
     bool ReadFileString(void* file, char *szLine, int iLineLength)
     {
-      return XBMC_read_file_string(m_Handle, m_Callbacks, file, szLine, iLineLength);
+      return m_Callbacks->ReadFileString(m_Handle->addonData, file, szLine, iLineLength);
     }
 
     /*!
@@ -512,7 +407,7 @@ namespace ADDON
      */
     ssize_t WriteFile(void* file, const void* lpBuf, size_t uiBufSize)
     {
-      return XBMC_write_file(m_Handle, m_Callbacks, file, lpBuf, uiBufSize);
+      return m_Callbacks->WriteFile(m_Handle->addonData, file, lpBuf, uiBufSize);
     }
 
     /*!
@@ -521,7 +416,7 @@ namespace ADDON
      */
     void FlushFile(void* file)
     {
-       return XBMC_flush_file(m_Handle, m_Callbacks, file);
+       m_Callbacks->FlushFile(m_Handle->addonData, file);
     }
 
     /*!
@@ -533,7 +428,7 @@ namespace ADDON
      */
     int64_t SeekFile(void* file, int64_t iFilePosition, int iWhence)
     {
-      return XBMC_seek_file(m_Handle, m_Callbacks, file, iFilePosition, iWhence);
+      return m_Callbacks->SeekFile(m_Handle->addonData, file, iFilePosition, iWhence);
     }
 
     /*!
@@ -544,7 +439,7 @@ namespace ADDON
      */
     int TruncateFile(void* file, int64_t iSize)
     {
-      return XBMC_truncate_file(m_Handle, m_Callbacks, file, iSize);
+      return m_Callbacks->TruncateFile(m_Handle->addonData, file, iSize);
     }
 
     /*!
@@ -554,7 +449,7 @@ namespace ADDON
      */
     int64_t GetFilePosition(void* file)
     {
-      return XBMC_get_file_position(m_Handle, m_Callbacks, file);
+      return m_Callbacks->GetFilePosition(m_Handle->addonData, file);
     }
 
     /*!
@@ -564,7 +459,7 @@ namespace ADDON
      */
     int64_t GetFileLength(void* file)
     {
-      return XBMC_get_file_length(m_Handle, m_Callbacks, file);
+      return m_Callbacks->GetFileLength(m_Handle->addonData, file);
     }
 
     /*!
@@ -574,7 +469,7 @@ namespace ADDON
     */
     double GetFileDownloadSpeed(void* file)
     {
-      return XBMC_get_file_download_speed(m_Handle, m_Callbacks, file);
+      return m_Callbacks->GetFileDownloadSpeed(m_Handle->addonData, file);
     }
 
     /*!
@@ -583,7 +478,7 @@ namespace ADDON
      */
     void CloseFile(void* file)
     {
-      return XBMC_close_file(m_Handle, m_Callbacks, file);
+      m_Callbacks->CloseFile(m_Handle->addonData, file);
     }
 
     /*!
@@ -593,7 +488,7 @@ namespace ADDON
      */
     int GetFileChunkSize(void* file)
     {
-      return XBMC_get_file_chunk_size(m_Handle, m_Callbacks, file);
+      return m_Callbacks->GetFileChunkSize(m_Handle->addonData, file);
     }
 
     /*!
@@ -604,7 +499,7 @@ namespace ADDON
      */
     bool FileExists(const char *strFileName, bool bUseCache)
     {
-      return XBMC_file_exists(m_Handle, m_Callbacks, strFileName, bUseCache);
+      return m_Callbacks->FileExists(m_Handle->addonData, strFileName, bUseCache);
     }
 
     /*!
@@ -615,7 +510,7 @@ namespace ADDON
      */
     int StatFile(const char *strFileName, struct __stat64* buffer)
     {
-      return XBMC_stat_file(m_Handle, m_Callbacks, strFileName, buffer);
+      return m_Callbacks->StatFile(m_Handle->addonData, strFileName, buffer);
     }
 
     /*!
@@ -625,7 +520,7 @@ namespace ADDON
      */
     bool DeleteFile(const char *strFileName)
     {
-      return XBMC_delete_file(m_Handle, m_Callbacks, strFileName);
+      return m_Callbacks->DeleteFile(m_Handle->addonData, strFileName);
     }
 
     /*!
@@ -635,7 +530,7 @@ namespace ADDON
      */
     bool CanOpenDirectory(const char* strUrl)
     {
-      return XBMC_can_open_directory(m_Handle, m_Callbacks, strUrl);
+      return m_Callbacks->CanOpenDirectory(m_Handle->addonData, strUrl);
     }
 
     /*!
@@ -645,7 +540,7 @@ namespace ADDON
      */
     bool CreateDirectory(const char *strPath)
     {
-      return XBMC_create_directory(m_Handle, m_Callbacks, strPath);
+      return m_Callbacks->CreateDirectory(m_Handle->addonData, strPath);
     }
 
     /*!
@@ -655,7 +550,7 @@ namespace ADDON
      */
     bool DirectoryExists(const char *strPath)
     {
-      return XBMC_directory_exists(m_Handle, m_Callbacks, strPath);
+      return m_Callbacks->DirectoryExists(m_Handle->addonData, strPath);
     }
 
     /*!
@@ -665,7 +560,7 @@ namespace ADDON
      */
     bool RemoveDirectory(const char *strPath)
     {
-      return XBMC_remove_directory(m_Handle, m_Callbacks, strPath);
+      return m_Callbacks->RemoveDirectory(m_Handle->addonData, strPath);
     }
 
     /*!
@@ -678,7 +573,7 @@ namespace ADDON
      */
     bool GetDirectory(const char *strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items)
     {
-      return XBMC_get_directory(m_Handle, m_Callbacks, strPath, mask, items, num_items);
+      return m_Callbacks->GetDirectory(m_Handle->addonData, strPath, mask, items, num_items);
     }
 
     /*!
@@ -688,7 +583,7 @@ namespace ADDON
      */
     void FreeDirectory(VFSDirEntry* items, unsigned int num_items)
     {
-      return XBMC_free_directory(m_Handle, m_Callbacks, items, num_items);
+      m_Callbacks->FreeDirectory(m_Handle->addonData, items, num_items);
     }
 
     /*!
@@ -697,7 +592,7 @@ namespace ADDON
     */
     void* CURLCreate(const char* strURL)
     {
-      return XBMC_curl_create(m_Handle, m_Callbacks, strURL);
+      return m_Callbacks->CURLCreate(m_Handle->addonData, strURL);
     }
 
     /*!
@@ -709,7 +604,7 @@ namespace ADDON
     */
     bool CURLAddOption(void* file, XFILE::CURLOPTIONTYPE type, const char* name, const char * value)
     {
-      return XBMC_curl_add_option(m_Handle, m_Callbacks, file, type, name, value);
+      return m_Callbacks->CURLAddOption(m_Handle->addonData, file, type, name, value);
     }
 
     /*!
@@ -719,54 +614,11 @@ namespace ADDON
     */
     bool CURLOpen(void* file, unsigned int flags)
     {
-      return XBMC_curl_open(m_Handle, m_Callbacks, file, flags);
+      return m_Callbacks->CURLOpen(m_Handle->addonData, file, flags);
     }
 
-  protected:
-    void* (*XBMC_register_me)(void *HANDLE);
-    void (*XBMC_unregister_me)(void *HANDLE, void* CB);
-    void (*XBMC_log)(void *HANDLE, void* CB, const addon_log_t loglevel, const char *msg);
-    bool (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
-    char*(*XBMC_translate_special)(void *HANDLE, void* CB, const char* source);
-    void (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
-    bool (*XBMC_wake_on_lan)(void *HANDLE, void* CB, const char* mac);
-    char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
-    char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
-    char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
-    void (*XBMC_free_string)(void *HANDLE, void* CB, char* str);
-    void* (*XBMC_open_file)(void *HANDLE, void* CB, const char* strFileName, unsigned int flags);
-    void* (*XBMC_open_file_for_write)(void *HANDLE, void* CB, const char* strFileName, bool bOverWrite);
-    ssize_t (*XBMC_read_file)(void *HANDLE, void* CB, void* file, void* lpBuf, size_t uiBufSize);
-    bool (*XBMC_read_file_string)(void *HANDLE, void* CB, void* file, char *szLine, int iLineLength);
-    ssize_t(*XBMC_write_file)(void *HANDLE, void* CB, void* file, const void* lpBuf, size_t uiBufSize);
-    void (*XBMC_flush_file)(void *HANDLE, void* CB, void* file);
-    int64_t (*XBMC_seek_file)(void *HANDLE, void* CB, void* file, int64_t iFilePosition, int iWhence);
-    int (*XBMC_truncate_file)(void *HANDLE, void* CB, void* file, int64_t iSize);
-    int64_t (*XBMC_get_file_position)(void *HANDLE, void* CB, void* file);
-    int64_t (*XBMC_get_file_length)(void *HANDLE, void* CB, void* file);
-    double(*XBMC_get_file_download_speed)(void *HANDLE, void* CB, void* file);
-    void (*XBMC_close_file)(void *HANDLE, void* CB, void* file);
-    int (*XBMC_get_file_chunk_size)(void *HANDLE, void* CB, void* file);
-    bool (*XBMC_file_exists)(void *HANDLE, void* CB, const char *strFileName, bool bUseCache);
-    int (*XBMC_stat_file)(void *HANDLE, void* CB, const char *strFileName, struct __stat64* buffer);
-    bool (*XBMC_delete_file)(void *HANDLE, void* CB, const char *strFileName);
-    bool (*XBMC_can_open_directory)(void *HANDLE, void* CB, const char* strURL);
-    bool (*XBMC_create_directory)(void *HANDLE, void* CB, const char* strPath);
-    bool (*XBMC_directory_exists)(void *HANDLE, void* CB, const char* strPath);
-    bool (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
-    bool (*XBMC_get_directory)(void *HANDLE, void* CB, const char* strPath, const char* mask, VFSDirEntry** items, unsigned int* num_items);
-    void (*XBMC_free_directory)(void *HANDLE, void* CB, VFSDirEntry* items, unsigned int num_items);
-    void* (*XBMC_curl_create)(void *HANDLE, void* CB, const char* strURL);
-    bool (*XBMC_curl_add_option)(void *HANDLE, void* CB, void *file, XFILE::CURLOPTIONTYPE type, const char* name, const char *value);
-    bool (*XBMC_curl_open)(void *m_Handle, void *m_Callbacks, void *file, unsigned int flags);
-
   private:
-    void *m_libXBMC_addon;
-    void *m_Handle;
-    void *m_Callbacks;
-    struct cb_array
-    {
-      const char* libPath;
-    };
+    AddonCB* m_Handle;
+    KodiAPI::V1::AddOn::CB_AddOnLib *m_Callbacks;
   };
 };
