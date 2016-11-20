@@ -32,11 +32,10 @@ namespace ADDON
   class CAddon;
 }
 
-namespace V1
-{
 namespace KodiAPI
 {
-
+namespace V1
+{
 namespace AudioDSP
 {
 
@@ -195,6 +194,5 @@ private:
 };
 
 } /* namespace AudioDSP */
-
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */

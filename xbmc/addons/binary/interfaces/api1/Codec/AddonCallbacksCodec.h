@@ -23,11 +23,10 @@
 #include "addons/binary/interfaces/AddonInterfaces.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_codec.h"
 
-namespace V1
-{
 namespace KodiAPI
 {
-
+namespace V1
+{
 namespace Codec
 {
 
@@ -56,6 +55,5 @@ private:
 };
 
 } /* namespace Codec */
-
-} /* namespace KoidAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */

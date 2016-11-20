@@ -39,11 +39,10 @@
 using namespace ADDON;
 using namespace XFILE;
 
-namespace V1
-{
 namespace KodiAPI
 {
-
+namespace V1
+{
 namespace AddOn
 {
 
@@ -680,6 +679,5 @@ bool CAddonCallbacksAddon::CURLOpen(const void* addonData, void* file, unsigned 
 }
 
 } /* namespace AddOn */
-
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */

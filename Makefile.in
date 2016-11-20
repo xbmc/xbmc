@@ -218,7 +218,6 @@ LIBADDON_DIRS=\
 	lib/addons/library.kodi.adsp \
 	lib/addons/library.kodi.audioengine \
 	lib/addons/library.xbmc.codec \
-	lib/addons/library.xbmc.pvr \
 	lib/addons/library.kodi.guilib \
 	lib/addons/library.kodi.inputstream \
 	lib/addons/library.kodi.peripheral \
@@ -344,7 +343,6 @@ libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.codec
 	$(MAKE) -C lib/addons/library.kodi.guilib
 	$(MAKE) -C lib/addons/library.kodi.peripheral
-	$(MAKE) -C lib/addons/library.xbmc.pvr
 	$(MAKE) -C lib/addons/library.kodi.inputstream
 dvdpcodecs: dllloader
 	$(MAKE) -C lib/libdvd

@@ -25,7 +25,6 @@ addons/library.kodi.inputstream/*
 addons/library.kodi.peripheral/*
 addons/library.xbmc.addon/*
 addons/library.xbmc.codec/*
-addons/library.xbmc.pvr/*
 addons/repository.xbmc.org/*
 addons/webinterface.default/*
 addons/screensaver.xbmc.builtin.dim/*
