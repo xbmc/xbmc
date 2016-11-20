@@ -1,6 +1,5 @@
 lib/addons/library.kodi.audioengine KODI_audioengine
 lib/addons/library.kodi.guilib      KODI_guilib
-lib/addons/library.kodi.inputstream KODI_inputstream
 lib/addons/library.kodi.peripheral  KODI_peripheral
 lib/addons/library.xbmc.addon       XBMC_addon
 lib/addons/library.xbmc.codec       XBMC_codec
