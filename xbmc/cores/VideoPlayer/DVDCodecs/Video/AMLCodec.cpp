@@ -1817,8 +1817,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     }
     if (m_prefill_state == PREFILL_STATE_FILLING && timesize >= 1.0)
       m_prefill_state = PREFILL_STATE_FILLED;
-    else if (m_prefill_state == PREFILL_STATE_FILLING)
-      usleep(1000);
   }
 
   int rtn(0);
@@ -1829,6 +1827,9 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     m_last_pts = m_cur_pts;
     m_cur_pts = decode_pts;
   }
+  else //Timesize actualizes each 10ms, throttle decode calls to avoid reading too much
+    usleep(2500);
+
   if (((rtn & VC_PICTURE) == 0 && timesize < 2.0) || timesize < 1.0)
    rtn |= VC_BUFFER;
 
