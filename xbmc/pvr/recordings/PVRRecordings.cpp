@@ -139,9 +139,9 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
       unwatchedFolders.insert(pFileItem);
   }
 
-  // Remove the watched overlay from folders containing unwatched entries
+  // Change the watched overlay to unwatched for folders containing unwatched entries
   for (auto item : unwatchedFolders)
-    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, true);
+    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
 }
 
 int CPVRRecordings::Load(void)
