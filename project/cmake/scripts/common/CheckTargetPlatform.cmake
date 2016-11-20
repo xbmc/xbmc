@@ -9,7 +9,11 @@ function(check_target_platform dir target_platform build)
   if(EXISTS ${dir} AND EXISTS ${dir}/platforms.txt)
     # get all the specified platforms
     file(STRINGS ${dir}/platforms.txt platforms)
-    string(REPLACE " " ";" platforms ${platforms})
+    
+    list( LENGTH platforms listlen )
+    if(${listlen} EQUAL 1)    
+        string(REPLACE " " ";" platforms ${platforms})
+    endif()
 
     # check if the addon/dependency should be built for the current platform
     foreach(platform ${platforms})
