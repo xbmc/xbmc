@@ -317,9 +317,10 @@
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
+		<value condition="ListItem.IsParentFolder">DefaultFolderBack.png</value>
 		<value condition="ListItem.IsFolder">overlays/folder.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
-		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
+		<value>OverlayUnwatched.png</value>
 	</variable>
 	<variable name="SettingsSectionIcon">
 		<value condition="Window.IsActive(playersettings)">icons/settings/video.png</value>
