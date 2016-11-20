@@ -23,6 +23,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "input/joysticks/DefaultJoystick.h"
 #include "input/joysticks/IActionMap.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
@@ -38,10 +39,14 @@
 
 using namespace GAME;
 
-CGUIDialogButtonCapture::CGUIDialogButtonCapture(const std::string& controllerId) :
-  CThread("ButtonCaptureDlg"),
-  m_controllerId(controllerId)
+CGUIDialogButtonCapture::CGUIDialogButtonCapture() :
+  CThread("ButtonCaptureDlg")
 {
+}
+
+std::string CGUIDialogButtonCapture::ControllerID(void) const
+{
+  return DEFAULT_CONTROLLER_ID;
 }
 
 void CGUIDialogButtonCapture::Show()
@@ -60,19 +65,20 @@ void CGUIDialogButtonCapture::Show()
 
     m_captureEvent.Set();
 
-    if (ButtonMapCallback())
+    for (auto& callback : ButtonMapCallbacks())
     {
       if (bAccepted)
       {
         // See documentation of IButtonMapCallback::ResetIgnoredPrimitives()
         // for why this call is needed
-        if (m_capturedPrimitives.empty())
-          ButtonMapCallback()->ResetIgnoredPrimitives();
+        if (m_deviceName.empty())
+          callback.second->ResetIgnoredPrimitives();
 
-        ButtonMapCallback()->SaveButtonMap();
+        if (m_deviceName.empty() || m_deviceName == callback.first)
+          callback.second->SaveButtonMap();
       }
       else
-        ButtonMapCallback()->RevertButtonMap();
+        callback.second->RevertButtonMap();
     }
 
     RemoveHooks();
@@ -103,7 +109,7 @@ bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     return false;
 
   // First check to see if driver primitive closes the dialog
-  if (actionMap)
+  if (actionMap && actionMap->ControllerID() == buttonMap->ControllerID())
   {
     std::string feature;
     if (buttonMap->GetFeature(primitive, feature))
@@ -126,13 +132,13 @@ bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
   // If a primitive comes from a different device, ignore it
   if (bHasDevice && m_deviceName != buttonMap->DeviceName())
   {
-    CLog::Log(LOGDEBUG, "%s: ignoring input from device %s", m_controllerId.c_str(), buttonMap->DeviceName().c_str());
+    CLog::Log(LOGDEBUG, "%s: ignoring input from device %s", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
     return false;
   }
 
   if (!bHasDevice)
   {
-    CLog::Log(LOGDEBUG, "%s: capturing input for device %s", m_controllerId.c_str(), buttonMap->DeviceName().c_str());
+    CLog::Log(LOGDEBUG, "%s: capturing input for device %s", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
     m_deviceName = buttonMap->DeviceName();
   }
 

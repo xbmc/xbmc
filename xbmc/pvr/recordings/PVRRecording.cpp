@@ -28,8 +28,9 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
+#include "pvr/timers/PVRTimers.h"
 
 #include "PVRRecording.h"
 
@@ -480,4 +481,13 @@ int CPVRRecording::ChannelUid(void) const
 int CPVRRecording::ClientID(void) const
 {
   return m_iClientId;
+}
+
+bool CPVRRecording::IsInProgress() const
+{
+  // Note: It is not enough to only check recording time and duration against 'now'.
+  //       Only the state of the related timer is a safe indicator that the backend
+  //       actually is recording this.
+
+  return g_PVRTimers->HasRecordingTimerForRecording(*this);
 }

@@ -30,7 +30,6 @@
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/dialogs/GUIDialogButtonCapture.h"
 #include "games/controllers/guicontrols/GUIControllerButton.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "guilib/GUIButtonControl.h"
@@ -140,17 +139,6 @@ void CGUIControllerList::ResetController(void)
       return;
 
     PERIPHERALS::g_peripherals.ResetButtonMaps(strControllerId);
-  }
-}
-
-void CGUIControllerList::ShowButtonCaptureDialog(void)
-{
-  if (0 <= m_focusedController && m_focusedController < (int)m_controllers.size())
-  {
-    const std::string strControllerId = m_controllers[m_focusedController]->ID();
-
-    CGUIDialogButtonCapture dialog(strControllerId);
-    dialog.Show();
   }
 }
 

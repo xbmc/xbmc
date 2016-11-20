@@ -130,6 +130,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
+      // This needs to be done again, because the initialization of CGUIWindow overwrites it with default values
+      // Mostly affects cases where GUIWindowViedeoNav is constructed and we're already in a show, e.g. entering from the homesceen
+      SelectFirstUnwatched();
+
       return true;
     }
     break;
@@ -284,6 +288,12 @@ bool CGUIWindowVideoNav::Update(const std::string &strDirectory, bool updateFilt
   if (!CGUIWindowVideoBase::Update(strDirectory, updateFilterPath))
     return false;
 
+  SelectFirstUnwatched();
+
+  return true;
+}
+
+void CGUIWindowVideoNav::SelectFirstUnwatched() {
   // Check if we should select the first unwatched item
   SelectFirstUnwatchedItem selectFirstUnwatched = GetSettingSelectFirstUnwatchedItem();
   if (selectFirstUnwatched != SelectFirstUnwatchedItem::NEVER)
@@ -302,8 +312,6 @@ bool CGUIWindowVideoNav::Update(const std::string &strDirectory, bool updateFilt
       m_viewControl.SetSelectedItem(iIndex);
     }
   }
-
-  return true;
 }
 
 bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)

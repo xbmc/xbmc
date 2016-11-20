@@ -34,10 +34,10 @@ namespace GAME
                                   protected CThread
   {
   public:
-    CGUIDialogButtonCapture(const std::string& controllerId);
+    CGUIDialogButtonCapture();
 
     // implementation of IButtonMapper
-    virtual std::string ControllerID(void) const override { return m_controllerId; }
+    virtual std::string ControllerID(void) const override;
     virtual bool NeedsCooldown(void) const override { return false; }
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
                               JOYSTICK::IActionMap* actionMap,
@@ -61,9 +61,6 @@ namespace GAME
     void RemoveHooks();
 
     static std::string GetPrimitiveName(const JOYSTICK::CDriverPrimitive& primitive);
-
-    // Construction parameters
-    const std::string m_controllerId;
 
     // Button capture parameters
     std::string m_deviceName;

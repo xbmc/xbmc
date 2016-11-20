@@ -598,22 +598,28 @@ namespace XBMCAddon
       /// | dbid          | integer (23) - Only add this for items which are part of the local db. You also need to set the correct 'mediatype'!
       ///
       /// __Music Values__:
-      /// | Info label    | Description                                        |
-      /// |--------------:|:---------------------------------------------------|
-      /// | tracknumber   | integer (8)
-      /// | discnumber    | integer (2)
-      /// | duration      | integer (245) - duration in seconds
-      /// | year          | integer (1998)
-      /// | genre         | string (Rock)
-      /// | album         | string (Pulse)
-      /// | artist        | string (Muse)
-      /// | title         | string (American Pie)
-      /// | rating        | float - range is between 0 and 10
-      /// | userrating    | integer - range is 1..10
-      /// | lyrics        | string (On a dark desert highway...)
-      /// | playcount     | integer (2) - number of times this item has been played
-      /// | lastplayed    | string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
-      /// | mediatype     | string - "music", "song", "album", "artist"
+      /// | Info label               | Description                                        |
+      /// |-------------------------:|:---------------------------------------------------|
+      /// | tracknumber              | integer (8)
+      /// | discnumber               | integer (2)
+      /// | duration                 | integer (245) - duration in seconds
+      /// | year                     | integer (1998)
+      /// | genre                    | string (Rock)
+      /// | album                    | string (Pulse)
+      /// | artist                   | string (Muse)
+      /// | title                    | string (American Pie)
+      /// | rating                   | float - range is between 0 and 10
+      /// | userrating               | integer - range is 1..10
+      /// | lyrics                   | string (On a dark desert highway...)
+      /// | playcount                | integer (2) - number of times this item has been played
+      /// | lastplayed               | string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
+      /// | mediatype                | string - "music", "song", "album", "artist"
+      /// | listeners                | integer (25614)
+      /// | musicbrainztrackid       | string (cd1de9af-0b71-4503-9f96-9f5efe27923c)
+      /// | musicbrainzartistid      | string (d87e52c5-bb8d-4da8-b941-9f4928627dc8)
+      /// | musicbrainzalbumid       | string (24944755-2f68-3778-974e-f572a9e30108)
+      /// | musicbrainzalbumartistid | string (d87e52c5-bb8d-4da8-b941-9f4928627dc8)
+      /// | comment                  | string (This is a great song)
       ///
       /// __Picture Values__:
       /// | Info label    | Description                                        |

@@ -859,7 +859,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   if (action == "android.intent.action.VIEW")
   {
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(
-                                         new CFileItem(GetFilenameFromIntent(intent))));
+                                                 new CFileItem(GetFilenameFromIntent(intent), false)));
   }
 }
 
