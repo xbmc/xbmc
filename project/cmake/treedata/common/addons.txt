@@ -1,3 +1,2 @@
-lib/addons/library.kodi.audioengine KODI_audioengine
 lib/addons/library.kodi.guilib      KODI_guilib
 lib/addons/library.xbmc.addon       XBMC_addon
