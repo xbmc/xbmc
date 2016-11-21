@@ -25,15 +25,15 @@ VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
 
 DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/addons.a \
-                   xbmc/addons/binary/interfaces/addon-interfaces.a \
-                   xbmc/addons/binary/interfaces/api1/Addon/addon-callbacks-addon.a \
-                   xbmc/addons/binary/interfaces/api1/AudioDSP/addon-callbacks-audiodsp.a \
-                   xbmc/addons/binary/interfaces/api1/AudioEngine/addon-callbacks-audioengine.a \
-                   xbmc/addons/binary/interfaces/api1/Codec/addon-callbacks-codec.a \
-                   xbmc/addons/binary/interfaces/api1/GUI/addon-callbacks-gui.a \
-                   xbmc/addons/binary/interfaces/api1/InputStream/addon-callbacks-inputstream.a \
-                   xbmc/addons/binary/interfaces/api1/Peripheral/addon-callbacks-peripheral.a \
-                   xbmc/addons/binary/interfaces/api1/PVR/addon-callbacks-pvr.a \
+                   xbmc/addons/interfaces/addon-interfaces.a \
+                   xbmc/addons/interfaces/Addon/addon-callbacks-addon.a \
+                   xbmc/addons/interfaces/AudioDSP/addon-callbacks-audiodsp.a \
+                   xbmc/addons/interfaces/AudioEngine/addon-callbacks-audioengine.a \
+                   xbmc/addons/interfaces/Codec/addon-callbacks-codec.a \
+                   xbmc/addons/interfaces/GUI/addon-callbacks-gui.a \
+                   xbmc/addons/interfaces/InputStream/addon-callbacks-inputstream.a \
+                   xbmc/addons/interfaces/Peripheral/addon-callbacks-peripheral.a \
+                   xbmc/addons/interfaces/PVR/addon-callbacks-pvr.a \
                    xbmc/contrib/kissfft/kissfft.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
