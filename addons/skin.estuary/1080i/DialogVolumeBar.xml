@@ -33,7 +33,7 @@
 				<top>-11</top>
 				<width>100</width>
 				<height>100</height>
-				<texture>dialogs/volume/progress/p$INFO[Control.GetLabel(20)].png</texture>
+				<texture>$INFO[Control.GetLabel(20),dialogs/volume/progress/p,.png]</texture>
 				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
 			</control>
 			<control type="image">

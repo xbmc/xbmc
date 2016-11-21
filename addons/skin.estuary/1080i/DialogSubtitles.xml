@@ -107,7 +107,7 @@
 						<top>5</top>
 						<width>50</width>
 						<height>50</height>
-						<texture>windows/subtitles/flags/$INFO[ListItem.Thumb].png</texture>
+						<texture>$INFO[ListItem.Thumb,windows/subtitles/flags/,.png]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -151,7 +151,7 @@
 						<top>10</top>
 						<width>100</width>
 						<height>45</height>
-						<texture fallback="flags/starrating/rating0.png">flags/starrating/rating$INFO[ListItem.ActualIcon].png</texture>
+						<texture fallback="flags/starrating/rating0.png">$INFO[ListItem.ActualIcon,flags/starrating/rating,.png]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 				</itemlayout>
@@ -177,7 +177,7 @@
 						<top>5</top>
 						<width>50</width>
 						<height>50</height>
-						<texture>windows/subtitles/flags/$INFO[ListItem.Thumb].png</texture>
+						<texture>$INFO[ListItem.Thumb,windows/subtitles/flags/,.png]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -221,7 +221,7 @@
 						<top>10</top>
 						<width>100</width>
 						<height>45</height>
-						<texture fallback="flags/starrating/rating0.png">flags/starrating/rating$INFO[ListItem.ActualIcon].png</texture>
+						<texture fallback="flags/starrating/rating0.png">$INFO[ListItem.ActualIcon,flags/starrating/rating,.png]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 				</focusedlayout>

@@ -57,7 +57,7 @@
 				<top>440</top>
 				<width>200</width>
 				<height>200</height>
-				<texture colordiffuse="button_focus">dialogs/volume/progress/p$INFO[Player.CacheLevel].png</texture>
+				<texture colordiffuse="button_focus">$INFO[Player.CacheLevel,dialogs/volume/progress/p,.png]</texture>
 			</control>
 			<control type="label" id="1">
 				<description>buffering value</description>

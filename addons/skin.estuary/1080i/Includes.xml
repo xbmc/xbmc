@@ -973,7 +973,7 @@
 			<height>50</height>
 			<fadetime>300</fadetime>
 			<aspectratio align="left">keep</aspectratio>
-			<texture colordiffuse="button_focus">weather/small/$INFO[Weather.FanartCode].png</texture>
+			<texture colordiffuse="button_focus">$INFO[Weather.FanartCode,weather/small/,.png]</texture>
 			<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![String.IsEqual(Weather.FanartCode,na) + String.Contains(Weather.Conditions,/)]</visible>
 		</control>
 	</include>
