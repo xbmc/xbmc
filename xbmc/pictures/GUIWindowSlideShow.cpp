@@ -633,6 +633,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
 void CGUIWindowSlideShow::Render()
 {
+  if (m_slides.empty())
+    return;
+
   g_graphicsContext.Clear(0xff000000);
 
   if (m_slides.at(m_iCurrentSlide)->IsVideo())
