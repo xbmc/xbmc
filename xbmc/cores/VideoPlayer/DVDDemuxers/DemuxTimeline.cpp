@@ -47,8 +47,6 @@ void CDemuxTimeline::Flush()
   m_curChapter->demuxer->Flush();
 }
 
-#define GET_PTS(x) ((x)->dts!=DVD_NOPTS_VALUE ? (x)->dts : (x)->pts)
-
 DemuxPacket* CDemuxTimeline::Read()
 {
   DemuxPacket *packet = nullptr;
@@ -56,7 +54,9 @@ DemuxPacket* CDemuxTimeline::Read()
   double dispPts;
 
   packet = m_curChapter->demuxer->Read();
-  packet && (pts = GET_PTS(packet));
+  if (packet)
+    pts = (packet->dts != DVD_NOPTS_VALUE ? packet->dts : packet->pts);
+
   while (
     !packet ||
     pts + packet->duration < DVD_MSEC_TO_TIME(m_curChapter->startSrcTime) ||
@@ -67,7 +67,8 @@ DemuxPacket* CDemuxTimeline::Read()
       if (!SwitchToNextDemuxer())
         return nullptr;
     packet = m_curChapter->demuxer->Read();
-    packet && (pts = GET_PTS(packet));
+    if (packet)
+      pts = (packet->dts != DVD_NOPTS_VALUE ? packet->dts : packet->pts);
   }
 
   dispPts = pts + DVD_MSEC_TO_TIME(m_curChapter->shiftTime());
