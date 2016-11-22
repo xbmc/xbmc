@@ -460,7 +460,7 @@ bool CxImage::CreateFromArray(BYTE* pArray,DWORD dwWidth,DWORD dwHeight,DWORD dw
 				src+=4;
 			}
 		} else {
-			memcpy(dst,src,min(info.dwEffWidth,dwBytesperline));
+			memcpy(dst,src,cxmin(info.dwEffWidth,dwBytesperline));
 		}
 	}
 	return true;
@@ -500,7 +500,7 @@ bool CxImage::CreateFromMatrix(BYTE** ppMatrix,DWORD dwWidth,DWORD dwHeight,DWOR
 					src+=4;
 				}
 			} else {
-				memcpy(dst,src,min(info.dwEffWidth,dwBytesperline));
+				memcpy(dst,src,cxmin(info.dwEffWidth,dwBytesperline));
 			}
 		}
 	}

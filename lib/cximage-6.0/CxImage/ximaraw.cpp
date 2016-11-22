@@ -216,7 +216,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
 
 		DWORD size = dcr.width * (dcr.colors*dcr.opt.output_bps/8);
 		RGBtoBGR(ppm,size);
-		memcpy(GetBits(dcr.height - 1 - row), ppm, min(size,GetEffWidth()));
+		memcpy(GetBits(dcr.height - 1 - row), ppm, cxmin(size,GetEffWidth()));
 	}
 	free (ppm);
 
@@ -298,7 +298,7 @@ bool CxImageRAW::GetExifThumbnail(const char *filename, const char *outname, int
 			// Resizing.
       		if (image.GetWidth() > 256 || image.GetHeight() > 256)
 		    {
-				float amount = 256.0f / max(image.GetWidth(), image.GetHeight());
+				float amount = 256.0f / cxmax(image.GetWidth(), image.GetHeight());
 				image.Resample((long)(image.GetWidth() * amount), (long)(image.GetHeight() * amount), 0);
 		    }
 	      	

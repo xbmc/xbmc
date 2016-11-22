@@ -110,7 +110,7 @@ bool CxImage::HistogramStretch(long method, double threshold)
 	// calculate LUT
 	BYTE lut[256];
 	for (x = 0; x <256; x++){
-		lut[x] = (BYTE)max(0,min(255,(255 * (x - minc) / (maxc - minc))));
+		lut[x] = (BYTE)cxmax(0,cxmin(255,(255 * (x - minc) / (maxc - minc))));
 	}
 
 	for (y=0; y<head.biHeight; y++)	{
@@ -152,7 +152,7 @@ bool CxImage::HistogramStretch(long method, double threshold)
 		// calculate LUT
 		BYTE lut[256];
 		for (x = 0; x <256; x++){
-			lut[x] = (BYTE)max(0,min(255,(255 * (x - minc) / (maxc - minc))));
+			lut[x] = (BYTE)cxmax(0,cxmin(255,(255 * (x - minc) / (maxc - minc))));
 		}
 
 		// normalize image
@@ -225,7 +225,7 @@ bool CxImage::HistogramStretch(long method, double threshold)
 		BYTE range = maxR - minR;
 		if (range != 0)	{
 			for (x = 0; x <256; x++){
-				lutR[x] = (BYTE)max(0,min(255,(255 * (x - minR) / range)));
+				lutR[x] = (BYTE)cxmax(0,cxmin(255,(255 * (x - minR) / range)));
 			}
 		} else lutR[minR] = minR;
 
@@ -233,7 +233,7 @@ bool CxImage::HistogramStretch(long method, double threshold)
 		range = maxG - minG;
 		if (range != 0)	{
 			for (x = 0; x <256; x++){
-				lutG[x] = (BYTE)max(0,min(255,(255 * (x - minG) / range)));
+				lutG[x] = (BYTE)cxmax(0,cxmin(255,(255 * (x - minG) / range)));
 			}
 		} else lutG[minG] = minG;
 			
@@ -241,7 +241,7 @@ bool CxImage::HistogramStretch(long method, double threshold)
 		range = maxB - minB;
 		if (range != 0)	{
 			for (x = 0; x <256; x++){
-				lutB[x] = (BYTE)max(0,min(255,(255 * (x - minB) / range)));
+				lutB[x] = (BYTE)cxmax(0,cxmin(255,(255 * (x - minB) / range)));
 			}
 		} else lutB[minB] = minB;
 
@@ -292,7 +292,7 @@ bool CxImage::HistogramStretch(long method, double threshold)
 		// calculate LUT
 		BYTE lut[256];
 		for (x = 0; x <256; x++){
-			lut[x] = (BYTE)max(0,min(255,(255 * (x - minc) / (maxc - minc))));
+			lut[x] = (BYTE)cxmax(0,cxmin(255,(255 * (x - minc) / (maxc - minc))));
 		}
 
 		for(y=0; y<head.biHeight; y++){

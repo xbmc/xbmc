@@ -145,7 +145,7 @@ bool CxImageJBG::Encode(CxFile * hFile)
 	jbg_enc_init(&jbig_state, w, h, planes, &buffer, jbig_data_out, hFile);
 
     //jbg_enc_layers(&jbig_state, 2);
-    //jbg_enc_lrlmax(&jbig_state, 800, 600);
+    //jbg_enc_lrlcxmax(&jbig_state, 800, 600);
 
 	// Specify a few other options (each is ignored if negative)
 	int dl = -1, dh = -1, d = -1, l0 = -1, mx = -1;
