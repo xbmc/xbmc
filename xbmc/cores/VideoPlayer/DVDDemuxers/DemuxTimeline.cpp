@@ -30,7 +30,7 @@ bool CDemuxTimeline::SwitchToNextDemuxer()
 
 void CDemuxTimeline::Reset()
 {
-  for (auto &demuxer : m_demuxer)
+  for (auto &demuxer : m_demuxers)
     demuxer->Reset();
   m_curChapter = m_chapterMap.begin()->second;
   if (m_curChapter->startSrcTime != 0)
@@ -135,7 +135,7 @@ int64_t CDemuxTimeline::GetChapterPos(int chapterIdx)
 
 void CDemuxTimeline::SetSpeed(int iSpeed)
 {
-  for (auto &demuxer : m_demuxer)
+  for (auto &demuxer : m_demuxers)
     demuxer->SetSpeed(iSpeed);
 }
 
@@ -161,7 +161,7 @@ std::string CDemuxTimeline::GetFileName()
 
 void CDemuxTimeline::EnableStream(int id, bool enable)
 {
-  for (auto &demuxer : m_demuxer)
+  for (auto &demuxer : m_demuxers)
     demuxer->EnableStream(demuxer->GetDemuxerId(), id, enable);
 }
 
@@ -217,7 +217,7 @@ CDemuxTimeline* CDemuxTimeline::CreateTimelineFromMatroskaParser(CDVDDemux *prim
 
   std::unique_ptr<CDemuxTimeline> timeline(new CDemuxTimeline);
   timeline->m_primaryDemuxer = primaryDemuxer;
-  timeline->m_demuxer.emplace_back(primaryDemuxer);
+  timeline->m_demuxers.emplace_back(primaryDemuxer);
 
   // collect needed segment uids
   std::set<MatroskaSegmentUID> neededSegmentUIDs;
@@ -254,7 +254,7 @@ CDemuxTimeline* CDemuxTimeline::CreateTimelineFromMatroskaParser(CDVDDemux *prim
       if(demuxer->Open(input2))
       {
         segmentDemuxer[mkv2.segment.infos.uid] = demuxer.get();
-        timeline->m_demuxer.emplace_back(std::move(demuxer));
+        timeline->m_demuxers.emplace_back(std::move(demuxer));
         timeline->m_inputStreams.emplace_back(std::move(uInput2));
       }
       if (neededSegmentUIDs.size() == 0)

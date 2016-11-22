@@ -73,9 +73,8 @@ private:
 
   CDVDDemux *m_primaryDemuxer;
 
-  std::list<std::shared_ptr<CDVDDemux>> m_demuxer;
+  std::list<std::shared_ptr<CDVDDemux>> m_demuxers;
   std::list<std::shared_ptr<CDVDInputStream>> m_inputStreams;
-  //std::map<CDVDDemux*,DemuxerInfo> m_demuxerInfos;
 
   std::vector<ChapterInfo> m_chapters;
   std::map<int,ChapterInfo*> m_chapterMap;  // maps chapter end display time in msec to chapter info
