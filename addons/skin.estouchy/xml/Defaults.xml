@@ -6,7 +6,7 @@
 		<width>300</width>
 		<height>42</height>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 		<font>font20</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>grey2</disabledcolor>
@@ -20,7 +20,7 @@
 		<width>300</width>
 		<height>42</height>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 		<font>font20</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>grey2</disabledcolor>
@@ -51,7 +51,7 @@
 		<posx>0</posx>
 		<posy>0</posy>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 	</default>
 	<default type="progress">
 		<posx>0</posx>
@@ -77,7 +77,7 @@
 		<textureradioondisabled colordiffuse="40FFFFFF">radiobutton_on.png</textureradioondisabled>
 		<textureradiooffdisabled colordiffuse="40FFFFFF">radiobutton_off.png</textureradiooffdisabled>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 		<label>215</label>
 		<font>font20</font>
 		<textcolor>white</textcolor>
@@ -90,7 +90,7 @@
 		<posx>0</posx>
 		<posy>0</posy>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 	</default>
 	<default type="slider">
 		<controloffsetx>75</controloffsetx>
@@ -105,7 +105,7 @@
 		<textoffsetx>20</textoffsetx>
 		<aligny>center</aligny>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 		<sliderwidth>350</sliderwidth>
 		<sliderheight>40</sliderheight>
 		<texturesliderbar>slider.png</texturesliderbar>
@@ -146,7 +146,7 @@
 		<spinwidth>70</spinwidth>
 		<spinheight>45</spinheight>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 		<textureup>arrow_up.png</textureup>
 		<texturedown>arrow_down.png</texturedown>
 		<textureupfocus colordiffuse="blue">arrow_up.png</textureupfocus>

@@ -563,13 +563,6 @@
 			<include>VisibleFadeEffect</include>
 			<visible>[Container.Content(Artists) + !String.IsEmpty(Window.Property(ShowAlbumList))] | [Container.Content(Albums) + !String.IsEmpty(Window.Property(ShowSongList))]</visible>
 			<itemlayout condition="Container.Content(Albums)" height="60" width="1000">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>1000</width>
-					<height>60</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
 				<control type="label">
 					<posx>30</posx>
 					<posy>0</posy>

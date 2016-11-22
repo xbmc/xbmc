@@ -617,13 +617,6 @@
 			<include>VisibleFadeEffect</include>
 			<itemlayout height="100" width="500">
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>500</width>
-					<height>100</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
-				<control type="image">
 					<posx>10</posx>
 					<posy>4</posy>
 					<width>100</width>
