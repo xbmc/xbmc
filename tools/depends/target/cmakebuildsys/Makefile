@@ -12,7 +12,7 @@ endif
 
 all:
 	mkdir -p $(CORE_SOURCE_DIR)/build
-	cd $(CORE_SOURCE_DIR)/build; $(CMAKE) -DCMAKE_BUILD_TYPE=$(Configuration) $(CORE_SOURCE_DIR)/project/cmake
+	cd $(CORE_SOURCE_DIR)/build; $(CMAKE) -DCMAKE_BUILD_TYPE=$(Configuration) -DENABLE_INTERNAL_CROSSGUID=OFF -DENABLE_INTERNAL_FFMPEG=OFF $(CORE_SOURCE_DIR)/project/cmake
 
 clean:
 	cd $(CORE_SOURCE_DIR)/build; $(MAKE) clean
