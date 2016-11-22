@@ -11,6 +11,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "MatroskaParser.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -224,7 +225,7 @@ CDemuxTimeline* CDemuxTimeline::CreateTimeline(CDVDDemux *primaryDemuxer)
   std::map<MatroskaSegmentUID,CDVDDemux*> segmentDemuxer;
   segmentDemuxer[""] = primaryDemuxer;
   segmentDemuxer[mkv.segment.infos.uid] = primaryDemuxer;
-  std::list<std::string> searchDirs({""}); // should be a global setting
+  auto &searchDirs = g_advancedSettings.m_videoMkvSegmentsSearchDirs;
   std::string filename = primaryDemuxer->GetFileName();
   std::string dirname = filename.substr(0, filename.rfind('/') + 1);
   for (auto &subDir : searchDirs)

@@ -590,6 +590,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
     XMLUtils::GetBoolean(pElement,"mediacodecforcesoftwarerendering",m_mediacodecForceSoftwareRendering);
 
+    auto pMkvSegmentsSearchDirs = pElement->FirstChildElement("mkvsegmentssearchdirs");
+    if (pMkvSegmentsSearchDirs)
+      XMLUtils::GetStringArray(pMkvSegmentsSearchDirs, "subdir", m_videoMkvSegmentsSearchDirs, true, "");
+    else
+      m_videoMkvSegmentsSearchDirs = std::vector<std::string>{""};
+
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)
     {
