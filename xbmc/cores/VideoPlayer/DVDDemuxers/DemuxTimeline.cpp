@@ -202,7 +202,7 @@ CDemuxTimeline* CDemuxTimeline::CreateTimeline(CDVDDemux *primaryDemuxer)
     return nullptr;
 
    // multiple editions unsupported (at the moment)
-  if (mkv.segment.chapters.editions.size() != 1)
+  if (mkv.segment.chapters.editions.size() > 0)
     return nullptr;
   auto &edition = mkv.segment.chapters.editions.front();
   // only handle ordered chapters
