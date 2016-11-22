@@ -479,17 +479,25 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     ||  info.m_displayName.find("DisplayPort") != std::string::npos)
     {
       info.m_deviceType = AE_DEVTYPE_HDMI;
-      info.m_dataFormats.push_back(AE_FMT_AC3);
-      info.m_dataFormats.push_back(AE_FMT_DTS);
-      info.m_dataFormats.push_back(AE_FMT_EAC3);
-      info.m_dataFormats.push_back(AE_FMT_TRUEHD);
-      info.m_dataFormats.push_back(AE_FMT_DTSHD);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+      info.m_dataFormats.push_back(AE_FMT_RAW);
     }
     else if (info.m_displayName.find("Digital") != std::string::npos)
     {
       info.m_deviceType = AE_DEVTYPE_IEC958;
-      info.m_dataFormats.push_back(AE_FMT_AC3);
-      info.m_dataFormats.push_back(AE_FMT_DTS);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      info.m_dataFormats.push_back(AE_FMT_RAW);
     }
     else
     {
