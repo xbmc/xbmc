@@ -51,6 +51,7 @@ public:
   static const std::string SETTING_LOOKANDFEEL_SKINSETTINGS;
   static const std::string SETTING_LOOKANDFEEL_SKINTHEME;
   static const std::string SETTING_LOOKANDFEEL_SKINCOLORS;
+  static const std::string SETTING_FILELISTS_VIDEOACTION;
   static const std::string SETTING_LOOKANDFEEL_FONT;
   static const std::string SETTING_LOOKANDFEEL_SKINZOOM;
   static const std::string SETTING_LOOKANDFEEL_STARTUPWINDOW;

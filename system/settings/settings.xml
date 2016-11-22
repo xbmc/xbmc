@@ -317,6 +317,17 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="filelists.videoaction" type="string" label="38024" help="38025">
+          <level>1</level>
+          <default>PLAY</default>
+          <constraints>
+            <options>videoactions</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
       </group>
     </category>
     <category id="screensaver" label="360" help="36128">
@@ -1060,7 +1071,7 @@
           <level>1</level>
           <default></default>
           <constraints>
-            <allowempty>true</allowempty>		  
+            <allowempty>true</allowempty>
             <addontype>xbmc.subtitle.module</addontype>
           </constraints>
           <control type="button" format="addon">

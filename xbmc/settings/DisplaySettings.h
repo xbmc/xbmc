@@ -30,6 +30,9 @@
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
+#define VIDEO_ACTION_PLAY "PLAY"
+#define VIDEO_ACTION_INFO "INFO"
+
 class TiXmlNode;
 
 class CDisplaySettings : public ISettingCallback, public ISubSettings,
@@ -98,6 +101,7 @@ public:
   static void SettingOptionsStereoscopicModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   static void SettingOptionsPreferredStereoscopicViewModesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   static void SettingOptionsMonitorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsVideoActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
 protected:
   CDisplaySettings();
