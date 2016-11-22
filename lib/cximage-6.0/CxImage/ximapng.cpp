@@ -206,9 +206,9 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	} else SetGrayPalette(); //<DP> needed for grayscale PNGs
 	
 #ifdef USE_NEW_LIBPNG_API
-	int nshift = max(0,(_bit_depth>>3)-1)<<3;
+	int nshift = cxmax(0,(_bit_depth>>3)-1)<<3;
 #else
-	int nshift = max(0,(info_ptr->bit_depth>>3)-1)<<3;
+	int nshift = cxmax(0,(info_ptr->bit_depth>>3)-1)<<3;
 #endif
 
 #ifdef USE_NEW_LIBPNG_API
@@ -255,10 +255,10 @@ bool CxImagePNG::Decode(CxFile *hFile)
 			if (pal){
 				DWORD ip;
 #ifdef USE_NEW_LIBPNG_API
-				for (ip=0;ip<min(head.biClrUsed,(unsigned long)_num_trans);ip++)
+				for (ip=0;ip<cxmin(head.biClrUsed,(unsigned long)_num_trans);ip++)
 					pal[ip].rgbReserved=_trans_alpha[ip];
 #else
-				for (ip=0;ip<min(head.biClrUsed,(unsigned long)info_ptr->num_trans);ip++)
+				for (ip=0;ip<cxmin(head.biClrUsed,(unsigned long)info_ptr->num_trans);ip++)
 #if PNG_LIBPNG_VER > 10399
 					pal[ip].rgbReserved=info_ptr->trans_alpha[ip];
 #else
@@ -737,9 +737,9 @@ bool CxImagePNG::Encode(CxFile *hFile)
 #endif // CXIMAGE_SUPPORT_ALPHA	// <vho>
 
 #ifdef USE_NEW_LIBPNG_API
-	int row_size = max(info.dwEffWidth, (_width * _channels * _bit_depth / 8));
+	int row_size = cxmax(info.dwEffWidth, (_width * _channels * _bit_depth / 8));
 #else
-	int row_size = max(info.dwEffWidth, info_ptr->width*info_ptr->channels*(info_ptr->bit_depth/8));
+	int row_size = cxmax(info.dwEffWidth, info_ptr->width*info_ptr->channels*(info_ptr->bit_depth/8));
 	info_ptr->rowbytes = row_size;
 #endif
 	BYTE *row_pointers = new BYTE[row_size];

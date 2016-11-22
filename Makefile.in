@@ -35,6 +35,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/cores/DllLoader/exports/exports.a \
                    xbmc/cores/DllLoader/exports/util/exports_utils.a \
                    xbmc/cores/ExternalPlayer/ExternalPlayer.a \
+                   xbmc/cores/Enigma2Player/Enigma2Player.a \
                    xbmc/cores/VideoRenderers/VideoRenderer.a \
                    xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
                    xbmc/cores/cores.a \
@@ -434,7 +435,15 @@ endif
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
+ifeq (@USE_DVBBOX_EGL@,1)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic xbmc/windowing/egl/gles_init.a -ldvb_base -lnxpl -ldvb_client
+else
+ifeq (@USE_DVBBOXARM_EGL@,1)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic xbmc/windowing/egl/gles_init.a -ldvb_base -lnxpl -ldvb_client
+else
 	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic
+endif
+endif
 endif
 
 @APP_NAME_LC@-xrandr: xbmc-xrandr.c

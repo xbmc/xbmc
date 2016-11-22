@@ -268,7 +268,11 @@ CCPUInfo::CCPUInfo(void)
   if (m_fProcTemperature == NULL)   
     m_fProcTemperature = fopen("/sys/class/thermal/thermal_zone0/temp", "r");  // On Raspberry PIs
 
+#if defined(TARGET_DVBBOX) || defined(TARGET_DVBBOXARM) // oskwon
+  m_fCPUFreq = fopen ("/sys/devices/platform/brcmstb/cpu_khz", "r");
+#else
   m_fCPUFreq = fopen ("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq", "r");
+#endif
   if (!m_fCPUFreq)
   {
     m_cpuInfoForFreq = true;
@@ -320,6 +324,29 @@ CCPUInfo::CCPUInfo(void)
           StringUtils::Trim(m_cores[nCurrId].m_strModel);
         }
       }
+#if defined(TARGET_DVBBOX) || defined(TARGET_DVBBOXARM) // oskwon
+      else if (strncmp(buffer, "system type", strlen("system type"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cpuModel = needle;
+          m_cores[nCurrId].m_strModel = m_cpuModel;
+          StringUtils::Trim(m_cores[nCurrId].m_strModel);
+        }
+      }
+      else if (strncmp(buffer, "cpu model", strlen("cpu model"))==0)
+      {
+        char *needle = strstr(buffer, ":");
+        if (needle && strlen(needle)>3)
+        {
+          needle+=2;
+          m_cores[nCurrId].m_strVendor = needle;
+          StringUtils::Trim(m_cores[nCurrId].m_strVendor);
+        }
+      }
+#endif
       else if (strncmp(buffer, "BogoMIPS", strlen("BogoMIPS"))==0)
       {
         char *needle = strstr(buffer, ":");

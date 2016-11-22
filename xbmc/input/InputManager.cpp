@@ -585,6 +585,22 @@ bool CInputManager::OnKey(const CKey& key)
       return true;
     }
   }
+#if defined(TARGET_DVBBOX) || defined(TARGET_DVBBOXARM)
+  if (StringUtils::StartsWithNoCase(action.GetName(), "SwitchToEnigma2"))
+  {
+    CLog::LogF(LOGDEBUG, "action %s [%d], switch to enigma2", action.GetName().c_str(), action.GetID());
+    if (!system("kodiext -P $PPID -E"))
+    {
+      if (g_application.m_pPlayer->IsPlaying())
+      {
+          g_application.m_pPlayer->Pause();
+      }
+      return true;
+    }
+    else
+      return false;
+  }
+#endif
 
   g_application.ResetScreenSaver();
 
@@ -620,6 +636,21 @@ bool CInputManager::OnKey(const CKey& key)
           useKeyboard = true;
       }
     }
+#if defined(TARGET_DVBBOX) // oskwon
+//    printf("----->> %x\n", key.GetVKey());
+    switch(key.GetVKey())
+    {
+      case 0x0d:
+      case 0x80:
+      case 0x81:
+      case 0x82:
+      case 0x83:
+	  	if (iWin == WINDOW_DIALOG_KEYBOARD) {
+	  	  useKeyboard = false;
+        }
+	  	break;
+    }
+#endif
     if (useKeyboard)
     {
       // use the virtualkeyboard section of the keymap, and send keyboard-specific or navigation

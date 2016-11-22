@@ -398,8 +398,8 @@ void CxImage::RGBtoBGR(BYTE *buffer, int length)
 {
 	if (buffer && (head.biClrUsed==0)){
 		BYTE temp;
-		length = min(length,(int)info.dwEffWidth);
-		length = min(length,(int)(3*head.biWidth));
+		length = cxmin(length,(int)info.dwEffWidth);
+		length = cxmin(length,(int)(3*head.biWidth));
 		for (int i=0;i<length;i+=3){
 			temp = buffer[i]; buffer[i] = buffer[i+2]; buffer[i+2] = temp;
 		}
@@ -444,7 +444,7 @@ void CxImage::SetPalette(DWORD n, BYTE *r, BYTE *g, BYTE *b)
 	if (!g) g = r;
 	if (!b) b = g;
 	RGBQUAD* ppal=GetPalette();
-	DWORD m=min(n,head.biClrUsed);
+	DWORD m=cxmin(n,head.biClrUsed);
 	for (DWORD i=0; i<m;i++){
 		ppal[i].rgbRed=r[i];
 		ppal[i].rgbGreen=g[i];
@@ -457,7 +457,7 @@ void CxImage::SetPalette(rgb_color *rgb,DWORD nColors)
 {
 	if ((!rgb)||(pDib==NULL)||(head.biClrUsed==0)) return;
 	RGBQUAD* ppal=GetPalette();
-	DWORD m=min(nColors,head.biClrUsed);
+	DWORD m=cxmin(nColors,head.biClrUsed);
 	for (DWORD i=0; i<m;i++){
 		ppal[i].rgbRed=rgb[i].r;
 		ppal[i].rgbGreen=rgb[i].g;
@@ -469,7 +469,7 @@ void CxImage::SetPalette(rgb_color *rgb,DWORD nColors)
 void CxImage::SetPalette(RGBQUAD* pPal,DWORD nColors)
 {
 	if ((pPal==NULL)||(pDib==NULL)||(head.biClrUsed==0)) return;
-	memcpy(GetPalette(),pPal,min(GetPaletteSize(),nColors*sizeof(RGBQUAD)));
+	memcpy(GetPalette(),pPal,cxmin(GetPaletteSize(),nColors*sizeof(RGBQUAD)));
 	info.last_c_isvalid = false;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -654,10 +654,10 @@ void CxImage::SetClrImportant(DWORD ncolors)
 
 	switch(head.biBitCount){
 	case 1:
-		head.biClrImportant = min(ncolors,2);
+		head.biClrImportant = cxmin(ncolors,2);
 		break;
 	case 4:
-		head.biClrImportant = min(ncolors,16);
+		head.biClrImportant = cxmin(ncolors,16);
 		break;
 	case 8:
 		head.biClrImportant = ncolors;

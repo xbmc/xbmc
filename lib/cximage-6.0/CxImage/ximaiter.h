@@ -140,7 +140,7 @@ inline void CImageIterator::SetY(int y)
 inline void CImageIterator::SetRow(BYTE *buf, int n)
 {
 	if (n<0) n = (int)ima->GetEffWidth();
-	else n = min(n,(int)ima->GetEffWidth());
+	else n = cxmin(n,(int)ima->GetEffWidth());
 
 	if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0)) memcpy(IterImage,buf,n);
 }
@@ -148,7 +148,7 @@ inline void CImageIterator::SetRow(BYTE *buf, int n)
 inline void CImageIterator::GetRow(BYTE *buf, int n)
 {
 	if ((IterImage!=NULL)&&(buf!=NULL)&&(n>0))
-		memcpy(buf,IterImage,min(n,(int)ima->GetEffWidth()));
+		memcpy(buf,IterImage,cxmin(n,(int)ima->GetEffWidth()));
 }
 /////////////////////////////////////////////////////////////////////
 inline BYTE* CImageIterator::GetRow()

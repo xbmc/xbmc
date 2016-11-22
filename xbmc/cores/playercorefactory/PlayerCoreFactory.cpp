@@ -358,6 +358,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
+      if (type == "enigma2player" ) eCore = EPC_E2PLAYER;
 
       if (eCore != EPC_NONE)
       {

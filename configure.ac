@@ -669,14 +669,13 @@ case $host in
      use_wayland=no
      build_shared_lib=yes
      ;;
-  mips*-*-linux-gnu*)
+  mips*-*-linux-gnu*|mipsel*linux)
      target_platform=target_linux
      ARCH="mips"
      use_arch="mips"
      use_joystick=no
-     use_gles=no
-     use_gl=yes
-     use_sdl=yes
+     use_gles=yes
+     use_x11=no
      use_wayland=no
      USE_STATIC_FFMPEG=1
      ;;
@@ -706,6 +705,32 @@ case $use_platform in
      AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
      USE_OMXLIB=1; AC_DEFINE([HAVE_OMXLIB],[1],["Define to 1 if OMX libs is enabled"])
      USE_MMAL=1; AC_DEFINE([HAS_MMAL],[1],["Define to 1 if MMAL libs is enabled"])
+     CFLAGS="$CFLAGS"
+     CXXFLAGS="$CXXFLAGS"
+     ;;
+  dvbbox)
+     target_platform=target_dvbbox
+     ARCH="mips"
+     use_arch="mips"
+     use_joystick=no
+     use_gles=yes
+     use_x11=no
+     use_wayland=no
+     AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
+     USE_DVBBOX_EGL=1
+     CFLAGS="$CFLAGS"
+     CXXFLAGS="$CXXFLAGS"
+     ;;
+  dvbboxarm)
+     target_platform=target_dvbbox
+     ARCH="arm"
+     use_arch="arm"
+     use_joystick=no
+     use_gles=yes
+     use_x11=no
+     use_wayland=no
+     AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
+     USE_DVBBOXARM_EGL=1
      CFLAGS="$CFLAGS"
      CXXFLAGS="$CXXFLAGS"
      ;;
@@ -1122,7 +1147,7 @@ int main() {
   )])
 AC_LANG_POP([C++])
 
-if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi" || test "${target_platform}" = "target_android"; then
+if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi" || test "${target_platform}" = "target_android" || test "${target_platform}" = "target_dvbbox"; then
   PKG_CHECK_MODULES([UUID], [uuid],, AC_MSG_ERROR(libuuid not found))
 fi
 
@@ -1621,13 +1646,23 @@ else
 fi
 
 # FFmpeg
-FFMPEG_LIBNAMES="libavcodec >= 56.26.100
-                 libavfilter >= 5.11.102
-                 libavformat >= 56.25.101
-                 libavutil >= 54.20.100
-                 libpostproc >= 53.3.100
-                 libswscale >= 3.1.101
-                 libswresample >= 1.1.100"
+if test "$with_ffmpeg" = "shared"; then
+  FFMPEG_LIBNAMES="libavcodec-ffmpeg-kodi >= 56.26.100
+                   libavfilter-ffmpeg-kodi >= 5.11.102
+                   libavformat-ffmpeg-kodi >= 56.25.101
+                   libavutil-ffmpeg-kodi >= 54.20.100
+                   libpostproc-ffmpeg-kodi >= 53.3.100
+                   libswscale-ffmpeg-kodi >= 3.1.101
+                   libswresample-ffmpeg-kodi >= 1.1.100"
+else
+  FFMPEG_LIBNAMES="libavcodec >= 56.26.100
+                   libavfilter >= 5.11.102
+                   libavformat >= 56.25.101
+                   libavutil >= 54.20.100
+                   libpostproc >= 53.3.100
+                   libswscale >= 3.1.101
+                   libswresample >= 1.1.100"
+fi
 
 ffmpeg_build="${abs_top_srcdir}/tools/depends/target/ffmpeg"
 FFMPEG_VER_SHA=$(grep "VERSION=" ${ffmpeg_build}/FFMPEG-VERSION | sed 's/VERSION=//g')
@@ -2489,6 +2524,8 @@ AC_SUBST(FFMPEG_LIBDIR)
 AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
 AC_SUBST(VORBISENC_ALL_LIBS)
+AC_SUBST(USE_DVBBOX_EGL)
+AC_SUBST(USE_DVBBOXARM_EGL)
 AC_SUBST(DCADEC_ALL_LIBS)
 AC_SUBST(USE_TOUCH_SKIN)
 AC_SUBST(USE_LIBAV_HACKS)

@@ -230,7 +230,7 @@ bool CxImage::CreateFromHANDLE(HANDLE hMem)
 		SetYDPI((long)floor(head.biYPelsPerMeter * 254.0 / 10000.0 + 0.5));
 
 		/*//copy the pixels (old way)
-		if((pHead->biCompression != BI_RGB) || (pHead->biBitCount == 32)){ //<Jörgen Alfredsson>
+		if((pHead->biCompression != BI_RGB) || (pHead->biBitCount == 32)){ //<JÃ¶rgen Alfredsson>
 			// BITFIELD case
 			// set the internal header in the dib
 			memcpy(pDib,&head,sizeof(head));
@@ -682,10 +682,10 @@ long CxImage::Draw(HDC hdc, long x, long y, long cx, long cy, RECT* pClipRect, b
 	RECT clipbox,paintbox;
 	GetClipBox(hdc,&clipbox);
 
-	paintbox.top = min(clipbox.bottom,max(clipbox.top,y));
-	paintbox.left = min(clipbox.right,max(clipbox.left,x));
-	paintbox.right = max(clipbox.left,min(clipbox.right,x+cx));
-	paintbox.bottom = max(clipbox.top,min(clipbox.bottom,y+cy));
+	paintbox.top = cxmin(clipbox.bottom,cxmax(clipbox.top,y));
+	paintbox.left = cxmin(clipbox.right,cxmax(clipbox.left,x));
+	paintbox.right = cxmax(clipbox.left,cxmin(clipbox.right,x+cx));
+	paintbox.bottom = cxmax(clipbox.top,cxmin(clipbox.bottom,y+cy));
 
 	long destw = paintbox.right - paintbox.left;
 	long desth = paintbox.bottom - paintbox.top;
@@ -730,12 +730,12 @@ long CxImage::Draw(HDC hdc, long x, long y, long cx, long cy, RECT* pClipRect, b
 
 				for(yy=0;yy<desth;yy++){
 					dy = head.biHeight-(ymax-yy-y)*fy;
-					sy = max(0L,(long)floor(dy));
+					sy = cxmax(0L,(long)floor(dy));
 					psrc = info.pImage+sy*info.dwEffWidth;
 					pdst = pbase+yy*ew;
 					for(xx=0;xx<destw;xx++){
 						dx = (xx+xmin-x)*fx;
-						sx = max(0L,(long)floor(dx));
+						sx = cxmax(0L,(long)floor(dx));
 #if CXIMAGE_SUPPORT_INTERPOLATION
 						if (bSmooth){
 							if (fx > 1 && fy > 1) { 
@@ -813,7 +813,7 @@ long CxImage::Draw(HDC hdc, long x, long y, long cx, long cy, RECT* pClipRect, b
 				
 				for(yy=0;yy<desth;yy++){
 					dy = head.biHeight-(ymax-yy-y)*fy;
-					sy = max(0L,(long)floor(dy));
+					sy = cxmax(0L,(long)floor(dy));
 
 					alphaoffset = sy*head.biWidth;
 					pdst = pbase + yy*ew;
@@ -821,7 +821,7 @@ long CxImage::Draw(HDC hdc, long x, long y, long cx, long cy, RECT* pClipRect, b
 
 					for(xx=0;xx<destw;xx++){
 						dx = (xx+xmin-x)*fx;
-						sx = max(0L,(long)floor(dx));
+						sx = cxmax(0L,(long)floor(dx));
 
 						if (bAlpha) a=pAlpha[alphaoffset+sx]; else a=255;
 						a =(BYTE)((a*(1+info.nAlphaMax))>>8);
@@ -1378,7 +1378,7 @@ void CxImage::InitTextInfo( CXTEXTINFO *txt )
     txt->b_outline = 0;     // default: no outline (OUTLINE NOT IMPLEMENTED AT THIS TIME)
     txt->b_round   = 20;    // default: rounding radius is 20% of the rectangle height
     // the text 
-    _stprintf( txt->text, _T("Sample Text 01234õû")); // text use TCHAR mappings <Cesar M>
+    _stprintf( txt->text, _T("Sample Text 01234ÃµÃ»")); // text use TCHAR mappings <Cesar M>
     txt->align = DT_CENTER;
     return;
 }
