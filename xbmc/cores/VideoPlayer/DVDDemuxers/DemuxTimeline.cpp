@@ -176,26 +176,20 @@ std::string CDemuxTimeline::GetStreamCodecName(int iStreamId)
 }
 
 
-CDemuxTimeline* CDemuxTimeline::CreateTimeline(CDVDDemux *demuxer)
-{
-  return CreateTimelineFromMatroskaParser(demuxer);
-  return CreateTimelineFromEbml(demuxer);
-}
-
 std::string segUidToHex(std::string uid)
 {
-	const char *hex = "0123456789abcdef";
-	std::string result("0x");
-	result.reserve(18);
-	for (unsigned char twoDigits : uid)
-	{
-		result.append(1, hex[(twoDigits >> 4) & 0xf]);
-		result.append(1, hex[twoDigits & 0xf]);
-	}
-	return result;
+  const char *hex = "0123456789abcdef";
+  std::string result("0x");
+  result.reserve(18);
+  for (unsigned char twoDigits : uid)
+  {
+    result.append(1, hex[(twoDigits >> 4) & 0xf]);
+    result.append(1, hex[twoDigits & 0xf]);
+  }
+  return result;
 }
 
-CDemuxTimeline* CDemuxTimeline::CreateTimelineFromMatroskaParser(CDVDDemux *primaryDemuxer)
+CDemuxTimeline* CDemuxTimeline::CreateTimeline(CDVDDemux *primaryDemuxer)
 {
   std::unique_ptr<CDVDInputStreamFile> inStream(new CDVDInputStreamFile(CFileItem(primaryDemuxer->GetFileName(), false)));
   if (!inStream->Open())
