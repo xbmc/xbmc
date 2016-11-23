@@ -120,7 +120,7 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
       m_diffPTS = m_diffPTS / m_count;
       if (m_diffPTS > 0)
       {
-        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %lld", m_diffPTS);
+        CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::CDropControl: calculated diff time: %" PRId64, m_diffPTS);
         m_state = CDropControl::VALID;
         m_count = 0;
       }
