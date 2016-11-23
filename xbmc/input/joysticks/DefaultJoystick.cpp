@@ -202,6 +202,7 @@ void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_ST
       m_handler->OnAnalogKey(keyId, 0.0f);
     }
 
+    m_holdStartTimes.erase(keyId);
     m_currentDirections[feature] = ANALOG_STICK_DIRECTION::UNKNOWN;
   }
 }
