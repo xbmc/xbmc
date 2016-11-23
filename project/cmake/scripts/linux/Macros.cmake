@@ -31,11 +31,12 @@ function(core_link_library lib wraplib)
     set(extra_libs ${data_arg})
   endif()
 
+  string(REGEX REPLACE "[ ]+" ";" _flags ${CMAKE_SHARED_LINKER_FLAGS})
   get_filename_component(dir ${wraplib} DIRECTORY)
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
                      COMMAND ${CMAKE_C_COMPILER}
-                     ARGS    -Wl,--whole-archive
+                     ARGS    ${_flags} -Wl,--whole-archive
                              "${link_lib}" ${extra_libs}
                              -Wl,--no-whole-archive -lm
                              -Wl,-soname,${wraplib}-${ARCH}${CMAKE_SHARED_MODULE_SUFFIX}

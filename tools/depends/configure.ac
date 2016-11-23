@@ -597,6 +597,7 @@ echo -e
   AC_SUBST(build_tools_path)
 fi
 
+AC_SUBST(use_debug)
 AC_SUBST(use_host)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)
