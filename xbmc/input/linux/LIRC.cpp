@@ -42,8 +42,10 @@
 CRemoteControl::CRemoteControl()
   : CThread("RemoteControl")
   , m_fd(-1)
+#ifdef HAVE_INOTIFY
   , m_inotify_fd(-1)
   , m_inotify_wd(-1)
+#endif
   , m_file(nullptr)
   , m_holdTime(0)
   , m_button(0)
