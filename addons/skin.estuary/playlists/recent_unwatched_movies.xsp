@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="movies">
+    <name>Recent Unwatched Movies</name>
+    <match>all</match>
+    <rule field="dateadded" operator="after">
+        <value>1900-01-01</value>
+    </rule>
+    <rule field="playcount" operator="lessthan">
+        <value>1</value>
+    </rule>
+    <limit>15</limit>
+    <order direction="descending">dateadded</order>
+</smartplaylist>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="musicvideos">
+    <name></name>
+    <match>all</match>
+    <group>artists</group>
+    <order direction="ascending">random</order>
+</smartplaylist>

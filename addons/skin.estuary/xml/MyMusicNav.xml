@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<menucontrol>9000</menucontrol>
+	<views>50,52,53,54,55,500</views>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<include>View_50_List</include>
+			<include>View_52_IconWall</include>
+			<include>View_53_Shift</include>
+			<include>View_54_InfoWall</include>
+			<include>View_55_WideList</include>
+			<include>View_500_Wall</include>
+			<include>CommonScrollbars</include>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<visible>Control.Isvisible(54) | Control.IsVisible(55)</visible>
+				<include>Visible_Left</include>
+				<include>ListThumbInfoPanel</include>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[2]" />
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<include>MediaMenuMouseOverlay</include>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<control type="grouplist" id="9000">
+					<top>50</top>
+					<include>MediaMenuListCommon</include>
+					<control type="label" id="203">
+						<description>Actions</description>
+						<include>MediaMenuLabelCommon</include>
+						<label>$LOCALIZE[31020]</label>
+					</control>
+					<control type="togglebutton" id="619">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[653]</label>
+						<onclick>UpdateLibrary(music)</onclick>
+						<visible>!Container.Content(addons)+ String.IsEmpty(Container.PluginName)</visible>
+						<altlabel>$LOCALIZE[13353]</altlabel>
+						<usealttexture>library.isscanningmusic</usealttexture>
+					</control>
+					<control type="radiobutton" id="16">
+						<label>$LOCALIZE[589]</label>
+						<include>MediaMenuItemsCommon</include>
+					</control>
+					<control type="button" id="612">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31056]</label>
+						<onclick>ActivateWindow(musicplaylist)</onclick>
+						<visible>Integer.IsGreater(Playlist.Length(music),0)</visible>
+					</control>
+					<control type="button" id="621">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[21452]</label>
+						<onclick>ActivateWindow(addonbrowser,addons://more/audio/,return)</onclick>
+						<visible>Container.Content(addons)</visible>
+					</control>
+					<control type="button" id="624">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10140]</label>
+						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<control type="button" id="622">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31117]</label>
+						<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
+						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+						<visible>String.IsEmpty(Container.FolderPath) + String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<include>MediaMenuNowPlaying</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>
