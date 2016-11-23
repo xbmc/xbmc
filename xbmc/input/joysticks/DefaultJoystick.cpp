@@ -107,6 +107,8 @@ bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitud
 
 bool CDefaultJoystick::OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs)
 {
+  bool bHandled = false;
+
   // Calculate the direction of the stick's position
   const ANALOG_STICK_DIRECTION analogStickDir = CJoystickTranslator::VectorToAnalogStickDirection(x, y);
 
@@ -114,14 +116,16 @@ bool CDefaultJoystick::OnAnalogStickMotion(const FeatureName& feature, float x, 
   const float magnitude = std::max(std::abs(x), std::abs(y));
 
   // Deactivate directions in which the stick is not pointing first
-  for (std::vector<ANALOG_STICK_DIRECTION>::const_iterator it = GetDirections().begin(); it != GetDirections().end(); ++it)
+  for (ANALOG_STICK_DIRECTION dir : GetDirections())
   {
-    if (*it != analogStickDir)
-      DeactivateDirection(feature, *it);
+    if (dir != analogStickDir)
+      DeactivateDirection(feature, dir);
   }
 
   // Now activate direction the analog stick is pointing
-  return ActivateDirection(feature, magnitude, analogStickDir, motionTimeMs);
+  bHandled = ActivateDirection(feature, magnitude, analogStickDir, motionTimeMs);
+
+  return bHandled;
 }
 
 bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z)
@@ -141,6 +145,8 @@ int CDefaultJoystick::GetActionID(const FeatureName& feature)
 
 bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs)
 {
+  bool bHandled = false;
+
   // Calculate the button key ID and input type for the analog stick's direction
   const unsigned int  keyId     = GetKeyID(feature, dir);
   const INPUT_TYPE    inputType = m_handler->GetInputType(keyId);
@@ -164,15 +170,15 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
     }
 
     m_handler->OnDigitalKey(keyId, bIsPressed, holdTimeMs);
-    return true;
+    bHandled = true;
   }
   else if (inputType == INPUT_TYPE::ANALOG)
   {
     m_handler->OnAnalogKey(keyId, magnitude);
-    return true;
+    bHandled = true;
   }
 
-  return false;
+  return bHandled;
 }
 
 void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_STICK_DIRECTION dir)
