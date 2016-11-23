@@ -35,7 +35,7 @@ public:
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) override {};
   virtual bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
-  virtual bool OnPlayMedia(int iItem);
+  bool OnPlayMedia(int iItem, const std::string& = "") override;
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   bool OnAddMediaSource() override;
