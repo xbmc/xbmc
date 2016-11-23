@@ -221,19 +221,28 @@
 						</include>
 						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14102" />
+							<param name="width" value="118" />
 							<param name="height" value="95" />
+							<param name="align" value="center" />
+							<param name="radioposx" value="38" />
 							<param name="onclick" value="Stop" />
 							<param name="icon" value="icons/now-playing/stop.png" />
 						</include>
 						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14104" />
+							<param name="width" value="118" />
 							<param name="height" value="95" />
+							<param name="align" value="center" />
+							<param name="radioposx" value="38" />
 							<param name="onclick" value="Next" />
 							<param name="icon" value="icons/now-playing/next.png" />
 						</include>
 						<include content="BottomMainMenuItem">
 							<param name="control_id" value="14105" />
+							<param name="width" value="118" />
 							<param name="height" value="95" />
+							<param name="align" value="center" />
+							<param name="radioposx" value="38" />
 							<param name="onclick" value="Fullscreen" />
 							<param name="icon" value="icons/now-playing/fullscreen.png" />
 						</include>
@@ -298,19 +307,28 @@
 			</include>
 			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14102" />
+				<param name="width" value="118" />
 				<param name="height" value="95" />
+				<param name="align" value="center" />
+				<param name="radioposx" value="38" />
 				<param name="onclick" value="Stop" />
 				<param name="icon" value="icons/now-playing/stop.png" />
 			</include>
 			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14104" />
+				<param name="width" value="118" />
 				<param name="height" value="95" />
+				<param name="align" value="center" />
+				<param name="radioposx" value="38" />
 				<param name="onclick" value="PlayerControl(Next)" />
 				<param name="icon" value="icons/now-playing/next.png" />
 			</include>
 			<include content="BottomMainMenuItem">
 				<param name="control_id" value="14105" />
+				<param name="width" value="118" />
 				<param name="height" value="95" />
+				<param name="align" value="center" />
+				<param name="radioposx" value="38" />
 				<param name="onclick" value="Fullscreen" />
 				<param name="icon" value="icons/now-playing/fullscreen.png" />
 			</include>
