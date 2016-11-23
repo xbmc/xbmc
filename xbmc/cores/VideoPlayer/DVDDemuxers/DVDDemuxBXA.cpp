@@ -29,13 +29,10 @@
 class CDemuxStreamAudioBXA
   : public CDemuxStreamAudio
 {
-  CDVDDemuxBXA  *m_parent;
   std::string    m_codec;
 public:
-  CDemuxStreamAudioBXA(CDVDDemuxBXA *parent, const std::string& codec)
-    : m_parent(parent)
-    , m_codec(codec)
-
+  CDemuxStreamAudioBXA(const std::string& codec)
+    : m_codec(codec)
   {}
 };
 
@@ -73,7 +70,7 @@ bool CDVDDemuxBXA::Open(CDVDInputStream* pInput)
 
   m_pInput = pInput;
 
-  m_stream = new CDemuxStreamAudioBXA(this, "BXA");
+  m_stream = new CDemuxStreamAudioBXA("BXA");
 
   if(!m_stream)
     return false;

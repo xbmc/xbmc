@@ -31,17 +31,18 @@ public:
   CDVDDemuxCC(AVCodecID codec);
   virtual ~CDVDDemuxCC();
 
-  virtual void Reset() {};
-  virtual void Abort() {};
-  virtual void Flush() {};
-  virtual DemuxPacket* Read() { return NULL; };
-  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override {return true;};
-  virtual void SetSpeed(int iSpeed) {};
-  virtual int GetStreamLength() {return 0;};
-  virtual CDemuxStream* GetStream(int iStreamId) const override;
-  virtual std::vector<CDemuxStream*> GetStreams() const override;
-  virtual int GetNrOfStreams() const;
-  virtual std::string GetFileName() {return "";};
+  void Reset() override {}
+  void Abort() override {}
+  void Flush() override {}
+  DemuxPacket* Read() override { return nullptr; }
+  bool SeekTime(double time, bool backwords = false,
+                double* startpts = nullptr) override { return true; }
+  void SetSpeed(int iSpeed) override {}
+  int GetStreamLength() override { return 0; }
+  CDemuxStream* GetStream(int iStreamId) const override;
+  std::vector<CDemuxStream*> GetStreams() const override;
+  int GetNrOfStreams() const override;
+  std::string GetFileName() override { return ""; }
 
   DemuxPacket* Read(DemuxPacket *packet);
   static void Handler(int service, void *userdata);

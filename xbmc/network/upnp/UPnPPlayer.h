@@ -40,41 +40,36 @@ public:
   CUPnPPlayer(IPlayerCallback& callback, const char* uuid);
   virtual ~CUPnPPlayer();
 
-  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options);
-  virtual bool QueueNextFile(const CFileItem &file);
-  virtual bool CloseFile(bool reopen = false);
-  virtual bool IsPlaying() const;
-  virtual void Pause() override;
-  virtual bool HasVideo() const { return false; }
-  virtual bool HasAudio() const { return false; }
-  virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
-  virtual void SeekPercentage(float fPercent = 0);
-  virtual float GetPercentage();
-  virtual void SetVolume(float volume);
+  bool OpenFile(const CFileItem& file, const CPlayerOptions& options) override;
+  bool QueueNextFile(const CFileItem &file) override;
+  bool CloseFile(bool reopen = false) override;
+  bool IsPlaying() const override;
+  void Pause() override;
+  bool HasVideo() const override { return false; }
+  bool HasAudio() const override { return false; }
+  void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
+  void SeekPercentage(float fPercent = 0.0f) override;
+  float GetPercentage() override;
+  void SetVolume(float volume) override;
   virtual void GetAudioInfo(std::string& strAudioInfo) {};
   virtual void GetVideoInfo(std::string& strVideoInfo) {};
-  virtual bool CanRecord() { return false;};
-  virtual bool IsRecording() { return false;};
-  virtual bool Record(bool bOnOff) { return false;};
+  bool CanRecord() override { return false;};
+  bool IsRecording() override { return false;};
+  bool Record(bool bOnOff) override { return false;};
 
-  virtual int  GetChapterCount()                               { return 0; }
-  virtual int  GetChapter()                                    { return -1; }
-  virtual void GetChapterName(std::string& strChapterName)     { return; }
-  virtual int  SeekChapter(int iChapter)                       { return -1; }
+  void SeekTime(int64_t iTime = 0) override;
+  int64_t GetTime() override;
+  int64_t GetTotalTime() override;
+  void SetSpeed(float speed = 0) override;
+  float GetSpeed() override;
 
-  virtual void SeekTime(int64_t iTime = 0);
-  virtual int64_t GetTime();
-  virtual int64_t GetTotalTime();
-  virtual void SetSpeed(float speed = 0) override;
-  virtual float GetSpeed() override;
+  bool SkipNext() override { return false; }
+  bool IsCaching() const override { return false; }
+  int GetCacheLevel() const override { return -1; }
+  void DoAudioWork() override;
+  bool OnAction(const CAction &action) override;
 
-  virtual bool SkipNext(){return false;}
-  virtual bool IsCaching() const {return false;};
-  virtual int GetCacheLevel() const {return -1;};
-  virtual void DoAudioWork();
-  virtual bool OnAction(const CAction &action);
-
-  virtual std::string GetPlayingTitle();
+  std::string GetPlayingTitle() override;
 
   int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);
 

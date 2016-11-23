@@ -577,7 +577,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
-      if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
+      if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources(false);
       OnInitWindow();
       return true;
     }
@@ -828,7 +828,7 @@ bool CGUIWindow::Initialize()
   if(!NeedXMLReload())
     return true;
   if(g_application.IsCurrentThread())
-    AllocResources();
+    AllocResources(false);
   else
   {
     // if not app thread, send gui msg via app messenger
@@ -860,7 +860,7 @@ bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
       return false;
     // make sure we update our visibility prior to queuing the window close anim
     for (unsigned int i = 0; i < m_children.size(); i++)
-      m_children[i]->UpdateVisibility();
+      m_children[i]->UpdateVisibility(nullptr);
   }
   return true;
 }

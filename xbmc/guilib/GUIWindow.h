@@ -126,7 +126,9 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
   
+  using CGUIControlGroup::OnBack;
   virtual bool OnBack(int actionID);
+  using CGUIControlGroup::OnInfo;
   virtual bool OnInfo(int actionID) { return false; };
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
@@ -143,6 +145,7 @@ public:
   int GetPreviousWindow() { return m_previousWindow; };
   CRect GetScaledBounds() const;
   virtual void ClearAll();
+  using CGUIControlGroup::AllocResources;
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
   virtual void DynamicResourceAlloc(bool bOnOff);

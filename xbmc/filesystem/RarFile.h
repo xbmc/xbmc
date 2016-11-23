@@ -66,18 +66,18 @@ namespace XFILE
     CRarFile();
     CRarFile(bool bSeekable); // used for caching files
     virtual ~CRarFile();
-    virtual int64_t       GetPosition();
-    virtual int64_t       GetLength();
-    virtual bool          Open(const CURL& url);
-    virtual bool          Exists(const CURL& url);
-    virtual int           Stat(const CURL& url, struct __stat64* buffer);
-    virtual ssize_t       Read(void* lpBuf, size_t uiBufSize);
-    virtual ssize_t       Write(const void* lpBuf, size_t uiBufSize);
-    virtual int64_t       Seek(int64_t iFilePosition, int iWhence=SEEK_SET);
-    virtual void          Close();
-    virtual void          Flush();
+    int64_t       GetPosition() override;
+    int64_t       GetLength() override;
+    bool          Open(const CURL& url) override;
+    bool          Exists(const CURL& url) override;
+    int           Stat(const CURL& url, struct __stat64* buffer) override;
+    ssize_t       Read(void* lpBuf, size_t uiBufSize) override;
+    ssize_t       Write(const void* lpBuf, size_t uiBufSize) override;
+    int64_t       Seek(int64_t iFilePosition, int iWhence=SEEK_SET) override;
+    void          Close() override;
+    void          Flush() override;
 
-    virtual bool          OpenForWrite(const CURL& url, bool);
+    bool                  OpenForWrite(const CURL& url, bool bOverwrite) override;
     unsigned int          Write(void *lpBuf, int64_t uiBufSize);
 
   protected:

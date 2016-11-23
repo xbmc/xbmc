@@ -70,6 +70,7 @@ public:
 protected:
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
+  using CGUIWindow::UpdateVisibility;
   virtual void UpdateVisibility();
 
   virtual void Open_Internal(const std::string &param = "");

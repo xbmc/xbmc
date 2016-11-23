@@ -39,11 +39,11 @@ public:
   virtual ~VideoPlayerCodec();
 
   virtual bool Init(const CFileItem &file, unsigned int filecache) override;
-  virtual bool Seek(int64_t iSeekTime);
-  virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
-  virtual int ReadRaw(uint8_t **pBuffer, int *bufferSize);
-  virtual bool CanInit();
-  virtual bool CanSeek();
+  bool Seek(int64_t iSeekTime) override;
+  int ReadPCM(BYTE *pBuffer, int size, int *actualsize) override;
+  int ReadRaw(uint8_t **pBuffer, int *bufferSize) override;
+  bool CanInit() override;
+  bool CanSeek() override;
 
   void DeInit();
   AEAudioFormat GetFormat();

@@ -75,6 +75,7 @@ private:
   void UpdateFromControls();
   void EnableControls();
   void SetDefaultSettings();
+  using CGUIDialogBoxBase::GetCondition;
   bool GetCondition(const std::string &condition, const int controlId);
 
   void SaveSettings(void);

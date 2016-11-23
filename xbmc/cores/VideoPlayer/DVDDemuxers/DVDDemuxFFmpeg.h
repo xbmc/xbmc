@@ -36,48 +36,41 @@ class CURL;
 class CDemuxStreamVideoFFmpeg
   : public CDemuxStreamVideo
 {
-  CDVDDemuxFFmpeg *m_parent;
   AVStream*        m_stream;
 public:
-  CDemuxStreamVideoFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
-    , m_stream(stream)
+  CDemuxStreamVideoFFmpeg(AVStream* stream)
+    : m_stream(stream)
   {}
   std::string      m_description;
 
-  virtual std::string GetStreamName() override;
+  std::string GetStreamName() override;
 };
 
 
 class CDemuxStreamAudioFFmpeg
   : public CDemuxStreamAudio
 {
-  CDVDDemuxFFmpeg *m_parent;
   AVStream*        m_stream;
 public:
-  CDemuxStreamAudioFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
-    , m_stream(stream)
+  CDemuxStreamAudioFFmpeg(AVStream* stream)
+    : m_stream(stream)
   {}
   std::string m_description;
 
-  virtual std::string GetStreamName() override;
+  std::string GetStreamName() override;
 };
 
 class CDemuxStreamSubtitleFFmpeg
   : public CDemuxStreamSubtitle
 {
-  CDVDDemuxFFmpeg *m_parent;
   AVStream*        m_stream;
 public:
-  CDemuxStreamSubtitleFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
-    , m_stream(stream)
+  CDemuxStreamSubtitleFFmpeg(AVStream* stream)
+    :m_stream(stream)
   {}
   std::string m_description;
 
-  virtual std::string GetStreamName() override;
-
+  std::string GetStreamName() override;
 };
 
 #define FFMPEG_DVDNAV_BUFFER_SIZE 2048  // for dvd's
@@ -107,12 +100,12 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
 
-  bool SeekChapter(int chapter, double* startpts = NULL);
-  int GetChapterCount();
-  int GetChapter();
-  void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
-  int64_t GetChapterPos(int chapterIdx=-1);
-  virtual std::string GetStreamCodecName(int iStreamId) override;
+  bool SeekChapter(int chapter, double* startpts = nullptr) override;
+  int GetChapterCount() override;
+  int GetChapter() override;
+  void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
+  int64_t GetChapterPos(int chapterIdx=-1) override;
+  std::string GetStreamCodecName(int iStreamId) override;
 
   bool Aborted();
 
