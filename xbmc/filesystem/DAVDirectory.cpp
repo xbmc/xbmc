@@ -116,6 +116,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   dav.SetCustomRequest(strRequest);
   dav.SetMimeType("text/xml; charset=\"utf-8\"");
   dav.SetRequestHeader("depth", 1);
+  dav.SetAcceptEncoding("gzip, deflate");
   dav.SetPostData(
     "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
     " <D:propfind xmlns:D=\"DAV:\">"
