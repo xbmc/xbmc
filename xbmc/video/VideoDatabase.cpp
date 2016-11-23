@@ -401,27 +401,29 @@ void CVideoDatabase::CreateViews()
   CLog::Log(LOGINFO, "create season_view");
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
                                      "  seasons.*, "
-                                     "  tvshow_view.strPath AS strPath,"
-                                     "  tvshow_view.c%02d AS showTitle,"
-                                     "  tvshow_view.c%02d AS plot,"
-                                     "  tvshow_view.c%02d AS premiered,"
-                                     "  tvshow_view.c%02d AS genre,"
-                                     "  tvshow_view.c%02d AS studio,"
-                                     "  tvshow_view.c%02d AS mpaa,"
-                                     "  count(DISTINCT episode_view.idEpisode) AS episodes,"
+                                     "  path.strPath AS strPath,"
+                                     "  tvshow.c%02d AS showTitle,"
+                                     "  tvshow.c%02d AS plot,"
+                                     "  tvshow.c%02d AS premiered,"
+                                     "  tvshow.c%02d AS genre,"
+                                     "  tvshow.c%02d AS studio,"
+                                     "  tvshow.c%02d AS mpaa,"
+                                     "  count(DISTINCT episode.idEpisode) AS episodes,"
                                      "  count(files.playCount) AS playCount,"
-                                     "  min(episode_view.c%02d) AS aired "
-                                     "FROM seasons"
-                                     "  JOIN tvshow_view ON"
-                                     "    tvshow_view.idShow = seasons.idShow"
-                                     "  JOIN episode_view ON"
-                                     "    episode_view.idShow = seasons.idShow AND episode_view.c%02d = seasons.season"
+                                     "  min(episode.c%02d) AS aired "
+                                     "FROM episode"
+                                     "  JOIN seasons ON"
+                                     "    episode.idSeason = seasons.idSeason"
+                                     "  JOIN tvshow ON"
+                                     "    tvshow.idShow = seasons.idShow"
                                      "  JOIN files ON"
-                                     "    files.idFile = episode_view.idFile "
-                                     "GROUP BY seasons.idSeason",
+                                     "    files.idFile = episode.idFile"
+                                     "  JOIN path ON"
+                                     "    path.idPath = files.idPath"
+                                     "GROUP BY episode.idSeason",
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
-                                     VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON);
+                                     VIDEODB_ID_EPISODE_AIRED);
   m_pDS->exec(seasonview);
 
   CLog::Log(LOGINFO, "create musicvideo_view");
