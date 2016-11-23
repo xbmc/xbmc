@@ -77,7 +77,7 @@ namespace XFILE
     virtual void          Close();
     virtual void          Flush();
 
-    virtual bool          OpenForWrite(const CURL& url);
+    virtual bool          OpenForWrite(const CURL& url, bool);
     unsigned int          Write(void *lpBuf, int64_t uiBufSize);
 
   protected:
