@@ -117,8 +117,8 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     return false;
   }
 
-  float deltaXabs = abs(pointer.current.x - pointer.down.x);
-  float deltaYabs = abs(pointer.current.y - pointer.down.y);
+  float deltaXabs = fabs(pointer.current.x - pointer.down.x);
+  float deltaYabs = fabs(pointer.current.y - pointer.down.y);
   float varXabs = deltaYabs * SWIPE_MAX_VARIANCE_ANGLE + (m_dpi * SWIPE_MAX_VARIANCE) / 2;
   float varYabs = deltaXabs * SWIPE_MAX_VARIANCE_ANGLE + (m_dpi * SWIPE_MAX_VARIANCE) / 2;
 
