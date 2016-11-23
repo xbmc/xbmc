@@ -157,6 +157,8 @@ void CAdvancedSettings::Initialize()
   m_DXVAAllowHqScaling = true;
   m_videoFpsDetect = 1;
 
+  m_videoMkvSegmentsSearchDirs = std::vector<std::string>{""};
+
   m_mediacodecForceSoftwareRendering = false;
 
   m_videoDefaultLatency = 0.0;
@@ -592,9 +594,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
     auto pMkvSegmentsSearchDirs = pElement->FirstChildElement("mkvsegmentssearchdirs");
     if (pMkvSegmentsSearchDirs)
+    {
       XMLUtils::GetStringArray(pMkvSegmentsSearchDirs, "subdir", m_videoMkvSegmentsSearchDirs, true, "");
-    else
-      m_videoMkvSegmentsSearchDirs = std::vector<std::string>{""};
+      m_videoMkvSegmentsSearchDirs.push_back("");
+    }
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)
