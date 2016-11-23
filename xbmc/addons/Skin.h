@@ -98,7 +98,7 @@ public:
   class CStartupWindow
   {
   public:
-    CStartupWindow(int id, const std::string &name):
+    CStartupWindow(int id, const char *name):
         m_id(id), m_name(name)
     {
     };

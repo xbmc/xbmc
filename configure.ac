@@ -2065,7 +2065,7 @@ fi
 # we don't compile with default upstream squish, so we use our own one
 # even on non unified deps platforms
 if test "$cross_compiling" != "yes"; then
-  make -C ${abs_top_srcdir}/tools/depends/native/libsquish-native CXX=${CXX}
+  make -C ${abs_top_srcdir}/tools/depends/native/libsquish-native CXX="${CXX}"
   export PKG_CONFIG_PATH="${abs_top_srcdir}/tools/depends/native/libsquish-native/squish-install/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
 PKG_CHECK_MODULES([SQUISH], [squish],
@@ -2103,8 +2103,8 @@ else
   final_message="$final_message\n  MID Support:\tNo"
 fi
 
-ORIGCC=$CC
-ORIGCXX=$CXX
+ORIGCC="$CC"
+ORIGCXX="$CXX"
 if test "x$use_ccache" != "xno"; then
   AC_PATH_PROG(CCACHE,ccache,none)
   if test "$ac_cv_path_CCACHE" = "none"; then

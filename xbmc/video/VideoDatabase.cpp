@@ -575,7 +575,7 @@ bool CVideoDatabase::GetPathsLinkedToTvShow(int idShow, std::vector<std::string>
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      paths.push_back(m_pDS->fv(0).get_asString());
+      paths.emplace_back(m_pDS->fv(0).get_asString());
       m_pDS->next();
     }
     return true;
@@ -650,7 +650,7 @@ bool CVideoDatabase::GetSubPaths(const std::string &basepath, std::vector<std::p
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      subpaths.push_back(make_pair(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()));
+      subpaths.emplace_back(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -1698,7 +1698,7 @@ void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
 
     std::vector<std::string> ids;
     for (int iType = VIDEODB_ID_TV_MIN + 1; iType < VIDEODB_ID_TV_MAX; iType++)
-      ids.push_back(StringUtils::Format("c%02d=NULL", iType));
+      ids.emplace_back(StringUtils::Format("c%02d=NULL", iType));
 
     strSQL = "update tvshow set ";
     strSQL += StringUtils::Join(ids, ", ");
@@ -1988,35 +1988,35 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:
-      conditions.push_back(PrepareSQL("c%02d='%s'", i, ((std::string*)(((char*)&details)+offsets[i].offset))->c_str()));
+      conditions.emplace_back(PrepareSQL("c%02d='%s'", i, ((std::string*)(((char*)&details)+offsets[i].offset))->c_str()));
       break;
     case VIDEODB_TYPE_INT:
-      conditions.push_back(PrepareSQL("c%02d='%i'", i, *(int*)(((char*)&details)+offsets[i].offset)));
+      conditions.emplace_back(PrepareSQL("c%02d='%i'", i, *(int*)(((char*)&details)+offsets[i].offset)));
       break;
     case VIDEODB_TYPE_COUNT:
       {
         int value = *(int*)(((char*)&details)+offsets[i].offset);
         if (value)
-          conditions.push_back(PrepareSQL("c%02d=%i", i, value));
+          conditions.emplace_back(PrepareSQL("c%02d=%i", i, value));
         else
-          conditions.push_back(PrepareSQL("c%02d=NULL", i));
+          conditions.emplace_back(PrepareSQL("c%02d=NULL", i));
       }
       break;
     case VIDEODB_TYPE_BOOL:
-      conditions.push_back(PrepareSQL("c%02d='%s'", i, *(bool*)(((char*)&details)+offsets[i].offset)?"true":"false"));
+      conditions.emplace_back(PrepareSQL("c%02d='%s'", i, *(bool*)(((char*)&details)+offsets[i].offset)?"true":"false"));
       break;
     case VIDEODB_TYPE_FLOAT:
-      conditions.push_back(PrepareSQL("c%02d='%f'", i, *(float*)(((char*)&details)+offsets[i].offset)));
+      conditions.emplace_back(PrepareSQL("c%02d='%f'", i, *(float*)(((char*)&details)+offsets[i].offset)));
       break;
     case VIDEODB_TYPE_STRINGARRAY:
-      conditions.push_back(PrepareSQL("c%02d='%s'", i, StringUtils::Join(*((std::vector<std::string>*)(((char*)&details)+offsets[i].offset)),
+      conditions.emplace_back(PrepareSQL("c%02d='%s'", i, StringUtils::Join(*((std::vector<std::string>*)(((char*)&details)+offsets[i].offset)),
                                                                           g_advancedSettings.m_videoItemSeparator).c_str()));
       break;
     case VIDEODB_TYPE_DATE:
-      conditions.push_back(PrepareSQL("c%02d='%s'", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDate().c_str()));
+      conditions.emplace_back(PrepareSQL("c%02d='%s'", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDate().c_str()));
       break;
     case VIDEODB_TYPE_DATETIME:
-      conditions.push_back(PrepareSQL("c%02d='%s'", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str()));
+      conditions.emplace_back(PrepareSQL("c%02d='%s'", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str()));
       break;
     }
   }
@@ -2637,9 +2637,9 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     if (details.GetVideoDuration())
     {
       std::vector<std::pair<std::string, int> > tables;
-      tables.push_back(std::make_pair("movie", VIDEODB_ID_RUNTIME));
-      tables.push_back(std::make_pair("episode", VIDEODB_ID_EPISODE_RUNTIME));
-      tables.push_back(std::make_pair("musicvideo", VIDEODB_ID_MUSICVIDEO_RUNTIME));
+      tables.emplace_back("movie", VIDEODB_ID_RUNTIME);
+      tables.emplace_back("episode", VIDEODB_ID_EPISODE_RUNTIME);
+      tables.emplace_back("musicvideo", VIDEODB_ID_MUSICVIDEO_RUNTIME);
       for (std::vector<std::pair<std::string, int> >::iterator i = tables.begin(); i != tables.end(); ++i)
       {
         std::string sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''",
@@ -2794,7 +2794,7 @@ void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, st
     m_pDS->query(strSQL);
     while (!m_pDS->eof())
     {
-      episodes.push_back(GetDetailsForEpisode(m_pDS));
+      episodes.emplace_back(GetDetailsForEpisode(m_pDS));
       m_pDS->next();
     }
     m_pDS->close();
@@ -3561,7 +3561,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
                          VIDEODB_ID_TV_TITLE,links[i]);
       m_pDS2->query(strSQL);
       if (!m_pDS2->eof())
-        details.m_showLink.push_back(m_pDS2->fv(0).get_asString());
+        details.m_showLink.emplace_back(m_pDS2->fv(0).get_asString());
     }
     m_pDS2->close();
 
@@ -3767,7 +3767,7 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, std::v
         info.order = m_pDS2->fv(2).get_asInt();
         info.thumbUrl.ParseString(m_pDS2->fv(3).get_asString());
         info.thumb = m_pDS2->fv(4).get_asString();
-        cast.push_back(info);
+        cast.emplace_back(std::move(info));
       }
       m_pDS2->next();
     }
@@ -3790,7 +3790,7 @@ void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::v
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
-      tags.push_back(m_pDS2->fv(0).get_asString());
+      tags.emplace_back(m_pDS2->fv(0).get_asString());
       m_pDS2->next();
     }
     m_pDS2->close();
@@ -4072,7 +4072,7 @@ bool CVideoDatabase::GetArtTypes(const MediaType &mediaType, std::vector<std::st
 
     while (!m_pDS->eof())
     {
-      artTypes.push_back(m_pDS->fv(0).get_asString());
+      artTypes.emplace_back(m_pDS->fv(0).get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -4379,7 +4379,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
       show.title = m_pDS->fv(2).get_asString();
       show.year  = m_pDS->fv(3).get_asString();
       show.ident = m_pDS->fv(4).get_asString();
-      shows.push_back(show);
+      shows.emplace_back(std::move(show));
       m_pDS->next();
     }
     m_pDS->close();
@@ -4419,7 +4419,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
       link.show   = m_pDS->fv(0).get_asInt();
       link.pathId = m_pDS->fv(1).get_asInt();
       link.path   = m_pDS->fv(2).get_asString();
-      shows.push_back(link);
+      shows.emplace_back(std::move(link));
       m_pDS->next();
     }
     m_pDS->close();
@@ -5366,7 +5366,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const std::string& strBaseDir, CFile
           pItem->SetLabelPreformated(true);
           if (!items.Contains(pItem->GetPath()))
           {
-            pItem->GetVideoInfoTag()->m_artist.push_back(m_pDS->fv(2).get_asString());
+            pItem->GetVideoInfoTag()->m_artist.emplace_back(m_pDS->fv(2).get_asString());
             items.Add(pItem);
           }
         }
@@ -5617,7 +5617,7 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir, CFileItemList& 
             pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0;
           }
           if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-            pItem->GetVideoInfoTag()->m_artist.push_back(pItem->GetLabel());
+            pItem->GetVideoInfoTag()->m_artist.emplace_back(pItem->GetLabel());
           items.Add(pItem);
           m_pDS->next();
         }

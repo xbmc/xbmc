@@ -2033,7 +2033,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   }
 
   // replace the current list with the re-ordered one
-  m_items.assign(sortedFileItems.begin(), sortedFileItems.end());
+  m_items = std::move(sortedFileItems);
 }
 
 void CFileItemList::Randomize()

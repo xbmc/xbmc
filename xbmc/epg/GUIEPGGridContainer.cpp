@@ -114,11 +114,11 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_focusedProgrammeLayouts = other.m_focusedProgrammeLayouts;
   m_programmeLayouts        = other.m_programmeLayouts;
   m_rulerLayouts            = other.m_rulerLayouts;
-  m_channelLayout           = other.m_channelLayout;
-  m_focusedChannelLayout    = other.m_focusedChannelLayout;
-  m_programmeLayout         = other.m_programmeLayout;
-  m_focusedProgrammeLayout  = other.m_focusedProgrammeLayout;
-  m_rulerLayout             = other.m_rulerLayout;
+  m_channelLayout           = NULL;
+  m_focusedChannelLayout    = NULL;
+  m_programmeLayout         = NULL;
+  m_focusedProgrammeLayout  = NULL;
+  m_rulerLayout             = NULL;
   m_wasReset                = other.m_wasReset;
   m_rulerUnit               = other.m_rulerUnit;
   m_channels                = other.m_channels;
@@ -150,9 +150,9 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_gridStart               = other.m_gridStart;
   m_gridEnd                 = other.m_gridEnd;
   m_gridIndex               = other.m_gridIndex;
-  m_item                    = other.m_item;
-  m_lastItem                = other.m_lastItem;
-  m_lastChannel             = other.m_lastChannel;
+  m_item                    = NULL;
+  m_lastItem                = NULL;
+  m_lastChannel             = NULL;
   m_scrollTime              = other.m_scrollTime;
   m_programmeScrollLastTime = other.m_programmeScrollLastTime;
   m_programmeScrollSpeed    = other.m_programmeScrollSpeed;
@@ -1419,9 +1419,11 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
 
 CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
 {
+  CSingleLock lock(m_critSection);
+
   if (iIndex >= 0 && (size_t) iIndex < m_channelItems.size())
   {
-    CFileItemPtr fileItem = m_channelItems[iIndex];
+    const CFileItemPtr &fileItem = m_channelItems[iIndex];
     if (fileItem->HasPVRChannelInfoTag())
       return fileItem->GetPVRChannelInfoTag();
   }
@@ -1626,7 +1628,7 @@ std::string CGUIEPGGridContainer::GetLabel(int info) const
   return label;
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(const int channel)
 {
   GridItemsPtr *closest = GetItem(channel);
 
@@ -1668,7 +1670,7 @@ int CGUIEPGGridContainer::GetItemSize(GridItemsPtr *item)
   return MathUtils::round_int(item->width / m_blockSize);
 }
 
-int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &channel)
+int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int channel)
 {
   if (!item)
     return 0;
@@ -1676,7 +1678,7 @@ int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &chann
   return GetRealBlock(item, channel) - m_blockOffset;
 }
 
-int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int &channel)
+int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int block = 0;
@@ -1687,7 +1689,7 @@ int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, const int &c
   return block;
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetNextItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetNextItem(const int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -1702,7 +1704,7 @@ GridItemsPtr *CGUIEPGGridContainer::GetNextItem(const int &channel)
   return &m_gridIndex[channelIndex][i + m_blockOffset];
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetPrevItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetPrevItem(const int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -1717,7 +1719,7 @@ GridItemsPtr *CGUIEPGGridContainer::GetPrevItem(const int &channel)
   return &m_gridIndex[channelIndex][i + m_blockOffset];
 }
 
-GridItemsPtr *CGUIEPGGridContainer::GetItem(const int &channel)
+GridItemsPtr *CGUIEPGGridContainer::GetItem(const int channel)
 {
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -2119,12 +2121,12 @@ void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)
 void CGUIEPGGridContainer::FreeItemsMemory()
 {
   // free memory of items
-  for (std::vector<CFileItemPtr>::iterator it = m_channelItems.begin(); it != m_channelItems.end(); ++it)
-    (*it)->FreeMemory();
-  for (std::vector<CFileItemPtr>::iterator it = m_rulerItems.begin(); it != m_rulerItems.end(); ++it)
-    (*it)->FreeMemory();
-  for (std::vector<CFileItemPtr>::iterator it = m_programmeItems.begin(); it != m_programmeItems.end(); ++it)
-    (*it)->FreeMemory();
+  for (const auto &i : m_channelItems)
+    i->FreeMemory();
+  for (const auto &i : m_rulerItems)
+    i->FreeMemory();
+  for (const auto &i : m_programmeItems)
+    i->FreeMemory();
 }
 
 void CGUIEPGGridContainer::FreeChannelMemory(int keepStart, int keepEnd)

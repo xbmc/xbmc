@@ -27,9 +27,6 @@
 
 namespace EPG
 {
-  #define MAXCHANNELS 20
-  #define MAXBLOCKS   (33 * 24 * 60 / 5) //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
-
   struct GridItemsPtr
   {
     CFileItemPtr item;
@@ -41,6 +38,8 @@ namespace EPG
 
   class CGUIEPGGridContainer : public IGUIContainer
   {
+    static constexpr size_t MAXBLOCKS = (33 * 24 * 60 / 5); //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
+
   public:
     CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
                          int scrollTime, int preloadItems, int minutesPerPage,
@@ -109,14 +108,14 @@ namespace EPG
     void Reset();
     void ClearGridIndex(void);
 
-    GridItemsPtr *GetItem(const int &channel);
-    GridItemsPtr *GetNextItem(const int &channel);
-    GridItemsPtr *GetPrevItem(const int &channel);
-    GridItemsPtr *GetClosestItem(const int &channel);
+    GridItemsPtr *GetItem(int channel);
+    GridItemsPtr *GetNextItem(int channel);
+    GridItemsPtr *GetPrevItem(int channel);
+    GridItemsPtr *GetClosestItem(int channel);
 
     int GetItemSize(GridItemsPtr *item);
-    int GetBlock(const CGUIListItemPtr &item, const int &channel);
-    int GetRealBlock(const CGUIListItemPtr &item, const int &channel);
+    int GetBlock(const CGUIListItemPtr &item, int channel);
+    int GetRealBlock(const CGUIListItemPtr &item, int channel);
     void MoveToRow(int row);
 
     CGUIListItemLayout *GetFocusedLayout() const;

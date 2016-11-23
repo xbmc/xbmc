@@ -19,8 +19,6 @@
  *
  */
 
-#include "epg/GUIEPGGridContainer.h"
-#include "threads/SystemClock.h"
 #include "GUIWindowPVRBase.h"
 
 class CSetting;
