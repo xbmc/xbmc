@@ -615,7 +615,6 @@ public:
 
 private:
   CAddonGUIWindow *m_Window;
-  int         m_ControlId;
   GUIHANDLE   m_SpinHandle;
   void *m_Handle;
   void *m_cb;
@@ -634,7 +633,6 @@ public:
 
 private:
   CAddonGUIWindow *m_Window;
-  int         m_ControlId;
   GUIHANDLE   m_ButtonHandle;
   void *m_Handle;
   void *m_cb;
@@ -654,7 +652,6 @@ public:
 
 private:
   CAddonGUIWindow *m_Window;
-  int         m_ControlId;
   GUIHANDLE   m_ProgressHandle;
   void *m_Handle;
   void *m_cb;
@@ -684,7 +681,6 @@ public:
 
 private:
   CAddonGUIWindow *m_Window;
-  int         m_ControlId;
   GUIHANDLE   m_SliderHandle;
   void *m_Handle;
   void *m_cb;
@@ -715,7 +711,6 @@ public:
 
 private:
   CAddonGUIWindow *m_Window;
-  int         m_ControlId;
   GUIHANDLE   m_SettingsSliderHandle;
   void *m_Handle;
   void *m_cb;
@@ -825,7 +820,6 @@ public:
 
 private:
   CAddonGUIWindow *m_Window;
-  int         m_ControlId;
   GUIHANDLE   m_RenderingHandle;
   void *m_Handle;
   void *m_cb;

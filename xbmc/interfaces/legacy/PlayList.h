@@ -61,7 +61,6 @@ namespace XBMCAddon
     //
     class PlayList : public AddonClass
     {
-      long refs;
       int iPlayList;
       PLAYLIST::CPlayList *pPlayList;
 
