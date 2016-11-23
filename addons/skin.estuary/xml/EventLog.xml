@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>50</views>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<control type="group">
+				<visible>Control.IsVisible(50)</visible>
+				<include>OpenClose_Right</include>
+				<control type="fixedlist" id="50">
+					<left>490</left>
+					<top>0</top>
+					<right>0</right>
+					<height>100%</height>
+					<onleft>9000</onleft>
+					<onright>60</onright>
+					<onup>50</onup>
+					<movement>2</movement>
+					<focusposition>3</focusposition>
+					<ondown>50</ondown>
+					<viewtype label="535">list</viewtype>
+					<pagecontrol>60</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="141" width="eventloglist_width">
+						<control type="group">
+							<width>eventloglist_width</width>
+							<control type="image">
+								<left>10</left>
+								<top>10</top>
+								<width>120</width>
+								<height>120</height>
+								<texture border="4" fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
+								<aspectratio>scale</aspectratio>
+								<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+								<bordersize>4</bordersize>
+							</control>
+							<control type="label">
+								<left>160</left>
+								<right>400</right>
+								<top>10</top>
+								<height>35</height>
+								<aligny>center</aligny>
+								<font>font37</font>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+							<control type="textbox">
+								<left>160</left>
+								<top>45</top>
+								<right>20</right>
+								<height>60</height>
+								<textcolor>white</textcolor>
+								<aligny>top</aligny>
+								<label>[I]$INFO[ListItem.Property(Event.Description)][/I]</label>
+							</control>
+							<control type="label">
+								<left>0</left>
+								<right>30</right>
+								<top>10</top>
+								<height>35</height>
+								<textcolor>white</textcolor>
+								<align>right</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label2]</label>
+							</control>
+						</control>
+					</itemlayout>
+					<focusedlayout height="141" width="eventloglist_width">
+						<control type="group">
+							<width>eventloglist_width</width>
+							<control type="image">
+								<left>0</left>
+								<top>0</top>
+								<width>eventloglist_width</width>
+								<height>141</height>
+								<texture colordiffuse="button_focus">lists/focus.png</texture>
+								<visible>Control.HasFocus(50)</visible>
+							</control>
+							<control type="image">
+								<left>10</left>
+								<top>10</top>
+								<width>120</width>
+								<height>120</height>
+								<texture border="4" fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
+								<aspectratio>scale</aspectratio>
+								<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+								<bordersize>4</bordersize>
+							</control>
+							<control type="label">
+								<left>160</left>
+								<right>400</right>
+								<top>10</top>
+								<height>35</height>
+								<aligny>center</aligny>
+								<font>font37</font>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
+							<control type="textbox">
+								<left>160</left>
+								<top>45</top>
+								<right>20</right>
+								<height>60</height>
+								<textcolor>white</textcolor>
+								<aligny>top</aligny>
+								<label>[I]$INFO[ListItem.Property(Event.Description)][/I]</label>
+							</control>
+							<control type="label">
+								<left>0</left>
+								<right>30</right>
+								<top>10</top>
+								<height>35</height>
+								<textcolor>white</textcolor>
+								<align>right</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label2]</label>
+							</control>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<include>OpenClose_Left</include>
+				<include content="ContentPanel">
+					<param name="width" value="547" />
+				</include>
+				<control type="grouplist" id="9000">
+					<orientation>vertical</orientation>
+					<itemgap>-8.5</itemgap>
+					<left>0</left>
+					<top>162</top>
+					<onup>9000</onup>
+					<ondown>9000</ondown>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<usecontrolcoords>true</usecontrolcoords>
+					<control type="togglebutton" id="4">
+						<width>487</width>
+						<height>110</height>
+						<aligny>top</aligny>
+						<textoffsetx>40</textoffsetx>
+						<texturenofocus></texturenofocus>
+						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+						<alttexturenofocus></alttexturenofocus>
+						<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
+						<textwidth>300</textwidth>
+						<textoffsety>35</textoffsety>
+						<label>$LOCALIZE[31032]: $LOCALIZE[584]</label>
+						<altlabel>$LOCALIZE[31032]: $LOCALIZE[585]</altlabel>
+					</control>
+					<include content="PlaylistWindowButton">
+						<param name="control_id" value="21" />
+						<param name="onclick" value="" />
+						<param name="label" value="" />
+					</include>
+					<control type="radiobutton" id="22">
+						<width>487</width>
+						<height>110</height>
+						<aligny>top</aligny>
+						<texturenofocus></texturenofocus>
+						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+						<textoffsetx>40</textoffsetx>
+						<textoffsety>35</textoffsety>
+						<textwidth>300</textwidth>
+					</control>
+					<include content="PlaylistWindowButton">
+						<param name="control_id" value="20" />
+						<param name="onclick" value="" />
+						<param name="label" value="$LOCALIZE[192]" />
+					</include>
+				</control>
+				<control type="image">
+					<left>40</left>
+					<bottom>100</bottom>
+					<width>340</width>
+					<height>360</height>
+					<fadetime>300</fadetime>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<texture fallback="DefaultVideo.png">$INFO[ListItem.Icon]</texture>
+					<bordertexture border="20">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+				</control>
+			</control>
+			<control type="scrollbar" id="60">
+				<right>0</right>
+				<top>80</top>
+				<width>12</width>
+				<bottom>80</bottom>
+				<onleft>50</onleft>
+				<onright>9000</onright>
+				<orientation>vertical</orientation>
+				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<visible>Control.IsVisible(50)</visible>
+			</control>
+		</control>
+		<include content="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[31067]" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

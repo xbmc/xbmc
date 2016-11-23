@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
+	<color name="primary_background">FF006699</color>
+	<color name="secondary_background">6600AFA7</color>
+	<color name="dialog_tint">FF22282A</color>
 	<color name="background">FF000000</color>
+	<color name="bg_image">FF909090</color>
+	<color name="bg_overlay">30FFFFFF</color>
 	<color name="black">FF000000</color>
 	<color name="white">FFF0F0F0</color>
 	<color name="grey">FFA0A0A0</color>
