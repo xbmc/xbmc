@@ -95,6 +95,7 @@ namespace JOYSTICK
 
     // State variables used to process joystick input
     std::map<unsigned int, unsigned int> m_holdStartTimes; // Key ID -> hold start time (ms)
+    std::map<FeatureName, ANALOG_STICK_DIRECTION> m_currentDirections; // Analog stick name -> direction
 
     // Rumble functionality
     CRumbleGenerator m_rumbleGenerator;

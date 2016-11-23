@@ -123,7 +123,8 @@ bool CDefaultJoystick::OnAnalogStickMotion(const FeatureName& feature, float x, 
   }
 
   // Now activate direction the analog stick is pointing
-  bHandled = ActivateDirection(feature, magnitude, analogStickDir, motionTimeMs);
+  if (magnitude != 0.0f)
+    bHandled = ActivateDirection(feature, magnitude, analogStickDir, motionTimeMs);
 
   return bHandled;
 }
@@ -178,22 +179,30 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
     bHandled = true;
   }
 
+  if (bHandled)
+    m_currentDirections[feature] = dir;
+
   return bHandled;
 }
 
 void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_STICK_DIRECTION dir)
 {
-  // Calculate the button key ID and input type for this direction
-  const unsigned int  keyId     = GetKeyID(feature, dir);
-  const INPUT_TYPE    inputType = m_handler->GetInputType(keyId);
+  if (m_currentDirections[feature] == dir)
+  {
+    // Calculate the button key ID and input type for this direction
+    const unsigned int  keyId     = GetKeyID(feature, dir);
+    const INPUT_TYPE    inputType = m_handler->GetInputType(keyId);
 
-  if (inputType == INPUT_TYPE::DIGITAL)
-  {
-    m_handler->OnDigitalKey(keyId, false);
-  }
-  else if (inputType == INPUT_TYPE::ANALOG)
-  {
-    m_handler->OnAnalogKey(keyId, 0.0f);
+    if (inputType == INPUT_TYPE::DIGITAL)
+    {
+      m_handler->OnDigitalKey(keyId, false);
+    }
+    else if (inputType == INPUT_TYPE::ANALOG)
+    {
+      m_handler->OnAnalogKey(keyId, 0.0f);
+    }
+
+    m_currentDirections[feature] = ANALOG_STICK_DIRECTION::UNKNOWN;
   }
 }
 
