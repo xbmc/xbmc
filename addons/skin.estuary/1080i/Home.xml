@@ -993,7 +993,6 @@
 						<top>1</top>
 						<width>382</width>
 						<height>671</height>
-						<pagecontrol>70</pagecontrol>
 						<onfocus>ClearProperty(listposition,home)</onfocus>
 						<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),movies) + Control.IsVisible(5000)">5000</onright>
 						<onright condition="String.IsEqual(Container(9000).ListItem.Property(id),tvshows) + Control.IsVisible(6000)">6000</onright>
@@ -1261,7 +1260,7 @@
 					<selected>!Player.Paused</selected>
 					<visible>Player.hasMedia</visible>
 				</control>
-				<control type="rss">
+				<control type="rss" id="9500">
 					<left>0</left>
 					<top>1041</top>
 					<height>30</height>
@@ -1272,6 +1271,10 @@
 					<shadowcolor>text_shadow</shadowcolor>
 					<headlinecolor>FFC0C0C0</headlinecolor>
 					<textcolor>white</textcolor>
+					<ondown>9000</ondown>
+					<onup>9000</onup>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
 					<visible>!Player.hasMedia</visible>
 				</control>
 			</control>
