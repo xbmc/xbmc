@@ -269,7 +269,7 @@ public:
   virtual void KeepConfiguration(unsigned int millis);
   virtual void DeviceChange();
   virtual bool HasDSP();
-  virtual AEAudioFormat GetCurrentSinkFormat();
+  bool GetCurrentSinkFormat(AEAudioFormat& format) override;
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback(IAudioCallback* pCallback);
