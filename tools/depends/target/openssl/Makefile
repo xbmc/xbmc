@@ -16,10 +16,10 @@ ifeq ($(OS), ios)
   CONFIGURE=./Configure iphoneos-cross zlib no-asm no-krb5 --openssldir=$(PREFIX)
 endif
 ifeq ($(OS), osx)
-  ifeq ($(CPU),x86_64)
-    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
+  ifeq ($(TARGET_ARCH),x86_64)
+    CONFIGURE=./Configure darwin64-x86_64-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
   else
-    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin-i386-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
   endif
 endif
 LIBDYLIB=$(PLATFORM)/libssl.a

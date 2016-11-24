@@ -93,10 +93,6 @@ endforeach()
 add_bundle_file(${SMBCLIENT_LIBRARY} ${libdir} "")
 
 # Main targets from Makefile.in
-if(CPU MATCHES i686)
-  set(CPU x86)
-  set(ARCH x86)
-endif()
 foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean apk-sign)
   add_custom_target(${target}
       COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM}

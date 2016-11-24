@@ -22,28 +22,23 @@ ffmpg_config += --enable-gnutls
 ffmpg_config += --enable-encoder=png --enable-encoder=mjpeg
 
 ifeq ($(CROSS_COMPILING), yes)
-  ffmpg_config += --arch=$(CPU) --enable-cross-compile
+  ffmpg_config += --arch=$(TARGET_ARCH) --enable-cross-compile
 endif
+ifneq ($(CPU),)
+  ffmpg_config += --cpu=$(CPU)
+endif
+
 ifeq ($(OS), linux)
-  ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
+  ffmpg_config += --target-os=$(OS)
   ffmpg_config += --enable-vdpau --enable-vaapi --enable-pic
 endif
 ifeq ($(OS), android)
-  ifeq ($(findstring arm64, $(CPU)), arm64)
-    ffmpg_config += --arch=aarch64 --cpu=cortex-a53
-  else
-    ifeq ($(findstring arm, $(CPU)), arm)
-      ffmpg_config += --cpu=cortex-a9
-    else
-      ffmpg_config += --cpu=i686 --disable-mmx
-    endif
+  ifeq ($(findstring x86, $(TARGET_ARCH)), x86)
+    ffmpg_config += --disable-mmx
   endif
   ffmpg_config += --target-os=linux --extra-libs=-liconv
 endif
 ifeq ($(OS), ios)
-  ifneq ($(CPU), arm64)
-    ffmpg_config += --cpu=cortex-a8
-  endif
   ffmpg_config += --yasmexe=$(NATIVEPREFIX)/bin/yasm
   ffmpg_config += --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
@@ -54,7 +49,7 @@ ifeq ($(OS), osx)
   ffmpg_config += --target-os=darwin
   ffmpg_config += --disable-securetransport
 endif
-ifeq ($(findstring arm, $(CPU)), arm)
+ifeq ($(findstring $(TARGET_ARCH), arm|aarch64), $(TARGET_ARCH))
   ffmpg_config += --enable-pic --disable-armv5te --disable-armv6t2
 endif
 ifeq ($(findstring mips, $(CPU)), mips)
@@ -63,7 +58,6 @@ endif
 ifeq ($(Configuration), Release)
   ffmpg_config += --disable-debug
 endif
-
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 

@@ -10,7 +10,7 @@ ARCHIVE=$(SOURCE).tar.bz2
 ifeq ($(OS),osx)
 CONFIGURE_FLAGS+= --disable-asm --disable-avx-support --disable-avx2-support
 endif
-ifeq ($(CPU),arm64)
+ifeq ($(TARGET_ARCH),aarch64)
 CONFIGURE_FLAGS+= --disable-asm --disable-neon-support
 endif
 

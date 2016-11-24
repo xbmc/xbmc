@@ -14,9 +14,9 @@ $RUN_SIGNSTEP
 cd $WORKSPACE
 
 #rename for upload
-#e.x. xbmc-20130314-8c2fb31-Frodo-arm64-v8a.apk
-UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-arm64-v8a"
-mv kodiapp-arm64-v8a-*.apk $UPLOAD_FILENAME.apk
+#e.x. xbmc-20130314-8c2fb31-Krypton-arm64.apk
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-arm64"
+mv kodiapp-arm64-*.apk $UPLOAD_FILENAME.apk
 if [ -f *.obb ]
 then
   mv *.obb $UPLOAD_FILENAME.obb
