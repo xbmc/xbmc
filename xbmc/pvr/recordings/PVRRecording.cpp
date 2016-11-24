@@ -396,7 +396,10 @@ void CPVRRecording::UpdatePath(void)
       strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
       StringUtils::Replace(strChannel, '/',' ');
     }
-    m_strFileNameAndPath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/%s/%s%s, TV%s, %s.pvr", m_bIsDeleted ? PVR_RECORDING_DELETED_PATH : PVR_RECORDING_ACTIVE_PATH,  strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
+
+    m_strFileNameAndPath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/%s/%s%s%s, TV%s, %s.pvr",
+        m_bIsDeleted ? PVR_RECORDING_DELETED_PATH : PVR_RECORDING_ACTIVE_PATH,  strDirectory.c_str(),
+        strTitle.c_str(), strChannel.c_str(), strDatetime.c_str(), m_strRecordingId.c_str());
   }
 }
 
