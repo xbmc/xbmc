@@ -68,7 +68,6 @@ using namespace KODI::MESSAGING;
 #define ROTATION_SNAP_RANGE              10.0f
 
 #define LABEL_ROW1                          10
-#define LABEL_ROW2                          11
 #define CONTROL_PAUSE                       13
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
@@ -633,6 +632,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
 void CGUIWindowSlideShow::Render()
 {
+  if (m_slides.empty())
+    return;
+
   g_graphicsContext.Clear(0xff000000);
 
   if (m_slides.at(m_iCurrentSlide)->IsVideo())

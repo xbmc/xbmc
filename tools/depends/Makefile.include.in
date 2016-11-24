@@ -1,5 +1,6 @@
 abs_top_srcdir=@abs_top_srcdir@
 
+DEBUG_BUILD=@use_debug@
 TOOLCHAIN=@use_toolchain@
 NDKROOT=@use_ndk@
 SDKROOT=@use_sdk_path@

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>50</views>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<control type="fixedlist" id="50">
+					<left>402</left>
+					<top>3</top>
+					<right>594</right>
+					<height>100%</height>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<orientation>vertical</orientation>
+					<onleft>700</onleft>
+					<onright>60</onright>
+					<movement>3</movement>
+					<focusposition>4</focusposition>
+					<onup>50</onup>
+					<ondown>50</ondown>
+					<pagecontrol>60</pagecontrol>
+					<viewtype label="List">list</viewtype>
+					<preloaditems>1</preloaditems>
+					<focusedlayout height="80" width="924">
+						<control type="group">
+							<width>playlistlist_width</width>
+							<control type="image">
+								<left>0</left>
+								<right>0</right>
+								<height>80</height>
+								<texture colordiffuse="button_focus">lists/focus.png</texture>
+								<visible>Control.HasFocus(50)</visible>
+							</control>
+							<control type="label">
+								<left>30</left>
+								<height>80</height>
+								<right>30</right>
+								<aligny>center</aligny>
+								<font>font12</font>
+								<label>$INFO[ListItem.Label]</label>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+							<control type="label">
+								<left>30</left>
+								<height>80</height>
+								<right>30</right>
+								<align>right</align>
+								<aligny>center</aligny>
+								<font>font12</font>
+								<label>$VAR[PlaylistLabel2Var]</label>
+								<textcolor>white</textcolor>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+						</control>
+					</focusedlayout>
+					<itemlayout height="80" width="924">
+						<control type="group">
+							<width>playlistlist_width</width>
+							<control type="label">
+								<left>30</left>
+								<height>80</height>
+								<right>30</right>
+								<aligny>center</aligny>
+								<font>font12</font>
+								<label>$INFO[ListItem.TVShowtitle,,: ]$INFO[ListItem.Label]</label>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+							<control type="label">
+								<left>30</left>
+								<height>80</height>
+								<right>30</right>
+								<align>right</align>
+								<aligny>center</aligny>
+								<font>font12</font>
+								<label>$VAR[PlaylistLabel2Var]</label>
+								<textcolor>grey</textcolor>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+						</control>
+					</itemlayout>
+				</control>
+				<control type="group">
+					<depth>DepthContentPanel</depth>
+					<include content="ContentPanel">
+						<param name="width" value="462" />
+					</include>
+					<control type="grouplist" id="700">
+						<orientation>vertical</orientation>
+						<itemgap>-9</itemgap>
+						<left>0</left>
+						<top>165</top>
+						<onup>700</onup>
+						<ondown>700</ondown>
+						<onleft>50</onleft>
+						<onright>50</onright>
+						<include content="PlaylistWindowButton">
+							<param name="control_id" value="20" />
+							<param name="label" value="$LOCALIZE[191]$INFO[Playlist.Random, : ]" />
+							<param name="width" value="400" />
+						</include>
+						<include content="PlaylistWindowButton">
+							<param name="control_id" value="26" />
+							<param name="label" value="" />
+							<param name="width" value="400" />
+						</include>
+						<include content="PlaylistWindowButton">
+							<param name="control_id" value="21" />
+							<param name="label" value="$LOCALIZE[190]" />
+							<param name="width" value="400" />
+						</include>
+						<include content="PlaylistWindowButton">
+							<param name="control_id" value="22" />
+							<param name="label" value="$LOCALIZE[192]" />
+							<param name="width" value="400" />
+						</include>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<right>0</right>
+				<width>593</width>
+				<include>OpenClose_Right</include>
+				<include content="ListThumbInfoPanel">
+					<param name="flip_bg" value="true" />
+				</include>
+				<control type="scrollbar" id="60">
+					<left>0</left>
+					<top>80</top>
+					<width>12</width>
+					<bottom>80</bottom>
+					<onleft>50</onleft>
+					<texturesliderbackground></texturesliderbackground>
+					<onright>700</onright>
+					<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+		</control>
+		<include content="TopBar" condition="Window.IsActive(videoplaylist)">
+			<param name="breadcrumbs_label" value="$LOCALIZE[31065]" />
+		</include>
+		<include content="TopBar" condition="Window.IsActive(musicplaylist)">
+			<param name="breadcrumbs_label" value="$LOCALIZE[31066]" />
+		</include>
+		<include>BottomBar</include>
+		<control type="group">
+			<depth>DepthBars</depth>
+			<bottom>0</bottom>
+			<height>70</height>
+			<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+			<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
+		</control>
+	</controls>
+</window>

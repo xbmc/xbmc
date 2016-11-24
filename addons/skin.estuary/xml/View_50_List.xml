@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_50_List">
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>596</left>
+			<visible>Control.IsVisible(50)</visible>
+			<include>Visible_Right</include>
+			<include content="ListContainer">
+				<param name="list_id" value="50" />
+				<param name="viewtype_label" value="$LOCALIZE[535]" />
+			</include>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<control type="group">
+					<right>-20</right>
+					<width>634</width>
+					<include content="ContentPanel">
+						<param name="left" value="0" />
+						<param name="top" value="-20" />
+						<param name="width" value="656" />
+						<param name="flipx" value="true" />
+					</include>
+					<control type="scrollbar" id="50600">
+						<left>20</left>
+						<top>0</top>
+						<width>12</width>
+						<height>100%</height>
+						<onleft>50</onleft>
+						<onright>50</onright>
+						<orientation>vertical</orientation>
+						<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(50600)">conditional</animation>
+					</control>
+					<control type="image">
+						<depth>DepthContentPopout</depth>
+						<left>38</left>
+						<right>36</right>
+						<top>120</top>
+						<bottom>124</bottom>
+						<fadetime>200</fadetime>
+						<aspectratio aligny="center">keep</aspectratio>
+						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoWallThumbVar]</texture>
+					</control>
+					<control type="group">
+						<left>310</left>
+						<top>936</top>
+						<include content="UserRatingCircle">
+							<param name="animation" value="True" />
+						</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="ListContainer">
+		<control type="fixedlist" id="$PARAM[list_id]">
+			<left>0</left>
+			<width>list_width</width>
+			<height>100%</height>
+			<movement>5</movement>
+			<focusposition>7</focusposition>
+			<scrolltime tween="cubic" easing="out">500</scrolltime>
+			<orientation>vertical</orientation>
+			<pagecontrol>$PARAM[list_id]600</pagecontrol>
+			<onleft>9000</onleft>
+			<onright>$PARAM[list_id]600</onright>
+			<onup>$PARAM[list_id]</onup>
+			<ondown>$PARAM[list_id]</ondown>
+			<viewtype label="$PARAM[viewtype_label]">list</viewtype>
+			<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Window.IsActive(MyPlaylist.xml)</visible>
+			<focusedlayout height="70">
+				<control type="group">
+					<width>list_width</width>
+					<control type="image">
+						<left>0</left>
+						<right>0</right>
+						<top>0</top>
+						<height>69</height>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<visible>Control.HasFocus($PARAM[list_id])</visible>
+					</control>
+					<control type="label">
+						<left>70</left>
+						<right>70</right>
+						<top>0</top>
+						<height>70</height>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<font>font27</font>
+						<label>$INFO[ListItem.Label]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>100</left>
+						<top>0</top>
+						<height>70</height>
+						<right>20</right>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$VAR[ListLabel2Var]</label>
+						<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="image">
+						<left>21</left>
+						<top>20</top>
+						<width>32</width>
+						<height>32</height>
+						<texture>$VAR[ListWatchedIconVar]</texture>
+						<animation effect="fade" start="30" end="100" time="300" reversible="false">Focus</animation>
+					</control>
+					<control type="image">
+						<left>21</left>
+						<top>20</top>
+						<width>32</width>
+						<height>32</height>
+						<texture colordiffuse="button_focus">$VAR[ListWatchedIconVar]</texture>
+						<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
+						<animation effect="fade" time="150">VisibleChange</animation>
+						<visible>!Control.HasFocus($PARAM[list_id])</visible>
+					</control>
+				</control>
+			</focusedlayout>
+			<itemlayout height="70">
+				<control type="group">
+					<width>list_width</width>
+					<control type="label">
+						<left>70</left>
+						<right>70</right>
+						<top>0</top>
+						<height>70</height>
+						<aligny>center</aligny>
+						<font>font27</font>
+						<label>$INFO[ListItem.Label]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>20</left>
+						<right>20</right>
+						<top>0</top>
+						<height>70</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$VAR[ListLabel2Var]</label>
+						<textcolor>grey</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="image">
+						<left>21</left>
+						<top>20</top>
+						<width>32</width>
+						<height>32</height>
+						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
+					</control>
+				</control>
+			</itemlayout>
+		</control>
+	</include>
+	<include name="ListThumbInfoPanel">
+		<param name="flip_bg">false</param>
+		<definition>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<include content="ContentPanel">
+					<param name="width" value="654" />
+					<param name="flipx" value="$PARAM[flip_bg]" />
+				</include>
+				<control type="image">
+					<left>30</left>
+					<top>140</top>
+					<width>530</width>
+					<height>470</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<fadetime>300</fadetime>
+					<texture background="true">$VAR[IconWallThumbVar]</texture>
+				</control>
+				<control type="textbox" id="15500">
+					<left>30</left>
+					<top>640</top>
+					<width>525</width>
+					<bottom>117</bottom>
+					<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+					<label>$VAR[ListBoxInfoVar]</label>
+					<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>
+				</control>
+				<control type="group">
+					<left>20</left>
+					<top>640</top>
+					<visible>ListItem.IsCollection</visible>
+					<include content="InfoList">
+						<param name="bottom" value="100" />
+						<param name="width" value="540" />
+						<param name="sortby" value="year" />
+						<param name="sortorder" value="descending" />
+						<param name="font" value="font13" />
+					</include>
+				</control>
+				<control type="group">
+					<visible>String.IsEmpty(Control.GetLabel(15500)) + !ListItem.IsCollection</visible>
+					<control type="textbox">
+						<left>30</left>
+						<top>460</top>
+						<width>530</width>
+						<height>413</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font27</font>
+						<textcolor>80FFFFFF</textcolor>
+						<label>$LOCALIZE[19055]</label>
+						<visible>!ListItem.IsParentFolder</visible>
+						<visible>!Integer.IsGreater(Container(42000).NumItems,0) + !Integer.IsGreater(Container(43000).NumItems,0)</visible>
+						<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>
+					</control>
+					<control type="group">
+						<left>20</left>
+						<top>640</top>
+						<visible>!String.IsEmpty(ListItem.DBID)</visible>
+						<control type="group">
+							<visible>String.IsEqual(ListItem.DBType,artist)</visible>
+							<include content="InfoList">
+								<param name="list_id" value="42000" />
+								<param name="bottom" value="100" />
+								<param name="width" value="540" />
+								<param name="sortby" value="year" />
+								<param name="sortorder" value="descending" />
+								<param name="font" value="font13" />
+								<param name="path" value="$INFO[ListItem.FolderPath]" />
+								<param name="item_label" value="$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
+							</include>
+						</control>
+						<control type="group">
+							<visible>String.IsEqual(ListItem.DBType,album)</visible>
+							<include content="InfoList">
+								<param name="list_id" value="43000" />
+								<param name="bottom" value="100" />
+								<param name="width" value="540" />
+								<param name="sortby" value="track" />
+								<param name="sortorder" value="ascending" />
+								<param name="font" value="font13" />
+								<param name="path" value="$INFO[ListItem.FolderPath]" />
+								<param name="item_label" value="$INFO[ListItem.Duration,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
+							</include>
+						</control>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+</includes>

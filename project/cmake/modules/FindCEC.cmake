@@ -15,13 +15,23 @@
 #   CEC::CEC   - The libCEC library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_CEC libcec>=4.0.0 QUIET)
+  pkg_check_modules(PC_CEC libcec QUIET)
 endif()
 
-find_path(CEC_INCLUDE_DIR libcec/cec.h libCEC/CEC.h
+find_path(CEC_INCLUDE_DIR NAMES libcec/cec.h libCEC/CEC.h
                           PATHS ${PC_CEC_INCLUDEDIR})
 
-set(CEC_VERSION ${PC_CEC_VERSION})
+if(PC_CEC_VERSION)
+  set(CEC_VERSION ${PC_CEC_VERSION})
+elseif(CEC_INCLUDE_DIR AND EXISTS "${CEC_INCLUDE_DIR}/libcec/version.h")
+  file(STRINGS "${CEC_INCLUDE_DIR}/libcec/version.h" cec_version_str REGEX "^[\t ]+LIBCEC_VERSION_TO_UINT\\(.*\\)")
+  string(REGEX REPLACE "^[\t ]+LIBCEC_VERSION_TO_UINT\\(([0-9]+), ([0-9]+), ([0-9]+)\\)" "\\1.\\2.\\3" CEC_VERSION "${cec_version_str}")
+  unset(cec_version_str)
+endif()
+
+if(NOT CEC_FIND_VERSION)
+  set(CEC_FIND_VERSION 4.0.0)
+endif()
 
 include(FindPackageHandleStandardArgs)
 if(NOT WIN32)
