@@ -30,6 +30,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
+#include "ServiceBroker.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -59,7 +60,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
     if (item->m_bIsFolder && !item->HasIcon() && !item->HasArt("thumb"))
     {
       std::string strImage = GetIcon(item->GetPath());
-      if (!strImage.empty() && g_TextureManager.HasTexture(strImage))
+      if (!strImage.empty() && CServiceBroker::GetTextureManager().HasTexture(strImage))
         item->SetIconImage(strImage);
     }
   }

@@ -1,6 +1,3 @@
-#ifndef XBTFWRITER_H_
-#define XBTFWRITER_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -21,35 +18,34 @@
  *
  */
 
-#include <vector>
-#include <string>
-#include <stdio.h>
+#include "XBTFHelpers.h"
 
 #include "guilib/XBTF.h"
+#include "guilib/XBTFReader.h"
+#include "URL.h"
 
-class CXBTFWriter
+namespace KODI
 {
-public:
-  CXBTFWriter(const std::string& outputFile);
-  ~CXBTFWriter();
+namespace GUILIB
+{
+bool HasTextureFiles (const CURL& path)
+{
+  CXBTFReader reader;
+  if (!reader.Open(path))
+    return false;
 
-  bool Create();
-  bool Close();
-  bool AppendContent(unsigned char const* data, size_t length);
-  bool UpdateHeader(const std::vector<unsigned int>& dupes);
-  void AddFile(const CXBTFFile& file);
-  void UpdateFile(const CXBTFFile& file);
-  std::vector<CXBTFFile> GetFiles() const;
+  return reader.HasFiles();
+}
 
-private:
-  void Cleanup();
-  uint64_t GetHeaderSize() const;
+bool GetTextureFiles(const CURL& path, std::vector<CXBTFFile>& files)
+{
+  CXBTFReader reader;
+  if (!reader.Open(path))
+    return false;
 
-  std::map<std::string, CXBTFFile> m_files;
-  std::string m_outputFile;
-  FILE* m_file;
-  unsigned char *m_data;
-  size_t         m_size;
-};
+  files = reader.GetFiles();
 
-#endif
+  return !files.empty();
+}
+}
+}

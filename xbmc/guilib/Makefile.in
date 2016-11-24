@@ -66,10 +66,10 @@ SRCS += Shader.cpp
 SRCS += StereoscopicsManager.cpp
 SRCS += Texture.cpp
 SRCS += TextureBundleXBT.cpp
-SRCS += TextureBundle.cpp
 SRCS += TextureManager.cpp
 SRCS += VisibleEffect.cpp
 SRCS += XBTF.cpp
+SRCS += XBTFHelpers.cpp
 SRCS += XBTFReader.cpp
 
 ifeq (@USE_OPENGL@,1)

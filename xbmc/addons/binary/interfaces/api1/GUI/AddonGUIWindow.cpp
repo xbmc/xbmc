@@ -29,6 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "ServiceBroker.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -188,9 +189,9 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
   m_mediaDir = fallbackMediaPath;
 
   //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::AllocResources(forceLoad);
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= FALSE */)
@@ -200,9 +201,9 @@ void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= FALSE */)
 
 void CGUIAddonWindow::Render()
 {
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::Render();
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::Update()

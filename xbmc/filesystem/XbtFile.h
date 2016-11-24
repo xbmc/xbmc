@@ -55,7 +55,6 @@ public:
 private:
   bool GetFirstFrame(CXBTFFrame& frame) const;
 
-  static bool GetReader(const CURL& url, CXBTFReaderPtr& reader);
   static bool GetReaderAndFile(const CURL& url, CXBTFReaderPtr& reader, CXBTFFile& file);
   static bool GetFile(const CURL& url, CXBTFFile& file);
 

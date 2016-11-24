@@ -47,10 +47,12 @@ namespace PLAYLIST
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
+class CGUITextureManager;
 
 class CServiceBroker
 {
 public:
+  static CGUITextureManager& GetTextureManager();
   static ADDON::CAddonMgr &GetAddonMgr();
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
   static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();

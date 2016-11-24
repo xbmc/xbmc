@@ -66,7 +66,6 @@ set(SOURCES AddonsDirectory.cpp
             VirtualDirectory.cpp
             XbtDirectory.cpp
             XbtFile.cpp
-            XbtManager.cpp
             ZeroconfDirectory.cpp
             ZipDirectory.cpp
             ZipFile.cpp
@@ -144,7 +143,6 @@ set(HEADERS AddonsDirectory.h
             VirtualDirectory.h
             XbtDirectory.h
             XbtFile.h
-            XbtManager.h
             ZeroconfDirectory.h
             ZipDirectory.h
             ZipFile.h

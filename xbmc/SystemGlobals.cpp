@@ -52,7 +52,6 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 
   XFILE::CDirectoryCache g_directoryCache;
 
-  CGUITextureManager g_TextureManager;
   CGUILargeTextureManager g_largeTextureManager;
 
   CGUIPassword       g_passwordManager;

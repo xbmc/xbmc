@@ -108,22 +108,3 @@ private:
   uint32_t m_loop;
   std::vector<CXBTFFrame> m_frames;
 };
-
-class CXBTFBase
-{
-public:
-  virtual ~CXBTFBase() { }
-
-  uint64_t GetHeaderSize() const;
-
-  bool Exists(const std::string& name) const;
-  bool Get(const std::string& name, CXBTFFile& file) const;
-  std::vector<CXBTFFile> GetFiles() const;
-  void AddFile(const CXBTFFile& file);
-  void UpdateFile(const CXBTFFile& file);
-
-protected:
-  CXBTFBase() { }
-
-  std::map<std::string, CXBTFFile> m_files;
-};

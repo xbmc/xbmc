@@ -54,6 +54,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "AddonUtils.h"
+#include "ServiceBroker.h"
 
 #include "LanguageHook.h"
 
@@ -475,7 +476,7 @@ namespace XBMCAddon
     bool skinHasImage(const char* image)
     {
       XBMC_TRACE;
-      return g_TextureManager.HasTexture(image);
+      return CServiceBroker::GetTextureManager().HasTexture(image);
     }
 
 

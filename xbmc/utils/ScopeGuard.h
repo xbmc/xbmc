@@ -56,7 +56,12 @@ public:
     return m_handle;
   }
 
-  operator bool()
+  operator Handle() const
+  {
+    return m_handle;
+  }
+
+  operator bool() const
   {
     return m_handle != invalid;
   }

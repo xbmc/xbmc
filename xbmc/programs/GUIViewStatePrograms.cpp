@@ -28,6 +28,7 @@
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
+#include "ServiceBroker.h"
 
 using namespace XFILE;
 
@@ -67,7 +68,7 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
     CMediaSource source;
     source.strPath = "androidapp://sources/apps/";
     source.strName = g_localizeStrings.Get(20244);
-    if (g_TextureManager.HasTexture("DefaultProgram.png"))
+    if (CServiceBroker::GetTextureManager().HasTexture("DefaultProgram.png"))
       source.m_strThumbnailImage = "DefaultProgram.png";
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;

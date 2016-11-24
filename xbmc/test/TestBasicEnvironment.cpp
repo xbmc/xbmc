@@ -35,6 +35,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
+#include "guilib/TextureManager.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/WIN32Util.h"

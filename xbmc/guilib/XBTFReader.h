@@ -19,31 +19,39 @@
  *
  */
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <stdint.h>
+#include "guilib/XBTF.h"
+#include "utils/ScopeGuard.h"
 
-#include "XBTF.h"
+class CURL;
 
-class CXBTFReader : public CXBTFBase
+class CXBTFReader
 {
 public:
-  CXBTFReader();
-  ~CXBTFReader();
-
-  bool Open(const std::string& path);
-  bool IsOpen() const;
+  bool Open(const CURL& url);
   void Close();
 
-  time_t GetLastModificationTimestamp() const;
+  bool HasFiles() const { return !m_files.empty(); }
+  bool Exists(const std::string& name) const;
+  bool Get(const std::string& name, CXBTFFile& file) const;
+  std::vector<CXBTFFile> GetFiles() const;
+  size_t GetFileCount() const;
 
   bool Load(const CXBTFFrame& frame, unsigned char* buffer) const;
 
 private:
+  bool Init();
+  uint64_t GetHeaderSize() const;
+
   std::string m_path;
-  FILE* m_file;
+  std::map<std::string, CXBTFFile> m_files;
+
+  using FileGuard = KODI::UTILS::CScopeGuard<FILE*, nullptr, decltype(fclose)>;
+  FileGuard m_file{fclose};
 };
 
 typedef std::shared_ptr<CXBTFReader> CXBTFReaderPtr;

@@ -65,7 +65,6 @@ SRCS += VideoDatabaseDirectory.cpp
 SRCS += VirtualDirectory.cpp
 SRCS += XbtDirectory.cpp
 SRCS += XbtFile.cpp
-SRCS += XbtManager.cpp
 SRCS += ZeroconfDirectory.cpp
 SRCS += ZipDirectory.cpp
 SRCS += ZipFile.cpp

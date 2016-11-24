@@ -31,6 +31,7 @@
 #include "TextureManager.h"
 #include "input/InputManager.h"
 #include "GUIWindowManager.h"
+#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 
@@ -972,7 +973,7 @@ void CGraphicContext::ToggleFullScreen()
 
 void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 {
-  g_TextureManager.SetTexturePath(strMediaDir);
+  CServiceBroker::GetTextureManager().SetTexturePath(strMediaDir);
   m_strMediaDir = strMediaDir;
 }
 

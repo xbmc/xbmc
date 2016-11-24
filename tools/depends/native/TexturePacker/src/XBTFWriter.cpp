@@ -82,6 +82,28 @@ void CXBTFWriter::Cleanup()
   }
 }
 
+uint64_t CXBTFWriter::GetHeaderSize() const
+{
+  uint64_t result = XBTF_MAGIC.size() + XBTF_VERSION.size() +
+    sizeof(uint32_t) /* number of files */;
+
+  for (const auto& file : m_files)
+    result += file.second.GetHeaderSize();
+
+  return result;
+}
+
+std::vector<CXBTFFile> CXBTFWriter::GetFiles() const
+{
+  std::vector<CXBTFFile> files;
+  files.reserve(m_files.size());
+
+  for (const auto& file : m_files)
+    files.push_back(file.second);
+
+  return files;
+}
+
 bool CXBTFWriter::AppendContent(unsigned char const* data, size_t length)
 {
   unsigned char *new_data = (unsigned char *)realloc(m_data, m_size + length);
@@ -161,4 +183,18 @@ bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
   }
 
   return true;
+}
+
+void CXBTFWriter::AddFile(const CXBTFFile& file)
+{
+  m_files.insert(std::make_pair(file.GetPath(), file));
+
+}
+
+void CXBTFWriter::UpdateFile(const CXBTFFile& file)
+{
+  auto&& it = m_files.find(file.GetPath());
+  if (it == m_files.end())
+    return;
+  it->second = file;
 }
