@@ -571,46 +571,15 @@ void am_packet_release(am_packet_t *pkt)
 
 int check_in_pts(am_private_t *para, am_packet_t *pkt)
 {
-    int last_duration = 0;
-    static int last_v_duration = 0;
-    int64_t pts = 0;
-
-    last_duration = last_v_duration;
-
-    if (para->stream_type == AM_STREAM_ES) {
-        if ((int64_t)INT64_0 != pkt->avpts) {
-            pts = pkt->avpts;
-
-            if (para->m_dll->codec_checkin_pts(pkt->codec, pts) != 0) {
-                CLog::Log(LOGDEBUG, "ERROR check in pts error!");
-                return PLAYER_PTS_ERROR;
-            }
-
-        } else if ((int64_t)INT64_0 != pkt->avdts) {
-            pts = pkt->avdts * last_duration;
-
-            if (para->m_dll->codec_checkin_pts(pkt->codec, pts) != 0) {
-                CLog::Log(LOGDEBUG, "ERROR check in dts error!");
-                return PLAYER_PTS_ERROR;
-            }
-
-            last_v_duration = pkt->avduration ? pkt->avduration : 1;
-        } else {
-            if (!para->check_first_pts) {
-                if (para->m_dll->codec_checkin_pts(pkt->codec, 0) != 0) {
-                    CLog::Log(LOGDEBUG, "ERROR check in 0 to video pts error!");
-                    return PLAYER_PTS_ERROR;
-                }
-            }
-        }
-        if (!para->check_first_pts) {
-            para->check_first_pts = 1;
-        }
+  if (para->stream_type == AM_STREAM_ES && (int64_t)INT64_0 != pkt->avpts)
+  {
+    if (para->m_dll->codec_checkin_pts(pkt->codec, pkt->avpts) != 0)
+    {
+      CLog::Log(LOGDEBUG, "ERROR check in pts error!");
+      return PLAYER_PTS_ERROR;
     }
-    if (pts > 0)
-      pkt->lastpts = pts;
-
-    return PLAYER_SUCCESS;
+  }
+  return PLAYER_SUCCESS;
 }
 
 static int write_header(am_private_t *para, am_packet_t *pkt)
