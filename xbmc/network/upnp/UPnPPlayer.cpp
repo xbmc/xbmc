@@ -466,7 +466,7 @@ failed:
   return;
 }
 
-void CUPnPPlayer::SeekTime(__int64 ms)
+void CUPnPPlayer::SeekTime(int64_t ms)
 {
   NPT_CHECK_LABEL(m_control->Seek(m_delegate->m_device
                                 , m_delegate->m_instance
