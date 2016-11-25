@@ -494,7 +494,7 @@ DemuxPacket* CInputStream::ReadDemux()
   return pPacket;
 }
 
-bool CInputStream::SeekTime(int time, bool backward, double* startpts)
+bool CInputStream::SeekTime(double time, bool backward, double* startpts)
 {
   bool ret = false;
   try

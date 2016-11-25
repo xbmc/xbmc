@@ -31,7 +31,7 @@
 #endif
 
 /* current API version */
-#define INPUTSTREAM_API_VERSION "1.0.5"
+#define INPUTSTREAM_API_VERSION "1.0.6"
 
 extern "C" {
 
@@ -140,7 +140,7 @@ extern "C" {
     void (__cdecl* DemuxAbort)(void);
     void (__cdecl* DemuxFlush)(void);
     DemuxPacket* (__cdecl* DemuxRead)(void);
-    bool (__cdecl* DemuxSeekTime)(int, bool, double*);
+    bool (__cdecl* DemuxSeekTime)(double, bool, double*);
     void (__cdecl* DemuxSetSpeed)(int);
     void (__cdecl* SetVideoResolution)(int, int);
 
