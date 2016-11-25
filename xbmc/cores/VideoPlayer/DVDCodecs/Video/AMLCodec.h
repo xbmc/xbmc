@@ -93,13 +93,10 @@ private:
   int              m_contrast;
   int              m_brightness;
 
-  enum PREFILLSTATE
-  {
-    PREFILL_STATE_FILLING,
-    PREFILL_STATE_FILLED
-  };
-  PREFILLSTATE     m_prefill_state;
+  static const unsigned int STATE_PREFILLED  = 1;
+  static const unsigned int STATE_HASPTS     = 2;
 
+  unsigned int m_state;
 
   PosixFilePtr     m_amlVideoFile;
   std::string      m_defaultVfmMap;

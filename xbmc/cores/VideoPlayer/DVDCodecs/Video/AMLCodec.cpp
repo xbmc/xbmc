@@ -37,10 +37,6 @@
 #include "utils/SysfsUtils.h"
 #include "utils/TimeUtils.h"
 
-extern "C" {
-#include "libavutil/avutil.h"
-}  // extern "C"
-
 #include <unistd.h>
 #include <queue>
 #include <vector>
@@ -234,8 +230,7 @@ public:
 #define TRICKMODE_I     0x01
 #define TRICKMODE_FFFB  0x02
 
-// same as AV_NOPTS_VALUE
-#define INT64_0         INT64_C(0x8000000000000000)
+static const int64_t INT64_0 = 0x8000000000000000ULL;
 
 #define EXTERNAL_PTS    (1)
 #define SYNC_OUTSIDE    (2)
@@ -546,7 +541,7 @@ static void am_packet_init(am_packet_t *pkt)
   pkt->avduration = 0;
   pkt->isvalid    = 0;
   pkt->newflag    = 0;
-  pkt->lastpts    = 0;
+  pkt->lastpts    = INT64_0;
   pkt->data       = NULL;
   pkt->buf        = NULL;
   pkt->data_size  = 0;
@@ -571,13 +566,12 @@ void am_packet_release(am_packet_t *pkt)
 
 int check_in_pts(am_private_t *para, am_packet_t *pkt)
 {
-  if (para->stream_type == AM_STREAM_ES && (int64_t)INT64_0 != pkt->avpts)
+  if (para->stream_type == AM_STREAM_ES
+    && INT64_0 != pkt->avpts
+    && para->m_dll->codec_checkin_pts(pkt->codec, pkt->avpts) != 0)
   {
-    if (para->m_dll->codec_checkin_pts(pkt->codec, pkt->avpts) != 0)
-    {
-      CLog::Log(LOGDEBUG, "ERROR check in pts error!");
-      return PLAYER_PTS_ERROR;
-    }
+    CLog::Log(LOGDEBUG, "ERROR check in pts error!");
+    return PLAYER_PTS_ERROR;
   }
   return PLAYER_SUCCESS;
 }
@@ -1318,9 +1312,9 @@ int set_header_info(am_private_t *para)
 CAMLCodec::CAMLCodec()
   : m_opened(false)
   , m_ptsIs64us(false)
-  , m_cur_pts(0)
+  , m_cur_pts(INT64_0)
   , m_last_pts(0)
-  , m_prefill_state(PREFILL_STATE_FILLING)
+  , m_state(0)
 {
   am_private = new am_private_t;
   memset(am_private, 0, sizeof(am_private_t));
@@ -1714,8 +1708,8 @@ void CAMLCodec::Reset()
   SysfsUtils::SetInt("/sys/class/video/blackout_policy", blackout_policy);
 
   // reset some interal vars
-  m_cur_pts = 0;
-  m_prefill_state = PREFILL_STATE_FILLING;
+  m_cur_pts = INT64_0;
+  m_state = 0;
   SetSpeed(m_speed);
 }
 
@@ -1737,28 +1731,30 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     // handle pts, including 31bit wrap, aml can only handle 31
     // bit pts as it uses an int in kernel.
     if (m_hints.ptsinvalid || pts == DVD_NOPTS_VALUE)
-      am_private->am_pkt.avpts = AV_NOPTS_VALUE;
+      am_private->am_pkt.avpts = INT64_0;
     else
     {
       am_private->am_pkt.avpts = 0.5 + (pts * PTS_FREQ) / DVD_TIME_BASE;\
       if (!m_start_pts && am_private->am_pkt.avpts >= 0x7fffffff)
         m_start_pts = am_private->am_pkt.avpts & ~0x0000ffff;
-    }
-    if (am_private->am_pkt.avpts != (int64_t)AV_NOPTS_VALUE)
       am_private->am_pkt.avpts -= m_start_pts;
+      m_state |= STATE_HASPTS;
+    }
 
     // handle dts, including 31bit wrap, aml can only handle 31
     // bit dts as it uses an int in kernel.
     if (dts == DVD_NOPTS_VALUE)
-      am_private->am_pkt.avdts = AV_NOPTS_VALUE;
+      am_private->am_pkt.avdts = INT64_0;
     else
     {
       am_private->am_pkt.avdts = 0.5 + (dts * PTS_FREQ) / DVD_TIME_BASE;
       if (!m_start_dts && am_private->am_pkt.avdts >= 0x7fffffff)
         m_start_dts = am_private->am_pkt.avdts & ~0x0000ffff;
-    }
-    if (am_private->am_pkt.avdts != (int64_t)AV_NOPTS_VALUE)
       am_private->am_pkt.avdts -= m_start_dts;
+      // We use this to determine the fill state if no PTS is given
+      if (m_cur_pts == INT64_0)
+        m_cur_pts = am_private->am_pkt.avdts;
+    }
 
     // some formats need header/data tweaks.
     // the actual write occurs once in write_av_packet
@@ -1784,13 +1780,13 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
       // Decoder got stuck; Reset
       Reset();
     }
-    if (m_prefill_state == PREFILL_STATE_FILLING && timesize >= 1.0)
-      m_prefill_state = PREFILL_STATE_FILLED;
+    if ((m_state & STATE_PREFILLED) == 0 && timesize >= 1.0)
+      m_state |= STATE_PREFILLED;
   }
 
   int rtn(0);
   int64_t decode_pts = 0;
-  if (m_prefill_state == PREFILL_STATE_FILLED && timesize > 0.5 &&  DequeueBuffer(decode_pts) == 0)
+  if ((m_state & STATE_PREFILLED) != 0 && timesize > 0.5 &&  DequeueBuffer(decode_pts) == 0)
   {
     rtn |= VC_PICTURE;
     m_last_pts = m_cur_pts;
@@ -1936,10 +1932,15 @@ double CAMLCodec::GetTimeSize()
   if (!m_opened)
     return 0;
 
-  int video_delay_ms;
   double timesize(0);
-  if (m_dll->codec_get_video_cur_delay_ms(&am_private->vcodec, &video_delay_ms) >= 0)
-    timesize = (float)video_delay_ms / 1000.0;
+  if (m_state & STATE_HASPTS)
+  {
+   int video_delay_ms;
+   if (m_dll->codec_get_video_cur_delay_ms(&am_private->vcodec, &video_delay_ms) >= 0)
+     timesize = (float)video_delay_ms / 1000.0;
+  }
+  else if (m_cur_pts != INT64_0)
+    timesize = static_cast<double>(am_private->am_pkt.avdts - m_cur_pts) / PTS_FREQ;
 
   // lie to VideoPlayer, it is hardcoded to a max of 8 seconds,
   // if you buffer more than 8 seconds, it goes nuts.
