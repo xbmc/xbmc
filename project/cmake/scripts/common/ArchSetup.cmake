@@ -60,7 +60,7 @@ endif()
 
 if(WITH_ARCH)
   set(ARCH ${WITH_ARCH})
-elseif(NOT CMAKE_TOOLCHAIN_FILE)
+elseif(NOT ARCH)
   set(ARCH ${CMAKE_SYSTEM_PROCESSOR})
 endif()
 

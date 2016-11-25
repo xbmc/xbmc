@@ -66,7 +66,7 @@ ifeq ($(OS),linux)
   DEPENDS += libuuid
   #not x86
   ifeq ($(findstring x86, $PLATORM_ARCH), x86)
-    DEPENDS += libsdl2 linux-system-libs
+    DEPENDS += linux-system-libs
     LINUX_SYSTEM_LIBS = linux-system-libs
   endif
   DEPENDS += alsa-lib

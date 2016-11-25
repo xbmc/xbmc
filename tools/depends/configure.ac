@@ -62,6 +62,11 @@ AC_ARG_WITH([cpu],
   [optional. specify target cpu. guessed if not specified])],
   [use_cpu=$withval],use_cpu=auto)
 
+AC_ARG_WITH([neon],
+  [AS_HELP_STRING([--with-neon],
+  [optional. specify if neon available. guessed if not specified])],
+  [use_neon=$withval],use_neon=auto)
+
 AC_ARG_WITH([arch],
   [AS_HELP_STRING([--with-arch],
   [optional. specify target arch. guessed if not specified])],
@@ -184,16 +189,24 @@ case $host in
     cross_compiling="yes"
   ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
-    platform_cflags="-Os -fPIC -DPIC"
-    platform_cxxflags="$platform_cflags"
-    platform_os="linux"
-    platform_arch=arm
+    if test -z $use_platform; then
+      platform_cflags="-Os -fPIC -DPIC"
+      platform_cxxflags="$platform_cflags"
+      platform_os="linux"
+      platform_arch=arm
+      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+      use_toolchain="${use_toolchain:-/usr}"
+    fi
   ;;
   aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
-    platform_cflags="-Os -fPIC -DPIC"
-    platform_cxxflags="$platform_cflags"
-    platform_os="linux"
-    platform_arch="aarch64"
+    if test -z $use_platform; then
+      platform_cflags="-Os -fPIC -DPIC"
+      platform_cxxflags="$platform_cflags"
+      platform_os="linux"
+      platform_arch="aarch64"
+      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+      use_toolchain="${use_toolchain:-/usr}"
+    fi
   ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
     use_toolchain="${use_toolchain:-/usr}"
@@ -377,23 +390,27 @@ case $host in
     AC_MSG_ERROR(unsupported host ($use_host))
 esac
 
-#tuning options for arm
-case $platform_arch in
-  arm | aarch64)
-    if echo $use_arch | grep -qE "^armv7"; then
+###########################################
+###########  tuning options  ##############
+###########################################
+
+case $use_arch in
+  armv7*)
+    if test "x$use_neon" = "xauto"; then
       platform_cflags+=" -mfpu=neon"
       platform_cxxflags+=" -mfpu=neon"
+      use_neon=yes
     fi
-    if test "x$use_arch" != "xauto"; then
-      platform_cflags+=" -march=$use_arch"
-      platform_cxxflags+=" -march=$use_arch"
-    fi
-    if test "x$use_cpu" != "xauto"; then
-      platform_cflags+=" -mtune=$use_cpu"
-      platform_cxxflags+=" -mtune=$use_cpu"
-    fi
-    ;;
+  ;;
 esac
+if test "x$use_arch" != "xauto"; then
+  platform_cflags+=" -march=$use_arch"
+  platform_cxxflags+=" -march=$use_arch"
+fi
+if test "x$use_cpu" != "xauto"; then
+  platform_cflags+=" -mtune=$use_cpu"
+  platform_cxxflags+=" -mtune=$use_cpu"
+fi
 
 case $use_platform in
   raspberry-pi)
@@ -606,6 +623,7 @@ if test "x$use_cpu" == "xauto"; then
 fi
 
 AC_SUBST(use_debug)
+AC_SUBST(use_neon)
 AC_SUBST(use_host)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)

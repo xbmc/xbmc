@@ -9,14 +9,7 @@ set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED
                    -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64)
 set(PLATFORM_DIR linux)
 
-if(ARCH STREQUAL arm)
-  set(NEON True)
-elseif(ARCH STREQUAL aarch64)
-  set(NEON False)
-elseif(ARCH MATCHES "x86.*")
-  #set(ARCH ${ARCH}-android-linux)
-  set(NEON False)
-else()
+if(NOT ARCH STREQUAL arm OR NOT ARCH STREQUAL aarch64 or NOT ARCH MATCHES "x86.*")
   message(SEND_ERROR "Unknown ARCH: ${ARCH}")
 endif()
 
@@ -27,7 +20,7 @@ if(NEON)
   set(FFMPEG_OPTS "${FFMPEG_OPTS} --enable-neon")
 endif()
 
-if(DEFINED CPU AND NOT CPU STREQUAL "")
+if(CPU)
   set(FFMPEG_OPTS "${FFMPEG_OPTS} --cpu=${CPU}")
 endif()
 
