@@ -42,6 +42,7 @@ namespace GAME
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
                               JOYSTICK::IActionMap* actionMap,
                               const JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
 
     // implementation of Observer
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
