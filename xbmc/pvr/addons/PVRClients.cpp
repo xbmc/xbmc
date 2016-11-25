@@ -1495,11 +1495,10 @@ bool CPVRClients::IsRealTimeStream(void) const
   return false;
 }
 
-void CPVRClients::ConnectionStateChange(int clientId, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
+void CPVRClients::ConnectionStateChange(CPVRClient *client, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
                                         std::string &strMessage)
 {
-  PVR_CLIENT client;
-  if (!GetClient(clientId, client))
+  if (!client)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - invalid client id", __FUNCTION__);
     return;

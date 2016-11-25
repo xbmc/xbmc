@@ -659,7 +659,7 @@ namespace PVR
 
     bool IsRealTimeStream() const;
 
-    void ConnectionStateChange(int clientId, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
+    void ConnectionStateChange(CPVRClient *client, std::string &strConnectionString, PVR_CONNECTION_STATE newState,
                                std::string &strMessage);
 
     /*!

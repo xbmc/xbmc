@@ -1817,9 +1817,9 @@ void CPVRManager::TriggerSearchMissingChannelIcons(void)
   CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
 }
 
-void CPVRManager::ConnectionStateChange(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
+void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
 {
-  CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(clientId, connectString, state, message), NULL);
+  CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);
 }
 
 void CPVRManager::ExecutePendingJobs(void)
@@ -1871,7 +1871,7 @@ bool CPVRSearchMissingChannelIconsJob::DoWork(void)
 
 bool CPVRClientConnectionJob::DoWork(void)
 {
-  g_PVRClients->ConnectionStateChange(m_clientId, m_connectString, m_state, m_message);
+  g_PVRClients->ConnectionStateChange(m_client, m_connectString, m_state, m_message);
   return true;
 }
 
