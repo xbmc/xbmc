@@ -137,14 +137,19 @@ std::string CPVRRecordingsPath::GetUnescapedDirectoryPath() const
 
 std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string &strPath) const
 {
+  // note: strPath must be unescaped.
+
   std::string strReturn;
   std::string strUsePath(TrimSlashes(strPath));
 
+  const std::string strUnescapedDirectoryPath(GetUnescapedDirectoryPath());
+
   /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
-  if (!m_directoryPath.empty() && (strUsePath.size() <= m_directoryPath.size() || !URIUtils::PathHasParent(strUsePath, m_directoryPath)))
+  if (!strUnescapedDirectoryPath.empty() &&
+      (strUsePath.size() <= strUnescapedDirectoryPath.size() || !URIUtils::PathHasParent(strUsePath, strUnescapedDirectoryPath)))
     return strReturn;
 
-  strUsePath.erase(0, m_directoryPath.size());
+  strUsePath.erase(0, strUnescapedDirectoryPath.size());
   strUsePath = TrimSlashes(strUsePath);
 
   /* check for more occurences */
@@ -154,7 +159,7 @@ std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string &
   else
     strReturn = strUsePath.substr(0, iDelimiter);
 
-  return CURL::Decode(strReturn);
+  return strReturn;
 }
 
 const std::string CPVRRecordingsPath::GetTitle() const
