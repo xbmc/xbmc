@@ -121,8 +121,8 @@ if test "x$host" = "x$build"; then
   use_host=$build_cpu-$build_os
   cross_compiling="no"
 
-  if test "x$use_cpu" = "xauto"; then
-    use_cpu=$host_cpu
+  if test "x$use_arch" = "xauto"; then
+    use_arch=$host_cpu
   fi
 fi
 
@@ -218,7 +218,7 @@ case $host in
     platform_cflags="-fPIC -DPIC"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
-    platform_arch="x86_64"
+    platform_arch="x86-64"
   ;;
   *darwin*)
     if test "x$prefix" = "xNONE"; then
@@ -259,18 +259,18 @@ case $host in
       *86*-apple-darwin)
         MC_CHECK_NOT_CPU([$use_arch], "arm")
 
-        # setup which cpu to use
+        # setup which arch to use
         case $host in
           x86_64-apple-darwin*)
             platform_arch=x86_64
             if test "x$use_arch" = "xauto"; then
-              use_arch=x86_64
+              use_arch=x86-64
             fi
           ;;
           i*86-apple-darwin*)
             platform_arch=x86
             if test "x$use_arch" = "xauto"; then
-              use_arch=i386
+              use_arch=x86
             fi
             platform_ldflags+=" -read_only_relocs suppress"
          ;;
