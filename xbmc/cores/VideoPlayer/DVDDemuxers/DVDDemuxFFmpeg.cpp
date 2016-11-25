@@ -935,19 +935,6 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
       if (pPacket)
       {
-        if(m_bMatroska && stream->codecpar && stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-        { // matroska can store different timestamps
-          // for different formats, for native stored
-          // stuff it is pts, but for ms compatibility
-          // tracks, it is really dts. sadly ffmpeg
-          // sets these two timestamps equal all the
-          // time, so we select it here instead
-          if(stream->codecpar->codec_tag == 0)
-            m_pkt.pkt.dts = AV_NOPTS_VALUE;
-          else
-            m_pkt.pkt.pts = AV_NOPTS_VALUE;
-        }
-
         if(m_bAVI && stream->codecpar && stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
         {
           // AVI's always have borked pts, specially if m_pFormatContext->flags includes
