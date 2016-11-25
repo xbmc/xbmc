@@ -1021,7 +1021,7 @@ void CMusicInfoTag::AppendGenre(const std::string &genre)
 
 void CMusicInfoTag::AddArtistRole(const std::string& Role, const std::string& strArtist)
 {
-  if (!strArtist.empty())
+  if (!strArtist.empty() && !Role.empty())
     AddArtistRole(Role, StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
 }
 
