@@ -78,10 +78,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "5.2.0"
+#define XBMC_PVR_API_VERSION "5.3.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "5.2.0"
+#define XBMC_PVR_MIN_API_VERSION "5.3.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -532,81 +532,81 @@ extern "C" {
    */
   typedef struct PVRClient
   {
-    const char*  (__cdecl* GetPVRAPIVersion)(void);
-    const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
-    const char*  (__cdecl* GetGUIAPIVersion)(void);
-    const char*  (__cdecl* GetMininumGUIAPIVersion)(void);
-    PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
-    PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
-    const char*  (__cdecl* GetBackendName)(void);
-    const char*  (__cdecl* GetBackendVersion)(void);
-    const char*  (__cdecl* GetConnectionString)(void);
-    PVR_ERROR    (__cdecl* GetDriveSpace)(long long*, long long*);
-    PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
-    PVR_ERROR    (__cdecl* GetEpg)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
-    int          (__cdecl* GetChannelGroupsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
-    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
-    PVR_ERROR    (__cdecl* OpenDialogChannelScan)(void);
-    int          (__cdecl* GetChannelsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannels)(ADDON_HANDLE, bool);
-    PVR_ERROR    (__cdecl* DeleteChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* RenameChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* MoveChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* OpenDialogChannelSettings)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* OpenDialogChannelAdd)(const PVR_CHANNEL&);
-    int          (__cdecl* GetRecordingsAmount)(bool);
-    PVR_ERROR    (__cdecl* GetRecordings)(ADDON_HANDLE, bool);
-    PVR_ERROR    (__cdecl* DeleteRecording)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* UndeleteRecording)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* DeleteAllRecordingsFromTrash)(void);
-    PVR_ERROR    (__cdecl* RenameRecording)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
-    PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
-    int          (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* GetRecordingEdl)(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
-    PVR_ERROR    (__cdecl* GetTimerTypes)(PVR_TIMER_TYPE[], int*);
-    int          (__cdecl* GetTimersAmount)(void);
-    PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
-    PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);
-    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
-    PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER&);
-    bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
-    void         (__cdecl* CloseLiveStream)(void);
-    int          (__cdecl* ReadLiveStream)(unsigned char*, unsigned int);
-    long long    (__cdecl* SeekLiveStream)(long long, int);
-    long long    (__cdecl* PositionLiveStream)(void);
-    long long    (__cdecl* LengthLiveStream)(void);
-    bool         (__cdecl* SwitchChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
-    const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
-    bool         (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
-    void         (__cdecl* CloseRecordedStream)(void);
-    int          (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
-    long long    (__cdecl* SeekRecordedStream)(long long, int);
-    long long    (__cdecl* PositionRecordedStream)(void);
-    long long    (__cdecl* LengthRecordedStream)(void);
-    void         (__cdecl* DemuxReset)(void);
-    void         (__cdecl* DemuxAbort)(void);
-    void         (__cdecl* DemuxFlush)(void);
-    DemuxPacket* (__cdecl* DemuxRead)(void);
-    unsigned int (__cdecl* GetChannelSwitchDelay)(void);
-    bool         (__cdecl* CanPauseStream)(void);
-    void         (__cdecl* PauseStream)(bool);
-    bool         (__cdecl* CanSeekStream)(void);
-    bool         (__cdecl* SeekTime)(int, bool, double*);
-    void         (__cdecl* SetSpeed)(int);
-    time_t       (__cdecl* GetPlayingTime)(void);
-    time_t       (__cdecl* GetBufferTimeStart)(void);
-    time_t       (__cdecl* GetBufferTimeEnd)(void);
-    const char*  (__cdecl* GetBackendHostname)(void);
-    bool         (__cdecl* IsTimeshifting)(void);
-    bool         (__cdecl* IsRealTimeStream)(void);
-    PVR_ERROR    (__cdecl* SetEPGTimeFrame)(int);
-    void         (__cdecl* OnSystemSleep)(void);
-    void         (__cdecl* OnSystemWake)(void);
-    void         (__cdecl* OnPowerSavingActivated)(void);
-    void         (__cdecl* OnPowerSavingDeactivated)(void);
+    const char*  (__cdecl* GetPVRAPIVersion)(void*);
+    const char*  (__cdecl* GetMininumPVRAPIVersion)(void*);
+    const char*  (__cdecl* GetGUIAPIVersion)(void*);
+    const char*  (__cdecl* GetMininumGUIAPIVersion)(void*);
+    PVR_ERROR    (__cdecl* GetAddonCapabilities)(void*, PVR_ADDON_CAPABILITIES*);
+    PVR_ERROR    (__cdecl* GetStreamProperties)(void*, PVR_STREAM_PROPERTIES*);
+    const char*  (__cdecl* GetBackendName)(void*);
+    const char*  (__cdecl* GetBackendVersion)(void*);
+    const char*  (__cdecl* GetConnectionString)(void*);
+    PVR_ERROR    (__cdecl* GetDriveSpace)(void*, long long*, long long*);
+    PVR_ERROR    (__cdecl* MenuHook)(void*, const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
+    PVR_ERROR    (__cdecl* GetEpg)(void*, ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
+    int          (__cdecl* GetChannelGroupsAmount)(void*);
+    PVR_ERROR    (__cdecl* GetChannelGroups)(void*, ADDON_HANDLE, bool);
+    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(void*, ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
+    PVR_ERROR    (__cdecl* OpenDialogChannelScan)(void*);
+    int          (__cdecl* GetChannelsAmount)(void*);
+    PVR_ERROR    (__cdecl* GetChannels)(void*, ADDON_HANDLE, bool);
+    PVR_ERROR    (__cdecl* DeleteChannel)(void*, const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* RenameChannel)(void*, const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* MoveChannel)(void*, const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* OpenDialogChannelSettings)(void*, const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* OpenDialogChannelAdd)(void*, const PVR_CHANNEL&);
+    int          (__cdecl* GetRecordingsAmount)(void*, bool);
+    PVR_ERROR    (__cdecl* GetRecordings)(void*, ADDON_HANDLE, bool);
+    PVR_ERROR    (__cdecl* DeleteRecording)(void*, const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* UndeleteRecording)(void*, const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* DeleteAllRecordingsFromTrash)(void*);
+    PVR_ERROR    (__cdecl* RenameRecording)(void*, const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* SetRecordingPlayCount)(void*, const PVR_RECORDING&, int);
+    PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(void*, const PVR_RECORDING&, int);
+    int          (__cdecl* GetRecordingLastPlayedPosition)(void*, const PVR_RECORDING&);
+    PVR_ERROR    (__cdecl* GetRecordingEdl)(void*, const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
+    PVR_ERROR    (__cdecl* GetTimerTypes)(void*, PVR_TIMER_TYPE[], int*);
+    int          (__cdecl* GetTimersAmount)(void*);
+    PVR_ERROR    (__cdecl* GetTimers)(void*, ADDON_HANDLE);
+    PVR_ERROR    (__cdecl* AddTimer)(void*, const PVR_TIMER&);
+    PVR_ERROR    (__cdecl* DeleteTimer)(void*, const PVR_TIMER&, bool);
+    PVR_ERROR    (__cdecl* UpdateTimer)(void*, const PVR_TIMER&);
+    bool         (__cdecl* OpenLiveStream)(void*, const PVR_CHANNEL&);
+    void         (__cdecl* CloseLiveStream)(void*);
+    int          (__cdecl* ReadLiveStream)(void*, unsigned char*, unsigned int);
+    long long    (__cdecl* SeekLiveStream)(void*, long long, int);
+    long long    (__cdecl* PositionLiveStream)(void*);
+    long long    (__cdecl* LengthLiveStream)(void*);
+    bool         (__cdecl* SwitchChannel)(void*, const PVR_CHANNEL&);
+    PVR_ERROR    (__cdecl* SignalStatus)(void*, PVR_SIGNAL_STATUS&);
+    const char*  (__cdecl* GetLiveStreamURL)(void*, const PVR_CHANNEL&);
+    bool         (__cdecl* OpenRecordedStream)(void*, const PVR_RECORDING&);
+    void         (__cdecl* CloseRecordedStream)(void*);
+    int          (__cdecl* ReadRecordedStream)(void*, unsigned char*, unsigned int);
+    long long    (__cdecl* SeekRecordedStream)(void*, long long, int);
+    long long    (__cdecl* PositionRecordedStream)(void*);
+    long long    (__cdecl* LengthRecordedStream)(void*);
+    void         (__cdecl* DemuxReset)(void*);
+    void         (__cdecl* DemuxAbort)(void*);
+    void         (__cdecl* DemuxFlush)(void*);
+    DemuxPacket* (__cdecl* DemuxRead)(void*);
+    unsigned int (__cdecl* GetChannelSwitchDelay)(void*);
+    bool         (__cdecl* CanPauseStream)(void*);
+    void         (__cdecl* PauseStream)(void*, bool);
+    bool         (__cdecl* CanSeekStream)(void*);
+    bool         (__cdecl* SeekTime)(void*, int, bool, double*);
+    void         (__cdecl* SetSpeed)(void*, int);
+    time_t       (__cdecl* GetPlayingTime)(void*);
+    time_t       (__cdecl* GetBufferTimeStart)(void*);
+    time_t       (__cdecl* GetBufferTimeEnd)(void*);
+    const char*  (__cdecl* GetBackendHostname)(void*);
+    bool         (__cdecl* IsTimeshifting)(void*);
+    bool         (__cdecl* IsRealTimeStream)(void*);
+    PVR_ERROR    (__cdecl* SetEPGTimeFrame)(void*, int);
+    void         (__cdecl* OnSystemSleep)(void*);
+    void         (__cdecl* OnSystemWake)(void*);
+    void         (__cdecl* OnPowerSavingActivated)(void*);
+    void         (__cdecl* OnPowerSavingDeactivated)(void*);
   } PVRClient;
 
 #ifdef __cplusplus

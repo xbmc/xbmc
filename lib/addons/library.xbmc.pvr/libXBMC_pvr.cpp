@@ -197,4 +197,12 @@ DLLEXPORT void PVR_transfer_channel_group_member(void *hdl, void* cb, const ADDO
   ((CB_PVRLib*)cb)->TransferChannelGroupMember(((AddonCB*)hdl)->addonData, handle, member);
 }
 
+DLLEXPORT void PVR_register_addon_instance(void *hdl, void* cb, void* addonInstance)
+{
+  if (cb == nullptr)
+    return;
+
+  ((CB_PVRLib*)cb)->RegisterAddonInstance(((AddonCB*)hdl)->addonData, addonInstance);
+}
+
 };

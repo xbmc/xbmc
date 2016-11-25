@@ -151,6 +151,10 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_epg_event_state_change");
     if (PVR_epg_event_state_change == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    PVR_register_addon_instance = (void (*)(void* HANDLE, void* CB, void* hdl))
+      dlsym(m_libXBMC_pvr, "PVR_register_addon_instance");
+    if (PVR_register_addon_instance == nullptr) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     m_Callbacks = PVR_register_me(m_Handle);
     return m_Callbacks != NULL;
   }
@@ -321,6 +325,15 @@ public:
     return PVR_epg_event_state_change(m_Handle, m_Callbacks, tag, iUniqueChannelId, newState);
   }
 
+  /*!
+   * @brief To register handle pointer who are used from add-on to get his working class
+   * @param addonInstance the instance pointer from addon to store
+   */
+  void RegisterAddonInstance(void* addonInstance)
+  {
+    PVR_register_addon_instance(m_Handle, m_Callbacks, addonInstance);
+  }
+
 protected:
   void* (*PVR_register_me)(void*);
   void (*PVR_unregister_me)(void*, void*);
@@ -343,6 +356,7 @@ protected:
 #endif
   void (*PVR_connection_state_change)(void*, void*, const char*, PVR_CONNECTION_STATE, const char*);
   void (*PVR_epg_event_state_change)(void*, void*, EPG_TAG*, unsigned int, EPG_EVENT_STATE);
+  void (*PVR_register_addon_instance)(void*, void*, void*);
 
 private:
   void* m_libXBMC_pvr;

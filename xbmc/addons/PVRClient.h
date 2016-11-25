@@ -140,6 +140,12 @@ namespace PVR
     //@{
 
     /*!
+     * @brief To register addon instance handle pointer who are used from add-on to get his working class
+     * @param handle the handle pointer to store
+     */
+    void RegisterAddonInstance(void* addonInstance);
+
+    /*!
      * @brief Query this add-on's capabilities.
      * @return pCapabilities The add-on's capabilities.
      */
@@ -741,5 +747,8 @@ namespace PVR
     CPVRRecordingPtr    m_playingRecording;
     ADDON::AddonVersion m_apiVersion;
     bool                m_bAvahiServiceAdded;
+
+    /*! From add-on given handle data, used on all add-on calls as first value. */
+    void* m_addonInstance;
   };
 }

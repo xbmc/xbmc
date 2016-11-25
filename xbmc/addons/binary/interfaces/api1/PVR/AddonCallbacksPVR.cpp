@@ -72,6 +72,7 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks->TransferChannelGroupMember = PVRTransferChannelGroupMember;
   m_callbacks->ConnectionStateChange      = PVRConnectionStateChange;
   m_callbacks->EpgEventStateChange        = PVREpgEventStateChange;
+  m_callbacks->RegisterAddonInstance      = PVRRegisterAddonInstance;
 }
 
 CAddonCallbacksPVR::~CAddonCallbacksPVR()
@@ -424,6 +425,18 @@ void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, u
     CSingleLock lock(queueMutex);
     queuedChanges.push_back(EpgEventStateChange(client->GetID(), iUniqueChannelId, tag, newState));
   }
+}
+
+void CAddonCallbacksPVR::PVRRegisterAddonInstance(void* addonData, void* addonInstance)
+{
+  CPVRClient *client = GetPVRClient(addonData);
+  if (!client || !addonInstance)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  client->RegisterAddonInstance(addonInstance);
 }
 
 } /* namespace PVR */
