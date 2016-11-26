@@ -75,19 +75,19 @@ public:
   virtual void Dispose() = 0;
 
   /*
-   * returns bytes used or -1 on error
+   * returns -1 on error
    *
    */
-  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts) = 0;
+  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) = 0;
 
   /*
    * returns nr of bytes in decode buffer
-   * the data is valid until the next Decode call
+   * the data is valid until the next call
    */
   virtual int GetData(uint8_t** dst) = 0;
 
   /*
-   * the data is valid until the next Decode call
+   * the data is valid until the next call
    */
   virtual void GetData(DVDAudioFrame &frame) = 0;
 
