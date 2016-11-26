@@ -8,11 +8,12 @@ list(GET FFMPEG_BASE_URL 0 FFMPEG_BASE_URL)
 string(SUBSTRING "${FFMPEG_BASE_URL}" 9 -1 FFMPEG_BASE_URL)
 
 
-if(ENABLE_INTERNAL_FFMPEG)
-  if(FFMPEG_PATH)
-    message(WARNING "Internal FFmpeg enabled, but FFMPEG_PATH given, ignoring")
-  endif()
+if(EXTERNAL_FFMPEG_PATH)
+  message(WARNING "EXTERNAL_FFMPEG_PATH given, disabling internal FFmpeg build.")
+  set(ENABLE_INTERNAL_FFMPEG OFF)
+endif()
 
+if(ENABLE_INTERNAL_FFMPEG)
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(FFMPEG_URL)
@@ -81,8 +82,8 @@ fi")
                                  -DUSE_STATIC_FFMPEG=1)
   set(FFMPEG_FOUND 1)
 else()
-  if(FFMPEG_PATH)
-    set(ENV{PKG_CONFIG_PATH} "${FFMPEG_PATH}/lib/pkgconfig")
+  if(EXTERNAL_FFMPEG_PATH)
+    set(ENV{PKG_CONFIG_PATH} "${EXTERNAL_FFMPEG_PATH}/lib/pkgconfig")
   endif()
   set(FFMPEG_PKGS libavcodec>=56.26.100 libavfilter>=5.11.100 libavformat>=56.25.101
                   libavutil>=54.20.100 libswscale>=3.1.101 libswresample>=1.1.100 libpostproc>=53.3.100)
