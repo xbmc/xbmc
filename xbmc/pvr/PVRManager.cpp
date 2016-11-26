@@ -1438,9 +1438,15 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
       return false;
     }
 
-    // no need to do anything except switching m_currentFile
     if (bPreview)
     {
+      if (!g_infoManager.GetShowInfo())
+      {
+        // no need to do anything
+        return true;
+      }
+
+      // no need to do anything except switching m_currentFile
       delete m_currentFile;
       m_currentFile = new CFileItem(channel);
 
