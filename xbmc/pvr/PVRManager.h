@@ -49,6 +49,7 @@ namespace EPG
 
 namespace PVR
 {
+  class CPVRClient;
   class CPVRClients;
   class CPVRChannel;
   typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
@@ -554,7 +555,7 @@ private:
     /*!
      * @brief Signal a connection change of a client
      */
-    void ConnectionStateChange(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
+    void ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
 
     /*!
      * @brief Explicitly set the state of channel preview. This is when channel is displayed on OSD without actually switching
@@ -773,14 +774,14 @@ private:
   class CPVRClientConnectionJob : public CJob
   {
   public:
-    CPVRClientConnectionJob(int clientId, std::string connectString, PVR_CONNECTION_STATE state, std::string message) :
-    m_clientId(clientId), m_connectString(connectString), m_state(state), m_message(message) {}
+    CPVRClientConnectionJob(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
+    : m_client(client), m_connectString(connectString), m_state(state), m_message(message) {}
     virtual ~CPVRClientConnectionJob() {}
     virtual const char *GetType() const { return "pvr-client-connection"; }
 
     virtual bool DoWork();
   private:
-    int m_clientId;
+    CPVRClient *m_client;
     std::string m_connectString;
     PVR_CONNECTION_STATE m_state;
     std::string m_message;

@@ -155,6 +155,8 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
   m_blocks = (gridDuration.GetDays() * 24 * 60 + gridDuration.GetHours() * 60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
   if (m_blocks >= MAXBLOCKS)
     m_blocks = MAXBLOCKS;
+  else if (m_blocks < iBlocksPerPage)
+    m_blocks = iBlocksPerPage;
 
   m_gridIndex.reserve(m_channelItems.size());
   const std::vector<GridItem> blocks(m_blocks);
