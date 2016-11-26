@@ -259,7 +259,7 @@ public:
   /*
    * Seek, time in msec calculated from stream start
    */
-  virtual bool SeekTime(int time, bool backwords = false, double* startpts = NULL) = 0;
+  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) = 0;
 
   /*
    * Seek to a specified chapter.

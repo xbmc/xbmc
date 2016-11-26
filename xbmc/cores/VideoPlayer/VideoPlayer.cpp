@@ -2561,7 +2561,7 @@ void CVideoPlayer::HandleMessages()
 
       double start = DVD_NOPTS_VALUE;
 
-      int time = msg.GetTime();
+      double time = msg.GetTime();
       if (msg.GetRelative())
         time = GetTime() + time;
 
@@ -2576,14 +2576,14 @@ void CVideoPlayer::HandleMessages()
       if (m_pInputStream->GetIPosTime() == nullptr)
         time -= DVD_TIME_TO_MSEC(m_State.time_offset);
 
-      CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
+      CLog::Log(LOGDEBUG, "demuxer seek to: %f", time);
       if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
       {
-        CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", time);
+        CLog::Log(LOGDEBUG, "demuxer seek to: %f, success", time);
         if(m_pSubtitleDemuxer)
         {
           if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
-            CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
+            CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %f, success", time);
         }
         // dts after successful seek
         if (start == DVD_NOPTS_VALUE)

@@ -64,7 +64,7 @@ public:
   void Abort();
   void Flush();
   DemuxPacket* Read();
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL) { return false; }
+  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override { return false; }
   void SetSpeed(int iSpeed) {};
   int GetStreamLength() { return (int)m_header.durationMs; }
   CDemuxStream* GetStream(int iStreamId) const override;

@@ -1064,7 +1064,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   return pPacket;
 }
 
-bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
+bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
 {
   bool hitEnd = false;
 
@@ -1109,7 +1109,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   int ret;
   {
     CSingleLock lock(m_critSection);
-    ret = av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
+    ret = av_seek_frame(m_pFormatContext, -1, seek_pts, backwards ? AVSEEK_FLAG_BACKWARD : 0);
 
     // demuxer can return failure, if seeking behind eof
     if (ret < 0 && m_pFormatContext->duration &&

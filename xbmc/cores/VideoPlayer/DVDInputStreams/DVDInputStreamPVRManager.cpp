@@ -553,7 +553,7 @@ void CDVDInputStreamPVRManager::SetSpeed(int Speed)
   }
 }
 
-bool CDVDInputStreamPVRManager::SeekTime(int timems, bool backwards, double *startpts)
+bool CDVDInputStreamPVRManager::SeekTime(double timems, bool backwards, double *startpts)
 {
   PVR_CLIENT client;
   if (g_PVRClients->GetPlayingClient(client))
