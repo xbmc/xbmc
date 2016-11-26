@@ -120,10 +120,6 @@ cross_compiling="yes"
 if test "x$host" = "x$build"; then
   use_host=$build_cpu-$build_os
   cross_compiling="no"
-
-  if test "x$use_arch" = "xauto"; then
-    use_arch=$host_cpu
-  fi
 fi
 
 deps_dir=$use_host
@@ -378,9 +374,9 @@ case $host in
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name | grep ^Path | awk '{ print $2}'`]
       ;;
     esac
-    platform_cflags+=" -arch $use_arch -m$platform_min_version"
-    platform_ldflags+=" -arch $use_arch -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
-    platform_cxxflags+=" -arch $use_arch -m$platform_min_version -std=c++11 -stdlib=libc++"
+    platform_cflags+=" -arch $platform_arch -m$platform_min_version"
+    platform_ldflags+=" -arch $platform_arch -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
+    platform_cxxflags+=" -arch $platform_arch -m$platform_min_version -std=c++11 -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
     deps_dir=$sdk_name"_"$platform_arch-target
     tool_dir=buildtools-native;
@@ -437,9 +433,8 @@ if test "$target_platform" = "raspberry-pi" ; then
   else
     AC_MSG_ERROR([Raspberry Pi firmware not found])
   fi
-  use_arch="arm"
   use_hardcoded_tables="yes"
-  ARCH="arm"
+  platform_arch="arm"
   platform_os="linux"
   cross_compiling="yes"
   use_host="arm-linux-gnueabihf"
@@ -653,6 +648,7 @@ echo -e "toolchain:\t $use_toolchain"
 echo -e "cpu:\t\t $use_cpu"
 echo -e "host:\t\t $use_host"
 echo -e "arch:\t\t $use_arch"
+echo -e "platform_arch:\t\t $platform_arch"
 if test "$platform_os" == "android"; then
   echo -e "sdk-platform:\t $use_sdk"
   echo -e "build-tools:\t $build_tools_path"
