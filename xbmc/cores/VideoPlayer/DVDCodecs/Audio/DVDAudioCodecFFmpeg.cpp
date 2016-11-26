@@ -21,6 +21,7 @@
 #include "DVDAudioCodecFFmpeg.h"
 #ifdef TARGET_POSIX
 #include "XMemUtils.h"
+#include "linux/XTimeUtils.h"
 #endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
@@ -42,9 +43,9 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg(CProcessInfo &processInfo) : CDVDAudi
   m_channels = 0;
   m_layout = 0;
   
-  m_pFrame1 = NULL;
+  m_pFrame = nullptr;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
-  m_gotFrame = 0;
+  m_eof = false;
 }
 
 CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
@@ -116,8 +117,8 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
-  m_pFrame1 = av_frame_alloc();
-  if (!m_pFrame1)
+  m_pFrame = av_frame_alloc();
+  if (!m_pFrame)
   {
     Dispose();
     return false;
@@ -132,15 +133,19 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDAudioCodecFFmpeg::Dispose()
 {
-  av_frame_free(&m_pFrame1);
+  av_frame_free(&m_pFrame);
   avcodec_free_context(&m_pCodecContext);
 }
 
-int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double pts)
+int CDVDAudioCodecFFmpeg::AddData(uint8_t* pData, int iSize, double dts, double pts)
 {
-  int iBytesUsed;
   if (!m_pCodecContext)
     return -1;
+
+  if (m_eof)
+  {
+    Reset();
+  }
 
   AVPacket avpkt;
   av_init_packet(&avpkt);
@@ -148,55 +153,45 @@ int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   avpkt.size = iSize;
   avpkt.dts = (dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : dts / DVD_TIME_BASE * AV_TIME_BASE;
   avpkt.pts = (pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : pts / DVD_TIME_BASE * AV_TIME_BASE;
-  iBytesUsed = avcodec_decode_audio4( m_pCodecContext
-                                                 , m_pFrame1
-                                                 , &m_gotFrame
-                                                 , &avpkt);
-  if (iBytesUsed < 0 || !m_gotFrame)
+  int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+
+  // try again
+  while (ret == AVERROR(EAGAIN))
   {
-    return iBytesUsed;
+    ret = avcodec_send_packet(m_pCodecContext, &avpkt);
+    Sleep(20);
   }
 
-  /* some codecs will attempt to consume more data than what we gave */
-  if (iBytesUsed > iSize)
-  {
-    CLog::Log(LOGWARNING, "CDVDAudioCodecFFmpeg::Decode - decoder attempted to consume more data than given");
-    iBytesUsed = iSize;
-  }
+  if (ret)
+    return -1;
 
-  if (m_pFrame1->nb_side_data)
-  {
-    for (int i = 0; i < m_pFrame1->nb_side_data; i++)
-    {
-      AVFrameSideData *sd = m_pFrame1->side_data[i];
-      if (sd->data)
-      {
-        if (sd->type == AV_FRAME_DATA_MATRIXENCODING)
-        {
-          m_matrixEncoding = *(enum AVMatrixEncoding*)sd->data;
-        }
-      }
-    }
-  }
-
-  m_format.m_dataFormat = GetDataFormat();
-  m_format.m_channelLayout = GetChannelMap();
-  m_format.m_sampleRate = GetSampleRate();
-  m_format.m_frameSize = m_format.m_channelLayout.Count() * CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3;
-  return iBytesUsed;
+  return 0;
 }
 
 void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
 {
-  frame.passthrough = false;
   frame.nb_frames = 0;
+
+  uint8_t* data[16];
+  int bytes = GetData(data);
+  if (!bytes)
+  {
+    return;
+  }
+
+  frame.passthrough = false;
   frame.format.m_dataFormat = m_format.m_dataFormat;
   frame.format.m_channelLayout = m_format.m_channelLayout;
   frame.framesize = (CAEUtil::DataFormatToBits(frame.format.m_dataFormat) >> 3) * frame.format.m_channelLayout.Count();
   if(frame.framesize == 0)
     return;
-  frame.nb_frames = GetData(frame.data)/frame.framesize;
+
+  frame.nb_frames = bytes/frame.framesize;
   frame.planes = AE_IS_PLANAR(frame.format.m_dataFormat) ? frame.format.m_channelLayout.Count() : 1;
+
+  for (unsigned int i=0; i<frame.planes; i++)
+    frame.data[i] = data[i];
+
   frame.bits_per_sample = CAEUtil::DataFormatToBits(frame.format.m_dataFormat);
   frame.format.m_sampleRate = m_format.m_sampleRate;
   frame.matrix_encoding = GetMatrixEncoding();
@@ -208,7 +203,7 @@ void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
   else
     frame.duration = 0.0;
 
-  int64_t bpts = av_frame_get_best_effort_timestamp(m_pFrame1);
+  int64_t bpts = av_frame_get_best_effort_timestamp(m_pFrame);
   if(bpts != AV_NOPTS_VALUE)
     frame.pts = (double)bpts * DVD_TIME_BASE / AV_TIME_BASE;
   else
@@ -217,13 +212,36 @@ void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
 
 int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
 {
-  if(m_gotFrame)
+  int ret = avcodec_receive_frame(m_pCodecContext, m_pFrame);
+  if (!ret)
   {
-    int planes = av_sample_fmt_is_planar(m_pCodecContext->sample_fmt) ? m_pFrame1->channels : 1;
+    if (m_pFrame->nb_side_data)
+    {
+      for (int i = 0; i < m_pFrame->nb_side_data; i++)
+      {
+        AVFrameSideData *sd = m_pFrame->side_data[i];
+        if (sd->data)
+        {
+          if (sd->type == AV_FRAME_DATA_MATRIXENCODING)
+          {
+            m_matrixEncoding = *(enum AVMatrixEncoding*)sd->data;
+          }
+        }
+      }
+    }
+
+    m_format.m_dataFormat = GetDataFormat();
+    m_format.m_channelLayout = GetChannelMap();
+    m_format.m_sampleRate = GetSampleRate();
+    m_format.m_frameSize = m_format.m_channelLayout.Count() *
+                           CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3;
+
+    int planes = av_sample_fmt_is_planar(m_pCodecContext->sample_fmt) ? m_pFrame->channels : 1;
     for (int i=0; i<planes; i++)
-      dst[i] = m_pFrame1->extended_data[i];
-    m_gotFrame = 0;
-    return m_pFrame1->nb_samples * m_pFrame1->channels * av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
+      dst[i] = m_pFrame->extended_data[i];
+
+    return m_pFrame->nb_samples * m_pFrame->channels *
+           av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
   }
 
   return 0;
@@ -232,7 +250,7 @@ int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
 void CDVDAudioCodecFFmpeg::Reset()
 {
   if (m_pCodecContext) avcodec_flush_buffers(m_pCodecContext);
-  m_gotFrame = 0;
+  m_eof = false;
 }
 
 int CDVDAudioCodecFFmpeg::GetChannels()
