@@ -214,7 +214,7 @@ case $host in
     platform_cflags="-fPIC -DPIC"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
-    platform_arch="x86-64"
+    platform_arch="x86_64"
   ;;
   *darwin*)
     if test "x$prefix" = "xNONE"; then
