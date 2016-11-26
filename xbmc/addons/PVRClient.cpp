@@ -1383,7 +1383,7 @@ int64_t CPVRClient::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/
   return -EINVAL;
 }
 
-bool CPVRClient::SeekTime(int time, bool backwards, double *startpts)
+bool CPVRClient::SeekTime(double time, bool backwards, double *startpts)
 {
   if (IsPlaying())
   {

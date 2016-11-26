@@ -122,7 +122,7 @@ extern "C"
    * @return True if the seek operation was possible
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  bool DemuxSeekTime(int time, bool backwards, double *startpts);
+  bool DemuxSeekTime(double time, bool backwards, double *startpts);
 
   /*!
    * Notify the InputStream addon/demuxer that XBMC wishes to change playback speed

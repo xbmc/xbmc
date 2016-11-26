@@ -35,7 +35,7 @@ public:
   virtual void Abort() override {};
   virtual void Flush() override {};
   virtual DemuxPacket* Read() override { return NULL; };
-  virtual bool SeekTime(int time, bool backwords = false, double* startpts = NULL) override {return true;};
+  virtual bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override {return true;};
   virtual void SetSpeed(int iSpeed) override {};
   virtual int GetStreamLength() override {return 0;};
   virtual CDemuxStream* GetStream(int iStreamId) const override;

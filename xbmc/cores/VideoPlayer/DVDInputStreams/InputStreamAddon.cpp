@@ -221,7 +221,7 @@ void CInputStreamAddon::SetSpeed(int iSpeed)
   m_addon->SetSpeed(iSpeed);
 }
 
-bool CInputStreamAddon::SeekTime(int time, bool backward, double* startpts)
+bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
 {
   if (!m_addon)
     return false;

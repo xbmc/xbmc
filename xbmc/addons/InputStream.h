@@ -75,7 +75,7 @@ namespace ADDON
     CDemuxStream* GetStream(int iStreamId);
     std::vector<CDemuxStream*> GetStreams() const;
     DemuxPacket* ReadDemux();
-    bool SeekTime(int time, bool backward, double* startpts);
+    bool SeekTime(double time, bool backward, double* startpts);
     void AbortDemux();
     void FlushDemux();
     void SetSpeed(int iSpeed);

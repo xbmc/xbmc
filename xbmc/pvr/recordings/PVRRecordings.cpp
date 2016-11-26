@@ -340,14 +340,6 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
     }
   }
 
-  if (items.IsEmpty())
-  {
-    // Note: Do not change the ".." label. It has very special meaning/logic.
-    //       CFileItem::IsParentFolder() and and other code depends on this.
-    const CFileItemPtr item(new CFileItem(".."));
-    items.Add(item);
-  }
-
   return recPath.IsValid();
 }
 

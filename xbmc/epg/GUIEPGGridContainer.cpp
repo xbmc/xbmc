@@ -1153,18 +1153,17 @@ int CGUIEPGGridContainer::GetRealBlock(const CGUIListItemPtr &item, int channel)
 
 GridItem *CGUIEPGGridContainer::GetNextItem(int channel)
 {
-  int channelIndex = channel + m_channelOffset;
-  int blockIndex = m_blockCursor + m_blockOffset;
+  const int channelIndex = channel + m_channelOffset;
+  const int blockIndex = m_blockCursor + m_blockOffset;
   if (channelIndex >= m_gridModel->ChannelItemsSize() || blockIndex >= m_gridModel->GetBlockCount())
     return nullptr;
 
   int i = m_blockCursor;
 
-  while (i < m_blocksPerPage && m_gridModel->GetGridItem(channelIndex, i + m_blockOffset) == m_gridModel->GetGridItem(channelIndex, blockIndex))
+  while (i < m_blocksPerPage &&
+         i + m_blockOffset + 1 < m_gridModel->GetBlockCount() &&
+         m_gridModel->GetGridItem(channelIndex, i + m_blockOffset) == m_gridModel->GetGridItem(channelIndex, blockIndex))
     i++;
-
-  if (i + m_blockOffset >= m_gridModel->GetBlockCount())
-    i = m_gridModel->GetBlockCount() - m_blockOffset - 1;
 
   return m_gridModel->GetGridItemPtr(channelIndex, i + m_blockOffset);
 }

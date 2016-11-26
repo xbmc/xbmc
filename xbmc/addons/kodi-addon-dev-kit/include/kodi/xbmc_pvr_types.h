@@ -78,10 +78,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "5.2.0"
+#define XBMC_PVR_API_VERSION "5.2.1"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "5.2.0"
+#define XBMC_PVR_MIN_API_VERSION "5.2.1"
 
 #ifdef __cplusplus
 extern "C" {
@@ -594,7 +594,7 @@ extern "C" {
     bool         (__cdecl* CanPauseStream)(void);
     void         (__cdecl* PauseStream)(bool);
     bool         (__cdecl* CanSeekStream)(void);
-    bool         (__cdecl* SeekTime)(int, bool, double*);
+    bool         (__cdecl* SeekTime)(double, bool, double*);
     void         (__cdecl* SetSpeed)(int);
     time_t       (__cdecl* GetPlayingTime)(void);
     time_t       (__cdecl* GetBufferTimeStart)(void);

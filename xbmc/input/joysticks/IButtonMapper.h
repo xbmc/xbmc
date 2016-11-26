@@ -67,9 +67,32 @@ namespace JOYSTICK
      * \param actionMap  An interface capable of translating driver primitives to Kodi actions
      * \param primitive  The driver primitive
      *
+     * Called in the same thread as \ref IButtonMapper::OnFrame.
+     *
      * \return True if driver primitive was mapped to a feature
      */
     virtual bool MapPrimitive(IButtonMap* buttonMap, IActionMap* actionMap, const CDriverPrimitive& primitive) = 0;
+
+    /*!
+     * \brief Called once per event frame to notify the implementation of motion status
+     *
+     * \param buttonMap The button map passed to MapPrimitive() (shall not be modified)
+     * \param bMotion True if a previously-mapped axis is still in motion
+     *
+     * This allows the implementer to wait for an axis to be centered before
+     * allowing it to be used as Kodi input.
+     *
+     * If mapping finishes on an axis, then the axis will still be pressed and
+     * sending input every frame when the mapping ends. For example, when the
+     * right analog stick is the last feature to be mapped, it is still pressed
+     * when mapping ends and immediately sends Volume Down actions.
+     *
+     * The fix is to allow implementers to wait until all axes are motionless
+     * before deattaching themselves.
+     *
+     * Called in the same thread as \ref IButtonMapper::MapPrimitive.
+     */
+    virtual void OnEventFrame(const IButtonMap* buttonMap, bool bMotion) = 0;
 
     // Button map callback interface
     void SetButtonMapCallback(const std::string& deviceName, IButtonMapCallback* callback) { m_callbacks[deviceName] = callback; }

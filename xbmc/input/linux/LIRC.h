@@ -55,8 +55,10 @@ protected:
 
 private:
   int     m_fd;
+#ifdef HAVE_INOTIFY
   int     m_inotify_fd;
   int     m_inotify_wd;
+#endif
   FILE*   m_file;
   unsigned int m_holdTime;
   int32_t m_button;
