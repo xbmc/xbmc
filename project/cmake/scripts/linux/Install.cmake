@@ -137,9 +137,11 @@ install(FILES ${CORE_SOURCE_DIR}/privacy-policy.txt
         COMPONENT kodi)
 
 # Install kodi-tools-texturepacker
-install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/texturepacker/TexturePacker
-        DESTINATION ${bindir}
-        COMPONENT kodi-tools-texturepacker)
+if(NOT WITH_TEXTUREPACKER)
+  install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/texturepacker/TexturePacker
+          DESTINATION ${bindir}
+          COMPONENT kodi-tools-texturepacker)
+endif()
 
 # Install kodi-addon-dev headers
 install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h
