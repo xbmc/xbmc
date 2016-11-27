@@ -10778,7 +10778,11 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     }
     else if (condition == LISTITEM_HASTIMERSCHEDULE)
     {
-      if (pItem->HasEPGInfoTag())
+      if (pItem->HasPVRTimerInfoTag())
+      {
+        return pItem->GetPVRTimerInfoTag()->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
+      }
+      else if (pItem->HasEPGInfoTag())
       {
         CPVRTimerInfoTagPtr timer = pItem->GetEPGInfoTag()->Timer();
         if (timer)
