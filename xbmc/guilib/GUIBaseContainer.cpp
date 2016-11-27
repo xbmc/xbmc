@@ -862,9 +862,10 @@ void CGUIBaseContainer::FreeResources(bool immediately)
   if (m_listProvider)
   {
     if (immediately)
+    {
       Reset();
-
-    m_listProvider->Reset(immediately);
+      m_listProvider->Reset();
+    }
   }
   m_scroller.Stop();
 }
