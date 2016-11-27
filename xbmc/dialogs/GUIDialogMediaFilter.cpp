@@ -748,7 +748,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
   {
     min = 0;
     interval = 1;
-    max = 5;
+    max = 10;
   }
   else if (filter.field == FieldYear)
   {
