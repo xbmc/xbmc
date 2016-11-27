@@ -20,6 +20,7 @@
  */
 
 #include <map>
+#include <memory>
 
 #include "XBDateTime.h"
 #include "dbwrappers/Database.h"
@@ -27,6 +28,7 @@
 namespace EPG
 {
   class CEpg;
+  typedef std::shared_ptr<CEpg> CEpgPtr;
   class CEpgInfoTag;
   class CEpgContainer;
 
@@ -122,7 +124,7 @@ namespace EPG
      */
     virtual bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
 
-    bool Persist(const std::map<unsigned int, CEpg *> &epgs);
+    bool Persist(const std::map<unsigned int, CEpgPtr> &epgs);
 
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.

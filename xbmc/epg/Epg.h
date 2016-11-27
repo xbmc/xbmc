@@ -27,6 +27,8 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
+#include <memory>
+
 namespace PVR
 {
   class CPVRChannel;
@@ -35,6 +37,9 @@ namespace PVR
 /** EPG container for CEpgInfoTag instances */
 namespace EPG
 {
+  class CEpg;
+  typedef std::shared_ptr<CEpg> CEpgPtr;
+
   class CEpg : public Observable
   {
     friend class CEpgDatabase;

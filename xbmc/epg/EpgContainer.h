@@ -122,7 +122,7 @@ namespace EPG
 
     virtual void OnSettingChanged(const CSetting *setting);
 
-    CEpg *CreateChannelEpg(PVR::CPVRChannelPtr channel);
+    CEpgPtr CreateChannelEpg(PVR::CPVRChannelPtr channel);
 
     /*!
      * @brief Get all EPG tables and apply a filter.
@@ -156,7 +156,7 @@ namespace EPG
      * @param iEpgId The database ID of the table.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetById(int iEpgId) const;
+    virtual CEpgPtr GetById(int iEpgId) const;
 
     /*!
      * @brief Get the EPG event with the given event id
@@ -170,7 +170,7 @@ namespace EPG
      * @param channel The channel to get the EPG table for.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetByChannel(const PVR::CPVRChannel &channel) const;
+    virtual CEpgPtr GetByChannel(const PVR::CPVRChannel &channel) const;
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -281,7 +281,7 @@ namespace EPG
 
     void InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName);
 
-    typedef std::map<unsigned int, CEpg*> EPGMAP;
+    typedef std::map<unsigned int, CEpgPtr> EPGMAP;
     typedef EPGMAP::iterator              EPGMAP_ITR;
     typedef EPGMAP::const_iterator        EPGMAP_CITR;
 

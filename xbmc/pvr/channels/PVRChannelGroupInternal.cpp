@@ -315,7 +315,7 @@ void CPVRChannelGroupInternal::CreateChannelEpg(CPVRChannelPtr channel, bool bFo
   CSingleLock lock(channel->m_critSection);
   if (!channel->m_bEPGCreated || bForce)
   {
-    CEpg *epg = g_EpgContainer.CreateChannelEpg(channel);
+    auto epg = g_EpgContainer.CreateChannelEpg(channel);
     if (epg)
     {
       channel->m_bEPGCreated = true;

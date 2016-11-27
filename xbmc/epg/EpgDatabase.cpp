@@ -292,11 +292,11 @@ bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-bool CEpgDatabase::Persist(const std::map<unsigned int, CEpg *> &epgs)
+bool CEpgDatabase::Persist(const std::map<unsigned int, CEpgPtr> &epgs)
 {
-  for (std::map<unsigned int, CEpg *>::const_iterator it = epgs.begin(); it != epgs.end(); ++it)
+  for (auto it = epgs.begin(); it != epgs.end(); ++it)
   {
-    CEpg *epg = it->second;
+    auto &epg = it->second;
     if (epg)
       Persist(*epg, true);
   }

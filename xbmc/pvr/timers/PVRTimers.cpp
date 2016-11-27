@@ -712,7 +712,7 @@ void CPVRTimers::UpdateEpgEvent(CPVRTimerInfoTagPtr timer)
     return;
 
   /* try to get the EPG table */
-  CEpg *epg = channel->GetEPG();
+  auto epg = channel->GetEPG();
   if (!epg)
     return;
 
