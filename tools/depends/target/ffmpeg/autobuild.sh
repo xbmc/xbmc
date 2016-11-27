@@ -32,6 +32,7 @@ function usage {
        [-p | --prefix]    ... ffmepg install prefix
        [-d | --download]  ... no build, download tarfile only
        [-r | --release]   ... disable debugging symbols
+       [-s | --shared]    ... build shared libraries
        [-j]               ... make concurrency level
        [--cpu=CPU]        ... minimum required CPU
        [--arch=ARCH]      ... select architecture
@@ -60,6 +61,10 @@ do
       ;;
     -r | --release)
       FLAGS="$FLAGS --disable-debug" 
+      shift
+      ;;
+    -s | --shared)
+      FLAGS="$FLAGS --enable-shared"
       shift
       ;;
     --disable-optimizations)
