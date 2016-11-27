@@ -424,6 +424,14 @@ bool CInputManager::Process(int windowId, float frameTime)
   ProcessGamepad(windowId);
   ProcessEventServer(windowId, frameTime);
   ProcessPeripherals(frameTime);
+
+#if defined(HAS_SDL_JOYSTICK)
+  if (m_ShallSetJoystickEnabled)
+  {
+    m_Joystick.SetEnabled(m_ShallSetJoystickEnabled == 1);
+    m_ShallSetJoystickEnabled = 0;
+  }
+#endif
   
   return true;
 }
@@ -870,7 +878,10 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
 
 #if defined(HAS_SDL_JOYSTICK)
   if (settingId == CSettings::SETTING_INPUT_ENABLEJOYSTICK)
-    m_Joystick.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue() &&
-    PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
+  {
+    m_ShallSetJoystickEnabled = dynamic_cast<const CSettingBool*>(setting)->GetValue() &&
+      PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0;
+    m_ShallSetJoystickEnabled = m_ShallSetJoystickEnabled ? 1 : -1;
+  }
 #endif
 }
