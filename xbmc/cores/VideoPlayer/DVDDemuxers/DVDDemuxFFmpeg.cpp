@@ -766,11 +766,15 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
     {
       static const std::map<std::string,std::string> optionmap =
       {{{"SWFPlayer", "rtmp_swfurl"},
+        {"swfplayer", "rtmp_swfurl"},
         {"PageURL", "rtmp_pageurl"},
+        {"pageurl", "rtmp_pageurl"},
         {"PlayPath", "rtmp_playpath"},
-        {"TcUrl",    "rtmp_tcurl"},
-        {"IsLive",   "rtmp_live"},
         {"playpath", "rtmp_playpath"},
+        {"TcUrl",    "rtmp_tcurl"},
+        {"tcurl",    "rtmp_tcurl"},
+        {"IsLive",   "rtmp_live"},
+        {"islive",   "rtmp_live"},
         {"swfurl",   "rtmp_swfurl"},
         {"swfvfy",   "rtmp_swfverify"},
       }};
@@ -792,7 +796,8 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
         bool swfvfy=false;
         for (size_t i = 1; i < opts.size(); ++i)
         {
-          std::vector<std::string> value = StringUtils::Split(opts[i], "=");
+          std::vector<std::string> value = StringUtils::Split(opts[i], "=", 2);
+          StringUtils::ToLower(value[0]);
           auto it = optionmap.find(value[0]);
           if (it != optionmap.end())
           {
