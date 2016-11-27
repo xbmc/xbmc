@@ -67,13 +67,6 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout width="940" height="80">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>940</width>
-						<height>80</height>
-						<texture border="40,0,40,5">list_nofocus.png</texture>
-					</control>
 					<control type="label">
 						<posx>20</posx>
 						<posy>10</posy>
@@ -133,14 +126,6 @@
 					</control>
 				</itemlayout>
 				<focusedlayout width="940" height="80">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>940</width>
-						<height>80</height>
-						<texture border="40,0,40,5">list_nofocus.png</texture>
-						<visible>!Control.HasFocus(120)</visible>
-					</control>
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
@@ -324,13 +309,6 @@
 				<viewtype label="535">list</viewtype>
 				<scrolltime>200</scrolltime>
 				<itemlayout width="320" height="70">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>320</width>
-						<height>70</height>
-						<texture border="40,0,40,5">list_nofocus.png</texture>
-					</control>
 					<control type="label">
 						<posx>10</posx>
 						<posy>0</posy>

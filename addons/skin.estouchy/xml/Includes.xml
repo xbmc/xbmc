@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include file="defaults.xml" />
+	<include file="Defaults.xml" />
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesPlayerControls.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
 	<include file="IncludesKeypad.xml" />
-
 	<include file="ViewsList.xml" />
 	<include file="ViewsThumbnail.xml" />
 	<include file="ViewsWide.xml" />
 	<include file="ViewsPVR.xml" />
-
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
-
 	<variable name="PlaylistHeader">
 		<value condition="Window.IsVisible(musicplaylist)">$LOCALIZE[10517]</value>
 		<value condition="Window.IsVisible(videoplaylist)">$LOCALIZE[10522]</value>
@@ -92,14 +89,12 @@
 		<include condition="String.IsEqual(Skin.AspectRatio,16:9)">ScreenWidth-16x9</include>
 		<include condition="String.IsEqual(Skin.AspectRatio,4:3)">ScreenWidth-4x3</include>
 	</include>
-
 	<include name="ScreenWidth-16x9">
 		<width>1706</width>
 	</include>
 	<include name="ScreenWidth-4x3">
 		<width>1280</width>
 	</include>
-
 	<include name="CommonBackground">
 		<control type="image">
 			<posx>0</posx>
@@ -107,7 +102,7 @@
 			<aspectratio>scale</aspectratio>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture fallback="special://skin/background/SKINDEFAULT.jpg">special://skin/background/$INFO[Skin.CurrentTheme].jpg</texture>
+			<texture colordiffuse="FF006699">special://skin/background/primary.jpg</texture>
 			<visible>!Skin.HasSetting(UseCustomBackground)</visible>
 		</control>
 		<control type="image">
@@ -116,7 +111,7 @@
 			<aspectratio>scale</aspectratio>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture>$INFO[Skin.String(CustomBackground)]</texture>
+			<texture colordiffuse="60FFFFFF">$INFO[Skin.String(CustomBackground)]</texture>
 			<visible>Skin.HasSetting(UseCustomBackground)</visible>
 		</control>
 		<control type="image">
@@ -160,6 +155,25 @@
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>Player.HasMedia</visible>
 		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<include>ScreenWidth</include>
+			<height>960</height>
+			<texture>black.png</texture>
+			<colordiffuse>90000000</colordiffuse>
+			<include>VisibleFadeEffect</include>
+			<visible>[!String.IsEmpty(ListItem.Art(fanart)) + !Player.HasMedia] | [!Skin.HasSetting(HideVizBackground) + Player.HasAudio] | [!Skin.HasSetting(HideVideoBackground) + Player.HasVideo + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels) + !Window.IsVisible(TVGuide) + !Window.IsVisible(RadioGuide) + !Window.IsVisible(TVSearch) + !Window.IsVisible(RadioSearch) + !Window.IsVisible(TVTimers) + !Window.IsVisible(RadioTimers) + !Window.IsVisible(TVTimerRules) + !Window.IsVisible(RadioTimerRules) + !Window.IsVisible(TVRecordings) + !Window.IsVisible(RadioRecordings)]</visible>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<aspectratio>scale</aspectratio>
+			<include>ScreenWidth</include>
+			<height>960</height>
+			<texture colordiffuse="4D24CCA2">special://skin/background/secondary1.png</texture>
+			<visible>!Skin.HasSetting(UseCustomBackground)</visible>
+		</control>
 		<control type="videowindow">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -174,16 +188,6 @@
 			<height>960</height>
 			<visible>!Skin.HasSetting(HideVizBackground) + Player.HasAudio + !SlideShow.IsActive</visible>
 		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<include>ScreenWidth</include>
-			<height>960</height>
-			<texture>black.png</texture>
-			<colordiffuse>70000000</colordiffuse>
-			<include>VisibleFadeEffect</include>
-			<visible>[!String.IsEmpty(ListItem.Art(fanart)) + !Player.HasMedia] | [!Skin.HasSetting(HideVizBackground) + Player.HasAudio] | [!Skin.HasSetting(HideVideoBackground) + Player.HasVideo + !Window.IsVisible(TVChannels) + !Window.IsVisible(RadioChannels) + !Window.IsVisible(TVGuide) + !Window.IsVisible(RadioGuide) + !Window.IsVisible(TVSearch) + !Window.IsVisible(RadioSearch) + !Window.IsVisible(TVTimers) + !Window.IsVisible(RadioTimers) + !Window.IsVisible(TVTimerRules) + !Window.IsVisible(RadioTimerRules) + !Window.IsVisible(TVRecordings) + !Window.IsVisible(RadioRecordings)]</visible>
-		</control>
 	</include>
 	<include name="Header">
 		<control type="group">
@@ -192,8 +196,8 @@
 				<posx>0</posx>
 				<posy>0</posy>
 				<include>ScreenWidth</include>
-				<height>80</height>
-				<texture border="0,0,0,2">header.png</texture>
+				<height>120</height>
+				<texture>header.png</texture>
 			</control>
 			<control type="button">
 				<description>Home Button</description>
@@ -216,57 +220,38 @@
 				<include>VisibleFadeEffect</include>
 			</control>
 		</control>
-		<control type="button">
-			<posx>370r</posx>
-			<posy>16</posy>
-			<height>45</height>
-			<width>145</width>
-			<font></font>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
-			<onclick>ActivateWindow(weather)</onclick>
-			<visible>!String.IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
-		</control>
 		<control type="grouplist">
 			<include>VisibleFadeEffect</include>
 			<posx>415r</posx>
 			<posy>16</posy>
 			<width>400</width>
-			<height>45</height>
+			<height>70</height>
 			<align>right</align>
 			<itemgap>10</itemgap>
 			<orientation>horizontal</orientation>
-			<include condition="!Window.IsVisible(LoginScreen)">WeatherIcon</include>
 			<control type="label">
 				<description>System Time</description>
-				<height>45</height>
-				<width>145</width>
-				<font>font30</font>
+				<height>70</height>
+				<width>400</width>
+				<font>font70_title</font>
 				<textcolor>white</textcolor>
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>$INFO[System.Time]</label>
-			</control>
-			<control type="image">
-				<description>System Time Clock</description>
-				<height>45</height>
-				<width>45</width>
-				<texture colordiffuse="blue">icon_header_clock.png</texture>
-				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
 	</include>
 	<include name="Footer">
 		<control type="image">
 			<posx>0</posx>
-			<posy>80r</posy>
+			<posy>120r</posy>
 			<include>ScreenWidth</include>
-			<height>80</height>
+			<height>120</height>
 			<texture flipy="true">header.png</texture>
 		</control>
 		<control type="rss">
 			<posx>0</posx>
-			<posy>58r</posy>
+			<posy>40r</posy>
 			<height>30</height>
 			<include>ScreenWidth</include>
 			<font>font24_title</font>
@@ -289,31 +274,6 @@
 			<visible>!Window.IsVisible(Home)</visible>
 			<animation effect="fade" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
 			<animation effect="fade" time="200" condition="Window.Next(Home)">WindowClose</animation>
-		</control>
-	</include>
-	<include name="WeatherIcon">
-		<control type="label">
-			<description>Weather label</description>
-			<height>45</height>
-			<width>100</width>
-			<font>font30</font>
-			<textcolor>white</textcolor>
-			<align>right</align>
-			<animation effect="fade" time="300">VisibleChange</animation>
-			<aligny>center</aligny>
-			<textoffsetx>0</textoffsetx>
-			<label>$INFO[Window(Weather).Property(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-			<visible>!String.IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
-		</control>
-		<control type="image">
-			<description>Weather</description>
-			<width>45</width>
-			<height>45</height>
-			<fadetime>300</fadetime>
-			<aspectratio align="left">keep</aspectratio>
-			<texture colordiffuse="blue">weather/$INFO[Window(Weather).Property(Current.FanartCode)].png</texture>
-			<animation effect="fade" time="300">VisibleChange</animation>
-			<visible>!String.IsEmpty(Window(Weather).Property(Current.Temperature)) + !Player.HasMedia</visible>
 		</control>
 	</include>
 	<include name="BehindDialogFadeOut">
@@ -472,18 +432,9 @@
 		<onright>9002</onright>
 		<onup>9001</onup>
 		<ondown>20</ondown>
-		<pagecontrol></pagecontrol>
 		<scrolltime>300</scrolltime>
 		<orientation>Horizontal</orientation>
 		<itemlayout height="78" width="120">
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>A0464646</colordiffuse>
-			</control>
 			<control type="image">
 				<posx>21</posx>
 				<posy>0</posy>
@@ -493,24 +444,8 @@
 				<texture>$INFO[ListItem.Icon]</texture>
 				<aspectratio>keep</aspectratio>
 			</control>
-			<control type="image">
-				<posx>120</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>A0464646</colordiffuse>
-			</control>
 		</itemlayout>
 		<focusedlayout height="78" width="120">
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>A0464646</colordiffuse>
-			</control>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -527,14 +462,6 @@
 				<texture>$INFO[ListItem.Icon]</texture>
 				<aspectratio>keep</aspectratio>
 			</control>
-			<control type="image">
-				<posx>120</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>A0464646</colordiffuse>
-			</control>
 		</focusedlayout>
 	</include>
 	<include name="MenuButtonCommonValues">
@@ -547,7 +474,7 @@
 		<aligny>center</aligny>
 		<font>font22</font>
 		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
+		<texturenofocus></texturenofocus>
 		<pulseonselect>false</pulseonselect>
 	</include>
 	<include name="ButtonInfoDialogsCommonValues">
@@ -556,8 +483,8 @@
 		<align>center</align>
 		<aligny>center</aligny>
 		<font>font18_title</font>
-		<texturefocus>list_focus.png</texturefocus>
-		<texturenofocus>button_nofocus.png</texturenofocus>
+		<texturefocus colordiffuse="blue" border="15">dialogbutton-focus.png</texturefocus>
+		<texturenofocus border="15">dialogbutton-nofocus.png</texturenofocus>
 		<pulseonselect>false</pulseonselect>
 	</include>
 	<include name="CommonNowPlaying">
@@ -567,14 +494,6 @@
 			<include>VisibleFadeEffect</include>
 			<include>16x9_xPos_Relocation</include>
 			<visible>Player.HasMedia + ![Window.IsVisible(busydialog) | Window.IsVisible(Notification) | Window.IsVisible(volumebar)]</visible>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>FF464646</colordiffuse>
-			</control>
 			<control type="button">
 				<description>Volume Button</description>
 				<posx>13</posx>
@@ -585,14 +504,6 @@
 				<texturenofocus>osd_volume.png</texturenofocus>
 				<texturefocus colordiffuse="blue">osd_volume.png</texturefocus>
 				<onclick>ActivateWindow(1112)</onclick>
-			</control>
-			<control type="image">
-				<posx>64</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>FF464646</colordiffuse>
 			</control>
 			<control type="togglebutton">
 				<description>Play Button</description>
@@ -607,14 +518,6 @@
 				<alttexturenofocus>osd_play.png</alttexturenofocus>
 				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 				<onclick>PlayerControl(Play)</onclick>
-			</control>
-			<control type="image">
-				<posx>128</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>FF464646</colordiffuse>
 			</control>
 			<control type="group">
 				<visible>!Window.IsVisible(1112)</visible>
@@ -708,14 +611,6 @@
 					<visible>Player.HasVideo + VideoPlayer.Content(MusicVideos)</visible>
 				</control>
 			</control>
-			<control type="image">
-				<posx>550</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>FF464646</colordiffuse>
-			</control>
 			<control type="button">
 				<description>Next Button</description>
 				<posx>563</posx>
@@ -727,14 +622,6 @@
 				<texturefocus colordiffuse="blue">osd_next.png</texturefocus>
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
-			<control type="image">
-				<posx>614</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>FF464646</colordiffuse>
-			</control>
 			<control type="button">
 				<description>Stop Button</description>
 				<posx>627</posx>
@@ -745,14 +632,6 @@
 				<texturenofocus>osd_stop.png</texturenofocus>
 				<texturefocus colordiffuse="blue">osd_stop.png</texturefocus>
 				<onclick>PlayerControl(Stop)</onclick>
-			</control>
-			<control type="image">
-				<posx>678</posx>
-				<posy>0</posy>
-				<width>2</width>
-				<height>78</height>
-				<texture border="2">separator.png</texture>
-				<colordiffuse>FF464646</colordiffuse>
 			</control>
 		</control>
 	</include>
@@ -788,20 +667,21 @@
 	<include name="SideMenu">
 		<control type="group">
 			<posx>0</posx>
-			<posy>80</posy>
+			<posy>0</posy>
 			<animation effect="slide" start="0,0" end="-100,0" time="400" tween="quadratic" easing="in">WindowClose</animation>
 			<animation effect="slide" end="0,0" start="-100,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
 			<control type="image">
 				<description>Menu Panel</description>
-				<posx>0</posx>
+				<posx>-960</posx>
 				<posy>0</posy>
-				<width>100</width>
-				<height>800</height>
-				<texture>side_panel.png</texture>
+				<width>960</width>
+				<height>120</height>
+				<texture>header.png</texture>
+				<animation effect="rotate" end="90" time="0" center="0,0" condition="true">Conditional</animation>
 			</control>
 			<control type="list" id="9000">
 				<posx>0</posx>
-				<posy>0</posy>
+				<posy>80</posy>
 				<width>100</width>
 				<height>800</height>
 				<itemlayout width="100" height="100">
@@ -887,70 +767,32 @@
 	</include>
 	<include name="HomeMenu">
 		<control type="group">
-			<animation effect="slide" start="0,0" end="-1040,0" time="400" tween="quadratic" easing="in">WindowClose</animation>
-			<animation effect="slide" end="0,0" start="-1040,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<posx>0</posx>
 			<control type="image">
 				<description>Menu Panel</description>
-				<posx>40</posx>
-				<posy>100</posy>
-				<width>$PARAM[list-width]</width>
-				<height>620</height>
+				<posx>-5</posx>
+				<posy>-5</posy>
+				<width>510</width>
+				<height>970</height>
 				<texture>panel.png</texture>
-				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
+				<bordertexture border="6">panel_shadow.png</bordertexture>
+				<bordersize>5</bordersize>
 			</control>
-			<control type="image">
-				<description>Menu Panel</description>
-				<posx>540</posx>
-				<posy>100</posy>
-				<width>$PARAM[list-width]</width>
-				<height>620</height>
-				<texture>panel.png</texture>
-				<animation effect="slide" start="0,0" end="-104,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
-			</control>
-			<control type="image">
-				<posx>40</posx>
-				<posy>-55</posy>
-				<width>$PARAM[list-width]</width>
-				<height>155</height>
-				<texture border="40,0,40,5">list_nofocus.png</texture>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,2)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,4)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,6)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
-				<visible>!Integer.IsGreater(Container(9000).NumItems,6)</visible>
-			</control>
-			<control type="image">
-				<posx>540</posx>
-				<posy>-55</posy>
-				<width>$PARAM[list-width]</width>
-				<height>155</height>
-				<texture border="40,0,40,5">list_nofocus.png</texture>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,2)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,4)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,6)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-104,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
-				<visible>!Integer.IsGreater(Container(9000).NumItems,6)</visible>
-			</control>
-			<control type="panel" id="9000">
-				<posx>40</posx>
-				<posy>100</posy>
-				<width>$PARAM[panel-width]</width>
-				<height>620</height>
+			<control type="fixedlist" id="9000">
+				<posx>0</posx>
+				<posy>200</posy>
+				<width>500</width>
+				<height>760</height>
 				<onleft>9000</onleft>
 				<onright>9003</onright>
 				<onup>10</onup>
 				<ondown>10</ondown>
-				<pagecontrol></pagecontrol>
 				<scrolltime>300</scrolltime>
 				<orientation>vertical</orientation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,2)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,4)">conditional</animation>
-				<animation effect="slide" start="0,0" end="0,77" time="0" condition="!Integer.IsGreater(Container(9000).NumItems,6)">conditional</animation>
-				<animation effect="slide" start="0,0" end="-20,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
-				<itemlayout height="155" width="$PARAM[layout-width]">
+				<focusposition>1</focusposition>
+				<movement>2</movement>
+				<itemlayout height="155" width="500">
 					<control type="image">
-						<posx>$PARAM[icon-posx-left]</posx>
+						<posx>-6</posx>
 						<posy>18</posy>
 						<width>90</width>
 						<height>120</height>
@@ -958,28 +800,21 @@
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
-						<posx>$PARAM[label-posx-left]</posx>
+						<posx>90</posx>
 						<posy>0</posy>
-						<width>$PARAM[label-width]</width>
+						<width>430</width>
 						<height>155</height>
-						<font>font35_title</font>
+						<font>font40</font>
 						<textcolor>white</textcolor>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
 					</control>
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>$PARAM[list-width]</width>
-						<height>155</height>
-						<texture border="40,0,40,5">list_nofocus.png</texture>
-					</control>
 				</itemlayout>
-				<focusedlayout height="155" width="$PARAM[layout-width]">
+				<focusedlayout height="155" width="500">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>$PARAM[list-width]</width>
+						<width>500</width>
 						<height>155</height>
 						<texture>list_focus.png</texture>
 						<visible>Control.HasFocus(9000)</visible>
@@ -987,14 +822,14 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>$PARAM[iconback-width]</width>
+						<width>75</width>
 						<height>155</height>
 						<texture>black.png</texture>
 						<colordiffuse>50000000</colordiffuse>
 						<visible>Control.HasFocus(9000)</visible>
 					</control>
 					<control type="image">
-						<posx>$PARAM[icon-posx-left]</posx>
+						<posx>-6</posx>
 						<posy>18</posy>
 						<width>90</width>
 						<height>120</height>
@@ -1002,11 +837,11 @@
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
-						<posx>$PARAM[label-posx-left]</posx>
+						<posx>90</posx>
 						<posy>0</posy>
-						<width>$PARAM[label-width]</width>
+						<width>430</width>
 						<height>155</height>
-						<font>font35_title</font>
+						<font>font40</font>
 						<textcolor>white</textcolor>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
@@ -1019,21 +854,21 @@
 		</control>
 	</include>
 	<include name="HomeMainMenuItems">
-		<item id="1">
+		<item>
 			<label>31556</label>
 			<onclick>ActivateWindow(TVChannels)</onclick>
 			<icon>icon_menu_livetv.png</icon>
 			<thumb></thumb>
 			<visible>System.HasPVRAddon + !Skin.HasSetting(HideHomeButtonLiveTV)</visible>
 		</item>
-		<item id="2">
+		<item>
 			<label>19021</label>
 			<onclick>ActivateWindow(RadioChannels)</onclick>
 			<icon>icon_menu_radio.png</icon>
 			<thumb></thumb>
 			<visible>System.HasPVRAddon + !Skin.HasSetting(HideHomeButtonRadio)</visible>
 		</item>
-		<item id="3">
+		<item>
 			<label>20342</label>
 			<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
 			<icon>icon_menu_movies.png</icon>
@@ -1041,7 +876,7 @@
 			<visible>Library.HasContent(Movies)</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonMovies)</visible>
 		</item>
-		<item id="4">
+		<item>
 			<label>20343</label>
 			<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
 			<icon>icon_menu_tvshows.png</icon>
@@ -1049,33 +884,47 @@
 			<visible>Library.HasContent(TVShows)</visible>
 			<visible>!Skin.HasSetting(HideHomeButtonTVShows)</visible>
 		</item>
-		<item id="5">
+		<item>
 			<label>3</label>
 			<onclick>ActivateWindow(Videos,Root,Return)</onclick>
 			<icon>icon_menu_videos.png</icon>
 			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>
 		</item>
-		<item id="6">
+		<item>
 			<label>2</label>
 			<onclick>ActivateWindow(Music)</onclick>
 			<icon>icon_menu_music.png</icon>
 			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonMusic)</visible>
 		</item>
-		<item id="7">
+		<item>
 			<label>1</label>
 			<onclick>ActivateWindow(Pictures)</onclick>
 			<icon>icon_menu_pictures.png</icon>
 			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonPictures)</visible>
 		</item>
-		<item id="8">
+		<item>
 			<label>24001</label>
 			<onclick>ActivateWindow(Programs,Addons,return)</onclick>
 			<icon>icon_menu_addons.png</icon>
 			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonPrograms)</visible>
+		</item>
+		<item>
+			<label>8</label>
+			<onclick>ActivateWindow(Weather)</onclick>
+			<icon>icon_menu_weather.png</icon>
+			<thumb></thumb>
+			<visible>!Skin.HasSetting(HideHomeButtonWeather)</visible>
+		</item>
+		<item>
+			<label>1036</label>
+			<onclick>ActivateWindow(Favourites)</onclick>
+			<icon>icon_menu_favourites.png</icon>
+			<thumb></thumb>
+			<visible>!Skin.HasSetting(HideHomeButtonFavourites)</visible>
 		</item>
 	</include>
 	<include name="KeyboardButton">
@@ -1158,7 +1007,7 @@
 			<description>Sort asc</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>31051</label>
 			<altlabel>31050</altlabel>
 			<usealttexture>Container.SortDirection(Ascending)</usealttexture>
@@ -1191,7 +1040,7 @@
 			<description>Sort asc</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>31051</label>
 			<altlabel>31050</altlabel>
 			<usealttexture>Container.SortDirection(Ascending)</usealttexture>
@@ -1223,7 +1072,7 @@
 			<description>Sort asc</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>31051</label>
 			<altlabel>31050</altlabel>
 			<usealttexture>Container.SortDirection(Ascending)</usealttexture>
@@ -1237,7 +1086,7 @@
 			<description>Update Library</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>653</label>
 			<altlabel>13353</altlabel>
 			<usealttexture>library.isscanningmusic</usealttexture>
@@ -1351,7 +1200,7 @@
 			<description>Sort asc</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>31051</label>
 			<altlabel>31050</altlabel>
 			<usealttexture>Container.SortDirection(Ascending)</usealttexture>
@@ -1385,10 +1234,181 @@
 			<description>Sort asc</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>31051</label>
 			<altlabel>31050</altlabel>
 			<usealttexture>Container.SortDirection(Ascending)</usealttexture>
+		</control>
+	</include>
+	<include name="ProfilesContent">
+		<control type="image">
+			<posx>390</posx>
+			<posy>130</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
+		</control>
+		<control type="panel" id="2">
+			<posx>390</posx>
+			<posy>133</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>720</height>
+			<onleft>9</onleft>
+			<onright>60</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<viewtype label="21371">list</viewtype>
+			<scrolltime>200</scrolltime>
+			<visible>Skin.String(ProfileSettings,1)</visible>
+			<itemlayout width="293" height="360">
+				<control type="image">
+					<posx>20</posx>
+					<posy>10</posy>
+					<width>253</width>
+					<height>253</height>
+					<texture fallback="DefaultActor.png">$INFO[Listitem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>270</posy>
+					<width>273</width>
+					<height>25</height>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>304</posy>
+					<width>273</width>
+					<height>20</height>
+					<font>font20</font>
+					<textcolor>blue</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31320]</label>
+					<visible>!String.IsEmpty(ListItem.Label2)</visible>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>330</posy>
+					<width>273</width>
+					<height>20</height>
+					<font>font20</font>
+					<textcolor>grey</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label2]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="293" height="360">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>293</width>
+					<height>360</height>
+					<texture>list_focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>20</posx>
+					<posy>10</posy>
+					<width>253</width>
+					<height>253</height>
+					<texture fallback="DefaultActor.png">$INFO[Listitem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>270</posy>
+					<width>273</width>
+					<height>25</height>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>304</posy>
+					<width>273</width>
+					<height>20</height>
+					<font>font20</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31320]</label>
+					<visible>!String.IsEmpty(ListItem.Label2)</visible>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>330</posy>
+					<width>273</width>
+					<height>20</height>
+					<font>font20</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label2]</label>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="grouplist" id="200">
+			<description>control area</description>
+			<posx>390</posx>
+			<posy>140</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>720</height>
+			<itemgap>-1</itemgap>
+			<onleft>9</onleft>
+			<onright>60</onright>
+			<onup>200</onup>
+			<ondown>200</ondown>
+			<visible>Skin.String(ProfileSettings,2)</visible>
+			<control type="radiobutton" id ="4">
+				<description>Enable Login screen</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>20096</label>
+				<enable>!Window.IsVisible(ProfileSettings)</enable>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="button" id ="5">
+				<description>Auto Login</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[33084]: $INFO[System.ProfileAutoLogin]</label>
+				<enable>!Window.IsVisible(ProfileSettings)</enable>
+				<textoffsetx>20</textoffsetx>
+			</control>
+		</control>
+		<control type="image">
+			<posx>390</posx>
+			<posy>854</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
 		</control>
 	</include>
 	<include name="PVRMenu">
@@ -1449,6 +1469,46 @@
 			<visible>Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings)</visible>
 		</control>
 	</include>
+	<include name="SettingsContent">
+		<control type="image">
+			<posx>390</posx>
+			<posy>130</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
+		</control>
+		<control type="grouplist" id="5">
+			<description>control area</description>
+			<posx>390</posx>
+			<posy>140</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>640</height>
+			<itemgap>-1</itemgap>
+			<onleft>3</onleft>
+			<onright>3</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+		</control>
+		<control type="image">
+			<posx>390</posx>
+			<posy>774</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
+		</control>
+		<control type="textbox" id="6">
+			<description>Settings Description</description>
+			<posx>410</posx>
+			<posy>790</posy>
+			<width>$PARAM[textbox-width]</width>
+			<height>90</height>
+			<font>font22</font>
+			<textcolor>blue</textcolor>
+			<align>left</align>
+		</control>
+	</include>
 	<include name="SettingsMenu">
 		<control type="button" id="20">
 			<description>Settings level button</description>
@@ -1463,6 +1523,816 @@
 			<onclick>settingsreset</onclick>
 		</control>
 	</include>
+	<include name="SettingsPanel">
+		<control type="panel" id="9000">
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<posx>$PARAM[panel-posx]</posx>
+			<posy>100</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>750</height>
+			<onleft>9000</onleft>
+			<onright>9001</onright>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<scrolltime>300</scrolltime>
+			<itemlayout height="250" width="$PARAM[layout-width]">
+				<control type="image">
+					<posx>20</posx>
+					<posy>20</posy>
+					<width>360</width>
+					<height>210</height>
+					<texture>button_nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>15</posx>
+					<posy>175</posy>
+					<width>370</width>
+					<height>60</height>
+					<texture colordiffuse="40000000">black.png</texture>
+					<bordertexture border="6">panel_shadow.png</bordertexture>
+					<bordersize>5</bordersize>
+				</control>
+				<control type="image">
+					<posx>80</posx>
+					<posy>10</posy>
+					<width>240</width>
+					<height>240</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<align>center</align>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>190</posy>
+					<width>400</width>
+					<height>400</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font20_title</font>
+					<align>center</align>
+					<textcolor>white</textcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout height="250" width="$PARAM[layout-width]">
+				<control type="group">
+					<animation type="Focus" reversible="false">
+						<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+					</animation>
+					<animation type="UnFocus" reversible="false">
+						<effect type="zoom" center="auto" start="108" end="100" time="250" tween="sine" />
+					</animation>
+					<control type="image">
+						<posx>20</posx>
+						<posy>20</posy>
+						<width>360</width>
+						<height>210</height>
+						<texture>button_nofocus.png</texture>
+					</control>
+					<control type="image">
+						<posx>20</posx>
+						<posy>20</posy>
+						<width>360</width>
+						<height>210</height>
+						<texture>list_focus.png</texture>
+						<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
+					</control>
+					<control type="image">
+						<posx>20</posx>
+						<posy>180</posy>
+						<width>360</width>
+						<height>50</height>
+						<texture colordiffuse="40000000">black.png</texture>
+					</control>
+					<control type="image">
+						<posx>80</posx>
+						<posy>10</posy>
+						<width>240</width>
+						<height>240</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<align>center</align>
+					</control>
+					<control type="label">
+						<posx>0</posx>
+						<posy>190</posy>
+						<width>400</width>
+						<height>400</height>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font20_title</font>
+						<align>center</align>
+					</control>
+				</control>
+			</focusedlayout>
+			<content>
+				<item id="1">
+					<label>14200</label>
+					<label2>31408</label2>
+					<onclick>ActivateWindow(PlayerSettings)</onclick>
+					<icon>icon_settings_player.png</icon>
+				</item>
+				<item id="2">
+					<label>14211</label>
+					<label2>31409</label2>
+					<onclick>ActivateWindow(MediaSettings)</onclick>
+					<icon>icon_settings_media.png</icon>
+				</item>
+				<item id="3">
+					<label>31556</label>
+					<label2>31555</label2>
+					<onclick>ActivateWindow(PVRSettings)</onclick>
+					<icon>icon_settings_livetv.png</icon>
+				</item>
+				<item id="4">
+					<label>14036</label>
+					<label2>31405</label2>
+					<onclick>ActivateWindow(ServiceSettings)</onclick>
+					<icon>icon_settings_services.png</icon>
+				</item>
+				<item id="5">
+					<label>14206</label>
+					<label2>31410</label2>
+					<onclick>ActivateWindow(InterfaceSettings)</onclick>
+					<icon>icon_settings_interface.png</icon>
+				</item>
+				<item id="6">
+					<label>13000</label>
+					<label2>31406</label2>
+					<onclick>ActivateWindow(SystemSettings)</onclick>
+					<icon>icon_settings_system.png</icon>
+				</item>
+				<item id="7">
+					<label>24001</label>
+					<label2>31407</label2>
+					<onclick>ActivateWindow(AddonBrowser)</onclick>
+					<icon>icon_settings_addons.png</icon>
+				</item>
+				<item id="8">
+					<label>13200</label>
+					<label2>31411</label2>
+					<onclick>ActivateWindow(Profiles)</onclick>
+					<icon>icon_settings_profiles.png</icon>
+				</item>
+				<item id="9">
+					<label>130</label>
+					<label2>31412</label2>
+					<onclick>ActivateWindow(SystemInfo)</onclick>
+					<icon>icon_settings_systeminfo.png</icon>
+				</item>
+			</content>
+		</control>
+	</include>
+	<include name="SkinSettingsContent">
+		<control type="image">
+			<posx>390</posx>
+			<posy>130</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
+		</control>
+		<control type="grouplist" id="100">
+			<description>control area</description>
+			<posx>390</posx>
+			<posy>140</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>640</height>
+			<itemgap>-1</itemgap>
+			<onup>100</onup>
+			<ondown>9002</ondown>
+			<onleft>9</onleft>
+			<onright>60</onright>
+			<visible>Skin.String(SkinSettings,1)</visible>
+			<control type="radiobutton" id="102">
+				<description>Show LiveTV</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31556]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonLiveTV)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonLiveTV)</selected>
+				<enable>System.HasPVRAddon</enable>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="103">
+				<description>Show Radio</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[19021]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonRadio)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonRadio)</selected>
+				<enable>System.HasPVRAddon</enable>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="104">
+				<description>Hide Videos</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[3]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonVideo)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonVideo)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="105">
+				<description>Hide Movies</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[20342]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonMovies)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonMovies)</selected>
+				<textoffsetx>20</textoffsetx>
+				<enable>Library.HasContent(Movies)</enable>
+			</control>
+			<control type="radiobutton" id="106">
+				<description>Hide TVShows</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[20343]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonTVShows)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonTVShows)</selected>
+				<textoffsetx>20</textoffsetx>
+				<enable>Library.HasContent(TVShows)</enable>
+			</control>
+			<control type="radiobutton" id="107">
+				<description>Hide Music</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[2]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonMusic)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonMusic)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="108">
+				<description>Hide Pictures</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[1]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonPictures)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonPictures)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="109">
+				<description>Hide Programs</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[0]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonPrograms)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonPrograms)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="110">
+				<description>Hide Weather</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[8]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonWeather)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonWeather)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="111">
+				<description>Hide Favourites</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[1036]</label>
+				<onclick>Skin.ToggleSetting(HideHomeButtonFavourites)</onclick>
+				<selected>!Skin.HasSetting(HideHomeButtonFavourites)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+		</control>
+		<control type="grouplist" id="200">
+			<description>control area</description>
+			<posx>390</posx>
+			<posy>140</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>640</height>
+			<itemgap>-1</itemgap>
+			<onup>200</onup>
+			<ondown>9002</ondown>
+			<onleft>9</onleft>
+			<onright>60</onright>
+			<visible>Skin.String(SkinSettings,2)</visible>
+			<control type="button" id="202">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 1</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton1))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton1,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="203">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 2</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton2))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton2,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="204">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 3</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton3))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton3,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="205">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 4</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton4))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton4,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="206">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 5</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton5))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton5,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="207">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 6</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton6))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton6,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="208">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 7</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton7))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton7,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="209">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 8</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton8))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton8,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="210">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 9</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton9))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton9,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="211">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 10</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton10))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton10,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="212">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 11</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton11))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton11,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="213">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 12</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton12))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton12,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="214">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 13</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton13))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton13,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="215">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 14</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton14))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton14,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+			<control type="button" id="216">
+				<description>Home Addon Button</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31551] 15</label>
+				<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton15))]</label2>
+				<textoffsetx>20</textoffsetx>
+				<onclick>Skin.SetAddon(HomeAddonButton15,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
+			</control>
+		</control>
+		<control type="grouplist" id="300">
+			<description>control area</description>
+			<posx>390</posx>
+			<posy>140</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>640</height>
+			<itemgap>-1</itemgap>
+			<onup>200</onup>
+			<ondown>9002</ondown>
+			<onleft>9</onleft>
+			<onright>60</onright>
+			<visible>Skin.String(SkinSettings,3)</visible>
+			<control type="radiobutton" id="115">
+				<description>Use custom background</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31553]</label>
+				<onclick>Skin.ToggleSetting(UseCustomBackground)</onclick>
+				<selected>Skin.HasSetting(UseCustomBackground)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="button" id="116">
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>- $LOCALIZE[31554]</label>
+				<label2>$INFO[Skin.String(CustomBackground)]</label2>
+				<onclick>Skin.SetImage(CustomBackground)</onclick>
+				<enable>Skin.HasSetting(UseCustomBackground)</enable>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="117">
+				<description>Hide video background</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31557]</label>
+				<onclick>Skin.ToggleSetting(HideVideoBackground)</onclick>
+				<selected>Skin.HasSetting(HideVideoBackground)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+			<control type="radiobutton" id="118">
+				<description>Hide viz background</description>
+				<width>$PARAM[panel-width]</width>
+				<height>80</height>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<texturefocus>list_focus.png</texturefocus>
+				<texturenofocus></texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>$LOCALIZE[31558]</label>
+				<onclick>Skin.ToggleSetting(HideVizBackground)</onclick>
+				<selected>Skin.HasSetting(HideVizBackground)</selected>
+				<textoffsetx>20</textoffsetx>
+			</control>
+		</control>
+		<control type="image">
+			<posx>390</posx>
+			<posy>774</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
+		</control>
+	</include>
+	<include name="SysInfoContent">
+		<control type="image">
+			<posx>390</posx>
+			<posy>130</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
+		</control>
+		<control type="group">
+			<posx>390</posx>
+			<posy>133</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>720</height>
+			<control type="label" id="2">
+				<description>Label 2</description>
+				<posx>20</posx>
+				<posy>0</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="3">
+				<description>Label 3</description>
+				<posx>20</posx>
+				<posy>60</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="4">
+				<description>Label 4</description>
+				<posx>20</posx>
+				<posy>120</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="5">
+				<description>Label 5</description>
+				<posx>20</posx>
+				<posy>180</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="6">
+				<description>Label 6</description>
+				<posx>20</posx>
+				<posy>240</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="7">
+				<description>Label 7</description>
+				<posx>20</posx>
+				<posy>300</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="8">
+				<description>Label 8</description>
+				<posx>20</posx>
+				<posy>360</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="9">
+				<description>Label 9</description>
+				<posx>20</posx>
+				<posy>420</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="10">
+				<description>Label 10</description>
+				<posx>20</posx>
+				<posy>480</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+			<control type="label" id="11">
+				<description>Label 11</description>
+				<posx>20</posx>
+				<posy>540</posy>
+				<width>$PARAM[panel-width]</width>
+				<height>60</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font22</font>
+			</control>
+		</control>
+		<control type="textbox" id="30">
+			<posx>410</posx>
+			<posy>150</posy>
+			<width>$PARAM[textbox-width]</width>
+			<height>620</height>
+			<pagecontrol>60</pagecontrol>
+			<autoscroll delay="5000" repeat="7500" time="5000">true</autoscroll>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>50r</posx>
+			<posy>150</posy>
+			<width>26</width>
+			<height>610</height>
+			<texturesliderbackground colordiffuse="30FFFFFF">white.png</texturesliderbackground>
+			<texturesliderbar colordiffuse="grey">white.png</texturesliderbar>
+			<texturesliderbarfocus colordiffuse="blue">white.png</texturesliderbarfocus>
+			<textureslidernib>blank.png</textureslidernib>
+			<textureslidernibfocus>blank.png</textureslidernibfocus>
+			<onleft>9000</onleft>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+			<animation effect="fade" time="150">Visible</animation>
+			<animation effect="fade" time="150">Hidden</animation>
+			<visible>Control.IsVisible(30)</visible>
+		</control>
+		<control type="image">
+			<posx>390</posx>
+			<posy>774</posy>
+			<width>$PARAM[panel-width]</width>
+			<height>2</height>
+			<texture border="2">separator.png</texture>
+			<colordiffuse>blue</colordiffuse>
+		</control>
+	</include>
 	<include name="VideosMenu">
 		<control type="button" id="3">
 			<description>Sort by button</description>
@@ -1473,7 +2343,7 @@
 			<description>Sort asc</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>31051</label>
 			<altlabel>31050</altlabel>
 			<usealttexture>Container.SortDirection(Ascending)</usealttexture>
@@ -1493,7 +2363,7 @@
 			<description>Update Library</description>
 			<include>MenuButtonCommonValues</include>
 			<alttexturefocus>list_focus.png</alttexturefocus>
-			<alttexturenofocus border="40,0,40,5">list_nofocus.png</alttexturenofocus>
+			<alttexturenofocus></alttexturenofocus>
 			<label>653</label>
 			<altlabel>13353</altlabel>
 			<usealttexture>library.isscanningvideo</usealttexture>

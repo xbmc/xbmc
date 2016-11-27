@@ -3,6 +3,69 @@
 	<defaultcontrol always="true">2</defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
+		<control type="group">
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<posx>0</posx>
+			<posy>0</posy>
+			<control type="image">
+				<description>Menu Panel</description>
+				<posx>-5</posx>
+				<posy>-5</posy>
+				<width>400</width>
+				<height>970</height>
+				<texture>panel.png</texture>
+				<bordertexture border="6">panel_shadow.png</bordertexture>
+				<bordersize>5</bordersize>
+			</control>
+			<control type="grouplist" id="9">
+				<description>button area</description>
+				<posx>0</posx>
+				<posy>130</posy>
+				<width>390</width>
+				<height>720</height>
+				<itemgap>-1</itemgap>
+				<onleft>9</onleft>
+				<onright>9</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<control type="button" id="91">
+					<description>Profiles Button</description>
+					<width>390</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<texturefocus>list_focus.png</texturefocus>
+					<texturenofocus></texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13200</label>
+					<textoffsetx>20</textoffsetx>
+					<onfocus>Skin.SetString(ProfileSettings,1)</onfocus>
+				</control>
+				<control type="button" id="92">
+					<description>Login Button</description>
+					<width>390</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<texturefocus>list_focus.png</texturefocus>
+					<texturenofocus></texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>31038</label>
+					<textoffsetx>20</textoffsetx>
+					<onfocus>Skin.SetString(ProfileSettings,2)</onfocus>
+				</control>
+			</control>
+			<include content="ProfilesContent" condition="String.IsEqual(Skin.AspectRatio,16:9)">
+				<param name="panel-width">1316</param>
+				<param name="textbox-width">1286</param>
+			</include>
+			<include content="ProfilesContent" condition="String.IsEqual(Skin.AspectRatio,4:3)">
+				<param name="panel-width">890</param>
+				<param name="textbox-width">860</param>
+			</include>
+		</control>
 		<include>Header</include>
 		<include>CommonNowPlaying</include>
 		<include>Footer</include>
@@ -27,221 +90,5 @@
 				</item>
 			</content>
 		</control>
-		<control type="group">
-			<include>Window_OpenClose_Animation_Zoom</include>
-			<include>16x9_xPos_Relocation</include>
-			<posx>30</posx>
-			<posy>140</posy>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>290</width>
-				<height>720</height>
-				<texture>panel.png</texture>
-			</control>
-			<control type="grouplist" id="9">
-				<description>button area</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>290</width>
-				<height>720</height>
-				<itemgap>-1</itemgap>
-				<onleft>9</onleft>
-				<onright>9</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
-				<control type="button" id="91">
-					<description>Profiles Button</description>
-					<width>290</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>13200</label>
-					<textoffsetx>20</textoffsetx>
-					<onfocus>Skin.SetString(ProfileSettings,1)</onfocus>
-				</control>
-				<control type="button" id="92">
-					<description>Login Button</description>
-					<width>290</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>31038</label>
-					<textoffsetx>20</textoffsetx>
-					<onfocus>Skin.SetString(ProfileSettings,2)</onfocus>
-				</control>
-			</control>
-			<control type="image">
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>720</height>
-				<texture>panel.png</texture>
-			</control>
-			<control type="panel" id="2">
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>720</height>
-				<onleft>9</onleft>
-				<onright>60</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
-				<viewtype label="21371">list</viewtype>
-				<pagecontrol>60</pagecontrol>
-				<scrolltime>200</scrolltime>
-				<visible>Skin.String(ProfileSettings,1)</visible>
-				<itemlayout width="293" height="360">
-					<control type="image">
-						<posx>20</posx>
-						<posy>10</posy>
-						<width>253</width>
-						<height>253</height>
-						<texture fallback="DefaultActor.png">$INFO[Listitem.Icon]</texture>
-					</control>
-					<control type="label">
-						<posx>10</posx>
-						<posy>270</posy>
-						<width>273</width>
-						<height>25</height>
-						<font>font24_title</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
-					<control type="label">
-						<posx>10</posx>
-						<posy>304</posy>
-						<width>273</width>
-						<height>20</height>
-						<font>font20</font>
-						<textcolor>blue</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$LOCALIZE[31320]</label>
-						<visible>!String.IsEmpty(ListItem.Label2)</visible>
-					</control>
-					<control type="label">
-						<posx>10</posx>
-						<posy>330</posy>
-						<width>273</width>
-						<height>20</height>
-						<font>font20</font>
-						<textcolor>grey</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label2]</label>
-					</control>
-				</itemlayout>
-				<focusedlayout width="293" height="360">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>293</width>
-						<height>360</height>
-						<texture>list_focus.png</texture>
-					</control>
-					<control type="image">
-						<posx>20</posx>
-						<posy>10</posy>
-						<width>253</width>
-						<height>253</height>
-						<texture fallback="DefaultActor.png">$INFO[Listitem.Icon]</texture>
-					</control>
-					<control type="label">
-						<posx>10</posx>
-						<posy>270</posy>
-						<width>273</width>
-						<height>25</height>
-						<font>font24_title</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
-					</control>
-					<control type="label">
-						<posx>10</posx>
-						<posy>304</posy>
-						<width>273</width>
-						<height>20</height>
-						<font>font20</font>
-						<textcolor>blue</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$LOCALIZE[31320]</label>
-						<visible>!String.IsEmpty(ListItem.Label2)</visible>
-					</control>
-					<control type="label">
-						<posx>10</posx>
-						<posy>330</posy>
-						<width>273</width>
-						<height>20</height>
-						<font>font20</font>
-						<textcolor>grey</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label2]</label>
-					</control>
-				</focusedlayout>
-			</control>
-			<control type="grouplist" id="200">
-				<description>control area</description>
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>680</height>
-				<pagecontrol>60</pagecontrol>
-				<itemgap>-1</itemgap>
-				<onleft>9</onleft>
-				<onright>60</onright>
-				<onup>200</onup>
-				<ondown>200</ondown>
-				<visible>Skin.String(ProfileSettings,2)</visible>
-				<control type="radiobutton" id ="4">
-					<description>Enable Login screen</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>20096</label>
-					<enable>!Window.IsVisible(ProfileSettings)</enable>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="button" id ="5">
-					<description>Auto Login</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[33084]: $INFO[System.ProfileAutoLogin]</label>
-					<enable>!Window.IsVisible(ProfileSettings)</enable>
-					<textoffsetx>20</textoffsetx>
-				</control>
-			</control>
-		</control>
-		<include>ScrollBarCommons</include>
 	</controls>
 </window>

@@ -57,13 +57,6 @@
 			<scrolltime>200</scrolltime>
 			<itemlayout height="90" width="750">
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>750</width>
-					<height>90</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
-				<control type="image">
 					<posx>2</posx>
 					<posy>2</posy>
 					<width>86</width>
