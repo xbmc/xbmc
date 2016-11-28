@@ -216,21 +216,21 @@ bool aml_support_hevc_10bit()
   return (has_hevc_10bit == 1);
 }
 
-int aml_support_h264_4k2k()
+AML_SUPPORT_H264_4K2K aml_support_h264_4k2k()
 {
-  static int has_h264_4k2k = -1;
+  static AML_SUPPORT_H264_4K2K has_h264_4k2k = AML_SUPPORT_H264_4K2K_UNINIT;
 
-  if (has_h264_4k2k == -1)
+  if (has_h264_4k2k == AML_SUPPORT_H264_4K2K_UNINIT)
   {
     std::string valstr;
     if (SysfsUtils::GetString("/sys/class/amstream/vcodec_profile", valstr) != 0)
-      has_h264_4k2k = 0;
+      has_h264_4k2k = AML_NO_H264_4K2K;
     else if (valstr.find("h264:4k") != std::string::npos)
-      has_h264_4k2k = 2;
+      has_h264_4k2k = AML_HAS_H264_4K2K_SAME_PROFILE;
     else if (valstr.find("h264_4k2k:") != std::string::npos)
-      has_h264_4k2k = 1;
+      has_h264_4k2k = AML_HAS_H264_4K2K;
     else
-      has_h264_4k2k = 0;
+      has_h264_4k2k = AML_NO_H264_4K2K;
   }
   return has_h264_4k2k;
 }
