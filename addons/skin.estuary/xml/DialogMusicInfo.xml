@@ -157,6 +157,40 @@
 					<ondown>130</ondown>
 					<onup>9000</onup>
 					<orientation>horizontal</orientation>
+					<itemlayout height="72.5" width="595" condition="Container.Content(songs)">
+						<control type="image">
+							<top>-10</top>
+							<width>595</width>
+							<height>100</height>
+							<texture border="40">buttons/button-nofo.png</texture>
+						</control>
+						<control type="label">
+							<left>40</left>
+							<top>10</top>
+							<width>546</width>
+							<height>60</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label,[COLOR grey], - [/COLOR]]$INFO[ListItem.Label2]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="72.5" width="595" condition="Container.Content(songs)">
+						<control type="image">
+							<top>-10</top>
+							<width>595</width>
+							<height>100</height>
+							<texture border="40" colordiffuse="button_focus">buttons/button-fo.png</texture>
+						</control>
+						<control type="label">
+							<left>40</left>
+							<top>10</top>
+							<width>546</width>
+							<height>60</height>
+							<font>font12</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label,[COLOR white], - [/COLOR]]$INFO[ListItem.Label2]</label>
+						</control>
+					</focusedlayout>
 					<itemlayout height="72.5" width="595" condition="Container.Content(albums)">
 						<control type="image">
 							<top>-10</top>
