@@ -28,8 +28,8 @@
 				<control type="image">
 					<left>38</left>
 					<right>36</right>
-					<top>104</top>
-					<height>650</height>
+					<top>115</top>
+					<height>644</height>
 					<fadetime>300</fadetime>
 					<texture border="2" fallback="special://skin/extras/home-images/movie.jpg" background="true">$VAR[FanartImageVar]</texture>
 					<aspectratio align="center" aligny="bottom">scale</aspectratio>

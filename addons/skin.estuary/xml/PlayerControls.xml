@@ -9,10 +9,10 @@
 			<centerleft>50%</centerleft>
 			<width>1115</width>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="1115" />
-				<param name="DialogBackgroundHeight" value="380" />
-				<param name="DialogHeaderLabel" value="16003" />
-				<param name="DialogHeaderId" value="" />
+				<param name="width" value="1115" />
+				<param name="height" value="380" />
+				<param name="header_label" value="16003" />
+				<param name="header_id" value="" />
 			</include>
 			<control type="group">
 				<left>20</left>
@@ -94,7 +94,7 @@
 					<radiowidth>74</radiowidth>
 					<radioheight>74</radioheight>
 					<font></font>
-					<texturenofocus></texturenofocus>
+					<texturenofocus />
 					<radioposx>1</radioposx>
 					<radioposy>0</radioposy>
 					<selected>Player.Paused</selected>
@@ -125,8 +125,8 @@
 						<height>74</height>
 						<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
 						<font></font>
-						<texturefocus></texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturefocus />
+						<texturenofocus />
 						<onleft>605</onleft>
 						<onright>607</onright>
 						<onup>1000</onup>
@@ -149,13 +149,13 @@
 					<textureradiooffnofocus>osd/fullscreen/buttons/random-off.png</textureradiooffnofocus>
 					<textureradioondisabled colordiffuse="disabled">osd/fullscreen/buttons/random-on.png</textureradioondisabled>
 					<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random-off.png</textureradiooffdisabled>
-					<texturefocus></texturefocus>
+					<texturefocus />
 					<width>125</width>
 					<height>123</height>
 					<radiowidth>74</radiowidth>
 					<radioheight>74</radioheight>
 					<font></font>
-					<texturenofocus></texturenofocus>
+					<texturenofocus />
 					<radioposx>0</radioposx>
 					<radioposy>0</radioposy>
 					<label>$LOCALIZE[590]$INFO[Playlist.Random, : ]</label>

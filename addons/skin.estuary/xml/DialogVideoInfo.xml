@@ -417,7 +417,7 @@
 								<param name="icon" value="" />
 							</include>
 							<label>$LOCALIZE[31033]</label>
-							<onleft>440</onleft>
+							<onleft>441</onleft>
 							<onright>101</onright>
 							<onup>140</onup>
 							<enable>String.IsEmpty(Container.PluginName)</enable>

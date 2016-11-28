@@ -21,15 +21,15 @@
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<visible>Control.Isvisible(54)</visible>
-				<include>Visible_Right</include>
+				<include>Visible_Left</include>
 				<visible>Container.Content(images)</visible>
 				<include content="ContentPanel">
-					<param name="width" value="590" />
+					<param name="width" value="656" />
 				</include>
 				<control type="textbox">
 					<left>40</left>
 					<top>360</top>
-					<width>429</width>
+					<width>529</width>
 					<height>413</height>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -41,7 +41,7 @@
 				<control type="grouplist">
 					<left>20</left>
 					<top>152</top>
-					<width>480</width>
+					<width>570</width>
 					<height>760</height>
 					<orientation>vertical</orientation>
 					<include content="PicsInfoLine">

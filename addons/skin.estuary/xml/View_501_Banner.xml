@@ -131,7 +131,6 @@
 								<width>800</width>
 								<height>20</height>
 								<font>font12</font>
-								<textcolor>button_focus</textcolor>
 								<align>right</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Rating]</label>
@@ -151,7 +150,6 @@
 								<width>800</width>
 								<height>20</height>
 								<font>font12</font>
-								<textcolor>button_focus</textcolor>
 								<align>right</align>
 								<aligny>center</aligny>
 								<label>$VAR[BannerLabel2Var]</label>

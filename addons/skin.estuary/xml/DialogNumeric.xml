@@ -10,10 +10,10 @@
 			<centerleft>50%</centerleft>
 			<width>545</width>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="545" />
-				<param name="DialogBackgroundHeight" value="660" />
-				<param name="DialogHeaderLabel" value="Numeric pad" />
-				<param name="DialogHeaderId" value="" />
+				<param name="width" value="545" />
+				<param name="height" value="660" />
+				<param name="header_label" value="$LOCALIZE[31161]" />
+				<param name="header_id" value="" />
 			</include>
 			<control type="image">
 				<left>44</left>
@@ -170,7 +170,7 @@
 						<width>125</width>
 						<height>125</height>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioofffocus>
@@ -193,7 +193,7 @@
 						<width>125</width>
 						<height>125</height>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioofffocus>

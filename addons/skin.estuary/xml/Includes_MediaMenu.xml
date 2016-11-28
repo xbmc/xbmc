@@ -8,10 +8,9 @@
 		<radioposx>370</radioposx>
 		<textwidth>320</textwidth>
 		<aligny>center</aligny>
-		<textcolor>white</textcolor>
 		<invalidcolor>invalid</invalidcolor>
 		<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-		<texturenofocus></texturenofocus>
+		<texturenofocus />
 		<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
 		<alttexturenofocus></alttexturenofocus>
 	</include>
@@ -25,7 +24,7 @@
 				<aligny>center</aligny>
 				<font></font>
 				<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-				<texturenofocus></texturenofocus>
+				<texturenofocus />
 				<radioposx>26</radioposx>
 				<radioposy>0</radioposy>
 				<radiowidth>40</radiowidth>
@@ -373,8 +372,8 @@
 			<width>50</width>
 			<left>-50</left>
 			<top>0</top>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus />
+			<texturenofocus />
 		</control>
 	</include>
 </includes>

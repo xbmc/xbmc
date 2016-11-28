@@ -67,30 +67,29 @@
 			</animation>
 			<scrolltime tween="cubic" easing="out">500</scrolltime>
 			<include>OpenClose_Right</include>
-			<itemgap>-130</itemgap>
+			<itemgap>-160</itemgap>
 			<control type="group" id="567">
 				<description>Weather info</description>
-				<height>380</height>
+				<height>410</height>
+				<left>22</left>
 				<control type="image">
 					<left>2.5%</left>
 					<top>100</top>
 					<width>95%</width>
 					<height>220</height>
-					<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-					<bordertexture border="20">overlays/shadow.png</bordertexture>
-					<bordersize>20</bordersize>
+					<texture border="21">dialogs/dialog-bg.png</texture>
 				</control>
-			<control type="label">
-				<top>310</top>
-				<left>10%</left>
-				<width>80%</width>
-				<align>center</align>
-				<height>44</height>
-				<shadowcolor>text_shadow</shadowcolor>
-				<label>$LOCALIZE[31154]</label>
-				<visible>Control.HasFocus(20)</visible>
-				<animation effect="fade" time="400">VisibleChange</animation>
-			</control>
+				<control type="label">
+					<top>310</top>
+					<left>10%</left>
+					<width>80%</width>
+					<align>center</align>
+					<height>44</height>
+					<shadowcolor>text_shadow</shadowcolor>
+					<label>$LOCALIZE[31154]</label>
+					<visible>Control.HasFocus(20)</visible>
+					<animation effect="fade" time="400">VisibleChange</animation>
+				</control>
 				<control type="button" id="20">
 					<left>2.5%</left>
 					<top>100</top>
@@ -101,7 +100,7 @@
 					<textoffsetx>40</textoffsetx>
 					<textoffsety>0</textoffsety>
 					<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-					<texturenofocus></texturenofocus>
+					<texturenofocus />
 					<onup>20000</onup>
 					<ondown>15100</ondown>
 					<font>font12</font>
@@ -110,7 +109,7 @@
 				</control>
 				<control type="label">
 					<right>100</right>
-					<top>190</top>
+					<top>194</top>
 					<aligny>center</aligny>
 					<height>24</height>
 					<width>500</width>
@@ -120,14 +119,14 @@
 				</control>
 				<control type="label">
 					<right>400</right>
-					<top>160</top>
+					<top>164</top>
 					<align>right</align>
 					<label>[I]$LOCALIZE[402]: $INFO[Window(weather).Property(Current.FeelsLike)]$INFO[System.TemperatureUnits][/I][CR]$INFO[Weather.Conditions]</label>
 					<font>font14</font>
 					<width>630</width>
 				</control>
 				<control type="grouplist">
-					<top>150</top>
+					<top>154</top>
 					<left>90</left>
 					<right>800</right>
 					<align>justify</align>
@@ -160,18 +159,18 @@
 				</control>
 			</control>
 			<include content="WeatherWidget">
-				<param name="left" value="-20" />
 				<param name="content_include" value="DailyItems" />
 				<param name="list_id" value="15100" />
 				<param name="widget_header" value="$LOCALIZE[31019]"/>
 				<param name="visible" value="!String.IsEmpty(Window(weather).Property(Daily.IsFetched))" />
+				<param name="width" value="258" />
 			</include>
 			<include content="WeatherWidget">
-				<param name="left" value="-20" />
 				<param name="content_include" value="HourlyItems" />
 				<param name="list_id" value="15200" />
 				<param name="widget_header" value="$LOCALIZE[33036]"/>
 				<param name="visible" value="!String.IsEmpty(Window(weather).Property(Hourly.IsFetched))" />
+				<param name="width" value="258" />
 			</include>
 			<include content="WeatherMapItem">
 				<param name="item_id" value="1" />

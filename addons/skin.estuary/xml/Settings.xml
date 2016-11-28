@@ -41,12 +41,13 @@
 					<texture colordiffuse="border_alpha">colors/black.png</texture>
 				</control>
 				<control type="image">
-					<left>95</left>
-					<top>10</top>
+					<centerleft>50%</centerleft>
+					<top>20</top>
 					<width>240</width>
-					<height>240</height>
+					<height>160</height>
 					<texture>$INFO[ListItem.Icon]</texture>
 					<align>center</align>
+					<aspectratio>scale</aspectratio>
 				</control>
 				<control type="label">
 					<left>30</left>
@@ -88,12 +89,13 @@
 						<texture colordiffuse="border_alpha">colors/black.png</texture>
 					</control>
 					<control type="image">
-						<left>95</left>
-						<top>10</top>
+						<centerleft>50%</centerleft>
+						<top>20</top>
 						<width>240</width>
-						<height>240</height>
+						<height>160</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 						<align>center</align>
+						<aspectratio>scale</aspectratio>
 					</control>
 					<control type="label">
 						<left>30</left>
@@ -109,7 +111,7 @@
 				<item>
 					<label>$LOCALIZE[14201]</label>
 					<onclick>ActivateWindow(PlayerSettings)</onclick>
-					<icon>icons/settings/video.png</icon>
+					<icon>icons/settings/player.png</icon>
 				</item>
 				<item>
 					<label>$LOCALIZE[14212]</label>
@@ -129,7 +131,7 @@
 				<item>
 					<label>$LOCALIZE[14207]</label>
 					<onclick>ActivateWindow(InterfaceSettings)</onclick>
-					<icon>icons/settings/appearance.png</icon>
+					<icon>icons/settings/interface.png</icon>
 				</item>
 				<item>
 					<label>$LOCALIZE[20077]</label>
@@ -147,6 +149,12 @@
 					<icon>icons/settings/system.png</icon>
 				</item>
 				<item>
+					<label>LibreELEC</label>
+					<onclick>RunAddon(service.libreelec.settings)</onclick>
+					<icon>icons/settings/libreelec.png</icon>
+					<visible>System.HasAddon(service.libreelec.settings)</visible>
+				</item>
+				<item>
 					<label>$LOCALIZE[138]</label>
 					<onclick>ActivateWindow(systeminfo)</onclick>
 					<icon>icons/settings/sysinfo.png</icon>
@@ -161,11 +169,11 @@
 					<onclick>ActivateWindow(filemanager)</onclick>
 					<icon>icons/settings/filemanager.png</icon>
 				</item>
-				<!-- 				<item>
-									<label>$LOCALIZE[24001]</label>
-									<onclick>ActivateWindow(addonbrowser)</onclick>
-									<icon>icons/settings/addons.png</icon>
-								</item> -->
+				<!-- <item>
+					<label>$LOCALIZE[24001]</label>
+					<onclick>ActivateWindow(addonbrowser)</onclick>
+					<icon>icons/settings/addons.png</icon>
+				</item> -->
 			</content>
 		</control>
 		<include content="TopBar">

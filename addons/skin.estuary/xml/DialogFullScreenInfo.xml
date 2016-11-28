@@ -9,8 +9,8 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>280</bottom>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus />
+			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">

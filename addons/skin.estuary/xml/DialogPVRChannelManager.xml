@@ -9,10 +9,10 @@
 			<centerleft>50%</centerleft>
 			<width>1720</width>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="1720" />
-				<param name="DialogBackgroundHeight" value="830" />
-				<param name="DialogHeaderLabel" value="$VAR[PVRChannelMgrHeader]" />
-				<param name="DialogHeaderId" value="2" />
+				<param name="width" value="1720" />
+				<param name="height" value="830" />
+				<param name="header_label" value="$VAR[PVRChannelMgrHeader]" />
+				<param name="header_id" value="2" />
 			</include>
 			<control type="group">
 				<left>10</left>
@@ -236,7 +236,7 @@
 				<top>90</top>
 				<onleft>9002</onleft>
 				<onright>20</onright>
-				<itemgap>-20</itemgap>
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<include content="DefaultDialogButton">
 					<param name="width" value="350" />
 					<param name="id" value="4" />
@@ -262,7 +262,7 @@
 				<textcolor>grey</textcolor>
 				<align>right</align>
 				<aligny>center</aligny>
-				<label>[COLOR=button_focus]$INFO[Container(20).NumItems][/COLOR] $LOCALIZE[19019] - $LOCALIZE[31035] [COLOR=button_focus]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR]</label>
+				<label>[COLOR=button_focus]$INFO[Container(20).NumItems][/COLOR] $LOCALIZE[19019] - [COLOR=button_focus]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR]</label>
 				<wrapmultiline>true</wrapmultiline>
 			</control>
 		</control>

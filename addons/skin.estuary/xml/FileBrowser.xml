@@ -7,19 +7,19 @@
 			<centerleft>50%</centerleft>
 			<centertop>50%</centertop>
 			<width>1300</width>
-			<height>880</height>
+			<height>850</height>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="1300" />
-				<param name="DialogBackgroundHeight" value="850" />
-				<param name="DialogHeaderLabel" value="" />
-				<param name="DialogHeaderId" value="411" />
+				<param name="width" value="1300" />
+				<param name="height" value="850" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="411" />
 			</include>
 			<control type="grouplist" id="9000">
 				<left>990</left>
 				<top>85</top>
 				<width>400</width>
 				<height>400</height>
-				<itemgap>-15</itemgap>
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<orientation>vertical</orientation>
 				<onleft>450</onleft>
 				<onright>450</onright>
@@ -189,27 +189,24 @@
 			<control type="label" id="412">
 				<description>Path label</description>
 				<left>25</left>
-				<top>810</top>
+				<bottom>10</bottom>
 				<width>595</width>
 				<height>30</height>
 				<haspath>true</haspath>
 				<font>font12</font>
-				<aligny>center</aligny>
-				<textcolor>button_focus</textcolor>
-				<shadowcolor>black</shadowcolor>
+				<aligny>bottom</aligny>
+				<textcolor>grey</textcolor>
 			</control>
 			<control type="label">
 				<left>0</left>
-				<top>810</top>
+				<bottom>10</bottom>
 				<width>1270</width>
 				<height>30</height>
 				<align>right</align>
-				<aligny>center</aligny>
+				<aligny>bottom</aligny>
 				<textcolor>grey</textcolor>
 				<font>font12</font>
 				<label>$VAR[FileBrowserSelectLabel]</label>
-				<wrapmultiline>true</wrapmultiline>
-				<visible>!Control.IsVisible(451)</visible>
 			</control>
 		</control>
 		<include content="UpDownArrows">

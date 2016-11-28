@@ -9,10 +9,10 @@
 			<centertop>50%</centertop>
 			<height>700</height>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="600" />
-				<param name="DialogBackgroundHeight" value="80" />
-				<param name="DialogHeaderLabel" value="$LOCALIZE[31072]" />
-				<param name="DialogHeaderId" value="2" />
+				<param name="width" value="600" />
+				<param name="height" value="80" />
+				<param name="header_label" value="$LOCALIZE[31072]" />
+				<param name="header_id" value="2" />
 			</include>
 			<control type="panel" id="9000">
 				<include>ButtonMenuList</include>

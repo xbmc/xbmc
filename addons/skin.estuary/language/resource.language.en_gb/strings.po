@@ -56,11 +56,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr ""
 
-#: /1080i/DialogAddonInfo.xml
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr ""
-
 #: /1080i/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
@@ -139,24 +134,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr ""
 
-#: /1080i/MusicVisualisation.xml
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr ""
-
 #: /1080i/DialogFavourites.xml
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr ""
-
-#: /1080i/DialogAlbumInfo.xml
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr ""
-
-#: /1080i/DialogAlbumInfo.xml
-msgctxt "#31027"
-msgid "Go to songs"
 msgstr ""
 
 #: /1080i/DialogAlbumInfo.xml /1080i/DialogVideoInfo.xml
@@ -205,11 +185,6 @@ msgid "items"
 msgstr ""
 
 #: /1080i/Variables.xml
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr ""
-
-#: /1080i/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
 msgstr ""
@@ -217,11 +192,6 @@ msgstr ""
 #: /1080i/Variables.xml
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr ""
-
-#: /1080i/Variables.xml
-msgctxt "#31040"
-msgid "Cancel update"
 msgstr ""
 
 #: /1080i/Variables.xml /1080i/MyPics.xml
@@ -254,19 +224,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr ""
 
-#: /1080i/View_50_List.xml
-msgctxt "#31047"
-msgid "Read more..."
-msgstr ""
-
 #: /1080i/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
-msgstr ""
-
-#: /1080i/Variables.xml
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
 msgstr ""
 
 #: /1080i/Variables.xml
@@ -294,11 +254,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr ""
 
-#: /1080i/Variables.xml
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr ""
-
 #: /1080i/MyMusicNav.xml /1080i/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -314,16 +269,6 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr ""
 
-#: /1080i/Includes.xml
-msgctxt "#31059"
-msgid "Updates available"
-msgstr ""
-
-#: /1080i/Variables.xml /1080i/DialogVideoInfo.xml
-msgctxt "#31060"
-msgid "minutes"
-msgstr ""
-
 #: /1080i/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
@@ -337,11 +282,6 @@ msgstr ""
 #: /1080i/Includes_MediaMenu.xml
 msgctxt "#31063"
 msgid "Sections"
-msgstr ""
-
-#: /1080i/Variables.xml
-msgctxt "#31064"
-msgid "unwatched"
 msgstr ""
 
 #: /1080i/MyVideoPlaylist.xml
@@ -369,11 +309,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr ""
 
-#: /1080i/Custom_1103_SourcesDialog.xml
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr ""
-
 #: /1080i/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
@@ -385,33 +320,8 @@ msgid "Power Options"
 msgstr ""
 
 #: /1080i/Home.xml
-msgctxt "#31073"
-msgid "Titles"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31074"
-msgid "Library root"
-msgstr ""
-
-#: /1080i/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31077"
-msgid "Previous location"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31078"
-msgid "Next location"
 msgstr ""
 
 #: /1080i/DialogVideoInfo.xml
@@ -422,11 +332,6 @@ msgstr ""
 #: /1080i/VideoOSD.xml
 msgctxt "#31080"
 msgid "Ends at"
-msgstr ""
-
-#: /1080i/DialogSongInfo.xml
-msgctxt "#31081"
-msgid "Album info"
 msgstr ""
 
 #: /1080i/Custom_1105_MusicOSDSettings.xml
@@ -444,26 +349,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr ""
 
-#: /1080i/DialogFullScreenInfo.xml
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr ""
-
-#: /1080i/DialogFullScreenInfo.xml
-msgctxt "#31086"
-msgid "Metadata"
-msgstr ""
-
-#: /1080i/DialogContentSettings.xml
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr ""
-
-#: /1080i/DialogContentSettings.xml
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr ""
-
 #: /1080i/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
@@ -474,11 +359,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr ""
 
-#: /1080i/VideoOSD.xml
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr ""
-
 #: /1080i/VideoOSD.xml /1080i/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
@@ -487,11 +367,6 @@ msgstr ""
 #: /1080i/SkinSettings.xml
 msgctxt "#31093"
 msgid "Show weather info in top bar"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
 msgstr ""
 
 #: /1080i/SkinSettings.xml
@@ -557,16 +432,6 @@ msgstr ""
 #: /1080i/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31109"
-msgid "Choose image path"
 msgstr ""
 
 #: /1080i/Home.xml
@@ -684,19 +549,9 @@ msgctxt "#31132"
 msgid "min"
 msgstr ""
 
-#: /1080i/DialogKeyboard.xml
-msgctxt "#31133"
-msgid "Hide"
-msgstr ""
-
 #: /1080i/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
-msgstr ""
-
-#: /1080i/DialogAddonInfo.xml
-msgctxt "#31135"
-msgid "Installed from"
 msgstr ""
 
 #: /1080i/DialogAddonInfo.xml
@@ -747,16 +602,6 @@ msgstr ""
 #: /1080i/Custom_1107_SearchDialog.xml
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31146"
-msgid "Manage add-ons"
-msgstr ""
-
-#: /1080i/Home.xml
-msgctxt "#31147"
-msgid "Download add-ons"
 msgstr ""
 
 #: /1080i/Home.xml
@@ -822,4 +667,9 @@ msgstr ""
 #: /xml/SkinSettings.xml
 msgctxt "#31160"
 msgid "Show media flags"
+msgstr ""
+
+#: /xml/DialogNumeric.xml
+msgctxt "#31161"
+msgid "Numeric pad"
 msgstr ""

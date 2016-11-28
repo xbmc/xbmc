@@ -94,7 +94,7 @@
 								<width>462</width>
 								<height>95</height>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !Control.HasFocus(900) + !ControlGroup(700).HasFocus">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !ControlGroup(700).HasFocus">Conditional</animation>
 							</control>
 							<control type="image">
 								<left>-3</left>
@@ -109,7 +109,7 @@
 								<width>95</width>
 								<height>95</height>
 								<texture colordiffuse="51FFFFFF">colors/black.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !Control.HasFocus(900) + !ControlGroup(700).HasFocus">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !ControlGroup(700).HasFocus">Conditional</animation>
 							</control>
 						</control>
 						<control type="image">

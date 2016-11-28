@@ -36,7 +36,7 @@
 				<onright>20</onright>
 				<orientation>vertical</orientation>
 				<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
-				<texturesliderbackground></texturesliderbackground>
+				<texturesliderbackground />
 			</control>
 		</control>
 		<control type="group">
@@ -66,7 +66,7 @@
 				<onleft>21</onleft>
 				<onright>21</onright>
 				<animation effect="zoom" end="50,100" time="300" tween="sine" center="812,0" easing="inout" condition="!Control.HasFocus(61)">conditional</animation>
-				<texturesliderbackground></texturesliderbackground>
+				<texturesliderbackground />
 				<orientation>vertical</orientation>
 			</control>
 		</control>
