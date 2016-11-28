@@ -7,18 +7,18 @@
 		<centertop>50%</centertop>
 		<height>800</height>
 		<centerleft>50%</centerleft>
-		<width>1720</width>
+		<width>1820</width>
 		<include content="DialogBackgroundCommons">
-			<param name="DialogBackgroundWidth" value="1720" />
-			<param name="DialogBackgroundHeight" value="800" />
-			<param name="DialogHeaderLabel" value="" />
-			<param name="DialogHeaderId" value="20" />
+			<param name="width" value="1820" />
+			<param name="height" value="800" />
+			<param name="header_label" value="" />
+			<param name="header_id" value="20" />
 		</include>
 		<control type="grouplist" id="9">
 			<description>button area</description>
 			<left>20</left>
 			<top>70</top>
-			<width>330</width>
+			<width>400</width>
 			<height>700</height>
 			<itemgap>-25</itemgap>
 			<orientation>vertical</orientation>
@@ -34,7 +34,7 @@
 			<param name="down_posy" value="814" />
 		</include>
 		<control type="image">
-			<left>330</left>
+			<left>400</left>
 			<top>70</top>
 			<width>1100</width>
 			<height>722</height>
@@ -42,7 +42,7 @@
 		</control>
 		<control type="grouplist" id="2">
 			<description>control area</description>
-			<left>350</left>
+			<left>420</left>
 			<top>90</top>
 			<width>1060</width>
 			<height>680</height>
@@ -52,12 +52,12 @@
 			<onright>9001</onright>
 		</control>
 		<control type="grouplist" id="9001">
-			<left>1410</left>
-			<top>-160</top>
+			<right>20</right>
+			<top>70</top>
 			<width>300</width>
 			<height>700</height>
-			<itemgap>-15</itemgap>
-			<align>center</align>
+			<itemgap>dialogbuttons_itemgap</itemgap>
+			<align>left</align>
 			<orientation>vertical</orientation>
 			<onup>9001</onup>
 			<ondown>9001</ondown>
@@ -79,7 +79,8 @@
 		<control type="button" id="13">
 			<description>Default Category Button</description>
 			<height>120</height>
-			<width>320</width>
+			<width>390</width>
+			<textoffsetx>20</textoffsetx>
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font25_title</font>

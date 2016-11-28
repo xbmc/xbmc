@@ -11,10 +11,10 @@
 			<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml)</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="700" />
-				<param name="DialogBackgroundHeight" value="80" />
-				<param name="DialogHeaderLabel" value="$INFO[Window(home).Property(settingslist_Header)]" />
-				<param name="DialogHeaderId" value="1" />
+				<param name="width" value="700" />
+				<param name="height" value="80" />
+				<param name="header_label" value="$INFO[Window(home).Property(settingslist_Header)]" />
+				<param name="header_id" value="1" />
 			</include>
 			<control type="group" id="11000">
 				<left>0</left>

@@ -78,7 +78,7 @@
 						<control type="label">
 							<left>12</left>
 							<height>90</height>
-							<width>70</width>
+							<width>75</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<font>font32_title</font>
@@ -131,12 +131,12 @@
 							<font>font12</font>
 							<label>$INFO[ListItem.Title]</label>
 							<shadowcolor>text_shadow</shadowcolor>
-							<textcolor>button_focus</textcolor>
+							<textcolor>grey</textcolor>
 						</control>
 						<control type="label">
 							<left>12</left>
 							<height>90</height>
-							<width>70</width>
+							<width>75</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<font>font32_title</font>
@@ -151,7 +151,7 @@
 					<width>12</width>
 					<height>100%</height>
 					<onleft>11</onleft>
-					<texturesliderbackground></texturesliderbackground>
+					<texturesliderbackground />
 					<onright>NextChannelGroup</onright>
 					<ondown>61</ondown>
 					<onup>61</onup>

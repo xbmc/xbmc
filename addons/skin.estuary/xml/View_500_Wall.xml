@@ -27,11 +27,6 @@
 						<top>120</top>
 						<include>InfoWallMovieLayout</include>
 					</control>
-					<control type="group">
-						<left>135</left>
-						<top>108</top>
-						<include>UserRatingCircle</include>
-					</control>
 				</itemlayout>
 				<focusedlayout height="445" width="300" condition="Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons)">
 					<control type="group">
@@ -42,46 +37,26 @@
 						<include content="InfoWallMovieLayout">
 							<param name="focused" value="true" />
 						</include>
-						<control type="group">
-							<left>135</left>
-							<top>-12</top>
-							<include>UserRatingCircle</include>
-						</control>
 					</control>
 				</focusedlayout>
-				<itemlayout height="400" width="300" condition="Container.Content(episodes)">
-					<control type="image">
-						<left>144</left>
-						<top>516</top>
-						<width>32</width>
-						<height>32</height>
-						<texture>$VAR[WallWatchedIconVar]</texture>
-					</control>
+				<itemlayout height="300" width="300" condition="Container.Content(episodes)">
 					<control type="group">
-						<top>150</top>
-						<include content="InfoWallMusicLayout">
+						<top>110</top>
+						<include content="InfoWallEpisodeLayout">
 							<param name="label" value="$INFO[ListItem.Label]" />
+							<param name="thumb_label" value="$INFO[ListItem.Label2]" />
 						</include>
 					</control>
 				</itemlayout>
-				<focusedlayout height="400" width="300" condition="Container.Content(episodes)">
-					<control type="image">
-						<left>144</left>
-						<top>516</top>
-						<width>32</width>
-						<height>32</height>
-						<texture>$VAR[WallWatchedIconVar]</texture>
-						<animation effect="slide" end="0,16" time="200" tween="sine" easing="inout">Focus</animation>
-						<animation effect="slide" start="0,16" end="0,0" time="200" tween="sine" easing="inout">UnFocus</animation>
-					</control>
+				<focusedlayout height="300" width="300" condition="Container.Content(episodes)">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
-						<animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="160,380">Focus</animation>
-						<animation effect="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="160,380">UnFocus</animation>
-						<top>150</top>
-						<include content="InfoWallMusicLayout">
-							<param name="label" value="$INFO[ListItem.Label]" />
+						<animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="160,280">Focus</animation>
+						<animation effect="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="160,280">UnFocus</animation>
+						<top>110</top>
+						<include content="InfoWallEpisodeLayout">
 							<param name="focused" value="true" />
+							<param name="thumb_label" value="$INFO[ListItem.Label2]" />
 						</include>
 					</control>
 				</focusedlayout>

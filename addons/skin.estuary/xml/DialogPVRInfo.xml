@@ -23,19 +23,7 @@
 				<width>461</width>
 				<height>461</height>
 				<aspectratio>keep</aspectratio>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="20">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
-			</control>
-			<control type="image">
-				<include>OpenClose_Left</include>
-				<left>114</left>
-				<top>236</top>
-				<width>461</width>
-				<height>461</height>
-				<aspectratio>keep</aspectratio>
-				<texture border="20" fallback="DefaultTVShows.png">$INFO[ListItem.Icon]</texture>
-				<bordersize>20</bordersize>
+				<texture fallback="DefaultTVShows.png">$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="group">
 				<top>230</top>

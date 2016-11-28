@@ -49,6 +49,12 @@
 					<selected>Skin.HasSetting(touchmode)</selected>
 				</control>
 				<control type="radiobutton" id="704">
+					<label>$LOCALIZE[31093]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(show_weatherinfo)</onclick>
+					<selected>Skin.HasSetting(show_weatherinfo)</selected>
+				</control>
+				<control type="radiobutton" id="705">
 					<label>$LOCALIZE[31160]</label>
 					<include>DefaultSettingButton</include>
 					<onclick>Skin.ToggleSetting(hide_mediaflags)</onclick>
@@ -247,7 +253,6 @@
 						<label>$INFO[ListItem.Label]</label>
 						<font>font37</font>
 						<aligny>center</aligny>
-						<textcolor>white</textcolor>
 					</control>
 				</itemlayout>
 				<focusedlayout height="90" width="470">

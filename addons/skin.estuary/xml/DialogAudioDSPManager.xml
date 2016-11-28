@@ -9,10 +9,10 @@
 			<centerleft>50%</centerleft>
 			<width>1780</width>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="1780" />
-				<param name="DialogBackgroundHeight" value="700" />
-				<param name="DialogHeaderLabel" value="$LOCALIZE[15020]" />
-				<param name="DialogHeaderId" value="2" />
+				<param name="width" value="1780" />
+				<param name="height" value="700" />
+				<param name="header_label" value="$LOCALIZE[15020]" />
+				<param name="header_id" value="2" />
 			</include>
 			<control type="list" id="9000">
 				<description>processing mode selection list</description>
@@ -72,7 +72,7 @@
 				<top>90</top>
 				<control type="group">
 					<left>320</left>
-					<description>available modes group</description>
+					<description>available modes</description>
 					<include content="AudioDSPModeList">
 						<param name="sublabel" value="$LOCALIZE[15050]: $INFO[Container(20).NumItems]" />
 						<param name="scrollbar_id" value="60" />
@@ -82,7 +82,7 @@
 					</include>
 				</control>
 				<control type="group">
-					<description>active modes group</description>
+					<description>active modes</description>
 					<left>810</left>
 					<top>0</top>
 					<include content="AudioDSPModeList">
@@ -96,8 +96,9 @@
 			</control>
 			<control type="grouplist" id="9001">
 				<left>1300</left>
+				<width>470</width>
 				<top>105</top>
-				<itemgap>-20</itemgap>
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<onleft>61</onleft>
 				<onright>9000</onright>
 				<control type="radiobutton" id="22">

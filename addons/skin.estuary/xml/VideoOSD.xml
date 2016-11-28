@@ -12,8 +12,8 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>280</bottom>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus />
+			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
@@ -33,6 +33,7 @@
 					<width>1000</width>
 					<height>60</height>
 					<label>$VAR[VideoOSDHelpTextVar]</label>
+					<visible>!Player.ShowInfo</visible>
 				</control>
 				<control type="group" id="200">
 					<control type="grouplist" id="201">
@@ -66,7 +67,7 @@
 							<radiowidth>74</radiowidth>
 							<radioheight>74</radioheight>
 							<font></font>
-							<texturenofocus></texturenofocus>
+							<texturenofocus />
 							<radioposx>1</radioposx>
 							<radioposy>0</radioposy>
 							<selected>Player.Paused</selected>
@@ -105,7 +106,7 @@
 							<radiowidth>74</radiowidth>
 							<radioheight>74</radioheight>
 							<font></font>
-							<texturenofocus></texturenofocus>
+							<texturenofocus />
 							<radioposx>1</radioposx>
 							<radioposy>0</radioposy>
 							<selected>!Player.Recording</selected>

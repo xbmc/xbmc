@@ -9,10 +9,10 @@
 		<centerleft>50%</centerleft>
 		<width>1200</width>
 		<include content="DialogBackgroundCommons">
-			<param name="DialogBackgroundWidth" value="1200" />
-			<param name="DialogBackgroundHeight" value="750" />
-			<param name="DialogHeaderLabel" value="$LOCALIZE[13406]" />
-			<param name="DialogHeaderId" value="2" />
+			<param name="width" value="1200" />
+			<param name="height" value="750" />
+			<param name="header_label" value="$LOCALIZE[13406]" />
+			<param name="header_id" value="2" />
 		</include>
 		<control type="label">
 			<description>path label</description>
@@ -24,8 +24,6 @@
 			<aligny>center</aligny>
 			<font>font12</font>
 			<label>$LOCALIZE[1021]</label>
-			<textcolor>button_focus</textcolor>
-			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="image">
 			<left>25</left>
@@ -38,7 +36,7 @@
 			<left>45</left>
 			<top>165</top>
 			<width>820</width>
-			<height>225</height>
+			<height>245</height>
 			<onup>9001</onup>
 			<onleft>9000</onleft>
 			<onright>60</onright>
@@ -77,9 +75,9 @@
 		</control>
 		<control type="scrollbar" id="60">
 			<left>870</left>
-			<top>165</top>
+			<top>166</top>
 			<width>12</width>
-			<height>240</height>
+			<height>243</height>
 			<onleft>10</onleft>
 			<onright>9000</onright>
 			<orientation>vertical</orientation>
@@ -91,7 +89,7 @@
 			<onleft>10</onleft>
 			<onright>10</onright>
 			<ondown>12</ondown>
-			<itemgap>7</itemgap>
+			<itemgap>-7</itemgap>
 			<include content="DefaultDialogButton">
 				<param name="id" value="11" />
 				<param name="label" value="$LOCALIZE[1024]" />
@@ -115,8 +113,6 @@
 			<aligny>center</aligny>
 			<font>font12</font>
 			<label>$LOCALIZE[1022]</label>
-			<textcolor>button_focus</textcolor>
-			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="edit" id="12">
 			<description>Name Button</description>
@@ -132,7 +128,8 @@
 		</control>
 		<control type="grouplist" id="9001">
 			<left>0</left>
-			<top>600</top>
+			<bottom>40</bottom>
+			<height>100</height>
 			<width>1200</width>
 			<align>center</align>
 			<orientation>horizontal</orientation>

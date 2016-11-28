@@ -32,7 +32,7 @@
 				<width>1542</width>
 				<height>100</height>
 				<font>font45</font>
-				<label>$PARAM[DialogHeaderLabel]</label>
+				<label>$PARAM[header_label]</label>
 				<align>center</align>
 				<aligny>center</aligny>
 				<shadowcolor>black</shadowcolor>
@@ -62,9 +62,8 @@
 				<font>font37</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<textcolor>button_focus</textcolor>
-				<texturefocus></texturefocus>
-				<texturenofocus></texturenofocus>
+				<texturefocus />
+				<texturenofocus />
 			</control>
 			<control type="group" id="78500">
 				<centerleft>59%</centerleft>
@@ -418,7 +417,7 @@
 						<onup>160</onup>
 						<ondown>100</ondown>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/symbols.png</textureradioofffocus>
@@ -434,7 +433,7 @@
 						<onup>161</onup>
 						<ondown>101</ondown>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/capslock.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioofffocus>
@@ -451,7 +450,7 @@
 						<onup>162</onup>
 						<ondown>102</ondown>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/shift.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioofffocus>
@@ -466,8 +465,8 @@
 						<height>120</height>
 						<onup>164</onup>
 						<ondown>104</ondown>
-						<texturefocus></texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturefocus />
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="button_focus">icons/keyboard/spacebar.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/spacebar.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="button_focus">icons/keyboard/spacebar.png</textureradioofffocus>
@@ -483,7 +482,7 @@
 						<ondown>107</ondown>
 						<onup>167</onup>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioofffocus>
@@ -499,7 +498,7 @@
 						<ondown>108</ondown>
 						<onup>168</onup>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioofffocus>
@@ -515,7 +514,7 @@
 						<onup>169</onup>
 						<ondown>109</ondown>
 						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioofffocus>
@@ -528,9 +527,9 @@
 			</control>
 			<control type="grouplist" id="95200">
 				<bottom>0</bottom>
-				<height>450</height>
+				<height>460</height>
 				<centerleft>86%</centerleft>
-				<itemgap>-10</itemgap>
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<onup>95200</onup>
 				<ondown>95200</ondown>
 				<onleft>78500</onleft>
@@ -579,9 +578,9 @@
 						<texture colordiffuse="dialog_tint">colors/white.png</texture>
 					</control>
 					<control type="label">
-						<left>30</left>
+						<textoffsetx>30</textoffsetx>
 						<top>0</top>
-						<width>480</width>
+						<width>500</width>
 						<height>50</height>
 						<label>$INFO[ListItem.Label]</label>
 						<font>font12</font>
@@ -606,9 +605,9 @@
 							<include>Animation_FocusTextureFade</include>
 						</control>
 						<control type="label">
-							<left>30</left>
+							<textoffsetx>30</textoffsetx>
 							<top>0</top>
-							<width>480</width>
+							<width>500</width>
 							<height>50</height>
 							<label>$INFO[ListItem.Label]</label>
 							<font>font12</font>

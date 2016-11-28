@@ -22,41 +22,41 @@
 			<top>-1080</top>
 			<width>5760</width>
 			<height>3240</height>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus />
+			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="image" id="999">
 			<description>background image</description>
 			<left>0</left>
-			<top>10</top>
+			<top>0</top>
 			<width>450</width>
-			<height>820</height>
+			<height>780</height>
 			<texture colordiffuse="dialog_tint">colors/white.png</texture>
 		</control>
 		<control type="grouplist" id="996">
 			<description>grouplist for context buttons</description>
 			<left>0</left>
-			<top>30</top>
+			<top>0</top>
 			<width>450</width>
 			<height max="780">auto</height>
 			<usecontrolcoords>true</usecontrolcoords>
 		</control>
 		<control type="button" id="1000">
 			<description>button template</description>
-			<left>2</left>
+			<left>0</left>
 			<top></top>
-			<width>446</width>
+			<width>450</width>
 			<height>65</height>
 			<align>center</align>
 			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturenofocus />
 		</control>
 		<include content="UpDownArrows">
 			<param name="container_id" value="996" />
 			<param name="posx" value="201" />
-			<param name="up_posy" value="-30" />
-			<param name="down_posy" value="850" />
+			<param name="up_posy" value="-40" />
+			<param name="down_posy" value="798" />
 		</include>
 	</controls>
 </window>

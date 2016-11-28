@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window type="dialog" id="1109">
 	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
-	<visible>Window.IsActive(seekbar) | [Player.ShowInfo + !System.HasModalDialog + VideoPlayer.Content(LiveTV)] | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrosdguide)</visible>
+	<visible>Window.IsActive(seekbar) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrosdguide)</visible>
 	<depth>DepthOSD</depth>
 	<include>Animation_TopSlide</include>
 	<zorder>0</zorder>
@@ -52,16 +52,33 @@
 					<align>right</align>
 					<label>$INFO[System.Time]</label>
 				</control>
-				<control type="label">
-					<top>80</top>
-					<label>$INFO[Player.FinishTime,$LOCALIZE[31080]: ]</label>
-					<right>22</right>
-					<shadowcolor>text_shadow</shadowcolor>
+				<control type="grouplist">
+					<right>24</right>
+					<top>74</top>
+					<width>800</width>
 					<height>100</height>
-					<width>500</width>
 					<align>right</align>
-					<visible>!String.isempty(Player.Duration)</visible>
-					<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasEpg</visible>
+					<itemgap>5</itemgap>
+					<orientation>horizontal</orientation>
+					<usecontrolcoords>true</usecontrolcoords>
+					<control type="label">
+						<label>$INFO[Player.FinishTime,$LOCALIZE[31080]: ]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+						<height>100</height>
+						<width>auto</width>
+						<visible>!String.isempty(Player.Duration)</visible>
+						<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasEpg</visible>
+					</control>
+					<control type="image">
+						<top>2</top>
+						<left>0</left>
+						<width>60</width>
+						<height>40</height>
+						<fadetime>300</fadetime>
+						<aspectratio aligny="center" align="right">keep</aspectratio>
+						<texture>dialogs/volume/mute.png</texture>
+						<visible>Player.Muted</visible>
+					</control>
 				</control>
 			</control>
 		</control>

@@ -23,9 +23,7 @@
 					<focusposition>5</focusposition>
 					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<focusedlayout height="80">
-						<control type="group">
-							<width>tvrecordings_width</width>
+					<focusedlayout height="80" width="tvrecordings_width">
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
@@ -59,13 +57,9 @@
 								<align>right</align>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Label2]</label>
-								<textcolor>white</textcolor>
 							</control>
-						</control>
 					</focusedlayout>
-					<itemlayout height="80">
-						<control type="group">
-							<width>tvrecordings_width</width>
+					<itemlayout height="80" width="tvrecordings_width">
 							<control type="image">
 								<left>21</left>
 								<top>30</top>
@@ -92,7 +86,6 @@
 								<textcolor>grey</textcolor>
 								<shadowcolor>text_shadow</shadowcolor>
 							</control>
-						</control>
 					</itemlayout>
 				</control>
 			</control>
@@ -108,14 +101,14 @@
 					<param name="flipx" value="true" />
 				</include>
 				<control type="scrollbar" id="73">
-					<left>-30</left>
+					<left>-40</left>
 					<top>0</top>
 					<width>12</width>
 					<height>100%</height>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<orientation>vertical</orientation>
-					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
+					<animation effect="zoom" start="100,100" end="50,100" center="-40,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
 				</control>
 				<control type="group">
 					<visible>!ListItem.IsFolder</visible>

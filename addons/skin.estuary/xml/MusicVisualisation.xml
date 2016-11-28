@@ -54,7 +54,6 @@
 						<label>$INFO[MusicPlayer.Artist]</label>
 						<font>font60</font>
 						<shadowcolor>black</shadowcolor>
-						<textcolor>white</textcolor>
 						<scroll>true</scroll>
 					</control>
 					<control type="label">
@@ -64,7 +63,6 @@
 						<label>$INFO[MusicPlayer.Album]$INFO[MusicPlayer.Year,[COLOR button_focus] [,][/COLOR]]</label>
 						<font>font37</font>
 						<shadowcolor>black</shadowcolor>
-						<textcolor>white</textcolor>
 						<scroll>true</scroll>
 					</control>
 					<control type="label">

@@ -243,14 +243,12 @@
 						<width>470</width>
 						<height>40</height>
 						<label>$INFO[ListItem.AddonSize,[COLOR button_focus]$LOCALIZE[22031]:[/COLOR] ,[CR]]</label>
-						<textcolor>white</textcolor>
 						<visible>!String.IsEmpty(ListItem.AddonSize)</visible>
 					</control>
 					<control type="label">
 						<width>470</width>
 						<height>40</height>
 						<label>$INFO[ListItem.AddonOrigin,[COLOR button_focus]$LOCALIZE[31150]:[/COLOR] ]</label>
-						<textcolor>white</textcolor>
 						<visible>!String.IsEmpty(ListItem.AddonOrigin)</visible>
 					</control>
 				</control>

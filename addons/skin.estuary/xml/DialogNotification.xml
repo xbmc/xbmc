@@ -45,8 +45,6 @@
 				<height>60</height>
 				<font>font27_narrow</font>
 				<aligny>center</aligny>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
 			</control>
 		</control>
 	</controls>

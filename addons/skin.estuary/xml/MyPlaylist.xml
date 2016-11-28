@@ -25,61 +25,54 @@
 					<pagecontrol>60</pagecontrol>
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
-					<focusedlayout height="80" width="924">
-						<control type="group">
-							<width>playlistlist_width</width>
-							<control type="image">
-								<left>0</left>
-								<right>0</right>
-								<height>80</height>
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(50)</visible>
-							</control>
-							<control type="label">
-								<left>30</left>
-								<height>80</height>
-								<right>30</right>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<label>$INFO[ListItem.Label]</label>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
-							<control type="label">
-								<left>30</left>
-								<height>80</height>
-								<right>30</right>
-								<align>right</align>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<label>$VAR[PlaylistLabel2Var]</label>
-								<textcolor>white</textcolor>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
+					<focusedlayout height="80" width="playlistlist_width">
+						<control type="image">
+							<left>0</left>
+							<right>0</right>
+							<height>80</height>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(50)</visible>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<height>80</height>
+							<right>30</right>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<label>$INFO[ListItem.Label]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<height>80</height>
+							<right>30</right>
+							<align>right</align>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<label>$VAR[PlaylistLabel2Var]</label>
+							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="80" width="924">
-						<control type="group">
-							<width>playlistlist_width</width>
-							<control type="label">
-								<left>30</left>
-								<height>80</height>
-								<right>30</right>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<label>$INFO[ListItem.TVShowtitle,,: ]$INFO[ListItem.Label]</label>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
-							<control type="label">
-								<left>30</left>
-								<height>80</height>
-								<right>30</right>
-								<align>right</align>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<label>$VAR[PlaylistLabel2Var]</label>
-								<textcolor>grey</textcolor>
-								<shadowcolor>text_shadow</shadowcolor>
-							</control>
+					<itemlayout height="80" width="playlistlist_width">
+						<control type="label">
+							<left>30</left>
+							<height>80</height>
+							<right>30</right>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<label>$INFO[ListItem.TVShowtitle,,: ]$INFO[ListItem.Label]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<height>80</height>
+							<right>30</right>
+							<align>right</align>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<label>$VAR[PlaylistLabel2Var]</label>
+							<textcolor>grey</textcolor>
+							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
 				</control>
@@ -97,11 +90,19 @@
 						<ondown>700</ondown>
 						<onleft>50</onleft>
 						<onright>50</onright>
-						<include content="PlaylistWindowButton">
-							<param name="control_id" value="20" />
-							<param name="label" value="$LOCALIZE[191]$INFO[Playlist.Random, : ]" />
-							<param name="width" value="400" />
-						</include>
+						<width>400</width>
+						<control type="radiobutton" id="20">
+							<width>467</width>
+							<height>110</height>
+							<align>left</align>
+							<aligny>top</aligny>
+							<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+							<texturenofocus />
+							<radioposx>300</radioposx>
+							<textoffsetx>40</textoffsetx>
+							<textoffsety>35</textoffsety>
+							<label>$LOCALIZE[191]</label>
+						</control>
 						<include content="PlaylistWindowButton">
 							<param name="control_id" value="26" />
 							<param name="label" value="" />
@@ -134,7 +135,7 @@
 					<width>12</width>
 					<bottom>80</bottom>
 					<onleft>50</onleft>
-					<texturesliderbackground></texturesliderbackground>
+					<texturesliderbackground />
 					<onright>700</onright>
 					<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
 					<orientation>vertical</orientation>
