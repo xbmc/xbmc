@@ -1,0 +1,88 @@
+<h1 id="kodi-web-interface-chorus2">Kodi Web Interface - Chorus2</h1>
+<p>The default Web Interface for Kodi.</p>
+<p>A great modern Web UI for Kodi. Browse your Music, Movies or TV Shows from the comfort of your
+own web browser. You can play media via Kodi or stream it in your browser. Works best with Chrome
+but plays well with most modern browsers.</p>
+<p>Successor to <a href="https://github.com/jez500/chorus">Chorus</a>. 
+A complete rebuild using Coffee Script, Backbone, Marionette and much, much more.</p>
+<h2 id="author">Author</h2>
+<p><a href="http://jez.me">Jeremy Graham </a> with help from <a href="https://github.com/xbmc/chorus2/graphs/contributors">these kind people</a></p>
+<h2 id="current-state">Current state</h2>
+<p>Pretty good, most things work really well. Other things need <a href="https://github.com/xbmc/chorus2/issues">polish/finishing/fixing</a>. </p>
+<h2 id="getting-it-working">Getting it working</h2>
+<p>Disclaimer: Beta software, expect bugs, changes, nuclear war, etc.</p>
+<h3 id="installing">Installing</h3>
+<p>Install via zip is the easiest way to go. Grab the latest release of webinterface.default.2.X.X.zip from the <a href="https://github.com/xbmc/chorus2/releases">releases page</a> then install it <a href="http://kodi.wiki/view/Add-on_manager#How_to_install_from_a_ZIP_file">like this</a></p>
+<h3 id="configuring">Configuring</h3>
+<ul>
+<li>Kodi &gt; System &gt; Settings &gt; Services</li>
+<li>Remote Control<ul>
+<li>Enable &quot;Allow programs on this system to control Kodi&quot;</li>
+<li>Enable &quot;Allow programs on other systems to control Kodi&quot;</li>
+</ul>
+</li>
+<li>Webserver<ul>
+<li>Enable &quot;Allow control of Kodi via HTTP&quot;</li>
+<li>Select Web interface</li>
+<li>Select Chorus2</li>
+</ul>
+</li>
+</ul>
+<h2 id="feature-requests-bugs">Feature requests / Bugs</h2>
+<p>Add them to the <a href="https://github.com/xbmc/chorus2/issues">list</a></p>
+<h2 id="streaming">Streaming</h2>
+<p>Disclaimer: The success of this depends on the file formats vs what the browser supports.  In general most things work.</p>
+<h3 id="audio-streaming">Audio streaming</h3>
+<p>In the top right there are some tabs, two of them are named Kodi and Local, this is how you toggle what player the UI
+is controlling.  In Local mode the logo and accents are pinky-red, In Kodi mode the logo is the Kodi blue. When you 
+are in a given mode, actions affect that player, so if you click Play on a track when in Local mode, it will play 
+through the browser, likewise, when in Kodi mode all commands are sent to Kodi.  You can also add media to other 
+playlists by clicking the menu buttons (three dots vertical) on most media items.</p>
+<h3 id="video-streaming">Video streaming</h3>
+<p>Video streaming via HTML5 &quot;sort of&quot; works, it really depends on the codec used. An embedded VLC player is also available with better codec support.
+This looks like the best we can get until Kodi supports transcoding.
+<strong>Chrome users</strong>: Chrome has removed support for vlc/divx plugins so streaming a video requires a <a href="https://en.wikipedia.org/wiki/HTML5_video#Browser_support">Chrome friendly codec</a>.</p>
+<h2 id="kodi-settings-via-the-web-interface">Kodi settings via the web interface</h2>
+<p>You can change most of the settings you would find in Kodi via the settings page in the web interface.
+Some settings have been omitted as they require interaction with the GUI and others are just a basic text field with no options.</p>
+<h2 id="contributing">Contributing</h2>
+<p>If you would like to make this project better I would appreciate any help. Please do pull requests against the <code>develop</code> branch.</p>
+<h3 id="translations">Translations</h3>
+<p>I only know English so definitely need help with this.<br>I also don&#39;t know heaps about javascript multilingual stuff but thanks to @mizaki we have a structure ready to go. 
+So it should be nice and easy to translate the UI. </p>
+<p>At the moment, there is 5 languages (english,french,german,dutch,chinese) more can be easily added.
+To contribute, send me a PR on a new branch against <code>develop</code>, or if you don&#39;t know git, a link to the language file.</p>
+<p>Language Files <a href="https://github.com/xbmc/chorus2/tree/master/src/lang">here</a>. 
+English is the only real complete translation file so start with that as your base. </p>
+<h3 id="compiling">Compiling</h3>
+<p>Sass and Grunt are used to compile css and js in the dist folder.
+To get your environment setup first install <a href="http://bundler.io">Bundler</a> and <a href="https://www.npmjs.org/">npm</a>.</p>
+<ul>
+<li>Install required gems with <code>bundle install</code></li>
+<li>Install NodeJs packages with <code>npm install</code></li>
+<li>Run grunt <code>grunt</code></li>
+</ul>
+<p>If you are updating (eg. git pull), always do an <code>npm update</code> and <code>bundle update</code> to ensure all the tools are in the toolbox.</p>
+<h3 id="build">Build</h3>
+<p>A build will also include translation files.</p>
+<ul>
+<li>Run grunt <code>grunt build</code></li>
+</ul>
+<h2 id="donate">Donate</h2>
+<p>Are you a fan of Chorus? You can <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=ZCGV976794JHE&amp;lc=AU&amp;item_name=Chorus%20Beer%20Fund&amp;currency_code=AUD&amp;bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted">buy me Jeremy a beer</a> to say thanks :)</p>
+<h2 id="screenshots">Screenshots</h2>
+<h3 id="homepage-now-playing-">Homepage (now playing)</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/now-playing.jpg" alt="alt text" title="Homepage/Now Playing"></p>
+<h3 id="search-results">Search results</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/search.jpg" alt="alt text" title="Search"></p>
+<h3 id="artists">Artists</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/artists.jpg" alt="alt text" title="Artists"></p>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist//screenshots/artist.jpg" alt="alt text" title="Artist"></p>
+<h3 id="video-library">Video library</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/tv.jpg" alt="alt text" title="TV"></p>
+<h3 id="filtering">Filtering</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/movie.jpg" alt="alt text" title="Movies"></p>
+<h3 id="settings">Settings</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/settings.jpg" alt="alt text" title="Settings"></p>
+<h3 id="add-ons">Add-ons</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/addons.jpg" alt="alt text" title="Add-ons"></p>
