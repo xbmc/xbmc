@@ -1497,10 +1497,11 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->video_rotation_degree = 3;
   // handle extradata
   am_private->video_format      = codecid_to_vformat(hints.codec);
-  if (am_private->video_format == VFORMAT_H264) {
-      if (hints.width > 1920 || hints.height > 1088) {
-        am_private->video_format = VFORMAT_H264_4K2K;
-      }
+  if ((am_private->video_format == VFORMAT_H264)
+    && (hints.width > 1920 || hints.height > 1088)
+    && (aml_support_h264_4k2k() == AML_HAS_H264_4K2K))
+  {
+    am_private->video_format = VFORMAT_H264_4K2K;
   }
   switch (am_private->video_format)
   {
