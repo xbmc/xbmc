@@ -19,6 +19,11 @@
  */
 #pragma once
 
+/*!
+ \file
+ \ingroup joystick
+ */
+
 #include <string>
 
 namespace JOYSTICK

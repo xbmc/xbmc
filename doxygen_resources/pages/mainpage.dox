@@ -130,10 +130,29 @@
 	Everything around input
 */
 
+/*! \defgroup keyboard Keyboard
+    \ingroup input
+
+    Keyboard input is processed by \ref CInputManager and forwarded to
+    registered keyboard handlers (e.g. game clients) or as actions to the UI:
+
+    - If no keyboard handlers are registered or if they don't consume events,
+      the keyboard events are forwarded to the UI via \ref CInputManager::OnKey.
+    - Clients (e.g. game clients implementing \ref KEYBOARD::IKeyboardHandler) call
+      \ref CInputManager::RegisterKeyboardHandler to register themselves as eligible
+      for keyboard input events.
+*/
+
 /*!
 	\defgroup mouse Mouse
 	\ingroup input
 	Everything around mouse
+*/
+
+/*!
+	\defgroup joystick Joystick
+	\ingroup input
+	Everything around joystick
 */
 
 /*!

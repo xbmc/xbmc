@@ -30,8 +30,7 @@ namespace JOYSTICK
   class IButtonMapCallback;
 
   /*!
-   * \ingroup joysticks
-   *
+   * \ingroup joystick
    * \brief Button mapper interface to assign the driver's raw button/hat/axis
    *        elements to physical joystick features using a provided button map.
    *

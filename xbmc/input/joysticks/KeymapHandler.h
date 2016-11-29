@@ -25,6 +25,9 @@
 
 namespace JOYSTICK
 {
+  /*!
+   * Handles keymaps
+   */
   class CKeymapHandler : public IKeymapHandler
   {
   public:

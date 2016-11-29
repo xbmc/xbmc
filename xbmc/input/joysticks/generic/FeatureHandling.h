@@ -33,6 +33,7 @@ namespace JOYSTICK
   typedef std::shared_ptr<CJoystickFeature> FeaturePtr;
 
   /*!
+   * \ingroup joystick
    * \brief Base class for joystick features
    *
    * See list of feature types in JoystickTypes.h.
@@ -118,6 +119,7 @@ namespace JOYSTICK
   };
 
   /*!
+   * \ingroup joystick
    * \brief Axis of a feature (analog stick, accelerometer, etc)
    *
    * Axes are composed of two driver primitives, one for the positive semiaxis

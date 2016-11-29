@@ -48,16 +48,17 @@ CKeymapHandler::~CKeymapHandler(void)
 
 INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
 {
+  CAction action(ACTION_NONE);
+
   if (keyId != 0)
+    action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId));
+
+  if (action.GetID() > ACTION_NONE)
   {
-    CAction action(CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId)));
-    if (action.GetID() > 0)
-    {
-      if (action.IsAnalog())
-        return INPUT_TYPE::ANALOG;
-      else
-        return INPUT_TYPE::DIGITAL;
-    }
+    if (action.IsAnalog())
+      return INPUT_TYPE::ANALOG;
+    else
+      return INPUT_TYPE::DIGITAL;
   }
 
   return INPUT_TYPE::UNKNOWN;
@@ -96,7 +97,8 @@ void CKeymapHandler::ProcessButtonPress(unsigned int keyId, unsigned int holdTim
   {
     m_pressedButtons.push_back(keyId);
 
-    if (SendDigitalAction(keyId))
+    // Only dispatch action if button was pressed this frame
+    if (holdTimeMs == 0 && SendDigitalAction(keyId))
     {
       m_lastButtonPress = keyId;
       m_lastDigitalActionMs = holdTimeMs;

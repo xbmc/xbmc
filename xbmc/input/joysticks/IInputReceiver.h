@@ -24,6 +24,7 @@
 namespace JOYSTICK
 {
   /*!
+   * \ingroup joystick
    * \brief Interface for sending input events to game controllers
    */
   class IInputReceiver

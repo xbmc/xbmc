@@ -31,7 +31,8 @@ namespace JOYSTICK
   class IButtonMap;
   class IButtonMapper;
 
-  /*
+  /*!
+   * \ingroup joystick
    * \brief Generic implementation of a class that provides button mapping by
    *        translating driver events to button mapping commands
    *
@@ -44,7 +45,7 @@ namespace JOYSTICK
                          public IButtonMapCallback
   {
   public:
-    /*
+    /*!
      * \brief Constructor for CButtonMapping
      *
      * \param buttonMapper Carries out button-mapping commands using <buttonMap>
