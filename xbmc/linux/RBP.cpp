@@ -245,9 +245,6 @@ void CRBP::Deinitialize()
   if(m_omx_initialized)
     m_OMX->Deinitialize();
 
-  if (m_display)
-    CloseDisplay(m_display);
-
   m_DllBcmHost->bcm_host_deinit();
 
   if(m_initialized)
