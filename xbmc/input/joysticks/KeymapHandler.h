@@ -56,7 +56,6 @@ namespace JOYSTICK
     static bool SendDigitalAction(unsigned int keyId, unsigned int holdTimeMs = 0);
     static bool SendAnalogAction(unsigned int keyId, float magnitude);
 
-    BUTTON_STATE              m_state;
     unsigned int              m_lastButtonPress;
     unsigned int              m_lastDigitalActionMs;
     std::vector<unsigned int> m_pressedButtons;
