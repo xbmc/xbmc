@@ -8751,6 +8751,8 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr ""
 
+#empty string with id 16326
+
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16327"
 msgid "VAAPI - Bob"
@@ -14100,7 +14102,7 @@ msgctxt "#24043"
 msgid "Available updates"
 msgstr ""
 
-# empty string 24043
+#empty string with id 24044
 
 #. Used as an event log description for add-ons failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
@@ -14123,7 +14125,7 @@ msgctxt "#24048"
 msgid "VideoPlayer InputStream"
 msgstr ""
 
-# empty string 24049
+#empty string with id 24049
 
 #: unknown
 msgctxt "#24050"
@@ -15275,6 +15277,8 @@ msgctxt "#29985"
 msgid "If traffic advisory is send from RDS, volume is increased"
 msgstr ""
 
+#empty string with id 29986
+
 #. Node title for music artist role, plural of #38036
 #: system/library/music/musicroles/Remixers.xml
 msgctxt "#29987"
@@ -16036,19 +16040,16 @@ msgid "Fix skipping"
 msgstr ""
 
 #. Help text of the button to fix the bug where buttons are skipped in the controller dialog. %s - list of disabled buttons and axes
-#:
 msgctxt "#35014"
 msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them:[CR]%s"
 msgstr ""
 
 #. Name of a controller button, e.g. Button 1. %d - button index
-#:
 msgctxt "#35015"
 msgid "Button %d"
 msgstr ""
 
 #. Name of a controller axis, e.g. Axis 2. %d - axis index
-#:
 msgctxt "#35016"
 msgid "Axis %d"
 msgstr ""
@@ -16398,6 +16399,8 @@ msgstr ""
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
 msgstr ""
+
+#empty string with id 36022
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36023"
@@ -19571,7 +19574,7 @@ msgctxt "#38060"
 msgid "Music library needs to rescan tags from files. Would you like to scan now?"
 msgstr ""
 
-#. Extra scraping question on upgrade from previous version 
+#. Extra scraping question on upgrade from previous version
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#38061"
 msgid "Fetch additional information for albums and artists? This could take some time so you may prefer to do this later"
