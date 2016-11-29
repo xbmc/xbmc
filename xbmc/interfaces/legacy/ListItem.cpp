@@ -454,6 +454,8 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->SetVotes(StringUtils::ReturnDigits(value));
           else if (key == "trailer")
             item->GetVideoInfoTag()->m_strTrailer = value;
+          else if (key == "path")
+            item->GetVideoInfoTag()->m_strPath = value;
           else if (key == "date")
           {
             if (value.length() == 10)
