@@ -7985,7 +7985,11 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     else
     {
       time = CDateTime::GetCurrentDateTime();
-      time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+      int playTimeRemaining = GetPlayTimeRemaining();
+      float speed = g_application.m_pPlayer->GetPlaySpeed();
+      if (speed >= 0.75 && speed <= 1.55)
+        playTimeRemaining /= speed;
+      time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
     }
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }
