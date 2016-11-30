@@ -80,7 +80,7 @@ bool CPVRClients::IsCreatedClient(int iClientId) const
   return GetCreatedClient(iClientId, client);
 }
 
-bool CPVRClients::IsCreatedClient(const AddonPtr addon)
+bool CPVRClients::IsCreatedClient(const AddonPtr &addon)
 {
   CSingleLock lock(m_critSection);
 
@@ -90,7 +90,7 @@ bool CPVRClients::IsCreatedClient(const AddonPtr addon)
   return false;
 }
 
-int CPVRClients::GetClientId(const AddonPtr client) const
+int CPVRClients::GetClientId(const AddonPtr &client) const
 {
   CSingleLock lock(m_critSection);
 
@@ -195,7 +195,7 @@ bool CPVRClients::HasEnabledClients(void) const
   return false;
 }
 
-bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
+bool CPVRClients::StopClient(const AddonPtr &client, bool bRestart)
 {
   CSingleLock lock(m_critSection);
   int iId = GetClientId(client);
@@ -1068,7 +1068,7 @@ bool CPVRClients::RenameChannel(const CPVRChannelPtr &channel)
   return (error == PVR_ERROR_NO_ERROR || error == PVR_ERROR_NOT_IMPLEMENTED);
 }
 
-bool CPVRClients::IsKnownClient(const AddonPtr client) const
+bool CPVRClients::IsKnownClient(const AddonPtr &client) const
 {
   // database IDs start at 1
   return GetClientId(client) > 0;

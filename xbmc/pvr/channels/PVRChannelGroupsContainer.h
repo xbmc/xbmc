@@ -197,7 +197,7 @@ namespace PVR
      * @brief Set the last played group.
      * @param The last played group
      */
-    void SetLastPlayedGroup(CPVRChannelGroupPtr group);
+    void SetLastPlayedGroup(const CPVRChannelGroupPtr &group);
 
   protected:
     /*!

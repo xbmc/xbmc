@@ -370,7 +370,7 @@ namespace PVR
      * @brief Set the current playing group, used to load the right channel.
      * @param group The new group.
      */
-    void SetPlayingGroup(CPVRChannelGroupPtr group);
+    void SetPlayingGroup(const CPVRChannelGroupPtr &group);
 
     /*!
      * @brief Get the current playing group, used to load the right channel.

@@ -720,7 +720,7 @@ void CGUIDialogPVRChannelManager::Clear(void)
   m_channelItems->Clear();
 }
 
-void CGUIDialogPVRChannelManager::RenameChannel(CFileItemPtr pItem)
+void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr &pItem)
 {
   std::string strChannelName = pItem->GetProperty("Name").asString();
   if (strChannelName != pItem->GetPVRChannelInfoTag()->ChannelName())
@@ -733,7 +733,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(CFileItemPtr pItem)
   }
 }
 
-bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber)
+bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr &pItem, const CPVRChannelGroupPtr &group, unsigned int *iChannelNumber)
 {
   if (!pItem || !pItem->HasPVRChannelInfoTag() || !group)
     return false;

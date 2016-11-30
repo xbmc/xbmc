@@ -1103,7 +1103,7 @@ bool CPVRManager::CheckParentalPIN(const std::string& strTitle /* = "" */)
   return bValidPIN;
 }
 
-void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
+void CPVRManager::SetPlayingGroup(const CPVRChannelGroupPtr &group)
 {
   if (m_channelGroups && group)
     m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);

@@ -85,7 +85,7 @@ namespace PVR
      */
     bool IsCreatedClient(int iClientId) const;
 
-    bool IsCreatedClient(const ADDON::AddonPtr addon);
+    bool IsCreatedClient(const ADDON::AddonPtr &addon);
 
     /*!
      * @brief Restart a single client add-on.
@@ -128,7 +128,7 @@ namespace PVR
      * @param bRestart If true, restart the client.
      * @return True if the client was found, false otherwise.
      */
-    bool StopClient(ADDON::AddonPtr client, bool bRestart);
+    bool StopClient(const ADDON::AddonPtr &client, bool bRestart);
 
     /*!
      * @return The amount of connected clients.
@@ -704,10 +704,10 @@ namespace PVR
      * @param client The client to check.
      * @return True if this client is registered, false otherwise.
      */
-    bool IsKnownClient(const ADDON::AddonPtr client) const;
+    bool IsKnownClient(const ADDON::AddonPtr &client) const;
 
 
-    int GetClientId(const ADDON::AddonPtr client) const;
+    int GetClientId(const ADDON::AddonPtr &client) const;
 
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */

@@ -531,7 +531,7 @@ namespace PVR
   class CPVRPersistGroupJob : public CJob
   {
   public:
-    CPVRPersistGroupJob(CPVRChannelGroupPtr group): m_group(group) {}
+    CPVRPersistGroupJob(const CPVRChannelGroupPtr &group): m_group(group) {}
     virtual ~CPVRPersistGroupJob() {}
     const char *GetType() const { return "pvr-channelgroup-persist"; }
 
