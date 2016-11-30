@@ -68,7 +68,7 @@
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>120</top>
+				<top>115</top>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
 				<right>0</right>
 				<height>500</height>
@@ -77,7 +77,7 @@
 				</include>
 				<itemlayout width="310" height="486">
 					<control type="group">
-						<left>70</left>
+						<left>68</left>
 						<top>10</top>
 						<include content="InfoWallMovieLayout">
 							<param name="focused" value="false" />
@@ -87,7 +87,7 @@
 				<focusedlayout width="310" height="486">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
-						<left>70</left>
+						<left>68</left>
 						<top>10</top>
 						<animation type="Focus">
 							<effect type="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="230,130" />
@@ -184,7 +184,7 @@
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>120</top>
+				<top>105</top>
 				<right>0</right>
 				<height>410</height>
 				<include content="WidgetListCommon">
@@ -295,7 +295,7 @@
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>120</top>
+				<top>110</top>
 				<right>0</right>
 				<height>290</height>
 				<include content="WidgetListCommon">

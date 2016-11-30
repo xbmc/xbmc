@@ -6,7 +6,6 @@
 		<top>0</top>
 		<height>80</height>
 		<radioposx>370</radioposx>
-		<textwidth>320</textwidth>
 		<aligny>center</aligny>
 		<invalidcolor>invalid</invalidcolor>
 		<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
