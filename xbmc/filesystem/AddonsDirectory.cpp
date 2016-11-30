@@ -686,26 +686,40 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDON
 
 bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileItemList &items)
 {
-  items.Clear();
-
   VECADDONS addons;
   if (!GetScriptsAndPlugins(content, addons))
     return false;
 
-  for (VECADDONS::const_iterator it = addons.begin(); it != addons.end(); ++it)
+  for (AddonPtr& addon : addons)
   {
-    const AddonPtr addon = *it;
-    const std::string prot = addon->Type() == ADDON_PLUGIN ? "plugin://" : "script://";
-    CFileItemPtr item(FileItemFromAddon(addon, prot + addon->ID(), addon->Type() == ADDON_PLUGIN));
-    PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-    if (plugin->ProvidesSeveral())
+    const bool bIsFolder = (addon->Type() == ADDON_PLUGIN);
+
+    std::string path;
+    switch (addon->Type())
     {
-      CURL url = item->GetURL();
-      std::string opt = StringUtils::Format("?content_type=%s",content.c_str());
-      url.SetOptions(opt);
-      item->SetURL(url);
+      case ADDON_PLUGIN:
+      {
+        path = "plugin://" + addon->ID();
+        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
+        if (plugin && plugin->ProvidesSeveral())
+        {
+          CURL url(path);
+          std::string opt = StringUtils::Format("?content_type=%s", content.c_str());
+          url.SetOptions(opt);
+          path = url.Get();
+        }
+        break;
+      }
+      case ADDON_SCRIPT:
+      {
+        path = "script://" + addon->ID();
+        break;
+      }
+      default:
+        break;
     }
-    items.Add(item);
+
+    items.Add(FileItemFromAddon(addon, path, bIsFolder));
   }
 
   items.SetContent("addons");

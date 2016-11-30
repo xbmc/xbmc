@@ -48,11 +48,11 @@ DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
     pPicture->iWidth = iWidth;
     pPicture->iHeight = iHeight;
 
-    int w = iWidth / 2;
-    int h = iHeight / 2;
+    int w = (iWidth + 1) / 2;
+    int h = (iHeight + 1) / 2;
     int size = w * h;
     int totalsize = (iWidth * iHeight) + size * 2;
-    uint8_t* data = new uint8_t[totalsize];
+    uint8_t* data = static_cast<uint8_t*>(av_malloc(totalsize));
     if (data)
     {
       pPicture->data[0] = data;

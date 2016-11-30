@@ -471,9 +471,18 @@ static int PlayMedia(const std::vector<std::string>& params)
   }
   else
   {
-    int playlist = item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
-    g_playlistPlayer.ClearPlaylist(playlist);
-    g_playlistPlayer.SetCurrentPlaylist(playlist);
+    int playlist = PLAYLIST_NONE;
+
+    if (item.IsAudio())
+      playlist = PLAYLIST_MUSIC;
+    else if (item.IsVideo())
+      playlist = PLAYLIST_VIDEO;
+
+    if (playlist != PLAYLIST_NONE)
+    {
+      g_playlistPlayer.ClearPlaylist(playlist);
+      g_playlistPlayer.SetCurrentPlaylist(playlist);
+    }
 
     // play media
     if (!g_application.PlayMedia(item, "", playlist))
