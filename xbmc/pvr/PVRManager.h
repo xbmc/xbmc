@@ -30,10 +30,12 @@
 #include "utils/Observer.h"
 
 #include "pvr/PVREvent.h"
+#include "pvr/PVRTypes.h"
 #include "pvr/recordings/PVRRecording.h"
 
-#include <map>
+#include <atomic>
 #include <memory>
+#include <string>
 #include <vector>
 
 class CGUIDialogProgressBarHandle;
@@ -51,14 +53,10 @@ namespace PVR
 {
   class CPVRClient;
   class CPVRClients;
-  class CPVRChannel;
-  typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
   class CPVRRecordings;
   class CPVRTimers;
-  class CPVRTimerInfoTag;
-  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
   class CPVRGUIInfo;
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
@@ -82,8 +80,6 @@ namespace PVR
   #define g_PVRTimers        g_PVRManager.Timers()
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
-
-  typedef std::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
   class CPVRManager : public ISettingCallback, private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {

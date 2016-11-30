@@ -19,9 +19,11 @@
  *
  */
 
-#include "PVRChannel.h"
 #include "settings/lib/ISettingCallback.h"
 #include "utils/Job.h"
+
+#include "pvr/PVRTypes.h"
+#include "pvr/channels/PVRChannel.h"
 
 #include <memory>
 #include <utility>
@@ -30,11 +32,6 @@
 class CDateTime;
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
-
-namespace EPG
-{
-  struct EpgSearchFilter;
-}
 
 namespace PVR
 {
@@ -61,9 +58,6 @@ namespace PVR
     EPG_FIRST_DATE = 0,
     EPG_LAST_DATE = 1
   };
-
-  class CPVRChannelGroup;
-  typedef std::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
   /** A group of channels */
   class CPVRChannelGroup : public Observable,

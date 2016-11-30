@@ -19,7 +19,10 @@
  *
  */
 
+#include "pvr/PVRTypes.h"
+
 #include <memory>
+#include <string>
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
@@ -28,9 +31,6 @@ class CGUIWindow;
 
 namespace PVR
 {
-  class CPVRTimerInfoTag;
-  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
-
   class CPVRGUIActions
   {
   public:

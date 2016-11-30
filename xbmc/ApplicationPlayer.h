@@ -28,6 +28,7 @@
 #include "threads/SystemClock.h"
 #include "guilib/Resolution.h"
 #include "cores/IPlayer.h"
+#include "pvr/PVRTypes.h"
 
 typedef enum
 {
@@ -35,12 +36,6 @@ typedef enum
   PLAYBACK_FAIL = 0,
   PLAYBACK_OK = 1,
 } PlayBackRet;
-
-namespace PVR
-{
-  class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-}
 
 class CAction;
 class CPlayerOptions;

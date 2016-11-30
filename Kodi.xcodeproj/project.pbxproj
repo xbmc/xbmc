@@ -2683,6 +2683,8 @@
 		2A5531F81D4A0F9C00BDCE99 /* AddonEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonEvents.h; sourceTree = "<group>"; };
 		2A5531F91D4A0FEB00BDCE99 /* EventStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventStream.h; sourceTree = "<group>"; };
 		2A5531FA1D4A0FEB00BDCE99 /* EventStreamDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventStreamDetail.h; sourceTree = "<group>"; };
+		2A77C42D1DEF5C8400E634EF /* PVRTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRTypes.h; sourceTree = "<group>"; };
+		2A77C42F1DEF7A0100E634EF /* EpgTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EpgTypes.h; sourceTree = "<group>"; };
 		2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRSettings.cpp; sourceTree = "<group>"; };
 		2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRSettings.h; sourceTree = "<group>"; };
 		2A7E24C71CEBBC3B003096EB /* libKODI_peripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_peripheral.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_peripheral.h"; sourceTree = "<group>"; };
@@ -7436,6 +7438,7 @@
 				C84828A0156CFCD8005A996F /* PVRManager.h */,
 				2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */,
 				2A7B2BDE1BD6F18B00044BCD /* PVRSettings.h */,
+				2A77C42D1DEF5C8400E634EF /* PVRTypes.h */,
 			);
 			path = pvr;
 			sourceTree = "<group>";
@@ -7557,6 +7560,7 @@
 				C84828EF156CFD5E005A996F /* EpgInfoTag.h */,
 				C84828F0156CFD5E005A996F /* EpgSearchFilter.cpp */,
 				C84828F1156CFD5E005A996F /* EpgSearchFilter.h */,
+				2A77C42F1DEF7A0100E634EF /* EpgTypes.h */,
 				C84828F2156CFD5E005A996F /* GUIEPGGridContainer.cpp */,
 				C84828F3156CFD5E005A996F /* GUIEPGGridContainer.h */,
 				2AFBB94B1CC608A200BAB340 /* GUIEPGGridContainerModel.cpp */,

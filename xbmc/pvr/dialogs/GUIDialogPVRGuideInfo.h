@@ -19,19 +19,11 @@
  *
  */
 
+#include "epg/EpgTypes.h"
 #include "guilib/GUIDialog.h"
-#include <memory>
-
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
 
 namespace PVR
 {
-  class CPVRTimerInfoTag;
-
   class CGUIDialogPVRGuideInfo : public CGUIDialog
   {
   public:

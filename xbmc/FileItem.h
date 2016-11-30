@@ -24,13 +24,17 @@
  *
  */
 
+#include <map>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
 #include "addons/IAddon.h"
+#include "epg/EpgTypes.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
+#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
@@ -43,22 +47,6 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
-namespace PVR
-{
-  class CPVRChannel;
-  class CPVRRecording;
-  class CPVRTimerInfoTag;
-  class CPVRRadioRDSInfoTag;
-  typedef std::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-  typedef std::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
-  typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
-}
 class CPictureInfoTag;
 namespace GAME
 {

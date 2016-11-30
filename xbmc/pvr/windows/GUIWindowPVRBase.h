@@ -19,8 +19,10 @@
  *
  */
 
-#include "windows/GUIMediaWindow.h"
 #include "utils/Observer.h"
+#include "windows/GUIMediaWindow.h"
+
+#include "pvr/PVRTypes.h"
 
 #define CONTROL_BTNVIEWASICONS            2
 #define CONTROL_BTNSORTBY                 3
@@ -47,12 +49,6 @@ namespace PVR
     EPG_SELECT_ACTION_RECORD         = 3,
     EPG_SELECT_ACTION_PLAY_RECORDING = 4,
   };
-
-  class CPVRChannelGroup;
-  typedef std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupPtr;
-
-  class CPVRTimerInfoTag;
-  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
 
   class CGUIWindowPVRBase : public CGUIMediaWindow, public Observer
   {

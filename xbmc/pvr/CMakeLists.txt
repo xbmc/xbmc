@@ -15,6 +15,7 @@ set(HEADERS PVRActionListener.h
             PVRSettings.h
             PVRContextMenus.h
             PVRGUIActions.h
-            PVRItem.h)
+            PVRItem.h
+            PVRTypes.h)
 
 core_add_library(pvr)
