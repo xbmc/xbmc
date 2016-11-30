@@ -5004,7 +5004,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       if (state.dts != DVD_NOPTS_VALUE)
       {
         int dispTime = 0;
-        if (m_CurrentVideo.dispTime)
+        if (m_CurrentVideo.id >= 0 && m_CurrentVideo.dispTime)
           dispTime = m_CurrentVideo.dispTime;
         else if (m_CurrentAudio.dispTime)
           dispTime = m_CurrentAudio.dispTime;
