@@ -973,7 +973,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     return VC_BUFFER;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
   ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);

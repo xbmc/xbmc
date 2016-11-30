@@ -122,7 +122,7 @@ public:
   // IHardwareDecoder overrides
   bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) override;
   int Decode(AVCodecContext* avctx, AVFrame* frame) override;
-  bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) override;
+  bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) override;
   int Check(AVCodecContext* avctx) override;
   const std::string Name() override { return "d3d11va"; }
   unsigned GetAllowedReferences() override;
