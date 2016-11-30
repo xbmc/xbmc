@@ -333,7 +333,7 @@
 				<left>0</left>
 				<width>40</width>
 				<height>40</height>
-				<texture colordiffuse="grey">$PARAM[icon]</texture>
+				<texture colordiffuse="white">$PARAM[icon]</texture>
 			</control>
 			<control type="label">
 				<left>50</left>
@@ -371,20 +371,20 @@
 			<width>1900</width>
 			<usecontrolcoords>true</usecontrolcoords>
 			<control type="group">
+				<width>150</width>
+				<top>-5</top>
+				<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[ListItem.Studio,resource://resource.images.studios.white/,.png]" />
+				</include>
+			</control>
+			<control type="group">
 				<top>10</top>
 				<width>200</width>
 				<include content="InfoFlag">
 					<param name="visible" value="String.IsEqual(ListItem.DBtype,tvshow) + !String.IsEmpty(ListItem.Premiered)" />
 					<param name="icon" value="lists/year.png" />
 					<param name="label" value="$INFO[ListItem.Premiered]" />
-				</include>
-			</control>
-			<control type="group">
-				<width>150</width>
-				<top>-5</top>
-				<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
-				<include content="MediaFlag">
-					<param name="texture" value="$INFO[ListItem.Studio,resource://resource.images.studios.white/,.png]" />
 				</include>
 			</control>
 			<control type="group">

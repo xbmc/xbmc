@@ -130,9 +130,9 @@
 				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 				<texturenofocus />
 				<textoffsetx>40</textoffsetx>
-				<textwidth>300</textwidth>
 				<textoffsety>35</textoffsety>
 				<label>$PARAM[label]</label>
+				<onclick>$PARAM[onclick]</onclick>
 				<selectedcolor>white</selectedcolor>
 			</control>
 		</definition>

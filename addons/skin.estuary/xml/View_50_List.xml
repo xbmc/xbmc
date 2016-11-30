@@ -23,9 +23,9 @@
 					</include>
 					<control type="scrollbar" id="50600">
 						<left>20</left>
-						<top>0</top>
+						<top>list_y_offset</top>
 						<width>12</width>
-						<height>100%</height>
+						<bottom>list_y_offset</bottom>
 						<onleft>50</onleft>
 						<onright>50</onright>
 						<orientation>vertical</orientation>

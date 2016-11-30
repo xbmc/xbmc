@@ -14,9 +14,9 @@
 				<include>Visible_Left</include>
 				<control type="fixedlist" id="50">
 					<left>0</left>
-					<top>0</top>
+					<top>list_y_offset</top>
 					<right>918</right>
-					<height>100%</height>
+					<bottom>list_y_offset</bottom>
 					<onup>50</onup>
 					<ondown>50</ondown>
 					<onleft>9000</onleft>

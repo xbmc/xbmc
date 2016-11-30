@@ -74,7 +74,7 @@
 				<top>0</top>
 				<width>316</width>
 				<height>316</height>
-				<texture border="2" fallback="$PARAM[fallback_image]" background="true">$VAR[InfoWallThumbVar]</texture>
+				<texture fallback="$PARAM[fallback_image]" background="true">$VAR[InfoWallThumbVar]</texture>
 				<aspectratio>keep</aspectratio>
 				<bordersize>20</bordersize>
 			</control>
@@ -113,7 +113,7 @@
 				</control>
 			</control>
 			<control type="group">
-				<left>145</left>
+				<left>133</left>
 				<top>2</top>
 				<include>UserRatingCircle</include>
 			</control>
@@ -150,7 +150,7 @@
 				<top>10</top>
 				<width>316</width>
 				<height>218</height>
-				<texture border="2" fallback="$PARAM[fallback_image]" background="true">$VAR[InfoWallThumbVar]</texture>
+				<texture fallback="$PARAM[fallback_image]" background="true">$VAR[InfoWallThumbVar]</texture>
 				<aspectratio>scale</aspectratio>
 				<bordersize>20</bordersize>
 			</control>
@@ -285,24 +285,26 @@
 				<visible>$PARAM[focused] + !String.IsEmpty(ListItem.Art(poster))</visible>
 				<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
 			</control>
-			<control type="image">
-				<left>15</left>
-				<top>-10</top>
-				<width>290</width>
-				<height>400</height>
-				<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-				<aspectratio>scale</aspectratio>
-				<bordertexture border="20">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
+			<control type="group">
 				<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
-			</control>
-			<control type="image">
-				<left>35</left>
-				<top>290</top>
-				<width>80</width>
-				<height>80</height>
-				<texture>overlays/overlay-bg.png</texture>
-				<visible>Listitem.IsCollection | ListItem.IsResumable | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
+				<control type="image">
+					<left>15</left>
+					<top>-10</top>
+					<width>290</width>
+					<height>400</height>
+					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+					<aspectratio>scale</aspectratio>
+					<bordertexture border="20">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+				</control>
+				<control type="image">
+					<left>35</left>
+					<top>290</top>
+					<width>80</width>
+					<height>80</height>
+					<texture>overlays/overlay-bg.png</texture>
+					<visible>Listitem.IsCollection | ListItem.IsResumable | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
+				</control>
 			</control>
 			<control type="group">
 				<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
@@ -312,7 +314,8 @@
 					<top>0</top>
 					<width>250</width>
 					<height>50</height>
-					<texture>overlays/overlayfade.png</texture>
+					<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
+					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
 				</control>
 				<control type="label">
 					<left>0</left>
@@ -398,7 +401,7 @@
 				</focusedlayout>
 				<itemlayout height="300" width="300" condition="Container.Content(episodes)">
 					<control type="group">
-						<left>40</left>
+						<left>64</left>
 						<top>110</top>
 						<include content="InfoWallEpisodeLayout">
 							<param name="focused" value="false" />
@@ -409,9 +412,9 @@
 				<focusedlayout height="300" width="300" condition="Container.Content(episodes)">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
-						<animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="200,250">Focus</animation>
-						<animation effect="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="200,250">UnFocus</animation>
-						<left>40</left>
+						<animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="220,250">Focus</animation>
+						<animation effect="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="220,250">UnFocus</animation>
+						<left>64</left>
 						<top>110</top>
 						<include content="InfoWallEpisodeLayout">
 							<param name="focused" value="true" />
@@ -424,11 +427,6 @@
 						<top>150</top>
 						<left>40</left>
 						<include>InfoWallMusicLayout</include>
-						<control type="group">
-							<left>133</left>
-							<top>-4</top>
-							<include>UserRatingCircle</include>
-						</control>
 					</control>
 				</itemlayout>
 				<focusedlayout height="410" width="310" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos)">
@@ -441,11 +439,6 @@
 						<include content="InfoWallMusicLayout">
 							<param name="focused" value="true" />
 						</include>
-						<control type="group">
-							<left>133</left>
-							<top>-4</top>
-							<include>UserRatingCircle</include>
-						</control>
 					</control>
 				</focusedlayout>
 				<itemlayout height="400" width="378" condition="Container.Content(images)">
