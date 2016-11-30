@@ -61,7 +61,7 @@ public:
 
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
-  virtual int IoControl(int request, void* param);
+  virtual int IoControl(EIoControl request, void* param);
   
   std::string GetName() const;
   

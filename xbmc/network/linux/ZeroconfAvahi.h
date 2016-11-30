@@ -73,7 +73,7 @@ private:
 
   //helper struct for holding information about creating a service / AvahiEntryGroup
   //we have to hold that as it's needed to recreate the service
-  class ServiceInfo;
+  struct ServiceInfo;
   typedef std::map<std::string, std::shared_ptr<ServiceInfo> > tServiceMap;
 
   //goes through a list of todos and publishs them (takes the client a param, as it might be called from
