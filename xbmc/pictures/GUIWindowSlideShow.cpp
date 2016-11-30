@@ -266,6 +266,7 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
     m_Image[1].Close();
   }
   g_infoManager.ResetCurrentSlide();
+  m_bSlideShow = false;
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
