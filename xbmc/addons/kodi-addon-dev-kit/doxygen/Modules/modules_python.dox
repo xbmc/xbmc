@@ -160,6 +160,9 @@ web applications or frameworks for the Python programming language.
 /*!
 @page python_v17 Python API v17
 */
+/*!
+@page python_v18 Python API v18
+*/
 
 /*!
 @page python_revisions Python API Changes
@@ -171,5 +174,6 @@ web applications or frameworks for the Python programming language.
 - @subpage python_v15
 - @subpage python_v16
 - @subpage python_v17
+- @subpage python_v18
 +*/
   
