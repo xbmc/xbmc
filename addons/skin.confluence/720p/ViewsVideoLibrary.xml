@@ -1970,4 +1970,524 @@
 			</control>
 		</control>
 	</include>
+	<include name="MediaListView3_Lowlist">
+		<control type="group">
+			<visible>Control.IsVisible(520)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="list" id="520">
+				<left>340</left>
+				<top>410</top>
+				<width>580</width>
+				<height>240</height>
+				<onleft>2</onleft>
+				<onright>60</onright>
+				<onup>520</onup>
+				<ondown>520</ondown>
+				<viewtype label="$LOCALIZE[31030]">list</viewtype>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<visible>Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(Movies)</visible>
+				<itemlayout height="40" width="480">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>480</width>
+						<height>41</height>
+						<texture border="0,2,0,2">MenuItemNF.png</texture>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>0</top>
+						<width>350</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>400</left>
+						<top>0</top>
+						<width>350</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<left>405</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>!ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>405</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>flagging/lists/3D.png</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>445</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>445</left>
+						<top>14</top>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>ListItem.IsResumable</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40" width="480">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>480</width>
+						<height>41</height>
+						<texture border="0,2,0,2">MenuItemNF.png</texture>
+						<visible>!Control.HasFocus(520)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>480</width>
+						<height>41</height>
+						<texture border="0,2,0,2">MenuItemFO.png</texture>
+						<visible>Control.HasFocus(520)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<left>370</left>
+						<top>5</top>
+						<width>100</width>
+						<height>33</height>
+						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
+						<visible>Control.HasFocus(520) + !IsEmpty(ListItem.Label2)</visible>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<top>0</top>
+						<width>350</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>400</left>
+						<top>0</top>
+						<width>350</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<left>405</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>!ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>405</left>
+						<top>8</top>
+						<width>40</width>
+						<height>26</height>
+						<texture>flagging/lists/3D.png</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+						<visible>ListItem.IsStereoscopic</visible>
+					</control>
+					<control type="image">
+						<left>445</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<visible>!ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>445</left>
+						<top>14</top>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>ListItem.IsResumable</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="60">
+				<left>810</left>
+				<top>420</top>
+				<width>25</width>
+				<height>230</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>520</onleft>
+				<onright>2</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(520)</visible>
+			</control>
+			<control type="group">
+				<left>40</left>
+				<top>160</top>
+				<visible>Container.Content(TVShows)</visible>
+				<control type="image">
+					<left>10</left>
+					<top>70</top>
+					<width>284</width>
+					<height>400</height>
+					<aspectratio aligny="bottom">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true">$VAR[PosterThumb]</texture>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="image">
+					<posx>18</posx>
+					<posy>462</posy>
+					<width>268</width>
+					<height>400</height>
+					<aspectratio aligny="top">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$VAR[PosterThumb]</texture>
+				</control>
+				<control type="textbox">
+					<description>Description Value for TVShows</description>
+					<left>805</left>
+					<top>258</top>
+					<width>420</width>
+					<height>160</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[ListItem.Plot,[COLOR blue]$LOCALIZE[203]: [/COLOR]]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="image">
+					<left>805</left>
+					<top>430</top>
+					<width>424</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<description>Genre</description>
+					<left>805</left>
+					<top>436</top>
+					<width>420</width>
+					<height>25</height>
+					<label>$INFO[listitem.Genre,[COLOR=blue]$LOCALIZE[515]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>Aired</description>
+					<left>805</left>
+					<top>460</top>
+					<width>200</width>
+					<height>25</height>
+					<label>$INFO[listitem.premiered,[COLOR=blue]$LOCALIZE[31322]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+			</control>
+			<control type="group">
+				<left>40</left>
+				<top>160</top>
+				<visible>Container.Content(Episodes)</visible>
+				<control type="image">
+					<left>10</left>
+					<top>340</top>
+					<width>284</width>
+					<height>140</height>
+					<aspectratio aligny="bottom">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true">$VAR[PosterThumb]</texture>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="image">
+					<posx>18</posx>
+					<posy>462</posy>
+					<width>268</width>
+					<height>400</height>
+					<aspectratio aligny="top">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$VAR[PosterThumb]</texture>
+				</control>
+				<control type="grouplist">
+					<description>Media Codec Flagging Images</description>
+					<left>-110</left>
+					<top>510</top>
+					<width>600</width>
+					<align>center</align>
+					<itemgap>2</itemgap>
+					<orientation>horizontal</orientation>
+					<include>VideoCodecFlaggingConditions</include>
+					<include>AudioCodecFlaggingConditions</include>
+					<include>AudioChannelsFlaggingConditions</include>
+					<include>AspectCodecFlaggingConditions</include>
+					<include>VideoStereoscopicsFlaggingConditions</include>
+					<include>VideoTypeHackFlaggingConditions</include>
+				</control>
+				<control type="textbox">
+					<description>Description Value for Episodes</description>
+					<left>805</left>
+					<top>258</top>
+					<width>420</width>
+					<height>160</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[ListItem.Plot,[COLOR blue]$LOCALIZE[203]: [/COLOR]]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="image">
+					<left>805</left>
+					<top>430</top>
+					<width>424</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<description>Episodes</description>
+					<left>805</left>
+					<top>436</top>
+					<width>420</width>
+					<height>25</height>
+					<label>$INFO[ListItem.episode,[COLOR=blue]$LOCALIZE[20359]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>Aired</description>
+					<left>805</left>
+					<top>460</top>
+					<width>200</width>
+					<height>25</height>
+					<label>$INFO[ListItem.premiered, [COLOR=blue]$LOCALIZE[31322]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+			</control>
+			<control type="group">
+				<left>40</left>
+				<top>160</top>
+				<visible>Container.Content(Seasons)</visible>
+				<control type="image">
+					<left>10</left>
+					<top>70</top>
+					<width>284</width>
+					<height>400</height>
+					<aspectratio aligny="bottom">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="image">
+					<posx>18</posx>
+					<posy>462</posy>
+					<width>268</width>
+					<height>400</height>
+					<aspectratio aligny="top">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="textbox">
+					<description>Description Value for Seasons</description>
+					<left>805</left>
+					<top>258</top>
+					<width>420</width>
+					<height>160</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[Container.ShowPlot,[COLOR blue]$LOCALIZE[203]: [/COLOR]]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<visible>Container.Content(Seasons)</visible>
+				</control>
+				<control type="image">
+					<left>805</left>
+					<top>430</top>
+					<width>424</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<description>Episodes</description>
+					<left>805</left>
+					<top>436</top>
+					<width>420</width>
+					<height>25</height>
+					<label>$INFO[ListItem.episode,[COLOR=blue]$LOCALIZE[20359]: [/COLOR]]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>Watched</description>
+					<left>805</left>
+					<top>460</top>
+					<width>100</width>
+					<height>25</height>
+					<label>$INFO[ListItem.Property(WatchedEpisodes),[COLOR=blue]$LOCALIZE[16102]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>Unwatched</description>
+					<left>980</left>
+					<top>460</top>
+					<width>250</width>
+					<height>25</height>
+					<label>$INFO[ListItem.Property(UnWatchedEpisodes),[COLOR=blue]$LOCALIZE[16101]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+			</control>
+			<control type="group">
+				<left>40</left>
+				<top>160</top>
+				<visible>Container.Content(Movies)</visible>
+				<control type="image">
+					<left>10</left>
+					<top>70</top>
+					<width>284</width>
+					<height>400</height>
+					<aspectratio aligny="bottom">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true">$VAR[PosterThumb]</texture>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="image">
+					<posx>18</posx>
+					<posy>462</posy>
+					<width>268</width>
+					<height>400</height>
+					<aspectratio aligny="top">stretch</aspectratio>
+					<fadetime>IconCrossfadeTime</fadetime>
+					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$VAR[PosterThumb]</texture>
+				</control>
+				<control type="grouplist">
+					<description>Media Codec Flagging Images</description>
+					<left>-110</left>
+					<top>510</top>
+					<width>600</width>
+					<align>center</align>
+					<itemgap>2</itemgap>
+					<orientation>horizontal</orientation>
+					<include>VideoCodecFlaggingConditions</include>
+					<include>AudioCodecFlaggingConditions</include>
+					<include>AudioChannelsFlaggingConditions</include>
+					<include>AspectCodecFlaggingConditions</include>
+					<include>VideoStereoscopicsFlaggingConditions</include>
+					<include>VideoTypeHackFlaggingConditions</include>
+				</control>
+				<control type="textbox">
+					<description>Description Value for Movie</description>
+					<left>805</left>
+					<top>258</top>
+					<width>420</width>
+					<height>160</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[ListItem.Plot,[COLOR blue]$LOCALIZE[203]:[/COLOR] ]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="image">
+					<left>805</left>
+					<top>430</top>
+					<width>424</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="label">
+					<description>Genre</description>
+					<left>805</left>
+					<top>436</top>
+					<width>420</width>
+					<height>25</height>
+					<label>$INFO[ListItem.Genre,[COLOR=blue]$LOCALIZE[515]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>Year</description>
+					<left>805</left>
+					<top>460</top>
+					<width>100</width>
+					<height>25</height>
+					<label>$INFO[ListItem.Year,[COLOR=blue]$LOCALIZE[345]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>Duration</description>
+					<left>980</left>
+					<top>460</top>
+					<width>250</width>
+					<height>25</height>
+					<label>$INFO[ListItem.Duration,[COLOR=blue]$LOCALIZE[180]:[/COLOR] , $LOCALIZE[12391] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+				</control>
+			</control>
+		</control>
+	</include>
 </includes>
