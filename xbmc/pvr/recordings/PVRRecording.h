@@ -40,6 +40,7 @@
 #include <vector>
 
 #include "XBDateTime.h"
+#include "addons/binary/interfaces/PVRClientBase.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
 
@@ -252,6 +253,6 @@ namespace PVR
     bool         m_bRadio;        /*!< radio or tv recording */
 
     void UpdatePath(void);
-    void DisplayError(PVR_ERROR err) const;
+    void DisplayError(PVRError err) const;
   };
 }

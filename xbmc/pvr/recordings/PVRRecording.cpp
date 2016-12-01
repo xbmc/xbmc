@@ -232,8 +232,8 @@ int CPVRRecording::GetDuration() const
 
 bool CPVRRecording::Delete(void)
 {
-  PVR_ERROR error = g_PVRClients->DeleteRecording(*this);
-  if (error != PVR_ERROR_NO_ERROR)
+  PVRError error = g_PVRClients->DeleteRecording(*this);
+  if (error != PVRError_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -258,8 +258,8 @@ void CPVRRecording::OnDelete(void)
 
 bool CPVRRecording::Undelete(void)
 {
-  PVR_ERROR error = g_PVRClients->UndeleteRecording(*this);
-  if (error != PVR_ERROR_NO_ERROR)
+  PVRError error = g_PVRClients->UndeleteRecording(*this);
+  if (error != PVRError_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -271,8 +271,8 @@ bool CPVRRecording::Undelete(void)
 bool CPVRRecording::Rename(const std::string &strNewName)
 {
   m_strTitle = StringUtils::Format("%s", strNewName.c_str());
-  PVR_ERROR error = g_PVRClients->RenameRecording(*this);
-  if (error != PVR_ERROR_NO_ERROR)
+  PVRError error = g_PVRClients->RenameRecording(*this);
+  if (error != PVRError_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -283,7 +283,7 @@ bool CPVRRecording::Rename(const std::string &strNewName)
 
 bool CPVRRecording::SetPlayCount(int count)
 {
-  PVR_ERROR error;
+  PVRError error;
   m_playCount = count;
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
       !g_PVRClients->SetRecordingPlayCount(*this, count, &error))
@@ -322,7 +322,7 @@ bool CPVRRecording::IncrementPlayCount()
 
 bool CPVRRecording::SetLastPlayedPosition(int lastplayedposition)
 {
-  PVR_ERROR error;
+  PVRError error;
 
   CBookmark bookmark;
   bookmark.timeInSeconds = lastplayedposition;
@@ -345,7 +345,7 @@ int CPVRRecording::GetLastPlayedPosition() const
   {
     rc = g_PVRClients->GetRecordingLastPlayedPosition(*this);
     if (rc < 0)
-      DisplayError(PVR_ERROR_SERVER_ERROR);
+      DisplayError(PVRError_SERVER_ERROR);
   }
   return rc;
 }
@@ -359,11 +359,11 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
   return std::vector<PVR_EDL_ENTRY>();
 }
 
-void CPVRRecording::DisplayError(PVR_ERROR err) const
+void CPVRRecording::DisplayError(PVRError err) const
 {
-  if (err == PVR_ERROR_SERVER_ERROR)
+  if (err == PVRError_SERVER_ERROR)
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
-  else if (err == PVR_ERROR_REJECTED)
+  else if (err == PVRError_REJECTED)
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19068}); /* print info dialog "Couldn't delete recording!" */
   else
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19147}); /* print info dialog "Unknown error!" */

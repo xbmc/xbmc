@@ -39,7 +39,7 @@
 
 #include <memory>
 
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/binary/interfaces/PVRClientBase.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
@@ -88,7 +88,7 @@ namespace PVR
 
     void UpdateSummary(void);
 
-    void DisplayError(PVR_ERROR err) const;
+    void DisplayError(PVRError err) const;
 
     std::string GetStatus() const;
     std::string GetTypeAsString() const;

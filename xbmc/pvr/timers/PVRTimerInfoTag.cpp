@@ -522,8 +522,8 @@ std::string CPVRTimerInfoTag::GetWeekdaysString() const
 
 bool CPVRTimerInfoTag::AddToClient(void) const
 {
-  PVR_ERROR error = g_PVRClients->AddTimer(*this);
-  if (error != PVR_ERROR_NO_ERROR)
+  PVRError error = g_PVRClients->AddTimer(*this);
+  if (error != PVRError_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -534,8 +534,8 @@ bool CPVRTimerInfoTag::AddToClient(void) const
 
 bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 {
-  PVR_ERROR error = g_PVRClients->DeleteTimer(*this, bForce);
-  if (error == PVR_ERROR_RECORDING_RUNNING)
+  PVRError error = g_PVRClients->DeleteTimer(*this, bForce);
+  if (error == PVRError_RECORDING_RUNNING)
   {
     // recording running. ask the user if it should be deleted anyway
     if (HELPERS::ShowYesNoDialogText(CVariant{122}, CVariant{19122}) != DialogResponse::YES)
@@ -544,7 +544,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
     error = g_PVRClients->DeleteTimer(*this, true);
   }
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -561,10 +561,10 @@ bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
     m_strTitle = strNewName;
   }
 
-  PVR_ERROR error = g_PVRClients->RenameTimer(*this, strNewName);
-  if (error != PVR_ERROR_NO_ERROR)
+  PVRError error = g_PVRClients->RenameTimer(*this, strNewName);
+  if (error != PVRError_NO_ERROR)
   {
-    if (error == PVR_ERROR_NOT_IMPLEMENTED)
+    if (error == PVRError_NOT_IMPLEMENTED)
       return UpdateOnClient();
 
     DisplayError(error);
@@ -658,8 +658,8 @@ void CPVRTimerInfoTag::ResetChildState()
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
-  PVR_ERROR error = g_PVRClients->UpdateTimer(*this);
-  if (error != PVR_ERROR_NO_ERROR)
+  PVRError error = g_PVRClients->UpdateTimer(*this);
+  if (error != PVRError_NO_ERROR)
   {
     DisplayError(error);
     return false;
@@ -668,13 +668,13 @@ bool CPVRTimerInfoTag::UpdateOnClient()
   return true;
 }
 
-void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
+void CPVRTimerInfoTag::DisplayError(PVRError err) const
 {
-  if (err == PVR_ERROR_SERVER_ERROR)
+  if (err == PVRError_SERVER_ERROR)
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
-  else if (err == PVR_ERROR_REJECTED)
+  else if (err == PVRError_REJECTED)
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); /* print info dialog "Couldn't save timer!" */
-  else if (err == PVR_ERROR_ALREADY_PRESENT)
+  else if (err == PVRError_ALREADY_PRESENT)
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19067}); /* print info dialog */
   else
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19110}); /* print info dialog "Unknown error!" */

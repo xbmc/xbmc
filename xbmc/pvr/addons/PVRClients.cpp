@@ -293,7 +293,7 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
 
     SBackend properties;
 
-    if (client->GetDriveSpace(&properties.diskTotal, &properties.diskUsed) == PVR_ERROR_NO_ERROR)
+    if (client->GetDriveSpace(&properties.diskTotal, &properties.diskUsed) == PVRError_NO_ERROR)
     {
       properties.diskTotal *= 1024;  
       properties.diskUsed *= 1024;
@@ -460,9 +460,9 @@ bool CPVRClients::GetTimers(CPVRTimers *timers, std::vector<int> &failedClients)
   /* get the timer list from each client */
   for (const auto &client : clients)
   {
-    PVR_ERROR currentError = client.second->GetTimers(timers);
-    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
-        currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = client.second->GetTimers(timers);
+    if (currentError != PVRError_NOT_IMPLEMENTED &&
+        currentError != PVRError_NO_ERROR)
     {
       CLog::Log(LOGERROR, "PVR - %s - cannot get timers from client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(currentError));
       bSuccess = false;
@@ -473,37 +473,37 @@ bool CPVRClients::GetTimers(CPVRTimers *timers, std::vector<int> &failedClients)
   return bSuccess;
 }
 
-PVR_ERROR CPVRClients::AddTimer(const CPVRTimerInfoTag &timer)
+PVRError CPVRClients::AddTimer(const CPVRTimerInfoTag &timer)
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
 
   PVR_CLIENT client;
   if (GetCreatedClient(timer.m_iClientId, client))
     error = client->AddTimer(timer);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot add timer to client '%d': %s",__FUNCTION__, timer.m_iClientId, CPVRClient::ToString(error));
 
   return error;
 }
 
-PVR_ERROR CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer)
+PVRError CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer)
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
 
   PVR_CLIENT client;
   if (GetCreatedClient(timer.m_iClientId, client))
     error = client->UpdateTimer(timer);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot update timer on client '%d': %s",__FUNCTION__, timer.m_iClientId, CPVRClient::ToString(error));
 
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
+PVRError CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
   PVR_CLIENT client;
 
   if (GetCreatedClient(timer.m_iClientId, client))
@@ -512,23 +512,23 @@ PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
   return error;
 }
 
-PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName)
+PVRError CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName)
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
 
   PVR_CLIENT client;
   if (GetCreatedClient(timer.m_iClientId, client))
     error = client->RenameTimer(timer, strNewName);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot rename timer on client '%d': %s",__FUNCTION__, timer.m_iClientId, CPVRClient::ToString(error));
 
   return error;
 }
 
-PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
+PVRError CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVRError error(PVRError_NO_ERROR);
 
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
@@ -536,9 +536,9 @@ PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
   for (const auto &clientEntry : clients)
   {
     CPVRTimerTypes types;
-    PVR_ERROR currentError = clientEntry.second->GetTimerTypes(types);
-    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
-        currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = clientEntry.second->GetTimerTypes(types);
+    if (currentError != PVRError_NOT_IMPLEMENTED &&
+        currentError != PVRError_NO_ERROR)
     {
       CLog::Log(LOGERROR, "PVR - %s - cannot get timer types from client '%d': %s",__FUNCTION__, clientEntry.first, CPVRClient::ToString(currentError));
       error = currentError;
@@ -553,31 +553,31 @@ PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results) const
   return error;
 }
 
-PVR_ERROR CPVRClients::GetTimerTypes(CPVRTimerTypes& results, int iClientId) const
+PVRError CPVRClients::GetTimerTypes(CPVRTimerTypes& results, int iClientId) const
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
 
   PVR_CLIENT client;
   if (GetCreatedClient(iClientId, client))
     error = client->GetTimerTypes(results);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot get timer types from client '%d': %s",__FUNCTION__, iClientId, CPVRClient::ToString(error));
 
   return error;
 }
 
-PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings, bool deleted)
+PVRError CPVRClients::GetRecordings(CPVRRecordings *recordings, bool deleted)
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVRError error(PVRError_NO_ERROR);
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
   for (const auto &client : clients)
   {
-    PVR_ERROR currentError = client.second->GetRecordings(recordings, deleted);
-    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
-        currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = client.second->GetRecordings(recordings, deleted);
+    if (currentError != PVRError_NOT_IMPLEMENTED &&
+        currentError != PVRError_NO_ERROR)
     {
       CLog::Log(LOGERROR, "PVR - %s - cannot get recordings from client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(currentError));
       error = currentError;
@@ -587,37 +587,37 @@ PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings, bool deleted)
   return error;
 }
 
-PVR_ERROR CPVRClients::RenameRecording(const CPVRRecording &recording)
+PVRError CPVRClients::RenameRecording(const CPVRRecording &recording)
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
 
   PVR_CLIENT client;
   if (GetCreatedClient(recording.m_iClientId, client))
     error = client->RenameRecording(recording);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot rename recording on client '%d': %s",__FUNCTION__, recording.m_iClientId, CPVRClient::ToString(error));
 
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteRecording(const CPVRRecording &recording)
+PVRError CPVRClients::DeleteRecording(const CPVRRecording &recording)
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
 
   PVR_CLIENT client;
   if (GetCreatedClient(recording.m_iClientId, client))
     error = client->DeleteRecording(recording);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot delete recording from client '%d': %s",__FUNCTION__, recording.m_iClientId, CPVRClient::ToString(error));
 
   return error;
 }
 
-PVR_ERROR CPVRClients::UndeleteRecording(const CPVRRecording &recording)
+PVRError CPVRClients::UndeleteRecording(const CPVRRecording &recording)
 {
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
 
   if (!recording.IsDeleted())
     return error;
@@ -626,15 +626,15 @@ PVR_ERROR CPVRClients::UndeleteRecording(const CPVRRecording &recording)
   if (GetCreatedClient(recording.m_iClientId, client))
     error = client->UndeleteRecording(recording);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot undelete recording from client '%d': %s",__FUNCTION__, recording.m_iClientId, CPVRClient::ToString(error));
 
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
+PVRError CPVRClients::DeleteAllRecordingsFromTrash()
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVRError error(PVRError_NO_ERROR);
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
@@ -667,8 +667,8 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
   {
     for (const auto &client : suppClients)
     {
-      PVR_ERROR currentError = client->DeleteAllRecordingsFromTrash();
-      if (currentError != PVR_ERROR_NO_ERROR)
+      PVRError currentError = client->DeleteAllRecordingsFromTrash();
+      if (currentError != PVRError_NO_ERROR)
       {
         CLog::Log(LOGERROR, "PVR - %s - cannot delete all recordings from client '%d': %s",__FUNCTION__, client->GetID(), CPVRClient::ToString(currentError));
         error = currentError;
@@ -677,8 +677,8 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
   }
   else if (selection >= 1 && selection <= (int)suppClients.size())
   {
-    PVR_ERROR currentError = suppClients[selection-1]->DeleteAllRecordingsFromTrash();
-    if (currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = suppClients[selection-1]->DeleteAllRecordingsFromTrash();
+    if (currentError != PVRError_NO_ERROR)
     {
       CLog::Log(LOGERROR, "PVR - %s - cannot delete all recordings from client '%d': %s",__FUNCTION__, suppClients[selection-1]->GetID(), CPVRClient::ToString(currentError));
       error = currentError;
@@ -688,16 +688,16 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
   return error;
 }
 
-bool CPVRClients::SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition, PVR_ERROR *error)
+bool CPVRClients::SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition, PVRError *error)
 {
-  *error = PVR_ERROR_UNKNOWN;
+  *error = PVRError_UNKNOWN;
   PVR_CLIENT client;
   if (GetCreatedClient(recording.m_iClientId, client) && client->SupportsRecordings())
     *error = client->SetRecordingLastPlayedPosition(recording, lastplayedposition);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings",__FUNCTION__, recording.m_iClientId);
 
-  return *error == PVR_ERROR_NO_ERROR;
+  return *error == PVRError_NO_ERROR;
 }
 
 int CPVRClients::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
@@ -713,16 +713,16 @@ int CPVRClients::GetRecordingLastPlayedPosition(const CPVRRecording &recording)
   return rc;
 }
 
-bool CPVRClients::SetRecordingPlayCount(const CPVRRecording &recording, int count, PVR_ERROR *error)
+bool CPVRClients::SetRecordingPlayCount(const CPVRRecording &recording, int count, PVRError *error)
 {
-  *error = PVR_ERROR_UNKNOWN;
+  *error = PVRError_UNKNOWN;
   PVR_CLIENT client;
   if (GetCreatedClient(recording.m_iClientId, client) && client->SupportsRecordingPlayCount())
     *error = client->SetRecordingPlayCount(recording, count);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support setting recording's play count",__FUNCTION__, recording.m_iClientId);
 
-  return *error == PVR_ERROR_NO_ERROR;
+  return *error == PVRError_NO_ERROR;
 }
 
 std::vector<PVR_EDL_ENTRY> CPVRClients::GetRecordingEdl(const CPVRRecording &recording)
@@ -772,31 +772,31 @@ bool CPVRClients::CanSeekStream(void) const
   return false;
 }
 
-PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start, time_t end)
+PVRError CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start, time_t end)
 {
   assert(channel.get());
 
-  PVR_ERROR error(PVR_ERROR_UNKNOWN);
+  PVRError error(PVRError_UNKNOWN);
   PVR_CLIENT client;
   if (GetCreatedClient(channel->ClientID(), client))
     error = client->GetEPGForChannel(channel, epg, start, end);
 
-  if (error != PVR_ERROR_NO_ERROR)
+  if (error != PVRError_NO_ERROR)
     CLog::Log(LOGERROR, "PVR - %s - cannot get EPG for channel '%s' from client '%d': %s",__FUNCTION__, channel->ChannelName().c_str(), channel->ClientID(), CPVRClient::ToString(error));
   return error;
 }
 
-PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
+PVRError CPVRClients::SetEPGTimeFrame(int iDays)
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVRError error(PVRError_NO_ERROR);
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
   for (const auto &client : clients)
   {
-    PVR_ERROR currentError = client.second->SetEPGTimeFrame(iDays);
-    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
-        currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = client.second->SetEPGTimeFrame(iDays);
+    if (currentError != PVRError_NOT_IMPLEMENTED &&
+        currentError != PVRError_NO_ERROR)
     {
       error = currentError;
       CLog::Log(LOGERROR, "PVR - %s - cannot set epg time frame for client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(error));
@@ -806,18 +806,18 @@ PVR_ERROR CPVRClients::SetEPGTimeFrame(int iDays)
   return error;
 }
 
-PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
+PVRError CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVRError error(PVRError_NO_ERROR);
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
   /* get the channel list from each client */
   for (const auto &client : clients)
   {
-    PVR_ERROR currentError = client.second->GetChannels(*group, group->IsRadio());
-    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
-        currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = client.second->GetChannels(*group, group->IsRadio());
+    if (currentError != PVRError_NOT_IMPLEMENTED &&
+        currentError != PVRError_NO_ERROR)
     {
       error = currentError;
       CLog::Log(LOGERROR, "PVR - %s - cannot get channels from client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(error));
@@ -827,17 +827,17 @@ PVR_ERROR CPVRClients::GetChannels(CPVRChannelGroupInternal *group)
   return error;
 }
 
-PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups *groups)
+PVRError CPVRClients::GetChannelGroups(CPVRChannelGroups *groups)
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVRError error(PVRError_NO_ERROR);
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
   for (const auto &client : clients)
   {
-    PVR_ERROR currentError = client.second->GetChannelGroups(groups);
-    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
-        currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = client.second->GetChannelGroups(groups);
+    if (currentError != PVRError_NOT_IMPLEMENTED &&
+        currentError != PVRError_NO_ERROR)
     {
       error = currentError;
       CLog::Log(LOGERROR, "PVR - %s - cannot get groups from client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(error));
@@ -847,18 +847,18 @@ PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups *groups)
   return error;
 }
 
-PVR_ERROR CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group)
+PVRError CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group)
 {
-  PVR_ERROR error(PVR_ERROR_NO_ERROR);
+  PVRError error(PVRError_NO_ERROR);
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
   /* get the member list from each client */
   for (const auto &client : clients)
   {
-    PVR_ERROR currentError = client.second->GetChannelGroupMembers(group);
-    if (currentError != PVR_ERROR_NOT_IMPLEMENTED &&
-        currentError != PVR_ERROR_NO_ERROR)
+    PVRError currentError = client.second->GetChannelGroupMembers(group);
+    if (currentError != PVRError_NOT_IMPLEMENTED &&
+        currentError != PVRError_NO_ERROR)
     {
       error = currentError;
       CLog::Log(LOGERROR, "PVR - %s - cannot get group members from client '%d': %s",__FUNCTION__, client.first, CPVRClient::ToString(error));
@@ -1007,7 +1007,7 @@ void CPVRClients::StartChannelScan(void)
   long perfCnt = XbmcThreads::SystemClockMillis();
 
   /* do the scan */
-  if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
+  if (scanClient->StartChannelScan() != PVRError_NO_ERROR)
     /* an error occured */
     CGUIDialogOK::ShowAndGetInput(CVariant{19111}, CVariant{19193});
 
@@ -1035,7 +1035,7 @@ std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelSettings(bool bR
 
 bool CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
 {
-  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+  PVRError error = PVRError_UNKNOWN;
 
   PVR_CLIENT client;
   if (GetCreatedClient(channel->ClientID(), client))
@@ -1043,18 +1043,18 @@ bool CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
-  if (error == PVR_ERROR_NOT_IMPLEMENTED)
+  if (error == PVRError_NOT_IMPLEMENTED)
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
     return true;
   }
 
-  return error == PVR_ERROR_NO_ERROR;
+  return error == PVRError_NO_ERROR;
 }
 
 bool CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
 {
-  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+  PVRError error = PVRError_UNKNOWN;
 
   PVR_CLIENT client;
   if (GetCreatedClient(channel->ClientID(), client))
@@ -1062,18 +1062,18 @@ bool CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
-  if (error == PVR_ERROR_NOT_IMPLEMENTED)
+  if (error == PVRError_NOT_IMPLEMENTED)
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
     return true;
   }
 
-  return error == PVR_ERROR_NO_ERROR;
+  return error == PVRError_NO_ERROR;
 }
 
 bool CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
 {
-  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+  PVRError error = PVRError_UNKNOWN;
 
   PVR_CLIENT client;
   if (GetCreatedClient(channel->ClientID(), client))
@@ -1081,18 +1081,18 @@ bool CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
-  if (error == PVR_ERROR_NOT_IMPLEMENTED)
+  if (error == PVRError_NOT_IMPLEMENTED)
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
     return true;
   }
 
-  return error == PVR_ERROR_NO_ERROR;
+  return error == PVRError_NO_ERROR;
 }
 
 bool CPVRClients::RenameChannel(const CPVRChannelPtr &channel)
 {
-  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+  PVRError error = PVRError_UNKNOWN;
 
   PVR_CLIENT client;
   if (GetCreatedClient(channel->ClientID(), client))
@@ -1100,7 +1100,7 @@ bool CPVRClients::RenameChannel(const CPVRChannelPtr &channel)
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
-  return (error == PVR_ERROR_NO_ERROR || error == PVR_ERROR_NOT_IMPLEMENTED);
+  return (error == PVRError_NO_ERROR || error == PVRError_NOT_IMPLEMENTED);
 }
 
 bool CPVRClients::IsKnownClient(const AddonPtr client) const

@@ -254,7 +254,7 @@ bool CPVRRecordings::RenameRecording(CFileItem &item, std::string &strNewName)
 
 bool CPVRRecordings::DeleteAllRecordingsFromTrash()
 {
-  return g_PVRClients->DeleteAllRecordingsFromTrash() == PVR_ERROR_NO_ERROR;
+  return g_PVRClients->DeleteAllRecordingsFromTrash() == PVRError_NO_ERROR;
 }
 
 bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)

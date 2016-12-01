@@ -599,7 +599,7 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroup::LoadFromClients(void)
 {
   /* get the channels from the backends */
-  return g_PVRClients->GetChannelGroupMembers(this) == PVR_ERROR_NO_ERROR;
+  return g_PVRClients->GetChannelGroupMembers(this) == PVRError_NO_ERROR;
 }
 
 bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)

@@ -1,4 +1,5 @@
 SRCS=AddonInterfaces.cpp \
+     PVRClientBase.cpp \
 
 LIB=addon-interfaces.a
 

@@ -244,7 +244,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroupInternal::LoadFromClients(void)
 {
   /* get the channels from the backends */
-  return g_PVRClients->GetChannels(this) == PVR_ERROR_NO_ERROR;
+  return g_PVRClients->GetChannels(this) == PVRError_NO_ERROR;
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannelPtr &channel) const
