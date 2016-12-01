@@ -1377,7 +1377,8 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     VIDEODATABASEDIRECTORY::NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
     if (items.GetContent() == "movies" && params.GetSetId() <= 0 &&
         nodeType == NODE_TYPE_TITLE_MOVIES &&
-       (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
+       (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) && !StringUtils::StartsWithNoCase(m_strFilterPath, "videodb://movies/tags/") || (StringUtils::EqualsNoCase(group, "sets") && mixed)) ||
+	   (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETSINTAGS) && StringUtils::StartsWithNoCase(m_strFilterPath, "videodb://movies/tags/") || (StringUtils::EqualsNoCase(group, "tags") && mixed)))
     {
       CFileItemList groupedItems;
       GroupAttribute groupAttributes = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS) ? GroupAttributeNone : GroupAttributeIgnoreSingleItems;
