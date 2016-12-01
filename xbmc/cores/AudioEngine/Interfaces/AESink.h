@@ -21,7 +21,6 @@
 
 #include <string>
 #include <stdint.h>
-#include "cores/AudioEngine/Interfaces/AE.h" // for typedef's used in derived classes
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 

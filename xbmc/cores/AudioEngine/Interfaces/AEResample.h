@@ -19,7 +19,8 @@
  *
  */
 
-#include "cores/AudioEngine/Interfaces/AE.h"
+
+#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 extern "C" {
 #include "libavutil/samplefmt.h"

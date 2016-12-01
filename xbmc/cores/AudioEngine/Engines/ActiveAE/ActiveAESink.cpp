@@ -36,6 +36,7 @@
 #include "linux/XMemUtils.h"
 #endif
 
+using namespace Actor;
 using namespace ActiveAE;
 
 CActiveAESink::CActiveAESink(CEvent *inMsgEvent) :

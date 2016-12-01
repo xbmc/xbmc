@@ -37,7 +37,6 @@ set(HEADERS AEResampleFactory.h
             Engines/ActiveAE/ActiveAESound.h
             Engines/ActiveAE/ActiveAEStream.h
             Engines/ActiveAE/ActiveAESettings.h
-            Interfaces/AE.h
             Interfaces/AEEncoder.h
             Interfaces/AEResample.h
             Interfaces/AESink.h
