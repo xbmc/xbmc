@@ -36,7 +36,6 @@ public:
   virtual ~CScreenSaver() {}
   virtual bool IsInUse() const;
 
-  // Things that MUST be supplied by the child classes
   bool CreateScreenSaver();
   void Start();
   void Render();
