@@ -227,7 +227,7 @@ public:
   void SetVisibleCondition(const std::string &expression, const std::string &allowHiddenFocus = "");
   bool HasVisibleCondition() const { return m_visibleCondition != NULL; };
   void SetEnableCondition(const std::string &expression);
-  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
+  virtual void UpdateVisibility(const CGUIListItem *item);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
   virtual void SetInvalid() { m_bInvalidated = true; };

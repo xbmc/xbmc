@@ -229,7 +229,8 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pImage; }
   virtual bool OnClick() { return false; }
-  virtual void Update() {}
+  using CGUIControlBaseSetting::Update;
+  void Update() {}
   virtual void Clear() { m_pImage = NULL; }
 private:
   CGUIImage *m_pImage;
@@ -243,7 +244,8 @@ public:
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pLabel; }
   virtual bool OnClick() { return false; }
-  virtual void Update() {}
+  using CGUIControlBaseSetting::Update;
+  void Update() {}
   virtual void Clear() { m_pLabel = NULL; }
 private:
   CGUILabelControl *m_pLabel;

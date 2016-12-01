@@ -74,7 +74,7 @@ public:
   virtual ~CDVDSubtitleParserText() = default;
 
 protected:
-
+  using CDVDSubtitleParserCollection::Open;
   bool Open()
   {
     if(m_pStream)
