@@ -38,7 +38,7 @@
 	<include name="CommonScrollbars">
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="System.HasModalDialog">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="System.HasActiveModalDialog">Conditional</animation>
 			<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
 			<control type="scrollbar" id="531">
 				<right>0</right>
@@ -693,7 +693,7 @@
 		<param name="left_posx">445</param>
 		<param name="right_posx">1843</param>
 		<param name="posy">936</param>
-		<param name="visible">!System.HasModalDialog</param>
+		<param name="visible">!System.HasActiveModalDialog</param>
 		<definition>
 			<control type="image">
 				<left>$PARAM[left_posx]</left>
@@ -1013,7 +1013,7 @@
 					<width>100%</width>
 					<height>80</height>
 					<align>center</align>
-					<visible>!System.HasModalDialog</visible>
+					<visible>!System.HasActiveModalDialog</visible>
 					<visible>Container.Scrolling</visible>
 					<visible>!Container.Content(seasons)</visible>
 					<visible>String.IsEqual(Container.SortMethod,$LOCALIZE[551]) | String.IsEqual(Container.SortMethod,$LOCALIZE[561]) | String.IsEqual(Container.SortMethod,$LOCALIZE[558]) | String.IsEqual(Container.SortMethod,$LOCALIZE[557]) | String.IsEqual(Container.SortMethod,$LOCALIZE[556]) | String.IsEqual(Container.SortMethod,$LOCALIZE[563])</visible>
@@ -1113,7 +1113,7 @@
 				</control>
 				<control type="group">
 					<visible>$PARAM[info_visible]</visible>
-					<visible>!System.HasModalDialog</visible>
+					<visible>!System.HasActiveModalDialog</visible>
 					<visible>!Skin.HasSetting(touchmode)</visible>
 					<animation effect="fade" time="400">VisibleChange</animation>
 					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>

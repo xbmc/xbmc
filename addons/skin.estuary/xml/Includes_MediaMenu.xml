@@ -207,7 +207,7 @@
 						<onup>8</onup>
 						<ondown>6056</ondown>
 						<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
-						<visible>!System.HasModalDialog</visible>
+						<visible>!System.HasActiveModalDialog</visible>
 						<include content="BottomMainMenuToggleItem">
 							<param name="control_id" value="14101" />
 							<param name="onclick" value="PlayerControl(Play)" />
@@ -257,7 +257,7 @@
 			<height>100%</height>
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
-			<visible>$EXP[sidebar_focused] + !System.HasModalDialog</visible>
+			<visible>$EXP[sidebar_focused] + !System.HasActiveModalDialog</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 		</control>
 		<control type="image">
@@ -287,7 +287,7 @@
 			<onleft>14100</onleft>
 			<width>450</width>
 			<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
-			<visible>!System.HasModalDialog</visible>
+			<visible>!System.HasActiveModalDialog</visible>
 			<include content="BottomMainMenuToggleItem">
 				<param name="control_id" value="14101" />
 				<param name="onclick" value="PlayerControl(Play)" />
