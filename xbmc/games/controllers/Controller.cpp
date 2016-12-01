@@ -20,10 +20,12 @@
 
 #include "Controller.h"
 #include "ControllerDefinitions.h"
+#include "addons/BinaryAddonCache.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "ServiceBroker.h"
 
 using namespace GAME;
 
@@ -40,17 +42,39 @@ CController::CController(ADDON::AddonProps addonprops) :
 {
 }
 
+ADDON::AddonPtr CController::GetRunningInstance() const
+{
+  using namespace ADDON;
+
+  CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
+  return addonCache.GetAddonInstance(ID(), Type());
+}
+
+void CController::OnPostInstall(bool update, bool modal)
+{
+  if (update)
+    m_bLoaded = false;
+}
+
 std::string CController::Label(void)
 {
-  if (m_layout.Label() > 0)
-    return g_localizeStrings.GetAddonString(ID(), m_layout.Label());
+  if (m_bLoaded)
+  {
+    if (m_layout.Label() > 0)
+      return g_localizeStrings.GetAddonString(ID(), m_layout.Label());
+  }
+
   return "";
 }
 
 std::string CController::ImagePath(void) const
 {
-  if (!m_layout.Image().empty())
-    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout.Image());
+  if (m_bLoaded)
+  {
+    if (!m_layout.Image().empty())
+      return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout.Image());
+  }
+
   return "";
 }
 
@@ -81,4 +105,12 @@ bool CController::LoadLayout(void)
   }
 
   return m_bLoaded;
+}
+
+const CControllerLayout& CController::Layout(void)
+{
+  if (!m_bLoaded)
+    LoadLayout();
+
+  return m_layout;
 }

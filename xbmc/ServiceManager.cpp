@@ -48,7 +48,9 @@ bool CServiceManager::Init1()
 bool CServiceManager::Init2()
 {
   m_Platform->Init();
-  
+
+  m_binaryAddonCache.reset(new ADDON::CBinaryAddonCache());
+
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -60,7 +62,6 @@ bool CServiceManager::Init2()
   m_PVRManager.reset(new PVR::CPVRManager());
   m_dataCacheCore.reset(new CDataCacheCore());
 
-  m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
 
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
