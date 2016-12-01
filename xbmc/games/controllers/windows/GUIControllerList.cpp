@@ -208,7 +208,7 @@ std::set<std::string> CGUIControllerList::GetNewControllerIDs(ADDON::VECADDONS& 
 {
   std::set<std::string> controllerIds;
 
-  CAddonMgr::GetInstance().GetAddons(addonCache, ADDON_GAME_CONTROLLER);
+  CAddonMgr::GetInstance().GetInstalledAddons(addonCache, ADDON_GAME_CONTROLLER);
 
   std::transform(addonCache.begin(), addonCache.end(), std::inserter(controllerIds, controllerIds.end()),
     [](const AddonPtr& addon)

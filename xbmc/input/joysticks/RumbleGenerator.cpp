@@ -123,7 +123,7 @@ std::vector<std::string> CRumbleGenerator::GetMotors(const std::string& controll
   std::vector<std::string> motors;
 
   AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER))
+  if (CAddonMgr::GetInstance().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER, false))
   {
     ControllerPtr controller = std::static_pointer_cast<CController>(addon);
     if (controller->LoadLayout())

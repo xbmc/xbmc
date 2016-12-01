@@ -50,7 +50,6 @@ CAddonsDirectory::~CAddonsDirectory(void) {}
 
 const auto CATEGORY_INFO_PROVIDERS = "category.infoproviders";
 const auto CATEGORY_LOOK_AND_FEEL = "category.lookandfeel";
-const auto CATEGORY_GAME_ADDONS = "category.gameaddons";
 
 const std::set<TYPE> dependencyTypes = {
     ADDON_SCRAPER_LIBRARY,
@@ -75,10 +74,6 @@ const std::set<TYPE> lookAndFeelTypes = {
   ADDON_VIZ,
 };
 
-const std::set<TYPE> gameTypes = {
-  ADDON_GAME_CONTROLLER,
-};
-
 static bool IsInfoProviderType(TYPE type)
 {
   return infoProviderTypes.find(type) != infoProviderTypes.end();
@@ -97,16 +92,6 @@ static bool IsLookAndFeelType(TYPE type)
 static bool IsLookAndFeelTypeAddon(const AddonPtr& addon)
 {
   return IsLookAndFeelType(addon->Type());
-}
-
-static bool IsGameType(TYPE type)
-{
-  return gameTypes.find(type) != gameTypes.end();
-}
-
-static bool IsGameAddon(const AddonPtr& addon)
-{
-  return IsGameType(addon->Type());
 }
 
 static bool IsDependecyType(TYPE type)
@@ -185,16 +170,6 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
       item->SetArt("thumb", thumb);
     items.Add(item);
   }
-  if (std::any_of(addons.begin(), addons.end(), IsGameAddon))
-  {
-    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(35049))); // Game add-ons
-    item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_GAME_ADDONS));
-    item->m_bIsFolder = true;
-    const std::string thumb = "DefaultGameAddons.png";
-    if (g_TextureManager.HasTexture(thumb))
-      item->SetArt("thumb", thumb);
-    items.Add(item);
-  }
 
   std::set<TYPE> uncategorized;
   for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
@@ -222,12 +197,6 @@ static void GenerateCategoryListing(const CURL& path, VECADDONS& addons,
     items.SetProperty("addoncategory", g_localizeStrings.Get(24997));
     items.SetLabel(g_localizeStrings.Get(24997));
     GenerateTypeListing(path, lookAndFeelTypes, addons, items);
-  }
-  else if (category == CATEGORY_GAME_ADDONS)
-  {
-    items.SetProperty("addoncategory", g_localizeStrings.Get(35049)); // Game add-ons
-    items.SetLabel(g_localizeStrings.Get(35049)); // Game add-ons
-    GenerateTypeListing(path, gameTypes, addons, items);
   }
   else
   { // fallback to addon type
