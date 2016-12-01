@@ -77,7 +77,7 @@ public:
   }
 
 protected:
-
+  using CDVDSubtitleParserCollection::Open;
   bool Open()
   {
     if(m_pStream)

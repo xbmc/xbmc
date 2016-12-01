@@ -66,7 +66,7 @@ namespace ADDON
   protected:
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
-    virtual bool LoadSettings();
+    bool LoadSettings();
     static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
@@ -75,6 +75,7 @@ namespace ADDON
     std::string m_parentLib;
 
   private:
+    using CAddon::LoadSettings;
     TheDll* m_pDll;
     bool m_initialized;
     bool LoadDll();
@@ -424,7 +425,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
     CAddon::SettingsFromXML(m_addonXmlDoc, true);
   }
   else
-    return CAddon::LoadSettings();
+    return CAddon::LoadSettings(true);
 
   m_settingsLoaded = true;
   CAddon::LoadUserSettings();
