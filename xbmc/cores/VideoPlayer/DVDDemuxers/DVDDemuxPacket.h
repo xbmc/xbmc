@@ -25,6 +25,18 @@
 #define DMX_SPECIALID_STREAMINFO    -10
 #define DMX_SPECIALID_STREAMCHANGE  -11
 
+typedef struct DemuxCryptoInfo
+{
+  uint16_t numSubSamples; //number of subsamples
+  uint16_t flags; //flags for later use
+
+  uint16_t *clearBytes; // numSubSamples uint16_t's wich define the size of clear size of a subsample
+  uint32_t *cipherBytes; // numSubSamples uint32_t's wich define the size of cipher size of a subsample
+
+  uint8_t iv[16]; // initialization vector
+  uint8_t kid[16]; // key id
+}DemuxCryptoInfo;
+
 typedef struct DemuxPacket
 {
   unsigned char* pData;   // data
@@ -32,10 +44,11 @@ typedef struct DemuxPacket
   int iStreamId; // integer representing the stream index
   int64_t demuxerId; // id of the demuxer that created the packet
   int iGroupId;  // the group this data belongs to, used to group data from different streams together
+  int dispTime;
 
   double pts; // pts in DVD_TIME_BASE
   double dts; // dts in DVD_TIME_BASE
   double duration; // duration in DVD_TIME_BASE if available
 
-  int dispTime;
+  DemuxCryptoInfo *cryptoInfo; //necessary information to decrypt a packet; nullptr if not encrypted
 } DemuxPacket;
