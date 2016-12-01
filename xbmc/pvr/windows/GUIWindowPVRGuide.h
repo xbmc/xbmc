@@ -76,11 +76,6 @@ namespace PVR
     bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button);
 
-    void GetViewChannelItems(CFileItemList &items);
-    void GetViewNowItems(CFileItemList &items);
-    void GetViewNextItems(CFileItemList &items);
-    void GetViewTimelineItems(CFileItemList &items);
-
     void StartRefreshTimelineItemsThread();
     void StopRefreshTimelineItemsThread();
 
