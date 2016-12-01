@@ -5944,6 +5944,7 @@ msgstr ""
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 #: xbmc/peripherals/devices/Peripheral.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#13205"
 msgid "Unknown"
 msgstr ""

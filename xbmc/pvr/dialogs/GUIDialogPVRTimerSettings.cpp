@@ -905,6 +905,21 @@ void CGUIDialogPVRTimerSettings::DupEpisodesFiller(
     list.clear();
     pThis->m_timerType->GetPreventDuplicateEpisodesValues(list);
     current = pThis->m_iPreventDupEpisodes;
+
+    auto it = list.begin();
+    while (it != list.end())
+    {
+      if (it->second == current)
+        break; // value already in list
+
+      ++it;
+    }
+
+    if (it == list.end())
+    {
+      // PVR backend supplied value is not in the list of predefined values. Insert it.
+      list.insert(it, std::make_pair(g_localizeStrings.Get(13205), current)); // "Unknown"
+    }
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::DupEpisodesFiller - No dialog");
