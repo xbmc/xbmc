@@ -214,7 +214,7 @@
 			<param name="posx" value="830" />
 			<param name="up_posy" value="50" />
 			<param name="down_posy" value="980" />
-			<param name="visible" value="!System.HasModalDialog" />
+			<param name="visible" value="!System.HasActiveModalDialog" />
 		</include>
 	</controls>
 </window>
