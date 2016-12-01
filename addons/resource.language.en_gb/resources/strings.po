@@ -5527,7 +5527,12 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr ""
 
-#empty strings from id 12396 to 12599
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#12396"
+msgid "Instance ID"
+msgstr ""
+
+#empty strings from id 12397 to 12599
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12600"

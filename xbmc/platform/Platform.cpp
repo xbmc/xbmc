@@ -18,10 +18,18 @@
  *
  */
 
+#include "system.h"
 #include "Platform.h"
+#include "Application.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
+const std::string CPlatform::NoValidUUID = "NOUUID";
 
 // Override for platform ports
-#if !defined(PLATFORM_OVERRIDE)
+#if !defined(PLATFORM_OVERRIDE_CLASSPLATFORM)
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -34,16 +42,38 @@ CPlatform* CPlatform::CreateInstance()
 
 CPlatform::CPlatform()
 {
-  
-}
-
-CPlatform::~CPlatform()
-{
-  
+  m_uuid = NoValidUUID;
 }
 
 void CPlatform::Init()
 {
-  // nothing for now
+  InitInstanceIdentifier();
 }
 
+void CPlatform::InitInstanceIdentifier()
+{
+  using namespace XFILE;
+
+  const auto path = CSpecialProtocol::TranslatePath("special://home/instance_id");
+  if (CFile::Exists(path))
+  {
+    CFile file;
+    if (file.Open(path))
+    {
+      char temp[36];
+      if (file.Read(temp, 36) == 36)
+      {
+        m_uuid = temp;
+        return;
+      }
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "instance id not found. creating..");
+  auto uuid = StringUtils::CreateUUID();
+  CFile file;
+  if (file.OpenForWrite(path, true) && file.Write(uuid.c_str(), 36) == 36)
+    m_uuid = std::move(uuid);
+  else
+    CLog::Log(LOGERROR, "failed to write instance id");
+}
