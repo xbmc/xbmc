@@ -132,7 +132,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
               if (window)
               {
                 CFileItem item(*m_song);
-                std::string path = StringUtils::Format("musicdb://artists/%li", idArtist);
+                std::string path = StringUtils::Format("musicdb://artists/%i", idArtist);
                 item.SetPath(path);
                 item.m_bIsFolder = true;
                 window->OnItemInfo(&item, true);
