@@ -344,7 +344,7 @@ void CVideoPlayerAudio::Process()
       {
         m_dvdAudio.Pause();
       }
-      m_speed = speed;
+      m_speed = (int)speed;
     }
     else if (pMsg->IsType(CDVDMsg::AUDIO_SILENCE))
     {
