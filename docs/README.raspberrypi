@@ -32,8 +32,8 @@ build for the first Raspberry Pi, the commands have to be adapted to use
     $ sudo mkdir -p /opt/bcm-rootfs/opt
     $ sudo cp -r firmware/opt/vc /opt/bcm-rootfs/opt
 
-    $ sudo mkdir -p /opt/xbmc-bcm
-    $ sudo chmod 777 /opt/xbmc-bcm
+    $ sudo mkdir -p /opt/kodi-bcm
+    $ sudo chmod 777 /opt/kodi-bcm
 
     $ git clone https://github.com/xbmc/xbmc
 
@@ -41,7 +41,7 @@ build for the first Raspberry Pi, the commands have to be adapted to use
     $ ./bootstrap
     $ PATH="$PATH:/opt/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin" \
        ./configure --host=arm-linux-gnueabihf \
-       --prefix=/opt/xbmc-bcm/xbmc-dbg \
+       --prefix=/opt/kodi-bcm/kodi-dbg \
        --with-toolchain=/usr/local/bcm-gcc/arm-bcm2708hardfp-linux-gnueabi/sysroot \
        --with-firmware=/opt/bcm-rootfs \
        --with-platform=raspberry-pi2 \
