@@ -4,7 +4,6 @@ SRCS = WinSystemEGL.cpp
 SRCS+= EGLNativeTypeAmlogic.cpp
 ifeq (@USE_ANDROID@,1)
 SRCS+= EGLNativeTypeAndroid.cpp
-SRCS+= EGLNativeTypeAmlAndroid.cpp
 endif
 ifeq (@USE_MMAL@,1)
 SRCS+= EGLNativeTypeRaspberryPI.cpp
