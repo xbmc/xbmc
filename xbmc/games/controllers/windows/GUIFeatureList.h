@@ -35,7 +35,7 @@ namespace GAME
                           public IConfigurationWizardCallback
   {
   public:
-    CGUIFeatureList(CGUIWindow* window);
+    CGUIFeatureList(CGUIWindow* window, const std::string& windowParam);
     virtual ~CGUIFeatureList(void);
 
     // implementation of IFeatureList

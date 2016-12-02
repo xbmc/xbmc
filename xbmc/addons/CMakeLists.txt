@@ -12,6 +12,7 @@ set(SOURCES Addon.cpp
             ContextMenuAddon.cpp
             ContextMenus.cpp
             FilesystemInstaller.cpp
+            GameResource.cpp
             GUIDialogAddonInfo.cpp
             GUIDialogAddonSettings.cpp
             GUIViewStateAddonBrowser.cpp
@@ -51,6 +52,7 @@ set(HEADERS Addon.h
             DllLibCPluff.h
             DllPVRClient.h
             FilesystemInstaller.h
+            GameResource.h
             GUIDialogAddonInfo.h
             GUIDialogAddonSettings.h
             GUIViewStateAddonBrowser.h

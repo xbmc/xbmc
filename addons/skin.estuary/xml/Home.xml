@@ -275,6 +275,16 @@
 							<param name="sortorder" value="descending"/>
 							<param name="list_id" value="8200"/>
 							<param name="fallback_icon" value="DefaultAddon.png"/>
+
+						</include>
+						<include content="WidgetListSquare">
+							<param name="content_path" value="addons://sources/game/"/>
+							<param name="widget_header" value="$LOCALIZE[35049]"/>
+							<param name="widget_target" value="games"/>
+							<param name="sortby" value="lastused"/>
+							<param name="sortorder" value="descending"/>
+							<param name="list_id" value="8700"/>
+							<param name="fallback_icon" value="DefaultAddon.png"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="addons://sources/executable/"/>
@@ -722,6 +732,34 @@
 						</include>
 					</control>
 				</control>
+				<control type="group" id="17000">
+					<visible>String.IsEqual(Container(9000).ListItem.Property(id),games)</visible>
+					<include content="Visible_Right_Delayed">
+						<param name="id" value="games"/>
+					</include>
+					<include content="ImageWidget">
+						<param name="image_path" value="special://skin/extras/home-images/games.jpg"/>
+						<param name="text_label" value="$LOCALIZE[31199]" />
+						<param name="button_label" value="$LOCALIZE[31110]" />
+						<param name="button_onclick" value="ActivateWindow(games)"/>
+						<param name="button_id" value="17100"/>
+						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
+					</include>
+					<!--
+					<control type="grouplist" id="17001">
+						<include>WidgetGroupListCommon</include>
+						<include content="ImageWidget">
+							<param name="image_path" value="special://skin/extras/home-images/games.jpg"/>
+							<param name="text_label" value="$LOCALIZE[31199]" />
+							<param name="button_label" value="$LOCALIZE[31110]" />
+							<param name="button_onclick" value="ActivateWindow(games)"/>
+							<param name="button_id" value="17100"/>
+							<param name="visible" value="true"/>
+							<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
+						</include>
+					</control>
+					-->
+				</control>
 			</control>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
@@ -856,6 +894,14 @@
 							<thumb>icons/sidemenu/radio.png</thumb>
 							<property name="id">radio</property>
 							<visible>!Skin.HasSetting(HomeMenuNoRadioButton)</visible>
+						</item>
+						<item>
+							<label>$LOCALIZE[15016]</label>
+							<property name="menu_id">$NUMBER[17000]</property>
+							<onclick>ActivateWindow(Games)</onclick>
+							<thumb>icons/sidemenu/games.png</thumb>
+							<property name="id">games</property>
+							<visible>System.GetBool(gamesgeneral.enable) + !Skin.HasSetting(HomeMenuNoGamesButton)</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[24001]</label>

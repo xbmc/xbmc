@@ -176,6 +176,12 @@ bool CApplicationPlayer::HasVideo() const
   return (player && player->HasVideo());
 }
 
+bool CApplicationPlayer::HasGame() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  return (player && player->HasGame());
+}
+
 int CApplicationPlayer::GetPreferredPlaylist() const
 {
   if (IsPlayingVideo())
@@ -217,6 +223,11 @@ bool CApplicationPlayer::IsPlayingAudio() const
 bool CApplicationPlayer::IsPlayingVideo() const
 {
   return (IsPlaying() && HasVideo());
+}
+
+bool CApplicationPlayer::IsPlayingGame() const
+{
+  return (IsPlaying() && HasGame());
 }
 
 bool CApplicationPlayer::IsPlayingRDS() const

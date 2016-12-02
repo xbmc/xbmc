@@ -27,6 +27,7 @@
 #include "addons/binary/interfaces/api1/AudioDSP/AddonCallbacksAudioDSP.h"
 #include "addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h"
 #include "addons/binary/interfaces/api1/Codec/AddonCallbacksCodec.h"
+#include "addons/binary/interfaces/api1/Game/AddonCallbacksGame.h"
 #include "addons/binary/interfaces/api1/GUI/AddonCallbacksGUI.h"
 #include "addons/binary/interfaces/api1/GUI/AddonGUIWindow.h"
 #include "addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h"
@@ -51,7 +52,8 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_helperADSP(nullptr),
     m_helperCODEC(nullptr),
     m_helperInputStream(nullptr),
-    m_helperPeripheral(nullptr)
+    m_helperPeripheral(nullptr),
+    m_helperGame(nullptr)
 {
   m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
   m_callbacks->addonData                    = this;
@@ -72,6 +74,8 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
   m_callbacks->INPUTSTREAMLib_UnRegisterMe  = CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe;
   m_callbacks->PeripheralLib_RegisterMe     = CAddonInterfaces::PeripheralLib_RegisterMe;
   m_callbacks->PeripheralLib_UnRegisterMe   = CAddonInterfaces::PeripheralLib_UnRegisterMe;
+  m_callbacks->GameLib_RegisterMe           = CAddonInterfaces::GameLib_RegisterMe;
+  m_callbacks->GameLib_UnRegisterMe         = CAddonInterfaces::GameLib_UnRegisterMe;
 }
 
 CAddonInterfaces::~CAddonInterfaces()
@@ -84,6 +88,7 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<V1::KodiAPI::Codec::CAddonCallbacksCodec*>(m_helperCODEC);
   delete static_cast<V1::KodiAPI::InputStream::CAddonCallbacksInputStream*>(m_helperInputStream);
   delete static_cast<V1::KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(m_helperPeripheral);
+  delete static_cast<V1::KodiAPI::Game::CAddonCallbacksGame*>(m_helperGame);
 
   free((char*)m_callbacks->libBasePath);
   delete m_callbacks;
@@ -252,6 +257,33 @@ void CAddonInterfaces::CodecLib_UnRegisterMe(void *addonData, void *cbTable)
 
   delete static_cast<V1::KodiAPI::Codec::CAddonCallbacksCodec*>(addon->m_helperCODEC);
   addon->m_helperCODEC = nullptr;
+}
+/*\_____________________________________________________________________________
+\*/
+CB_GameLib* CAddonInterfaces::GameLib_RegisterMe(void *addonData)
+{
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return nullptr;
+  }
+
+  addon->m_helperGame = new V1::KodiAPI::Game::CAddonCallbacksGame(addon->m_addon);
+  return static_cast<V1::KodiAPI::Game::CAddonCallbacksGame*>(addon->m_helperGame)->GetCallbacks();
+}
+
+void CAddonInterfaces::GameLib_UnRegisterMe(void *addonData, CB_GameLib *cbTable)
+{
+  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  delete static_cast<V1::KodiAPI::Game::CAddonCallbacksGame*>(addon->m_helperGame);
+  addon->m_helperGame = nullptr;
 }
 /*\_____________________________________________________________________________
 \*/

@@ -930,6 +930,7 @@ msgstr ""
 
 #: xbmc/pvr/windows/PVRGUIWindowRecordings.cpp
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
+#: xbmc/games/windows/GUIWindowGames.cpp
 #: system/settings/settings.xml
 msgctxt "#208"
 msgid "Play"
@@ -4971,6 +4972,7 @@ msgctxt "#10139"
 msgid "Pictures / Info"
 msgstr ""
 
+#: addons/skin.estuary/1080i/MyGames.xml
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10140"
 msgid "Add-on settings"
@@ -7887,6 +7889,7 @@ msgctxt "#15015"
 msgid "Remove"
 msgstr ""
 
+#: system/settings/settings.xml
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15016"
 msgid "Games"
@@ -9140,6 +9143,7 @@ msgstr ""
 #: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 #: addons/skin.estuary/1080i/View_50_List.xml
 #: addons/skin.estuary/1080i/DialogMusicInfo.xml
+#: addons/skin.estuary/1080i/MyGames.xml
 #: addons/skin.estuary/1080i/MyPics.xml
 #: addons/skin.estuary/1080i/MyVideoNav.xml
 #: addons/skin.estuary/1080i/Includes_PVR.xml
@@ -13143,6 +13147,7 @@ msgstr ""
 #: addons/skin.estuary/1080i/MyVideoNav.xml
 #: addons/skin.estuary/1080i/MyPics.xml
 #: addons/skin.estuary/1080i/MyMusicNav.xml
+#: addons/skin.estuary/1080i/MyGames.xml
 msgctxt "#21452"
 msgid "Get more..."
 msgstr ""
@@ -13892,6 +13897,7 @@ msgid "Add-on options"
 msgstr ""
 
 #: xbmc/addons/ContextMenus.h
+#: xbmc/games/windows/GUIWindowGames.cpp
 msgctxt "#24003"
 msgid "Add-on information"
 msgstr ""
@@ -16069,7 +16075,8 @@ msgstr ""
 #empty strings from id 35019 to 35048
 
 #. Name of game add-ons category
-#: xbmc/filesystem/AddonsDirectory.cpp
+#: xbmc/addons/Addon.cpp
+#: xbmc/games/windows/GUIViewStateWindowGames.cpp
 msgctxt "#35049"
 msgid "Game add-ons"
 msgstr ""
@@ -16266,7 +16273,250 @@ msgctxt "#35102"
 msgid "Disable joystick when this device is present"
 msgstr ""
 
-#empty strings from id 35103 to 35504
+#. Label for mouse buttons. Used in the controller mapping dialog.
+msgctxt "#35103"
+msgid "Buttons"
+msgstr ""
+
+#. Label for relative mounters like the mouse pointer. Used in the controller mapping dialog.
+msgctxt "#35104"
+msgid "Pointers"
+msgstr ""
+
+#empty strings from id 35103 to 35149
+
+#. Name of keyboard category in the settings category window
+#: system/settings/settings.xml
+msgctxt "#35150"
+msgid "Keyboard"
+msgstr ""
+
+#. Name of group in "Games -> Keyboard" for configuring keyboard players
+#: system/settings/settings.xml
+msgctxt "#35151"
+msgid "Player configuration"
+msgstr ""
+
+#. Name of setting for enabling the keyboard during gameplay
+#: system/settings/settings.xml
+msgctxt "#35152"
+msgid "Enable keyboard"
+msgstr ""
+
+#. Description of setting with label #35152 "Enable keyboard"
+#: system/settings/settings.xml
+msgctxt "#35153"
+msgid "This allows the keyboard to emulate up to 8 game controllers. If disabled, the keyboard can still be used to control emulators like DOSBox which require a full keyboard."
+msgstr ""
+
+#. Setting name for number of keyboard players
+#: system/settings/settings.xml
+msgctxt "#35154"
+msgid "Number of keyboard players"
+msgstr ""
+
+#. Description of settings with label #35066
+#: system/settings/settings.xml
+msgctxt "#35155"
+msgid "Set the number of players using the keyboard. This is intended for devices that use keyboard drivers, but you can also see how many people fit around a keyboard!"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#35156"
+msgid "%i"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35157"
+msgid "Configure keyboard player 1"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35158"
+msgid "Configure keyboard player 2"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35159"
+msgid "Configure keyboard player 3"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35160"
+msgid "Configure keyboard player 4"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35161"
+msgid "Configure keyboard player 5"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35162"
+msgid "Configure keyboard player 6"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35163"
+msgid "Configure keyboard player 7"
+msgstr ""
+
+#. Name of setting to configure a keyboard player's controller configuration
+#: system/settings/settings.xml
+msgctxt "#35164"
+msgid "Configure keyboard player 8"
+msgstr ""
+
+#. Name of the keyboard-emulated controller in the list of peripherals
+#: xbmc/peripherals/bus/virtual/PeripheralBusApplication.cpp
+msgctxt "#35165"
+msgid "Keyboard player"
+msgstr ""
+
+#empty strings from id 35166 to 35199
+
+#. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
+#: system/settings/settings.xml
+msgctxt "#35200"
+msgid "ALL YOUR BASE ARE BELONG[CR]TO US"
+msgstr ""
+
+#. Name of group in "Games -> General" for configuring gameplay
+#: system/settings/settings.xml
+msgctxt "#35201"
+msgid "Gameplay"
+msgstr ""
+
+#empty string with id 35202
+
+#: system/settings/settings.xml
+msgctxt "#35203"
+msgid "Enable rewind if supported"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#35204"
+msgid "Enable real-time rewinding during game play, if supported. Press rewind or manually seek backwards using the seek bar."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#35205"
+msgid "Maximum rewind time"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#35206"
+msgid "Maximum time possible to rewind, if supported. Large rewind histories can use a lot of RAM."
+msgstr ""
+
+#. Description of add-on category for emulators
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#35207"
+msgid "Emulators"
+msgstr ""
+
+#. Description of add-on category for standalone games
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#35208"
+msgid "Standalone games"
+msgstr ""
+
+#: xbmc/addons/Addon.cpp
+msgctxt "#35209"
+msgid "Game resources"
+msgstr ""
+
+#. Dialog title when gameplay fails
+#: xbmc/games/addons/GameClient.cpp
+#: xbmc/games/GameManager.cpp
+msgctxt "#35210"
+msgid "Failed to play game"
+msgstr ""
+
+#. Error dialog text when the game requires restricted files to play. %s - emulator ID
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35211"
+msgid "This game requires the following add-on: %s"
+msgstr ""
+
+#. Error dialog text when launching a game and no emulators are compatible
+#: xbmc/games/GameUtils.cpp
+msgctxt "#35212"
+msgid "This game isn't compatible with any available emulators."
+msgstr ""
+
+#. Error dialog text when launching a game and the emulator has an internal error. %s - emulator name
+#: xbmc/games/GameClient.cpp
+msgctxt "#35213"
+msgid "The emulator \"%s\" had an internal error."
+msgstr ""
+
+#. Error dialog text when the game can't be played because it's not on a hard drive or partition
+#: xbmc/games/GameUtils.cpp
+msgctxt "#35214"
+msgid "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
+msgstr ""
+
+#. Error dialog text when libretro support is disabled
+#: xbmc/games/addons/GameClientProperties.cpp
+msgctxt "#35215"
+msgid "This game depends on a disabled add-on. Would you like to enable it?"
+msgstr ""
+
+#. Description of add-on category for game support add-ons like game.libretro (the libretro wrapper)
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#35216"
+msgid "Support add-ons"
+msgstr ""
+
+#empty strings from id 35217 to 35219
+
+#. Description of add-on category for game providers
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#35220"
+msgid "Game providers"
+msgstr ""
+
+#empty strings from id 35221 to 35249
+
+#: xbmc/windows/GUIMediaWindow.cpp
+msgctxt "#35250"
+msgid "Add games..."
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#35251"
+msgid "Add game source"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#35252"
+msgid "Edit game source"
+msgstr ""
+
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35253"
+msgid "Install emulator"
+msgstr ""
+
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35254"
+msgid "Manage emulators"
+msgstr ""
+
+#: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+msgctxt "#35255"
+msgid "Browse all emulators"
+msgstr ""
+
+#empty strings from id 35256 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/addons/AddonCallbacksPVR.cpp

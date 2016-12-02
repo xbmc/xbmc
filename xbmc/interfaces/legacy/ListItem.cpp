@@ -27,6 +27,8 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
+#include "games/tags/GameInfoTag.h"
+#include "games/GameTypes.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
@@ -590,6 +592,53 @@ namespace XBMCAddon
             int info = CPictureInfoTag::TranslateString(StringUtils::Mid(exifkey,5));
             item->GetPictureInfoTag()->SetInfo(info, value);
           }
+        }
+      }
+      else if (StringUtils::EqualsNoCase(type, "game"))
+      {
+        for (InfoLabelDict::const_iterator it = infoLabels.begin(); it != infoLabels.end(); it++)
+        {
+          String key = it->first;
+          StringUtils::ToLower(key);
+
+          const InfoLabelValue& alt = it->second;
+          const String value(alt.which() == first ? alt.former() : emptyString);
+
+          if (key == "title")
+          {
+            item->m_strTitle = value;
+            item->GetGameInfoTag()->SetTitle(value);
+          }
+          else if (key == "platform")
+            item->GetGameInfoTag()->SetPlatform(value);
+          else if (key == "genres")
+          {
+            if (alt.which() != second)
+              throw WrongTypeException("When using \"genres\" you need to supply a list of strings for the value in the dictionary");
+
+            std::vector<std::string> genres;
+
+            const std::vector<InfoLabelStringOrTuple>& listValue = alt.later();
+            for (std::vector<InfoLabelStringOrTuple>::const_iterator viter = listValue.begin(); viter != listValue.end(); ++viter)
+            {
+
+              const InfoLabelStringOrTuple& genreEntry = *viter;
+              const String& genre = genreEntry.which() == first ? genreEntry.former() : genreEntry.later().first();
+              genres.emplace_back(std::move(genre));
+            }
+
+            item->GetGameInfoTag()->SetGenres(genres);
+          }
+          else if (key == "publisher")
+            item->GetGameInfoTag()->SetPublisher(value);
+          else if (key == "developer")
+            item->GetGameInfoTag()->SetDeveloper(value);
+          else if (key == "overview")
+            item->GetGameInfoTag()->SetOverview(value);
+          else if (key == "year")
+            item->GetGameInfoTag()->SetYear(strtol(value.c_str(), NULL, 10));
+          else if (key == "emulator")
+            item->GetGameInfoTag()->SetGameClient(value);
         }
       }
     } // end ListItem::setInfo

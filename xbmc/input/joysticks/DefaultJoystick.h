@@ -25,6 +25,7 @@
 #include "RumbleGenerator.h"
 
 #include <map>
+#include <memory>
 #include <vector>
 
 #define DEFAULT_CONTROLLER_ID    "game.controller.default"
@@ -36,6 +37,7 @@
 namespace JOYSTICK
 {
   class IKeymapHandler;
+  class IButtonSequence;
 
   /*!
    * \ingroup joystick
@@ -99,5 +101,7 @@ namespace JOYSTICK
 
     // Rumble functionality
     CRumbleGenerator m_rumbleGenerator;
+
+    std::unique_ptr<IButtonSequence> m_easterEgg;
   };
 }

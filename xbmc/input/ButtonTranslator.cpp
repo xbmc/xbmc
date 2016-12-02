@@ -313,6 +313,7 @@ static const ActionMapping windows[] =
     { "radiotimers"              , WINDOW_RADIO_TIMERS },
     { "radiosearch"              , WINDOW_RADIO_SEARCH },
     { "gamecontrollers"          , WINDOW_DIALOG_GAME_CONTROLLERS },
+    { "games"                    , WINDOW_GAMES },
     { "pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO },
     { "pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO },
     { "pvrradiordsinfo"          , WINDOW_DIALOG_PVR_RADIO_RDS_INFO },
@@ -335,6 +336,7 @@ static const ActionMapping windows[] =
     { "mediasettings"            , WINDOW_SETTINGS_MEDIA },
     { "interfacesettings"        , WINDOW_SETTINGS_INTERFACE },
     { "appearancesettings"       , WINDOW_SETTINGS_INTERFACE },	// backward compatibility to v16
+    { "gamesettings"             , WINDOW_SETTINGS_MYGAMES },
     { "videoplaylist"            , WINDOW_VIDEO_PLAYLIST },
     { "loginscreen"              , WINDOW_LOGIN_SCREEN },
     { "profiles"                 , WINDOW_SETTINGS_PROFILES },
@@ -390,6 +392,7 @@ static const ActionMapping windows[] =
     { "fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO },
     { "fullscreenlivetv"         , WINDOW_FULLSCREEN_LIVETV },         // virtual window/keymap section for PVR specific bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
     { "fullscreenradio"          , WINDOW_FULLSCREEN_RADIO },          // virtual window for fullscreen radio, uses WINDOW_VISUALISATION as fallback
+    { "fullscreengame"           , WINDOW_FULLSCREEN_GAME },           // virtual window for fullscreen games, uses WINDOW_FULLSCREEN_VIDEO as fallback
     { "visualisation"            , WINDOW_VISUALISATION },
     { "slideshow"                , WINDOW_SLIDESHOW },
     { "weather"                  , WINDOW_WEATHER },
@@ -443,7 +446,8 @@ static const ActionMapping touchcommands[] =
 static const WindowMapping fallbackWindows[] =
 {
     { WINDOW_FULLSCREEN_LIVETV   , WINDOW_FULLSCREEN_VIDEO },
-    { WINDOW_FULLSCREEN_RADIO    , WINDOW_VISUALISATION }
+    { WINDOW_FULLSCREEN_RADIO    , WINDOW_VISUALISATION },
+    { WINDOW_FULLSCREEN_GAME     , WINDOW_FULLSCREEN_VIDEO }
 };
 
 #ifdef TARGET_WINDOWS

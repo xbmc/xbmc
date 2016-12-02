@@ -1,6 +1,7 @@
 SRCS=DeadzoneFilter.cpp \
      DefaultJoystick.cpp \
      DriverPrimitive.cpp \
+     JoystickEasterEgg.cpp \
      JoystickMonitor.cpp \
      JoystickTranslator.cpp \
      KeymapHandler.cpp \

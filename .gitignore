@@ -129,6 +129,7 @@ cmake_install.cmake
 /addons/pvr.*
 /addons/adsp.*
 /addons/peripheral.*
+/addons/game.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
@@ -151,6 +152,7 @@ cmake_install.cmake
 /lib/addons/library.xbmc.pvr/Makefile
 /lib/addons/library.xbmc.codec/Makefile
 /lib/addons/library.kodi.peripheral/Makefile
+/lib/addons/library.kodi.game/Makefile
 /lib/addons/library.xbmc.addon/project/VS2010Express/Release
 /lib/addons/library.xbmc.addon/project/VS2010Express/Debug
 /lib/addons/library.kodi.adsp/project/VS2010Express/Release
@@ -165,6 +167,8 @@ cmake_install.cmake
 /lib/addons/library.kodi.inputstream/Makefile
 /lib/addons/library.kodi.peripheral/project/VS2010Express/Release
 /lib/addons/library.kodi.peripheral/project/VS2010Express/Debug
+/lib/addons/library.kodi.game/project/VS2010Express/Release
+/lib/addons/library.kodi.game/project/VS2010Express/Debug
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -438,6 +442,7 @@ lib/cpluff/stamp-h1
 /xbmc/cores/playercorefactory/Makefile
 /xbmc/cores/Makefile
 /xbmc/cores/VideoPlayer/VideoRenderers/Makefile
+/xbmc/cores/RetroPlayer/Makefile
 
 # /xbmc/filesystem/
 /xbmc/filesystem/Makefile

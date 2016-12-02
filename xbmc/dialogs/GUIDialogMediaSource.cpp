@@ -341,6 +341,10 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
   }
+  else if (m_type == "games")
+  {
+    // nothing to add
+  }
   else if (m_type == "programs")
   {
     // nothing to add
@@ -476,6 +480,8 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNot
       heading = g_localizeStrings.Get(10054);
     else if (type == "pictures")
       heading = g_localizeStrings.Get(10055);
+    else if (type == "games")
+      heading = g_localizeStrings.Get(35252); // "Edit game source"
     else if (type == "programs")
       heading = g_localizeStrings.Get(10056);
     else
@@ -489,6 +495,8 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const std::string &type, bool editNot
       heading = g_localizeStrings.Get(10049);
     else if (type == "pictures")
       heading = g_localizeStrings.Get(10050);
+    else if (type == "games")
+      heading = g_localizeStrings.Get(35251); // "Add game source"
     else if (type == "programs")
       heading = g_localizeStrings.Get(10051);
     else

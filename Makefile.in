@@ -30,6 +30,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/binary/interfaces/api1/AudioDSP/addon-callbacks-audiodsp.a \
                    xbmc/addons/binary/interfaces/api1/AudioEngine/addon-callbacks-audioengine.a \
                    xbmc/addons/binary/interfaces/api1/Codec/addon-callbacks-codec.a \
+                   xbmc/addons/binary/interfaces/api1/Game/addon-callbacks-game.a \
                    xbmc/addons/binary/interfaces/api1/GUI/addon-callbacks-gui.a \
                    xbmc/addons/binary/interfaces/api1/InputStream/addon-callbacks-inputstream.a \
                    xbmc/addons/binary/interfaces/api1/Peripheral/addon-callbacks-peripheral.a \
@@ -40,6 +41,7 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/cores/DllLoader/exports/exports.a \
                    xbmc/cores/DllLoader/exports/util/exports_utils.a \
                    xbmc/cores/ExternalPlayer/ExternalPlayer.a \
+                   xbmc/cores/RetroPlayer/retroplayer.a \
                    xbmc/cores/VideoPlayer/VideoRenderers/VideoRenderer.a \
                    xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/VideoShaders.a \
                    xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/HwDecRender.a \
@@ -53,10 +55,18 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
                    xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
                    xbmc/filesystem/filesystem.a \
+                   xbmc/games/addons/gameaddons.a \
+                   xbmc/games/addons/playback/gameaddonplayback.a \
+                   xbmc/games/addons/savestates/gamesavestates.a \
                    xbmc/games/controllers/controllers.a \
                    xbmc/games/controllers/dialogs/controllerdialogs.a \
                    xbmc/games/controllers/guicontrols/controllerguicontrols.a \
                    xbmc/games/controllers/windows/controllerwindows.a \
+                   xbmc/games/dialogs/gamedialogs.a \
+                   xbmc/games/games.a \
+                   xbmc/games/ports/gameports.a \
+                   xbmc/games/tags/gameinfotags.a \
+                   xbmc/games/windows/gamewindows.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
                    xbmc/interfaces/builtins/builtins.a \
@@ -151,6 +161,10 @@ ifeq ($(findstring osx,@ARCH@),osx)
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/input_keyboard.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/generic/input_keyboard_generic.a
+DIRECTORY_ARCHIVES += xbmc/input/mouse/input_mouse.a
+DIRECTORY_ARCHIVES += xbmc/input/mouse/generic/input_mouse_generic.a
 DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
@@ -167,7 +181,11 @@ ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/input_keyboard.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/generic/input_keyboard_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += xbmc/input/mouse/input_mouse.a
+DIRECTORY_ARCHIVES += xbmc/input/mouse/generic/input_mouse_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
@@ -178,7 +196,11 @@ else
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/input_keyboard.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/generic/input_keyboard_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += xbmc/input/mouse/input_mouse.a
+DIRECTORY_ARCHIVES += xbmc/input/mouse/generic/input_mouse_generic.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
@@ -222,6 +244,7 @@ LIBADDON_DIRS=\
 	lib/addons/library.kodi.guilib \
 	lib/addons/library.kodi.inputstream \
 	lib/addons/library.kodi.peripheral \
+	lib/addons/library.kodi.game \
 
 ESTUARY_MEDIA=addons/skin.estuary/media
 SKIN_DIRS=$(ESTUARY_MEDIA)
@@ -342,6 +365,7 @@ libaddon: exports
 	$(MAKE) -C lib/addons/library.kodi.adsp
 	$(MAKE) -C lib/addons/library.kodi.audioengine
 	$(MAKE) -C lib/addons/library.xbmc.codec
+	$(MAKE) -C lib/addons/library.kodi.game
 	$(MAKE) -C lib/addons/library.kodi.guilib
 	$(MAKE) -C lib/addons/library.kodi.peripheral
 	$(MAKE) -C lib/addons/library.xbmc.pvr

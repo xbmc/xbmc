@@ -1159,6 +1159,23 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseEpg.compression);
   }
 
+  pDatabase = pRootElement->FirstChildElement("savestatedatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseSavestates.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseSavestates.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseSavestates.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseSavestates.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseSavestates.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseSavestates.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseSavestates.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseSavestates.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseSavestates.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseSavestates.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseSavestates.ciphers);
+    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseSavestates.compression);
+  }
+
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
   if (pElement)
   {

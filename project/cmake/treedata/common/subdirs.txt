@@ -5,6 +5,7 @@ xbmc/addons/binary/interfaces/api1/Addon        api1AddonCallbacks_Addon
 xbmc/addons/binary/interfaces/api1/AudioDSP     api1AddonCallbacks_AudioDSP
 xbmc/addons/binary/interfaces/api1/AudioEngine  api1AddonCallbacks_AudioEngine
 xbmc/addons/binary/interfaces/api1/Codec        api1AddonCallbacks_Codec
+xbmc/addons/binary/interfaces/api1/Game         api1AddonCallbacks_Game
 xbmc/addons/binary/interfaces/api1/GUI          api1AddonCallbacks_GUI
 xbmc/addons/binary/interfaces/api1/InputStream  api1AddonCallbacks_InputStream
 xbmc/addons/binary/interfaces/api1/Peripheral   api1AddonCallbacks_Peripheral
@@ -18,6 +19,10 @@ xbmc/input                                      input
 xbmc/input/joysticks                            input/joysticks
 xbmc/input/joysticks/dialogs                    input/joysticks/dialogs
 xbmc/input/joysticks/generic                    input/joysticks/generic
+xbmc/input/keyboard                             input/keyboard
+xbmc/input/keyboard/generic                     input/keyboard/generic
+xbmc/input/mouse                                input/mouse
+xbmc/input/mouse/generic                        input/mouse/generic
 xbmc/listproviders                              listproviders
 xbmc/media                                      media
 xbmc/messaging                                  messaging

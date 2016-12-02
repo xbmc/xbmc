@@ -22,6 +22,7 @@
 
 #include "IAddonInterface.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_callbacks.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_callbacks.h"
 
 #include <stdint.h>
 
@@ -49,6 +50,8 @@ typedef void* (*KODIINPUTSTREAMLib_RegisterMe)(void *addonData);
 typedef void (*KODIINPUTSTREAMLib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef CB_PeripheralLib* (*KODIPeripheralLib_RegisterMe)(void *addonData);
 typedef void (*KODIPeripheralLib_UnRegisterMe)(void *addonData, CB_PeripheralLib *cbTable);
+typedef CB_GameLib* (*KODIGameLib_RegisterMe)(void *addonData);
+typedef void (*KODIGameLib_UnRegisterMe)(void *addonData, CB_GameLib *cbTable);
 
 typedef struct AddonCB
 {
@@ -70,6 +73,8 @@ typedef struct AddonCB
   KODIINPUTSTREAMLib_UnRegisterMe   INPUTSTREAMLib_UnRegisterMe;
   KODIPeripheralLib_RegisterMe      PeripheralLib_RegisterMe;
   KODIPeripheralLib_UnRegisterMe    PeripheralLib_UnRegisterMe;
+  KODIGameLib_RegisterMe            GameLib_RegisterMe;
+  KODIGameLib_UnRegisterMe          GameLib_UnRegisterMe;
 } AddonCB;
 
 
@@ -127,6 +132,11 @@ namespace ADDON
     static CB_PeripheralLib* PeripheralLib_RegisterMe  (void *addonData);
     static void         PeripheralLib_UnRegisterMe     (void *addonData, CB_PeripheralLib* cbTable);
     void*               GetHelperPeripheral()         { return m_helperPeripheral; }
+    /*\_________________________________________________________________________
+    \*/
+    static CB_GameLib*  GameLib_RegisterMe             (void *addonData);
+    static void         GameLib_UnRegisterMe           (void *addonData, CB_GameLib* cbTable);
+    void*               GetHelperGame()               { return m_helperGame; }
     /*
      * API level independent functions for Kodi
      */
@@ -144,6 +154,7 @@ namespace ADDON
     void*     m_helperCODEC;
     void*     m_helperInputStream;
     void*     m_helperPeripheral;
+    void*     m_helperGame;
   };
 
 } /* namespace ADDON */

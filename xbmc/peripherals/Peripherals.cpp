@@ -36,6 +36,7 @@
 #include "devices/PeripheralHID.h"
 #include "devices/PeripheralImon.h"
 #include "devices/PeripheralJoystick.h"
+#include "devices/PeripheralJoystickEmulation.h"
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
@@ -44,6 +45,8 @@
 #include "dialogs/GUIDialogPeripheralSettings.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "FileItem.h"
+#include "bus/virtual/PeripheralBusApplication.h"
+#include "input/joysticks/IButtonMapper.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -74,12 +77,14 @@ using namespace XFILE;
 CPeripherals::CPeripherals() :
   m_eventScanner(this)
 {
+  RegisterObserver(&m_portMapper);
   Clear();
 }
 
 CPeripherals::~CPeripherals()
 {
   Clear();
+  UnregisterObserver(&m_portMapper);
 }
 
 CPeripherals &CPeripherals::GetInstance()
@@ -113,6 +118,7 @@ void CPeripherals::Initialise()
 #if defined(TARGET_ANDROID)
   busses.push_back(std::make_shared<CPeripheralBusAndroid>(this));
 #endif
+  busses.push_back(std::make_shared<CPeripheralBusApplication>(this));
 
   /* initialise all known busses and run an initial scan for devices */
   for (auto& bus : busses)
@@ -335,6 +341,10 @@ void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanRes
     peripheral = PeripheralPtr(new CPeripheralJoystick(mappedResult, &bus));
     break;
 
+  case PERIPHERAL_JOYSTICK_EMULATION:
+    peripheral = PeripheralPtr(new CPeripheralJoystickEmulation(mappedResult, &bus));
+    break;
+
   default:
     break;
   }
@@ -356,8 +366,17 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
 {
   OnDeviceChanged();
 
+  bool bNotify = true;
+
   // don't show a notification for devices detected during the initial scan
-  if (bus.IsInitialised())
+  if (!bus.IsInitialised())
+    bNotify = false;
+
+  // don't show a notification for emulated peripherals
+  if (peripheral.Type() == PERIPHERAL_JOYSTICK_EMULATION) //! @todo Change to peripheral.IsEmulated()
+    bNotify = false;
+
+  if (bNotify)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
 }
 
@@ -365,7 +384,14 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
 {
   OnDeviceChanged();
 
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
+  bool bNotify = true;
+
+  // don't show a notification for emulated peripherals
+  if (peripheral.Type() == PERIPHERAL_JOYSTICK_EMULATION) //! @todo Change to peripheral.IsEmulated()
+    bNotify = false;
+
+  if (bNotify)
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
 }
 
 void CPeripherals::OnDeviceChanged()
@@ -820,7 +846,25 @@ void CPeripherals::RegisterJoystickButtonMapper(IButtonMapper* mapper)
   GetPeripheralsWithFeature(peripherals, FEATURE_JOYSTICK);
 
   for (auto& peripheral : peripherals)
+  {
+    if (mapper->Emulation())
+    {
+      if (peripheral->Type() != PERIPHERAL_JOYSTICK_EMULATION)
+        continue;
+
+      unsigned int controllerNumber = std::static_pointer_cast<CPeripheralJoystickEmulation>(peripheral)->ControllerNumber();
+
+      if (mapper->ControllerNumber() != controllerNumber)
+        continue;
+    }
+    else
+    {
+      if (peripheral->Type() != PERIPHERAL_JOYSTICK)
+        continue;
+    }
+
     peripheral->RegisterJoystickButtonMapper(mapper);
+  }
 }
 
 void CPeripherals::UnregisterJoystickButtonMapper(IButtonMapper* mapper)

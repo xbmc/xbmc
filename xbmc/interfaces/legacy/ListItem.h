@@ -536,6 +536,7 @@ namespace XBMCAddon
       /// | video        | Video information
       /// | music        | Music information
       /// | pictures     | Pictures informantion
+      /// | game         | Game informantion
       ///
       /// @note To set pictures exif info, prepend `exif:` to the label. Exif values must be passed
       ///       as strings, separate value pairs with a comma. <b>(eg. <c>{'exif:resolution': '720,480'}</c></b>
@@ -628,6 +629,17 @@ namespace XBMCAddon
       /// | picturepath   | string (`/home/username/pictures/img001.jpg`)
       /// | exif*         | string (See \ref kodi_pictures_infotag for valid strings)
       ///
+      /// __Game Values__:
+      /// | Info label    | Description                                        |
+      /// |--------------:|:---------------------------------------------------|
+      /// | title         | string (Super Mario Bros.)
+      /// | platform      | string (Atari 2600)
+      /// | genres        | list (["Action","Strategy"])
+      /// | publisher     | string (Nintendo)
+      /// | developer     | string (Square)
+      /// | overview      | string (Long Description)
+      /// | year          | integer (1980)
+      /// | emulator      | string (game.libretro.fceumm)
       ///
       ///
       ///-----------------------------------------------------------------------

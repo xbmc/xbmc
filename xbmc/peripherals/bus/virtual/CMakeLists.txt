@@ -1,6 +1,8 @@
-set(SOURCES PeripheralBusAddon.cpp)
+set(SOURCES PeripheralBusAddon.cpp
+            PeripheralBusApplication.cpp)
 
-set(HEADERS PeripheralBusAddon.h)
+set(HEADERS PeripheralBusAddon.h
+            PeripheralBusApplication.h)
 
 if(CEC_FOUND)
   list(APPEND SOURCES PeripheralBusCEC.cpp)
