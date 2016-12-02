@@ -27,6 +27,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
 #include "utils/AMLUtils.h"
+#include "filesystem/SpecialProtocol.h"
 
 bool CEGLNativeTypeAmlAndroid::m_isWritable = false;
 
@@ -90,9 +91,14 @@ bool CEGLNativeTypeAmlAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &re
 {
   CEGLNativeTypeAndroid::GetNativeResolution(&m_fb_res);
 
-  std::string valstr;
-  if (SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr) < 0)
-    return false;
+  std::string valstr, dcapfile;
+  dcapfile = CSpecialProtocol::TranslatePath("special://home/userdata/disp_cap");
+
+  if (SysfsUtils::GetString(dcapfile, valstr) < 0)
+  {
+    if (SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr) < 0)
+      return false;
+  }
   std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
 
   resolutions.clear();
