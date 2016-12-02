@@ -162,14 +162,8 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
 
     CGUIDialog::OnMessage(message);
 
-    return true;
-  }
-  else if (message.GetMessage() == GUI_MSG_WINDOW_RESET)
-  {
-    CGUIDialog::OnMessage(message);
-    
-    // Clear saved subtitles from any previous subtitle search
     ClearSubtitles();
+    ClearServices();
     return true;
   }
   return CGUIDialog::OnMessage(message);
@@ -187,10 +181,7 @@ void CGUIDialogSubtitles::OnInitWindow()
 
   FillServices();
   CGUIWindow::OnInitWindow();
-
-  // Only do a inital search for subtitles if there isn't a saved search
-  if (m_subtitles->IsEmpty())
-    Search();
+  Search();
 }
 
 void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -240,7 +231,6 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
 
 void CGUIDialogSubtitles::FillServices()
 {
-  std::string previousService = m_currentService;
   ClearServices();
 
   VECADDONS addons;
@@ -267,8 +257,7 @@ void CGUIDialogSubtitles::FillServices()
   {
     CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addonIt, "plugin://" + (*addonIt)->ID(), false));
     m_serviceItems->Add(item);
-    // If we don't have used a previous service use the default service, otherwise use the previous service
-    if ((previousService.empty() && (*addonIt)->ID() == defaultService) || (*addonIt)->ID() == previousService)
+    if ((*addonIt)->ID() == defaultService)
       service = (*addonIt)->ID();
   }
 
