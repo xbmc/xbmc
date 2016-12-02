@@ -32,7 +32,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font45_title</font>
-				<label>$LOCALIZE[31155]</label>
+				<label>$VAR[BookmarkLabel]</label>
 				<visible>Integer.IsEqual(Container(11).NumItems,0)</visible>
 			</control>
 			<control type="grouplist" id="9001">
@@ -46,17 +46,17 @@
 				<ondown>11</ondown>
 				<include content="DefaultDialogButton">
 					<param name="id" value="2" />
-					<param name="label" value="$LOCALIZE[294]" />
+					<param name="label" value="" />
 					<param name="width" value="350" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="3" />
-					<param name="label" value="$LOCALIZE[296]" />
+					<param name="label" value="" />
 					<param name="width" value="350" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="4" />
-					<param name="label" value="$LOCALIZE[20406]" />
+					<param name="label" value="" />
 					<param name="width" value="350" />
 					<param name="visible" value="Control.IsEnabled(4)" />
 				</include>

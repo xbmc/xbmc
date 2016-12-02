@@ -35,6 +35,7 @@ public:
   CGUIDialogVideoBookmarks(void);
   ~CGUIDialogVideoBookmarks(void) override;
   bool OnMessage(CGUIMessage& message) override;
+  void OnInitWindow() override;
   void OnWindowLoaded() override;
   void OnWindowUnload() override;
   bool OnAction(const CAction &action) override;

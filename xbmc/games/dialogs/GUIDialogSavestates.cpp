@@ -38,12 +38,14 @@
 using namespace KODI;
 using namespace GAME;
 
+#define CONTROL_HEADING           1
 #define CONTROL_ADD_SAVESTATE     2
 #define CONTROL_CLEAR_SAVESTATES  3
+#define CONTROL_BUTTON            4
 #define CONTROL_THUMBS            11
 
 CGUIDialogSavestates::CGUIDialogSavestates() : 
-  CGUIDialog(WINDOW_DIALOG_SAVESTATES, "DialogSavestates.xml"),
+  CGUIDialog(WINDOW_DIALOG_SAVESTATES, "DialogBookmarks.xml"),
   m_vecItems(new CFileItemList)
 {
   // Initialize CGUIWindow
@@ -156,6 +158,16 @@ bool CGUIDialogSavestates::OnMessage(CGUIMessage& message)
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogSavestates::OnInitWindow()
+{
+  SET_CONTROL_LABEL(CONTROL_HEADING, 35269);
+  SET_CONTROL_LABEL(CONTROL_ADD_SAVESTATE, 35270);
+  SET_CONTROL_LABEL(CONTROL_CLEAR_SAVESTATES, 35271);
+  SET_CONTROL_HIDDEN(CONTROL_BUTTON);
+
+  CGUIDialog::OnInitWindow();
 }
 
 bool CGUIDialogSavestates::OnAction(const CAction &action)

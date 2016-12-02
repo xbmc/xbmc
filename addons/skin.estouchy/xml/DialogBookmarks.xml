@@ -22,13 +22,13 @@
 			<height>600</height>
 			<texture>dialog_back.png</texture>
 		</control>
-		<control type="label">
+		<control type="label" id="1">
 			<description>header label</description>
 			<posx>20</posx>
 			<posy>0</posy>
 			<include>WindowTitleCommons</include>
 			<width>700</width>
-			<label>$LOCALIZE[298]</label>
+			<label></label>
 		</control>
 		<control type="group">
 			<posx>740</posx>
@@ -137,22 +137,22 @@
 			<ondown>11</ondown>
 			<control type="button" id="2">
 				<description>Create Bookmark button</description>
-				<label>294</label>
+				<label></label>
 				<width>250</width>
 				<include>ButtonInfoDialogsCommonValues</include>
 			</control>
 			<control type="button" id="3">
 				<description>Clear Bookmark button</description>
-				<label>296</label>
+				<label></label>
 				<width>250</width>
 				<include>ButtonInfoDialogsCommonValues</include>
 			</control>
 			<control type="button" id="4">
 				<description>Clear Bookmark button</description>
-				<label>20406</label>
+				<label></label>
 				<width>250</width>
 				<include>ButtonInfoDialogsCommonValues</include>
-				<visible>videoplayer.content(episodes)</visible>
+				<visible>Control.IsEnabled(4)</visible>
 			</control>
 		</control>
 	</controls>

@@ -42,6 +42,7 @@ namespace GAME
     // implementation of CGUIControl via CGUIDialog
     virtual bool OnMessage(CGUIMessage& message) override;
     virtual bool OnAction(const CAction &action) override;
+    virtual void OnInitWindow() override;
 
     // implementation of CGUIControlGroup via CGUIDialog
     virtual CGUIControl* GetFirstFocusableControl(int id) override;
