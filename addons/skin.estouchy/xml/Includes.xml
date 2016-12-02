@@ -4,7 +4,6 @@
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesPlayerControls.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
-	<include file="IncludesKeypad.xml" />
 	<include file="ViewsList.xml" />
 	<include file="ViewsThumbnail.xml" />
 	<include file="ViewsWide.xml" />
@@ -981,7 +980,7 @@
 					<include condition="Window.IsVisible(Pictures)">PicturesMenu</include>
 					<include condition="Window.IsVisible(Programs)">ProgramsMenu</include>
 					<include condition="Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVGuide) | Window.IsVisible(RadioGuide) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch)">PVRMenu</include>
-					<include condition="Window.IsVisible(PicturesSettings) | Window.IsVisible(ProgramsSettings) | Window.IsVisible(WeatherSettings) | Window.IsVisible(MusicSettings) | Window.IsVisible(SystemSettings) | Window.IsVisible(VideosSettings) | Window.IsVisible(ServiceSettings) | Window.IsVisible(AppearanceSettings)">SettingsMenu</include>
+					<include condition="Window.IsVisible(PlayerSettings) | Window.IsVisible(MediaSettings) | Window.IsVisible(PVRSettings) | Window.IsVisible(ServiceSettings) | Window.IsVisible(InterfaceSettings) | Window.IsVisible(SystemSettings)">SettingsMenu</include>
 					<include condition="Window.IsVisible(Videos)">VideosMenu</include>
 					<include condition="Window.IsVisible(VideoOSD)">VideoOSDMenu</include>
 					<include condition="Window.IsVisible(VideoPlaylist)">VideoPlaylistMenu</include>
