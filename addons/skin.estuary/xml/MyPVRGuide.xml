@@ -52,15 +52,15 @@
 							<control type="label">
 								<left>2</left>
 								<top>-2</top>
-								<width>70</width>
+								<width>75</width>
 								<height>60</height>
-								<font>font36_title</font>
-								<label>$INFO[ListItem.ChannelNumber]</label>
+								<font>font32_title</font>
+								<label>$INFO[ListItem.ChannelNumberLabel]</label>
 								<align>center</align>
 								<aligny>center</aligny>
 							</control>
 							<control type="label" id="1">
-								<left>65</left>
+								<left>68</left>
 								<top>-2</top>
 								<width>350</width>
 								<height>60</height>
@@ -74,16 +74,16 @@
 							<control type="label">
 								<left>2</left>
 								<top>-2</top>
-								<width>70</width>
+								<width>75</width>
 								<height>60</height>
-								<font>font36_title</font>
-								<label>$INFO[ListItem.ChannelNumber]</label>
+								<font>font32_title</font>
+								<label>$INFO[ListItem.ChannelNumberLabel]</label>
 								<textcolor>button_focus</textcolor>
 								<align>center</align>
 								<aligny>center</aligny>
 							</control>
 							<control type="label" id="1">
-								<left>65</left>
+								<left>68</left>
 								<top>-2</top>
 								<width>350</width>
 								<height>60</height>
@@ -208,6 +208,7 @@
 			</control>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRGuideVar]" />
+				<param name="sublabel" value="" />
 			</include>
 			<include content="BottomBar">
 				<param name="info_visible" value="true" />

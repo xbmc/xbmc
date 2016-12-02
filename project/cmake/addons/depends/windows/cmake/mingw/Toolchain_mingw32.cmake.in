@@ -1,0 +1,17 @@
+set(CMAKE_SYSTEM_VERSION 1)
+set(CMAKE_SYSTEM_NAME Windows)
+
+set(CMAKE_FIND_ROOT_PATH @CMAKE_FIND_ROOT_PATH@ @CMAKE_INSTALL_PREFIX@ @MSYS_PATH@ @MINGW_PATH@)
+
+# specify the cross compiler
+set(CMAKE_C_COMPILER   @MINGW_PATH@/bin/gcc.bat)
+set(CMAKE_CXX_COMPILER @MINGW_PATH@/bin/g++.bat)
+set(CMAKE_AR           @MINGW_PATH@/bin/ar.bat CACHE FILEPATH "Archiver")
+set(CMAKE_LINKER       @MINGW_PATH@/bin/ld.bat CACHE FILEPATH "Linker")
+SET(CMAKE_RC_COMPILER  @MINGW_PATH@/bin/windres.bat)
+
+# search for programs in the build host directories
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# for libraries and headers in the target directories
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

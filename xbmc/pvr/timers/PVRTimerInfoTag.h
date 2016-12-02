@@ -37,9 +37,9 @@
  * number of the tag reported by the PVR backend and can not be played!
  */
 
-#include <memory>
-
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
@@ -48,23 +48,11 @@
 class CFileItem;
 class CVariant;
 
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
-
 namespace PVR
 {
   class CGUIDialogPVRTimerSettings;
   class CPVRTimers;
   class CPVRChannelGroupInternal;
-
-  class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-
-  class CPVRTimerInfoTag;
-  typedef std::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
 
   class CPVRTimerInfoTag : public ISerializable
   {

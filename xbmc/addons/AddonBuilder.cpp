@@ -22,6 +22,7 @@
 #include "addons/AudioDecoder.h"
 #include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
+#include "addons/GameResource.h"
 #include "addons/ImageResource.h"
 #include "addons/InputStream.h"
 #include "addons/LanguageResource.h"
@@ -35,6 +36,7 @@
 #include "addons/Visualisation.h"
 #include "addons/Webinterface.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
+#include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "addons/PVRClient.h"
@@ -88,7 +90,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       type == ADDON_AUDIOENCODER ||
       type == ADDON_AUDIODECODER ||
       type == ADDON_INPUTSTREAM ||
-      type == ADDON_PERIPHERALDLL)
+      type == ADDON_PERIPHERALDLL ||
+      type == ADDON_GAMEDLL)
   {
     std::string value = CAddonMgr::GetInstance().GetPlatformLibraryName(m_extPoint->plugin->extensions->configuration);
     if (value.empty())
@@ -137,10 +140,14 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CInputStream::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_PERIPHERALDLL:
       return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_GAMEDLL:
+      return GAME::CGameClient::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_SKIN:
       return CSkinInfo::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_RESOURCE_IMAGES:
       return CImageResource::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_RESOURCE_GAMES:
+      return CGameResource::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_RESOURCE_LANGUAGE:
       return CLanguageResource::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_RESOURCE_UISOUNDS:
@@ -203,6 +210,8 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new CAudioDecoder(std::move(addonProps)));
     case ADDON_RESOURCE_IMAGES:
       return AddonPtr(new CImageResource(std::move(addonProps)));
+    case ADDON_RESOURCE_GAMES:
+      return AddonPtr(new CGameResource(std::move(addonProps)));
     case ADDON_RESOURCE_LANGUAGE:
       return AddonPtr(new CLanguageResource(std::move(addonProps)));
     case ADDON_RESOURCE_UISOUNDS:
@@ -217,6 +226,8 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new PERIPHERALS::CPeripheralAddon(std::move(addonProps), false, false)); //! @todo implement
     case ADDON_GAME_CONTROLLER:
       return AddonPtr(new GAME::CController(std::move(addonProps)));
+    case ADDON_GAMEDLL:
+      return AddonPtr(new GAME::CGameClient(std::move(addonProps)));
     default:
       break;
   }

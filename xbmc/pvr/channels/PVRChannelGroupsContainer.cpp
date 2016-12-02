@@ -334,7 +334,7 @@ CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetPreviousPlayedGroup(void)
   return m_lastPlayedGroups[0];
 }
 
-void CPVRChannelGroupsContainer::SetLastPlayedGroup(CPVRChannelGroupPtr group)
+void CPVRChannelGroupsContainer::SetLastPlayedGroup(const CPVRChannelGroupPtr &group)
 {
   CSingleLock lock(m_critSection);
   m_lastPlayedGroups[0] = m_lastPlayedGroups[1];

@@ -26,6 +26,7 @@
 #include "system.h"
 #include "network/Network.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "DNSNameCache.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -668,7 +669,7 @@ void CWakeOnAccess::SetEnabled(bool enabled)
 
 void CWakeOnAccess::LoadFromXML()
 {
-  bool enabled = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
+  bool enabled = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(GetSettingFile()))

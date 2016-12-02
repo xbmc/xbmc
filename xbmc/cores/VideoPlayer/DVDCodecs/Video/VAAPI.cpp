@@ -20,6 +20,7 @@
 #include "system.h"
 #ifdef HAVE_LIBVA
 #include "VAAPI.h"
+#include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
@@ -32,7 +33,7 @@
 #include "guilib/GraphicContext.h"
 #include "settings/MediaSettings.h"
 #include "settings/AdvancedSettings.h"
-#include <va/va_x11.h>
+#include <va/va_drm.h>
 #include <va/va_drmcommon.h>
 #include <drm_fourcc.h>
 #include "linux/XTimeUtils.h"
@@ -45,7 +46,12 @@ extern "C" {
 #include "libavfilter/buffersrc.h"
 }
 
+#ifdef HAVE_X11
+#include <va/va_x11.h>
+#endif
+
 #include <va/va_vpp.h>
+#include <xf86drm.h>
 
 using namespace VAAPI;
 #define NUM_RENDER_PICS 7
@@ -86,6 +92,11 @@ void CVAAPIContext::Release(CDecoder *decoder)
 void CVAAPIContext::Close()
 {
   CLog::Log(LOGNOTICE, "VAAPI::Close - closing decoder context");
+  if (m_renderNodeFD >= 0)
+  {
+    close(m_renderNodeFD);
+  }
+
   DestroyContext();
 }
 
@@ -123,14 +134,67 @@ bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
   return true;
 }
 
-bool CVAAPIContext::CreateContext()
+void CVAAPIContext::SetValidDRMVaDisplayFromRenderNode()
 {
-  { CSingleLock lock(g_graphicsContext);
-    if (!m_X11dpy)
-      m_X11dpy = XOpenDisplay(NULL);
+  int const buf_size{128};
+  char name[buf_size];
+  int fd{-1};
+
+  // 128 is the start of the NUM in renderD<NUM>
+  for (int i = 128; i < (128 + 16); i++)
+  {
+    snprintf(name, buf_size, "/dev/dri/renderD%u", i);
+
+    fd = open(name, O_RDWR);
+
+    if (fd < 0)
+    {
+      continue;
+    }
+
+    auto display = vaGetDisplayDRM(fd);
+
+    if (display != nullptr)
+    {
+      m_renderNodeFD = fd;
+      m_display = display;
+      return;
+    }
   }
 
-  m_display = vaGetDisplay(m_X11dpy);
+  CLog::Log(LOGERROR, "Failed to find any open render nodes in /dev/dri/renderD<num>");
+}
+
+void CVAAPIContext::SetVaDisplayForSystem()
+{
+  auto win_system = g_Windowing.GetWinSystem();
+  if (win_system == WINDOW_SYSTEM_X11)
+  {
+#if HAVE_X11
+    { CSingleLock lock(g_graphicsContext);
+      if (m_X11dpy == nullptr)
+        m_X11dpy = XOpenDisplay(nullptr);
+    }
+
+    m_display = vaGetDisplay(m_X11dpy);
+#endif
+  }
+  else
+  {
+    // Render nodes depends on kernel >= 3.15
+    SetValidDRMVaDisplayFromRenderNode();
+  }
+}
+
+bool CVAAPIContext::CreateContext()
+{
+  SetVaDisplayForSystem();
+
+  if (m_display == nullptr)
+  {
+    CLog::Log(LOGERROR, "Failed to find any VaDisplays for this system");
+    return false;
+  }
 
   int major_version, minor_version;
   if (!CheckSuccess(vaInitialize(m_display, &major_version, &minor_version)))
@@ -248,11 +312,6 @@ bool CVAAPIContext::CheckSuccess(VAStatus status)
 VADisplay CVAAPIContext::GetDisplay()
 {
   return m_display;
-}
-
-Display *CVAAPIContext::GetX11Display()
-{
-  return m_X11dpy;
 }
 
 bool CVAAPIContext::IsValidDecoder(CDecoder *decoder)
@@ -1011,7 +1070,6 @@ bool CDecoder::ConfigVAAPI()
   memset(&m_hwContext, 0, sizeof(vaapi_context));
 
   m_vaapiConfig.dpy = m_vaapiConfig.context->GetDisplay();
-  m_vaapiConfig.x11dsp = m_vaapiConfig.context->GetX11Display();
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
   if ((m_vaapiConfig.attrib.value & VA_RT_FORMAT_YUV420) == 0)
   {
@@ -2030,7 +2088,7 @@ void COutput::InitCycle()
     if (!m_pp)
     {
       m_config.stats->SetVpp(false);
-      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+      if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
         m_pp = new CFFmpegPostproc();
       else
       {
@@ -2397,7 +2455,6 @@ bool COutput::CheckSuccess(VAStatus status)
 
 bool COutput::CreateEGLContext()
 {
-  m_Display = g_Windowing.GetDisplay();
   EGLDisplay eglDisplay = g_Windowing.GetEGLDisplay();
   EGLContext eglMainContext = g_Windowing.GetEGLContext();
   EGLConfig eglMainConfig = g_Windowing.GetEGLConfig();
@@ -3333,7 +3390,7 @@ bool CFFmpegPostproc::Compatible(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else if (method == VS_INTERLACEMETHOD_NONE &&
-           !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+           !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
     return true;
 
   return false;

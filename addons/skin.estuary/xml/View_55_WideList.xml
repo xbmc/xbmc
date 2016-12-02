@@ -7,115 +7,113 @@
 			<include>Visible_Right</include>
 			<control type="fixedlist" id="55">
 				<left>594</left>
-				<top>3</top>
+				<top>list_y_offset</top>
+				<bottom>list_y_offset</bottom>
 				<right>0</right>
-				<height>100%</height>
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<orientation>vertical</orientation>
 				<pagecontrol>531</pagecontrol>
-				<movement>3</movement>
-				<focusposition>5</focusposition>
+				<movement>5</movement>
+				<focusposition>6</focusposition>
 				<onleft>9000</onleft>
 				<onright>531</onright>
 				<onup>55</onup>
 				<ondown>55</ondown>
 				<viewtype label="$LOCALIZE[31107]">list</viewtype>
 				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content() | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)</visible>
-				<focusedlayout height="80" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
-					<control type="group">
-						<width>widelist_width</width>
-						<control type="image">
-							<left>0</left>
-							<right>0</right>
-							<height>80</height>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<visible>Control.HasFocus(55)</visible>
-						</control>
-						<control type="label">
-							<left>18</left>
-							<top>2</top>
-							<height>80</height>
-							<width>80</width>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Year]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-							<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies)</visible>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>25</top>
-							<width>32</width>
-							<height>32</height>
-							<texture>$VAR[ListWatchedIconVar]</texture>
-							<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | String.IsEmpty(ListItem.Year)</visible>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<height>80</height>
-							<right>100</right>
-							<aligny>center</aligny>
-							<scroll>true</scroll>
-							<label>$INFO[ListItem.Label]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<left>40</left>
-							<height>80</height>
-							<right>40</right>
-							<align>right</align>
-							<aligny>center</aligny>
-							<label>$VAR[ActorLabel2]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+				<focusedlayout height="list_item_height" width="widelist_width" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
+					<control type="image">
+						<left>0</left>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<visible>Control.HasFocus(55)</visible>
+					</control>
+					<control type="label">
+						<left>18</left>
+						<top>0</top>
+						<bottom>0</bottom>
+						<width>80</width>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Year]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies)</visible>
+					</control>
+					<control type="image">
+						<left>35</left>
+						<centertop>50%</centertop>
+						<width>32</width>
+						<height>32</height>
+						<texture>$VAR[ListWatchedIconVar]</texture>
+						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | String.IsEmpty(ListItem.Year)</visible>
+					</control>
+					<control type="label">
+						<left>105</left>
+						<top>0</top>
+						<bottom>0</bottom>
+						<right>100</right>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<label>$INFO[ListItem.Label]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>40</left>
+						<top>0</top>
+						<bottom>0</bottom>
+						<right>40</right>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$VAR[ListLabel2Var]</label>
+						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 				</focusedlayout>
-				<itemlayout height="80" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
-					<control type="group">
-						<width>widelist_width</width>
-						<control type="label">
-							<left>18</left>
-							<top>2</top>
-							<height>80</height>
-							<width>80</width>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Year]</label>
-							<textcolor>button_focus</textcolor>
-							<shadowcolor>text_shadow</shadowcolor>
-							<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies)</visible>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>25</top>
-							<width>32</width>
-							<height>32</height>
-							<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
-							<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | String.IsEmpty(ListItem.Year)</visible>
-						</control>
-						<control type="label">
-							<left>105</left>
-							<height>80</height>
-							<right>100</right>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<left>40</left>
-							<height>80</height>
-							<right>40</right>
-							<align>right</align>
-							<aligny>center</aligny>
-							<label>$VAR[ActorLabel2]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>25</top>
-							<visible>String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.AddonVersion)</visible>
-							<width>32</width>
-							<height>32</height>
-							<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
-						</control>
+				<itemlayout height="list_item_height" width="widelist_width" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)">
+					<control type="label">
+						<left>18</left>
+						<top>0</top>
+						<bottom>0</bottom>
+						<width>80</width>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Year]</label>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies)</visible>
+					</control>
+					<control type="image">
+						<left>35</left>
+						<centertop>50%</centertop>
+						<width>32</width>
+						<height>32</height>
+						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
+						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | String.IsEmpty(ListItem.Year)</visible>
+					</control>
+					<control type="label">
+						<left>105</left>
+						<top>0</top>
+						<bottom>0</bottom>
+						<right>100</right>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>40</left>
+						<top>0</top>
+						<bottom>0</bottom>
+						<right>40</right>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$VAR[ListLabel2Var]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="image">
+						<left>35</left>
+						<centertop>50%</centertop>
+						<visible>String.IsEmpty(ListItem.Year) + String.IsEmpty(ListItem.AddonVersion)</visible>
+						<width>32</width>
+						<height>32</height>
+						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
 					</control>
 				</itemlayout>
 				<include condition="Window.IsActive(music)">SongsListLayout</include>
@@ -124,126 +122,114 @@
 		</control>
 	</include>
 	<include name="SongsListLayout">
-		<focusedlayout height="80" condition="Container.Content(songs)">
-			<control type="group">
-				<width>widelist_width</width>
-				<control type="image">
-					<left>0</left>
-					<right>0</right>
-					<height>80</height>
-					<texture colordiffuse="button_focus">lists/focus.png</texture>
-					<visible>Control.hasFocus(55)</visible>
-				</control>
-				<control type="label">
-					<left>35</left>
-					<height>80</height>
-					<right>90</right>
-					<aligny>center</aligny>
-					<scroll>true</scroll>
-					<label>$INFO[ListItem.Label]</label>
-					<shadowcolor>text_shadow</shadowcolor>
-				</control>
-				<control type="label">
-					<left>40</left>
-					<height>80</height>
-					<right>40</right>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label2]</label>
-					<shadowcolor>text_shadow</shadowcolor>
-				</control>
+		<focusedlayout height="80" width="widelist_width" condition="Container.Content(songs)">
+			<control type="image">
+				<left>0</left>
+				<right>0</right>
+				<height>80</height>
+				<texture colordiffuse="button_focus">lists/focus.png</texture>
+				<visible>Control.hasFocus(55)</visible>
+			</control>
+			<control type="label">
+				<left>35</left>
+				<height>80</height>
+				<right>90</right>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<left>40</left>
+				<height>80</height>
+				<right>40</right>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label2]</label>
+				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 		</focusedlayout>
-		<itemlayout height="80" condition="Container.Content(songs)">
-			<control type="group">
-				<width>widelist_width</width>
-				<control type="label">
-					<left>35</left>
-					<height>80</height>
-					<right>90</right>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
-					<shadowcolor>text_shadow</shadowcolor>
-				</control>
-				<control type="label">
-					<left>40</left>
-					<height>80</height>
-					<right>40</right>
-					<align>right</align>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label2]</label>
-					<textcolor>grey</textcolor>
-					<shadowcolor>text_shadow</shadowcolor>
-				</control>
+		<itemlayout height="80" width="widelist_width" condition="Container.Content(songs)">
+			<control type="label">
+				<left>35</left>
+				<height>80</height>
+				<right>90</right>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+			<control type="label">
+				<left>40</left>
+				<height>80</height>
+				<right>40</right>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label2]</label>
+				<textcolor>grey</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 		</itemlayout>
 	</include>
 	<include name="AddonsListLayout">
-		<focusedlayout height="80" condition="Container.Content(addons)">
-			<control type="group">
-				<width>widelist_width</width>
-				<control type="image">
-					<left>0</left>
-					<right>0</right>
-					<height>80</height>
-					<texture colordiffuse="button_focus">lists/focus.png</texture>
-					<visible>Control.hasFocus(55)</visible>
-				</control>
-				<control type="image">
-					<left>20</left>
-					<top>25</top>
-					<width>32</width>
-					<height>32</height>
-					<texture>$VAR[AddonsListIconVar]</texture>
-				</control>
-				<control type="label">
-					<left>75</left>
-					<height>80</height>
-					<right>100</right>
-					<aligny>center</aligny>
-					<scroll>true</scroll>
-					<label>$INFO[ListItem.Label]</label>
-				</control>
-				<control type="label">
-					<left>40</left>
-					<height>80</height>
-					<right>40</right>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font27</font>
-					<label>$VAR[AddonsLabel2Var]</label>
-				</control>
+		<focusedlayout height="80" width="widelist_width" condition="Container.Content(addons)">
+			<control type="image">
+				<left>0</left>
+				<right>0</right>
+				<height>80</height>
+				<texture colordiffuse="button_focus">lists/focus.png</texture>
+				<visible>Control.hasFocus(55)</visible>
+			</control>
+			<control type="image">
+				<left>20</left>
+				<top>25</top>
+				<width>32</width>
+				<height>32</height>
+				<texture>$VAR[AddonsListIconVar]</texture>
+			</control>
+			<control type="label">
+				<left>75</left>
+				<height>80</height>
+				<right>100</right>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>40</left>
+				<height>80</height>
+				<right>40</right>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font27</font>
+				<label>$VAR[AddonsLabel2Var]</label>
 			</control>
 		</focusedlayout>
-		<itemlayout height="80" condition="Container.Content(addons)">
-			<control type="group">
-				<width>widelist_width</width>
-				<control type="image">
-					<left>20</left>
-					<top>25</top>
-					<width>32</width>
-					<height>32</height>
-					<texture>$VAR[AddonsListIconVar]</texture>
-				</control>
-				<control type="label">
-					<left>75</left>
-					<height>80</height>
-					<right>100</right>
-					<aligny>center</aligny>
-					<scroll>true</scroll>
-					<label>$INFO[ListItem.Label]</label>
-				</control>
-				<control type="label">
-					<left>40</left>
-					<height>80</height>
-					<right>40</right>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font27</font>
-					<label>$VAR[AddonsLabel2Var]</label>
-					<textcolor>grey</textcolor>
-					<shadowcolor>text_shadow</shadowcolor>
-				</control>
+		<itemlayout height="80" width="widelist_width" condition="Container.Content(addons)">
+			<control type="image">
+				<left>20</left>
+				<top>25</top>
+				<width>32</width>
+				<height>32</height>
+				<texture>$VAR[AddonsListIconVar]</texture>
+			</control>
+			<control type="label">
+				<left>75</left>
+				<height>80</height>
+				<right>100</right>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<left>40</left>
+				<height>80</height>
+				<right>40</right>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font27</font>
+				<label>$VAR[AddonsLabel2Var]</label>
+				<textcolor>grey</textcolor>
+				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 		</itemlayout>
 	</include>

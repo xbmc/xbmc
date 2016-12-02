@@ -49,7 +49,6 @@ namespace PVR
     virtual void SaveControlStates();
     virtual void SetInvalid();
 
-    void CloseOrSelect(unsigned int iItem);
     void GotoChannel(int iItem);
     void ShowInfo(int item);
     void Clear();

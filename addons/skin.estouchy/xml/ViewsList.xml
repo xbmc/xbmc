@@ -2,12 +2,24 @@
 <includes>
 	<include name="List">
 		<control type="image">
-			<posx>120</posx>
-			<posy>130</posy>
-			<width>$PARAM[panel-width]</width>
-			<height>700</height>
-			<texture>panel.png</texture>
-			<visible>Control.IsVisible(500)</visible>
+			<posx>115</posx>
+			<posy>125</posy>
+			<width>1540</width>
+			<height>710</height>
+			<texture>back.png</texture>
+			<bordertexture border="6">panel_shadow.png</bordertexture>
+			<bordersize>5</bordersize>
+			<visible>String.IsEqual(Skin.AspectRatio,16:9) + Control.IsVisible(500)</visible>
+		</control>
+		<control type="image">
+			<posx>115</posx>
+			<posy>125</posy>
+			<width>1100</width>
+			<height>710</height>
+			<texture>back.png</texture>
+			<bordertexture border="6">panel_shadow.png</bordertexture>
+			<bordersize>5</bordersize>
+			<visible>String.IsEqual(Skin.AspectRatio,4:3) + Control.IsVisible(500)</visible>
 		</control>
 		<control type="panel" id="500">
 			<posx>120</posx>
@@ -23,13 +35,6 @@
 			<scrolltime>200</scrolltime>
 			<preloaditems>2</preloaditems>
 			<itemlayout height="70" width="$PARAM[panel-width]" condition="!Window.IsVisible(EventLog)">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>$PARAM[layout-width]</width>
-					<height>70</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
 				<control type="image">
 					<posx>4</posx>
 					<posy>4</posy>
@@ -306,13 +311,6 @@
 				</control>
 			</focusedlayout>
 			<itemlayout height="90" width="$PARAM[panel-width]" condition="Window.IsVisible(EventLog)">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>$PARAM[layout-width]</width>
-					<height>90</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
 				<control type="image">
 					<posx>4</posx>
 					<posy>4</posy>

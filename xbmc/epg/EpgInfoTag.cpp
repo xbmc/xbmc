@@ -18,6 +18,7 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
@@ -59,7 +60,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
 {
 }
 
-CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
+CEpgInfoTag::CEpgInfoTag(CEpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
     m_bNotify(false),
     m_iBroadcastId(-1),
     m_iGenreType(0),
@@ -353,7 +354,7 @@ std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 
   if (!bOverrideParental && bParentalLocked)
     strTitle = g_localizeStrings.Get(19266); // parental locked
-  else if (m_strTitle.empty() && !CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+  else if (m_strTitle.empty() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
     strTitle = g_localizeStrings.Get(19055); // no information available
   else
     strTitle = m_strTitle;
@@ -533,7 +534,7 @@ CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const
   return m_timer;
 }
 
-void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannelPtr channel)
+void CEpgInfoTag::SetPVRChannel(const PVR::CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
   m_pvrChannel = channel;
@@ -722,7 +723,7 @@ void CEpgInfoTag::ClearTimer(void)
     previousTag->ClearEpgTag();
 }
 
-void CEpgInfoTag::SetRecording(CPVRRecordingPtr recording)
+void CEpgInfoTag::SetRecording(const CPVRRecordingPtr &recording)
 {
   CSingleLock lock(m_critSection);
   m_recording = recording;

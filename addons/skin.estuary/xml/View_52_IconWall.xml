@@ -145,7 +145,6 @@
 							<label>$INFO[ListItem.Label]</label>
 							<align>center</align>
 							<aligny>center</aligny>
-							<textcolor>white</textcolor>
 						</control>
 					</control>
 				</itemlayout>

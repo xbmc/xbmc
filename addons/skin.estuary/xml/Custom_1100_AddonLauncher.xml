@@ -37,6 +37,14 @@
 					<param name="imagewidget_image" value="special://skin/extras/home-images/music.jpg" />
 				</include>
 				<include content="AddonLauncherPanel">
+					<param name="group_id" value="509" />
+					<param name="id" value="game" />
+					<param name="container_path" value="addons://sources/game/" />
+					<param name="container_target" value="games" />
+					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/category.standalonegames,return)" />
+					<param name="imagewidget_image" value="special://skin/extras/home-images/games.jpg" />
+				</include>
+				<include content="AddonLauncherPanel">
 					<param name="group_id" value="502" />
 					<param name="id" value="addons" />
 					<param name="container_path" value="addons://sources/executable/" />
@@ -94,7 +102,7 @@
 								<width>462</width>
 								<height>95</height>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !Control.HasFocus(900) + !ControlGroup(700).HasFocus">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !ControlGroup(700).HasFocus">Conditional</animation>
 							</control>
 							<control type="image">
 								<left>-3</left>
@@ -109,7 +117,7 @@
 								<width>95</width>
 								<height>95</height>
 								<texture colordiffuse="51FFFFFF">colors/black.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !Control.HasFocus(900) + !ControlGroup(700).HasFocus">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !ControlGroup(700).HasFocus">Conditional</animation>
 							</control>
 						</control>
 						<control type="image">
@@ -165,6 +173,16 @@
 							<property name="path">addons://sources/audio/</property>
 							<property name="menu_id">$NUMBER[501]</property>
 							<!-- <visible>Integer.IsGreater(Container(501).NumItems,0)</visible> -->
+						</item>
+						<item id="8">
+							<label>$LOCALIZE[35049]</label>
+							<visible>System.GetBool(gamesgeneral.enable)</visible>
+							<onclick>ActivateWindow(games,addons://sources/game/,return)</onclick>
+							<thumb>icons/sidemenu/games.png</thumb>
+							<property name="id">game</property>
+							<property name="path">addons://sources/game/</property>
+							<property name="menu_id">$NUMBER[509]</property>
+							<!-- <visible>Integer.IsGreater(Container(509).NumItems,0)</visible> -->
 						</item>
 						<item id="3">
 							<label>$LOCALIZE[1043]</label>

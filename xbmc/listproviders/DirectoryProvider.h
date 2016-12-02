@@ -60,7 +60,7 @@ public:
   virtual bool Update(bool forceRefresh) override;
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
   virtual void Fetch(std::vector<CGUIListItemPtr> &items) const override;
-  virtual void Reset(bool immediately = false) override;
+  virtual void Reset() override;
   virtual bool OnClick(const CGUIListItemPtr &item) override;
   bool OnInfo(const CGUIListItemPtr &item) override;
   bool OnContextMenu(const CGUIListItemPtr &item) override;

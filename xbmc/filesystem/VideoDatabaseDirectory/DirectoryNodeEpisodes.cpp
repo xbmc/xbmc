@@ -49,3 +49,8 @@ bool CDirectoryNodeEpisodes::GetContent(CFileItemList& items) const
 
   return bSuccess;
 }
+
+NODE_TYPE CDirectoryNodeEpisodes::GetChildType() const
+{
+  return NODE_TYPE_EPISODES;
+}

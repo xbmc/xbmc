@@ -9,10 +9,10 @@
 			<width>1720</width>
 			<control type="group" id="250">
 				<include content="DialogBackgroundCommons">
-					<param name="DialogBackgroundWidth" value="1720" />
-					<param name="DialogBackgroundHeight" value="750" />
-					<param name="DialogHeaderLabel" value="$LOCALIZE[24012]" />
-					<param name="DialogHeaderId" value="100" />
+					<param name="width" value="1720" />
+					<param name="height" value="750" />
+					<param name="header_label" value="$LOCALIZE[24012]" />
+					<param name="header_id" value="100" />
 				</include>
 				<control type="group">
 					<left>1320</left>

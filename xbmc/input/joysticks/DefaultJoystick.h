@@ -24,6 +24,8 @@
 #include "JoystickTypes.h"
 #include "RumbleGenerator.h"
 
+#include <map>
+#include <memory>
 #include <vector>
 
 #define DEFAULT_CONTROLLER_ID    "game.controller.default"
@@ -35,13 +37,15 @@
 namespace JOYSTICK
 {
   class IKeymapHandler;
+  class IButtonSequence;
 
   /*!
+   * \ingroup joystick
    * \brief Implementation of IInputHandler for Kodi input
    *
    * \sa IInputHandler
    */
-  class CDefaultJoystick : public JOYSTICK::IInputHandler,
+  class CDefaultJoystick : public IInputHandler,
                            public IActionMap
   {
   public:
@@ -88,8 +92,16 @@ namespace JOYSTICK
      */
     static const std::vector<ANALOG_STICK_DIRECTION>& GetDirections(void);
 
-    IKeymapHandler* const  m_handler;
+    // Handler to process joystick input to Kodi actions
+    IKeymapHandler* const m_handler;
 
+    // State variables used to process joystick input
+    std::map<unsigned int, unsigned int> m_holdStartTimes; // Key ID -> hold start time (ms)
+    std::map<FeatureName, ANALOG_STICK_DIRECTION> m_currentDirections; // Analog stick name -> direction
+
+    // Rumble functionality
     CRumbleGenerator m_rumbleGenerator;
+
+    std::unique_ptr<IButtonSequence> m_easterEgg;
   };
 }

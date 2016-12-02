@@ -49,6 +49,12 @@
 					<selected>Skin.HasSetting(touchmode)</selected>
 				</control>
 				<control type="radiobutton" id="704">
+					<label>$LOCALIZE[31093]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.ToggleSetting(show_weatherinfo)</onclick>
+					<selected>Skin.HasSetting(show_weatherinfo)</selected>
+				</control>
+				<control type="radiobutton" id="705">
 					<label>$LOCALIZE[31160]</label>
 					<include>DefaultSettingButton</include>
 					<onclick>Skin.ToggleSetting(hide_mediaflags)</onclick>
@@ -76,7 +82,8 @@
 					<label2>$INFO[Skin.String(background_overlay),$LOCALIZE[467] ]</label2>
 					<include>DefaultSettingButton</include>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),1)">Skin.SetString(background_overlay,2)</onclick>
-					<onclick condition="String.IsEqual(Skin.String(background_overlay),6)">Skin.SetString(background_overlay,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(background_overlay),7)">Skin.SetString(background_overlay,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(background_overlay),6)">Skin.SetString(background_overlay,7)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),5)">Skin.SetString(background_overlay,6)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),4)">Skin.SetString(background_overlay,5)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),3)">Skin.SetString(background_overlay,4)</onclick>
@@ -192,6 +199,13 @@
 					<selected>!Skin.HasSetting(HomeMenuNoVideosButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoVideosButton)</onclick>
 				</control>
+				<control type="radiobutton" id="620">
+					<label>$LOCALIZE[15016]</label>
+					<visible>System.GetBool(gamesgeneral.enable)</visible>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoGamesButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoGamesButton)</onclick>
+				</control>
 				<control type="radiobutton" id="6160">
 					<label>$LOCALIZE[10134]</label>
 					<include>DefaultSettingButton</include>
@@ -247,7 +261,6 @@
 						<label>$INFO[ListItem.Label]</label>
 						<font>font37</font>
 						<aligny>center</aligny>
-						<textcolor>white</textcolor>
 					</control>
 				</itemlayout>
 				<focusedlayout height="90" width="470">

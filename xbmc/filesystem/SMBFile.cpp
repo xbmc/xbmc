@@ -25,6 +25,7 @@
 #include "system.h"
 #include "SMBFile.h"
 #include "PasswordManager.h"
+#include "ServiceBroker.h"
 #include "SMBDirectory.h"
 #include <libsmbclient.h>
 #include "filesystem/SpecialProtocol.h"
@@ -123,9 +124,9 @@ void CSMB::Init()
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
-        if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WINSSERVER).length() > 0 && !StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WINSSERVER), "0.0.0.0") )
+        if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WINSSERVER).length() > 0 && !StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WINSSERVER), "0.0.0.0") )
         {
-          fprintf(f, "\twins server = %s\n", CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
+          fprintf(f, "\twins server = %s\n", CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
           fprintf(f, "\tname resolve order = bcast wins host\n");
         }
         else
@@ -161,8 +162,8 @@ void CSMB::Init()
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      smbc_setWorkgroup(m_context, (char*)CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+    if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
+      smbc_setWorkgroup(m_context, (char*)CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
     std::string guest = "guest";
     smbc_setUser(m_context, (char*)guest.c_str());
 #else
@@ -174,8 +175,8 @@ void CSMB::Init()
     m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
     // we need to strdup these, they will get free'ed on smbc_free_context
-    if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+    if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
+      m_context->workgroup = strdup(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
     m_context->user = strdup("guest");
 #endif
 

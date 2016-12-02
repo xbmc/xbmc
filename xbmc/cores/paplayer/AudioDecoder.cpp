@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "music/tags/MusicInfoTag.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -74,13 +75,13 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   m_eof = false;
 
   // get correct cache size
-  unsigned int filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_INTERNET);
+  unsigned int filecache = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_CACHEAUDIO_INTERNET);
   if ( file.IsHD() )
-    filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHE_HARDDISK);
+    filecache = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_CACHE_HARDDISK);
   else if ( file.IsOnDVD() )
-    filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_DVDROM);
+    filecache = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_CACHEAUDIO_DVDROM);
   else if ( file.IsOnLAN() )
-    filecache = CSettings::GetInstance().GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
+    filecache = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
 
   // create our codec
   m_codec=CodecFactory::CreateCodecDemux(file, filecache * 1024);

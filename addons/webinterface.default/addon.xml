@@ -1,145 +1,31 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.33"
-  name="Default webinterface"
-  provider-name="Team Kodi">
+  version="2.3.4"
+  name="Kodi web interface - Chorus2"
+  provider-name="jez500, Team Kodi">
   <requires>
-    <import addon="xbmc.json" version="6.0.0"/>
+    <import addon="xbmc.json" version="6.0.0" />
   </requires>
-  <extension
-    point="xbmc.webinterface"/>
+  <extension point="xbmc.webinterface"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="af_ZA">Span Kodi Web Koppelvlak. (Kodi se verstek web koppelvlak)</summary>
-    <summary lang="am_ET">የ Kodi የዌብ ገጽታዎች (የ Kodi ነባር የዌብ ገጽታዎች)</summary>
-    <summary lang="ar_SA">واجهه فريق إكس بي إم سي للشبكة العنكبوتية (واجهه الشبكة العنكبوتية المبدئية لـ إكس بي إم سي)</summary>
-    <summary lang="be_BY">Team Kodi Web Interface. (Kodi's default web interface)</summary>
-    <summary lang="bg_BG">Уеб интерфейс на Team Kodi. (стандартният уеб интерфейс на Kodi)</summary>
-    <summary lang="ca_ES">Interfície web de l'equip Kodi. (la interfície web per defecte del Kodi)</summary>
-    <summary lang="cs_CZ">Webové rozhraní týmu Kodi (Výchozí webové rozhraní Kodi).</summary>
-    <summary lang="cy_GB">Rhyngwyneb Gwe Team Kodi (Rhyngwyneb gwe rhagosodedig Kodi)</summary>
-    <summary lang="da_DK">Team Kodi Web-grænseflade. (Kodi's standard webgrænseflade)</summary>
-    <summary lang="de_DE">Team Kodi Webinterface. (Standardwebinterface von Kodi)</summary>
-    <summary lang="el_GR">Διεπαφή Ιστού της Team Kodi. (Προεπιλεγμένη διεπαφή ιστού του Kodi)</summary>
-    <summary lang="en_AU">Team Kodi Web Interface. (Kodi's default web interface)</summary>
-    <summary lang="en_GB">Team Kodi Web Interface. (Kodi's default web interface)</summary>
-    <summary lang="en_NZ">Team Kodi Web Interface. (Kodi's default web interface)</summary>
-    <summary lang="en_US">Team Kodi Web Interface. (Kodi's default web interface)</summary>
-    <summary lang="es_AR">Interfaz Web del Equipo de Kodi. (Interfaz web por defecto de Kodi)</summary>
-    <summary lang="es_ES">Interfaz web de Kodi. (Interfaz web por defecto de Kodi)</summary>
-    <summary lang="es_MX">Interfaz Web del Equipo de Kodi (Interfaz Web por defecto de Kodi)</summary>
-    <summary lang="et_EE">Kodi meeskonna veebikeskkond. (Vaikimisi keskkond)</summary>
-    <summary lang="eu_ES">Kodi taldean Web Interfazea. (Kodi-ren lehenetsiriko web interfazea)</summary>
-    <summary lang="fa_AF">نمایه وب تیم Kodi.(رابط پیش فرض Kodi)</summary>
-    <summary lang="fa_IR">رابط وب تیم Kodi. (رابط وب استاندارد Kodi)</summary>
-    <summary lang="fi_FI">Team Kodin web-käyttöliittymä. (Kodin oletus-web-käyttöliittymä)</summary>
-    <summary lang="fr_CA">Interface Web de l'équipe Kodi. (Interface Web par défaut de Kodi)</summary>
-    <summary lang="fr_FR">Interface Web de l'Équipe Kodi (interface d'origine de Kodi)</summary>
-    <summary lang="gl_ES">Interface web da equipa de Kodi. (Interface web predefinida de Kodi)</summary>
-    <summary lang="he_IL">ממשק הדפדפן הרשמי של Kodi. (ברירת המחדל)</summary>
-    <summary lang="hr_HR">Tim Kodi Web sučelje. (Kodijevo uobičajeno web sučelje)</summary>
-    <summary lang="hu_HU">Az Kodi csapat Webes kezelőfelülete (Kodi alapértelmezett webes kezelőfelülete)</summary>
-    <summary lang="id_ID">Antar Muka Web Tim Kodi. (Antar muka web bawaan Kodi)</summary>
-    <summary lang="is_IS">Team Kodi Vefviðmót. (Sjálfgefið vefviðmót á Kodi)</summary>
-    <summary lang="it_IT">Interfaccia Web del Team Kodi. (Interfaccia web di default per Kodi)</summary>
-    <summary lang="ja_JP">Team Kodi Web Interface. (Kodi's default web interface)</summary>
-    <summary lang="ko_KR">Team Kodi 웹 인터페이스. (Kodi 기본 웹 인터페이스)</summary>
-    <summary lang="lt_LT">Komandos Kodi Web sąsaja.(Kodi numatytoji žiniatinklio sąsaja)</summary>
-    <summary lang="lv_LV">Team Kodi tīmekļa saskarne. (Kodi noklusētā tīmekļa saskarne)</summary>
-    <summary lang="mk_MK">Веб интерфејс на  Kodi тимот. (Kodi's подразбирачки веб интерфејс)</summary>
-    <summary lang="mn_MN">Kodi багийн вэб интерфэйс. (Kodi-ийн үндсэн вэб интерфэйс)</summary>
-    <summary lang="ms_MY">Antaramuka Sesawang Pasukan-Kodi (antaramuka sesawang lalai Kodi) </summary>
-    <summary lang="mt_MT">Web interface ta' Team Kodi.  (Il-Web interface normali ta' Kodi)</summary>
-    <summary lang="my_MM">Team Kodi ဝက်ဘ် အသွင်အပြင် (Kodi ၏ မူရင် ဝက်ဘ် အသွင်အပြင်)</summary>
-    <summary lang="nb_NO">Team Kodi nettgrensesnitt. (Kodis standard nettgrensesnitt)</summary>
-    <summary lang="nl_NL">Team Kodi Webinterface. (Kodi's standaard webinterface)</summary>
-    <summary lang="pl_PL">Interfejs webowy Kodi. (Domyślny)</summary>
-    <summary lang="pt_BR">Interface Web da Equipe Kodi. (interface web padrão do Kodi)</summary>
-    <summary lang="pt_PT">Interface da Web da Team Kodi. (Interface da Web predefinida do Kodi)</summary>
-    <summary lang="ro_RO">Interfață web Kodi. (interfață web implicită pentru Kodi)</summary>
-    <summary lang="ru_RU">Веб-интерфейс от разработчиков Kodi (веб-интерфейс Kodi по умолчанию).</summary>
-    <summary lang="sk_SK">Webové rozhranie tímu Kodi. (predvolené webové rozhranie pre Kodi)</summary>
-    <summary lang="sl_SI">Spletni vmesnik ekipe Kodi. (Privzet spletni vmesnik za Kodi)</summary>
-    <summary lang="sr_RS">Web интерфејс Kodi Тима (подразуевани web интерфејс Kodi-jа)</summary>
-    <summary lang="sr_RS@latin">Web interfejs Kodi Tima (podrazuevani web interfejs Kodija)</summary>
-    <summary lang="sv_SE">Team Kodi webbgränsnitt. (Kodi's standardwebbgränssnitt)</summary>
-    <summary lang="szl">Webowy interfejs ôd Team Kodi (wychodny webowy interface we Kodi).</summary>
-    <summary lang="ta_IN">கோடி குழுமத்தின் இணைய இடைமுகம். (கோடியின் நிரந்தர இணைய இடைமுகம்)</summary>
-    <summary lang="te_IN">టీమ్-కోడి వెబ్ ఇంటర్ఫేస్. (కోడి యొక్క డిఫాల్ట్ వెబ్ ఇంటర్ఫేస్)</summary>
-    <summary lang="tg_TJ">Интерфейси веби гурӯҳи кории Kodi Web. (Интерфейси веби пешфарз барои Kodi)</summary>
-    <summary lang="th_TH">ทีมส่วนประสานหน้าเว็บ Kodi (ส่วนประสานหน้าเว็บพื้นฐานของ Kodi)</summary>
-    <summary lang="tr_TR">Kodi Takımı Web Arayüzü. (Kodi'nin varsayılan web arayüzü)</summary>
-    <summary lang="uk_UA">Веб-інтерфейс Kodi (Типовий веб-інтерфейс  для Kodi)</summary>
-    <summary lang="uz_UZ">Kodi guruhi veb Interfeysi. (Kodi andoza veb interfeysi)</summary>
-    <summary lang="vi_VN">Đội ngũ giao diện Web Kodi. (Giao diện Web mặc định của Kodi)</summary>
-    <summary lang="zh_CN">Kodi 团队开发的 Web 界面。（Kodi 的默认 web 界面）</summary>
-    <summary lang="zh_TW">Kodi團隊網頁介面。(Kodi的預設網頁介面)</summary>
-    <description lang="af_ZA">Verstek web koppelvlak vir Kodi; Ontwerp vir toestelle van alle resolusies</description>
-    <description lang="am_ET">ነባር የዌብ ገጽታዎች ለ Kodi ፡ የተነደፈው ለሁሉም አካላቶች resolutions ነው </description>
-    <description lang="ar_SA">واجهه الشبكة العنكبوتية المبدئية لـ إكس بي إم سي، مُصمَمة لتناسب كافة قياسات أبعاد الشاشات</description>
-    <description lang="be_BY">Стандартны вэб-інтэрфэйс да Kodi; распрацаваны для прыладаў зь любымі разрознасьцямі</description>
-    <description lang="bg_BG">Стандартния уеб интерфейс на Kodi; Направен е за устройства с най-различни резолюции</description>
-    <description lang="ca_ES">Interfície web per defecte del Kodi; Dissenyada per dispositius de totes les resolucions</description>
-    <description lang="cs_CZ">Výchozí webové rozhraní Kodi navržené pro zařízení s libovolným rozlišením</description>
-    <description lang="cy_GB">Rhyngwyneb gwe rhagosodedig Kodi. Wedi ei gynllunio ar gyfer cydraniad pob dyfais</description>
-    <description lang="da_DK">Standard webgrænseflade til Kodi; designet til enheder i alle opløsninger</description>
-    <description lang="de_DE">Standard Kodi Webinterface - Für alle Geräte und Auflösungen geeignet</description>
-    <description lang="el_GR">Προεπιλεγμένη διεπαφή ιστού για το Kodi. Σχεδιασμένη για συσκευές όλων των αναλύσεων.</description>
-    <description lang="en_AU">Default web interface for Kodi; Designed for devices of all resolutions</description>
-    <description lang="en_GB">Default web interface for Kodi; Designed for devices of all resolutions</description>
-    <description lang="en_NZ">Default web interface for Kodi; Designed for devices of all resolutions</description>
-    <description lang="en_US">Default web interface for Kodi; Designed for devices of all resolutions</description>
-    <description lang="es_AR">Interfaz web por defecto de Kodi. Diseñada para dispositivos de cualquier resolución</description>
-    <description lang="es_ES">Interfaz web por defecto de Kodi. Diseñada para dispositivos de cualquier resolución</description>
-    <description lang="es_MX">Interfaz Web por defecto para Kodi; Diseñado para dispositivos de todas las resoluciones</description>
-    <description lang="et_EE">Kodi vaikimisi veebikeskkond; Disainitud erinevate resolutsioonidega seadmetele.</description>
-    <description lang="eu_ES">Kodi-ren lehenetsiriko web interfazea. Erresoluzio guztietako gailentzat diseinatua</description>
-    <description lang="fa_AF">رابط پیش فرض Kodiوطراحی شده برای هر رزولیشن</description>
-    <description lang="fa_IR">رابط استاندارد وب برای Kodi. قابل استفاده برای همه دستگاه ها و همه رزولوشن ها</description>
-    <description lang="fi_FI">Kodin oletus-web-käyttöliittymä. Suunniteltu käytettäväksi kaiken kokoisilla laitteilla.</description>
-    <description lang="fr_CA">Interface Web par défaut de Kodi - Conçue pour les appareils de toutes résolutions</description>
-    <description lang="fr_FR">Interface Web d'origine de Kodi ; adaptée aux appareils de toutes résolutions</description>
-    <description lang="gl_ES">Interface web predefinida para Kodi, deseñada para dispositivos de todas as resolucións</description>
-    <description lang="he_IL">ממשק דפדפן ברירת המחדל עבור Kodi; מותאם למכשירים בעלי אבחנות שונות</description>
-    <description lang="hr_HR">Uobičajeno web sučelje za Kodi; Dizajnirano za uređaje svih razlučivosti</description>
-    <description lang="hu_HU">A Kodi alapértelmezett webes kezelőfelülete; Minden felbontásra alkalmas</description>
-    <description lang="hy_AM">Նախնական տեսք Kodi-ի համար; Նախատեսված է բոլոր կրիչների համար</description>
-    <description lang="id_ID">Antar muka web bawaan bagi Kodi; Dirancang untuk perangkat dengan semua resolusi</description>
-    <description lang="is_IS">Sjálfgefið vefviðmót fyrir Kodi; Hannað fyrir tæki með allskonar upplausnir</description>
-    <description lang="it_IT">Interfaccia Web di default per Kodi; Realizzata per periferiche con qualunque risoluzione</description>
-    <description lang="ja_JP">Kodi のデフォルト Web インターフェースです。さまざまな解像度のデバイス用にデザインされています。</description>
-    <description lang="ko_KR">Kodi 기본 웹 인터페이스; 모든 해상도의 기기를 위해 디자인 됨</description>
-    <description lang="lt_LT">Numatytoji Kodi Web sąsaja skirta visų rezoliucijų prietaisams</description>
-    <description lang="lv_LV">Noklusētā Kodi tīmekļa sakarne; Piemērota visu izšķirtspēju iekārtām</description>
-    <description lang="mk_MK">Подразбирачки веб интерфејс за Kodi; Дизајниран за уреди со сите резолуции</description>
-    <description lang="mn_MN">Kod-ийн үндсэн вэб интерфэйс; Бүх төрлийн нарийвчлалтай төхөөрөмжид зориулагдсан.</description>
-    <description lang="ms_MY">Antaramuka sesawang lalai untuk Kodi; Direka untuk peranti pelbagai resolusi</description>
-    <description lang="mt_MT">Il-Web interface in-normali ta' Kodi; Iddiżinjata għal apparat ta' kull reżoluzzjoni</description>
-    <description lang="my_MM">Kodi အတွက် မူရင်း ဝက်ဘ် အသွင်ပြင် ၊ စက်များ အားလုံး၏ resolutions အတွက် ရေးဆွဲထားသည်။</description>
-    <description lang="nb_NO">Standard nettgrensesnitt for Kodi; Laget for alle oppløsninger</description>
-    <description lang="nl_NL">Standaard Kodi-webinterface; geschikt voor alle resoluties</description>
-    <description lang="pl_PL">Domyślny interfejs webowy Kodi; Zaprojektowany dla urządzeń o ekranach w dowolnej rozdzielczości</description>
-    <description lang="pt_BR">Interface web padrão para Kodi; Concebida para dispositivos de todas as resoluções</description>
-    <description lang="pt_PT">Interface da Web ppredefinida do Kodi; Criada para dispositivos de todas as resoluções.</description>
-    <description lang="ro_RO">Interfață web implicită pentru Kodi, realizată de echipa Kodi pentru dispozitive cu orice rezoluție.</description>
-    <description lang="ru_RU">Веб-интерфейс Kodi по умолчанию. Разработан для устройств с любыми разрешениями.</description>
-    <description lang="si_LK">Kodi' සඳහා නියත  වෙබ් අතුරුමුහුණත; සෑම විභේදනයකම උපකරණ සඳහා නිර්මාණය කර ඇත</description>
-    <description lang="sk_SK">Predvolené webové rozhranie pre Kodi; Navrhnuté pre zariadenia zobrazujúce v akomkoľvek rozlíšení</description>
-    <description lang="sl_SI">Privzet spletni vmesnik za Kodi, ustvarjen za naprave vseh ločljivosti</description>
-    <description lang="sr_RS">Подразумевани web интерфејс Kodi; Намењен уређајима свих резолуција</description>
-    <description lang="sr_RS@latin">Podrazumevani web interfejs Kodi; Namenjen uređajima svih rezolucija</description>
-    <description lang="sv_SE">Standardwebbgränssnitt för Kodi; Utformat för alla enheter oavsett skärmupplösning</description>
-    <description lang="szl">Wychodny webowy interface we Kodi. Zrychtowany dlŏ maszin we wszyjskich rozdziylczościach.</description>
-    <description lang="ta_IN">கோடி இற்கான நிரந்தர இணைய இடைமுகம்; சகல சாதனங்களின் திரைகளுக்கும் வடிவமைக்கப்பட்டது</description>
-    <description lang="te_IN">కోడి డిఫాల్ట్ వెబ్ ఇంటర్ఫేస్; అన్ని వైశాల్యాలు పరికరాల కోసం రూపొందించబడింది</description>
-    <description lang="tg_TJ">Интерфейси веби пешфарз барои Kodi; Барои ҳар гуна дастгоҳ бо возеҳии экранаш гуногун эҷод карда шудааст</description>
-    <description lang="th_TH">ส่วนประสานหน้าเว็บพื้นฐานสำหรับ Kodi ได้ออกแบบรองรับความละเอียดหน้าจอของอุปกรณ์ทั้งหมด</description>
-    <description lang="tr_TR">Kodi için varsayılan web arayüzü; Bütün çözünürlüklerde tüm cihazlar için dizayn edilmiştir.</description>
-    <description lang="uk_UA">Типовий веб-інтерфейс  для Kodi; Розроблений для пристроїв з будь-якою роздільною здатністю</description>
-    <description lang="uz_UZ">Kodi uchun andoza veb interfeysi; barcha ekran o'lchamlari bilan uskunalar uchun yaratilgan</description>
-    <description lang="vi_VN">Giao diện Web mặc định cho Kodi; Thiết kế cho các thiết bị ở tất cả độ phân giải khác nhau</description>
-    <description lang="zh_CN">Kodi 的默认 web 界面；为支持所有分辨率的设备而设计</description>
-    <description lang="zh_TW">Kodi的預設網頁介面；針對所有解析度的設備而設計</description>
+    <summary lang="en">Kodi web interface - Chorus2</summary>
+    <description lang="en">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
     <platform>all</platform>
+    <language>en</language>
+    <source>https://github.com/xbmc/chorus2</source>
+    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>images/turntable.jpg</fanart>
+      <screenshot>screenshots/now-playing.jpg</screenshot>
+      <screenshot>screenshots/search.jpg</screenshot>
+      <screenshot>screenshots/artists.jpg</screenshot>
+      <screenshot>screenshots/artist.jpg</screenshot>
+      <screenshot>screenshots/tv.jpg</screenshot>
+      <screenshot>screenshots/movie.jpg</screenshot>
+      <screenshot>screenshots/settings.jpg</screenshot>
+      <screenshot>screenshots/addons.jpg</screenshot>
+    </assets>
   </extension>
 </addon>

@@ -83,6 +83,7 @@
 #define PLAYER_IS_TEMPO              59
 #define PLAYER_PLAYSPEED             60
 #define PLAYER_SEEKNUMERIC           61
+#define PLAYER_HAS_GAME              62
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -129,12 +130,13 @@
 #define SYSTEM_PROFILENAME          146
 #define SYSTEM_PROFILETHUMB         147
 #define SYSTEM_HAS_LOGINSCREEN      148
-#define SYSTEM_HAS_MODAL_DIALOG     149
+#define SYSTEM_HAS_ACTIVE_MODAL_DIALOG  149
 #define SYSTEM_HDD_SMART            150
 #define SYSTEM_HDD_TEMPERATURE      151
 #define SYSTEM_HDD_MODEL            152
 #define SYSTEM_HDD_SERIAL           153
 #define SYSTEM_HDD_FIRMWARE         154
+#define SYSTEM_HAS_VISIBLE_MODAL_DIALOG  155
 #define SYSTEM_HDD_PASSWORD         156
 #define SYSTEM_HDD_LOCKSTATE        157
 #define SYSTEM_HDD_LOCKKEY          158

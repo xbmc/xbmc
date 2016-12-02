@@ -9,13 +9,13 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>546</bottom>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus />
+			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
 			<bottom>0</bottom>
-			<height>546</height>
+			<height>550</height>
 			<control type="image">
 				<left>0</left>
 				<width>100%</width>
@@ -38,7 +38,7 @@
 			<control type="grouplist" id="9001">
 				<orientation>horizontal</orientation>
 				<left>0</left>
-				<top>-4</top>
+				<top>-10</top>
 				<width>100%</width>
 				<align>center</align>
 				<height>100</height>

@@ -94,7 +94,18 @@ public:
   static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
   static bool EndsWithNoCase(const std::string &str1, const char *s2);
 
-  static std::string Join(const std::vector<std::string> &strings, const std::string& delimiter);
+  template<typename CONTAINER>
+  static std::string Join(const CONTAINER &strings, const std::string& delimiter)
+  {
+    std::string result;
+    for (const auto& str : strings)
+      result += str + delimiter;
+
+    if (!result.empty())
+      result.erase(result.size() - delimiter.size());
+    return result;
+  }
+
   /*! \brief Splits the given input string using the given delimiter into separate strings.
 
    If the given input string is empty the result will be an empty array (not
@@ -106,6 +117,7 @@ public:
    */
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
+  static std::vector<std::string> Split(const std::string& input, const std::vector<std::string> &delimiters);
   
   /*! \brief Splits the given input strings using the given delimiters into further separate strings.
 

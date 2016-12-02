@@ -3,9 +3,31 @@
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
+		<include content="SettingsPanel" condition="String.IsEqual(Skin.AspectRatio,16:9)">
+			<param name="panel-posx">160</param>
+			<param name="panel-width">1500</param>
+			<param name="layout-width">500</param>
+		</include>
+		<include content="SettingsPanel" condition="String.IsEqual(Skin.AspectRatio,4:3)">
+			<param name="panel-posx">40</param>
+			<param name="panel-width">1200</param>
+			<param name="layout-width">400</param>
+		</include>
 		<include>Header</include>
 		<include>CommonNowPlaying</include>
 		<include>Footer</include>
+		<control type="textbox">
+			<description>Settings Description</description>
+			<posx>250</posx>
+			<posy>70r</posy>
+			<width>780</width>
+			<height>60</height>
+			<label>$INFO[Container(9000).ListItem.Label2]</label>
+			<font>font22</font>
+			<textcolor>blue</textcolor>
+			<align>center</align>
+			<include>16x9_xPos_Relocation</include>
+		</control>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -26,171 +48,6 @@
 					<icon>icon_button_favourites.png</icon>
 				</item>
 			</content>
-		</control>
-		<control type="panel" id="9000">
-			<include>16x9_xPos_Relocation</include>
-			<include>Window_OpenClose_Animation_Zoom</include>
-			<posx>40</posx>
-			<posy>100</posy>
-			<width>1200</width>
-			<height>750</height>
-			<onleft>9000</onleft>
-			<onright>9001</onright>
-			<onup>9000</onup>
-			<ondown>9000</ondown>
-			<pagecontrol></pagecontrol>
-			<scrolltime>300</scrolltime>
-			<itemlayout height="250" width="400">
-				<control type="image">
-					<posx>20</posx>
-					<posy>20</posy>
-					<width>360</width>
-					<height>210</height>
-					<texture>button_nofocus.png</texture>
-				</control>
-				<control type="image">
-					<posx>20</posx>
-					<posy>180</posy>
-					<width>360</width>
-					<height>50</height>
-					<texture colordiffuse="40000000">black.png</texture>
-				</control>
-				<control type="image">
-					<posx>80</posx>
-					<posy>10</posy>
-					<width>240</width>
-					<height>240</height>
-					<texture>$INFO[ListItem.Icon]</texture>
-					<align>center</align>
-				</control>
-				<control type="label">
-					<posx>0</posx>
-					<posy>190</posy>
-					<width>400</width>
-					<height>400</height>
-					<label>$INFO[ListItem.Label]</label>
-					<font>font20_title</font>
-					<align>center</align>
-					<textcolor>white</textcolor>
-				</control>
-			</itemlayout>
-			<focusedlayout height="250" width="400">
-				<control type="group">
-					<animation type="Focus" reversible="false">
-						<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
-					</animation>
-					<animation type="UnFocus" reversible="false">
-						<effect type="zoom" center="auto" start="108" end="100" time="250" tween="sine" />
-					</animation>
-					<control type="image">
-						<posx>20</posx>
-						<posy>20</posy>
-						<width>360</width>
-						<height>210</height>
-						<texture>button_nofocus.png</texture>
-					</control>
-					<control type="image">
-						<posx>20</posx>
-						<posy>20</posy>
-						<width>360</width>
-						<height>210</height>
-						<texture>list_focus.png</texture>
-						<animation effect="fade" start="100" end="0" time="0">Unfocus</animation>
-					</control>
-					<control type="image">
-						<posx>20</posx>
-						<posy>180</posy>
-						<width>360</width>
-						<height>50</height>
-						<texture colordiffuse="40000000">black.png</texture>
-					</control>
-					<control type="image">
-						<posx>80</posx>
-						<posy>10</posy>
-						<width>240</width>
-						<height>240</height>
-						<texture>$INFO[ListItem.Icon]</texture>
-						<align>center</align>
-					</control>
-					<control type="label">
-						<posx>0</posx>
-						<posy>190</posy>
-						<width>400</width>
-						<height>400</height>
-						<label>$INFO[ListItem.Label]</label>
-						<font>font20_title</font>
-						<align>center</align>
-					</control>
-				</control>
-			</focusedlayout>
-			<content>
-				<item id="1">
-					<label>14200</label>
-					<label2>31408</label2>
-					<onclick>ActivateWindow(PlayerSettings)</onclick>
-					<icon>icon_settings_player.png</icon>
-				</item>
-				<item id="2">
-					<label>14211</label>
-					<label2>31409</label2>
-					<onclick>ActivateWindow(MediaSettings)</onclick>
-					<icon>icon_settings_library.png</icon>
-				</item>
-				<item id="3">
-					<label>31556</label>
-					<label2>31555</label2>
-					<onclick>ActivateWindow(PVRSettings)</onclick>
-					<icon>icon_settings_tv.png</icon>
-				</item>
-				<item id="4">
-					<label>14036</label>
-					<label2>31405</label2>
-					<onclick>ActivateWindow(ServiceSettings)</onclick>
-					<icon>icon_settings_services.png</icon>
-				</item>
-				<item id="5">
-					<label>14206</label>
-					<label2>31410</label2>
-					<onclick>ActivateWindow(InterfaceSettings)</onclick>
-					<icon>icon_settings_interface.png</icon>
-				</item>
-				<item id="6">
-					<label>13000</label>
-					<label2>31406</label2>
-					<onclick>ActivateWindow(SystemSettings)</onclick>
-					<icon>icon_settings_system.png</icon>
-				</item>
-				<item id="7">
-					<label>24001</label>
-					<label2>31407</label2>
-					<onclick>ActivateWindow(AddonBrowser)</onclick>
-					<icon>icon_settings_addons.png</icon>
-				</item>
-				<item id="8">
-					<label>13200</label>
-					<label2>31411</label2>
-					<onclick>ActivateWindow(Profiles)</onclick>
-					<icon>icon_settings_profiles.png</icon>
-				</item>
-				<item id="9">
-					<label>130</label>
-					<label2>31412</label2>
-					<onclick>ActivateWindow(SystemInfo)</onclick>
-					<icon>icon_settings_systeminfo.png</icon>
-				</item>
-			</content>
-		</control>
-		<control type="textbox">
-			<description>Settings Description</description>
-			<posx>250</posx>
-			<posy>70r</posy>
-			<width>780</width>
-			<height>60</height>
-			<label>$INFO[Container(9000).ListItem.Label2]</label>
-			<font>font22</font>
-			<textcolor>blue</textcolor>
-			<align>center</align>
-			<include>16x9_xPos_Relocation</include>
 		</control>
 	</controls>
 </window>

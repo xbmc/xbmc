@@ -20,37 +20,24 @@
  */
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "epg/EpgTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "utils/Observer.h"
 
-#include <memory>
+#include "pvr/PVRTypes.h"
+
 #include <string>
 #include <utility>
 
 class CVariant;
 class CFileItemList;
 
-namespace EPG
-{
-  class CEpg;
-  typedef std::shared_ptr<CEpg> CEpgPtr;
-  class CEpgInfoTag;
-  typedef std::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
-
-}
-
 namespace PVR
 {
   class CPVRDatabase;
   class CPVRChannelGroupInternal;
-
-  class CPVRRecording;
-  typedef std::shared_ptr<CPVRRecording> CPVRRecordingPtr;
-
-  class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   typedef struct
   {

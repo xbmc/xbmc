@@ -103,7 +103,7 @@
 					<width>12</width>
 					<height>100%</height>
 					<onleft>11</onleft>
-					<texturesliderbackground></texturesliderbackground>
+					<texturesliderbackground />
 					<onright>NextChannelGroup</onright>
 					<ondown>61</ondown>
 					<onup>61</onup>

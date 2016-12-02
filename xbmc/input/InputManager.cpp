@@ -21,8 +21,13 @@
 #include <math.h>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "InputManager.h"
 #include "input/keyboard/IKeyboardHandler.h"
+#include "input/mouse/generic/MouseInputHandling.h"
+#include "input/mouse/IMouseDriverHandler.h"
+#include "input/mouse/MouseWindowingButtonMap.h"
+#include "input/keyboard/KeyboardEasterEgg.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/Geometry.h"
@@ -68,6 +73,18 @@ using EVENTSERVER::CEventServer;
 using namespace KODI::MESSAGING;
 using PERIPHERALS::CPeripherals;
 
+CInputManager::CInputManager() :
+  m_mouseButtonMap(new MOUSE::CMouseWindowingButtonMap),
+  m_keyboardEasterEgg(new KEYBOARD::CKeyboardEasterEgg)
+{
+  RegisterKeyboardHandler(m_keyboardEasterEgg.get());
+}
+
+CInputManager::~CInputManager()
+{
+  UnregisterKeyboardHandler(m_keyboardEasterEgg.get());
+}
+
 CInputManager& CInputManager::GetInstance()
 {
   static CInputManager inputManager;
@@ -83,7 +100,7 @@ void CInputManager::InitializeInputs()
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
-  m_Mouse.SetEnabled(CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  m_Mouse.SetEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
 void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
@@ -382,9 +399,40 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   case XBMC_MOUSEBUTTONDOWN:
   case XBMC_MOUSEBUTTONUP:
   case XBMC_MOUSEMOTION:
-    m_Mouse.HandleEvent(newEvent);
-    ProcessMouse(g_windowManager.GetActiveWindowID());
+  {
+    bool handled = false;
+
+    for (auto it = m_mouseHandlers.begin(); it != m_mouseHandlers.end(); ++it)
+    {
+      if (newEvent.type == XBMC_MOUSEMOTION)
+      {
+        if (it->driverHandler->OnPosition(newEvent.motion.x, newEvent.motion.y))
+          handled = true;
+      }
+      else
+      {
+        if (newEvent.button.type == XBMC_MOUSEBUTTONDOWN)
+        {
+          if (it->driverHandler->OnButtonPress(newEvent.button.button))
+            handled = true;
+        }
+        else if (newEvent.button.type == XBMC_MOUSEBUTTONUP)
+        {
+          it->driverHandler->OnButtonRelease(newEvent.button.button);
+        }
+      }
+
+      if (handled)
+        break;
+    }
+
+    if (!handled)
+    {
+      m_Mouse.HandleEvent(newEvent);
+      ProcessMouse(g_windowManager.GetActiveWindowID());
+    }
     break;
+  }
   case XBMC_TOUCH:
   {
     if (newEvent.touch.action == ACTION_TOUCH_TAP)
@@ -780,10 +828,37 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
 void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
 {
   if (std::find(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler) == m_keyboardHandlers.end())
-    m_keyboardHandlers.push_back(handler);
+    m_keyboardHandlers.insert(m_keyboardHandlers.begin(), handler);
 }
 
 void CInputManager::UnregisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
 {
   m_keyboardHandlers.erase(std::remove(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler), m_keyboardHandlers.end());
+}
+
+std::string CInputManager::RegisterMouseHandler(MOUSE::IMouseInputHandler* handler)
+{
+  auto it = std::find_if(m_mouseHandlers.begin(), m_mouseHandlers.end(),
+    [handler](const MouseHandlerHandle& element)
+    {
+      return element.inputHandler == handler;
+    });
+
+  if (it == m_mouseHandlers.end())
+  {
+    std::unique_ptr<MOUSE::IMouseDriverHandler> driverHandler(new MOUSE::CMouseInputHandling(handler, m_mouseButtonMap.get()));
+    MouseHandlerHandle handle = { handler, std::move(driverHandler) };
+    m_mouseHandlers.insert(m_mouseHandlers.begin(), std::move(handle));
+  }
+
+  return m_mouseButtonMap->ControllerID();
+}
+
+void CInputManager::UnregisterMouseHandler(MOUSE::IMouseInputHandler* handler)
+{
+  m_mouseHandlers.erase(std::remove_if(m_mouseHandlers.begin(), m_mouseHandlers.end(),
+    [handler](const MouseHandlerHandle& handle)
+    {
+      return handle.inputHandler == handler;
+    }), m_mouseHandlers.end());
 }

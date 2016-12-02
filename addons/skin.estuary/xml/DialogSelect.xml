@@ -10,10 +10,10 @@
 			<height>742</height>
 			<width>1220</width>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="1220" />
-				<param name="DialogBackgroundHeight" value="742" />
-				<param name="DialogHeaderLabel" value="" />
-				<param name="DialogHeaderId" value="1" />
+				<param name="width" value="1220" />
+				<param name="height" value="742" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1" />
 			</include>
 			<control type="image">
 				<left>0</left>
@@ -140,7 +140,7 @@
 				<left>920</left>
 				<top>80</top>
 				<onleft>61</onleft>
-				<itemgap>-20</itemgap>
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<onright>3</onright>
 				<include content="DefaultDialogButton">
 					<param name="id" value="5" />

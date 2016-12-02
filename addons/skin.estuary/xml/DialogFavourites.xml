@@ -7,12 +7,12 @@
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
 			<width>1540</width>
-			<height>838</height>
+			<height>858</height>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="1540" />
-				<param name="DialogBackgroundHeight" value="858" />
-				<param name="DialogHeaderLabel" value="$LOCALIZE[1036]" />
-				<param name="DialogHeaderId" value="2" />
+				<param name="width" value="1540" />
+				<param name="height" value="858" />
+				<param name="header_label" value="$LOCALIZE[1036]" />
+				<param name="header_id" value="2" />
 			</include>
 			<include content="UpDownArrows">
 				<param name="container_id" value="450" />
@@ -24,7 +24,7 @@
 				<right>0</right>
 				<top>70</top>
 				<width>12</width>
-				<height>788</height>
+				<bottom>0</bottom>
 				<onleft>450</onleft>
 				<onright>450</onright>
 				<orientation>vertical</orientation>
@@ -33,7 +33,7 @@
 				<left>10</left>
 				<top>70</top>
 				<width>1600</width>
-				<height>788</height>
+				<bottom>0</bottom>
 				<onleft>60</onleft>
 				<onright>60</onright>
 				<onup>450</onup>
@@ -62,9 +62,9 @@
 			</control>
 			<control type="textbox">
 				<left>300</left>
-				<top>200</top>
+				<top>90</top>
 				<width>900</width>
-				<height>300</height>
+				<bottom>0</bottom>
 				<aligny>center</aligny>
 				<align>center</align>
 				<label>$LOCALIZE[31025]</label>

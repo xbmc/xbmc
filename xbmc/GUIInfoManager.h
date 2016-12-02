@@ -37,20 +37,17 @@
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
 #include "FileItem.h"
+#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
 
-#include <memory>
-#include <list>
+#include <atomic>
 #include <map>
+#include <string>
 #include <vector>
 
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
-}
-namespace PVR
-{
-  class CPVRRadioRDSInfoTag;
-  typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 }
 class CVideoInfoTag;
 class CFileItem;
@@ -63,13 +60,6 @@ namespace INFO
 
 // forward
 class CGUIWindow;
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
-
-
 
 // structure to hold multiple integer data
 // for storage referenced from a single integer
@@ -171,6 +161,7 @@ public:
   void SetCurrentSlide(CFileItem &item);
   const CFileItem &GetCurrentSlide() const;
   void ResetCurrentSlide();
+  void SetCurrentGame(CFileItem &item);
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 

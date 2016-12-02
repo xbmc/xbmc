@@ -2,12 +2,24 @@
 <includes>
 	<include name="Wide">
 		<control type="image">
-			<posx>120</posx>
-			<posy>120</posy>
-			<width>$PARAM[panel-width]</width>
-			<height>720</height>
-			<texture>panel.png</texture>
-			<visible>Control.IsVisible(550)</visible>
+			<posx>115</posx>
+			<posy>115</posy>
+			<width>1540</width>
+			<height>730</height>
+			<texture>back.png</texture>
+			<bordertexture border="6">panel_shadow.png</bordertexture>
+			<bordersize>5</bordersize>
+			<visible>String.IsEqual(Skin.AspectRatio,16:9) + Control.IsVisible(550)</visible>
+		</control>
+		<control type="image">
+			<posx>115</posx>
+			<posy>115</posy>
+			<width>1100</width>
+			<height>730</height>
+			<texture>back.png</texture>
+			<bordertexture border="6">panel_shadow.png</bordertexture>
+			<bordersize>5</bordersize>
+			<visible>String.IsEqual(Skin.AspectRatio,4:3) + Control.IsVisible(550)</visible>
 		</control>
 		<control type="panel" id="550">
 			<visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons)</visible>
@@ -24,13 +36,6 @@
 			<scrolltime>200</scrolltime>
 			<preloaditems>2</preloaditems>
 			<itemlayout condition="!Container.Content(Episodes) + !Container.Content(MusicVideos) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(Addons)" height="240" width="$PARAM[panel-width]">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>$PARAM[panel-width]</width>
-					<height>240</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
 				<control type="image">
 					<posx>5</posx>
 					<posy>10</posy>
@@ -60,6 +65,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Genre]</label>
+					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
 					<posx>510r</posx>
@@ -71,6 +77,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label2]</label>
+					<textcolor>blue</textcolor>
 					<animation effect="slide" start="0,0" end="60,0" time="0" condition="Container.Content(TVShows) | container.Content(Seasons)">Conditional</animation>
 				</control>
 				<control type="image">
@@ -120,10 +127,11 @@
 					<posx>170</posx>
 					<posy>70</posy>
 					<width>$PARAM[textbox-width-movies]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Plot]</label>
+					<textcolor>lightgrey</textcolor>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="!Container.Content(Episodes) + !Container.Content(MusicVideos) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(Addons)" height="240" width="$PARAM[panel-width]">
@@ -163,6 +171,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Genre]</label>
+					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
 					<posx>510r</posx>
@@ -174,6 +183,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label2]</label>
+					<textcolor>blue</textcolor>
 					<animation effect="slide" start="0,0" end="60,0" time="0" condition="Container.Content(TVShows) | container.Content(Seasons)">Conditional</animation>
 				</control>
 				<control type="image">
@@ -223,7 +233,7 @@
 					<posx>170</posx>
 					<posy>70</posy>
 					<width>$PARAM[textbox-width-movies]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Plot]</label>
@@ -231,13 +241,6 @@
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos)" height="240" width="$PARAM[panel-width]">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>$PARAM[panel-width]</width>
-					<height>240</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
 				<control type="image">
 					<posx>5</posx>
 					<posy>75</posy>
@@ -267,6 +270,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Premiered,$LOCALIZE[20416] : ]</label>
+					<textcolor>blue</textcolor>
 					<visible>Container.Content(Episodes)</visible>
 				</control>
 				<control type="label">
@@ -279,6 +283,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Artist]</label>
+					<textcolor>blue</textcolor>
 					<visible>Container.Content(MusicVideos)</visible>
 				</control>
 				<control type="label">
@@ -291,6 +296,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label2]</label>
+					<textcolor>blue</textcolor>
 				</control>
 				<control type="image">
 					<description>Rating value</description>
@@ -330,10 +336,11 @@
 					<posx>270</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Plot]</label>
+					<textcolor>lightgrey</textcolor>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos)" height="240" width="$PARAM[panel-width]">
@@ -373,6 +380,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Premiered,$LOCALIZE[20416] : ]</label>
+					<textcolor>blue</textcolor>
 					<visible>Container.Content(Episodes)</visible>
 				</control>
 				<control type="label">
@@ -385,6 +393,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Artist]</label>
+					<textcolor>blue</textcolor>
 					<visible>Container.Content(MusicVideos)</visible>
 				</control>
 				<control type="label">
@@ -397,6 +406,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label2]</label>
+					<textcolor>blue</textcolor>
 				</control>
 				<control type="image">
 					<description>Rating value</description>
@@ -436,7 +446,7 @@
 					<posx>270</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Plot]</label>
@@ -444,13 +454,6 @@
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs)" height="240" width="$PARAM[panel-width]">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>$PARAM[panel-width]</width>
-					<height>240</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
 				<control type="image">
 					<posx>5</posx>
 					<posy>5</posy>
@@ -480,6 +483,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Genre]</label>
+					<textcolor>blue</textcolor>
 					<visible>Container.Content(Artists)</visible>
 				</control>
 				<control type="label">
@@ -492,6 +496,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Year,, - ]$INFO[ListItem.Genre]</label>
+					<textcolor>blue</textcolor>
 					<visible>!Container.Content(Artists)</visible>
 				</control>
 				<control type="label">
@@ -503,6 +508,7 @@
 					<selectedcolor>selected</selectedcolor>
 					<align>right</align>
 					<aligny>center</aligny>
+					<textcolor>blue</textcolor>
 					<label>$INFO[ListItem.Label2]</label>
 				</control>
 				<control type="image">
@@ -529,20 +535,22 @@
 					<posx>250</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Property(Artist_Description)]</label>
+					<textcolor>lightgrey</textcolor>
 					<visible>Container.Content(Artists)</visible>
 				</control>
 				<control type="textbox">
 					<posx>250</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Property(Album_Description)]</label>
+					<textcolor>lightgrey</textcolor>
 					<visible>Container.Content(Albums)</visible>
 				</control>
 				<control type="textbox">
@@ -553,6 +561,7 @@
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Comment]</label>
+					<textcolor>lightgrey</textcolor>
 					<visible>Container.Content(Songs) + !String.IsEmpty(ListItem.Comment)</visible>
 				</control>
 				<control type="textbox">
@@ -563,6 +572,7 @@
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Album,$LOCALIZE[558]: ][CR]$INFO[ListItem.Tracknumber,$LOCALIZE[554]: ][CR]$INFO[ListItem.Duration,$LOCALIZE[180]: ]</label>
+					<textcolor>lightgrey</textcolor>
 					<visible>Container.Content(Songs) + String.IsEmpty(ListItem.Comment)</visible>
 				</control>
 			</itemlayout>
@@ -603,6 +613,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Genre]</label>
+					<textcolor>blue</textcolor>
 					<visible>Container.Content(Artists)</visible>
 				</control>
 				<control type="label">
@@ -615,6 +626,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Year,, - ]$INFO[ListItem.Genre]</label>
+					<textcolor>blue</textcolor>
 					<visible>!Container.Content(Artists)</visible>
 				</control>
 				<control type="label">
@@ -626,6 +638,7 @@
 					<selectedcolor>selected</selectedcolor>
 					<align>right</align>
 					<aligny>center</aligny>
+					<textcolor>blue</textcolor>
 					<label>$INFO[ListItem.Label2]</label>
 				</control>
 				<control type="image">
@@ -652,7 +665,7 @@
 					<posx>250</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Property(Artist_Description)]</label>
@@ -662,7 +675,7 @@
 					<posx>250</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.Property(Album_Description)]</label>
@@ -693,13 +706,6 @@
 				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Addons)" height="240" width="$PARAM[panel-width]">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>$PARAM[panel-width]</width>
-					<height>240</height>
-					<texture border="40,0,40,5">list_nofocus.png</texture>
-				</control>
 				<control type="image">
 					<posx>5</posx>
 					<posy>5</posy>
@@ -752,7 +758,7 @@
 					<posx>250</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.AddonBroken,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDisclaimer,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDescription]</label>
@@ -818,7 +824,7 @@
 					<posx>250</posx>
 					<posy>75</posy>
 					<width>$PARAM[textbox-width-episodes]</width>
-					<height>154</height>
+					<height>145</height>
 					<font>font25</font>
 					<align>justify</align>
 					<label>$INFO[ListItem.AddonBroken,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDisclaimer,[COLOR=blue][B],[/B][/COLOR][CR]]$INFO[ListItem.AddonDescription]</label>
@@ -828,4 +834,3 @@
 		</control>
 	</include>
 </includes>
-

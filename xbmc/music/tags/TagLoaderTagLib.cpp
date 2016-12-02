@@ -981,32 +981,60 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
   if (values.size() % 2 != 0) // Must contain an even number of entries 
     return;
 
+  // Vector of possible separators
+  const std::vector<std::string> separators{ ";", "/", ",", "&", " and " };
+
   for (size_t i = 0; i + 1 < values.size(); i += 2)
-    tag.AddArtistRole(values[i], StringUtils::Split(values[i + 1], ","));
+  {
+    std::vector<std::string> roles;
+    //Split into individual roles
+    roles = StringUtils::Split(values[i], separators);
+    for (auto role : roles)
+    {
+      StringUtils::Trim(role);
+      StringUtils::ToCapitalize(role);
+      tag.AddArtistRole(role, StringUtils::Split(values[i + 1], ","));
+    }
+  }
 }
 
 void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
-  // Values is a musician credits list, each entry is artist name followed by instrument (or function)
-  // e.g. violin, drums, background vocals, solo, orchestra etc. in brackets. This is how Picard uses PERFORMER tag.
-  // If there is not a pair of brackets then role is "performer" by default, and the whole entry is 
-  // taken as artist name.
-  
+  /* Values is a musician credits list, each entry is artist name followed by instrument (or function) 
+     e.g. violin, drums, background vocals, solo, orchestra etc. in brackets. This is how Picard uses 
+     the PERFORMER tag. Multiple instruments may be in one tag 
+     e.g "Pierre Marchand (bass, drum machine and hammond organ)", 
+     these will be separated into individual roles. 
+     If there is not a pair of brackets then role is "performer" by default, and the whole entry is 
+     taken as artist name.
+  */
+  // Vector of possible separators
+  const std::vector<std::string> separators{";", "/", ",", "&", " and "};
+
   for (size_t i = 0; i < values.size(); ++i)
   {
-    std::string strRole = "Performer";
+    std::vector<std::string> roles;    
     std::string strArtist = values[i];
     size_t firstLim = values[i].find_first_of("(");
     size_t lastLim = values[i].find_last_of(")");
     if (lastLim != std::string::npos && firstLim != std::string::npos && firstLim < lastLim - 1)
     {
       //Pair of brackets with something between them
-      strRole = values[i].substr(firstLim + 1, lastLim - firstLim - 1);
-      StringUtils::Trim(strRole);
       strArtist.erase(firstLim, lastLim - firstLim + 1);
+      std::string strRole = values[i].substr(firstLim + 1, lastLim - firstLim - 1);
+      //Split into individual roles
+      roles = StringUtils::Split(strRole, separators);
     }
     StringUtils::Trim(strArtist);
-    tag.AddArtistRole(strRole, strArtist);
+    if (roles.empty())
+      tag.AddArtistRole("Performer", strArtist);
+    else
+      for (auto role : roles)
+      {
+        StringUtils::Trim(role);
+        StringUtils::ToCapitalize(role);
+        tag.AddArtistRole(role, strArtist);
+      }
   }
 }
 

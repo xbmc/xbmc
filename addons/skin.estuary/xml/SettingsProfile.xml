@@ -200,7 +200,6 @@
 						<label>$INFO[ListItem.Label]</label>
 						<font>font37</font>
 						<aligny>center</aligny>
-						<textcolor>white</textcolor>
 					</control>
 				</itemlayout>
 				<focusedlayout height="90" width="470">

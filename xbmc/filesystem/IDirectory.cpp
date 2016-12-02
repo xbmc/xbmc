@@ -69,6 +69,16 @@ bool IDirectory::IsAllowed(const CURL& url) const
   if (URIUtils::HasExtension(url, ".dat"))
   {
     std::string fileName = URIUtils::GetFileName(url);
+    std::string folder = URIUtils::GetDirectory(fileName);
+    URIUtils::RemoveSlashAtEnd(folder);
+    folder = URIUtils::GetFileName(folder);
+    if (folder.size() <= 3) // cannot be a vcd variant
+      return true;
+
+    if (!StringUtils::CompareNoCase(folder, "vcd") &&
+        !StringUtils::CompareNoCase(folder, "MPEGAV") &&
+        !StringUtils::CompareNoCase(folder, "CDDA"))
+      return true;
 
     // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
     // and MUSIC##(#).DAT

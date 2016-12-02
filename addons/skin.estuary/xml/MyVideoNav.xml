@@ -21,8 +21,7 @@
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Left</include>
 				<visible>Control.IsVisible(55)</visible>
-<!-- 				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(addons) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content() | Container.Content(episodes)</visible>
- -->				<include>Visible_Left</include>
+				<include>Visible_Left</include>
 				<include>ListThumbInfoPanel</include>
 			</control>
 			<control type="group">
@@ -44,8 +43,6 @@
 						<height>110</height>
 						<font>font36_title</font>
 						<label>$INFO[ListItem.Label]</label>
-						<!-- 					<visible>ListItem.IsCollection</visible>
-						 -->
 					</control>
 					<control type="textbox">
 						<left>30</left>

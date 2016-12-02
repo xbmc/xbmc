@@ -18,6 +18,7 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "utils/JobManager.h"
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"
@@ -32,17 +33,17 @@ protected:
   {
     //! @todo implement
     /*
-    CSettingsCategory* net = CSettings::GetInstance().AddCategory(4, "network", 798);
-    CSettings::GetInstance().AddBool(net, CSettings::SETTING_NETWORK_USEHTTPPROXY, 708, false);
-    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYSERVER, 706, "",
+    CSettingsCategory* net = CServiceBroker::GetSettings().AddCategory(4, "network", 798);
+    CServiceBroker::GetSettings().AddBool(net, CSettings::SETTING_NETWORK_USEHTTPPROXY, 708, false);
+    CServiceBroker::GetSettings().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYSERVER, 706, "",
                             EDIT_CONTROL_INPUT);
-    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPORT, 730, "8080",
+    CServiceBroker::GetSettings().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPORT, 730, "8080",
                             EDIT_CONTROL_NUMBER_INPUT, false, 707);
-    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME, 1048, "",
+    CServiceBroker::GetSettings().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME, 1048, "",
                             EDIT_CONTROL_INPUT);
-    CSettings::GetInstance().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD, 733, "",
+    CServiceBroker::GetSettings().AddString(net, CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD, 733, "",
                             EDIT_CONTROL_HIDDEN_INPUT,true,733);
-    CSettings::GetInstance().AddInt(net, CSettings::SETTING_NETWORK_BANDWIDTH, 14041, 0, 0, 512, 100*1024,
+    CServiceBroker::GetSettings().AddInt(net, CSettings::SETTING_NETWORK_BANDWIDTH, 14041, 0, 0, 512, 100*1024,
                          SPIN_CONTROL_INT_PLUS, 14048, 351);
     */
   }
@@ -52,7 +53,7 @@ protected:
     /* Always cancel jobs test completion */
     CJobManager::GetInstance().CancelJobs();
     CJobManager::GetInstance().Restart();
-    CSettings::GetInstance().Unload();
+    CServiceBroker::GetSettings().Unload();
   }
 };
 

@@ -30,6 +30,7 @@ namespace JOYSTICK
   class IButtonMap;
 
   /*!
+   * \ingroup joystick
    * \brief Class to translate input events from higher-level features to driver primitives
    *
    * A button map is used to translate controller features to driver primitives.

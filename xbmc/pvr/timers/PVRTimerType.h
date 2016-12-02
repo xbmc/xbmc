@@ -19,7 +19,8 @@
  *
  */
 
-#include <memory>
+#include "pvr/PVRTypes.h"
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -28,9 +29,6 @@ struct PVR_TIMER_TYPE;
 
 namespace PVR
 {
-  class CPVRTimerType;
-  typedef std::shared_ptr<CPVRTimerType> CPVRTimerTypePtr;
-
   class CPVRTimerType
   {
   public:

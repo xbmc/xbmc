@@ -32,7 +32,12 @@ CBinaryAddonCache::~CBinaryAddonCache()
 
 void CBinaryAddonCache::Init()
 {
-  m_addonsToCache = {ADDON_AUDIODECODER, ADDON_INPUTSTREAM, ADDON_PVRDLL};
+  m_addonsToCache = {
+    ADDON_AUDIODECODER,
+    ADDON_INPUTSTREAM,
+    ADDON_PVRDLL,
+    ADDON_GAMEDLL,
+  };
   CAddonMgr::GetInstance().Events().Subscribe(this, &CBinaryAddonCache::OnEvent);
   Update();
 }
@@ -57,6 +62,29 @@ void CBinaryAddonCache::GetAddons(VECADDONS& addons, const TYPE& type)
   }
 }
 
+AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, TYPE type)
+{
+  AddonPtr addon;
+
+  CSingleLock lock(m_critSection);
+
+  auto it = m_addons.find(type);
+  if (it != m_addons.end())
+  {
+    VECADDONS& addons = it->second;
+    auto itAddon = std::find_if(addons.begin(), addons.end(),
+      [&strId](const AddonPtr& addon)
+      {
+        return addon->ID() == strId;
+      });
+
+    if (itAddon != addons.end())
+      addon = *itAddon;
+  }
+
+  return addon;
+}
+
 void CBinaryAddonCache::OnEvent(const AddonEvent& event)
 {
   if (typeid(event) == typeid(AddonEvents::InstalledChanged))
@@ -67,7 +95,6 @@ void CBinaryAddonCache::Update()
 {
   using AddonMap = std::multimap<TYPE, VECADDONS>;
   AddonMap addonmap;
-  addonmap.clear();
 
   for (auto &addonType : m_addonsToCache)
   {
@@ -78,7 +105,7 @@ void CBinaryAddonCache::Update()
 
   {
     CSingleLock lock(m_critSection);
-    m_addons = addonmap;
+    m_addons = std::move(addonmap);
   }
 }
 

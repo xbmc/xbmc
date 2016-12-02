@@ -48,6 +48,7 @@ namespace PLAYLIST
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
+class CSettings;
 
 class CServiceBroker
 {
@@ -62,4 +63,5 @@ public:
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
+  static CSettings& GetSettings();
 };

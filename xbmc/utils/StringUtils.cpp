@@ -693,17 +693,6 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
-std::string StringUtils::Join(const std::vector<std::string> &strings, const std::string& delimiter)
-{
-  std::string result;
-  for(std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); ++it )
-    result += (*it) + delimiter;
-  
-  if (!result.empty())
-    result.erase(result.size() - delimiter.size());
-  return result;
-}
-
 std::vector<std::string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings /* = 0 */)
 {
   std::vector<std::string> results;
@@ -752,6 +741,25 @@ std::vector<std::string> StringUtils::Split(const std::string& input, const char
     results.push_back(input.substr(textPos, nextDelim - textPos));
     textPos = nextDelim + 1;
   } while (nextDelim != std::string::npos);
+
+  return results;
+}
+
+std::vector<std::string> StringUtils::Split(const std::string& input, const std::vector<std::string> &delimiters)
+{
+  std::vector<std::string> results;
+  if (input.empty())
+    return results;
+
+  if (delimiters.empty())
+  {
+    results.push_back(input);
+    return results;
+  }
+  std::string str = input;
+  for (size_t di = 1; di < delimiters.size(); di++)
+    StringUtils::Replace(str, delimiters[di], delimiters[0]);
+  results = Split(str, delimiters[0]);
 
   return results;
 }
@@ -1295,9 +1303,9 @@ uint64_t StringUtils::ToUint64(std::string str, uint64_t fallback) noexcept
 
 std::string StringUtils::FormatFileSize(uint64_t bytes)
 {
-  const std::array<std::string, 6> units{"B", "kB", "MB", "GB", "TB", "PB"};
+  const std::array<std::string, 6> units{{"B", "kB", "MB", "GB", "TB", "PB"}};
   if (bytes < 1000)
-    return Format("%lluB", bytes);
+    return Format("%" PRIu64 "B", bytes);
 
   int i = 0;
   double value = static_cast<double>(bytes);

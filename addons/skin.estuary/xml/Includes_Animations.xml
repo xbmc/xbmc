@@ -41,8 +41,8 @@
 	</include>
 	<include name="Vis_FadeSlide_Right_Delayed">
 		<animation type="Conditional" condition="String.IsEqual(Container(9000).ListItem.Property(id),$PARAM[id])">
-			<effect type="fade" start="0" end="100" time="300" tween="sine" delay="300" easing="out"  reversible="False"/>
-			<effect type="slide" start="320" end="0" time="400" delay="300" tween="cubic" easing="out"  reversible="False"/>
+			<effect type="fade" start="0" end="100" time="300" tween="sine" delay="300" easing="out" />
+			<effect type="slide" start="320" end="0" time="400" delay="300" tween="cubic" easing="out" />
 		</animation>
 		<animation type="Hidden">
 			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />

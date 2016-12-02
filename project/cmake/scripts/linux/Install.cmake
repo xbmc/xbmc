@@ -137,9 +137,11 @@ install(FILES ${CORE_SOURCE_DIR}/privacy-policy.txt
         COMPONENT kodi)
 
 # Install kodi-tools-texturepacker
-install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/texturepacker/TexturePacker
-        DESTINATION ${bindir}
-        COMPONENT kodi-tools-texturepacker)
+if(NOT WITH_TEXTUREPACKER)
+  install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/texturepacker/TexturePacker
+          DESTINATION ${bindir}
+          COMPONENT kodi-tools-texturepacker)
+endif()
 
 # Install kodi-addon-dev headers
 install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h
@@ -158,6 +160,7 @@ install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kod
               ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h
               ${CORE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
               ${CORE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
+              ${CORE_SOURCE_DIR}/xbmc/input/XBMC_vkeys.h
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev)
 

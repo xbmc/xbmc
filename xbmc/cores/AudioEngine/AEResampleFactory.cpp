@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResampleFFMPEG.h"
 #if defined(TARGET_RASPBERRY_PI)
+  #include "ServiceBroker.h"
   #include "settings/Settings.h"
   #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResamplePi.h"
 #endif
@@ -32,7 +33,7 @@ namespace ActiveAE
 IAEResample *CAEResampleFactory::Create(uint32_t flags /* = 0 */)
 {
 #if defined(TARGET_RASPBERRY_PI)
-  if (!(flags & AERESAMPLEFACTORY_QUICK_RESAMPLE) && CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY) == AE_QUALITY_GPU)
+  if (!(flags & AERESAMPLEFACTORY_QUICK_RESAMPLE) && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY) == AE_QUALITY_GPU)
     return new CActiveAEResamplePi();
 #endif
   return new CActiveAEResampleFFMPEG();

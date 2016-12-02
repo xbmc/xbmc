@@ -8,10 +8,10 @@
 			<centerleft>50%</centerleft>
 			<width>1700</width>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="1700" />
-				<param name="DialogBackgroundHeight" value="790" />
-				<param name="DialogHeaderLabel" value="" />
-				<param name="DialogHeaderId" value="2" />
+				<param name="width" value="1700" />
+				<param name="height" value="790" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="2" />
 			</include>
 			<control type="grouplist" id="500">
 				<orientation>vertical</orientation>
@@ -104,6 +104,7 @@
 				<orientation>vertical</orientation>
 				<left>1380</left>
 				<width>1300</width>
+				<itemgap>dialogbuttons_itemgap</itemgap>
 				<top>100</top>
 				<onleft>10</onleft>
 				<onright>500</onright>

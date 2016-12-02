@@ -19,11 +19,13 @@
 			<animation effect="slide" start="0,0" end="28,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3) + Container.Content(Episodes)">Conditional</animation>
 			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos)" height="250" width="218">
 				<control type="image">
-					<posx>10</posx>
-					<posy>5</posy>
-					<width>200</width>
-					<height>245</height>
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>210</width>
+					<height>255</height>
 					<texture>button_nofocus.png</texture>
+					<bordertexture border="6">panel_shadow.png</bordertexture>
+					<bordersize>5</bordersize>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -52,9 +54,9 @@
 				</control>
 				<control type="textbox">
 					<posx>10</posx>
-					<posy>200</posy>
+					<posy>199</posy>
 					<width>200</width>
-					<height>49</height>
+					<height>52</height>
 					<font>font20_narrow</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
@@ -73,11 +75,13 @@
 			</itemlayout>
 			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos)" height="250" width="218">
 				<control type="image">
-					<posx>10</posx>
-					<posy>5</posy>
-					<width>200</width>
-					<height>245</height>
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>210</width>
+					<height>255</height>
 					<texture>button_nofocus.png</texture>
+					<bordertexture border="6">panel_shadow.png</bordertexture>
+					<bordersize>5</bordersize>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -102,13 +106,13 @@
 					<posy>205</posy>
 					<width>200</width>
 					<height>45</height>
-					<texture colordiffuse="darkblue">white.png</texture>
+					<texture colordiffuse="blue">white.png</texture>
 				</control>
 				<control type="textbox">
 					<posx>10</posx>
-					<posy>200</posy>
+					<posy>199</posy>
 					<width>200</width>
-					<height>49</height>
+					<height>52</height>
 					<font>font20_narrow</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
@@ -127,11 +131,13 @@
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="375" width="218">
 				<control type="image">
-					<posx>10</posx>
-					<posy>5</posy>
-					<width>200</width>
-					<height>345</height>
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>210</width>
+					<height>355</height>
 					<texture>button_nofocus.png</texture>
+					<bordertexture border="6">panel_shadow.png</bordertexture>
+					<bordersize>5</bordersize>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -150,9 +156,9 @@
 				</control>
 				<control type="textbox">
 					<posx>10</posx>
-					<posy>300</posy>
+					<posy>299</posy>
 					<width>200</width>
-					<height>49</height>
+					<height>52</height>
 					<font>font20_narrow</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
@@ -184,11 +190,13 @@
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)" height="375" width="218">
 				<control type="image">
-					<posx>10</posx>
-					<posy>5</posy>
-					<width>200</width>
-					<height>345</height>
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>210</width>
+					<height>355</height>
 					<texture>button_nofocus.png</texture>
+					<bordertexture border="6">panel_shadow.png</bordertexture>
+					<bordersize>5</bordersize>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -203,13 +211,13 @@
 					<posy>305</posy>
 					<width>200</width>
 					<height>45</height>
-					<texture colordiffuse="darkblue">white.png</texture>
+					<texture colordiffuse="blue">white.png</texture>
 				</control>
 				<control type="textbox">
 					<posx>10</posx>
-					<posy>300</posy>
+					<posy>299</posy>
 					<width>200</width>
-					<height>49</height>
+					<height>52</height>
 					<font>font20_narrow</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
@@ -241,11 +249,13 @@
 			</focusedlayout>
 			<itemlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos)" height="250" width="$PARAM[layout-width]">
 				<control type="image">
-					<posx>5</posx>
-					<posy>5</posy>
-					<width>298</width>
-					<height>213</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>308</width>
+					<height>223</height>
 					<texture>button_nofocus.png</texture>
+					<bordertexture border="6">panel_shadow.png</bordertexture>
+					<bordersize>5</bordersize>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -264,9 +274,9 @@
 				</control>
 				<control type="textbox">
 					<posx>5</posx>
-					<posy>168</posy>
+					<posy>167</posy>
 					<width>298</width>
-					<height>49</height>
+					<height>52</height>
 					<font>font20_narrow</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
@@ -290,11 +300,13 @@
 			</itemlayout>
 			<focusedlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos)" height="250" width="$PARAM[layout-width]">
 				<control type="image">
-					<posx>5</posx>
-					<posy>5</posy>
-					<width>298</width>
-					<height>213</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>308</width>
+					<height>223</height>
 					<texture>button_nofocus.png</texture>
+					<bordertexture border="6">panel_shadow.png</bordertexture>
+					<bordersize>5</bordersize>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -309,13 +321,13 @@
 					<posy>173</posy>
 					<width>298</width>
 					<height>45</height>
-					<texture colordiffuse="darkblue">white.png</texture>
+					<texture colordiffuse="blue">white.png</texture>
 				</control>
 				<control type="textbox">
 					<posx>5</posx>
-					<posy>168</posy>
+					<posy>167</posy>
 					<width>298</width>
-					<height>49</height>
+					<height>52</height>
 					<font>font20_narrow</font>
 					<selectedcolor>selected</selectedcolor>
 					<align>center</align>

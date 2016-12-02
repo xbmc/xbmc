@@ -9,8 +9,8 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>180</bottom>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus />
+			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group" id="200">
@@ -56,7 +56,7 @@
 					<radiowidth>74</radiowidth>
 					<radioheight>74</radioheight>
 					<font></font>
-					<texturenofocus></texturenofocus>
+					<texturenofocus />
 					<radioposx>1</radioposx>
 					<radioposy>0</radioposy>
 					<selected>Player.Paused</selected>
@@ -107,7 +107,7 @@
 						<label></label>
 						<font></font>
 						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
-						<texturenofocus></texturenofocus>
+						<texturenofocus />
 						<onleft>620</onleft>
 						<onright>607</onright>
 						<onup>87</onup>
@@ -137,7 +137,7 @@
 					<radiowidth>74</radiowidth>
 					<radioheight>74</radioheight>
 					<font></font>
-					<texturenofocus></texturenofocus>
+					<texturenofocus />
 					<radioposx>1</radioposx>
 					<radioposy>0</radioposy>
 					<selected>Playlist.IsRandom</selected>

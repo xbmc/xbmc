@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "GUIWindowMusicPlaylistEditor.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -386,7 +387,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
     PLAYLIST::CPlayListM3U playlist;
     playlist.Add(*m_playlist);
     std::string path = URIUtils::AddFileToFolder(
-      CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
+      CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
       "music",
       name + ".m3u");
 
@@ -398,7 +399,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 {
   OnRetrieveMusicInfo(newItems);
-  FormatItemLabels(newItems, LABEL_MASKS(CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT), "%D", "%L", ""));
+  FormatItemLabels(newItems, LABEL_MASKS(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT), "%D", "%L", ""));
   m_playlist->Append(newItems);
   UpdatePlaylist();
 }

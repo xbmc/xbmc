@@ -4,6 +4,7 @@ SRCS += PeripheralDisk.cpp
 SRCS += PeripheralHID.cpp
 SRCS += PeripheralImon.cpp
 SRCS += PeripheralJoystick.cpp
+SRCS += PeripheralJoystickEmulation.cpp
 SRCS += PeripheralNIC.cpp
 SRCS += PeripheralNyxboard.cpp
 SRCS += PeripheralTuner.cpp

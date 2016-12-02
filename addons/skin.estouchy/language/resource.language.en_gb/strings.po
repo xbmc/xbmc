@@ -53,7 +53,6 @@ msgid "Recent"
 msgstr ""
 
 #empty string with id 31012
-#Used for subtitle button in the OSD
 
 msgctxt "#31013"
 msgid "Movies"
@@ -83,7 +82,6 @@ msgid "Info List"
 msgstr ""
 
 #empty strings from id 31031 to 31037
-#Extra labels
 
 msgctxt "#31038"
 msgid "Login"
@@ -269,26 +267,19 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr ""
 
-#empty strings from id 31422 to 31499
-#Skin Setting Headers
-
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr ""
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr ""
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr ""
-
-#empty strings from id 31503 to 31549
+#empty strings from id 31422 to 31547
 #Skin Setting Options
 
+msgctxt "#31548"
+msgid "Home menu"
+msgstr ""
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr ""
+
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
+msgid "Backgrounds"
 msgstr ""
 
 msgctxt "#31551"

@@ -19,6 +19,7 @@
  */
 
 #include "PeripheralAddon.h"
+#include "ServiceBroker.h"
 #include "AddonButtonMap.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/AddonManager.h"
@@ -32,7 +33,9 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/devices/PeripheralJoystick.h"
+#include "peripherals/devices/PeripheralJoystickEmulation.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -43,6 +46,9 @@
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
+
+#define JOYSTICK_EMULATION_BUTTON_MAP_NAME  "Keyboard"
+#define JOYSTICK_EMULATION_PROVIDER         "application"
 
 #ifndef SAFE_DELETE
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
@@ -73,7 +79,7 @@ CPeripheralAddon::~CPeripheralAddon(void)
   // delete all peripherals provided by this addon
   for (const auto& peripheral : m_peripherals)
   {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
     {
       // shutdown the joystick if it is supported
       if (peripheral.second->Type() == PERIPHERAL_JOYSTICK)
@@ -252,6 +258,7 @@ void CPeripheralAddon::UnregisterRemovedDevices(const PeripheralScanResults &res
     auto it = m_peripherals.find(index);
     const PeripheralPtr& peripheral = it->second;
     CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+    UnregisterButtonMap(peripheral.get());
     peripheral->OnDeviceRemoved();
     removedPeripherals.push_back(peripheral);
     m_peripherals.erase(it);
@@ -729,12 +736,16 @@ void CPeripheralAddon::PowerOffJoystick(unsigned int index)
 
 void CPeripheralAddon::RegisterButtonMap(CPeripheral* device, IButtonMap* buttonMap)
 {
+  CSingleLock lock(m_buttonMapMutex);
+
   UnregisterButtonMap(buttonMap);
   m_buttonMaps.push_back(std::make_pair(device, buttonMap));
 }
 
 void CPeripheralAddon::UnregisterButtonMap(IButtonMap* buttonMap)
 {
+  CSingleLock lock(m_buttonMapMutex);
+
   for (auto it = m_buttonMaps.begin(); it != m_buttonMaps.end(); ++it)
   {
     if (it->second == buttonMap)
@@ -745,8 +756,21 @@ void CPeripheralAddon::UnregisterButtonMap(IButtonMap* buttonMap)
   }
 }
 
+void CPeripheralAddon::UnregisterButtonMap(CPeripheral* device)
+{
+  CSingleLock lock(m_buttonMapMutex);
+
+  m_buttonMaps.erase(std::remove_if(m_buttonMaps.begin(), m_buttonMaps.end(),
+    [device](const std::pair<CPeripheral*, JOYSTICK::IButtonMap*>& buttonMap)
+    {
+      return buttonMap.first == device;
+    }), m_buttonMaps.end());
+}
+
 void CPeripheralAddon::RefreshButtonMaps(const std::string& strDeviceName /* = "" */)
 {
+  CSingleLock lock(m_buttonMapMutex);
+
   for (auto it = m_buttonMaps.begin(); it != m_buttonMaps.end(); ++it)
   {
     if (strDeviceName.empty() || strDeviceName == it->first->DeviceName())
@@ -756,6 +780,7 @@ void CPeripheralAddon::RefreshButtonMaps(const std::string& strDeviceName /* = "
 
 void CPeripheralAddon::GetPeripheralInfo(const CPeripheral* device, ADDON::Peripheral& peripheralInfo)
 {
+  peripheralInfo.SetType(CPeripheralAddonTranslator::TranslateType(device->Type()));
   peripheralInfo.SetName(device->DeviceName());
   peripheralInfo.SetVendorID(device->VendorId());
   peripheralInfo.SetProductID(device->ProductId());
@@ -774,6 +799,13 @@ void CPeripheralAddon::GetJoystickInfo(const CPeripheral* device, ADDON::Joystic
     joystickInfo.SetAxisCount(joystick->AxisCount());
     joystickInfo.SetMotorCount(joystick->MotorCount());
     joystickInfo.SetSupportsPowerOff(joystick->SupportsPowerOff());
+  }
+  else if (device->Type() == PERIPHERAL_JOYSTICK_EMULATION)
+  {
+    const CPeripheralJoystickEmulation* joystick = static_cast<const CPeripheralJoystickEmulation*>(device);
+    joystickInfo.SetName(JOYSTICK_EMULATION_BUTTON_MAP_NAME); // Override name with non-localized version
+    joystickInfo.SetProvider(JOYSTICK_EMULATION_PROVIDER);
+    joystickInfo.SetIndex(joystick->ControllerNumber());
   }
 }
 

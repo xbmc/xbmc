@@ -8,10 +8,10 @@
 			<width>960</width>
 			<top>330</top>
 			<include content="DialogBackgroundCommons">
-				<param name="DialogBackgroundWidth" value="960" />
-				<param name="DialogBackgroundHeight" value="500" />
-				<param name="DialogHeaderLabel" value="$LOCALIZE[21421]" />
-				<param name="DialogHeaderId" value="2" />
+				<param name="width" value="960" />
+				<param name="height" value="500" />
+				<param name="header_label" value="$LOCALIZE[21421]" />
+				<param name="header_id" value="2" />
 			</include>
 			<control type="label">
 				<description>Rule match label</description>

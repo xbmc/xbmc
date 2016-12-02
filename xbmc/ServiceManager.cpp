@@ -30,6 +30,7 @@
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "settings/Settings.h"
 
 bool CServiceManager::Init1()
 {
@@ -42,6 +43,8 @@ bool CServiceManager::Init1()
   m_Platform.reset(CPlatform::CreateInstance());
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
+
+  m_settings.reset(new CSettings());
 
   return true;
 }
@@ -172,6 +175,11 @@ CPlatform& CServiceManager::GetPlatform()
 PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
 {
   return *m_playlistPlayer;
+}
+
+CSettings& CServiceManager::GetSettings()
+{
+  return *m_settings;
 }
 
 // deleters for unique_ptr

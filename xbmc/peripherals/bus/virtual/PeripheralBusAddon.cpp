@@ -133,12 +133,6 @@ bool CPeripheralBusAddon::GetAddonWithButtonMap(const CPeripheral* device, Perip
   return addon.get() != nullptr;
 }
 
-unsigned int CPeripheralBusAddon::GetAddonCount(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_addons.size();
-}
-
 bool CPeripheralBusAddon::PerformDeviceScan(PeripheralScanResults &results)
 {
   PeripheralAddonVector addons;
@@ -521,7 +515,10 @@ bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::VECADDONS& disabledAdd
   if (bAccepted)
   {
     for (const AddonPtr& addon : disabledAddons)
-      CAddonMgr::GetInstance().EnableAddon(addon->ID());
+    {
+      if (std::static_pointer_cast<CPeripheralAddon>(addon)->HasButtonMaps())
+        CAddonMgr::GetInstance().EnableAddon(addon->ID());
+    }
   }
 
   PeripheralAddonPtr dummy;

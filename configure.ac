@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([kodi], [16.9.806], [http://trac.kodi.tv])
+AC_INIT([kodi], [17.9.701], [http://trac.kodi.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -2153,7 +2153,7 @@ OUTPUT_FILES="Makefile \
     addons/skin.estuary/media/Makefile \
     addons/skin.estouchy/media/Makefile \
     xbmc/Makefile \
-    xbmc/addons/interfaces/Makefile \
+    xbmc/addons/binary/interfaces/Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoPlayer/VideoRenderers/Makefile \
@@ -2173,6 +2173,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
     xbmc/cores/playercorefactory/Makefile \
+    xbmc/cores/RetroPlayer/Makefile \
     xbmc/messaging/Makefile \
     xbmc/messaging/helpers/Makefile \
     xbmc/guilib/Makefile \
@@ -2190,6 +2191,15 @@ OUTPUT_FILES="Makefile \
     xbmc/filesystem/Makefile \
     xbmc/windowing/Makefile \
     xbmc/windowing/egl/Makefile \
+    lib/addons/library.xbmc.addon/Makefile \
+    lib/addons/library.kodi.adsp/Makefile \
+    lib/addons/library.kodi.audioengine/Makefile \
+    lib/addons/library.xbmc.codec/Makefile \
+    lib/addons/library.kodi.game/Makefile \
+    lib/addons/library.kodi.guilib/Makefile \
+    lib/addons/library.kodi.peripheral/Makefile \
+    lib/addons/library.xbmc.pvr/Makefile \
+    lib/addons/library.kodi.inputstream/Makefile \
     tools/Linux/kodi.sh \
     tools/Linux/kodi-standalone.sh \
     tools/Linux/kodi-xsession.desktop \

@@ -125,7 +125,6 @@ struct CVaapiConfig
   VADisplay dpy;
   VAProfile profile;
   VAConfigAttrib attrib;
-  Display *x11dsp;
   CProcessInfo *processInfo;
 };
 
@@ -378,7 +377,6 @@ public:
   static bool EnsureContext(CVAAPIContext **ctx, CDecoder *decoder);
   void Release(CDecoder *decoder);
   VADisplay GetDisplay();
-  Display* GetX11Display();
   bool SupportsProfile(VAProfile profile);
   VAConfigAttrib GetAttrib(VAProfile profile);
   VAConfigID CreateConfig(VAProfile profile, VAConfigAttrib attrib);
@@ -386,14 +384,15 @@ public:
 private:
   CVAAPIContext();
   void Close();
+  void SetVaDisplayForSystem();
   bool CreateContext();
   void DestroyContext();
   void QueryCaps();
   bool CheckSuccess(VAStatus status);
   bool IsValidDecoder(CDecoder *decoder);
+  void SetValidDRMVaDisplayFromRenderNode();
   static CVAAPIContext *m_context;
   static CCriticalSection m_section;
-  static Display *m_X11dpy;
   VADisplay m_display;
   int m_refCount;
   int m_attributeCount;
@@ -401,6 +400,10 @@ private:
   int m_profileCount;
   VAProfile *m_profiles;
   std::vector<CDecoder*> m_decoders;
+  int m_renderNodeFD{-1};
+#ifdef HAVE_X11
+  static Display *m_X11dpy;
+#endif
 };
 
 /**

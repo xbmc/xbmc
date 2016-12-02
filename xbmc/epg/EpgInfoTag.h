@@ -19,15 +19,18 @@
  *
  */
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "utils/ISerializable.h"
+
+#include "epg/EpgTypes.h"
+
+#include <string>
+#include <vector>
 
 #define EPG_DEBUGGING 0
 
@@ -36,9 +39,6 @@ class CVariant;
 namespace EPG
 {
   class CEpg;
-
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 
   class CEpgInfoTag : public ISerializable
   {
@@ -66,7 +66,7 @@ namespace EPG
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::string &strTableName = "", const std::string &strIconPath = "");
+    CEpgInfoTag(CEpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName = "", const std::string &strIconPath = "");
 
     CEpgInfoTag(const CEpgInfoTag &tag) = delete;
     CEpgInfoTag &operator =(const CEpgInfoTag &other) = delete;
@@ -338,7 +338,7 @@ namespace EPG
      * @brief Set a recording for this event or NULL to clear it.
      * @param recording The recording value.
      */
-    void SetRecording(PVR::CPVRRecordingPtr recording);
+    void SetRecording(const PVR::CPVRRecordingPtr &recording);
 
     /*!
      * @brief Clear a recording for this event.
@@ -361,7 +361,7 @@ namespace EPG
      * @brief Change the channel tag of this epg tag
      * @param channel The new channel
      */
-    void SetPVRChannel(PVR::CPVRChannelPtr channel);
+    void SetPVRChannel(const PVR::CPVRChannelPtr &channel);
 
     /*!
      * @return True if this tag has a PVR channel set.

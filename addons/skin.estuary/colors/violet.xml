@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
-	<color name="primary_background">FFC050FF</color>
+	<color name="primary_background">FFA200FF</color>
 	<color name="secondary_background">4DF6FF02</color>
 	<color name="dialog_tint">FF27222A</color>
 	<color name="button_focus">FFC050FF</color>

@@ -42,7 +42,6 @@ protected:
   virtual void InitializeSettings() override;
 
 private:
-  bool m_viewModeChanged;
   static void Cms3dLutsFiller(
     const CSetting *setting,
     std::vector< std::pair<std::string, std::string> > &list,

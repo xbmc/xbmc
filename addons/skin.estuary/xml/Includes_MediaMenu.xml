@@ -6,12 +6,10 @@
 		<top>0</top>
 		<height>80</height>
 		<radioposx>370</radioposx>
-		<textwidth>320</textwidth>
 		<aligny>center</aligny>
-		<textcolor>white</textcolor>
 		<invalidcolor>invalid</invalidcolor>
 		<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-		<texturenofocus></texturenofocus>
+		<texturenofocus />
 		<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
 		<alttexturenofocus></alttexturenofocus>
 	</include>
@@ -25,7 +23,7 @@
 				<aligny>center</aligny>
 				<font></font>
 				<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
-				<texturenofocus></texturenofocus>
+				<texturenofocus />
 				<radioposx>26</radioposx>
 				<radioposy>0</radioposy>
 				<radiowidth>40</radiowidth>
@@ -209,7 +207,7 @@
 						<onup>8</onup>
 						<ondown>6056</ondown>
 						<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
-						<visible>!System.HasModalDialog</visible>
+						<visible>!System.HasActiveModalDialog</visible>
 						<include content="BottomMainMenuToggleItem">
 							<param name="control_id" value="14101" />
 							<param name="onclick" value="PlayerControl(Play)" />
@@ -259,7 +257,7 @@
 			<height>100%</height>
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
-			<visible>$EXP[sidebar_focused] + !System.HasModalDialog</visible>
+			<visible>$EXP[sidebar_focused] + !System.HasActiveModalDialog</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 		</control>
 		<control type="image">
@@ -289,7 +287,7 @@
 			<onleft>14100</onleft>
 			<width>450</width>
 			<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
-			<visible>!System.HasModalDialog</visible>
+			<visible>!System.HasActiveModalDialog</visible>
 			<include content="BottomMainMenuToggleItem">
 				<param name="control_id" value="14101" />
 				<param name="onclick" value="PlayerControl(Play)" />
@@ -373,8 +371,8 @@
 			<width>50</width>
 			<left>-50</left>
 			<top>0</top>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus />
+			<texturenofocus />
 		</control>
 	</include>
 </includes>

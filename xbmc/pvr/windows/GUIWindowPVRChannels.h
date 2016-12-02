@@ -40,17 +40,12 @@ namespace PVR
     virtual std::string GetDirectoryPath(void) override;
 
   private:
-    bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonManage(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonAddTimer(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonManage(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
     void ShowChannelManager();
-    void ShowGroupManager(void);
+    void ShowGroupManager();
+    void UpdateEpg(const CFileItemPtr &item);
+    bool InputChannelNumber(int input);
 
     bool m_bShowHiddenChannels;
   };

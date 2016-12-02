@@ -58,6 +58,34 @@ const char* CPeripheralAddonTranslator::TranslateError(const PERIPHERAL_ERROR er
   }
 }
 
+PeripheralType CPeripheralAddonTranslator::TranslateType(PERIPHERAL_TYPE type)
+{
+  switch (type)
+  {
+    case PERIPHERAL_TYPE_JOYSTICK:
+      return PERIPHERAL_JOYSTICK;
+    case PERIPHERAL_TYPE_KEYBOARD:
+      return PERIPHERAL_JOYSTICK_EMULATION;
+    default:
+      break;
+  }
+  return PERIPHERAL_UNKNOWN;
+}
+
+PERIPHERAL_TYPE CPeripheralAddonTranslator::TranslateType(PeripheralType type)
+{
+  switch (type)
+  {
+    case PERIPHERAL_JOYSTICK:
+      return PERIPHERAL_TYPE_JOYSTICK;
+    case PERIPHERAL_JOYSTICK_EMULATION:
+      return PERIPHERAL_TYPE_KEYBOARD;
+    default:
+      break;
+  }
+  return PERIPHERAL_TYPE_UNKNOWN;
+}
+
 CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const ADDON::DriverPrimitive& primitive)
 {
   CDriverPrimitive retVal;
