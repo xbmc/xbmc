@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "utils/log.h"
 
 #include "DVDFactoryCodec.h"
@@ -51,8 +50,6 @@
 
 #include "DVDStreamInfo.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "settings/VideoSettings.h"
 #include "utils/StringUtils.h"
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
@@ -175,7 +172,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
 
 CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo, bool allowpassthrough, bool allowdtshddecode)
 {
-  CDVDAudioCodec* pCodec = NULL;
+  CDVDAudioCodec* pCodec;
   CDVDCodecOptions options;
 
   if (!allowdtshddecode)
@@ -198,7 +195,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
 
 CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
 {
-  CDVDOverlayCodec* pCodec = NULL;
+  CDVDOverlayCodec* pCodec;
   CDVDCodecOptions options;
 
   switch (hint.codec)

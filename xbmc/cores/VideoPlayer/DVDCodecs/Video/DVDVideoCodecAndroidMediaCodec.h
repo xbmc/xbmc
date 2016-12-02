@@ -95,7 +95,7 @@ private:
 class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec
 {
 public:
-  CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render = false);
+  CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
   // required overrides

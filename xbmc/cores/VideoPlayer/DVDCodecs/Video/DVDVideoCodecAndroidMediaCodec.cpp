@@ -338,7 +338,7 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
 /*****************************************************************************/
 /*****************************************************************************/
-CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render)
+CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo)
 : CDVDVideoCodec(processInfo)
 , m_formatname("mediacodec")
 , m_opened(false)
@@ -346,7 +346,9 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_textureId(0)
 , m_bitstream(NULL)
 , m_render_sw(false)
-, m_render_surface(surface_render)
+, m_render_surface(false)
+, m_drop(false)
+, m_colorFormat(-1)
 {
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
   memset(&m_demux_pkt, 0x00, sizeof(m_demux_pkt));
@@ -374,7 +376,26 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
            !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     return false;
 
-  m_render_surface = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
+  // Avoid h/w decoder for SD; Those files might use features
+  // not supported and can easily be soft-decoded
+  switch (hints.codec)
+  {
+  case AV_CODEC_ID_MPEG4:
+  case AV_CODEC_ID_MSMPEG4V2:
+  case AV_CODEC_ID_MSMPEG4V3:
+    if (hints.width <= 800)
+    {
+      CLog::Log(LOGINFO, "MediaCodec Falling back to SW acceleration...");
+      return false;
+    }
+  }
+  // only use surface rendering for content larger FullHD
+  if ((hints.width > 1920 || hints.height > 1080) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+  {
+    CLog::Log(LOGINFO, "MediaCodec (Surface) Video Decoder...");
+    m_render_surface = true;
+  }
+  
   m_drop = false;
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
   m_noPictureLoop = 0;
