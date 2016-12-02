@@ -19,6 +19,7 @@
  */
 
 #include "JoystickEasterEgg.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
@@ -70,9 +71,9 @@ bool CJoystickEasterEgg::OnButtonPress(const FeatureName& feature)
 
 void CJoystickEasterEgg::OnFinish(void)
 {
-  CSettings::GetInstance().ToggleBool(CSettings::SETTING_GAMES_ENABLE);
+  CServiceBroker::GetSettings().ToggleBool(CSettings::SETTING_GAMES_ENABLE);
 
-  WINDOW_SOUND sound = CSettings::GetInstance().GetBool(CSettings::SETTING_GAMES_ENABLE) ? SOUND_INIT : SOUND_DEINIT;
+  WINDOW_SOUND sound = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_GAMES_ENABLE) ? SOUND_INIT : SOUND_DEINIT;
   g_audioManager.PlayWindowSound(WINDOW_DIALOG_KAI_TOAST, sound);
 
   //! @todo Shake screen

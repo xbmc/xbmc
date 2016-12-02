@@ -34,6 +34,7 @@
 #include "filesystem/File.h"
 #include "network/Network.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
@@ -1228,7 +1229,7 @@ std::string CSysInfo::GetUserAgent()
 
 std::string CSysInfo::GetDeviceName()
 {
-  std::string friendlyName = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_DEVICENAME);
+  std::string friendlyName = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SERVICES_DEVICENAME);
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
   {
     std::string hostname("[unknown]");

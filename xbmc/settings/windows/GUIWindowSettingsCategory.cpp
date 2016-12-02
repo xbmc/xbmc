@@ -23,6 +23,7 @@
 #include "GUIWindowSettingsCategory.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "input/Key.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -58,7 +59,7 @@ static const SettingGroup s_settingGroupMap[] = { { SETTINGS_SYSTEM,      "syste
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
     : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_SYSTEM, "SettingsCategory.xml"),
-      m_settings(CSettings::GetInstance()),
+      m_settings(CServiceBroker::GetSettings()),
       m_iSection(0),
       m_returningFromSkinLoad(false)
 {
@@ -136,7 +137,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
         return false;
       
       CViewStateSettings::GetInstance().CycleSettingLevel();
-      CSettings::GetInstance().Save();
+      CServiceBroker::GetSettings().Save();
 
       // try to keep the current position
       std::string oldCategory;

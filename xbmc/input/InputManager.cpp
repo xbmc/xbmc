@@ -21,6 +21,7 @@
 #include <math.h>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "InputManager.h"
 #include "input/keyboard/IKeyboardHandler.h"
 #include "input/mouse/generic/MouseInputHandling.h"
@@ -99,7 +100,7 @@ void CInputManager::InitializeInputs()
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
-  m_Mouse.SetEnabled(CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  m_Mouse.SetEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
 void CInputManager::SetEnabledJoystick(bool enabled /* = true */)

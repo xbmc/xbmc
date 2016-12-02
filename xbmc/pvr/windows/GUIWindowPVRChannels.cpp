@@ -20,6 +20,7 @@
 
 
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "epg/EpgContainer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -153,7 +154,7 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
            case ACTION_MOUSE_LEFT_CLICK:
            case ACTION_PLAY:
              CPVRGUIActions::GetInstance().SwitchToChannel(m_vecItems->Get(iItem),
-                                                           CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
+                                                           CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
                                                            true);
              break;
            case ACTION_SHOW_INFO:

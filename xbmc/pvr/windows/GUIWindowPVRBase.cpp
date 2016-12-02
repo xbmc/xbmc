@@ -20,6 +20,7 @@
 
 #include "GUIWindowPVRBase.h"
 
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"

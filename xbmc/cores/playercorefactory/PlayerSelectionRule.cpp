@@ -20,6 +20,7 @@
 
 #include "URL.h"
 #include "PlayerSelectionRule.h"
+#include "ServiceBroker.h"
 #include "video/VideoInfoTag.h"
 #include "utils/StreamDetails.h"
 #include "settings/Settings.h"
@@ -75,7 +76,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_bStreamDetails = m_audioCodec.length() > 0 || m_audioChannels.length() > 0 ||
     m_videoCodec.length() > 0 || m_videoResolution.length() > 0 || m_videoAspect.length() > 0;
 
-  if (m_bStreamDetails && !CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+  if (m_bStreamDetails && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
   {
       CLog::Log(LOGWARNING, "CPlayerSelectionRule::Initialize: rule: %s needs media flagging, which is disabled", m_name.c_str());
   }

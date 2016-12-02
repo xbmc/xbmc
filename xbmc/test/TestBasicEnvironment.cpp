@@ -31,6 +31,7 @@
 #include "Util.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "interfaces/AnnouncementManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "interfaces/python/XBPython.h"
@@ -77,7 +78,7 @@ void TestBasicEnvironment::SetUp()
    * that the initialization of these components won't be needed.
    */
   g_powerManager.Initialize();
-  CSettings::GetInstance().Initialize();
+  CServiceBroker::GetSettings().Initialize();
 
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
@@ -125,7 +126,7 @@ void TestBasicEnvironment::TearDown()
 {
   std::string xbmcTempPath = CSpecialProtocol::TranslatePath("special://temp/");
   XFILE::CDirectory::Remove(xbmcTempPath);
-  CSettings::GetInstance().Uninitialize();
+  CServiceBroker::GetSettings().Uninitialize();
   g_application.m_ServiceManager->Deinit();
 }
 

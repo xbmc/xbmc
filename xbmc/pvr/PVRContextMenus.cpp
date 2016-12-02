@@ -19,6 +19,7 @@
  */
 
 #include "ContextMenuItem.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "epg/EpgInfoTag.h"
 #include "pvr/addons/PVRClients.h"
@@ -180,7 +181,7 @@ namespace PVR
     bool PlayChannel::Execute(const CFileItemPtr &item) const
     {
       return CPVRGUIActions::GetInstance().SwitchToChannel(
-        item, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), false /* bCheckResume */);
+        item, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), false /* bCheckResume */);
     }
 
     ///////////////////////////////////////////////////////////////////////////////

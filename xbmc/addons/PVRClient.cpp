@@ -19,6 +19,7 @@
  */
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 #include "epg/Epg.h"
 #include "messaging/ApplicationMessenger.h"
@@ -136,7 +137,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_pInfo->strUserPath    = m_strUserPath.c_str();
   m_strClientPath         = CSpecialProtocol::TranslatePath(Path());
   m_pInfo->strClientPath  = m_strClientPath.c_str();
-  m_pInfo->iEpgMaxDays    = CSettings::GetInstance().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY);
+  m_pInfo->iEpgMaxDays    = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY);
   m_menuhooks.clear();
   m_timertypes.clear();
   m_bReadyToUse           = false;

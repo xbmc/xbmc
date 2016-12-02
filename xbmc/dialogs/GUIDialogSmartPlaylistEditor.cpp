@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogSmartPlaylistRule.h"
@@ -228,7 +229,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnOK()
 {
-  std::string systemPlaylistsPath = CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  std::string systemPlaylistsPath = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   // save our playlist
   if (m_path.empty())
   {

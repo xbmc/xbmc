@@ -29,6 +29,7 @@
 #include "WIN32Util.h"
 #include "storage/windows/Win32StorageProvider.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
@@ -494,7 +495,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case SC_MONITORPOWER:
           if (g_application.m_pPlayer->IsPlaying() || g_application.m_pPlayer->IsPausedPlayback())
             return 0;
-          else if(CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) == 0)
+          else if(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) == 0)
             return 0;
           break;
         case SC_SCREENSAVE:

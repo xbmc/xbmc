@@ -400,13 +400,6 @@ public:
   CSettings();
   virtual ~CSettings();
 
-  /*!
-   \brief Returns a "global" settings wrapper which can be used from anywhere.
-
-   \return "global" settings wrapper
-   */
-  static CSettings& GetInstance();
-
   CSettingsManager* GetSettingsManager() const { return m_settingsManager; }
 
   /*!
@@ -612,10 +605,14 @@ private:
   void InitializeVisibility();
   void InitializeDefaults();
   void InitializeOptionFillers();
+  void UninitializeOptionFillers();
   void InitializeConditions();
   void InitializeISettingsHandlers();
+  void UninitializeISettingsHandlers();
   void InitializeISubSettings();
+  void UninitializeISubSettings();
   void InitializeISettingCallbacks();
+  void UninitializeISettingCallbacks();
   bool Reset();
 
   bool m_initialized;

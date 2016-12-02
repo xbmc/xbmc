@@ -19,6 +19,7 @@
 */
 
 #include "MusicFileItemListModifier.h"
+#include "ServiceBroker.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "FileItem.h"
 #include "music/MusicDbUrl.h"
@@ -58,7 +59,7 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     return;
 
   // always show "all" items by default
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWALLITEMS))
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWALLITEMS))
     return;
 
   // no need for "all" item when only one item

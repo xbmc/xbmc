@@ -20,6 +20,7 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "Socket.h"
@@ -156,8 +157,8 @@ namespace EVENTCLIENT
 
     void RefreshSettings()
     {
-      m_iRepeatDelay = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY);
-      m_iRepeatSpeed = CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
+      m_iRepeatDelay = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY);
+      m_iRepeatSpeed = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
     }
 
     SOCKETS::CAddress& Address()

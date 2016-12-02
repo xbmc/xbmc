@@ -22,6 +22,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "RecentlyAddedJob.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
@@ -314,7 +315,7 @@ bool CRecentlyAddedJob::UpdateTotal()
 
   CMusicDbUrl musicUrl;
   musicUrl.FromString("musicdb://artists/");
-  musicUrl.AddOption("albumartistsonly", !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS));
+  musicUrl.AddOption("albumartistsonly", !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS));
 
   CFileItemList items;
   CDatabase::Filter filter;

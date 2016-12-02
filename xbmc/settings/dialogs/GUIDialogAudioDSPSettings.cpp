@@ -20,6 +20,7 @@
 
 #include "GUIDialogAudioDSPSettings.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPDatabase.h"
@@ -390,7 +391,7 @@ void CGUIDialogAudioDSPSettings::Save()
 
   CMediaSettings::GetInstance().GetDefaultAudioSettings() = CMediaSettings::GetInstance().GetCurrentAudioSettings();
   CMediaSettings::GetInstance().GetDefaultAudioSettings().m_MasterStreamType = AE_DSP_ASTREAM_AUTO;
-  CSettings::GetInstance().Save();
+  CServiceBroker::GetSettings().Save();
 }
 
 void CGUIDialogAudioDSPSettings::SetupView()

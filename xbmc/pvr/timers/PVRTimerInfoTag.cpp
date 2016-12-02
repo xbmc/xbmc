@@ -18,6 +18,7 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -53,16 +54,16 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_iClientChannelUid(PVR_CHANNEL_INVALID_UID),
   m_bStartAnyTime(false),
   m_bEndAnyTime(false),
-  m_iPriority(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY)),
-  m_iLifetime(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME)),
+  m_iPriority(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY)),
+  m_iLifetime(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME)),
   m_iMaxRecordings(0),
-  m_iPreventDupEpisodes(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES)),
+  m_iPreventDupEpisodes(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES)),
   m_iRecordingGroup(0),
   m_iChannelNumber(0),
   m_bIsRadio(bRadio),
   m_iTimerId(0),
-  m_iMarginStart(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_MARGINSTART)),
-  m_iMarginEnd(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_MARGINEND)),
+  m_iMarginStart(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_MARGINSTART)),
+  m_iMarginEnd(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_MARGINEND)),
   m_StartTime(CDateTime::GetUTCDateTime()),
   m_StopTime(m_StartTime),
   m_iEpgUid(EPG_TAG_INVALID_UID)
@@ -752,7 +753,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
   newTimer->SetStartFromUTC(now);
 
   if (iDuration == DEFAULT_PVRRECORD_INSTANTRECORDTIME)
-    iDuration = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+    iDuration = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
 
   CDateTime endTime = now + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
   newTimer->SetEndFromUTC(endTime);
