@@ -19,10 +19,9 @@
  *
  */
 
-#include "AE.h"
 #include "threads/Thread.h"
 
-class IThreadedAE : public IAE, public IRunnable
+class IThreadedAE : public IRunnable
 {
 public:
   virtual void Run () = 0;
