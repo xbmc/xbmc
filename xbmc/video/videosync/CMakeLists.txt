@@ -20,6 +20,11 @@ if(CORE_SYSTEM_NAME STREQUAL rbpi)
   list(APPEND HEADERS VideoSyncPi.h)
 endif()
 
+if(IMXVPU_FOUND)
+  list(APPEND SOURCES VideoSyncIMX.cpp)
+  list(APPEND HEADERS VideoSyncIMX.h)
+endif()
+
 if(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND SOURCES VideoSyncOsx.cpp)
   list(APPEND HEADERS VideoSyncOsx.h)

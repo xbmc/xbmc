@@ -1,4 +1,4 @@
-if(OPENGLES_FOUND OR AML_FOUND OR MMAL_FOUND)
+if(OPENGLES_FOUND OR AML_FOUND OR IMXVPU_FOUND OR MMAL_FOUND)
   set(SOURCES EGLWrapper.cpp)
 
   set(HEADERS EGLNativeType.h
@@ -23,6 +23,11 @@ endif()
 if(AML_FOUND)
   list(APPEND SOURCES EGLNativeTypeAmlogic.cpp)
   list(APPEND HEADERS EGLNativeTypeAmlogic.h)
+endif()
+
+if(IMXVPU_FOUND)
+  list(APPEND SOURCES EGLNativeTypeIMX.cpp)
+  list(APPEND HEADERS EGLNativeTypeIMX.h)
 endif()
 
 if(MMAL_FOUND)

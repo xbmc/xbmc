@@ -38,7 +38,7 @@ if(OPENMAX_FOUND)
   list(APPEND HEADERS RendererOpenMax.h)
 endif()
 
-if(IMX_FOUND)
+if(IMXVPU_FOUND)
   list(APPEND SOURCES RendererIMX.cpp)
   list(APPEND HEADERS RendererIMX.h)
 endif()

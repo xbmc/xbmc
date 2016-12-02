@@ -40,4 +40,11 @@ if(OMXLIB_FOUND)
                       OMXCore.h)
 endif()
 
+if(IMXVPU_FOUND)
+  list(APPEND SOURCES imx/IMX.cpp
+                      imx/GlobalsIMX.cpp)
+  list(APPEND HEADERS imx/IMX.h)
+endif()
+
+
 core_add_library(linuxsupport)

@@ -53,7 +53,7 @@ if(MMAL_FOUND)
   list(APPEND HEADERS MMALFFmpeg.h)
 endif()
 
-if(IMX_FOUND)
+if(IMXVPU_FOUND)
   list(APPEND SOURCES DVDVideoCodecIMX.cpp)
   list(APPEND HEADERS DVDVideoCodecIMX.h)
 endif()
