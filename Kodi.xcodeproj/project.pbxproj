@@ -3951,7 +3951,6 @@
 		DFB0F471161B747500D744F4 /* AddonsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonsOperations.h; sourceTree = "<group>"; };
 		DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEEncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		DFB65F6B15373AE7006B8FF1 /* AEEncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoderFFmpeg.h; sourceTree = "<group>"; };
-		DFB65F8915373AE7006B8FF1 /* AE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AE.h; sourceTree = "<group>"; };
 		DFB65F8A15373AE7006B8FF1 /* AEEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoder.h; sourceTree = "<group>"; };
 		DFB65F8C15373AE7006B8FF1 /* AESink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESink.h; sourceTree = "<group>"; };
 		DFB65F8D15373AE7006B8FF1 /* AESound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESound.h; sourceTree = "<group>"; };
@@ -6162,15 +6161,6 @@
 			name = dialogs;
 			sourceTree = "<group>";
 		};
-		6827D71B1DD03E5300BE9114 /* dialogs */ = {
-			isa = PBXGroup;
-			children = (
-				6827D71C1DD03E5F00BE9114 /* GUIDialogNewJoystick.cpp */,
-				6827D71D1DD03E5F00BE9114 /* GUIDialogNewJoystick.h */,
-			);
-			name = dialogs;
-			sourceTree = "<group>";
-		};
 		68AE5BA21C92410300C4D527 /* Peripheral */ = {
 			isa = PBXGroup;
 			children = (
@@ -7574,7 +7564,6 @@
 		DFB65F8815373AE7006B8FF1 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
-				DFB65F8915373AE7006B8FF1 /* AE.h */,
 				DFB65F8A15373AE7006B8FF1 /* AEEncoder.h */,
 				DFEB902519E9335E00728978 /* AEResample.h */,
 				DFB65F8C15373AE7006B8FF1 /* AESink.h */,
