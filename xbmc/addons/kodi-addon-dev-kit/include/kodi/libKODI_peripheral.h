@@ -47,6 +47,9 @@ typedef struct CB_PeripheralLib
 } /* namespace KodiAPI */
 } /* extern "C" */
 
+namespace ADDON
+{
+
 class CHelper_libKODI_peripheral
 {
 public:
@@ -118,3 +121,5 @@ private:
   AddonCB* m_Handle;
   KodiAPI::Peripheral::CB_PeripheralLib* m_Callbacks;
 };
+
+} /* namespace ADDON */
