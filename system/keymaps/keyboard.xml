@@ -197,6 +197,7 @@
   </VirtualKeyboard>
   <TVChannels>
     <keyboard>
+      <delete>Delete</delete>
       <m mod="ctrl">Move</m>
       <h>PreviousMenu</h>
     </keyboard>
@@ -245,6 +246,7 @@
   </TVGuide>
   <RadioChannels>
     <keyboard>
+      <delete>Delete</delete>
       <m mod="ctrl">Move</m>
       <j>PreviousMenu</j>
     </keyboard>

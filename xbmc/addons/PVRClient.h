@@ -19,6 +19,7 @@
  *
  */
 
+#include <exception>
 #include <memory>
 #include <string>
 #include <vector>
@@ -29,6 +30,7 @@
 #include "network/ZeroconfBrowser.h"
 
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/PVRTypes.h"
 
 namespace EPG
 {
@@ -51,7 +53,6 @@ namespace PVR
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   #define PVR_INVALID_CLIENT_ID (-2)
 
-  typedef std::shared_ptr<CPVRTimerType> CPVRTimerTypePtr;
   typedef std::vector<CPVRTimerTypePtr>  CPVRTimerTypes;
 
   /*!

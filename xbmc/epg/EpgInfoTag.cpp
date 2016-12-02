@@ -59,7 +59,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
 {
 }
 
-CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
+CEpgInfoTag::CEpgInfoTag(CEpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
     m_bNotify(false),
     m_iBroadcastId(-1),
     m_iGenreType(0),
@@ -533,7 +533,7 @@ CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const
   return m_timer;
 }
 
-void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannelPtr channel)
+void CEpgInfoTag::SetPVRChannel(const PVR::CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
   m_pvrChannel = channel;
@@ -722,7 +722,7 @@ void CEpgInfoTag::ClearTimer(void)
     previousTag->ClearEpgTag();
 }
 
-void CEpgInfoTag::SetRecording(CPVRRecordingPtr recording)
+void CEpgInfoTag::SetRecording(const CPVRRecordingPtr &recording)
 {
   CSingleLock lock(m_critSection);
   m_recording = recording;

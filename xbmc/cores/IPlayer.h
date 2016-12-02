@@ -21,12 +21,13 @@
  */
 
 #include "system.h" // until we get sane int types used here
-#include <memory>
 #include <vector>
+#include <string>
+
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
-#include <string>
+#include "pvr/PVRTypes.h"
 
 #define CURRENT_STREAM -1
 #define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
@@ -37,12 +38,6 @@ struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
 class CAction;
-
-namespace PVR
-{
-  class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-}
 
 class CPlayerOptions
 {

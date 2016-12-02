@@ -19,19 +19,13 @@
  *
  */
 
-#include <memory>
-#include <map>
-
+#include "epg/EpgTypes.h"
 #include "FileItem.h"
 #include "video/VideoDatabase.h"
 
-#include "PVRRecording.h"
+#include "pvr/recordings/PVRRecording.h"
 
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
+#include <map>
 
 namespace PVR
 {

@@ -750,9 +750,28 @@ bool CPVRManager::IsPlayingChannel(const CPVRChannelPtr &channel) const
   return bReturn;
 }
 
+bool CPVRManager::IsPlayingRecording(const CPVRRecordingPtr &recording) const
+{
+  bool bReturn(false);
+
+  if (recording && IsStarted())
+  {
+    CPVRRecordingPtr current(GetCurrentRecording());
+    if (current && *current == *recording)
+      bReturn = true;
+  }
+
+  return bReturn;
+}
+
 CPVRChannelPtr CPVRManager::GetCurrentChannel(void) const
 {
   return m_addons->GetPlayingChannel();
+}
+
+CPVRRecordingPtr CPVRManager::GetCurrentRecording(void) const
+{
+  return m_addons->GetPlayingRecording();
 }
 
 int CPVRManager::GetCurrentEpg(CFileItemList &results) const
@@ -1084,7 +1103,7 @@ bool CPVRManager::CheckParentalPIN(const std::string& strTitle /* = "" */)
   return bValidPIN;
 }
 
-void CPVRManager::SetPlayingGroup(CPVRChannelGroupPtr group)
+void CPVRManager::SetPlayingGroup(const CPVRChannelGroupPtr &group)
 {
   if (m_channelGroups && group)
     m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);

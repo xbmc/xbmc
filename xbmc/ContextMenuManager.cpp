@@ -25,6 +25,7 @@
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
 #include "music/ContextMenus.h"
+#include "pvr/PVRContextMenus.h"
 #include "video/ContextMenus.h"
 #include "utils/log.h"
 #include "ServiceBroker.h"
@@ -32,7 +33,7 @@
 #include <iterator>
 
 using namespace ADDON;
-
+using namespace PVR;
 
 const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main", "");
 const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage", "");
@@ -72,7 +73,12 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CMarkWatched>(),
       std::make_shared<CONTEXTMENU::CMarkUnWatched>(),
   };
+
   ReloadAddonItems();
+
+  const std::vector<std::shared_ptr<IContextMenuItem>> pvrItems(CPVRContextMenuManager::GetInstance().GetMenuItems());
+  for (const auto &item : pvrItems)
+    m_items.emplace_back(item);
 }
 
 void CContextMenuManager::ReloadAddonItems()

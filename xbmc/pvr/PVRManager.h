@@ -30,10 +30,12 @@
 #include "utils/Observer.h"
 
 #include "pvr/PVREvent.h"
+#include "pvr/PVRTypes.h"
 #include "pvr/recordings/PVRRecording.h"
 
-#include <map>
+#include <atomic>
 #include <memory>
+#include <string>
 #include <vector>
 
 class CGUIDialogProgressBarHandle;
@@ -51,14 +53,10 @@ namespace PVR
 {
   class CPVRClient;
   class CPVRClients;
-  class CPVRChannel;
-  typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
   class CPVRRecordings;
   class CPVRTimers;
-  class CPVRTimerInfoTag;
-  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
   class CPVRGUIInfo;
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
@@ -83,20 +81,17 @@ namespace PVR
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
 
-  typedef std::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
-
   class CPVRManager : public ISettingCallback, private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
     friend class CPVRClients;
 
-public:
+  public:
     /*!
      * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
      */
     CPVRManager(void);
 
-private:
-
+  private:
     /*!
      * @brief Updates the last watched timestamps of the channel and group which are currently playing.
      * @param channel The channel which is updated
@@ -223,6 +218,12 @@ private:
     bool IsPlayingChannel(const CPVRChannelPtr &channel) const;
 
     /*!
+     * @brief Check if the given recording is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingRecording(const CPVRRecordingPtr &recording) const;
+
+    /*!
      * @return True while the PVRManager is initialising.
      */
     inline bool IsInitialising(void) const
@@ -262,6 +263,12 @@ private:
      * @return The channel or NULL if none is playing.
      */
     CPVRChannelPtr GetCurrentChannel(void) const;
+
+    /*!
+     * @brief Return the recording that is currently playing.
+     * @return The recording or NULL if none is playing.
+     */
+    CPVRRecordingPtr GetCurrentRecording(void) const;
 
     /*!
      * @brief Update the channel displayed in guiinfomanager and application to match the currently playing channel.
@@ -363,7 +370,7 @@ private:
      * @brief Set the current playing group, used to load the right channel.
      * @param group The new group.
      */
-    void SetPlayingGroup(CPVRChannelGroupPtr group);
+    void SetPlayingGroup(const CPVRChannelGroupPtr &group);
 
     /*!
      * @brief Get the current playing group, used to load the right channel.

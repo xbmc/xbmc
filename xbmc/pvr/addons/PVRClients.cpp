@@ -26,7 +26,6 @@
 
 #include "Application.h"
 #include "cores/IPlayer.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -81,7 +80,7 @@ bool CPVRClients::IsCreatedClient(int iClientId) const
   return GetCreatedClient(iClientId, client);
 }
 
-bool CPVRClients::IsCreatedClient(const AddonPtr addon)
+bool CPVRClients::IsCreatedClient(const AddonPtr &addon)
 {
   CSingleLock lock(m_critSection);
 
@@ -91,7 +90,7 @@ bool CPVRClients::IsCreatedClient(const AddonPtr addon)
   return false;
 }
 
-int CPVRClients::GetClientId(const AddonPtr client) const
+int CPVRClients::GetClientId(const AddonPtr &client) const
 {
   CSingleLock lock(m_critSection);
 
@@ -196,7 +195,7 @@ bool CPVRClients::HasEnabledClients(void) const
   return false;
 }
 
-bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
+bool CPVRClients::StopClient(const AddonPtr &client, bool bRestart)
 {
   CSingleLock lock(m_critSection);
   int iId = GetClientId(client);
@@ -638,50 +637,16 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
   PVR_CLIENTMAP clients;
   GetCreatedClients(clients);
 
-  std::vector<PVR_CLIENT> suppClients;
-  for (const auto client : clients)
+  for (const auto &client : clients)
   {
     if (client.second->SupportsRecordingsUndelete() && client.second->GetRecordingsAmount(true) > 0)
-      suppClients.push_back(client.second);
-  }
-
-  int selection = 0;
-  if (suppClients.size() > 1)
-  {
-    // have user select client
-    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-    pDialog->Reset();
-    pDialog->SetHeading(CVariant{19292});       //Delete all permanently
-    pDialog->Add(g_localizeStrings.Get(24032)); // All Add-ons
-
-    for (const auto client : clients)
     {
-      if (client.second->SupportsRecordingsUndelete() && client.second->GetRecordingsAmount(true) > 0)
-        pDialog->Add(client.second->GetBackendName());
-    }
-    pDialog->Open();
-    selection = pDialog->GetSelectedItem();
-  }
-
-  if (selection == 0)
-  {
-    for (const auto &client : suppClients)
-    {
-      PVR_ERROR currentError = client->DeleteAllRecordingsFromTrash();
+      PVR_ERROR currentError = client.second->DeleteAllRecordingsFromTrash();
       if (currentError != PVR_ERROR_NO_ERROR)
       {
-        CLog::Log(LOGERROR, "PVR - %s - cannot delete all recordings from client '%d': %s",__FUNCTION__, client->GetID(), CPVRClient::ToString(currentError));
+        CLog::Log(LOGERROR, "PVR - %s - cannot delete all recordings from client '%d': %s",__FUNCTION__, client.second->GetID(), CPVRClient::ToString(currentError));
         error = currentError;
       }
-    }
-  }
-  else if (selection >= 1 && selection <= (int)suppClients.size())
-  {
-    PVR_ERROR currentError = suppClients[selection-1]->DeleteAllRecordingsFromTrash();
-    if (currentError != PVR_ERROR_NO_ERROR)
-    {
-      CLog::Log(LOGERROR, "PVR - %s - cannot delete all recordings from client '%d': %s",__FUNCTION__, suppClients[selection-1]->GetID(), CPVRClient::ToString(currentError));
-      error = currentError;
     }
   }
 
@@ -1103,7 +1068,7 @@ bool CPVRClients::RenameChannel(const CPVRChannelPtr &channel)
   return (error == PVR_ERROR_NO_ERROR || error == PVR_ERROR_NOT_IMPLEMENTED);
 }
 
-bool CPVRClients::IsKnownClient(const AddonPtr client) const
+bool CPVRClients::IsKnownClient(const AddonPtr &client) const
 {
   // database IDs start at 1
   return GetClientId(client) > 0;

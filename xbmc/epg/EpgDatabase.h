@@ -19,9 +19,6 @@
  *
  */
 
-#include <map>
-#include <memory>
-
 #include "XBDateTime.h"
 #include "dbwrappers/Database.h"
 
@@ -29,8 +26,6 @@
 
 namespace EPG
 {
-  class CEpg;
-  typedef std::shared_ptr<CEpg> CEpgPtr;
   class CEpgInfoTag;
   class CEpgContainer;
 

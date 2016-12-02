@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2016 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,29 +19,15 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
-
 #include <memory>
 
-class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
-
-namespace PVR
+namespace EPG
 {
-  class CGUIWindowPVRTimersBase : public CGUIWindowPVRBase
-  {
-  public:
-    CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile);
-    virtual ~CGUIWindowPVRTimersBase(void);
+  class CEpg;
+  typedef std::shared_ptr<CEpg> CEpgPtr;
 
-    bool OnMessage(CGUIMessage& message);
-    bool OnAction(const CAction &action);
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-    void UpdateButtons(void);
+  class CEpgInfoTag;
+  typedef std::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
 
-  private:
-    bool ActionShowTimer(const CFileItemPtr &item);
+} // namespace EPG
 
-    CFileItemPtr m_currentFileItem;
-  };
-}

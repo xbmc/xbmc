@@ -34,7 +34,13 @@ namespace PVR
     virtual void OnWindowLoaded() override;
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) override;
+
+    /*!
+     * @brief trigger a search for events similar to the given item.
+     * @param item the epg event to search similar events for.
+     * @return True on success (note: empty result set also means success), false otherwise.
+     */
+    bool FindSimilar(const CFileItemPtr &item);
 
   protected:
     virtual void OnPrepareFileItems(CFileItemList &items) override;
@@ -42,11 +48,6 @@ namespace PVR
 
   private:
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button);
 
     void OpenDialogSearch();
 

@@ -24,8 +24,9 @@
 #include "settings/SettingConditions.h"
 #include "settings/lib/SettingDependency.h"
 
+#include "pvr/PVRTypes.h"
+
 #include <map>
-#include <memory>
 #include <utility>
 #include <vector>
 #include <string>
@@ -35,12 +36,6 @@ class CSetting;
 
 namespace PVR
 {
-  class CPVRTimerInfoTag;
-  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
-
-  class CPVRTimerType;
-  typedef std::shared_ptr<CPVRTimerType> CPVRTimerTypePtr;
-
   class CGUIDialogPVRTimerSettings : public CGUIDialogSettingsManualBase
   {
   public:

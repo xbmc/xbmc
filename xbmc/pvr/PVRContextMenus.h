@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2016 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,29 +19,27 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
-
 #include <memory>
+#include <vector>
 
-class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
+class IContextMenuItem;
 
 namespace PVR
 {
-  class CGUIWindowPVRTimersBase : public CGUIWindowPVRBase
+  class CPVRContextMenuManager
   {
   public:
-    CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile);
-    virtual ~CGUIWindowPVRTimersBase(void);
+    static CPVRContextMenuManager& GetInstance();
 
-    bool OnMessage(CGUIMessage& message);
-    bool OnAction(const CAction &action);
-    bool Update(const std::string &strDirectory, bool updateFilterPath = true);
-    void UpdateButtons(void);
+    std::vector<std::shared_ptr<IContextMenuItem>> GetMenuItems() const { return m_items; }
 
   private:
-    bool ActionShowTimer(const CFileItemPtr &item);
+    CPVRContextMenuManager();
+    CPVRContextMenuManager(const CPVRContextMenuManager&) = delete;
+    CPVRContextMenuManager const& operator=(CPVRContextMenuManager const&) = delete;
+    virtual ~CPVRContextMenuManager() = default;
 
-    CFileItemPtr m_currentFileItem;
+    std::vector<std::shared_ptr<IContextMenuItem>> m_items;
   };
-}
+
+} // namespace PVR
