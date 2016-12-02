@@ -18,6 +18,8 @@
  *
  */
 
+#include "system.h"
+
 #include "AESinkFactory.h"
 #include "Interfaces/AESink.h"
 #if defined(TARGET_WINDOWS)
