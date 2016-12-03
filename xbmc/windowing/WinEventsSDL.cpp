@@ -355,6 +355,15 @@ bool CWinEventsSDL::MessagePump()
       }
       case SDL_VIDEORESIZE:
       {
+        // Under newer osx versions sdl is so fucked up that it even fires resize events
+        // that exceed the screen size (maybe some HiDP incompatibility in old SDL?)
+        // ensure to ignore those events because it will mess with windowed size
+        int RES_SCREEN = g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
+        if((event.resize.w > CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iWidth) ||
+           (event.resize.h > CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iHeight))
+        {
+          break;
+        }
         XBMC_Event newEvent;
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.w = event.resize.w;
