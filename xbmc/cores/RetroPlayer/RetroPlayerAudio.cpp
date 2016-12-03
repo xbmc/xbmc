@@ -18,9 +18,10 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "RetroPlayerAudio.h"
 #include "RetroPlayerDefines.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"

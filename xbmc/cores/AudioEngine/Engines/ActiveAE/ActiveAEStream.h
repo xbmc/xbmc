@@ -26,6 +26,7 @@
 
 namespace ActiveAE
 {
+class CActiveAE;
 
 class CSyncError
 {
@@ -127,7 +128,7 @@ class CActiveAEStream : public IAEStream
 protected:
   friend class CActiveAE;
   friend class CEngineStats;
-  CActiveAEStream(AEAudioFormat *format, unsigned int streamid);
+  CActiveAEStream(AEAudioFormat *format, unsigned int streamid, CActiveAE *ae);
   virtual ~CActiveAEStream();
   void FadingFinished();
   void IncFreeBuffers();
@@ -179,6 +180,7 @@ public:
 
 protected:
 
+  CActiveAE *m_activeAE;
   unsigned int m_id;
   AEAudioFormat m_format;
   float m_streamVolume;
