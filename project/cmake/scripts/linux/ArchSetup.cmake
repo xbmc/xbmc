@@ -40,9 +40,6 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
   set(COVERAGE_EXCLUDES */test/* lib/* */lib/*)
 endif()
 
-# Missing mir support in these libraries
 if(ENABLE_MIR)
-  set(ENABLE_VAAPI OFF CACHE BOOL "Disabling VAAPI since no Mir support" FORCE)
   set(ENABLE_VDPAU OFF CACHE BOOL "Disabling VDPAU since no Mir support" FORCE)
-  message(STATUS "Hardware video acceleration disabled due to no support in Mir")
 endif()

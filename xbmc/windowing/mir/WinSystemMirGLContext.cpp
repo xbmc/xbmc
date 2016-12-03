@@ -78,6 +78,26 @@ void CWinSystemMirGLContext::PresentRenderImpl(bool rendered)
   }
 }
 
+EGLDisplay CWinSystemMirGLContext::GetEGLDisplay() const
+{
+  return m_pGLContext.m_eglDisplay;
+}
+
+EGLSurface CWinSystemMirGLContext::GetEGLSurface() const
+{
+  return m_pGLContext.m_eglSurface;
+}
+
+EGLContext CWinSystemMirGLContext::GetEGLContext() const
+{
+  return m_pGLContext.m_eglContext;
+}
+
+EGLConfig  CWinSystemMirGLContext::GetEGLConfig() const
+{
+  return m_pGLContext.m_eglConfig;
+}
+
 // FIXME Implement
 bool CWinSystemMirGLContext::IsExtSupported(const char* extension)
 {
