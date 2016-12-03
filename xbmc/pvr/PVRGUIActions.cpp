@@ -690,6 +690,30 @@ namespace PVR
     return true;
   }
 
+  bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const
+  {
+    CFileItemPtr pvrItem(item);
+    if (URIUtils::IsPVRChannel(item->GetPath()) && !item->HasPVRChannelInfoTag())
+      pvrItem = g_PVRChannelGroups->GetByPath(item->GetPath());
+    else if (URIUtils::IsPVRRecording(item->GetPath()) && !item->HasPVRRecordingInfoTag())
+      pvrItem = g_PVRRecordings->GetByPath(item->GetPath());
+
+    if (pvrItem->HasPVRChannelInfoTag())
+    {
+      return SwitchToChannel(pvrItem,
+                             CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
+                             true);
+    }
+    else if (pvrItem->HasPVRRecordingInfoTag())
+    {
+      return PlayRecording(pvrItem,
+                           CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
+                           true);
+    }
+
+    return false;
+  }
+
   bool CPVRGUIActions::HideChannel(const CFileItemPtr &item) const
   {
     const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());

@@ -152,6 +152,7 @@
 #include "addons/GUIDialogAddonSettings.h"
 
 // PVR related include Files
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
 #include "epg/EpgContainer.h"
@@ -3059,7 +3060,7 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   }
   else if (item.IsPVR())
   {
-    return g_PVRManager.PlayMedia(item);
+    return CPVRGUIActions::GetInstance().PlayMedia(CFileItemPtr(new CFileItem(item)));
   }
 
   CURL path(item.GetPath());
