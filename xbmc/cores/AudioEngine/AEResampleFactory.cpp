@@ -19,7 +19,6 @@
  */
 
 #include "AEResampleFactory.h"
-#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResampleFFMPEG.h"
 #if defined(TARGET_RASPBERRY_PI)
   #include "ServiceBroker.h"
