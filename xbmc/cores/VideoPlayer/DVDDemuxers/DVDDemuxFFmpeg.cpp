@@ -1294,6 +1294,7 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
       // discard all unneeded streams
       for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
       {
+        m_pFormatContext->streams[i]->discard = AVDISCARD_NONE;
         if (GetStream(i) == nullptr)
           m_pFormatContext->streams[i]->discard = AVDISCARD_ALL;
       }
