@@ -227,18 +227,19 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   
   while((nfsdirent = gNfsConnection.GetImpl()->nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL) 
   {
-    std::string strName = nfsdirent->name;
-    std::string path(myStrPath + strName);    
+    struct nfsdirent tmpDirent = *nfsdirent;
+    std::string strName = tmpDirent.name;
+    std::string path(myStrPath + strName);
     int64_t iSize = 0;
     bool bIsDir = false;
     int64_t lTimeDate = 0;
 
     //reslove symlinks
-    if(nfsdirent->type == NF3LNK)
+    if(tmpDirent.type == NF3LNK)
     {
       CURL linkUrl;
-      //resolve symlink changes nfsdirent and strName
-      if(!ResolveSymlink(strDirName,nfsdirent,linkUrl))
+      //resolve symlink changes tmpDirent and strName
+      if(!ResolveSymlink(strDirName,&tmpDirent,linkUrl))
       { 
         continue;
       }
@@ -246,16 +247,16 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       path = linkUrl.Get();
     }
     
-    iSize = nfsdirent->size;
-    bIsDir = nfsdirent->type == NF3DIR;
-    lTimeDate = nfsdirent->mtime.tv_sec;
+    iSize = tmpDirent.size;
+    bIsDir = tmpDirent.type == NF3DIR;
+    lTimeDate = tmpDirent.mtime.tv_sec;
 
     if (!StringUtils::EqualsNoCase(strName,".") && !StringUtils::EqualsNoCase(strName,"..")
         && !StringUtils::EqualsNoCase(strName,"lost+found"))
     {
       if(lTimeDate == 0) // if modification date is missing, use create date
       {
-        lTimeDate = nfsdirent->ctime.tv_sec;
+        lTimeDate = tmpDirent.ctime.tv_sec;
       }
 
       LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000ll;
@@ -263,7 +264,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       fileTime.dwHighDateTime = (DWORD)(ll >> 32);
       FileTimeToLocalFileTime(&fileTime, &localTime);
 
-      CFileItemPtr pItem(new CFileItem(nfsdirent->name));
+      CFileItemPtr pItem(new CFileItem(tmpDirent.name));
       pItem->m_dateTime=localTime;   
       pItem->m_dwSize = iSize;        
       
