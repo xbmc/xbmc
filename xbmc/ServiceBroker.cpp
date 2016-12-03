@@ -53,7 +53,7 @@ ActiveAE::CActiveAEDSP &CServiceBroker::GetADSP()
   return g_application.m_ServiceManager->GetADSPManager();
 }
 
-ActiveAE::CActiveAE& CServiceBroker::GetActiveAE()
+IAE& CServiceBroker::GetActiveAE()
 {
   return g_application.m_ServiceManager->GetActiveAE();
 }

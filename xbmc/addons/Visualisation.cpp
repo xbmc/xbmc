@@ -34,7 +34,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 
 using namespace MUSIC_INFO;
 using namespace ADDON;

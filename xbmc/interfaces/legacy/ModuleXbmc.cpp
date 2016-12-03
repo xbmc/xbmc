@@ -47,7 +47,7 @@
 #include "guilib/TextureManager.h"
 #include "Util.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "storage/MediaManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"

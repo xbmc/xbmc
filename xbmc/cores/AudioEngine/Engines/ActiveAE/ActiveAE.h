@@ -29,7 +29,6 @@
 #include "ActiveAESink.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
-#include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 
 #include "guilib/DispResource.h"
@@ -44,6 +43,7 @@ extern "C" {
 
 class IAESink;
 class IAEEncoder;
+class CServiceManager;
 
 namespace ActiveAE
 {
@@ -226,7 +226,7 @@ protected:
 class CActiveAE : public IAE, public IDispResource, private CThread
 {
 protected:
-  friend class ::CAEFactory;
+  friend class ::CServiceManager;
   friend class CActiveAESound;
   friend class CActiveAEStream;
   friend class CSoundPacket;
@@ -280,8 +280,8 @@ public:
 
 protected:
   void PlaySound(CActiveAESound *sound);
-  uint8_t **AllocSoundSample(SampleConfig &config, int &samples, int &bytes_per_sample, int &planes, int &linesize);
-  void FreeSoundSample(uint8_t **data);
+  static uint8_t **AllocSoundSample(SampleConfig &config, int &samples, int &bytes_per_sample, int &planes, int &linesize);
+  static void FreeSoundSample(uint8_t **data);
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream) { m_stats.GetDelay(status, stream); }
   void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream) { m_stats.GetSyncInfo(info, stream); }
   float GetCacheTime(CActiveAEStream *stream) { return m_stats.GetCacheTime(stream); }

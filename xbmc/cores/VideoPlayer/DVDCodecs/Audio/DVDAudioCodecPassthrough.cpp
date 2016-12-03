@@ -25,7 +25,7 @@
 
 #include <algorithm>
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"

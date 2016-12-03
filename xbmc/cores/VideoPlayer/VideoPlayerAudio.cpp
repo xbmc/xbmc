@@ -28,7 +28,7 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #ifdef TARGET_RASPBERRY_PI
 #include "linux/RBP.h"

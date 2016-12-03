@@ -35,6 +35,7 @@ extern "C" {
 #include "cores/IPlayer.h"
 #include "settings/MediaSettings.h"
 #include "utils/TimeUtils.h"
+#include "utils/Log.h"
 
 using namespace ADDON;
 using namespace ActiveAE;
@@ -122,7 +123,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
 
   CSingleLock lock(m_restartSection);
 
-  CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - Audio DSP processing id %d created:", __FUNCTION__, m_streamId);
+  //CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - Audio DSP processing id %d created:", __FUNCTION__, m_streamId);
 
   m_convertInput = swr_alloc_set_opts(m_convertInput,
                                       CAEUtil::GetAVChannelLayout(m_inputFormat.m_channelLayout),
@@ -134,13 +135,13 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
                                       0, NULL);
   if (m_convertInput == NULL)
   {
-    CLog::Log(LOGERROR, "ActiveAE DSP - %s - DSP input convert with data format '%s' not supported!", __FUNCTION__, CAEUtil::DataFormatToStr(inputFormat.m_dataFormat));
+    //CLog::Log(LOGERROR, "ActiveAE DSP - %s - DSP input convert with data format '%s' not supported!", __FUNCTION__, CAEUtil::DataFormatToStr(inputFormat.m_dataFormat));
     return false;
   }
 
   if (swr_init(m_convertInput) < 0)
   {
-    CLog::Log(LOGERROR, "ActiveAE DSP - %s - DSP input convert failed", __FUNCTION__);
+    //CLog::Log(LOGERROR, "ActiveAE DSP - %s - DSP input convert failed", __FUNCTION__);
     return false;
   }
 

@@ -48,6 +48,7 @@ extern "C" {
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "utils/JobManager.h"
+#include "utils/Log.h"
 #include "utils/StringUtils.h"
 
 
@@ -74,8 +75,8 @@ CActiveAEDSP::~CActiveAEDSP()
 {
   Shutdown();
   CAddonMgr::GetInstance().UnregisterAddonMgrCallback(ADDON_ADSPDLL);
-  CSettings::GetInstance().UnregisterCallback(this);
-  CLog::Log(LOGDEBUG, "ActiveAE DSP - destroyed");
+  //CSettings::GetInstance().UnregisterCallback(this);
+  //CLog::Log(LOGDEBUG, "ActiveAE DSP - destroyed");
 }
 
 /*! @name initialization and configuration methods */
@@ -90,13 +91,13 @@ void CActiveAEDSP::Init(void)
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB);
-  CSettings::GetInstance().RegisterCallback(this, settingSet);
+  //CSettings::GetInstance().RegisterCallback(this, settingSet);
 
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_ADSPDLL, this);
 
   CSingleLock lock(m_critSection);
 
-  CLog::Log(LOGNOTICE, "ActiveAE DSP - starting");
+  //CLog::Log(LOGNOTICE, "ActiveAE DSP - starting");
 
   UpdateAddons();
   m_isActive = true;

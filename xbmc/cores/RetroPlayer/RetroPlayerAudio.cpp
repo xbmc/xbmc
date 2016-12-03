@@ -18,9 +18,10 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "RetroPlayerAudio.h"
 #include "RetroPlayerDefines.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -44,7 +45,7 @@ CRetroPlayerAudio::CRetroPlayerAudio(CProcessInfo& processInfo) :
 
 CRetroPlayerAudio::~CRetroPlayerAudio()
 {
-  CloseStream(); 
+  CloseStream();
 }
 
 unsigned int CRetroPlayerAudio::NormalizeSamplerate(unsigned int samplerate) const
@@ -91,7 +92,7 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
   audioFormat.m_dataFormat = format;
   audioFormat.m_sampleRate = samplerate;
   audioFormat.m_channelLayout = channelLayout;
-  m_pAudioStream = CAEFactory::MakeStream(audioFormat);
+  //m_pAudioStream = CAEFactory::MakeStream(audioFormat);
 
   if (!m_pAudioStream)
   {
@@ -178,7 +179,7 @@ void CRetroPlayerAudio::CloseStream()
   }
   if (m_pAudioStream)
   {
-    CAEFactory::FreeStream(m_pAudioStream);
+    //CAEFactory::FreeStream(m_pAudioStream);
     m_pAudioStream = nullptr;
   }
 }

@@ -30,7 +30,7 @@
 #include "filesystem/Directory.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 

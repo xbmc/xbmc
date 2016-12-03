@@ -24,7 +24,7 @@
 #include "DVDClock.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "settings/MediaSettings.h"
 #ifdef TARGET_POSIX
