@@ -19,42 +19,10 @@
  *
  */
 
-#include <vector>
-
 #include "AEChannelInfo.h"
 #include "AEStreamInfo.h"
 
 #define AE_IS_PLANAR(x) ((x) >= AE_FMT_U8P && (x) <= AE_FMT_FLOATP)
-
-typedef std::pair<std::string, std::string> AEDevice;
-typedef std::vector<AEDevice> AEDeviceList;
-
-/* sound options */
-#define AE_SOUND_OFF    0 /* disable sounds */
-#define AE_SOUND_IDLE   1 /* only play sounds while no streams are running */
-#define AE_SOUND_ALWAYS 2 /* always play sounds */
-
-/* config options */
-#define AE_CONFIG_FIXED 1
-#define AE_CONFIG_AUTO  2
-#define AE_CONFIG_MATCH 3
-
-enum AEQuality
-{
-  AE_QUALITY_UNKNOWN    = -1, /* Unset, unknown or incorrect quality level */
-  AE_QUALITY_DEFAULT    =  0, /* Engine's default quality level */
-
-  /* Basic quality levels */
-  AE_QUALITY_LOW        = 20, /* Low quality level */
-  AE_QUALITY_MID        = 30, /* Standard quality level */
-  AE_QUALITY_HIGH       = 50, /* Best sound processing quality */
-
-  /* Optional quality levels */
-  AE_QUALITY_REALLYHIGH = 100, /* Uncompromised optional quality level,
-                               usually with unmeasurable and unnoticeable improvement */ 
-  AE_QUALITY_GPU        = 101, /* GPU acceleration */
-};
-
 
 /**
  * The audio format structure that fully defines a stream's audio information

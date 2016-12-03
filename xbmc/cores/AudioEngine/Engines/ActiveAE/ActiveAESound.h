@@ -27,10 +27,12 @@ class DllAvUtil;
 namespace ActiveAE
 {
 
+class CActiveAE;
+
 class CActiveAESound : public IAESound
 {
 public:
-  CActiveAESound (const std::string &filename);
+  CActiveAESound (const std::string &filename, CActiveAE *ae);
   virtual ~CActiveAESound();
 
   virtual void Play();
@@ -59,6 +61,7 @@ public:
   static int64_t Seek(void *h, int64_t pos, int whence);
 
 protected:
+  CActiveAE *m_activeAE;
   std::string m_filename;
   XFILE::CFile *m_pFile;
   bool m_isSeekPossible;

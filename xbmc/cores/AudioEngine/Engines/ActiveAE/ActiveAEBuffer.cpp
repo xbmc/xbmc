@@ -18,20 +18,20 @@
  *
  */
 
+#include "ActiveAE.h"
 #include "ActiveAEBuffer.h"
 #include "ActiveAEFilter.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
-#include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 
 using namespace ActiveAE;
 
 CSoundPacket::CSoundPacket(SampleConfig conf, int samples) : config(conf)
 {
-  data = CServiceBroker::GetActiveAE().AllocSoundSample(config, samples, bytes_per_sample, planes, linesize);
+  data = CActiveAE::AllocSoundSample(config, samples, bytes_per_sample, planes, linesize);
   max_nb_samples = samples;
   nb_samples = 0;
   pause_burst_ms = 0;
@@ -40,7 +40,7 @@ CSoundPacket::CSoundPacket(SampleConfig conf, int samples) : config(conf)
 CSoundPacket::~CSoundPacket()
 {
   if (data)
-    CServiceBroker::GetActiveAE().FreeSoundSample(data);
+    CActiveAE::FreeSoundSample(data);
 }
 
 CSampleBuffer::CSampleBuffer() : pkt(NULL), pool(NULL)

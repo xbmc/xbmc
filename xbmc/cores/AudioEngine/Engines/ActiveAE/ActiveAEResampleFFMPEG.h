@@ -21,8 +21,8 @@
 
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEResample.h"
-#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 extern "C" {
 #include "libavutil/samplefmt.h"

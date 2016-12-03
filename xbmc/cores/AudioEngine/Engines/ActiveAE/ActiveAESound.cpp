@@ -20,7 +20,6 @@
 
 #include "cores/AudioEngine/Interfaces/AESound.h"
 
-#include "ServiceBroker.h"
 #include "ActiveAE.h"
 #include "ActiveAESound.h"
 #include "utils/log.h"
@@ -32,7 +31,7 @@ extern "C" {
 using namespace ActiveAE;
 using namespace XFILE;
 
-CActiveAESound::CActiveAESound(const std::string &filename) :
+CActiveAESound::CActiveAESound(const std::string &filename, CActiveAE *ae) :
   IAESound         (filename),
   m_filename       (filename),
   m_volume         (1.0f    ),
@@ -44,6 +43,7 @@ CActiveAESound::CActiveAESound(const std::string &filename) :
   m_isSeekPossible = false;
   m_fileSize = 0;
   m_isConverted = false;
+  m_activeAE = ae;
 }
 
 CActiveAESound::~CActiveAESound()
@@ -55,12 +55,12 @@ CActiveAESound::~CActiveAESound()
 
 void CActiveAESound::Play()
 {
-  CServiceBroker::GetActiveAE().PlaySound(this);
+  m_activeAE->PlaySound(this);
 }
 
 void CActiveAESound::Stop()
 {
-  CServiceBroker::GetActiveAE().StopSound(this);
+  m_activeAE->StopSound(this);
 }
 
 bool CActiveAESound::IsPlaying()

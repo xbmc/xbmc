@@ -152,9 +152,10 @@ ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
   return *m_ADSPManager;
 }
 
-ActiveAE::CActiveAE& CServiceManager::GetActiveAE()
+IAE& CServiceManager::GetActiveAE()
 {
-  return *m_ActiveAE;
+  ActiveAE::CActiveAE& ae = *m_ActiveAE;
+  return ae;
 }
 
 CContextMenuManager& CServiceManager::GetContextMenuManager()
@@ -189,6 +190,11 @@ void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
 }
 
 void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager *p) const
+{
+  delete p;
+}
+
+void CServiceManager::delete_activeAE::operator()(ActiveAE::CActiveAE *p) const
 {
   delete p;
 }
