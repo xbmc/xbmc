@@ -8422,7 +8422,9 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
     }
   case PLAYLIST_POSITION:
     {
-      return StringUtils::Format("%i", g_playlistPlayer.GetCurrentSong() + 1);
+      int currentSong = g_playlistPlayer.GetCurrentSong();
+      if (currentSong > -1)
+        return StringUtils::Format("%i", currentSong + 1);
     }
   case PLAYLIST_RANDOM:
     {
