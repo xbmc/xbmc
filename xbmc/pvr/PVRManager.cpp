@@ -1440,7 +1440,8 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
 
     if (bPreview)
     {
-      if (!g_infoManager.GetShowInfo())
+      if (!g_infoManager.GetShowInfo() &&
+          CSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT) == 0)
       {
         // no need to do anything
         return true;
