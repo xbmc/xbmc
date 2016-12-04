@@ -1326,6 +1326,8 @@ CAMLCodec::CAMLCodec()
   am_private->vcodec.cntl_handle        = -1;
   am_private->vcodec.sub_handle         = -1;
   am_private->vcodec.audio_utils_handle = -1;
+  am_private->vcodec.has_audio = 0;
+  am_private->vcodec.has_sub = 0;
 }
 
 
