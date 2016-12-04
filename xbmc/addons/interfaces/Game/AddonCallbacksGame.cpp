@@ -31,8 +31,6 @@
 using namespace ADDON;
 using namespace GAME;
 
-namespace V1
-{
 namespace KodiAPI
 {
 
@@ -40,7 +38,7 @@ namespace Game
 {
 
 CAddonCallbacksGame::CAddonCallbacksGame(CAddon* addon) :
-  ADDON::IAddonInterface(addon, 1, GAME_API_VERSION),
+  ADDON::IAddonInterface(addon, GAME_API_VERSION),
   m_callbacks(new CB_GameLib)
 {
   /* write Kodi game specific add-on function addresses to callback table */
@@ -210,4 +208,3 @@ bool CAddonCallbacksGame::InputEvent(void* addonData, const game_input_event* ev
 } /* namespace Game */
 
 } /* namespace KodiAPI */
-} /* namespace V1 */

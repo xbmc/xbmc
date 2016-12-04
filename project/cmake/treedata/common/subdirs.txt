@@ -6,6 +6,7 @@ xbmc/addons/interfaces/AudioDSP                 addonInterface_AudioDSP
 xbmc/addons/interfaces/AudioEngine              addonInterface_AudioEngine
 xbmc/addons/interfaces/Codec                    addonInterface_Codec
 xbmc/addons/interfaces/GUI                      addonInterface_GUI
+xbmc/addons/interfaces/Game                     addonInterface_Game
 xbmc/addons/interfaces/InputStream              addonInterface_InputStream
 xbmc/addons/interfaces/Peripheral               addonInterface_Peripheral
 xbmc/addons/interfaces/PVR                      addonInterface_PVR

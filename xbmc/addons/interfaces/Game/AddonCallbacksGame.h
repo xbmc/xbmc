@@ -20,11 +20,10 @@
 #pragma once
 
 #include "addons/interfaces/AddonInterfaces.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_game.h"
 
 namespace GAME { class CGameClient; }
 
-namespace V1
-{
 namespace KodiAPI
 {
 
@@ -67,6 +66,4 @@ private:
 };
 
 } /* namespace Game */
-
-} /* namespace KoidAPI */
-} /* namespace V1 */
+} /* namespace KodiAPI */

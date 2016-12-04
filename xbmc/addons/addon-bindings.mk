@@ -13,7 +13,6 @@ BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h
-BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_game_callbacks.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_game_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h
