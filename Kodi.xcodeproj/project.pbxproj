@@ -2294,6 +2294,8 @@
 		E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP -I$SRCROOT/lib/libUPnP/Neptune/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum  -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
+		EDC0CE2D1DF1FE0C000A364F /* AddonCallbacksGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */; };
+		EDC0CE301DF1FE30000A364F /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = EDC0CE2F1DF1FE30000A364F /* Makefile */; };
 		F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
@@ -2939,7 +2941,6 @@
 		6890C2211DDBDCBC00F8F362 /* DllLibCPluff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibCPluff.h; sourceTree = "<group>"; };
 		6890C2221DDBDCC900F8F362 /* DllPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPeripheral.h; sourceTree = "<group>"; };
 		6890C2231DDBDCCE00F8F362 /* DllPVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPVRClient.h; sourceTree = "<group>"; };
-		6890C2291DDBDD0900F8F362 /* kodi_game_callbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_callbacks.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_callbacks.h"; sourceTree = "<group>"; };
 		6890C22A1DDBDD0900F8F362 /* kodi_game_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_dll.h"; sourceTree = "<group>"; };
 		6890C22B1DDBDD0900F8F362 /* kodi_game_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_types.h"; sourceTree = "<group>"; };
 		6890C22C1DDBDD2D00F8F362 /* GameTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameTypes.h; path = games/GameTypes.h; sourceTree = "<group>"; };
@@ -2978,7 +2979,6 @@
 		6890C2821DDBE03900F8F362 /* GUIWindowGames.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowGames.cpp; path = games/windows/GUIWindowGames.cpp; sourceTree = "<group>"; };
 		6890C2831DDBE03900F8F362 /* GUIWindowGames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowGames.h; path = games/windows/GUIWindowGames.h; sourceTree = "<group>"; };
 		68AE5BA01C923E5300C4D527 /* kodi_vfs_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_vfs_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_vfs_utils.hpp"; sourceTree = "<group>"; };
-		68AE5BA71C92414B00C4D527 /* kodi_peripheral_callbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_callbacks.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_callbacks.h"; sourceTree = "<group>"; };
 		68AE5BA81C92414B00C4D527 /* kodi_peripheral_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_dll.h"; sourceTree = "<group>"; };
 		68AE5BA91C92414B00C4D527 /* kodi_peripheral_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"; sourceTree = "<group>"; };
 		68AE5BAA1C92414B00C4D527 /* kodi_peripheral_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_peripheral_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"; sourceTree = "<group>"; };
@@ -5067,6 +5067,10 @@
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		EC720A8D155091BB00FFD782 /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ilog.cpp; path = commons/ilog.cpp; sourceTree = "<group>"; };
 		EC720A8E155091BB00FFD782 /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ilog.h; path = commons/ilog.h; sourceTree = "<group>"; };
+		EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGame.cpp; path = Game/AddonCallbacksGame.cpp; sourceTree = "<group>"; };
+		EDC0CE2C1DF1FE0C000A364F /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGame.h; path = Game/AddonCallbacksGame.h; sourceTree = "<group>"; };
+		EDC0CE2E1DF1FE30000A364F /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = Game/CMakeLists.txt; sourceTree = "<group>"; };
+		EDC0CE2F1DF1FE30000A364F /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = Game/Makefile; sourceTree = "<group>"; };
 		EDE8C70C1C7F615800A86ECC /* NOTE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = NOTE; path = "kodi-addon-dev-kit/include/NOTE"; sourceTree = "<group>"; };
 		EDE8C70D1C7F618500A86ECC /* kodi_adsp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_adsp_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_adsp_dll.h"; sourceTree = "<group>"; };
 		EDE8C70E1C7F618500A86ECC /* kodi_adsp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_adsp_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"; sourceTree = "<group>"; };
@@ -6790,6 +6794,7 @@
 				7C3373301DF1A1CD0019EDEC /* CMakeLists.txt */,
 				7C3373311DF1A1CD0019EDEC /* Codec */,
 				7C3373361DF1A1CD0019EDEC /* GUI */,
+				EDC0CE291DF1FD7D000A364F /* Game */,
 				7C33733F1DF1A1CD0019EDEC /* IAddonInterface.h */,
 				7C3373401DF1A1CD0019EDEC /* InputStream */,
 				7C3373461DF1A1CD0019EDEC /* Peripheral */,
@@ -9640,6 +9645,17 @@
 			name = commons;
 			sourceTree = "<group>";
 		};
+		EDC0CE291DF1FD7D000A364F /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */,
+				EDC0CE2C1DF1FE0C000A364F /* AddonCallbacksGame.h */,
+				EDC0CE2E1DF1FE30000A364F /* CMakeLists.txt */,
+				EDC0CE2F1DF1FE30000A364F /* Makefile */,
+			);
+			name = Game;
+			sourceTree = "<group>";
+		};
 		EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */ = {
 			isa = PBXGroup;
 			children = (
@@ -9665,12 +9681,10 @@
 				EDE8C70F1C7F618500A86ECC /* kodi_audiodec_dll.h */,
 				EDE8C7101C7F618500A86ECC /* kodi_audiodec_types.h */,
 				EDE8C7111C7F618500A86ECC /* kodi_audioengine_types.h */,
-				6890C2291DDBDD0900F8F362 /* kodi_game_callbacks.h */,
 				6890C22A1DDBDD0900F8F362 /* kodi_game_dll.h */,
 				6890C22B1DDBDD0900F8F362 /* kodi_game_types.h */,
 				7CEE107B1C970BB800E0D426 /* kodi_inputstream_dll.h */,
 				7CEE107C1C970BB800E0D426 /* kodi_inputstream_types.h */,
-				68AE5BA71C92414B00C4D527 /* kodi_peripheral_callbacks.h */,
 				68AE5BA81C92414B00C4D527 /* kodi_peripheral_dll.h */,
 				68AE5BA91C92414B00C4D527 /* kodi_peripheral_types.h */,
 				68AE5BAA1C92414B00C4D527 /* kodi_peripheral_utils.hpp */,
@@ -10289,6 +10303,7 @@
 				DF91E93E1C0A26350011084D /* SDLMain.mm in Sources */,
 				6890C1DC1DDBDBE500F8F362 /* DeltaPairMemoryStream.cpp in Sources */,
 				E38E1FAB0D25F9FD00618676 /* DVDStreamInfo.cpp in Sources */,
+				EDC0CE301DF1FE30000A364F /* Makefile in Sources */,
 				7C3373651DF1A1CD0019EDEC /* Makefile in Sources */,
 				E38E1FAC0D25F9FD00618676 /* DVDFactorySubtitle.cpp in Sources */,
 				E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */,
@@ -10507,6 +10522,7 @@
 				E38E22560D25F9FE00618676 /* rijndael.cpp in Sources */,
 				E38E22570D25F9FE00618676 /* rs.cpp in Sources */,
 				E38E22580D25F9FE00618676 /* savepos.cpp in Sources */,
+				EDC0CE2D1DF1FE0C000A364F /* AddonCallbacksGame.cpp in Sources */,
 				E38E22590D25F9FE00618676 /* scantree.cpp in Sources */,
 				E38E225A0D25F9FE00618676 /* sha1.cpp in Sources */,
 				E38E225D0D25F9FE00618676 /* strfn.cpp in Sources */,
