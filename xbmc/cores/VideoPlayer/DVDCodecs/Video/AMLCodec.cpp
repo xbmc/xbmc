@@ -1354,7 +1354,7 @@ int CAMLCodec::GetAmlDuration() const
 bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 {
   m_speed = DVD_PLAYSPEED_NORMAL;
-  m_cur_pts = 0;
+  m_cur_pts = INT64_0;
   m_dst_rect.SetRect(0, 0, 0, 0);
   m_zoom = -1;
   m_contrast = -1;
@@ -1363,6 +1363,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_start_dts = 0;
   m_start_pts = 0;
   m_hints = hints;
+  m_state = 0;
 
   if (!OpenAmlVideo(hints))
   {
@@ -1935,12 +1936,18 @@ double CAMLCodec::GetTimeSize()
   double timesize(0);
   if (m_state & STATE_HASPTS)
   {
-   int video_delay_ms;
+   int video_delay_ms(0);
    if (m_dll->codec_get_video_cur_delay_ms(&am_private->vcodec, &video_delay_ms) >= 0)
      timesize = (float)video_delay_ms / 1000.0;
+   if (timesize < 0 || timesize > 5.0)
+    CLog::Log(LOGWARNING, "CAMLCodec::GetTimeSize limits exceed: cur_delay_ms: %d", video_delay_ms);
   }
   else if (m_cur_pts != INT64_0)
+  {
     timesize = static_cast<double>(am_private->am_pkt.avdts - m_cur_pts) / PTS_FREQ;
+    if (timesize < 0 || timesize > 5.0)
+     CLog::Log(LOGWARNING, "CAMLCodec::GetTimeSize limits exceed: avdts: %lld  cur_pts: %lld",am_private->am_pkt.avdts, m_cur_pts);
+  }
 
   // lie to VideoPlayer, it is hardcoded to a max of 8 seconds,
   // if you buffer more than 8 seconds, it goes nuts.
