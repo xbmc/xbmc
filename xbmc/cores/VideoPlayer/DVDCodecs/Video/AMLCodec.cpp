@@ -224,7 +224,7 @@ public:
 
 #define PTS_FREQ        90000
 #define UNIT_FREQ       96000
-#define AV_SYNC_THRESH  PTS_FREQ*0
+#define AV_SYNC_THRESH  PTS_FREQ*30
 
 #define TRICKMODE_NONE  0x00
 #define TRICKMODE_I     0x01
