@@ -110,14 +110,7 @@ void CInputStream::UpdateConfig()
 
   if (status != ADDON_STATUS_PERMANENT_FAILURE)
   {
-    try
-    {
-      pathList = m_pStruct->GetPathList();
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "CInputStream::Supports - could not get a list of paths. Reason: %s", e.what());
-    }
+    pathList = m_pStruct->GetPathList();
     Destroy();
   }
 
@@ -235,18 +228,9 @@ bool CInputStream::Open(CFileItem &fileitem)
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
 
-  bool ret = false;
-  try
-  {
-    ret = m_pStruct->Open(props);
-    if (ret)
-      m_caps = m_pStruct->GetCapabilities();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::Open - could not open stream. Reason: %s", e.what());
-    return false;
-  }
+  bool ret = m_pStruct->Open(props);
+  if (ret)
+    m_caps = m_pStruct->GetCapabilities();
 
   UpdateStreams();
   return ret;
@@ -254,14 +238,7 @@ bool CInputStream::Open(CFileItem &fileitem)
 
 void CInputStream::Close()
 {
-  try
-  {
-    m_pStruct->Close();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::Close - could not close stream. Reason: %s", e.what());
-  }
+  m_pStruct->Close();
 
   if (!m_bIsChild)
   {
@@ -275,45 +252,18 @@ void CInputStream::Close()
 // IDisplayTime
 int CInputStream::GetTotalTime()
 {
-  int ret = 0;
-  try
-  {
-    ret = m_pStruct->GetTotalTime();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::GetTotalTime - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->GetTotalTime();
 }
 
 int CInputStream::GetTime()
 {
-  int ret = 0;
-  try
-  {
-    ret = m_pStruct->GetTime();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::GetTime - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->GetTime();
 }
 
 // IPosTime
 bool CInputStream::PosTime(int ms)
 {
-  bool ret = false;
-  try
-  {
-    ret = m_pStruct->PosTime(ms);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::PosTime - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->PosTime(ms);
 }
 
 // IDemux
@@ -321,18 +271,7 @@ void CInputStream::UpdateStreams()
 {
   DisposeStreams();
 
-  INPUTSTREAM_IDS streamIDs;
-  try
-  {
-    streamIDs = m_pStruct->GetStreamIds();
-  }
-  catch (std::exception &e)
-  {
-    DisposeStreams();
-    CLog::Log(LOGERROR, "CInputStream::UpdateStreams - error GetStreamIds. Reason: %s", e.what());
-    return;
-  }
-
+  INPUTSTREAM_IDS streamIDs = m_pStruct->GetStreamIds();
   if (streamIDs.m_streamCount > INPUTSTREAM_IDS::MAX_STREAM_COUNT)
   {
     DisposeStreams();
@@ -341,18 +280,7 @@ void CInputStream::UpdateStreams()
 
   for (unsigned int i=0; i<streamIDs.m_streamCount; i++)
   {
-    INPUTSTREAM_INFO stream;
-    try
-    {
-      stream = m_pStruct->GetStream(streamIDs.m_streamIds[i]);
-    }
-    catch (std::exception &e)
-    {
-      DisposeStreams();
-      CLog::Log(LOGERROR, "CInputStream::GetTotalTime - error GetStream. Reason: %s", e.what());
-      return;
-    }
-
+    INPUTSTREAM_INFO stream = m_pStruct->GetStream(streamIDs.m_streamIds[i]);
     if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
       continue;
 
@@ -455,28 +383,12 @@ void CInputStream::EnableStream(int iStreamId, bool enable)
   if (it == m_streams.end())
     return;
 
-  try
-  {
-    m_pStruct->EnableStream(it->second->uniqueId, enable);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::EnableStream - error. Reason: %s", e.what());
-  }
+  m_pStruct->EnableStream(it->second->uniqueId, enable);
 }
 
 DemuxPacket* CInputStream::ReadDemux()
 {
-  DemuxPacket* pPacket = nullptr;
-  try
-  {
-    pPacket = m_pStruct->DemuxRead();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::ReadDemux - error. Reason: %s", e.what());
-    return nullptr;
-  }
+  DemuxPacket* pPacket = m_pStruct->DemuxRead();
 
   if (!pPacket)
   {
@@ -496,146 +408,57 @@ DemuxPacket* CInputStream::ReadDemux()
 
 bool CInputStream::SeekTime(double time, bool backward, double* startpts)
 {
-  bool ret = false;
-  try
-  {
-    ret = m_pStruct->DemuxSeekTime(time, backward, startpts);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::SeekTime - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->DemuxSeekTime(time, backward, startpts);
 }
 
 void CInputStream::AbortDemux()
 {
-  try
-  {
-    m_pStruct->DemuxAbort();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::AbortDemux - error. Reason: %s", e.what());
-  }
+  m_pStruct->DemuxAbort();
 }
 
 void CInputStream::FlushDemux()
 {
-  try
-  {
-    m_pStruct->DemuxFlush();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::FlushDemux - error. Reason: %s", e.what());
-  }
+  m_pStruct->DemuxFlush();
 }
 
 void CInputStream::SetSpeed(int iSpeed)
 {
-  try
-  {
-    m_pStruct->DemuxSetSpeed(iSpeed);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::SetSpeed - error. Reason: %s", e.what());
-  }
+  m_pStruct->DemuxSetSpeed(iSpeed);
 }
 
 int CInputStream::ReadStream(uint8_t* buf, unsigned int size)
 {
-  int ret = -1;
-  try
-  {
-    ret = m_pStruct->ReadStream(buf, size);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::ReadStream - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->ReadStream(buf, size);
 }
 
 int64_t CInputStream::SeekStream(int64_t offset, int whence)
 {
-  int64_t ret = -1;
-  try
-  {
-    ret = m_pStruct->SeekStream(offset, whence);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::SeekStream - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->SeekStream(offset, whence);
 }
 
 int64_t CInputStream::PositionStream()
 {
-  int64_t ret = -1;
-  try
-  {
-    ret = m_pStruct->PositionStream();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::PositionStream - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->PositionStream();
 }
 
 int64_t CInputStream::LengthStream()
 {
-  int64_t ret = -1;
-  try
-  {
-    ret = m_pStruct->LengthStream();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::LengthStream - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->LengthStream();
 }
 
 void CInputStream::PauseStream(double time)
 {
-  try
-  {
-    m_pStruct->PauseStream(time);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::PauseStream - error. Reason: %s", e.what());
-  }
+  m_pStruct->PauseStream(time);
 }
 
 bool CInputStream::IsRealTimeStream()
 {
-  bool ret = false;
-  try
-  {
-    ret = m_pStruct->IsRealTimeStream();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::IsRealTimeStream - error. Reason: %s", e.what());
-  }
-  return ret;
+  return m_pStruct->IsRealTimeStream();
 }
 
 void CInputStream::SetVideoResolution(int width, int height)
 {
-  try
-  {
-    m_pStruct->SetVideoResolution(width, height);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CInputStream::SetVideoResolution - error. Reason: %s", e.what());
-  }
+  m_pStruct->SetVideoResolution(width, height);
 }
 
 } /*namespace ADDON*/
