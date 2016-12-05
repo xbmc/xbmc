@@ -438,7 +438,6 @@ int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
   CDVDDemuxUtils::FreeDemuxPacket(pPacket);
   if (ret < 0)
   {
-    CDVDDemuxUtils::FreeDemuxPacket(pPacket);
     return READ_ERROR;
   }
 
