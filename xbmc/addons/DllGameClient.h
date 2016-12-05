@@ -22,7 +22,7 @@
 #include "DllAddon.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 
-class DllGameClient : public DllAddon<GameClient, game_client_properties>
+class DllGameClient : public DllAddon<GameClient>
 {
   // this is populated via macro calls in DllAddon.h
 };

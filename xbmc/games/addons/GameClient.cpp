@@ -116,9 +116,9 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::AddonProps props,
 }
 
 CGameClient::CGameClient(ADDON::AddonProps props) :
-  CAddonDll<DllGameClient, GameClient, game_client_properties>(std::move(props)),
+  CAddonDll<DllGameClient, GameClient>(std::move(props)),
   m_apiVersion("0.0.0"),
-  m_libraryProps(this, m_pInfo),
+  m_libraryProps(this, m_info),
   m_bSupportsVFS(false),
   m_bSupportsStandalone(false),
   m_bSupportsKeyboard(false),
@@ -174,8 +174,8 @@ CGameClient::~CGameClient(void)
 std::string CGameClient::LibPath() const
 {
   // If the game client requires a proxy, load its DLL instead
-  if (m_pInfo->proxy_dll_count > 0)
-    return m_pInfo->proxy_dll_paths[0];
+  if (m_info->proxy_dll_count > 0)
+    return m_info->proxy_dll_paths[0];
 
   return CAddon::LibPath();
 }
@@ -219,7 +219,7 @@ bool CGameClient::Initialize(void)
 
   m_libraryProps.InitializeProperties();
 
-  if (Create() == ADDON_STATUS_OK)
+  if (Create(m_info) == ADDON_STATUS_OK)
   {
     LogAddonProperties();
     return true;

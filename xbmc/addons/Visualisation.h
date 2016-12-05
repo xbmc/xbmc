@@ -36,7 +36,7 @@
 
 class CCriticalSection;
 
-typedef DllAddon<Visualisation, VIS_PROPS> DllVisualisation;
+typedef DllAddon<Visualisation> DllVisualisation;
 
 class CAudioBuffer
 {
@@ -53,13 +53,12 @@ private:
 
 namespace ADDON
 {
-  class CVisualisation : public CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>
+  class CVisualisation : public CAddonDll<DllVisualisation, Visualisation>
                        , public IAudioCallback
                        , public IRenderingCallback
   {
   public:
-    explicit CVisualisation(AddonProps props)
-        : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(std::move(props)) {}
+    explicit CVisualisation(AddonProps props);
 
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
@@ -107,5 +106,7 @@ namespace ADDON
 
     // track information
     std::string m_AlbumThumb;
+    
+    VIS_PROPS m_info;
   };
 }

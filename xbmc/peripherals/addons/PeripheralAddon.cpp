@@ -66,7 +66,7 @@ std::unique_ptr<CPeripheralAddon> CPeripheralAddon::FromExtension(ADDON::AddonPr
 }
 
 CPeripheralAddon::CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysticks, bool bProvidesButtonMaps) :
-  CAddonDll<DllPeripheral, PeripheralAddon, PERIPHERAL_PROPERTIES>(std::move(props)),
+  CAddonDll<DllPeripheral, PeripheralAddon>(std::move(props)),
   m_apiVersion("0.0.0"),
   m_bProvidesJoysticks(bProvidesJoysticks),
   m_bProvidesButtonMaps(bProvidesButtonMaps)
@@ -96,7 +96,6 @@ CPeripheralAddon::~CPeripheralAddon(void)
   m_buttonMaps.clear();
 
   Destroy();
-  SAFE_DELETE(m_pInfo);
 }
 
 void CPeripheralAddon::ResetProperties(void)
@@ -105,10 +104,8 @@ void CPeripheralAddon::ResetProperties(void)
   m_strUserPath        = CSpecialProtocol::TranslatePath(Profile());
   m_strClientPath      = CSpecialProtocol::TranslatePath(Path());
 
-  SAFE_DELETE(m_pInfo);
-  m_pInfo              = new PERIPHERAL_PROPERTIES;
-  m_pInfo->user_path   = m_strUserPath.c_str();
-  m_pInfo->addon_path  = m_strClientPath.c_str();
+  m_info.user_path     = m_strUserPath.c_str();
+  m_info.addon_path    = m_strClientPath.c_str();
 
   m_apiVersion = ADDON::AddonVersion("0.0.0");
 }
@@ -136,7 +133,7 @@ ADDON_STATUS CPeripheralAddon::CreateAddon(void)
 
   // Initialise the add-on
   CLog::Log(LOGDEBUG, "PERIPHERAL - %s - creating peripheral add-on instance '%s'", __FUNCTION__, Name().c_str());
-  ADDON_STATUS status = CAddonDll<DllPeripheral, PeripheralAddon, PERIPHERAL_PROPERTIES>::Create();
+  ADDON_STATUS status = CAddonDll<DllPeripheral, PeripheralAddon>::Create(&m_info);
   if (status == ADDON_STATUS_OK)
   {
     if (!GetAddonProperties())
