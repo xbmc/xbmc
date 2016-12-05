@@ -136,7 +136,6 @@ private:
   // Helper functions
   void LogAddonProperties(void) const;
   bool LogError(GAME_ERROR error, const char* strMethod) const;
-  void LogException(const char* strFunctionName) const;
 
   // Add-on properties
   ADDON::AddonVersion   m_apiVersion;
