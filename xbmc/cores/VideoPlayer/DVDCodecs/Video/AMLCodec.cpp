@@ -1362,8 +1362,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_contrast = -1;
   m_brightness = -1;
   m_vbufsize = 500000 * 2;
-  m_start_dts = 0;
-  m_start_pts = 0;
+  m_start_adj = 0;
   m_hints = hints;
   m_state = 0;
 
@@ -1559,7 +1558,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_dll->codec_resume(&am_private->vcodec);
 
   m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
-  m_dll->codec_set_video_delay_limited_ms(&am_private->vcodec, 1000);
 
   m_dll->codec_set_cntl_avthresh(&am_private->vcodec, AV_SYNC_THRESH);
   m_dll->codec_set_cntl_syncthresh(&am_private->vcodec, 0);
@@ -1738,26 +1736,25 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     else
     {
       am_private->am_pkt.avpts = 0.5 + (pts * PTS_FREQ) / DVD_TIME_BASE;\
-      if (!m_start_pts && am_private->am_pkt.avpts >= 0x7fffffff)
-        m_start_pts = am_private->am_pkt.avpts & ~0x0000ffff;
-      am_private->am_pkt.avpts -= m_start_pts;
-      m_state |= STATE_HASPTS;
+      if (!m_start_adj && am_private->am_pkt.avpts >= 0x7fffffff)
+        m_start_adj = am_private->am_pkt.avpts & ~0x0000ffff;
+      am_private->am_pkt.avpts -= m_start_adj;
     }
 
     // handle dts, including 31bit wrap, aml can only handle 31
     // bit dts as it uses an int in kernel.
     if (dts == DVD_NOPTS_VALUE)
-      am_private->am_pkt.avdts = INT64_0;
+      am_private->am_pkt.avdts = am_private->am_pkt.avpts;
     else
     {
       am_private->am_pkt.avdts = 0.5 + (dts * PTS_FREQ) / DVD_TIME_BASE;
-      if (!m_start_dts && am_private->am_pkt.avdts >= 0x7fffffff)
-        m_start_dts = am_private->am_pkt.avdts & ~0x0000ffff;
-      am_private->am_pkt.avdts -= m_start_dts;
-      // We use this to determine the fill state if no PTS is given
-      if (m_cur_pts == INT64_0)
-        m_cur_pts = am_private->am_pkt.avdts;
+      if (!m_start_adj && am_private->am_pkt.avdts >= 0x7fffffff)
+        m_start_adj = am_private->am_pkt.avdts & ~0x0000ffff;
+      am_private->am_pkt.avdts -= m_start_adj;
     }
+    // We use this to determine the fill state if no PTS is given
+    if (m_cur_pts == INT64_0)
+      m_cur_pts = am_private->am_pkt.avdts;
 
     // some formats need header/data tweaks.
     // the actual write occurs once in write_av_packet
@@ -1936,15 +1933,7 @@ double CAMLCodec::GetTimeSize()
     return 0;
 
   double timesize(0);
-  if (m_state & STATE_HASPTS)
-  {
-   int video_delay_ms(0);
-   if (m_dll->codec_get_video_cur_delay_ms(&am_private->vcodec, &video_delay_ms) >= 0)
-     timesize = (float)video_delay_ms / 1000.0;
-   if (timesize < 0 || timesize > 5.0)
-    CLog::Log(LOGWARNING, "CAMLCodec::GetTimeSize limits exceed: cur_delay_ms: %d", video_delay_ms);
-  }
-  else if (m_cur_pts != INT64_0)
+  if (m_cur_pts != INT64_0)
   {
     timesize = static_cast<double>(am_private->am_pkt.avdts - m_cur_pts) / PTS_FREQ;
     if (timesize < 0 || timesize > 5.0)
