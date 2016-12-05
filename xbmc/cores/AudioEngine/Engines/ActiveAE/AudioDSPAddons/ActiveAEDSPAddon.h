@@ -404,7 +404,6 @@ namespace ActiveAE
     bool GetAddonProperties(void);
 
     bool LogError(const AE_DSP_ERROR error, const char *strMethod) const;
-    void LogUnhandledException(const char *strFunctionName) const;
 
     bool                      m_bReadyToUse;            /*!< true if this add-on is connected to the audio DSP, false otherwise */
     bool                      m_isInUse;                /*!< true if this add-on currentyl processing data */
