@@ -105,10 +105,10 @@ ssize_t CShoutcastFile::Read(void* lpBuf, size_t uiBufSize)
     unsigned char header;
     m_file.Read(&header,1);
     ReadTruncated(m_buffer, header*16);
-    if (ExtractTagInfo(m_buffer)
+    if ((ExtractTagInfo(m_buffer)
         // this is here to workaround issues caused by application posting callbacks to itself (3cf882d9)
         // the callback will set an empty tag in the info manager item, while we think we have ours set
-        || (m_file.GetPosition() < 10*m_metaint && !m_tagPos))
+        || m_file.GetPosition() < 10*m_metaint) && !m_tagPos)
     {
       m_tagPos = m_file.GetPosition();
       m_tagChange.Set();
@@ -167,6 +167,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   if (reTitle.RegFind(strBuffer.c_str()) != -1)
   {
     std::string newtitle(reTitle.GetMatch(1));
+    CSingleLock lock(m_tagSection);
     result = (m_tag.GetTitle() != newtitle);
     m_tag.SetTitle(newtitle);
   }
@@ -204,6 +205,7 @@ void CShoutcastFile::Process()
     {
       while (!m_bStop && m_cacheReader->GetPosition() < m_tagPos)
         Sleep(20);
+      CSingleLock lock(m_tagSection);
       CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1,-1, static_cast<void*>(new CFileItem(m_tag)));
       m_tagPos = 0;
     }
