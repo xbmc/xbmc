@@ -74,8 +74,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
       if (!input->UseParent())
         addon = std::shared_ptr<ADDON::CInputStream>(new ADDON::CInputStream(*input));
 
-      ADDON_STATUS status = addon->Create();
-      if (status == ADDON_STATUS_OK)
+      if (addon->Create())
       {
         unsigned int videoWidth, videoHeight;
         pPlayer->GetVideoResolution(videoWidth, videoHeight);

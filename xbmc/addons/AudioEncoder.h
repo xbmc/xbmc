@@ -22,11 +22,11 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"
 #include "cdrip/IEncoder.h"
 
-typedef DllAddon<AudioEncoder, AUDIOENC_PROPS> DllAudioEncoder;
+typedef DllAddon<AudioEncoder> DllAudioEncoder;
 namespace ADDON
 {
   typedef CAddonDll<DllAudioEncoder,
-                    AudioEncoder, AUDIOENC_PROPS> AudioEncoderDll;
+                    AudioEncoder> AudioEncoderDll;
 
   class CAudioEncoder : public AudioEncoderDll, public IEncoder
   {
@@ -38,6 +38,7 @@ namespace ADDON
     virtual ~CAudioEncoder() {}
 
     // Things that MUST be supplied by the child classes
+    bool Create();
     bool Init(audioenc_callbacks &callbacks);
     int Encode(int nNumBytesRead, uint8_t* pbtStream);
     bool Close();
@@ -47,6 +48,7 @@ namespace ADDON
 
   private:
     void *m_context; ///< audio encoder context
+    AUDIOENC_PROPS m_info;
   };
 
 } /*namespace ADDON*/

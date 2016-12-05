@@ -22,7 +22,7 @@
 #include "DllAddon.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"
 
-class DllPeripheral : public DllAddon<PeripheralAddon, PERIPHERAL_PROPERTIES>
+class DllPeripheral : public DllAddon<PeripheralAddon>
 {
   // this is populated via Macro calls in DllAddon.h
 };

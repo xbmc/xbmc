@@ -30,11 +30,11 @@ namespace MUSIC_INFO
   class EmbeddedArt;
 }
 
-typedef DllAddon<AudioDecoder, AUDIODEC_PROPS> DllAudioDecoder;
+typedef DllAddon<AudioDecoder> DllAudioDecoder;
 namespace ADDON
 {
   typedef CAddonDll<DllAudioDecoder,
-                    AudioDecoder, AUDIODEC_PROPS> AudioDecoderDll;
+                    AudioDecoder> AudioDecoderDll;
 
   class CAudioDecoder : public AudioDecoderDll,
                         public ICodec,
@@ -59,6 +59,7 @@ namespace ADDON
     virtual ~CAudioDecoder();
 
     // Things that MUST be supplied by the child classes
+    bool Create();
     bool Init(const CFileItem& file, unsigned int filecache) override;
     int ReadPCM(uint8_t* buffer, int size, int* actualsize);
     bool Seek(int64_t time);
@@ -81,6 +82,7 @@ namespace ADDON
     bool m_tags;
     bool m_tracks;
     const AEChannel* m_channel;
+    AUDIODEC_PROPS m_info;
   };
 
 } /*namespace ADDON*/

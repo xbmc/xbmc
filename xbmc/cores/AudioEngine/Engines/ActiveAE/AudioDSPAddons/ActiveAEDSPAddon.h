@@ -41,7 +41,7 @@ namespace ActiveAE
    *
    * Also translates KODI's C++ structures to the addon's C structures.
    */
-  class CActiveAEDSPAddon : public ADDON::CAddonDll<DllAudioDSP, AudioDSP, AE_DSP_PROPERTIES>
+  class CActiveAEDSPAddon : public ADDON::CAddonDll<DllAudioDSP, AudioDSP>
   {
   public:
     explicit CActiveAEDSPAddon(ADDON::AddonProps props);
@@ -423,5 +423,6 @@ namespace ActiveAE
     CCriticalSection          m_critSection;
 
     ADDON::AddonVersion       m_apiVersion;
+    AE_DSP_PROPERTIES         m_info;
   };
 }

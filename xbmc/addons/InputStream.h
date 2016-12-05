@@ -25,13 +25,13 @@
 #include <vector>
 #include <map>
 
-typedef DllAddon<InputStreamAddonFunctions, INPUTSTREAM_PROPS> DllInputStream;
+typedef DllAddon<InputStreamAddonFunctions> DllInputStream;
 
 class CDemuxStream;
 
 namespace ADDON
 {
-  typedef CAddonDll<DllInputStream, InputStreamAddonFunctions, INPUTSTREAM_PROPS> InputStreamDll;
+  typedef CAddonDll<DllInputStream, InputStreamAddonFunctions> InputStreamDll;
 
   class CInputStream : public InputStreamDll
   {
@@ -51,6 +51,8 @@ namespace ADDON
 
     virtual void SaveSettings() override;
     virtual bool CheckAPIVersion(void) override;
+
+    bool Create();
 
     bool UseParent();
     bool Supports(const CFileItem &fileitem);
@@ -111,6 +113,9 @@ namespace ADDON
       bool m_ready;
     };
     static std::map<std::string, Config> m_configMap;
+
+  private:
+    INPUTSTREAM_PROPS m_info;
   };
 
 } /*namespace ADDON*/

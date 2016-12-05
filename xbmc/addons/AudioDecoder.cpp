@@ -51,6 +51,11 @@ CAudioDecoder::~CAudioDecoder()
   DeInit();
 }
 
+bool CAudioDecoder::Create()
+{
+  return CAddonDll<DllAudioDecoder, AudioDecoder>::Create(&m_info) == ADDON_STATUS_OK;
+}
+
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 {
   if (!Initialized())

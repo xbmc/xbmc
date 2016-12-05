@@ -34,8 +34,9 @@ namespace ADDON
 {
 
 CScreenSaver::CScreenSaver(const char *addonID)
-    : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(AddonProps(addonID, ADDON_UNKNOWN))
+    : ADDON::CAddonDll<DllScreenSaver, ScreenSaver>(AddonProps(addonID, ADDON_UNKNOWN))
 {
+  memset(&m_info, 0, sizeof(m_info));
 }
 
 bool CScreenSaver::IsInUse() const
@@ -59,22 +60,21 @@ bool CScreenSaver::CreateScreenSaver()
   int iWidth = g_graphicsContext.GetWidth();
   int iHeight = g_graphicsContext.GetHeight();
 
-  m_pInfo = new SCR_PROPS;
 #ifdef HAS_DX
-  m_pInfo->device     = g_Windowing.Get3D11Context();
+  m_info.device     = g_Windowing.Get3D11Context();
 #else
-  m_pInfo->device     = NULL;
+  m_info.device     = NULL;
 #endif
-  m_pInfo->x          = 0;
-  m_pInfo->y          = 0;
-  m_pInfo->width      = iWidth;
-  m_pInfo->height     = iHeight;
-  m_pInfo->pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
-  m_pInfo->name       = strdup(Name().c_str());
-  m_pInfo->presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
-  m_pInfo->profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
+  m_info.x          = 0;
+  m_info.y          = 0;
+  m_info.width      = iWidth;
+  m_info.height     = iHeight;
+  m_info.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
+  m_info.name       = strdup(Name().c_str());
+  m_info.presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
+  m_info.profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
 
-  if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create() == ADDON_STATUS_OK)
+  if (CAddonDll<DllScreenSaver, ScreenSaver>::Create(&m_info) == ADDON_STATUS_OK)
     return true;
 
   return false;
@@ -106,17 +106,23 @@ void CScreenSaver::Destroy()
   }
 #endif
   // Release what was allocated in method CScreenSaver::CreateScreenSaver.
-  if (m_pInfo)
+  if (m_info.name)
   {
-    free((void *) m_pInfo->name);
-    free((void *) m_pInfo->presets);
-    free((void *) m_pInfo->profile);
-
-    delete m_pInfo;
-    m_pInfo = NULL;
+    free((void *) m_info.name);
+    m_info.name = nullptr;
+  }
+  if (m_info.presets)
+  {
+    free((void *) m_info.presets);
+    m_info.presets = nullptr;
+  }
+  if (m_info.profile)
+  {
+    free((void *) m_info.profile);
+    m_info.profile = nullptr;
   }
 
-  CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Destroy();
+  CAddonDll<DllScreenSaver, ScreenSaver>::Destroy();
 }
 
 } /*namespace ADDON*/

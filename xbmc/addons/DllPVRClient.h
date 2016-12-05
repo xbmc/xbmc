@@ -22,7 +22,7 @@
 #include "DllAddon.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 
-class DllPVRClient : public DllAddon<PVRClient, PVR_PROPERTIES>
+class DllPVRClient : public DllAddon<PVRClient>
 {
   // this is populated via Macro calls in DllAddon.h
 };
