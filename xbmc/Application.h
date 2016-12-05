@@ -138,6 +138,8 @@ public:
   bool Create();
   bool Cleanup() override;
 
+  bool IsInitialized() { return !m_bInitializing; }
+
   bool CreateGUI();
   bool InitWindow(RESOLUTION res = RES_INVALID);
   bool DestroyWindow();
