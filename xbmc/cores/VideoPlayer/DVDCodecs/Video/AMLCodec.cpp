@@ -1326,8 +1326,6 @@ CAMLCodec::CAMLCodec()
   am_private->vcodec.cntl_handle        = -1;
   am_private->vcodec.sub_handle         = -1;
   am_private->vcodec.audio_utils_handle = -1;
-  am_private->vcodec.has_audio = 0;
-  am_private->vcodec.has_sub = 0;
 }
 
 
@@ -1558,6 +1556,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_dll->codec_resume(&am_private->vcodec);
 
   m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
+  m_dll->codec_set_video_delay_limited_ms(&am_private->vcodec, 1000);
 
   m_dll->codec_set_cntl_avthresh(&am_private->vcodec, AV_SYNC_THRESH);
   m_dll->codec_set_cntl_syncthresh(&am_private->vcodec, 0);
@@ -1739,6 +1738,7 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
       if (!m_start_adj && am_private->am_pkt.avpts >= 0x7fffffff)
         m_start_adj = am_private->am_pkt.avpts & ~0x0000ffff;
       am_private->am_pkt.avpts -= m_start_adj;
+      m_state |= STATE_HASPTS;
     }
 
     // handle dts, including 31bit wrap, aml can only handle 31
@@ -1754,7 +1754,12 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     }
     // We use this to determine the fill state if no PTS is given
     if (m_cur_pts == INT64_0)
+    {
       m_cur_pts = am_private->am_pkt.avdts;
+      // No PTS given -> use first DTS for AML ptsserver initialization
+      if ((m_state & STATE_HASPTS) == 0)
+         am_private->am_pkt.avpts = am_private->am_pkt.avdts;
+    }
 
     // some formats need header/data tweaks.
     // the actual write occurs once in write_av_packet

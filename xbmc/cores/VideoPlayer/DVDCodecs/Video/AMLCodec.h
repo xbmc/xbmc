@@ -76,8 +76,8 @@ private:
   bool             m_ptsIs64us;
   am_private_t    *am_private;
   CDVDStreamInfo   m_hints;
-  volatile int     m_speed;
-  volatile int64_t m_cur_pts;
+  int              m_speed;
+  int64_t          m_cur_pts;
   volatile int64_t m_vbufsize;
   int64_t          m_start_adj;
   int64_t          m_last_pts;
@@ -93,6 +93,7 @@ private:
   int              m_brightness;
 
   static const unsigned int STATE_PREFILLED  = 1;
+  static const unsigned int STATE_HASPTS     = 2;
 
   unsigned int m_state;
 
