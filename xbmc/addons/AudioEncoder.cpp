@@ -28,13 +28,13 @@ std::unique_ptr<CAudioEncoder> CAudioEncoder::FromExtension(AddonProps props, co
 }
 
 CAudioEncoder::CAudioEncoder(AddonProps props, std::string _extension)
-    : AudioEncoderDll(std::move(props)), extension(std::move(_extension)), m_context(nullptr)
+    : CAddonDll(std::move(props)), extension(std::move(_extension)), m_context(nullptr)
 {
 }
 
 bool CAudioEncoder::Create()
 {
-  return CAddonDll<AudioEncoder>::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
+  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
 }
 
 bool CAudioEncoder::Init(audioenc_callbacks &callbacks)
@@ -86,7 +86,7 @@ bool CAudioEncoder::Close()
 
 void CAudioEncoder::Destroy()
 {
-  AudioEncoderDll::Destroy();
+  CAddonDll::Destroy();
 }
 
 } /*namespace ADDON*/

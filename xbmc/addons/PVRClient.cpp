@@ -63,7 +63,7 @@ std::unique_ptr<CPVRClient> CPVRClient::FromExtension(AddonProps props, const cp
 }
 
 CPVRClient::CPVRClient(AddonProps props)
-  : CAddonDll<PVRClient>(std::move(props)),
+  : CAddonDll(std::move(props)),
     m_apiVersion("0.0.0"),
     m_bAvahiServiceAdded(false)
 {
@@ -72,7 +72,7 @@ CPVRClient::CPVRClient(AddonProps props)
 
 CPVRClient::CPVRClient(AddonProps props, const std::string& strAvahiType, const std::string& strAvahiIpSetting,
     const std::string& strAvahiPortSetting)
-  : CAddonDll<PVRClient>(std::move(props)),
+  : CAddonDll(std::move(props)),
     m_strAvahiType(strAvahiType),
     m_strAvahiIpSetting(strAvahiIpSetting),
     m_strAvahiPortSetting(strAvahiPortSetting),
@@ -165,7 +165,7 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   /* initialise the add-on */
   bool bReadyToUse(false);
   CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
-  if ((status = CAddonDll<PVRClient>::Create(&m_struct, &m_info)) == ADDON_STATUS_OK)
+  if ((status = CAddonDll::Create(&m_struct, &m_info)) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
 
   m_bReadyToUse = bReadyToUse;
@@ -174,7 +174,7 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
 
 bool CPVRClient::DllLoaded(void) const
 {
-  return CAddonDll<PVRClient>::DllLoaded();
+  return CAddonDll::DllLoaded();
 }
 
 void CPVRClient::Destroy(void)
@@ -187,7 +187,7 @@ void CPVRClient::Destroy(void)
   CLog::Log(LOGDEBUG, "PVR - %s - destroying PVR add-on '%s'", __FUNCTION__, GetFriendlyName().c_str());
 
   /* destroy the add-on */
-  CAddonDll<PVRClient>::Destroy();
+  CAddonDll::Destroy();
 
   /* reset all properties to defaults */
   ResetProperties();

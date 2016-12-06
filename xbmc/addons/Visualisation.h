@@ -51,7 +51,7 @@ private:
 
 namespace ADDON
 {
-  class CVisualisation : public CAddonDll<Visualisation>
+  class CVisualisation : public CAddonDll
                        , public IAudioCallback
                        , public IRenderingCallback
   {

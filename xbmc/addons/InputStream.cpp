@@ -48,7 +48,7 @@ CInputStream::CInputStream(const AddonProps& props,
                            const std::string& listitemprops,
                            const std::string& extensions,
                            const std::string& protocols)
-: InputStreamDll(std::move(props))
+: CAddonDll(std::move(props))
 {
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)
@@ -72,7 +72,7 @@ CInputStream::CInputStream(const AddonProps& props,
 
 bool CInputStream::Create()
 {
-  return CAddonDll<InputStreamAddonFunctions>::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
+  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
 }
 
 bool CInputStream::CheckAPIVersion()
@@ -111,7 +111,7 @@ void CInputStream::CheckConfig()
 void CInputStream::UpdateConfig()
 {
   std::string pathList;
-  ADDON_STATUS status = CAddonDll<InputStreamAddonFunctions>::Create(&m_struct, &m_info);
+  ADDON_STATUS status = CAddonDll::Create(&m_struct, &m_info);
 
   if (status != ADDON_STATUS_PERMANENT_FAILURE)
   {

@@ -25,10 +25,10 @@
 namespace ADDON
 {
 
-class CScreenSaver : public ADDON::CAddonDll<ScreenSaver>
+class CScreenSaver : public ADDON::CAddonDll
 {
 public:
-  explicit CScreenSaver(AddonProps props) : CAddonDll<ScreenSaver>(std::move(props)) {};
+  explicit CScreenSaver(AddonProps props) : CAddonDll(std::move(props)) {};
   explicit CScreenSaver(const char *addonID);
 
   virtual ~CScreenSaver() {}
