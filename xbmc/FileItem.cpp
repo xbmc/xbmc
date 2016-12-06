@@ -1475,9 +1475,9 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (HasVideoInfoTag() && item->HasVideoInfoTag())
   {
-    if (m_videoInfoTag->m_iDbId != -1 && item->m_videoInfoTag->m_iDbId != -1)
-      return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
-        (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));
+    if (GetVideoInfoTag()->m_iDbId != -1 && item->GetVideoInfoTag()->m_iDbId != -1)
+      return ((GetVideoInfoTag()->m_iDbId == item->GetVideoInfoTag()->m_iDbId) &&
+        (GetVideoInfoTag()->m_type == item->GetVideoInfoTag()->m_type));
   }
   if (IsMusicDb() && HasMusicInfoTag())
   {
@@ -1488,7 +1488,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (IsVideoDb() && HasVideoInfoTag())
   {
-    CFileItem dbItem(m_videoInfoTag->m_strFileNameAndPath, false);
+    CFileItem dbItem(GetVideoInfoTag()->m_strFileNameAndPath, false);
     if (HasProperty("item_start"))
       dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
@@ -1502,7 +1502,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (item->IsVideoDb() && item->HasVideoInfoTag())
   {
-    CFileItem dbItem(item->m_videoInfoTag->m_strFileNameAndPath, false);
+    CFileItem dbItem(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
     if (item->HasProperty("item_start"))
       dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
@@ -3354,12 +3354,27 @@ void CFileItemList::ClearSortState()
   m_sortDescription.sortAttributes = SortAttributeNone;
 }
 
+bool CFileItem::HasVideoInfoTag() const
+{
+  // Note: CPVRRecording is derived from CVideoInfoTag
+  return m_pvrRecordingInfoTag.get() != nullptr || m_videoInfoTag != nullptr;
+}
+
 CVideoInfoTag* CFileItem::GetVideoInfoTag()
 {
-  if (!m_videoInfoTag)
+  // Note: CPVRRecording is derived from CVideoInfoTag
+  if (m_pvrRecordingInfoTag)
+    return m_pvrRecordingInfoTag.get();
+  else if (!m_videoInfoTag)
     m_videoInfoTag = new CVideoInfoTag;
 
   return m_videoInfoTag;
+}
+
+const CVideoInfoTag* CFileItem::GetVideoInfoTag() const
+{
+  // Note: CPVRRecording is derived from CVideoInfoTag
+  return m_pvrRecordingInfoTag ? m_pvrRecordingInfoTag.get() : m_videoInfoTag;
 }
 
 CPictureInfoTag* CFileItem::GetPictureInfoTag()

@@ -253,17 +253,11 @@ public:
     return m_musicInfoTag;
   }
 
-  inline bool HasVideoInfoTag() const
-  {
-    return m_videoInfoTag != NULL;
-  }
+  bool HasVideoInfoTag() const;
 
   CVideoInfoTag* GetVideoInfoTag();
 
-  inline const CVideoInfoTag* GetVideoInfoTag() const
-  {
-    return m_videoInfoTag;
-  }
+  const CVideoInfoTag* GetVideoInfoTag() const;
 
   inline bool HasEPGInfoTag() const
   {
