@@ -89,15 +89,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
     // Start the visualisation
     std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
-    try
-    {
-      m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
-    }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->Start() (CVisualisation::Create)");
-      return false;
-    }
+    m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
 
     m_hasPresets = GetPresets();
 
@@ -121,14 +113,7 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
   if (Initialized())
   {
-    try
-    {
-      m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
-    }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->Start (CVisualisation::Start)");
-    }
+    m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
   }
 }
 
@@ -141,14 +126,7 @@ void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, fl
   // iFreqDataLength = length of pFreqData
   if (Initialized())
   {
-    try
-    {
-      m_pStruct->AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
-    }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->AudioData (CVisualisation::AudioData)");
-    }
+    m_pStruct->AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
   }
 }
 
@@ -157,14 +135,7 @@ void CVisualisation::Render()
   // ask visz. to render itself
   if (Initialized())
   {
-    try
-    {
-      m_pStruct->Render();
-    }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->Render (CVisualisation::Render)");
-    }
+    m_pStruct->Render();
   }
 }
 
@@ -181,14 +152,7 @@ void CVisualisation::GetInfo(VIS_INFO *info)
 {
   if (Initialized())
   {
-    try
-    {
-      m_pStruct->GetInfo(info);
-    }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->GetInfo (CVisualisation::GetInfo)");
-    }
+    m_pStruct->GetInfo(info);
   }
 }
 
@@ -200,41 +164,34 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
   // see if vis wants to handle the input
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
-  try
+  if (action != VIS_ACTION_NONE && m_pStruct->OnAction)
   {
-    if (action != VIS_ACTION_NONE && m_pStruct->OnAction)
+    // if this is a VIS_ACTION_UPDATE_TRACK action, copy relevant
+    // tags from CMusicInfoTag to VisTag
+    if ( action == VIS_ACTION_UPDATE_TRACK && param )
     {
-      // if this is a VIS_ACTION_UPDATE_TRACK action, copy relevant
-      // tags from CMusicInfoTag to VisTag
-      if ( action == VIS_ACTION_UPDATE_TRACK && param )
-      {
-        const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-        std::string artist(tag->GetArtistString());
-        std::string albumArtist(tag->GetAlbumArtistString());
-        std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
-        
-        VisTrack track;
-        track.title       = tag->GetTitle().c_str();
-        track.artist      = artist.c_str();
-        track.album       = tag->GetAlbum().c_str();
-        track.albumArtist = albumArtist.c_str();
-        track.genre       = genre.c_str();
-        track.comment     = tag->GetComment().c_str();
-        track.lyrics      = tag->GetLyrics().c_str();
-        track.trackNumber = tag->GetTrackNumber();
-        track.discNumber  = tag->GetDiscNumber();
-        track.duration    = tag->GetDuration();
-        track.year        = tag->GetYear();
-        track.rating      = tag->GetUserrating();
+      const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
+      std::string artist(tag->GetArtistString());
+      std::string albumArtist(tag->GetAlbumArtistString());
+      std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
+      
+      VisTrack track;
+      track.title       = tag->GetTitle().c_str();
+      track.artist      = artist.c_str();
+      track.album       = tag->GetAlbum().c_str();
+      track.albumArtist = albumArtist.c_str();
+      track.genre       = genre.c_str();
+      track.comment     = tag->GetComment().c_str();
+      track.lyrics      = tag->GetLyrics().c_str();
+      track.trackNumber = tag->GetTrackNumber();
+      track.discNumber  = tag->GetDiscNumber();
+      track.duration    = tag->GetDuration();
+      track.year        = tag->GetYear();
+      track.rating      = tag->GetUserrating();
 
-        return m_pStruct->OnAction(action, &track);
-      }
-      return m_pStruct->OnAction((int)action, param);
+      return m_pStruct->OnAction(action, &track);
     }
-  }
-  catch (std::exception e)
-  {
-    HandleException(e, "m_pStruct->OnAction (CVisualisation::OnAction)");
+    return m_pStruct->OnAction((int)action, param);
   }
   return false;
 }
@@ -360,16 +317,8 @@ bool CVisualisation::GetPresets()
 {
   m_presets.clear();
   char **presets = NULL;
-  unsigned int entries = 0;
-  try
-  {
-    entries = m_pStruct->GetPresets(&presets);
-  }
-  catch (std::exception e)
-  {
-    HandleException(e, "m_pStruct->OnAction (CVisualisation::GetPresets)");
-    return false;
-  }
+  unsigned int entries = m_pStruct->GetPresets(&presets);
+
   if (presets && entries > 0)
   {
     for (unsigned i=0; i < entries; i++)
@@ -393,16 +342,8 @@ bool CVisualisation::GetSubModules()
 {
   m_submodules.clear();
   char **modules = NULL;
-  unsigned int entries = 0;
-  try
-  {
-    entries = m_pStruct->GetSubModules(&modules);
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Exception in Visualisation::GetSubModules()");
-    return false;
-  }
+  unsigned int entries = m_pStruct->GetSubModules(&modules);
+
   if (modules && entries > 0)
   {
     for (unsigned i=0; i < entries; i++)
@@ -454,16 +395,7 @@ void CVisualisation::Destroy()
 
 unsigned CVisualisation::GetPreset()
 {
-  unsigned index = 0;
-  try
-  {
-    index = m_pStruct->GetPreset();
-  }
-  catch(...)
-  {
-    return 0;
-  }
-  return index;
+  return m_pStruct->GetPreset();
 }
 
 std::string CVisualisation::GetPresetName()

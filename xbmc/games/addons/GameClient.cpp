@@ -264,8 +264,7 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  try { LogError(error = m_pStruct->LoadGame(path.c_str()), "LoadGame()"); }
-  catch (...) { LogException("LoadGame()"); }
+  LogError(error = m_pStruct->LoadGame(path.c_str()), "LoadGame()");
 
   if (error != GAME_ERROR_NO_ERROR)
   {
@@ -292,9 +291,7 @@ bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* 
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  try { LogError(error = m_pStruct->LoadStandalone(), "LoadStandalone()"); }
-  catch (...) { LogException("LoadStandalone()"); }
-
+  LogError(error = m_pStruct->LoadStandalone(), "LoadStandalone()");
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
@@ -366,16 +363,11 @@ bool CGameClient::LoadGameInfo()
   // Can be called only after retro_load_game()
   game_system_av_info av_info = { };
 
-  bool bSuccess = false;
-  try { bSuccess = LogError(m_pStruct->GetGameInfo(&av_info), "GetGameInfo()"); }
-  catch (...) { LogException("GetGameInfo()"); }
-
+  bool bSuccess = LogError(m_pStruct->GetGameInfo(&av_info), "GetGameInfo()");
   if (!bSuccess)
     return false;
 
-  GAME_REGION region;
-  try { region = m_pStruct->GetRegion(); }
-  catch (...) { LogException("GetRegion()"); return false; }
+  GAME_REGION region = m_pStruct->GetRegion();
 
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
   CLog::Log(LOGINFO, "GAME: Base Width:   %u", av_info.geometry.base_width);
@@ -443,11 +435,7 @@ std::string CGameClient::GetMissingResource()
 
 void CGameClient::CreatePlayback()
 {
-  bool bRequiresGameLoop = false;
-
-  try { bRequiresGameLoop = m_pStruct->RequiresGameLoop(); }
-  catch (...) { LogException("RequiresGameLoop()"); }
-
+  bool bRequiresGameLoop = m_pStruct->RequiresGameLoop();
   if (bRequiresGameLoop)
   {
     m_playback.reset(new CGameClientReversiblePlayback(this, m_timing.GetFrameRate(), m_serializeSize));
@@ -471,8 +459,7 @@ void CGameClient::Reset()
 
   if (m_bIsPlaying)
   {
-    try { LogError(m_pStruct->Reset(), "Reset()"); }
-    catch (...) { LogException("Reset()"); }
+    LogError(m_pStruct->Reset(), "Reset()");
 
     CreatePlayback();
   }
@@ -486,8 +473,7 @@ void CGameClient::CloseFile()
 
   if (m_bIsPlaying)
   {
-    try { LogError(m_pStruct->UnloadGame(), "UnloadGame()"); }
-    catch (...) { LogException("UnloadGame()"); }
+    LogError(m_pStruct->UnloadGame(), "UnloadGame()");
   }
 
   ClearPorts();
@@ -518,8 +504,7 @@ void CGameClient::RunFrame()
 
   if (m_bIsPlaying)
   {
-    try { LogError(m_pStruct->RunFrame(), "RunFrame()"); }
-    catch (...) { LogException("RunFrame()"); }
+    LogError(m_pStruct->RunFrame(), "RunFrame()");
   }
 }
 
@@ -672,8 +657,7 @@ size_t CGameClient::GetSerializeSize()
   size_t serializeSize = 0;
   if (m_bIsPlaying)
   {
-    try { serializeSize = m_pStruct->SerializeSize(); }
-    catch (...) { LogException("SerializeSize()"); }
+    serializeSize = m_pStruct->SerializeSize();
   }
 
   return serializeSize;
@@ -689,8 +673,7 @@ bool CGameClient::Serialize(uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    try { bSuccess = LogError(m_pStruct->Serialize(data, size), "Serialize()"); }
-    catch (...) { LogException("Serialize()"); }
+    bSuccess = LogError(m_pStruct->Serialize(data, size), "Serialize()");
   }
 
   return bSuccess;
@@ -706,8 +689,7 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    try { bSuccess = LogError(m_pStruct->Deserialize(data, size), "Deserialize()"); }
-    catch (...) { LogException("Deserialize()"); }
+    bSuccess = LogError(m_pStruct->Deserialize(data, size), "Deserialize()");
   }
 
   return bSuccess;
@@ -778,13 +760,11 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
     controllerStruct.abs_pointer_count    = 0; //! @todo
     controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
 
-    try { m_pStruct->UpdatePort(port, true, &controllerStruct); }
-    catch (...) { LogException("UpdatePort()"); }
+    m_pStruct->UpdatePort(port, true, &controllerStruct);
   }
   else
   {
-    try { m_pStruct->UpdatePort(port, false, nullptr); }
-    catch (...) { LogException("UpdatePort()"); }
+    m_pStruct->UpdatePort(port, false, nullptr);
   }
 }
 
@@ -874,14 +854,12 @@ void CGameClient::OpenMouse(void)
 
   game_controller controllerStruct = { strId.c_str() };
 
-  try { m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct); }
-  catch (...) { LogException("UpdatePort()"); }
+  m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct);
 }
 
 void CGameClient::CloseMouse(void)
 {
-  try { m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr); }
-  catch (...) { LogException("UpdatePort()"); }
+  m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr);
 
   m_mouse.reset();
 }
@@ -908,11 +886,4 @@ bool CGameClient::LogError(GAME_ERROR error, const char* strMethod) const
     return false;
   }
   return true;
-}
-
-void CGameClient::LogException(const char* strFunctionName) const
-{
-  CLog::Log(LOGERROR, "GAME: exception caught while trying to call '%s' on add-on %s",
-      strFunctionName, ID().c_str());
-  CLog::Log(LOGERROR, "Please contact the developer of this add-on: %s", Author().c_str());
 }
