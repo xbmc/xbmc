@@ -22,7 +22,6 @@
 #include "GameClientProperties.h"
 #include "GameClientTiming.h"
 #include "addons/AddonDll.h"
-#include "addons/DllGameClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/controllers/ControllerTypes.h"
 #include "games/GameTypes.h"
@@ -53,7 +52,7 @@ class IGameVideoCallback;
  * \ingroup games
  * \brief Interface between Kodi and Game add-ons.
  */
-class CGameClient : public ADDON::CAddonDll<DllGameClient, GameClient>
+class CGameClient : public ADDON::CAddonDll<GameClient>
 {
 public:
   static std::unique_ptr<CGameClient> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);

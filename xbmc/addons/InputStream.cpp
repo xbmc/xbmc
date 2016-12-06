@@ -72,7 +72,7 @@ CInputStream::CInputStream(const AddonProps& props,
 
 bool CInputStream::Create()
 {
-  return CAddonDll<DllInputStream, InputStreamAddonFunctions>::Create(&m_info) == ADDON_STATUS_OK;
+  return CAddonDll<InputStreamAddonFunctions>::Create(&m_info) == ADDON_STATUS_OK;
 }
 
 bool CInputStream::CheckAPIVersion()
@@ -111,7 +111,7 @@ void CInputStream::CheckConfig()
 void CInputStream::UpdateConfig()
 {
   std::string pathList;
-  ADDON_STATUS status = CAddonDll<DllInputStream, InputStreamAddonFunctions>::Create(&m_info);
+  ADDON_STATUS status = CAddonDll<InputStreamAddonFunctions>::Create(&m_info);
 
   if (status != ADDON_STATUS_PERMANENT_FAILURE)
   {

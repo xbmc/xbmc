@@ -20,7 +20,6 @@
 #pragma once
 
 #include "addons/AddonDll.h"
-#include "addons/DllPeripheral.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
 #include "input/joysticks/JoystickTypes.h"
@@ -45,7 +44,7 @@ namespace PERIPHERALS
   typedef std::vector<ADDON::DriverPrimitive> PrimitiveVector;
   typedef std::map<JOYSTICK::FeatureName, ADDON::JoystickFeature> FeatureMap;
 
-  class CPeripheralAddon : public ADDON::CAddonDll<DllPeripheral, PeripheralAddon>
+  class CPeripheralAddon : public ADDON::CAddonDll<PeripheralAddon>
   {
   public:
     static std::unique_ptr<CPeripheralAddon> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
