@@ -274,7 +274,7 @@ namespace PVR
 
       if (!recording->IsDeleted())
       {
-        if (recording->m_playCount == 0)
+        if (recording->GetPlayCount() == 0)
           return true;
       }
       return false;
@@ -304,7 +304,7 @@ namespace PVR
 
       if (!recording->IsDeleted())
       {
-        if (recording->m_playCount > 0)
+        if (recording->GetPlayCount() > 0)
           return true;
       }
       return false;

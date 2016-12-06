@@ -159,6 +159,25 @@ public:
   void SetNamedSeasons(std::map<int, std::string> namedSeasons);
   void SetUserrating(int userrating);
 
+  /*!
+   * @brief Get this videos's play count.
+   * @return True the play count.
+   */
+  virtual int GetPlayCount() const;
+
+  /*!
+   * @brief Set this videos's play count.
+   * @param count play count.
+   * @return True if play count was set successfully, false otherwise.
+   */
+  virtual bool SetPlayCount(int count);
+
+  /*!
+   * @brief Increment this videos's play count.
+   * @return True if play count was increased successfully, false otherwise.
+   */
+  virtual bool IncrementPlayCount();
+
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   std::vector<std::string> m_director;
@@ -196,7 +215,6 @@ public:
   CDateTime m_lastPlayed;
   std::vector<std::string> m_showLink;
   std::map<int, std::string> m_namedSeasons;
-  int m_playCount;
   int m_iTop250;
   int m_iSeason;
   int m_iEpisode;
@@ -237,6 +255,8 @@ private:
   std::map<std::string, std::string> m_uniqueIDs;
   std::string Trim(std::string &&value);
   std::vector<std::string> Trim(std::vector<std::string> &&items);
+
+  int m_playCount;
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

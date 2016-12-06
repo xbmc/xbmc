@@ -357,9 +357,9 @@ namespace XBMCAddon
           else if (key == "size")
             item->m_dwSize = (int64_t)strtoll(value.c_str(), NULL, 10);
           else if (key == "watched") // backward compat - do we need it?
-            item->GetVideoInfoTag()->m_playCount = strtol(value.c_str(), NULL, 10);
+            item->GetVideoInfoTag()->SetPlayCount(strtol(value.c_str(), NULL, 10));
           else if (key == "playcount")
-            item->GetVideoInfoTag()->m_playCount = strtol(value.c_str(), NULL, 10);
+            item->GetVideoInfoTag()->SetPlayCount(strtol(value.c_str(), NULL, 10));
           else if (key == "overlay")
           {
             long overlay = strtol(value.c_str(), NULL, 10);

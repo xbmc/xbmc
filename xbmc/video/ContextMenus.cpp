@@ -59,7 +59,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder) //Only allow db content to be updated recursively
     return item.IsVideoDb();
 
-  return item.GetVideoInfoTag()->m_playCount == 0;
+  return item.GetVideoInfoTag()->GetPlayCount() == 0;
 }
 
 bool CMarkWatched::Execute(const CFileItemPtr& item) const
@@ -79,7 +79,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder) //Only allow db content to be updated recursively
     return item.IsVideoDb();
 
-  return item.GetVideoInfoTag()->m_playCount > 0;
+  return item.GetVideoInfoTag()->GetPlayCount() > 0;
 }
 
 bool CMarkUnWatched::Execute(const CFileItemPtr& item) const

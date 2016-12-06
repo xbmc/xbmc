@@ -340,7 +340,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_MiscInfo.last_position = (NPT_UInt32)tag.m_resumePoint.timeInSeconds;
     object.m_XbmcInfo.last_playerstate = tag.m_resumePoint.playerState.c_str();
     object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsW3CDateTime().c_str();
-    object.m_MiscInfo.play_count = tag.m_playCount;
+    object.m_MiscInfo.play_count = tag.GetPlayCount();
     if (resource) {
         resource->m_Duration = tag.GetDuration();
         if (tag.HasStreamDetails()) {
@@ -529,7 +529,7 @@ BuildObject(CFileItem&                    item,
                   container->m_ObjectClass.type += ".album.videoAlbum";
                   container->m_Recorded.series_title = tag.m_strShowTitle.c_str();
                   container->m_Recorded.episode_number = tag.m_iEpisode;
-                  container->m_MiscInfo.play_count = tag.m_playCount;
+                  container->m_MiscInfo.play_count = tag.GetPlayCount();
                   container->m_Title = tag.m_strTitle.c_str();
                   container->m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
 
@@ -851,7 +851,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     tag.m_strMPAARating = object.m_Description.rating;
     tag.m_strShowTitle = object.m_Recorded.series_title;
     tag.m_lastPlayed.SetFromW3CDateTime((const char*)object.m_MiscInfo.last_time);
-    tag.m_playCount = object.m_MiscInfo.play_count;
+    tag.SetPlayCount(object.m_MiscInfo.play_count);
 
     if(resource)
     {
@@ -982,7 +982,7 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
   // content set on file item list
   if (pItem->HasVideoInfoTag()) {
     int episodes = pItem->GetVideoInfoTag()->m_iEpisode;
-    int played   = pItem->GetVideoInfoTag()->m_playCount;
+    int played   = pItem->GetVideoInfoTag()->GetPlayCount();
     const std::string& type = pItem->GetVideoInfoTag()->m_type;
     bool watched(false);
     if (type == MediaTypeTvShow || type == MediaTypeSeason) {
@@ -991,7 +991,7 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
       pItem->SetProperty("watchedepisodes", played);
       pItem->SetProperty("unwatchedepisodes", episodes - played);
       watched = (episodes && played >= episodes);
-      pItem->GetVideoInfoTag()->m_playCount = watched ? 1 : 0;
+      pItem->GetVideoInfoTag()->SetPlayCount(watched ? 1 : 0);
     }
     else if (type == MediaTypeEpisode || type == MediaTypeMovie)
       watched = (played > 0);

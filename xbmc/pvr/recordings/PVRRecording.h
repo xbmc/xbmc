@@ -137,13 +137,7 @@ namespace PVR
      * @param count play count.
      * @return True if play count was set successfully, false otherwise.
      */
-    bool SetPlayCount(int count);
-
-    /*!
-     * @brief Increment this recording's play count on the client (if supported).
-     * @return True if play count was set successfully, false otherwise.
-     */
-    bool IncrementPlayCount();
+    bool SetPlayCount(int count) override;
 
     /*!
      * @brief Set the last watched position of a recording on the backend.

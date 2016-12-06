@@ -136,7 +136,7 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
         pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     }
 
-    if (current->m_playCount == 0)
+    if (current->GetPlayCount() == 0)
       unwatchedFolders.insert(pFileItem);
   }
 
@@ -335,7 +335,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       // Use the channel icon as a fallback when a thumbnail is not available
       pFileItem->SetArtFallback("thumb", "icon");
 
-      pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
+      pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->GetPlayCount() > 0);
 
       items.Add(pFileItem);
     }
@@ -360,7 +360,7 @@ void CPVRRecordings::GetAll(CFileItemList &items, bool bDeleted)
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
-    pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
+    pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->GetPlayCount() > 0);
 
     items.Add(pFileItem);
   }
@@ -548,7 +548,7 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
           recording->SetPlayCount(count);
 
         // Clear resume bookmark
-        if (recording->m_playCount > 0)
+        if (recording->GetPlayCount() > 0)
         {
           m_database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
           recording->SetLastPlayedPosition(0);

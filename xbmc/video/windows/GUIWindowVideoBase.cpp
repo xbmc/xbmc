@@ -505,8 +505,8 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         }
       }
       else if (items[i]->HasVideoInfoTag() &&
-       ((unwatchedOnly && items[i]->GetVideoInfoTag()->m_playCount > 0) ||
-        (watchedOnly && items[i]->GetVideoInfoTag()->m_playCount <= 0)))
+       ((unwatchedOnly && items[i]->GetVideoInfoTag()->GetPlayCount() > 0) ||
+        (watchedOnly && items[i]->GetVideoInfoTag()->GetPlayCount() <= 0)))
         continue;
 
       AddItemToPlayList(items[i], queuedItems);

@@ -96,7 +96,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
   m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
-  m_playCount                      = recording.iPlayCount;
   m_resumePoint.timeInSeconds      = recording.iLastPlayedPosition;
   m_resumePoint.totalTimeInSeconds = recording.iDuration;
   m_strIconPath                    = recording.strIconPath;
@@ -105,6 +104,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_bIsDeleted                     = recording.bIsDeleted;
   m_iEpgEventId                    = recording.iEpgEventId;
   m_iChannelUid                    = recording.iChannelUid;
+
+  CVideoInfoTag::SetPlayCount(recording.iPlayCount);
 
   //  As the channel a recording was done on (probably long time ago) might no longer be
   //  available today prefer addon-supplied channel type (tv/radio) over channel attribute.
@@ -284,7 +285,6 @@ bool CPVRRecording::Rename(const std::string &strNewName)
 bool CPVRRecording::SetPlayCount(int count)
 {
   PVR_ERROR error;
-  m_playCount = count;
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
       !g_PVRClients->SetRecordingPlayCount(*this, count, &error))
   {
@@ -292,7 +292,7 @@ bool CPVRRecording::SetPlayCount(int count)
     return false;
   }
 
-  return true;
+  return CVideoInfoTag::SetPlayCount(count);
 }
 
 void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
@@ -306,18 +306,13 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
   if (!supportsPlayCount || !supportsLastPlayed)
   {
     if (!supportsPlayCount)
-      m_playCount = db.GetPlayCount(m_strFileNameAndPath);
+      SetPlayCount(db.GetPlayCount(m_strFileNameAndPath));
 
     if (!supportsLastPlayed)
       db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
   }
 
   m_bGotMetaData = true;
-}
-
-bool CPVRRecording::IncrementPlayCount()
-{
-  return SetPlayCount(m_playCount + 1);
 }
 
 bool CPVRRecording::SetLastPlayedPosition(int lastplayedposition)
@@ -399,7 +394,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_bRadio            = tag.m_bRadio;
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
-    m_playCount       = tag.m_playCount;
+    SetPlayCount(tag.GetPlayCount());
 
   if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
   {

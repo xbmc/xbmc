@@ -199,7 +199,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     else if(scheme == "urn:boxee:show-title")
       vtag->m_strShowTitle = text.c_str();
     else if(scheme == "urn:boxee:view-count")
-      vtag->m_playCount = atoi(text.c_str());
+      vtag->SetPlayCount(atoi(text.c_str()));
     else if(scheme == "urn:boxee:source")
       item->SetProperty("boxee:provider_source", text);
     else
@@ -360,7 +360,7 @@ static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement*
   else if(name == "season")
     vtag->m_iSeason = atoi(text.c_str());
   else if(name == "view-count")
-    vtag->m_playCount = atoi(text.c_str());
+    vtag->SetPlayCount(atoi(text.c_str()));
   else if(name == "tv-show-title")
     vtag->m_strShowTitle = text;
   else if(name == "release-date")
@@ -376,7 +376,7 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
   else if(name == "season")
     vtag->m_iSeason = atoi(text.c_str());
   else if(name == "views")
-    vtag->m_playCount = atoi(text.c_str());
+    vtag->SetPlayCount(atoi(text.c_str()));
   else if(name == "airdate")
     vtag->m_firstAired.SetFromDateString(text);
   else if(name == "userrating")

@@ -66,7 +66,7 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items.Get(i);
-    if (item->HasVideoInfoTag() && m_mark == (item->GetVideoInfoTag()->m_playCount > 0))
+    if (item->HasVideoInfoTag() && m_mark == (item->GetVideoInfoTag()->GetPlayCount() > 0))
       continue;
 
 #ifdef HAS_UPNP
