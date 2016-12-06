@@ -26,7 +26,7 @@
 
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
-#include "addons/DllPVRClient.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "network/ZeroconfBrowser.h"
 
 #include "pvr/channels/PVRChannel.h"
@@ -60,7 +60,7 @@ namespace PVR
    *
    * Also translates XBMC's C++ structures to the addon's C structures.
    */
-  class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient>
+  class CPVRClient : public ADDON::CAddonDll<PVRClient>
   {
   public:
     static std::unique_ptr<CPVRClient> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);

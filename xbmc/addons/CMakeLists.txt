@@ -48,9 +48,7 @@ set(HEADERS Addon.h
             ContextMenuAddon.h
             ContextMenus.h
             DllAddon.h
-            DllAudioDSP.h
             DllLibCPluff.h
-            DllPVRClient.h
             FilesystemInstaller.h
             GameResource.h
             GUIDialogAddonInfo.h

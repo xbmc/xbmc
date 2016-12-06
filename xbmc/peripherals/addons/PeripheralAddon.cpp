@@ -66,7 +66,7 @@ std::unique_ptr<CPeripheralAddon> CPeripheralAddon::FromExtension(ADDON::AddonPr
 }
 
 CPeripheralAddon::CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysticks, bool bProvidesButtonMaps) :
-  CAddonDll<DllPeripheral, PeripheralAddon>(std::move(props)),
+  CAddonDll<PeripheralAddon>(std::move(props)),
   m_apiVersion("0.0.0"),
   m_bProvidesJoysticks(bProvidesJoysticks),
   m_bProvidesButtonMaps(bProvidesButtonMaps)
@@ -133,7 +133,7 @@ ADDON_STATUS CPeripheralAddon::CreateAddon(void)
 
   // Initialise the add-on
   CLog::Log(LOGDEBUG, "PERIPHERAL - %s - creating peripheral add-on instance '%s'", __FUNCTION__, Name().c_str());
-  ADDON_STATUS status = CAddonDll<DllPeripheral, PeripheralAddon>::Create(&m_info);
+  ADDON_STATUS status = CAddonDll<PeripheralAddon>::Create(&m_info);
   if (status == ADDON_STATUS_OK)
   {
     if (!GetAddonProperties())

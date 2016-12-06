@@ -36,8 +36,6 @@
 
 class CCriticalSection;
 
-typedef DllAddon<Visualisation> DllVisualisation;
-
 class CAudioBuffer
 {
 public:
@@ -53,7 +51,7 @@ private:
 
 namespace ADDON
 {
-  class CVisualisation : public CAddonDll<DllVisualisation, Visualisation>
+  class CVisualisation : public CAddonDll<Visualisation>
                        , public IAudioCallback
                        , public IRenderingCallback
   {

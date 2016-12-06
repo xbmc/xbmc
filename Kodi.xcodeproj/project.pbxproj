@@ -2918,11 +2918,7 @@
 		6890C21A1DDBDC7400F8F362 /* IXmlDeserializable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IXmlDeserializable.h; sourceTree = "<group>"; };
 		6890C21B1DDBDCA200F8F362 /* GameResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameResource.cpp; sourceTree = "<group>"; };
 		6890C21C1DDBDCA200F8F362 /* GameResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameResource.h; sourceTree = "<group>"; };
-		6890C21F1DDBDCB000F8F362 /* DllGameClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllGameClient.h; sourceTree = "<group>"; };
-		6890C2201DDBDCB700F8F362 /* DllAudioDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAudioDSP.h; sourceTree = "<group>"; };
 		6890C2211DDBDCBC00F8F362 /* DllLibCPluff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibCPluff.h; sourceTree = "<group>"; };
-		6890C2221DDBDCC900F8F362 /* DllPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPeripheral.h; sourceTree = "<group>"; };
-		6890C2231DDBDCCE00F8F362 /* DllPVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPVRClient.h; sourceTree = "<group>"; };
 		6890C2251DDBDCF500F8F362 /* AddonCallbacksGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGame.cpp; path = addons/interfaces/Game/AddonCallbacksGame.cpp; sourceTree = "<group>"; };
 		6890C2261DDBDCF500F8F362 /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGame.h; path = addons/interfaces/Game/AddonCallbacksGame.h; sourceTree = "<group>"; };
 		6890C22A1DDBDD0900F8F362 /* kodi_game_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_dll.h"; sourceTree = "<group>"; };
@@ -5388,11 +5384,7 @@
 				9A2FAD681C972BE10049652A /* ContextMenus.cpp */,
 				9A2FAD691C972BE10049652A /* ContextMenus.h */,
 				18B49FF61152BFA5001AF8A6 /* DllAddon.h */,
-				6890C2201DDBDCB700F8F362 /* DllAudioDSP.h */,
-				6890C21F1DDBDCB000F8F362 /* DllGameClient.h */,
 				6890C2211DDBDCBC00F8F362 /* DllLibCPluff.h */,
-				6890C2221DDBDCC900F8F362 /* DllPeripheral.h */,
-				6890C2231DDBDCCE00F8F362 /* DllPVRClient.h */,
 				DF209C101DB2A0C200515D1F /* FilesystemInstaller.cpp */,
 				DF209C111DB2A0C300515D1F /* FilesystemInstaller.h */,
 				6890C21B1DDBDCA200F8F362 /* GameResource.cpp */,

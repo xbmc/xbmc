@@ -34,7 +34,7 @@ namespace ADDON
 {
 
 CScreenSaver::CScreenSaver(const char *addonID)
-    : ADDON::CAddonDll<DllScreenSaver, ScreenSaver>(AddonProps(addonID, ADDON_UNKNOWN))
+    : ADDON::CAddonDll<ScreenSaver>(AddonProps(addonID, ADDON_UNKNOWN))
 {
   memset(&m_info, 0, sizeof(m_info));
 }
@@ -74,7 +74,7 @@ bool CScreenSaver::CreateScreenSaver()
   m_info.presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_info.profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
 
-  if (CAddonDll<DllScreenSaver, ScreenSaver>::Create(&m_info) == ADDON_STATUS_OK)
+  if (CAddonDll<ScreenSaver>::Create(&m_info) == ADDON_STATUS_OK)
     return true;
 
   return false;
@@ -122,7 +122,7 @@ void CScreenSaver::Destroy()
     m_info.profile = nullptr;
   }
 
-  CAddonDll<DllScreenSaver, ScreenSaver>::Destroy();
+  CAddonDll<ScreenSaver>::Destroy();
 }
 
 } /*namespace ADDON*/
