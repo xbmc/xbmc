@@ -84,10 +84,6 @@ bool CSaveFileStateJob::DoWork()
             videodatabase.IncrementPlayCount(m_item);
             m_item.GetVideoInfoTag()->m_playCount++;
 
-            // PVR: Set recording's play count on the backend (if supported)
-            if (m_item.HasPVRRecordingInfoTag())
-              m_item.GetPVRRecordingInfoTag()->IncrementPlayCount();
-
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
 

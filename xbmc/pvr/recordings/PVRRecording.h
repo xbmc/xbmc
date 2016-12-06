@@ -187,12 +187,6 @@ namespace PVR
     static std::string GetTitleFromURL(const std::string &url);
 
     /*!
-     * @brief Copy some information from the client to the given video info tag
-     * @param target video info tag to which the information will be copied
-     */
-    void CopyClientInfo(CVideoInfoTag *target) const;
-
-    /*!
      * @brief If deleted but can be undeleted it is true
      */
     bool IsDeleted() const { return m_bIsDeleted; }

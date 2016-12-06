@@ -1522,10 +1522,24 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   if (item.HasVideoInfoTag())
   { // copy info across
     //! @todo premiered info is normally stored in m_dateTime by the db
-    *GetVideoInfoTag() = *item.GetVideoInfoTag();
-    // preferably use some information from PVR info tag if available
-    if (m_pvrRecordingInfoTag)
-      m_pvrRecordingInfoTag->CopyClientInfo(GetVideoInfoTag());
+
+    if (item.m_videoInfoTag)
+    {
+      if (m_videoInfoTag)
+        *m_videoInfoTag = *item.m_videoInfoTag;
+      else
+        m_videoInfoTag = new CVideoInfoTag(*item.m_videoInfoTag);
+    }
+    else
+    {
+      if (m_videoInfoTag)
+        delete m_videoInfoTag;
+
+      m_videoInfoTag = new CVideoInfoTag;
+    }
+
+    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+
     SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->m_playCount > 0);
     SetInvalid();
   }
@@ -1576,7 +1590,11 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     m_bIsFolder = false;
   }
 
-  *GetVideoInfoTag() = video;
+  if (m_videoInfoTag)
+    *m_videoInfoTag = video;
+  else
+    m_videoInfoTag = new CVideoInfoTag(video);
+
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
   FillInDefaultIcon();

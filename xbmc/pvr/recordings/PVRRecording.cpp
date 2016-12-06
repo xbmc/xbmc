@@ -456,15 +456,6 @@ std::string CPVRRecording::GetTitleFromURL(const std::string &url)
   return CPVRRecordingsPath(url).GetTitle();
 }
 
-void CPVRRecording::CopyClientInfo(CVideoInfoTag *target) const
-{
-  if (!target)
-    return;
-
-  target->m_playCount   = m_playCount;
-  target->m_resumePoint = m_resumePoint;
-}
-
 CPVRChannelPtr CPVRRecording::Channel(void) const
 {
   if (m_iChannelUid != PVR_CHANNEL_INVALID_UID)
