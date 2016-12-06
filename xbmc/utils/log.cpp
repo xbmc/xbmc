@@ -175,9 +175,6 @@ bool CLog::IsLogLevelLogged(int loglevel)
   if (extras != 0 && (s_globals.m_extraLogLevels & extras) == 0)
     return false;
 
-#if defined(_DEBUG) || defined(PROFILE)
-  return true;
-#else
   if (s_globals.m_logLevel >= LOG_LEVEL_DEBUG)
     return true;
   if (s_globals.m_logLevel <= LOG_LEVEL_NONE)
@@ -185,7 +182,6 @@ bool CLog::IsLogLevelLogged(int loglevel)
 
   // "m_logLevel" is "LOG_LEVEL_NORMAL"
   return (loglevel & LOGMASK) >= LOGNOTICE;
-#endif
 }
 
 
