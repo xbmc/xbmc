@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "epg/EpgContainer.h"
+#include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -34,6 +35,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"

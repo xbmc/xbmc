@@ -26,6 +26,7 @@
 #include "epg/EpgContainer.h"
 #include "epg/EpgInfoTag.h"
 #include "FileItem.h"
+#include "filesystem/Directory.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/PVRManager.h"

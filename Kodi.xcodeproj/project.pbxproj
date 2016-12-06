@@ -2294,6 +2294,7 @@
 		E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP -I$SRCROOT/lib/libUPnP/Neptune/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum  -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
+		EDADD1561DF792A400B3308D /* AddonDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDADD1551DF792A400B3308D /* AddonDll.cpp */; };
 		EDC0CE2D1DF1FE0C000A364F /* AddonCallbacksGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */; };
 		EDC0CE301DF1FE30000A364F /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = EDC0CE2F1DF1FE30000A364F /* Makefile */; };
 		F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
@@ -5063,6 +5064,7 @@
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		EC720A8D155091BB00FFD782 /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ilog.cpp; path = commons/ilog.cpp; sourceTree = "<group>"; };
 		EC720A8E155091BB00FFD782 /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ilog.h; path = commons/ilog.h; sourceTree = "<group>"; };
+		EDADD1551DF792A400B3308D /* AddonDll.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonDll.cpp; sourceTree = "<group>"; };
 		EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGame.cpp; path = Game/AddonCallbacksGame.cpp; sourceTree = "<group>"; };
 		EDC0CE2C1DF1FE0C000A364F /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGame.h; path = Game/AddonCallbacksGame.h; sourceTree = "<group>"; };
 		EDC0CE2E1DF1FE30000A364F /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = Game/CMakeLists.txt; sourceTree = "<group>"; };
@@ -5399,6 +5401,7 @@
 				9A999F1C1C67B77600E4E0D5 /* AddonBuilder.h */,
 				18B7C3821294203F009E7A26 /* AddonDatabase.cpp */,
 				18B7C3831294203F009E7A26 /* AddonDatabase.h */,
+				EDADD1551DF792A400B3308D /* AddonDll.cpp */,
 				18B49FF31152BFA5001AF8A6 /* AddonDll.h */,
 				2A5531F81D4A0F9C00BDCE99 /* AddonEvents.h */,
 				7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */,
@@ -10395,6 +10398,7 @@
 				E38E206A0D25F9FD00618676 /* DirectoryNodeSeasons.cpp in Sources */,
 				E38E206C0D25F9FD00618676 /* DirectoryNodeTitleMovies.cpp in Sources */,
 				DF14CF7E1A77782E00396CC9 /* InputManager.cpp in Sources */,
+				EDADD1561DF792A400B3308D /* AddonDll.cpp in Sources */,
 				E38E206D0D25F9FD00618676 /* DirectoryNodeTitleMusicVideos.cpp in Sources */,
 				E38E206E0D25F9FD00618676 /* DirectoryNodeTitleTvShows.cpp in Sources */,
 				E38E206F0D25F9FD00618676 /* DirectoryNodeTvShowsOverview.cpp in Sources */,

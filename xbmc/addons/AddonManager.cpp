@@ -39,6 +39,7 @@
 #include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
+#include "filesystem/SpecialProtocol.h"
 #include "LangInfo.h"
 #include "PluginSource.h"
 #include "Repository.h"

@@ -21,6 +21,7 @@
 #include "ActiveAEDSPMode.h"
 #include "ActiveAEDSPDatabase.h"
 #include "ActiveAEDSP.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 
 using namespace ActiveAE;

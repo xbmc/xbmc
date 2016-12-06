@@ -23,6 +23,7 @@
 #include "ActiveAEDSPAddon.h"
 #include "ActiveAEDSP.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
+#include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"

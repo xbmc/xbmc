@@ -19,10 +19,12 @@
  */
 #include "ScreenSaver.h"
 #include "ServiceBroker.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "settings/Settings.h"
 #include "utils/AlarmClock.h"
+#include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
 
 // What sound does a python screensaver make?
