@@ -219,7 +219,7 @@ bool CGameClient::Initialize(void)
 
   m_libraryProps.InitializeProperties();
 
-  if (Create(m_info) == ADDON_STATUS_OK)
+  if (Create(&m_struct, m_info) == ADDON_STATUS_OK)
   {
     LogAddonProperties();
     return true;
@@ -264,7 +264,7 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  LogError(error = m_pStruct->LoadGame(path.c_str()), "LoadGame()");
+  LogError(error = m_struct.LoadGame(path.c_str()), "LoadGame()");
 
   if (error != GAME_ERROR_NO_ERROR)
   {
@@ -291,7 +291,7 @@ bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* 
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  LogError(error = m_pStruct->LoadStandalone(), "LoadStandalone()");
+  LogError(error = m_struct.LoadStandalone(), "LoadStandalone()");
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
@@ -363,11 +363,11 @@ bool CGameClient::LoadGameInfo()
   // Can be called only after retro_load_game()
   game_system_av_info av_info = { };
 
-  bool bSuccess = LogError(m_pStruct->GetGameInfo(&av_info), "GetGameInfo()");
+  bool bSuccess = LogError(m_struct.GetGameInfo(&av_info), "GetGameInfo()");
   if (!bSuccess)
     return false;
 
-  GAME_REGION region = m_pStruct->GetRegion();
+  GAME_REGION region = m_struct.GetRegion();
 
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
   CLog::Log(LOGINFO, "GAME: Base Width:   %u", av_info.geometry.base_width);
@@ -435,7 +435,7 @@ std::string CGameClient::GetMissingResource()
 
 void CGameClient::CreatePlayback()
 {
-  bool bRequiresGameLoop = m_pStruct->RequiresGameLoop();
+  bool bRequiresGameLoop = m_struct.RequiresGameLoop();
   if (bRequiresGameLoop)
   {
     m_playback.reset(new CGameClientReversiblePlayback(this, m_timing.GetFrameRate(), m_serializeSize));
@@ -459,7 +459,7 @@ void CGameClient::Reset()
 
   if (m_bIsPlaying)
   {
-    LogError(m_pStruct->Reset(), "Reset()");
+    LogError(m_struct.Reset(), "Reset()");
 
     CreatePlayback();
   }
@@ -473,7 +473,7 @@ void CGameClient::CloseFile()
 
   if (m_bIsPlaying)
   {
-    LogError(m_pStruct->UnloadGame(), "UnloadGame()");
+    LogError(m_struct.UnloadGame(), "UnloadGame()");
   }
 
   ClearPorts();
@@ -504,7 +504,7 @@ void CGameClient::RunFrame()
 
   if (m_bIsPlaying)
   {
-    LogError(m_pStruct->RunFrame(), "RunFrame()");
+    LogError(m_struct.RunFrame(), "RunFrame()");
   }
 }
 
@@ -657,7 +657,7 @@ size_t CGameClient::GetSerializeSize()
   size_t serializeSize = 0;
   if (m_bIsPlaying)
   {
-    serializeSize = m_pStruct->SerializeSize();
+    serializeSize = m_struct.SerializeSize();
   }
 
   return serializeSize;
@@ -673,7 +673,7 @@ bool CGameClient::Serialize(uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    bSuccess = LogError(m_pStruct->Serialize(data, size), "Serialize()");
+    bSuccess = LogError(m_struct.Serialize(data, size), "Serialize()");
   }
 
   return bSuccess;
@@ -689,7 +689,7 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    bSuccess = LogError(m_pStruct->Deserialize(data, size), "Deserialize()");
+    bSuccess = LogError(m_struct.Deserialize(data, size), "Deserialize()");
   }
 
   return bSuccess;
@@ -709,7 +709,7 @@ bool CGameClient::OpenPort(unsigned int port)
 
     if (controller->LoadLayout())
     {
-      m_ports[port].reset(new CGameClientInput(this, port, controller, m_pStruct));
+      m_ports[port].reset(new CGameClientInput(this, port, controller, &m_struct));
 
       // If keyboard input is being captured by this add-on, force the port type to PERIPHERAL_JOYSTICK
       PERIPHERALS::PeripheralType device = PERIPHERALS::PERIPHERAL_UNKNOWN;
@@ -760,11 +760,11 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
     controllerStruct.abs_pointer_count    = 0; //! @todo
     controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
 
-    m_pStruct->UpdatePort(port, true, &controllerStruct);
+    m_struct.UpdatePort(port, true, &controllerStruct);
   }
   else
   {
-    m_pStruct->UpdatePort(port, false, nullptr);
+    m_struct.UpdatePort(port, false, nullptr);
   }
 }
 
@@ -838,7 +838,7 @@ bool CGameClient::SetRumble(unsigned int port, const std::string& feature, float
 
 void CGameClient::OpenKeyboard(void)
 {
-  m_keyboard.reset(new CGameClientKeyboard(this, m_pStruct));
+  m_keyboard.reset(new CGameClientKeyboard(this, &m_struct));
 }
 
 void CGameClient::CloseKeyboard(void)
@@ -848,18 +848,18 @@ void CGameClient::CloseKeyboard(void)
 
 void CGameClient::OpenMouse(void)
 {
-  m_mouse.reset(new CGameClientMouse(this, m_pStruct));
+  m_mouse.reset(new CGameClientMouse(this, &m_struct));
 
   std::string strId = m_mouse->ControllerID();
 
   game_controller controllerStruct = { strId.c_str() };
 
-  m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct);
+  m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct);
 }
 
 void CGameClient::CloseMouse(void)
 {
-  m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr);
+  m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr);
 
   m_mouse.reset();
 }

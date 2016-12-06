@@ -74,7 +74,7 @@ bool CScreenSaver::CreateScreenSaver()
   m_info.presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_info.profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
 
-  if (CAddonDll<ScreenSaver>::Create(&m_info) == ADDON_STATUS_OK)
+  if (CAddonDll<ScreenSaver>::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
     return true;
 
   return false;
@@ -83,13 +83,13 @@ bool CScreenSaver::CreateScreenSaver()
 void CScreenSaver::Start()
 {
   // notify screen saver that they should start
-  if (Initialized()) m_pStruct->Start();
+  if (Initialized()) m_struct.Start();
 }
 
 void CScreenSaver::Render()
 {
   // ask screensaver to render itself
-  if (Initialized()) m_pStruct->Render();
+  if (Initialized()) m_struct.Render();
 }
 
 void CScreenSaver::Destroy()

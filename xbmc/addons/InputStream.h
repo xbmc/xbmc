@@ -114,6 +114,7 @@ namespace ADDON
 
   private:
     INPUTSTREAM_PROPS m_info;
+    InputStreamAddonFunctions m_struct;
   };
 
 } /*namespace ADDON*/
