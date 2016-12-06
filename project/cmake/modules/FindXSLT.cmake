@@ -43,7 +43,7 @@ if(XSLT_FOUND)
                                      IMPORTED_LOCATION "${XSLT_LIBRARY}"
                                      INTERFACE_INCLUDE_DIRECTORIES "${XSLT_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR}"
                                      INTERFACE_COMPILE_DEFINITIONS HAVE_LIBXSLT=1
-                                     ITERFACE_LINK_LIBRARIES "${LIBXML2_LIBRARIES}")
+                                     INTERFACE_LINK_LIBRARIES "${LIBXML2_LIBRARIES}")
   endif()
 endif()
 
