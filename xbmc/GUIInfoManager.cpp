@@ -9394,7 +9394,6 @@ void CGUIInfoManager::SetCurrentGame(CFileItem &item)
     // No title in tag, show filename only
     m_currentFile->GetGameInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
   }
-  m_currentFile->GetGameInfoTag()->SetLoaded(true);
 
   m_currentFile->FillInDefaultIcon();
 }
