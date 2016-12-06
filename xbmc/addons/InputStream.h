@@ -29,16 +29,15 @@ class CDemuxStream;
 
 namespace ADDON
 {
-  typedef CAddonDll<InputStreamAddonFunctions> InputStreamDll;
 
-  class CInputStream : public InputStreamDll
+  class CInputStream : public CAddonDll
   {
   public:
 
     static std::unique_ptr<CInputStream> FromExtension(AddonProps props, const cp_extension_t* ext);
 
     explicit CInputStream(AddonProps props)
-      : InputStreamDll(std::move(props))
+      : CAddonDll(std::move(props))
     {};
     CInputStream(const AddonProps& props,
                  const std::string& name,

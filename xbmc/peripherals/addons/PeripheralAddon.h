@@ -44,7 +44,7 @@ namespace PERIPHERALS
   typedef std::vector<ADDON::DriverPrimitive> PrimitiveVector;
   typedef std::map<JOYSTICK::FeatureName, ADDON::JoystickFeature> FeatureMap;
 
-  class CPeripheralAddon : public ADDON::CAddonDll<PeripheralAddon>
+  class CPeripheralAddon : public ADDON::CAddonDll
   {
   public:
     static std::unique_ptr<CPeripheralAddon> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);

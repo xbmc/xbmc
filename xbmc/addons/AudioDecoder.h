@@ -32,9 +32,7 @@ namespace MUSIC_INFO
 
 namespace ADDON
 {
-  typedef CAddonDll<AudioDecoder> AudioDecoderDll;
-
-  class CAudioDecoder : public AudioDecoderDll,
+  class CAudioDecoder : public CAddonDll,
                         public ICodec,
                         public MUSIC_INFO::IMusicInfoTagLoader,
                         public XFILE::CMusicFileDirectory
@@ -44,7 +42,7 @@ namespace ADDON
     static std::unique_ptr<CAudioDecoder> FromExtension(AddonProps props, const cp_extension_t* ext);
 
     explicit CAudioDecoder(AddonProps props)
-      : AudioDecoderDll(std::move(props))
+      : CAddonDll(std::move(props))
       , m_context{nullptr}
       , m_tags{false}
       , m_tracks{false}

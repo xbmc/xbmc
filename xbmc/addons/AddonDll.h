@@ -41,14 +41,13 @@
 
 namespace ADDON
 {
-  template<typename TheStruct>
   class CAddonDll : public CAddon
   {
   public:
     CAddonDll(AddonProps props);
 
     //FIXME: does shallow pointer copy. no copy assignment op
-    CAddonDll(const CAddonDll<TheStruct> &rhs);
+    CAddonDll(const CAddonDll &rhs);
     virtual ~CAddonDll();
     virtual ADDON_STATUS GetStatus();
 
@@ -87,8 +86,7 @@ namespace ADDON
     static void AddOnOpenOwnSettings(void *userData, bool bReload);
   };
 
-template<typename TheStruct>
-CAddonDll<TheStruct>::CAddonDll(AddonProps props)
+CAddonDll::CAddonDll(AddonProps props)
   : CAddon(std::move(props)),
     m_bIsChild(false)
 {
@@ -99,8 +97,7 @@ CAddonDll<TheStruct>::CAddonDll(AddonProps props)
   m_parentLib.clear();
 }
 
-template<typename TheStruct>
-CAddonDll<TheStruct>::CAddonDll(const CAddonDll<TheStruct> &rhs)
+CAddonDll::CAddonDll(const CAddonDll &rhs)
   : CAddon(rhs),
     m_bIsChild(true)
 {
@@ -111,15 +108,13 @@ CAddonDll<TheStruct>::CAddonDll(const CAddonDll<TheStruct> &rhs)
   m_parentLib = rhs.m_parentLib;
 }
 
-template<typename TheStruct>
-CAddonDll<TheStruct>::~CAddonDll()
+CAddonDll::~CAddonDll()
 {
   if (m_initialized)
     Destroy();
 }
 
-template<typename TheStruct>
-bool CAddonDll<TheStruct>::LoadDll()
+bool CAddonDll::LoadDll()
 {
   if (m_pDll)
     return true;
@@ -225,8 +220,7 @@ bool CAddonDll<TheStruct>::LoadDll()
   return true;
 }
 
-template<typename TheStruct>
-ADDON_STATUS CAddonDll<TheStruct>::Create(void* funcTable, void* info)
+ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
 {
   /* ensure that a previous instance is destroyed */
   Destroy();
@@ -291,8 +285,7 @@ ADDON_STATUS CAddonDll<TheStruct>::Create(void* funcTable, void* info)
   return status;
 }
 
-template<typename TheStruct>
-void CAddonDll<TheStruct>::Stop()
+void CAddonDll::Stop()
 {
   /* Inform dll to stop all activities */
   try
@@ -327,8 +320,7 @@ void CAddonDll<TheStruct>::Stop()
   }
 }
 
-template<typename TheStruct>
-void CAddonDll<TheStruct>::Destroy()
+void CAddonDll::Destroy()
 {
   /* Unload library file */
   try
@@ -356,14 +348,12 @@ void CAddonDll<TheStruct>::Destroy()
   m_initialized = false;
 }
 
-template<typename TheStruct>
-bool CAddonDll<TheStruct>::DllLoaded(void) const
+bool CAddonDll::DllLoaded(void) const
 {
   return m_pDll != NULL;
 }
 
-template<typename TheStruct>
-ADDON_STATUS CAddonDll<TheStruct>::GetStatus()
+ADDON_STATUS CAddonDll::GetStatus()
 {
   try
   {
@@ -376,8 +366,7 @@ ADDON_STATUS CAddonDll<TheStruct>::GetStatus()
   return ADDON_STATUS_UNKNOWN;
 }
 
-template<typename TheStruct>
-bool CAddonDll<TheStruct>::LoadSettings()
+bool CAddonDll::LoadSettings()
 {
   if (m_settingsLoaded)
     return true;
@@ -422,8 +411,7 @@ bool CAddonDll<TheStruct>::LoadSettings()
   return true;
 }
 
-template<typename TheStruct>
-TiXmlElement CAddonDll<TheStruct>::MakeSetting(DllSetting& setting) const
+TiXmlElement CAddonDll::MakeSetting(DllSetting& setting) const
 {
   TiXmlElement node("setting");
 
@@ -457,8 +445,7 @@ TiXmlElement CAddonDll<TheStruct>::MakeSetting(DllSetting& setting) const
   return node;
 }
 
-template<typename TheStruct>
-void CAddonDll<TheStruct>::SaveSettings()
+void CAddonDll::SaveSettings()
 {
   // must save first, as TransferSettings() reloads saved settings!
   CAddon::SaveSettings();
@@ -466,14 +453,12 @@ void CAddonDll<TheStruct>::SaveSettings()
     TransferSettings();
 }
 
-template<typename TheStruct>
-std::string CAddonDll<TheStruct>::GetSetting(const std::string& key)
+std::string CAddonDll::GetSetting(const std::string& key)
 {
   return CAddon::GetSetting(key);
 }
 
-template<typename TheStruct>
-ADDON_STATUS CAddonDll<TheStruct>::TransferSettings()
+ADDON_STATUS CAddonDll::TransferSettings()
 {
   bool restart = false;
   ADDON_STATUS reportStatus = ADDON_STATUS_OK;
@@ -565,8 +550,7 @@ ADDON_STATUS CAddonDll<TheStruct>::TransferSettings()
   return ADDON_STATUS_OK;
 }
 
-template<typename TheStruct>
-void CAddonDll<TheStruct>::HandleException(std::exception &e, const char* context)
+void CAddonDll::HandleException(std::exception &e, const char* context)
 {
   m_initialized = false;
   m_pDll->Unload();

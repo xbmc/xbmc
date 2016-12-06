@@ -52,7 +52,7 @@ class IGameVideoCallback;
  * \ingroup games
  * \brief Interface between Kodi and Game add-ons.
  */
-class CGameClient : public ADDON::CAddonDll<GameClient>
+class CGameClient : public ADDON::CAddonDll
 {
 public:
   static std::unique_ptr<CGameClient> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);

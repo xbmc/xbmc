@@ -24,14 +24,13 @@
 
 namespace ADDON
 {
-  typedef CAddonDll<AudioEncoder> AudioEncoderDll;
 
-  class CAudioEncoder : public AudioEncoderDll, public IEncoder
+  class CAudioEncoder : public CAddonDll, public IEncoder
   {
   public:
     static std::unique_ptr<CAudioEncoder> FromExtension(AddonProps, const cp_extension_t* ext);
 
-    explicit CAudioEncoder(AddonProps props) : AudioEncoderDll(std::move(props)), m_context{nullptr} {};
+    explicit CAudioEncoder(AddonProps props) : CAddonDll(std::move(props)), m_context{nullptr} {};
     CAudioEncoder(AddonProps props, std::string extension);
     virtual ~CAudioEncoder() {}
 

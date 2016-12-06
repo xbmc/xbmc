@@ -116,7 +116,7 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::AddonProps props,
 }
 
 CGameClient::CGameClient(ADDON::AddonProps props) :
-  CAddonDll<GameClient>(std::move(props)),
+  CAddonDll(std::move(props)),
   m_apiVersion("0.0.0"),
   m_libraryProps(this, m_info),
   m_bSupportsVFS(false),

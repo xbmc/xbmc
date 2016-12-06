@@ -65,7 +65,7 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
 }
 
 CVisualisation::CVisualisation(AddonProps props)
-  : CAddonDll<Visualisation>(std::move(props))
+  : CAddonDll(std::move(props))
 {
   memset(&m_info, 0, sizeof(m_info));
 }
@@ -88,7 +88,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_info.profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_info.submodule = NULL;
 
-  if (CAddonDll<Visualisation>::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
+  if (CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
   {
     // Start the visualisation
     std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
@@ -148,7 +148,7 @@ void CVisualisation::Stop()
   CAEFactory::UnregisterAudioCallback(this);
   if (Initialized())
   {
-    CAddonDll<Visualisation>::Stop();
+    CAddonDll::Stop();
   }
 }
 
@@ -404,7 +404,7 @@ void CVisualisation::Destroy()
     m_info.submodule = nullptr;
   }
 
-  CAddonDll<Visualisation>::Destroy();
+  CAddonDll::Destroy();
 }
 
 unsigned CVisualisation::GetPreset()

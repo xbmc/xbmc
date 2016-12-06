@@ -39,7 +39,7 @@ std::unique_ptr<CAudioDecoder> CAudioDecoder::FromExtension(AddonProps props, co
 
 CAudioDecoder::CAudioDecoder(AddonProps props, std::string extension, std::string mimetype,
     bool tags, bool tracks, std::string codecName, std::string strExt)
-    : AudioDecoderDll(std::move(props)), m_extension(extension), m_mimetype(mimetype),
+    : CAddonDll(std::move(props)), m_extension(extension), m_mimetype(mimetype),
       m_context(nullptr), m_tags(tags), m_tracks(tracks), m_channel(nullptr)
 {
   m_CodecName = std::move(codecName);
@@ -53,7 +53,7 @@ CAudioDecoder::~CAudioDecoder()
 
 bool CAudioDecoder::Create()
 {
-  return CAddonDll<AudioDecoder>::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
+  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
 }
 
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
@@ -144,7 +144,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
 
 void CAudioDecoder::Destroy()
 {
-  AudioDecoderDll::Destroy();
+  CAddonDll::Destroy();
 }
 
 } /*namespace ADDON*/
