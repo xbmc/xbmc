@@ -657,10 +657,12 @@ extern "C"
 
   /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
-   * @param pClient The struct to assign the function pointers to.
+   * @param ptr The struct to assign the function pointers to.
    */
-  void __declspec(dllexport) get_addon(struct PVRClient* pClient)
+  void __declspec(dllexport) get_addon(void* ptr)
   {
+    PVRClient* pClient = static_cast<PVRClient*>(ptr);
+    
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
     pClient->GetMininumPVRAPIVersion        = GetMininumPVRAPIVersion;
     pClient->GetGUIAPIVersion               = GetGUIAPIVersion;

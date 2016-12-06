@@ -230,8 +230,10 @@ extern "C"
    * pClient. Note that get_addon() is defined here, so it will be available in
    * all compiled peripheral add-ons.
    */
-  void __declspec(dllexport) get_addon(struct PeripheralAddon* pClient)
+  void __declspec(dllexport) get_addon(void* ptr)
   {
+    PeripheralAddon* pClient = static_cast<PeripheralAddon*>(ptr);
+
     pClient->GetPeripheralAPIVersion        = GetPeripheralAPIVersion;
     pClient->GetMinimumPeripheralAPIVersion = GetMinimumPeripheralAPIVersion;
     pClient->GetAddonCapabilities           = GetAddonCapabilities;
