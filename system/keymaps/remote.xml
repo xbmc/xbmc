@@ -145,6 +145,11 @@
       <hash>Rename</hash>
     </remote>
   </FileManager>
+  <FileBrowser>
+    <remote>
+      <zero>Highlight</zero>
+    </remote>
+  </FileBrowser>
   <MusicPlaylist>
     <remote>
       <clear>Delete</clear>
