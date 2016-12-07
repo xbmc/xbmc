@@ -99,6 +99,7 @@ protected:
   mpeg2_sequence *m_mpeg2_sequence;
   double          m_mpeg2_sequence_pts;
   bool            m_drop;
+  bool            m_has_idr;
 
   CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;

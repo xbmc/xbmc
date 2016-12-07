@@ -54,7 +54,8 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo) : CDVDVi
   m_bitparser(NULL),
   m_bitstream(NULL),
   m_opened(false),
-  m_drop(false)
+  m_drop(false),
+  m_has_idr(false)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -133,8 +134,11 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         m_hints.extradata = malloc(m_hints.extrasize);
         memcpy(m_hints.extradata, m_bitstream->GetExtraData(), m_hints.extrasize);
       }
-      //m_bitparser = new CBitstreamParser();
-      //m_bitparser->Open();
+      else
+      {
+        m_bitparser = new CBitstreamParser();
+        m_bitparser->Open();
+      }
       break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
@@ -240,6 +244,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   m_processInfo.SetVideoDeintMethod("hardware");
   m_processInfo.SetVideoDAR(m_hints.aspect);
 
+  m_has_idr = false;
+
   CLog::Log(LOGINFO, "%s: Opened Amlogic Codec", __MODULE_NAME__);
   return true;
 }
@@ -280,13 +286,24 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
       if (!m_bitstream->Convert(pData, iSize))
         return VC_ERROR;
 
+      if (!m_bitstream->IdrFramePassed())
+      {
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for IDR frame", __MODULE_NAME__);
+        return VC_BUFFER;
+      }
       pData = m_bitstream->GetConvertBuffer();
       iSize = m_bitstream->GetConvertSize();
     }
-
-    if (m_bitparser)
-      m_bitparser->FindIdrSlice(pData, iSize);
-
+    else if (!m_has_idr && m_bitparser)
+    {
+      if (!m_bitparser->FindIdrSlice(pData, iSize))
+      {
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for IDR frame", __MODULE_NAME__);
+        return VC_BUFFER;
+      }
+      else
+        m_has_idr = true;
+    }
     FrameRateTracking( pData, iSize, dts, pts);
   }
 
@@ -310,6 +327,7 @@ void CDVDVideoCodecAmlogic::Reset(void)
 
   m_Codec->Reset();
   m_mpeg2_sequence_pts = 0;
+  m_has_idr = false;
 }
 
 bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)

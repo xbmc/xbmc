@@ -157,6 +157,7 @@ public:
   int               GetConvertSize() const;
   uint8_t*          GetExtraData(void) const;
   int               GetExtraSize() const;
+  bool              IdrFramePassed() const;
 
   static void       bits_reader_set( bits_reader_t *br, uint8_t *buf, int len );
   static uint32_t   read_bits( bits_reader_t *br, int nbits );
