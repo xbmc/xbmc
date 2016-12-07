@@ -171,7 +171,7 @@ public:
 
   /*!
    * @brief Get this videos's play count.
-   * @return True the play count.
+   * @return the play count.
    */
   virtual int GetPlayCount() const;
 
@@ -187,6 +187,28 @@ public:
    * @return True if play count was increased successfully, false otherwise.
    */
   virtual bool IncrementPlayCount();
+
+  /*!
+   * @brief Get this videos's resume point.
+   * @return the resume point.
+   */
+  virtual CBookmark GetResumePoint() const;
+
+  /*!
+   * @brief Set this videos's resume point.
+   * @param resumePoint resume point.
+   * @return True if resume point was set successfully, false otherwise.
+   */
+  virtual bool SetResumePoint(const CBookmark &resumePoint);
+
+  /*!
+   * @brief Set this videos's resume point.
+   * @param timeInSeconds the time of the resume point
+   * @param totalTimeInSeconds the total time of the video
+   * @param playerState the player state
+   * @return True if resume point was set successfully, false otherwise.
+   */
+  bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState = "");
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
@@ -243,7 +265,6 @@ public:
   int m_iIdSeason;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
-  CBookmark m_resumePoint;
   CDateTime m_dateAdded;
   MediaType m_type;
   int m_relevance; // Used for actors' number of appearances
@@ -269,6 +290,7 @@ private:
   std::vector<std::string> Trim(std::vector<std::string> &&items);
 
   int m_playCount;
+  CBookmark m_resumePoint;
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

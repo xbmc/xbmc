@@ -1549,3 +1549,24 @@ bool CVideoInfoTag::IncrementPlayCount()
   SetPlayCount(GetPlayCount() + 1); // note: not just m_playCount++; call possibly overridden (G|S)etPlayCount
   return true;
 }
+
+CBookmark CVideoInfoTag::GetResumePoint() const
+{
+  return m_resumePoint;
+}
+
+bool CVideoInfoTag::SetResumePoint(const CBookmark &resumePoint)
+{
+  m_resumePoint = resumePoint;
+  return true;
+}
+
+bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState /* = "" */)
+{
+  CBookmark resumePoint;
+  resumePoint.timeInSeconds = timeInSeconds;
+  resumePoint.totalTimeInSeconds = totalTimeInSeconds;
+  resumePoint.playerState = playerState;
+  resumePoint.type = CBookmark::RESUME;
+  return SetResumePoint(resumePoint); // note: not just m_resumePoint = resumePoint; call the possibly overridden SetResumePoint
+}

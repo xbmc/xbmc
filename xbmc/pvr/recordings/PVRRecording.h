@@ -133,17 +133,17 @@ namespace PVR
     bool SetPlayCount(int count) override;
 
     /*!
-     * @brief Set the last watched position of a recording on the backend.
-     * @param position The last watched position in seconds
-     * @return True if the last played position was updated successfully, false otherwise
+     * @brief Set this videos's resume point.
+     * @param resumePoint resume point.
+     * @return True if resume point was set successfully, false otherwise.
      */
-    bool SetLastPlayedPosition(int lastplayedposition);
+    bool SetResumePoint(const CBookmark &resumePoint) override;
 
     /*!
-     * @brief Retrieve the last watched position of a recording on the backend.
-     * @return The last watched position in seconds
+     * @brief Get this recording's resume point.
+     * @return the resume point.
      */
-    int GetLastPlayedPosition() const;
+    CBookmark GetResumePoint() const override;
 
     /*!
      * @brief Retrieve the edit decision list (EDL) of a recording on the backend.

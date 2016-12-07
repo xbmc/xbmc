@@ -205,9 +205,17 @@ namespace XBMCAddon
         item->SetMimeType(value.c_str());
       }
       else if (lowerKey == "totaltime")
-        item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds = (float)atof(value.c_str());
+      {
+        CBookmark resumePoint(item->GetVideoInfoTag()->GetResumePoint());
+        resumePoint.totalTimeInSeconds = (float)atof(value.c_str());
+        item->GetVideoInfoTag()->SetResumePoint(resumePoint);
+      }
       else if (lowerKey == "resumetime")
-        item->GetVideoInfoTag()->m_resumePoint.timeInSeconds = (float)atof(value.c_str());
+      {
+        CBookmark resumePoint(item->GetVideoInfoTag()->GetResumePoint());
+        resumePoint.timeInSeconds = (float)atof(value.c_str());
+        item->GetVideoInfoTag()->SetResumePoint(resumePoint);
+      }
       else if (lowerKey == "specialsort")
       {
         if (value == "bottom")
@@ -233,9 +241,9 @@ namespace XBMCAddon
         value = StringUtils::Format("%f", item->m_lStartOffset / 75.0);
       }
       else if (lowerKey == "totaltime")
-        value = StringUtils::Format("%f", item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+        value = StringUtils::Format("%f", item->GetVideoInfoTag()->GetResumePoint().totalTimeInSeconds);
       else if (lowerKey == "resumetime")
-        value = StringUtils::Format("%f", item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+        value = StringUtils::Format("%f", item->GetVideoInfoTag()->GetResumePoint().timeInSeconds);
       else if (lowerKey == "fanart_image")
         value = item->GetArt("fanart");
       else

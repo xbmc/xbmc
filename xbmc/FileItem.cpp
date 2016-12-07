@@ -3527,24 +3527,15 @@ int CFileItem::GetVideoContentType() const
 
 bool CFileItem::IsResumePointSet() const
 {
-  return (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet()) ||
-      (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->GetLastPlayedPosition() > 0);
+  return HasVideoInfoTag() && GetVideoInfoTag()->GetResumePoint().IsSet();
 }
 
 double CFileItem::GetCurrentResumeTime() const
 {
-  if (m_pvrRecordingInfoTag)
+  if (HasVideoInfoTag() && GetVideoInfoTag()->GetResumePoint().IsSet())
   {
-    // This will retrieve 'fresh' resume information from the PVR server
-    int rc = m_pvrRecordingInfoTag->GetLastPlayedPosition();
-    if (rc > 0)
-      return rc;
-    // Fall through to default value
+    return GetVideoInfoTag()->GetResumePoint().timeInSeconds;
   }
-  if (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet())
-  {
-    return GetVideoInfoTag()->m_resumePoint.timeInSeconds;
-  }
-  // Resume from start when resume points are invalid or the PVR server returns an error
+  // Resume from start when resume points are invalid
   return 0;
 }

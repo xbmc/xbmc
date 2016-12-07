@@ -488,23 +488,7 @@ namespace PVR
     const CPVRRecordingPtr recording(CPVRItem(CFileItemPtr(new CFileItem(item))).GetRecording());
     if (recording && !recording->IsDeleted())
     {
-      // First try to find the resume position on the back-end, if that fails use video database
-      int positionInSeconds = recording->GetLastPlayedPosition();
-      // If the back-end does report a saved position it will be picked up by FileItem
-      if (positionInSeconds < 0)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          CBookmark bookmark;
-          std::string itemPath(recording->m_strFileNameAndPath);
-          if (db.GetResumeBookMark(itemPath, bookmark) )
-            positionInSeconds = lrint(bookmark.timeInSeconds);
-          db.Close();
-        }
-      }
-
-      // Suppress resume from 0
+      int positionInSeconds = lrint(recording->GetResumePoint().timeInSeconds);
       if (positionInSeconds > 0)
         resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
                                            StringUtils::SecondsToTimeString(positionInSeconds, TIME_FORMAT_HH_MM_SS).c_str());
