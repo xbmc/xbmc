@@ -28,7 +28,7 @@
 						<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
 					</item>
 					<item>
-						<label>$LOCALIZE[250]: [COLOR button_focus]$INFO[Visualisation.Name][/COLOR]</label>
+						<label>$LOCALIZE[250]$INFO[Visualisation.Name,: [COLOR button_focus],[/COLOR]]</label>
 						<onclick>Dialog.Close(all)</onclick>
 						<onclick>SendClick(500)</onclick>
 					</item>
@@ -42,7 +42,7 @@
 						<visible>Visualisation.HasPresets</visible>
 					</item>
 					<item>
-						<label>$LOCALIZE[31082]: [COLOR button_focus]$INFO[Skin.String(LyricScript_Path)][/COLOR]</label>
+						<label>$LOCALIZE[31082]$INFO[Skin.String(LyricScript_Path),: [COLOR button_focus],[/COLOR]]</label>
 						<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
 					</item>
 					<item>

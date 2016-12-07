@@ -29,8 +29,8 @@
 				<control type="image">
 					<width>430</width>
 					<height>270</height>
-					<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-					<bordertexture border="20">overlays/shadow.png</bordertexture>
+					<texture>dialogs/dialog-bg-nobo.png</texture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -70,8 +70,8 @@
 					<control type="image">
 						<width>430</width>
 						<height>270</height>
-						<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-						<bordertexture border="20">overlays/shadow.png</bordertexture>
+						<texture>dialogs/dialog-bg-nobo.png</texture>
+						<bordertexture border="21">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
@@ -138,11 +138,6 @@
 					<label>$LOCALIZE[14207]</label>
 					<onclick>ActivateWindow(InterfaceSettings)</onclick>
 					<icon>icons/settings/interface.png</icon>
-				</item>
-				<item>
-					<label>$LOCALIZE[20077]</label>
-					<onclick>ActivateWindow(SkinSettings)</onclick>
-					<icon>icons/settings/skin.png</icon>
 				</item>
 				<item>
 					<label>$LOCALIZE[14210]</label>

@@ -22,7 +22,9 @@
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$LOCALIZE[24001]" />
 			</include>
-			<include>BottomBar</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
 			<include>MediaMenuMouseOverlay</include>
 			<control type="group">
 				<include>MediaMenuCommon</include>

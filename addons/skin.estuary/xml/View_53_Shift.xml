@@ -70,7 +70,7 @@
 							<height>480</height>
 							<aspectratio aligny="center">keep</aspectratio>
 							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="textbox">
@@ -99,7 +99,7 @@
 							<height>480</height>
 							<aspectratio aligny="center">keep</aspectratio>
 							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="textbox">
@@ -169,7 +169,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<content sortby="year" sortorder="descending">$INFO[ListItem.Path]</content>
+					<content sortby="year" sortorder="descending">$VAR[InfoListPathVar]</content>
 				</control>
 			</control>
 		</control>
