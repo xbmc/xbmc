@@ -33,9 +33,13 @@ CVideoInfo::CVideoInfo(MediaType mediaType)
 
 bool CVideoInfo::IsVisible(const CFileItem& item) const
 {
-  if (item.IsPVR())
-    return false; // pvr has its own implementation for this
-  return item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_type == m_mediaType;
+  if (!item.HasVideoInfoTag())
+    return false;
+
+  if (item.IsPVRRecording())
+    return false; // pvr recordings have its own implementation for this
+
+  return item.GetVideoInfoTag()->m_type == m_mediaType;
 }
 
 bool CVideoInfo::Execute(const CFileItemPtr& item) const
@@ -48,10 +52,13 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
 {
   if (!item.HasVideoInfoTag())
     return false;
-  if (item.IsPVR())
-    return false; // pvr has its own implementation for this
+
+  if (item.IsPVRRecording())
+    return false; // pvr recordings have its own implementation for this
+
   if (item.m_bIsFolder) //Only allow db content to be updated recursively
     return item.IsVideoDb();
+
   return item.GetVideoInfoTag()->m_playCount == 0;
 }
 
@@ -65,10 +72,13 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
 {
   if (!item.HasVideoInfoTag())
     return false;
-  if (item.IsPVR())
-    return false; // pvr has its own implementation for this
+
+  if (item.IsPVRRecording())
+    return false; // pvr recordings have its own implementation for this
+
   if (item.m_bIsFolder) //Only allow db content to be updated recursively
     return item.IsVideoDb();
+
   return item.GetVideoInfoTag()->m_playCount > 0;
 }
 
@@ -85,8 +95,9 @@ std::string CResume::GetLabel(const CFileItem& item) const
 
 bool CResume::IsVisible(const CFileItem& item) const
 {
-  if (item.IsPVR())
-    return false; // pvr has its own implementation for this
+  if (item.IsPVRRecording())
+    return false; // pvr recordings have its own implementation for this
+
   return CGUIWindowVideoBase::HasResumeItemOffset(&item);
 }
 
@@ -124,8 +135,10 @@ bool CPlay::IsVisible(const CFileItem& item) const
 {
   if (item.m_bIsFolder)
     return false; //! @todo implement
-  if (item.IsPVR())
-    return false; // pvr has its own implementation for this
+
+  if (item.IsPVRRecording())
+    return false; // pvr recordings have its own implementation for this
+
   return item.IsVideo() || item.IsDVD() || item.IsCDDA();
 }
 
