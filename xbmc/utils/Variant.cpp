@@ -328,6 +328,8 @@ void CVariant::cleanup()
     delete m_data.map;
     m_data.map = nullptr;
     break;
+  default:
+    break;
   }
   m_type = VariantTypeNull;
 }

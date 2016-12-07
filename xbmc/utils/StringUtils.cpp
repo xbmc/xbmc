@@ -1314,9 +1314,9 @@ uint64_t StringUtils::ToUint64(std::string str, uint64_t fallback) noexcept
 
 std::string StringUtils::FormatFileSize(uint64_t bytes)
 {
-  const std::array<std::string, 6> units{"B", "kB", "MB", "GB", "TB", "PB"};
+  const std::array<std::string, 6> units{{"B", "kB", "MB", "GB", "TB", "PB"}};
   if (bytes < 1000)
-    return Format("%lluB", bytes);
+    return Format("%" PRIu64 "B", bytes);
 
   int i = 0;
   double value = static_cast<double>(bytes);
