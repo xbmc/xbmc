@@ -28,11 +28,10 @@
 
 using namespace ADDON;
 
-namespace V1
-{
 namespace KodiAPI
 {
-  
+namespace V1
+{  
 namespace AudioEngine
 {
 
@@ -402,6 +401,5 @@ void CAddonCallbacksAudioEngine::AEStream_SetResampleRatio(void *AddonData, AESt
 }
 
 } /* namespace AudioEngine */
-
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */

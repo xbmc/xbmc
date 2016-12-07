@@ -23,11 +23,10 @@
 
 namespace PERIPHERALS { class CPeripheralAddon; }
 
-namespace V1
-{
 namespace KodiAPI
 {
-
+namespace V1
+{
 namespace Peripheral
 {
 
@@ -56,6 +55,5 @@ private:
 };
 
 } /* namespace Peripheral */
-
-} /* namespace KoidAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */
