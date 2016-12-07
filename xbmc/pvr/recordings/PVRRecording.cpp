@@ -86,7 +86,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
     SetYear(recording.iYear);
   m_iClientId                      = iClientId;
   m_recordingTime                  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
-  m_duration                       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
+  m_duration                       = recording.iDuration;
   m_iPriority                      = recording.iPriority;
   m_iLifetime                      = recording.iLifetime;
   // Deleted recording is placed at the root of the deleted view
@@ -176,13 +176,12 @@ void CPVRRecording::Serialize(CVariant& value) const
   CVideoInfoTag::Serialize(value);
 
   value["channel"] = m_strChannelName;
-  value["runtime"] = m_duration.GetSecondsTotal();
   value["lifetime"] = m_iLifetime;
   value["streamurl"] = m_strStreamURL;
   value["directory"] = m_strDirectory;
   value["icon"] = m_strIconPath;
   value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
-  value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + m_duration).GetAsDBDateTime() : "";
+  value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + CDateTimeSpan(0, 0, m_duration / 60, m_duration % 60)).GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
   value["isdeleted"] = m_bIsDeleted;
   value["epgeventid"] = m_iEpgEventId;
@@ -221,14 +220,6 @@ void CPVRRecording::Reset(void)
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
-}
-
-int CPVRRecording::GetDuration() const
-{
-  return (m_duration.GetDays() * 60*60*24 +
-      m_duration.GetHours() * 60*60 +
-      m_duration.GetMinutes() * 60 +
-      m_duration.GetSeconds());
 }
 
 bool CPVRRecording::Delete(void)

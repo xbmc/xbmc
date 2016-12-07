@@ -72,7 +72,6 @@ namespace PVR
     int           m_iClientId;        /*!< ID of the backend */
     std::string   m_strRecordingId;   /*!< unique ID of the recording on the client */
     std::string   m_strChannelName;   /*!< name of the channel this was recorded from */
-    CDateTimeSpan m_duration;         /*!< duration of this recording */
     int           m_iPriority;        /*!< priority of this recording */
     int           m_iLifetime;        /*!< lifetime of this recording */
     std::string   m_strStreamURL;     /*!< stream URL. if empty use pvr client */
@@ -101,12 +100,6 @@ namespace PVR
      * @brief Reset this tag to it's initial state.
      */
     void Reset(void);
-
-    /*!
-     * @brief The duration of this recording in seconds.
-     * @return The duration.
-     */
-    int GetDuration() const;
 
     /*!
      * @brief Delete this recording on the client (if supported).
