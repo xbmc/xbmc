@@ -1081,7 +1081,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "playcount"))
     details.SetPlayCount(static_cast<int>(parameterObject["playcount"].asInteger()));
   if (ParameterNotNull(parameterObject, "runtime"))
-    details.m_duration = (int)parameterObject["runtime"].asInteger();
+    details.SetDuration(static_cast<int>(parameterObject["runtime"].asInteger()));
 
   std::vector<std::string> director(details.m_director);
   UpdateVideoTagField(parameterObject, "director", director, updatedDetails);

@@ -495,7 +495,7 @@ CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr
           recording.second->ClientID() == epgTag->ChannelTag()->ClientID() &&
           recording.second->ChannelUid() == epgTag->ChannelTag()->UniqueID() &&
           recording.second->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
-          (recording.second->RecordingTimeAsUTC() + recording.second->m_duration) >= epgTag->EndAsUTC())
+          recording.second->EndTimeAsUTC() >= epgTag->EndAsUTC())
         return recording.second;
     }
   }

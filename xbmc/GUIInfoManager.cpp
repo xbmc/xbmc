@@ -9039,7 +9039,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
             case VIDEOPLAYER_STARTTIME:
               return tag->RecordingTimeAsLocalTime().GetAsLocalizedTime("", false);
             case VIDEOPLAYER_ENDTIME:
-              return (tag->RecordingTimeAsLocalTime() + tag->m_duration).GetAsLocalizedTime("", false);
+              return tag->EndTimeAsLocalTime().GetAsLocalizedTime("", false);
             case VIDEOPLAYER_EPISODENAME:
               return tag->EpisodeName();
             case VIDEOPLAYER_CHANNEL_NAME:

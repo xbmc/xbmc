@@ -2596,8 +2596,8 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
     sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
   else
     sql += ", userrating = NULL";  
-  if (details.m_duration > 0)
-    sql += PrepareSQL(", duration = %i", details.m_duration);
+  if (details.GetDuration() > 0)
+    sql += PrepareSQL(", duration = %i", details.GetDuration());
   else
     sql += ", duration = NULL";
   sql += PrepareSQL(" WHERE idShow=%i", idTvShow);
@@ -3691,7 +3691,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   details.DetermineBestStreams();
 
   if (details.GetVideoDuration() > 0)
-    tag.m_duration = details.GetVideoDuration();
+    tag.SetDuration(details.GetVideoDuration());
 
   return retVal;
 }
@@ -3869,7 +3869,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
                     record->at(VIDEODB_DETAILS_TVSHOW_VOTES).get_asInt(),
                     record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString(), true);
   details.SetUniqueID(record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_TYPE).get_asString(), true);
-  details.m_duration = record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt();
+  details.SetDuration(record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt());
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 

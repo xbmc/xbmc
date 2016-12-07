@@ -105,10 +105,20 @@ public:
     return m_strFileNameAndPath;
   };
 
+  /*! \brief set the duration in seconds
+   \param duration the duration to set
+   */
+  void SetDuration(int duration);
+
   /*! \brief retrieve the duration in seconds.
    Prefers the duration from stream details if available.
    */
   unsigned int GetDuration() const;
+
+  /*! \brief retrieve the duration in seconds.
+   Ignores the duration from stream details even if available.
+   */
+  unsigned int GetStaticDuration() const;
 
   /*! \brief get the duration in seconds from a minute string
    \param runtime the runtime string from a scraper or similar
@@ -236,9 +246,11 @@ public:
   CBookmark m_resumePoint;
   CDateTime m_dateAdded;
   MediaType m_type;
-  int m_duration; ///< duration in seconds
   int m_relevance; // Used for actors' number of appearances
   int m_parsedDetails;
+
+  // TODO: cannot be private, because of 'struct SDbTableOffsets'
+  unsigned int m_duration; ///< duration in seconds
 
 private:
   /* \brief Parse our native XML format for video info.

@@ -1221,6 +1221,11 @@ bool CVideoInfoTag::IsEmpty() const
           m_strPath.empty());
 }
 
+void CVideoInfoTag::SetDuration(int duration)
+{
+  m_duration = duration;
+}
+
 unsigned int CVideoInfoTag::GetDuration() const
 {
   /*
@@ -1231,6 +1236,11 @@ unsigned int CVideoInfoTag::GetDuration() const
   if (duration > m_duration * 0.6)
     return duration;
 
+  return m_duration;
+}
+
+unsigned int CVideoInfoTag::GetStaticDuration() const
+{
   return m_duration;
 }
 

@@ -856,7 +856,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     if(resource)
     {
       if (resource->m_Duration)
-        tag.m_duration = resource->m_Duration;
+        tag.SetDuration(resource->m_Duration);
       if (object.m_MiscInfo.last_position > 0 )
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;
@@ -871,7 +871,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
           CStreamDetailVideo* detail = new CStreamDetailVideo;
           detail->m_iWidth = width;
           detail->m_iHeight = height;
-          detail->m_iDuration = tag.m_duration;
+          detail->m_iDuration = tag.GetDuration();
           tag.m_streamDetails.AddStream(detail);
         }
       }

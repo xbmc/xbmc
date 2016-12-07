@@ -86,7 +86,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
     SetYear(recording.iYear);
   m_iClientId                      = iClientId;
   m_recordingTime                  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
-  m_duration                       = recording.iDuration;
   m_iPriority                      = recording.iPriority;
   m_iLifetime                      = recording.iLifetime;
   // Deleted recording is placed at the root of the deleted view
@@ -106,6 +105,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_iChannelUid                    = recording.iChannelUid;
 
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
+  SetDuration(recording.iDuration);
 
   //  As the channel a recording was done on (probably long time ago) might no longer be
   //  available today prefer addon-supplied channel type (tv/radio) over channel attribute.
@@ -143,7 +143,7 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_iClientId          == right.m_iClientId &&
        m_strChannelName     == right.m_strChannelName &&
        m_recordingTime      == right.m_recordingTime &&
-       m_duration           == right.m_duration &&
+       GetDuration()        == right.GetDuration() &&
        m_strPlotOutline     == right.m_strPlotOutline &&
        m_strPlot            == right.m_strPlot &&
        m_strStreamURL       == right.m_strStreamURL &&
@@ -181,7 +181,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["directory"] = m_strDirectory;
   value["icon"] = m_strIconPath;
   value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
-  value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + CDateTimeSpan(0, 0, m_duration / 60, m_duration % 60)).GetAsDBDateTime() : "";
+  value["endtime"] = m_recordingTime.IsValid() ? EndTimeAsUTC().GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
   value["isdeleted"] = m_bIsDeleted;
   value["epgeventid"] = m_iEpgEventId;
@@ -367,7 +367,6 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_iEpisode          = tag.m_iEpisode;
   SetPremiered(tag.GetPremiered());
   m_recordingTime     = tag.m_recordingTime;
-  m_duration          = tag.m_duration;
   m_iPriority         = tag.m_iPriority;
   m_iLifetime         = tag.m_iLifetime;
   m_strDirectory      = tag.m_strDirectory;
@@ -384,8 +383,8 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_iChannelUid       = tag.m_iChannelUid;
   m_bRadio            = tag.m_bRadio;
 
-  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
-    SetPlayCount(tag.GetPlayCount());
+  SetPlayCount(tag.GetPlayCount());
+  SetDuration(tag.GetDuration());
 
   if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
   {
@@ -435,6 +434,19 @@ const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
   tmp.SetFromUTCDateTime(m_recordingTime);
 
   return tmp;
+}
+
+CDateTime CPVRRecording::EndTimeAsUTC() const
+{
+  unsigned int duration = GetDuration();
+  return m_recordingTime + CDateTimeSpan(0, 0, duration / 60, duration % 60);
+}
+
+CDateTime CPVRRecording::EndTimeAsLocalTime() const
+{
+  CDateTime ret;
+  ret.SetFromUTCDateTime(EndTimeAsUTC());
+  return ret;
 }
 
 std::string CPVRRecording::GetTitleFromURL(const std::string &url)

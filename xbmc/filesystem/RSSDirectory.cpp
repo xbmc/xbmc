@@ -255,7 +255,7 @@ static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement
   else if(name == "author")
     vtag->m_writingCredits.push_back(text);
   else if(name == "duration")
-    vtag->m_duration = StringUtils::TimeStringToSeconds(text);
+    vtag->SetDuration(StringUtils::TimeStringToSeconds(text));
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 }
@@ -354,7 +354,7 @@ static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement*
   else if(name == "content_type")
     item->SetMimeType(text);
   else if(name == "runtime")
-    vtag->m_duration = StringUtils::TimeStringToSeconds(text);
+    vtag->SetDuration(StringUtils::TimeStringToSeconds(text));
   else if(name == "episode")
     vtag->m_iEpisode = atoi(text.c_str());
   else if(name == "season")
@@ -382,9 +382,9 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
   else if(name == "userrating")
     vtag->SetRating((float)atof(text.c_str()));
   else if(name == "duration")
-    vtag->m_duration = atoi(text.c_str());
+    vtag->SetDuration(atoi(text.c_str()));
   else if(name == "durationstr")
-    vtag->m_duration = StringUtils::TimeStringToSeconds(text);
+    vtag->SetDuration(StringUtils::TimeStringToSeconds(text));
 }
 
 static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const std::string& name, const std::string& xmlns, const std::string& path)
@@ -539,7 +539,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
     CVideoInfoTag* vtag = item->GetVideoInfoTag();
 
     if(item->HasProperty("duration")    && !vtag->GetDuration())
-      vtag->m_duration = StringUtils::TimeStringToSeconds(item->GetProperty("duration").asString());
+      vtag->SetDuration(StringUtils::TimeStringToSeconds(item->GetProperty("duration").asString()));
 
     if(item->HasProperty("description") && vtag->m_strPlot.empty())
       vtag->m_strPlot = item->GetProperty("description").asString();

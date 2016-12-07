@@ -163,8 +163,29 @@ namespace PVR
      */
     void Update(const CPVRRecording &tag);
 
+    /*!
+     * @brief Retrieve the recording start as UTC time
+     * @return the recording start time
+     */
     const CDateTime &RecordingTimeAsUTC(void) const { return m_recordingTime; }
+
+    /*!
+     * @brief Retrieve the recording start as local time
+     * @return the recording start time
+     */
     const CDateTime &RecordingTimeAsLocalTime(void) const;
+
+    /*!
+     * @brief Retrieve the recording end as UTC time
+     * @return the recording end time
+     */
+    CDateTime EndTimeAsUTC() const;
+
+    /*!
+     * @brief Retrieve the recording end as local time
+     * @return the recording end time
+     */
+    CDateTime EndTimeAsLocalTime() const;
 
     /*!
      * @brief Retrieve the recording title from the URL path
