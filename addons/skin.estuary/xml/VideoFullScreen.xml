@@ -52,13 +52,13 @@
 				<centertop>50%</centertop>
 				<width>92</width>
 				<height>92</height>
-				<texture colordiffuse="1AFFFFFF">dialogs/extendedprogress/loading-placeholder.png</texture>
+				<texture>dialogs/extendedprogress/loading-back.png</texture>
 			</control>
 			<control type="image" id="1">
 				<centerleft>50%</centerleft>
 				<centertop>50%</centertop>
-				<width>160</width>
-				<height>160</height>
+				<width>92</width>
+				<height>92</height>
 				<texture colordiffuse="button_focus">$INFO[Player.CacheLevel,dialogs/volume/progress/p,.png]</texture>
 			</control>
 			<control type="label" id="1">

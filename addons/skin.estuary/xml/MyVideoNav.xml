@@ -29,7 +29,6 @@
 				<include>OpenClose_Left</include>
 				<visible>Control.IsVisible(50) | Control.Isvisible(54) | [Control.IsVisible(501) + String.IsEqual(Skin.AspectRatio,21:9)]</visible>
 				<include>Visible_Left</include>
-				<visible>Container.Content(sets) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(musicvideos)</visible>
 				<include content="ContentPanel">
 					<param name="width" value="656" />
 				</include>

@@ -120,7 +120,7 @@
 		<font>font45</font>
 	</include>
 	<include name="PlaylistWindowButton">
-		<param name="width">487</param>
+		<param name="width">100%</param>
 		<definition>
 			<control type="button" id="$PARAM[control_id]">
 				<width>$PARAM[width]</width>
@@ -196,8 +196,8 @@
 			<height>142</height>
 			<align>center</align>
 			<aligny>top</aligny>
-			<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-			<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+			<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+			<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
 			<textoffsetx>35</textoffsetx>
 			<textoffsety>78</textoffsety>
 			<radioposx>108</radioposx>
@@ -220,8 +220,8 @@
 				<height>142</height>
 				<align>center</align>
 				<aligny>top</aligny>
-				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
 				<textoffsetx>35</textoffsetx>
 				<textoffsety>78</textoffsety>
 				<radioposx>108</radioposx>
@@ -250,8 +250,8 @@
 				<height>142</height>
 				<align>center</align>
 				<aligny>top</aligny>
-				<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-				<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
 				<textoffsetx>35</textoffsetx>
 				<textoffsety>78</textoffsety>
 				<radioposx>108</radioposx>

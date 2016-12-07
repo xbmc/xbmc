@@ -106,17 +106,14 @@
 						<include content="PlaylistWindowButton">
 							<param name="control_id" value="26" />
 							<param name="label" value="" />
-							<param name="width" value="402" />
 						</include>
 						<include content="PlaylistWindowButton">
 							<param name="control_id" value="21" />
 							<param name="label" value="$LOCALIZE[190]" />
-							<param name="width" value="402" />
 						</include>
 						<include content="PlaylistWindowButton">
 							<param name="control_id" value="22" />
 							<param name="label" value="$LOCALIZE[192]" />
-							<param name="width" value="402" />
 						</include>
 					</control>
 				</control>
@@ -130,14 +127,14 @@
 					<param name="flip_bg" value="true" />
 				</include>
 				<control type="scrollbar" id="60">
-					<left>0</left>
-					<top>80</top>
+					<left>-20</left>
+					<top>0</top>
 					<width>12</width>
-					<bottom>80</bottom>
+					<bottom>0</bottom>
 					<onleft>50</onleft>
 					<texturesliderbackground />
 					<onright>700</onright>
-					<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+					<animation effect="zoom" end="50,100" time="300" tween="sine" center="-20,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
 					<orientation>vertical</orientation>
 				</control>
 			</control>

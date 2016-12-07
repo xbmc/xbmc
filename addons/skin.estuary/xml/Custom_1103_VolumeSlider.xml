@@ -24,8 +24,8 @@
 				<top>0</top>
 				<width>525</width>
 				<height>152</height>
-				<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="20">overlays/shadow.png</bordertexture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
+				<bordertexture border="21">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="progress">

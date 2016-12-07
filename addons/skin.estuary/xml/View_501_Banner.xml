@@ -29,9 +29,9 @@
 							<top>0</top>
 							<width>860</width>
 							<height>195</height>
-							<texture border="2" fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
+							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="label">
@@ -66,9 +66,9 @@
 							<top>0</top>
 							<width>860</width>
 							<height>195</height>
-							<texture border="2" fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
+							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="label">

@@ -2,9 +2,7 @@
 <includes>
 	<variable name="PVRStatusImageVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
-		<value condition="ListItem.HasTimer + !ListItem.IsRecording + !ListItem.HasTimerSchedule">windows/pvr/timer.png</value>
-		<value condition="ListItem.HasTimerSchedule + !ListItem.IsRecording">windows/pvr/timer.png</value>
-		<value condition="ListItem.HasRecording + !ListItem.IsRecording + !ListItem.HasTimer">windows/pvr/timer.png</value>
+		<value condition="ListItem.HasTimer | ListItem.HasTimerSchedule">windows/pvr/timer.png</value>
 	</variable>
 	<variable name="AutoCompletionContentVar">
 		<value condition="System.HasAddon(plugin.program.autocompletion) + !System.HasHiddenInput">plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
@@ -12,6 +10,10 @@
 	<variable name="PlaylistLabel2Var">
 		<value condition="Window.IsActive(musicplaylist)">$INFO[ListItem.Duration]</value>
 		<value>$INFO[ListItem.Duration,, $LOCALIZE[12391]]</value>
+	</variable>
+	<variable name="InfoListPathVar">
+		<value condition="String.IsEmpty(Container.PluginName)">$INFO[ListItem.FolderPath]</value>
+		<value></value>
 	</variable>
 	<variable name="AddonCountLabel">
 		<value condition="Integer.IsGreater(Container(8000).NumItems,10)">&gt;9</value>

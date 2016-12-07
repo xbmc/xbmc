@@ -18,7 +18,7 @@
 					<left>70</left>
 					<width>1280</width>
 					<height>820</height>
-					<texture border="22">dialogs/dialog-bg.png</texture>
+					<texture border="21">dialogs/dialog-bg.png</texture>
 				</control>
 				<control type="image">
 					<left>120</left>
