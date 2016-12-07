@@ -20,7 +20,7 @@
 					<width>566</width>
 					<height>841</height>
 					<texture>colors/black.png</texture>
-					<bordertexture border="20">overlays/shadow.png</bordertexture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -50,7 +50,7 @@
 						<height>801</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Thumb]</texture>
-						<bordertexture border="20">overlays/shadow.png</bordertexture>
+						<bordertexture border="21">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 				</control>
@@ -58,7 +58,7 @@
 			<control type="group">
 				<top>154</top>
 				<left>70</left>
-				<visible>Stringcompare(ListItem.DBType,musicvideo)</visible>
+				<visible>String.IsEqual(ListItem.DBType,musicvideo)</visible>
 				<include>OpenClose_Left</include>
 				<control type="image">
 					<width>526</width>
@@ -72,7 +72,7 @@
 					<height>801</height>
 					<aspectratio>keep</aspectratio>
 					<texture>$INFO[ListItem.Thumb]</texture>
-					<bordertexture border="20">overlays/shadow.png</bordertexture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 			</control>
@@ -121,7 +121,7 @@
 						<onleft>139</onleft>
 						<onright>139</onright>
 						<ondown>5000</ondown>
-						<texturenofocus border="40">dialogs/dialog-bg.png</texturenofocus>
+						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="textbox">
@@ -171,7 +171,7 @@
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="150" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[515]: [/COLOR]$INFO[ListItem.Genre]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Genre) + Stringcompare(ListItem.DBType,movie)" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Genre) + String.IsEqual(ListItem.DBType,movie)" />
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="152" />
@@ -191,7 +191,7 @@
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="155" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[31048]: [/COLOR]$INFO[ListItem.Season,, $LOCALIZE[36905]]$INFO[ListItem.Episode, (, $LOCALIZE[20453])]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Season) + !Stringcompare(ListItem.DBType,episode)" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Season) + !String.IsEqual(ListItem.DBType,episode)" />
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="156" />
@@ -264,7 +264,7 @@
 								<height>317</height>
 								<texture>DefaultActorSolid.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="20">overlays/shadow.png</bordertexture>
+								<bordertexture border="21">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -316,7 +316,7 @@
 								<height>317</height>
 								<texture>DefaultActorSolid.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="20">overlays/shadow.png</bordertexture>
+								<bordertexture border="21">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -451,7 +451,7 @@
 						<param name="icon" value="icons/infodialogs/info.png" />
 						<param name="label" value="$LOCALIZE[31034]" />
 						<param name="onclick_1" value="RunScript(script.extendedinfo,info=openinfodialog)" />
-						<param name="visible" value="System.hasAddon(script.extendedinfo) + [Stringcompare(ListItem.DbType,movie) | Stringcompare(ListItem.DbType,tvshow) | Stringcompare(ListItem.DbType,season) | Stringcompare(ListItem.DbType,episode)]" />
+						<param name="visible" value="System.hasAddon(script.extendedinfo) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,season) | String.IsEqual(ListItem.DbType,episode)]" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="102" />

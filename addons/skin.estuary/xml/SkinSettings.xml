@@ -81,7 +81,6 @@
 					<label>$LOCALIZE[31156]</label>
 					<label2>$INFO[Skin.String(background_overlay),$LOCALIZE[467] ]</label2>
 					<include>DefaultSettingButton</include>
-					<onclick condition="String.IsEqual(Skin.String(background_overlay),1)">Skin.SetString(background_overlay,2)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),7)">Skin.SetString(background_overlay,1)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),6)">Skin.SetString(background_overlay,7)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),5)">Skin.SetString(background_overlay,6)</onclick>
@@ -122,6 +121,7 @@
 				<onleft>9000</onleft>
 				<onright>60</onright>
 				<onup>610</onup>
+				<pagecontrol>60</pagecontrol>
 				<ondown>610</ondown>
 				<visible>Container(9000).HasFocus(2)</visible>
 				<control type="radiobutton" id="611">
@@ -294,6 +294,22 @@
 					</item>
 				</content>
 			</control>
+		</control>
+		<control type="scrollbar" id="60">
+			<right>0</right>
+			<top>163</top>
+			<width>12</width>
+			<bottom>137</bottom>
+			<orientation>vertical</orientation>
+			<texturesliderbackground />
+			<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+			<onleft>610</onleft>
+			<onright>610</onright>
+			<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+			<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+			<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			<visible>Control.IsVisible(610)</visible>
 		</control>
 		<include content="TopBar">
 			<param name="breadcrumbs_label" value="$LOCALIZE[5] / $LOCALIZE[20077]" />
