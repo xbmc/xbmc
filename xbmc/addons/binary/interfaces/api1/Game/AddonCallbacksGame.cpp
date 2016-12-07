@@ -31,9 +31,9 @@
 using namespace ADDON;
 using namespace GAME;
 
-namespace V1
-{
 namespace KodiAPI
+{
+namespace V1
 {
 
 namespace Game
@@ -209,5 +209,5 @@ bool CAddonCallbacksGame::InputEvent(void* addonData, const game_input_event* ev
 
 } /* namespace Game */
 
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */

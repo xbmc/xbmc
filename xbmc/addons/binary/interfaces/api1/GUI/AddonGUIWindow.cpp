@@ -38,9 +38,9 @@
 using namespace KODI::MESSAGING;
 using namespace ADDON;
 
-namespace V1
-{
 namespace KodiAPI
+{
+namespace V1
 {
 namespace GUI
 {
@@ -355,5 +355,5 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 }
 
 } /* namespace GUI */
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */

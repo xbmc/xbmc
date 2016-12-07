@@ -22,9 +22,9 @@
 
 #include "guilib/GUIRenderingControl.h"
 
-namespace V1
-{
 namespace KodiAPI
+{
+namespace V1
 {
 namespace GUI
 {
@@ -89,5 +89,5 @@ bool CGUIAddonRenderingControl::IsDirty()
 }
 
 } /* namespace GUI */
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */
