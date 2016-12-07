@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
 	<color name="primary_background">FF006699</color>
-	<color name="secondary_background">8024CA7A</color>
+	<color name="secondary_background">80A6111F</color>
 	<color name="dialog_tint">FF22282A</color>
 	<color name="background">FF000000</color>
 	<color name="bg_image">FF909090</color>
@@ -11,7 +11,7 @@
 	<color name="grey">FFA0A0A0</color>
 	<color name="blue">FF7ACAFE</color>
 	<color name="red">FFCE4421</color>
-	<color name="button_focus">FF12B2E7</color>
+	<color name="button_focus">FF12A0C7</color>
 	<color name="text_shadow">22000000</color>
 	<color name="border_alpha">60FFFFFF</color>
 	<color name="disabled">40FFFFFF</color>

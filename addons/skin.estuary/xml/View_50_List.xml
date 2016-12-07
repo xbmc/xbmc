@@ -217,32 +217,24 @@
 						<left>20</left>
 						<top>640</top>
 						<visible>!String.IsEmpty(ListItem.DBID)</visible>
-						<control type="group">
-							<visible>String.IsEqual(ListItem.DBType,artist)</visible>
-							<include content="InfoList">
-								<param name="list_id" value="42000" />
-								<param name="bottom" value="100" />
-								<param name="width" value="540" />
-								<param name="sortby" value="year" />
-								<param name="sortorder" value="descending" />
-								<param name="font" value="font13" />
-								<param name="path" value="$INFO[ListItem.FolderPath]" />
-								<param name="item_label" value="$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
-							</include>
-						</control>
-						<control type="group">
-							<visible>String.IsEqual(ListItem.DBType,album)</visible>
-							<include content="InfoList">
-								<param name="list_id" value="43000" />
-								<param name="bottom" value="100" />
-								<param name="width" value="540" />
-								<param name="sortby" value="track" />
-								<param name="sortorder" value="ascending" />
-								<param name="font" value="font13" />
-								<param name="path" value="$INFO[ListItem.FolderPath]" />
-								<param name="item_label" value="$INFO[ListItem.Duration,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
-							</include>
-						</control>
+						<include content="InfoList">
+							<param name="list_id" value="42000" />
+							<param name="bottom" value="100" />
+							<param name="width" value="540" />
+							<param name="sortby" value="year" />
+							<param name="sortorder" value="descending" />
+							<param name="item_label" value="$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
+							<param name="visible" value="String.IsEqual(ListItem.DBType,artist)" />
+						</include>
+						<include content="InfoList">
+							<param name="list_id" value="43000" />
+							<param name="bottom" value="100" />
+							<param name="width" value="540" />
+							<param name="sortby" value="track" />
+							<param name="sortorder" value="ascending" />
+							<param name="item_label" value="$INFO[ListItem.Duration,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
+							<param name="visible" value="String.IsEqual(ListItem.DBType,album)" />
+						</include>
 					</control>
 				</control>
 			</control>

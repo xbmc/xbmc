@@ -27,14 +27,14 @@
 				<top>15</top>
 				<width>68</width>
 				<height>68</height>
-				<texture colordiffuse="1AFFFFFF">dialogs/extendedprogress/loading-placeholder.png</texture>
+				<texture>dialogs/extendedprogress/loading-back.png</texture>
 				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
 			</control>
 			<control type="image">
-				<left>-4</left>
-				<top>-11</top>
-				<width>120</width>
-				<height>120</height>
+				<left>22</left>
+				<top>15</top>
+				<width>68</width>
+				<height>68</height>
 				<texture>$INFO[Control.GetLabel(29999),dialogs/volume/progress/p,.png]</texture>
 				<animation effect="fade" start="100" end="0" delay="300" time="500" tween="sine" condition="Player.Muted">Conditional</animation>
 			</control>

@@ -27,10 +27,10 @@
 	<include name="PVRWidget">
 		<control type="image">
 			<top>80</top>
-			<left>15</left>
+			<left>16</left>
 			<width>670</width>
 			<height>225</height>
-			<texture border="22">dialogs/dialog-bg.png</texture>
+			<texture border="21">dialogs/dialog-bg.png</texture>
 		</control>
 		<control type="image">
 			<left>55</left>
@@ -65,6 +65,10 @@
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
 				<param name="list_id" value="$PARAM[list_id]"/>
+			</include>
+			<include content="BusyListSpinner">
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="posy" value="250"/>
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
@@ -173,6 +177,7 @@
 	<include name="WidgetListEpisodes">
 		<param name="main_label">$INFO[ListItem.Title]</param>
 		<param name="sub_label">$INFO[ListItem.TVShowTitle]</param>
+		<param name="thumb_label">$INFO[ListItem.Season,,x]$INFO[ListItem.Episode]</param>
 		<param name="sortby"></param>
 		<param name="visible">True</param>
 		<param name="sortorder">ascending</param>
@@ -181,6 +186,10 @@
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
 				<param name="list_id" value="$PARAM[list_id]"/>
+			</include>
+			<include content="BusyListSpinner">
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="posy" value="200"/>
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
@@ -199,6 +208,7 @@
 						<include content="InfoWallEpisodeLayout">
 							<param name="main_label" value="$PARAM[main_label]" />
 							<param name="sub_label" value="$PARAM[sub_label]" />
+							<param name="thumb_label" value="$PARAM[thumb_label]" />
 							<param name="focused" value="false" />
 						</include>
 					</control>
@@ -217,6 +227,7 @@
 						<include content="InfoWallEpisodeLayout">
 							<param name="main_label" value="$PARAM[main_label]" />
 							<param name="sub_label" value="$PARAM[sub_label]" />
+							<param name="thumb_label" value="$PARAM[thumb_label]" />
 							<param name="focused" value="true" />
 						</include>
 					</control>
@@ -236,6 +247,10 @@
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
 				<param name="list_id" value="$PARAM[list_id]"/>
+			</include>
+			<include content="BusyListSpinner">
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="posy" value="220"/>
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
@@ -293,6 +308,10 @@
 				<param name="list_id" value="$PARAM[list_id]"/>
 				<param name="visible" value="$PARAM[visible]"/>
 			</include>
+			<include content="BusyListSpinner">
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="visible" value="$PARAM[visible]"/>
+			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>110</top>
@@ -310,7 +329,7 @@
 							<width>316</width>
 							<height>200</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -339,16 +358,16 @@
 						<depth>DepthContentPopout</depth>
 						<left>70</left>
 						<animation type="Focus">
-							<effect type="zoom" start="100" end="115" time="200" tween="sine" easing="inout" center="240,70" />
+							<effect type="zoom" start="100" end="115" time="200" tween="sine" easing="inout" center="228,70" />
 						</animation>
 						<animation type="Unfocus">
-							<effect type="zoom" start="115" end="100" time="200" tween="sine" easing="inout" center="240,70" />
+							<effect type="zoom" start="115" end="100" time="200" tween="sine" easing="inout" center="228,70" />
 						</animation>
 						<control type="image">
 							<width>316</width>
 							<height>200</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -437,6 +456,10 @@
 				<param name="label">$PARAM[widget_header]</param>
 				<param name="list_id" value="$PARAM[list_id]"/>
 			</include>
+			<include content="BusyListSpinner">
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="posy" value="200"/>
+			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>120</top>
@@ -453,7 +476,7 @@
 							<width>319</width>
 							<height>340</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -487,7 +510,7 @@
 							<aligny>top</aligny>
 						</control>
 						<control type="image">
-							<left>270</left>
+							<left>260</left>
 							<top>30</top>
 							<width>32</width>
 							<height>32</height>
@@ -509,7 +532,7 @@
 							<width>319</width>
 							<height>340</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -552,7 +575,7 @@
 							<aligny>top</aligny>
 						</control>
 						<control type="image">
-							<left>270</left>
+							<left>260</left>
 							<top>30</top>
 							<width>32</width>
 							<height>32</height>
@@ -590,7 +613,7 @@
 							<width>254</width>
 							<height>350</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -641,7 +664,7 @@
 							<width>254</width>
 							<height>350</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -819,8 +842,8 @@
 				<top>100</top>
 				<width>1820</width>
 				<height>920</height>
-				<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="20">overlays/shadow.png</bordertexture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
+				<bordertexture border="21">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image" id="700$PARAM[item_id]2">
@@ -857,9 +880,9 @@
 			<aligny>center</aligny>
 			<textoffsetx>40</textoffsetx>
 			<textoffsety>0</textoffsety>
-			<texturenofocus border="40">buttons/button-nofo.png</texturenofocus>
+			<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
 			<animation effect="slide" end="0,-90" time="0" condition="true">Conditional</animation>
-			<texturefocus border="40" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+			<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 			<font>font30_title</font>
 			<onclick>Weather.LocationNext</onclick>
 			<label>$INFO[Window(weather).Property(Map.$PARAM[item_id].Heading)]</label>
@@ -879,5 +902,32 @@
 		<onback>PageUp</onback>
 		<onback>PageUp</onback>
 		<preloaditems>2</preloaditems>
+	</include>
+	<include name="BusyListSpinner">
+		<param name="posy">160</param>
+		<param name="visible">true</param>
+		<definition>
+			<control type="group" id="$PARAM[list_id]599">
+				<height>160</height>
+				<left>180</left>
+				<visible>Container($PARAM[list_id]).IsUpdating + !Integer.IsGreater(Container($PARAM[list_id]).NumItems,0)</visible>
+				<visible>$PARAM[visible]</visible>
+				<control type="image">
+					<top>$PARAM[posy]</top>
+					<width>100</width>
+					<height>100</height>
+					<aspectratio aligny="center">keep</aspectratio>
+					<texture colordiffuse="black">dialogs/extendedprogress/loading-back.png</texture>
+				</control>
+				<control type="image">
+					<top>$PARAM[posy]</top>
+					<width>100</width>
+					<height>100</height>
+					<aspectratio aligny="center">keep</aspectratio>
+					<texture>dialogs/extendedprogress/loading.png</texture>
+					<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
+				</control>
+			</control>
+		</definition>
 	</include>
 </includes>

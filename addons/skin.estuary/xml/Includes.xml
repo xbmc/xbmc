@@ -110,7 +110,7 @@
 	</include>
 	<include name="InfoList">
 		<param name="item_label">$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]</param>
-		<param name="path">$INFO[ListItem.Path]</param>
+		<param name="path">$VAR[InfoListPathVar]</param>
 		<param name="item_height">40</param>
 		<param name="bottom">100</param>
 		<param name="width">1152</param>
@@ -118,12 +118,14 @@
 		<param name="font">font13</param>
 		<param name="sortby"></param>
 		<param name="sortorder">ascending</param>
+		<param name="visible">true</param>
 		<definition>
 			<control type="panel" id="$PARAM[list_id]">
 				<top>0</top>
 				<width>$PARAM[width]</width>
 				<bottom>$PARAM[bottom]</bottom>
 				<orientation>vertical</orientation>
+				<visible>$PARAM[visible]</visible>
 				<focusedlayout height="$PARAM[item_height]" width="$PARAM[width]">
 					<control type="label">
 						<left>10</left>
@@ -521,7 +523,7 @@
 				<include content="Visible_Right_Delayed">
 					<param name="id" value="$PARAM[id]"/>
 				</include>
-				<visible>StringCompare(Container(9000).ListItem.Property(id),$PARAM[id])</visible>
+				<visible>String.IsEqual(Container(9000).ListItem.Property(id),$PARAM[id])</visible>
 				<control type="group">
 					<visible>Integer.IsGreater(Container($PARAM[group_id]50).NumItems,0) | Container($PARAM[group_id]50).IsUpdating</visible>
 					<control type="panel" id="$PARAM[group_id]50">
