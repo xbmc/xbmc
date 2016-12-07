@@ -46,6 +46,8 @@ namespace GAME
   public:
     CGameLoop(IGameLoopCallback* callback, double fps);
 
+    virtual ~CGameLoop();
+
     void Start();
     void Stop();
 
