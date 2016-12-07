@@ -1011,6 +1011,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   ShowHideNSWindow([last_view window], needtoshowme);
   // need to make sure SDL tracks any window size changes
   ResizeWindowInternal(m_nWidth, m_nHeight, -1, -1, last_view);
+  [[last_view window] setFrameOrigin:last_window_origin];
   HandlePossibleRefreshrateChange();
 
   return true;
