@@ -260,7 +260,7 @@ void CAddonInterfaces::CodecLib_UnRegisterMe(void *addonData, void *cbTable)
 }
 /*\_____________________________________________________________________________
 \*/
-CB_GameLib* CAddonInterfaces::GameLib_RegisterMe(void *addonData)
+void* CAddonInterfaces::GameLib_RegisterMe(void *addonData)
 {
   CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
   if (addon == nullptr)
@@ -273,7 +273,7 @@ CB_GameLib* CAddonInterfaces::GameLib_RegisterMe(void *addonData)
   return static_cast<V1::KodiAPI::Game::CAddonCallbacksGame*>(addon->m_helperGame)->GetCallbacks();
 }
 
-void CAddonInterfaces::GameLib_UnRegisterMe(void *addonData, CB_GameLib *cbTable)
+void CAddonInterfaces::GameLib_UnRegisterMe(void *addonData, void *cbTable)
 {
   CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
   if (addon == nullptr)
@@ -314,7 +314,7 @@ void CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe(void *addonData, void* cbTabl
 }
 /*\_____________________________________________________________________________
 \*/
-CB_PeripheralLib* CAddonInterfaces::PeripheralLib_RegisterMe(void *addonData)
+void* CAddonInterfaces::PeripheralLib_RegisterMe(void *addonData)
 {
   CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
   if (addon == nullptr)
@@ -327,7 +327,7 @@ CB_PeripheralLib* CAddonInterfaces::PeripheralLib_RegisterMe(void *addonData)
   return static_cast<V1::KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(addon->m_helperPeripheral)->GetCallbacks();
 }
 
-void CAddonInterfaces::PeripheralLib_UnRegisterMe(void *addonData, CB_PeripheralLib* cbTable)
+void CAddonInterfaces::PeripheralLib_UnRegisterMe(void *addonData, void* cbTable)
 {
   CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
   if (addon == nullptr)

@@ -41,7 +41,7 @@ DLLEXPORT CB_GameLib* GAME_register_me(AddonCB* frontend)
     fprintf(stderr, "ERROR: GAME_register_frontend is called with NULL handle!!!\n");
   else
   {
-    cb = frontend->GameLib_RegisterMe(frontend->addonData);
+    cb = static_cast<CB_GameLib*>(frontend->GameLib_RegisterMe(frontend->addonData));
     if (!cb)
       fprintf(stderr, "ERROR: GAME_register_frontend can't get callback table from frontend!!!\n");
   }

@@ -41,7 +41,7 @@ DLLEXPORT CB_PeripheralLib* PERIPHERAL_register_me(AddonCB* frontend)
     fprintf(stderr, "ERROR: PERIPHERAL_register_frontend is called with NULL handle!!!\n");
   else
   {
-    cb = frontend->PeripheralLib_RegisterMe(frontend->addonData);
+    cb = static_cast<CB_PeripheralLib*>(frontend->PeripheralLib_RegisterMe(frontend->addonData));
     if (!cb)
       fprintf(stderr, "ERROR: PERIPHERAL_register_frontend can't get callback table from frontend!!!\n");
   }

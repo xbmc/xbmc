@@ -149,7 +149,6 @@ cmake_install.cmake
 /lib/addons/library.kodi.guilib/project/VS2010Express/Debug
 /lib/addons/library.xbmc.addon/Makefile
 /lib/addons/library.kodi.adsp/Makefile
-/lib/addons/library.xbmc.pvr/Makefile
 /lib/addons/library.xbmc.codec/Makefile
 /lib/addons/library.kodi.peripheral/Makefile
 /lib/addons/library.kodi.game/Makefile
@@ -159,8 +158,6 @@ cmake_install.cmake
 /lib/addons/library.kodi.adsp/project/VS2010Express/Debug
 /lib/addons/library.xbmc.codec/project/VS2010Express/Release
 /lib/addons/library.xbmc.codec/project/VS2010Express/Debug
-/lib/addons/library.xbmc.pvr/project/VS2010Express/Release
-/lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
 /lib/addons/library.kodi.audioengine/Makefile
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
 /lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
@@ -551,8 +548,6 @@ lib/cpluff/stamp-h1
 /addons/library.xbmc.codec/libXBMC_codec.lib
 /addons/library.kodi.guilib/libKODI_guilib.dll
 /addons/library.kodi.guilib/libKODI_guilib.lib
-/addons/library.xbmc.pvr/libXBMC_pvr.dll
-/addons/library.xbmc.pvr/libXBMC_pvr.lib
 /addons/library.kodi.audioengine/libKODI_audioengine.dll
 /addons/library.kodi.audioengine/libKODI_audioengine.lib
 
