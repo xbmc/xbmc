@@ -426,13 +426,25 @@ void CVideoPlayerVideo::Process()
 
       bRequestDrop = false;
       iDropDirective = CalcDropRequirement(pts);
-      if (iDropDirective & EOS_VERYLATE)
+      if ((iDropDirective & EOS_VERYLATE) &&
+           m_bAllowDrop &&
+          !bPacketDrop)
       {
-        if (m_bAllowDrop)
-        {
-          bRequestDrop = true;
-        }
+        bRequestDrop = true;
       }
+      if (iDropDirective & EOS_DROPPED)
+      {
+        m_iDroppedFrames++;
+        iDropped++;
+        m_pullupCorrection.Flush();
+      }
+      if (m_messageQueue.GetDataSize() == 0 ||  m_speed < 0)
+      {
+        bRequestDrop = false;
+        m_iDroppedRequest = 0;
+        m_iLateFrames = 0;
+      }
+
       int codecControl = 0;
       if (iDropDirective & EOS_BUFFER_LEVEL)
         codecControl |= DVD_CODEC_CTRL_HURRY;
@@ -440,50 +452,24 @@ void CVideoPlayerVideo::Process()
         codecControl |= DVD_CODEC_CTRL_NO_POSTPROC;
       if (bPacketDrop)
         codecControl |= DVD_CODEC_CTRL_DROP;
+      if (bRequestDrop)
+        codecControl |= DVD_CODEC_CTRL_DROP_ANY;
       if (!m_renderManager.Supports(RENDERFEATURE_ROTATION))
         codecControl |= DVD_CODEC_CTRL_ROTATE;
       m_pVideoCodec->SetCodecControl(codecControl);
-      if (iDropDirective & EOS_DROPPED)
-      {
-        m_iDroppedFrames++;
-        iDropped++;
-        m_pullupCorrection.Flush();
-      }
-
-      if (m_messageQueue.GetDataSize() == 0
-      ||  m_speed < 0)
-      {
-        bRequestDrop = false;
-        m_iDroppedRequest = 0;
-        m_iLateFrames     = 0;
-      }
-
-      // if player want's us to drop this packet, do so nomatter what
-      if(bPacketDrop)
-        bRequestDrop = true;
-
-      // tell codec if next frame should be dropped
-      // problem here, if one packet contains more than one frame
-      // both frames will be dropped in that case instead of just the first
-      // decoder still needs to provide an empty image structure, with correct flags
-      m_pVideoCodec->SetDropState(bRequestDrop);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
       // buffer packets so we can recover should decoder flush for some reason
-      if(m_pVideoCodec->GetConvergeCount() > 0)
+      if (m_pVideoCodec->GetConvergeCount() > 0)
       {
         m_packets.emplace_back(pMsg, 0);
-        if(m_packets.size() > m_pVideoCodec->GetConvergeCount()
-        || m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
+        if (m_packets.size() > m_pVideoCodec->GetConvergeCount() ||
+            m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
           m_packets.pop_front();
       }
 
       m_videoStats.AddSampleBytes(pPacket->iSize);
-
-      // reset the request, the following while loop may break before
-      // setting the flag to a new value
-      bRequestDrop = false;
 
       // loop while no error and decoder produces pics
       while (!m_bStop)
