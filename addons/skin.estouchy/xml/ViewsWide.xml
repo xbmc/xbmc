@@ -22,7 +22,7 @@
 			<visible>String.IsEqual(Skin.AspectRatio,4:3) + Control.IsVisible(550)</visible>
 		</control>
 		<control type="panel" id="550">
-			<visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons)</visible>
+			<visible>Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Games)</visible>
 			<posx>120</posx>
 			<posy>120</posy>
 			<width>$PARAM[panel-width]</width>
@@ -89,7 +89,7 @@
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/,.png]</texture>
 					<animation effect="slide" start="0,0" end="60,0" time="0" condition="Container.Content(TVShows) | container.Content(Seasons)">Conditional</animation>
-					<visible>!String.IsEqual(ListItem.Label,..)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..) + ![Container.Content(Files) | Container.Content(Games)]</visible>
 				</control>
 				<control type="image">
 					<posx>100r</posx>
@@ -195,7 +195,7 @@
 					<aspectratio align="left">keep</aspectratio>
 					<texture fallback="rating/0.png">$INFO[ListItem.UserRating,rating/,.png]</texture>
 					<animation effect="slide" start="0,0" end="60,0" time="0" condition="Container.Content(TVShows) | container.Content(Seasons)">Conditional</animation>
-					<visible>!String.IsEqual(ListItem.Label,..)</visible>
+					<visible>!String.IsEqual(ListItem.Label,..) + ![Container.Content(Files) | Container.Content(Games)]</visible>
 				</control>
 				<control type="image">
 					<posx>100r</posx>
@@ -745,7 +745,7 @@
 					<selectedcolor>selected</selectedcolor>
 					<align>right</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.AddonVersion]$INFO[ListItem.AddonStatus, - ]</label>
+					<label>$INFO[ListItem.AddonVersion]$INFO[ListItem.Property(Addon.Status), - ]</label>
 				</control>
 				<control type="image">
 					<posx>40r</posx>
@@ -811,7 +811,7 @@
 					<selectedcolor>selected</selectedcolor>
 					<align>right</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.AddonVersion]$INFO[ListItem.AddonStatus, - ]</label>
+					<label>$INFO[ListItem.AddonVersion]$INFO[ListItem.Property(Addon.Status), - ]</label>
 				</control>
 				<control type="image">
 					<posx>40r</posx>
