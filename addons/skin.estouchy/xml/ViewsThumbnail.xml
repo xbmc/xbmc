@@ -34,7 +34,7 @@
 					<height>200</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
-					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Games) | Container.Content(Images) | Container.Content(Actors) | Container.Content(Sets)</visible>
 				</control>
 				<control type="image">
 					<posx>67</posx>
@@ -43,7 +43,7 @@
 					<height>86</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content() | Container.Content(Files) | Container.Content(Games) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists)</visible>
 				</control>
 				<control type="image">
 					<posx>10</posx>
@@ -90,7 +90,7 @@
 					<height>200</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
-					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Games) | Container.Content(Images) | Container.Content(Actors) | Container.Content(Sets)</visible>
 				</control>
 				<control type="image">
 					<posx>67</posx>
@@ -99,7 +99,7 @@
 					<height>86</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists) | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content() | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists)</visible>
 				</control>
 				<control type="image">
 					<posx>10</posx>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
+	<onunload>ClearProperty(PopupMenuVisible,Home)</onunload>
 	<controls>
 		<include>CommonBackground</include>
 		<include content="SettingsPanel" condition="String.IsEqual(Skin.AspectRatio,16:9)">
@@ -47,7 +48,17 @@
 					<onclick>ActivateWindow(Favourites)</onclick>
 					<icon>icon_button_favourites.png</icon>
 				</item>
+				<item>
+					<label>5</label>
+					<onclick condition="String.IsEmpty(Window(Home).Property(PopupMenuVisible))">SetProperty(PopupMenuVisible,Show,Home)</onclick>
+					<onclick condition="!String.IsEmpty(Window(Home).Property(PopupMenuVisible))">ClearProperty(PopupMenuVisible,Home)</onclick>
+					<icon>icon_button_settings.png</icon>
+				</item>
 			</content>
 		</control>
+		<include content="PopupMenu">
+			<param name="panel-posy">480</param>
+			<param name="panel-height">80</param>
+		</include>
 	</controls>
 </window>
