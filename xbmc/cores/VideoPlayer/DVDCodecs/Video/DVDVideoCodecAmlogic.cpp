@@ -128,6 +128,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       {
         m_bitstream = new CBitstreamConverter;
         m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true);
+        m_bitstream->ResetKeyframe();
         // make sure we do not leak the existing m_hints.extradata
         free(m_hints.extradata);
         m_hints.extrasize = m_bitstream->GetExtraSize();
@@ -286,7 +287,7 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
       if (!m_bitstream->Convert(pData, iSize))
         return VC_ERROR;
 
-      if (!m_bitstream->IdrFramePassed())
+      if (!m_bitstream->HasKeyframe())
       {
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for IDR frame", __MODULE_NAME__);
         return VC_BUFFER;
@@ -296,7 +297,7 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
     }
     else if (!m_has_idr && m_bitparser)
     {
-      if (!m_bitparser->FindIdrSlice(pData, iSize))
+      if (!m_bitparser->HasKeyframe(pData, iSize))
       {
         CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for IDR frame", __MODULE_NAME__);
         return VC_BUFFER;
@@ -328,6 +329,8 @@ void CDVDVideoCodecAmlogic::Reset(void)
   m_Codec->Reset();
   m_mpeg2_sequence_pts = 0;
   m_has_idr = false;
+  if (m_bitstream && m_hints.codec == AV_CODEC_ID_H264)
+    m_bitstream->ResetKeyframe();
 }
 
 bool CDVDVideoCodecAmlogic::GetPicture(DVDVideoPicture* pDvdVideoPicture)

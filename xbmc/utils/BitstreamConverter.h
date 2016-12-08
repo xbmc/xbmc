@@ -137,7 +137,7 @@ public:
 
   static bool Open();
   static void Close();
-  static bool FindIdrSlice(const uint8_t *buf, int buf_size);
+  static bool HasKeyframe(const uint8_t *buf, int buf_size);
 
 protected:
   static const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
@@ -157,7 +157,8 @@ public:
   int               GetConvertSize() const;
   uint8_t*          GetExtraData(void) const;
   int               GetExtraSize() const;
-  bool              IdrFramePassed() const;
+  void              ResetKeyframe(void);
+  bool              HasKeyframe() const;
 
   static void       bits_reader_set( bits_reader_t *br, uint8_t *buf, int len );
   static uint32_t   read_bits( bits_reader_t *br, int nbits );
@@ -208,5 +209,6 @@ protected:
   bool              m_convert_3byteTo4byteNALSize;
   bool              m_convert_bytestream;
   AVCodecID         m_codec;
+  bool              m_has_keyframe;
 };
 
