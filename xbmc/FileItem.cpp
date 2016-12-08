@@ -902,6 +902,14 @@ bool CFileItem::IsAudio() const
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.GetMusicExtensions());
 }
 
+bool CFileItem::IsDeleted() const
+{
+  if (HasPVRRecordingInfoTag())
+    return GetPVRRecordingInfoTag()->IsDeleted();
+
+  return false;
+}
+
 bool CFileItem::IsGame() const
 {
   if (HasGameInfoTag())

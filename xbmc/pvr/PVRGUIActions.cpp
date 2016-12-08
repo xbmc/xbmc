@@ -724,32 +724,4 @@ namespace PVR
     return true;
   }
 
-  bool CPVRGUIActions::MarkWatched(const CFileItemPtr &item) const
-  {
-    if (!g_PVRRecordings->IncrementRecordingsPlayCount(item))
-      return false;
-
-    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase *>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));
-    if (pvrWindow)
-      pvrWindow->DoRefresh();
-    else
-      CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
-
-    return true;
-  }
-
-  bool CPVRGUIActions::MarkUnwatched(const CFileItemPtr &item) const
-  {
-    if (!g_PVRRecordings->SetRecordingsPlayCount(item, 0))
-      return false;
-
-    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase *>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));
-    if (pvrWindow)
-      pvrWindow->DoRefresh();
-    else
-      CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
-
-    return true;
-  }
-
 } // namespace PVR

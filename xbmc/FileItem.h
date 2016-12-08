@@ -174,6 +174,12 @@ public:
    */
   bool IsAudio() const;
 
+  /*!
+   \brief Check whether an item is 'deleted' (for example, a trashed pvr recording).
+   \return true if item is 'deleted', false otherwise.
+   */
+  bool IsDeleted() const;
+
   bool IsGame() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;

@@ -70,8 +70,6 @@ namespace PVR
     DECL_CONTEXTMENUITEM(PlayChannel);
     DECL_CONTEXTMENUITEM(ResumePlayRecording);
     DECL_CONTEXTMENUITEM(PlayRecording);
-    DECL_STATICCONTEXTMENUITEM(MarkWatched);
-    DECL_STATICCONTEXTMENUITEM(MarkUnwatched);
     DECL_STATICCONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
@@ -253,66 +251,6 @@ namespace PVR
     {
       item->m_lStartOffset = 0; // must always be set if PlayRecording is called with bCheckResume == false
       return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, false /* bCheckResume */);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-    // Mark watched
-
-    bool MarkWatched::IsVisible(const CFileItem &item) const
-    {
-      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (!recording)
-        return false;
-
-      // ".." folders don't have have "mark watched" context menu item
-      if (item.IsParentFolder())
-        return false;
-
-      // recording folders always have "mark watched" context menu item
-      if (item.m_bIsFolder)
-        return true;
-
-      if (!recording->IsDeleted())
-      {
-        if (recording->GetPlayCount() == 0)
-          return true;
-      }
-      return false;
-    }
-
-    bool MarkWatched::Execute(const CFileItemPtr &item) const
-    {
-      return CPVRGUIActions::GetInstance().MarkWatched(item);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-    // Mark unwatched
-
-    bool MarkUnwatched::IsVisible(const CFileItem &item) const
-    {
-      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (!recording)
-        return false;
-
-      // ".." folders don't have have "mark unwatched" context menu item
-      if (item.IsParentFolder())
-        return false;
-
-      // recording folders always have "mark unwatched" context menu item
-      if (item.m_bIsFolder)
-        return true;
-
-      if (!recording->IsDeleted())
-      {
-        if (recording->GetPlayCount() > 0)
-          return true;
-      }
-      return false;
-    }
-
-    bool MarkUnwatched::Execute(const CFileItemPtr &item) const
-    {
-      return CPVRGUIActions::GetInstance().MarkUnwatched(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -673,8 +611,6 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::PlayChannel>(),
       std::make_shared<CONTEXTMENUITEM::ResumePlayRecording>(),
       std::make_shared<CONTEXTMENUITEM::PlayRecording>(),
-      std::make_shared<CONTEXTMENUITEM::MarkWatched>(16103), /* Mark as watched */
-      std::make_shared<CONTEXTMENUITEM::MarkUnwatched>(16104), /* Mark as unwatched */
       std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
       std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
       std::make_shared<CONTEXTMENUITEM::EditTimerRule>(19243), /* Edit timer rule */

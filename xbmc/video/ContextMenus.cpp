@@ -21,6 +21,7 @@
 #include "ContextMenus.h"
 #include "Application.h"
 #include "Autorun.h"
+#include "Util.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
@@ -50,14 +51,18 @@ bool CVideoInfo::Execute(const CFileItemPtr& item) const
 
 bool CMarkWatched::IsVisible(const CFileItem& item) const
 {
-  if (!item.HasVideoInfoTag())
+  if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  if (item.IsPVRRecording())
-    return false; // pvr recordings have its own implementation for this
-
-  if (item.m_bIsFolder) //Only allow db content to be updated recursively
-    return item.IsVideoDb();
+  if (item.m_bIsFolder) //Only allow db content and recording folders to be updated recursively
+  {
+    if (item.HasVideoInfoTag())
+      return item.IsVideoDb();
+    else
+      return CUtil::IsTVRecording(item.GetPath());
+  }
+  else if (!item.HasVideoInfoTag())
+    return false;
 
   return item.GetVideoInfoTag()->GetPlayCount() == 0;
 }
@@ -70,14 +75,18 @@ bool CMarkWatched::Execute(const CFileItemPtr& item) const
 
 bool CMarkUnWatched::IsVisible(const CFileItem& item) const
 {
-  if (!item.HasVideoInfoTag())
+  if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  if (item.IsPVRRecording())
-    return false; // pvr recordings have its own implementation for this
-
-  if (item.m_bIsFolder) //Only allow db content to be updated recursively
-    return item.IsVideoDb();
+  if (item.m_bIsFolder) //Only allow db content and recording folders to be updated recursively
+  {
+    if (item.HasVideoInfoTag())
+      return item.IsVideoDb();
+    else
+      return CUtil::IsTVRecording(item.GetPath());
+  }
+  else if (!item.HasVideoInfoTag())
+    return false;
 
   return item.GetVideoInfoTag()->GetPlayCount() > 0;
 }

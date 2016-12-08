@@ -103,6 +103,7 @@ namespace PVR
     bool RenameRecording(CFileItem &item, std::string &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
     bool IncrementRecordingsPlayCount(const CFileItemPtr &item);
+    bool MarkWatched(const CFileItemPtr &item, bool bWatched);
 
     bool GetDirectory(const std::string& strPath, CFileItemList &items);
     CFileItemPtr GetByPath(const std::string &path);
