@@ -55,7 +55,7 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo) : CDVDVi
   m_bitstream(NULL),
   m_opened(false),
   m_drop(false),
-  m_has_idr(false)
+  m_has_keyframe(false)
 {
   pthread_mutex_init(&m_queue_mutex, NULL);
 }
@@ -245,7 +245,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   m_processInfo.SetVideoDeintMethod("hardware");
   m_processInfo.SetVideoDAR(m_hints.aspect);
 
-  m_has_idr = false;
+  m_has_keyframe = false;
 
   CLog::Log(LOGINFO, "%s: Opened Amlogic Codec", __MODULE_NAME__);
   return true;
@@ -289,21 +289,21 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
 
       if (!m_bitstream->HasKeyframe())
       {
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for IDR frame", __MODULE_NAME__);
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for keyframe (bitstream)", __MODULE_NAME__);
         return VC_BUFFER;
       }
       pData = m_bitstream->GetConvertBuffer();
       iSize = m_bitstream->GetConvertSize();
     }
-    else if (!m_has_idr && m_bitparser)
+    else if (!m_has_keyframe && m_bitparser)
     {
       if (!m_bitparser->HasKeyframe(pData, iSize))
       {
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for IDR frame", __MODULE_NAME__);
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::Decode waiting for keyframe (bitparser)", __MODULE_NAME__);
         return VC_BUFFER;
       }
       else
-        m_has_idr = true;
+        m_has_keyframe = true;
     }
     FrameRateTracking( pData, iSize, dts, pts);
   }
@@ -328,7 +328,7 @@ void CDVDVideoCodecAmlogic::Reset(void)
 
   m_Codec->Reset();
   m_mpeg2_sequence_pts = 0;
-  m_has_idr = false;
+  m_has_keyframe = false;
   if (m_bitstream && m_hints.codec == AV_CODEC_ID_H264)
     m_bitstream->ResetKeyframe();
 }

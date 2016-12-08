@@ -336,7 +336,7 @@ bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size)
         rtn = true;
         break;
       case AVC_NAL_SEI:
-        buf_begin = buf;
+        buf_begin = buf - 1;
         buf = find_start_code(buf, buf_end, &state) - 4;
         if (has_sei_recovery_point(buf_begin, buf))
           rtn = true;
