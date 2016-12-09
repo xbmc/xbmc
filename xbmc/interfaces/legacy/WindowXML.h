@@ -381,7 +381,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool      OnDoubleClick(int iItem);
       SWIGHIDDENVIRTUAL void      Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { XBMC_TRACE; return true; };
+      SWIGHIDDENVIRTUAL bool IsMediaWindow();
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.

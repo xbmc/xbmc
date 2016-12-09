@@ -278,6 +278,14 @@ namespace XBMCAddon
       return A(m_viewControl.GetCurrentControl());
     }
 
+    bool WindowXML::IsMediaWindow()
+    {
+      XBMC_TRACE;
+      if (A(m_viewControl.GetViewModeCount()) == 0)
+        return false;
+      return true;
+    }
+
     bool WindowXML::OnAction(const CAction &action)
     {
       XBMC_TRACE;
