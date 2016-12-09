@@ -42,6 +42,8 @@ using namespace MMAL;
 
 #define CLASSNAME "CMMALYUVBuffer"
 
+#define VERBOSE 0
+
 CMMALYUVBuffer::CMMALYUVBuffer(CDecoder *omv, std::shared_ptr<CMMALPool> pool, uint32_t mmal_encoding, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size)
 : CMMALBuffer(pool), m_omv(omv)
 {
@@ -72,13 +74,13 @@ CMMALYUVBuffer::CMMALYUVBuffer(CDecoder *omv, std::shared_ptr<CMMALPool> pool, u
   gmem = m_pool->AllocateBuffer(size_pic);
   if (gmem)
     gmem->m_opaque = (void *)this;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p mmal:%p %dx%d (%dx%d) size:%d %.4s", CLASSNAME, __FUNCTION__, this, gmem, mmal_buffer, m_width, m_height, m_aligned_width, m_aligned_height, gmem->m_numbytes, (char *)&m_encoding);
 }
 
 CMMALYUVBuffer::~CMMALYUVBuffer()
 {
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s buf:%p gmem:%p mmal:%p %dx%d (%dx%d) size:%d %.4s", CLASSNAME, __FUNCTION__, this, gmem, mmal_buffer, m_width, m_height, m_aligned_width, m_aligned_height, gmem->m_numbytes, (char *)&m_encoding);
   if (gmem)
     m_pool->ReleaseBuffer(gmem);
