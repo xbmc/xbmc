@@ -23,6 +23,7 @@
 #include "input/joysticks/IButtonMapper.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/Peripherals.h"
+#include "utils/log.h"
 
 using namespace JOYSTICK;
 using namespace PERIPHERALS;

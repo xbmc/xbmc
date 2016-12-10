@@ -76,7 +76,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       if (dec->HasTracks() && dec->GetExtensions().find(strExtension) != std::string::npos)
       {
         CAudioDecoder* result = new CAudioDecoder(*dec);
-        static_cast<AudioDecoderDll&>(*result).Create();
+        result->Create();
         if (result->ContainsFiles(url))
           return result;
         delete result;

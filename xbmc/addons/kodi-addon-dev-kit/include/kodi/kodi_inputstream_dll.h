@@ -224,8 +224,10 @@ extern "C"
   * Called by XBMC to assign the function pointers of this add-on to pClient.
   * @param pClient The struct to assign the function pointers to.
   */
-  void __declspec(dllexport) get_addon(struct InputStreamAddonFunctions* pClient)
+  void __declspec(dllexport) get_addon(void* ptr)
   {
+    InputStreamAddonFunctions* pClient = static_cast<InputStreamAddonFunctions*>(ptr);
+
     pClient->Open = Open;
     pClient->Close = Close;
     pClient->GetPathList = GetPathList;

@@ -38,6 +38,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #include <algorithm>
 

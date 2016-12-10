@@ -1,5 +1,6 @@
 SRCS=Addon.cpp \
      AddonBuilder.cpp \
+     AddonDll.cpp \
      BinaryAddonCache.cpp \
      AddonDatabase.cpp \
      AddonInstaller.cpp \

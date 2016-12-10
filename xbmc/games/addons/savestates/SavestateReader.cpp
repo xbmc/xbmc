@@ -21,6 +21,7 @@
 #include "SavestateReader.h"
 #include "filesystem/File.h"
 #include "games/addons/GameClient.h"
+#include "utils/log.h"
 #include "IMemoryStream.h"
 
 using namespace GAME;

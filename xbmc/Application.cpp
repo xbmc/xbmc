@@ -93,6 +93,7 @@
 #include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
+#include "utils/log.h"
 #include "utils/SeekHandler.h"
 
 #include "input/KeyboardLayoutManager.h"

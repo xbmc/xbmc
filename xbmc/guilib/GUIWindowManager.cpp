@@ -34,6 +34,7 @@
 #include "GUITexture.h"
 #include "utils/Variant.h"
 #include "input/Key.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SeekHandler.h"
 
