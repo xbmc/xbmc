@@ -2,7 +2,7 @@ include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile
 
 LIBNAME=taglib
-VERSION=1.11
+VERSION=1.11.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
