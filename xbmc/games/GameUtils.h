@@ -57,8 +57,6 @@ namespace GAME
      */
     static bool HasGameExtension(const std::string& path);
 
-    static std::set<std::string> GetGameExtensions();
-
     /*!
      * \brief Check if game script or game add-on can be launched directly
      *

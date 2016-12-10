@@ -32,6 +32,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "games/addons/GameClient.h"
 #include "LangInfo.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfilesManager.h"
@@ -390,6 +391,7 @@ void CAdvancedSettings::Initialize()
   m_musicExtensions += "|.cdda";
   // internal video extensions
   m_videoExtensions += "|.pvr";
+  m_gameExtensions = ".32x|.a26|.a78|.agb|.bat|.bin|.bml|.bs|.bsx|.cbn|.ccd|.cdi|.cdt|.chd|.col|.com|.conf|.cue|.dim|.dmg|.dsk|.dx2|.exe|.fds|.fig|.game|.gb|.gba|.gbc|.gd3|.gd7|.gdi|.gen|.gg|.img|.ipf|.iso|.iwad|.j64|.jag|.lnx|.lua|.lutro|.m3u|.md|.mdf|.mdx|.mgw|.min|.msa|.mx1|.mx2|.n64|.ndd|.nds|.nes|.ngc|.ngp|.pak|.pbp|.pce|.ri|.rom|.rzx|.sc|.scl|.scum|.scummvm|.sfc|.sg|.sgb|.sgx|.smc|.smd|.sms|.sna|.st|.stx|.swc|.tap|.toc|.trd|.tzx|.u1|.unf|.unif|.v64|.vb|.vboy|.vec|.voc|.wad|.ws|.wsc|.z64|.z80|.zip";
 
   m_stereoscopicregex_3d = "[-. _]3d[-. _]";
   m_stereoscopicregex_sbs = "[-. _]h?sbs[-. _]";
@@ -932,6 +934,11 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pExts)
     GetCustomExtensions(pExts, m_discStubExtensions);
 
+  // game extensions
+  pExts = pRootElement->FirstChildElement("gameextensions");
+  if (pExts)
+    GetCustomExtensions(pExts, m_gameExtensions);
+
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
 
@@ -1434,6 +1441,33 @@ std::string CAdvancedSettings::GetMusicExtensions() const
     result += '|';
     result += dec->GetExtensions();
   }
+
+  return result;
+}
+
+std::string CAdvancedSettings::GetGameExtensions() const
+{
+  std::string result(m_gameExtensions);
+  if (!result.empty())
+    result.append("|");
+
+  VECADDONS addons;
+  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(addons, ADDON_GAMEDLL);
+  for (const auto &addon : addons)
+  {
+    GAME::GameClientPtr gameClient = std::static_pointer_cast<GAME::CGameClient>(addon);
+    for (auto extension : gameClient->GetExtensions())
+    {
+      StringUtils::ToLower(extension);
+      extension.append("|");
+      if (result.find(extension) == std::string::npos)
+        result.append(extension);
+    }
+  }
+
+  if (!result.empty() && result[result.size() - 1] == '|')
+    result.erase(result.end() - 1);
 
   return result;
 }

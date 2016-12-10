@@ -359,6 +359,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     //! \brief Returns a list of music extension for filtering in the GUI
     std::string GetMusicExtensions() const;
 
+    //! \brief Returns a list of game extensions for filtering in the GUI
+    std::string GetGameExtensions() const;
+
     void SetDebugMode(bool debug);
 
     //! \brief Toggles dirty-region visualization
@@ -369,6 +372,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_videoExtensions;
     std::string m_discStubExtensions;
     std::string m_subtitlesExtensions;
+    std::string m_gameExtensions;
 
     std::string m_stereoscopicregex_3d;
     std::string m_stereoscopicregex_sbs;
