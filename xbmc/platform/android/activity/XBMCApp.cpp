@@ -77,9 +77,6 @@
 #include "platform/android/jni/MediaStore.h"
 #include "platform/android/jni/Build.h"
 #include "filesystem/SpecialProtocol.h"
-#if defined(HAS_LIBAMCODEC)
-#include "utils/AMLUtils.h"
-#endif
 #include "platform/android/jni/Window.h"
 #include "platform/android/jni/WindowManager.h"
 #include "platform/android/jni/KeyEvent.h"
@@ -143,16 +140,6 @@ void CXBMCApp::onStart()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-#if defined(HAS_LIBAMCODEC)
-  if (aml_permissions())
-  {
-    // non-aml boxes will ignore this intent broadcast.
-    // setup aml scalers to play video as is, unscaled.
-    CJNIIntent intent_aml_video_on = CJNIIntent("android.intent.action.REALVIDEO_ON");
-    sendBroadcast(intent_aml_video_on);
-  }
-#endif
-
   if (!m_firstrun)
   {
     android_printf("%s: Already running, ignoring request to start", __PRETTY_FUNCTION__);
@@ -204,15 +191,6 @@ void CXBMCApp::onPause()
     else
       registerMediaButtonEventReceiver();
   }
-
-#if defined(HAS_LIBAMCODEC)
-  if (aml_permissions())
-  {
-    // non-aml boxes will ignore this intent broadcast.
-    CJNIIntent intent_aml_video_off = CJNIIntent("android.intent.action.REALVIDEO_OFF");
-    sendBroadcast(intent_aml_video_off);
-  }
-#endif
 
   EnableWakeLock(false);
 }

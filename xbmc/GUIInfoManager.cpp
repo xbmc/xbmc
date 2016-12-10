@@ -7955,18 +7955,23 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
     CFileItemPtr item;
-    CGUIWindow *window = NULL;
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
 
     int data1 = info.GetData1();
     if (!data1) // No container specified, so we lookup the current view container
     {
-      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
-      if (window && window->IsMediaWindow())
-        data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
+      if (window)
+      {
+        if (window->IsMediaWindow())
+          data1 = static_cast<CGUIMediaWindow*>(window)->GetViewContainerID();
+        else
+        {
+          auto control = window->GetFocusedControl();
+          if (control && control->IsContainer())
+            data1 = control->GetID();
+        }
+      }
     }
-
-    if (!window) // If we don't have a window already (from lookup above), get one
-      window = GetWindowWithCondition(contextWindow, 0);
 
     if (window)
     {
@@ -8422,7 +8427,9 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
     }
   case PLAYLIST_POSITION:
     {
-      return StringUtils::Format("%i", g_playlistPlayer.GetCurrentSong() + 1);
+      int currentSong = g_playlistPlayer.GetCurrentSong();
+      if (currentSong > -1)
+        return StringUtils::Format("%i", currentSong + 1);
     }
   case PLAYLIST_RANDOM:
     {

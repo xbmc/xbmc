@@ -176,7 +176,7 @@ function(add_addon_depends addon searchpath)
                                   PATCH_COMMAND ${PATCH_COMMAND}
                                   "${INSTALL_COMMAND}")
 
-        if(CMAKE_VERSION VERSION_GREATER 3.5)
+        if(CMAKE_VERSION VERSION_GREATER 3.5.9)
           list(APPEND EXTERNALPROJECT_SETUP GIT_SHALLOW 1)
         endif()
 

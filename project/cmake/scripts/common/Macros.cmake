@@ -155,9 +155,12 @@ function(core_add_shared_library name)
     add_library(${name} SHARED ${SOURCES} ${HEADERS} ${OTHERS})
     set_target_properties(${name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
                                              RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
-                                             RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
-                                             RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
                                              OUTPUT_NAME ${OUTPUT_NAME} PREFIX "")
+    foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+      string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+      set_target_properties(${name} PROPERTIES  LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}
+                                                RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY})
+    endforeach()
 
     set(LIBRARY_FILES ${LIBRARY_FILES} ${CMAKE_BINARY_DIR}/${OUTPUT_DIRECTORY}/${OUTPUT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} CACHE STRING "" FORCE)
     add_dependencies(${APP_NAME_LC}-libraries ${name})
@@ -595,9 +598,9 @@ macro(core_find_versions)
   set(APP_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR})
   if(APP_VERSION_TAG)
     set(APP_VERSION ${APP_VERSION}-${APP_VERSION_TAG})
+    string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   endif()
   string(REPLACE "." "," FILE_VERSION ${APP_ADDON_API}.0)
-  string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version REGEX "^.*GUILIB_API_VERSION (.*)$")
   string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version ${guilib_version})
   file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version_min REGEX "^.*GUILIB_MIN_API_VERSION (.*)$")

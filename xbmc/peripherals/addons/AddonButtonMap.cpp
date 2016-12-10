@@ -81,7 +81,7 @@ bool CAddonButtonMap::Load(void)
     CSingleLock lock(m_mutex);
     m_features = std::move(features);
     m_driverMap = std::move(driverMap);
-    m_ignoredPrimitives = std::move(CPeripheralAddonTranslator::TranslatePrimitives(ignoredPrimitives));
+    m_ignoredPrimitives = CPeripheralAddonTranslator::TranslatePrimitives(ignoredPrimitives);
   }
 
   return true;

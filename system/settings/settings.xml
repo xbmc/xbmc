@@ -2016,7 +2016,7 @@
         <setting id="gameskeyboard.enablekeyboard" type="boolean" label="35152" help="35153">
           <level>0</level>
           <control type="toggle" />
-          <default>false</default>
+          <default>true</default>
         </setting>
       </group>
       <group id="2" label="35151">

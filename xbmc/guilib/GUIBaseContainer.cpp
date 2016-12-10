@@ -435,7 +435,10 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1()) // subfocus item is specified, so set the offset appropriately
       {
-        int item = std::min(GetOffset() + (int)message.GetParam1() - 1, (int)m_items.size() - 1);
+        int offset = GetOffset();
+        if (message.GetParam2() && message.GetParam2() == 1)
+          offset = 0;
+        int item = std::min(offset + (int)message.GetParam1() - 1, (int)m_items.size() - 1);
         SelectItem(item);
       }
     }

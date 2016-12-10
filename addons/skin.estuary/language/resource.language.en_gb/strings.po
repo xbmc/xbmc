@@ -389,21 +389,25 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_52_IconWall.xml
 msgctxt "#31099"
-msgid "Icon Wall"
+msgid "IconWall"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_53_Shift.xml
 msgctxt "#31100"
 msgid "Shift"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_54_InfoWall.xml
 msgctxt "#31101"
 msgid "InfoWall"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_500_Wall.xml
 msgctxt "#31102"
 msgid "Wall"
@@ -429,6 +433,7 @@ msgctxt "#31106"
 msgid "Teletext"
 msgstr ""
 
+#. viewtype name
 #: /1080i/View_55_WideList.xml
 msgctxt "#31107"
 msgid "WideList"
@@ -672,11 +677,4 @@ msgstr ""
 #: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr ""
-
-#empty strings from id 31148 to 31198
-
-#: /1080i/Home.xml
-msgctxt "#31199"
-msgid "Play your personal games or download one of the many game add-ons from the official repository."
 msgstr ""

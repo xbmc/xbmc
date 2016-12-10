@@ -25,8 +25,8 @@
 						<control type="image">
 							<width>396</width>
 							<height>245</height>
-							<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -79,8 +79,8 @@
 						<control type="image">
 							<width>396</width>
 							<height>245</height>
-							<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -133,8 +133,8 @@
 						<control type="image">
 							<width>330</width>
 							<height>140</height>
-							<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="textbox">
@@ -161,8 +161,8 @@
 						<control type="image">
 							<width>330</width>
 							<height>140</height>
-							<texture border="21">dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="20">overlays/shadow.png</bordertexture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">

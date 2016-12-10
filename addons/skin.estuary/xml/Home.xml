@@ -285,6 +285,7 @@
 							<param name="sortorder" value="descending"/>
 							<param name="list_id" value="8700"/>
 							<param name="fallback_icon" value="DefaultAddon.png"/>
+							<param name="visible" value="System.GetBool(gamesgeneral.enable)"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="addons://sources/executable/"/>
@@ -376,7 +377,7 @@
 							<visible>PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer</visible>
 							<align>center</align>
 							<control type="group">
-								<width>680</width>
+								<width>674</width>
 								<visible>PVR.IsRecordingTV</visible>
 								<include content="PVRWidget">
 									<param name="icon" value="$INFO[PVR.TVNowRecordingChannelIcon]" />
@@ -386,7 +387,7 @@
 								</include>
 							</control>
 							<control type="group">
-								<width>680</width>
+								<width>674</width>
 								<visible>PVR.HasNonRecordingTVTimer</visible>
 								<include content="PVRWidget">
 									<param name="icon" value="$INFO[PVR.TVNextRecordingChannelIcon]" />
@@ -570,7 +571,7 @@
 							<control type="image">
 								<bottom>90</bottom>
 								<width>100%</width>
-								<texture border="22">dialogs/dialog-bg.png</texture>
+								<texture border="21">dialogs/dialog-bg.png</texture>
 							</control>
 							<control type="label">
 								<left>300</left>
@@ -639,13 +640,12 @@
 							<param name="visible" value="!String.IsEmpty(Window(weather).Property(Daily.IsFetched))" />
 						</include>
 					</control>
-					<include content="ImageWidget">
+					<include content="ImageWidget" condition="String.IsEmpty(Weather.plugin)">
 						<param name="image_path" value="special://skin/extras/home-images/weather.jpg"/>
 						<param name="text_label" value="$LOCALIZE[31120]" />
 						<param name="button_label" value="$LOCALIZE[31121]" />
 						<param name="button_onclick" value="ActivateWindow(servicesettings,weather)"/>
 						<param name="button_id" value="15300"/>
-						<param name="visible" value="String.IsEmpty(Weather.plugin)"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoWeatherButton)"/>
 					</include>
 				</control>
@@ -669,6 +669,7 @@
 							<param name="widget_target" value="videos"/>
 							<param name="main_label" value="$INFO[ListItem.Label]" />
 							<param name="sub_label" value="$INFO[ListItem.Artist]" />
+							<param name="thumb_label" value="$INFO[ListItem.Year]" />
 							<param name="fallback_image" value="DefaultMusicSongs.png" />
 							<param name="list_id" value="16300"/>
 						</include>
@@ -678,6 +679,7 @@
 							<param name="widget_target" value="videos"/>
 							<param name="main_label" value="$INFO[ListItem.Label]" />
 							<param name="sub_label" value="$INFO[ListItem.Artist]" />
+							<param name="thumb_label" value="$INFO[ListItem.Year]" />
 							<param name="fallback_image" value="DefaultMusicSongs.png" />
 							<param name="list_id" value="16400"/>
 						</include>
@@ -694,6 +696,7 @@
 							<param name="widget_target" value="videos"/>
 							<param name="main_label" value="$INFO[ListItem.Label]" />
 							<param name="sub_label" value="$INFO[ListItem.Artist]" />
+							<param name="thumb_label" value="$INFO[ListItem.Year]" />
 							<param name="fallback_image" value="DefaultMusicSongs.png" />
 							<param name="list_id" value="16500"/>
 						</include>

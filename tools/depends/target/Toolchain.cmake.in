@@ -23,6 +23,19 @@ elseif(OS STREQUAL ios)
   set(CORE_SYSTEM_NAME ios)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL ios)
+  # Necessary to build the main Application (but not other dependencies)
+  # with Xcode (and a bundle with Makefiles) (https://cmake.org/Bug/view.php?id=15329)
+  if(NOT PROJECT_SOURCE_DIR MATCHES "tools/depends")
+    message(STATUS "Toolchain enabled IOS bundle for project ${PROJECT_NAME}")
+    set(CMAKE_MACOSX_BUNDLE YES)
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
+
+    # set this to YES once we have a deployment target of at least iOS 6.0
+    set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
+  endif()
+endif()
+
 if(CORE_SYSTEM_NAME STREQUAL ios OR CORE_SYSTEM_NAME STREQUAL osx)
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
 endif()

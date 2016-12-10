@@ -56,7 +56,7 @@
 								<height>394</height>
 								<aspectratio>scale</aspectratio>
 								<texture fallback="DefaultVideo.png">$VAR[ListPosterVar]</texture>
-								<bordertexture border="20">overlays/shadow.png</bordertexture>
+								<bordertexture border="21">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="textbox">
@@ -103,7 +103,7 @@
 								<height>394</height>
 								<aspectratio>scale</aspectratio>
 								<texture fallback="DefaultVideo.png">$VAR[ListPosterVar]</texture>
-								<bordertexture border="20">overlays/shadow.png</bordertexture>
+								<bordertexture border="21">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 								<visible>Container.OnScrollPrevious</visible>
 								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
@@ -116,7 +116,7 @@
 								<height>394</height>
 								<aspectratio>scale</aspectratio>
 								<texture fallback="DefaultVideo.png">$VAR[ListPosterVar]</texture>
-								<bordertexture border="20">overlays/shadow.png</bordertexture>
+								<bordertexture border="21">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 								<visible>Container.OnScrollNext</visible>
 								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
@@ -208,7 +208,7 @@
 				<width>516</width>
 				<height>756</height>
 				<texture>colors/black.png</texture>
-				<bordertexture border="20">overlays/shadow.png</bordertexture>
+				<bordertexture border="21">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image">

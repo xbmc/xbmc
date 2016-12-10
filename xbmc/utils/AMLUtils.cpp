@@ -148,7 +148,6 @@ bool aml_permissions()
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/class/tsync/enable");
     }
-#ifndef TARGET_ANDROID
     if (!SysfsUtils::HasRW("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq"))
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
@@ -161,7 +160,6 @@ bool aml_permissions()
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     }
-#endif
   }
 
   return permissions_ok == 1;

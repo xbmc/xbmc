@@ -64,13 +64,6 @@
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Date]</label>
 							</control>
-							<control type="image">
-								<left>980</left>
-								<top>50</top>
-								<width>50</width>
-								<height>50</height>
-								<texture>$VAR[PVRStatusImageVar]</texture>
-							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout height="100" width="tvchannelslist_width">
@@ -119,13 +112,6 @@
 								<font>font12</font>
 								<aligny>center</aligny>
 								<label>$INFO[ListItem.Date]</label>
-							</control>
-							<control type="image">
-								<left>980</left>
-								<top>50</top>
-								<width>50</width>
-								<height>50</height>
-								<texture>$VAR[PVRStatusImageVar]</texture>
 							</control>
 						</control>
 					</focusedlayout>

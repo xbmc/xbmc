@@ -20,7 +20,7 @@
 					<height>607</height>
 					<aspectratio>scale</aspectratio>
 					<texture>dialogs/dialog-bg-nobo.png</texture>
-					<bordertexture border="20">overlays/shadow.png</bordertexture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -162,7 +162,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="40">buttons/button-nofo.png</texture>
+							<texture border="21">buttons/button-nofo.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -179,7 +179,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="40" colordiffuse="button_focus">buttons/button-fo.png</texture>
+							<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -196,7 +196,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="40">buttons/button-nofo.png</texture>
+							<texture border="21">buttons/button-nofo.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -219,7 +219,7 @@
 								<top>-10</top>
 								<width>595</width>
 								<height>100</height>
-								<texture border="40" colordiffuse="button_focus">buttons/button-fo.png</texture>
+								<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
 							</control>
 							<control type="label">
 								<left>40</left>
@@ -242,7 +242,7 @@
 							<top>-10</top>
 							<width>250</width>
 							<height>312</height>
-							<texture border="40">buttons/button-nofo.png</texture>
+							<texture border="21">buttons/button-nofo.png</texture>
 						</control>
 						<control type="image">
 							<left>30</left>
@@ -278,7 +278,7 @@
 								<top>-10</top>
 								<width>250</width>
 								<height>312</height>
-								<texture border="40">buttons/button-nofo.png</texture>
+								<texture border="21">buttons/button-nofo.png</texture>
 							</control>
 							<control type="image">
 								<left>30</left>
@@ -329,6 +329,20 @@
 					<align>center</align>
 					<itemgap>0</itemgap>
 					<orientation>horizontal</orientation>
+					<control type="radiobutton" id="155">
+						<include content="VideoInfoButtonsCommon">
+							<param name="icon" value="icons/infodialogs/play.png" />
+						</include>
+						<label>$LOCALIZE[208]</label>
+						<onup>130</onup>
+						<onleft>12</onleft>
+						<onright>120</onright>
+						<onclick condition="System.HasAddon(script.playalbum) + String.IsEqual(ListItem.DBType,album)">RunScript(script.playalbum,albumid=$INFO[ListItem.DBID])</onclick>
+						<onclick condition="System.HasAddon(script.playalbum) + String.IsEqual(ListItem.DBType,song)">RunScript(script.playalbum,songid=$INFO[ListItem.DBID])</onclick>
+						<onclick condition="System.HasAddon(script.playalbum)">Action(close)</onclick>
+						<onclick condition="!System.HasAddon(script.playalbum)">InstallAddon(script.playalbum)</onclick>
+						<visible>[String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)] + !String.IsEmpty(ListItem.Dbid)</visible>
+					</control>
 					<control type="group" id="420">
 						<width>262</width>
 						<visible>String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)</visible>

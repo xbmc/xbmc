@@ -171,22 +171,13 @@
 				<control type="group">
 					<bottom>0</bottom>
 					<height>300</height>
-					<control type="image" id="82">
-						<width>450</width>
-						<height>240</height>
-						<aspectratio align="center" aligny="top">keep</aspectratio>
-						<fadetime>400</fadetime>
-						<texture>$INFO[ListItem.PlotOutline]</texture>
-						<visible>String.StartsWith(ListItem.PlotOutline,http://) | String.StartsWith(ListItem.PlotOutline,https://)</visible>
-					</control>
 					<control type="image">
 						<left>10</left>
 						<width>240</width>
 						<height>200</height>
 						<aspectratio align="right">keep</aspectratio>
 						<fadetime>400</fadetime>
-						<texture>$INFO[Container(10).ListItem.Icon]</texture>
-						<visible>!Control.IsVisible(82)</visible>
+						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="label">
 						<top>-9</top>
@@ -194,13 +185,13 @@
 						<right>60</right>
 						<height>30</height>
 						<textcolor>button_focus</textcolor>
-						<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]$INFO[ListItem.EpgEventTitle,  [COLOR grey],[/COLOR]]$INFO[ListItem.EpisodeName, [COLOR grey](,)[/COLOR]]$INFO[ListItem.Genre,      $LOCALIZE[515]: [COLOR grey],[/COLOR]]</label>
+						<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]$INFO[ListItem.EpgEventTitle,  [COLOR white],[/COLOR]]$INFO[ListItem.EpisodeName, [COLOR grey](,)[/COLOR]]$INFO[ListItem.Genre,      $LOCALIZE[515]: [COLOR grey],[/COLOR]]</label>
 					</control>
 					<control type="textbox">
 						<left>300</left>
 						<top>38</top>
 						<right>60</right>
-						<height>179</height>
+						<height>173</height>
 						<label>$INFO[ListItem.Plot]</label>
 						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					</control>

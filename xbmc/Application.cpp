@@ -144,7 +144,6 @@
 
 // Dialog includes
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "video/dialogs/GUIDialogSubtitles.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSubMenu.h"
@@ -153,6 +152,7 @@
 #include "addons/GUIDialogAddonSettings.h"
 
 // PVR related include Files
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
 #include "epg/EpgContainer.h"
@@ -3034,7 +3034,7 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   }
   else if (item.IsPVR())
   {
-    return g_PVRManager.PlayMedia(item);
+    return CPVRGUIActions::GetInstance().PlayMedia(CFileItemPtr(new CFileItem(item)));
   }
 
   CURL path(item.GetPath());
@@ -3841,12 +3841,6 @@ void CApplication::StopPlaying()
   if ( m_pPlayer->IsPlaying() )
   {
     m_pPlayer->CloseFile();
-
-    // When playback stops we must clear the saved subtitle search from the SubtitleDialog since the dialog is preserved in memory
-    // Otherwise the next time the dialogs open any previous search from a previous movie will be shown
-    CGUIDialogSubtitles *dialog = (CGUIDialogSubtitles*)g_windowManager.GetWindow(WINDOW_DIALOG_SUBTITLES);
-    CGUIMessage msg(GUI_MSG_WINDOW_RESET, dialog->GetID(), 0);
-    dialog->OnMessage(msg);
 
     // turn off visualisation window when stopping
     if ((iWin == WINDOW_VISUALISATION

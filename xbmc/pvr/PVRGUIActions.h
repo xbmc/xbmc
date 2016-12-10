@@ -217,6 +217,13 @@ namespace PVR
     bool SwitchToChannel(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const;
 
     /*!
+     * @brief Playback the given file item.
+     * @param item containing a channel or a recording.
+     * @return True if the item could be played, false otherwise.
+     */
+    bool PlayMedia(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Hide a channel, always showing a confirmation dialog.
      * @param item containing a channel or an epg tag.
      * @return true on success, false otherwise.

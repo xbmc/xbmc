@@ -61,7 +61,10 @@ using namespace VAAPI;
 
 CVAAPIContext *CVAAPIContext::m_context = 0;
 CCriticalSection CVAAPIContext::m_section;
+
+#ifdef HAVE_X11
 Display *CVAAPIContext::m_X11dpy = 0;
+#endif
 
 CVAAPIContext::CVAAPIContext()
 {

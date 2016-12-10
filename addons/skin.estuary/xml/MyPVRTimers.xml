@@ -26,7 +26,7 @@
 						<control type="label">
 							<left>30</left>
 							<top>0</top>
-							<width>500</width>
+							<right>30</right>
 							<height>100</height>
 							<font>font36_title</font>
 							<aligny>center</aligny>
@@ -86,7 +86,7 @@
 						<control type="label">
 							<left>30</left>
 							<top>0</top>
-							<width>250</width>
+							<right>30</right>
 							<height>100</height>
 							<font>font36_title</font>
 							<aligny>center</aligny>

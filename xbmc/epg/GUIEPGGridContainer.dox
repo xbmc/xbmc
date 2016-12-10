@@ -24,6 +24,7 @@ the position, size, and look of the grid and it's contents.
     <timeblocks>40</timeblocks>
     <rulerunit>6</rulerunit>
     <progresstexture border="5">PVR-EpgProgressIndicator.png</progresstexture>
+    <orienttation>vertical</orientation>
     <onleft>31</onleft>
     <onright>31</onright>
     <onup>10</onup>
@@ -222,12 +223,13 @@ important, as `xml` tags are case-sensitive.
 
 | Tag                   | Description                                                   |
 |----------------------:|:--------------------------------------------------------------|
-| timeblocks            | The number of timeframes on the top row.
-| rulerunit             | Timeframe of each unit on the top row. 1 unit equals 5 minutes.
-| rulerlayout           | The layout of the top row.
+| timeblocks            | The number of timeframes on the ruler.
+| rulerunit             | Timeframe of each unit on ruler. 1 unit equals 5 minutes.
+| rulerdatelayout       | The layout of a ruler date item (usually used to display the start date of current epg page).
+| rulerlayout           | The layout of a ruler item.
 | progresstexture       | A texture which indicates the current progress time
-| channellayout         | The layout of the left column.
-| focusedchannellayout  | The focused layout of the left column.
+| channellayout         | The layout of a channel item.
+| focusedchannellayout  | The focused layout of a channel item.
 | itemlayout            | The layout of the grid
 | focusedlayout         | The focused layout of the grid
 
