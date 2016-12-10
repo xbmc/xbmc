@@ -682,17 +682,21 @@ namespace PVR
     else if (URIUtils::IsPVRRecording(item->GetPath()) && !item->HasPVRRecordingInfoTag())
       pvrItem = g_PVRRecordings->GetByPath(item->GetPath());
 
+    bool bCheckResume = true;
+    if (item->HasProperty("check_resume"))
+      bCheckResume = item->GetProperty("check_resume").asBoolean();
+
     if (pvrItem->HasPVRChannelInfoTag())
     {
       return SwitchToChannel(pvrItem,
                              CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
-                             true);
+                             bCheckResume);
     }
     else if (pvrItem->HasPVRRecordingInfoTag())
     {
       return PlayRecording(pvrItem,
                            CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
-                           true);
+                           bCheckResume);
     }
 
     return false;

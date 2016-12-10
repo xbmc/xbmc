@@ -558,8 +558,8 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
 void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber)
 {
-  // do not resume livetv
-  if (item->IsLiveTV())
+  // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
+  if (item->IsLiveTV() || item->IsDeleted())
     return;
 
   startoffset = 0;
@@ -567,10 +567,9 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
 
   if (!item->IsNFO() && !item->IsPlayList())
   {
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetResumePoint().IsSet())
+    if (item->GetCurrentResumeTimeAndPartNumber(startoffset, partNumber))
     {
-      startoffset = (int)(item->GetVideoInfoTag()->GetResumePoint().timeInSeconds*75);
-      partNumber = item->GetVideoInfoTag()->GetResumePoint().partNumber;
+      startoffset *= 75;
     }
     else
     {
@@ -651,7 +650,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player
       if (!resumeString.empty())
       {
         choices.Add(SELECT_ACTION_RESUME, resumeString);
-        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+        choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
       }
       else
         choices.Add(SELECT_ACTION_PLAY, 208);   // Play
@@ -771,7 +770,7 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
     { // prompt user whether they wish to resume
       CContextButtons choices;
       choices.Add(1, resumeString);
-      choices.Add(2, 12021); // start from the beginning
+      choices.Add(2, 12021); // Play from beginning
       int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
       if (retVal < 0)
         return false; // don't do anything
@@ -800,7 +799,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
   {
     CContextButtons choices;
     choices.Add(SELECT_ACTION_RESUME, resumeString);
-    choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+    choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
     int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if (value < 0)
       return true;
@@ -925,7 +924,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
       {
         CContextButtons choices;
         choices.Add(SELECT_ACTION_RESUME, resumeString);
-        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+        choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
         int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (value == SELECT_ACTION_RESUME)
           GetResumeItemOffset(parts[selectedFile].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);

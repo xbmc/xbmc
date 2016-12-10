@@ -49,6 +49,7 @@
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
 #include "threads/SingleLock.h"
 #include "music/tags/MusicInfoTag.h"
@@ -3533,17 +3534,42 @@ int CFileItem::GetVideoContentType() const
   return type;
 }
 
+CFileItem CFileItem::GetItemToPlay() const
+{
+  if (HasEPGInfoTag())
+  {
+    const CPVRChannelPtr channel(GetEPGInfoTag()->ChannelTag());
+    if (channel)
+      return CFileItem(channel);
+  }
+  return *this;
+}
+
+CBookmark CFileItem::GetResumePoint() const
+{
+  if (HasVideoInfoTag())
+    return GetVideoInfoTag()->GetResumePoint();
+  return CBookmark();
+}
+
 bool CFileItem::IsResumePointSet() const
 {
-  return HasVideoInfoTag() && GetVideoInfoTag()->GetResumePoint().IsSet();
+  return GetResumePoint().IsSet();
 }
 
 double CFileItem::GetCurrentResumeTime() const
 {
-  if (HasVideoInfoTag() && GetVideoInfoTag()->GetResumePoint().IsSet())
+  return lrint(GetResumePoint().timeInSeconds);
+}
+
+bool CFileItem::GetCurrentResumeTimeAndPartNumber(int& startOffset, int& partNumber) const
+{
+  CBookmark resumePoint(GetResumePoint());
+  if (resumePoint.IsSet())
   {
-    return GetVideoInfoTag()->GetResumePoint().timeInSeconds;
+    startOffset = lrint(resumePoint.timeInSeconds);
+    partNumber = resumePoint.partNumber;
+    return true;
   }
-  // Resume from start when resume points are invalid
-  return 0;
+  return false;
 }

@@ -99,65 +99,72 @@ bool CMarkUnWatched::Execute(const CFileItemPtr& item) const
 
 std::string CResume::GetLabel(const CFileItem& item) const
 {
-  return CGUIWindowVideoBase::GetResumeString(item);
+  return CGUIWindowVideoBase::GetResumeString(item.GetItemToPlay());
 }
 
-bool CResume::IsVisible(const CFileItem& item) const
+bool CResume::IsVisible(const CFileItem& itemIn) const
 {
-  if (item.IsPVRRecording())
-    return false; // pvr recordings have its own implementation for this
+  CFileItem item(itemIn.GetItemToPlay());
+  if (item.IsDeleted()) // e.g. trashed pvr recording
+    return false;
 
   return CGUIWindowVideoBase::HasResumeItemOffset(&item);
 }
 
-static void SetPathAndPlay(CFileItem&& item)
+static void SetPathAndPlay(CFileItem& item)
 {
   if (item.IsVideoDb())
   {
     item.SetProperty("original_listitem_url", item.GetPath());
     item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
   }
-  g_application.PlayFile(item, "");
+  item.SetProperty("check_resume", false);
+  g_application.PlayMedia(item, "", PLAYLIST_NONE);
 }
 
-bool CResume::Execute(const CFileItemPtr& item) const
+bool CResume::Execute(const CFileItemPtr& itemIn) const
 {
+  CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
-  if (item->IsDVD() || item->IsCDDA())
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false);
+  if (item.IsDVD() || item.IsCDDA())
+    return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, false);
 #endif
 
-  CFileItem cpy(*item);
-  cpy.m_lStartOffset = STARTOFFSET_RESUME;
-  SetPathAndPlay(std::move(cpy));
+  item.m_lStartOffset = STARTOFFSET_RESUME;
+  SetPathAndPlay(item);
   return true;
 };
 
-std::string CPlay::GetLabel(const CFileItem& item) const
+std::string CPlay::GetLabel(const CFileItem& itemIn) const
 {
+  CFileItem item(itemIn.GetItemToPlay());
+  if (item.IsLiveTV())
+    return g_localizeStrings.Get(19000); // Switch to channel
   if (CGUIWindowVideoBase::HasResumeItemOffset(&item))
-    return g_localizeStrings.Get(12023);
-  return g_localizeStrings.Get(208);
+    return g_localizeStrings.Get(12021); // Play from beginning
+  return g_localizeStrings.Get(208); // Play
 }
 
-bool CPlay::IsVisible(const CFileItem& item) const
+bool CPlay::IsVisible(const CFileItem& itemIn) const
 {
+  CFileItem item(itemIn.GetItemToPlay());
+  if (item.IsDeleted()) // e.g. trashed pvr recording
+    return false;
+
   if (item.m_bIsFolder)
     return false; //! @todo implement
 
-  if (item.IsPVRRecording())
-    return false; // pvr recordings have its own implementation for this
-
-  return item.IsVideo() || item.IsDVD() || item.IsCDDA();
+  return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsCDDA();
 }
 
-bool CPlay::Execute(const CFileItemPtr& item) const
+bool CPlay::Execute(const CFileItemPtr& itemIn) const
 {
+  CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
-  if (item->IsDVD() || item->IsCDDA())
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true);
+  if (item.IsDVD() || item.IsCDDA())
+    return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, true);
 #endif
-  SetPathAndPlay(CFileItem(*item));
+  SetPathAndPlay(item);
   return true;
 };
 
