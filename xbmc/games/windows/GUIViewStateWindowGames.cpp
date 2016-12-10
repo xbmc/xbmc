@@ -19,23 +19,13 @@
  */
 
 #include "GUIViewStateWindowGames.h"
-#include "addons/BinaryAddonCache.h"
-#include "games/addons/GameClient.h"
-#include "guilib/GraphicContext.h" // include before ViewState.h
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
-#include "input/Key.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
-#include "utils/StringUtils.h"
 #include "view/ViewState.h"
 #include "view/ViewStateSettings.h"
 #include "FileItem.h"
-#include "ServiceBroker.h"
-
-#include <assert.h>
-#include <set>
 
 using namespace GAME;
 

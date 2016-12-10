@@ -25,8 +25,6 @@
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "FileItem.h"
-#include "games/tags/GameInfoTag.h"
-#include "games/addons/GameClient.h"
 #include "games/addons/savestates/SavestateDatabase.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -38,8 +36,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
-
-#include <algorithm>
+#include "utils/URIUtils.h"
 
 using namespace GAME;
 
