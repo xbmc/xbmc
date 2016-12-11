@@ -9,7 +9,7 @@ DEPENDS = \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng fribidi libass \
-	librtmp libxml2 yajl libmicrohttpd mysql libffi \
+	libxml2 yajl libmicrohttpd mysql libffi \
 	python27 libshairplay \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs \
@@ -83,7 +83,6 @@ libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV)
 curl: openssl
 libass: fontconfig libpng freetype2 expat $(ICONV)
-librtmp: openssl
 libmicrohttpd: gnutls libgcrypt libgpg-error
 python27: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
