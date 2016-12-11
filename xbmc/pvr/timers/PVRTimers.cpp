@@ -166,7 +166,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
           bChanged = true;
           existingTimer->ResetChildState();
 
-          if (bStateChanged && g_PVRManager.IsStarted())
+          if (bStateChanged)
           {
             std::string strMessage;
             existingTimer->GetNotificationText(strMessage);
@@ -202,12 +202,9 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
         bChanged = true;
         bAddedOrDeleted = true;
 
-        if (g_PVRManager.IsStarted())
-        {
-          std::string strMessage;
-          newTimer->GetNotificationText(strMessage);
-          timerNotifications.push_back(std::make_pair(newTimer->m_iClientId, strMessage));
-        }
+         std::string strMessage;
+         newTimer->GetNotificationText(strMessage);
+         timerNotifications.push_back(std::make_pair(newTimer->m_iClientId, strMessage));
 
         CLog::Log(LOGDEBUG,"PVRTimers - %s - added timer %d on client %d",
             __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
@@ -246,8 +243,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
         CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
-        if (g_PVRManager.IsStarted())
-          timerNotifications.push_back(std::make_pair(timer->m_iClientId, timer->GetDeletedNotificationText()));
+        timerNotifications.push_back(std::make_pair(timer->m_iClientId, timer->GetDeletedNotificationText()));
 
         ClearEpgTagTimer(timer);
 
@@ -323,24 +319,27 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
   if (bChanged)
   {
     UpdateChannels();
-    g_PVRManager.SetChanged();
     lock.Leave();
 
+    g_PVRManager.SetChanged();
     g_PVRManager.NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
-    /* queue notifications / fill eventlog */
-    for (const auto &entry : timerNotifications)
+    if (g_PVRManager.IsStarted())
     {
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), entry.second);
+      /* queue notifications / fill eventlog */
+      for (const auto &entry : timerNotifications)
+      {
+        if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), entry.second);
 
-      std::string strName;
-      g_PVRClients->GetClientAddonName(entry.first, strName);
+        std::string strName;
+        g_PVRClients->GetClientAddonName(entry.first, strName);
 
-      std::string strIcon;
-      g_PVRClients->GetClientAddonIcon(entry.first, strIcon);
+        std::string strIcon;
+        g_PVRClients->GetClientAddonIcon(entry.first, strIcon);
 
-      CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(strName, entry.second, strIcon, EventLevel::Information)));
+        CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(strName, entry.second, strIcon, EventLevel::Information)));
+      }
     }
   }
 
@@ -642,6 +641,7 @@ bool CPVRTimers::GetDirectory(const std::string& strPath, CFileItemList &items) 
 bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDeleteTimerRules /* = true */, bool bCurrentlyActiveOnly /* = false */)
 {
   bool bReturn = false;
+  bool bChanged = false;
   {
     CSingleLock lock(m_critSection);
 
@@ -657,11 +657,14 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
         {
           CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
           bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
-          g_PVRManager.SetChanged();
+          bChanged = true;
         }
       }
     }
   }
+
+  if (bChanged)
+    g_PVRManager.SetChanged();
 
   g_PVRManager.NotifyObservers(ObservableMessageTimersReset);
 

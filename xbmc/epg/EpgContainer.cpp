@@ -179,18 +179,24 @@ void CEpgContainer::Start(bool bAsync)
 
   LoadFromDB();
 
-  CSingleLock lock(m_critSection);
-  if (!m_bStop)
+  bool bStop = false;
   {
-    CheckPlayingEvents();
+    CSingleLock lock(m_critSection);
+    bStop = m_bStop;
+    if (!m_bStop)
+    {
+      CheckPlayingEvents();
 
-    Create();
-    SetPriority(-1);
+      Create();
+      SetPriority(-1);
 
-    m_bStarted = true;
+      m_bStarted = true;
+    }
+  }
 
+  if (!bStop)
+  {
     g_PVRManager.TriggerEpgsCreate();
-
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
 }
@@ -772,24 +778,36 @@ int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &f
 bool CEpgContainer::CheckPlayingEvents(void)
 {
   bool bReturn(false);
-  time_t iNow;
   bool bFoundChanges(false);
 
   {
-    CSingleLock lock(m_critSection);
+    time_t iNextEpgActiveTagCheck;
+    {
+      CSingleLock lock(m_critSection);
+      iNextEpgActiveTagCheck = m_iNextEpgActiveTagCheck;
+    }
+
+    time_t iNow;
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-    if (iNow >= m_iNextEpgActiveTagCheck)
+    if (iNow >= iNextEpgActiveTagCheck)
     {
       for (const auto &epgEntry : m_epgs)
         bFoundChanges = epgEntry.second->CheckPlayingEvent() || bFoundChanges;
-      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgActiveTagCheck);
-      m_iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
+
+      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNextEpgActiveTagCheck);
+      iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
 
       /* pvr tags always start on the full minute */
       if (g_PVRManager.IsStarted())
-        m_iNextEpgActiveTagCheck -= m_iNextEpgActiveTagCheck % 60;
+        iNextEpgActiveTagCheck -= iNextEpgActiveTagCheck % 60;
 
       bReturn = true;
+    }
+
+    if (bReturn)
+    {
+      CSingleLock lock(m_critSection);
+      m_iNextEpgActiveTagCheck = iNextEpgActiveTagCheck;
     }
   }
 

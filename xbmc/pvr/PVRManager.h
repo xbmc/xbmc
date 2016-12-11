@@ -51,12 +51,16 @@ namespace PVR
 {
   class CPVRClient;
   class CPVRClients;
+  typedef std::shared_ptr<CPVRClients> CPVRClientsPtr;
   class CPVRChannel;
   typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
+  typedef std::shared_ptr<CPVRChannelGroupsContainer> CPVRChannelGroupsContainerPtr;
   class CPVRChannelGroup;
   class CPVRRecordings;
+  typedef std::shared_ptr<CPVRRecordings> CPVRRecordingsPtr;
   class CPVRTimers;
+  typedef std::shared_ptr<CPVRTimers> CPVRTimersPtr;
   class CPVRTimerInfoTag;
   typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
   class CPVRGUIInfo;
@@ -130,25 +134,25 @@ private:
      * @brief Get the channel groups container.
      * @return The groups container.
      */
-    CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups.get(); }
+    CPVRChannelGroupsContainerPtr ChannelGroups(void) const;
 
     /*!
      * @brief Get the recordings container.
      * @return The recordings container.
      */
-    CPVRRecordings *Recordings(void) const { return m_recordings.get(); }
+    CPVRRecordingsPtr Recordings(void) const;
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRTimers *Timers(void) const { return m_timers.get(); }
+    CPVRTimersPtr Timers(void) const;
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRClients *Clients(void) const { return m_addons.get(); }
+    CPVRClientsPtr Clients(void) const;
 
     /*!
      * @brief Init PVRManager.
@@ -161,14 +165,14 @@ private:
     void Reinit(void);
 
     /*!
-     * @brief Stop the PVRManager and destroy all objects it created.
+     * @brief Stop the PVRManager.
      */
     void Stop(void);
 
     /*!
-     * @brief Delete PVRManager's objects.
+     * @brief Destroy PVRManager's objects.
      */
-    void Cleanup(void);
+    void Clear(void);
 
     /*!
      * @brief Get the TV database.
@@ -661,11 +665,11 @@ private:
 
     /** @name containers */
     //@{
-    std::unique_ptr<CPVRChannelGroupsContainer>    m_channelGroups;               /*!< pointer to the channel groups container */
-    std::unique_ptr<CPVRRecordings>                m_recordings;                  /*!< pointer to the recordings container */
-    std::unique_ptr<CPVRTimers>                    m_timers;                      /*!< pointer to the timers container */
-    std::unique_ptr<CPVRClients>                   m_addons;                      /*!< pointer to the pvr addon container */
-    std::unique_ptr<CPVRGUIInfo>                   m_guiInfo;                     /*!< pointer to the guiinfo data */
+    CPVRChannelGroupsContainerPtr  m_channelGroups;               /*!< pointer to the channel groups container */
+    CPVRRecordingsPtr              m_recordings;                  /*!< pointer to the recordings container */
+    CPVRTimersPtr                  m_timers;                      /*!< pointer to the timers container */
+    const CPVRClientsPtr           m_addons;                      /*!< pointer to the pvr addon container */
+    std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     //@}
 
     CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggered updates */
