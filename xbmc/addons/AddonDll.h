@@ -49,7 +49,6 @@ namespace ADDON
     bool DllLoaded(void) const;
 
   protected:
-    void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
     virtual bool LoadSettings();
     static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
