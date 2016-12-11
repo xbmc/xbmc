@@ -16,8 +16,17 @@
 				<height>170</height>
 				<texture>frame/osdfade.png</texture>
 			</control>
+			<control type="image">
+				<left>10</left>
+				<top>0</top>
+				<width>500</width>
+				<height>160</height>
+				<texture>$INFO[Player.Art(clearlogo)]</texture>
+				<aspectratio aligny="top" align="left">keep</aspectratio>
+			</control>
 			<control type="group">
 				<visible>!Window.IsActive(pvrosdchannels) + !Window.IsActive(pvrosdguide)</visible>
+				<visible>IsEmpty(Player.Art(clearlogo))</visible>
 				<animation effect="fade" time="150">VisibleChange</animation>
 				<left>30</left>
 				<right>400</right>

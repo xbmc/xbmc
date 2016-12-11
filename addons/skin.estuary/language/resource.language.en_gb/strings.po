@@ -678,3 +678,8 @@ msgstr ""
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr ""

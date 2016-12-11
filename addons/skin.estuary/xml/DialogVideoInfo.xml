@@ -244,7 +244,7 @@
 					<texture>$VAR[BannerVar]</texture>
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
-				<control type="list" id="50">
+				<control type="panel" id="50">
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
@@ -364,7 +364,6 @@
 								<width>232</width>
 								<height>285</height>
 								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-								<visible>Control.HasFocus(50)</visible>
 							</control>
 						</control>
 					</focusedlayout>
