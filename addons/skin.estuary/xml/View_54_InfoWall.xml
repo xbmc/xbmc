@@ -45,7 +45,7 @@
 	</include>
 	<include name="InfoWallMusicLayout">
 		<param name="fallback_image">DefaultFolder.png</param>
-		<param name="main_label">$INFO[ListItem.Artist,[COLOR grey],[/COLOR]]</param>
+		<param name="main_label">$INFO[ListItem.Artist]</param>
 		<param name="sub_label">$INFO[ListItem.Title]</param>
 		<param name="single_label">$INFO[ListItem.Label]</param>
 		<param name="focused">false</param>
@@ -253,40 +253,41 @@
 					<visible>$PARAM[focused]</visible>
 					<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
 				</control>
-				<control type="image">
-					<left>26</left>
-					<top>0</top>
-					<width>270</width>
-					<height>290</height>
-					<texture fallback="DefaultMovies.png" background="true">$INFO[ListItem.Icon]</texture>
-					<aspectratio>keep</aspectratio>
-					<bordersize>20</bordersize>
-				</control>
 				<control type="textbox">
 					<left>40</left>
-					<top>240</top>
+					<top>250</top>
 					<width>242</width>
-					<height>90</height>
+					<height>120</height>
 					<font>font27</font>
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">$PARAM[focused]</autoscroll>
 					<visible>!ListItem.IsParentFolder</visible>
 				</control>
-			</control>
-			<control type="image">
-				<left>11</left>
-				<top>-14</top>
-				<width>298</width>
-				<height>408</height>
-				<texture colordiffuse="button_focus">colors/grey.png</texture>
-				<bordertexture border="21">overlays/shadow.png</bordertexture>
-				<bordersize>20</bordersize>
-				<visible>$PARAM[focused] + !String.IsEmpty(ListItem.Art(poster))</visible>
-				<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
+				<control type="image">
+					<left>26</left>
+					<top>0</top>
+					<width>270</width>
+					<height>270</height>
+					<texture fallback="DefaultMovies.png" background="true">$INFO[ListItem.Icon]</texture>
+					<aspectratio>scale</aspectratio>
+					<bordersize>20</bordersize>
+				</control>
 			</control>
 			<control type="group">
 				<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+				<control type="image">
+					<left>11</left>
+					<top>-14</top>
+					<width>298</width>
+					<height>408</height>
+					<texture colordiffuse="button_focus">colors/grey.png</texture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+					<visible>$PARAM[focused]</visible>
+					<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
+				</control>
 				<control type="image">
 					<left>15</left>
 					<top>-10</top>

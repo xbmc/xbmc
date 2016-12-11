@@ -384,7 +384,7 @@
 				<top>10</top>
 				<width>200</width>
 				<include content="InfoFlag">
-					<param name="visible" value="String.IsEqual(ListItem.DBtype,tvshow) + !String.IsEmpty(ListItem.Premiered)" />
+					<param name="visible" value="[String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,episode)] + !String.IsEmpty(ListItem.Premiered)" />
 					<param name="icon" value="lists/year.png" />
 					<param name="label" value="$INFO[ListItem.Premiered]" />
 				</include>
@@ -574,7 +574,6 @@
 				<control type="group">
 					<left>462</left>
 					<include content="ImageWidget">
-						<param name="image_path" value="$PARAM[imagewidget_image]"/>
 						<param name="text_label" value="$LOCALIZE[31153]" />
 						<param name="button_label" value="$LOCALIZE[31144]" />
 						<param name="button_onclick" value="$PARAM[imagewidget_onclick]"/>

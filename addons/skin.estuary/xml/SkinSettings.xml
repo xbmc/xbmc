@@ -79,7 +79,7 @@
 				</control>
 				<control type="button" id="607">
 					<label>$LOCALIZE[31156]</label>
-					<label2>$INFO[Skin.String(background_overlay),$LOCALIZE[467] ]</label2>
+					<label2>$VAR[BackgroundOverlayTypeVar]</label2>
 					<include>DefaultSettingButton</include>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),7)">Skin.SetString(background_overlay,1)</onclick>
 					<onclick condition="String.IsEqual(Skin.String(background_overlay),6)">Skin.SetString(background_overlay,7)</onclick>

@@ -116,15 +116,6 @@
 		<definition>
 			<control type="group" id="$PARAM[button_id]889">
 				<visible>$PARAM[visible]</visible>
-				<control type="multiimage">
-					<top>0</top>
-					<left>0</left>
-					<right>0</right>
-					<height>100%</height>
-					<aspectratio>scale</aspectratio>
-					<imagepath colordiffuse="33FFFFFF">$PARAM[image_path]</imagepath>
-					<visible>String.IsEmpty(Skin.String(HomeFanart.path))</visible>
-				</control>
 				<control type="grouplist" id="$PARAM[button_id]577">
 					<orientation>vertical</orientation>
 					<top>0</top>
@@ -597,42 +588,42 @@
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>100</top>
+				<top>90</top>
 				<right>0</right>
-				<height>480</height>
+				<height>396</height>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
 				<visible>$PARAM[visible]</visible>
-				<itemlayout width="$PARAM[width]" height="400">
+				<itemlayout width="$PARAM[width]" height="320">
 					<control type="group">
 						<left>70</left>
 						<control type="image">
 							<left>0</left>
 							<top>20</top>
 							<width>254</width>
-							<height>350</height>
+							<height>280</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<left>60</left>
-							<top>130</top>
+							<top>108</top>
 							<width>130</width>
 							<height>130</height>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
 							<left>15</left>
-							<top>47</top>
+							<top>45</top>
 							<align>center</align>
 							<label>$INFO[ListItem.Label]</label>
 							<width>230</width>
 						</control>
 						<control type="label">
 							<left>15</left>
-							<top>80</top>
+							<top>78</top>
 							<align>center</align>
 							<font>font12</font>
 							<label>$INFO[ListItem.Property(ShortDate)]</label>
@@ -640,7 +631,7 @@
 						</control>
 						<control type="label">
 							<left>15</left>
-							<top>280</top>
+							<top>236</top>
 							<align>center</align>
 							<label>$INFO[ListItem.Label2]</label>
 							<font>font12</font>
@@ -653,16 +644,16 @@
 						<left>70</left>
 						<depth>DepthContentPopout</depth>
 						<animation type="Focus">
-							<effect type="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="180,195" />
+							<effect type="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="180,140" />
 						</animation>
 						<animation type="Unfocus">
-							<effect type="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="180,195" />
+							<effect type="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="180,140" />
 						</animation>
 						<control type="image">
 							<left>0</left>
 							<top>20</top>
 							<width>254</width>
-							<height>350</height>
+							<height>280</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -671,28 +662,28 @@
 							<left>0</left>
 							<top>20</top>
 							<width>254</width>
-							<height>350</height>
+							<height>280</height>
 							<texture colordiffuse="button_focus">colors/grey.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
 						<control type="image">
 							<left>60</left>
-							<top>130</top>
+							<top>108</top>
 							<width>130</width>
 							<height>130</height>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
 							<left>15</left>
-							<top>47</top>
+							<top>45</top>
 							<align>center</align>
 							<label>$INFO[ListItem.Label]</label>
 							<width>230</width>
 						</control>
 						<control type="label">
 							<left>15</left>
-							<top>80</top>
+							<top>78</top>
 							<align>center</align>
 							<font>font12</font>
 							<label>$INFO[ListItem.Property(ShortDate)]</label>
@@ -700,7 +691,7 @@
 						</control>
 						<control type="label">
 							<left>15</left>
-							<top>280</top>
+							<top>236</top>
 							<align>center</align>
 							<label>$INFO[ListItem.Label2]</label>
 							<font>font12</font>
