@@ -168,7 +168,7 @@ private:
   CCriticalSection m_critSection;
   
   game_client_properties* m_info;
-  GameClient m_struct;
+  KodiToAddonFuncTable_Game m_struct;
 };
 
 } // namespace GAME

@@ -22,7 +22,7 @@
 #include "games/controllers/ControllerTypes.h"
 #include "input/joysticks/IInputHandler.h"
 
-struct GameClient;
+struct KodiToAddonFuncTable_Game;
 
 namespace GAME
 {
@@ -44,7 +44,7 @@ namespace GAME
      * \param controller The game controller which is used (for controller mapping).
      * \param dllStruct The emulator or game to which the events are sent.
      */
-    CGameClientInput(CGameClient* addon, int port, const ControllerPtr& controller, const GameClient* dllStruct);
+    CGameClientInput(CGameClient* addon, int port, const ControllerPtr& controller, const KodiToAddonFuncTable_Game* dllStruct);
 
     // Implementation of IInputHandler
     virtual std::string ControllerID(void) const override;
@@ -63,6 +63,6 @@ namespace GAME
     const CGameClient* const  m_gameClient;
     const int                 m_port;
     const ControllerPtr       m_controller;
-    const GameClient* const   m_dllStruct;
+    const KodiToAddonFuncTable_Game* const m_dllStruct;
   };
 }
