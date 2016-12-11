@@ -232,7 +232,7 @@ extern "C"
    */
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    PeripheralAddon* pClient = static_cast<PeripheralAddon*>(ptr);
+    KodiToAddonFuncTable_Peripheral* pClient = static_cast<KodiToAddonFuncTable_Peripheral*>(ptr);
 
     pClient->GetPeripheralAPIVersion        = GetPeripheralAPIVersion;
     pClient->GetMinimumPeripheralAPIVersion = GetMinimumPeripheralAPIVersion;
