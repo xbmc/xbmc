@@ -6,7 +6,7 @@ LIBNAME=curl
 ifeq (osx, $(findstring osx, $(OS)))
 VERSION=7.21.6
 else
-VERSION=7.50.1
+VERSION=7.51.0
 endif
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
