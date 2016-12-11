@@ -424,6 +424,6 @@ namespace ActiveAE
 
     ADDON::AddonVersion       m_apiVersion;
     AE_DSP_PROPERTIES         m_info;
-    AudioDSP                  m_struct;
+    KodiToAddonFuncTable_AudioDSP m_struct;
   };
 }
