@@ -292,60 +292,51 @@ AVFrame* CFFmpegImage::ExtractFrame()
   AVPacket pkt;
   AVFrame* frame = av_frame_alloc();
   int frame_decoded = 0;
-  if (av_read_frame(m_fctx, &pkt) == 0)
+  int ret = 0;
+  ret = av_read_frame(m_fctx, &pkt);
+  if (ret < 0)
   {
-    int ret = DecodeFFmpegFrame(m_codec_ctx, frame, &frame_decoded, &pkt);
-    if (ret < 0)
-      CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
+    CLog::Log(LOGDEBUG, "Error [%d] while reading frame: %s\n", ret, strerror(AVERROR(ret)));
+    av_frame_free(&frame);
+    av_packet_unref(&pkt);
+    return nullptr;
   }
-  if (frame_decoded != 0)
+
+  ret = DecodeFFmpegFrame(m_codec_ctx, frame, &frame_decoded, &pkt);
+  if (ret < 0 || frame_decoded == 0 || !frame)
   {
-    if (frame)
+    CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
+    av_frame_free(&frame);
+    av_packet_unref(&pkt);
+    return nullptr;
+  }
+  //we need milliseconds
+  av_frame_set_pkt_duration(frame, av_rescale_q(frame->pkt_duration, m_fctx->streams[0]->time_base, AVRational{ 1, 1000 }));
+  m_height = frame->height;
+  m_width = frame->width;
+  m_originalWidth = m_width;
+  m_originalHeight = m_height;
+
+  const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(frame->format));
+  if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
+    m_hasAlpha = true;
+
+  AVDictionary* dic = av_frame_get_metadata(frame);
+  AVDictionaryEntry* entry = NULL;
+  if (dic)
+  {
+    entry = av_dict_get(dic, "Orientation", NULL, AV_DICT_MATCH_CASE);
+    if (entry && entry->value)
     {
-      m_frames++;
-      //we need milliseconds
-      av_frame_set_pkt_duration(frame, av_rescale_q(frame->pkt_duration, m_fctx->streams[0]->time_base, AVRational{ 1, 1000 }));
-      m_height = frame->height;
-      m_width = frame->width;
-      m_originalWidth = m_width;
-      m_originalHeight = m_height;
-
-      const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(frame->format));
-      if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
-        m_hasAlpha = true;
-
-      AVDictionary* dic = av_frame_get_metadata(frame);
-      AVDictionaryEntry* entry = NULL;
-      if (dic)
-      {
-        entry = av_dict_get(dic, "Orientation", NULL, AV_DICT_MATCH_CASE);
-        if (entry && entry->value)
-        {
-          int orientation = atoi(entry->value);
-          // only values between including 0 and including 8
-          // http://sylvana.net/jpegcrop/exif_orientation.html
-          if (orientation >= 0 && orientation <= 8)
-            m_orientation = (unsigned int)orientation;
-        }
-      }
-    }
-    else
-    {
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate a picture data buffer");
-      frame_decoded = 0;
+      int orientation = atoi(entry->value);
+      // only values between including 0 and including 8
+      // http://sylvana.net/jpegcrop/exif_orientation.html
+      if (orientation >= 0 && orientation <= 8)
+        m_orientation = (unsigned int)orientation;
     }
   }
-  else if (m_frames == 0)
-  {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not decode a frame");
-  }
 
-  AVFrame* clone = nullptr;
-  if (frame_decoded)
-  {
-     clone = av_frame_clone(frame);
-  }
-
+  AVFrame* clone = av_frame_clone(frame);
   av_frame_free(&frame);
   av_packet_unref(&pkt);
 
