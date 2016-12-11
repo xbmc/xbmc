@@ -474,7 +474,7 @@ extern "C" {
   /*!
    * @brief Structure to transfer the methods from kodi_audiodsp_dll.h to KODI
    */
-  struct AudioDSP
+  typedef struct KodiToAddonFuncTable_AudioDSP
   {
     const char*  (__cdecl* GetAudioDSPAPIVersion)                (void);
     const char*  (__cdecl* GetMinimumAudioDSPAPIVersion)         (void);
@@ -516,7 +516,7 @@ extern "C" {
     unsigned int (__cdecl* OutputResampleProcess)                (const ADDON_HANDLE, float**, float**, unsigned int);
     float        (__cdecl* OutputResampleGetDelay)               (const ADDON_HANDLE);
     int          (__cdecl* OutputResampleSampleRate)             (const ADDON_HANDLE);
-  };
+  } KodiToAddonFuncTable_AudioDSP;
 
 #ifdef __cplusplus
 }
