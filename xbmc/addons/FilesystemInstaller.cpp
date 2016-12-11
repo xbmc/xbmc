@@ -31,7 +31,7 @@ using namespace XFILE;
 CFilesystemInstaller::CFilesystemInstaller()
 {
   m_addonFolder = CSpecialProtocol::TranslatePath("special://home/addons/");
-  m_tempFolder = CSpecialProtocol::TranslatePath("special://home/temp/");
+  m_tempFolder = CSpecialProtocol::TranslatePath("special://home/addons/temp/");
 }
 
 bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const std::string& addonId)
