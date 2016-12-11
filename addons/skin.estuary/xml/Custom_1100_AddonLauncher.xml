@@ -26,7 +26,6 @@
 					<param name="container_path" value="addons://sources/video/" />
 					<param name="container_target" value="videos" />
 					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.video,return)" />
-					<param name="imagewidget_image" value="special://skin/extras/home-images/movie.jpg" />
 				</include>
 				<include content="AddonLauncherPanel">
 					<param name="group_id" value="501" />
@@ -34,7 +33,6 @@
 					<param name="container_path" value="addons://sources/audio/" />
 					<param name="container_target" value="music" />
 					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.audio,return)" />
-					<param name="imagewidget_image" value="special://skin/extras/home-images/music.jpg" />
 				</include>
 				<include content="AddonLauncherPanel">
 					<param name="group_id" value="502" />
@@ -42,7 +40,6 @@
 					<param name="container_path" value="addons://sources/executable/" />
 					<param name="container_target" value="programs" />
 					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.executable,return)" />
-					<param name="imagewidget_image" value="special://skin/extras/home-images/add-ons.jpg" />
 				</include>
 				<include content="AddonLauncherPanel" condition="System.Platform.Android">
 					<param name="group_id" value="506" />
@@ -56,7 +53,6 @@
 					<param name="container_path" value="addons://sources/image/" />
 					<param name="container_target" value="pictures" />
 					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.image,return)" />
-					<param name="imagewidget_image" value="special://skin/extras/home-images/pictures.jpg" />
 				</include>
 				<include content="AddonLauncherPanel">
 					<param name="group_id" value="507" />
@@ -155,7 +151,6 @@
 							<property name="id">video</property>
 							<property name="path">addons://sources/video/</property>
 							<property name="menu_id">$NUMBER[500]</property>
-							<!-- <visible>Integer.IsGreater(Container(500).NumItems,0)</visible> -->
 						</item>
 						<item id="2">
 							<label>$LOCALIZE[1038]</label>
@@ -164,7 +159,6 @@
 							<property name="id">music</property>
 							<property name="path">addons://sources/audio/</property>
 							<property name="menu_id">$NUMBER[501]</property>
-							<!-- <visible>Integer.IsGreater(Container(501).NumItems,0)</visible> -->
 						</item>
 						<item id="3">
 							<label>$LOCALIZE[1043]</label>
@@ -173,7 +167,6 @@
 							<property name="id">addons</property>
 							<property name="path">addons://sources/executable/</property>
 							<property name="menu_id">$NUMBER[502]</property>
-							<!-- <visible>Integer.IsGreater(Container(502).NumItems,0)</visible> -->
 						</item>
 						<item id="4">
 							<label>$LOCALIZE[20244]</label>
@@ -191,8 +184,6 @@
 							<property name="id">pictures</property>
 							<property name="path">addons://sources/image/</property>
 							<property name="menu_id">$NUMBER[503]</property>
-							<!-- 							<visible>Integer.IsGreater(Container(503).NumItems,0)</visible>
-							 -->
 						</item>
 						<item id="7">
 							<label>$LOCALIZE[24998]</label>
