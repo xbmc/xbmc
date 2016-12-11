@@ -33,7 +33,7 @@ extern "C"
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    ScreenSaver* pScr = static_cast<ScreenSaver*>(ptr);
+    KodiToAddonFuncTable_Screensaver* pScr = static_cast<KodiToAddonFuncTable_Screensaver*>(ptr);
 
     pScr->Start = Start;
     pScr->Render = Render;
