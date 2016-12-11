@@ -87,8 +87,6 @@ namespace ADDON
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
     static void AddOnOpenSettings(const char *url, bool bReload);
     static void AddOnOpenOwnSettings(void *userData, bool bReload);
-    static const char* AddOnGetAddonDirectory(void *userData);
-    static const char* AddOnGetUserDirectory(void *userData);
   };
 
 template<class TheDll, typename TheStruct, typename TheProps>
