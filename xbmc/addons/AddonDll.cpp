@@ -174,6 +174,9 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
   /* ensure that a previous instance is destroyed */
   Destroy();
 
+  if (!funcTable)
+    return ADDON_STATUS_PERMANENT_FAILURE;
+
   ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
@@ -181,11 +184,8 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
   if (!LoadDll())
     return ADDON_STATUS_PERMANENT_FAILURE;
 
-  if (funcTable)
-  {
-    m_pDll->GetAddon(funcTable);
-    return ADDON_STATUS_PERMANENT_FAILURE;
-  }
+  /* Load add-on function table (written by add-on itself) */
+  m_pDll->GetAddon(funcTable);
 
   if (!CheckAPIVersion())
     return ADDON_STATUS_PERMANENT_FAILURE;
