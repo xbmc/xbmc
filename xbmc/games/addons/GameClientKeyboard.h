@@ -21,7 +21,7 @@
 
 #include "input/keyboard/IKeyboardHandler.h"
 
-struct GameClient;
+struct KodiToAddonFuncTable_Game;
 
 namespace GAME
 {
@@ -41,7 +41,7 @@ namespace GAME
      * \param gameClient The game client implementation.
      * \param dllStruct The emulator or game to which the events are sent.
      */
-    CGameClientKeyboard(const CGameClient* gameClient, const GameClient* dllStruct);
+    CGameClientKeyboard(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct);
 
     /*!
      * \brief Destructor unregisters from keyboard events from CInputManager.
@@ -55,6 +55,6 @@ namespace GAME
   private:
     // Construction parameters
     const CGameClient* const m_gameClient;
-    const GameClient* const m_dllStruct;
+    const KodiToAddonFuncTable_Game* const m_dllStruct;
   };
 }

@@ -50,7 +50,7 @@ extern "C"
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    AudioDecoder* pScr = static_cast<AudioDecoder*>(ptr);
+    KodiToAddonFuncTable_AudioDecoder* pScr = static_cast<KodiToAddonFuncTable_AudioDecoder*>(ptr);
 
     pScr->Init = Init;
     pScr->ReadPCM = ReadPCM;

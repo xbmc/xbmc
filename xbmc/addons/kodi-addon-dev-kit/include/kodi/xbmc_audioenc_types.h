@@ -55,7 +55,7 @@ extern "C"
     audioenc_seek_callback  seek;
   } audioenc_callbacks;
 
-  struct AudioEncoder
+  typedef struct KodiToAddonFuncTable_AudioEncoder
   {
     /*! \brief Create encoder context
      \param callbacks Pointer to audioenc_callbacks structure.
@@ -105,6 +105,6 @@ extern "C"
      \param context Encoder context to free.
      */
     void (__cdecl* Free)(void* context);
-  };
+  } KodiToAddonFuncTable_AudioEncoder;
 }
 

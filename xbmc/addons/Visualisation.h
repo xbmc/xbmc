@@ -106,6 +106,6 @@ namespace ADDON
     std::string m_AlbumThumb;
     
     VIS_PROPS m_info;
-    Visualisation m_struct;
+    KodiToAddonFuncTable_Visualisation m_struct;
   };
 }
