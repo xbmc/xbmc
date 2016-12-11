@@ -33,7 +33,7 @@
 #endif
 
 using namespace std;
-using namespace V1::KodiAPI::AudioEngine;
+using namespace KodiAPI::V1::AudioEngine;
 
 #define LIBRARY_NAME "libKODI_audioengine"
 

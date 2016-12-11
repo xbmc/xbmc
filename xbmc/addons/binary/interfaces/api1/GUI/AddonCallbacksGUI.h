@@ -28,9 +28,9 @@ namespace ADDON
   class CAddon;
 }
 
-namespace V1
-{
 namespace KodiAPI
+{
+namespace V1
 {
 namespace GUI
 {
@@ -442,5 +442,5 @@ private:
 };
 
 } /* namespace GUI */
-} /* namespace KodiAPI */
 } /* namespace V1 */
+} /* namespace KodiAPI */
