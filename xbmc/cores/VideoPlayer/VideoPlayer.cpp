@@ -3029,6 +3029,11 @@ void CVideoPlayer::HandleMessages()
       CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
       CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_ABORT))
+    {
+      CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::PLAYER_ABORT");
+      m_bAbortRequest = true;
+    }
 
     pMsg->Release();
   }

@@ -26,6 +26,9 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 }
 
+#define CODEC_FORCE_SOFRWARE 0x01
+#define CODEC_ALLOW_FALLBACK 0x02
+
 class CDemuxStream;
 
 class CDVDStreamInfo
@@ -49,10 +52,9 @@ public:
   int uniqueId;
   bool realtime;
   int flags;
-  bool software;  //force software decoding
   std::string filename;
   bool dvd;
-
+  int codecOptions;
 
   // VIDEO
   int fpsscale; // scale of 1001 and a rate of 60000 will result in 59.94 fps
