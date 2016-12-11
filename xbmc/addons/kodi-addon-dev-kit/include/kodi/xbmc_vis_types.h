@@ -93,7 +93,7 @@ extern "C"
     int        reserved4;
   };
 
-  struct Visualisation
+  typedef struct KodiToAddonFuncTable_Visualisation
   {
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
     void (__cdecl* AudioData)(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
@@ -105,6 +105,6 @@ extern "C"
     unsigned int (__cdecl *GetPreset)();
     unsigned int (__cdecl *GetSubModules)(char ***modules);
     bool (__cdecl* IsLocked)();
-  };
+  } KodiToAddonFuncTable_Visualisation;
 }
 
