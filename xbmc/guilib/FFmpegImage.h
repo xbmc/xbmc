@@ -97,7 +97,6 @@ private:
 
 
   MemBuffer m_buf;
-  uint32_t m_frames = 0;
 
   AVIOContext* m_ioctx = nullptr;
   AVFormatContext* m_fctx = nullptr;
