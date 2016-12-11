@@ -39,7 +39,7 @@ extern "C"
     int dummy;
   };
 
-  struct AudioDecoder
+  typedef struct KodiToAddonFuncTable_AudioDecoder
   {
     //! \brief Initialize a decoder
     //! \param file The file to read
@@ -97,5 +97,5 @@ extern "C"
     //! \return True on success, false on failure
     //! \sa ICodec::DeInit
     bool (__cdecl* DeInit)(void* context);
-  };
+  } KodiToAddonFuncTable_AudioDecoder;
 }
