@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Filmes não vistos"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Sem chamada de atenção"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Descarregar ícones"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Avaliados"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Canais mais reproduzidos"
+msgid "Recently played channels"
+msgstr "Canais recentes"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Tipo de visualização"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Faixas seguintes"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Não há favoritos. Pode adicionar qualquer item a esta lista, usando o menu de contexto."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Ir para álbuns"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Ir para faixas"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -135,10 +119,6 @@ msgstr "Mostrar fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Última vez ligado"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Memória utilizada"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "itens"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Lista de faixas"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Recuar"
@@ -175,10 +151,6 @@ msgstr "Recuar"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Avançar"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Cancelar atualização"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Apagar grupo"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Saber mais..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Disponível"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Carregue para [B]Cima[/B] para recuar ou avançar"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Carregue para [B]Esquerda[/B] para recuar ou em [B]Direita[/B] para avançar"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Descarregar legendas"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Ir para lista de reprodução"
@@ -252,29 +212,13 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Iniciar sessão ao arrancar"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Atualizações disponíveis"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minutos"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Itens do menu principal"
 
-msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Atalhos para as secções \"Ficheiros\" de cada tipo de conteúdo. Venha aqui para adicionar fontes adicionais às suas bases de dados."
-
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Secções"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "não vistos"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +240,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Última Atualização"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Adicionar fontes multimédia"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "de"
@@ -308,29 +248,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opções de Energia"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Títulos"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Topo da coleção"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Conjuntos de filmes"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Reproduzir disco"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Localização anterior"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Localização seguinte"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -339,10 +259,6 @@ msgstr "Elenco indisponível"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Termina às"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Info do álbum"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -356,22 +272,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Definições de visualização"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grupo de Canais"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Meta-Dados"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Definições do fornecedor"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Opções de pesquisa de conteúdo"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Grupos disponíveis"
@@ -380,10 +280,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Pesquisa por trailer"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Descarregar legendas"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Menu de vídeo"
@@ -391,10 +287,6 @@ msgstr "Menu de vídeo"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Mostrar a informação meteorológica no topo"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Mostrar os símbolos de conteúdos dos vídeos de filmes / episódios / música"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +303,6 @@ msgstr "Opções do canal"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecione o seu perfil de utilizador do Kodi[CR]para iniciar sessão e continuar"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Quadro de Ícones"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +335,6 @@ msgstr "Teletexto"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Lista Ampla"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Usar o fundo personalizado global"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Escolher a localização da imagem"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -540,18 +420,38 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Definições do menu principal: Configure o ecrã inicial ao seu gosto."
 
-msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Escolher o pacote local de fanart"
-
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Ocultar"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Falta"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Clique aqui para ver as últimas alterações..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Info PVR"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Descodificador de vídeo"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Alterações da versão"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Velocidade de reprodução"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Entrar no navegador de add-ons"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Pesquisar add-ons"

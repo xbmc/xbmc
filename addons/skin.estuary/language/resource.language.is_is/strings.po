@@ -84,29 +84,13 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Orkukostir"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Hljómplötuupplýsingar"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Viðbót fyrir lagatexta"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Rásarhópur"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Stillingar fyrir skönnun innihalds"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Tiltækir hópar"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Sækja þýðingartexta"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -123,7 +107,3 @@ msgstr "Veldu Kodi notanda[CR]til að skrá þig inn og halda áfram"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Fela"

@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Nepozreté filmy"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Žiadne podmienky"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Prevziať ikony"
@@ -70,7 +66,7 @@ msgstr "Náhodné albumy"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Náhodní interpreti"
+msgstr "Náhodní umelci"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Ohodnotené"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Najsledovanejšie kanály"
+msgid "Recently played channels"
+msgstr "Nedávno prehrávané kanály"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "TypZobrazenia"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Nasledujúce skladby"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Nenašli sa žiadne obľúbené položky. Akúkoľvek položku z prehľadov médií môžete pridať do tohto zoznamu použitím kontextovej ponuky."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Prejsť na albumy"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Prejsť na skladby"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -135,10 +119,6 @@ msgstr "Zobraziť fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Posledné prihlásenie"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Použitá pamäť"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "položky"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Zoznam skladieb"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Pretočiť dozadu"
@@ -175,10 +151,6 @@ msgstr "Pretočiť dozadu"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Pretočiť dopredu"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Zrušiť aktualizáciu"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Odstrániť skupinu"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Čítať viac..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "K dispozícii"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Stlačte [B]nahor[/B] pre rýchle pretáčanie dozadu alebo dopredu"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Stlačte [B]doľava[/B] pre rýchle pretáčanie dozadu alebo [B]doprava[/B] pre rýchle pretáčanie dopredu"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Prevzatie titulkov"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Prejsť na zoznam skladieb"
@@ -252,29 +212,17 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatické prihlásenie pri spustení"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "K dispozícii sú aktualizácie"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minúty"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Položky hlavnej ponuky"
 
 msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Odkazy k sekcii \"Súbory\" pre každý typ média. Prejdite tam, pokiaľ chcete pridať ďalšie zdroje pre vaše databázy."
+msgid "Choose weather fanart pack"
+msgstr "Vyberte fanart balík pre počasie"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sekcie"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "nepozreté"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +244,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Naposledy aktualizované"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Pridať zdroje médií"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "od"
@@ -308,29 +252,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Možnosti napájania"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Názvy"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Hlavný adresár knižnice"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Filmové kolekcie"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Prehrať optický disk"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Predchádzajúce umiestnenie"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Nasledujúce umiestnenie"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -338,11 +262,7 @@ msgstr "Obsadenie nie je k dispozícii"
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "Končí v"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Informácie o albume"
+msgstr "Končí o"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -356,22 +276,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Nastavenia vizualizácií"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Skupina kanálov"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadáta"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Nastavenia poskytovateľa"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Možnosti vyhľadávania obsahu"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Dostupné skupiny"
@@ -380,10 +284,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Hľadať upútavku"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Prevziať titulky"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Ponuka videa"
@@ -391,10 +291,6 @@ msgstr "Ponuka videa"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Zobraziť počasie v hornej lište"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Zobrazovať vlastnosti médií pre filmy / epizódy / hudobné videá"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +307,6 @@ msgstr "Možnosti kanálu"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Zvoľte si profil používateľa Kodi[CR]pre prihlásenie a pokračovanie"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Ikony"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +339,6 @@ msgstr "Teletext"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Široký zoznam"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Použiť vlastné globálne pozadie"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Vybrať cestu k obrázku"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -541,17 +425,53 @@ msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Nastavenia týkajúce sa hlavnej ponuky: Nastavte si domovskú obrazovku podľa vašich predstáv."
 
 msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Vybrať domovský fanart balík"
+msgid "Choose skin fanart pack"
+msgstr "Vyberte fanart balík pre vzhľad"
 
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Skryť"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Zostáva"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Kliknite sem, aby ste videli najnovšie zmeny..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Informácie o PVR"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Informácie o procese prehrávača"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Dekodér videa"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Formát pixelu"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Zmeny pre verziu"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Rýchlosť prehrávania"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Nanadstavili ste PVR. Pokiaľ chcete používať PVR, vyberte si doplnok pre PVR klienta a nakonfigurujte ho. Navštívte http://kodi.wiki/view/PVR pre viac informácií."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Vstúpiť do prehliadača doplnkov"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Prehľadávať doplnky"

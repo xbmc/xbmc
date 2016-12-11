@@ -72,21 +72,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "گزینه های صرفه جویی در مصرف انرژی"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "اطلاعات آلبوم"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "افزونه متن ترانه"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "گروه کانال ها"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "دانلود زیر نویس ها"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -96,6 +84,6 @@ msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "مخفی کردن"
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "تله تکست"
