@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">10</defaultcontrol>
+	<defaultcontrol always="true">50</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
-	<views>10</views>
+	<views>50</views>
 	<menucontrol>9000</menucontrol>
 	<controls>
 		<include>DefaultBackground</include>
-		<control type="group" id="50">
+		<control type="group">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
 				<description>Guide Timeline</description>
-				<visible>Control.IsVisible(10)</visible>
+				<visible>Control.IsVisible(50)</visible>
 				<include>OpenClose_Right</include>
 				<include>Visible_Right</include>
 				<control type="group">
@@ -23,7 +23,7 @@
 						<bottom>336</bottom>
 						<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 					</control>
-					<control type="epggrid" id="10">
+					<control type="epggrid" id="50">
 						<left>0</left>
 						<top>0</top>
 						<right>20</right>
@@ -34,8 +34,8 @@
 						<rulerunit>6</rulerunit>
 						<onleft>9000</onleft>
 						<onright>60</onright>
-						<onup>10</onup>
-						<ondown>10</ondown>
+						<onup>50</onup>
+						<ondown>50</ondown>
 						<viewtype label="19032">list</viewtype>
 						<progresstexture border="0,60,18,14" colordiffuse="button_focus">windows/pvr/epg_progress.png</progresstexture>
 						<rulerlayout height="45" width="1400">
@@ -124,7 +124,7 @@
 								<width>54</width>
 								<height>54</height>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<visible>Control.HasFocus(10)</visible>
+								<visible>Control.HasFocus(50)</visible>
 							</control>
 							<control type="image" id="2">
 								<width>58</width>
@@ -136,7 +136,7 @@
 								<height>58</height>
 								<top>0</top>
 								<texture border="3" fallback="windows/pvr/epg-genres/0.png">$INFO[ListItem.Property(GenreType),windows/pvr/epg-genres/,.png]</texture>
-								<visible>!Control.HasFocus(10)</visible>
+								<visible>!Control.HasFocus(50)</visible>
 							</control>
 							<control type="label" id="1">
 								<left>6</left>
