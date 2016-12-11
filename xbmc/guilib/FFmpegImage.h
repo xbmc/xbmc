@@ -62,6 +62,7 @@ struct AVFrame;
 struct AVIOContext;
 struct AVFormatContext;
 struct AVCodecContext;
+struct AVPacket;
 
 class CFFmpegImage : public IImage
 {
@@ -88,6 +89,8 @@ private:
   static void FreeIOCtx(AVIOContext** ioctx);
   AVFrame* ExtractFrame();
   bool DecodeFrame(AVFrame* m_pFrame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels);
+  static int EncodeFFmpegFrame(AVCodecContext *avctx, AVPacket *pkt, int *got_packet, AVFrame *frame);
+  static int DecodeFFmpegFrame(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacket *pkt);
   static AVPixelFormat ConvertFormats(AVFrame* frame);
   std::string m_strMimeType;
   void CleanupLocalOutputBuffer();

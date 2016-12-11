@@ -294,7 +294,7 @@ AVFrame* CFFmpegImage::ExtractFrame()
   int frame_decoded = 0;
   if (av_read_frame(m_fctx, &pkt) == 0)
   {
-    int ret = avcodec_decode_video2(m_codec_ctx, frame, &frame_decoded, &pkt);
+    int ret = DecodeFFmpegFrame(m_codec_ctx, frame, &frame_decoded, &pkt);
     if (ret < 0)
       CLog::Log(LOGDEBUG, "Error [%d] while decoding frame: %s\n", ret, strerror(AVERROR(ret)));
   }
@@ -397,6 +397,50 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
   }
 
   return DecodeFrame(m_pFrame, width, height, pitch, pixels);
+}
+
+int CFFmpegImage::EncodeFFmpegFrame(AVCodecContext *avctx, AVPacket *pkt, int *got_packet, AVFrame *frame)
+{
+  int ret;
+
+  *got_packet = 0;
+
+  ret = avcodec_send_frame(avctx, frame);
+  if (ret < 0)
+    return ret;
+
+  ret = avcodec_receive_packet(avctx, pkt);
+  if (!ret)
+    *got_packet = 1;
+
+  if (ret == AVERROR(EAGAIN))
+    return 0;
+
+  return ret;
+}
+
+int CFFmpegImage::DecodeFFmpegFrame(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacket *pkt)
+{
+  int ret;
+
+  *got_frame = 0;
+
+  if (pkt)
+  {
+    ret = avcodec_send_packet(avctx, pkt);
+    // In particular, we don't expect AVERROR(EAGAIN), because we read all
+    // decoded frames with avcodec_receive_frame() until done.
+    if (ret < 0)
+      return ret;
+  }
+
+  ret = avcodec_receive_frame(avctx, frame);
+  if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
+    return ret;
+  if (ret >= 0) // static code analysers would complain
+   *got_frame = 1;
+
+  return 0;
 }
 
 bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels)
@@ -690,7 +734,9 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   avpkt.data = m_outputBuffer;
   avpkt.size = internalBufOutSize;
 
-  if ((avcodec_encode_video2(tdm.avOutctx, &avpkt, tdm.frame_input, &got_package) < 0) || (got_package == 0))
+  int ret = EncodeFFmpegFrame(tdm.avOutctx, &avpkt, &got_package, tdm.frame_input);
+
+  if ((ret < 0) || (got_package == 0))
   {
     CLog::Log(LOGERROR, "Could not encode thumbnail: %s", destFile.c_str());
     CleanupLocalOutputBuffer();
