@@ -113,7 +113,7 @@ namespace ADDON
 
   private:
     INPUTSTREAM_PROPS m_info;
-    InputStreamAddonFunctions m_struct;
+    KodiToAddonFuncTable_InputStream m_struct;
   };
 
 } /*namespace ADDON*/
