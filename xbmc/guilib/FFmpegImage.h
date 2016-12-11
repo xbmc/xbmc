@@ -61,6 +61,7 @@ struct MemBuffer
 struct AVFrame;
 struct AVIOContext;
 struct AVFormatContext;
+struct AVCodecContext;
 
 class CFFmpegImage : public IImage
 {
@@ -97,6 +98,7 @@ private:
 
   AVIOContext* m_ioctx = nullptr;
   AVFormatContext* m_fctx = nullptr;
+  AVCodecContext* m_codec_ctx = nullptr;
 
   AVFrame* m_pFrame;
   uint8_t* m_outputBuffer;
