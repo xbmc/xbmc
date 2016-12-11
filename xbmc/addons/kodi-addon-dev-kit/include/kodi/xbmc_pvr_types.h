@@ -530,7 +530,7 @@ extern "C" {
   /*!
    * @brief Structure to transfer the methods from xbmc_pvr_dll.h to XBMC
    */
-  typedef struct PVRClient
+  typedef struct KodiToAddonFuncTable_PVR
   {
     const char*  (__cdecl* GetPVRAPIVersion)(void);
     const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
@@ -607,7 +607,7 @@ extern "C" {
     void         (__cdecl* OnSystemWake)(void);
     void         (__cdecl* OnPowerSavingActivated)(void);
     void         (__cdecl* OnPowerSavingDeactivated)(void);
-  } PVRClient;
+  } KodiToAddonFuncTable_PVR;
 
 #ifdef __cplusplus
 }

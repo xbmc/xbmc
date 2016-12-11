@@ -661,7 +661,7 @@ extern "C"
    */
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    PVRClient* pClient = static_cast<PVRClient*>(ptr);
+    KodiToAddonFuncTable_PVR* pClient = static_cast<KodiToAddonFuncTable_PVR*>(ptr);
     
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
     pClient->GetMininumPVRAPIVersion        = GetMininumPVRAPIVersion;
