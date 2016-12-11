@@ -39,6 +39,11 @@ CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps) :
 {
 }
 
+CGameLoop::~CGameLoop()
+{
+  Stop();
+}
+
 void CGameLoop::Start()
 {
   Create();
