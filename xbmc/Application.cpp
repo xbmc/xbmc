@@ -1059,6 +1059,7 @@ void CApplication::CreateUserDirs() const
   CDirectory::Create("special://home/");
   CDirectory::Create("special://home/addons");
   CDirectory::Create("special://home/addons/packages");
+  CDirectory::Create("special://home/addons/temp");
   CDirectory::Create("special://home/media");
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
