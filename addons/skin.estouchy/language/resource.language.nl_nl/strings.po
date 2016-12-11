@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "TERUGSPOELEN"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Afspeelsnelheid"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Eind tijd"
@@ -141,8 +145,8 @@ msgid "Data provider"
 msgstr "Gegevens aanbieder"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Geheugen-verbruik:"
+msgid "System Memory Used:"
+msgstr "Systeemgeheugen in gebruik:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -192,6 +196,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Configureer acties die gebruikt kunnen worden tijdens het afspelen · Configureer hoe media-inhoud wordt afgespeeld"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Configureer bibliotheekbronnen · Toon de medialijsten toon inhoud · configureer hoe bibliotheeklijsten worden bestuurd"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Configureer skin · Configureer regio · Configureer controle · Configureer screensaver · Configureer hoofdslot"
@@ -208,21 +216,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Kies je Kodi gebruikersprofiel[CR]om in te loggen en door te gaan"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Beginmenu categorieknoppen"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Beginpagina add-on snelkoppelingen"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Diverse opties"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Beginscherm weerinformatie en knop"
+msgid "Backgrounds"
+msgstr "Achtergronden"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

@@ -128,10 +128,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Pajisës i të Dhënave"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Memorje Përdorur"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "I Loguar së Fundmi"
@@ -164,13 +160,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Zgjedho Kodi profilin [CR]për të rregjistruar dhe vazhdo"
 
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Opcione të llojllojshëm"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Informacionet dhe butonet të motit në Ekranin kryesor"
+msgid "Backgrounds"
+msgstr "Sfondet"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

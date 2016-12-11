@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Setări Audio"
+msgstr "Stabiliri audio"
 
 msgctxt "#31003"
 msgid "IP"
@@ -34,7 +34,7 @@ msgstr "Opțiuni pentru Vizualizare"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Vizualizări predefinite"
+msgstr "Prestabiliri vizualizare"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -83,6 +83,10 @@ msgstr "ÎNAINTE"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ÎNAPOI"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Viteză de redare"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -140,10 +144,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Furnizor informații"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Memorie folosită:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Ultima intrare"
@@ -158,7 +158,7 @@ msgstr "Meniul Video"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Descărcare subtitrare"
+msgstr "Descarcă subtitluri"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -174,23 +174,47 @@ msgstr "Cu Arial la bază"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "schimbă skinul · Configurează limba și regiunea · Schimbă modul cum sunt afișate fișierele · Schimbă protecția ecranului"
+msgstr "Schimbați costumul · Stabiliți limba și regiunea · Schimbați opțiunile de listare a fișierelor · Alegeți un protector de ecran"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configurați și gestionați serviciile de partajare media · Configurați și gestionați serviciul meteo"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configurați afișajul · Configurați sunetul · Configurați accesul la Internet · Configurați economisirea energiei electrice· Configurați jurnalizarea"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Vă gestionați suplimentele instalate · Răsfoiți și instalați suplimente de la kodi.tv · Modificați stabiliri suplimente"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configurați acțiunile care pot fi folosite în timpul redării · Configurați cum este redat conținutul media"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Configurați surse mediatecă · Arătați conținutul de afișare a listelor media · Configurați navigarea în listele mediatecii"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configurați costumul · Configurați regiunea · Configurați controlul · Configurați protectorul de ecran · Configurați blocarea principală"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Vă configurați profilele · Stabiliți opțiuni de blocare · Activați ecranul de autentificare"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Afișează informații sistem · Statistici componente · Verificați disponibilitatea stocării · Vizualizați configurarea rețelei"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selectați profilul dumneavoastră de utilizator Kodi[CR]pentru a vă autentifica și a continua"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Pagina principală a legăturilor Suplimentelor"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Opțiuni Diverse"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Ecranul și butonul Informații Vreme"
+msgid "Backgrounds"
+msgstr "Fundaluri"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
@@ -208,6 +232,10 @@ msgctxt "#31554"
 msgid "Background:"
 msgstr "Fundal: "
 
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Configurați stabiliri televizor · Schimbați informațiile din ecranul complet · Gestionați stabiliri date EPG"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "TV Live"
@@ -222,7 +250,7 @@ msgstr "Ascunde fundal vizualizare"
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr "Setări canal"
+msgstr "Stabiliri canal"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -247,3 +275,23 @@ msgstr "Arată ascunse"
 msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Arată șterse"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Prima rulare"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Sunt două lucruri pe care trebuie să le știți despre navigarea în Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Sigla Kodi funcționează ca buton de mers „ACASĂ”. De fiecare dată când îl atingeți, veți fi duși înapoi în ecranul inițial."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Când redați fișiere audio sau video, titlul elementului va apărea în partea de sus a ecranului. Atingând-ul veți fi duși la vizualizarea pe tot ecranul sau fereastra video."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Titlul care este redat acum..."

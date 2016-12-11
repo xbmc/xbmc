@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "தரவு வழங்குநர்"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "பயன்படுத்தப்பட்டுள்ள நினைவகம்"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "கடைசியாக உள்நுழைந்தது"
@@ -168,17 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "உங்கள் Kodi பயனர் விவரங்களை தேர்வுசெய்து[CR]உள்நுழைய தொடரச்செய்யவும்"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "முகப்புப்பக்க துணைப்-பயன் விரைவு இணைப்புகள்"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "இதர விருப்பங்கள்"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "முகப்புப்பக்க வானியல் தகவல் மற்றும் பொத்தான்"
+msgid "Backgrounds"
+msgstr "பின்னணி"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

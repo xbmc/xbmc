@@ -76,6 +76,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "ATTĪT ATPAKAĻ"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Atskaņošanas ātrums"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Beigu laiks"
@@ -132,10 +136,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Datu piegādātājs"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Atmiņa izmantota:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Pēdējoreiz pieteicies"
@@ -151,6 +151,10 @@ msgstr "Video izvēlne"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Lejupielādē subtitrus"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teleteksts"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -168,17 +172,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Atlasiet savu Kodi lietotāja profilu,[CR]lai pieslēgtos un turpinātu"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Mājas izvēlnes pielikumu ātrās saites"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Dažādas opcijas"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Mājas ekrāna laikapstākļu info un poga"
+msgid "Backgrounds"
+msgstr "Foni"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

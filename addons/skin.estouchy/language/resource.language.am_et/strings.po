@@ -120,10 +120,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "ዳታ አቅራቢ "
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "የተጠቀሙት Memory:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "መጨረሻ የገባው"
@@ -152,13 +148,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "ይምረጡ የ እርስዎን  Kodi ተጠቃሚ ገጽታ[CR]ለ መግባት እና ለመቀጠል"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "የ ቤት ገጽ ተጨ-ማሪ ፈጣን አገናኞች"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "የተለያዩ ምርጫዎች"
+msgctxt "#31550"
+msgid "Backgrounds"
+msgstr "መደቦች "
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
