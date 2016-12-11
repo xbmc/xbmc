@@ -2,7 +2,7 @@
 <addon
   id="resource.language.en_gb"
   version="2.0.1"
-  name="English"
+  name="English (United Kingdom)"
   provider-name="Team Kodi">
   <requires>
     <import addon="kodi.resource" version="1.0.0"/>
