@@ -165,6 +165,7 @@ public:
 };
 
 typedef struct {
+  NPT_String last_playerstate;
   NPT_String date_added;
   NPT_Float rating;
   NPT_Int32 votes;
