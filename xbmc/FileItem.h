@@ -182,6 +182,12 @@ public:
    */
   bool IsDeleted() const;
 
+  /*!
+   \brief Check whether an item is an audio book item.
+   \return true if item is audiobook, false otherwise.
+   */
+  bool IsAudioBook() const;
+
   bool IsGame() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
