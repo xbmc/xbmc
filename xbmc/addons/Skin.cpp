@@ -37,6 +37,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
+#include "filesystem/XbtManager.h"
 
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
@@ -369,6 +370,20 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string
 
 void CSkinInfo::OnPreInstall()
 {
+  // Windows: Close texture file(s) before delete/move
+  auto mediaDir = g_graphicsContext.GetMediaDir();
+  if (mediaDir.empty())
+  {
+    mediaDir = CSpecialProtocol::TranslatePath(
+      URIUtils::AddFileToFolder("special://home/addons",
+        CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)));
+  }
+
+  std::string addFileToFolder = URIUtils::AddFileToFolder(mediaDir, "media", "Textures.xbt");
+  addFileToFolder = CSpecialProtocol::TranslatePathConvertCase(addFileToFolder);
+  CURL xbtUrl(addFileToFolder);
+
+  XFILE::CXbtManager::GetInstance().Release(xbtUrl);
 }
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
