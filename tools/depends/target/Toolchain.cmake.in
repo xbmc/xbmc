@@ -80,3 +80,5 @@ set(ENV{PKG_CONFIG_LIBDIR} @prefix@/@deps_dir@/lib/pkgconfig)
 if(NOT CORE_SYSTEM_NAME STREQUAL linux)
   set(ADDONS_PREFER_STATIC_LIBS ON)
 endif()
+
+set(KODI_DEPENDSBUILD 1)
