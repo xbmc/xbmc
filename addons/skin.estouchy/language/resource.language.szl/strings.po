@@ -16,9 +16,37 @@ msgstr ""
 "Language: szl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Sztelōnki klangu"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Ôpcyje wizualizacyje"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Sdefiniowane szablōny wizualizacyje"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Myni kōntekstowe"
+
 msgctxt "#31009"
 msgid "Working..."
-msgstr "Robiã..."
+msgstr "Przetwŏrzanie..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Nŏjnowsze"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -26,7 +54,7 @@ msgstr "Filmy"
 
 msgctxt "#31014"
 msgid "Episodes"
-msgstr "Tajle"
+msgstr "Party"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -36,9 +64,17 @@ msgctxt "#31024"
 msgid "Page"
 msgstr "Strōna"
 
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Wykŏz informacyji"
+
 msgctxt "#31038"
 msgid "Login"
-msgstr "Zaloguj"
+msgstr "Wloguj"
+
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Zaktualizowano było:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -48,17 +84,25 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "NAZŎD"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Gibkość ôdtwŏrzaniŏ"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Kōniec ô"
+
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Zortowaniy: rosnōnco"
+msgstr "Zortowanie: ôd nŏjmyńszych"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Zortowaniy: malyjōnco"
+msgstr "Zortowanie: ôd nŏjsrogszych"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Ôtwōrz playlistã"
+msgstr "Ôdewrzij playlistã"
 
 msgctxt "#31056"
 msgid "Save playlist"
@@ -66,7 +110,7 @@ msgstr "Spamiyntej plejlistã"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Zawrzij plejlistã"
+msgstr "Zawrzij playlistã"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -76,17 +120,49 @@ msgctxt "#31059"
 msgid "Current playlist"
 msgstr "Terŏźnŏ playlista"
 
+msgctxt "#31200"
+msgid "Back"
+msgstr "Nazŏd"
+
 msgctxt "#31201"
 msgid "Location"
 msgstr "Plac"
 
+msgctxt "#31202"
+msgid "View"
+msgstr "Przeziyrej"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Tymperatura"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Ôstatniŏ aktualizacyjŏ"
+
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Dostŏwca datōw"
+msgstr "Liferant datōw"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Ôstatnio wlogowany"
 
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Emisyjŏ"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Myni wideo"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Sebier podnapisy"
+
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -95,3 +171,127 @@ msgstr "Wychodne dlŏ skōry"
 msgctxt "#31391"
 msgid "Arial based"
 msgstr "Podane na Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Ôbiōr skōry · Sztelōnki regiōnalne · Wykŏzy zbiorōw · Wygŏszŏcz ekranu"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Kōnfiguracyjŏ i reskyrowanie posugami udostympnianiŏ · Kōnfiguracyjŏ i reskyrowanie posugōm informacyji pogodowych"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Kōnfiguracyjŏ ôbrŏzu · Kōnfiguracyjŏ klangu · Kōnfiguracyjŏ dostympu do Internetu · Kōnfiguracyjŏ szpŏrowaniŏ ynergije · Kōnfiguracyjŏ diagnostyki"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Reskyrowanie zainstalowanymi przidŏwkami · Przeziyranie i instalowanie przidŏwkōw · Sztelōnki przidŏwkōw"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Kōnfiguracyjŏ dostympnych funkcyji ôdegrowŏcza · Kōnfiguracyjŏ ôdtwŏrzaniŏ mydiōw"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Kōnfiguracyjŏ źrōdeł bibliŏtyki · Kōnfiguracyjŏ pokozŏwaniŏ zawartości · Kōnfiguracyjŏ przeziyraniŏ multimydiōw"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Kōnfiguracyjŏ skōry · Kōnfiguracyjŏ regiōnu · Kōnfiguracyjŏ sterowaniŏ · Kōnfiguracyjŏ wygŏszŏcza · Kōnfiguracyjŏ dostympu"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Kōnfiguracyjŏ profilōw · Sztelōnki dostympu · Aktywacyjŏ ekranu logowaniŏ"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Informacyje ô systymie · Statystyki masziny · Dostympne przestrzyństwo dyskowe · Pokŏzanie necowyj kōnfiguracyje"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Ôbier profil używŏcza[CR]do wlogowaniŏ, coby kōntynuować"
+
+msgctxt "#31550"
+msgid "Backgrounds"
+msgstr "Tła"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Przima do przidŏwka"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNCHRŌNIZACYJŎ"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Używej niystandardowygo zadku"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Zadek:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Kōnfiguracyjŏ telewizyje · Myni ekranowe · Ôkludzŏcz programōw · Nagrowanie"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Telewizyjŏ"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Chrōniej ôdtwŏrzane wideo na zadku interfejsu"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Chrōniej zadek wizualizacyje"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Sztelōnki kanałōw"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostympne skupiny"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Przidej skupinã"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Przemianuj skupinã"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Uchrōń skupinã"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Ukŏzuj skryte"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Ukŏzuj uchrōniōne"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Piyrsze sztartniyńcie"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Musisz wiydzieć dwie rzeczy ô nawigacyji we Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Logo Kodi funkcjōniyruje za knefel 'Sztart'. Kej ino go naciśniesz, przejdziesz do przodnigo ekranu."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Przi ôdtwŏrzaniu muzyki lebo wideo, tytuł pozycyje bydzie pokŏzowany na gōrze ekranu. Jeźli go tykniesz, bydziesz przejdziesz połnoekranowyj wizualizacyje lebo ôkna wideo."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Terŏz ôdtwŏrzane..."

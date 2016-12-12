@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "GERİ SAR"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Oynatma hızı"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Bitiş Zamanı"
@@ -141,8 +145,8 @@ msgid "Data provider"
 msgstr "Veri sağlayıcı"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Kullanılan Bellek:"
+msgid "System Memory Used:"
+msgstr "Kullanılan Sistem Belleği:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -190,7 +194,11 @@ msgstr "Yüklü eklentilerinizi yönetin · kodi.tv sitesindeki uygulamalara gö
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Oynatım sırasında kullanılacak etlemleri yapılandırın · Medya içeriğinin nasıl oynatılacağını yapılandırın"
+msgstr "Oynatım sırasında kullanılacak eylemleri yapılandırın · Medya içeriğinin nasıl oynatılacağını yapılandırın"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Kitaplık kaynaklarını yapılandırın · Medya listeleri içeriklerinin nasıl göstereceğini yapılandırın · Kitaplık listelerine nasıl gidileceğini yapılandırın"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
@@ -208,21 +216,17 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Oturum açıp devam etmek için[CR]Kodi kullanıcı profilinizi seçin"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Ana Menü Kategori Düğmeleri"
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Ana menü"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Giriş Sayfası Hızlı Eklenti Bağlantıları"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Çeşitli Seçenekler"
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Ana Eklentiler"
 
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Ana Ekran Hava Durumu Bilgisi ve düğmesi"
+msgid "Backgrounds"
+msgstr "Arka Planlar"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

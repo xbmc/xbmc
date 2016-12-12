@@ -26,7 +26,7 @@ msgstr "IP"
 
 msgctxt "#31004"
 msgid "Caps[CR]Lock"
-msgstr "Bloqueig[CR]Majúscules"
+msgstr "Bloq[CR]Maj"
 
 msgctxt "#31005"
 msgid "Visualization Options"
@@ -42,7 +42,11 @@ msgstr "Menú contextual"
 
 msgctxt "#31009"
 msgid "Working..."
-msgstr "Treballant..."
+msgstr "S'està treballant..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Recent"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -68,13 +72,21 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Inici de sessió"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Actualització:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "AVANÇAR RÀPID"
+msgstr "AVANÇA DE PRESSA"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "REBOBINAR"
+msgstr "REBOBINA"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Velocitat de reproducció"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -82,31 +94,31 @@ msgstr "Hora d'acabament"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ordena: Ascendent"
+msgstr "Ordre: Ascendent"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ordena: Descendent"
+msgstr "Ordre: Descendent"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Obrir llista reproducció"
+msgstr "Obre la llista reproducció"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Guardar llista reproducció"
+msgstr "Desa la llista reproducció"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Tancar llista reproducció"
+msgstr "Tanca la llista reproducció"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Arxius de música del sistema"
+msgstr "Fitxers de música del sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Llista reproducció actual"
+msgstr "Llista de reproducció actual"
 
 msgctxt "#31200"
 msgid "Back"
@@ -133,12 +145,12 @@ msgid "Data provider"
 msgstr "Proveïdor de dades"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Memòria utilitzada:"
+msgid "System Memory Used:"
+msgstr "Memòria de sistema utilitzada:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Últim accés el"
+msgstr "Últim inici de sessió"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -146,11 +158,11 @@ msgstr "Emès"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Menú de Video"
+msgstr "Menú del vídeo"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Baixar-se els subtítols"
+msgstr "Baixa els subtítols"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -158,7 +170,7 @@ msgstr "Teletext"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Tema per defecte"
+msgstr "Predeterminat de l'aparença"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -166,39 +178,95 @@ msgstr "Basat en Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Canvia la pell · Estableix l'idioma i la regió · Canvia les opcions de llistat · Estableix un estalvi de pantalla"
+msgstr "Canvieu l'aparença · Establiu l'idioma i la regió · Canvieu les opcions de llistat · Establiu un estalvi de pantalla"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configureu i gestioneu els serveis de compartició de mitjans · Configureu i gestioneu el servei del temps"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configureu la visualització · Configureu l'àudio · Configureu l'accés a Internet · Configureu l'estalvi energètic · Configureu el registrament"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Configureu els vostres complements instal·lats · Navegueu i instal·leu els complements des de kodi.tv · Modifiqueu els ajusts del complement"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configureu les accions que es poden dur a terme durant la reproducció · Configureu com es reprodueix el contingut dels mitjans"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Configureu els orígens de la biblioteca · Mostra el contingut de la visualització de les llistes dels mitjans · Configureu com es navega per les llistes de la biblioteca"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configureu l'aparença · Configureu la regió · Configureu el control · Configureu l'estalvi de pantalla · Configureu el bloqueig mestre"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Configureu els vostres perfils · Establiu les opcions de bloqueig · Habiliteu la pantalla d'inici de sessió"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Visualitzeu la informació del sistema · Estadístiques del maquinari · Comproveu la disponibilitat de l'emmagatzematge · Visualitzeu la configuració de la xarxa"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per iniciar la sessió i continuar"
+msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per entrar i continuar"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Botons de Categories del Menú Principal"
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menú d'inici"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Accessos ràpids de l'afegitó de la pàgina d'inici"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Opcions miscel·lànies"
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Complements de l'inici"
 
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Informació i botó de la pantalla de meteorologia"
+msgid "Backgrounds"
+msgstr "Fons"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Drecera d'afegitó"
+msgstr "Drecera del complement"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Utilitza un fons personalitzat"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Fons:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Configureu els ajusts de la TV · Canvieu la pantalla completa d'informació · Gestioneu els ajusts de les dades de la guia electrònica de programació (EPG)"
 
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "TV en directe"
 
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Oculta el fons del vídeo"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Oculta el fons de la visualització"
+
 msgctxt "#31559"
 msgid "Channel settings"
 msgstr "Ajusts dels canals"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Grups disponibles"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -211,3 +279,31 @@ msgstr "Canvia el nom del grup"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Elimina el grup"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Mosta els ocults"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Mostra els suprimits"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Primera execució"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Hi ha dues coses que heu de conèixer sobre la navegació d'Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Les funcions del logotip de Kodi com un botó «INICI». Cada cop que el toqueu, se us portarà de nou a la pantalla d'inici."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Quan esteu reproduint àudio o vídeo, el títol de l'element apareixerà a la part superior de la pantalla. Si el toqueu, us portarà a la visualització de la pantalla completa o de la finestra del vídeo."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Títol en reproducció..."

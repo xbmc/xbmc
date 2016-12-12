@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Uppruni gagna"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Minni í notkun:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Síðasta innskráning"
@@ -168,21 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Veldu Kodi notanda[CR]til að skrá inn og hala áfram"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Flokkahnappar á upphafsmynd"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Tenglar í viðbætur á upphafsmynd"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Ýmsir valmöguleikar"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Veðurupplýsingar og hnappur á upphafsmynd"
+msgid "Backgrounds"
+msgstr "Bakgrunnar"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "뒤로"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "재생 속도"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "종료 시간"
@@ -141,8 +145,8 @@ msgid "Data provider"
 msgstr "날씨 정보 제공"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "사용 메모리:"
+msgid "System Memory Used:"
+msgstr "시스템 메모리 사용량:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -192,6 +196,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "재생 중 동작 설정 ·  미디어 콘텐츠 재생 방법 설정"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "라이브러리 소스 구성 · 미디어 목록 표시 · 라이브러리 탐색 방법 설정"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "스킨 설정 · 지역 설정 · 제어 설정 · 화면 보호기 설정 · 마스터 잠금 설정"
@@ -208,21 +216,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "로그인할 Kodi 사용자 프로파일을[CR]선택하고 계속하세요"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "홈화면에 표시할 메뉴"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "홈화면에 표시할 애드온 버튼"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "기타 옵션"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "홈화면 날씨 정보와 버튼"
+msgid "Backgrounds"
+msgstr "배경"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

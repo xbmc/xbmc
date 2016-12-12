@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Teenusepakkuja"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Mälukasutus:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Viimane sisselogimine"
@@ -168,17 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Vali enda Kodi profiil[CR]ja jätka"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Peamenüü lisamooduli kiirlingid"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Mitmesugused seaded"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Ilma andmed ja nupp peamenüüs"
+msgid "Backgrounds"
+msgstr "Taustad"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "DO TYŁU"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Szybkość odtwarzania"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Koniec o"
@@ -141,8 +145,8 @@ msgid "Data provider"
 msgstr "Dostawca danych"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Użycie pamięci:"
+msgid "System Memory Used:"
+msgstr "Użycie pamięci systemowej:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -192,6 +196,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Konfiguracja dostępnych funkcji odtwarzacza · Konfiguracja odtwarzania mediów"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Konfiguracja źródeł biblioteki · Konfiguracja wyświetlania zawartości · Konfiguracja przeglądania multimediów"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Konfiguracja skóry · Konfiguracja regionu · Konfiguracja sterowania · Konfiguracja wygaszacza · Konfiguracja dostępu"
@@ -208,21 +216,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Przyciski kategorii menu startowego"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Szybkie łącza dodatków w menu startowym"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Opcje dodatkowe"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Informacje i przycisk pogody na ekranie startowym"
+msgid "Backgrounds"
+msgstr "Tła"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

@@ -92,10 +92,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Veitari av upplýsing"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Brúkt minni:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Seinasta innritan"
@@ -119,6 +115,10 @@ msgstr "Bygt á Arial"
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Vel eina Kodi uppseting[CR]fyri at innrita og halda áfram"
+
+msgctxt "#31550"
+msgid "Backgrounds"
+msgstr "Bakgrundir"
 
 msgctxt "#31556"
 msgid "Live TV"
