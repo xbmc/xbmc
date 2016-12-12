@@ -18,4 +18,4 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Dim level"
-msgstr "變暗級別"
+msgstr "暗化程度"

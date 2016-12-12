@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.30"
+       version="1.0.31"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -56,6 +56,7 @@
     <summary lang="sr_RS">Чувар екрана који пригушује ваш екран</summary>
     <summary lang="sr_RS@latin">Čuvar ekrana koji prigušuje vaš ekran</summary>
     <summary lang="sv_SE">En skärmsläckare som tonar ned din skärm</summary>
+    <summary lang="szl">Wygŏszŏcz, co zaciymniŏ ekran</summary>
     <summary lang="tg_TJ">Пардаи экран бо таъсири «Пардаи экрани камнур»</summary>
     <summary lang="th_TH">สกรีนเซฟเวอร์ที่หรี่หน้าจอของคุณ</summary>
     <summary lang="tr_TR">Ekranınızı karanlıklaştıran ekran koruyucu</summary>
@@ -114,6 +115,7 @@
     <description lang="sr_RS">Чувар екрана Пригуши је једноставан чувар екрана који ће пригушити (избледети) ваш екран на подешену вредност између 20 и 100% .</description>
     <description lang="sr_RS@latin">Čuvar ekrana Priguši je jednostavan čuvar ekrana koji će prigušiti (izbledeti) vaš ekran na podešenu vrednost između 20 i 100% .</description>
     <description lang="sv_SE">Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%</description>
+    <description lang="szl">Wygŏszŏcz Dim to je ajnfachowy wygŏszŏcz, co zaciymni ekran do werty miyndzy 20 a 100%.</description>
     <description lang="tg_TJ">Ин пардаи экран бо таъсири «Пардаи экрани камнур» хеле осон мебошад, ки сатҳи камнури экранро то дараҷае байни 20% ва 100% тағйир меёбад.</description>
     <description lang="th_TH">สกรีนเซฟเวอร์หรี่หน้าจอเป็นสกรีนเซฟเวอร์แบบพื้นฐานที่ช่วยหรี่หน้าจอของคุณซึ่งสามารถตั้งค่าการหรี่หน้าจอได้ตั้งแต่ 20% ถึง 100%</description>
     <description lang="tr_TR">Dim ekran koruyucusu, değeri %20 ile %100 arasında ayarlanabilen ve ekranınızı karanlıklaştıran (silikleştiren) basit bir ekran koruyucudur.</description>

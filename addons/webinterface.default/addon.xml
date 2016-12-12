@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.3.4"
+  version="2.3.5"
   name="Kodi web interface - Chorus2"
   provider-name="jez500, Team Kodi">
   <requires>
@@ -9,12 +9,22 @@
   </requires>
   <extension point="xbmc.webinterface"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Kodi web interface - Chorus2</summary>
-    <description lang="en">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
-    <platform>all</platform>
+    <summary lang="ca_ES">Interfície web de Kodi - Chorus2</summary>
+    <summary lang="en_GB">Kodi web interface - Chorus2</summary>
+    <summary lang="fi_FI">Kodin web-käyttöliittymä - Chorus2</summary>
+    <summary lang="lt_LT">Kodi žiniatinklio sąsaja - Chorus2</summary>
+    <summary lang="pt_BR">Kodi Interface web - Chorus2</summary>
+    <summary lang="tr_TR">Kodi web arayüzü - Chorus2</summary>
+    <description lang="ca_ES">La interfície web predeterminada de Kodi. Navegueu i interactueu amb la vostra música, les vostres pel·lícules, els vostres programes de televisió i més coses a través d'un navegador web.</description>
+    <description lang="en_GB">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
+    <description lang="fi_FI">Kodin oletusarvoinen web-käyttöliittymä. Selaa ja toista musiikkia, elokuvia, tv-sarjoja ynnä muuta nettiselaimen kautta.</description>
+    <description lang="lt_LT">Numatytoji Kodi žiniatinklio sąsaja. Naršykite ir valdykite savo muziką, filmus, TV laidas ir dar daugiau naudodami interneto naršyklę.</description>
+    <description lang="pt_BR">Interface web padrão do Kodi. Navegue e interaja com suas músicas, files, seriados e muito mais via um navegador de internet.</description>
+    <description lang="tr_TR">Varsayılan Kodi web arayüzü. İnternet tarayıcısı üzerinden Müzik, Film ve Dizilerinize göz atın.</description>
     <language>en</language>
-    <source>https://github.com/xbmc/chorus2</source>
+    <platform>all</platform>
     <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
+    <source>https://github.com/xbmc/chorus2</source>
     <assets>
       <icon>icon.png</icon>
       <fanart>images/turntable.jpg</fanart>
