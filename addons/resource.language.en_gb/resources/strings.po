@@ -20419,3 +20419,8 @@ msgstr ""
 msgctxt "#39015"
 msgid "Image decoder"
 msgstr ""
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#39016"
+msgid "Resume audiobook"
+msgstr ""

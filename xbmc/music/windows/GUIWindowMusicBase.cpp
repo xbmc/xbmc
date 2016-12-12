@@ -807,6 +807,12 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         {
             buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
         }
+        if (item->IsAudioBook())
+        {
+          int bookmark;
+          if (m_musicdatabase.GetResumeBookmarkForAudioBook(item->GetPath(), bookmark) && bookmark > 0)
+            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 39016);
+        }
 
         if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
@@ -936,6 +942,19 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (m_musicdatabase.LookupCDDBInfo(true))
       Refresh();
     return true;
+
+  case CONTEXT_BUTTON_RESUME_ITEM: //audiobooks
+    {
+      Update(item->GetPath());
+      int bookmark;
+      m_musicdatabase.GetResumeBookmarkForAudioBook(item->GetPath(), bookmark);
+      int i=0;
+      while (i < m_vecItems->Size() && bookmark > m_vecItems->Get(i)->m_lEndOffset)
+        ++i;
+      CFileItem resItem(*m_vecItems->Get(i));
+      resItem.SetProperty("StartPercent", ((double)bookmark-resItem.m_lStartOffset)/(resItem.m_lEndOffset-resItem.m_lStartOffset)*100);
+      g_application.PlayFile(resItem, "", false);
+    }
 
   default:
     break;
