@@ -16,14 +16,6 @@ msgstr ""
 "Language: mi\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Info Album"
-
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Huna"

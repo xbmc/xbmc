@@ -84,25 +84,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Mogućnosti energije"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Informacije albuma"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Dodatak za tekstove pjesama"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grupa programa"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Mogućnosti pretraživanja sadržaja"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Preuzmanje podnaslova"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -119,7 +103,3 @@ msgstr "Odaberite svoj Kodi korisnički profil[CR]za prijavu i nastavak"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Sakrij"

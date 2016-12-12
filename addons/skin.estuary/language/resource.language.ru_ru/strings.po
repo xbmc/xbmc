@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Поиск…"
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Отображать фан-арт медиафайлов в качестве фона"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Режим кинотеатра"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Изменить режим"
@@ -38,7 +46,7 @@ msgstr "Случайные фильмы"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "Не просмотреные фильмы"
+msgstr "Непросмотреные фильмы"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -46,7 +54,7 @@ msgstr "Загрузить иконки"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "Просматриваемые фильмы"
+msgstr "Вы смотрите"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -72,9 +80,13 @@ msgctxt "#31016"
 msgid "Recently played channels"
 msgstr "Недавно проигранные каналы"
 
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Оцененный"
+
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Самые проигрываемые каналы"
+msgid "Recently played channels"
+msgstr "Недавно проигранные каналы"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -92,13 +104,13 @@ msgctxt "#31022"
 msgid "Sort by"
 msgstr "Сорт. по"
 
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Перейти к альбомам"
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Вид"
 
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Перейти к композициям"
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Список избранного пуст. Вы можете добавить сюда любой медиаконтент с помощью контекстного меню."
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -107,10 +119,6 @@ msgstr "Показать фанарт"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Последний вход"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Использовано памяти"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -136,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "Объекты"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Треклист"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Перемотка назад"
@@ -148,10 +152,6 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Перемотка вперед"
 
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Отменить обновление"
-
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Производитель камеры"
@@ -159,6 +159,10 @@ msgstr "Производитель камеры"
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Параметры плейлиста"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Установите тип и добавьте правила, чтобы создать смарт-плейлист. Эти плейлисты являются динамическими и включают в себя все элементы из вашей медиатеки, которые подходят к выбранным Вами правилам."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -172,10 +176,6 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Удалить группу"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Читать далее..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Доступно"
@@ -188,6 +188,10 @@ msgctxt "#31051"
 msgid "Toggle language"
 msgstr "Переключить язык"
 
+msgctxt "#31052"
+msgid "filtered"
+msgstr "отфильтровано"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "На основе Arial"
@@ -196,21 +200,25 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Нажмите [B]Влево[/B] для перемотки назад или [B]Вправо[/B] для перемотки вперед"
 
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Перейти к плейлисту"
+
 msgctxt "#31057"
 msgid "Show login screen on startup"
 msgstr "Показывать экран входа при запуске"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Доступны обновления"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "мин."
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Автоматическая авторизация при запуске"
 
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Элементы главного меню"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Разделы"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -224,13 +232,17 @@ msgctxt "#31067"
 msgid "Event log"
 msgstr "Журнал событий"
 
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Выбор предустановок"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Последнее обновление"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Добавить источники медиаданных"
+msgctxt "#31071"
+msgid "by"
+msgstr "от"
 
 msgctxt "#31072"
 msgid "Power Options"
@@ -240,37 +252,37 @@ msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Киноциклы"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Сведения об альбоме"
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Актерский состав не доступен"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Закончится в"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Дополнение текстов песен"
 
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Настройка дополнения текстов песен"
+
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Настройки визуализации"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Группа каналов"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Метаданные"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Параметры сканирования содержимого"
 
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Доступные группы"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Загрузить субтитры"
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Искать трейлер"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Видео меню"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
@@ -291,10 +303,6 @@ msgstr "Настройки канала"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Выберите профиль пользователя Kodi,[CR]чтобы войти и продолжить"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Стена иконок"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -328,18 +336,134 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "Широкий список"
 
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Войти в раздел \"Файлы\""
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Просмотр Ваших фотографий или их загрузка с помощью фото дополнений из официального репозитория."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Переключить аудиодорожку"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Искать в медиатеке"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Искать в YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Искать в TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Убрать этот элемент главного меню"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Изменить разделы"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Вход в браузер дополнений"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "У вас еще нет каких-либо установленных дополнений. Перейдите в браузер дополнений, чтобы просмотреть нашу коллекцию и улучшить возможности Вашего Kodi."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Вы еще не выбрали поставщика погоды. Для того чтобы просматривать информацию о погоде, выберите его и укажите свое местоположение."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Установить поставщика погоды"
+
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
 msgstr "Не просмотренные сериалы"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Тот же режиссер "
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Показывать изображения на карте"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Нажмите вверх для получения информации об актере"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Нажмите OK, чтобы прочитать сюжет"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Показывать значки"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Участники"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Общие параметры, применяемые во всех местах обложки."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Основные настройки меню: Настройка главного экрана в соответствии с Вашими предпочтениями."
 
 msgctxt "#31132"
 msgid "min"
 msgstr "мин"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Скрыть"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Осталось"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Нажмите сюда, чтобы увидеть последние изменения..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Сведения PVR"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Видеодекодер"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Формат пикселей"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Изменения в версии"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Скорость воспроизведения"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Вход в браузер дополнений"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Поиск дополнений"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Категории"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Репозиторий"

@@ -16,9 +16,21 @@ msgstr ""
 "Language: es_MX\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Reproduciendo ahora"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Buscar..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Mostrar el fanart multimedia como fondo"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Modo de cine"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -28,6 +40,54 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Ver en 2D"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Películas al azar"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Películas sin mirar"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Download iconos"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Películas en progreso"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Álbumes más reproducidos"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Álbumes al azar"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Artistas al azar"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Álbumes no reproducidos"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Grabaciones recientes"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Canales reproducidos recientemente"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Valorado"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Canales reproducidos recientemente"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "Pronóstico"
@@ -36,38 +96,382 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "Acciones"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Opciones varias"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Ordenar por"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Tipo de vista"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "No se han encontrado favoritos. Puede agregar cualquier elemento de las vistas de medios a esta lista mediante el menú contextual."
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Mostrar fanart"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Último acceso"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Información de la versión"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Orden"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Tu votación"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Información extendida"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Páginas"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Elementos"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Rebobinar"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Avance rápido"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Fabricante de la cámara"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Opciones de lista"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Establezca el tipo y agregue reglas para crear una lista de reproducción inteligente. Estas listas de reproducción son dinámicas e incluyen todos los elementos de medios de la base de datos que se aplican a las reglas elegidas."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Adicionar grupo"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Renombrar grupo"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Borrar grupo"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Disponible"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Presione [B]OK[/B] para parar"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Alternar idioma"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrado"
 
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Basado en Arial"
 
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Presione [B]Izquierda[/B] para rebobinar, o [B]Derecha[/B] avanzar rápidamente"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Ir a lista de reproducción"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Mostrar pantalla de inicio de sesión al inicio"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Inicio de sesión automático al inicio"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Elementos del menú principal"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Elija el paquete de fanart del tiempo"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Secciones"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Lista de reproducción de videos"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Lista de reproducción de musica"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Registro de eventos"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Elegir preajustes"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Última Actualización"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "por"
 
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opciones de Energía"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Info de álbum"
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "conjunto de películas"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grupo de Canales"
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Reparto no disponible"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Termina en"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Complemento letras"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Ajustes de complementos de letras"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Configuración de visualización"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Grupos disponibles"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Buscar tráiler"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Menú de vídeo"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Mostrar información del tiempo en la barra superior"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Usar animaciones de diapositivas"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Subtítulo local disponible"
 
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Opciones de canal"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Selecciona tu perfil de usuario Kodi[CR]para acceder y continuar"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Mays."
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Esconder"
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Muro de información"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Pared"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Entre el texto aquí"
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Tu biblioteca está vacía. Para llenarlo con sus medios personales, ingrese a la sección \"Archivos\", añada una fuente de medios y configúrela. Después de que se haya agregado e indexado el código, podrá explorar su biblioteca."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Agregue fuentes de vídeo y establezca el tipo de contenido adecuado para rellenar sus bibliotecas de vídeo."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletexto"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Lista ancha"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Entrar en la sección de archivos"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Vea sus fotos personales o descargue una de las muchas complementos de imágenes del repositorio oficial."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Alternar secuencia de audio"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Buscar en la biblioteca local"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Buscar en YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Buscar en TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Eliminar este elemento del menú principal"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Editar nodos"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Ingresar al navegador de complementos"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Todavía no tienes ningún complemento instalado. Visite nuestro navegador de complementos para navegar a través de nuestra colección y mejorar su experiencia de Kodi."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Todavía no ha creado un proveedor de servicios meteorológicos. Para ver la información meteorológica, elija un proveedor de clima y configure su ubicación."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Establecer proveedor del clima"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Programas de TV no vistos"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Mismo director"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Mostrar imágenes en el mapa"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Presione para arriba para información del actor"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Presione OK para leer la gráfica"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Mostrar iconos"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Colaboradores"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Ajustes generales que se aplican a todas las áreas del skin."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Ajustes relacionados con el menú principal: Configure la pantalla de inicio a sus gusto."
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Elegir paquete de skin fanart"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "mínimo"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Restante"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Clic aquí para ver los cambios más recientes ..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Información del PVR"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Información del proceso del reproductor"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Decodificador de video"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Formato del píxel"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Cambios para la versión"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Velocidad de reproducción"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Todavía no ha configurado el PVR. Para utilizar el PVR, elija un complemento de cliente PVR y configúrelo. Visite http://kodi.wiki/view/PVR para obtener más información."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Ingresar al navegador de complementos"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Buscar complementos"

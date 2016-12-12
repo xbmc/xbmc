@@ -84,29 +84,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Strømstyring"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albuminfo"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Add-on til Sangtekster"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanalgruppe"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadata"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Indstillinger for indholdsskanning"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Hent Undertekster"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -127,7 +107,3 @@ msgstr "Shift"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Tekst-tv"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Skjul"

@@ -24,13 +24,69 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Szukej..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Pokŏzuj fanart mydiōw w zadku interfejsu"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Tryb kinowy"
+
 msgctxt "#31004"
 msgid "Change mode"
-msgstr "Zmiyń tryb"
+msgstr "Pōmiyń tryb"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "Ôbezdrzeć we 2D"
+msgstr "Ôbejzdrzij we 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Losowe filmy"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Filmy niyôbejzdrzane"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Sebier ikōny"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmy terŏz ôbziyranie"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Porzōnd grane albōmy"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Losowe albōmy"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Losowe autōry"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Niygrane albōmy"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Nŏjnowsze nagrania"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Kanały ôstatnio ôdtwŏrzane"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Ôcyniōne"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Kanały ôstatnio ôdtwŏrzane"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -42,11 +98,51 @@ msgstr "Akcyje"
 
 msgctxt "#31021"
 msgid "Misc options"
-msgstr "Roztōmajte nasztalowania"
+msgstr "Roztōmajte sztelōnki"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Zortuj podle"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Widzik"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Niy ma wertownych. Możesz przidŏć leda jakõ pozycyjõ do tego wykŏzu z poziōmu widzikōw mydiōw, bez myni kōntekstowe."
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Pokŏż fototapetã"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Ôstatnie logowaniy"
+msgstr "Ôstatnie logowanie"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Informacyje ô wersyji"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Porzōndek"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Twoja ôcyna"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Ekstra info"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Zajty"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "elymyntōw"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -56,9 +152,17 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Do przodku"
 
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Producynt aparatu"
+
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Nasztalowania playlisty"
+msgstr "Sztelōnki playlisty"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Ôbier zortã i przidej prawidło, coby zrychtować inteligyntnõ playlistã. Take wykŏzy sōm dynamiczne i zawiyrajōm wszyjske pozycyje z Twojij bazy, kere sztimujōm ze ôbranymi prawidłami."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -72,25 +176,121 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Wyciep skupinã"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "Dostympne"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Naciś [B]OK[/B], coby zastawić"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Przeszaltruj gŏdka"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrowane"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Podane na Arial"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Info ô albumie"
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Naciś [B]Lewo[/B], coby cofać lebo [B]Prawo[/B], coby przewijać"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Przejdź do playlisty"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Pokŏzuj ekran logowaniŏ po sztartniyńciu"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Loguj autōmatycznie po sztartniyńciu"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Elymynty przodnigo myni"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Sekcyje"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Wykŏz wideo"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Wykŏz śpiywek"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Dziynnik zdarzyń"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Ôbier szablōna"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Ôstatniŏ aktualizacyjŏ"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "po"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Sztelōnki zasiylaniŏ"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Seryje filmowe"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Niy ma ôbsady"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Kōniec ô"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Przidŏwka tekstōw śpiywek"
+msgstr "Przidŏwek tekstōw śpiywek"
 
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Nasztalowania podszukowaniŏ zawartości"
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Sztelōnki przidŏwka teksōw śpiywek"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Sciōngnōńć podnapisy"
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Sztelōnki wizualizacyje"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Dostympne skupiny"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Szukej trailera"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Myni wideo"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Ukazuj terŏźnõ pogodã we wiyrchnij lajście"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Używej animacyje chynaniŏ"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -98,16 +298,164 @@ msgstr "Lokalne podnapisy dostympne"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Nasztalowania kanału"
+msgstr "Sztelōnki kanału"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Ôbier swōj profil Kodi,[CR]coby sie zalogować i kōntynuować"
+msgstr "Ôbier swōj profil Kodi,[CR]coby sie wlogować i kōntynuować"
 
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Skryj"
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Ściana informacyji"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Ściana"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Wkludź tekst..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Twoja bibliŏtyka je prōżnŏ. Coby jã nafolować włŏsnymi mydiami, wlyź do sekcyji \"Zbiory\", przidej źrōdło mydiōw i skōnfiguruj je. Po przidaniu źrōdła i przeskanowaniu jigo zawartości, bydziesz mieć możebność przeziyraniŏ swojij bibliŏtyki."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Przidej źrōdła wideo i nasztaluj ôdpedniõ zorta zawartości, coby nafolować swojã bibliŏtykã wideo."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletekst"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Szyroki wykŏz"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Wlyź do sekcyji Zbiory"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Umożniŏ pokŏzowanie włŏsnych ôbrŏzōw lebo sebranie jednyj z mocki przidŏwek ôbrŏzōw z ôficjalnygo repozytoriōm."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Przeszaltruj ściyżkã klangowõ"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Szukej w lokalnyj bibliŏtyce"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Szukej w YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Szukej w TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Uchrōń pozycyjõ przodnigo myni"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Edytuj knōutle"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Wlyź do przeziyrŏczki przidŏwkōw"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Niy mŏsz jeszcze żŏdnych zainstalowanych przidŏwek. Nawiydź przeziyrŏczkã przidŏwkōw, coby przezdrzić naszã kolekcyjõ i rozszyrzić Kodi ô nadbytnie funkcyje."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Liferant informacyji pogodowych niy bōł jeszcze nasztalowany. Coby pokŏzać informacyje pogodowe, ôbier liferanta i nasztaluj swojã lokalizacyjõ."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Nasztaluj liferanta pogordy"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Seriole niyôbejzdrzane"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Filmy ôd reżysyra"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Pokŏż ôbrŏzy na karcie"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Naciś Gōra, coby ujzdrzić ino ô aktōrze"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Naciś OK, coby przeczytać fabułã"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Pokŏzuj ikōny"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Spōłprŏcowniki"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Ôgōlne sztelōnki dlŏ wszyjskich przestrzyństw skōry."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Sztelōnki przodnigo myni: Kōnfiguruj przodnie myni do swojich ôbmiyłowań."
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Ôstało"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Naciś, coby ujzdrzić ôstatnie pōmiany..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Ô telewizyji"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Ô ôdegrowoczu"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Dekoder wideo"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Format piksela"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Wykŏz pōmian wersyje"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Gibkość ôdtwŏrzaniŏ"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Wlyź do przeziyrŏczki przidŏwkōw"

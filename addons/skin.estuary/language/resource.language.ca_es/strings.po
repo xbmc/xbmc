@@ -18,11 +18,19 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "S'està reproduint"
+msgstr "En reproducció"
 
 msgctxt "#31001"
 msgid "Search..."
 msgstr "Cerca..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Mostra el fanart dels mitjans com a fons"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Mode cinema"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -31,6 +39,54 @@ msgstr "Canvia el mode"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Veure en 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Pel·lícules aleatòries"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Pel·lícules no vistes"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Baixa les icones"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Pel·lícules en curs"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Àlbums més reproduïts"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Àlbums aleatoris"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Artistes aleatoris"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Àlbums no reproduïts"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Enregistraments recents"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Canals reproduïts recentment"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Valoració"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Canals reproduïts recentment"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -42,11 +98,55 @@ msgstr "Accions"
 
 msgctxt "#31021"
 msgid "Misc options"
-msgstr "Opcions vàries"
+msgstr "Altres opcions"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Ordena per"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Tipus de vista"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "No s'ha trobat cap preferit. Podeu afegir qualsevol element des de les vistes dels mitjans a aquesta llista mitjançant el menú contextual."
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Mostr el fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Últim accés el"
+msgstr "Última entrada"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Ús de la memòria del sistema"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Informació de la versió"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "La vostra valoració"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Info estesa"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Pàgines"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "elements"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -56,9 +156,17 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Avanç ràpid"
 
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Fabricant de la càmera"
+
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Opcions de la llista de reproducció"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Establiu el tipus i afegiu les regles per crear una llista de reproducció intel·ligent. Aquestes llistes de reproducció són dinàmiques i inclouen tots els elements dels mitjans de la vostra base de dades amb l'aplicació de les vostres regles triades."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -72,45 +180,125 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Elimina el grup"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "Disponible"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Preu [B]D'ACORD[/B] per aturar"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Commuta l'idioma"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrat"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Basat en Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Premeu [B]Esquerra[/B] per rebobinar, o [B]Dreta[/B] per a l'avanç ràpid"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Vés a la llista de reproducció"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Mostra la pantalla d'inici de sessió a l'inici"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Inici de sessió automàtic a l'inici"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Elements menú principal"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Tria el paquet de fanart del temps"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Seccions"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Llista de reproducció de vídeo"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Llista de reproducció de música"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Registre d'esdeveniments"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Tria els valors predefinits"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Última actualització"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "per"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opcions d'energia"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Informació de l'àlbum"
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Col·leccions de pel·lícules"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Repartiment no disponible"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Acaba a les"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Complement de lletres"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grup del canal"
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Ajust del complement de lletres"
 
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadades"
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Ajusts de la visualització"
 
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Ajusts del proveïdor"
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Grups disponibles"
 
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Opcions d'escaneig de continguts"
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Cerca el tràiler"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Baixa els subtítols"
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Menú del vídeo"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Mostra la informació del temps a la barra superior"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Utilitza animacions lliscants"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -122,16 +310,220 @@ msgstr "Opcions del canal"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Seleccioni el seu perfil d'usuari de Kodi[CR]per ingressar i continuar"
+msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per entrar i continuar"
 
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Majúscules"
+msgstr "Desplaçament"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Mur d'info"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Mur"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Introduïu aquí el text..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "La vostra biblioteca actualment està buida. Per tal d'omplir-la amb els vostres mitjans personals, entreu a la secció \"Fitxers\", afegiu un origen de mitjans i configureu-lo. Un cop hàgiu afegit l'origen i aquest s'hagi indexat, aleshores sereu capaç de navegar per la biblioteca."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Afegiu els orígens dels vídeos i establiu el tipus de contingut apropiat per tal d'omplir les vostres biblioteques."
 
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Amaga"
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Llista ampla"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Entrada a la secció dels fitxers"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Visualitzeu les vostres fotografies personals o baixeu un dels molts complements d'imatges des del dipòsit oficial."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Commuta la transmissió de l'àudio"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Cerca de la biblioteca local"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Cerca de YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Cerca de TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Suprimeix aquest element de menú principal"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Edita els nodes"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Entrada al navegador de complements"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Encara no teniu instal·lat cap complement. Visiteu el nostre complement de navegació per navegar a través de la nostra col·lecció i millorar la vostra experiència amb Kodi."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Encara no heu establert cap proveïdor del temps. Per tal de veure la informació del temps, trieu un proveïdor del temps i configureu la vostra ubicació."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Estableix el proveïdor del temps"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Programes de TV no vists"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Mateix director"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Mostra les imatges al mapa"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Premeu amunt per a la informació de l'actor"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Premeu D'ACORD per a llegir el resum de l'argument"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Mostra les icones"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Contribuïdors"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Els ajusts generals que s'apliquen a totes les àrees de l'aparença."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Principals ajusts relacionats amb el menú principal: Configureu la pantalla d'inici segons els vostres gustos."
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Tria el paquet de fanart de l'aparença"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "min"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Restant"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Feu clic aquí per veure els últims canvis..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Informació PVR"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Informació del procés del reproductor"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Descodificador de vídeo"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Format del píxel"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Canvis per versió"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Velocitat de reproducció"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Encara no heu configurat el PVR. Per utilitzar el PVR, trieu un complement  de client PVR i configureu-lo. Consulteu http://kodi.wiki/view/PVR per a més detalls."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Entrada al navegador de complements"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Cerca complements"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categories"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Dipòsit"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Vídeos musicals no vists"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Vídeos musicals aleatoris"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "No teniu cap complement d'aquest tipus instal·lat. Entreu al navegador de complements per baixar complements creats per la nostra comunitat."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Premeu d'acord per canviar entre ubicacions"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Encara no s'ha creat cap marcador."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Trieu el patró del fons"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Edita les categories"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Mode tàctil"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Mostra els indicadors multimèdia"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Teclat numèric"
