@@ -83,3 +83,6 @@ set(HEADERS AppParamParser.h
             system_gl.h)
 
 core_add_library(xbmc)
+if(CAP_FOUND)
+  target_compile_definitions(${CORE_LIBRARY} PRIVATE -DHAVE_LIBCAP=1)
+endif()
