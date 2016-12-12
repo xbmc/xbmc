@@ -5257,9 +5257,9 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
   const Property &cat = info[0];
   if (info.size() == 1)
   { // single category
-    if (cat.name == "false" || cat.name == "no")
+    if (cat.name == "false")
       return SYSTEM_ALWAYS_FALSE;
-    else if (cat.name == "true" || cat.name == "yes")
+    else if (cat.name == "true")
       return SYSTEM_ALWAYS_TRUE;
 
     // deprecated begin
@@ -5272,8 +5272,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
       std::string label = CGUIInfoLabel::GetLabel(cat.param(1));
       StringUtils::ToLower(label);
-      // 'true', 'false', 'yes', 'no' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
-      if (label != "true" && label != "false" && label != "yes" && label != "no")
+      // 'true', 'false' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
+      if (label != "true" && label != "false")
       {
         int info2 = TranslateSingleString(cat.param(1), listItemDependent);
         if (info2 > 0)
@@ -5324,8 +5324,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
             // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
             std::string label = CGUIInfoLabel::GetLabel(prop.param(1));
             StringUtils::ToLower(label);
-            // 'true', 'false', 'yes', 'no' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
-            if (label != "true" && label != "false" && label != "yes" && label != "no")
+            // 'true', 'false' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
+            if (label != "true" && label != "false")
             {
               int data2 = TranslateSingleString(prop.param(1), listItemDependent);
               if (data2 > 0)
