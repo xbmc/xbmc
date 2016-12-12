@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Russian – current edition by Roman_V_M -->
 <strings>
-    <string id="30000">Включить Фанарт</string>
-    <string id="30001">Включить Трейлеры с HD-Trailers.net</string>
-    <string id="30002">Предпочитаемый Язык</string>
+    <string id="30000">Загружать фанарт</string>
+    <string id="30004">Включить трейлеры (YouTube)</string>
+    <string id="30001">Включить трейлеры (HD-Trailers.net)</string>
+    <string id="30002">Предпочтительный язык</string>
+    <string id="30003">Получать рейтинги с</string>
+    <string id="30005">Использовать оригинальное название</string>
 </strings>

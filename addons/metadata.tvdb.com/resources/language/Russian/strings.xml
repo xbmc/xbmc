@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Russian – current edition by Roman_V_M -->
 <strings>
-    <string id="30000">Использовать Порядок DVD</string>
-    <string id="30001">Использовать Абсолютный Порядок (Один Сезон)</string>
-    <string id="30002">Включить Фанарт</string>
-    <string id="30003">Предпочтение к Постерам</string>
+    <string id="30000">Использовать порядок DVD</string>
+    <string id="30001">Использовать сквозную нумерацию (один сезон)</string>
+    <string id="30002">Загружать фанарт</string>
+    <string id="30003">Предпочитать постеры</string>
     <string id="30004">Язык</string>
 </strings>
