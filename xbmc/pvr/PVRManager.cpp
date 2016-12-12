@@ -1896,8 +1896,10 @@ bool CPVRManager::CreateChannelEpgs(void)
   if (EpgsCreated())
     return true;
 
+  bool bEpgsCreated = m_channelGroups->CreateChannelEpgs();
+
   CSingleLock lock(m_critSection);
-  m_bEpgsCreated = m_channelGroups->CreateChannelEpgs();
+  m_bEpgsCreated = bEpgsCreated;
   return m_bEpgsCreated;
 }
 
