@@ -22,7 +22,6 @@ addons/library.kodi.adsp/*
 addons/library.kodi.audioengine/*
 addons/library.kodi.game/*
 addons/library.kodi.guilib/*
-addons/library.kodi.peripheral/*
 addons/library.xbmc.addon/*
 addons/library.xbmc.codec/*
 addons/repository.xbmc.org/*
