@@ -256,7 +256,6 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     /* Check to see if the XML file exists in current skin. If not use
        fallback path to find a skin for the addon */
     strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
-
     if (!XFILE::CFile::Exists(strSkinPath))
     {
       /* Check for the matching folder for the skin in the fallback skins folder */
@@ -296,6 +295,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
       return NULL;
     }
   }
+
   // window id's 14000 - 14100 are reserved for addons
   // get first window id that is not in use
   int id = WINDOW_ADDON_START;

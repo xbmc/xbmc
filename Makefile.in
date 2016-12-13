@@ -237,7 +237,6 @@ LIB_DIRS=\
 
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
-	lib/addons/library.kodi.guilib \
 	lib/addons/library.kodi.game \
 
 ESTUARY_MEDIA=addons/skin.estuary/media
@@ -357,7 +356,6 @@ dllloader: exports xbmc/cores/DllLoader/dllloader.a
 libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.addon
 	$(MAKE) -C lib/addons/library.kodi.game
-	$(MAKE) -C lib/addons/library.kodi.guilib
 dvdpcodecs: dllloader
 	$(MAKE) -C lib/libdvd
 
