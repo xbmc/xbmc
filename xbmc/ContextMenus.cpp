@@ -19,7 +19,7 @@
  */
 
 #include "ContextMenus.h"
-#include "guilib/GUIWindowManager.h"
+#include "FileItem.h"
 #include "storage/MediaManager.h"
 
 
@@ -28,7 +28,11 @@ namespace CONTEXTMENU
 
   bool CEjectDisk::IsVisible(const CFileItem& item) const
   {
+#ifdef HAS_DVD_DRIVE
     return item.IsRemovable() && (item.IsDVD() || item.IsCDDA());
+#else
+    return false;
+#endif
   }
 
   bool CEjectDisk::Execute(const CFileItemPtr& item) const
