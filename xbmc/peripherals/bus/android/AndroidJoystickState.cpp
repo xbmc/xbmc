@@ -88,6 +88,13 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
 
   const std::string deviceName = inputDevice.getName();
 
+  // Skip problematic devices
+  if (deviceName == "SONY TV RC MIC 001")
+  {
+    // Sony TV IR + bluetooth remote disconnects after a minute or so of inactivity
+    return false;
+  }
+
   // get the device ID
   m_deviceId = inputDevice.getId();
 
