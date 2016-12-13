@@ -240,7 +240,6 @@ LIBADDON_DIRS=\
 	lib/addons/library.kodi.audioengine \
 	lib/addons/library.xbmc.codec \
 	lib/addons/library.kodi.guilib \
-	lib/addons/library.kodi.peripheral \
 	lib/addons/library.kodi.game \
 
 ESTUARY_MEDIA=addons/skin.estuary/media
@@ -363,7 +362,6 @@ libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.codec
 	$(MAKE) -C lib/addons/library.kodi.game
 	$(MAKE) -C lib/addons/library.kodi.guilib
-	$(MAKE) -C lib/addons/library.kodi.peripheral
 dvdpcodecs: dllloader
 	$(MAKE) -C lib/libdvd
 

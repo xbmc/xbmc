@@ -18,7 +18,6 @@ BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_game_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h
-BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_callbacks.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp
