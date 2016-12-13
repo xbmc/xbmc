@@ -34,6 +34,7 @@ list(APPEND final_message "Bindir: ${bindir}")
 list(APPEND final_message "Includedir: ${includedir}")
 list(APPEND final_message "Datarootdir: ${datarootdir}")
 list(APPEND final_message "Datadir: ${datadir}")
+list(APPEND final_message "Docdir: ${docdir}")
 
 set(PATH_DEFINES -DBIN_INSTALL_PATH=\"${libdir}/kodi\"
                    -DINSTALL_PATH=\"${datarootdir}/kodi\")
