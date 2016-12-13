@@ -36,11 +36,6 @@
 #include "utils/SysfsUtils.h"
 #include "utils/TimeUtils.h"
 
-#if defined(TARGET_ANDROID)
-#include "platform/android/activity/AndroidFeatures.h"
-#include "utils/BitstreamConverter.h"
-#endif
-
 extern "C" {
 #include "libavutil/avutil.h"
 }  // extern "C"
@@ -179,61 +174,6 @@ public:
   {
     memset(p_out, 0x00, sizeof(codec_para_t));
 
-#ifdef TARGET_ANDROID
-    bits_writer_t bs = {0};
-
-    // we are always as large as codec_para_t from headers.
-    CBitstreamConverter::init_bits_writer(&bs, (uint8_t*)p_out, sizeof(codec_para_t), 1);
-
-    // order matters, so pay attention
-    // to codec_para_t in codec_types.h
-    CBitstreamConverter::write_bits(&bs, 32, -1);                   // CODEC_HANDLE handle, init to invalid
-    CBitstreamConverter::write_bits(&bs, 32, -1);                   // CODEC_HANDLE cntl_handle
-    CBitstreamConverter::write_bits(&bs, 32, -1);                   // CODEC_HANDLE sub_handle
-
-    CBitstreamConverter::write_bits(&bs, 32, -1);                   // CODEC_HANDLE audio_utils_handle
-
-    CBitstreamConverter::write_bits(&bs, 32, p_in->stream_type);   // stream_type_t stream_type
-
-    // watch these, using bit fields (which is stupid)
-    CBitstreamConverter::write_bits(&bs,  1, 1);                   // unsigned int has_video:1
-    CBitstreamConverter::write_bits(&bs,  1, 0);                   // unsigned int has_audio:1
-    CBitstreamConverter::write_bits(&bs,  1, 0);                   // unsigned int has_sub:1
-    unsigned int value =  p_in->noblock > 0 ? 1:0;
-    CBitstreamConverter::write_bits(&bs,  1, value);               // unsigned int noblock:1
-    CBitstreamConverter::write_bits(&bs, 28, 0);                   // align back to next word boundary
-
-    CBitstreamConverter::write_bits(&bs, 32, p_in->video_type);    // int video_type
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int audio_type
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int sub_type
-
-    CBitstreamConverter::write_bits(&bs, 32, p_in->video_pid);     // int video_pid
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int audio_pid
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int sub_pid
-
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int audio_channels
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int audio_samplerate
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int vbuf_size
-    CBitstreamConverter::write_bits(&bs, 32, 0);                   // int abuf_size
-
-    CBitstreamConverter::write_bits(&bs, 32, p_in->format);        // am_sysinfo, unsigned int format
-    CBitstreamConverter::write_bits(&bs, 32, p_in->width);         // am_sysinfo, unsigned int width
-    CBitstreamConverter::write_bits(&bs, 32, p_in->height);        // am_sysinfo, unsigned int height
-    CBitstreamConverter::write_bits(&bs, 32, p_in->rate);          // am_sysinfo, unsigned int rate
-    CBitstreamConverter::write_bits(&bs, 32, p_in->extra);         // am_sysinfo, unsigned int extra
-    CBitstreamConverter::write_bits(&bs, 32, p_in->status);        // am_sysinfo, unsigned int status
-    CBitstreamConverter::write_bits(&bs, 32, p_in->ratio);         // am_sysinfo, unsigned int ratio
-    CBitstreamConverter::write_bits(&bs, 32, (unsigned int)p_in->param); // am_sysinfo, unsigned int param
-    unsigned int lo = 0x00000000ffffffff & p_in->ratio64;
-    unsigned int hi = p_in->ratio64 >> 32;
-    CBitstreamConverter::write_bits(&bs, 32, lo);                  // am_sysinfo, unsigned long long ratio64
-    CBitstreamConverter::write_bits(&bs, 32, hi);                  // am_sysinfo, unsigned long long ratio64
-
-    // we do not care about the rest, flush and go.
-    // FYI there are 4.0 to 4.1 differences here.
-    CBitstreamConverter::flush_bits(&bs);
-    //CLog::MemDump((char*)p_out, 0xFF);
-#else
     // direct struct usage, we do not know which flavor
     // so just use what we get from headers and pray.
     p_out->handle             = -1; //init to invalid
@@ -254,7 +194,6 @@ public:
     p_out->am_sysinfo.ratio   = p_in->ratio;
     p_out->am_sysinfo.ratio64 = p_in->ratio64;
     p_out->am_sysinfo.param   = p_in->param;
-#endif
   }
 };
 
@@ -1406,10 +1345,6 @@ CAMLCodec::~CAMLCodec()
 
 bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 {
-#ifdef TARGET_ANDROID
-  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder, android version %d", CAndroidFeatures::GetVersion());
-#endif
-
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_1st_pts = 0;
   m_cur_pts = 0;
@@ -2170,11 +2105,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   CRect gui, display;
   gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 
-#ifdef TARGET_ANDROID
-  display = m_display_rect;
-#else
   display = gui;
-#endif
   if (gui != display)
   {
     float xscale = display.Width() / gui.Width();
