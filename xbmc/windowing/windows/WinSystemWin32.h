@@ -140,6 +140,7 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual bool SetFullScreenEx(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool forceResChange);
+  virtual bool DPIChanged(WORD dpi, RECT windowRect);
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
@@ -162,9 +163,11 @@ public:
   typedef BOOL (WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);
   typedef BOOL (WINAPI *pSetGestureConfig)(HWND, DWORD, UINT, PGESTURECONFIG, UINT);
   typedef BOOL (WINAPI *pCloseGestureInfoHandle)(HGESTUREINFO);
+  typedef BOOL(WINAPI *pEnableNonClientDpiScaling)(HWND);
   pGetGestureInfo         PtrGetGestureInfo;
   pSetGestureConfig       PtrSetGestureConfig;
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
+  pEnableNonClientDpiScaling PtrEnableNonClientDpiScaling;
 
 protected:
   bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);

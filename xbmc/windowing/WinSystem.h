@@ -65,6 +65,7 @@ public:
   virtual bool DestroyWindow(){ return false; }
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) = 0;
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) = 0;
+  virtual bool DPIChanged(WORD dpi, RECT windowRect) = 0;
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
   virtual bool CenterWindow(){return false;}
   virtual bool IsCreated(){ return m_bWindowCreated; }
