@@ -94,9 +94,9 @@ public:
 
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
+  virtual int AddData(uint8_t *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
-  virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
+  virtual int GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual unsigned GetAllowedReferences() { return 4; }
   virtual const char* GetName(void) { return m_pFormatName ? m_pFormatName:"mmal-xxx"; }
