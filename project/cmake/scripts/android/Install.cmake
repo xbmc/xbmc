@@ -91,7 +91,6 @@ foreach(lib IN LISTS required_dyload dyload_optional ITEMS Shairplay)
   endif()
 endforeach()
 add_bundle_file(${SMBCLIENT_LIBRARY} ${libdir} "")
-add_bundle_file(${DEPENDS_PATH}/lib/librtmp.so ${libdir} "")
 
 # Main targets from Makefile.in
 if(CPU MATCHES i686)
