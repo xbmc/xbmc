@@ -27,24 +27,39 @@
 #include "xbmc_codec_types.h"
 #include "libXBMC_addon.h"
 
-#define CODEC_HELPER_DLL_NAME XBMC_DLL_NAME("codec")
-#define CODEC_HELPER_DLL XBMC_DLL("codec")
+extern "C"
+{
+namespace KodiAPI
+{
+namespace V1
+{
+namespace Codec
+{
+
+typedef struct CB_CODEC
+{
+  xbmc_codec_t (*GetCodecByName)(const void* addonData, const char* strCodecName);
+} CB_CodecLib;
+
+} /* namespace Codec */
+} /* namespace V1 */
+} /* namespace KodiAPI */
+} /* extern "C" */
 
 class CHelper_libXBMC_codec
 {
 public:
   CHelper_libXBMC_codec(void)
   {
-    m_libXBMC_codec = NULL;
-    m_Handle        = NULL;
+    m_Handle = nullptr;
+    m_Callbacks = nullptr;
   }
 
   ~CHelper_libXBMC_codec(void)
   {
-    if (m_libXBMC_codec)
+    if (m_Handle && m_Callbacks)
     {
-      CODEC_unregister_me(m_Handle, m_Callbacks);
-      dlclose(m_libXBMC_codec);
+      m_Handle->CodecLib_UnRegisterMe(m_Handle->addonData, m_Callbacks);
     }
   }
 
@@ -55,33 +70,13 @@ public:
    */
   bool RegisterMe(void* handle)
   {
-    m_Handle = handle;
+    m_Handle = static_cast<AddonCB*>(handle);
+    if (m_Handle)
+      m_Callbacks = (KodiAPI::V1::Codec::CB_CODEC*)m_Handle->CodecLib_RegisterMe(m_Handle->addonData);
+    if (!m_Callbacks)
+      fprintf(stderr, "libXBMC_codec-ERROR: CodecLib_RegisterMe can't get callback table from Kodi !!!\n");
 
-    std::string libBasePath;
-    libBasePath  = ((cb_array*)m_Handle)->libPath;
-    libBasePath += CODEC_HELPER_DLL;
-
-    m_libXBMC_codec = dlopen(libBasePath.c_str(), RTLD_LAZY);
-    if (m_libXBMC_codec == NULL)
-    {
-      fprintf(stderr, "Unable to load %s\n", dlerror());
-      return false;
-    }
-
-    CODEC_register_me = (void* (*)(void *HANDLE))
-      dlsym(m_libXBMC_codec, "CODEC_register_me");
-    if (CODEC_register_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-    CODEC_unregister_me = (void (*)(void* HANDLE, void* CB))
-      dlsym(m_libXBMC_codec, "CODEC_unregister_me");
-    if (CODEC_unregister_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-    CODEC_get_codec_by_name = (xbmc_codec_t (*)(void* HANDLE, void* CB, const char* strCodecName))
-        dlsym(m_libXBMC_codec, "CODEC_get_codec_by_name");
-    if (CODEC_get_codec_by_name == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
-
-    m_Callbacks = CODEC_register_me(m_Handle);
-    return m_Callbacks != NULL;
+    return m_Callbacks != nullptr;
   }
 
   /*!
@@ -91,21 +86,10 @@ public:
    */
   xbmc_codec_t GetCodecByName(const char* strCodecName)
   {
-    return CODEC_get_codec_by_name(m_Handle, m_Callbacks, strCodecName);
+    return m_Callbacks->GetCodecByName(m_Handle->addonData, strCodecName);
   }
 
-protected:
-  void* (*CODEC_register_me)(void*);
-  void (*CODEC_unregister_me)(void*, void*);
-  xbmc_codec_t (*CODEC_get_codec_by_name)(void *HANDLE, void* CB, const char* strCodecName);
-
 private:
-  void* m_libXBMC_codec;
-  void* m_Handle;
-  void* m_Callbacks;
-  struct cb_array
-  {
-    const char* libPath;
-  };
+  AddonCB* m_Handle;
+  KodiAPI::V1::Codec::CB_CODEC *m_Callbacks;
 };
-
