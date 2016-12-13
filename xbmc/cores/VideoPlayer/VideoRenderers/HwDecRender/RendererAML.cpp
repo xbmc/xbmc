@@ -233,7 +233,8 @@ void CRendererAML::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
     SysfsUtils::SetInt("/sys/module/amvideo/parameters/omx_pts", pcrscr);
 
-    amlcodec->SetVideoRect(m_sourceRect, m_destRect);
+    if(amlcodec)
+      amlcodec->SetVideoRect(m_sourceRect, m_destRect);
   }
 }
 
