@@ -62,6 +62,8 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CResume>(),
       std::make_shared<CONTEXTMENU::CPlay>(),
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
+      std::make_shared<CONTEXTMENU::CEnableAddon>(),
+      std::make_shared<CONTEXTMENU::CDisableAddon>(),
       std::make_shared<CONTEXTMENU::CAddonSettings>(),
       std::make_shared<CONTEXTMENU::CCheckForUpdates>(),
       std::make_shared<CONTEXTMENU::CEpisodeInfo>(),
