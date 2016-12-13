@@ -70,7 +70,7 @@ private:
     int duration;
   } m_buffers[m_numRenderBuffers];
 
-  int m_prevPts;
+  int m_prevVPts;
   bool m_bConfigured;
   int m_diff_counter;
 };
