@@ -21,9 +21,6 @@
 //#define DEBUG_VERBOSE 1
 
 #include "system.h"
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
 
 #if HAS_GLES == 2
 #include "system_gl.h"

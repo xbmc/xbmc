@@ -18,9 +18,6 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H)
-  #include "config.h"
-#endif
 #include <limits.h>
 #if defined(TARGET_ANDROID)
 #include <unistd.h>

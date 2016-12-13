@@ -1,2 +1,0 @@
-# Does nothing intentionally.
-# This exists solely so we can use AM_INIT_AUTOMAKE in configure.in

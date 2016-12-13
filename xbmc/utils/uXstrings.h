@@ -26,9 +26,6 @@
 #include <string>
 
 #ifndef TARGET_WINDOWS
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif // HAVE_CONFIG_H
 
 #if !defined(HAVE_STD__U16STRING) || !defined(HAVE_STD__U32STRING) 
 #if defined(HAVE_STDINT_H)

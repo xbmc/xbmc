@@ -1,9 +1,0 @@
-SRCS  = CDDARipJob.cpp
-SRCS += CDDARipper.cpp
-SRCS += Encoder.cpp
-SRCS += EncoderFFmpeg.cpp
-
-LIB=cdrip.a
-
-include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

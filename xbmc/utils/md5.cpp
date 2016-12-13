@@ -99,9 +99,6 @@ std::string XBMC::XBMC_MD5::GetMD5(const std::string &text)
 
 #include <sys/types.h>		/* for stupid systems */
 #include <string.h>		/* for memcpy() */
-#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
-#include "../config.h"
-#endif
 
 #ifdef WORDS_BIGENDIAN
 void
