@@ -1553,7 +1553,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   am_private->dumpdemux = false;
   dumpfile_open(am_private);
 
-  m_dll->codec_resume(&am_private->vcodec);
+  m_dll->codec_pause(&am_private->vcodec);
 
   m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
   m_dll->codec_set_video_delay_limited_ms(&am_private->vcodec, 1000);
@@ -1688,9 +1688,10 @@ void CAMLCodec::Reset()
   // restore the speed (some amcodec versions require this)
   if (m_speed != DVD_PLAYSPEED_NORMAL)
   {
-    m_dll->codec_resume(&am_private->vcodec);
     m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
   }
+  m_dll->codec_pause(&am_private->vcodec);
+
   // reset the decoder
   m_dll->codec_reset(&am_private->vcodec);
   m_dll->codec_set_video_delay_limited_ms(&am_private->vcodec, 1000);
@@ -1786,7 +1787,10 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
       Reset();
     }
     if ((m_state & STATE_PREFILLED) == 0 && timesize >= 1.0)
+    {
+      m_dll->codec_resume(&am_private->vcodec);
       m_state |= STATE_PREFILLED;
+    }
   }
 
   int rtn(0);

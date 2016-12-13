@@ -219,7 +219,7 @@ void CRendererAML::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
         ++m_diff_counter;
     }
 
-    if (abs(m_diff_counter) > 10)
+    if (abs(m_diff_counter) > 5)
     {
       set_pts("/sys/class/tsync/pts_pcrscr", pts);
       CLog::Log(LOGDEBUG, "RenderUpdate: Adjusting: ptsclock:%d ptsscr:%d vpts:%d dur:%d diff:%d diffsum:%d", pts, pcrscr, videopts,amli->GetAmlDuration(), diff, m_diff_counter);
