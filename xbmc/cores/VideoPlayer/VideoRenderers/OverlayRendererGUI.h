@@ -44,8 +44,9 @@ public:
   COverlayText(CDVDOverlayText* src);
   virtual ~COverlayText();
   virtual void Render(SRenderState& state);
-  virtual void PrepareRender(const std::string &font, int color, int height, int style,
-                             const std::string &fontcache, const std::string &fontbordercache);
+  using COverlay::PrepareRender;
+  void PrepareRender(const std::string &font, int color, int height, int style,
+                     const std::string &fontcache, const std::string &fontbordercache);
   virtual CGUITextLayout* GetFontLayout(const std::string &font, int color, int height, int style,
                                         const std::string &fontcache, const std::string &fontbordercache);
 

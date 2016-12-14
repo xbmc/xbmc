@@ -1331,7 +1331,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     {
     case AVMEDIA_TYPE_AUDIO:
       {
-        CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(this, pStream);
+        CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(pStream);
         stream = st;
         st->iChannels = pStream->codec->channels;
         st->iSampleRate = pStream->codec->sample_rate;
@@ -1349,7 +1349,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       }
     case AVMEDIA_TYPE_VIDEO:
       {
-        CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(this, pStream);
+        CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(pStream);
         stream = st;
         if(strcmp(m_pFormatContext->iformat->name, "flv") == 0)
           st->bVFR = true;
@@ -1447,7 +1447,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         }
         else
         {
-          CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
+          CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(pStream);
           stream = st;
       
           if(av_dict_get(pStream->metadata, "title", NULL, 0))

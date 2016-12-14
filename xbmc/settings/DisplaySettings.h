@@ -42,7 +42,7 @@ public:
   virtual bool Save(TiXmlNode *settings) const override;
   virtual void Clear() override;
 
-  virtual void OnSettingAction(const CSetting *setting);
+  void OnSettingAction(const CSetting *setting) override;
   virtual bool OnSettingChanging(const CSetting *setting) override;
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 

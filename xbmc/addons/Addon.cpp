@@ -170,7 +170,7 @@ bool CAddon::MeetsVersion(const AddonVersion &version) const
  */
 bool CAddon::HasSettings()
 {
-  return LoadSettings();
+  return LoadSettings(false);
 }
 
 bool CAddon::LoadSettings(bool bForce /* = false*/)
@@ -204,7 +204,7 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
 
 bool CAddon::HasUserSettings()
 {
-  if (!LoadSettings())
+  if (!LoadSettings(false))
     return false;
 
   return m_userSettingsLoaded;
@@ -260,7 +260,7 @@ void CAddon::SaveSettings(void)
 
 std::string CAddon::GetSetting(const std::string& key)
 {
-  if (!LoadSettings())
+  if (!LoadSettings(false))
     return ""; // no settings available
 
   std::map<std::string, std::string>::const_iterator i = m_settings.find(key);
@@ -271,7 +271,7 @@ std::string CAddon::GetSetting(const std::string& key)
 
 void CAddon::UpdateSetting(const std::string& key, const std::string& value)
 {
-  LoadSettings();
+  LoadSettings(false);
   if (key.empty()) return;
   m_settings[key] = value;
 }

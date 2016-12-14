@@ -122,6 +122,7 @@ protected:
   void PlayItem(int iItem, const std::string &player = "");
   virtual bool OnPlayMedia(int iItem, const std::string &player = "") override;
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item, std::string player = "") override;
+  using CGUIMediaWindow::LoadPlayList;
   void LoadPlayList(const std::string& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
   bool ShowIMDB(CFileItemPtr item, const ADDON::ScraperPtr& content, bool fromDB);

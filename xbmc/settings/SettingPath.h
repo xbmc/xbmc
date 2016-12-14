@@ -42,6 +42,7 @@ public:
   void SetSources(const std::vector<std::string> &sources) { m_sources = sources; }
 
 private:
+  using CSettingString::copy;
   void copy(const CSettingPath &setting);
 
   bool m_writable;
