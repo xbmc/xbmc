@@ -20,6 +20,7 @@
 #pragma once
 
 #include "addons/binary/interfaces/AddonInterfaces.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_game.h"
 
 namespace GAME { class CGameClient; }
 
