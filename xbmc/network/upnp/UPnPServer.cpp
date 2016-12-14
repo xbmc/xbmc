@@ -1070,6 +1070,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
                 CBookmark bookmark;
                 bookmark.timeInSeconds = resume;
                 bookmark.totalTimeInSeconds = resume + 100; // not required to be correct
+                bookmark.playerState = new_vals["lastPlayerState"];
 
                 db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
             }

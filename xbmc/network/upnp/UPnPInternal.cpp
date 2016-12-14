@@ -338,6 +338,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_Description.long_description = tag.m_strPlot.c_str();
     object.m_Description.rating = tag.m_strMPAARating.c_str();
     object.m_MiscInfo.last_position = (NPT_UInt32)tag.m_resumePoint.timeInSeconds;
+    object.m_XbmcInfo.last_playerstate = tag.m_resumePoint.playerState.c_str();
     object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsW3CDateTime().c_str();
     object.m_MiscInfo.play_count = tag.m_playCount;
     if (resource) {
@@ -860,6 +861,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;
         tag.m_resumePoint.timeInSeconds = object.m_MiscInfo.last_position;
+        tag.m_resumePoint.playerState = object.m_XbmcInfo.last_playerstate;
       }
       if (!resource->m_Resolution.IsEmpty())
       {

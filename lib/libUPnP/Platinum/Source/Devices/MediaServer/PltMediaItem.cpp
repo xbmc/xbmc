@@ -256,6 +256,7 @@ PLT_MediaObject::Reset()
 
     m_Resources.Clear();
 
+    m_XbmcInfo.last_playerstate = "";
     m_XbmcInfo.date_added = "";
     m_XbmcInfo.rating = 0.0f;
     m_XbmcInfo.votes = 0;
@@ -625,6 +626,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
       didl += "</xbmc:userrating>";
     }
 
+    // xbmc last playback state
+    if (mask & PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE && !m_XbmcInfo.last_playerstate.IsEmpty()) {
+      didl += "<xbmc:lastPlayerState>";
+      PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.last_playerstate);
+      didl += "</xbmc:lastPlayerState>";
+    }
+
     // class is required
     didl += "<upnp:class";
 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
@@ -824,6 +832,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
         }    
         m_Resources.Add(resource);
     }
+
+    PLT_XmlHelper::GetChildText(entry, "lastPlayerState", m_XbmcInfo.last_playerstate, didl_namespace_xbmc, 2048);
 
     PLT_XmlHelper::GetChildText(entry, "dateadded", m_XbmcInfo.date_added, didl_namespace_xbmc, 256);
     // parse date and make sure it's valid
