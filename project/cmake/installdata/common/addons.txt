@@ -19,7 +19,6 @@ addons/xbmc.pvr/*
 addons/xbmc.python/*
 addons/xbmc.webinterface/*
 addons/library.kodi.game/*
-addons/library.kodi.guilib/*
 addons/library.xbmc.addon/*
 addons/repository.xbmc.org/*
 addons/webinterface.default/*

@@ -2192,9 +2192,7 @@ OUTPUT_FILES="Makefile \
     xbmc/windowing/Makefile \
     xbmc/windowing/egl/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
-    lib/addons/library.kodi.audioengine/Makefile \
     lib/addons/library.kodi.game/Makefile \
-    lib/addons/library.kodi.guilib/Makefile \
     tools/Linux/kodi.sh \
     tools/Linux/kodi-standalone.sh \
     tools/Linux/kodi-xsession.desktop \
