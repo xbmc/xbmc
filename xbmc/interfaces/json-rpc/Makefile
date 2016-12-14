@@ -27,7 +27,7 @@ JSON_SRC =  $(JSON_VERSION_SRC) schema/license.txt schema/methods.json schema/ty
 
 all: $(GENERATED_JSON) $(GENERATED_ADDON_JSON) $(LIB)
 
--include ../../../Makefile.include
+-include ../../../tools/depends/Makefile.include
 ifeq ($(wildcard $(JSON_BUILDER)),)
   JSON_BUILDER = $(shell which JsonSchemaBuilder)
 ifeq ($(JSON_BUILDER),)
