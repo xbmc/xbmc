@@ -140,7 +140,6 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual bool SetFullScreenEx(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool forceResChange);
-  virtual bool DPIChanged(WORD dpi, RECT windowRect);
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
@@ -158,6 +157,7 @@ public:
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }
   bool IsAlteringWindow() { return m_IsAlteringWindow; }
+  bool DPIChanged(WORD dpi, RECT windowRect);
 
   // touchscreen support
   typedef BOOL (WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);
