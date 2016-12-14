@@ -31,6 +31,7 @@
 #include "network/Network.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/Base64.h"
 #include "utils/XMLUtils.h"
 #include "URL.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
@@ -56,6 +57,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->WakeOnLan          = WakeOnLan;
   m_callbacks->GetSetting         = GetAddonSetting;
   m_callbacks->TranslateSpecialProtocol = TranslateSpecialProtocol;
+  m_callbacks->EncodeBase64				= EncodeBase64;
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
   m_callbacks->GetLocalizedString = GetLocalizedString;
   m_callbacks->GetDVDMenuLanguage = GetDVDMenuLanguage;
@@ -283,6 +285,22 @@ char* CAddonCallbacksAddon::TranslateSpecialProtocol(const char *strSource)
   {
     if (strSource)
       return strdup(CSpecialProtocol::TranslatePath(strSource).c_str());
+    else
+      return NULL;
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - exception '%s' caught", __FUNCTION__, e.what());
+    return NULL;
+  }
+}
+
+char* CAddonCallbacksAddon::EncodeBase64(const uint8_t *data, const size_t data_size)
+{
+  try
+  {
+    if (data && data_size)
+      return strdup(Base64::Encode(std::string(reinterpret_cast<const char*>(data), data_size)).c_str());
     else
       return NULL;
   }

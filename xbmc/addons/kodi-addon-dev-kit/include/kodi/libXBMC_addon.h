@@ -229,6 +229,10 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_translate_special");
       if (XBMC_translate_special == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      XBMC_encode_base64 = (char* (*)(void* HANDLE, void* CB, const uint8_t* data, const size_t data_size))
+        dlsym(m_libXBMC_addon, "XBMC_encode_base64");
+      if (XBMC_encode_base64 == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       XBMC_queue_notification = (void (*)(void* HANDLE, void* CB, const queue_msg_t loglevel, const char *msg))
         dlsym(m_libXBMC_addon, "XBMC_queue_notification");
       if (XBMC_queue_notification == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -391,6 +395,17 @@ namespace ADDON
     char *TranslateSpecialProtocol(const char *source)
     {
       return XBMC_translate_special(m_Handle, m_Callbacks, source);
+    }
+
+    /*!
+    * @brief Encodes binary data t a base64 string representation.
+    * @param data The data wich will be encoded.
+    * @param data_size The size in bytes of the data.
+    * @return The base64 encoded string. Must be freed by calling FreeString() when done.
+    */
+    char *EncodeBase64(const uint8_t *data, const size_t data_size)
+    {
+      return XBMC_encode_base64(m_Handle, m_Callbacks, data, data_size);
     }
 
     /*!
@@ -732,6 +747,7 @@ namespace ADDON
     void (*XBMC_log)(void *HANDLE, void* CB, const addon_log_t loglevel, const char *msg);
     bool (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
     char*(*XBMC_translate_special)(void *HANDLE, void* CB, const char* source);
+    char*(*XBMC_encode_base64)(void *HANDLE, void* CB, const uint8_t* data, const size_t data_size);
     void (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
     bool (*XBMC_wake_on_lan)(void *HANDLE, void* CB, const char* mac);
     char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
