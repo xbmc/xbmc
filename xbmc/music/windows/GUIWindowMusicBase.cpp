@@ -669,7 +669,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       return;
     }
   }
-  if (pItem->m_bIsFolder || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
+  if (pItem->m_bIsFolder)
   {
     // Check if we add a locked share
     if ( pItem->m_bIsShareOrDrive )
@@ -996,7 +996,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 #endif
 
   // if its a folder, build a playlist
-  if ((pItem->m_bIsFolder && !pItem->IsPlugin()) || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
+  if (pItem->m_bIsFolder && !pItem->IsPlugin())
   {
     // make a copy so that we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
