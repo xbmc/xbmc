@@ -319,6 +319,7 @@
 #define CONTAINER_VIEWCOUNT         381
 #define CONTAINER_SHOWTITLE         382
 #define CONTAINER_PLUGINCATEGORY    383
+#define CONTAINER_ACTUAL_ITEMS      384
 
 #define MUSICPM_ENABLED             390
 #define MUSICPM_SONGSPLAYED         391
@@ -347,13 +348,6 @@
 #define STRING_STARTS_WITH          422
 #define STRING_ENDS_WITH            423
 #define STRING_CONTAINS             424
-// deprecated begin
-// should be removed before L*** v18
-#define STRING_COMPARE              425
-#define STRING_STR                  426
-#define STRING_STR_LEFT             428
-#define STRING_STR_RIGHT            429
-// deprecated end
 
 #define INTEGER_IS_EQUAL            450
 #define INTEGER_GREATER_THAN        451

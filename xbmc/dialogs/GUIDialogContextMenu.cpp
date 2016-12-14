@@ -24,7 +24,6 @@
 #include "guilib/GUIControlGroupList.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
-#include "Autorun.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "Util.h"
@@ -38,7 +37,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "GUIDialogYesNo.h"
-#include "addons/AddonManager.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
@@ -225,20 +223,6 @@ bool CGUIDialogContextMenu::SourcesMenu(const std::string &strType, const CFileI
 
 void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons)
 {
-  // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
-  if (item && item->IsRemovable())
-  {
-    if (item->IsDVD() || item->IsCDDA())
-    {
-      buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
-    }
-    else // Must be HDD
-    {
-      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420);  // Eject Removable HDD!
-    }
-  }
-
-
   // Next, Add buttons to the ContextMenu that should ONLY be visible for sources and not autosourced items
   CMediaSource *share = GetShare(type, item.get());
 
@@ -292,21 +276,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
 {
   // buttons that are available on both sources and autosourced items
   if (!item) return false;
-
-  switch (button)
-  {
-  case CONTEXT_BUTTON_EJECT_DRIVE:
-    return g_mediaManager.Eject(item->GetPath());
-
-#ifdef HAS_DVD_DRIVE
-  case CONTEXT_BUTTON_EJECT_DISC:
-    g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
-#endif
-    return true;
-  default:
-    break;
-  }
-
+  
   // the rest of the operations require a valid share
   CMediaSource *share = GetShare(type, item.get());
   if (!share) return false;

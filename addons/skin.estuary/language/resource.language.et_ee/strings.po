@@ -52,14 +52,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energia valikud"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albumi andmed"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanalite grupp"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Lokaalsed subtiitrid on saadaval"
@@ -67,7 +59,3 @@ msgstr "Lokaalsed subtiitrid on saadaval"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Nihe"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Peida"

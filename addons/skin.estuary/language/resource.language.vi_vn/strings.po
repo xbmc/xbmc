@@ -68,14 +68,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Tùy chọn nguồn"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Thông tin album"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Nhóm kênh"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Phụ đề sẵn có trong máy"
@@ -83,7 +75,3 @@ msgstr "Phụ đề sẵn có trong máy"
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Thiết lập kênh"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Ẩn"

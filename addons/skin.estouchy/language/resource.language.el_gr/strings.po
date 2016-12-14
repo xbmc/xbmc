@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "ΕΠΑΝΑΦΟΡΑ"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Ταχύτητα αναπαραγωγής"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Χρόνος Λήξης"
@@ -139,10 +143,6 @@ msgstr "Τελευταία Ενημέρωση"
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Πάροχος δεδομένων"
-
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Χρήση Μνήμης:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -208,21 +208,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Πλήκτρα Κατηγοριών Κεντρικού Μενού"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Σύνδεσμοι Προσθέτων Αρχικής Οθόνης"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Διάφορες Επιλογές"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Πληροφορίες Καιρού Αρχικής Οθόνης και πλήκτρο"
+msgid "Backgrounds"
+msgstr "Υπόβαθρα"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

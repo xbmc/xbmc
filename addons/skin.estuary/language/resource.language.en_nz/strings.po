@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Unwatched movies"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "No disclaimer"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Download icons"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Rated"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Most played channels"
+msgid "Recently played channels"
+msgstr "Recently played channels"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -108,21 +104,9 @@ msgctxt "#31022"
 msgid "Sort by"
 msgstr "Sort by"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Next tracks"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No favourites found. You can add any item from media views to this list by using the context menu."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Go to albums"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Go to songs"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -131,10 +115,6 @@ msgstr "Show fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Last logged in"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Memory used"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -160,10 +140,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "items"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Tracklist"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Rewind"
@@ -171,10 +147,6 @@ msgstr "Rewind"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Fast forward"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Cancel update"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -200,17 +172,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Delete group"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Read more..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Available"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Press [B]Up[/B] to rewind or fast-forward"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -232,10 +196,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Subtitle download"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Go to playlist"
@@ -248,29 +208,13 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatic Login on startup"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Updates available"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minutes"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Main menu items"
 
-msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sections"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "unwatched"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -292,10 +236,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Last Updated"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Add media sources"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "by"
@@ -304,29 +244,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Power Options"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Titles"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Library root"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Movie sets"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Play optical disc"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Previous location"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Next location"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -335,10 +255,6 @@ msgstr "Cast not available"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Ends at"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Album info"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -352,22 +268,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Visualisation settings"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Channel Group"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadata"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Provider settings"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Content scanning options"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Available groups"
@@ -376,10 +276,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Search trailer"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Download subtitles"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Video menu"
@@ -387,10 +283,6 @@ msgstr "Video menu"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Show weather info in top bar"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Show media flags for movies / episodes / music videos"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -407,10 +299,6 @@ msgstr "Channel options"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Select your Kodi user profile[CR]to login and continue"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Icon Wall"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -443,14 +331,6 @@ msgstr "Teletext"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "WideList"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Use custom global background"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Choose image path"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -536,14 +416,10 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Main menu-related settings: Configure the home screen to your likings."
 
-msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Choose home fanart pack"
-
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Hide"
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Enter add-on browser"

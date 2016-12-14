@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Katsomattomat elokuvat"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Ei huomautusta"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Lataa kuvakkeet"
@@ -78,7 +74,7 @@ msgstr "Toistamattomat albumit"
 
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Viimeaikaiset tallennukset"
+msgstr "Viimeksi tallennetut ohjelmat"
 
 msgctxt "#31016"
 msgid "Recently played channels"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Ikäraja"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Eniten katsotut kanavat"
+msgid "Recently played channels"
+msgstr "Viimeksi kuunnellut kanavat"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Näkymä"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Seuraavat raidat"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Suosikkeja ei löytynyt. Avaa sisältövalikko haluamasi mediatiedoston kohdalla ja valitse \"Lisää suosikkeihin\"."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Siirry albumeihin"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Siirry kappaleisiin"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -137,8 +121,8 @@ msgid "Last logged in"
 msgstr "Viimeksi kirjauduttu"
 
 msgctxt "#31030"
-msgid "Memory used"
-msgstr "Muistin käyttö"
+msgid "System memory usage"
+msgstr "Järjestelmän muistinkäyttö"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,21 +148,13 @@ msgctxt "#31036"
 msgid "items"
 msgstr "kohdetta"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Kappalelista"
-
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Kelaa taaksepäin"
+msgstr "Kelaus taaksepäin"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "Kelaa eteenpäin"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Peruuta päivitys"
+msgstr "Kelaus eteenpäin"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +180,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Poista ryhmä"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Lue lisää..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Saatavilla"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Kelaa painamalla [B]Ylös[/B]"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +204,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Kelaa painamalla [B]Vasen[/B] tai [B]Oikea[/B]"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Tekstityksen lataus"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Avaa toistolista"
@@ -252,29 +216,17 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automaattinen kirjautuminen käynnistyksessä"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Päivityksiä saatavilla"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minuuttia"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Päävalikko"
 
 msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Pikakuvakkeet eri mediatyyppien tiedostonäkymiin. Tiedostonäkymän kautta voit lisätä uusia lähteitä mediakirjastoosi."
+msgid "Choose weather fanart pack"
+msgstr "Valitse säätietojen taustakuvapaketti"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Osiot"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "katsomaton"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +248,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Viimeksi päivitetty"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Lisää medialähteitä"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "Tekijä:"
@@ -308,29 +256,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Virta-asetukset"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Nimet"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Kirjaston päävalikko"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Elokuvaryhmät"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Toista optinen levy"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Edellinen sijainti"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Seuraava sijainti"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -340,37 +268,17 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Päättyy"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albumitiedot"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Sanoitukset-lisäosa"
+msgstr "Sanoituslisäosa"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Sanoitukset-lisäosan asetukset"
+msgstr "Sanoituslisäosan asetukset"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Visualisoinnin asetukset"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanavaryhmä"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Lisätiedot"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Tarjoaja-asetukset"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Sisällön hakuasetukset"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -380,10 +288,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Etsi traileria"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Lataa tekstitykset"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Elokuvavalikko"
@@ -392,17 +296,13 @@ msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Näytä säätiedot yläpalkissa"
 
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Näytä video- ja musiikkitiedostojen mediatiedot"
-
 msgctxt "#31095"
 msgid "Use slide animations"
 msgstr "Käytä liukuanimaatioita"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Paikallinen tekstitys saatavilla"
+msgstr "Paikallinen tekstitys havaittu"
 
 msgctxt "#31097"
 msgid "Channel options"
@@ -413,7 +313,7 @@ msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
 
 msgctxt "#31099"
-msgid "Icon Wall"
+msgid "IconWall"
 msgstr "Kuvakeseinä"
 
 msgctxt "#31100"
@@ -447,14 +347,6 @@ msgstr "Teksti-tv"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Leveä lista"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Valinnainen taustakuva käytössä"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Valitse kuvan sijainti"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -541,17 +433,109 @@ msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Tämä kategoria sisältää päävalikkoon liittyvät asetukset."
 
 msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Valitse päävalikon taustakuvapaketti"
+msgid "Choose skin fanart pack"
+msgstr "Valitse ulkoasun taustakuvapaketti"
 
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Piilota"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Jäljellä"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Valitse nähdäksesi viimeisimmät muutokset..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR-tiedot"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Soittimen tiedot"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Videon purkutapa"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Pikselimuoto"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Version muutokset"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Toistonopeus"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "PVR-ominaisuus ei ole käytössä. Jos haluat ottaa sen käyttöön, valitse PVR-asiakasohjelma lisäosaselaimen kautta ja muokkaa sen asetukset kohdalleen. Lisätietoja löytyy osoitteesta http://kodi.wiki/view/PVR"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Avaa lisäosaselain"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Etsi lisäosista"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategoriat"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Valitse lajityyppien taustakuvapaketti"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Ohjelmavarasto"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Katsomattomat musiikkivideot"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Satunnaiset musiikkivideot"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Yhtään tämän tyyppistä lisäosaa ei ole asennettu. Avaa lisäosaselain, jos haluat asentaa kehittäjäyhteisömme luomia lisäosia."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Paina OK vaihtaaksesi sijaintia"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Kirjanmerkkejä ei ole luotu"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Valitse taustakuva"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Muokkaa kategorioita"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Kosketusnäyttötila"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Kuvat"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Näytä mediakuvakkeet"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numeronäppäimistö"

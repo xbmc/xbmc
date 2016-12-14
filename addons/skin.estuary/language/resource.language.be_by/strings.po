@@ -40,14 +40,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Power Options"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Зьвесткі альбома"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Channel Group"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Даступныя лакальныя субтытры"
@@ -55,7 +47,3 @@ msgstr "Даступныя лакальныя субтытры"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Hide"

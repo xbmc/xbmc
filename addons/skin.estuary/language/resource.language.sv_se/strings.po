@@ -44,10 +44,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Osedda filmer"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Ingen ansvarsfriskrivning"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Ladda ner ikoner"
@@ -85,8 +81,8 @@ msgid "Rated"
 msgstr "Betygsatt"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Mest spelade kanaler"
+msgid "Recently played channels"
+msgstr "Senast spelade kanaler"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -108,21 +104,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Vytyp"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Nästa spår"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Inga favoriter hittades. Du kan lägga till objekt från media visningar till den här listan genom att använda snabbmenyn."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Gå till album"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Go till låtar"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -131,10 +115,6 @@ msgstr "Visa fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Senast inloggad"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Använd minne"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -160,10 +140,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "objekt"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Spellista"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Spola bakåt"
@@ -171,10 +147,6 @@ msgstr "Spola bakåt"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Spola fram"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Avbryt uppdatering"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -196,17 +168,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Ta bort grupp"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Läs mer..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Tillgänglig"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Tryck [B]Upp[/B] för att spola tillbaka eller snabbspola framåt"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -228,10 +192,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Tryck [B]Vänster[/B] för att spola tillbaka eller [B]Höger[/B] för att snabbspola framåt"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Ladda ner undertext"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Gå till spellista"
@@ -244,29 +204,17 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatisk inloggning vid uppstart"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Uppdateringar tillgängliga"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minuter"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Huvudmeny objekt"
 
 msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Genvägar till avsnitt \"Filer\" för varje mediatyp. Gå dit för att lägga till ytterligare källor för dina databaser."
+msgid "Choose weather fanart pack"
+msgstr "Välj fanart för väder"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sektioner"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "osedda"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -288,10 +236,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Senast uppdaterad"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Lägg till mediakällor"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "av"
@@ -300,25 +244,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Energialternativ"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Titlar"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "bibliotek root"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Spela optisk skiva"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Föregående plats"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Nästa plats"
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmsamling"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -327,10 +255,6 @@ msgstr "Roller inte tillgängliga"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Slutar vid"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Albuminfo"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -344,22 +268,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Visualiseringsinställningar"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Kanalgrupp"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadata"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Inställningar för leverantör"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Alternativ för innehållsskanning"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Tillgängliga grupper"
@@ -368,10 +276,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Sök efter trailer"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Ladda hem undertexter"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Video-meny"
@@ -379,10 +283,6 @@ msgstr "Video-meny"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Visa väderleksinformation i översta fältet"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Visa media-flaggor för filmer / avsnitt / musikvideor"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -399,10 +299,6 @@ msgstr "Kanalalternativ"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Ikonvägg"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -431,14 +327,6 @@ msgstr "Lägg till videokällor och ange lämplig innehållstyp för att fylla d
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Texttv"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Använd en anpassad global bakgrund"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Välj bild sökväg"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -528,6 +416,38 @@ msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Dölj"
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Återstående"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Klicka här för att se de senaste ändringarna..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR-info"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Video-avkodare"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Pixel-format"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Ändringar för version"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Uppspelningshastighet"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Ange tilläggsutforskare"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Sök i tillägg"

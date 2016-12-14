@@ -300,6 +300,14 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   TiXmlElement resume("resume");
   XMLUtils::SetFloat(&resume, "position", (float)m_resumePoint.timeInSeconds);
   XMLUtils::SetFloat(&resume, "total", (float)m_resumePoint.totalTimeInSeconds);
+  if (!m_resumePoint.playerState.empty())
+  {
+    TiXmlElement playerstate("playerstate");
+    CXBMCTinyXML doc;
+    doc.Parse(m_resumePoint.playerState);
+    playerstate.InsertEndChild(*doc.RootElement());
+    resume.InsertEndChild(playerstate);
+  }
   movie->InsertEndChild(resume);
 
   XMLUtils::SetDateTime(movie, "dateadded", m_dateAdded);
@@ -408,6 +416,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_parentPathID;
     ar << m_resumePoint.timeInSeconds;
     ar << m_resumePoint.totalTimeInSeconds;
+    ar << m_resumePoint.playerState;
     ar << m_iIdShow;
     ar << m_dateAdded.GetAsDBDateTime();
     ar << m_type;
@@ -524,6 +533,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_parentPathID;
     ar >> m_resumePoint.timeInSeconds;
     ar >> m_resumePoint.totalTimeInSeconds;
+    ar >> m_resumePoint.playerState;
     ar >> m_iIdShow;
 
     std::string dateAdded;
@@ -1187,6 +1197,13 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   {
     XMLUtils::GetDouble(resume, "position", m_resumePoint.timeInSeconds);
     XMLUtils::GetDouble(resume, "total", m_resumePoint.totalTimeInSeconds);
+    const TiXmlElement *playerstate = resume->FirstChildElement("playerstate");
+    if (playerstate)
+    {
+      const TiXmlElement *value = playerstate->FirstChildElement();
+      if (value)
+        m_resumePoint.playerState << *value;
+    }
   }
 
   XMLUtils::GetDateTime(movie, "dateadded", m_dateAdded);

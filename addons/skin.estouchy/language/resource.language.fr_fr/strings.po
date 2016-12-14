@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "RETOUR RAPIDE"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Vitesse de lecture"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Heure de fin"
@@ -141,8 +145,8 @@ msgid "Data provider"
 msgstr "Fournisseur de données"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Mémoire utilisée :"
+msgid "System Memory Used:"
+msgstr "Mémoire système utilisée :"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -192,6 +196,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Configuration des actions pouvant être effectuées pendant la lecture · Configuration de la manière dont le média est lu"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Configuration des sources de la bibliothèque · Configuration de la manière dont les listes de média affichent le contenu · Configuration de la navigation des listes de la bibliothèque"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Configuration de l'habillage · Configuration de la région · Configuration du contrôle · Configuration de l'économiseur d'écran · Configuration du verrouillage maître"
@@ -208,21 +216,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Sélectionner le profil utilisateur Kodi[CR]pour s'identifier et poursuivre"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Boutons des catégories du menu d'accueil"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Liens rapides d'extensions de la page d'accueil"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Options diverses"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Bouton et infos météo de l'écran d'accueil"
+msgid "Backgrounds"
+msgstr "Arrières-plans"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

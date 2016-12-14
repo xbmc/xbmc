@@ -36,18 +36,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Streym stillingar"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Útgávu upplýsing"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Rás bólkur"
-
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Stórt"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Goym"

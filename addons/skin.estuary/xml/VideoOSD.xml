@@ -163,7 +163,7 @@
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
 						<onclick>ActivateWindow(Teletext)</onclick>
-						<visible>VideoPlayer.Content(livetv)</visible>
+						<visible>Pvr.HasTxt</visible>
 					</control>
 					<control type="radiobutton" id="704">
 						<include content="OSDButton">

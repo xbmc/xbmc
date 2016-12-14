@@ -129,7 +129,7 @@ install(FILES ${CORE_SOURCE_DIR}/copying.txt
               ${CORE_SOURCE_DIR}/LICENSE.GPL
               ${CORE_SOURCE_DIR}/version.txt
               ${CORE_SOURCE_DIR}/docs/README.linux
-        DESTINATION ${datarootdir}/doc/${APP_NAME_LC}
+        DESTINATION ${docdir}
         COMPONENT kodi)
 
 install(FILES ${CORE_SOURCE_DIR}/privacy-policy.txt

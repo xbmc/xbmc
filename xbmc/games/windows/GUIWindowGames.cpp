@@ -256,7 +256,11 @@ bool CGUIWindowGames::GetDirectory(const std::string &strDirectory, CFileItemLis
   // Set label
   std::string label;
   if (items.GetLabel().empty())
-    m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("games"), &label);
+  {
+    std::string source;
+    if (m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("games"), &source))
+      label = std::move(source);
+  }
 
   if (!label.empty())
     items.SetLabel(label);

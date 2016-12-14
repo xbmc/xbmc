@@ -93,7 +93,7 @@ set(INCLUDES ${CORE_SOURCE_DIR}
              ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
 
 find_package(PkgConfig)
-if(CMAKE_CROSSCOMPILING)
+if(KODI_DEPENDSBUILD)
   if(PKG_CONFIG_EXECUTABLE)
     set(PKG_CONFIG_FOUND TRUE)
   endif()
@@ -118,7 +118,7 @@ endif()
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH XSLT
                   Alsa UDEV DBus Avahi SmbClient
-                  PulseAudio VDPAU VAAPI)
+                  PulseAudio VDPAU VAAPI Bluetooth CAP)
 
 # Required, dyloaded deps
 set(required_dyload Curl ASS)

@@ -140,10 +140,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Poskytovatel dat"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Využitá paměť:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Naposledy přihlášen"
@@ -184,21 +180,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Vyberte váš uživatelské profil Kodi[CR]pro přihlášení a pokračování"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Tlačítka kategorií domovského menu"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Rychlé odkazy rozšíření úvodní obrazovky"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Různá nastavení"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Tlačítko a informace o počasí úvodní obrazovky"
+msgid "Backgrounds"
+msgstr "Pozadí"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

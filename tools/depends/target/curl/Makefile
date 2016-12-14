@@ -6,14 +6,14 @@ LIBNAME=curl
 ifeq (osx, $(findstring osx, $(OS)))
 VERSION=7.21.6
 else
-VERSION=7.50.1
+VERSION=7.51.0
 endif
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
-          --without-libssh2 --disable-ntlm-wb --enable-ipv6 --without-librtmp
+          --without-libssh2 --disable-ntlm-wb --enable-ipv6
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 

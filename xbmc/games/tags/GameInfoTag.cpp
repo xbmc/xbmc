@@ -30,8 +30,12 @@ void CGameInfoTag::Reset()
 {
   m_bLoaded = false;
   m_strURL.clear();
-  m_strName.clear();
+  m_strTitle.clear();
   m_strPlatform.clear();
+  m_genres.clear();
+  m_strDeveloper.clear();
+  m_strOverview.clear();
+  m_year = 0;
   m_strID.clear();
   m_strRegion.clear();
   m_strPublisher.clear();
@@ -41,14 +45,18 @@ void CGameInfoTag::Reset()
   m_strGameClient.clear();
 }
 
-const CGameInfoTag& CGameInfoTag::operator=(const CGameInfoTag& tag)
+CGameInfoTag& CGameInfoTag::operator=(const CGameInfoTag& tag)
 {
   if (this != &tag)
   {
     m_bLoaded          = tag.m_bLoaded;
     m_strURL           = tag.m_strURL;
-    m_strName          = tag.m_strName;
+    m_strTitle         = tag.m_strTitle;
     m_strPlatform      = tag.m_strPlatform;
+    m_genres           = tag.m_genres;
+    m_strDeveloper     = tag.m_strDeveloper;
+    m_strOverview      = tag.m_strOverview;
+    m_year             = tag.m_year;
     m_strID            = tag.m_strID;
     m_strRegion        = tag.m_strRegion;
     m_strPublisher     = tag.m_strPublisher;
@@ -64,19 +72,26 @@ bool CGameInfoTag::operator==(const CGameInfoTag& tag) const
 {
   if (this != &tag)
   {
-    // Two tags can't be equal if they aren't loaded
-    if (!m_bLoaded || !tag.m_bLoaded) return false;
+    if (m_bLoaded != tag.m_bLoaded)
+      return false;
 
-    if (m_strURL           != tag.m_strURL)           return false;
-    if (m_strName          != tag.m_strName)          return false;
-    if (m_strPlatform      != tag.m_strPlatform)      return false;
-    if (m_strID            != tag.m_strID)            return false;
-    if (m_strRegion        != tag.m_strRegion)        return false;
-    if (m_strPublisher     != tag.m_strPublisher)     return false;
-    if (m_strFormat        != tag.m_strFormat)        return false;
-    if (m_strCartridgeType != tag.m_strCartridgeType) return false;
-    if (m_strSavestate     != tag.m_strSavestate)     return false;
-    if (m_strGameClient    != tag.m_strGameClient)    return false;
+    if (m_bLoaded)
+    {
+      if (m_strURL           != tag.m_strURL)           return false;
+      if (m_strTitle         != tag.m_strTitle)         return false;
+      if (m_strPlatform      != tag.m_strPlatform)      return false;
+      if (m_genres           != tag.m_genres)           return false;
+      if (m_strDeveloper     != tag.m_strDeveloper)     return false;
+      if (m_strOverview      != tag.m_strOverview)      return false;
+      if (m_year             != tag.m_year)             return false;
+      if (m_strID            != tag.m_strID)            return false;
+      if (m_strRegion        != tag.m_strRegion)        return false;
+      if (m_strPublisher     != tag.m_strPublisher)     return false;
+      if (m_strFormat        != tag.m_strFormat)        return false;
+      if (m_strCartridgeType != tag.m_strCartridgeType) return false;
+      if (m_strSavestate     != tag.m_strSavestate)     return false;
+      if (m_strGameClient    != tag.m_strGameClient)    return false;
+    }
   }
   return true;
 }
@@ -86,23 +101,31 @@ void CGameInfoTag::Archive(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_bLoaded;
-    ar << std::string(m_strURL);
-    ar << std::string(m_strName);
-    ar << std::string(m_strPlatform);
-    ar << std::string(m_strID);
-    ar << std::string(m_strRegion);
-    ar << std::string(m_strPublisher);
-    ar << std::string(m_strFormat);
-    ar << std::string(m_strCartridgeType);
-    ar << std::string(m_strSavestate);
-    ar << std::string(m_strGameClient);
+    ar << m_strURL;
+    ar << m_strTitle;
+    ar << m_strPlatform;
+    ar << m_genres;
+    ar << m_strDeveloper;
+    ar << m_strOverview;
+    ar << m_year;
+    ar << m_strID;
+    ar << m_strRegion;
+    ar << m_strPublisher;
+    ar << m_strFormat;
+    ar << m_strCartridgeType;
+    ar << m_strSavestate;
+    ar << m_strGameClient;
   }
   else
   {
     ar >> m_bLoaded;
     ar >> m_strURL;
-    ar >> m_strName;
+    ar >> m_strTitle;
     ar >> m_strPlatform;
+    ar >> m_genres;
+    ar >> m_strDeveloper;
+    ar >> m_strOverview;
+    ar >> m_year;
     ar >> m_strID;
     ar >> m_strRegion;
     ar >> m_strPublisher;
@@ -117,8 +140,12 @@ void CGameInfoTag::Serialize(CVariant& value) const
 {
   value["loaded"]        = m_bLoaded;
   value["url"]           = m_strURL;
-  value["name"]          = m_strName;
+  value["name"]          = m_strTitle;
   value["platform"]      = m_strPlatform;
+  value["genres"]        = m_genres;
+  value["developer"]     = m_strDeveloper;
+  value["overview"]      = m_strOverview;
+  value["year"]          = m_year;
   value["id"]            = m_strID;
   value["region"]        = m_strRegion;
   value["publisher"]     = m_strPublisher;

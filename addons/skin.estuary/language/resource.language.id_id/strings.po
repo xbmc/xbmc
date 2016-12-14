@@ -84,25 +84,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Pilihan Batere"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Info Album"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Add-on lirik"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grup Kanal"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Pilihan pemindaian konten"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "unduh sub judul"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -119,7 +103,3 @@ msgstr "Pilih profil pengguna Kodi Anda [CR] untuk login dan lanjutkan"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Sembunyikan"

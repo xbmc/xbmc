@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Data verskaffer"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Geheue Gebruik:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Laaste IngeLog"
@@ -168,21 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selekteer jou Kodi gebruiker Profiel[CR]om in te log en voort te gaan"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Tuis Kieslys Kategorie Knoppies"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Tuis Kieslys Byvoegsel Vinnige Skakels"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Allerlei Opsies"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Tuis Skerm Weer Info en knoppie"
+msgid "Backgrounds"
+msgstr "Agtergronde"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

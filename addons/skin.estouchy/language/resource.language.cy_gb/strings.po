@@ -116,10 +116,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Darparwr data"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Defnydd Cof:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Mewngofnodwyd Ddiwethaf"
@@ -152,9 +148,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Dewiswch eich Proffil[CR] defnyddiwr Kodi i fewngofnodi a pharhau"
 
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Dewisiadau Amrywiol"
+msgctxt "#31550"
+msgid "Backgrounds"
+msgstr "Cefndiroedd"
 
 msgctxt "#31556"
 msgid "Live TV"

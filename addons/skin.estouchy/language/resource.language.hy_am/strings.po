@@ -92,10 +92,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Տվյալների մատակարար"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Օգտագործված է հիշողություն:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Վերջին այցելությունը"

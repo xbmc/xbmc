@@ -2329,7 +2329,13 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///   \table_row3{   <b>`Container(id).NumItems`</b>,
 ///                  \anchor Container_NumItems
 ///                  _boolean_,
-///     Number of items in the container or grouplist with given id. If no id is
+///     Number of items in the container or grouplist with given id excluding parent folder item. If no id is
+///     specified it grabs the current container.
+///   }
+///   \table_row3{   <b>`Container(id).ActualItems`</b>,
+///                  \anchor Container_ActualItems
+///                  _boolean_,
+///     Number of items in the container or grouplist with given id including parent folder item. If no id is
 ///     specified it grabs the current container.
 ///   }
 ///   \table_row3{   <b>`Container(id).CurrentPage`</b>,
@@ -2390,6 +2396,7 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "onscrollprevious", CONTAINER_SCROLL_PREVIOUS },
                                   { "numpages",         CONTAINER_NUM_PAGES },
                                   { "numitems",         CONTAINER_NUM_ITEMS },
+                                  { "actualitems",      CONTAINER_ACTUAL_ITEMS },
                                   { "currentpage",      CONTAINER_CURRENT_PAGE },
                                   { "scrolling",        CONTAINER_SCROLLING },
                                   { "hasnext",          CONTAINER_HAS_NEXT },
@@ -5255,49 +5262,6 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       return SYSTEM_ALWAYS_FALSE;
     else if (cat.name == "true" || cat.name == "yes")
       return SYSTEM_ALWAYS_TRUE;
-
-    // deprecated begin
-    // should be removed before L*** v18
-    if (cat.name == "isempty" && cat.num_params() == 1)
-      return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(cat.param(), listItemDependent)));
-    else if (cat.name == "stringcompare" && cat.num_params() == 2)
-    {
-      int info = TranslateSingleString(cat.param(0), listItemDependent);
-      // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
-      std::string label = CGUIInfoLabel::GetLabel(cat.param(1));
-      StringUtils::ToLower(label);
-      // 'true', 'false', 'yes', 'no' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
-      if (label != "true" && label != "false" && label != "yes" && label != "no")
-      {
-        int info2 = TranslateSingleString(cat.param(1), listItemDependent);
-        if (info2 > 0)
-          return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
-      }
-      int compareString = ConditionalStringParameter(label);
-      return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
-    }
-    else if (cat.name == "integergreaterthan" && cat.num_params() == 2)
-    {
-      int info = TranslateSingleString(cat.param(0), listItemDependent);
-      int compareInt = atoi(cat.param(1).c_str());
-      return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
-    }
-    else if (cat.name == "substring" && cat.num_params() >= 2)
-    {
-      int info = TranslateSingleString(cat.param(0), listItemDependent);
-      std::string label = CGUIInfoLabel::GetLabel(cat.param(1));
-      StringUtils::ToLower(label);
-      int compareString = ConditionalStringParameter(label);
-      if (cat.num_params() > 2)
-      {
-        if (StringUtils::EqualsNoCase(cat.param(2), "left"))
-          return AddMultiInfo(GUIInfo(STRING_STR_LEFT, info, compareString));
-        else if (StringUtils::EqualsNoCase(cat.param(2), "right"))
-          return AddMultiInfo(GUIInfo(STRING_STR_RIGHT, info, compareString));
-      }
-      return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
-    }
-    // deprecated end
   }
   else if (info.size() == 2)
   {
@@ -6431,6 +6395,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case CONTAINER_NUM_PAGES:
   case CONTAINER_NUM_ITEMS:
+  case CONTAINER_ACTUAL_ITEMS:
   case CONTAINER_CURRENT_ITEM:
   case CONTAINER_CURRENT_PAGE:
     return GetMultiInfoLabel(GUIInfo(info), contextWindow);
@@ -7479,7 +7444,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
           bReturn = GetImage(info.GetData1(), contextWindow).empty();
         break;
-      case STRING_COMPARE: // STRING_COMPARE is deprecated - should be removed before L*** v18
       case STRING_IS_EQUAL:
         {
           std::string compare;
@@ -7537,9 +7501,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = integer <= info.GetData2();
         }
         break;
-      case STRING_STR:          // STRING_STR is deprecated - should be removed before L*** v18
-      case STRING_STR_LEFT:     // STRING_STR_LEFT is deprecated - should be removed before L*** v18
-      case STRING_STR_RIGHT:    // STRING_STR_RIGHT is deprecated - should be removed before L*** v18
       case STRING_STARTS_WITH:
       case STRING_ENDS_WITH:
       case STRING_CONTAINS:
@@ -7558,9 +7519,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             label = GetImage(info.GetData1(), contextWindow);
             StringUtils::ToLower(label);
           }
-          if (condition == STRING_STR_LEFT || condition == STRING_STARTS_WITH)
+          if (condition == STRING_STARTS_WITH)
             bReturn = StringUtils::StartsWith(label, compare);
-          else if (condition == STRING_STR_RIGHT || condition == STRING_ENDS_WITH)
+          else if (condition == STRING_ENDS_WITH)
             bReturn = StringUtils::EndsWith(label, compare);
           else
             bReturn = label.find(compare) != std::string::npos;
@@ -8079,7 +8040,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
            info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION ||
            info.m_info == CONTAINER_ROW || info.m_info == CONTAINER_COLUMN ||
-           info.m_info == CONTAINER_CURRENT_ITEM)
+           info.m_info == CONTAINER_CURRENT_ITEM || info.m_info == CONTAINER_ACTUAL_ITEMS)
   {
     const CGUIControl *control = NULL;
     if (info.GetData1())
@@ -8431,6 +8392,7 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
       int currentSong = g_playlistPlayer.GetCurrentSong();
       if (currentSong > -1)
         return StringUtils::Format("%i", currentSong + 1);
+      break;
     }
   case PLAYLIST_RANDOM:
     {
@@ -9397,7 +9359,6 @@ void CGUIInfoManager::SetCurrentGame(CFileItem &item)
     // No title in tag, show filename only
     m_currentFile->GetGameInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
   }
-  m_currentFile->GetGameInfoTag()->SetLoaded(true);
 
   m_currentFile->FillInDefaultIcon();
 }

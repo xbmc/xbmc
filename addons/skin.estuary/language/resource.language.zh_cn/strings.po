@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "未观看电影"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "无免责声明"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "下载图标"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "已评分"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "常播频道"
+msgid "Recently played channels"
+msgstr "最近播放的频道"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "视图类型"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "下一首"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "未找到收藏。你可以从媒体浏览使用上下文菜单添加收藏项目。"
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "进入专辑"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "进入歌曲"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -135,10 +119,6 @@ msgstr "显示同人画"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "最近登录"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "己用内存"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "项"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "曲目列表"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "回退"
@@ -175,10 +151,6 @@ msgstr "回退"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "快进"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "取消更新"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "删除组"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "阅读更多..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "可用"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "按 [B]上[/B] 回退或快进"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "按 [B]左[/B] 回退，[B]右[/B] 快进"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "字幕下载"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "进入播放列表"
@@ -252,29 +212,17 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "启动时自动登录"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "可更新"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "分钟"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "主菜单项"
 
 msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "每类媒体的“文件”区快捷方式。到那里为数据库添加源。"
+msgid "Choose weather fanart pack"
+msgstr "选择天气同人画包"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "区"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "未观看"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +244,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "最近修改"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "添加媒体源"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "于"
@@ -308,29 +252,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "电源选项"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "标题"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "资料库根"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "电影集"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "播放光盘"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "上一位置"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "下一位置"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -339,10 +263,6 @@ msgstr "演员不可用"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "结束于"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "专辑信息"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -356,22 +276,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "可视化效果设置"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "频道组"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "元数据"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "提供者设置"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "内容扫描选项"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "可用组"
@@ -380,10 +284,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "搜索预告片"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "下载字幕"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "视频菜单"
@@ -391,10 +291,6 @@ msgstr "视频菜单"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "在顶部栏显示天气信息"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "显示电影/剧集/音乐电视的媒体标识"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +307,6 @@ msgstr "频道选项"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "选择 Kodi 用户配置文件[CR]登录并继续"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "图标墙"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +339,6 @@ msgstr "图文字幕"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "宽列表"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "使用自定义全局背景"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "选择图片路径"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -541,17 +425,53 @@ msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "主菜单相关设置：按喜好设置主界面。"
 
 msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "选择主界面同人画包"
+msgid "Choose skin fanart pack"
+msgstr "选择皮肤同人画包"
 
 msgctxt "#31132"
 msgid "min"
 msgstr "分"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "隐藏"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "剩余"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "点击查看最新变化..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR 信息"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "播放器处理信息"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "视频解码器"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "像素格式"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "更改于版本"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "播放速度"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "尚未设置 PVR。使用 PVR，需选择一个 PVR 客户端插件并进行设置。详情请访问 http://kodi.wiki/view/PVR。"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "进入插件浏览"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "搜索插件"

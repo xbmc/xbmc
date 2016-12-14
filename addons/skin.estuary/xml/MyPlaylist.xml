@@ -39,7 +39,7 @@
 							<right>30</right>
 							<aligny>center</aligny>
 							<font>font12</font>
-							<label>$INFO[ListItem.Label]</label>
+							<label>$VAR[PlaylistLabelVar]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -60,7 +60,7 @@
 							<right>30</right>
 							<aligny>center</aligny>
 							<font>font12</font>
-							<label>$INFO[ListItem.TVShowtitle,,: ]$INFO[ListItem.Label]</label>
+							<label>$VAR[PlaylistLabelVar]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">

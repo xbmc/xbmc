@@ -128,10 +128,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Nhà cung cấp dữ liệu"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Bộ nhớ chiếm:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Lần truy cập cuối"
@@ -164,17 +160,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Chọn profile Kodi[CR]để tiếp tục đăng nhập"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Link nhanh cho Add-on trên trang bắt đầu"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Các lựa chọn khác"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Thông tin và các nút cho màn hình bắt đầu của thời tiết"
+msgid "Backgrounds"
+msgstr "Hình nền"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

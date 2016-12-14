@@ -56,6 +56,8 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr ""
 
+#empty string with id 31008
+
 #: /1080i/MyVideoNav.xml
 msgctxt "#31009"
 msgid "Download icons"
@@ -134,10 +136,14 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr ""
 
+#empty string with id 31024
+
 #: /1080i/DialogFavourites.xml
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr ""
+
+#empty strings from id 31026 to 31027
 
 #: /1080i/DialogAlbumInfo.xml /1080i/DialogVideoInfo.xml
 msgctxt "#31028"
@@ -184,6 +190,8 @@ msgctxt "#31036"
 msgid "items"
 msgstr ""
 
+#empty string with id 31037
+
 #: /1080i/Variables.xml
 msgctxt "#31038"
 msgid "Rewind"
@@ -193,6 +201,8 @@ msgstr ""
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr ""
+
+#empty string with id 31040
 
 #: /1080i/Variables.xml /1080i/MyPics.xml
 msgctxt "#31041"
@@ -224,10 +234,14 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr ""
 
+#empty string with id 31047
+
 #: /1080i/DialogVideoInfo.xml
 msgctxt "#31048"
 msgid "Available"
 msgstr ""
+
+#empty string with id 31049
 
 #: /1080i/Variables.xml
 msgctxt "#31050"
@@ -254,6 +268,8 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr ""
 
+#empty string with id 31055
+
 #: /1080i/MyMusicNav.xml /1080i/MyVideoNav.xml
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -269,6 +285,8 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr ""
 
+#empty strings from id 31059 to 31060
+
 #: /1080i/SkinSettings.xml
 msgctxt "#31061"
 msgid "Main menu items"
@@ -283,6 +301,8 @@ msgstr ""
 msgctxt "#31063"
 msgid "Sections"
 msgstr ""
+
+#empty string with id 31064
 
 #: /1080i/MyVideoPlaylist.xml
 msgctxt "#31065"
@@ -309,6 +329,8 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr ""
 
+#empty string with id 31070
+
 #: /1080i/DialogAddonInfo.xml
 msgctxt "#31071"
 msgid "by"
@@ -319,10 +341,14 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr ""
 
+#empty strings from id 31073 to 31074
+
 #: /1080i/Home.xml
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr ""
+
+#empty strings from id 31076 to 31078
 
 #: /1080i/DialogVideoInfo.xml
 msgctxt "#31079"
@@ -333,6 +359,8 @@ msgstr ""
 msgctxt "#31080"
 msgid "Ends at"
 msgstr ""
+
+#empty string with id 31081
 
 #: /1080i/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"
@@ -349,6 +377,8 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr ""
 
+#empty strings from id 31085 to 31088
+
 #: /1080i/DialogPVRGroupManager.xml
 msgctxt "#31089"
 msgid "Available groups"
@@ -359,6 +389,8 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr ""
 
+#empty string with id 31091
+
 #: /1080i/VideoOSD.xml /1080i/Variables.xml
 msgctxt "#31092"
 msgid "Video menu"
@@ -368,6 +400,8 @@ msgstr ""
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr ""
+
+#empty string with id 31094
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31095"
@@ -438,6 +472,8 @@ msgstr ""
 msgctxt "#31107"
 msgid "WideList"
 msgstr ""
+
+#empty strings from id 31108 to 31109
 
 #: /1080i/Home.xml
 msgctxt "#31110"
@@ -554,10 +590,14 @@ msgctxt "#31132"
 msgid "min"
 msgstr ""
 
+#empty string with id 31133
+
 #: /1080i/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
 msgstr ""
+
+#empty string with id 31135
 
 #: /1080i/DialogAddonInfo.xml
 msgctxt "#31136"
@@ -608,6 +648,8 @@ msgstr ""
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr ""
+
+#empty strings from id 31146 to 31147
 
 #: /1080i/Home.xml
 msgctxt "#31148"
@@ -677,4 +719,9 @@ msgstr ""
 #: /xml/DialogNumeric.xml
 msgctxt "#31161"
 msgid "Numeric pad"
+msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
 msgstr ""
