@@ -6,4 +6,4 @@ set(HEADERS AddonCallbacksGUI.h
             AddonGUIRenderingControl.h
             AddonGUIWindow.h)
 
-core_add_library(api1AddonCallbacks_GUI)
+core_add_library(addonInterface_GUI)
