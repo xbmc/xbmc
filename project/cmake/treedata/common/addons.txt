@@ -1,2 +1,1 @@
-lib/addons/library.kodi.game        KODI_game
 lib/addons/library.xbmc.addon       XBMC_addon
