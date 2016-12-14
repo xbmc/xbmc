@@ -1711,6 +1711,7 @@ void CAMLCodec::Reset()
   // reset some interal vars
   m_cur_pts = INT64_0;
   m_state = 0;
+  m_start_adj = 0;
   SetSpeed(m_speed);
 }
 
@@ -1820,10 +1821,12 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     else
       memset(&vfs, 0, sizeof(vfs));
 
-    CLog::Log(LOGDEBUG, "CAMLCodec::Decode: ret: %d dts_in: %0.6f, pts_in: %0.6f, ptsOut:%0.6f, amlpts:%d vfs:[%d-%d-%d-%d] timesize:%0.2f",
+    CLog::Log(LOGDEBUG, "CAMLCodec::Decode: ret: %d, sz: %llu, dts_in: %0.6f[%llX], pts_in: %0.6f[%llX], adj:%llu, ptsOut:%0.6f, amlpts:%d vfs:[%d-%d-%d-%d] timesize:%0.2f",
       rtn,
-      static_cast<float>(dts)/DVD_TIME_BASE,
-      static_cast<float>(pts)/DVD_TIME_BASE,
+      iSize,
+      static_cast<float>(dts)/DVD_TIME_BASE, am_private->am_pkt.avdts,
+      static_cast<float>(pts)/DVD_TIME_BASE, am_private->am_pkt.avpts,
+      m_start_adj,
       static_cast<float>(m_cur_pts)/PTS_FREQ,
       static_cast<int>(m_cur_pts),
       vfs.vf_pool_size, vfs.buf_free_num,vfs.buf_recycle_num,vfs.buf_avail_num,

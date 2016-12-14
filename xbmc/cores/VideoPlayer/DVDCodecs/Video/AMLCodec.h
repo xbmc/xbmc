@@ -50,8 +50,8 @@ public:
   double        GetTimeSize();
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   void          SetVideoRate(int videoRate);
-  int64_t       GetCurPts() const { return m_cur_pts; }
-  int       	GetOMXPts() const { return static_cast<int>(m_cur_pts - m_start_adj); }
+  int64_t       GetCurPts() const { return m_cur_pts + m_start_adj; }
+  int       	GetOMXPts() const { return static_cast<int>(m_cur_pts); }
   static float  OMXPtsToSeconds(int omxpts);
   static int    OMXDurationToNs(int duration);
   int           GetAmlDuration() const;
