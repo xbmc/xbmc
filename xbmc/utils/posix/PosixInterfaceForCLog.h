@@ -21,8 +21,6 @@
 
 #include <string>
 
-struct FILEWRAP; // forward declaration, wrapper for FILE
-
 class CPosixInterfaceForCLog
 {
 public:
@@ -34,5 +32,5 @@ public:
   void PrintDebugString(const std::string& debugString);
   static void GetCurrentLocalTime(int& hour, int& minute, int& second, double& millisecond);
 private:
-  FILEWRAP* m_file;
+  FILE * m_file;
 };

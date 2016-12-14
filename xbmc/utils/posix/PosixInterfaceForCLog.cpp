@@ -29,10 +29,6 @@
 #include "platform/android/activity/XBMCApp.h"
 #endif // TARGET_ANDROID
 
-struct FILEWRAP : public FILE
-{};
-
-
 CPosixInterfaceForCLog::CPosixInterfaceForCLog() :
   m_file(NULL)
 { }
@@ -52,7 +48,7 @@ bool CPosixInterfaceForCLog::OpenLogFile(const std::string &logFilename, const s
   (void)remove(backupOldLogToFilename.c_str()); // if it's failed, try to continue
   (void)rename(logFilename.c_str(), backupOldLogToFilename.c_str()); // if it's failed, try to continue
 
-  m_file = (FILEWRAP*)fopen(logFilename.c_str(), "wb");
+  m_file = fopen(logFilename.c_str(), "wb");
   if (!m_file)
     return false; // error, can't open log file
 

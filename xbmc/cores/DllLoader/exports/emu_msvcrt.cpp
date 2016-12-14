@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
+#include <paths.h>
 #ifndef TARGET_POSIX
 #include <io.h>
 #include <direct.h>
@@ -477,13 +478,10 @@ extern "C"
     EmuFileObject* o = g_emuFileWrapper.GetFileObjectByDescriptor(fd);
     if (o)
     {
-      if(!o->used)
-        return NULL;
-
       int nmode = convert_fmode(mode);
       if( (o->mode & nmode) != nmode)
         CLog::Log(LOGWARNING, "dll_fdopen - mode 0x%x differs from fd mode 0x%x", nmode, o->mode);
-      return &o->file_emu;
+      return g_emuFileWrapper.GetStreamByFileObject(o);
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -546,7 +544,7 @@ extern "C"
         return -1;
       }
       object->mode = iMode;
-      return g_emuFileWrapper.GetDescriptorByStream(&object->file_emu);
+      return g_emuFileWrapper.GetDescriptorByFileObject(object);
     }
     delete pFile;
     return -1;
@@ -1215,8 +1213,8 @@ extern "C"
   {
     FILE* file = NULL;
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
-    if (strcmp(filename, MOUNTED) == 0
-    ||  strcmp(filename, MNTTAB) == 0)
+    if (strcmp(filename, _PATH_MOUNTED) == 0
+    ||  strcmp(filename, _PATH_MNTTAB) == 0)
     {
       CLog::Log(LOGINFO, "%s - something opened the mount file, let's hope it knows what it's doing", __FUNCTION__);
       return fopen(filename, mode);
@@ -1623,7 +1621,7 @@ extern "C"
     int ret;
 
     ret = dll_fgetpos64(stream, &tmpPos);
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID) || defined(_MUSL)
     *pos = (fpos_t)tmpPos;
 #else
     pos->__pos = (off_t)tmpPos.__pos;
@@ -1636,8 +1634,9 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
-      *pos = pFile->GetPosition();
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID) || defined(_MUSL)
+      uint64_t *ppos = (uint64_t *) pos;
+      *ppos = pFile->GetPosition();
 #else
       pos->__pos = pFile->GetPosition();
 #endif
@@ -1658,8 +1657,9 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
-      if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID) || defined(_MUSL)
+      const uint64_t *ppos = (const uint64_t *) pos;
+      if (dll_lseeki64(fd, *ppos, SEEK_SET) >= 0)
 #else
       if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
 #endif
@@ -1675,7 +1675,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID) || defined(_MUSL)
       return fsetpos(stream, pos);
 #else
       return fsetpos64(stream, pos);
@@ -1691,7 +1691,7 @@ extern "C"
     if (fd >= 0)
     {
       fpos64_t tmpPos;
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID) || defined(_MUSL)
       tmpPos= *pos;
 #else
       tmpPos.__pos = (off64_t)(pos->__pos);
