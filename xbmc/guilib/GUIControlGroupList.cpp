@@ -55,7 +55,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
   {
     CGUIControl *control = *it;
     GUIPROFILER_VISIBILITY_BEGIN(control);
-    control->UpdateVisibility();
+    control->UpdateVisibility(nullptr);
     GUIPROFILER_VISIBILITY_END(control);
   }
 
