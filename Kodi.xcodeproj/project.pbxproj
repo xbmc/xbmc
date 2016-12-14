@@ -2916,8 +2916,8 @@
 		6890C2211DDBDCBC00F8F362 /* DllLibCPluff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibCPluff.h; sourceTree = "<group>"; };
 		6890C2221DDBDCC900F8F362 /* DllPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPeripheral.h; sourceTree = "<group>"; };
 		6890C2231DDBDCCE00F8F362 /* DllPVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPVRClient.h; sourceTree = "<group>"; };
-		6890C2251DDBDCF500F8F362 /* AddonCallbacksGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGame.cpp; path = addons/binary/interfaces/api1/Game/AddonCallbacksGame.cpp; sourceTree = "<group>"; };
-		6890C2261DDBDCF500F8F362 /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGame.h; path = addons/binary/interfaces/api1/Game/AddonCallbacksGame.h; sourceTree = "<group>"; };
+		6890C2251DDBDCF500F8F362 /* AddonCallbacksGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGame.cpp; path = addons/interfaces/Game/AddonCallbacksGame.cpp; sourceTree = "<group>"; };
+		6890C2261DDBDCF500F8F362 /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGame.h; path = addons/interfaces/Game/AddonCallbacksGame.h; sourceTree = "<group>"; };
 		6890C22A1DDBDD0900F8F362 /* kodi_game_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_dll.h"; sourceTree = "<group>"; };
 		6890C22B1DDBDD0900F8F362 /* kodi_game_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_types.h"; sourceTree = "<group>"; };
 		6890C22C1DDBDD2D00F8F362 /* GameTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameTypes.h; path = games/GameTypes.h; sourceTree = "<group>"; };
@@ -2956,8 +2956,8 @@
 		6890C2821DDBE03900F8F362 /* GUIWindowGames.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowGames.cpp; path = games/windows/GUIWindowGames.cpp; sourceTree = "<group>"; };
 		6890C2831DDBE03900F8F362 /* GUIWindowGames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowGames.h; path = games/windows/GUIWindowGames.h; sourceTree = "<group>"; };
 		68AE5BA01C923E5300C4D527 /* kodi_vfs_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_vfs_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_vfs_utils.hpp"; sourceTree = "<group>"; };
-		68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPeripheral.cpp; path = addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.cpp; sourceTree = "<group>"; };
-		68AE5BA41C92412900C4D527 /* AddonCallbacksPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPeripheral.h; path = addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.h; sourceTree = "<group>"; };
+		68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPeripheral.cpp; path = addons/interfaces/Peripheral/AddonCallbacksPeripheral.cpp; sourceTree = "<group>"; };
+		68AE5BA41C92412900C4D527 /* AddonCallbacksPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPeripheral.h; path = addons/interfaces/Peripheral/AddonCallbacksPeripheral.h; sourceTree = "<group>"; };
 		68AE5BA81C92414B00C4D527 /* kodi_peripheral_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_dll.h"; sourceTree = "<group>"; };
 		68AE5BA91C92414B00C4D527 /* kodi_peripheral_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"; sourceTree = "<group>"; };
 		68AE5BAA1C92414B00C4D527 /* kodi_peripheral_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_peripheral_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"; sourceTree = "<group>"; };
@@ -3052,10 +3052,10 @@
 		6E97BDC10DA2B620003A2A89 /* EventServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventServer.h; sourceTree = "<group>"; };
 		6E97BDC30DA2B620003A2A89 /* Fanart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fanart.h; sourceTree = "<group>"; };
 		6E97BDC40DA2B620003A2A89 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
-		7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonGUIRenderingControl.cpp; path = addons/binary/interfaces/api1/GUI/AddonGUIRenderingControl.cpp; sourceTree = "<group>"; };
-		7611708D1C8B85F8006C6366 /* AddonGUIRenderingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonGUIRenderingControl.h; path = addons/binary/interfaces/api1/GUI/AddonGUIRenderingControl.h; sourceTree = "<group>"; };
-		7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonGUIWindow.cpp; path = addons/binary/interfaces/api1/GUI/AddonGUIWindow.cpp; sourceTree = "<group>"; };
-		7611708F1C8B85F8006C6366 /* AddonGUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonGUIWindow.h; path = addons/binary/interfaces/api1/GUI/AddonGUIWindow.h; sourceTree = "<group>"; };
+		7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonGUIRenderingControl.cpp; path = addons/interfaces/GUI/AddonGUIRenderingControl.cpp; sourceTree = "<group>"; };
+		7611708D1C8B85F8006C6366 /* AddonGUIRenderingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonGUIRenderingControl.h; path = addons/interfaces/GUI/AddonGUIRenderingControl.h; sourceTree = "<group>"; };
+		7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonGUIWindow.cpp; path = addons/interfaces/GUI/AddonGUIWindow.cpp; sourceTree = "<group>"; };
+		7611708F1C8B85F8006C6366 /* AddonGUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonGUIWindow.h; path = addons/interfaces/GUI/AddonGUIWindow.h; sourceTree = "<group>"; };
 		76EC19BC1D15514200D4AF19 /* ActiveAEDSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSP.cpp; path = AudioDSPAddons/ActiveAEDSP.cpp; sourceTree = "<group>"; };
 		76EC19BD1D15514200D4AF19 /* ActiveAEDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActiveAEDSP.h; path = AudioDSPAddons/ActiveAEDSP.h; sourceTree = "<group>"; };
 		76EC19BE1D15514200D4AF19 /* ActiveAEDSPAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSPAddon.cpp; path = AudioDSPAddons/ActiveAEDSPAddon.cpp; sourceTree = "<group>"; };
@@ -3066,8 +3066,8 @@
 		76EC19C31D15514200D4AF19 /* ActiveAEDSPMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActiveAEDSPMode.h; path = AudioDSPAddons/ActiveAEDSPMode.h; sourceTree = "<group>"; };
 		76EC19C41D15514200D4AF19 /* ActiveAEDSPProcess.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSPProcess.cpp; path = AudioDSPAddons/ActiveAEDSPProcess.cpp; sourceTree = "<group>"; };
 		76EC19C51D15514200D4AF19 /* ActiveAEDSPProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActiveAEDSPProcess.h; path = AudioDSPAddons/ActiveAEDSPProcess.h; sourceTree = "<group>"; };
-		76F4C37C1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksInputStream.cpp; path = addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.cpp; sourceTree = "<group>"; };
-		76F4C37D1C8E92E000A1E64B /* AddonCallbacksInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksInputStream.h; path = addons/binary/interfaces/api1/InputStream/AddonCallbacksInputStream.h; sourceTree = "<group>"; };
+		76F4C37C1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksInputStream.cpp; path = addons/interfaces/InputStream/AddonCallbacksInputStream.cpp; sourceTree = "<group>"; };
+		76F4C37D1C8E92E000A1E64B /* AddonCallbacksInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksInputStream.h; path = addons/interfaces/InputStream/AddonCallbacksInputStream.h; sourceTree = "<group>"; };
 		7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEDeviceInfo.cpp; sourceTree = "<group>"; };
 		7C0B98A2154B79C30065A238 /* AEDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDeviceInfo.h; sourceTree = "<group>"; };
 		7C14096F183224B8009F9411 /* ISetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ISetting.cpp; path = lib/ISetting.cpp; sourceTree = "<group>"; };
@@ -5038,21 +5038,21 @@
 		EDE8C7231C7F618500A86ECC /* xbmc_scr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_scr_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"; sourceTree = "<group>"; };
 		EDE8C7251C7F618500A86ECC /* xbmc_vis_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h"; sourceTree = "<group>"; };
 		EDE8C7261C7F618500A86ECC /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h"; sourceTree = "<group>"; };
-		EDED2E861C878DE8000F5E80 /* AddonCallbacksPVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPVR.cpp; path = addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.cpp; sourceTree = "<group>"; };
-		EDED2E871C878DE8000F5E80 /* AddonCallbacksPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPVR.h; path = addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.h; sourceTree = "<group>"; };
-		EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGUI.cpp; path = addons/binary/interfaces/api1/GUI/AddonCallbacksGUI.cpp; sourceTree = "<group>"; };
-		EDED2E8A1C878E62000F5E80 /* AddonCallbacksGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGUI.h; path = addons/binary/interfaces/api1/GUI/AddonCallbacksGUI.h; sourceTree = "<group>"; };
-		EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksCodec.cpp; path = addons/binary/interfaces/api1/Codec/AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
-		EDED2E8D1C878E97000F5E80 /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksCodec.h; path = addons/binary/interfaces/api1/Codec/AddonCallbacksCodec.h; sourceTree = "<group>"; };
-		EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAudioEngine.cpp; path = addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.cpp; sourceTree = "<group>"; };
-		EDED2E901C878EB8000F5E80 /* AddonCallbacksAudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioEngine.h; path = addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h; sourceTree = "<group>"; };
-		EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAddon.cpp; path = addons/binary/interfaces/api1/Addon/AddonCallbacksAddon.cpp; sourceTree = "<group>"; };
-		EDED2E931C878EE0000F5E80 /* AddonCallbacksAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAddon.h; path = addons/binary/interfaces/api1/Addon/AddonCallbacksAddon.h; sourceTree = "<group>"; };
-		EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAudioDSP.cpp; path = addons/binary/interfaces/api1/AudioDSP/AddonCallbacksAudioDSP.cpp; sourceTree = "<group>"; };
-		EDED2E961C878EF8000F5E80 /* AddonCallbacksAudioDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioDSP.h; path = addons/binary/interfaces/api1/AudioDSP/AddonCallbacksAudioDSP.h; sourceTree = "<group>"; };
-		EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonInterfaces.cpp; path = addons/binary/interfaces/AddonInterfaces.cpp; sourceTree = "<group>"; };
-		EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonInterfaces.h; path = addons/binary/interfaces/AddonInterfaces.h; sourceTree = "<group>"; };
-		EDED2E9C1C878F70000F5E80 /* IAddonInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAddonInterface.h; path = addons/binary/interfaces/IAddonInterface.h; sourceTree = "<group>"; };
+		EDED2E861C878DE8000F5E80 /* AddonCallbacksPVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPVR.cpp; path = addons/interfaces/PVR/AddonCallbacksPVR.cpp; sourceTree = "<group>"; };
+		EDED2E871C878DE8000F5E80 /* AddonCallbacksPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPVR.h; path = addons/interfaces/PVR/AddonCallbacksPVR.h; sourceTree = "<group>"; };
+		EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGUI.cpp; path = addons/interfaces/GUI/AddonCallbacksGUI.cpp; sourceTree = "<group>"; };
+		EDED2E8A1C878E62000F5E80 /* AddonCallbacksGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGUI.h; path = addons/interfaces/GUI/AddonCallbacksGUI.h; sourceTree = "<group>"; };
+		EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksCodec.cpp; path = addons/interfaces/Codec/AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
+		EDED2E8D1C878E97000F5E80 /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksCodec.h; path = addons/interfaces/Codec/AddonCallbacksCodec.h; sourceTree = "<group>"; };
+		EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAudioEngine.cpp; path = addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.cpp; sourceTree = "<group>"; };
+		EDED2E901C878EB8000F5E80 /* AddonCallbacksAudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioEngine.h; path = addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.h; sourceTree = "<group>"; };
+		EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAddon.cpp; path = addons/interfaces/Addon/AddonCallbacksAddon.cpp; sourceTree = "<group>"; };
+		EDED2E931C878EE0000F5E80 /* AddonCallbacksAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAddon.h; path = addons/interfaces/Addon/AddonCallbacksAddon.h; sourceTree = "<group>"; };
+		EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAudioDSP.cpp; path = addons/interfaces/AudioDSP/AddonCallbacksAudioDSP.cpp; sourceTree = "<group>"; };
+		EDED2E961C878EF8000F5E80 /* AddonCallbacksAudioDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioDSP.h; path = addons/interfaces/AudioDSP/AddonCallbacksAudioDSP.h; sourceTree = "<group>"; };
+		EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonInterfaces.cpp; path = addons/interfaces/AddonInterfaces.cpp; sourceTree = "<group>"; };
+		EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonInterfaces.h; path = addons/interfaces/AddonInterfaces.h; sourceTree = "<group>"; };
+		EDED2E9C1C878F70000F5E80 /* IAddonInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAddonInterface.h; path = addons/interfaces/IAddonInterface.h; sourceTree = "<group>"; };
 		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
 		F500E35917F34132004FC217 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
 		F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CallbackHandler.cpp; path = python/CallbackHandler.cpp; sourceTree = "<group>"; };
@@ -5351,7 +5351,7 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
-				EDED2E7D1C878BDF000F5E80 /* binary */,
+				EDED2E7E1C878C5F000F5E80 /* interfaces */,
 				EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */,
 				18B49FF11152BFA5001AF8A6 /* Addon.cpp */,
 				18B49FF21152BFA5001AF8A6 /* Addon.h */,
@@ -9577,27 +9577,7 @@
 			name = kodi;
 			sourceTree = "<group>";
 		};
-		EDED2E7D1C878BDF000F5E80 /* binary */ = {
-			isa = PBXGroup;
-			children = (
-				EDED2E7E1C878C5F000F5E80 /* interfaces */,
-			);
-			name = binary;
-			path = ..;
-			sourceTree = "<group>";
-		};
 		EDED2E7E1C878C5F000F5E80 /* interfaces */ = {
-			isa = PBXGroup;
-			children = (
-				EDED2E7F1C878C87000F5E80 /* api1 */,
-				EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */,
-				EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */,
-				EDED2E9C1C878F70000F5E80 /* IAddonInterface.h */,
-			);
-			name = interfaces;
-			sourceTree = "<group>";
-		};
-		EDED2E7F1C878C87000F5E80 /* api1 */ = {
 			isa = PBXGroup;
 			children = (
 				EDED2E841C878D1D000F5E80 /* Addon */,
@@ -9609,8 +9589,12 @@
 				76F4C37B1C8E927A00A1E64B /* InputStream */,
 				68AE5BA21C92410300C4D527 /* Peripheral */,
 				EDED2E811C878CC1000F5E80 /* PVR */,
+				EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */,
+				EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */,
+				EDED2E9C1C878F70000F5E80 /* IAddonInterface.h */,
 			);
-			name = api1;
+			name = interfaces;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		EDED2E801C878CB4000F5E80 /* GUI */ = {
