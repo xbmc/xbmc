@@ -1,3 +1,6 @@
+file(GLOB OVERRIDES_CPP Encoders/overrides/${CORE_SYSTEM_NAME}/*.cpp)
+file(GLOB OVERRIDES_H Encoders/overrides/${CORE_SYSTEM_NAME}/*.h)
+
 set(SOURCES AEFactory.cpp
             AEResampleFactory.cpp
             AESinkFactory.cpp
@@ -129,6 +132,11 @@ endif()
 
 core_add_library(audioengine)
 target_include_directories(${CORE_LIBRARY} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+if(OVERRIDES_CPP)
+  list(APPEND SOURCES ${OVERRIDES_CPP})
+  list(APPEND HEADERS ${OVERRIDES_H})
+  target_compile_definitions(${CORE_LIBRARY} PRIVATE -DPLATFORM_OVERRIDE_AE_ENCODERS)
+endif()
 if(NOT CORE_SYSTEM_NAME STREQUAL windows)
   if(HAVE_SSE)
     target_compile_options(${CORE_LIBRARY} PRIVATE -msse)
