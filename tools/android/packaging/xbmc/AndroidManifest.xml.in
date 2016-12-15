@@ -92,6 +92,25 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name=".XBMCImageContentProvider"
+            android:authorities="org.xbmc.kodi.image"
+            android:exported="true" />
+
+        <provider
+            android:name=".XBMCMediaContentProvider"
+            android:authorities="org.xbmc.kodi.media"
+            android:exported="true" />
+
+        <activity android:name=".XBMCSearchableActivity" >
+        	<intent-filter>
+            	<action android:name="android.intent.action.SEARCH" />
+        	</intent-filter>
+        	<meta-data android:name="android.app.searchable"
+                   android:resource="@xml/searchable"/>
+    	</activity>
+
     </application>
 
-</manifest><!-- END_INCLUDE(manifest) -->
+</manifest> <!-- END_INCLUDE(manifest) -->
+

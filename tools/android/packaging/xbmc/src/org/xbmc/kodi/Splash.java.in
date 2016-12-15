@@ -11,19 +11,15 @@ import java.io.OutputStream;
 import java.lang.System;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.ArrayList;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -436,7 +432,7 @@ public class Splash extends Activity {
         sysProp.load(xbmcenvprop);
         System.setProperties(sysProp);
 
-        sXbmcHome = System.getProperty("xbmc.home", "");
+        sXbmcHome = XBMCProperties.getStringProperty("xbmc.home", "");
         if (!sXbmcHome.isEmpty()) {
           File fXbmcHome = new File(sXbmcHome);
           int loop = 20;
@@ -455,7 +451,7 @@ public class Splash extends Activity {
           }
         }
 
-        sXbmcdata = System.getProperty("xbmc.data", "");
+        sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
         if (!sXbmcdata.isEmpty()) {
           File fXbmcData = new File(sXbmcdata);
           int loop = 20;
@@ -493,7 +489,7 @@ public class Splash extends Activity {
     String obbfn = "";
     if (fPackagePath.length() < 50 * 1024 * 1024)
     {
-      sPackagePath = System.getProperty("@APP_NAME@.obb", "");
+      sPackagePath = XBMCProperties.getStringProperty("@APP_NAME_LC@.obb", "");
       if (sPackagePath.equals(""))
       {
         try
@@ -667,7 +663,10 @@ public class Splash extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // Check if @APP_NAME@ is not already running
+    // Be sure properties are initialized for native
+    XBMCProperties.initializeProperties();
+
+    // Check if @APP_NAME_LC@ is not already running
     ActivityManager activityManager = (ActivityManager) getBaseContext()
         .getSystemService(Context.ACTIVITY_SERVICE);
     List<RunningTaskInfo> tasks = activityManager
