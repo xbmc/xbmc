@@ -176,6 +176,8 @@ x11_enabled="== X11 enabled. =="
 x11_disabled="== X11 disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support disabled. =="
+dvdcss_enabled="== DVDCSS support enabled. =="
+dvdcss_disabled="== DVDCSS support disabled. =="
 avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
 avahi_disabled="== Avahi support disabled. =="
 mdnsembedded_not_found="== Could not find mDNSEmbedded. Might prevent zeroconf support. =="
@@ -351,6 +353,12 @@ AC_ARG_ENABLE([upnp],
   [disable UPnP support (default is enabled)])],
   [use_upnp=$enableval],
   [use_upnp=yes])
+
+AC_ARG_ENABLE([dvdcss],
+  [AS_HELP_STRING([--enable-dvdcss],
+  [enable DVDCSS support (default is yes)])],
+  [use_dvdcss=$enableval],
+  [use_dvdcss=yes])
 
 AC_ARG_ENABLE([mid],
   [AS_HELP_STRING([--enable-mid],
@@ -576,6 +584,7 @@ case $host in
      use_neon=yes
      use_libcec=no
      use_optical_drive=no
+     use_dvdcss=no
      use_gles=yes
      use_cpu=cortex-a8
      ARCH="arm-osx"
@@ -666,6 +675,7 @@ if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
   webserver_checkdepends=yes
   CFLAGS="$CFLAGS -Wno-psabi"
+  DROID_DVDLIB_SEEK64="-D_FILE_OFFSET_BITS=64 -D_OFF_T_DEFINED_ -Doff_t=off64_t -Dlseek=lseek64"
   CXXFLAGS="$CXXFLAGS -Wno-psabi"
   AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
 fi
@@ -1990,6 +2000,22 @@ else
   final_message="$final_message\n  PulseAudio:\tNo"
 fi
 
+# DVDCSS
+if test "$use_dvdcss" = "yes"; then
+  AC_MSG_NOTICE($dvdcss_enabled)
+  final_message="$final_message\n  DVDCSS:\tYes"
+  BUILD_DVDCSS=1
+  DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
+else
+  AC_MSG_NOTICE($dvdcss_disabled)
+  final_message="$final_message\n  DVDCSS:\tNo"
+  BUILD_DVDCSS=0
+  DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
+fi
+if test "$host_vendor" = "apple"; then
+ DVDREAD_CFLAGS="$DVDREAD_CFLAGS -D__DARWIN__"
+fi
+
 # Google Test Framework
 if test "$configure_gtest" = "yes"; then
   AC_MSG_NOTICE($gtest_enabled)
@@ -2279,6 +2305,7 @@ AC_SUBST(CFLAGS_FOR_BUILD)
 AC_SUBST(CXXFLAGS_FOR_BUILD)
 AC_SUBST(LDFLAGS_FOR_BUILD)
 AC_SUBST(SDL_DEFINES)
+AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(FFMPEG_LIBDIR)
 AC_SUBST(USE_STATIC_FFMPEG)
 AC_SUBST(GNUTLS_ALL_LIBS)
