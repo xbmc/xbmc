@@ -20,9 +20,6 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
 extern "C" {
   #include <ass/ass.h>
 }
