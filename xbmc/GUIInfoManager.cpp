@@ -1793,13 +1793,13 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.HasEpg`</b>,
 ///                  \anchor VideoPlayer_HasEpg
 ///                  _boolean_,
-///     Returns true when epg information is available for the currently playing
+///     Returns true if epg information is available for the currently playing
 ///     programme (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.CanResumeLiveTV`</b>,
 ///                  \anchor VideoPlayer_CanResumeLiveTV
 ///                  _boolean_,
-///     Todo
+///     Returns true if a in-progress PVR recording is playing an the respective live TV channel is available
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Title`</b>,
 ///                  \anchor VideoPlayer_Title
@@ -3611,7 +3611,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.HasRecording`</b>,
 ///                  \anchor ListItem_HasRecording
 ///                  _boolean_,
-///     Todo
+///     Returns true if a given epg tag item currently gets recorded or has been recorded
 ///   }
 ///   \table_row3{   <b>`ListItem.TimerHasError`</b>,
 ///                  \anchor ListItem_TimerHasError
@@ -3636,17 +3636,17 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.TimerType`</b>,
 ///                  \anchor ListItem_TimerType
 ///                  _string_,
-///     Todo
+///     Returns the type of the PVR timer / timer rule item as a human readable string
 ///   }
 ///   \table_row3{   <b>`ListItem.EpgEventTitle`</b>,
 ///                  \anchor ListItem_EpgEventTitle
 ///                  _string_,
-///     Todo
+///     Returns the title of the epg event associated with the item, if any
 ///   }
 ///   \table_row3{   <b>`ListItem.InProgress`</b>,
 ///                  \anchor ListItem_InProgress
 ///                  _boolean_,
-///     Todo
+///     Returns true if the epg event item is currently active (time-wise)
 ///   }
 ///   \table_row3{   <b>`ListItem.IsParentFolder`</b>,
 ///                  \anchor ListItem_IsParentFolder
