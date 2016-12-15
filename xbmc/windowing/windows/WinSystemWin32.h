@@ -157,14 +157,17 @@ public:
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }
   bool IsAlteringWindow() { return m_IsAlteringWindow; }
+  bool DPIChanged(WORD dpi, RECT windowRect);
 
   // touchscreen support
   typedef BOOL (WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);
   typedef BOOL (WINAPI *pSetGestureConfig)(HWND, DWORD, UINT, PGESTURECONFIG, UINT);
   typedef BOOL (WINAPI *pCloseGestureInfoHandle)(HGESTUREINFO);
+  typedef BOOL(WINAPI *pEnableNonClientDpiScaling)(HWND);
   pGetGestureInfo         PtrGetGestureInfo;
   pSetGestureConfig       PtrSetGestureConfig;
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
+  pEnableNonClientDpiScaling PtrEnableNonClientDpiScaling;
 
 protected:
   bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);

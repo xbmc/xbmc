@@ -401,6 +401,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   ZeroMemory(&newEvent, sizeof(newEvent));
   static HDEVNOTIFY hDeviceNotify;
 
+  if (uMsg == WM_NCCREATE)
+  {
+    // if available, enable DPI scaling of non-client portion of window (title bar, etc.) 
+    if (g_Windowing.PtrEnableNonClientDpiScaling != NULL)
+    {
+      g_Windowing.PtrEnableNonClientDpiScaling(hWnd);
+    }
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
+  }
+
   if (uMsg == WM_CREATE)
   {
     g_hWnd = hWnd;
@@ -667,6 +677,19 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         m_pEventFunc(newEvent);
       }
       return(0);
+    case WM_DPICHANGED:
+      // This message tells the program that most of its window is on a
+      // monitor with a new DPI. The wParam contains the new DPI, and the 
+      // lParam contains a rect which defines the window rectangle scaled 
+      // the new DPI. 
+      if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow())
+      {
+        // get the suggested size of the window on the new display with a different DPI
+        unsigned short  dpi = LOWORD(wParam);
+        RECT resizeRect = *((RECT*)lParam);
+        g_Windowing.DPIChanged(dpi, resizeRect);
+      }
+      return(0);
     case WM_DISPLAYCHANGE:
       CLog::Log(LOGDEBUG, __FUNCTION__": display change event");  
       if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)  
@@ -683,9 +706,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.type = XBMC_VIDEORESIZE;  
           newEvent.resize.w = GET_X_LPARAM(lParam);  
           newEvent.resize.h = GET_Y_LPARAM(lParam);  
-        }  
-        m_pEventFunc(newEvent);  
-      }  
+        }
+        m_pEventFunc(newEvent);
+      }
       return(0);  
     case WM_SIZE:
       newEvent.type = XBMC_VIDEORESIZE;
