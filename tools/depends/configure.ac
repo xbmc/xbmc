@@ -120,13 +120,13 @@ platform_cc=gcc
 platform_cxx=g++
 
 case $build in
-  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*|arm*-*-linux-musl*)
     build_os="linux"
   ;;
-  *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
+  *i686*-linux-gnu*|i*86*-*-linux-uclibc*|i*86*-*-linux-musl*)
     build_os="linux"
   ;;
-  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
+  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*|x86_64-*-linux-musl*)
     build_os="linux"
   ;;
   *darwin*)
@@ -186,7 +186,7 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;
-  arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+  arm*-*-linux-gnu*|arm*-*-linux-uclibc*|arm*-*-linux-musl*)
     if test "$use_platform" = "auto"; then
       if test "x$use_cpu" = "xauto"; then
         use_cpu=$host_cpu
@@ -210,12 +210,12 @@ case $host in
       platform_os="linux"
     fi
   ;;
-  *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
+  *i686*-linux-gnu*|i*86*-*-linux-uclibc*|i*86*-*-linux-musl*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_os="linux"
   ;;
-  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
+  x86_64*-linux-gnu*|x86_64-*-linux-uclibc*|x86_64-*-linux-musl*)
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
