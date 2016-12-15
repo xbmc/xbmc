@@ -24,6 +24,11 @@ ifeq (@HAVE_SSE2@,1)
   CXXFLAGS += -DHAVE_SSE2 -msse2
 endif
 
+ifeq (@USE_ANDROID@,1)
+CXXFLAGS += -DAC3_ENCODE_BITRATE=384000
+else
+CXXFLAGS += -DAC3_ENCODE_BITRATE=640000
+endif
 
 SRCS  = AEFactory.cpp
 
