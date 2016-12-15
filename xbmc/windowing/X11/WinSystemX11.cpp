@@ -46,6 +46,7 @@
 
 #include "../WinEventsX11.h"
 #include "input/InputManager.h"
+#include "Xsel.h"
 
 using namespace KODI::MESSAGING;
 
@@ -1069,6 +1070,11 @@ void CWinSystemX11::UpdateCrtc()
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);
   g_graphicsContext.SetFPS(fps);
+}
+
+std::string CWinSystemX11::GetClipboardText(void)
+{
+  return Xsel(m_dpy); 
 }
 
 #endif

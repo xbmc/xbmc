@@ -71,6 +71,7 @@ public:
   bool IsCurrentOutput(std::string output);
   void RecreateWindow();
   int GetCrtc() { return m_crtc; }
+  std::string GetClipboardText(void);
 
 protected:
   virtual bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) = 0;

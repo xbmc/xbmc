@@ -5,6 +5,7 @@ SRCS=WinSystemX11.cpp \
      GLContextEGL.cpp \
      GLContextGLX.cpp \
      XRandR.cpp \
+     Xsel.cpp
      
 LIB=windowing_X11.a
 
