@@ -27,7 +27,8 @@ case $build in
      AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
   *)
-     AC_MSG_ERROR(unsupported native build platform: $build)
+     AC_MSG_WARN([unsupported native build platform: $build])
+     AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
 esac
 
 
@@ -70,7 +71,8 @@ case $host in
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID")
      ;;
   *)
-     AC_MSG_ERROR(unsupported build target: $host)
+     AC_MSG_WARN([unsupported native build platform: $build])
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
 esac
 
 if test "$target_platform" = "target_android" ; then
