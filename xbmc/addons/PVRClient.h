@@ -708,7 +708,6 @@ namespace PVR
     bool CanPlayChannel(const CPVRChannelPtr &channel) const;
 
     bool LogError(const PVR_ERROR error, const char *strMethod) const;
-    void LogException(const std::exception &e, const char *strFunctionName) const;
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
     PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
