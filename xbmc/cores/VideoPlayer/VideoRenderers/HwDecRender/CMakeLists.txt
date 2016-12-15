@@ -6,6 +6,8 @@ endif()
 if(VAAPI_FOUND)
   list(APPEND SOURCES RendererVAAPI.cpp)
   list(APPEND HEADERS RendererVAAPI.h)
+  list(APPEND SOURCES RendererRKVA.cpp)
+  list(APPEND HEADERS RendererRKVA.h)
 endif()
 
 if(VDPAU_FOUND)

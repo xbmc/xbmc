@@ -475,7 +475,7 @@ AC_ARG_ENABLE([gtest],
 
 AC_ARG_ENABLE([codec],
   [AS_HELP_STRING([--enable-codec],
-  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec and imxvpu)])],
+  [enable additional codecs from a list of comma separated names, (default is none, choices are amcodec, rkva and imxvpu)])],
   [add_codecs=$enableval],
   [add_codecs=no])
 
@@ -1760,6 +1760,17 @@ for codecs in `echo $add_codecs | sed 's/,/ /g'`; do
       if test "$use_x11" = "no"; then
         CXXFLAGS="$CXXFLAGS -DEGL_API_FB"
         CFLAGS="$CFLAGS -DEGL_API_FB"
+      fi
+      ;;
+    *rkva*)
+      if test "$use_gles" = "yes"; then
+        if test "$use_vaapi" = "yes"; then
+          XB_ADD_CODEC([RKVA], [rkva], [$codecs])
+        else
+          AC_MSG_RESULT([rkva is not enabled])
+        fi
+      else
+        AC_MSG_RESULT([rkva is not enabled])
       fi
       ;;
     *)
