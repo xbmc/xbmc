@@ -111,9 +111,6 @@ if(NOT WIN32)
 else()
   list(APPEND required_deps D3DX11Effects)
 endif()
-if(CORE_SYSTEM_NAME STREQUAL android)
-  list(APPEND required_deps Zip)
-endif()
 
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH XSLT

@@ -191,7 +191,6 @@ public:
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsBDFile() const;
   bool IsRAR() const;
-  bool IsAPK() const;
   bool IsZIP() const;
   bool IsCBZ() const;
   bool IsCBR() const;

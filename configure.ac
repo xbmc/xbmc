@@ -1137,12 +1137,6 @@ if test "$use_optical_drive" = "yes"; then
     AC_MSG_ERROR($missing_library))
 fi
 
-if test "$target_platform" = "target_android" ; then
-PKG_CHECK_MODULES([ZIP],       [libzip],
-  [INCLUDES="$INCLUDES $ZIP_CFLAGS"; LIBS="$LIBS $ZIP_LIBS"],
-  AC_MSG_ERROR($missing_library))
-fi
-
 # check for libbluray
 AS_CASE([x$use_libbluray],
   [xyes],[

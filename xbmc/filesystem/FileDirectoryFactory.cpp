@@ -29,9 +29,6 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
 #endif
-#if defined(TARGET_ANDROID)
-#include "APKDirectory.h"
-#endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
@@ -94,7 +91,6 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     return new CUDFDirectory();
 
 #endif
-#if defined(TARGET_ANDROID)
   if (url.IsFileType("apk"))
   {
     CURL zipURL = URIUtils::CreateArchivePath("apk", url);
@@ -111,11 +107,10 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     else
     { // compressed or more than one file -> create a apk dir
       pItem->SetURL(zipURL);
-      return new CAPKDirectory;
+      return new CZipDirectory;
     }
     return NULL;
   }
-#endif
   if (url.IsFileType("zip"))
   {
     CURL zipURL = URIUtils::CreateArchivePath("zip", url);

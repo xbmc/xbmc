@@ -71,9 +71,6 @@
 #ifdef HAS_PVRCLIENTS
 #include "PVRDirectory.h"
 #endif
-#if defined(TARGET_ANDROID)
-#include "APKDirectory.h"
-#endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -135,9 +132,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
   if (url.IsProtocol("udf")) return new CUDFDirectory();
   if (url.IsProtocol("plugin")) return new CPluginDirectory();
-#if defined(TARGET_ANDROID)
-  if (url.IsProtocol("apk")) return new CAPKDirectory();
-#endif
+  if (url.IsProtocol("apk")) return new CZipDirectory();
   if (url.IsProtocol("zip")) return new CZipDirectory();
   if (url.IsProtocol("rar"))
   {

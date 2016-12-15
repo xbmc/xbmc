@@ -768,14 +768,9 @@ bool URIUtils::IsInRAR(const std::string& strFile)
   return url.IsProtocol("rar") && !url.GetFileName().empty();
 }
 
-bool URIUtils::IsAPK(const std::string& strFile)
-{
-  return HasExtension(strFile, ".apk");
-}
-
 bool URIUtils::IsZIP(const std::string& strFile) // also checks for comic books!
 {
-  return HasExtension(strFile, ".zip|.cbz");
+  return HasExtension(strFile, ".zip|.cbz|.apk");
 }
 
 bool URIUtils::IsArchive(const std::string& strFile)
