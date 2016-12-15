@@ -24,7 +24,7 @@
 #include "utils/AliasShortcutUtils.h"
 #include "URL.h"
 #include "utils/log.h"
-#include "filesystem/File.h"
+#include "utils/auto_buffer.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h" // for HAVE_POSIX_FADVISE
@@ -322,12 +322,53 @@ bool CPosixFile::Rename(const CURL& url, const CURL& urlnew)
   if (errno == EXDEV)
   {
     CLog::LogF(LOGDEBUG, "Source file \"%s\" and target file \"%s\" are located on different filesystems, copy&delete will be used instead of rename", name.c_str(), newName.c_str());
-    if (XFILE::CFile::Copy(name, newName))
+
+    int src = open(name.c_str(), O_RDONLY, S_IRUSR | S_IRGRP | S_IROTH);
+    if (src < 0)
     {
-      if (XFILE::CFile::Delete(name))
-        return true;
+      CLog::LogF(LOGWARNING, "Can't open file \"%s\"", name.c_str());
+      return false;
+    }
+    int dst = open(newName.c_str(), O_WRONLY | O_CREAT | O_TRUNC , S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH);
+    if (dst < 0)
+    {
+      close(src);
+      CLog::LogF(LOGWARNING, "Can't open file \"%s\" for writing", newName.c_str());
+      return false;
+    }
+
+    XUTILS::auto_buffer buf(1024 * 1024); // use 1MB buffer
+    ssize_t portion_size = read(src, buf.get(), buf.size());
+    while (portion_size > 0)
+    {
+      if (write(dst, buf.get(), portion_size) != portion_size)
+      {
+        portion_size = -2; // indicate error
+        break;
+      }
+      portion_size = read(src, buf.get(), buf.size());
+    }
+    close(dst);
+    close(src);
+
+    if (portion_size == 0)
+    {
+      if (unlink(name.c_str()) < 0) // remove original file
+      {
+        if (errno != EIO)
+          unlink(newName.c_str()); // remove copy of file, if original file is not damaged/partly deleted
+        CLog::LogF(LOGERROR, "Error removing source file \"%s\" after coping", name.c_str());
+        return false;
+      }
+      return true;
+    }
+    else
+    {
+      unlink(newName.c_str()); // remove incomplete copy of file
+      if (portion_size == -2)
+        CLog::LogF(LOGWARNING, "Error writing file \"%s\"", newName.c_str());
       else
-        XFILE::CFile::Delete(newName);
+        CLog::LogF(LOGWARNING, "Error reading file \"%s\"", name.c_str());
     }
   }
 
