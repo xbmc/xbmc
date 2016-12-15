@@ -826,25 +826,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_postdata = Base64::Decode(value);
           m_postdataset = true;
         }
-        else if (name == "active-remote")// needed for DACP!
-        {
-          SetRequestHeader(it->first, value);
-        }
         // other standard headers (see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
-        else if (name == "accept" || name == "accept-language" || name == "accept-datetime" ||
-                 name == "authorization" || name == "cache-control" || name == "connection" ||
-                 name == "content-md5" || name == "content-type" || name == "date" ||
-                 name == "expect" || name == "forwarded" || name == "from" ||
-                 name == "if-match" || name == "if-modified-since" || name == "if-none-match" ||
-                 name == "if-range" || name == "if-unmodified-since" || name == "max-forwards" ||
-                 name == "origin" || name == "pragma" || name == "range" || name == "te" ||
-                 name == "upgrade" || name == "via" || name == "warning" ||
-                 name == "x-requested-with" || name == "dnt" || name == "x-forwarded-for" ||
-                 name == "x-forwarded-host" || name == "x-forwarded-proto" ||
-                 name == "front-end-https" || name == "x-http-method-override" ||
-                 name == "x-att-deviceid" || name == "x-wap-profile" || name == "x-uidh" ||
-                 name == "x-csrf-token" || name == "x-request-id" || name == "x-correlation-id" ||
-                 name == "icy-metadata")
+        else
         {
           SetRequestHeader(it->first, value);
           if (name == "authorization")
@@ -852,17 +835,10 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           else
             CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() adding custom header option '%s: %s'", it->first.c_str(), value.c_str());
         }
-        // we don't add blindly all options to headers anymore
-        // if anybody wants to pass options to ffmpeg, explicitly prefix those
-        // to be identified here
-        else
-        {
-          CLog::Log(LOGDEBUG, "CurlFile::ParseAndCorrectUrl() ignoring header option '%s: %s'", it->first.c_str(), value.c_str());
-        }
       }
     }
   }
-  
+
   // Unset the protocol options to have an url without protocol options
   url2.SetProtocolOptions("");
 
@@ -1124,7 +1100,7 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   assert(m_state->m_multiHandle);
 
-  SetCommonOptions(m_state); 
+  SetCommonOptions(m_state);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_UPLOAD, 1);
 
   g_curlInterface.multi_add_handle(m_state->m_multiHandle, m_state->m_easyHandle);
@@ -1264,7 +1240,7 @@ bool CCurlFile::Exists(const CURL& url)
 int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
 {
   int64_t nextPos = m_state->m_filePos;
-  
+
   if(!m_seekable)
     return -1;
 
@@ -1314,7 +1290,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
 
       if (m_state->Seek(nextPos))
         return nextPos;
-      
+
       m_state->Disconnect();
     }
   }
@@ -1350,7 +1326,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
     {
       m_seekable = false;
       return -1;
-    } 
+    }
   }
 
   SetCorrectHeaders(m_state);
@@ -1417,8 +1393,8 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
       return -1;
   }
 
-  if(result == CURLE_GOT_NOTHING 
-  || result == CURLE_HTTP_RETURNED_ERROR 
+  if(result == CURLE_GOT_NOTHING
+  || result == CURLE_HTTP_RETURNED_ERROR
   || result == CURLE_RECV_ERROR /* some silly shoutcast servers */ )
   {
     /* some http servers and shoutcast servers don't give us any data on a head request */
