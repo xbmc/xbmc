@@ -280,6 +280,12 @@ AC_ARG_ENABLE([tegra],
   [use_tegra=$enableval],
   [use_tegra=no])
 
+AC_ARG_ENABLE([mmal],
+  [AS_HELP_STRING([--enable-mmal],
+  [enable Multi-Media Abstraction Layer on VideoCore (default is no)])],
+  [use_mmal=$enableval],
+  [use_mmal=no])
+
 AC_ARG_ENABLE([profiling],
   [AS_HELP_STRING([--enable-profiling],
   [enable gprof profiling (default is no)])],
@@ -690,8 +696,7 @@ if test "$target_platform" = "target_raspberry_pi" ; then
      CORE_SYSTEM_NAME=rbpi
      ARCH="arm"
      AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
-     USE_OMXLIB=1; AC_DEFINE([HAVE_OMXLIB],[1],["Define to 1 if OMX libs is enabled"])
-     USE_MMAL=1; AC_DEFINE([HAS_MMAL],[1],["Define to 1 if MMAL libs is enabled"])
+     use_mmal="yes"
      CFLAGS="$CFLAGS"
      CXXFLAGS="$CXXFLAGS"
 fi
@@ -934,6 +939,12 @@ if test -z "$PYTHON_VERSION"; then
 else
   LIBS="$LIBS $PYTHON_LDFLAGS"
   AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
+fi
+
+if test "$use_mmal" = "yes" ; then
+     USE_MMAL=1
+     AC_DEFINE([HAS_MMAL],[1],["Define to 1 if MMAL is enabled"])
+     add_players=omxplayer
 fi
 
 # Checks for platforms libraries.
@@ -1738,6 +1749,9 @@ case $add_players in
   *omxplayer*)
       XB_ADD_PLAYER([OMXPLAYER], [omxplayer])
       CORE_SYSTEM_VARIANT=omx
+      AC_DEFINE([TARGET_RASPBERRY_PI],[1],["Define to 1 for RASPBERRY_PI"])
+      USE_OMXLIB=1;
+      AC_DEFINE([HAVE_OMXLIB],[1],["Define to 1 if OMX libs is enabled"])
       ;;
 esac
 
