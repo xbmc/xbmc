@@ -6,7 +6,7 @@
 # PYTHON_LIBRARIES - The python libraries
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PYTHON python >= 2.7 QUIET)
+  pkg_check_modules(PC_PYTHON python>=2.7 QUIET)
 endif()
 
 find_program(PYTHON_EXECUTABLE python ONLY_CMAKE_FIND_ROOT_PATH)
