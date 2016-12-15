@@ -576,3 +576,23 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
   return res->iWidth > 0 && res->iHeight> 0;
 }
 
+// dirty hack to check if amcodec is runing
+// TODO: remove when rendercapture gets easy access to codec info
+bool amcodec_runing()
+{
+  int fd = open("/sys/class/tsync/pts_video", O_RDONLY);
+  if (fd >= 0)
+  {
+    char pts_str[16];
+    int size = read(fd, pts_str, sizeof(pts_str));
+    close(fd);
+    if (size > 0)
+    {
+      unsigned long pts = strtoul(pts_str, NULL, 16);
+      if (pts > 0)
+        return true;
+    }
+  }
+
+  return false;
+}

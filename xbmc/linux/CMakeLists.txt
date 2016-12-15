@@ -1,4 +1,5 @@
-set(SOURCES ConvUtils.cpp
+set(SOURCES AmVideoCap.cpp
+            ConvUtils.cpp
             DBusMessage.cpp
             DBusReserve.cpp
             DBusUtil.cpp
@@ -12,7 +13,8 @@ set(SOURCES ConvUtils.cpp
             XMemUtils.cpp
             XTimeUtils.cpp)
 
-set(HEADERS ConvUtils.h
+set(HEADERS AmVideoCap.h
+            ConvUtils.h
             DBusMessage.h
             DBusReserve.h
             DBusUtil.h

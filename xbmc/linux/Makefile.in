@@ -22,6 +22,10 @@ SRCS += OMXClock.cpp
 SRCS += OMXCore.cpp
 endif
 
+ifeq (@USE_LIBAMCODEC@,1)
+SRCS += AmVideoCap.cpp
+endif
+
 LIB = linux.a
 
 include @abs_top_srcdir@/Makefile.include
