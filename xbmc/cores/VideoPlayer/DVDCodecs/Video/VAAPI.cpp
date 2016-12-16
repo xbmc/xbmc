@@ -1391,7 +1391,7 @@ bool CVaapiRenderPicture::GLMapSurface()
       if (!glInterop.eglImageY)
       {
         EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: %d", err);
         return false;
       }
 
@@ -1415,7 +1415,7 @@ bool CVaapiRenderPicture::GLMapSurface()
       if (!glInterop.eglImageVU)
       {
         EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: %d", err);
         return false;
       }
 
