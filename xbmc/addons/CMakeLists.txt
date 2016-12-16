@@ -2,6 +2,7 @@ set(SOURCES Addon.cpp
             AddonBuilder.cpp
             BinaryAddonCache.cpp
             AddonDatabase.cpp
+            AddonDll.cpp
             AddonInstaller.cpp
             AddonManager.cpp
             AddonStatusHandler.cpp

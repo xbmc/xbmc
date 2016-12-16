@@ -27,6 +27,7 @@
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 using namespace dbiplus;
 using namespace ActiveAE;

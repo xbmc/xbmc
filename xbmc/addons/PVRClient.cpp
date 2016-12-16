@@ -22,6 +22,7 @@
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 #include "epg/Epg.h"
+#include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"

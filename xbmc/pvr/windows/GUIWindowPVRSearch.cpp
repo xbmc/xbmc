@@ -23,6 +23,7 @@
 #include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
 #include "pvr/PVRGUIActions.h"

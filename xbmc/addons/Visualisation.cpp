@@ -23,19 +23,17 @@
 #include "ServiceBroker.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "Application.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/WindowIDs.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
+#include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "cores/AudioEngine/AEFactory.h"
-#ifdef TARGET_POSIX
-#include <dlfcn.h>
-#include "filesystem/SpecialProtocol.h"
-#endif
 
 using namespace MUSIC_INFO;
 using namespace ADDON;

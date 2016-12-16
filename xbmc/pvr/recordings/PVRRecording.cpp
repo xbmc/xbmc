@@ -22,6 +22,7 @@
 #include "epg/Epg.h"
 #include "epg/EpgContainer.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"

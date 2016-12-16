@@ -17,12 +17,15 @@
  *
  */
 #include "InputStream.h"
+#include "URL.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "threads/SingleLock.h"
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 namespace ADDON
 {

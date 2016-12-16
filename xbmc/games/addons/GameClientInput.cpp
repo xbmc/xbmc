@@ -22,6 +22,7 @@
 #include "GameClient.h"
 #include "games/controllers/Controller.h"
 #include "input/joysticks/IInputReceiver.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <assert.h>

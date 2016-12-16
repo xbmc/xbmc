@@ -26,6 +26,7 @@
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Crc32.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "Application.h"
 #include "XBDateTime.h"
