@@ -531,7 +531,7 @@ void CGUIDialogAddonSettings::UpdateFromControls()
           value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
           break;
         case CGUIControl::GUICONTROL_SPINEX:
-          if (type == "fileenum" || type == "labelenum")
+          if (type == "fileenum")
             value = ((CGUISpinControlEx*) control)->GetLabel();
           else
             value = StringUtils::Format("%i", ((CGUISpinControlEx*) control)->GetValue());
@@ -798,13 +798,7 @@ void CGUIDialogAddonSettings::CreateControls()
             replace = valuesVec[i];
           ((CGUISpinControlEx *)pControl)->AddLabel(replace, iAdd);
         }
-        if (type == "labelenum")
-        { // need to run through all our settings and find the one that matches
-          ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings[id]);
-        }
-        else
-          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings[id].c_str()));
-
+        ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings[id].c_str()));
       }
       else if (type == "fileenum" && !id.empty())
       {

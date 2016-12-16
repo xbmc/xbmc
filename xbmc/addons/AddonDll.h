@@ -515,7 +515,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
                  type == "executable" || type == "file"      ||
                  type == "action"     || type == "date"      ||
                  type == "time"       || type == "select"    ||
-                 type == "addon"      || type == "labelenum" ||
+                 type == "addon"      ||
                  type == "fileenum" )
         {
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
