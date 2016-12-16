@@ -67,7 +67,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(CGUIMessage &message)
     Close();
 
     if (m_recordItem)
-      CPVRGUIActions::GetInstance().PlayRecording(m_recordItem, false /* don't play minimized */, true /* check resume */);
+      CPVRGUIActions::GetInstance().PlayRecording(m_recordItem, true /* check resume */);
 
     bReturn = true;
   }

@@ -514,7 +514,7 @@ namespace PVR
     return bPlayIt;
   }
 
-  bool CPVRGUIActions::ResumePlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bFallbackToPlay) const
+  bool CPVRGUIActions::ResumePlayRecording(const CFileItemPtr &item, bool bFallbackToPlay) const
   {
     bool bCanResume = !GetResumeLabel(*item).empty();
     if (bCanResume)
@@ -529,14 +529,56 @@ namespace PVR
         return false;
     }
 
-    return PlayRecording(item, bPlayMinimized, false);
+    return PlayRecording(item, false);
   }
 
-  bool CPVRGUIActions::PlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const
+  void CPVRGUIActions::CheckAndSwitchToFullscreen() const
+  {
+    const bool bPlayMinimized(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED));
+    CMediaSettings::GetInstance().SetVideoStartWindowed(bPlayMinimized);
+
+    if (!bPlayMinimized)
+    {
+      CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
+      g_windowManager.SendMessage(msg);
+    }
+  }
+
+  bool CPVRGUIActions::TryFastChannelSwitch(const CPVRChannelPtr &channel) const
+  {
+    bool bSwitchSuccessful(false);
+
+    if (channel->StreamURL().empty() &&
+        (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
+        (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
+    {
+      bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
+
+      if (bSwitchSuccessful)
+        CheckAndSwitchToFullscreen();
+    }
+
+    return bSwitchSuccessful;
+  }
+
+  void CPVRGUIActions::StartPlayback(CFileItem *item) const
+  {
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+    CheckAndSwitchToFullscreen();
+  }
+
+  bool CPVRGUIActions::PlayRecording(const CFileItemPtr &item, bool bCheckResume) const
   {
     const CPVRRecordingPtr recording(CPVRItem(item).GetRecording());
     if (!recording)
       return false;
+
+    if (g_PVRManager.IsPlayingRecording(recording))
+    {
+      CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
+      g_windowManager.SendMessage(msg);
+      return true;
+    }
 
     std::string stream = recording->m_strStreamURL;
     if (stream.empty())
@@ -545,7 +587,7 @@ namespace PVR
       {
         CFileItem *itemToPlay = new CFileItem(recording);
         itemToPlay->m_lStartOffset = item->m_lStartOffset;
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(itemToPlay));
+        StartPlayback(itemToPlay);
       }
       return true;
     }
@@ -597,12 +639,12 @@ namespace PVR
     }
 
     if (!bCheckResume || CheckResumeRecording(item))
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
+      StartPlayback(new CFileItem(*item));
 
     return true;
   }
 
-  bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const
+  bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
   {
     if (item->m_bIsFolder)
       return false;
@@ -615,8 +657,6 @@ namespace PVR
       g_windowManager.SendMessage(msg);
       return true;
     }
-
-    CMediaSettings::GetInstance().SetVideoStartWindowed(bPlayMinimized);
 
     // switch to channel or if recording present, ask whether to switch or play recording...
     bool bSwitchSuccessful(false);
@@ -641,21 +681,16 @@ namespace PVR
         if (bPlayRecording)
         {
           const CFileItemPtr recordingItem(new CFileItem(recording));
-          return PlayRecording(recordingItem, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), bCheckResume);
+          return PlayRecording(recordingItem, bCheckResume);
         }
       }
 
-      /* try a fast switch */
-      if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-          (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
-      {
-        if (channel->StreamURL().empty())
-          bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
-      }
+      /* optimization: try a fast switch */
+      bSwitchSuccessful = TryFastChannelSwitch(channel);
 
       if (!bSwitchSuccessful)
       {
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(channel)));
+        StartPlayback(new CFileItem(channel));
         return true;
       }
     }
@@ -688,15 +723,11 @@ namespace PVR
 
     if (pvrItem->HasPVRChannelInfoTag())
     {
-      return SwitchToChannel(pvrItem,
-                             CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
-                             bCheckResume);
+      return SwitchToChannel(pvrItem, bCheckResume);
     }
     else if (pvrItem->HasPVRRecordingInfoTag())
     {
-      return PlayRecording(pvrItem,
-                           CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
-                           bCheckResume);
+      return PlayRecording(pvrItem, bCheckResume);
     }
 
     return false;

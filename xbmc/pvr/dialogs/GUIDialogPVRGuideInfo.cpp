@@ -139,9 +139,9 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
 
     const CFileItemPtr item(new CFileItem(m_progItem));
     if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
-      CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, true /* bCheckResume */);
+      CPVRGUIActions::GetInstance().PlayRecording(item, true /* bCheckResume */);
     else
-      CPVRGUIActions::GetInstance().SwitchToChannel(item, false /* bPlayMinimized */, true /* bCheckResume */);
+      CPVRGUIActions::GetInstance().SwitchToChannel(item, true /* bCheckResume */);
 
     bReturn = true;
   }
