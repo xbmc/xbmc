@@ -19,7 +19,6 @@
  */
 
 #include "ContextMenuItem.h"
-#include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "epg/EpgInfoTag.h"
 #include "guilib/GUIWindowManager.h"
@@ -29,7 +28,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
-#include "settings/Settings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "utils/URIUtils.h"
 
@@ -172,7 +170,7 @@ namespace PVR
 
     bool PlayRecording::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, true /* bCheckResume */);
+      return CPVRGUIActions::GetInstance().PlayRecording(item, true /* bCheckResume */);
     }
 
     ///////////////////////////////////////////////////////////////////////////////

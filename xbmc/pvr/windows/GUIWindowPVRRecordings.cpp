@@ -209,7 +209,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
 
               if (message.GetParam1() == ACTION_PLAY)
               {
-                CPVRGUIActions::GetInstance().PlayRecording(item, false /* don't play minimized */, true /* check resume */);
+                CPVRGUIActions::GetInstance().PlayRecording(item, true /* check resume */);
                 bReturn = true;
               }
               else
@@ -221,11 +221,11 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
                     bReturn = true;
                     break;
                   case SELECT_ACTION_PLAY_OR_RESUME:
-                    CPVRGUIActions::GetInstance().PlayRecording(item, false /* don't play minimized */, true /* check resume */);
+                    CPVRGUIActions::GetInstance().PlayRecording(item, true /* check resume */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_RESUME:
-                    CPVRGUIActions::GetInstance().ResumePlayRecording(item, false /* don't play minimized */, true /* fall back to play if no resume possible */);
+                    CPVRGUIActions::GetInstance().ResumePlayRecording(item, true /* fall back to play if no resume possible */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_INFO:

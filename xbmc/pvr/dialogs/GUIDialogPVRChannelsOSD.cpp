@@ -20,7 +20,6 @@
 
 #include "FileItem.h"
 #include "GUIInfoManager.h"
-#include "ServiceBroker.h"
 #include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -256,7 +255,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     return;
 
   Close();
-  CPVRGUIActions::GetInstance().SwitchToChannel(m_vecItems->Get(item), false /* bPlayMinimized */, true /* bCheckResume */);
+  CPVRGUIActions::GetInstance().SwitchToChannel(m_vecItems->Get(item), true /* bCheckResume */);
   m_group = GetPlayingGroup();
 }
 

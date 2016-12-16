@@ -1377,7 +1377,7 @@
       <group id="1" label="128">
         <setting id="pvrplayback.playminimized" type="boolean" label="19171" help="36227">
           <level>1</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">

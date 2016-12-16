@@ -178,29 +178,26 @@ namespace PVR
     /*!
      * @brief Resume a previously not completely played recording.
      * @param item containing a recording or an epg tag.
-     * @param bPlayMinimized controls whether the recording should be played fullscreen or in a window.
      * @param bFallbackToPlay controls whether playback of the recording should be started at the beginning ig no resume data are available.
      * @return true on success, false otherwise.
      */
-    bool ResumePlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bFallbackToPlay) const;
+    bool ResumePlayRecording(const CFileItemPtr &item, bool bFallbackToPlay) const;
 
     /*!
      * @brief Play recording.
      * @param item containing a recording or an epg tag.
-     * @param bPlayMinimized controls whether the recording should be played fullscreen or in a window.
      * @param bCheckResume controls resume check.
      * @return true on success, false otherwise.
      */
-    bool PlayRecording(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const;
+    bool PlayRecording(const CFileItemPtr &item, bool bCheckResume) const;
 
     /*!
      * @brief Switch channel.
      * @param item containing a channel or an epg tag.
-     * @param bPlayMinimized controls whether the channel should be played fullscreen or in a window.
      * @param bCheckResume controls resume check in case a recording for the current epg event is present.
      * @return true on success, false otherwise.
      */
-    bool SwitchToChannel(const CFileItemPtr &item, bool bPlayMinimized, bool bCheckResume) const;
+    bool SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const;
 
     /*!
      * @brief Playback the given file item.
@@ -284,6 +281,24 @@ namespace PVR
      * @return true, to play/resume the item, false otherwise.
      */
     bool CheckResumeRecording(const CFileItemPtr &item) const;
+
+    /*!
+     * @brief Check "play minimized" settings value and switch to fullscreen if not set.
+     */
+    void CheckAndSwitchToFullscreen() const;
+
+    /*!
+     * @brief Try a fast Live TV/Radio channel switch. Calls directly into active player instead of using messaging
+     * @param channel the channel to switch to.
+     * @return true if the switch was succesful, false otherwise.
+     */
+    bool TryFastChannelSwitch(const CPVRChannelPtr &channel) const;
+
+    /*!
+     * @brief Start playback of the given item.
+     * @param item containing a channel or a recording.
+     */
+    void StartPlayback(CFileItem *item) const;
   };
 
 } // namespace PVR
