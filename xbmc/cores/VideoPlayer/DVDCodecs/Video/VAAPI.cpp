@@ -562,8 +562,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   if (!CVAAPIContext::EnsureContext(&m_vaapiConfig.context, this))
     return false;
 
-  if(avctx->coded_width  == 0
-  || avctx->coded_height == 0)
+  if(avctx->coded_width  == 0 ||
+     avctx->coded_height == 0)
   {
     CLog::Log(LOGWARNING,"VAAPI::Open: no width/height available, can't init");
     return false;
@@ -620,7 +620,12 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
-      profile = VAProfileHEVCMain;
+      if (avctx->profile == FF_PROFILE_HEVC_MAIN_10)
+        profile = VAProfileHEVCMain10;
+      else if (avctx->profile == FF_PROFILE_HEVC_MAIN)
+        profile = VAProfileHEVCMain;
+      else
+        profile = VAProfileNone;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
         return false;
       break;
@@ -650,7 +655,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   m_vaapiConfig.profile = profile;
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(profile);
-  if ((m_vaapiConfig.attrib.value & VA_RT_FORMAT_YUV420) == 0)
+  if ((m_vaapiConfig.attrib.value & (VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP)) == 0)
   {
     CLog::Log(LOGERROR, "VAAPI - invalid yuv format %x", m_vaapiConfig.attrib.value);
     return false;
@@ -1074,7 +1079,7 @@ bool CDecoder::ConfigVAAPI()
 
   m_vaapiConfig.dpy = m_vaapiConfig.context->GetDisplay();
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
-  if ((m_vaapiConfig.attrib.value & VA_RT_FORMAT_YUV420) == 0)
+  if ((m_vaapiConfig.attrib.value & (VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP)) == 0)
   {
     CLog::Log(LOGERROR, "VAAPI - invalid yuv format %x", m_vaapiConfig.attrib.value);
     return false;
@@ -1087,9 +1092,12 @@ bool CDecoder::ConfigVAAPI()
 
   // create surfaces
   VASurfaceID surfaces[32];
+  unsigned int format = VA_RT_FORMAT_YUV420;
+  if (m_vaapiConfig.profile == VAProfileHEVCMain10)
+    format = VA_RT_FORMAT_YUV420_10BPP;
   int nb_surfaces = m_vaapiConfig.maxReferences;
   if (!CheckSuccess(vaCreateSurfaces(m_vaapiConfig.dpy,
-                                     VA_RT_FORMAT_YUV420,
+                                     format,
                                      m_vaapiConfig.surfaceWidth,
                                      m_vaapiConfig.surfaceHeight,
                                      surfaces,
@@ -1316,6 +1324,83 @@ bool CVaapiRenderPicture::GLMapSurface()
       attrib = attribs;
       *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
       *attrib++ = fourcc_code('G', 'R', '8', '8');
+      *attrib++ = EGL_WIDTH;
+      *attrib++ = (glInterop.vaImage.width + 1) >> 1;
+      *attrib++ = EGL_HEIGHT;
+      *attrib++ = (glInterop.vaImage.height + 1) >> 1;
+      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
+      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
+      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
+      *attrib++ = glInterop.vaImage.offsets[1];
+      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
+      *attrib++ = glInterop.vaImage.pitches[1];
+      *attrib++ = EGL_NONE;
+      glInterop.eglImageVU = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          attribs);
+      if (!glInterop.eglImageVU)
+      {
+        EGLint err = eglGetError();
+        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        return false;
+      }
+
+      GLint format;
+
+      glGenTextures(1, &textureY);
+      glEnable(glInterop.textureTarget);
+      glBindTexture(glInterop.textureTarget, textureY);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageY);
+      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
+
+      glGenTextures(1, &textureVU);
+      glEnable(glInterop.textureTarget);
+      glBindTexture(glInterop.textureTarget, textureVU);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageVU);
+      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
+
+      glBindTexture(glInterop.textureTarget, 0);
+      glDisable(glInterop.textureTarget);
+
+      break;
+    }
+    case VA_FOURCC('P','0','1','0'):
+    {
+      attrib = attribs;
+      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+      *attrib++ = fourcc_code('R', '1', '6', ' ');
+      *attrib++ = EGL_WIDTH;
+      *attrib++ = glInterop.vaImage.width;
+      *attrib++ = EGL_HEIGHT;
+      *attrib++ = glInterop.vaImage.height;
+      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
+      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
+      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
+      *attrib++ = glInterop.vaImage.offsets[0];
+      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
+      *attrib++ = glInterop.vaImage.pitches[0];
+      *attrib++ = EGL_NONE;
+      glInterop.eglImageY = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          attribs);
+      if (!glInterop.eglImageY)
+      {
+        EGLint err = eglGetError();
+        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        return false;
+      }
+
+      attrib = attribs;
+      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+      *attrib++ = fourcc_code('G', 'R', '1', '6');
       *attrib++ = EGL_WIDTH;
       *attrib++ = (glInterop.vaImage.width + 1) >> 1;
       *attrib++ = EGL_HEIGHT;
@@ -2608,9 +2693,12 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
   // create surfaces
   VASurfaceID surfaces[32];
+  unsigned int format = VA_RT_FORMAT_YUV420;
+  if (m_config.profile == VAProfileHEVCMain10)
+    format = VA_RT_FORMAT_YUV420_10BPP;
   int nb_surfaces = NUM_RENDER_PICS;
   if (!CheckSuccess(vaCreateSurfaces(m_config.dpy,
-                                     VA_RT_FORMAT_YUV420,
+                                     format,
                                      m_config.surfaceWidth,
                                      m_config.surfaceHeight,
                                      surfaces,
