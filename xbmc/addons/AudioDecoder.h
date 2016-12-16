@@ -81,6 +81,7 @@ namespace ADDON
     bool m_tracks;
     const AEChannel* m_channel;
     AUDIODEC_PROPS m_info;
+    AudioDecoder m_struct;
   };
 
 } /*namespace ADDON*/

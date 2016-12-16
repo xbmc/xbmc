@@ -156,5 +156,6 @@ namespace PERIPHERALS
     CCriticalSection    m_critSection;
     
     PERIPHERAL_PROPERTIES m_info;
+    PeripheralAddon m_struct;
   };
 }

@@ -41,6 +41,7 @@ public:
 
 private:
   SCR_PROPS m_info;
+  ScreenSaver m_struct;
 };
 
 } /*namespace ADDON*/

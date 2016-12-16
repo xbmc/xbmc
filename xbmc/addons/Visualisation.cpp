@@ -88,12 +88,12 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_info.profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_info.submodule = NULL;
 
-  if (CAddonDll<Visualisation>::Create(&m_info) == ADDON_STATUS_OK)
+  if (CAddonDll<Visualisation>::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
   {
     // Start the visualisation
     std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
-    m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
+    m_struct.Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
 
     m_hasPresets = GetPresets();
 
@@ -117,7 +117,7 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
   if (Initialized())
   {
-    m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+    m_struct.Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
   }
 }
 
@@ -130,7 +130,7 @@ void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, fl
   // iFreqDataLength = length of pFreqData
   if (Initialized())
   {
-    m_pStruct->AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
+    m_struct.AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
   }
 }
 
@@ -139,7 +139,7 @@ void CVisualisation::Render()
   // ask visz. to render itself
   if (Initialized())
   {
-    m_pStruct->Render();
+    m_struct.Render();
   }
 }
 
@@ -156,7 +156,7 @@ void CVisualisation::GetInfo(VIS_INFO *info)
 {
   if (Initialized())
   {
-    m_pStruct->GetInfo(info);
+    m_struct.GetInfo(info);
   }
 }
 
@@ -168,7 +168,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
   // see if vis wants to handle the input
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
-  if (action != VIS_ACTION_NONE && m_pStruct->OnAction)
+  if (action != VIS_ACTION_NONE && m_struct.OnAction)
   {
     // if this is a VIS_ACTION_UPDATE_TRACK action, copy relevant
     // tags from CMusicInfoTag to VisTag
@@ -193,16 +193,16 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       track.year        = tag->GetYear();
       track.rating      = tag->GetUserrating();
 
-      return m_pStruct->OnAction(action, &track);
+      return m_struct.OnAction(action, &track);
     }
-    return m_pStruct->OnAction((int)action, param);
+    return m_struct.OnAction((int)action, param);
   }
   return false;
 }
 
 void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
 {
-  if (!m_pStruct)
+  if (!Initialized())
     return ;
   CLog::Log(LOGDEBUG, "OnInitialize() started");
 
@@ -216,7 +216,7 @@ void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPe
 
 void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)
 {
-  if (!m_pStruct)
+  if (!Initialized())
     return ;
 
   // FIXME: iAudioDataLength should never be less than 0
@@ -258,7 +258,7 @@ void CVisualisation::CreateBuffers()
 
   // Get the number of buffers from the current vis
   VIS_INFO info;
-  m_pStruct->GetInfo(&info);
+  m_struct.GetInfo(&info);
   m_iNumBuffers = info.iSyncDelay + 1;
   m_bWantsFreq = (info.bWantsFreq != 0);
   if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
@@ -321,7 +321,7 @@ bool CVisualisation::GetPresets()
 {
   m_presets.clear();
   char **presets = NULL;
-  unsigned int entries = m_pStruct->GetPresets(&presets);
+  unsigned int entries = m_struct.GetPresets(&presets);
 
   if (presets && entries > 0)
   {
@@ -346,7 +346,7 @@ bool CVisualisation::GetSubModules()
 {
   m_submodules.clear();
   char **modules = NULL;
-  unsigned int entries = m_pStruct->GetSubModules(&modules);
+  unsigned int entries = m_struct.GetSubModules(&modules);
 
   if (modules && entries > 0)
   {
@@ -372,10 +372,10 @@ bool CVisualisation::IsLocked()
 {
   if (!m_presets.empty())
   {
-    if (!m_pStruct)
+    if (!Initialized())
       return false;
 
-    return m_pStruct->IsLocked();
+    return m_struct.IsLocked();
   }
   return false;
 }
@@ -409,7 +409,7 @@ void CVisualisation::Destroy()
 
 unsigned CVisualisation::GetPreset()
 {
-  return m_pStruct->GetPreset();
+  return m_struct.GetPreset();
 }
 
 std::string CVisualisation::GetPresetName()

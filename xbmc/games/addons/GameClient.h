@@ -169,6 +169,7 @@ private:
   CCriticalSection m_critSection;
   
   game_client_properties* m_info;
+  GameClient m_struct;
 };
 
 } // namespace GAME

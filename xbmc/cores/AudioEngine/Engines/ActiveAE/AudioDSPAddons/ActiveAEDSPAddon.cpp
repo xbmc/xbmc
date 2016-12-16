@@ -120,7 +120,7 @@ ADDON_STATUS CActiveAEDSPAddon::Create(int iClientId)
   /* initialise the add-on */
   bool bReadyToUse(false);
   CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - creating audio dsp add-on instance '%s'", __FUNCTION__, Name().c_str());
-  if ((status = CAddonDll<AudioDSP>::Create(&m_info)) == ADDON_STATUS_OK)
+  if ((status = CAddonDll<AudioDSP>::Create(&m_struct, &m_info)) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
 
   m_bReadyToUse = bReadyToUse;
@@ -191,7 +191,7 @@ bool CActiveAEDSPAddon::CheckAPIVersion(void)
 {
   /* check the API version */
   AddonVersion minVersion = AddonVersion(KODI_AE_DSP_MIN_API_VERSION);
-  m_apiVersion = AddonVersion(m_pStruct->GetAudioDSPAPIVersion());
+  m_apiVersion = AddonVersion(m_struct.GetAudioDSPAPIVersion());
 
   if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
   {
@@ -200,7 +200,7 @@ bool CActiveAEDSPAddon::CheckAPIVersion(void)
   }
 
   /* check the GUI API version */
-  AddonVersion guiVersion = AddonVersion(m_pStruct->GetGUIAPIVersion());
+  AddonVersion guiVersion = AddonVersion(m_struct.GetGUIAPIVersion());
   minVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
 
   if (!IsCompatibleGUIAPIVersion(minVersion, guiVersion))
@@ -218,7 +218,7 @@ bool CActiveAEDSPAddon::GetAddonProperties(void)
 
   /* get the capabilities */
   memset(&addonCapabilities, 0, sizeof(addonCapabilities));
-  AE_DSP_ERROR retVal = m_pStruct->GetAddonCapabilities(&addonCapabilities);
+  AE_DSP_ERROR retVal = m_struct.GetAddonCapabilities(&addonCapabilities);
   if (retVal != AE_DSP_ERROR_NO_ERROR)
   {
     CLog::Log(LOGERROR, "ActiveAE DSP - couldn't get the capabilities for add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
@@ -226,13 +226,13 @@ bool CActiveAEDSPAddon::GetAddonProperties(void)
   }
 
   /* get the name of the dsp addon */
-  std::string strDSPName = m_pStruct->GetDSPName();
+  std::string strDSPName = m_struct.GetDSPName();
 
   /* display name = backend name string */
   std::string strFriendlyName = StringUtils::Format("%s", strDSPName.c_str());
 
   /* backend version number */
-  std::string strAudioDSPVersion = m_pStruct->GetDSPVersion();
+  std::string strAudioDSPVersion = m_struct.GetDSPVersion();
 
   /* update the members */
   m_strAudioDSPName     = strDSPName;
@@ -287,12 +287,12 @@ void CActiveAEDSPAddon::CallMenuHook(const AE_DSP_MENUHOOK &hook, AE_DSP_MENUHOO
   if (!m_bReadyToUse || hookData.category == AE_DSP_MENUHOOK_UNKNOWN)
     return;
 
-  m_pStruct->MenuHook(hook, hookData);
+  m_struct.MenuHook(hook, hookData);
 }
 
 AE_DSP_ERROR CActiveAEDSPAddon::StreamCreate(const AE_DSP_SETTINGS *addonSettings, const AE_DSP_STREAM_PROPERTIES* pProperties, ADDON_HANDLE handle)
 {
-  AE_DSP_ERROR retVal = m_pStruct->StreamCreate(addonSettings, pProperties, handle);
+  AE_DSP_ERROR retVal = m_struct.StreamCreate(addonSettings, pProperties, handle);
   if (retVal == AE_DSP_ERROR_NO_ERROR)
     m_isInUse = true;
   LogError(retVal, __FUNCTION__);
@@ -302,14 +302,14 @@ AE_DSP_ERROR CActiveAEDSPAddon::StreamCreate(const AE_DSP_SETTINGS *addonSetting
 
 void CActiveAEDSPAddon::StreamDestroy(const ADDON_HANDLE handle)
 {
-  m_pStruct->StreamDestroy(handle);
+  m_struct.StreamDestroy(handle);
 
   m_isInUse = false;
 }
 
 bool CActiveAEDSPAddon::StreamIsModeSupported(const ADDON_HANDLE handle, AE_DSP_MODE_TYPE type, unsigned int addon_mode_id, int unique_db_mode_id)
 {
-  AE_DSP_ERROR retVal = m_pStruct->StreamIsModeSupported(handle, type, addon_mode_id, unique_db_mode_id);
+  AE_DSP_ERROR retVal = m_struct.StreamIsModeSupported(handle, type, addon_mode_id, unique_db_mode_id);
   if (retVal == AE_DSP_ERROR_NO_ERROR)
     return true;
   else if (retVal != AE_DSP_ERROR_IGNORE_ME)
@@ -320,7 +320,7 @@ bool CActiveAEDSPAddon::StreamIsModeSupported(const ADDON_HANDLE handle, AE_DSP_
 
 AE_DSP_ERROR CActiveAEDSPAddon::StreamInitialize(const ADDON_HANDLE handle, const AE_DSP_SETTINGS *addonSettings)
 {
-  AE_DSP_ERROR retVal = m_pStruct->StreamInitialize(handle, addonSettings);
+  AE_DSP_ERROR retVal = m_struct.StreamInitialize(handle, addonSettings);
   LogError(retVal, __FUNCTION__);
 
   return retVal;
@@ -328,47 +328,47 @@ AE_DSP_ERROR CActiveAEDSPAddon::StreamInitialize(const ADDON_HANDLE handle, cons
 
 bool CActiveAEDSPAddon::InputProcess(const ADDON_HANDLE handle, const float **array_in, unsigned int samples)
 {
-  return m_pStruct->InputProcess(handle, array_in, samples);
+  return m_struct.InputProcess(handle, array_in, samples);
 }
 
 unsigned int CActiveAEDSPAddon::InputResampleProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-  return m_pStruct->InputResampleProcessNeededSamplesize(handle);
+  return m_struct.InputResampleProcessNeededSamplesize(handle);
 }
 
 unsigned int CActiveAEDSPAddon::InputResampleProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples)
 {
-  return m_pStruct->InputResampleProcess(handle, array_in, array_out, samples);
+  return m_struct.InputResampleProcess(handle, array_in, array_out, samples);
 }
 
 int CActiveAEDSPAddon::InputResampleSampleRate(const ADDON_HANDLE handle)
 {
-  return m_pStruct->InputResampleSampleRate(handle);
+  return m_struct.InputResampleSampleRate(handle);
 }
 
 float CActiveAEDSPAddon::InputResampleGetDelay(const ADDON_HANDLE handle)
 {
-  return m_pStruct->InputResampleGetDelay(handle);
+  return m_struct.InputResampleGetDelay(handle);
 }
 
 unsigned int CActiveAEDSPAddon::PreProcessNeededSamplesize(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_pStruct->PreProcessNeededSamplesize(handle, mode_id);
+  return m_struct.PreProcessNeededSamplesize(handle, mode_id);
 }
 
 float CActiveAEDSPAddon::PreProcessGetDelay(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_pStruct->PreProcessGetDelay(handle, mode_id);
+  return m_struct.PreProcessGetDelay(handle, mode_id);
 }
 
 unsigned int CActiveAEDSPAddon::PreProcess(const ADDON_HANDLE handle, unsigned int mode_id, float **array_in, float **array_out, unsigned int samples)
 {
-  return m_pStruct->PostProcess(handle, mode_id, array_in, array_out, samples);
+  return m_struct.PostProcess(handle, mode_id, array_in, array_out, samples);
 }
 
 AE_DSP_ERROR CActiveAEDSPAddon::MasterProcessSetMode(const ADDON_HANDLE handle, AE_DSP_STREAMTYPE type, unsigned int mode_id, int unique_db_mode_id)
 {
-  AE_DSP_ERROR retVal = m_pStruct->MasterProcessSetMode(handle, type, mode_id, unique_db_mode_id);
+  AE_DSP_ERROR retVal = m_struct.MasterProcessSetMode(handle, type, mode_id, unique_db_mode_id);
   LogError(retVal, __FUNCTION__);
 
   return retVal;
@@ -376,22 +376,22 @@ AE_DSP_ERROR CActiveAEDSPAddon::MasterProcessSetMode(const ADDON_HANDLE handle, 
 
 unsigned int CActiveAEDSPAddon::MasterProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-  return m_pStruct->MasterProcessNeededSamplesize(handle);
+  return m_struct.MasterProcessNeededSamplesize(handle);
 }
 
 float CActiveAEDSPAddon::MasterProcessGetDelay(const ADDON_HANDLE handle)
 {
-  return m_pStruct->MasterProcessGetDelay(handle);
+  return m_struct.MasterProcessGetDelay(handle);
 }
 
 int CActiveAEDSPAddon::MasterProcessGetOutChannels(const ADDON_HANDLE handle, unsigned long &out_channel_present_flags)
 {
-  return m_pStruct->MasterProcessGetOutChannels(handle, out_channel_present_flags);
+  return m_struct.MasterProcessGetOutChannels(handle, out_channel_present_flags);
 }
 
 unsigned int CActiveAEDSPAddon::MasterProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples)
 {
-  return m_pStruct->MasterProcess(handle, array_in, array_out, samples);
+  return m_struct.MasterProcess(handle, array_in, array_out, samples);
 }
 
 std::string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
@@ -401,43 +401,43 @@ std::string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HAND
   if (!m_bReadyToUse)
     return strReturn;
 
-  strReturn = m_pStruct->MasterProcessGetStreamInfoString(handle);
+  strReturn = m_struct.MasterProcessGetStreamInfoString(handle);
   return strReturn;
 }
 
 unsigned int CActiveAEDSPAddon::PostProcessNeededSamplesize(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_pStruct->PostProcessNeededSamplesize(handle, mode_id);
+  return m_struct.PostProcessNeededSamplesize(handle, mode_id);
 }
 
 float CActiveAEDSPAddon::PostProcessGetDelay(const ADDON_HANDLE handle, unsigned int mode_id)
 {
-  return m_pStruct->PostProcessGetDelay(handle, mode_id);
+  return m_struct.PostProcessGetDelay(handle, mode_id);
 }
 
 unsigned int CActiveAEDSPAddon::PostProcess(const ADDON_HANDLE handle, unsigned int mode_id, float **array_in, float **array_out, unsigned int samples)
 {
-  return m_pStruct->PostProcess(handle, mode_id, array_in, array_out, samples);
+  return m_struct.PostProcess(handle, mode_id, array_in, array_out, samples);
 }
 
 unsigned int CActiveAEDSPAddon::OutputResampleProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-  return m_pStruct->OutputResampleProcessNeededSamplesize(handle);
+  return m_struct.OutputResampleProcessNeededSamplesize(handle);
 }
 
 unsigned int CActiveAEDSPAddon::OutputResampleProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples)
 {
-  return m_pStruct->OutputResampleProcess(handle, array_in, array_out, samples);
+  return m_struct.OutputResampleProcess(handle, array_in, array_out, samples);
 }
 
 int CActiveAEDSPAddon::OutputResampleSampleRate(const ADDON_HANDLE handle)
 {
-  return m_pStruct->OutputResampleSampleRate(handle);
+  return m_struct.OutputResampleSampleRate(handle);
 }
 
 float CActiveAEDSPAddon::OutputResampleGetDelay(const ADDON_HANDLE handle)
 {
-  return m_pStruct->OutputResampleGetDelay(handle);
+  return m_struct.OutputResampleGetDelay(handle);
 }
 
 bool CActiveAEDSPAddon::SupportsInputInfoProcess(void) const
