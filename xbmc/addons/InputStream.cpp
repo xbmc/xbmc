@@ -78,18 +78,6 @@ bool CInputStream::Create()
   return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
 }
 
-bool CInputStream::CheckAPIVersion()
-{
-  std::string dllVersion = m_struct.GetApiVersion();
-  if (dllVersion.compare(INPUTSTREAM_API_VERSION) != 0)
-  {
-    CLog::Log(LOGERROR, "CInputStream::CheckAPIVersion - API version does not match");
-    return false;
-  }
-
-  return true;
-}
-
 void CInputStream::SaveSettings()
 {
   CAddon::SaveSettings();
