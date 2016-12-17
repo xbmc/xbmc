@@ -46,8 +46,10 @@ extern "C"
   void Free(void* context);
 
   // function to export the above structure to XBMC
-  void __declspec(dllexport) get_addon(struct AudioEncoder* pScr)
+  void __declspec(dllexport) get_addon(void* enc)
   {
+    AudioEncoder* pScr = static_cast<AudioEncoder*>(enc);
+
     pScr->Create = Create;
     pScr->Start  = Start;
     pScr->Encode = Encode;

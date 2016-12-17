@@ -66,7 +66,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     if (dec->HasTags() && dec->GetExtensions().find("."+strExtension) != std::string::npos)
     {
       CAudioDecoder* result = new CAudioDecoder(*dec);
-      static_cast<AudioDecoderDll&>(*result).Create();
+      result->Create();
       return result;
     }
   }

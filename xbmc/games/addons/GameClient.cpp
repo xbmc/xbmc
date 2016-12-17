@@ -116,9 +116,9 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::AddonProps props,
 }
 
 CGameClient::CGameClient(ADDON::AddonProps props) :
-  CAddonDll<DllGameClient, GameClient, game_client_properties>(std::move(props)),
+  CAddonDll(std::move(props)),
   m_apiVersion("0.0.0"),
-  m_libraryProps(this, m_pInfo),
+  m_libraryProps(this, m_info),
   m_bSupportsVFS(false),
   m_bSupportsStandalone(false),
   m_bSupportsKeyboard(false),
@@ -174,8 +174,8 @@ CGameClient::~CGameClient(void)
 std::string CGameClient::LibPath() const
 {
   // If the game client requires a proxy, load its DLL instead
-  if (m_pInfo->proxy_dll_count > 0)
-    return m_pInfo->proxy_dll_paths[0];
+  if (m_info->proxy_dll_count > 0)
+    return m_info->proxy_dll_paths[0];
 
   return CAddon::LibPath();
 }
@@ -219,7 +219,7 @@ bool CGameClient::Initialize(void)
 
   m_libraryProps.InitializeProperties();
 
-  if (Create() == ADDON_STATUS_OK)
+  if (Create(&m_struct, m_info) == ADDON_STATUS_OK)
   {
     LogAddonProperties();
     return true;
@@ -264,7 +264,7 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  try { LogError(error = m_pStruct->LoadGame(path.c_str()), "LoadGame()"); }
+  try { LogError(error = m_struct.LoadGame(path.c_str()), "LoadGame()"); }
   catch (...) { LogException("LoadGame()"); }
 
   if (error != GAME_ERROR_NO_ERROR)
@@ -292,7 +292,7 @@ bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* 
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  try { LogError(error = m_pStruct->LoadStandalone(), "LoadStandalone()"); }
+  try { LogError(error = m_struct.LoadStandalone(), "LoadStandalone()"); }
   catch (...) { LogException("LoadStandalone()"); }
 
   if (error != GAME_ERROR_NO_ERROR)
@@ -367,14 +367,14 @@ bool CGameClient::LoadGameInfo()
   game_system_av_info av_info = { };
 
   bool bSuccess = false;
-  try { bSuccess = LogError(m_pStruct->GetGameInfo(&av_info), "GetGameInfo()"); }
+  try { bSuccess = LogError(m_struct.GetGameInfo(&av_info), "GetGameInfo()"); }
   catch (...) { LogException("GetGameInfo()"); }
 
   if (!bSuccess)
     return false;
 
   GAME_REGION region;
-  try { region = m_pStruct->GetRegion(); }
+  try { region = m_struct.GetRegion(); }
   catch (...) { LogException("GetRegion()"); return false; }
 
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
@@ -445,7 +445,7 @@ void CGameClient::CreatePlayback()
 {
   bool bRequiresGameLoop = false;
 
-  try { bRequiresGameLoop = m_pStruct->RequiresGameLoop(); }
+  try { bRequiresGameLoop = m_struct.RequiresGameLoop(); }
   catch (...) { LogException("RequiresGameLoop()"); }
 
   if (bRequiresGameLoop)
@@ -471,7 +471,7 @@ void CGameClient::Reset()
 
   if (m_bIsPlaying)
   {
-    try { LogError(m_pStruct->Reset(), "Reset()"); }
+    try { LogError(m_struct.Reset(), "Reset()"); }
     catch (...) { LogException("Reset()"); }
 
     CreatePlayback();
@@ -486,7 +486,7 @@ void CGameClient::CloseFile()
 
   if (m_bIsPlaying)
   {
-    try { LogError(m_pStruct->UnloadGame(), "UnloadGame()"); }
+    try { LogError(m_struct.UnloadGame(), "UnloadGame()"); }
     catch (...) { LogException("UnloadGame()"); }
   }
 
@@ -518,7 +518,7 @@ void CGameClient::RunFrame()
 
   if (m_bIsPlaying)
   {
-    try { LogError(m_pStruct->RunFrame(), "RunFrame()"); }
+    try { LogError(m_struct.RunFrame(), "RunFrame()"); }
     catch (...) { LogException("RunFrame()"); }
   }
 }
@@ -672,7 +672,7 @@ size_t CGameClient::GetSerializeSize()
   size_t serializeSize = 0;
   if (m_bIsPlaying)
   {
-    try { serializeSize = m_pStruct->SerializeSize(); }
+    try { serializeSize = m_struct.SerializeSize(); }
     catch (...) { LogException("SerializeSize()"); }
   }
 
@@ -689,7 +689,7 @@ bool CGameClient::Serialize(uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    try { bSuccess = LogError(m_pStruct->Serialize(data, size), "Serialize()"); }
+    try { bSuccess = LogError(m_struct.Serialize(data, size), "Serialize()"); }
     catch (...) { LogException("Serialize()"); }
   }
 
@@ -706,7 +706,7 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    try { bSuccess = LogError(m_pStruct->Deserialize(data, size), "Deserialize()"); }
+    try { bSuccess = LogError(m_struct.Deserialize(data, size), "Deserialize()"); }
     catch (...) { LogException("Deserialize()"); }
   }
 
@@ -727,7 +727,7 @@ bool CGameClient::OpenPort(unsigned int port)
 
     if (controller->LoadLayout())
     {
-      m_ports[port].reset(new CGameClientInput(this, port, controller, m_pStruct));
+      m_ports[port].reset(new CGameClientInput(this, port, controller, &m_struct));
 
       // If keyboard input is being captured by this add-on, force the port type to PERIPHERAL_JOYSTICK
       PERIPHERALS::PeripheralType device = PERIPHERALS::PERIPHERAL_UNKNOWN;
@@ -778,12 +778,12 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
     controllerStruct.abs_pointer_count    = 0; //! @todo
     controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
 
-    try { m_pStruct->UpdatePort(port, true, &controllerStruct); }
+    try { m_struct.UpdatePort(port, true, &controllerStruct); }
     catch (...) { LogException("UpdatePort()"); }
   }
   else
   {
-    try { m_pStruct->UpdatePort(port, false, nullptr); }
+    try { m_struct.UpdatePort(port, false, nullptr); }
     catch (...) { LogException("UpdatePort()"); }
   }
 }
@@ -858,7 +858,7 @@ bool CGameClient::SetRumble(unsigned int port, const std::string& feature, float
 
 void CGameClient::OpenKeyboard(void)
 {
-  m_keyboard.reset(new CGameClientKeyboard(this, m_pStruct));
+  m_keyboard.reset(new CGameClientKeyboard(this, &m_struct));
 }
 
 void CGameClient::CloseKeyboard(void)
@@ -868,19 +868,19 @@ void CGameClient::CloseKeyboard(void)
 
 void CGameClient::OpenMouse(void)
 {
-  m_mouse.reset(new CGameClientMouse(this, m_pStruct));
+  m_mouse.reset(new CGameClientMouse(this, &m_struct));
 
   std::string strId = m_mouse->ControllerID();
 
   game_controller controllerStruct = { strId.c_str() };
 
-  try { m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct); }
+  try { m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct); }
   catch (...) { LogException("UpdatePort()"); }
 }
 
 void CGameClient::CloseMouse(void)
 {
-  try { m_pStruct->UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr); }
+  try { m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr); }
   catch (...) { LogException("UpdatePort()"); }
 
   m_mouse.reset();

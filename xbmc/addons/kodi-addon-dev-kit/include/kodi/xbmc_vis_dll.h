@@ -37,8 +37,10 @@ extern "C"
   bool IsLocked();
 
   // function to export the above structure to XBMC
-  void __declspec(dllexport) get_addon(struct Visualisation* pVisz)
+  void __declspec(dllexport) get_addon(void* ptr)
   {
+    Visualisation* pVisz = static_cast<Visualisation*>(ptr);
+
     pVisz->Start = Start;
     pVisz->AudioData = AudioData;
     pVisz->Render = Render;

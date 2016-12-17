@@ -21,6 +21,7 @@
 #include "GUIDialogAudioDSPManager.h"
 
 #include "FileItem.h"
+#include "Util.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogOK.h"
@@ -31,6 +32,7 @@
 #include "guilib/GUIListContainer.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "input/Key.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 
 #define CONTROL_LIST_AVAILABLE                  20

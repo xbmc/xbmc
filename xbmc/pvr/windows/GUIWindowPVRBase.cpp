@@ -23,6 +23,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "epg/Epg.h"
 #include "GUIUserMessages.h"
@@ -38,6 +39,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "ServiceBroker.h"
+#include "utils/log.h"
 #include "utils/Variant.h"
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds

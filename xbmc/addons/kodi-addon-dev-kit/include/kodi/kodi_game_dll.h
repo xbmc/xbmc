@@ -254,8 +254,10 @@ GAME_ERROR SetCheat(unsigned int index, bool enabled, const char* code);
  * Note that get_addon() is defined here, so it will be available in all
  * compiled game clients.
  */
-void __declspec(dllexport) get_addon(GameClient* pClient)
+void __declspec(dllexport) get_addon(void* ptr)
 {
+  GameClient* pClient = static_cast<GameClient*>(ptr);
+
   pClient->GetGameAPIVersion        = GetGameAPIVersion;
   pClient->GetMininumGameAPIVersion = GetMininumGameAPIVersion;
   pClient->LoadGame                 = LoadGame;

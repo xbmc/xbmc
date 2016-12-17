@@ -41,6 +41,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
+#include "utils/log.h"
 #include "utils/Variant.h"
 
 using namespace ADDON;

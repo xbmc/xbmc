@@ -27,6 +27,7 @@
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/File.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "Util.h"

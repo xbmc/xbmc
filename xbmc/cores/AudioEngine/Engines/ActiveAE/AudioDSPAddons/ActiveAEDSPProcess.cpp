@@ -34,6 +34,7 @@ extern "C" {
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "settings/MediaSettings.h"
+#include "utils/log.h"
 #include "utils/TimeUtils.h"
 
 using namespace ADDON;

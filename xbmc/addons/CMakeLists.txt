@@ -2,6 +2,7 @@ set(SOURCES Addon.cpp
             AddonBuilder.cpp
             BinaryAddonCache.cpp
             AddonDatabase.cpp
+            AddonDll.cpp
             AddonInstaller.cpp
             AddonManager.cpp
             AddonStatusHandler.cpp
@@ -48,9 +49,7 @@ set(HEADERS Addon.h
             ContextMenuAddon.h
             ContextMenus.h
             DllAddon.h
-            DllAudioDSP.h
             DllLibCPluff.h
-            DllPVRClient.h
             FilesystemInstaller.h
             GameResource.h
             GUIDialogAddonInfo.h

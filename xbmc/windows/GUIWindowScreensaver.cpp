@@ -28,6 +28,7 @@
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
 
 using namespace ADDON;
 

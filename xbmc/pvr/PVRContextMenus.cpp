@@ -22,6 +22,7 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "epg/EpgInfoTag.h"
+#include "guilib/GUIWindowManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRGUIActions.h"

@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "addons/DllAudioDSP.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 class CAudioSettings
