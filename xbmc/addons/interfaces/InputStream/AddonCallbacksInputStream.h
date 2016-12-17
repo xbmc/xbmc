@@ -28,7 +28,7 @@ namespace KodiAPI
 namespace InputStream
 {
 
-class CAddonCallbacksInputStream : public ADDON::IAddonInterface
+class CAddonCallbacksInputStream
 {
 public:
   CAddonCallbacksInputStream(ADDON::CAddon* addon);
@@ -55,6 +55,7 @@ public:
   static void InputStreamFreeDemuxPacket(void* addonData, DemuxPacket* pPacket);
 
 private:
+  ADDON::CAddon* m_addon; /*!< the addon */
   CB_INPUTSTREAMLib* m_callbacks; /*!< callback addresses */
 };
 

@@ -5059,7 +5059,6 @@
 		EDED2E961C878EF8000F5E80 /* AddonCallbacksAudioDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioDSP.h; path = addons/interfaces/AudioDSP/AddonCallbacksAudioDSP.h; sourceTree = "<group>"; };
 		EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonInterfaces.cpp; path = addons/interfaces/AddonInterfaces.cpp; sourceTree = "<group>"; };
 		EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonInterfaces.h; path = addons/interfaces/AddonInterfaces.h; sourceTree = "<group>"; };
-		EDED2E9C1C878F70000F5E80 /* IAddonInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAddonInterface.h; path = addons/interfaces/IAddonInterface.h; sourceTree = "<group>"; };
 		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
 		F500E35917F34132004FC217 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
 		F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CallbackHandler.cpp; path = python/CallbackHandler.cpp; sourceTree = "<group>"; };
@@ -9600,7 +9599,6 @@
 				EDED2E811C878CC1000F5E80 /* PVR */,
 				EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */,
 				EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */,
-				EDED2E9C1C878F70000F5E80 /* IAddonInterface.h */,
 			);
 			name = interfaces;
 			path = ..;

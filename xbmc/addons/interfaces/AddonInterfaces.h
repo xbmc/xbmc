@@ -20,7 +20,6 @@
  *
  */
 
-#include "IAddonInterface.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h"
 
 #include <stdint.h>

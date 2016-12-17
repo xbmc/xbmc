@@ -33,7 +33,7 @@ namespace Game
 /*!
  * Callbacks for a game add-on to Kodi
  */
-class CAddonCallbacksGame : public ADDON::IAddonInterface
+class CAddonCallbacksGame
 {
 public:
   CAddonCallbacksGame(ADDON::CAddon* addon);
@@ -62,6 +62,7 @@ public:
 private:
   static GAME::CGameClient* GetGameClient(void* addonData, const char* strFunction);
 
+  ADDON::CAddon* m_addon; /*!< the addon */
   CB_GameLib*  m_callbacks; /*!< callback addresses */
 };
 

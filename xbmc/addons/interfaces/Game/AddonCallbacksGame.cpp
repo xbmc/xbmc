@@ -38,7 +38,7 @@ namespace Game
 {
 
 CAddonCallbacksGame::CAddonCallbacksGame(CAddon* addon) :
-  ADDON::IAddonInterface(addon, 1, GAME_API_VERSION),
+  m_addon(addon),
   m_callbacks(new CB_GameLib)
 {
   /* write Kodi game specific add-on function addresses to callback table */

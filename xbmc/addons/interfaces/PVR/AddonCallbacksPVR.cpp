@@ -48,7 +48,7 @@ namespace PVR
 {
 
 CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
-  : ADDON::IAddonInterface(addon, 1, XBMC_PVR_API_VERSION),
+  : m_addon(addon),
     m_callbacks(new CB_PVRLib)
 {
   /* write XBMC PVR specific add-on function addresses to callback table */
