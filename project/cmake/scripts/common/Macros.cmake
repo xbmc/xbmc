@@ -601,9 +601,9 @@ macro(core_find_versions)
     string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   endif()
   string(REPLACE "." "," FILE_VERSION ${APP_ADDON_API}.0)
-  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version REGEX "^.*GUILIB_API_VERSION (.*)$")
+  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h guilib_version REGEX "^.*INSTANCE_VERSION_GUI (.*)$")
   string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version ${guilib_version})
-  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version_min REGEX "^.*GUILIB_MIN_API_VERSION (.*)$")
+  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h guilib_version_min REGEX "^.*INSTANCE_MIN_VERSION_GUI (.*)$")
   string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version_min ${guilib_version_min})
   # unset variables not used anywhere else
   unset(version_list)
@@ -614,9 +614,9 @@ macro(core_find_versions)
     message(FATAL_ERROR "Could not determine app version! Make sure that ${CORE_SOURCE_DIR}/version.txt exists")
   endif()
 
-  # bail if we can't parse libKODI_guilib.h
+  # bail if we can't parse versions.h
   if(NOT DEFINED guilib_version OR NOT DEFINED guilib_version_min)
-    message(FATAL_ERROR "Could not determine add-on API version! Make sure that ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h exists")
+    message(FATAL_ERROR "Could not determine add-on API version! Make sure that ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h exists")
   endif()
 endmacro()
 
