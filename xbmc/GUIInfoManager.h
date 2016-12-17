@@ -151,7 +151,7 @@ public:
   /*! \brief Set currently playing file item
    \param blocking whether to run in current thread (true) or background thread (false)
    */
-  void SetCurrentItem(const CFileItemPtr item);
+  void SetCurrentItem(const CFileItemPtr& item);
   void ResetCurrentItem();
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
@@ -268,11 +268,11 @@ protected:
 
   /*! \brief Split an info string into it's constituent parts and parameters
    Format is:
-     
+
      info1(params1).info2(params2).info3(params3) ...
-   
+
    where the parameters are an optional comma separated parameter list.
-   
+
    \param infoString the original string
    \param info the resulting pairs of info and parameters.
    */
@@ -290,7 +290,7 @@ protected:
    */
   EPG::CEpgInfoTagPtr GetEpgInfoTag() const;
 
-  void SetCurrentItemJob(const CFileItemPtr item);
+  void SetCurrentItemJob(const CFileItemPtr& item);
 
   // Conditional string parameters are stored here
   std::vector<std::string> m_stringParameters;
@@ -337,10 +337,10 @@ protected:
   int m_libraryHasMovieSets;
   int m_libraryHasSingles;
   int m_libraryHasCompilations;
-  
+
   //Count of artists in music library contributing to song by role e.g. composers, conductors etc.
   //For checking visibiliy of custom nodes for a role.
-  std::vector<std::pair<std::string, int>> m_libraryRoleCounts; 
+  std::vector<std::pair<std::string, int>> m_libraryRoleCounts;
 
   SPlayerVideoStreamInfo m_videoInfo;
   SPlayerAudioStreamInfo m_audioInfo;
@@ -358,7 +358,3 @@ private:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
-
-
-
-

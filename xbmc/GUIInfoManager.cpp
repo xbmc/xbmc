@@ -9067,7 +9067,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         std::string strEpisode;
         if (m_currentFile->GetVideoInfoTag()->m_iSeason == 0) // prefix episode with 'S'
           strEpisode = StringUtils::Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else 
+        else
           strEpisode = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strEpisode;
       }
@@ -9134,7 +9134,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       break;
     }
   }
-  
+
   if (item == VIDEOPLAYER_TITLE)
     return GetLabel(PLAYER_TITLE);
 
@@ -9214,13 +9214,13 @@ void CGUIInfoManager::ResetCurrentItem()
   m_currentMovieDuration = "";
 }
 
-void CGUIInfoManager::SetCurrentItem(const CFileItemPtr item)
+void CGUIInfoManager::SetCurrentItem(const CFileItemPtr& item)
 {
   CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
   CJobManager::GetInstance().AddJob(job, NULL);
 }
 
-void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
+void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr& item)
 {
   ResetCurrentItem();
 
@@ -9653,7 +9653,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
 
     if (rating.rating <= 0.f)
       return "";
-    
+
     if (rating.votes == 0)
       return StringUtils::FormatNumber(rating.rating);
     else
@@ -9661,7 +9661,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
-  { 
+  {
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
     if (StringUtils::StartsWithNoCase(property, "Role.") && item->HasMusicInfoTag())
     { // "Role.xxxx" properties are held in music tag
@@ -9953,7 +9953,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         if (item->GetMusicInfoTag()->GetVotes() <= 0)
           strRatingAndVotes = StringUtils::FormatNumber(item->GetMusicInfoTag()->GetRating());
         else
-          strRatingAndVotes = FormatRatingAndVotes(item->GetMusicInfoTag()->GetRating(), 
+          strRatingAndVotes = FormatRatingAndVotes(item->GetMusicInfoTag()->GetRating(),
                                                    item->GetMusicInfoTag()->GetVotes());
         return strRatingAndVotes;
       }

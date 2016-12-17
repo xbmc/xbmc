@@ -733,7 +733,7 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 {
   Fields::const_iterator it;
-  for (it = fields.begin(); it != fields.end(); it++)
+  for (it = fields.begin(); it != fields.end(); ++it)
     ToSortable(sortable, *it);
 
   /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
@@ -1700,7 +1700,7 @@ void CFileItem::LoadEmbeddedCue()
     {
       std::vector<std::string> MediaFileVec;
       cuesheet->GetMediaFiles(MediaFileVec);
-      for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+      for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); ++itMedia)
         cuesheet->UpdateMediaFile(*itMedia, GetPath());
       SetCueDocument(cuesheet);
     }
@@ -2168,7 +2168,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   // apply the new order to the existing CFileItems
   VECFILEITEMS sortedFileItems;
   sortedFileItems.reserve(Size());
-  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); it++)
+  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); ++it)
   {
     CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem
@@ -2393,7 +2393,7 @@ void CFileItemList::FilterCueItems()
           cuesheet->GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
-          for(std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+          for(std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); ++itMedia)
           {
             std::string strMediaFile = *itMedia;
             std::string fileFromCue = strMediaFile; // save the file from the cue we're matching against,
@@ -2509,7 +2509,7 @@ void CFileItemList::StackFolders()
     else
       folderRegExps.push_back(folderRegExp);
 
-    strExpression++;
+    ++strExpression;
   }
 
   if (!folderRegExp.IsCompiled())
@@ -2568,7 +2568,7 @@ void CFileItemList::StackFolders()
             if (nFiles == 1)
               *item = *items[index];
           }
-          expr++;
+          ++expr;
         }
 
         // check for dvd folders
@@ -2607,7 +2607,7 @@ void CFileItemList::StackFiles()
       else
         CLog::Log(LOGERROR, "Invalid video stack RE (%s). Must have 4 captures.", strRegExp->c_str());
     }
-    strRegExp++;
+    ++strRegExp;
   }
 
   // now stack the files, some of which may be from the previous stack iteration
@@ -2700,7 +2700,7 @@ void CFileItemList::StackFiles()
                 else // Sequel
                 {
                   offset = 0;
-                  expr++;
+                  ++expr;
                   break;
                 }
               }
@@ -2712,21 +2712,21 @@ void CFileItemList::StackFiles()
               else // Extension mismatch
               {
                 offset = 0;
-                expr++;
+                ++expr;
                 break;
               }
             }
             else // Title mismatch
             {
               offset = 0;
-              expr++;
+              ++expr;
               break;
             }
           }
           else // No match 2, next expression
           {
             offset = 0;
-            expr++;
+            ++expr;
             break;
           }
           j++;
@@ -2737,7 +2737,7 @@ void CFileItemList::StackFiles()
       else // No match 1
       {
         offset = 0;
-        expr++;
+        ++expr;
       }
       if (stack.size() > 1)
       {
@@ -3438,7 +3438,7 @@ std::string CFileItem::FindTrailer() const
     {
       matchRegExps.push_back(tmpRegExp);
     }
-    strRegExp++;
+    ++strRegExp;
   }
 
   std::string strTrailer;
@@ -3465,7 +3465,7 @@ std::string CFileItem::FindTrailer() const
           i = items.Size();
           break;
         }
-        expr++;
+        ++expr;
       }
     }
   }

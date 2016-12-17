@@ -685,7 +685,7 @@ std::string CURL::Decode(const std::string& strURLData)
     }
     else strResult += kar;
   }
-  
+
   return strResult;
 }
 
@@ -699,7 +699,7 @@ std::string CURL::Encode(const std::string& strURLData)
   for (size_t i = 0; i < strURLData.size(); ++i)
   {
     const char kar = strURLData[i];
-    
+
     // Don't URL encode "-_.!()" according to RFC1738
     //! @todo Update it to "-_.~" after Gotham according to RFC3986
     if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
@@ -727,7 +727,7 @@ bool CURL::IsProtocolEqual(const std::string &protocol, const char *type)
 void CURL::GetOptions(std::map<std::string, std::string> &options) const
 {
   CUrlOptions::UrlOptions optionsMap = m_options.GetOptions();
-  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); option++)
+  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); ++option)
     options[option->first] = option->second.asString();
 }
 
@@ -770,7 +770,7 @@ void CURL::RemoveOption(const std::string &key)
 void CURL::GetProtocolOptions(std::map<std::string, std::string> &options) const
 {
   CUrlOptions::UrlOptions optionsMap = m_protocolOptions.GetOptions();
-  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); option++)
+  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); ++option)
     options[option->first] = option->second.asString();
 }
 
@@ -784,7 +784,7 @@ bool CURL::GetProtocolOption(const std::string &key, std::string &value) const
   CVariant valueObj;
   if (!m_protocolOptions.GetOption(key, valueObj))
     return false;
-  
+
   value = valueObj.asString();
   return true;
 }
@@ -794,7 +794,7 @@ std::string CURL::GetProtocolOption(const std::string &key) const
   std::string value;
   if (!GetProtocolOption(key, value))
     return "";
-  
+
   return value;
 }
 
