@@ -165,9 +165,9 @@ void CPVRRecordings::Update(void)
 
   lock.Enter();
   m_bIsUpdating = false;
-  g_PVRManager.SetChanged();
   lock.Leave();
 
+  g_PVRManager.SetChanged();
   g_PVRManager.NotifyObservers(ObservableMessageRecordings);
   g_PVRManager.PublishEvent(RecordingsInvalidated);
 }

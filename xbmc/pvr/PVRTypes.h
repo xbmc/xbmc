@@ -29,17 +29,29 @@ namespace PVR
   class CPVRChannelGroup;
   typedef std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupPtr;
 
+  class CPVRChannelGroupsContainer;
+  typedef std::shared_ptr<CPVRChannelGroupsContainer> CPVRChannelGroupsContainerPtr;
+
+  class CPVRClients;
+  typedef std::shared_ptr<CPVRClients> CPVRClientsPtr;
+
   class CPVRRadioRDSInfoTag;
   typedef std::shared_ptr<CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 
   class CPVRRecording;
   typedef std::shared_ptr<CPVRRecording> CPVRRecordingPtr;
 
+  class CPVRRecordings;
+  typedef std::shared_ptr<CPVRRecordings> CPVRRecordingsPtr;
+
   class CPVRTimerInfoTag;
   typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
 
   class CPVRTimerType;
   typedef std::shared_ptr<CPVRTimerType> CPVRTimerTypePtr;
+
+  class CPVRTimers;
+  typedef std::shared_ptr<CPVRTimers> CPVRTimersPtr;
 
 } // namespace PVR
 

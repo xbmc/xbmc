@@ -571,8 +571,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (!g_PVRManager.IsStarted())
       return FailedToExecute;
 
-    CPVRChannelGroupsContainer *channelGroupContainer = g_PVRChannelGroups;
-    if (channelGroupContainer == NULL)
+    CPVRChannelGroupsContainerPtr channelGroupContainer = g_PVRChannelGroups;
+    if (!channelGroupContainer)
       return FailedToExecute;
 
     CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["item"]["channelid"].asInteger());
@@ -596,8 +596,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (!g_PVRManager.IsStarted())
       return FailedToExecute;
 
-    CPVRRecordings *recordingsContainer = g_PVRRecordings;
-    if (recordingsContainer == NULL)
+    CPVRRecordingsPtr recordingsContainer = g_PVRRecordings;
+    if (!recordingsContainer)
       return FailedToExecute;
 
     CFileItemPtr fileItem = recordingsContainer->GetById((int)parameterObject["item"]["recordingid"].asInteger());

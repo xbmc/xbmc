@@ -170,6 +170,12 @@ namespace EPG
     int GetDuration(void) const;
 
     /*!
+     * @brief Check whether this event is parental locked.
+     * @return True if whether this event is parental locked, false otherwise.
+     */
+    bool IsParentalLocked() const;
+
+    /*!
      * @brief Get the title of this event.
      * @param bOverrideParental True to override parental control, false check it.
      * @return The title.
