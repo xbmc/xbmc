@@ -9950,10 +9950,10 @@ msgctxt "#19170"
 msgid "Timeout when starting playback"
 msgstr ""
 
-#. pvr settings "start playback in a window instead of full screen" setting label
+#. pvr settings "start playback full screen" setting label
 #: system/settings/settings.xml
 msgctxt "#19171"
-msgid "Start playback minimised"
+msgid "Switch to full screen"
 msgstr ""
 
 #. pvr settings "duration for an instant recording" setting label
@@ -17951,7 +17951,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36227"
-msgid "Display stream of selected channel in a small box instead of fullscreen."
+msgid "Switch to full screen display when starting playback of channels and recordings."
 msgstr ""
 
 #: system/settings/settings.xml
