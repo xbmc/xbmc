@@ -28,7 +28,7 @@ namespace KodiAPI
 namespace Codec
 {
 
-class CAddonCallbacksCodec : public ADDON::IAddonInterface
+class CAddonCallbacksCodec
 {
 public:
   CAddonCallbacksCodec(ADDON::CAddon* addon);
@@ -42,6 +42,7 @@ public:
   static xbmc_codec_t GetCodecByName(const void* addonData, const char* strCodecName);
 
 private:
+  ADDON::CAddon* m_addon; /*!< the addon */
   CB_CodecLib*                           m_callbacks; /*!< callback addresses */
 };
 

@@ -32,7 +32,7 @@ namespace Peripheral
 /*!
  * Callbacks for a peripheral add-on to Kodi
  */
-class CAddonCallbacksPeripheral : public ADDON::IAddonInterface
+class CAddonCallbacksPeripheral
 {
 public:
   CAddonCallbacksPeripheral(ADDON::CAddon* addon);
@@ -50,6 +50,7 @@ public:
 private:
   static PERIPHERALS::CPeripheralAddon* GetPeripheralAddon(void* addonData, const char* strFunction);
 
+  ADDON::CAddon* m_addon; /*!< the addon */
   CB_PeripheralLib*  m_callbacks; /*!< callback addresses */
 };
 

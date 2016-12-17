@@ -42,7 +42,7 @@ namespace AudioDSP
  *
  * Also translates the addon's C structures to KODI's C++ structures.
  */
-class CAddonCallbacksADSP : public ADDON::IAddonInterface
+class CAddonCallbacksADSP
 {
 public:
   CAddonCallbacksADSP(ADDON::CAddon* addon);
@@ -155,6 +155,7 @@ public:
 private:
   static ::ActiveAE::CActiveAEDSPAddon* GetAudioDSPAddon(void* addonData);
 
+  ADDON::CAddon* m_addon; /*!< the addon */
   CB_ADSPLib   *m_callbacks; /*!< callback addresses */
 };
 

@@ -47,7 +47,7 @@ struct EpgEventStateChange;
  *
  * Also translates the addon's C structures to XBMC's C++ structures.
  */
-class CAddonCallbacksPVR : public ADDON::IAddonInterface
+class CAddonCallbacksPVR
 {
 public:
   CAddonCallbacksPVR(ADDON::CAddon* addon);
@@ -193,6 +193,7 @@ private:
   static ::PVR::CPVRClient* GetPVRClient(void* addonData);
   static void UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued);
 
+  ADDON::CAddon* m_addon; /*!< the addon */
   CB_PVRLib    *m_callbacks; /*!< callback addresses */
 };
 

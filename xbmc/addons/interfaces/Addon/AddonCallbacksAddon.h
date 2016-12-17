@@ -42,7 +42,7 @@ namespace KodiAPI
 namespace AddOn
 {
 
-class CAddonCallbacksAddon : public ADDON::IAddonInterface
+class CAddonCallbacksAddon
 {
 public:
   CAddonCallbacksAddon(ADDON::CAddon* addon);
@@ -91,6 +91,7 @@ public:
   static bool CURLOpen(const void* addonData, void* curl, unsigned int flags);
 
 private:
+  ADDON::CAddon* m_addon; /*!< the addon */
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
 };
 
