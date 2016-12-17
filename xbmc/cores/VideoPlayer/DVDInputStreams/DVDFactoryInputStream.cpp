@@ -78,8 +78,11 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
       if (status == ADDON_STATUS_OK)
       {
         unsigned int videoWidth, videoHeight;
-        pPlayer->GetVideoResolution(videoWidth, videoHeight);
-        addon->SetVideoResolution(videoWidth, videoHeight);
+        if (pPlayer)
+        {
+          pPlayer->GetVideoResolution(videoWidth, videoHeight);
+          addon->SetVideoResolution(videoWidth, videoHeight);
+        }
 
         return new CInputStreamAddon(fileitem, addon);
       }
