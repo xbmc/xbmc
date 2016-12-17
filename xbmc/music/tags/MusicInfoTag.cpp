@@ -851,6 +851,7 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
     break;
   }
   case FieldArtist:      sortable[FieldArtist] = m_strArtistDesc; break; //#blake add sort my sortname
+  case FieldArtistSort:  sortable[FieldArtistSort] = m_strArtistSort; break;
   case FieldAlbum:       sortable[FieldAlbum] = m_strAlbum; break;
   case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_strAlbumArtistDesc; break;
   case FieldGenre:       sortable[FieldGenre] = m_genre; break;

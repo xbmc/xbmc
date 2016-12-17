@@ -71,6 +71,7 @@ typedef enum {
   FieldGenre,
   FieldAlbum,
   FieldArtist,
+  FieldArtistSort,
   FieldAlbumArtist,
   FieldTitle,
   FieldSortTitle,
