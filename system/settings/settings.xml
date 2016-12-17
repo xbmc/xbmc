@@ -1375,7 +1375,7 @@
       <group id="1" label="128">
         <setting id="pvrplayback.switchtofullscreen" type="boolean" label="19171" help="36227">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">

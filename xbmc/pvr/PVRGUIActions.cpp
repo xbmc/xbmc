@@ -817,10 +817,10 @@ namespace PVR
 
   void CPVRGUIActions::CheckAndSwitchToFullscreen() const
   {
-    const bool bPlayMinimized(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED));
-    CMediaSettings::GetInstance().SetVideoStartWindowed(bPlayMinimized);
+    const bool bFullscreen(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
+    CMediaSettings::GetInstance().SetVideoStartWindowed(!bFullscreen);
 
-    if (!bPlayMinimized)
+    if (bFullscreen)
     {
       CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
       g_windowManager.SendMessage(msg);
