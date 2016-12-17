@@ -177,7 +177,6 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
   if (!funcTable)
     return ADDON_STATUS_PERMANENT_FAILURE;
 
-  ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
 
@@ -196,39 +195,32 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  try
+  ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), info);
+  if (status == ADDON_STATUS_OK)
   {
-    status = m_pDll->Create(m_pHelpers->GetCallbacks(), info);
-    if (status == ADDON_STATUS_OK)
-    {
-      m_initialized = true;
-    }
-    else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
-    {
-      m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
-      if ((status = TransferSettings()) == ADDON_STATUS_OK)
-        m_initialized = true;
-      else
-        new CAddonStatusHandler(ID(), status, "", false);
-    }
-    else
-    { // Addon failed initialization
-      CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
-      
-      CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (pDialog)
-      {
-        std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
-        pDialog->SetHeading(CVariant{heading});
-        pDialog->SetLine(1, CVariant{24070});
-        pDialog->SetLine(2, CVariant{24071});
-        pDialog->Open();
-      }
-    }
+    m_initialized = true;
   }
-  catch (std::exception &e)
+  else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
   {
-    HandleException(e, "m_pDll->Create");
+    m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
+    if ((status = TransferSettings()) == ADDON_STATUS_OK)
+      m_initialized = true;
+    else
+      new CAddonStatusHandler(ID(), status, "", false);
+  }
+  else
+  { // Addon failed initialization
+    CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
+    
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (pDialog)
+    {
+      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      pDialog->SetHeading(CVariant{heading});
+      pDialog->SetLine(1, CVariant{24070});
+      pDialog->SetLine(2, CVariant{24071});
+      pDialog->Open();
+    }
   }
 
   return status;
@@ -237,53 +229,40 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
 void CAddonDll::Stop()
 {
   /* Inform dll to stop all activities */
-  try
+  if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
   {
-    if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
+    char   str_id[64] = "";
+    char   str_value[1024];
+    CAddon::LoadUserSettings();
+    for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
     {
-      char   str_id[64] = "";
-      char   str_value[1024];
-      CAddon::LoadUserSettings();
-      for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
-      {
-        strcpy(str_id, "###GetSavedSettings");
-        sprintf (str_value, "%i", i);
-        ADDON_STATUS status = m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
+      strcpy(str_id, "###GetSavedSettings");
+      sprintf (str_value, "%i", i);
+      ADDON_STATUS status = m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
 
-        if (status == ADDON_STATUS_UNKNOWN)
-          break;
+      if (status == ADDON_STATUS_UNKNOWN)
+        break;
 
-        if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
-      }
-      CAddon::SaveSettings();
+      if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
     }
-    if (m_pDll)
-    {
-      m_pDll->Stop();
-      CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
-    }
+    CAddon::SaveSettings();
   }
-  catch (std::exception &e)
+  if (m_pDll)
   {
-    HandleException(e, "m_pDll->Stop");
+    m_pDll->Stop();
+    CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
   }
 }
 
 void CAddonDll::Destroy()
 {
   /* Unload library file */
-  try
+  if (m_pDll)
   {
-    if (m_pDll)
-    {
-      m_pDll->Destroy();
-      m_pDll->Unload();
-    }
+    m_pDll->Destroy();
+    m_pDll->Unload();
   }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->Unload");
-  }
+
   delete m_pHelpers;
   m_pHelpers = NULL;
   if (m_pDll)
@@ -304,15 +283,7 @@ bool CAddonDll::DllLoaded(void) const
 
 ADDON_STATUS CAddonDll::GetStatus()
 {
-  try
-  {
-    return m_pDll->GetStatus();
-  }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->GetStatus()");
-  }
-  return ADDON_STATUS_UNKNOWN;
+  return m_pDll->GetStatus();
 }
 
 bool CAddonDll::LoadSettings()
@@ -325,18 +296,9 @@ bool CAddonDll::LoadSettings()
 
   ADDON_StructSetting** sSet;
   std::vector<DllSetting> vSet;
-  unsigned entries = 0;
-  try
-  {
-    entries = m_pDll->GetSettings(&sSet);
-    DllUtils::StructToVec(entries, &sSet, &vSet);
-    m_pDll->FreeSettings();
-  }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->GetSettings()");
-    return false;
-  }
+  unsigned entries = m_pDll->GetSettings(&sSet);
+  DllUtils::StructToVec(entries, &sSet, &vSet);
+  m_pDll->FreeSettings();
 
   if (vSet.size())
   {
@@ -497,13 +459,6 @@ ADDON_STATUS CAddonDll::TransferSettings()
   }
 
   return ADDON_STATUS_OK;
-}
-
-void CAddonDll::HandleException(std::exception &e, const char* context)
-{
-  m_initialized = false;
-  m_pDll->Unload();
-  CLog::Log(LOGERROR, "ADDON: Dll %s, throws an exception '%s' during %s. Contact developer '%s' with bug reports", Name().c_str(), e.what(), context, Author().c_str());
 }
 
 }; /* namespace ADDON */
