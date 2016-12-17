@@ -339,7 +339,7 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem, const std::string &player)
       CFileItemPtr pPlaylistItem = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO)[iItem];
       pPlaylistItem->m_lStartOffset = pItem->m_lStartOffset;
       if (pPlaylistItem->HasVideoInfoTag() && pItem->HasVideoInfoTag())
-        pPlaylistItem->GetVideoInfoTag()->m_resumePoint = pItem->GetVideoInfoTag()->m_resumePoint;
+        pPlaylistItem->GetVideoInfoTag()->SetResumePoint(pItem->GetVideoInfoTag()->GetResumePoint());
     }
     // now play item
     g_playlistPlayer.Play(iItem, player);

@@ -844,7 +844,7 @@ bool CPVRTimers::HasRecordingTimerForRecording(const CPVRRecording &recording) c
           timersEntry->m_iClientId == recording.ClientID() &&
           timersEntry->ChannelTag()->UniqueID() == recording.ChannelUid() &&
           timersEntry->StartAsUTC() <= recording.RecordingTimeAsUTC() &&
-          timersEntry->EndAsUTC() >= (recording.RecordingTimeAsUTC() + recording.m_duration))
+          timersEntry->EndAsUTC() >= recording.EndTimeAsUTC())
       {
         return true;
       }

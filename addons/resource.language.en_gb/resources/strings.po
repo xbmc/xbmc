@@ -936,7 +936,7 @@ msgstr ""
 #: addons/skin.estuary/1080i/DialogVideoInfo.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
-#: xbmc/pvr/PVRContextMenus.cpp
+#: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: system/settings/settings.xml
 msgctxt "#208"
@@ -5179,6 +5179,7 @@ msgstr ""
 #: xbmc/Autorun.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
+#: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#12021"
 msgid "Play from beginning"
@@ -5191,8 +5192,7 @@ msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
 
-#. Label of video/recordings context menu items
-#: xbmc/video/ContextMenus.cpp
+#. unused?
 msgctxt "#12023"
 msgid "Play from beginning"
 msgstr ""
@@ -8888,6 +8888,8 @@ msgstr ""
 
 #empty strings from id 18000 to 18999
 
+#. Live TV channels 'play' context menu item label
+#: xbmc/video/ContextMenus.cpp
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr ""

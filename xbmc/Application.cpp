@@ -3331,7 +3331,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // have to be set here due to playstack using this for starting the file
     options.starttime = item.m_lStartOffset / 75.0;
     if (item.HasVideoInfoTag())
-      options.state = item.GetVideoInfoTag()->m_resumePoint.playerState;
+      options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
     if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0 && m_itemCurrentFile->m_lStartOffset != 0)
       m_itemCurrentFile->m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
   }
@@ -3353,7 +3353,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
         {
           options.starttime = item.GetCurrentResumeTime();
           if (item.HasVideoInfoTag())
-            options.state = item.GetVideoInfoTag()->m_resumePoint.playerState;
+            options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
         }
         else
         {

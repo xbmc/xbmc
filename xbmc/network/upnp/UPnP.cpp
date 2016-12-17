@@ -244,14 +244,14 @@ public:
         NPT_String curr_value;
         NPT_String new_value;
 
-        if (item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != bookmark.timeInSeconds) {
+        if (item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds) {
             CLog::Log(LOGDEBUG, "UPNP: Updating resume point for item %s", path.c_str());
             long time = (long)bookmark.timeInSeconds;
             if (time < 0) time = 0;
             curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
-                                                 (long)item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));
+                                                 (long)item.GetVideoInfoTag()->GetResumePoint().timeInSeconds));
             curr_value += "<xbmc:lastPlayerState>";
-            PLT_Didl::AppendXmlEscape(curr_value, item.GetVideoInfoTag()->m_resumePoint.playerState.c_str());
+            PLT_Didl::AppendXmlEscape(curr_value, item.GetVideoInfoTag()->GetResumePoint().playerState.c_str());
             curr_value += "</xbmc:lastPlayerState>";
             new_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
             new_value += "<xbmc:lastPlayerState>";

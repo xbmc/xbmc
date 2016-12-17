@@ -1284,11 +1284,11 @@ namespace VIDEO
     }
 
     if (g_advancedSettings.m_bVideoLibraryImportWatchedState || libraryImport)
-      m_database.SetPlayCount(*pItem, movieDetails.m_playCount, movieDetails.m_lastPlayed);
+      m_database.SetPlayCount(*pItem, movieDetails.GetPlayCount(), movieDetails.m_lastPlayed);
 
     if ((g_advancedSettings.m_bVideoLibraryImportResumePoint || libraryImport) &&
-        movieDetails.m_resumePoint.IsSet())
-      m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.m_resumePoint, CBookmark::RESUME);
+        movieDetails.GetResumePoint().IsSet())
+      m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
 
     m_database.Close();
 

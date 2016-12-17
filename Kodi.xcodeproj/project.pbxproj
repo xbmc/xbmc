@@ -3712,8 +3712,8 @@
 		9A7368501C401F5F00CA169F /* DirectoryNodeInProgressTvShows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeInProgressTvShows.h; sourceTree = "<group>"; };
 		9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonBuilder.cpp; sourceTree = "<group>"; };
 		9A999F1C1C67B77600E4E0D5 /* AddonBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonBuilder.h; sourceTree = "<group>"; };
-		9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ContextMenus.cpp; path = ../ContextMenus.cpp; sourceTree = "<group>"; };
-		9AA7E3E71C972CF4000B7863 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContextMenus.h; path = ../ContextMenus.h; sourceTree = "<group>"; };
+		9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
+		9AA7E3E71C972CF4000B7863 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
 		9ABFE7A01C972D60002F1318 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicFileItemListModifier.cpp; sourceTree = "<group>"; };
@@ -6225,6 +6225,8 @@
 				43FAC88812D6364800F67914 /* windows */,
 				7C62F24010505BC7002AD2C1 /* Bookmark.cpp */,
 				7C62F24110505BC7002AD2C1 /* Bookmark.h */,
+				9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */,
+				9AA7E3E71C972CF4000B7863 /* ContextMenus.h */,
 				E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */,
 				E38E18000D25F9FA00618676 /* GUIViewStateVideo.h */,
 				7C87B2CC162CE39600EF897D /* PlayerController.cpp */,
@@ -6291,8 +6293,6 @@
 		43FAC88812D6364800F67914 /* windows */ = {
 			isa = PBXGroup;
 			children = (
-				9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */,
-				9AA7E3E71C972CF4000B7863 /* ContextMenus.h */,
 				E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */,
 				E38E18060D25F9FA00618676 /* GUIWindowFullScreen.h */,
 				E38E183B0D25F9FA00618676 /* GUIWindowVideoBase.cpp */,

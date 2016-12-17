@@ -535,7 +535,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
-  int playcount = infos.m_playCount;
+  int playcount = infos.GetPlayCount();
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
@@ -548,11 +548,11 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeMovie, removedArtwork))
     return InternalError;
 
-  if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+  if (playcount != infos.GetPlayCount() || lastPlayed != infos.m_lastPlayed)
   {
     // restore original playcount or the new one won't be announced
-    int newPlaycount = infos.m_playCount;
-    infos.m_playCount = playcount;
+    int newPlaycount = infos.GetPlayCount();
+    infos.SetPlayCount(playcount);
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
   }
 
@@ -694,7 +694,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
-  int playcount = infos.m_playCount;
+  int playcount = infos.GetPlayCount();
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
@@ -707,11 +707,11 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeEpisode, removedArtwork))
     return InternalError;
 
-  if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+  if (playcount != infos.GetPlayCount() || lastPlayed != infos.m_lastPlayed)
   {
     // restore original playcount or the new one won't be announced
-    int newPlaycount = infos.m_playCount;
-    infos.m_playCount = playcount;
+    int newPlaycount = infos.GetPlayCount();
+    infos.SetPlayCount(playcount);
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
   }
 
@@ -741,7 +741,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
-  int playcount = infos.m_playCount;
+  int playcount = infos.GetPlayCount();
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   std::set<std::string> removedArtwork;
@@ -758,11 +758,11 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeMusicVideo, removedArtwork))
     return InternalError;
 
-  if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+  if (playcount != infos.GetPlayCount()|| lastPlayed != infos.m_lastPlayed)
   {
     // restore original playcount or the new one won't be announced
-    int newPlaycount = infos.m_playCount;
-    infos.m_playCount = playcount;
+    int newPlaycount = infos.GetPlayCount();
+    infos.SetPlayCount(playcount);
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
   }
 
@@ -1079,9 +1079,9 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "title"))
     details.SetTitle(parameterObject["title"].asString());
   if (ParameterNotNull(parameterObject, "playcount"))
-    details.m_playCount = (int)parameterObject["playcount"].asInteger();
+    details.SetPlayCount(static_cast<int>(parameterObject["playcount"].asInteger()));
   if (ParameterNotNull(parameterObject, "runtime"))
-    details.m_duration = (int)parameterObject["runtime"].asInteger();
+    details.SetDuration(static_cast<int>(parameterObject["runtime"].asInteger()));
 
   std::vector<std::string> director(details.m_director);
   UpdateVideoTagField(parameterObject, "director", director, updatedDetails);

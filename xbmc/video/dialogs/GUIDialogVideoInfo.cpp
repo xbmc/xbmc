@@ -381,7 +381,7 @@ void CGUIDialogVideoInfo::Update()
   // setup plot text area
   std::string strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
   if (m_movieItem->GetVideoInfoTag()->m_type != MediaTypeTvShow)
-    if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS))
+    if (m_movieItem->GetVideoInfoTag()->GetPlayCount() == 0 && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS))
       strTmp = g_localizeStrings.Get(20370);
 
   StringUtils::Trim(strTmp);
@@ -416,7 +416,7 @@ void CGUIDialogVideoInfo::Update()
   }
 
   // Check for resumability
-  if (m_movieItem->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0.0)
+  if (m_movieItem->GetVideoInfoTag()->GetResumePoint().timeInSeconds > 0.0)
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   else
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
@@ -478,7 +478,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
     for (int i = 0; i < items.Size(); i++)
     {
       if (items[i]->HasVideoInfoTag() &&
-          items[i]->GetVideoInfoTag()->m_playCount > 0)
+          items[i]->GetVideoInfoTag()->GetPlayCount() > 0)
         items[i]->SetLabel2(g_localizeStrings.Get(16102));
 
       loader.LoadItem(items[i].get());
