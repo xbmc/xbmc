@@ -226,7 +226,7 @@ extern "C"
   */
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    InputStreamAddonFunctions* pClient = static_cast<InputStreamAddonFunctions*>(ptr);
+    KodiToAddonFuncTable_InputStream* pClient = static_cast<KodiToAddonFuncTable_InputStream*>(ptr);
 
     pClient->Open = Open;
     pClient->Close = Close;

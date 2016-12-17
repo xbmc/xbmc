@@ -256,7 +256,7 @@ GAME_ERROR SetCheat(unsigned int index, bool enabled, const char* code);
  */
 void __declspec(dllexport) get_addon(void* ptr)
 {
-  GameClient* pClient = static_cast<GameClient*>(ptr);
+  KodiToAddonFuncTable_Game* pClient = static_cast<KodiToAddonFuncTable_Game*>(ptr);
 
   pClient->GetGameAPIVersion        = GetGameAPIVersion;
   pClient->GetMininumGameAPIVersion = GetMininumGameAPIVersion;

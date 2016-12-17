@@ -21,7 +21,7 @@
 
 #include "input/mouse/IMouseInputHandler.h"
 
-struct GameClient;
+struct KodiToAddonFuncTable_Game;
 
 namespace GAME
 {
@@ -41,7 +41,7 @@ namespace GAME
      * \param gameClient The game client implementation.
      * \param dllStruct The emulator or game to which the events are sent.
      */
-    CGameClientMouse(const CGameClient* gameClient, const GameClient* dllStruct);
+    CGameClientMouse(const CGameClient* gameClient, const KodiToAddonFuncTable_Game* dllStruct);
 
     /*!
      * \brief Destructor unregisters from mouse events from CInputManager.
@@ -57,7 +57,7 @@ namespace GAME
   private:
     // Construction parameters
     const CGameClient* const m_gameClient;
-    const GameClient* const m_dllStruct;
+    const KodiToAddonFuncTable_Game* const m_dllStruct;
     const std::string m_controllerId;
   };
 }

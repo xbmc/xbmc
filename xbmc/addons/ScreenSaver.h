@@ -41,7 +41,7 @@ public:
 
 private:
   SCR_PROPS m_info;
-  ScreenSaver m_struct;
+  KodiToAddonFuncTable_Screensaver m_struct;
 };
 
 } /*namespace ADDON*/
