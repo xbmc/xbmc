@@ -181,7 +181,10 @@ ADDON_STATUS CAddonDll::Create(int type, void* funcTable, void* info)
   m_initialized = false;
 
   if (!LoadDll())
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
     return ADDON_STATUS_PERMANENT_FAILURE;
+  }
 
   /* Check version of requested instance type */
   if (!CheckAPIVersion(type))
