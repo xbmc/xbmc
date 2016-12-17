@@ -19,23 +19,13 @@
  */
 
 #include "GUIViewStateWindowGames.h"
-#include "addons/BinaryAddonCache.h"
-#include "games/addons/GameClient.h"
-#include "games/GameUtils.h"
-#include "guilib/GraphicContext.h" // include before ViewState.h
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
-#include "input/Key.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
-#include "utils/StringUtils.h"
 #include "view/ViewState.h"
 #include "view/ViewStateSettings.h"
 #include "FileItem.h"
-#include "ServiceBroker.h"
-
-#include <assert.h>
-#include <set>
 
 using namespace GAME;
 
@@ -74,15 +64,7 @@ std::string CGUIViewStateWindowGames::GetLockType()
 
 std::string CGUIViewStateWindowGames::GetExtensions()
 {
-  using namespace ADDON;
-
-  std::set<std::string> exts = CGameUtils::GetGameExtensions();
-
-  // Ensure .zip appears
-  if (std::find(exts.begin(), exts.end(), ".zip") == exts.end())
-    exts.insert(".zip");
-
-  return StringUtils::Join(exts, "|");
+  return g_advancedSettings.GetGameExtensions();
 }
 
 VECSOURCES& CGUIViewStateWindowGames::GetSources()

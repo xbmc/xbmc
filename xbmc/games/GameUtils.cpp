@@ -29,6 +29,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -182,60 +183,9 @@ bool CGameUtils::HasGameExtension(const std::string &path)
     return false;
 
   StringUtils::ToLower(extension);
+  extension.append("|");
 
-  // Look for a game client that supports this extension
-  VECADDONS gameClients;
-  CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(gameClients, ADDON_GAMEDLL);
-  for (auto& gameClient : gameClients)
-  {
-    GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
-    if (gc->IsExtensionValid(extension))
-      return true;
-  }
-
-  // Check remote add-ons
-  gameClients.clear();
-  if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
-  {
-    for (auto& gameClient : gameClients)
-    {
-      GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
-      if (gc->IsExtensionValid(extension))
-        return true;
-    }
-  }
-
-  return false;
-}
-
-std::set<std::string> CGameUtils::GetGameExtensions()
-{
-  using namespace ADDON;
-
-  std::set<std::string> extensions;
-
-  VECADDONS gameClients;
-  CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(gameClients, ADDON_GAMEDLL);
-  for (auto& gameClient : gameClients)
-  {
-    GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
-    extensions.insert(gc->GetExtensions().begin(), gc->GetExtensions().end());
-  }
-
-  // Check remote add-ons
-  gameClients.clear();
-  if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
-  {
-    for (auto& gameClient : gameClients)
-    {
-      GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
-      extensions.insert(gc->GetExtensions().begin(), gc->GetExtensions().end());
-    }
-  }
-
-  return extensions;
+  return g_advancedSettings.GetGameExtensions().find(extension) != std::string::npos;
 }
 
 bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)
