@@ -375,28 +375,6 @@ namespace ActiveAE
 
   private:
     /*!
-     * @brief Checks whether the provided API version is compatible with KODI
-     * @param minVersion The add-on's KODI_AE_DSP_MIN_API_VERSION version
-     * @param version The add-on's KODI_AE_DSP_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
-
-    /*!
-     * @brief Checks whether the provided GUI API version is compatible with KODI
-     * @param minVersion The add-on's KODI_GUILIB_MIN_API_VERSION version
-     * @param version The add-on's KODI_GUILIB_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
-
-    /*!
-     * @brief Request the API version from the add-on, and check if it's compatible
-     * @return True when compatible, false otherwise.
-     */
-    bool CheckAPIVersion(void);
-
-    /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
     void ResetProperties(int iClientId = AE_DSP_INVALID_ADDON_ID);

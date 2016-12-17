@@ -47,7 +47,6 @@ namespace ADDON
     virtual ~CInputStream() {}
 
     virtual void SaveSettings() override;
-    virtual bool CheckAPIVersion(void) override;
 
     bool Create();
 
