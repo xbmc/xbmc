@@ -120,6 +120,10 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Ultimo login"
 
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Utilizzo memoria sistema"
+
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Info versione"
@@ -308,6 +312,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Scegli il tuo profilo utente Kodi[CR]per fare login e continuare"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Muro di Icone"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Spostamento"
@@ -475,3 +483,59 @@ msgstr "Inserisci browser Add-On"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Cerca Add-on"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categorie"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Scegli pacchetto fanart genere"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repository"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Video Musicali non visti"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Video Musicali casuali"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Non hai alcun Add-On di questo tipo installato. Apri il browser Add-On per per scaricare Add-On creati dalla nostra community."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Premi OK per scorrere fra le località"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Nessun segnalibro ancora creato."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Scegli motivo sfondo"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Modifica categorie"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Modalità Touch"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Mostra etichette info media"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Tastierino numerico"

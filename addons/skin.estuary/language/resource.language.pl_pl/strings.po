@@ -120,6 +120,10 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Ostatnio zalogowany"
 
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Użycie pamięci"
+
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Informacje o wersji"
@@ -246,7 +250,7 @@ msgstr "Ostatnia aktualizacja"
 
 msgctxt "#31071"
 msgid "by"
-msgstr "po"
+msgstr "autorstwa"
 
 msgctxt "#31072"
 msgid "Power Options"
@@ -308,17 +312,21 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Kafelki 2"
+
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr "Kolejka"
 
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Kafelki informacji"
+msgstr "Kafelki 3"
 
 msgctxt "#31102"
 msgid "Wall"
-msgstr "Kafelki"
+msgstr "Kafelki 1"
 
 msgctxt "#31103"
 msgid "Enter text here..."
@@ -406,7 +414,7 @@ msgstr "Naciśnij Góra, aby zobaczyć notkę o aktorze"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Naciśnij kursor Góra, aby przeczytać fabułę"
+msgstr "Naciśnij OK, aby przeczytać fabułę"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -458,7 +466,7 @@ msgstr "Format piksela"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "Lista zmian wersji"
+msgstr "Lista zmian"
 
 msgctxt "#31142"
 msgid "Play speed"
@@ -474,4 +482,60 @@ msgstr "Wejdź do przeglądarki dodatków"
 
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr "Wyszukaj dodatek"
+msgstr "Szukaj dodatku"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorie"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Wybierz pakiet fototapet gatunków"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repozytorium"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Teledyski nieobejrzane"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Teledyski losowe"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Nie zainstalowano żadnego dodatku tego typu. Przejdź do przeglądarki dodatków, aby pobrać dodatki stworzone przez naszą społeczność."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Naciśnij OK, aby przełączać się między lokalizacjami"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Brak zakładek."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Wybierz wzór tła"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Edytuj kategorie"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Tryb dotykowy"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Grafika"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Pokazuj etykiety mediów"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Klawiatura numeryczna"
