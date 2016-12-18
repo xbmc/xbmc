@@ -79,9 +79,6 @@
 
 #define CONTROL_LABELFILES          12
 
-#define CONTROL_VIEW_START          50
-#define CONTROL_VIEW_END            59
-
 #define PROPERTY_PATH_DB            "path.db"
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
@@ -126,17 +123,6 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
       int controlID = atol(i->c_str());
       CGUIControl *control = GetControl(controlID);
       if (control && control->IsContainer())
-        m_viewControl.AddView(control);
-    }
-  }
-  else
-  { // backward compatibility
-    std::vector<CGUIControl *> controls;
-    GetContainers(controls);
-    for (ciControls it = controls.begin(); it != controls.end(); it++)
-    {
-      CGUIControl *control = *it;
-      if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
         m_viewControl.AddView(control);
     }
   }
