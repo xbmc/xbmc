@@ -56,6 +56,9 @@
 			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
 				<expression noclean="1">&quot;release_date&quot;:&quot;([0-9]+)-</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="5+">
+				<expression noclean="1">&quot;release_date&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
 			<RegExp input="$$1" output="\1" dest="10">
 				<expression clear="yes" noclean="1">&quot;runtime&quot;:([0-9]+)</expression>
 			</RegExp>

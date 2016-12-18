@@ -1,3 +1,9 @@
+[B]2.8.7[/B]
+- fixed: IMDb countries
+
+[B]2.8.6[/B]
+- fixed: metacritic rating in further scenarios
+
 [B]2.8.5[/B]
 - fixed: metacritic rating
 

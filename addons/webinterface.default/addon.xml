@@ -35,8 +35,9 @@
     <description lang="zh_TW">預設的Kodi網頁介面。可在網頁瀏覽器中瀏覽及播放您的音樂、影片、電視劇等內容。</description>
     <language>en</language>
     <platform>all</platform>
-    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
+    <language>en</language>
     <source>https://github.com/xbmc/chorus2</source>
+    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
     <assets>
       <icon>icon.png</icon>
       <fanart>images/turntable.jpg</fanart>
