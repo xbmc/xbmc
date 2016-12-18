@@ -38,6 +38,7 @@ extern "C"
   typedef struct KodiToAddonFuncTable_Screensaver
   {
     void (__cdecl* Start) ();
+    void (__cdecl* Stop) ();
     void (__cdecl* Render) ();
   } KodiToAddonFuncTable_Screensaver;
 }
