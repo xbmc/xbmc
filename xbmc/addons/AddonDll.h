@@ -42,7 +42,6 @@ namespace ADDON
     virtual std::string GetSetting(const std::string& key);
 
     ADDON_STATUS Create(void* funcTable, void* info);
-    virtual void Stop();
     virtual bool CheckAPIVersion(void) { return true; }
     void Destroy();
 

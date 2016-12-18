@@ -28,7 +28,6 @@ public:
   virtual ~DllAddonInterface() {}
   virtual void GetAddon(void* pAddon) =0;
   virtual ADDON_STATUS Create(void *cb, void *info) =0;
-  virtual void Stop() =0;
   virtual void Destroy() =0;
   virtual ADDON_STATUS GetStatus() =0;
   virtual bool HasSettings() =0;
@@ -42,7 +41,6 @@ class DllAddon : public DllDynamic, public DllAddonInterface
 public:
   DECLARE_DLL_WRAPPER_TEMPLATE(DllAddon)
   DEFINE_METHOD2(ADDON_STATUS, Create, (void* p1, void* p2))
-  DEFINE_METHOD0(void, Stop)
   DEFINE_METHOD0(void, Destroy)
   DEFINE_METHOD0(ADDON_STATUS, GetStatus)
   DEFINE_METHOD0(bool, HasSettings)
@@ -53,7 +51,6 @@ public:
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(get_addon,GetAddon)
     RESOLVE_METHOD_RENAME(ADDON_Create, Create)
-    RESOLVE_METHOD_RENAME(ADDON_Stop, Stop)
     RESOLVE_METHOD_RENAME(ADDON_Destroy, Destroy)
     RESOLVE_METHOD_RENAME(ADDON_GetStatus, GetStatus)
     RESOLVE_METHOD_RENAME(ADDON_HasSettings, HasSettings)

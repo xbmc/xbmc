@@ -28,6 +28,7 @@ extern "C"
 
   // Functions that your visualisation must implement
   void Start();
+  void Stop();
   void Render();
 
   // function to export the above structure to XBMC
@@ -36,6 +37,7 @@ extern "C"
     KodiToAddonFuncTable_Screensaver* pScr = static_cast<KodiToAddonFuncTable_Screensaver*>(ptr);
 
     pScr->Start = Start;
+    pScr->Stop = Stop;
     pScr->Render = Render;
   };
 };
