@@ -59,3 +59,11 @@ msgstr ""
 msgctxt "#30010"
 msgid "Grab Album Thumbs from theaudiodb.com"
 msgstr ""
+
+msgctxt "#30011"
+msgid "MB Mirror"
+msgstr ""
+
+msgctxt "#30012"
+msgid "MusicBrainz Mirror"
+msgstr ""
