@@ -59,6 +59,8 @@ typedef struct CB_PVRLib
   
   void (*ConnectionStateChange)(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
   void (*EpgEventStateChange)(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+
+  xbmc_codec_t (*GetCodecByName)(const void* addonData, const char* strCodecName);
 } CB_PVRLib;
 
 } /* namespace PVR */
@@ -261,6 +263,16 @@ public:
   void EpgEventStateChange(EPG_TAG *tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
   {
     return m_Callbacks->EpgEventStateChange(m_Handle->addonData, tag, iUniqueChannelId, newState);
+  }
+
+  /*!
+   * @brief Get the codec id used by XBMC
+   * @param strCodecName The name of the codec
+   * @return The codec_id, or a codec_id with 0 values when not supported
+   */
+  xbmc_codec_t GetCodecByName(const char* strCodecName)
+  {
+    return m_Callbacks->GetCodecByName(m_Handle->addonData, strCodecName);
   }
 
 private:
