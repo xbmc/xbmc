@@ -307,6 +307,12 @@ public:
   int GetArtistByName(const std::string& strArtist);
   std::string GetRoleById(int id);
 
+  /*! \brief Propagate artist sort name into the concatenated artist sort name strings
+  held for songs and albums 
+  \param int idArtist to propagate sort name for, -1 means all artists
+  */
+  bool UpdateArtistSortNames(int idArtist = -1);
+
   /////////////////////////////////////////////////
   // Cuesheets
   /////////////////////////////////////////////////

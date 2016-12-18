@@ -5478,6 +5478,88 @@ std::string CMusicDatabase::GetRoleById(int id)
   return GetSingleValue("role", "strRole", PrepareSQL("idRole=%i", id));
 }
 
+bool CMusicDatabase::UpdateArtistSortNames(int idArtist /*=-1*/)
+{
+  // Propagate artist sort names into concatenated artist sort name string for songs and albums
+  std::string strSQL;
+  // MySQL syntax for GROUP_CONCAT is different from that in SQLite
+  bool bisMySQL = StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql");
+  
+  BeginMultipleExecute();   
+  if (bisMySQL)
+    strSQL = "UPDATE album SET strArtistSort =  "
+      "(SELECT GROUP_CONCAT("
+      "CASE WHEN artist.strSortName IS NULL THEN artist.strArtist "
+      "ELSE artist.strSortName END "
+      "ORDER BY album_artist.idAlbum, album_artist.iOrder "
+      "SEPARATOR '; ') as val "
+      "FROM album_artist JOIN artist on artist.idArtist = album_artist.idArtist "
+      "WHERE album_artist.idAlbum = album.idAlbum GROUP BY idAlbum) "
+      "WHERE album.strArtistSort = '' OR album.strArtistSort is NULL";
+  else
+    strSQL = "UPDATE album SET strArtistSort = "
+      "(SELECT GROUP_CONCAT(val, '; ') "
+      "FROM(SELECT album_artist.idAlbum, "
+      "CASE WHEN artist.strSortName IS NULL THEN artist.strArtist "
+      "ELSE artist.strSortName END as val "
+      "FROM album_artist JOIN artist on artist.idArtist = album_artist.idArtist "
+      "WHERE album_artist.idAlbum = album.idAlbum "
+      "ORDER BY album_artist.idAlbum, album_artist.iOrder) GROUP BY idAlbum) "
+      "WHERE album.strArtistSort = '' OR album.strArtistSort is NULL";
+  if (idArtist > 0)
+    strSQL += PrepareSQL(" AND EXISTS (SELECT 1 FROM album_artist WHERE album_artist.idArtist = %ld "
+      "AND album_artist.idAlbum = album.idAlbum)", idArtist);
+  ExecuteQuery(strSQL);
+  CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+
+  
+  if (bisMySQL)
+    strSQL = "UPDATE song SET strArtistSort = "
+      "(SELECT GROUP_CONCAT("
+      "CASE WHEN artist.strSortName IS NULL THEN artist.strArtist "
+      "ELSE artist.strSortName END "
+      "ORDER BY song_artist.idSong, song_artist.iOrder "
+      "SEPARATOR '; ') as val "
+      "FROM song_artist JOIN artist on artist.idArtist = song_artist.idArtist "
+      "WHERE song_artist.idSong = song.idSong AND song_artist.idRole = 1 GROUP BY idSong) "
+      "WHERE song.strArtistSort = ''  OR song.strArtistSort is NULL";
+  else
+    strSQL = "UPDATE song SET strArtistSort = "
+      "(SELECT GROUP_CONCAT(val, '; ') "
+      "FROM(SELECT song_artist.idSong, "
+      "CASE WHEN artist.strSortName IS NULL THEN artist.strArtist "
+      "ELSE artist.strSortName END as val "
+      "FROM song_artist JOIN artist on artist.idArtist = song_artist.idArtist "
+      "WHERE song_artist.idSong = song.idSong AND song_artist.idRole = 1 "
+      "ORDER BY song_artist.idSong, song_artist.iOrder) GROUP BY idSong) "
+      "WHERE song.strArtistSort = ''  OR song.strArtistSort is NULL ";
+  if (idArtist > 0)
+    strSQL += PrepareSQL(" AND EXISTS (SELECT 1 FROM song_artist WHERE song_artist.idArtist = %ld "
+      "AND song_artist.idSong = song.idSong AND song_artist.idRole = 1)", idArtist);
+  ExecuteQuery(strSQL);
+  CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+
+  //Restore nulls where strArtistSort = strArtistDisp
+  strSQL = "UPDATE album SET strArtistSort = Null WHERE strArtistSort = strArtistDisp";
+  if (idArtist > 0)
+    strSQL += PrepareSQL(" AND EXISTS (SELECT 1 FROM album_artist WHERE album_artist.idArtist = %ld "
+      "AND album_artist.idAlbum = album.idAlbum)", idArtist);
+  ExecuteQuery(strSQL);
+  CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+  strSQL = "UPDATE song SET strArtistSort = Null WHERE strArtistSort = strArtistDisp";
+  if (idArtist > 0)
+    strSQL += PrepareSQL(" AND EXISTS (SELECT 1 FROM song_artist WHERE song_artist.idArtist = %ld "
+        "AND song_artist.idSong = song.idSong AND song_artist.idRole = 1)", idArtist);
+  ExecuteQuery(strSQL);
+  CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+ 
+  if (CommitMultipleExecute())
+    return true;
+  else
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__); 
+  return false;
+}
+
 std::string CMusicDatabase::GetAlbumById(int id)
 {
   return GetSingleValue("album", "strAlbum", PrepareSQL("idAlbum=%i", id));

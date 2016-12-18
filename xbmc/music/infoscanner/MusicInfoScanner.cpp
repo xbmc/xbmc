@@ -246,7 +246,9 @@ void CMusicInfoScanner::Process()
           break;
       }
     }
-
+    //propagate artist sort names to albums and songs
+    if (g_advancedSettings.m_bMusicLibraryArtistSortOnUpdate)
+      m_musicDatabase.UpdateArtistSortNames();
   }
   catch (...)
   {
