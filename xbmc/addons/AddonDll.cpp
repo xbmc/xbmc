@@ -226,15 +226,6 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
   return status;
 }
 
-void CAddonDll::Stop()
-{
-  if (m_pDll)
-  {
-    m_pDll->Stop();
-    CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
-  }
-}
-
 void CAddonDll::Destroy()
 {
   if (m_pDll)
