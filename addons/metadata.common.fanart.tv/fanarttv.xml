@@ -16,8 +16,8 @@
 			<RegExp input="$$1" output="\1" dest="16">
 				<expression noclean="1">&quot;artistthumb&quot;:\s\[(.*?)\}\s*\]</expression>
 			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;([^&quot;]*)</expression>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;http://\1/preview/\2&quot;&gt;http://\1/fanart/\2&lt;/thumb&gt;" dest="13">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;http://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -42,8 +42,8 @@
 			<RegExp input="$$1" output="\1" dest="16">
 				<expression noclean="1">&quot;artistbackground&quot;:\s\[(.*?)\}\s*\]</expression>
 			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="14">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;([^&quot;]*)</expression>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;http://\1/preview/\2&quot;&gt;http://\1/fanart/\2&lt;/thumb&gt;" dest="14">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;http://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$14" output="\1" dest="13">
 				<expression noclean="1">(.+)</expression>
@@ -68,8 +68,8 @@
 			<RegExp input="$$1" output="\1" dest="16">
 				<expression noclean="1">&quot;albumcover&quot;:\s\[(.*?)\}\s*\]</expression>
 			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;([^&quot;]*)</expression>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;http://\1/preview/\2&quot;&gt;http://\1/fanart/\2&lt;/thumb&gt;" dest="13">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;http://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -97,8 +97,8 @@
 			<RegExp input="$$1" output="\1" dest="16">
 				<expression noclean="1">&quot;moviebackground&quot;:\s\[(.*?)\}\s*\]</expression>
 			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="14">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;([^&quot;]*)</expression>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;http://\1/preview/\2&quot;&gt;http://\1/fanart/\2&lt;/thumb&gt;" dest="14">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;http://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$14" output="\1" dest="13">
 				<expression noclean="1">(.+)</expression>
@@ -126,8 +126,8 @@
 			<RegExp input="$$1" output="\1" dest="16">
 				<expression noclean="1">&quot;movieposter&quot;:\s\[(.*?)\}\s*\]</expression>
 			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;([^&quot;]*)</expression>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;http://\1/preview/\2&quot;&gt;http://\1/fanart/\2&lt;/thumb&gt;" dest="13">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;http://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

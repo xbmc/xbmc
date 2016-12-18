@@ -17,4 +17,8 @@
       <setting label="30010" type="bool" id="tadbalbumthumbs" default="true"/>
       <setting label="30008" type="bool" id="allmusicalbumthumbs" default="false"/>
   </category>
+
+  <category label="30011">
+      <setting label="30012" type="text" id="mbsite" default="http://musicbrainz.org"/>
+  </category>
 </settings>

@@ -1,3 +1,9 @@
+[B]3.9.2[/B]
+- added: some new languages
+
+[B]3.9.1[/B]
+- added: premiered tag with full release date
+
 [B]3.9.0[/B]
 - Update
 

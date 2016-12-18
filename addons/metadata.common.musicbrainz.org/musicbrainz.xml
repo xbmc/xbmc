@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraperfunctions>
 	<GetMBDiscographyByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBDiscography&quot; cache=&quot;mb-\1-discog.xml&quot;&gt;http://musicbrainz.org/ws/2/release-group?artist=\1&amp;amp;limit=100&amp;amp;type=album&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBDiscography&quot; cache=&quot;mb-\1-discog.xml&quot;&gt;$INFO[mbsite]/ws/2/release-group?artist=\1&amp;amp;limit=100&amp;amp;type=album&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBDiscographyByMBID>
@@ -11,14 +11,14 @@
 				<expression />
 			</RegExp>
 			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\5&lt;/year&gt;&lt;title&gt;\3&lt;/title&gt;&lt;label&gt;\1\2&lt;/label&gt;&lt;/album&gt;" dest="2">
-				<expression repeat="yes" clear="yes" fixchars="1,2,3" noclean="1,2,3">(?: id="([^"]*)")? type="Album"(?: id="([^"]*)")?&gt;&lt;title&gt;([^&lt;]*)&lt;/title&gt;&lt;first-release-date(\s/)?&gt;(\d{4})?</expression>
+				<expression repeat="yes" clear="yes" noclean="1,2,3">(?:\stype-id=&quot;[^&quot;]*&quot;)?(?:\sid=&quot;([^&quot;]*)&quot;)?\stype=&quot;Album&quot;(?:\stype-id=&quot;[^&quot;]*&quot;)?(?:\sid=&quot;([^&quot;]*)&quot;)?&gt;&lt;title&gt;([^&lt;]*)&lt;/title&gt;&lt;first-release-date(\s/)?&gt;(\d{4})?</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseMBDiscography>
 
 	<GetMBLafeSpanByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBLifeSpan&quot; cache=&quot;mb-\1-artist.xml&quot;&gt;http://musicbrainz.org/ws/2/artist/\1?inc=url-rels&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBLifeSpan&quot; cache=&quot;mb-\1-artist.xml&quot;&gt;$INFO[mbsite]/ws/2/artist/\1?inc=url-rels&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBLafeSpanByMBID>
@@ -59,7 +59,7 @@
 	</ParseMBLifeSpan>
 
 	<GetMBFallbackLafeSpanByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFallbackMBLifeSpan&quot; cache=&quot;mb-\1-artist.xml&quot;&gt;http://musicbrainz.org/ws/2/artist/\1?inc=url-rels&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFallbackMBLifeSpan&quot; cache=&quot;mb-\1-artist.xml&quot;&gt;$INFO[mbsite]/ws/2/artist/\1?inc=url-rels&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBFallbackLafeSpanByMBID>
@@ -85,7 +85,7 @@
 	</ParseFallbackMBLifeSpan>
 
 	<GetMBAlbumTitleByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumTitle&quot; cache=&quot;mb-\1-album.xml&quot;&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumTitle&quot; cache=&quot;mb-\1-album.xml&quot;&gt;$INFO[mbsite]/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBAlbumTitleByMBID>
@@ -99,7 +99,7 @@
 	</ParseMBAlbumTitle>
 
 	<GetMBAlbumArtistsByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumArtists&quot; cache=&quot;mb-\1-album.xml&quot;&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumArtists&quot; cache=&quot;mb-\1-album.xml&quot;&gt;$INFO[mbsite]/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBAlbumArtistsByMBID>
@@ -113,7 +113,7 @@
 	</ParseMBAlbumArtists>
 
 	<GetMBAlbumArtistByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumArtist&quot; cache=&quot;mb-\1-album.xml&quot;&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumArtist&quot; cache=&quot;mb-\1-album.xml&quot;&gt;$INFO[mbsite]/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBAlbumArtistByMBID>
@@ -127,7 +127,7 @@
 	</ParseMBAlbumArtist>
 
 	<GetMBAlbumRatingByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumRating&quot; cache=&quot;mb-\1-album.xml&quot;&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumRating&quot; cache=&quot;mb-\1-album.xml&quot;&gt;$INFO[mbsite]/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBAlbumRatingByMBID>
@@ -141,7 +141,7 @@
 	</ParseMBAlbumRating>
 
 	<GetMBAlbumLabelByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumLabel&quot; cache=&quot;mb-\1-album.xml&quot;&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumLabel&quot; cache=&quot;mb-\1-album.xml&quot;&gt;$INFO[mbsite]/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBAlbumLabelByMBID>
@@ -155,7 +155,7 @@
 	</ParseMBAlbumLabel>
 
 	<GetMBAlbumDateByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumDate&quot; cache=&quot;mb-\1-album.xml&quot;&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumDate&quot; cache=&quot;mb-\1-album.xml&quot;&gt;$INFO[mbsite]/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBAlbumDateByMBID>
@@ -172,7 +172,7 @@
 	</ParseMBAlbumDate>
 
 	<GetMBAlbumTracksByMBID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumTracks&quot; cache=&quot;mb-\1-album.xml&quot;&gt;http://musicbrainz.org/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseMBAlbumTracks&quot; cache=&quot;mb-\1-album.xml&quot;&gt;$INFO[mbsite]/ws/2/release/\1?inc=recordings+release-groups+artists+labels+ratings&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetMBAlbumTracksByMBID>
