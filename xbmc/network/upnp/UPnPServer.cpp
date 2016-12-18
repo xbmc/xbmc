@@ -300,6 +300,7 @@ PLT_MediaObject* CUPnPServer::Build(const CFileItemPtr& item,
             if (path == "musicdb://" ) {
                 item->SetLabel("Music Library");
                 item->SetLabelPreformatted(true);
+                item->m_bIsFolder = true;
             } else {
                 if (!item->HasMusicInfoTag()) {
                     MUSICDATABASEDIRECTORY::CQueryParams params;
@@ -314,11 +315,13 @@ PLT_MediaObject* CUPnPServer::Build(const CFileItemPtr& item,
                             item->GetMusicInfoTag()->SetSong(song);
                     }
                     else if (params.GetAlbumId() >= 0 ) {
+                        item->m_bIsFolder = true;
                         CAlbum album;
                         if (db.GetAlbum(params.GetAlbumId(), album, false))
                             item->GetMusicInfoTag()->SetAlbum(album);
                     }
                     else if (params.GetArtistId() >= 0 ) {
+                        item->m_bIsFolder = true;
                         CArtist artist;
                         if (db.GetArtist(params.GetArtistId(), artist, false))
                             item->GetMusicInfoTag()->SetArtist(artist);
@@ -339,6 +342,7 @@ PLT_MediaObject* CUPnPServer::Build(const CFileItemPtr& item,
             if (path == "library://video/" ) {
                 item->SetLabel("Video Library");
                 item->SetLabelPreformatted(true);
+                item->m_bIsFolder = true;
             } else {
                 if (!item->HasVideoInfoTag()) {
                     VIDEODATABASEDIRECTORY::CQueryParams params;
@@ -369,6 +373,7 @@ PLT_MediaObject* CUPnPServer::Build(const CFileItemPtr& item,
                 if (item->GetVideoInfoTag()->m_type == MediaTypeTvShow || item->GetVideoInfoTag()->m_type == MediaTypeSeason) {
                     // for tvshows and seasons, iEpisode and playCount are
                     // invalid
+                    item->m_bIsFolder = true;
                     item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
                     item->GetVideoInfoTag()->SetPlayCount(static_cast<int>(item->GetProperty("watchedepisodes").asInteger()));
                 }
@@ -389,6 +394,8 @@ PLT_MediaObject* CUPnPServer::Build(const CFileItemPtr& item,
                 }
             }
         }
+        else
+            item->m_bIsFolder = CDirectory::Exists(item->GetPath());
 
         // not a virtual path directory, new system
         object = BuildObject(*item.get(), file_path, with_count, thumb_loader, &context, this, UPnPContentDirectory);
@@ -573,8 +580,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             return NPT_FAILURE;
         }
     } else {
-        // determine if it's a container by calling CDirectory::Exists
-        item.reset(new CFileItem((const char*)id, CDirectory::Exists((const char*)id)));
+        item.reset(new CFileItem((const char*)id, false));
 
         // attempt to determine the parent of this item
         std::string parent;
