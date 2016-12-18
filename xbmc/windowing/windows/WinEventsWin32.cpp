@@ -401,6 +401,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   ZeroMemory(&newEvent, sizeof(newEvent));
   static HDEVNOTIFY hDeviceNotify;
 
+#if 0
   if (uMsg == WM_NCCREATE)
   {
     // if available, enable DPI scaling of non-client portion of window (title bar, etc.) 
@@ -410,6 +411,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     }
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
   }
+#endif
 
   if (uMsg == WM_CREATE)
   {

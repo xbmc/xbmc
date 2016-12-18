@@ -510,7 +510,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
 
     // The SWP_DRAWFRAME is here because, perversely, without it win7 draws a
     // white frame plus titlebar around the xbmc splash
-    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_NOSIZE|SWP_SHOWWINDOW|SWP_DRAWFRAME);
+    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW|SWP_DRAWFRAME);
 
     //! @todo Probably only need this if switching screens
     ValidateRect(NULL, NULL);
