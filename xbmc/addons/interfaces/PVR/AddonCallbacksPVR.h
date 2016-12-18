@@ -189,6 +189,11 @@ public:
    */
   static void PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
 
+  /*! @todo remove the use complete from them, or add as generl function?!
+   * Returns the ffmpeg codec id from given ffmpeg codec string name
+   */
+  static xbmc_codec_t GetCodecByName(const void* addonData, const char* strCodecName);
+
 private:
   static ::PVR::CPVRClient* GetPVRClient(void* addonData);
   static void UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued);
