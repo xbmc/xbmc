@@ -335,12 +335,9 @@ AVFrame* CFFmpegImage::ExtractFrame()
         m_orientation = (unsigned int)orientation;
     }
   }
-
-  AVFrame* clone = av_frame_clone(frame);
-  av_frame_free(&frame);
   av_packet_unref(&pkt);
 
-  return clone;
+  return frame;
 }
 
 AVPixelFormat CFFmpegImage::ConvertFormats(AVFrame* frame)
