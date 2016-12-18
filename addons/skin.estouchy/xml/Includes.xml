@@ -101,7 +101,7 @@
 			<aspectratio>scale</aspectratio>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture colordiffuse="FF006699">special://skin/background/primary.jpg</texture>
+			<texture colordiffuse="FF0E597E">special://skin/background/primary.jpg</texture>
 			<visible>!Skin.HasSetting(UseCustomBackground)</visible>
 		</control>
 		<control type="image">
@@ -170,7 +170,7 @@
 			<aspectratio>scale</aspectratio>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture colordiffuse="4D24CCA2">special://skin/background/secondary1.png</texture>
+			<texture colordiffuse="330BAA8E">special://skin/background/secondary.png</texture>
 			<visible>!Skin.HasSetting(UseCustomBackground)</visible>
 		</control>
 		<control type="videowindow">
