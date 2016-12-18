@@ -146,7 +146,7 @@ msgstr "Dostawca danych"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Użycie pamięci systemowej:"
+msgstr "Użycie pamięci:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -215,6 +215,14 @@ msgstr "Informacje o systemie · Statystyki sprzętu · Dostępna przestrzeń dy
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menu startowe"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Dodatki"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -286,11 +294,11 @@ msgstr "Pierwsze uruchomienie"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Musisz wiedzieć dwie rzeczy o nawigacji w przypadku Estouchy"
+msgstr "Musisz wiedzieć dwie rzeczy o nawigacji w Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Logo Kodi funkcjonuje jako przycisk 'Start'. Kiedykolwiek go naciśniesz zostaniesz przeniesiony do ekranu startowego."
+msgstr "Logo Kodi funkcjonuje jako przycisk 'Start'. Kiedykolwiek go naciśniesz, zostaniesz przeniesiony do ekranu startowego."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
